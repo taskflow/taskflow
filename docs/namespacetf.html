@@ -174,8 +174,8 @@
         <section id="enum-members">
           <h2><a href="#enum-members">Enums</a></h2>
           <dl class="m-doc">
-            <dt id="a1355048578785a80414707ff308b395a">
-              <span class="m-doc-wrap-bumper">enum class <a href="#a1355048578785a80414707ff308b395a" class="m-doc-self">TaskType</a>: int { </span><span class="m-doc-wrap"><a href="#a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" class="m-doc">PLACEHOLDER</a> = 0,
+            <dt>
+              <span class="m-doc-wrap-bumper">enum class <a href="#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>: int { </span><span class="m-doc-wrap"><a href="#a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" class="m-doc">PLACEHOLDER</a> = 0,
               <a href="#a1355048578785a80414707ff308b395aa1fbe66e2b3b8907e5b1e605191a1c225" class="m-doc">CUDAFLOW</a>,
               <a href="#a1355048578785a80414707ff308b395aaacf7c94171844e1799b1cccf0144938c" class="m-doc">SYCLFLOW</a>,
               <a href="#a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" class="m-doc">STATIC</a>,
@@ -192,8 +192,8 @@
               <a href="#a192f7cb0fab2eb6f1c84f6046706435da0db45d2a4141101bdfe48e3314cfbca3" class="m-doc">UNDEFINED</a> }</span>
             </dt>
             <dd>enumeration of all observer types</dd>
-            <dt id="afebc56ae6d5765010d0dd13a5f04132e">
-              <span class="m-doc-wrap-bumper">enum class <a href="#afebc56ae6d5765010d0dd13a5f04132e" class="m-doc-self">cudaTaskType</a>: int { </span><span class="m-doc-wrap"><a href="#afebc56ae6d5765010d0dd13a5f04132eaba2b45bdc11e2a4a6e86aab2ac693cbb" class="m-doc">EMPTY</a> = 0,
+            <dt>
+              <span class="m-doc-wrap-bumper">enum class <a href="#afebc56ae6d5765010d0dd13a5f04132e" class="m-doc">cudaTaskType</a>: int { </span><span class="m-doc-wrap"><a href="#afebc56ae6d5765010d0dd13a5f04132eaba2b45bdc11e2a4a6e86aab2ac693cbb" class="m-doc">EMPTY</a> = 0,
               <a href="#afebc56ae6d5765010d0dd13a5f04132eab9361011891280a44d85b967739cc6a5" class="m-doc">HOST</a>,
               <a href="#afebc56ae6d5765010d0dd13a5f04132ea41d4dbfd78ceea21abb0ecb03c3cc921" class="m-doc">MEMSET</a>,
               <a href="#afebc56ae6d5765010d0dd13a5f04132eac5d10cc70cce96265c445f14e7f5aba4" class="m-doc">MEMCPY</a>,
@@ -787,6 +787,133 @@
             </dt>
             <dd>determines if a callable is a syclFlow task</dd>
           </dl>
+        </section>
+        <section>
+          <h2>Enum documentation</h2>
+          <section class="m-doc-details" id="a1355048578785a80414707ff308b395a"><div>
+            <h3>
+              enum class tf::<wbr /><a href="#a1355048578785a80414707ff308b395a" class="m-doc-self">TaskType</a>: int
+            </h3>
+            <p>enumeration of all task types</p>
+            <table class="m-table m-fullwidth m-flat m-doc">
+              <thead><tr><th style="width: 1%">Enumerators</th><th></th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><a href="#a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" class="m-doc-self" id="a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842">PLACEHOLDER</a></td>
+                  <td>
+                  <p>placeholder task type</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#a1355048578785a80414707ff308b395aa1fbe66e2b3b8907e5b1e605191a1c225" class="m-doc-self" id="a1355048578785a80414707ff308b395aa1fbe66e2b3b8907e5b1e605191a1c225">CUDAFLOW</a></td>
+                  <td>
+                  <p><a href="classtf_1_1cudaFlow.html" class="m-doc">cudaFlow</a> task type</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#a1355048578785a80414707ff308b395aaacf7c94171844e1799b1cccf0144938c" class="m-doc-self" id="a1355048578785a80414707ff308b395aaacf7c94171844e1799b1cccf0144938c">SYCLFLOW</a></td>
+                  <td>
+                  <p><a href="classtf_1_1syclFlow.html" class="m-doc">syclFlow</a> task type</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" class="m-doc-self" id="a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc">STATIC</a></td>
+                  <td>
+                  <p>static task type</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#a1355048578785a80414707ff308b395aa0fcc90da4811c877ba9f9c12f7d60bc9" class="m-doc-self" id="a1355048578785a80414707ff308b395aa0fcc90da4811c877ba9f9c12f7d60bc9">DYNAMIC</a></td>
+                  <td>
+                  <p>dynamic (subflow) task type</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac" class="m-doc-self" id="a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac">CONDITION</a></td>
+                  <td>
+                  <p>condition task type</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#a1355048578785a80414707ff308b395aa1cf5e1f5569acda3c4a88a91c5130a69" class="m-doc-self" id="a1355048578785a80414707ff308b395aa1cf5e1f5569acda3c4a88a91c5130a69">MODULE</a></td>
+                  <td>
+                  <p>module task type</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#a1355048578785a80414707ff308b395aabe553330beb7b3d994656e0a4e66cd96" class="m-doc-self" id="a1355048578785a80414707ff308b395aabe553330beb7b3d994656e0a4e66cd96">ASYNC</a></td>
+                  <td>
+                  <p>asynchronous task type</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#a1355048578785a80414707ff308b395aa0db45d2a4141101bdfe48e3314cfbca3" class="m-doc-self" id="a1355048578785a80414707ff308b395aa0db45d2a4141101bdfe48e3314cfbca3">UNDEFINED</a></td>
+                  <td>
+                  <p>undefined task type (for internal use only)</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div></section>
+          <section class="m-doc-details" id="afebc56ae6d5765010d0dd13a5f04132e"><div>
+            <h3>
+              enum class tf::<wbr /><a href="#afebc56ae6d5765010d0dd13a5f04132e" class="m-doc-self">cudaTaskType</a>: int
+            </h3>
+            <p>enumeration of all cudaTask types</p>
+            <table class="m-table m-fullwidth m-flat m-doc">
+              <thead><tr><th style="width: 1%">Enumerators</th><th></th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><a href="#afebc56ae6d5765010d0dd13a5f04132eaba2b45bdc11e2a4a6e86aab2ac693cbb" class="m-doc-self" id="afebc56ae6d5765010d0dd13a5f04132eaba2b45bdc11e2a4a6e86aab2ac693cbb">EMPTY</a></td>
+                  <td>
+                  <p>empty task type</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#afebc56ae6d5765010d0dd13a5f04132eab9361011891280a44d85b967739cc6a5" class="m-doc-self" id="afebc56ae6d5765010d0dd13a5f04132eab9361011891280a44d85b967739cc6a5">HOST</a></td>
+                  <td>
+                  <p>host task type</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#afebc56ae6d5765010d0dd13a5f04132ea41d4dbfd78ceea21abb0ecb03c3cc921" class="m-doc-self" id="afebc56ae6d5765010d0dd13a5f04132ea41d4dbfd78ceea21abb0ecb03c3cc921">MEMSET</a></td>
+                  <td>
+                  <p>memory set task type</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#afebc56ae6d5765010d0dd13a5f04132eac5d10cc70cce96265c445f14e7f5aba4" class="m-doc-self" id="afebc56ae6d5765010d0dd13a5f04132eac5d10cc70cce96265c445f14e7f5aba4">MEMCPY</a></td>
+                  <td>
+                  <p>memory copy task type</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#afebc56ae6d5765010d0dd13a5f04132ea35c10219c45ccfb5b07444fd7e17214c" class="m-doc-self" id="afebc56ae6d5765010d0dd13a5f04132ea35c10219c45ccfb5b07444fd7e17214c">KERNEL</a></td>
+                  <td>
+                  <p>memory copy task type</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#afebc56ae6d5765010d0dd13a5f04132ea46be697979903d784a70aeec45eb14ad" class="m-doc-self" id="afebc56ae6d5765010d0dd13a5f04132ea46be697979903d784a70aeec45eb14ad">SUBFLOW</a></td>
+                  <td>
+                  <p>subflow (child graph) task type</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#afebc56ae6d5765010d0dd13a5f04132eab72f08e0732365cac9599b5c42157bf9" class="m-doc-self" id="afebc56ae6d5765010d0dd13a5f04132eab72f08e0732365cac9599b5c42157bf9">CAPTURE</a></td>
+                  <td>
+                  <p>capture task type</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#afebc56ae6d5765010d0dd13a5f04132ea0db45d2a4141101bdfe48e3314cfbca3" class="m-doc-self" id="afebc56ae6d5765010d0dd13a5f04132ea0db45d2a4141101bdfe48e3314cfbca3">UNDEFINED</a></td>
+                  <td>
+                  <p>undefined task type</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div></section>
         </section>
         <section>
           <h2>Function documentation</h2>

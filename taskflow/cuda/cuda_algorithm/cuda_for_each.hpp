@@ -22,7 +22,7 @@ void cuda_for_each_loop(P&& p, I first, unsigned count, C c) {
   unsigned B = (count + E::nv - 1) / E::nv;
 
   cuda_kernel<<<B, E::nt, 0, p.stream()>>>(
-  [=] __device__ (auto tid, auto bid) mutable {
+  [=] __device__ (auto tid, auto bid) {
     auto tile = cuda_get_tile(bid, E::nv, count);
     cuda_strided_iterate<E::nt, E::vt>([=](auto, auto j) {
       c(*(first + tile.begin + j));
@@ -41,7 +41,7 @@ void cuda_for_each_index_loop(
   unsigned B = (count + E::nv - 1) / E::nv;
 
   cuda_kernel<<<B, E::nt, 0, p.stream()>>>(
-  [=]__device__(auto tid, auto bid) mutable {
+  [=]__device__(auto tid, auto bid) {
     auto tile = cuda_get_tile(bid, E::nv, count);
     cuda_strided_iterate<E::nt, E::vt>([=]__device__(auto, auto j) {
       c(first + inc*(tile.begin+j));
@@ -203,10 +203,14 @@ __global__ void cuda_single_task(C callable) {
 
 // Function: single_task
 template <typename C>
-cudaTask cudaFlow::single_task(C&& c) {
-  return kernel(
-    1, 1, 0, cuda_single_task<C>, std::forward<C>(c)
-  );
+cudaTask cudaFlow::single_task(C c) {
+  return kernel(1, 1, 0, cuda_single_task<C>, c);
+}
+
+// Function: single_task
+template <typename C>
+void cudaFlow::single_task(cudaTask task, C c) {
+  return kernel(task, 1, 1, 0, cuda_single_task<C>, c);
 }
 
 // Function: for_each
@@ -227,19 +231,19 @@ cudaTask cudaFlow::for_each_index(I first, I last, I inc, C c) {
   });
 }
 
-// Function: update_for_each
+// Function: for_each
 template <typename I, typename C>
-void cudaFlow::update_for_each(cudaTask task, I first, I last, C c) {
-  update_capture(task, [=](cudaFlowCapturer& cap) mutable {
+void cudaFlow::for_each(cudaTask task, I first, I last, C c) {
+  capture(task, [=](cudaFlowCapturer& cap) mutable {
     cap.make_optimizer<cudaLinearCapturing>();
     cap.for_each(first, last, c);
   });
 }
 
-// Function: update_for_each_index
+// Function: for_each_index
 template <typename I, typename C>
-void cudaFlow::update_for_each_index(cudaTask task, I first, I last, I inc, C c) {
-  update_capture(task, [=](cudaFlowCapturer& cap) mutable {
+void cudaFlow::for_each_index(cudaTask task, I first, I last, I inc, C c) {
+  capture(task, [=](cudaFlowCapturer& cap) mutable {
     cap.make_optimizer<cudaLinearCapturing>();
     cap.for_each_index(first, last, inc, c);
   });
@@ -267,21 +271,21 @@ cudaTask cudaFlowCapturer::for_each_index(I beg, I end, I inc, C c) {
   });
 }
 
-// Function: rebind_for_each
+// Function: for_each
 template <typename I, typename C>
-void cudaFlowCapturer::rebind_for_each(cudaTask task, I first, I last, C c) {
-  rebind_on(task, [=](cudaStream_t stream) mutable {
+void cudaFlowCapturer::for_each(cudaTask task, I first, I last, C c) {
+  on(task, [=](cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_for_each_async(p, first, last, c);
   });
 }
 
-// Function: rebind_for_each_index
+// Function: for_each_index
 template <typename I, typename C>
-void cudaFlowCapturer::rebind_for_each_index(
+void cudaFlowCapturer::for_each_index(
   cudaTask task, I beg, I end, I inc, C c
 ) {
-  rebind_on(task, [=] (cudaStream_t stream) mutable {
+  on(task, [=] (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_for_each_index_async(p, beg, end, inc, c);
   });
@@ -296,10 +300,10 @@ cudaTask cudaFlowCapturer::single_task(C callable) {
   });
 }
 
-// Function: rebind_single_task
+// Function: single_task
 template <typename C>
-void cudaFlowCapturer::rebind_single_task(cudaTask task, C callable) {
-  rebind_on(task, [=] (cudaStream_t stream) mutable {
+void cudaFlowCapturer::single_task(cudaTask task, C callable) {
+  on(task, [=] (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_single_task_async(p, callable);
   });

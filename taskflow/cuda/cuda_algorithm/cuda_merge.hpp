@@ -682,6 +682,17 @@ cudaTask cudaFlow::merge(
   });
 }
 
+// Function: merge
+template<typename A, typename B, typename C, typename Comp>
+void cudaFlow::merge(
+  cudaTask task, A a_first, A a_last, B b_first, B b_last, C c_first, Comp comp
+) {
+  capture(task, [=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.merge(a_first, a_last, b_first, b_last, c_first, comp);
+  });
+}
+
 // ----------------------------------------------------------------------------
 // cudaFlowCapturer merge algorithms
 // ----------------------------------------------------------------------------
@@ -706,7 +717,7 @@ cudaTask cudaFlowCapturer::merge(
 
 // Procedure: rebind
 template<typename A, typename B, typename C, typename Comp>
-void cudaFlowCapturer::rebind_merge(
+void cudaFlowCapturer::merge(
   cudaTask task, A a_first, A a_last, B b_first, B b_last, C c_first, Comp comp
 ) {
   // TODO
@@ -714,7 +725,7 @@ void cudaFlowCapturer::rebind_merge(
     std::distance(a_first, a_last), std::distance(b_first, b_last)
   );
 
-  rebind_on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cuda_merge_async(cudaDefaultExecutionPolicy{stream}, 
       a_first, a_last, b_first, b_last, c_first, comp, buf.get().data()

@@ -562,6 +562,15 @@ cudaTask cudaFlow::sort(I first, I last, C comp) {
   });
 }
 
+// Function: sort
+template <typename I, typename C>
+void cudaFlow::sort(cudaTask task, I first, I last, C comp) {
+  capture(task, [=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.sort(first, last, comp);
+  });
+}
+
 // ----------------------------------------------------------------------------
 // cudaFlowCapturer
 // ----------------------------------------------------------------------------
@@ -584,9 +593,9 @@ cudaTask cudaFlowCapturer::sort(I first, I last, C comp) {
   });
 }
 
-// Function: rebind_sort
+// Function: sort
 template <typename I, typename C>
-void cudaFlowCapturer::rebind_sort(cudaTask task, I first, I last, C comp) {
+void cudaFlowCapturer::sort(cudaTask task, I first, I last, C comp) {
   
   using K = typename std::iterator_traits<I>::value_type;
 
@@ -594,7 +603,7 @@ void cudaFlowCapturer::rebind_sort(cudaTask task, I first, I last, C comp) {
     std::distance(first, last)
   );
 
-  rebind_on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cuda_sort_async(
       cudaDefaultExecutionPolicy{stream}, first, last, comp, buf.get().data()

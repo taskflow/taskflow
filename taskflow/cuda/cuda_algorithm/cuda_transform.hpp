@@ -222,40 +222,25 @@ cudaTask cudaFlow::transform(I1 first1, I1 last1, I2 first2, O output, C c) {
   });
 }
 
-// Function: update_transform
+// Function: update transform
 template <typename I, typename O, typename C>
-void cudaFlow::update_transform(cudaTask task, I first, I last, O output, C c) {
-  update_capture(task, [=](cudaFlowCapturer& cap) mutable {
+void cudaFlow::transform(cudaTask task, I first, I last, O output, C c) {
+  capture(task, [=](cudaFlowCapturer& cap) mutable {
     cap.make_optimizer<cudaLinearCapturing>();
     cap.transform(first, last, output, c);
   });
 }
 
-// Function: update_transform
+// Function: update transform
 template <typename I1, typename I2, typename O, typename C>
-void cudaFlow::update_transform(
+void cudaFlow::transform(
   cudaTask task, I1 first1, I1 last1, I2 first2, O output, C c
 ) {
-  update_capture(task, [=](cudaFlowCapturer& cap) mutable {
+  capture(task, [=](cudaFlowCapturer& cap) mutable {
     cap.make_optimizer<cudaLinearCapturing>();
     cap.transform(first1, last1, first2, output, c);
   });
 }
-
-//// Procedure: update_transform
-//template <typename I, typename C, typename... S>
-//void cudaFlow::update_transform(
-//  cudaTask task, I first, I last, C&& c, S... srcs
-//) {
-//  
-//  // TODO: special case when N is 0?
-//  size_t N = std::distance(first, last);
-//  size_t B = _default_block_size(N);
-//
-//  update_kernel(
-//    task, (N+B-1) / B, B, 0, first, N, std::forward<C>(c), srcs...
-//  );
-//}
 
 // ----------------------------------------------------------------------------
 // cudaFlowCapturer
@@ -281,23 +266,23 @@ cudaTask cudaFlowCapturer::transform(
   });
 }
 
-// Function: rebind_transform
+// Function: transform
 template <typename I, typename O, typename C>
-void cudaFlowCapturer::rebind_transform(
+void cudaFlowCapturer::transform(
   cudaTask task, I first, I last, O output, C op
 ) {
-  rebind_on(task, [=] (cudaStream_t stream) mutable {
+  on(task, [=] (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_transform_async(p, first, last, output, op);
   });
 }
 
-// Function: rebind_transform
+// Function: transform
 template <typename I1, typename I2, typename O, typename C>
-void cudaFlowCapturer::rebind_transform(
+void cudaFlowCapturer::transform(
   cudaTask task, I1 first1, I1 last1, I2 first2, O output, C op
 ) {
-  rebind_on(task, [=] (cudaStream_t stream) mutable {
+  on(task, [=] (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_transform_async(p, first1, last1, first2, output, op);
   });

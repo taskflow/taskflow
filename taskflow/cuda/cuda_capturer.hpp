@@ -111,7 +111,6 @@ class cudaFlowCapturer {
     */
     void dump(std::ostream& os) const;
     
-    
     /**
     @brief selects a different optimization algorithm
 
@@ -149,6 +148,17 @@ class cudaFlowCapturer {
     cudaTask on(C&& callable);
     
     /**
+    @brief updates a capture task to another sequential CUDA operations
+
+    The method is similar to cudaFlowCapturer::on but operates 
+    on an existing task.
+    */
+    template <typename C, std::enable_if_t<
+      std::is_invocable_r_v<void, C, cudaStream_t>, void>* = nullptr
+    >
+    void on(cudaTask task, C&& callable);
+    
+    /**
     @brief copies data between host and device asynchronously through a stream
     
     @param dst destination memory address
@@ -159,6 +169,14 @@ class cudaFlowCapturer {
     internal stream.
     */ 
     cudaTask memcpy(void* dst, const void* src, size_t count);
+    
+    /**
+    @brief updates a capture task to a memcpy operation
+
+    The method is similar to cudaFlowCapturer::memcpy but operates on an
+    existing task.
+    */
+    void memcpy(cudaTask task, void* dst, const void* src, size_t count);
 
     /**
     @brief captures a copy task of typed data
@@ -180,6 +198,17 @@ class cudaFlowCapturer {
     cudaTask copy(T* tgt, const T* src, size_t num);
 
     /**
+    @brief updates a capture task to a copy operation
+
+    The method is similar to cudaFlowCapturer::copy but operates on 
+    an existing task.
+    */
+    template <typename T, 
+      std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
+    >
+    void copy(cudaTask task, T* tgt, const T* src, size_t num);
+
+    /**
     @brief initializes or sets GPU memory to the given value byte by byte
     
     @param ptr pointer to GPU mempry
@@ -191,6 +220,14 @@ class cudaFlowCapturer {
     pointed to by @c devPtr with the constant byte value @c value.
     */ 
     cudaTask memset(void* ptr, int v, size_t n);
+
+    /**
+    @brief updates a capture task to a memset operation
+
+    The method is similar to cudaFlowCapturer::memset but operates on
+    an existing task.
+    */
+    void memset(cudaTask task, void* ptr, int value, size_t n);
 
     /**
     @brief captures a kernel
@@ -208,6 +245,17 @@ class cudaFlowCapturer {
     */ 
     template <typename F, typename... ArgsT>
     cudaTask kernel(dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
+    
+    /**
+    @brief updates a capture task to a kernel operation
+
+    The method is similar to cudaFlowCapturer::kernel but operates on
+    an existing task.
+    */
+    template <typename F, typename... ArgsT>
+    void kernel(
+      cudaTask task, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args
+    );
 
     // ------------------------------------------------------------------------
     // generic algorithms
@@ -222,6 +270,15 @@ class cudaFlowCapturer {
     */
     template <typename C>
     cudaTask single_task(C callable);
+    
+    /**
+    @brief updates a capture task to a single-threaded kernel
+    
+    This method is similar to cudaFlowCapturer::single_task but operates
+    on an existing task.
+    */
+    template <typename C>
+    void single_task(cudaTask task, C callable);
     
     /**
     @brief captures a kernel that applies a callable to each dereferenced element 
@@ -246,6 +303,15 @@ class cudaFlowCapturer {
     */
     template <typename I, typename C>
     cudaTask for_each(I first, I last, C callable);
+    
+    /**
+    @brief updates a capture task to a for-each kernel task
+    
+    This method is similar to cudaFlowCapturer::for_each but operates
+    on an existing task.
+    */
+    template <typename I, typename C>
+    void for_each(cudaTask task, I first, I last, C callable);
 
     /**
     @brief captures a kernel that applies a callable to each index in the range 
@@ -277,6 +343,17 @@ class cudaFlowCapturer {
     */
     template <typename I, typename C>
     cudaTask for_each_index(I first, I last, I step, C callable);
+
+    /**
+    @brief updates a capture task to a for-each-index kernel task
+
+    This method is similar to cudaFlowCapturer::for_each_index but operates
+    on an existing task.
+    */
+    template <typename I, typename C>
+    void for_each_index(
+      cudaTask task, I first, I last, I step, C callable
+    );
   
     /**
     @brief captures a kernel that transforms an input range to an output range 
@@ -304,6 +381,15 @@ class cudaFlowCapturer {
     cudaTask transform(I first, I last, O output, C op);
     
     /**
+    @brief updates a capture task to a transform kernel task
+
+    This method is similar to cudaFlowCapturer::transform but operates
+    on an existing task.
+    */
+    template <typename I, typename O, typename C>
+    void transform(cudaTask task, I first, I last, O output, C op);
+
+    /**
     @brief captures a kernel that transforms two input ranges to an output range 
     
     @tparam I1 first input iterator type
@@ -330,6 +416,17 @@ class cudaFlowCapturer {
     */
     template <typename I1, typename I2, typename O, typename C>
     cudaTask transform(I1 first1, I1 last1, I2 first2, O output, C op);
+    
+    /**
+    @brief updates a capture task to a transform kernel task
+
+    This method is similar to cudaFlowCapturer::transform but operates
+    on an existing task.
+    */
+    template <typename I1, typename I2, typename O, typename C>
+    void transform(
+      cudaTask task, I1 first1, I1 last1, I2 first2, O output, C op
+    );
       
     /**
     @brief captures kernels that perform parallel reduction over a range of items
@@ -357,6 +454,16 @@ class cudaFlowCapturer {
     cudaTask reduce(I first, I last, T* result, C op);
     
     /**
+    @brief updates a capture task to a reduction task
+
+    This method is similar to cudaFlowCapturer::reduce but operates
+    on an existing task.
+    */
+    template <typename I, typename T, typename C>
+    void reduce(cudaTask task, I first, I last, T* result, C op);
+
+    
+    /**
     @brief similar to tf::cudaFlowCapturer::reduce but does not assume
            any initial value to reduce
     
@@ -372,6 +479,17 @@ class cudaFlowCapturer {
     */
     template <typename I, typename T, typename C>
     cudaTask uninitialized_reduce(I first, I last, T* result, C op);
+    
+    /**
+    @brief updates a capture task to an uninitialized-reduction task
+
+    This method is similar to cudaFlowCapturer::uninitialized_reduce
+    but operates on an existing task.
+    */
+    template <typename I, typename T, typename C>
+    void uninitialized_reduce(
+      cudaTask task, I first, I last, T* result, C op
+    );
     
     /**
     @brief captures kernels that perform parallel reduction over a range of 
@@ -402,6 +520,17 @@ class cudaFlowCapturer {
     cudaTask transform_reduce(I first, I last, T* result, C bop, U uop);
     
     /**
+    @brief updates a capture task to a transform-reduce task
+
+    This method is similar to cudaFlowCapturer::transform_reduce but 
+    operates on an existing task.
+    */
+    template <typename I, typename T, typename C, typename U>
+    void transform_reduce(
+      cudaTask task, I first, I last, T* result, C bop, U uop
+    );
+
+    /**
     @brief similar to tf::cudaFlowCapturer::transform_reduce but does not assume
            any initial value to reduce
     
@@ -417,6 +546,17 @@ class cudaFlowCapturer {
     */
     template <typename I, typename T, typename C, typename U>
     cudaTask transform_uninitialized_reduce(I first, I last, T* result, C bop, U uop);
+    
+    /**
+    @brief updates a capture task to a transform-reduce task of no initialized value
+
+    This method is similar to cudaFlowCapturer::transform_uninitialized_reduce 
+    but operates on an existing task.
+    */
+    template <typename I, typename T, typename C, typename U>
+    void transform_uninitialized_reduce(
+      cudaTask task, I first, I last, T* result, C bop, U uop
+    );
     
     /**
     @brief captures kernels that perform parallel inclusive scan 
@@ -445,11 +585,29 @@ class cudaFlowCapturer {
     cudaTask inclusive_scan(I first, I last, O output, C op);
     
     /**
+    @brief updates a capture task to an inclusive scan task
+
+    This method is similar to cudaFlowCapturer::inclusive_scan 
+    but operates on an existing task.
+    */
+    template <typename I, typename O, typename C>
+    void inclusive_scan(cudaTask task, I first, I last, O output, C op);
+    
+    /**
     @brief similar to cudaFlowCapturer::inclusive_scan 
            but excludes the first value
     */
     template <typename I, typename O, typename C>
     cudaTask exclusive_scan(I first, I last, O output, C op);
+    
+    /**
+    @brief updates a capture task to an exclusive scan task
+
+    This method is similar to cudaFlowCapturer::exclusive_scan 
+    but operates on an existing task.
+    */
+    template <typename I, typename O, typename C>
+    void exclusive_scan(cudaTask task, I first, I last, O output, C op);
     
     /**
     @brief captures kernels that perform parallel inclusive scan 
@@ -481,11 +639,33 @@ class cudaFlowCapturer {
     cudaTask transform_inclusive_scan(I first, I last, O output, B bop, U uop);
     
     /**
+    @brief updates a capture task to a transform-inclusive scan task
+
+    This method is similar to cudaFlowCapturer::transform_inclusive_scan 
+    but operates on an existing task.
+    */
+    template <typename I, typename O, typename B, typename U>
+    void transform_inclusive_scan(
+      cudaTask task, I first, I last, O output, B bop, U uop
+    );
+    
+    /**
     @brief similar to cudaFlowCapturer::transform_inclusive_scan but 
            excludes the first value
     */
     template <typename I, typename O, typename B, typename U>
     cudaTask transform_exclusive_scan(I first, I last, O output, B bop, U uop);
+    
+    /**
+    @brief updates a capture task to a transform-exclusive scan task
+
+    This method is similar to cudaFlowCapturer::transform_exclusive_scan 
+    but operates on an existing task.
+    */
+    template <typename I, typename O, typename B, typename U>
+    void transform_exclusive_scan(
+      cudaTask task, I first, I last, O output, B bop, U uop
+    );
     
     /**
     @brief captures kernels that perform parallel merge on two sorted arrays
@@ -517,6 +697,17 @@ class cudaFlowCapturer {
     cudaTask merge(A a_first, A a_last, B b_first, B b_last, C c_first, Comp comp);
     
     /**
+    @brief updates a capture task to a merge task
+
+    This method is similar to cudaFlowCapturer::merge but operates
+    on an existing task.
+     */ 
+    template <typename A, typename B, typename C, typename Comp>
+    void merge(
+      cudaTask task, A a_first, A a_last, B b_first, B b_last, C c_first, Comp comp
+    );
+    
+    /**
     @brief captures kernels that sort the given array
     
     @tparam I iterator type of the first input array
@@ -533,170 +724,15 @@ class cudaFlowCapturer {
      */
     template <typename I, typename C>
     cudaTask sort(I first, I last, C comp);
-
-    // ------------------------------------------------------------------------
-    // rebind methods to update captured tasks
-    // ------------------------------------------------------------------------
-
-    /**
-    @brief rebinds a capture task to another sequential CUDA operations
-
-    The method is similar to cudaFlowCapturer::on but operates 
-    on an existing task.
-    */
-    template <typename C, std::enable_if_t<
-      std::is_invocable_r_v<void, C, cudaStream_t>, void>* = nullptr
-    >
-    void rebind_on(cudaTask task, C&& callable);
     
     /**
-    @brief rebinds a capture task to a memcpy operation
-
-    The method is similar to cudaFlowCapturer::memcpy but operates on an
-    existing task.
-    */
-    void rebind_memcpy(cudaTask task, void* dst, const void* src, size_t count);
-
-    /**
-    @brief rebinds a capture task to a copy operation
-
-    The method is similar to cudaFlowCapturer::copy but operates on 
-    an existing task.
-    */
-    template <typename T, 
-      std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
-    >
-    void rebind_copy(cudaTask task, T* tgt, const T* src, size_t num);
-
-    /**
-    @brief rebinds a capture task to a memset operation
-
-    The method is similar to cudaFlowCapturer::memset but operates on
-    an existing task.
-    */
-    void rebind_memset(cudaTask task, void* ptr, int value, size_t n);
-
-    /**
-    @brief rebinds a capture task to a kernel operation
-
-    The method is similar to cudaFlowCapturer::kernel but operates on
-    an existing task.
-    */
-    template <typename F, typename... ArgsT>
-    void rebind_kernel(
-      cudaTask task, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args
-    );
-    
-    /**
-    @brief rebinds a capture task to a single-threaded kernel
-    
-    This method is similar to cudaFlowCapturer::single_task but operates
-    on an existing task.
-    */
-    template <typename C>
-    void rebind_single_task(cudaTask task, C callable);
-    
-    /**
-    @brief rebinds a capture task to a for-each kernel task
-    
-    This method is similar to cudaFlowCapturer::for_each but operates
-    on an existing task.
-    */
-    template <typename I, typename C>
-    void rebind_for_each(cudaTask task, I first, I last, C callable);
-
-    /**
-    @brief rebinds a capture task to a for-each-index kernel task
-
-    This method is similar to cudaFlowCapturer::for_each_index but operates
-    on an existing task.
-    */
-    template <typename I, typename C>
-    void rebind_for_each_index(
-      cudaTask task, I first, I last, I step, C callable
-    );
-  
-    /**
-    @brief rebinds a capture task to a transform kernel task
-
-    This method is similar to cudaFlowCapturer::transform but operates
-    on an existing task.
-    */
-    template <typename I, typename O, typename C>
-    void rebind_transform(cudaTask task, I first, I last, O output, C op);
-    
-    /**
-    @brief rebinds a capture task to a transform kernel task
-
-    This method is similar to cudaFlowCapturer::transform but operates
-    on an existing task.
-    */
-    template <typename I1, typename I2, typename O, typename C>
-    void rebind_transform(
-      cudaTask task, I1 first1, I1 last1, I2 first2, O output, C op
-    );
-      
-    /**
-    @brief rebinds a capture task to a reduction task
-
-    This method is similar to cudaFlowCapturer::reduce but operates
-    on an existing task.
-    */
-    template <typename I, typename T, typename C>
-    void rebind_reduce(cudaTask task, I first, I last, T* result, C op);
-    
-    /**
-    @brief rebinds a capture task to an uninitialized-reduction task
-
-    This method is similar to cudaFlowCapturer::uninitialized_reduce
-    but operates on an existing task.
-    */
-    template <typename I, typename T, typename C>
-    void rebind_uninitialized_reduce(
-      cudaTask task, I first, I last, T* result, C op
-    );
-    
-    /**
-    @brief rebinds a capture task to a transform-reduce task
-
-    This method is similar to cudaFlowCapturer::transform_reduce but 
-    operates on an existing task.
-    */
-    template <typename I, typename T, typename C, typename U>
-    void rebind_transform_reduce(
-      cudaTask task, I first, I last, T* result, C bop, U uop
-    );
-    
-    /**
-    @brief rebinds a capture task to a transform-reduce task of no initialized value
-
-    This method is similar to cudaFlowCapturer::transform_uninitialized_reduce 
-    but operates on an existing task.
-    */
-    template <typename I, typename T, typename C, typename U>
-    void rebind_transform_uninitialized_reduce(
-      cudaTask task, I first, I last, T* result, C bop, U uop
-    );
-    
-    /**
-    @brief rebinds a capture task to a merge task
-
-    This method is similar to cudaFlowCapturer::merge but operates
-    on an existing task.
-     */ 
-    template <typename A, typename B, typename C, typename Comp>
-    void rebind_merge(
-      cudaTask task, A a_first, A a_last, B b_first, B b_last, C c_first, Comp comp
-    );
-    
-    /**
-    @brief rebinds a capture task to a sort task
+    @brief updates a capture task to a sort task
 
     This method is similar to cudaFlowCapturer::sort but operates on 
     an existing task.
      */
     template <typename I, typename C>
-    void rebind_sort(cudaTask task, I first, I last, C comp);
+    void sort(cudaTask task, I first, I last, C comp);
     
     // ------------------------------------------------------------------------
     // offload methods
@@ -733,8 +769,6 @@ class cudaFlowCapturer {
 
   private:
 
-    const size_t _MAX_BLOCK_SIZE;
-    
     handle_t _handle;
 
     cudaGraph& _graph;
@@ -749,24 +783,16 @@ class cudaFlowCapturer {
 
     void _destroy_executable();
 
-    size_t _default_block_size(size_t) const;
-
 };
 
 // constructs a cudaFlow capturer from a taskflow
 inline cudaFlowCapturer::cudaFlowCapturer(cudaGraph& g) :
-  _MAX_BLOCK_SIZE {
-    cuda_get_device_max_threads_per_block(cuda_get_device())
-  },
   _handle {std::in_place_type_t<Internal>{}},
   _graph  {g} {
 }
 
 // constructs a standalone cudaFlow capturer
 inline cudaFlowCapturer::cudaFlowCapturer() : 
-  _MAX_BLOCK_SIZE {
-    cuda_get_device_max_threads_per_block(cuda_get_device())
-  },
   _handle {std::in_place_type_t<External>{}},
   _graph  {std::get<External>(_handle).graph} {
 }
@@ -776,11 +802,6 @@ inline cudaFlowCapturer::~cudaFlowCapturer() {
   if(_executable != nullptr) {
     cudaGraphExecDestroy(_executable);
   }
-}
-
-// Function: _default_block_size
-inline size_t cudaFlowCapturer::_default_block_size(size_t N) const {
-  return N <= 32u ? 32u : std::min(_MAX_BLOCK_SIZE, next_pow2(N));
 }
 
 // Function: empty
@@ -876,30 +897,62 @@ inline cudaGraph_t cudaFlowCapturer::_capture() {
 // Procedure: offload_until
 template <typename P>
 void cudaFlowCapturer::offload_until(P&& predicate) {
+  
+  // If the topology got changed, we need to destroy the executable
+  // and create a new one
+  if(_graph._state & cudaGraph::CHANGED) {
 
-  // If the executable graph does not exist, instantiate it 
-  if(_executable == nullptr) {
+    _destroy_executable();
 
-    auto captured = _capture();
-    
+    auto g = _capture();
     TF_CHECK_CUDA(
-      cudaGraphInstantiate(&_executable, captured, nullptr, nullptr, 0),
+      cudaGraphInstantiate(&_executable, g, nullptr, nullptr, 0),
       "failed to create an executable graph"
     );
 
     // TODO: store the native graph?
-    TF_CHECK_CUDA(cudaGraphDestroy(captured), "failed to destroy captured graph");
+    TF_CHECK_CUDA(cudaGraphDestroy(g), "failed to destroy captured graph");
   }
-  
-  cudaScopedPerThreadStream s;
+  // if the graph is just updated (i.e., topology does not change), 
+  // we can skip part of the optimization and just update the executable
+  // with the new captured graph
+  else if(_graph._state & cudaGraph::UPDATED) {
+    
+    // TODO: skip part of the optimization (e.g., levelization)
+    auto g = _capture();
+    
+    assert(_executable != nullptr);
 
-  while(!predicate()) {
-    TF_CHECK_CUDA(
-      cudaGraphLaunch(_executable, s), "failed to launch the exec graph"
-    );
+    cudaGraphNode_t error_node;
+    cudaGraphExecUpdateResult error_result;
+    cudaGraphExecUpdate(_executable, g, &error_node, &error_result);
 
-    TF_CHECK_CUDA(cudaStreamSynchronize(s), "failed to synchronize stream");
+    if(error_result != cudaGraphExecUpdateSuccess) {
+      _destroy_executable();
+      TF_CHECK_CUDA(
+        cudaGraphInstantiate(&_executable, g, nullptr, nullptr, 0),
+        "failed to re-create an executable graph after updates fail"
+      );
+      // TODO: store the native graph?
+      TF_CHECK_CUDA(cudaGraphDestroy(g), "failed to destroy captured graph");
+    }
   }
+   
+  // offload the executable
+  if(_executable) {
+     
+    cudaScopedPerThreadStream s;
+
+    while(!predicate()) {
+      TF_CHECK_CUDA(
+        cudaGraphLaunch(_executable, s), "failed to launch the exec graph"
+      );
+
+      TF_CHECK_CUDA(cudaStreamSynchronize(s), "failed to synchronize stream");
+    }
+  }
+
+  _graph._state = cudaGraph::OFFLOADED;
 }
 
 // Procedure: offload_n
@@ -912,26 +965,26 @@ inline void cudaFlowCapturer::offload() {
   offload_until([repeat=1] () mutable { return repeat-- == 0; });
 }
 
-// Function: rebind_on
+// Function: on
 template <typename C, std::enable_if_t<
   std::is_invocable_r_v<void, C, cudaStream_t>, void>* 
 >
-void cudaFlowCapturer::rebind_on(cudaTask task, C&& callable) {
+void cudaFlowCapturer::on(cudaTask task, C&& callable) {
   
   if(task.type() != cudaTaskType::CAPTURE) {
     TF_THROW("invalid cudaTask type (must be CAPTURE)");
   }
   
-  _destroy_executable();
+  _graph._state |= cudaGraph::UPDATED;
 
   std::get<cudaNode::Capture>((task._node)->_handle).work = std::forward<C>(callable);
 }
 
-// Function: rebind_memcpy
-inline void cudaFlowCapturer::rebind_memcpy(
+// Function: memcpy
+inline void cudaFlowCapturer::memcpy(
   cudaTask task, void* dst, const void* src, size_t count
 ) {
-  rebind_on(task, [dst, src, count](cudaStream_t stream) mutable {
+  on(task, [dst, src, count](cudaStream_t stream) mutable {
     TF_CHECK_CUDA(
       cudaMemcpyAsync(dst, src, count, cudaMemcpyDefault, stream),
       "failed to capture memcpy"
@@ -939,14 +992,14 @@ inline void cudaFlowCapturer::rebind_memcpy(
   });
 }
 
-// Function: rebind_copy
+// Function: copy
 template <typename T, 
   std::enable_if_t<!std::is_same_v<T, void>, void>* 
 >
-void cudaFlowCapturer::rebind_copy(
+void cudaFlowCapturer::copy(
   cudaTask task, T* tgt, const T* src, size_t num
 ) {
-  rebind_on(task, [tgt, src, num] (cudaStream_t stream) mutable {
+  on(task, [tgt, src, num] (cudaStream_t stream) mutable {
     TF_CHECK_CUDA(
       cudaMemcpyAsync(tgt, src, sizeof(T)*num, cudaMemcpyDefault, stream),
       "failed to capture copy"
@@ -954,23 +1007,23 @@ void cudaFlowCapturer::rebind_copy(
   });
 }
 
-// Function: rebind_memset
-inline void cudaFlowCapturer::rebind_memset(
+// Function: memset
+inline void cudaFlowCapturer::memset(
   cudaTask task, void* ptr, int v, size_t n
 ) {
-  rebind_on(task, [ptr, v, n] (cudaStream_t stream) mutable {
+  on(task, [ptr, v, n] (cudaStream_t stream) mutable {
     TF_CHECK_CUDA(
       cudaMemsetAsync(ptr, v, n, stream), "failed to capture memset"
     );
   });
 }
 
-// Function: rebind_kernel
+// Function: kernel
 template <typename F, typename... ArgsT>
-void cudaFlowCapturer::rebind_kernel(
+void cudaFlowCapturer::kernel(
   cudaTask task, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args
 ) {
-  rebind_on(task, [g, b, s, f, args...] (cudaStream_t stream) mutable {
+  on(task, [g, b, s, f, args...] (cudaStream_t stream) mutable {
     f<<<g, b, s, stream>>>(args...);
   });
 }

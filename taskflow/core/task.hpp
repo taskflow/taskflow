@@ -19,14 +19,23 @@ namespace tf {
 @brief enumeration of all task types
 */
 enum class TaskType : int {
+  /** @brief placeholder task type */
   PLACEHOLDER = 0,
+  /** @brief cudaFlow task type */
   CUDAFLOW,
+  /** @brief syclFlow task type */
   SYCLFLOW,
+  /** @brief static task type */
   STATIC,
+  /** @brief dynamic (subflow) task type */
   DYNAMIC,
+  /** @brief condition task type */
   CONDITION,
+  /** @brief module task type */
   MODULE,
+  /** @brief asynchronous task type */
   ASYNC,
+  /** @brief undefined task type (for internal use only) */
   UNDEFINED 
 };
 

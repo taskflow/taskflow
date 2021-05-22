@@ -201,8 +201,8 @@ taskflow.emplace([](tf::cudaFlowCapturer& sf) {
 @section UpdateAcudaFlowCapturer Update a cudaFlow Capturer
 
 Between successive offloads (i.e., executions of a %cudaFlow capturer),
-you can update the captured task by @em rebinding it to another task type.
-For example, you can rebind a kernel task to a memory task from an offloaded 
+you can update the captured task with a different set of parameters.
+For example, you can update a kernel task to a memory task from an offloaded 
 %cudaFlow capturer.
 
 @code{.cpp}
@@ -210,26 +210,22 @@ taskflow.emplace(tf::cudaFlowCapturer& cf) {
   tf::cudaTask task = cf.kernel(grid1, block1, shm1, kernel1, kernel1_args);
   cf.offload();
 
-  // rebind task to another kernel with different parameters
-  cf.rebind_kernel(task, grid2, block2, shm2, kernel2, kernel2_args);
+  // update task to another kernel with different parameters
+  cf.kernel(task, grid2, block2, shm2, kernel2, kernel2_args);
   cf.offload();
 
-  // rebind task to another task type is OK in a capturer
-  cf.rebind_memset(task, target, 0, num_bytes);
+  // update task to another task type is OK in a capturer
+  cf.memset(task, target, 0, num_bytes);
   cf.offload();
 };
 @endcode
 
-When you call a rebind method, it destroys the underlying executable graph 
-if it exists, and a new executable graph will be recreated for the next offload.
-A %cudaFlow capturer does not maintain an one-to-one mapping between the 
-user-described graph and the actual executable graph,
-and therefore the rebind methods are more flexible than the update methods 
-of tf::cudaFlow.
-Each method of task creation in tf::cudaFlowCapturer has a corresponding method of 
-rebinding a task to that task type
-(e.g., tf::cudaFlowCapturer::on and tf::cudaFlowCapturer::rebind_on,
-       tf::cudaFlowCapturer::kernel and tf::cudaFlowCapturer::kernel).
+When you offload a updated %cudaFlow capturer,
+the runtime will try to update the underlying executable 
+with the new captured graph first, 
+or destroy the executable graph and replace it with a new one.
+Each method of task creation in tf::cudaFlowCapturer has an overload of 
+updating the parameters of the task created from the same creation method.
 
 @section UsecudaFlowCapturerInAStandaloneEnvironment Use cudaFlow Capturer in a Standalone Environment
 

@@ -560,23 +560,45 @@ cudaTask cudaFlow::transform_uninitialized_reduce(
   });
 }
 
-// Function: update_reduce
-template <typename I, typename T, typename B>
-void cudaFlow::update_reduce(cudaTask task, I first, I last, T* result, B bop) {
-  update_capture(task, [=](cudaFlowCapturer& cap){
+// Function: reduce
+template <typename I, typename T, typename C>
+void cudaFlow::reduce(cudaTask task, I first, I last, T* result, C op) {
+  capture(task, [=](cudaFlowCapturer& cap){
     cap.make_optimizer<cudaLinearCapturing>();
-    cap.reduce(first, last, result, bop);
+    cap.reduce(first, last, result, op);
   });
 }
 
-// Function: update_uninitialized_reduce
-template <typename I, typename T, typename B>
-void cudaFlow::update_uninitialized_reduce(
-  cudaTask task, I first, I last, T* result, B bop
+// Function: uninitialized_reduce
+template <typename I, typename T, typename C>
+void cudaFlow::uninitialized_reduce(
+  cudaTask task, I first, I last, T* result, C op
 ) {
-  update_capture(task, [=](cudaFlowCapturer& cap){
+  capture(task, [=](cudaFlowCapturer& cap){
     cap.make_optimizer<cudaLinearCapturing>();
-    cap.uninitialized_reduce(first, last, result, bop);
+    cap.uninitialized_reduce(first, last, result, op);
+  });
+}
+
+// Function: transform_reduce
+template <typename I, typename T, typename B, typename U>
+void cudaFlow::transform_reduce(
+  cudaTask task, I first, I last, T* result, B bop, U uop
+) {
+  capture(task, [=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.transform_reduce(first, last, result, bop, uop);
+  });
+}
+
+// Function: transform_uninitialized_reduce
+template <typename I, typename T, typename B, typename U>
+void cudaFlow::transform_uninitialized_reduce(
+  cudaTask task, I first, I last, T* result, B bop, U uop
+) {
+  capture(task, [=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.transform_uninitialized_reduce(first, last, result, bop, uop);
   });
 }
 
@@ -655,9 +677,9 @@ cudaTask cudaFlowCapturer::transform_uninitialized_reduce(
   });
 }
 
-// Function: rebind_reduce
+// Function: reduce
 template <typename I, typename T, typename C>
-void cudaFlowCapturer::rebind_reduce(
+void cudaFlowCapturer::reduce(
   cudaTask task, I first, I last, T* result, C c
 ) {
   
@@ -666,16 +688,16 @@ void cudaFlowCapturer::rebind_reduce(
     std::distance(first, last)
   );
 
-  rebind_on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_reduce_async(p, first, last, result, c, buf.get().data());
   });
 }
 
-// Function: rebind_uninitialized_reduce
+// Function: uninitialized_reduce
 template <typename I, typename T, typename C>
-void cudaFlowCapturer::rebind_uninitialized_reduce(
+void cudaFlowCapturer::uninitialized_reduce(
   cudaTask task, I first, I last, T* result, C c
 ) {
   // TODO  
@@ -683,16 +705,16 @@ void cudaFlowCapturer::rebind_uninitialized_reduce(
     std::distance(first, last)
   );
 
-  rebind_on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_uninitialized_reduce_async(p, first, last, result, c, buf.get().data());
   });
 }
 
-// Function: rebind_transform_reduce
+// Function: transform_reduce
 template <typename I, typename T, typename C, typename U>
-void cudaFlowCapturer::rebind_transform_reduce(
+void cudaFlowCapturer::transform_reduce(
   cudaTask task, I first, I last, T* result, C bop, U uop
 ) {
   
@@ -701,7 +723,7 @@ void cudaFlowCapturer::rebind_transform_reduce(
     std::distance(first, last)
   );
 
-  rebind_on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_transform_reduce_async(
@@ -710,9 +732,9 @@ void cudaFlowCapturer::rebind_transform_reduce(
   });
 }
 
-// Function: rebind_transform_uninitialized_reduce
+// Function: transform_uninitialized_reduce
 template <typename I, typename T, typename C, typename U>
-void cudaFlowCapturer::rebind_transform_uninitialized_reduce(
+void cudaFlowCapturer::transform_uninitialized_reduce(
   cudaTask task, I first, I last, T* result, C bop, U uop
 ) {
 
@@ -721,7 +743,7 @@ void cudaFlowCapturer::rebind_transform_uninitialized_reduce(
     std::distance(first, last)
   );
 
-  rebind_on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_transform_uninitialized_reduce_async(

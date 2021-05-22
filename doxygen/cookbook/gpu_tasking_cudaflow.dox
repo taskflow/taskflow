@@ -290,7 +290,7 @@ between successive executions.
 2:   tf::cudaTask task = cf.kernel(grid1, block1, shm1, my_kernel, args1...);
 3:   cf.offload();  // immediately run the cudaFlow once
 4:
-5:   cf.update_kernel(task, grid2, block2, shm2, args2...);
+5:   cf.kernel(task, grid2, block2, shm2, my_kernel, args2...);
 6:   cf.offload();  // run the cudaFlow again with the same graph topology
 7:                  // but with different kernel parameters
 8: });
@@ -307,11 +307,8 @@ Between successive offloads (i.e., executions of a %cudaFlow),
 you can update the task parameters, 
 such as changing the kernel execution parameters and memory operation parameters.
 However, you must @em NOT change the topology of an offloaded %cudaFlow.
-Each method of task creation in tf::cudaFlow has a corresponding method of updating
-the parameters of the task created from the same creation method
-(e.g., tf::cudaFlow::kernel and tf::cudaFlow::update_kernel, 
-tf::cudaFlow::copy and tf::cudaFlow::update_copy).
-
+Each method of task creation in tf::cudaFlow has an overload of updating
+the parameters of the task created from the same creation method.
 
 @attention
 There are a few restrictions on updating task parameters in a %cudaFlow. 

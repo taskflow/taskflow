@@ -39,7 +39,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 </para></sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_cudaflow">
 <title>cudaFlow</title>
-<para>This releases added new algorithms in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> and <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>:</para><para><itemizedlist>
+<para><itemizedlist>
+<listitem><para>improved the execution flow of <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> when updates involve</para></listitem>
+</itemizedlist>
+New algorithms in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> and <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>:</para><para><itemizedlist>
 <listitem><para>added <ref refid="classtf_1_1cudaFlow_1a931a0f99034bccf377aea35e221f50bc" kindref="member">tf::cudaFlow::reduce</ref> </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlow_1a1af5d4e8a3820f9b9d8abbe4f4f6c4a4" kindref="member">tf::cudaFlow::transform_reduce</ref> </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlow_1a3a5189b9c9494d2a63a983c32cf234f6" kindref="member">tf::cudaFlow::uninitialized_reduce</ref> </para></listitem>
@@ -124,7 +127,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <listitem><para>removed tf::cudaFlow::kernel_on method </para></listitem>
 <listitem><para>removed explicit partitions in parallel iterations and reductions </para></listitem>
 <listitem><para>removed tf::cudaFlowCapturerBase </para></listitem>
-<listitem><para>removed tf::cublasFlowCapturer</para></listitem>
+<listitem><para>removed tf::cublasFlowCapturer </para></listitem>
+<listitem><para>renamed update and rebind methods in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> and <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> to overloads</para></listitem>
 </itemizedlist>
 </para></sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_documentation">

@@ -19,13 +19,21 @@ namespace tf {
 @brief enumeration of all %cudaTask types
 */
 enum class cudaTaskType : int {
+  /** @brief empty task type */
   EMPTY = 0, 
+  /** @brief host task type */
   HOST,
+  /** @brief memory set task type */
   MEMSET,
+  /** @brief memory copy task type */
   MEMCPY,
+  /** @brief memory copy task type */
   KERNEL,
+  /** @brief subflow (child graph) task type */
   SUBFLOW,
+  /** @brief capture task type */
   CAPTURE,
+  /** @brief undefined task type */
   UNDEFINED
 };
 

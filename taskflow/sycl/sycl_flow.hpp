@@ -659,8 +659,7 @@ void syclFlow::offload_until(P&& predicate) {
     _queue.wait();
   }
 
-  _graph._state |= syclGraph::OFFLOADED;
-  _graph._state &= ~syclGraph::TOPOLOGY_CHANGED;
+  _graph._state = syclGraph::OFFLOADED;
 }
 
 // Procedure: offload_n

@@ -696,10 +696,28 @@ cudaTask cudaFlow::inclusive_scan(I first, I last, O output, C op) {
   });
 }
 
+// Function: inclusive_scan
+template <typename I, typename O, typename C>
+void cudaFlow::inclusive_scan(cudaTask task, I first, I last, O output, C op) {
+  capture(task, [=](cudaFlowCapturer& cap) {
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.inclusive_scan(first, last, output, op);
+  });
+}
+
 // Function: exclusive_scan
 template <typename I, typename O, typename C>
 cudaTask cudaFlow::exclusive_scan(I first, I last, O output, C op) {
   return capture([=](cudaFlowCapturer& cap) {
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.exclusive_scan(first, last, output, op);
+  });
+}
+
+// Function: exclusive_scan
+template <typename I, typename O, typename C>
+void cudaFlow::exclusive_scan(cudaTask task, I first, I last, O output, C op) {
+  capture(task, [=](cudaFlowCapturer& cap) {
     cap.make_optimizer<cudaLinearCapturing>();
     cap.exclusive_scan(first, last, output, op);
   });
@@ -716,12 +734,34 @@ cudaTask cudaFlow::transform_inclusive_scan(
   });
 }
 
+// Function: transform_inclusive_scan
+template <typename I, typename O, typename B, typename U>
+void cudaFlow::transform_inclusive_scan(
+  cudaTask task, I first, I last, O output, B bop, U uop
+) {
+  capture(task, [=](cudaFlowCapturer& cap) {
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.transform_inclusive_scan(first, last, output, bop, uop);
+  });
+}
+
 // Function: transform_exclusive_scan
 template <typename I, typename O, typename B, typename U>
 cudaTask cudaFlow::transform_exclusive_scan(
   I first, I last, O output, B bop, U uop
 ) {
   return capture([=](cudaFlowCapturer& cap) {
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.transform_exclusive_scan(first, last, output, bop, uop);
+  });
+}
+
+// Function: transform_exclusive_scan
+template <typename I, typename O, typename B, typename U>
+void cudaFlow::transform_exclusive_scan(
+  cudaTask task, I first, I last, O output, B bop, U uop
+) {
+  capture(task, [=](cudaFlowCapturer& cap) {
     cap.make_optimizer<cudaLinearCapturing>();
     cap.transform_exclusive_scan(first, last, output, bop, uop);
   });
@@ -748,6 +788,25 @@ cudaTask cudaFlowCapturer::inclusive_scan(I first, I last, O output, C op) {
   });
 }
 
+// Function: inclusive_scan
+template <typename I, typename O, typename C>
+void cudaFlowCapturer::inclusive_scan(
+  cudaTask task, I first, I last, O output, C op
+) {
+  
+  using T = typename std::iterator_traits<O>::value_type;
+  
+  auto bufsz = cuda_scan_buffer_size<cudaDefaultExecutionPolicy, T>(
+    std::distance(first, last)
+  );
+
+  on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  (cudaStream_t stream) mutable {
+    cudaDefaultExecutionPolicy p(stream);
+    cuda_inclusive_scan_async(p, first, last, output, op, buf.get().data());
+  });
+}
+
 // Function: exclusive_scan
 template <typename I, typename O, typename C>
 cudaTask cudaFlowCapturer::exclusive_scan(I first, I last, O output, C op) {
@@ -759,6 +818,25 @@ cudaTask cudaFlowCapturer::exclusive_scan(I first, I last, O output, C op) {
   );
 
   return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  (cudaStream_t stream) mutable {
+    cudaDefaultExecutionPolicy p(stream);
+    cuda_exclusive_scan_async(p, first, last, output, op, buf.get().data());
+  });
+}
+
+// Function: exclusive_scan
+template <typename I, typename O, typename C>
+void cudaFlowCapturer::exclusive_scan(
+  cudaTask task, I first, I last, O output, C op
+) {
+  
+  using T = typename std::iterator_traits<O>::value_type;
+  
+  auto bufsz = cuda_scan_buffer_size<cudaDefaultExecutionPolicy, T>(
+    std::distance(first, last)
+  );
+
+  on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_exclusive_scan_async(p, first, last, output, op, buf.get().data());
@@ -786,6 +864,27 @@ cudaTask cudaFlowCapturer::transform_inclusive_scan(
   });
 }
 
+// Function: transform_inclusive_scan
+template <typename I, typename O, typename B, typename U>
+void cudaFlowCapturer::transform_inclusive_scan(
+  cudaTask task, I first, I last, O output, B bop, U uop
+) {
+  
+  using T = typename std::iterator_traits<O>::value_type;
+  
+  auto bufsz = cuda_scan_buffer_size<cudaDefaultExecutionPolicy, T>(
+    std::distance(first, last)
+  );
+
+  on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  (cudaStream_t stream) mutable {
+    cudaDefaultExecutionPolicy p(stream);
+    cuda_transform_inclusive_scan_async(
+      p, first, last, output, bop, uop, buf.get().data()
+    );
+  });
+}
+
 // Function: transform_exclusive_scan
 template <typename I, typename O, typename B, typename U>
 cudaTask cudaFlowCapturer::transform_exclusive_scan(
@@ -799,6 +898,27 @@ cudaTask cudaFlowCapturer::transform_exclusive_scan(
   );
 
   return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  (cudaStream_t stream) mutable {
+    cudaDefaultExecutionPolicy p(stream);
+    cuda_transform_exclusive_scan_async(
+      p, first, last, output, bop, uop, buf.get().data()
+    );
+  });
+}
+
+// Function: transform_exclusive_scan
+template <typename I, typename O, typename B, typename U>
+void cudaFlowCapturer::transform_exclusive_scan(
+  cudaTask task, I first, I last, O output, B bop, U uop
+) {
+  
+  using T = typename std::iterator_traits<O>::value_type;
+  
+  auto bufsz = cuda_scan_buffer_size<cudaDefaultExecutionPolicy, T>(
+    std::distance(first, last)
+  );
+
+  on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_transform_exclusive_scan_async(

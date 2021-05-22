@@ -316,7 +316,9 @@ inline void cudaRoundRobinCapturing::num_streams(size_t n) {
   _num_streams = n;
 }
 
-inline void cudaRoundRobinCapturing::_reset(std::vector<std::vector<cudaNode*>>& graph) {
+inline void cudaRoundRobinCapturing::_reset(
+  std::vector<std::vector<cudaNode*>>& graph
+) {
   //level == global id 
   //idx == stream id we want to skip
   size_t id{0};

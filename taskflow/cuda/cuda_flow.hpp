@@ -147,6 +147,15 @@ class cudaFlow {
     cudaTask host(C&& callable);
     
     /**
+    @brief updates parameters of a host task
+
+    The method is similar to tf::cudaFlow::host but operates on a task
+    of type tf::cudaTaskType::HOST.
+    */
+    template <typename C>
+    void host(cudaTask task, C&& callable);
+    
+    /**
     @brief creates a kernel task
     
     @tparam F kernel function type
@@ -164,6 +173,18 @@ class cudaFlow {
     cudaTask kernel(dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
     
     /**
+    @brief updates parameters of a kernel task
+
+    The method is similar to tf::cudaFlow::kernel but operates on a task
+    of type tf::cudaTaskType::KERNEL.
+    The kernel function name must NOT change. 
+    */
+    template <typename F, typename... ArgsT>
+    void kernel(
+      cudaTask task, dim3 g, dim3 b, size_t shm, F&& f, ArgsT&&... args
+    );
+    
+    /**
     @brief creates a memset task that fills untyped data with a byte value
 
     @param dst pointer to the destination device memory area
@@ -178,6 +199,17 @@ class cudaFlow {
     cudaTask memset(void* dst, int v, size_t count);
     
     /**
+    @brief updates parameters of a memset task
+    
+    The method is similar to tf::cudaFlow::memset but operates on a task
+    of type tf::cudaTaskType::MEMSET.
+    The source/destination memory may have different address values but
+    must be allocated from the same contexts as the original 
+    source/destination memory.
+    */
+    void memset(cudaTask task, void* dst, int ch, size_t count);
+    
+    /**
     @brief creates a memcpy task that copies untyped data in bytes
     
     @param tgt pointer to the target memory block
@@ -190,6 +222,17 @@ class cudaFlow {
     to a target location. Direction can be arbitrary among CPUs and GPUs.
     */ 
     cudaTask memcpy(void* tgt, const void* src, size_t bytes);
+    
+    /**
+    @brief updates parameters of a memcpy task
+    
+    The method is similar to tf::cudaFlow::memcpy but operates on a task
+    of type tf::cudaTaskType::MEMCPY.     
+    The source/destination memory may have different address values but 
+    must be allocated from the same contexts as the original 
+    source/destination memory.
+    */
+    void memcpy(cudaTask task, void* tgt, const void* src, size_t bytes);
 
     /**
     @brief creates a memset task that sets a typed memory block to zero
@@ -207,6 +250,21 @@ class cudaFlow {
       is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), void>* = nullptr
     >
     cudaTask zero(T* dst, size_t count);
+    
+    /**
+    @brief updates parameters of a memset task to a zero task
+
+    The method is similar to tf::cudaFlow::zero but operates on 
+    a task of type tf::cudaTaskType::MEMSET.
+    
+    The source/destination memory may have different address values but
+    must be allocated from the same contexts as the original 
+    source/destination memory.
+    */
+    template <typename T, std::enable_if_t<
+      is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), void>* = nullptr
+    >
+    void zero(cudaTask task, T* dst, size_t count);
 
     /**
     @brief creates a memset task that fills a typed memory block with a value
@@ -229,6 +287,21 @@ class cudaFlow {
     cudaTask fill(T* dst, T value, size_t count);
     
     /**
+    @brief updates parameters of a memset task to a fill task
+    
+    The method is similar to tf::cudaFlow::fill but operates on a task
+    of type tf::cudaTaskType::MEMSET.
+
+    The source/destination memory may have different address values but
+    must be allocated from the same contexts as the original 
+    source/destination memory.
+    */
+    template <typename T, std::enable_if_t<
+      is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), void>* = nullptr
+    >
+    void fill(cudaTask task, T* dst, T value, size_t count);
+    
+    /**
     @brief creates a memcopy task that copies typed data
     
     @tparam T element type (non-void)
@@ -246,6 +319,20 @@ class cudaFlow {
       std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
     >
     cudaTask copy(T* tgt, const T* src, size_t num);
+    
+    /**
+    @brief updates parameters of a memcpy task to a copy task
+
+    The method is similar to tf::cudaFlow::copy but operates on a task
+    of type tf::cudaTaskType::MEMCPY.
+    The source/destination memory may have different address values but 
+    must be allocated from the same contexts as the original 
+    source/destination memory.
+    */
+    template <typename T, 
+      std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
+    >
+    void copy(cudaTask task, T* tgt, const T* src, size_t num);
     
     // ------------------------------------------------------------------------
     // offload methods
@@ -298,8 +385,17 @@ class cudaFlow {
     @return a tf::cudaTask handle
     */
     template <typename C>
-    cudaTask single_task(C&& callable);
+    cudaTask single_task(C callable);
     
+    /**
+    @brief updates a single-threaded kernel task
+    
+    This method is similar to cudaFlow::single_task but operates
+    on an existing task.
+    */
+    template <typename C>
+    void single_task(cudaTask task, C callable);
+
     /**
     @brief applies a callable to each dereferenced element of the data array
 
@@ -322,6 +418,16 @@ class cudaFlow {
     */
     template <typename I, typename C>
     cudaTask for_each(I first, I last, C callable);
+    
+    /**
+    @brief updates parameters of a kernel task created from
+           tf::cudaFlow::for_each
+
+    The type of the iterators and the callable must be the same as 
+    the task created from tf::cudaFlow::for_each.
+    */
+    template <typename I, typename C>
+    void for_each(cudaTask task, I first, I last, C callable);
 
     /**
     @brief applies a callable to each index in the range with the step size
@@ -352,6 +458,18 @@ class cudaFlow {
     */
     template <typename I, typename C>
     cudaTask for_each_index(I first, I last, I step, C callable);
+    
+    /**
+    @brief updates parameters of a kernel task created from 
+           tf::cudaFlow::for_each_index
+    
+    The type of the iterators and the callable must be the same as 
+    the task created from tf::cudaFlow::for_each_index.
+    */
+    template <typename I, typename C>
+    void for_each_index(
+      cudaTask task, I first, I last, I step, C callable
+    );
   
     /**
     @brief applies a callable to a source range and stores the result in a target range
@@ -377,6 +495,16 @@ class cudaFlow {
     */
     template <typename I, typename O, typename C>
     cudaTask transform(I first, I last, O output, C op);
+    
+    /**
+    @brief updates parameters of a kernel task created from
+           tf::cudaFlow::transform
+    
+    The type of the iterators and the callable must be the same as 
+    the task created from tf::cudaFlow::for_each.
+    */
+    template <typename I, typename O, typename C>
+    void transform(cudaTask task, I first, I last, O output, C c);
     
     /**
     @brief creates a task to perform parallel transforms over two ranges of items
@@ -405,6 +533,18 @@ class cudaFlow {
     */
     template <typename I1, typename I2, typename O, typename C>
     cudaTask transform(I1 first1, I1 last1, I2 first2, O output, C op);
+  
+    /**
+    @brief updates parameters of a kernel task created from
+           tf::cudaFlow::transform
+    
+    The type of the iterators and the callable must be the same as 
+    the task created from tf::cudaFlow::for_each.
+    */
+    template <typename I1, typename I2, typename O, typename C>
+    void transform(
+      cudaTask task, I1 first1, I1 last1, I2 first2, O output, C c
+    );
     
     /**
     @brief performs parallel reduction over a range of items
@@ -432,6 +572,16 @@ class cudaFlow {
     cudaTask reduce(I first, I last, T* result, B bop);
     
     /**
+    @brief updates parameters of a kernel task created from 
+           tf::cudaFlow::reduce
+    
+    The type of the iterators, result, and callable must be the same as 
+    the task created from tf::cudaFlow::reduce.
+    */
+    template <typename I, typename T, typename C>
+    void reduce(cudaTask task, I first, I last, T* result, C op);
+    
+    /**
     @brief similar to tf::cudaFlow::reduce but does not assume any initial
            value to reduce
     
@@ -447,6 +597,18 @@ class cudaFlow {
     */
     template <typename I, typename T, typename B>
     cudaTask uninitialized_reduce(I first, I last, T* result, B bop);
+    
+    /**
+    @brief updates parameters of a kernel task created from
+           tf::cudaFlow::uninitialized_reduce
+    
+    The type of the iterators, result, and callable must be the same as 
+    the task created from tf::cudaFlow::uninitialized_reduce.
+    */
+    template <typename I, typename T, typename C>
+    void uninitialized_reduce(
+      cudaTask task, I first, I last, T* result, C op
+    );
     
     /**
     @brief performs parallel reduction over a range of transformed items
@@ -476,6 +638,13 @@ class cudaFlow {
     cudaTask transform_reduce(I first, I last, T* result, B bop, U uop);
     
     /**
+    @brief updates parameters of a kernel task created from
+           tf::cudaFlow::transform_reduce
+    */
+    template <typename I, typename T, typename B, typename U>
+    void transform_reduce(cudaTask, I first, I last, T* result, B bop, U uop);
+    
+    /**
     @brief similar to tf::cudaFlow::transform_reduce but does not assume any initial
            value to reduce
     
@@ -492,6 +661,15 @@ class cudaFlow {
     template <typename I, typename T, typename B, typename U>
     cudaTask transform_uninitialized_reduce(
       I first, I last, T* result, B bop, U uop
+    );
+    
+    /**
+    @brief updates parameters of a kernel task created from
+           tf::cudaFlow::transform_uninitialized_reduce
+    */
+    template <typename I, typename T, typename B, typename U>
+    void transform_uninitialized_reduce(
+      cudaTask task, I first, I last, T* result, B bop, U uop
     );
     
     /**
@@ -521,10 +699,24 @@ class cudaFlow {
     cudaTask inclusive_scan(I first, I last, O output, C op);
     
     /**
+    @brief updates the parameters of a task created 
+           from tf::cudaFlow::inclusive_scan
+    */
+    template <typename I, typename O, typename C>
+    void inclusive_scan(cudaTask task, I first, I last, O output, C op);
+    
+    /**
     @brief similar to cudaFlow::inclusive_scan but excludes the first value
     */
     template <typename I, typename O, typename C>
     cudaTask exclusive_scan(I first, I last, O output, C op);
+    
+    /**
+    @brief updates the parameters of a task created from
+           tf::cudaFlow::exclusive_scan
+    */
+    template <typename I, typename O, typename C>
+    void exclusive_scan(cudaTask task, I first, I last, O output, C op);
     
     /**
     @brief creates a task to perform parallel inclusive scan 
@@ -556,11 +748,29 @@ class cudaFlow {
     cudaTask transform_inclusive_scan(I first, I last, O output, B bop, U uop);
     
     /**
+    @brief updates the parameters of a task created from 
+           tf::cudaFlow::transform_inclusive_scan
+    */
+    template <typename I, typename O, typename B, typename U>
+    void transform_inclusive_scan(
+      cudaTask task, I first, I last, O output, B bop, U uop
+    );
+    
+    /**
     @brief similar to cudaFlow::transform_inclusive_scan but 
            excludes the first value
     */
     template <typename I, typename O, typename B, typename U>
     cudaTask transform_exclusive_scan(I first, I last, O output, B bop, U uop);
+    
+    /**
+    @brief updates the parameters of a task created from 
+           tf::cudaFlow::transform_exclusive_scan
+    */
+    template <typename I, typename O, typename B, typename U>
+    void transform_exclusive_scan(
+      cudaTask task, I first, I last, O output, B bop, U uop
+    );
     
     /**
     @brief creates a task to perform parallel merge on two sorted arrays
@@ -592,6 +802,15 @@ class cudaFlow {
     cudaTask merge(A a_first, A a_last, B b_first, B b_last, C c_first, Comp comp);
     
     /**
+    @brief updates the parameters of a task created from 
+           tf::cudaFlow::merge
+    */
+    template <typename A, typename B, typename C, typename Comp>
+    void merge(
+      cudaTask task, A a_first, A a_last, B b_first, B b_last, C c_first, Comp comp
+    );
+    
+    /**
     @brief creates a task to perform parallel sort an array
     
     @tparam I iterator type of the first input array
@@ -608,6 +827,13 @@ class cudaFlow {
      */
     template <typename I, typename C>
     cudaTask sort(I first, I last, C comp);
+    
+    /**
+    @brief updates the parameters of the task created from 
+           tf::cudaFlow::sort
+    */
+    template <typename I, typename C>
+    void sort(cudaTask task, I first, I last, C comp);
     
     // ------------------------------------------------------------------------
     // subflow
@@ -648,10 +874,6 @@ class cudaFlow {
     template <typename C>
     cudaTask capture(C&& callable);
     
-    // ------------------------------------------------------------------------
-    // update methods
-    // ------------------------------------------------------------------------
-    
     /**
     @brief updates the captured child graph 
 
@@ -661,164 +883,9 @@ class cudaFlow {
     captured graph.
     */
     template <typename C>
-    void update_capture(cudaTask task, C callable);
-  
-    /**
-    @brief updates parameters of a host task
-
-    The method is similar to tf::cudaFlow::host but operates on a task
-    of type tf::cudaTaskType::HOST.
-    */
-    template <typename C>
-    void update_host(cudaTask task, C&& callable);
-
-    /**
-    @brief updates parameters of a kernel task
-
-    The method is similar to tf::cudaFlow::kernel but operates on a task
-    of type tf::cudaTaskType::KERNEL.
-    The kernel function name must NOT change. 
-    */
-    template <typename... ArgsT>
-    void update_kernel(cudaTask task, dim3 g, dim3 b, size_t shm, ArgsT&&... args);
-
-    /**
-    @brief updates parameters of a memcpy task to a copy task
-
-    The method is similar to tf::cudaFlow::copy but operates on a task
-    of type tf::cudaTaskType::MEMCPY.
-    The source/destination memory may have different address values but 
-    must be allocated from the same contexts as the original 
-    source/destination memory.
-    */
-    template <typename T, 
-      std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
-    >
-    void update_copy(cudaTask task, T* tgt, const T* src, size_t num);
-
-    /**
-    @brief updates parameters of a memcpy task
+    void capture(cudaTask task, C callable);
     
-    The method is similar to tf::cudaFlow::memcpy but operates on a task
-    of type tf::cudaTaskType::MEMCPY.     
-    The source/destination memory may have different address values but 
-    must be allocated from the same contexts as the original 
-    source/destination memory.
-    */
-    void update_memcpy(cudaTask task, void* tgt, const void* src, size_t bytes);
-
-    /**
-    @brief updates parameters of a memset task
-    
-    The method is similar to tf::cudaFlow::memset but operates on a task
-    of type tf::cudaTaskType::MEMSET.
-    The source/destination memory may have different address values but
-    must be allocated from the same contexts as the original 
-    source/destination memory.
-    */
-    void update_memset(cudaTask task, void* dst, int ch, size_t count);
-    
-    /**
-    @brief updates parameters of a memset task to a fill task
-    
-    The method is similar to tf::cudaFlow::fill but operates on a task
-    of type tf::cudaTaskType::MEMSET.
-
-    The source/destination memory may have different address values but
-    must be allocated from the same contexts as the original 
-    source/destination memory.
-    */
-    template <typename T, std::enable_if_t<
-      is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), void>* = nullptr
-    >
-    void update_fill(cudaTask task, T* dst, T value, size_t count);
-    
-    /**
-    @brief updates parameters of a memset task to a zero task
-
-    The method is similar to tf::cudaFlow::zero but operates on 
-    a task of type tf::cudaTaskType::MEMSET.
-    
-    The source/destination memory may have different address values but
-    must be allocated from the same contexts as the original 
-    source/destination memory.
-    */
-    template <typename T, std::enable_if_t<
-      is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), void>* = nullptr
-    >
-    void update_zero(cudaTask task, T* dst, size_t count);
-    
-    /**
-    @brief updates parameters of a kernel task created from
-           tf::cudaFlow::for_each
-
-    The type of the iterators and the callable must be the same as 
-    the task created from tf::cudaFlow::for_each.
-    */
-    template <typename I, typename C>
-    void update_for_each(cudaTask task, I first, I last, C callable);
-
-    /**
-    @brief updates parameters of a kernel task created from 
-           tf::cudaFlow::for_each_index
-    
-    The type of the iterators and the callable must be the same as 
-    the task created from tf::cudaFlow::for_each_index.
-    */
-    template <typename I, typename C>
-    void update_for_each_index(
-      cudaTask task, I first, I last, I step, C callable
-    );
-    
-    /**
-    @brief updates parameters of a kernel task created from
-           tf::cudaFlow::transform
-    
-    The type of the iterators and the callable must be the same as 
-    the task created from tf::cudaFlow::for_each.
-    */
-    template <typename I, typename O, typename C>
-    void update_transform(
-      cudaTask task, I first, I last, O output, C c
-    );
-  
-    /**
-    @brief updates parameters of a kernel task created from
-           tf::cudaFlow::transform
-    
-    The type of the iterators and the callable must be the same as 
-    the task created from tf::cudaFlow::for_each.
-    */
-    template <typename I1, typename I2, typename O, typename C>
-    void update_transform(
-      cudaTask task, I1 first1, I1 last1, I2 first2, O output, C c
-    );
-
-    /**
-    @brief updates parameters of a kernel task created from 
-           tf::cudaFlow::reduce
-    
-    The type of the iterators, result, and callable must be the same as 
-    the task created from tf::cudaFlow::reduce.
-    */
-    template <typename I, typename T, typename C>
-    void update_reduce(cudaTask task, I first, I last, T* result, C op);
-    
-    /**
-    @brief updates parameters of a kernel task created from
-           tf::cudaFlow::uninitialized_reduce
-    
-    The type of the iterators, result, and callable must be the same as 
-    the task created from tf::cudaFlow::uninitialized_reduce.
-    */
-    template <typename I, typename T, typename C>
-    void update_uninitialized_reduce(
-      cudaTask task, I first, I last, T* result, C op
-    );
-
   private:
-
-    const size_t _MAX_BLOCK_SIZE;
 
     handle_t _handle;
     
@@ -827,15 +894,10 @@ class cudaFlow {
     cudaGraphExec_t _executable {nullptr};
     
     cudaFlow(cudaGraph&);
-
-    size_t _default_block_size(size_t N) const;
 };
 
 // Construct a standalone cudaFlow
 inline cudaFlow::cudaFlow() :
-  _MAX_BLOCK_SIZE {
-    cuda_get_device_max_threads_per_block(cuda_get_device())
-  },
   _handle {std::in_place_type_t<External>{}},
   _graph  {std::get<External>(_handle).graph} {
   
@@ -847,9 +909,6 @@ inline cudaFlow::cudaFlow() :
 
 // Construct the cudaFlow from executor (internal graph)
 inline cudaFlow::cudaFlow(cudaGraph& g) :
-  _MAX_BLOCK_SIZE {
-    cuda_get_device_max_threads_per_block(cuda_get_device())
-  },
   _handle {std::in_place_type_t<Internal>{}},
   _graph  {g} {
 
@@ -868,11 +927,6 @@ inline cudaFlow::~cudaFlow() {
   }
   cudaGraphDestroy(_graph._native_handle);
   _graph._native_handle = nullptr;
-}
-
-// Function: _default_block_size
-inline size_t cudaFlow::_default_block_size(size_t N) const {
-  return N <= 32u ? 32u : std::min(_MAX_BLOCK_SIZE, next_pow2(N));
 }
 
 // Procedure: clear
@@ -1101,7 +1155,7 @@ inline cudaTask cudaFlow::memcpy(void* tgt, const void* src, size_t bytes) {
 
 // Function: host
 template <typename C>
-void cudaFlow::update_host(cudaTask task, C&& c) {
+void cudaFlow::host(cudaTask task, C&& c) {
   
   if(task.type() != cudaTaskType::HOST) {
     TF_THROW(task, " is not a host task");
@@ -1113,19 +1167,19 @@ void cudaFlow::update_host(cudaTask task, C&& c) {
 }
 
 // Function: update kernel parameters
-template <typename... ArgsT>
-void cudaFlow::update_kernel(
-  cudaTask ct, dim3 g, dim3 b, size_t s, ArgsT&&... args
+template <typename F, typename... ArgsT>
+void cudaFlow::kernel(
+  cudaTask task, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args
 ) {
 
-  if(ct.type() != cudaTaskType::KERNEL) {
-    TF_THROW(ct, " is not a kernel task");
+  if(task.type() != cudaTaskType::KERNEL) {
+    TF_THROW(task, " is not a kernel task");
   }
 
   cudaKernelNodeParams p;
   
   void* arguments[sizeof...(ArgsT)] = { (void*)(&args)... };
-  p.func = std::get<cudaNode::Kernel>((ct._node)->_handle).func;
+  p.func = (void*)f;
   p.gridDim = g;
   p.blockDim = b;
   p.sharedMemBytes = s;
@@ -1134,9 +1188,9 @@ void cudaFlow::update_kernel(
   
   TF_CHECK_CUDA(
     cudaGraphExecKernelNodeSetParams(
-      _executable, ct._node->_native_handle, &p
+      _executable, task._node->_native_handle, &p
     ),
-    "failed to update kernel parameters on ", ct
+    "failed to update kernel parameters on ", task
   );
 } 
 
@@ -1145,62 +1199,62 @@ template <
   typename T,
   std::enable_if_t<!std::is_same_v<T, void>, void>*
 >
-void cudaFlow::update_copy(cudaTask ct, T* tgt, const T* src, size_t num) {
+void cudaFlow::copy(cudaTask task, T* tgt, const T* src, size_t num) {
   
-  if(ct.type() != cudaTaskType::MEMCPY) {
-    TF_THROW(ct, " is not a memcpy task");
+  if(task.type() != cudaTaskType::MEMCPY) {
+    TF_THROW(task, " is not a memcpy task");
   }
 
   auto p = cuda_get_copy_parms(tgt, src, num);
 
   TF_CHECK_CUDA(
     cudaGraphExecMemcpyNodeSetParams(
-      _executable, ct._node->_native_handle, &p
+      _executable, task._node->_native_handle, &p
     ),
-    "failed to update memcpy parameters on ", ct
+    "failed to update memcpy parameters on ", task
   );
 }
 
 // Function: update memcpy parameters
-inline void cudaFlow::update_memcpy(
-  cudaTask ct, void* tgt, const void* src, size_t bytes
+inline void cudaFlow::memcpy(
+  cudaTask task, void* tgt, const void* src, size_t bytes
 ) {
   
-  if(ct.type() != cudaTaskType::MEMCPY) {
-    TF_THROW(ct, " is not a memcpy task");
+  if(task.type() != cudaTaskType::MEMCPY) {
+    TF_THROW(task, " is not a memcpy task");
   }
 
   auto p = cuda_get_memcpy_parms(tgt, src, bytes);
 
   TF_CHECK_CUDA(
-    cudaGraphExecMemcpyNodeSetParams(_executable, ct._node->_native_handle, &p),
-    "failed to update memcpy parameters on ", ct
+    cudaGraphExecMemcpyNodeSetParams(_executable, task._node->_native_handle, &p),
+    "failed to update memcpy parameters on ", task
   );
 }
 
-// Procedure: update_memset
+// Procedure: memset
 inline
-void cudaFlow::update_memset(cudaTask ct, void* dst, int ch, size_t count) {
+void cudaFlow::memset(cudaTask task, void* dst, int ch, size_t count) {
 
-  if(ct.type() != cudaTaskType::MEMSET) {
-    TF_THROW(ct, " is not a memset task");
+  if(task.type() != cudaTaskType::MEMSET) {
+    TF_THROW(task, " is not a memset task");
   }
 
   auto p = cuda_get_memset_parms(dst, ch, count);
 
   TF_CHECK_CUDA(
     cudaGraphExecMemsetNodeSetParams(
-      _executable, ct._node->_native_handle, &p
+      _executable, task._node->_native_handle, &p
     ),
-    "failed to update memset parameters on ", ct
+    "failed to update memset parameters on ", task
   );
 }
     
-// Procedure: update_fill
+// Procedure: fill
 template <typename T, std::enable_if_t<
   is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), void>*
 >
-void cudaFlow::update_fill(cudaTask task, T* dst, T value, size_t count) {
+void cudaFlow::fill(cudaTask task, T* dst, T value, size_t count) {
 
   if(task.type() != cudaTaskType::MEMSET) {
     TF_THROW(task, " is not a memset task");
@@ -1216,11 +1270,11 @@ void cudaFlow::update_fill(cudaTask task, T* dst, T value, size_t count) {
   );
 }
     
-// Procedure: update_zero
+// Procedure: zero
 template <typename T, std::enable_if_t<
   is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), void>*
 >
-void cudaFlow::update_zero(cudaTask task, T* dst, size_t count) {
+void cudaFlow::zero(cudaTask task, T* dst, size_t count) {
 
   if(task.type() != cudaTaskType::MEMSET) {
     TF_THROW(task, " is not a memset task");
@@ -1236,9 +1290,9 @@ void cudaFlow::update_zero(cudaTask task, T* dst, size_t count) {
   );
 }
 
-// Function: update_capture
+// Function: capture
 template <typename C>
-void cudaFlow::update_capture(cudaTask task, C c) {
+void cudaFlow::capture(cudaTask task, C c) {
   
   if(task.type() != cudaTaskType::SUBFLOW) {
     TF_THROW(task, " is not a subflow task");
@@ -1303,8 +1357,6 @@ cudaTask cudaFlow::capture(C&& c) {
   return cudaTask(node);
 }
 
-
-
 // ----------------------------------------------------------------------------
 // Offload methods
 // ----------------------------------------------------------------------------
@@ -1336,6 +1388,8 @@ void cudaFlow::offload_until(P&& predicate) {
       cudaStreamSynchronize(s), "failed to synchronize cudaFlow execution"
     );
   }
+
+  _graph._state = cudaGraph::OFFLOADED;
 }
 
 // Procedure: offload_n
@@ -1395,8 +1449,10 @@ void Executor::_invoke_cudaflow_task_entry(Node* node, C&& c) {
   T cf(*g);
 
   c(cf); 
-
-  if(cf._executable == nullptr) {
+  
+  // TODO: change it to _graph.state
+  //if(cf._executable == nullptr) {
+  if(!(g->_state & cudaGraph::OFFLOADED)) {
     cf.offload();
   }
 }

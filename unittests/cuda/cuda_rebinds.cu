@@ -97,14 +97,14 @@ void rebind_kernel() {
 
       cf.offload();
 
-      cf.rebind_kernel(
+      cf.kernel(
         multi_t,
         64, 128, 0,
         multiply<T>,
         operand[ind[2]], operand[ind[0]], operand[ind[1]], N
       );
 
-      cf.rebind_kernel(
+      cf.kernel(
         add_t,
         16, 256, 0,
         add<T>,
@@ -113,14 +113,14 @@ void rebind_kernel() {
 
       cf.offload();
 
-      cf.rebind_kernel(
+      cf.kernel(
         multi_t,
         8, 1024, 0,
         multiply<T>,
         operand[ind[0]], operand[ind[2]], operand[ind[1]], N
       );
 
-      cf.rebind_kernel(
+      cf.kernel(
         add_t,
         64, 64, 0,
         add<T>,
@@ -302,10 +302,10 @@ void rebind_copy() {
       auto h2d_t = cf.copy(da, ha.data(), N).name("h2d");
       cf.offload();
 
-      cf.rebind_copy(h2d_t, db, hb.data(), N);
+      cf.copy(h2d_t, db, hb.data(), N);
       cf.offload();
 
-      cf.rebind_copy(h2d_t, dc, hc.data(), N);
+      cf.copy(h2d_t, dc, hc.data(), N);
       cf.offload();
 
     });
@@ -342,7 +342,7 @@ void rebind_copy() {
       auto d2h_t = cf.copy(hc.data(), dc, N).name("d2h");
       cf.offload();
 
-      cf.rebind_copy(d2h_t, hz.data(), dz, N);
+      cf.copy(d2h_t, hz.data(), dz, N);
       cf.offload();
 
     });
@@ -425,10 +425,10 @@ void rebind_memcpy() {
       auto h2d_t = cf.memcpy(da, ha.data(), sizeof(T) * N).name("h2d");
       cf.offload();
 
-      cf.rebind_memcpy(h2d_t, db, hb.data(), sizeof(T) * N);
+      cf.memcpy(h2d_t, db, hb.data(), sizeof(T) * N);
       cf.offload();
 
-      cf.rebind_memcpy(h2d_t, dc, hc.data(), sizeof(T) * N);
+      cf.memcpy(h2d_t, dc, hc.data(), sizeof(T) * N);
       cf.offload();
 
     });
@@ -465,7 +465,7 @@ void rebind_memcpy() {
       auto d2h_t = cf.memcpy(hc.data(), dc, sizeof(T) * N).name("d2h");
       cf.offload();
 
-      cf.rebind_memcpy(d2h_t, hz.data(), dz, sizeof(T) * N);
+      cf.memcpy(d2h_t, hz.data(), dz, sizeof(T) * N);
       cf.offload();
 
     });
@@ -559,10 +559,10 @@ void rebind_memset() {
       auto memset_t = cf.memset(ans_a, 0, N * sizeof(T));
       cf.offload();
 
-      cf.rebind_memset(memset_t, a, 0, N * sizeof(T));
+      cf.memset(memset_t, a, 0, N * sizeof(T));
       cf.offload();
 
-      cf.rebind_memset(memset_t, b, 1, (N + 37) * sizeof(T));
+      cf.memset(memset_t, b, 1, (N + 37) * sizeof(T));
       cf.offload();
     }).name("memset");
 
@@ -639,7 +639,7 @@ TEST_CASE("cudaFlowCapturer.rebind.algorithms") {
   REQUIRE(capturer.num_tasks() == 1);
   
   // rebind to single task
-  capturer.rebind_single_task(task, [=] __device__ () {*data = 2;});
+  capturer.single_task(task, [=] __device__ () {*data = 2;});
 
   capturer.offload();
   
@@ -650,7 +650,7 @@ TEST_CASE("cudaFlowCapturer.rebind.algorithms") {
   REQUIRE(capturer.num_tasks() == 1);
   
   // rebind to for each index
-  capturer.rebind_for_each_index(task, 0, 10000, 1,
+  capturer.for_each_index(task, 0, 10000, 1,
     [=] __device__ (int i) {
       data[i] = -23;
     }
@@ -665,7 +665,7 @@ TEST_CASE("cudaFlowCapturer.rebind.algorithms") {
 
   // rebind to reduce
   *res = 10;
-  capturer.rebind_reduce(task, data, data + 10000, res, 
+  capturer.reduce(task, data, data + 10000, res, 
     []__device__(int a, int b){ return a + b; }
   );
 
@@ -675,7 +675,7 @@ TEST_CASE("cudaFlowCapturer.rebind.algorithms") {
   REQUIRE(capturer.num_tasks() == 1);
   
   // rebind to uninitialized reduce
-  capturer.rebind_uninitialized_reduce(task, data, data + 10000, res, 
+  capturer.uninitialized_reduce(task, data, data + 10000, res, 
     []__device__(int a, int b){ return a + b; }
   );
 
@@ -685,7 +685,7 @@ TEST_CASE("cudaFlowCapturer.rebind.algorithms") {
   REQUIRE(capturer.num_tasks() == 1);
   
   // rebind to single task
-  capturer.rebind_single_task(task, [res]__device__(){ *res = 999; });
+  capturer.single_task(task, [res]__device__(){ *res = 999; });
   REQUIRE(*res == -230000);
 
   capturer.offload();
