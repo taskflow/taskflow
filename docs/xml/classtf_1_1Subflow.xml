@@ -86,7 +86,7 @@
 <para>Performs an immediate action to join the subflow. Once the subflow is joined, it is considered finished and you may not modify the subflow anymore. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="608" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1318" bodyend="1326"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="608" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1317" bodyend="1325"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Subflow_1acfdedc7e9676126e9a38ecf7b5a37864" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -99,7 +99,7 @@
 <para>Performs an immediate action to detach the subflow. Once the subflow is detached, it is considered finished and you may not modify the subflow anymore. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="616" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1328" bodyend="1336"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="616" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1327" bodyend="1335"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Subflow_1a4c4b56476ca907ceca75dd8a861e1145" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -182,7 +182,7 @@ This method is thread-safe and can be called by multiple tasks in the subflow at
 </programlisting></para><para>You cannot create asynchronous tasks from a detached subflow. Doing this results in undefined behavior. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="659" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1340" bodyend="1376"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="659" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1339" bodyend="1375"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Subflow_1af9671aa8548882b3425e5a1f10f7a868" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -213,7 +213,7 @@ This method is thread-safe and can be called by multiple tasks in the subflow at
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="665" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1380" bodyend="1395"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="665" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1379" bodyend="1394"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -266,26 +266,26 @@ This method is thread-safe and can be called by multiple tasks in the subflow at
 <codeline><highlight class="normal">C.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(D);<sp/><sp/></highlight><highlight class="comment">//<sp/>D<sp/>runs<sp/>after<sp/>C<sp/></highlight></codeline>
 </programlisting> </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="139">
+      <node id="142">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
       </node>
-      <node id="138">
+      <node id="141">
         <label>tf::Subflow</label>
         <link refid="classtf_1_1Subflow"/>
-        <childnode refid="139" relation="public-inheritance">
+        <childnode refid="142" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="141">
+      <node id="144">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
       </node>
-      <node id="140">
+      <node id="143">
         <label>tf::Subflow</label>
         <link refid="classtf_1_1Subflow"/>
-        <childnode refid="141" relation="public-inheritance">
+        <childnode refid="144" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>

@@ -36,6 +36,7 @@
     <innerclass refid="classtf_1_1FlowBuilder" prot="public">tf::FlowBuilder</innerclass>
     <innerclass refid="classtf_1_1Future" prot="public">tf::Future</innerclass>
     <innerclass refid="classtf_1_1ObserverInterface" prot="public">tf::ObserverInterface</innerclass>
+    <innerclass refid="structtf_1_1PerThreadWorker" prot="private">tf::PerThreadWorker</innerclass>
     <innerclass refid="structtf_1_1ProfileData" prot="private">tf::ProfileData</innerclass>
     <innerclass refid="structtf_1_1Segment" prot="private">tf::Segment</innerclass>
     <innerclass refid="classtf_1_1Semaphore" prot="public">tf::Semaphore</innerclass>
@@ -406,6 +407,19 @@
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
+      <memberdef kind="function" id="namespacetf_1a4d2543d6c1f4f0025ae0df525cce70ae" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>PerThreadWorker &amp;</type>
+        <definition>PerThreadWorker&amp; tf::this_worker</definition>
+        <argsstring>()</argsstring>
+        <name>this_worker</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="51" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="51" bodyend="54"/>
+      </memberdef>
       <memberdef kind="function" id="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
         <definition>const char* tf::to_string</definition>

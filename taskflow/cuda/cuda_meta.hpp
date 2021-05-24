@@ -95,7 +95,7 @@ struct cudaRange {
   __device__ bool valid() const { return end > begin; }
 };
 
-__device__ cudaRange cuda_get_tile(unsigned b, unsigned nv, unsigned count) {
+inline __device__ cudaRange cuda_get_tile(unsigned b, unsigned nv, unsigned count) {
   return cudaRange { nv * b, min(count, nv * (b + 1)) };
 }
 
