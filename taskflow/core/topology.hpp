@@ -29,7 +29,7 @@ class AsyncTopology : public TopologyBase {
 // class: Topology
 class Topology : public TopologyBase {
   
-  friend class Executor;
+  friend class TaskScheduler;
 
   public:
 

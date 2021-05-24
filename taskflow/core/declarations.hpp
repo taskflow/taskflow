@@ -14,7 +14,7 @@ class TaskView;
 class Taskflow;
 class Topology;
 class TopologyBase;
-class Executor;
+class TaskScheduler;
 class WorkerView;
 class ObserverInterface;
 class ChromeTracingObserver;

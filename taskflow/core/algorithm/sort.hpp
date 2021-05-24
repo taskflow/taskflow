@@ -447,7 +447,7 @@ Task FlowBuilder::sort(B&& beg, E&& end, C&& cmp) {
       return;
     }
 
-    size_t W = sf._executor.num_workers();
+    size_t W = sf._scheduler.num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph

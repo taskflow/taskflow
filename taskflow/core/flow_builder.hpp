@@ -594,7 +594,7 @@ C.precede(D);  // D runs after C
 */ 
 class Subflow : public FlowBuilder {
 
-  friend class Executor;
+  friend class TaskScheduler;
   friend class FlowBuilder;
 
   public:
@@ -666,18 +666,18 @@ class Subflow : public FlowBuilder {
 
   private:
     
-    Subflow(Executor&, Node*, Graph&);
+    Subflow(TaskScheduler&, Node*, Graph&);
 
-    Executor& _executor;
+    TaskScheduler& _scheduler;
     Node* _parent;
 
     bool _joinable {true};
 };
 
 // Constructor
-inline Subflow::Subflow(Executor& executor, Node* parent, Graph& graph) :
+inline Subflow::Subflow(TaskScheduler& scheduler, Node* parent, Graph& graph) :
   FlowBuilder {graph},
-  _executor   {executor},
+  _scheduler  {scheduler},
   _parent     {parent} {
 }
 

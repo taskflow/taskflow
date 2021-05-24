@@ -528,7 +528,7 @@ inline std::ostream& operator << (std::ostream& os, const Task& task) {
 */
 class TaskView {
   
-  friend class Executor;
+  friend class TaskScheduler;
 
   public:
 

@@ -230,7 +230,7 @@ observer->dump(std::cout);
 */
 class ChromeObserver : public ObserverInterface {
 
-  friend class Executor;
+  friend class TaskScheduler;
   
   // data structure to record each task execution
   struct Segment {
@@ -446,7 +446,7 @@ compatible with the format of @TFProf.
 */
 class TFProfObserver : public ObserverInterface {
 
-  friend class Executor;
+  friend class TaskScheduler;
   friend class TFProfManager;
   
   public:
@@ -626,7 +626,7 @@ inline size_t TFProfObserver::num_tasks() const {
 */
 class TFProfManager {
 
-  friend class Executor;
+  friend class TaskScheduler;
 
   public:
     

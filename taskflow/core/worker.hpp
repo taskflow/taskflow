@@ -16,14 +16,14 @@ namespace tf {
 */
 class Worker {
 
-  friend class Executor;
+  friend class TaskScheduler;
   friend class WorkerView;
 
   private:
 
     size_t _id;
     size_t _vtm;
-    Executor* _executor;
+    TaskScheduler* _executor;
     Notifier::Waiter* _waiter;
     std::default_random_engine _rdgen { std::random_device{}() };
     TaskQueue<Node*> _wsq;
@@ -45,7 +45,7 @@ from an observer derived from tf::ObserverInterface.
 */
 class WorkerView {
   
-  friend class Executor;
+  friend class TaskScheduler;
   
   public:
     

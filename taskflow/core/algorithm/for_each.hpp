@@ -34,7 +34,7 @@ Task FlowBuilder::for_each(B&& beg, E&& end, C&& c) {
     }
   
     size_t chunk_size = 1;
-    size_t W = sf._executor.num_workers();
+    size_t W = sf._scheduler.num_workers();
     size_t N = std::distance(beg, end);
     
     // only myself - no need to spawn another graph
@@ -130,7 +130,7 @@ Task FlowBuilder::for_each_index(B&& beg, E&& end, S&& inc, C&& c){
     }
     
     size_t chunk_size = 1;
-    size_t W = sf._executor.num_workers();
+    size_t W = sf._scheduler.num_workers();
     size_t N = distance(beg, end, inc);
     
     // only myself - no need to spawn another graph

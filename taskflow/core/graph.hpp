@@ -34,7 +34,7 @@ class Graph {
 
   friend class Node;
   friend class Taskflow;
-  friend class Executor;
+  friend class TaskScheduler;
 
   public:
 
@@ -74,7 +74,7 @@ class Node {
   friend class Task;
   friend class TaskView;
   friend class Taskflow;
-  friend class Executor;
+  friend class TaskScheduler;
   friend class FlowBuilder;
   friend class Subflow;
 
@@ -148,7 +148,7 @@ class Node {
     template <typename C, typename G> 
     cudaFlow(C&& c, G&& g);
 
-    std::function<void(Executor&, Node*)> work;
+    std::function<void(TaskScheduler&, Node*)> work;
 
     std::unique_ptr<CustomGraphBase> graph;
   };
@@ -159,7 +159,7 @@ class Node {
     template <typename C, typename G> 
     syclFlow(C&& c, G&& g);
 
-    std::function<void(Executor&, Node*)> work;
+    std::function<void(TaskScheduler&, Node*)> work;
 
     std::unique_ptr<CustomGraphBase> graph;
   };

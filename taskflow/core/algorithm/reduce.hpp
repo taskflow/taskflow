@@ -34,7 +34,7 @@ Task FlowBuilder::reduce(
 
     //size_t C = (c == 0) ? 1 : c;
     size_t C = 1;
-    size_t W = sf._executor.num_workers();
+    size_t W = sf._scheduler.num_workers();
     size_t N = std::distance(beg, end);
     
     // only myself - no need to spawn another graph
@@ -165,7 +165,7 @@ Task FlowBuilder::transform_reduce(
 
     //size_t C = (c == 0) ? 1 : c;
     size_t C = 1;
-    size_t W = sf._executor.num_workers();
+    size_t W = sf._scheduler.num_workers();
     size_t N = std::distance(beg, end);
     
     // only myself - no need to spawn another graph

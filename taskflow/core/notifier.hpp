@@ -64,7 +64,7 @@ namespace tf {
 // other changes, which would lead to deadlock.
 class Notifier {
 
-  friend class Executor;
+  friend class TaskScheduler;
 
   public:
   
