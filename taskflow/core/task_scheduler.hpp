@@ -4,8 +4,8 @@
 #include "taskflow.hpp"
 
 /** 
-@file executor.hpp
-@brief executor include file
+@file task_scheduler.hpp
+@brief task scheduler include file
 */
 
 namespace tf {
@@ -17,9 +17,9 @@ namespace tf {
 
 /** @class TaskScheduler
 
-@brief execution interface for running a taskflow graph
+@brief base class for scheduling workers to execute taskflows
 
-An executor object manages a set of worker threads to run taskflow(s)
+A TaskScheduler object tracks a set of Workers which execute taskflows
 using an efficient work-stealing scheduling algorithm.
 
 */
@@ -28,20 +28,15 @@ class TaskScheduler {
   friend class FlowBuilder;
   friend class Subflow;
 
-  //struct PerThread {
-  //  Worker* worker;
-  //  inline PerThread() : worker {nullptr} { }
-  //};
-
   public:
 
     /**
-    @brief constructs the executor with N worker threads
+    @brief constructs the task scheduler with N worker threads
     */
     explicit TaskScheduler(size_t N);
     
     /**
-    @brief destructs the executor 
+    @brief destructs the task scheduler 
     */
     ~TaskScheduler();
 
@@ -125,16 +120,16 @@ class TaskScheduler {
     /**
     @brief queries the number of running topologies at the time of this call
 
-    When a taskflow is submitted to an executor, a topology is created to store
+    When a taskflow is submitted to an task scheduler, a topology is created to store
     runtime metadata of the running taskflow.
     */
     size_t num_topologies() const;
 
     /**
-    @brief queries the id of the caller thread in this executor
+    @brief queries the id of the caller thread in this task scheduler
 
-    Each worker has an unique id from 0 to N-1 exclusive to the associated executor.
-    If the caller thread does not belong to the executor, -1 is returned.
+    Each worker has an unique id from 0 to N-1 exclusive to the associated task scheduler.
+    If the caller thread does not belong to the task scheduler, -1 is returned.
     */
     int this_worker_id() const;
 
@@ -164,7 +159,7 @@ class TaskScheduler {
     /**
     @brief constructs an observer to inspect the activities of worker threads
 
-    Each executor manage a list of observers in shared ownership with callers.
+    Each task scheduler manage a list of observers in shared ownership with callers.
     
     @tparam Observer observer type derived from tf::ObserverInterface
     @tparam ArgsT argument parameter pack
