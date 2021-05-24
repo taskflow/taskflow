@@ -38,7 +38,7 @@ class TaskScheduler {
     /**
     @brief destructs the task scheduler 
     */
-    ~TaskScheduler();
+    //~TaskScheduler();
 
     /**
     @brief runs the taskflow once
@@ -133,6 +133,10 @@ class TaskScheduler {
     */
     int this_worker_id() const;
 
+    /**
+    */
+    void register_worker(std::thread& t);
+
     /** 
     @brief runs a given function asynchronously
 
@@ -182,6 +186,10 @@ class TaskScheduler {
     */
     size_t num_observers() const;
 
+  protected:
+
+    void _shutdown();
+
   private:
 
     //inline static thread_local PerThread _per_thread;
@@ -198,8 +206,7 @@ class TaskScheduler {
 
     size_t _num_topologies {0};
     
-    std::vector<Worker> _workers;
-    std::vector<std::thread> _threads;
+    std::vector<std::shared_ptr<Worker>> _workers;
 
     Notifier _notifier;
 
@@ -215,7 +222,6 @@ class TaskScheduler {
     
     void _observer_prologue(Worker&, Node*);
     void _observer_epilogue(Worker&, Node*);
-    void _spawn(size_t);
     void _worker_loop(Worker&);
     void _exploit_task(Worker&, Node*&);
     void _explore_task(Worker&, Node*&);
@@ -257,14 +263,14 @@ inline TaskScheduler::TaskScheduler(size_t N) :
   _VICTIM_END {N - 1},
   _MAX_STEALS {(N + 1) << 1},
   _MAX_YIELDS {100},
-  _workers    {N},
+  _workers    {},
   _notifier   {N} {
   
   if(N == 0) {
     TF_THROW("no cpu workers to execute taskflows");
   }
-  
-  _spawn(N);
+
+  _workers.reserve(N);
 
   // instantite the default observer if requested
   if(has_env(TF_ENABLE_PROFILER)) {
@@ -272,23 +278,16 @@ inline TaskScheduler::TaskScheduler(size_t N) :
   }
 }
 
-// Destructor
-inline TaskScheduler::~TaskScheduler() {
-  
-  // wait for all topologies to complete
-  wait_for_all();
-  
-  // shut down the scheduler
-  _done = true;
+// Manually executed destructor
+inline void TaskScheduler::_shutdown() {
 
-  _notifier.notify(true);
-  
-  for(auto& t : _threads){
-    t.join();
-  } 
-  
-  // flush the default observer
-  //_flush_tfprof();
+    // wait for all topologies to complete
+    wait_for_all();
+
+    // shut down the scheduler
+    _done = true;
+
+    _notifier.notify(true);
 }
 
 // Function: num_workers
@@ -362,18 +361,21 @@ inline int TaskScheduler::this_worker_id() const {
 }
 
 // Procedure: _spawn
-inline void TaskScheduler::_spawn(size_t N) {
-  for(size_t id=0; id<N; ++id) {
+inline void TaskScheduler::register_worker(std::thread& t) {
 
-    _workers[id]._id = id;
-    _workers[id]._vtm = id;
-    _workers[id]._executor = this;
-    _workers[id]._waiter = &_notifier._waiters[id];
-    
-    _threads.emplace_back([this] (Worker& w) -> void {
+  size_t workerIndex = _workers.size();
+  Worker& worker = *_workers.emplace_back(std::make_shared<Worker>());
+
+  worker._id = workerIndex;
+  worker._vtm = workerIndex;
+  worker._executor = this;
+  worker._waiter = &_notifier._waiters[workerIndex];
+  worker._thread = &t;
+
+  t = std::thread([this] (std::shared_ptr<Worker> w) -> void {
 
       //_per_thread.worker = &w;
-      _this_worker = &w;
+      _this_worker = w.get();
 
       Node* t = nullptr;
 
@@ -381,16 +383,15 @@ inline void TaskScheduler::_spawn(size_t N) {
       while(1) {
         
         // execute the tasks.
-        _exploit_task(w, t);
+        _exploit_task(*w, t);
 
         // wait for tasks
-        if(_wait_for_task(w, t) == false) {
+        if(_wait_for_task(*w, t) == false) {
           break;
         }
       }
       
-    }, std::ref(_workers[id]));     
-  }
+    }, _workers[workerIndex]);
 }
 
 // Function: _explore_task
@@ -423,7 +424,7 @@ inline void TaskScheduler::_explore_task(Worker& w, Node*& t) {
   //}
 
   do {
-    t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
+    t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]->_wsq.steal();
 
     if(t) {
       break;
@@ -514,8 +515,8 @@ inline bool TaskScheduler::_wait_for_task(Worker& worker, Node*& t) {
     }
     // check all queues again
     for(auto& w : _workers) {
-      if(!w._wsq.empty()) {
-        worker._vtm = w._id;
+      if(!w->_wsq.empty()) {
+        worker._vtm = w->_id;
         _notifier.cancel_wait(worker._waiter);
         goto wait_for_task;
       }
@@ -911,7 +912,7 @@ inline void TaskScheduler::_invoke_dynamic_task_internal(
       }
       else {
         explore:
-        t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
+        t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]->_wsq.steal();
         if(t) {
           goto exploit;
         }

@@ -27,6 +27,7 @@ class Worker {
     Notifier::Waiter* _waiter;
     std::default_random_engine _rdgen { std::random_device{}() };
     TaskQueue<Node*> _wsq;
+    std::thread* _thread;
 };
 
 // ----------------------------------------------------------------------------
