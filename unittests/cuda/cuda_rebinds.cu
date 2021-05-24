@@ -512,17 +512,18 @@ TEST_CASE("cudaFlowCapturer.rebind.memcpy.double" * doctest::timeout(300)) {
   rebind_memcpy<double>();
 }
 
-
-
 //----------------------------------------------------------------------
 //rebind memset
 //----------------------------------------------------------------------
 template <typename T>
 void rebind_memset() {
+
   tf::Executor executor;
+  tf::Taskflow taskflow;
 
   for(size_t N = 1; N < 65199; N = N * 2 + 1) {
-    tf::Taskflow taskflow;
+
+    taskflow.clear();
 
     T* a {nullptr};
     T* b {nullptr};
@@ -706,12 +707,3 @@ TEST_CASE("cudaFlowCapturer.rebind.algorithms") {
   tf::cuda_free(data);
   tf::cuda_free(res);
 }
-
-
-
-
-
-
-
-
-

@@ -821,6 +821,11 @@ struct MultiplyScalar {
   int v;
 };
 
+struct LessOrGreater {
+  __device__ int operator()(int a, int b) const { return v ? a < b : a > b; }
+  bool v;
+};
+
 // ----------------------------------------------------------------------------
 // update for_each
 // ----------------------------------------------------------------------------
@@ -920,6 +925,7 @@ TEST_CASE("cudaFlowCapturer.update.for_each_index" * doctest::timeout(300)) {
 
 template <typename F>
 void update_reduce() {
+
   F cf;
 
   for(int N=1; N<=100000; N += (N/10+1)) {
@@ -1449,22 +1455,29 @@ void update_sort() {
       input1[i] = rand();
       input2[i] = rand();
     }
-
-    auto sort = cf.sort(input1, input1+N, tf::cuda_less<int>());
-    //auto sort = cf.sort(input1, input1+N, []__device__(int a, int b) { return a < b; });
+    
+    // create sort
+    auto sort = cf.sort(input1, input1+N, LessOrGreater{true});
     cf.offload();
 
     REQUIRE(cf.num_tasks() == 1);
     REQUIRE(std::is_sorted(input1, input1+N));
 
     // update sort
-    cf.sort(sort, input2, input2+N, tf::cuda_less<int>());
-    //cf.sort(sort, input2, input2+N, [] __device__ (int a, int b) { return a < b; });
+    cf.sort(sort, input2, input2+N, LessOrGreater{true});
     cf.offload();
     
     REQUIRE(cf.num_tasks() == 1);
     REQUIRE(std::is_sorted(input2, input2+N, std::less<int>()));
     
+    // update sort with a different kernel
+    cf.sort(sort, input1, input1+N, tf::cuda_greater<int>());
+    cf.offload();
+    
+    REQUIRE(cf.num_tasks() == 1);
+    REQUIRE(std::is_sorted(input1, input1+N, std::greater<int>()));
+    
+    // free the data 
     tf::cuda_free(input1);
     tf::cuda_free(input2);
   }

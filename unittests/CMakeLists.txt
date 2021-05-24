@@ -7,6 +7,7 @@ list(APPEND TF_UNITTESTS
   tsq 
   serializer 
   basics 
+  movable
   cancellation
   semaphore
   algorithm 

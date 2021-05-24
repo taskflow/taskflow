@@ -80,6 +80,16 @@ class Taskflow : public FlowBuilder {
     Taskflow();
 
     /**
+    @brief constructs a taskflow from a moved taskflow
+    */
+    Taskflow(Taskflow&& rhs);
+
+    /**
+    @brief move assignment 
+    */
+    Taskflow& operator = (Taskflow&& rhs);
+
+    /**
     @brief default destructor
 
     When the destructor is called, all tasks and their associated data
@@ -145,18 +155,21 @@ class Taskflow : public FlowBuilder {
     void for_each_task(V&& visitor) const;
 
   private:
+    
+    mutable std::mutex _mutex;
  
     std::string _name;
    
     Graph _graph;
 
-    std::mutex _mtx;
-
     std::queue<std::shared_ptr<Topology>> _topologies;
+
+    std::optional<std::list<Taskflow>::iterator> _satellite;
     
     void _dump(std::ostream&, const Taskflow*) const;
     void _dump(std::ostream&, const Node*, Dumper&) const;
     void _dump(std::ostream&, const Graph&, Dumper&) const;
+
 };
 
 // Constructor
@@ -167,6 +180,32 @@ inline Taskflow::Taskflow(const std::string& name) :
 
 // Constructor
 inline Taskflow::Taskflow() : FlowBuilder{_graph} {
+}
+
+// Move constructor
+inline Taskflow::Taskflow(Taskflow&& rhs) : FlowBuilder{_graph} {
+
+  std::scoped_lock lock(rhs._mutex);
+  
+  _name = std::move(rhs._name);
+  _graph = std::move(rhs._graph); 
+  _topologies = std::move(rhs._topologies);
+  _satellite = rhs._satellite;
+
+  rhs._satellite.reset();
+}
+
+// Move assignment
+inline Taskflow& Taskflow::operator = (Taskflow&& rhs) {
+  if(this != &rhs) {
+    std::scoped_lock(_mutex, rhs._mutex);
+    _name = std::move(rhs._name);
+    _graph = std::move(rhs._graph); 
+    _topologies = std::move(rhs._topologies);
+    _satellite = rhs._satellite;
+    rhs._satellite.reset();
+  }
+  return *this;
 }
 
 // Procedure:
