@@ -552,13 +552,11 @@ inline void Graph::merge(Graph&& g) {
 }
 
 // Function: size
-// query the size
 inline size_t Graph::size() const {
   return _nodes.size();
 }
 
 // Function: empty
-// query the emptiness
 inline bool Graph::empty() const {
   return _nodes.empty();
 }

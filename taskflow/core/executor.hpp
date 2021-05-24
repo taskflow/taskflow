@@ -271,7 +271,7 @@ class Executor {
   private:
 
     //inline static thread_local PerThread _per_thread;
-    inline static thread_local Worker* _this_worker {nullptr};
+    //inline static thread_local Worker* _this_worker {nullptr};
 
     std::condition_variable _topology_cv;
     std::mutex _taskflow_mutex;
@@ -441,7 +441,7 @@ void Executor::silent_async(F&& f, ArgsT&&... args) {
 // Function: this_worker_id
 inline int Executor::this_worker_id() const {
   //auto worker = _per_thread.worker;
-  Worker* worker = _this_worker;
+  Worker* worker = this_worker().worker;
   return worker ? static_cast<int>(worker->_id) : -1;
 }
 
@@ -457,7 +457,7 @@ inline void Executor::_spawn(size_t N) {
     _threads.emplace_back([this] (Worker& w) -> void {
 
       //_per_thread.worker = &w;
-      _this_worker = &w;
+      this_worker().worker = &w;
 
       Node* t = nullptr;
 
@@ -658,7 +658,7 @@ inline void Executor::_schedule(Node* node) {
 
   // caller is a worker to this pool
   //auto worker = _per_thread.worker;
-  auto worker = _this_worker;
+  auto worker = this_worker().worker;
 
   if(worker != nullptr && worker->_executor == this) {
     worker->_wsq.push(node);
@@ -691,8 +691,7 @@ inline void Executor::_schedule(const std::vector<Node*>& nodes) {
 
   // worker thread
   //auto worker = _per_thread.worker;
-  auto worker = _this_worker;
-
+  auto worker = this_worker().worker;
 
   if(worker != nullptr && worker->_executor == this) {
     for(size_t i=0; i<num_nodes; ++i) {
@@ -929,7 +928,7 @@ inline void Executor::_invoke_dynamic_task(Worker& w, Node* node) {
 inline void Executor::_invoke_dynamic_task_external(Node*p, Graph& g, bool detach) {
 
   //auto worker = _per_thread.worker;
-  auto worker = _this_worker;
+  auto worker = this_worker().worker;
 
   assert(worker && worker->_executor == this);
   
