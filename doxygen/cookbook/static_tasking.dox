@@ -207,8 +207,30 @@ all the associated tasks exist.
 It is your responsibility to keep tasks and graph alive during their execution.
 
 
+@section MoveATaskflow Move a Taskflow
 
+You can construct or assign a taskflow from a @em moved taskflow.
+Moving a taskflow to another will result in transferring the underlying graph 
+data structures from one to the other.
 
+@code{.cpp}
+tf::Taskflow taskflow1, taskflow3;
+
+taskflow1.emplace([](){});
+
+// move-construct taskflow2 from taskflow1
+tf::Taskflow taskflow2(std::move(taskflow1));
+assert(taskflow2.num_tasks() == 1 && taskflow1.num_tasks() == 0);
+
+// move-assign taskflow3 to taskflow2
+taskflow3 = std::move(taskflow2);
+assert(taskflow3.num_tasks() == 1 && taskflow2.num_tasks() == 0);
+@endcode
+
+You can only move a taskflow to another while that taskflow is not being
+run by an executor.
+Moving a running taskflow can result in undefined behavior.
+Please see @ref ExecuteATaskflowWithTransferredOwnership for more details.
 
 */
 

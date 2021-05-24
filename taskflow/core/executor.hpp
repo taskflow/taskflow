@@ -152,7 +152,6 @@ class Executor {
 
     @param taskflow a moved tf::Taskflow object
     @param pred a boolean predicate to return @c true for stop
-    @param callable a callable object to be invoked after this run completes
 
     @return a tf::Future that holds the result of the execution
     
@@ -206,6 +205,11 @@ class Executor {
     runtime metadata of the running taskflow.
     */
     size_t num_topologies() const;
+
+    /**
+    @brief queries the number of running taskflows with moved ownership
+    */
+    size_t num_taskflows() const;
 
     /**
     @brief queries the id of the caller thread in this executor
@@ -374,6 +378,11 @@ inline size_t Executor::num_workers() const {
 // Function: num_topologies
 inline size_t Executor::num_topologies() const {
   return _num_topologies;
+}
+
+// Function: num_taskflows
+inline size_t Executor::num_taskflows() const {
+  return _taskflows.size();
 }
     
 // Function: async

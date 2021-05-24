@@ -140,8 +140,22 @@ You can change the name and work of a task at anytime before running the graph. 
 </programlisting></para></sect1>
 <sect1 id="StaticTasking_1UnderstandTheLifetimeOfATask">
 <title>Understand the Lifetime of a Task</title>
-<para>A task lives with its graph and belongs to only a graph at a time, and is not destroyed until the graph gets cleaned up. The lifetime of a task refers to the user-given callable object, including captured values. As long as the graph is alive, all the associated tasks exist.</para><para><simplesect kind="attention"><para>It is your responsibility to keep tasks and graph alive during their execution. </para></simplesect>
+<para>A task lives with its graph and belongs to only a graph at a time, and is not destroyed until the graph gets cleaned up. The lifetime of a task refers to the user-given callable object, including captured values. As long as the graph is alive, all the associated tasks exist.</para><para><simplesect kind="attention"><para>It is your responsibility to keep tasks and graph alive during their execution.</para></simplesect>
 </para></sect1>
+<sect1 id="StaticTasking_1MoveATaskflow">
+<title>Move a Taskflow</title>
+<para>You can construct or assign a taskflow from a <emphasis>moved</emphasis> taskflow. Moving a taskflow to another will result in transferring the underlying graph data structures from one to the other.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow1,<sp/>taskflow3;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">taskflow1.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){});</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>move-construct<sp/>taskflow2<sp/>from<sp/>taskflow1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow2(std::move(taskflow1));</highlight></codeline>
+<codeline><highlight class="normal">assert(taskflow2.num_tasks()<sp/>==<sp/>1<sp/>&amp;&amp;<sp/>taskflow1.<ref refid="classtf_1_1Taskflow_1af4f03bca084deb5c2228ac8936d33649" kindref="member">num_tasks</ref>()<sp/>==<sp/>0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>move-assign<sp/>taskflow3<sp/>to<sp/>taskflow2</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">taskflow3<sp/>=<sp/><ref refid="cpp/utility/move" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::move</ref>(taskflow2);</highlight></codeline>
+<codeline><highlight class="normal">assert(taskflow3.num_tasks()<sp/>==<sp/>1<sp/>&amp;&amp;<sp/>taskflow2.num_tasks()<sp/>==<sp/>0);</highlight></codeline>
+</programlisting></para><para>You can only move a taskflow to another while that taskflow is not being run by an executor. Moving a running taskflow can result in undefined behavior. Please see <ref refid="ExecuteTaskflow_1ExecuteATaskflowWithTransferredOwnership" kindref="member">Execute a Taskflow with Transferred Ownership</ref> for more details. </para></sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

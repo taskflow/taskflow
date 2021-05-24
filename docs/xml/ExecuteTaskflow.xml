@@ -74,7 +74,40 @@ Issuing multiple runs on the same taskflow will automatically <emphasis>synchron
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>alter<sp/>the<sp/>taskflow<sp/>while<sp/>running<sp/>leads<sp/>to<sp/>undefined<sp/>behavior<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">f.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Add<sp/>a<sp/>new<sp/>task\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-</programlisting></para><para>You must always keep a taskflow alive and must not modify it while it is being run by an executor.</para></sect1>
+</programlisting></para><para>You must always keep a taskflow alive and must not modify it while it is running on an executor.</para></sect1>
+<sect1 id="ExecuteTaskflow_1ExecuteATaskflowWithTransferredOwnership">
+<title>Execute a Taskflow with Transferred Ownership</title>
+<para>You can transfer the ownership of a taskflow to an executor and run it without wrangling with the lifetime issue of that taskflow. Each <computeroutput>run_*</computeroutput> method discussed in the previous section comes with an overload that takes a <emphasis>moved</emphasis> taskflow object.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){});</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>let<sp/>the<sp/>executor<sp/>manage<sp/>the<sp/>lifetime<sp/>of<sp/>the<sp/>submitted<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(std::move(taskflow));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>taskflow<sp/>has<sp/>no<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">assert(taskflow.<ref refid="classtf_1_1Taskflow_1af4f03bca084deb5c2228ac8936d33649" kindref="member">num_tasks</ref>()<sp/>==<sp/>0);</highlight></codeline>
+</programlisting></para><para>However, you should avoid moving a <emphasis>running</emphasis> taskflow which can result in undefined behavior.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){});</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>executor<sp/>does<sp/>not<sp/>manage<sp/>the<sp/>lifetime<sp/>of<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>error!<sp/>you<sp/>cannot<sp/>move<sp/>a<sp/>taskflow<sp/>while<sp/>it<sp/>is<sp/>running</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(std::move(taskflow));<sp/><sp/></highlight></codeline>
+</programlisting></para><para>The correct way to submit a taskflow with moved ownership to an executor is to ensure all previous runs have completed. The executor will automatically release the resources of a moved taskflow right <emphasis>after</emphasis> its execution completes.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>submit<sp/>the<sp/>taskflow<sp/>and<sp/>wait<sp/>until<sp/>it<sp/>completes</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>it&apos;s<sp/>safe<sp/>to<sp/>move<sp/>the<sp/>taskflow<sp/>to<sp/>the<sp/>executor<sp/>and<sp/>run<sp/>it</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(std::move(taskflow));<sp/><sp/></highlight></codeline>
+</programlisting></para><para>Likewise, you cannot move a taskflow that is running on an executor. You must wait until all the previous fires of runs on that taskflow complete before calling move.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>submit<sp/>the<sp/>taskflow<sp/>and<sp/>wait<sp/>until<sp/>it<sp/>completes</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>it&apos;s<sp/>safe<sp/>to<sp/>move<sp/>the<sp/>taskflow<sp/>to<sp/>another</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>moved_taskflow(std::move(taskflow));<sp/><sp/></highlight></codeline>
+</programlisting></para></sect1>
 <sect1 id="ExecuteTaskflow_1ThreadSafety">
 <title>Touch an Executor from Multiple Threads</title>
 <para>All <computeroutput>run_*</computeroutput> methods are <emphasis>thread-safe</emphasis>. You can have multiple threads call these methods from an executor to run different taskflows. However, the order which taskflow runs first is non-deterministic and is up to the runtime.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>

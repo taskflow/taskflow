@@ -122,7 +122,68 @@ f.emplace([](){ std::cout << "Add a new task\n"; });
 @endcode
 
 You must always keep a taskflow alive and must not modify it while 
-it is being run by an executor.
+it is running on an executor.
+
+@section ExecuteATaskflowWithTransferredOwnership Execute a Taskflow with Transferred Ownership
+
+You can transfer the ownership of a taskflow to an executor and run it without
+wrangling with the lifetime issue of that taskflow.
+Each @c run\_* method discussed in the previous section comes with an overload
+that takes a @em moved taskflow object.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+tf::Executor executor;
+
+taskflow.emplace([](){});
+
+// let the executor manage the lifetime of the submitted taskflow
+executor.run(std::move(taskflow));
+
+// now taskflow has no tasks
+assert(taskflow.num_tasks() == 0);
+@endcode
+
+However, you should avoid moving a @em running taskflow which can result in
+undefined behavior.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+tf::Executor executor;
+
+taskflow.emplace([](){});
+
+// executor does not manage the lifetime of taskflow
+executor.run(taskflow);
+
+// error! you cannot move a taskflow while it is running
+executor.run(std::move(taskflow));  
+@endcode
+
+The correct way to submit a taskflow with moved ownership to an executor is 
+to ensure all previous runs have completed.
+The executor will automatically release the resources of a moved taskflow
+right @em after its execution completes.
+
+@code{.cpp}
+// submit the taskflow and wait until it completes
+executor.run(taskflow).wait();
+
+// now it's safe to move the taskflow to the executor and run it
+executor.run(std::move(taskflow));  
+@endcode
+
+Likewise, you cannot move a taskflow that is running on an executor. 
+You must wait until all the previous fires of runs on that taskflow complete
+before calling move.
+
+@code{.cpp}
+// submit the taskflow and wait until it completes
+executor.run(taskflow).wait();
+
+// now it's safe to move the taskflow to another
+tf::Taskflow moved_taskflow(std::move(taskflow));  
+@endcode
 
 
 @section ThreadSafety Touch an Executor from Multiple Threads

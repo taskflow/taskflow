@@ -20,16 +20,18 @@ A %taskflow manages a task dependency graph where each task represents a
 callable object (e.g., @std_lambda, @std_function) and an edge represents a 
 dependency between two tasks. A task is one of the following types:
   
-  1. static task: the callable constructible from 
-                  @c std::function<void()>
-  2. dynamic task: the callable constructible from 
-                   @c std::function<void(tf::Subflow&)>
+  1. static task   : the callable constructible from 
+                     @c std::function<void()>
+  2. dynamic task  : the callable constructible from 
+                     @c std::function<void(tf::Subflow&)>
   3. condition task: the callable constructible from 
                      @c std::function<int()>
-  4. module task: the task constructed from tf::Taskflow::composed_of
+  4. module task   : the task constructed from tf::Taskflow::composed_of
   5. %cudaFlow task: the callable constructible from 
                      @c std::function<void(tf::cudaFlow&)> or
                      @c std::function<void(tf::cudaFlowCapturer&)>
+  6. %syclFlow task: the callable constructible from
+                     @c std::function<void(tf::syclFlow&)>
 
 Each task is a basic computation unit and is run by one worker thread
 from an executor.
@@ -81,11 +83,19 @@ class Taskflow : public FlowBuilder {
 
     /**
     @brief constructs a taskflow from a moved taskflow
+
+    Move a running taskflow can result in undefined behavior.
+    You should only move a taskflow to another if it is not being run by
+    an executor.
     */
     Taskflow(Taskflow&& rhs);
 
     /**
-    @brief move assignment 
+    @brief move assignment operator
+
+    Move a running taskflow can result in undefined behavior.
+    You should only move a taskflow to another if it is not being run by
+    an executor.
     */
     Taskflow& operator = (Taskflow&& rhs);
 
@@ -169,7 +179,6 @@ class Taskflow : public FlowBuilder {
     void _dump(std::ostream&, const Taskflow*) const;
     void _dump(std::ostream&, const Node*, Dumper&) const;
     void _dump(std::ostream&, const Graph&, Dumper&) const;
-
 };
 
 // Constructor

@@ -34,7 +34,13 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect2 id="release-3-2-0_1release-3-2-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>added tf::SmallVector optimization for optimizing the dependency storage in a graph</para></listitem>
+<listitem><para>added tf::SmallVector optimization for optimizing the dependency storage in a graph </para></listitem>
+<listitem><para>added move constructor and move assignment operator for <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><itemizedlist>
+<listitem><para><ref refid="classtf_1_1Taskflow_1afd790de6db6d16ddf4729967c1edebb5" kindref="member">tf::Taskflow::Taskflow(Taskflow&amp;&amp;)</ref></para></listitem><listitem><para><ref refid="classtf_1_1Taskflow_1aa4957a41e63e1d1a6f77c540d70d04fa" kindref="member">tf::Taskflow::operator=(Taskflow&amp;&amp;)</ref> </para></listitem></itemizedlist>
+</para></listitem>
+<listitem><para>added moved run in <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> for automatically managing taskflow&apos;s lifetimes<itemizedlist>
+<listitem><para><ref refid="classtf_1_1Executor_1a4bbef53618db1852003a0cd1e1e40c50" kindref="member">tf::Executor::run(Taskflow&amp;&amp;)</ref></para></listitem><listitem><para><ref refid="classtf_1_1Executor_1a52c27df2fb7372277f4926f4ab0a0937" kindref="member">tf::Executor::run(Taskflow&amp;&amp;, C&amp;&amp;)</ref></para></listitem><listitem><para><ref refid="classtf_1_1Executor_1ad10a12c9e14c8132e414c9a48443d938" kindref="member">tf::Executor::run_n(Taskflow&amp;&amp;, size_t)</ref></para></listitem><listitem><para><ref refid="classtf_1_1Executor_1ad14430ac62f0e64e9e21712ba35c22ea" kindref="member">tf::Executor::run_n(Taskflow&amp;&amp;, size_t, C&amp;&amp;)</ref></para></listitem><listitem><para><ref refid="classtf_1_1Executor_1ab10fac2869d80049e5a75d2084a78eda" kindref="member">tf::Executor::run_until(Taskflow&amp;&amp;, P&amp;&amp;)</ref></para></listitem><listitem><para><ref refid="classtf_1_1Executor_1af30c6947f060e4bdf344e90b6b44fc70" kindref="member">tf::Executor::run_until(Taskflow&amp;&amp;, P&amp;&amp;, C&amp;&amp;)</ref></para></listitem></itemizedlist>
+</para></listitem>
 </itemizedlist>
 </para></sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_cudaflow">
@@ -114,8 +120,9 @@ New algorithms in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFl
 <sect1 id="release-3-2-0_1release-3-2-0_bug_fixes">
 <title>Bug Fixes</title>
 <para><itemizedlist>
-<listitem><para>fixed a bug in creating a round-robin optimizer in <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> </para></listitem>
-<listitem><para>fixed a compilation error of TLS worker pointer in <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref></para></listitem>
+<listitem><para>fixed compilation errors in constructing <ref refid="classtf_1_1cudaRoundRobinCapturing" kindref="compound">tf::cudaRoundRobinCapturing</ref> </para></listitem>
+<listitem><para>fixed compilation errors of TLS worker pointer in <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> </para></listitem>
+<listitem><para>fixed memory leak when moving a <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref></para></listitem>
 </itemizedlist>
 </para></sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_breaking_changes">
@@ -134,6 +141,12 @@ New algorithms in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFl
 <sect1 id="release-3-2-0_1release-3-2-0_documentation">
 <title>Documentation</title>
 <para><itemizedlist>
+<listitem><para>revised <ref refid="StaticTasking" kindref="compound">Static Tasking</ref><itemizedlist>
+<listitem><para><ref refid="StaticTasking_1MoveATaskflow" kindref="member">Move a Taskflow</ref> </para></listitem></itemizedlist>
+</para></listitem>
+<listitem><para>revised <ref refid="ExecuteTaskflow" kindref="compound">Executor</ref><itemizedlist>
+<listitem><para><ref refid="ExecuteTaskflow_1ExecuteATaskflowWithTransferredOwnership" kindref="member">Execute a Taskflow with Transferred Ownership</ref> </para></listitem></itemizedlist>
+</para></listitem>
 <listitem><para>revised <ref refid="cudaFlowReduce" kindref="compound">Parallel Reduction</ref> </para></listitem>
 <listitem><para>added <ref refid="cudaFlowAlgorithms" kindref="compound">cudaFlow Algorithms</ref><itemizedlist>
 <listitem><para><ref refid="cudaFlowReduce" kindref="compound">Parallel Reduction</ref></para></listitem><listitem><para><ref refid="cudaFlowScan" kindref="compound">Parallel Scan</ref></para></listitem><listitem><para><ref refid="cudaFlowMerge" kindref="compound">Parallel Merge</ref></para></listitem><listitem><para><ref refid="cudaFlowSort" kindref="compound">Parallel Sort</ref> </para></listitem></itemizedlist>

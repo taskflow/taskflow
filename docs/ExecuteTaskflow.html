@@ -54,6 +54,7 @@
           <ul>
             <li><a href="#CreateAnExecutor">Create an Executor</a></li>
             <li><a href="#ExecuteATaskflow">Execute a Taskflow</a></li>
+            <li><a href="#ExecuteATaskflowWithTransferredOwnership">Execute a Taskflow with Transferred Ownership</a></li>
             <li><a href="#ThreadSafety">Touch an Executor from Multiple Threads</a></li>
             <li><a href="#QueryTheWorkerID">Query the Worker Identieir</a></li>
             <li><a href="#ObserveThreadActivities">Observe Thread Activities</a></li>
@@ -107,7 +108,33 @@
 <span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span> <span class="n">future</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">f</span><span class="p">);</span>  <span class="c1">// non-blocking return</span>
 
 <span class="c1">// alter the taskflow while running leads to undefined behavior </span>
-<span class="n">f</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Add a new task</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span></pre><p>You must always keep a taskflow alive and must not modify it while it is being run by an executor.</p></section><section id="ThreadSafety"><h2><a href="#ThreadSafety">Touch an Executor from Multiple Threads</a></h2><p>All <code>run_*</code> methods are <em>thread-safe</em>. You can have multiple threads call these methods from an executor to run different taskflows. However, the order which taskflow runs first is non-deterministic and is up to the runtime.</p><pre class="m-code"> <span class="mi">1</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
+<span class="n">f</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Add a new task</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span></pre><p>You must always keep a taskflow alive and must not modify it while it is running on an executor.</p></section><section id="ExecuteATaskflowWithTransferredOwnership"><h2><a href="#ExecuteATaskflowWithTransferredOwnership">Execute a Taskflow with Transferred Ownership</a></h2><p>You can transfer the ownership of a taskflow to an executor and run it without wrangling with the lifetime issue of that taskflow. Each <code>run_*</code> method discussed in the previous section comes with an overload that takes a <em>moved</em> taskflow object.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
+
+<span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
+
+<span class="c1">// let the executor manage the lifetime of the submitted taskflow</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">taskflow</span><span class="p">));</span>
+
+<span class="c1">// now taskflow has no tasks</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">taskflow</span><span class="p">.</span><span class="n">num_tasks</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span></pre><p>However, you should avoid moving a <em>running</em> taskflow which can result in undefined behavior.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
+
+<span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
+
+<span class="c1">// executor does not manage the lifetime of taskflow</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span>
+
+<span class="c1">// error! you cannot move a taskflow while it is running</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">taskflow</span><span class="p">));</span></pre><p>The correct way to submit a taskflow with moved ownership to an executor is to ensure all previous runs have completed. The executor will automatically release the resources of a moved taskflow right <em>after</em> its execution completes.</p><pre class="m-code"><span class="c1">// submit the taskflow and wait until it completes</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
+
+<span class="c1">// now it&#39;s safe to move the taskflow to the executor and run it</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">taskflow</span><span class="p">));</span></pre><p>Likewise, you cannot move a taskflow that is running on an executor. You must wait until all the previous fires of runs on that taskflow complete before calling move.</p><pre class="m-code"><span class="c1">// submit the taskflow and wait until it completes</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
+
+<span class="c1">// now it&#39;s safe to move the taskflow to another</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">moved_taskflow</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">taskflow</span><span class="p">));</span></pre></section><section id="ThreadSafety"><h2><a href="#ThreadSafety">Touch an Executor from Multiple Threads</a></h2><p>All <code>run_*</code> methods are <em>thread-safe</em>. You can have multiple threads call these methods from an executor to run different taskflows. However, the order which taskflow runs first is non-deterministic and is up to the runtime.</p><pre class="m-code"> <span class="mi">1</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
  <span class="mi">2</span><span class="o">:</span>
  <span class="mi">3</span><span class="o">:</span> <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
  <span class="mi">4</span><span class="o">:</span>   <span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="p">([</span><span class="n">i</span><span class="p">,</span> <span class="o">&amp;</span><span class="p">](){</span>

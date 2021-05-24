@@ -503,11 +503,7 @@ inline std::vector<Node*> Node::_release_all() {
 
 // Destructor
 inline Graph::~Graph() {
-  //auto& np = _node_pool();
-  for(auto node : _nodes) {
-    //np.recycle(node);
-    node_pool.recycle(node);
-  }
+  clear();
 }
 
 // Move constructor
@@ -517,6 +513,7 @@ inline Graph::Graph(Graph&& other) :
 
 // Move assignment
 inline Graph& Graph::operator = (Graph&& other) {
+  clear();
   _nodes = std::move(other._nodes);
   return *this;
 }
