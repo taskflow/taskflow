@@ -34,11 +34,6 @@ class TaskScheduler {
     @brief constructs the task scheduler with N worker threads
     */
     explicit TaskScheduler(size_t N);
-    
-    /**
-    @brief destructs the task scheduler 
-    */
-    //~TaskScheduler();
 
     /**
     @brief runs the taskflow once
@@ -188,16 +183,16 @@ class TaskScheduler {
 
   protected:
 
+    /**
+    @brief shuts down the scheduler; must be called for destruction
+    */
     void _shutdown();
 
   private:
 
-    //inline static thread_local PerThread _per_thread;
     inline static thread_local Worker* _this_worker {nullptr};
 
-    const size_t _VICTIM_BEG;
-    const size_t _VICTIM_END;
-    const size_t _MAX_STEALS;
+    size_t _MAX_STEALS;
     const size_t _MAX_YIELDS;
    
     std::condition_variable _topology_cv;
@@ -258,10 +253,7 @@ class TaskScheduler {
 };
 
 // Constructor
-inline TaskScheduler::TaskScheduler(size_t N) : 
-  _VICTIM_BEG {0},
-  _VICTIM_END {N - 1},
-  _MAX_STEALS {(N + 1) << 1},
+inline TaskScheduler::TaskScheduler(size_t N) :
   _MAX_YIELDS {100},
   _workers    {},
   _notifier   {N} {
@@ -403,7 +395,7 @@ inline void TaskScheduler::_explore_task(Worker& w, Node*& t) {
   size_t num_steals = 0;
   size_t num_yields = 0;
 
-  std::uniform_int_distribution<size_t> rdvtm(_VICTIM_BEG, _VICTIM_END);
+  std::uniform_int_distribution<size_t> rdvtm(0, _workers.size() - 1);
 
   //while(!_done) {
   //
@@ -899,7 +891,7 @@ inline void TaskScheduler::_invoke_dynamic_task_internal(
     _schedule(src);
     Node* t = nullptr;
   
-    std::uniform_int_distribution<size_t> rdvtm(_VICTIM_BEG, _VICTIM_END);
+    std::uniform_int_distribution<size_t> rdvtm(0, _workers.size() - 1);
 
     while(p->_join_counter != 0) {
 
