@@ -44,8 +44,9 @@ class Executor : public TaskScheduler
 };
 
 // Constructor
-inline Executor::Executor(size_t N) : TaskScheduler(N) {
+inline Executor::Executor(size_t N) : TaskScheduler() {
     _spawn_thread_pool(N);
+    _configure();
 }
 
 inline Executor::~Executor() {

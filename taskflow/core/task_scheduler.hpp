@@ -33,7 +33,7 @@ class TaskScheduler {
     /**
     @brief constructs the task scheduler with N worker threads
     */
-    explicit TaskScheduler(size_t N);
+    explicit TaskScheduler();
 
     /**
     @brief runs the taskflow once
@@ -129,6 +129,7 @@ class TaskScheduler {
     int this_worker_id() const;
 
     /**
+    @brief registers the specified thread as a new worker
     */
     void register_worker(std::thread& t);
 
@@ -182,6 +183,11 @@ class TaskScheduler {
     size_t num_observers() const;
 
   protected:
+
+    /**
+    @brief configures the scheduler from the current workers
+    */
+    void _configure();
 
     /**
     @brief shuts down the scheduler; must be called for destruction
@@ -252,17 +258,32 @@ class TaskScheduler {
     void _invoke_syclflow_task_entry(Node*, C&&, Q&);
 };
 
-// Constructor
-inline TaskScheduler::TaskScheduler(size_t N) :
-  _MAX_YIELDS {100},
-  _workers    {},
-  _notifier   {N} {
-  
+// Function: _configure
+inline void TaskScheduler::_configure()
+{
+  size_t N = _workers.size();
+      
   if(N == 0) {
     TF_THROW("no cpu workers to execute taskflows");
   }
 
-  _workers.reserve(N);
+  // Re-construct Notifier with placement new (it has no copy constructor)
+  _notifier.~Notifier();
+  new (&_notifier) Notifier(N);
+
+  for (size_t i = 0; i < _workers.size(); i++) {
+      _workers[i]->_waiter = &_notifier._waiters[i];
+  }
+
+  _MAX_STEALS = ((_workers.size() + 1) << 1);
+}
+
+// Constructor
+inline TaskScheduler::TaskScheduler() :
+  _MAX_STEALS {0},
+  _MAX_YIELDS {100},
+  _workers    {},
+  _notifier   {0} {
 
   // instantite the default observer if requested
   if(has_env(TF_ENABLE_PROFILER)) {
@@ -352,7 +373,7 @@ inline int TaskScheduler::this_worker_id() const {
   return worker ? static_cast<int>(worker->_id) : -1;
 }
 
-// Procedure: _spawn
+// Procedure: _register_worker
 inline void TaskScheduler::register_worker(std::thread& t) {
 
   size_t workerIndex = _workers.size();
@@ -361,7 +382,7 @@ inline void TaskScheduler::register_worker(std::thread& t) {
   worker._id = workerIndex;
   worker._vtm = workerIndex;
   worker._executor = this;
-  worker._waiter = &_notifier._waiters[workerIndex];
+  //worker._waiter = &_notifier._waiters[workerIndex];
   worker._thread = &t;
 
   t = std::thread([this] (std::shared_ptr<Worker> w) -> void {
