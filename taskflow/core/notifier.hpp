@@ -228,7 +228,7 @@ class Notifier {
   static const uint64_t kWaiterShift = 16;
   static const uint64_t kWaiterMask = ((1ull << kWaiterBits) - 1)
                                       << kWaiterShift;
-  static const uint64_t kWaiterInc = 1ull << kWaiterBits;
+  static const uint64_t kWaiterInc = 1ull << kWaiterShift;
   static const uint64_t kEpochBits = 32;
   static const uint64_t kEpochShift = 32;
   static const uint64_t kEpochMask = ((1ull << kEpochBits) - 1) << kEpochShift;
