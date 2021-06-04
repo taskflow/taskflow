@@ -30,11 +30,17 @@ int main(int argc, char* argv[]) {
   // --------------------------------------------------------------------------
   // GPU merge
   // --------------------------------------------------------------------------
-  
+
   auto beg = std::chrono::steady_clock::now();
-  tf::cuda_merge(
-    tf::cudaDefaultExecutionPolicy{}, da, da+N, db, db+N, dc, tf::cuda_less<int>{}
+
+  // allocate the buffer
+  auto bufsz = tf::cuda_merge_buffer_size<tf::cudaDefaultExecutionPolicy>(N, N);
+  tf::cudaScopedDeviceMemory<std::byte> buf(bufsz);
+
+  tf::cuda_merge(tf::cudaDefaultExecutionPolicy{}, 
+    da, da+N, db, db+N, dc, tf::cuda_less<int>{}, buf.data()
   );
+  cudaStreamSynchronize(0);
   auto end = std::chrono::steady_clock::now();
 
   std::cout << "GPU merge: " 

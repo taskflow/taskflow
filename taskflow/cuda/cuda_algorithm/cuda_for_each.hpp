@@ -63,27 +63,15 @@ void cuda_for_each_index_loop(
 
 @param p execution policy
 @param c closure to run by one kernel thread
-*/
-template <typename P, typename C>
-void cuda_single_task_async(P&& p, C c) {
-  cuda_kernel<<<1, 1, 0, p.stream()>>>(
-    [=]__device__(auto, auto) mutable { c(); }
-  );
-}
 
-/**
-@brief runs a callable using one kernel thread
-
-@tparam P execution policy type
-@tparam C closure type
-
-@param p execution policy
-@param c closure to run by one kernel thread
+The function launches a single kernel thread to run the given callable
+through the stream in the execution policy object.
 */
 template <typename P, typename C>
 void cuda_single_task(P&& p, C c) {
-  cuda_single_task_async(p, c);
-  p.synchronize();
+  cuda_kernel<<<1, 1, 0, p.stream()>>>(
+    [=]__device__(auto, auto) mutable { c(); }
+  );
 }
 
 /**
@@ -101,7 +89,7 @@ void cuda_single_task(P&& p, C c) {
 Please refer to @ref CUDASTDForEach for details.
 */
 template <typename P, typename I, typename C>
-void cuda_for_each_async(P&& p, I first, I last, C c) {
+void cuda_for_each(P&& p, I first, I last, C c) {
   
   unsigned count = std::distance(first, last);
   
@@ -110,26 +98,6 @@ void cuda_for_each_async(P&& p, I first, I last, C c) {
   }
 
   detail::cuda_for_each_loop(p, first, count, c);
-}
-
-/**
-@brief performs parallel iterations over a range of items
-
-@tparam P execution policy type
-@tparam I input iterator type
-@tparam C unary operator type
-
-@param p execution policy object
-@param first iterator to the beginning of the range
-@param last iterator to the end of the range
-@param c unary operator to apply to each dereferenced iterator
-
-Please refer to @ref CUDASTDForEach for details.
-*/
-template <typename P, typename I, typename C>
-void cuda_for_each(P&& p, I first, I last, C c) {
-  cuda_for_each_async(p, first, last, c);
-  p.synchronize();
 }
 
 /**
@@ -149,7 +117,7 @@ void cuda_for_each(P&& p, I first, I last, C c) {
 Please refer to @ref CUDASTDForEach for details.
 */
 template <typename P, typename I, typename C>
-void cuda_for_each_index_async(P&& p, I first, I last, I inc, C c) {
+void cuda_for_each_index(P&& p, I first, I last, I inc, C c) {
   
   if(is_range_invalid(first, last, inc)) {
     TF_THROW("invalid range [", first, ", ", last, ") with inc size ", inc);
@@ -163,29 +131,6 @@ void cuda_for_each_index_async(P&& p, I first, I last, I inc, C c) {
 
   detail::cuda_for_each_index_loop(p, first, inc, count, c);
 }
-
-  
-/**
-@brief performs parallel iterations over an index-based range of items
-
-@tparam P execution policy type
-@tparam I input index type
-@tparam C unary operator type
-
-@param p execution policy object
-@param first index to the beginning of the range
-@param last  index to the end of the range
-@param inc step size between successive iterations
-@param c unary operator to apply to each index
-
-Please refer to @ref CUDASTDForEach for details.
-*/
-template <typename P, typename I, typename C>
-void cuda_for_each_index(P&& p, I first, I last, I inc, C c) {
-  cuda_for_each_index_async(p, first, last, inc, c); 
-  p.synchronize();
-}
-
 
 // ----------------------------------------------------------------------------
 // single_task
@@ -258,7 +203,7 @@ template <typename I, typename C>
 cudaTask cudaFlowCapturer::for_each(I first, I last, C c) {
   return on([=](cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
-    cuda_for_each_async(p, first, last, c);
+    cuda_for_each(p, first, last, c);
   });
 }
 
@@ -267,7 +212,7 @@ template <typename I, typename C>
 cudaTask cudaFlowCapturer::for_each_index(I beg, I end, I inc, C c) {
   return on([=] (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
-    cuda_for_each_index_async(p, beg, end, inc, c);
+    cuda_for_each_index(p, beg, end, inc, c);
   });
 }
 
@@ -276,7 +221,7 @@ template <typename I, typename C>
 void cudaFlowCapturer::for_each(cudaTask task, I first, I last, C c) {
   on(task, [=](cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
-    cuda_for_each_async(p, first, last, c);
+    cuda_for_each(p, first, last, c);
   });
 }
 
@@ -287,7 +232,7 @@ void cudaFlowCapturer::for_each_index(
 ) {
   on(task, [=] (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
-    cuda_for_each_index_async(p, beg, end, inc, c);
+    cuda_for_each_index(p, beg, end, inc, c);
   });
 }
 
@@ -296,7 +241,7 @@ template <typename C>
 cudaTask cudaFlowCapturer::single_task(C callable) {
   return on([=] (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
-    cuda_single_task_async(p, callable);
+    cuda_single_task(p, callable);
   });
 }
 
@@ -305,7 +250,7 @@ template <typename C>
 void cudaFlowCapturer::single_task(cudaTask task, C callable) {
   on(task, [=] (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
-    cuda_single_task_async(p, callable);
+    cuda_single_task(p, callable);
   });
 }
 

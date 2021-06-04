@@ -9,9 +9,8 @@ into a sorted range of items.
 
 @section CUDASTDMergeItems Merge Two Sorted Ranges of Items
 
-tf::cuda_merge merges two sorted ranges of items into a sorted range.
-The following code merges two sorted arrays @c input_1 and @c input_2, 
-each of 1000 items, into a sorted array @c output of 2000 items.
+tf::cuda_merge merges two sorted ranges of items into a sorted range. 
+The following code merges two sorted arrays @c input_1 and @c input_2, each of 1000 items, into a sorted array @c output of 2000 items.
 
 @code{.cpp}
 const size_t N = 1000;
@@ -26,58 +25,36 @@ for(size_t i=0; i<N; i++) {
 }
 std::sort(input_1, input1 + N);
 std::sort(input_2, input2 + N);
+
+// queries the required buffer size to merge two N-element vectors 
+tf::cudaDefaultExecutionPolicy policy;
+auto bytes  = tf::cuda_merge_buffer_size<tf::cudaDefaultExecutionPolicy>(N, N);
+auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
 
 // merge input_1 and input_2 to output
-tf::cuda_merge(tf::cudaDefaultExecutionPolicy{}, 
+tf::cuda_merge(policy, 
   input_1, input_1 + N, input_2, input_2 + N, output, 
-  []__device__ (int a, int b) { return a < b; }  // comparator
+  []__device__ (int a, int b) { return a < b; },  // comparator
+  buffer
 );
+
+// synchronizes the execution and verifies the result
+policy.synchronize();
+assert(std::is_sorted(output, output + 2*N));
+
+// delete the buffer
+tf::cuda_free(buffer);
 @endcode
 
-@section CUDASTDInvokeMergeAsynchronously Invoke Merge Kernels Asynchronously
+The merge algorithm call runs @em asynchronously through the stream specified
+in the execution policy. You need to synchronize the stream to
+obtain correct results.
+Since the GPU merge algorithm may require extra buffer to store the 
+temporary results, you must provide a buffer of size at least the bytes
+returned from tf::cuda_merge_buffer_size.
 
-By default, tf::cuda_merge blocks until all kernels finish.
-You can invoke these kernels asynchronously
-and explicitly synchronize them at another place of your program.
-Since our merge kernels rely on additional device memory,
-you need to provide a buffer of size <i>in bytes</i> equal to (or larger than) 
-the value returned by tf::cuda_merge_buffer_size.
-
-@code{.cpp}
-const size_t N = 1000;
-int* input_1 = tf::cuda_malloc_shared<int>(N);    // input vector 1
-int* input_2 = tf::cuda_malloc_shared<int>(N);    // input vector 2
-int* output  = tf::cuda_malloc_shared<int>(2*N);  // output vector
-
-// initializes the data
-for(size_t i=0; i<N; i++) {
-  input_1[i] = rand()%100;
-  input_2[i] = rand()%100;
-}
-std::sort(input_1, input1 + N);
-std::sort(input_2, input2 + N);
-
-// queries the required buffer size to merge two arrays using the given policy
-auto bytes = tf::cuda_merge_buffer_size<tf::cudaDefaultExecutionPolicy>(N, N);
-void* buffer = tf::cuda_malloc_device<std::byte>(bytes);
-
-// invoke the merge kernels asynchronously
-tf::cuda_merge_async(tf::cudaDefaultExecutionPolicy{my_stream},
-  input_1, input_1 + N, input_2, input_2 + N, output, 
-  [] __device__ (int a, int b) { return a < b; }, buffer
-);
-// here, output may not be ready yet, as kernels are still running ...
-
-// synchronize the stream to make output ready
-cudaStreamSynchronize(my_stream);
-@endcode
-
-The allocated buffer must remain alive until the asynchronous call completes.
-
-@note
-The stream given to an asynchronous merge function can be enabled to the capture mode
-to capture internal kernels into a CUDA graph.
-
+@attention
+You must keep the buffer alive before the merge call completes.
 
 */
 }

@@ -27,7 +27,7 @@ struct cudaIterate {
 template<unsigned i, unsigned count>
 struct cudaIterate<i, count, false> {
   template<typename F>
-  __device__ static void eval(F f) { }
+  __device__ static void eval(F) { }
 };
 
 template<unsigned begin, unsigned end, typename F>
@@ -123,8 +123,8 @@ struct cudaArray {
 
 template<typename T>
 struct cudaArray<T, 0> { 
-  __device__ T operator[](unsigned i) const { return T(); }
-  __device__ T& operator[](unsigned i) { return *(T*)nullptr; }
+  __device__ T operator[](unsigned) const { return T(); }
+  __device__ T& operator[](unsigned) { return *(T*)nullptr; }
 };
 
 template<typename T, typename V, unsigned size>

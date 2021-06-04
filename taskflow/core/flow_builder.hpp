@@ -226,15 +226,44 @@ class FlowBuilder {
     Task emplace_on(C&& callable, D&& device);
     
     /**
+    @brief creates a %syclFlow task on the default queue
+
+    @tparam C callable type constructible from std::function<void(tf::syclFlow&)>
+    
+    @param callable a callable that takes a referenced tf::syclFlow object
+
+    @return a tf::Task handle
+    
+    The following example creates a %syclFlow on the default queue to submit
+    two kernel tasks, @c task1 and @c task2, where @c task1 runs before @c task2.
+    
+    @code{.cpp}
+    taskflow.emplace([&](tf::syclFlow& cf){
+      // create two single-thread kernel tasks
+      tf::syclTask task1 = cf.single_task([](){});
+      tf::syclTask task2 = cf.single_task([](){});
+
+      // kernel1 runs before kernel2
+      task1.precede(task2);
+    });
+    @endcode
+    */
+    template <typename C, std::enable_if_t<is_syclflow_task_v<C>, void>* = nullptr>
+    Task emplace(C&& callable);
+    
+    /**
     @brief creates a %syclFlow task on the given queue
 
     @tparam C callable type constructible from std::function<void(tf::syclFlow&)>
     @tparam Q queue type
 
+    @param callable a callable that takes a referenced tf::syclFlow object
+    @param queue a queue of type sycl::queue
+
     @return a tf::Task handle
     
-    The following example creates a %syclFlow of two kernel tasks, @c task1 and 
-    @c task2 on GPU @c 2, where @c task1 runs before @c task2
+    The following example creates a %syclFlow on the given queue to submit
+    two kernel tasks, @c task1 and @c task2, where @c task1 runs before @c task2.
     
     @code{.cpp}
     taskflow.emplace_on([&](tf::syclFlow& cf){
@@ -250,7 +279,7 @@ class FlowBuilder {
     template <typename C, typename Q,
       std::enable_if_t<is_syclflow_task_v<C>, void>* = nullptr
     >
-    Task emplace_on(C&& callable, Q& queue);
+    Task emplace_on(C&& callable, Q&& queue);
 
     /**
     @brief adds adjacent dependency links to a linear list of tasks

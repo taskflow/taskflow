@@ -28,18 +28,25 @@ for(auto i=first; i>last; i+=step) {
 
 Each iteration @c i is independent of each other and is assigned one kernel thread 
 to run the callable.
-Since the callable runs on GPU, it must be declared with a <tt>%__device__</tt> specifier.
 The following example creates a kernel that assigns each entry of @c data 
 to 1 over the range @c [0, 100) with step size 1.
 
 @code{.cpp}
+tf::cudaDefaultExecutionPolicy policy;
 auto data = tf::cuda_malloc_shared<int>(100);
 
 // assigns each element in data to 1 over the range [0, 100) with step size 1
-tf::cuda_for_each_index(tf::cudaDefaultExecutionPolicy{},
-  0, 100, 1, [data] __device__ (int idx) { data[idx] = 1; }
+tf::cuda_for_each_index(
+  policy, 0, 100, 1, [data] __device__ (int idx) { data[idx] = 1; }
 );
+
+// synchronize the execution
+policy.synchronize();
 @endcode
+
+The parallel-iteration algorithm call runs @em asynchronously through the stream specified
+in the execution policy. You need to synchronize the stream to
+obtain correct results.
 
 @section CUDASTDIteratorBasedParallelFor Iterator-based Parallel Iterations
 
@@ -60,41 +67,21 @@ The following example creates a @c for_each kernel that assigns each element in
 @c gpu_data to 1 over the range <tt>[data, data + 1000)</tt>.
 
 @code{.cpp}
+tf::cudaDefaultExecutionPolicy policy;
 auto data = tf::cuda_malloc_shared<int>(1000);
 
 // assigns each element in data to 1 over the range [0, 1000) with step size 1
-tf::cuda_for_each(tf::cudaDefaultExecutionPolicy{},
-  data, data + 1000, [] __device__ (int& item) { item = 1; }
+tf::cuda_for_each(
+  policy, data, data + 1000, [] __device__ (int& item) { item = 1; }
 );
+
+// synchronize the execution
+policy.synchronize();
 @endcode
 
 Each iteration is independent of each other and is assigned one kernel thread 
 to run the callable.
 Since the callable runs on GPU, it must be declared with a <tt>%__device__</tt> specifier.
-
-@section CUDASTDInvokeForEachAsynchronously Invoke Parallel-Iteration Kernels Asynchronously
-
-By default, tf::cuda_for_each and tf::cuda_for_each_index blocks until all kernels finish.
-You can use tf::cuda_for_each_async and tf::cuda_for_each_index_async to invoke
-parallel-iteration kernels asynchronously
-and explicitly synchronize them at another place of your program.
-
-@code{.cpp}
-auto p = tf::cudaDefaultExecutionPolicy(my_stream);
-auto data = tf::cuda_malloc_shared<int>(1000);
-
-// Launch for_each kernel asynchronously
-tf::cuda_for_each_async(
-  p, data, data + 1000, [] __device__ (int& item) { item = 1; }
-);
-p.synchronize();  // now all items in data are 1
-
-// Launch for_each_index kernel asynchronously
-tf::cuda_for_each_index_async(
-  p, 0, 1000, 1, [data] __device__ (int idx) { data[idx] = -1; }
-);
-p.synchronize();  // now all items in data are -1
-@endcode
 
 */
 }

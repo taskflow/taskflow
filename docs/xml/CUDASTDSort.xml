@@ -9,54 +9,31 @@
     <detaileddescription>
 <para>Taskflow provides standalone template methods for sorting ranges of items on a CUDA GPU.</para><sect1 id="CUDASTDSort_1CUDASTDSortItems">
 <title>Sort a Range of Items</title>
-<para><ref refid="namespacetf_1ac1efa544085b46079735d7691713d90b" kindref="member">tf::cuda_sort</ref> performs an in-place parallel sort over a range of elements specified by <computeroutput>[first, last)</computeroutput> using the given comparator. The following code sorts one million random integers in an increasing order on a GPU.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+<para><ref refid="namespacetf_1aeaed6f5d4a4cfa5c3a2c42d0dba54664" kindref="member">tf::cuda_sort</ref> performs an in-place parallel sort over a range of elements specified by <computeroutput>[first, last)</computeroutput> using the given comparator. The following code sorts one million random integers in an increasing order on a GPU.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>vec<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>i++)<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>vec[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>();</highlight></codeline>
 <codeline><highlight class="normal">}<sp/></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac1efa544085b46079735d7691713d90b" kindref="member">tf::cuda_sort</ref>(<ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref>{},<sp/>vec,<sp/>vec+N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>sort<sp/>a<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>tf::cuda_sort_buffer_size&lt;tf::cudaDefaultExecutionPolicy,<sp/>int&gt;(N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>sorts<sp/>the<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1aeaed6f5d4a4cfa5c3a2c42d0dba54664" kindref="member">tf::cuda_sort</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>policy,<sp/>vec,<sp/>vec+N,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>&lt;<sp/>b;<sp/>},<sp/>buffer</highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronizes<sp/>the<sp/>execution<sp/>and<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a33596174fe764d85356ed9b8c0934bb7" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal">assert(std::is_sorted(vec,<sp/>vec+N));</highlight></codeline>
-</programlisting></para><para>You can specify a comparator to <ref refid="namespacetf_1ac1efa544085b46079735d7691713d90b" kindref="member">tf::cuda_sort</ref> to alter the sorting order. For example, the following code sorts one million random integers in an decreasing order on a GPU.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>vec<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>i++)<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>vec[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>();</highlight></codeline>
-<codeline><highlight class="normal">}<sp/></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac1efa544085b46079735d7691713d90b" kindref="member">tf::cuda_sort</ref>(<ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref>{},<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>vec,<sp/>vec+N,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>&gt;<sp/>b;<sp/>}</highlight></codeline>
-<codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">assert(std::is_sorted(vec,<sp/>vec+N,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>&gt;<sp/>b;<sp/>}));</highlight></codeline>
-</programlisting></para></sect1>
-<sect1 id="CUDASTDSort_1CUDASTDInvokeSortAsynchronously">
-<title>Invoke Sort Kernels Asynchronously</title>
-<para>By default, <ref refid="namespacetf_1ac1efa544085b46079735d7691713d90b" kindref="member">tf::cuda_sort</ref> blocks until all kernels finish. You can use <ref refid="namespacetf_1a6e5412a4a7923f50a8874e90abea988c" kindref="member">tf::cuda_sort_async</ref> to invoke these kernels asynchronously and explicitly synchronize them at another place of your program. Since our sorting kernels rely on additional device memory, you need to provide a buffer of size <emphasis>in bytes</emphasis> equal to (or larger than) the value returned by <ref refid="namespacetf_1a9c69906a4dfd1e2d0cd7ed496d29dafd" kindref="member">tf::cuda_sort_buffer_size</ref>.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>100000;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>vec<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>i++)<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>vec[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>();</highlight></codeline>
-<codeline><highlight class="normal">}<sp/></highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>sort<sp/>N<sp/>elements<sp/>using<sp/>the<sp/>default<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/>=<sp/>tf::cuda_sort_buffer_size&lt;tf::cudaDefaultExecutionPolicy,<sp/>int&gt;(N);</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal">*<sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>invoke<sp/>the<sp/>sort<sp/>kernels<sp/>asynchronously</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1a6e5412a4a7923f50a8874e90abea988c" kindref="member">tf::cuda_sort_async</ref>(<ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref>{my_stream},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>vec,<sp/>vec+N,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>&lt;<sp/>b;<sp/>},<sp/>buffer</highlight></codeline>
-<codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>here,<sp/>vec<sp/>may<sp/>not<sp/>be<sp/>sorted<sp/>yet,<sp/>as<sp/>kernels<sp/>are<sp/>still<sp/>running<sp/>...</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronize<sp/>the<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">cudaStreamSynchronize(my_stream);</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">assert(std::is_sorted(vec,<sp/>ved+N));</highlight></codeline>
-</programlisting></para><para>The allocated buffer must remain alive until the asynchronous call completes.</para><para><simplesect kind="note"><para>The stream given to an asynchronous sort function can be enabled to the capture mode to capture internal kernels into a CUDA graph. </para></simplesect>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>deletes<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(buffer);</highlight></codeline>
+</programlisting></para><para>The sort algorithm call runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results. Since the GPU sort algorithm may require extra buffer to store the temporary results, you must provide a buffer of size at least the bytes returned from <ref refid="namespacetf_1a9c69906a4dfd1e2d0cd7ed496d29dafd" kindref="member">tf::cuda_sort_buffer_size</ref>.</para><para><simplesect kind="attention"><para>By default, the You must keep the buffer alive before the merge call completes. </para></simplesect>
 </para></sect1>
     </detaileddescription>
   </compounddef>

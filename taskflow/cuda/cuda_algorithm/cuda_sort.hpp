@@ -282,11 +282,11 @@ void merge_sort_loop(
     }
   }
 
-  //cudaDeviceMemory<K> keys_temp(R ? count : 0);
+  //cudaScopedDeviceMemory<K> keys_temp(R ? count : 0);
   //auto keys_output = keys_temp.data();
   ////std::cout << "keys_output = " << keys_temp.size()*sizeof(K) << std::endl;
 
-  //cudaDeviceMemory<V> vals_temp((has_values && R) ? count : 0);
+  //cudaScopedDeviceMemory<V> vals_temp((has_values && R) ? count : 0);
   //auto vals_output = vals_temp.data();
   //std::cout << "vals_output = " << vals_temp.size()*sizeof(V) << std::endl;
 
@@ -347,7 +347,7 @@ void merge_sort_loop(
   
   // number of partitions
   //unsigned num_partitions = B + 1;
-  //cudaDeviceMemory<unsigned> mem(num_partitions);
+  //cudaScopedDeviceMemory<unsigned> mem(num_partitions);
   //auto mp_data = mem.data();
   //std::cout << "num_partitions = " << (B+1)*sizeof(unsigned) << std::endl;
   
@@ -439,41 +439,25 @@ unsigned cuda_sort_buffer_size(unsigned count) {
 // key-value sort
 // ----------------------------------------------------------------------------
 
-/**
-@brief performs key-value sort on a range of items
-
-@tparam P execution policy type
-@tparam K_it key iterator type
-@tparam V_it value iterator type
-@tparam C comparator type
-
-@param p execution policy 
-@param k_first iterator to the beginning of the key range
-@param k_last iterator to the end of the key range
-@param v_first iterator to the beginning of the value range
-@param comp binary comparator
-
-Please refer to @ref CUDASTDSort for details.
-*/
-template<typename P, typename K_it, typename V_it, typename C>
-void cuda_sort(P&& p, K_it k_first, K_it k_last, V_it v_first, C comp) {
-  
-  using K = typename std::iterator_traits<K_it>::value_type;
-  using V = typename std::iterator_traits<V_it>::value_type;
-
-  unsigned N = std::distance(k_first, k_last);
-
-  if(N <= 1) {
-    return;
-  }
-
-  cudaDeviceMemory<std::byte> temp(cuda_sort_buffer_size<P, K, V>(N));
-
-  detail::merge_sort_loop(p, k_first, v_first, N, comp, temp.data());
-  
-  // synchronize the execution
-  p.synchronize();
-}
+//template<typename P, typename K_it, typename V_it, typename C>
+//void cuda_sort(P&& p, K_it k_first, K_it k_last, V_it v_first, C comp) {
+//  
+//  using K = typename std::iterator_traits<K_it>::value_type;
+//  using V = typename std::iterator_traits<V_it>::value_type;
+//
+//  unsigned N = std::distance(k_first, k_last);
+//
+//  if(N <= 1) {
+//    return;
+//  }
+//
+//  cudaScopedDeviceMemory<std::byte> temp(cuda_sort_buffer_size<P, K, V>(N));
+//
+//  detail::merge_sort_loop(p, k_first, v_first, N, comp, temp.data());
+//  
+//  // synchronize the execution
+//  p.synchronize();
+//}
 
 /**
 @brief performs asynchronous key-value sort on a range of items
@@ -493,7 +477,7 @@ void cuda_sort(P&& p, K_it k_first, K_it k_last, V_it v_first, C comp) {
 Please refer to @ref CUDASTDSort for details.
 */
 template<typename P, typename K_it, typename V_it, typename C>
-void cuda_sort_async(
+void cuda_sort(
   P&& p, K_it k_first, K_it k_last, V_it v_first, C comp, void* buf
 ) {
 
@@ -511,25 +495,6 @@ void cuda_sort_async(
 // ----------------------------------------------------------------------------
 
 /**
-@brief performs key-only sort on a range of items
-
-@tparam P execution policy type
-@tparam K_it key iterator type
-@tparam C comparator type
-
-@param p execution policy 
-@param k_first iterator to the beginning of the key range
-@param k_last iterator to the end of the key range
-@param comp binary comparator
-
-Please refer to @ref CUDASTDSort for details.
-*/
-template<typename P, typename K_it, typename C>
-void cuda_sort(P&& p, K_it k_first, K_it k_last, C comp) {
-  cuda_sort(p, k_first, k_last, (cudaEmpty*)nullptr, comp);
-}
-
-/**
 @brief performs asynchronous key-only sort on a range of items
 
 @tparam P execution policy type
@@ -545,8 +510,8 @@ void cuda_sort(P&& p, K_it k_first, K_it k_last, C comp) {
 Please refer to @ref CUDASTDSort for details.
 */
 template<typename P, typename K_it, typename C>
-void cuda_sort_async(P&& p, K_it k_first, K_it k_last, C comp, void* buf) {
-  cuda_sort_async(p, k_first, k_last, (cudaEmpty*)nullptr, comp, buf);
+void cuda_sort(P&& p, K_it k_first, K_it k_last, C comp, void* buf) {
+  cuda_sort(p, k_first, k_last, (cudaEmpty*)nullptr, comp, buf);
 }
 
 // ----------------------------------------------------------------------------
@@ -585,9 +550,9 @@ cudaTask cudaFlowCapturer::sort(I first, I last, C comp) {
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
-    cuda_sort_async(
+    cuda_sort(
       cudaDefaultExecutionPolicy{stream}, first, last, comp, buf.get().data()
     );
   });
@@ -603,9 +568,9 @@ void cudaFlowCapturer::sort(cudaTask task, I first, I last, C comp) {
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
-    cuda_sort_async(
+    cuda_sort(
       cudaDefaultExecutionPolicy{stream}, first, last, comp, buf.get().data()
     );
   });

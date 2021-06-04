@@ -84,7 +84,7 @@ Please refer to @ref CUDASTDTransform for details.
 
 */
 template <typename P, typename I, typename O, typename C>
-void cuda_transform_async(P&& p, I first, I last, O output, C op) {
+void cuda_transform(P&& p, I first, I last, O output, C op) {
   
   unsigned count = std::distance(first, last);
   
@@ -93,36 +93,6 @@ void cuda_transform_async(P&& p, I first, I last, O output, C op) {
   }
 
   detail::cuda_transform_loop(p, first, count, output, op);
-}
-
-/**
-@brief performs parallel transforms over a range of items
-
-@tparam P execution policy type
-@tparam I input iterator type
-@tparam O output iterator type
-@tparam C unary operator type
-
-@param p execution policy
-@param first iterator to the beginning of the range
-@param last iterator to the end of the range
-@param output iterator to the beginning of the output range
-@param op unary operator to apply to transform each item
-
-This method is equivalent to the parallel execution of the following loop on a GPU:
-
-@code{.cpp}
-while (first != last) {
-  *output++ = op(*first++);
-}
-@endcode
-
-Please refer to @ref CUDASTDTransform for details.
-*/
-template <typename P, typename I, typename O, typename C>
-void cuda_transform(P&& p, I first, I last, O output, C op) {
-  cuda_transform_async(p, first, last, output, op);
-  p.synchronize();
 }
 
 /**
@@ -153,7 +123,7 @@ Please refer to @ref CUDASTDTransform for details.
 
 */
 template <typename P, typename I1, typename I2, typename O, typename C>
-void cuda_transform_async(
+void cuda_transform(
   P&& p, I1 first1, I1 last1, I2 first2, O output, C op
 ) {
   
@@ -164,40 +134,6 @@ void cuda_transform_async(
   }
 
   detail::cuda_transform_loop(p, first1, first2, count, output, op);
-}
-
-/**
-@brief performs parallel transforms over two ranges of items
-
-@tparam P execution policy type
-@tparam I1 first input iterator type
-@tparam I2 second input iterator type
-@tparam O output iterator type
-@tparam C binary operator type
-
-@param p execution policy
-@param first1 iterator to the beginning of the first range
-@param last1 iterator to the end of the first range
-@param first2 iterator to the beginning of the second range
-@param output iterator to the beginning of the output range
-@param op binary operator to apply to transform each pair of items
-
-This method is equivalent to the parallel execution of the following loop on a GPU:
-
-@code{.cpp}
-while (first1 != last1) {
-  *output++ = op(*first1++, *first2++);
-}
-@endcode
-
-Please refer to @ref CUDASTDTransform for details.
-*/
-template <typename P, typename I1, typename I2, typename O, typename C>
-void cuda_transform(
-  P&& p, I1 first1, I1 last1, I2 first2, O output, C op
-) {
-  cuda_transform_async(p, first1, last1, first2, output, op);
-  p.synchronize();
 }
 
 // ----------------------------------------------------------------------------
@@ -251,7 +187,7 @@ template <typename I, typename O, typename C>
 cudaTask cudaFlowCapturer::transform(I first, I last, O output, C op) {
   return on([=](cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
-    cuda_transform_async(p, first, last, output, op);
+    cuda_transform(p, first, last, output, op);
   });
 }
 
@@ -262,7 +198,7 @@ cudaTask cudaFlowCapturer::transform(
 ) {
   return on([=](cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
-    cuda_transform_async(p, first1, last1, first2, output, op);
+    cuda_transform(p, first1, last1, first2, output, op);
   });
 }
 
@@ -273,7 +209,7 @@ void cudaFlowCapturer::transform(
 ) {
   on(task, [=] (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
-    cuda_transform_async(p, first, last, output, op);
+    cuda_transform(p, first, last, output, op);
   });
 }
 
@@ -284,7 +220,7 @@ void cudaFlowCapturer::transform(
 ) {
   on(task, [=] (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
-    cuda_transform_async(p, first1, last1, first2, output, op);
+    cuda_transform(p, first1, last1, first2, output, op);
   });
 }
 

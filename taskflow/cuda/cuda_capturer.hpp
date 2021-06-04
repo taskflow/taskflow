@@ -461,7 +461,6 @@ class cudaFlowCapturer {
     */
     template <typename I, typename T, typename C>
     void reduce(cudaTask task, I first, I last, T* result, C op);
-
     
     /**
     @brief similar to tf::cudaFlowCapturer::reduce but does not assume

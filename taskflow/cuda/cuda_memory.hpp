@@ -375,13 +375,13 @@ struct cudaSharedMemory <double>
 @private
 */ 
 template <typename T>
-class cudaDeviceMemory {
+class cudaScopedDeviceMemory {
   
   public:
 
-    cudaDeviceMemory() = default;
+    cudaScopedDeviceMemory() = default;
 
-    cudaDeviceMemory(size_t N) : _N {N} {
+    cudaScopedDeviceMemory(size_t N) : _N {N} {
       if(N) {
         TF_CHECK_CUDA(
           cudaMalloc(&_data, N*sizeof(T)), 
@@ -390,19 +390,19 @@ class cudaDeviceMemory {
       }
     }
     
-    cudaDeviceMemory(cudaDeviceMemory&& rhs) : 
+    cudaScopedDeviceMemory(cudaScopedDeviceMemory&& rhs) : 
       _data{rhs._data}, _N {rhs._N} {
       rhs._data = nullptr;
       rhs._N    = 0;
     }
 
-    ~cudaDeviceMemory() {
+    ~cudaScopedDeviceMemory() {
       if(_data) {
         cudaFree(_data);
       }
     }
 
-    cudaDeviceMemory& operator = (cudaDeviceMemory&& rhs) {
+    cudaScopedDeviceMemory& operator = (cudaScopedDeviceMemory&& rhs) {
       if(_data) {
         cudaFree(_data);
       }
@@ -418,8 +418,8 @@ class cudaDeviceMemory {
     T* data() { return _data; }
     const T* data() const { return _data; }
     
-    cudaDeviceMemory(const cudaDeviceMemory&) = delete;
-    cudaDeviceMemory& operator = (const cudaDeviceMemory&) = delete;
+    cudaScopedDeviceMemory(const cudaScopedDeviceMemory&) = delete;
+    cudaScopedDeviceMemory& operator = (const cudaScopedDeviceMemory&) = delete;
 
   private:
 

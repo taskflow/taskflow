@@ -101,7 +101,7 @@ void cuda_reduce_loop(
     auto x = cuda_mem_to_reg_strided<E::nt, E::vt>(
       input + tile.begin, tid, tile.count()
     );
-    // Reduce the multiple values per thread into a scalar.
+    // reduce multiple values per thread into a scalar.
     T s;
     cuda_strided_iterate<E::nt, E::vt>(
       [&] (auto i, auto) { s = i ? op(s, x[i]) : x[0]; }, tid, tile.count()
@@ -148,40 +148,24 @@ unsigned cuda_reduce_buffer_size(unsigned count) {
 // cuda_reduce
 // ----------------------------------------------------------------------------
 
-/**
-@brief performs parallel reduction over a range of items
-
-@tparam P execution policy type
-@tparam I input iterator type
-@tparam T value type
-@tparam O binary operator type
-
-@param p execution policy
-@param first iterator to the beginning of the range
-@param last iterator to the end of the range
-@param res pointer to the result
-@param op binary operator to apply to reduce elements
-
-Please refer to @ref CUDASTDReduce for details.
- */
-template<typename P, typename I, typename T, typename O>
-void cuda_reduce(P&& p, I first, I last, T* res, O op) {
-
-  unsigned count = std::distance(first, last);
-
-  if(count == 0) {
-    return;
-  }
-  
-  // allocate temporary buffer
-  cudaDeviceMemory<std::byte> temp(cuda_reduce_buffer_size<P, T>(count));
-  
-  // reduction loop
-  detail::cuda_reduce_loop(p, first, count, res, op, true, temp.data());
-  
-  // synchronize the execution
-  p.synchronize();
-}
+//template<typename P, typename I, typename T, typename O>
+//void cuda_reduce(P&& p, I first, I last, T* res, O op) {
+//
+//  unsigned count = std::distance(first, last);
+//
+//  if(count == 0) {
+//    return;
+//  }
+//  
+//  // allocate temporary buffer
+//  cudaScopedDeviceMemory<std::byte> temp(cuda_reduce_buffer_size<P, T>(count));
+//  
+//  // reduction loop
+//  detail::cuda_reduce_loop(p, first, count, res, op, true, temp.data());
+//  
+//  // synchronize the execution
+//  p.synchronize();
+//}
 
 /**
 @brief performs asynchronous parallel reduction over a range of items
@@ -201,7 +185,7 @@ void cuda_reduce(P&& p, I first, I last, T* res, O op) {
 Please refer to @ref CUDASTDReduce for details.
  */
 template <typename P, typename I, typename T, typename O>
-void cuda_reduce_async(
+void cuda_reduce(
   P&& p, I first, I last, T* res, O op, void* buf
 ) {
   unsigned count = std::distance(first, last);
@@ -215,42 +199,25 @@ void cuda_reduce_async(
 // cuda_uninitialized_reduce
 // ----------------------------------------------------------------------------
 
-/**
-@brief performs parallel reduction over a range of items without an initial value
-
-@tparam P execution policy type
-@tparam I input iterator type
-@tparam T value type
-@tparam O binary operator type
-
-@param p execution policy
-@param first iterator to the beginning of the range
-@param last iterator to the end of the range
-@param res pointer to the result
-@param op binary operator to apply to reduce elements
-
-Similar to tf::cuda_reduce but does not assume any initial value in @c res 
-to reduce. Please refer to @ref CUDASTDReduce for more details.
-*/
-template<typename P, typename I, typename T, typename O>
-void cuda_uninitialized_reduce(P&& p, I first, I last, T* res, O op) {
-
-  unsigned count = std::distance(first, last);
-
-  if(count == 0) {
-    return;
-  }
-  
-  // allocate temporary buffer
-  cudaDeviceMemory<std::byte> temp(cuda_reduce_buffer_size<P, T>(count));
-  auto buf = temp.data();
-  
-  // reduction loop
-  detail::cuda_reduce_loop(p, first, count, res, op, false, buf);
-  
-  // synchronize the execution
-  p.synchronize();
-}
+//template<typename P, typename I, typename T, typename O>
+//void cuda_uninitialized_reduce(P&& p, I first, I last, T* res, O op) {
+//
+//  unsigned count = std::distance(first, last);
+//
+//  if(count == 0) {
+//    return;
+//  }
+//  
+//  // allocate temporary buffer
+//  cudaScopedDeviceMemory<std::byte> temp(cuda_reduce_buffer_size<P, T>(count));
+//  auto buf = temp.data();
+//  
+//  // reduction loop
+//  detail::cuda_reduce_loop(p, first, count, res, op, false, buf);
+//  
+//  // synchronize the execution
+//  p.synchronize();
+//}
 
 /**
 @brief performs asynchronous parallel reduction over a range of items without
@@ -272,7 +239,7 @@ Asynchronous version of tf::cuda_uninitialized_reduce.
 Please refer to @ref CUDASTDReduce for more details.
 */
 template <typename P, typename I, typename T, typename O>
-void cuda_uninitialized_reduce_async(
+void cuda_uninitialized_reduce(
   P&& p, I first, I last, T* res, O op, void* buf
 ) {
   unsigned count = std::distance(first, last);
@@ -286,50 +253,29 @@ void cuda_uninitialized_reduce_async(
 // transform_reduce
 // ----------------------------------------------------------------------------
 
-/**
-@brief performs parallel reduction over a range of transformed items without
-       an initial value
-
-@tparam P execution policy type
-@tparam I input iterator type
-@tparam T value type
-@tparam O binary operator type
-@tparam U unary operator type
-
-@param p execution policy
-@param first iterator to the beginning of the range
-@param last iterator to the end of the range
-@param res pointer to the result
-@param bop binary operator to apply to reduce elements
-@param uop unary operator to apply to transform elements
-
-Transforms each element in the range using the unary operator @c uop 
-and then reduce these transformed elements to @c res using the binary
-operator @c bop. Please refer to @ref CUDASTDReduce for more details.
-*/
-template<typename P, typename I, typename T, typename O, typename U>
-void cuda_transform_reduce(P&& p, I first, I last, T* res, O bop, U uop) {
-
-  unsigned count = std::distance(first, last);
-
-  if(count == 0) {
-    return;
-  }
-  
-  // allocate temporary buffer
-  cudaDeviceMemory<std::byte> temp(cuda_reduce_buffer_size<P, T>(count));
-  auto buf = temp.data();
-  
-  // reduction loop
-  //detail::cuda_transform_reduce_loop(p, first, count, res, bop, uop, true, 0, buf);
-  detail::cuda_reduce_loop(p, 
-    cuda_make_load_iterator<T>([=]__device__(auto i){ return uop(*(first+i)); }), 
-    count, res, bop, true, buf
-  );
-  
-  // synchronize the execution
-  p.synchronize();
-}
+//template<typename P, typename I, typename T, typename O, typename U>
+//void cuda_transform_reduce(P&& p, I first, I last, T* res, O bop, U uop) {
+//
+//  unsigned count = std::distance(first, last);
+//
+//  if(count == 0) {
+//    return;
+//  }
+//  
+//  // allocate temporary buffer
+//  cudaScopedDeviceMemory<std::byte> temp(cuda_reduce_buffer_size<P, T>(count));
+//  auto buf = temp.data();
+//  
+//  // reduction loop
+//  //detail::cuda_transform_reduce_loop(p, first, count, res, bop, uop, true, 0, buf);
+//  detail::cuda_reduce_loop(p, 
+//    cuda_make_load_iterator<T>([=]__device__(auto i){ return uop(*(first+i)); }), 
+//    count, res, bop, true, buf
+//  );
+//  
+//  // synchronize the execution
+//  p.synchronize();
+//}
 
 /**
 @brief performs asynchronous parallel reduction over a range of transformed items 
@@ -353,7 +299,7 @@ Asynchronous version of tf::cuda_transform_reduce.
 Please refer to @ref CUDASTDReduce for more details.
 */
 template<typename P, typename I, typename T, typename O, typename U>
-void cuda_transform_reduce_async(
+void cuda_transform_reduce(
   P&& p, I first, I last, T* res, O bop, U uop, void* buf
 ) {
 
@@ -375,51 +321,31 @@ void cuda_transform_reduce_async(
 // transform_uninitialized_reduce
 // ----------------------------------------------------------------------------
 
-/**
-@brief performs parallel reduction over a range of transformed items 
-       with an initial value
-
-@tparam P execution policy type
-@tparam I input iterator type
-@tparam T value type
-@tparam O binary operator type
-@tparam U unary operator type
-
-@param p execution policy
-@param first iterator to the beginning of the range
-@param last iterator to the end of the range
-@param res pointer to the result
-@param bop binary operator to apply to reduce elements
-@param uop unary operator to apply to transform elements
-
-Similar to tf::cuda_transform_reduce but does not assum any initial value
-to reduce. Please refer to @ref CUDASTDReduce for more details.
-*/
-template<typename P, typename I, typename T, typename O, typename U>
-void cuda_transform_uninitialized_reduce(
-  P&& p, I first, I last, T* res, O bop, U uop
-) {
-
-  unsigned count = std::distance(first, last);
-
-  if(count == 0) {
-    return;
-  }
-  
-  // allocate temporary buffer
-  cudaDeviceMemory<std::byte> temp(cuda_reduce_buffer_size<P, T>(count));
-  auto buf = temp.data();
-  
-  // reduction loop
-  //detail::cuda_transform_reduce_loop(p, first, count, res, bop, uop, false, 0, buf);
-  detail::cuda_reduce_loop(p,
-    cuda_make_load_iterator<T>([=]__device__(auto i){ return uop(*(first+i)); }), 
-    count, res, bop, false, buf
-  );
-  
-  // synchronize the execution
-  p.synchronize();
-}
+//template<typename P, typename I, typename T, typename O, typename U>
+//void cuda_transform_uninitialized_reduce(
+//  P&& p, I first, I last, T* res, O bop, U uop
+//) {
+//
+//  unsigned count = std::distance(first, last);
+//
+//  if(count == 0) {
+//    return;
+//  }
+//  
+//  // allocate temporary buffer
+//  cudaScopedDeviceMemory<std::byte> temp(cuda_reduce_buffer_size<P, T>(count));
+//  auto buf = temp.data();
+//  
+//  // reduction loop
+//  //detail::cuda_transform_reduce_loop(p, first, count, res, bop, uop, false, 0, buf);
+//  detail::cuda_reduce_loop(p,
+//    cuda_make_load_iterator<T>([=]__device__(auto i){ return uop(*(first+i)); }), 
+//    count, res, bop, false, buf
+//  );
+//  
+//  // synchronize the execution
+//  p.synchronize();
+//}
 
 /**
 @brief performs asynchronous parallel reduction over a range of transformed items 
@@ -443,7 +369,7 @@ Asynchronous version of tf::cuda_transform_uninitialized_reduce.
 Please refer to @ref CUDASTDReduce for more details.
 */
 template<typename P, typename I, typename T, typename O, typename U>
-void cuda_transform_uninitialized_reduce_async(
+void cuda_transform_uninitialized_reduce(
   P&& p, I first, I last, T* res, O bop, U uop, void* buf
 ) {
 
@@ -615,10 +541,10 @@ cudaTask cudaFlowCapturer::reduce(I first, I last, T* result, C c) {
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
-    cuda_reduce_async(p, first, last, result, c, buf.get().data());
+    cuda_reduce(p, first, last, result, c, buf.get().data());
   });
 }
 
@@ -631,10 +557,10 @@ cudaTask cudaFlowCapturer::uninitialized_reduce(I first, I last, T* result, C c)
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
-    cuda_uninitialized_reduce_async(p, first, last, result, c, buf.get().data());
+    cuda_uninitialized_reduce(p, first, last, result, c, buf.get().data());
   });
 }
 
@@ -649,10 +575,10 @@ cudaTask cudaFlowCapturer::transform_reduce(
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
-    cuda_transform_reduce_async(
+    cuda_transform_reduce(
       p, first, last, result, bop, uop, buf.get().data()
     );
   });
@@ -668,10 +594,10 @@ cudaTask cudaFlowCapturer::transform_uninitialized_reduce(
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
-    cuda_transform_uninitialized_reduce_async(
+    cuda_transform_uninitialized_reduce(
       p, first, last, result, bop, uop, buf.get().data()
     );
   });
@@ -688,10 +614,10 @@ void cudaFlowCapturer::reduce(
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
-    cuda_reduce_async(p, first, last, result, c, buf.get().data());
+    cuda_reduce(p, first, last, result, c, buf.get().data());
   });
 }
 
@@ -705,10 +631,10 @@ void cudaFlowCapturer::uninitialized_reduce(
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
-    cuda_uninitialized_reduce_async(p, first, last, result, c, buf.get().data());
+    cuda_uninitialized_reduce(p, first, last, result, c, buf.get().data());
   });
 }
 
@@ -723,10 +649,10 @@ void cudaFlowCapturer::transform_reduce(
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
-    cuda_transform_reduce_async(
+    cuda_transform_reduce(
       p, first, last, result, bop, uop, buf.get().data()
     );
   });
@@ -743,10 +669,10 @@ void cudaFlowCapturer::transform_uninitialized_reduce(
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
-    cuda_transform_uninitialized_reduce_async(
+    cuda_transform_uninitialized_reduce(
       p, first, last, result, bop, uop, buf.get().data()
     );
   });

@@ -2,7 +2,7 @@
 
 #include <CL/sycl.hpp>
 
-#include "../utility/traits.hpp"
+#include "sycl_meta.hpp"
 
 namespace tf {
 
@@ -60,13 +60,40 @@ class syclNode {
   friend class syclFlow;
   friend class Taskflow;
   friend class Executor;
+
+  struct CommandGroupHandler {
+
+    std::function<void(sycl::handler&)> work;
+    
+    template <typename F>
+    CommandGroupHandler(F&& func) : work {std::forward<F>(func)} {}
+  };
+
+  struct DependentSubmit {
+    std::function<sycl::event(sycl::queue&, std::vector<sycl::event>)> work;
+    
+    template <typename F>
+    DependentSubmit(F&& func) : work {std::forward<F>(func)} {}
+  };
   
+  using handle_t = std::variant<
+    CommandGroupHandler, 
+    DependentSubmit
+  >;
+
   public:
+  
+  // variant index
+  constexpr static auto COMMAND_GROUP_HANDLER = 
+    get_index_v<CommandGroupHandler, handle_t>;
+
+  constexpr static auto DEPENDENT_SUBMIT = 
+    get_index_v<DependentSubmit, handle_t>;
   
     syclNode() = delete;
     
-    template <typename F>
-    syclNode(syclGraph&, F&&);
+    template <typename... ArgsT>
+    syclNode(syclGraph&, ArgsT&&...);
 
   private:
 
@@ -78,7 +105,7 @@ class syclNode {
 
     sycl::event _event;
     
-    std::function<void(sycl::handler&)> _func;
+    handle_t _handle;
 
     SmallVector<syclNode*> _successors;
     SmallVector<syclNode*> _dependents;
@@ -91,10 +118,10 @@ class syclNode {
 // ----------------------------------------------------------------------------
 
 // Constructor
-template <typename F>
-syclNode::syclNode(syclGraph& g, F&& func) : 
-  _graph {g},
-  _func  {std::forward<F>(func)} {
+template <typename... ArgsT>
+syclNode::syclNode(syclGraph& g, ArgsT&&... args) : 
+  _graph  {g},
+  _handle {std::forward<ArgsT>(args)...} {
 }
 
 // Procedure: _precede
@@ -133,7 +160,7 @@ inline bool syclGraph::empty() const {
 
 // Procedure: clear
 inline void syclGraph::clear() {
-  _state = 0;
+  _state = syclGraph::TOPOLOGY_CHANGED;
   _nodes.clear();
 }
 

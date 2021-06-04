@@ -59,35 +59,29 @@ auto syclFlow::_for_each_index_cgh(I first, I last, I step, C&& op) {
 // Function: for_each
 template <typename I, typename C>
 syclTask syclFlow::for_each(I first, I last, C&& op) {
-  auto node = _graph.emplace_back(
-    _graph, _for_each_cgh(first, last, std::forward<C>(op))
-  );
-  return syclTask(node);
+  return on(_for_each_cgh(first, last, std::forward<C>(op)));
 }
 
 // Function: for_each_index
 template <typename I, typename C>
 syclTask syclFlow::for_each_index(I beg, I end, I inc, C&& op) {
-  auto node = _graph.emplace_back(
-    _graph, _for_each_index_cgh(beg, end, inc, std::forward<C>(op))
-  );
-  return syclTask(node);
+  return on(_for_each_index_cgh(beg, end, inc, std::forward<C>(op)));
 }
 
 // ----------------------------------------------------------------------------
 // rebind
 // ----------------------------------------------------------------------------
 
-// Function: rebind_for_each
+// Function: for_each
 template <typename I, typename C>
-void syclFlow::rebind_for_each(syclTask task, I first, I last, C&& op) {
-  task._node->_func = _for_each_cgh(first, last, std::forward<C>(op));
+void syclFlow::for_each(syclTask task, I first, I last, C&& op) {
+  on(task, _for_each_cgh(first, last, std::forward<C>(op)));
 }
 
-// Function: rebind_for_each_index
+// Function: for_each_index
 template <typename I, typename C>
-void syclFlow::rebind_for_each_index(syclTask task, I beg, I end, I inc, C&& op) {
-  task._node->_func = _for_each_index_cgh(beg, end, inc, std::forward<C>(op));
+void syclFlow::for_each_index(syclTask task, I beg, I end, I inc, C&& op) {
+  on(task, _for_each_index_cgh(beg, end, inc, std::forward<C>(op)));
 }
       
 

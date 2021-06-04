@@ -35,11 +35,32 @@ for(size_t i=0; i<N; i++)
   vec[i] = i;
 } 
 
+// queries the required buffer size to reduce N elements using the given policy
+tf::cudaDefaultExecutionPolicy policy;
+auto bytes  = tf::cuda_reduce_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
+
 // *res = 1000 + (0 + 1 + 2 + 3 + 4 + ... + N-1)
-tf::cuda_reduce(tf::cudaDefaultExecutionPolicy{},
-  vec, vec + N, res, [] __device__ (int a, int b) { return a + b; }
+tf::cuda_reduce(policy,
+  vec, vec + N, res, [] __device__ (int a, int b) { return a + b; }, buffer
 );
+
+// synchronize the execution
+policy.synchronize();
+
+// delete the buffer
+tf::cuda_free(buffer);
 @endcode
+
+The reduce algorithm call runs @em asynchronously through the stream specified
+in the execution policy. You need to synchronize the stream to
+obtain correct results.
+Since the GPU reduction algorithm may require extra buffer to store the 
+temporary results, you must provide a buffer of size at least the bytes
+returned from tf::cuda_reduce_buffer_size.
+
+@attention
+You must keep the buffer alive before the reduction call completes.
 
 @section CUDASTDReduceItemsWithoutAnInitialValue Reduce a Range of Items without an Initial Value
 
@@ -70,10 +91,21 @@ for(size_t i=0; i<N; i++)
   vec[i] = i;
 } 
 
+// queries the required buffer size to reduce N elements using the given policy
+tf::cudaDefaultExecutionPolicy policy;
+auto bytes  = tf::cuda_reduce_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
+
 // *res = 0 + 1 + 2 + 3 + 4 + ... + N-1
-tf::cuda_uninitialized_reduce(tf::cudaDefaultExecutionPolicy{},
-  vec, vec + N, res, [] __device__ (int a, int b) { return a + b; }
+tf::cuda_uninitialized_reduce(policy,
+  vec, vec + N, res, [] __device__ (int a, int b) { return a + b; }, buffer
 );
+
+// synchronize the execution
+policy.synchronize();
+
+// delete the buffer
+tf::cuda_free(buffer);
 @endcode
 
 
@@ -107,12 +139,24 @@ for(size_t i=0; i<N; i++)
   vec[i] = i;
 } 
 
+// queries the required buffer size to reduce N elements using the given policy
+tf::cudaDefaultExecutionPolicy policy;
+auto bytes  = tf::cuda_reduce_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
+
 // *res = 1000 + (0*10 + 1*10 + 2*10 + 3*10 + 4*10 + ... + (N-1)*10)
-tf::cuda_reduce(tf::cudaDefaultExecutionPolicy{},
+tf::cuda_transform_reduce(policy,
   vec, vec + N, res, 
   [] __device__ (int a, int b) { return a + b; },
-  [] __device__ (int a) { return a*10; }
+  [] __device__ (int a) { return a*10; },
+  buffer
 );
+
+// synchronize the execution
+policy.synchronize();
+
+// delete the buffer
+tf::cuda_free(buffer);
 @endcode
 
 
@@ -145,57 +189,25 @@ for(size_t i=0; i<N; i++)
   vec[i] = i;
 } 
 
+// queries the required buffer size to reduce N elements using the given policy
+tf::cudaDefaultExecutionPolicy policy;
+auto bytes  = tf::cuda_reduce_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
+
 // *res = 0*10 + 1*10 + 2*10 + 3*10 + 4*10 + ... + (N-1)*10
-tf::cuda_uninitialized_reduce(tf::cudaDefaultExecutionPolicy{},
+tf::cuda_uninitialized_reduce(policy,
   vec, vec + N, res, 
   [] __device__ (int a, int b) { return a + b; },
-  [] __device__ (int a) { return a*10; }
+  [] __device__ (int a) { return a*10; },
+  buffer
 );
+
+// synchronize the execution
+policy.synchronize();
+
+// delete the buffer
+tf::cuda_free(buffer);
 @endcode
-
-
-@section CUDASTDInvokeReduceAsynchronously Invoke Reduction Kernels Asynchronously
-
-By default, tf::cuda_reduce and other variants blocks until all kernels finish.
-You can use tf::cuda_reduce_async to invoke these kernels asynchronously
-and explicitly synchronize them at another place of your program.
-Since our reduction kernels rely on additional device memory,
-you need to provide a buffer of size <i>in bytes</i> equal to (or larger than) 
-the value returned by tf::cuda_reduce_buffer_size.
-
-@code{.cpp}
-const size_t N = 1000000;
-int* res = tf::cuda_malloc_shared<int>(1);  // result
-int* vec = tf::cuda_malloc_shared<int>(N);  // vector
-
-// initializes the data
-for(size_t i=0; i<N; i++) 
-  vec[i] = i;
-} 
-*res = 0;
-
-// queries the required buffer size to reduce N elements using the given policy
-auto bytes = tf::cuda_reduce_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
-void* buffer = tf::cuda_malloc_device<std::byte>(bytes);
-
-// invoke the reduce kernels asynchronously (same for other reduction variants)
-tf::cuda_reduce_async(tf::cudaDefaultExecutionPolicy{my_stream},
-  vec, vec+N, res, [] __device__ (int a, int b) { return a + b; }, buffer
-);
-// here, res may not be ready yet, as kernels are still running ...
-
-// synchronize the stream
-cudaStreamSynchronize(my_stream);
-
-assert(*res == (N-1)*N/2);
-@endcode
-
-The allocated buffer must remain alive until the asynchronous call completes.
-
-@note
-The stream given to an asynchronous reduce function can be enabled to the capture mode
-to capture internal kernels into a CUDA graph.
-
 
 
 */

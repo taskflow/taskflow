@@ -888,7 +888,6 @@ void update_for_each_index() {
     auto data = tf::cuda_malloc_shared<int>(N);
     
     // for each index
-    //auto task = cf.for_each_index(0, N, 1, [data] __device__ (int i){ data[i] = 100; });
     auto task = cf.for_each_index(0, N, 1, SetValueOnIndex{data, 100});
     cf.offload();
 
@@ -898,12 +897,11 @@ void update_for_each_index() {
     }
 
     // update for each index
-    //cf.for_each_index(task, 0, N, 1, [data] __device__ (int i){ data[i] = -100; });
     cf.for_each_index(task, 0, N, 1, SetValueOnIndex{data, -100});
     cf.offload();
 
     REQUIRE(cf.num_tasks() == 1);
-    for(int i=0; i<N/2; i++) {
+    for(int i=0; i<N; i++) {
       REQUIRE(data[i] == -100);
     }
 

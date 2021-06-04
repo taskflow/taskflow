@@ -144,13 +144,13 @@ void reduce() {
   tf::Taskflow taskflow;
   tf::Executor executor;
 
-  for(int n=1; n<=123456; n = n*2 + 1) {
+  for(int N=1; N<=1000000; N += (N/10+1)) {
 
     taskflow.clear();
 
     T sum = 0;
 
-    std::vector<T> cpu(n);
+    std::vector<T> cpu(N);
     for(auto& i : cpu) {
       i = ::rand()%100-50;
       sum += i;
@@ -162,23 +162,19 @@ void reduce() {
     T* res = nullptr;
 
     auto cputask = taskflow.emplace([&](){
-      gpu = sycl::malloc_device<T>(n, queue);
-      res = sycl::malloc_device<T>(1, queue);
+      gpu = sycl::malloc_shared<T>(N, queue);
+      res = sycl::malloc_shared<T>(1, queue);
     });
 
     tf::Task gputask;
     
     gputask = taskflow.emplace_on([&](tf::syclFlow& cf) {
       auto d2h = cf.copy(&sol, res, 1);
-      auto h2d = cf.copy(gpu, cpu.data(), n);
+      auto h2d = cf.copy(gpu, cpu.data(), N);
       auto set = cf.single_task([res] () {
         *res = 1000;
       });
-      auto kernel = cf.reduce(
-        gpu, gpu+n, res, [] (T a, T b) { 
-          return a + b;
-        }
-      );
+      auto kernel = cf.reduce(gpu, gpu+N, res, std::plus<T>());
       kernel.succeed(h2d, set);
       d2h.succeed(kernel);
     }, queue);
@@ -186,6 +182,16 @@ void reduce() {
     cputask.precede(gputask);
     
     executor.run(taskflow).wait();
+
+    REQUIRE(std::fabs(sum-sol+1000) < 0.0001);
+
+    // ------------------------------------------------------------------------
+    // standard algorithms
+    // ------------------------------------------------------------------------
+    tf::syclDefaultExecutionPolicy p{queue};
+
+    *res = 1000;
+    tf::sycl_reduce(p, gpu, gpu+N, res, std::plus<T>{});
 
     REQUIRE(std::fabs(sum-sol+1000) < 0.0001);
 
@@ -217,13 +223,13 @@ void uninitialized_reduce() {
   tf::Taskflow taskflow;
   tf::Executor executor;
 
-  for(int n=1; n<=123456; n = n*2 + 1) {
+  for(int N=1; N<=1000000; N += (N/10+1)) {
 
     taskflow.clear();
 
     T sum = 0;
 
-    std::vector<T> cpu(n);
+    std::vector<T> cpu(N);
     for(auto& i : cpu) {
       i = ::rand()%100-50;
       sum += i;
@@ -235,23 +241,19 @@ void uninitialized_reduce() {
     T* res = nullptr;
 
     auto cputask = taskflow.emplace([&](){
-      gpu = sycl::malloc_device<T>(n, queue);
-      res = sycl::malloc_device<T>(1, queue);
+      gpu = sycl::malloc_shared<T>(N, queue);
+      res = sycl::malloc_shared<T>(1, queue);
     });
 
     tf::Task gputask;
     
     gputask = taskflow.emplace_on([&](tf::syclFlow& cf) {
       auto d2h = cf.copy(&sol, res, 1);
-      auto h2d = cf.copy(gpu, cpu.data(), n);
+      auto h2d = cf.copy(gpu, cpu.data(), N);
       auto set = cf.single_task([res] () {
         *res = 1000;
       });
-      auto kernel = cf.uninitialized_reduce(
-        gpu, gpu+n, res, [] (T a, T b) { 
-          return a + b;
-        }
-      );
+      auto kernel = cf.uninitialized_reduce(gpu, gpu+N, res, std::plus<T>());
       kernel.succeed(h2d, set);
       d2h.succeed(kernel);
     }, queue);
@@ -259,6 +261,16 @@ void uninitialized_reduce() {
     cputask.precede(gputask);
     
     executor.run(taskflow).wait();
+
+    REQUIRE(std::fabs(sum-sol) < 0.0001);
+    
+    // ------------------------------------------------------------------------
+    // standard algorithms
+    // ------------------------------------------------------------------------
+    tf::syclDefaultExecutionPolicy p{queue};
+
+    *res = 1000;
+    tf::sycl_reduce(p, gpu, gpu+N, res, std::plus<T>{});
 
     REQUIRE(std::fabs(sum-sol) < 0.0001);
 

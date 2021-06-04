@@ -26,26 +26,32 @@ int main(int argc, char* argv[]) {
   }
   *res1 = 10;
   *res2 = 10;
-  
-  // perform reduction
-  tf::syclFlow syclflow(queue);
-  
-  // res1 = res1 + data[0] + data[1] + ... 
-  syclflow.reduce(
-    data, data+N, res1, [](int a, int b){ return a+b; }
-  );
-  
-  // res2 = data[0] + data[1] + data[2] + ...
-  syclflow.uninitialized_reduce(
-    data, data+N, res2, [](int a, int b){ return a+b; }
-  );
 
-  syclflow.offload();
+  tf::syclDefaultExecutionPolicy policy(queue);
   
-  // inspect 
-  if(hres + 10 != *res1 || hres != *res2) {
-    throw std::runtime_error("incorrect result");
-  }
+  tf::sycl_reduce(policy, data, data+N, res1, [](int a, int b){ return a+b; });
+  
+  //// perform reduction
+  //tf::syclFlow syclflow(queue);
+  //
+  //// res1 = res1 + data[0] + data[1] + ... 
+  //syclflow.reduce(
+  //  data, data+N, res1, [](int a, int b){ return a+b; }
+  //);
+  //
+  //// res2 = data[0] + data[1] + data[2] + ...
+  //syclflow.uninitialized_reduce(
+  //  data, data+N, res2, [](int a, int b){ return a+b; }
+  //);
+
+  //syclflow.offload();
+  //
+  //// inspect 
+  //if(hres + 10 != *res1 || hres != *res2) {
+  //  throw std::runtime_error("incorrect result");
+  //}
+  //
+  printf("hres=%d res1=%d\n", hres, *res1);
 
   std::cout << "correct result\n";
 

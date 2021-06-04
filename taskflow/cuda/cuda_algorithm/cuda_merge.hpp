@@ -469,66 +469,41 @@ unsigned cuda_merge_buffer_size(unsigned a_count, unsigned b_count) {
 // key-value merge
 // ----------------------------------------------------------------------------
 
-/** 
-@brief performs key-value merge over a range of keys and values
-
-@tparam P execution policy type
-@tparam a_keys_it first key iterator type
-@tparam a_vals_it first value iterator type
-@tparam b_keys_it second key iterator type
-@tparam b_vals_it second value iterator type
-@tparam c_keys_it output key iterator type
-@tparam c_vals_it output value iterator type
-@tparam C comparator type
-
-@param p execution policy
-@param a_keys_first iterator to the beginning of the first key range
-@param a_vals_first iterator to the beginning of the first value range
-@param a_keys_last iterator to the end of the first key range
-@param b_keys_first iterator to the beginning of the second key range
-@param b_vals_first iterator to the beginning of the second value range
-@param b_keys_last iterator to the end of the second key range
-@param c_keys_first iterator to the beginning of the output key range
-@param c_vals_first iterator to the beginning of the output value range
-@param comp comparator
-
-Please refer to @ref CUDASTDMerge for details.
-*/
-template<
-  typename P,
-  typename a_keys_it, typename a_vals_it, 
-  typename b_keys_it, typename b_vals_it,
-  typename c_keys_it, typename c_vals_it, 
-  typename C
->
-void cuda_merge(
-  P&& p, 
-  a_keys_it a_keys_first, a_vals_it a_vals_first, a_keys_it a_keys_last, 
-  b_keys_it b_keys_first, b_vals_it b_vals_first, b_keys_it b_keys_last,
-  c_keys_it c_keys_first, c_vals_it c_vals_first, C comp
-) {
-
-  unsigned a_count = std::distance(a_keys_first, a_keys_last);
-  unsigned b_count = std::distance(b_keys_first, b_keys_last);
-
-  if(a_count + b_count == 0) {
-    return; 
-  }
-  
-  // allocate temporary buffer
-  cudaDeviceMemory<std::byte> temp(cuda_merge_buffer_size<P>(a_count, b_count));
-
-  detail::cuda_merge_loop(
-    p, 
-    a_keys_first, a_vals_first, a_count, 
-    b_keys_first, b_vals_first, b_count, 
-    c_keys_first, c_vals_first, comp, 
-    temp.data()
-  );
-  
-  // synchronize the execution
-  p.synchronize();
-}
+//template<
+//  typename P,
+//  typename a_keys_it, typename a_vals_it, 
+//  typename b_keys_it, typename b_vals_it,
+//  typename c_keys_it, typename c_vals_it, 
+//  typename C
+//>
+//void cuda_merge(
+//  P&& p, 
+//  a_keys_it a_keys_first, a_vals_it a_vals_first, a_keys_it a_keys_last, 
+//  b_keys_it b_keys_first, b_vals_it b_vals_first, b_keys_it b_keys_last,
+//  c_keys_it c_keys_first, c_vals_it c_vals_first, C comp
+//) {
+//
+//  unsigned a_count = std::distance(a_keys_first, a_keys_last);
+//  unsigned b_count = std::distance(b_keys_first, b_keys_last);
+//
+//  if(a_count + b_count == 0) {
+//    return; 
+//  }
+//  
+//  // allocate temporary buffer
+//  cudaScopedDeviceMemory<std::byte> temp(cuda_merge_buffer_size<P>(a_count, b_count));
+//
+//  detail::cuda_merge_loop(
+//    p, 
+//    a_keys_first, a_vals_first, a_count, 
+//    b_keys_first, b_vals_first, b_count, 
+//    c_keys_first, c_vals_first, comp, 
+//    temp.data()
+//  );
+//  
+//  // synchronize the execution
+//  p.synchronize();
+//}
 
 /** 
 @brief performs asynchronous key-value merge over a range of keys and values
@@ -563,7 +538,7 @@ template<
   typename c_keys_it, typename c_vals_it, 
   typename C
 >
-void cuda_merge_async(
+void cuda_merge(
   P&& p, 
   a_keys_it a_keys_first, a_vals_it a_vals_first, a_keys_it a_keys_last, 
   b_keys_it b_keys_first, b_vals_it b_vals_first, b_keys_it b_keys_last,
@@ -590,42 +565,23 @@ void cuda_merge_async(
 // key-only merge
 // ----------------------------------------------------------------------------
 
-/** 
-@brief performs key-only merge over a range of keys
-
-@tparam P execution policy type
-@tparam a_keys_it first key iterator type
-@tparam b_keys_it second key iterator type
-@tparam c_keys_it output key iterator type
-@tparam C comparator type
-
-@param p execution policy
-@param a_keys_first iterator to the beginning of the first key range
-@param a_keys_last iterator to the end of the first key range
-@param b_keys_first iterator to the beginning of the second key range
-@param b_keys_last iterator to the end of the second key range
-@param c_keys_first iterator to the beginning of the output key range
-@param comp comparator
-
-Please refer to @ref CUDASTDMerge for details.
-*/
-template<typename P,
-  typename a_keys_it, typename b_keys_it, typename c_keys_it, typename C
->
-void cuda_merge(
-  P&& p, 
-  a_keys_it a_keys_first, a_keys_it a_keys_last, 
-  b_keys_it b_keys_first, b_keys_it b_keys_last,
-  c_keys_it c_keys_first, 
-  C comp
-) {
-  cuda_merge(
-    p, 
-    a_keys_first, (const cudaEmpty*)nullptr, a_keys_last, 
-    b_keys_first, (const cudaEmpty*)nullptr, b_keys_last, 
-    c_keys_first, (cudaEmpty*)nullptr, comp
-  );
-}
+//template<typename P,
+//  typename a_keys_it, typename b_keys_it, typename c_keys_it, typename C
+//>
+//void cuda_merge(
+//  P&& p, 
+//  a_keys_it a_keys_first, a_keys_it a_keys_last, 
+//  b_keys_it b_keys_first, b_keys_it b_keys_last,
+//  c_keys_it c_keys_first, 
+//  C comp
+//) {
+//  cuda_merge(
+//    p, 
+//    a_keys_first, (const cudaEmpty*)nullptr, a_keys_last, 
+//    b_keys_first, (const cudaEmpty*)nullptr, b_keys_last, 
+//    c_keys_first, (cudaEmpty*)nullptr, comp
+//  );
+//}
 
 /** 
 @brief performs asynchronous key-only merge over a range of keys
@@ -650,7 +606,7 @@ Please refer to @ref CUDASTDMerge for details.
 template<typename P,
   typename a_keys_it, typename b_keys_it, typename c_keys_it, typename C
 >
-void cuda_merge_async(
+void cuda_merge(
   P&& p, 
   a_keys_it a_keys_first, a_keys_it a_keys_last, 
   b_keys_it b_keys_first, b_keys_it b_keys_last,
@@ -658,7 +614,7 @@ void cuda_merge_async(
   C comp,
   void* buf
 ) {
-  cuda_merge_async(
+  cuda_merge(
     p, 
     a_keys_first, (const cudaEmpty*)nullptr, a_keys_last, 
     b_keys_first, (const cudaEmpty*)nullptr, b_keys_last, 
@@ -707,9 +663,9 @@ cudaTask cudaFlowCapturer::merge(
     std::distance(a_first, a_last), std::distance(b_first, b_last)
   );
 
-  return on([=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
-    cuda_merge_async(cudaDefaultExecutionPolicy{stream}, 
+    cuda_merge(cudaDefaultExecutionPolicy{stream}, 
       a_first, a_last, b_first, b_last, c_first, comp, buf.get().data()
     );
   });
@@ -725,9 +681,9 @@ void cudaFlowCapturer::merge(
     std::distance(a_first, a_last), std::distance(b_first, b_last)
   );
 
-  on(task, [=, buf=MoC{cudaDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
-    cuda_merge_async(cudaDefaultExecutionPolicy{stream}, 
+    cuda_merge(cudaDefaultExecutionPolicy{stream}, 
       a_first, a_last, b_first, b_last, c_first, comp, buf.get().data()
     );
   });

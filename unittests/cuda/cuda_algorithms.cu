@@ -90,6 +90,7 @@ void add2() {
     tf::cuda_transform(p, input, input + N, output, 
       [] __device__ (T i) { return i+2; }
     );
+    cudaStreamSynchronize(0);
 
     for(size_t n=0; n<N; n++) {
       REQUIRE(output[n] == 3);
@@ -176,6 +177,8 @@ void for_each() {
     tf::cuda_for_each(tf::cudaDefaultExecutionPolicy{},
       g_data, g_data + n, [] __device__ (T& val) { val = 12222; }
     );
+
+    cudaStreamSynchronize(0);
     
     for(int i=0; i<n; i++) {
       REQUIRE(std::fabs(g_data[i] - (T)12222) < eps);
@@ -716,13 +719,21 @@ void scan() {
       scan1[i] = 0;
       scan2[i] = 0;
     }
+
+    // allocate temporary buffer
+    tf::cudaScopedDeviceMemory<std::byte> temp(
+      tf::cuda_scan_buffer_size<tf::cudaDefaultExecutionPolicy, T>(N)
+    );
       
     tf::cuda_inclusive_scan(tf::cudaDefaultExecutionPolicy{}, 
-      data1, data1+N, scan1, tf::cuda_plus<T>{}
+      data1, data1+N, scan1, tf::cuda_plus<T>{}, temp.data()
     );
+    cudaStreamSynchronize(0);
+
     tf::cuda_exclusive_scan(tf::cudaDefaultExecutionPolicy{}, 
-      data2, data2+N, scan2, tf::cuda_plus<T>{}
+      data2, data2+N, scan2, tf::cuda_plus<T>{}, temp.data()
     );
+    cudaStreamSynchronize(0);
     
     // inspect 
     for(int i=1; i<N; i++) {
@@ -807,18 +818,27 @@ void transform_scan() {
       scan1[i] = 0;
       scan2[i] = 0;
     }
+    
+    // allocate temporary buffer
+    tf::cudaScopedDeviceMemory<std::byte> temp(
+      tf::cuda_scan_buffer_size<tf::cudaDefaultExecutionPolicy, T>(N)
+    );
       
     tf::cuda_transform_inclusive_scan(tf::cudaDefaultExecutionPolicy{},
       data1, data1+N, scan1, 
       [] __device__ (T a, T b){ return a+b; },
-      [] __device__ (T a) { return a*10; }
+      [] __device__ (T a) { return a*10; },
+      temp.data()
     );
+    cudaStreamSynchronize(0);
       
     tf::cuda_transform_exclusive_scan(tf::cudaDefaultExecutionPolicy{},
       data2, data2+N, scan2, 
       [] __device__ (T a, T b){ return a+b; },
-      [] __device__ (T a) { return a*10; }
+      [] __device__ (T a) { return a*10; },
+      temp.data()
     );
+    cudaStreamSynchronize(0);
     
     // inspect 
     for(int i=1; i<N; i++) {
@@ -879,25 +899,15 @@ void merge_keys() {
 
     std::sort(a, a+N);
     std::sort(b, b+N);
-
-    tf::cuda_merge(p, a, a+N, b, b+N, c, tf::cuda_less<T>{});
-
-    REQUIRE(std::is_sorted(c, c+2*N));
     
-    // ----------------- standalone asynchronous algorithms
-    
-    // initialize the data
-    for(int i=0; i<N*2; i++) {
-      c[i] = rand();      
-    }
-
     auto bufsz = tf::cuda_merge_buffer_size<decltype(p)>(N, N);
-    tf::cudaDeviceMemory<std::byte> buf(bufsz);
-    tf::cuda_merge_async(p, a, a+N, b, b+N, c, tf::cuda_less<T>{}, buf.data());
+    tf::cudaScopedDeviceMemory<std::byte> buf(bufsz);
+
+    tf::cuda_merge(p, a, a+N, b, b+N, c, tf::cuda_less<T>{}, buf.data());
     p.synchronize();
 
     REQUIRE(std::is_sorted(c, c+2*N));
-
+    
     // ----------------- cudaFlow capturer
     for(int i=0; i<N*2; i++) {
       c[i] = rand();      
@@ -950,17 +960,6 @@ void sort_keys() {
     auto a = tf::cuda_malloc_shared<T>(N);
     auto p = tf::cudaDefaultExecutionPolicy{};
 
-    // ----------------- standalone algorithms
-
-    // initialize the data
-    for(int i=0; i<N; i++) {
-      a[i] = T(rand()%1000);
-    }
-
-    tf::cuda_sort(p, a, a+N, tf::cuda_less<T>{});
-
-    REQUIRE(std::is_sorted(a, a+N));
-    
     // ----------------- standalone asynchronous algorithms
 
     // initialize the data
@@ -969,8 +968,8 @@ void sort_keys() {
     }
 
     auto bufsz = tf::cuda_sort_buffer_size<decltype(p), T>(N);
-    tf::cudaDeviceMemory<std::byte> buf(bufsz);
-    tf::cuda_sort_async(p, a, a+N, tf::cuda_less<T>{}, buf.data());
+    tf::cudaScopedDeviceMemory<std::byte> buf(bufsz);
+    tf::cuda_sort(p, a, a+N, tf::cuda_less<T>{}, buf.data());
     p.synchronize();
     REQUIRE(std::is_sorted(a, a+N));
 

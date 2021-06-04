@@ -31,18 +31,15 @@ auto syclFlow::_transform_cgh(I first, I last, C&& op, S... srcs) {
 // Function: transform
 template <typename I, typename C, typename... S>
 syclTask syclFlow::transform(I first, I last, C&& op, S... srcs) {
-  auto node = _graph.emplace_back(
-    _graph, _transform_cgh(first, last, std::forward<C>(op), srcs...)
-  );
-  return syclTask(node);
+  return on(_transform_cgh(first, last, std::forward<C>(op), srcs...));
 }
 
-// Procedure: rebind_transform
+// Procedure: transform
 template <typename I, typename C, typename... S>
-void syclFlow::rebind_transform(
+void syclFlow::transform(
   syclTask task, I first, I last, C&& op, S... srcs
 ) {
-  task._node->_func = _transform_cgh(first, last, std::forward<C>(op), srcs...);
+  on(task, _transform_cgh(first, last, std::forward<C>(op), srcs...));
 }
       
 

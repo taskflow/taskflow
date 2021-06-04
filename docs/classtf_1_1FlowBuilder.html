@@ -128,9 +128,14 @@
             </dt>
             <dd>creates a cudaFlow task on the given device</dd>
             <dt>
+              <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#a574038aaa99e0220eedca4e8ea9389cf" class="m-doc">is_<wbr />syclflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+            </dt>
+            <dd>creates a syclFlow task on the default queue</dd>
+            <dt>
               <div class="m-doc-template">template&lt;typename C, typename Q, std::enable_if_t&lt;<a href="namespacetf.html#a574038aaa99e0220eedca4e8ea9389cf" class="m-doc">is_<wbr />syclflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a8706e06336e69c826e93fd772b1b178c" class="m-doc">emplace_on</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable,
-              Q&amp; queue) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+              <span class="m-doc-wrap-bumper">auto <a href="#af7c878fa6f0c4539ab88c0a85e6052d8" class="m-doc">emplace_on</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable,
+              Q&amp;&amp; queue) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>creates a syclFlow task on the given queue</dd>
             <dt>
@@ -488,13 +493,56 @@
   <span class="n">task1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span>
 <span class="p">},</span> <span class="mi">2</span><span class="p">);</span></pre>
           </div></section>
-          <section class="m-doc-details" id="a8706e06336e69c826e93fd772b1b178c"><div>
+          <section class="m-doc-details" id="a60d7a666cab71ecfa3010b2efb0d6b57"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#a574038aaa99e0220eedca4e8ea9389cf" class="m-doc">is_<wbr />syclflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc-self">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable)</span></span>
+            </h3>
+            <p>creates a syclFlow task on the default queue</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">C</td>
+                  <td>callable type constructible from std::function&lt;void(tf::syclFlow&amp;)&gt;</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>callable</td>
+                  <td>a callable that takes a referenced <a href="classtf_1_1syclFlow.html" class="m-doc">tf::<wbr />syclFlow</a> object</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>The following example creates a syclFlow on the default queue to submit two kernel tasks, <code>task1</code> and <code>task2</code>, where <code>task1</code> runs before <code>task2</code>.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">syclFlow</span><span class="o">&amp;</span> <span class="n">cf</span><span class="p">){</span>
+  <span class="c1">// create two single-thread kernel tasks</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span> <span class="n">task1</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">single_task</span><span class="p">([](){});</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span> <span class="n">task2</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">single_task</span><span class="p">([](){});</span>
+
+  <span class="c1">// kernel1 runs before kernel2</span>
+  <span class="n">task1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span>
+<span class="p">});</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="af7c878fa6f0c4539ab88c0a85e6052d8"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename C, typename Q, std::enable_if_t&lt;<a href="namespacetf.html#a574038aaa99e0220eedca4e8ea9389cf" class="m-doc">is_<wbr />syclflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8706e06336e69c826e93fd772b1b178c" class="m-doc-self">emplace_on</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable,
-              Q&amp; queue)</span></span>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af7c878fa6f0c4539ab88c0a85e6052d8" class="m-doc-self">emplace_on</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable,
+              Q&amp;&amp; queue)</span></span>
             </h3>
             <p>creates a syclFlow task on the given queue</p>
             <table class="m-table m-fullwidth m-flat">
@@ -511,6 +559,19 @@
                   <td>queue type</td>
                 </tr>
               </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>callable</td>
+                  <td>a callable that takes a referenced <a href="classtf_1_1syclFlow.html" class="m-doc">tf::<wbr />syclFlow</a> object</td>
+                </tr>
+                <tr>
+                  <td>queue</td>
+                  <td>a queue of type sycl::queue</td>
+                </tr>
+              </tbody>
               <tfoot>
                 <tr>
                   <th>Returns</th>
@@ -518,7 +579,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>The following example creates a syclFlow of two kernel tasks, <code>task1</code> and <code>task2</code> on GPU <code>2</code>, where <code>task1</code> runs before <code>task2</code></p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace_on</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">syclFlow</span><span class="o">&amp;</span> <span class="n">cf</span><span class="p">){</span>
+<p>The following example creates a syclFlow on the given queue to submit two kernel tasks, <code>task1</code> and <code>task2</code>, where <code>task1</code> runs before <code>task2</code>.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace_on</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">syclFlow</span><span class="o">&amp;</span> <span class="n">cf</span><span class="p">){</span>
   <span class="c1">// create two single-thread kernel tasks</span>
   <span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span> <span class="n">task1</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">single_task</span><span class="p">([](){});</span>
   <span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span> <span class="n">task2</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">single_task</span><span class="p">([](){});</span>

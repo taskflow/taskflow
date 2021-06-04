@@ -362,7 +362,7 @@ class cudaGraph : public CustomGraphBase {
 
   private:
 
-    int _state{0};
+    int _state{CHANGED};
 
     cudaGraph_t _native_handle {nullptr};
 
@@ -604,7 +604,7 @@ inline void cudaGraph::clear() {
   //for(auto n : _nodes) {
   //  delete n;
   //}
-  _state = 0;
+  _state = cudaGraph::CHANGED;
   _nodes.clear();
 }
 

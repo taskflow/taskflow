@@ -27,7 +27,7 @@ TEST_CASE("syclFlowCapturer.rebind.algorithms") {
   REQUIRE(syclflow.num_tasks() == 1);
   
   // rebind to single task
-  syclflow.rebind_single_task(task, [=]  () {*data = 2;});
+  syclflow.single_task(task, [=]  () {*data = 2;});
 
   syclflow.offload();
   
@@ -38,12 +38,13 @@ TEST_CASE("syclFlowCapturer.rebind.algorithms") {
   REQUIRE(syclflow.num_tasks() == 1);
   
   // rebind to for each index
-  syclflow.rebind_for_each_index(
+  syclflow.for_each_index(
     task, 0, 10000, 1, [=] (int i) { data[i] = -23; }
   );
 
   syclflow.offload();
   
+
   for(int i=0; i<10000; i++) {
     REQUIRE(data[i] == -23);
   }
@@ -51,7 +52,7 @@ TEST_CASE("syclFlowCapturer.rebind.algorithms") {
 
   // rebind to reduce
   *res = 10;
-  syclflow.rebind_reduce(task, data, data + 10000, res, 
+  syclflow.reduce(task, data, data + 10000, res, 
     [](int a, int b){ return a + b; }
   );
 
@@ -61,7 +62,7 @@ TEST_CASE("syclFlowCapturer.rebind.algorithms") {
   REQUIRE(syclflow.num_tasks() == 1);
   
   // rebind to uninitialized reduce
-  syclflow.rebind_uninitialized_reduce(task, data, data + 10000, res, 
+  syclflow.uninitialized_reduce(task, data, data + 10000, res, 
     [](int a, int b){ return a + b; }
   );
 
@@ -71,7 +72,7 @@ TEST_CASE("syclFlowCapturer.rebind.algorithms") {
   REQUIRE(syclflow.num_tasks() == 1);
   
   // rebind to single task
-  syclflow.rebind_single_task(task, [res](){ *res = 999; });
+  syclflow.single_task(task, [res](){ *res = 999; });
   REQUIRE(*res == -230000);
 
   syclflow.offload();
@@ -79,7 +80,7 @@ TEST_CASE("syclFlowCapturer.rebind.algorithms") {
   REQUIRE(syclflow.num_tasks() == 1);
 
   // rebind to on
-  syclflow.rebind_on(task, [res] (sycl::handler& handler) {
+  syclflow.on(task, [res] (sycl::handler& handler) {
     handler.single_task([=](){ *res = 1000; });
   });
 
@@ -91,10 +92,13 @@ TEST_CASE("syclFlowCapturer.rebind.algorithms") {
   REQUIRE(syclflow.num_tasks() == 0);
 
   syclflow.offload();
+
   REQUIRE(*res == 1000);
   for(int i=0; i<10000; i++) {
     REQUIRE(data[i] == -23);
   }
+
+  return;
 
   // clear the memory
   sycl::free(data, queue);

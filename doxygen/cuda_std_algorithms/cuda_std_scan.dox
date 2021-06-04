@@ -25,15 +25,36 @@ int* output = tf::cuda_malloc_shared<int>(N);  // output vector
 for(size_t i=0; i<N; i++) 
   input[i] = rand();
 } 
+
+// queries the required buffer size to scan N elements using the given policy
+tf::cudaDefaultExecutionPolicy policy;
+auto bytes  = tf::cuda_scan_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
+
 // computes inclusive scan over input and stores the result in output
-tf::cuda_inclusive_scan(tf::cudaDefaultExecutionPolicy{}, 
-  input, input + N, output, [] __device__ (int a, int b) { return a + b; }
+tf::cuda_inclusive_scan(policy, 
+  input, input + N, output, [] __device__ (int a, int b) {return a + b;}, buffer
 );
-// verifies the result
+
+// synchronizes and verifies the result
+policy.synchronize();
 for(size_t i=1; i<N; i++) {
   assert(output[i] == output[i-1] + input[i]);
 }
+
+// delete the buffer
+tf::cuda_free(buffer);
 @endcode
+
+The sort algorithm call runs @em asynchronously through the stream specified
+in the execution policy. You need to synchronize the stream to
+obtain correct results.
+Since the GPU scan algorithm may require extra buffer to store the 
+temporary results, you must provide a buffer of size at least the bytes
+returned from tf::cuda_scan_buffer_size.
+
+@attention
+You must keep the buffer alive before the scan call completes.
 
 On the other hand, tf::cuda_exclusive_scan computes an exclusive prefix sum operation.
 The term &quot;exclusive&quot; means that the i-th input element is @em NOT included 
@@ -41,10 +62,12 @@ in the i-th sum.
 
 @code{.cpp}
 // computes exclusive scan over input and stores the result in output
-tf::cuda_exclusive_scan(tf::cudaDefaultExecutionPolicy{}, 
-  input, input + N, output, [] __device__ (int a, int b) { return a + b; }
+tf::cuda_exclusive_scan(policy, 
+  input, input + N, output, [] __device__ (int a, int b) {return a + b;}, buffer
 );
-// verifies the result
+
+// synchronizes the execution and verifies the result
+policy.synchronize();
 for(size_t i=1; i<N; i++) {
   assert(output[i] == output[i-1] + input[i-1]);
 }
@@ -66,13 +89,22 @@ int* output = tf::cuda_malloc_shared<int>(N);  // output vector
 for(size_t i=0; i<N; i++) 
   input[i] = rand();
 } 
+
+// queries the required buffer size to scan N elements using the given policy
+tf::cudaDefaultExecutionPolicy policy;
+auto bytes  = tf::cuda_scan_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
+
 // computes inclusive scan over transformed input and stores the result in output
-tf::cuda_transform_inclusive_scan(tf::cudaDefaultExecutionPolicy{}, 
+tf::cuda_transform_inclusive_scan(policy, 
   input, input + N, output, 
   [] __device__ (int a, int b) { return a + b; },  // binary scan operator
-  [] __device__ (int a) { return a*10; }           // unary transform operator
+  [] __device__ (int a) { return a*10; },          // unary transform operator
+  buffer
 );
-// verifies the result
+
+// synchronizes the execution and verifies the result
+policy.synchronize();
 for(size_t i=1; i<N; i++) {
   assert(output[i] == output[i-1] + input[i] * 10);
 }
@@ -93,57 +125,25 @@ for(size_t i=0; i<N; i++)
   input[i] = rand();
 } 
 
+// queries the required buffer size to scan N elements using the given policy
+tf::cudaDefaultExecutionPolicy policy;
+auto bytes  = tf::cuda_scan_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
+
 // computes exclusive scan over transformed input and stores the result in output
-tf::cuda_transform_exclusive_scan(tf::cudaDefaultExecutionPolicy{}, 
+tf::cuda_transform_exclusive_scan(policy, 
   input, input + N, output, 
   [] __device__ (int a, int b) { return a + b; },  // binary scan operator
-  [] __device__ (int a) { return a*10; }           // unary transform operator
+  [] __device__ (int a) { return a*10; },          // unary transform operator
+  buffer
 );
 
-// verifies the result
+// synchronizes the execution and verifies the result
+policy.synchronize();
 for(size_t i=1; i<N; i++) {
   assert(output[i] == output[i-1] + input[i-1] * 10);
 }
 @endcode
-
-@section CUDASTDInvokeScanAsynchronously Invoke Scan Kernels Asynchronously
-
-By default, scan functions block until all kernels finish.
-You can invoke these kernels asynchronously
-and explicitly synchronize them at another place of your program.
-Since our scan kernels rely on additional device memory,
-you need to provide a buffer of size <i>in bytes</i> equal to (or larger than) 
-the value returned by tf::cuda_scan_buffer_size.
-
-@code{.cpp}
-const size_t N = 1000000;
-int* input  = tf::cuda_malloc_shared<int>(N);  // input  vector
-int* output = tf::cuda_malloc_shared<int>(N);  // output vector
-
-// initializes the data
-for(size_t i=0; i<N; i++) 
-  input[i] = rand();
-} 
-
-// queries the required buffer size to scan N elements using the given policy
-auto bytes = tf::cuda_scan_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
-void* buffer = tf::cuda_malloc_device<std::byte>(bytes);
-
-// invoke the inclusive scan kernels asynchronously (same for other scan variants)
-tf::cuda_inclusive_scan_async(tf::cudaDefaultExecutionPolicy{my_stream},
-  input, input+N, output, [] __device__ (int a, int b) { return a + b; }, buffer
-);
-// here, output may not be ready yet, as kernels are still running ...
-
-// synchronize the stream to make output ready
-cudaStreamSynchronize(my_stream);
-@endcode
-
-The allocated buffer must remain alive until the asynchronous call completes.
-
-@note
-The stream given to an asynchronous scan function can be enabled to the capture mode
-to capture internal kernels into a CUDA graph.
 
 */
 }
