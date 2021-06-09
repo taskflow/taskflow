@@ -1006,6 +1006,152 @@ TEST_CASE("capture.sort_keys.float" * doctest::timeout(300)) {
   sort_keys<float, tf::cudaFlowCapturer>();
 }
 
+// ----------------------------------------------------------------------------
+// find-if
+// ----------------------------------------------------------------------------
+
+template <typename T, typename F>
+void find_if() {
+    
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+
+  for(int N=0; N<=1234567; N += std::max(N/100, 1)) {
+
+    taskflow.clear();
+
+    auto a = tf::cuda_malloc_shared<T>(N);
+    auto r = tf::cuda_malloc_shared<unsigned>(1);
+    auto p = tf::cudaDefaultExecutionPolicy{};
+    
+    // initialize the data
+    for(int i=0; i<N; i++) {
+      a[i] = i;
+    }
+    *r = 1234;
+
+    // ----------------- standalone asynchronous algorithms
+
+    tf::cuda_find_if(p, a, a+N, r, []__device__(int v){ return v == 5000; });
+    p.synchronize();
+
+    if(N <= 5000) {
+      REQUIRE(*r == N);
+    }
+    else {
+      REQUIRE(*r == 5000);
+    }
+
+    // ----------------- cudaflow capturer
+    *r = 1234;
+    
+    taskflow.emplace([&](F& cudaflow){
+      cudaflow.find_if(a, a+N, r, []__device__(int v){ return v == 5000; });
+    });
+
+    executor.run(taskflow).wait();
+    
+    if(N <= 5000) {
+      REQUIRE(*r == N);
+    }
+    else {
+      REQUIRE(*r == 5000);
+    }
+    
+    REQUIRE(cudaFree(a) == cudaSuccess);
+    REQUIRE(cudaFree(r) == cudaSuccess);
+  }
+}
+
+TEST_CASE("cudaflow.find_if.int" * doctest::timeout(300)) {
+  find_if<int, tf::cudaFlow>();
+}
+
+TEST_CASE("cudaflow.find_if.float" * doctest::timeout(300)) {
+  find_if<float, tf::cudaFlow>();
+}
+
+TEST_CASE("capture.find_if.int" * doctest::timeout(300)) {
+  find_if<int, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capture.find_if.float" * doctest::timeout(300)) {
+  find_if<float, tf::cudaFlowCapturer>();
+}
+
+// ----------------------------------------------------------------------------
+// min_element
+// ----------------------------------------------------------------------------
+
+template <typename T, typename F>
+void min_element() {
+    
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+
+  for(int N=0; N<=1234567; N += std::max(N/100, 1)) {
+
+    taskflow.clear();
+
+    auto a = tf::cuda_malloc_shared<T>(N);
+    auto r = tf::cuda_malloc_shared<unsigned>(1);
+    auto p = tf::cudaDefaultExecutionPolicy{};
+    auto min = std::numeric_limits<T>::max();
+
+    // initialize the data
+    for(int i=0; i<N; i++) {
+      a[i] = rand();
+      min = std::min(min, a[i]);
+    }
+    *r = 1234;
+
+    // ----------------- standalone asynchronous algorithms
+
+    tf::cudaScopedDeviceMemory<std::byte> buf(
+      tf::cuda_min_element_buffer_size<decltype(p), T>(N)
+    );
+
+    tf::cuda_min_element(
+      p, a, a+N, r, []__device__(int a, int b){ return a < b; }, buf.data()
+    );
+    p.synchronize();
+
+    if(min != std::numeric_limits<T>::max()) {
+      REQUIRE(a[*r] == min);
+    }
+    else {
+      REQUIRE(*r == N);
+    }
+    
+    /*
+    // ----------------- cudaflow capturer
+    *r = 1234;
+    
+    taskflow.emplace([&](F& cudaflow){
+      cudaflow.find_if(a, a+N, r, []__device__(int v){ return v == 5000; });
+    });
+
+    executor.run(taskflow).wait();
+    
+    if(!N) {
+      REQUIRE(*r == 1234);
+    }
+    else if(N <= 5000) {
+      REQUIRE(*r == N);
+    }
+    else {
+      REQUIRE(*r == 5000);
+    }*/
+    
+    REQUIRE(cudaFree(a) == cudaSuccess);
+    REQUIRE(cudaFree(r) == cudaSuccess);
+  }
+}
+
+TEST_CASE("capturer.min_element.int" * doctest::timeout(300)) {
+  min_element<int, tf::cudaFlowCapturer>();
+}
+
 /*// --------------------------------------------------------------------------
 // row-major transpose
 // ----------------------------------------------------------------------------

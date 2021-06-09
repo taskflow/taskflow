@@ -14,6 +14,7 @@ list(APPEND TF_CUDA_EXAMPLES
   cuda_sort
   cuda_transform
   cuda_rebind
+  cuda_find
 )
 
 foreach(cuda_example IN LISTS TF_CUDA_EXAMPLES)

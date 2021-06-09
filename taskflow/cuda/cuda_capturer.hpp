@@ -733,6 +733,41 @@ class cudaFlowCapturer {
     template <typename I, typename C>
     void sort(cudaTask task, I first, I last, C comp);
     
+    /**
+    @brief creates a task to find the index of the first element in a range
+    
+    @tparam I input iterator type
+    @tparam U unary operator type
+    
+    @param first iterator to the beginning of the range
+    @param last iterator to the end of the range
+    @param idx pointer to the index of the found element
+    @param op unary operator which returns @c true for the required element
+    
+    Finds the index @c idx of the first element in the range 
+    <tt>[first, last)</tt> such that <tt>op(*(first+idx))</tt> is true.
+    This is equivalent to the parallel execution of the following loop:
+    
+    @code{.cpp}
+    unsigned idx = 0;
+    for(; first != last; ++first, ++idx) {
+      if (p(*first)) {
+        return idx;
+      }
+    }
+    return idx;
+    @endcode
+    */
+    template <typename I, typename U>
+    cudaTask find_if(I first, I last, unsigned* idx, U op);
+    
+    /**
+    @brief updates the parameters of the task created from 
+           tf::cudaFlow::find_if
+    */
+    template <typename I, typename U>
+    void find_if(cudaTask task, I first, I last, unsigned* idx, U op);
+    
     // ------------------------------------------------------------------------
     // offload methods
     // ------------------------------------------------------------------------
