@@ -18,19 +18,21 @@ const size_t N = 1000000;
 int* vec = tf::cuda_malloc_shared<int>(N);  // vector
 
 // initializes the data
-for(size_t i=0; i<N; i++) 
+for(size_t i=0; i<N; i++) {
   vec[i] = rand();
 } 
 
 // create a cudaFlow of one task to perform parallel sort
 tf::cudaFlow cf;
-tf::cudaTask task = cf.sort(vec, vec + N);
+tf::cudaTask task = cf.sort(
+  vec, vec + N, []__device__(int a, int b) { return a < b; }
+);
 cf.offload();
 
 assert(std::is_sorted(vec, vec+N));
 @endcode
 
-You can specify a comparator to tf::cudaFlow::sort to alter the sorting order.
+You can specify a different comparator to tf::cudaFlow::sort to alter the sorting order.
 For example, the following code sorts one million random integers
 in an decreasing order on a GPU.
 
@@ -39,7 +41,7 @@ const size_t N = 1000000;
 int* vec = tf::cuda_malloc_shared<int>(N);  // vector
 
 // initializes the data
-for(size_t i=0; i<N; i++) 
+for(size_t i=0; i<N; i++) {
   vec[i] = rand();
 } 
 
