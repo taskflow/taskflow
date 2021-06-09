@@ -18,7 +18,7 @@ const size_t N = 1000000;
 int* vec = tf::cuda_malloc_shared<int>(N);  // vector
 
 // initializes the data
-for(size_t i=0; i<N; i++) 
+for(size_t i=0; i<N; i++) {
   vec[i] = rand();
 } 
 
@@ -40,15 +40,14 @@ assert(std::is_sorted(vec, vec+N));
 tf::cuda_free(buffer);
 @endcode
 
-The sort algorithm call runs @em asynchronously through the stream specified
+The sort algorithm runs @em asynchronously through the stream specified
 in the execution policy. You need to synchronize the stream to
 obtain correct results.
 Since the GPU sort algorithm may require extra buffer to store the 
-temporary results, you must provide a buffer of size at least the bytes
+temporary results, you need provide a buffer of size at least bytes
 returned from tf::cuda_sort_buffer_size.
 
 @attention
-By default, the 
 You must keep the buffer alive before the merge call completes.
 
 */

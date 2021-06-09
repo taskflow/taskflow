@@ -5,6 +5,7 @@
     <innerclass refid="structtf_1_1detail_1_1cudaBlockReduce" prot="private">tf::detail::cudaBlockReduce</innerclass>
     <innerclass refid="structtf_1_1detail_1_1cudaBlockScan" prot="private">tf::detail::cudaBlockScan</innerclass>
     <innerclass refid="structtf_1_1detail_1_1cudaBlockSort" prot="private">tf::detail::cudaBlockSort</innerclass>
+    <innerclass refid="structtf_1_1detail_1_1cudaFindPair" prot="private">tf::detail::cudaFindPair</innerclass>
     <innerclass refid="structtf_1_1detail_1_1cudaMergePair" prot="private">tf::detail::cudaMergePair</innerclass>
     <innerclass refid="structtf_1_1detail_1_1cudaMergeRange" prot="private">tf::detail::cudaMergeRange</innerclass>
     <innerclass refid="structtf_1_1detail_1_1cudaScanResult" prot="private">tf::detail::cudaScanResult</innerclass>
@@ -264,7 +265,7 @@
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_transform.hpp" line="38" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_transform.hpp" bodystart="38" bodyend="53"/>
       </memberdef>
-      <memberdef kind="function" id="cuda__reduce_8hpp_1afddddc0216ce67d63a474374ebab7858" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="cuda__reduce_8hpp_1ab2081cd1728759054a34c21a16453db6" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename P</type>
@@ -281,7 +282,7 @@
         </templateparamlist>
         <type>void</type>
         <definition>void tf::detail::cuda_reduce_loop</definition>
-        <argsstring>(P &amp;&amp;p, I input, unsigned count, T *res, O op, bool incl, void *ptr)</argsstring>
+        <argsstring>(P &amp;&amp;p, I input, unsigned count, T *res, O op, void *ptr)</argsstring>
         <name>cuda_reduce_loop</name>
         <param>
           <type>P &amp;&amp;</type>
@@ -304,8 +305,55 @@
           <declname>op</declname>
         </param>
         <param>
-          <type>bool</type>
-          <declname>incl</declname>
+          <type>void *</type>
+          <declname>ptr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" line="89" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="89" bodyend="122"/>
+      </memberdef>
+      <memberdef kind="function" id="cuda__reduce_8hpp_1a6694b88dc343d87df2104809002583cc" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::detail::cuda_uninitialized_reduce_loop</definition>
+        <argsstring>(P &amp;&amp;p, I input, unsigned count, T *res, O op, void *ptr)</argsstring>
+        <name>cuda_uninitialized_reduce_loop</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>input</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>count</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>res</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>op</declname>
         </param>
         <param>
           <type>void *</type>
@@ -317,7 +365,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" line="89" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="89" bodyend="121"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" line="126" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_reduce.hpp" bodystart="126" bodyend="159"/>
       </memberdef>
       <memberdef kind="function" id="cuda__scan_8hpp_1a2c9669b414231e12f66e9d40ca9ae3a3" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1553,6 +1601,146 @@
         <inbodydescription>
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" line="257" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" bodystart="257" bodyend="404"/>
+      </memberdef>
+      <memberdef kind="function" id="cuda__find_8hpp_1a3941b09790867beb42f502c08e08b908" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::detail::cuda_find_if_loop</definition>
+        <argsstring>(P &amp;&amp;p, I input, unsigned count, unsigned *idx, U pred)</argsstring>
+        <name>cuda_find_if_loop</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>input</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>count</declname>
+        </param>
+        <param>
+          <type>unsigned *</type>
+          <declname>idx</declname>
+        </param>
+        <param>
+          <type>U</type>
+          <declname>pred</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_find.hpp" line="26" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_find.hpp" bodystart="26" bodyend="90"/>
+      </memberdef>
+      <memberdef kind="function" id="cuda__find_8hpp_1a72820903215a409e1e3d47a073579918" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::detail::cuda_min_element_loop</definition>
+        <argsstring>(P &amp;&amp;p, I input, unsigned count, unsigned *idx, O op, void *ptr)</argsstring>
+        <name>cuda_min_element_loop</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>input</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>count</declname>
+        </param>
+        <param>
+          <type>unsigned *</type>
+          <declname>idx</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>op</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>ptr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_find.hpp" line="94" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_find.hpp" bodystart="94" bodyend="116"/>
+      </memberdef>
+      <memberdef kind="function" id="cuda__find_8hpp_1a442fbc4beb897580a46164147d7db2c9" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::detail::cuda_max_element_loop</definition>
+        <argsstring>(P &amp;&amp;p, I input, unsigned count, unsigned *idx, O op, void *ptr)</argsstring>
+        <name>cuda_max_element_loop</name>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>input</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>count</declname>
+        </param>
+        <param>
+          <type>unsigned *</type>
+          <declname>idx</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>op</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>ptr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_find.hpp" line="120" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_find.hpp" bodystart="120" bodyend="142"/>
       </memberdef>
       </sectiondef>
     <briefdescription>

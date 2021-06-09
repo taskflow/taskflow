@@ -9,6 +9,10 @@ execution parameters.
 
 @tableofcontents
 
+@section CUDASTDIncludeHeader Include the Header
+
+To use CUDA standard algorithms, you need to include cudaflow.hpp.
+
 @section CUDASTDParameterizePerformance Parameterize Performance
 
 %Taskflow parameterizes most CUDA algorithms in terms of <i>the number of threads per block</i>
@@ -27,13 +31,15 @@ It is always a good idea to specify an odd number in the second parameter
 to avoid bank conflicts.
 
 @code{.cpp}
+#include <taskflow/cudaflow.hpp>
+
 tf::cudaExecutionPolicy<512, 11> policy;
 @endcode
 
 By default, the execution policy object is associated with the CUDA 
 <i>default stream</i> (i.e., 0).
 Default stream can incur significant overhead due to the global synchronization.
-You can associate an execution policy with another stream as shown below.
+You can associate an execution policy with another stream as shown below:
 
 @code{.cpp}
 // assign a stream to a policy at construction time

@@ -55,6 +55,11 @@
     <member refid="classtf_1_1cudaExecutionPolicy_1a5f2a4d6b35af49403756ee2291264758" kind="function"><name>stream</name></member>
     <member refid="classtf_1_1cudaExecutionPolicy_1a33596174fe764d85356ed9b8c0934bb7" kind="function"><name>synchronize</name></member>
   </compound>
+  <compound refid="structtf_1_1detail_1_1cudaFindPair" kind="struct"><name>tf::detail::cudaFindPair</name>
+    <member refid="structtf_1_1detail_1_1cudaFindPair_1a45f07c94fc363d0d14bd827e33868c77" kind="variable"><name>key</name></member>
+    <member refid="structtf_1_1detail_1_1cudaFindPair_1a0cdb518ce84ef59432fe1b1995597bf1" kind="variable"><name>index</name></member>
+    <member refid="structtf_1_1detail_1_1cudaFindPair_1a2fb94039a5cb8280591044a35626ad8d" kind="function"><name>operator unsigned</name></member>
+  </compound>
   <compound refid="classtf_1_1cudaFlow" kind="class"><name>tf::cudaFlow</name>
     <member refid="classtf_1_1cudaFlow_1a424926b9d6ce538c8e6aa576cdb1583c" kind="typedef"><name>handle_t</name></member>
     <member refid="classtf_1_1cudaFlow_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -116,6 +121,12 @@
     <member refid="classtf_1_1cudaFlow_1a168006fd26cc40451978c6acd424504e" kind="function"><name>merge</name></member>
     <member refid="classtf_1_1cudaFlow_1ae462d455fed06dfcdbd1e25a2c9c5da6" kind="function"><name>sort</name></member>
     <member refid="classtf_1_1cudaFlow_1a63109604cb3df8644aa6db244dec3252" kind="function"><name>sort</name></member>
+    <member refid="classtf_1_1cudaFlow_1a4812f4eccece9217da13dbc09992670c" kind="function"><name>find_if</name></member>
+    <member refid="classtf_1_1cudaFlow_1a25ea1f440e929924a7137a85661b962d" kind="function"><name>find_if</name></member>
+    <member refid="classtf_1_1cudaFlow_1a63d18c5a42bb351fda43305258f51262" kind="function"><name>min_element</name></member>
+    <member refid="classtf_1_1cudaFlow_1ae880febb9f5928d42455707f13bd9e9e" kind="function"><name>min_element</name></member>
+    <member refid="classtf_1_1cudaFlow_1a7c99f8f1a961a225e2ea708afaa34905" kind="function"><name>max_element</name></member>
+    <member refid="classtf_1_1cudaFlow_1a05593150085596723ee87f9ed1c4bc3e" kind="function"><name>max_element</name></member>
     <member refid="classtf_1_1cudaFlow_1a89c389fff64a16e5dd8c60875d3b514d" kind="function"><name>capture</name></member>
     <member refid="classtf_1_1cudaFlow_1aa0f182dc0fa99bcc9118311925fddca5" kind="function"><name>capture</name></member>
     <member refid="classtf_1_1cudaFlow_1a40554a27542772c13c51e0815d883d8b" kind="function"><name>cudaFlow</name></member>
@@ -176,6 +187,12 @@
     <member refid="classtf_1_1cudaFlowCapturer_1a4a69fa9de723f703d6d69fc96fdc978f" kind="function"><name>merge</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a3bcb91eb1579451ece602206f20845f4" kind="function"><name>sort</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a75851fb2e6825dad5143ee3d4bf16411" kind="function"><name>sort</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a861e098e939c07c592c00e75583a68c0" kind="function"><name>find_if</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a039e57d518c43826bba3b8138e034212" kind="function"><name>find_if</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a8b846063445cd2314c24d03f478d0540" kind="function"><name>min_element</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1ad88b4d4bcf8bbd9afd8d83b91365cca5" kind="function"><name>min_element</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1acf68a3c66c67d6dc6870dd38513aa786" kind="function"><name>max_element</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a259989d70b0092f0273ece9283c42dcd" kind="function"><name>max_element</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a8678573f19e01f441a6b4108e62781f3" kind="function"><name>offload_until</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a0bc6231cc6b1dbf5171b0bc421dc6577" kind="function"><name>offload_n</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a5959002af1cf1a1ada3d86a073682232" kind="function"><name>offload</name></member>
@@ -414,14 +431,14 @@
     <member refid="classtf_1_1Executor_1aeeecfcac09ba22db0aeaf2f5b534b802" kind="function"><name>_invoke_cudaflow_task_entry</name></member>
     <member refid="classtf_1_1Executor_1a42a995c2a5299761cf3c2e2d17cfca34" kind="function"><name>_invoke_syclflow_task_entry</name></member>
   </compound>
-  <compound refid="structtf_1_1cudaFlow_1_1External" kind="struct"><name>tf::cudaFlow::External</name>
-    <member refid="structtf_1_1cudaFlow_1_1External_1add55ef590408418dee0c8b79db7a747b" kind="variable"><name>graph</name></member>
-  </compound>
   <compound refid="structtf_1_1cudaFlowCapturer_1_1External" kind="struct"><name>tf::cudaFlowCapturer::External</name>
     <member refid="structtf_1_1cudaFlowCapturer_1_1External_1acb0595d884b28d21f661595e718c3cc2" kind="variable"><name>graph</name></member>
   </compound>
   <compound refid="structtf_1_1syclFlow_1_1External" kind="struct"><name>tf::syclFlow::External</name>
     <member refid="structtf_1_1syclFlow_1_1External_1ace2afbeee949bd808c7e374bdceb0467" kind="variable"><name>graph</name></member>
+  </compound>
+  <compound refid="structtf_1_1cudaFlow_1_1External" kind="struct"><name>tf::cudaFlow::External</name>
+    <member refid="structtf_1_1cudaFlow_1_1External_1add55ef590408418dee0c8b79db7a747b" kind="variable"><name>graph</name></member>
   </compound>
   <compound refid="classtf_1_1FlowBuilder" kind="class"><name>tf::FlowBuilder</name>
     <member refid="classtf_1_1FlowBuilder_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -466,9 +483,9 @@
     <member refid="structtf_1_1syclFlow_1_1Internal_1a9bbc7eb920ae573d5360cae1cd7fb03d" kind="variable"><name>executor</name></member>
     <member refid="structtf_1_1syclFlow_1_1Internal_1a25015cffaeb326799d37ecb8ca5baceb" kind="function"><name>Internal</name></member>
   </compound>
-  <compound refid="structtf_1_1cudaFlowCapturer_1_1Internal" kind="struct"><name>tf::cudaFlowCapturer::Internal</name>
-  </compound>
   <compound refid="structtf_1_1cudaFlow_1_1Internal" kind="struct"><name>tf::cudaFlow::Internal</name>
+  </compound>
+  <compound refid="structtf_1_1cudaFlowCapturer_1_1Internal" kind="struct"><name>tf::cudaFlowCapturer::Internal</name>
   </compound>
   <compound refid="classtf_1_1ObserverInterface" kind="class"><name>tf::ObserverInterface</name>
     <member refid="classtf_1_1ObserverInterface_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -495,6 +512,12 @@
     <member refid="structtf_1_1ProfileData_1ac8bd5a12ea62aa7f5c1afbcceae1b075" kind="function"><name>save</name></member>
     <member refid="structtf_1_1ProfileData_1a8ba1ef7e916c4b827707a48c886381c4" kind="function"><name>load</name></member>
   </compound>
+  <compound refid="structtf_1_1ChromeObserver_1_1Segment" kind="struct"><name>tf::ChromeObserver::Segment</name>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a8e3739d8a5b9be34851a6404f5916d95" kind="variable"><name>name</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a197cf797abb156e1f17dd276acd2cd74" kind="variable"><name>beg</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1abe331473cff75d9f11c7fb69e481f2f7" kind="variable"><name>end</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a069ca8806de9e01a0ae2b3f5263a20c2" kind="function"><name>Segment</name></member>
+  </compound>
   <compound refid="structtf_1_1Segment" kind="struct"><name>tf::Segment</name>
     <member refid="structtf_1_1Segment_1a3e259f6da83dcf714ec785aa1a3d14bd" kind="variable"><name>name</name></member>
     <member refid="structtf_1_1Segment_1a8f567dbac067898e2e5c4d4947b04fb4" kind="variable"><name>type</name></member>
@@ -505,12 +528,6 @@
     <member refid="structtf_1_1Segment_1ad6393c5cf90f07b0eda6bf0c0321322d" kind="function"><name>Segment</name></member>
     <member refid="structtf_1_1Segment_1aab1d1ddd792d5b7b312ad14532034054" kind="function"><name>Segment</name></member>
     <member refid="structtf_1_1Segment_1a336d5825032b4b9085f1e78a1fa26341" kind="function"><name>span</name></member>
-  </compound>
-  <compound refid="structtf_1_1ChromeObserver_1_1Segment" kind="struct"><name>tf::ChromeObserver::Segment</name>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a8e3739d8a5b9be34851a6404f5916d95" kind="variable"><name>name</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a197cf797abb156e1f17dd276acd2cd74" kind="variable"><name>beg</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1abe331473cff75d9f11c7fb69e481f2f7" kind="variable"><name>end</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a069ca8806de9e01a0ae2b3f5263a20c2" kind="function"><name>Segment</name></member>
   </compound>
   <compound refid="classtf_1_1Semaphore" kind="class"><name>tf::Semaphore</name>
     <member refid="classtf_1_1Semaphore_1a6db9d28bd448a131448276ee03de1e6d" kind="friend"><name>Node</name></member>
@@ -1374,6 +1391,11 @@
     <member refid="namespacetf_1a9c69906a4dfd1e2d0cd7ed496d29dafd" kind="function"><name>cuda_sort_buffer_size</name></member>
     <member refid="namespacetf_1aeaed6f5d4a4cfa5c3a2c42d0dba54664" kind="function"><name>cuda_sort</name></member>
     <member refid="namespacetf_1a06804cb1598e965febc7bd35fc0fbbb0" kind="function"><name>cuda_sort</name></member>
+    <member refid="namespacetf_1a5f9dabd7c5d0fa5166cf76d9fa5a038e" kind="function"><name>cuda_find_if</name></member>
+    <member refid="namespacetf_1abe3b31aaf686b491e9000f0867934713" kind="function"><name>cuda_min_element_buffer_size</name></member>
+    <member refid="namespacetf_1a572c13198191c46765264f8afabe2e9f" kind="function"><name>cuda_min_element</name></member>
+    <member refid="namespacetf_1a04965f210cc6447c7c38206a28c3c3d4" kind="function"><name>cuda_max_element_buffer_size</name></member>
+    <member refid="namespacetf_1a3fc577fd0a8f127770bcf68bc56c073e" kind="function"><name>cuda_max_element</name></member>
     <member refid="namespacetf_1a160861c1c085842ecb0c56537199deaa" kind="function"><name>operator&lt;&lt;</name></member>
     <member refid="namespacetf_1a30fa078dcf625e9eada5a95af1467588" kind="function"><name>version</name></member>
   </compound>
@@ -1389,7 +1411,8 @@
     <member refid="cuda__for__each_8hpp_1adb0301752c89d8b515d00c4c771f74d7" kind="function"><name>cuda_for_each_index_loop</name></member>
     <member refid="cuda__transform_8hpp_1aefd61e0b4f1e0e9518bed187dd840ba6" kind="function"><name>cuda_transform_loop</name></member>
     <member refid="cuda__transform_8hpp_1a0d4171d8abe557841d9aa06a72cdcbcb" kind="function"><name>cuda_transform_loop</name></member>
-    <member refid="cuda__reduce_8hpp_1afddddc0216ce67d63a474374ebab7858" kind="function"><name>cuda_reduce_loop</name></member>
+    <member refid="cuda__reduce_8hpp_1ab2081cd1728759054a34c21a16453db6" kind="function"><name>cuda_reduce_loop</name></member>
+    <member refid="cuda__reduce_8hpp_1a6694b88dc343d87df2104809002583cc" kind="function"><name>cuda_uninitialized_reduce_loop</name></member>
     <member refid="cuda__scan_8hpp_1a2c9669b414231e12f66e9d40ca9ae3a3" kind="function"><name>cuda_single_pass_scan</name></member>
     <member refid="cuda__scan_8hpp_1a10be6941d3e42a5583d07a092a7b083d" kind="function"><name>cuda_scan_loop</name></member>
     <member refid="cuda__merge_8hpp_1ae9d3db5c9457ebec7cbdd3a3d8c65e94" kind="function"><name>cuda_merge_path</name></member>
@@ -1416,6 +1439,9 @@
     <member refid="cuda__sort_8hpp_1a4705874f6abf58283ecae02f60cdf8d2" kind="function"><name>cuda_compute_merge_sort_range</name></member>
     <member refid="cuda__sort_8hpp_1ab4d357fb63d82334ea784ee72beaf600" kind="function"><name>cuda_merge_sort_partitions</name></member>
     <member refid="cuda__sort_8hpp_1a1d70c013b280d4f811275e892af15c18" kind="function"><name>merge_sort_loop</name></member>
+    <member refid="cuda__find_8hpp_1a3941b09790867beb42f502c08e08b908" kind="function"><name>cuda_find_if_loop</name></member>
+    <member refid="cuda__find_8hpp_1a72820903215a409e1e3d47a073579918" kind="function"><name>cuda_min_element_loop</name></member>
+    <member refid="cuda__find_8hpp_1a442fbc4beb897580a46164147d7db2c9" kind="function"><name>cuda_max_element_loop</name></member>
   </compound>
   <compound refid="algorithms_8dox" kind="file"><name>algorithms.dox</name>
   </compound>
@@ -1447,6 +1473,8 @@
   </compound>
   <compound refid="cuda__execution__policy_8hpp" kind="file"><name>cuda_execution_policy.hpp</name>
   </compound>
+  <compound refid="cuda__find_8hpp" kind="file"><name>cuda_find.hpp</name>
+  </compound>
   <compound refid="cuda__flow_8hpp" kind="file"><name>cuda_flow.hpp</name>
   </compound>
   <compound refid="cuda__for__each_8hpp" kind="file"><name>cuda_for_each.hpp</name>
@@ -1466,6 +1494,8 @@
   <compound refid="cuda__std__algorithms_8dox" kind="file"><name>cuda_std_algorithms.dox</name>
   </compound>
   <compound refid="cuda__std__execution__policy_8dox" kind="file"><name>cuda_std_execution_policy.dox</name>
+  </compound>
+  <compound refid="cuda__std__find_8dox" kind="file"><name>cuda_std_find.dox</name>
   </compound>
   <compound refid="cuda__std__for__each_8dox" kind="file"><name>cuda_std_for_each.dox</name>
   </compound>
@@ -1488,6 +1518,8 @@
   <compound refid="cudaflow_8hpp" kind="file"><name>cudaflow.hpp</name>
   </compound>
   <compound refid="cudaflow__algorithms_8dox" kind="file"><name>cudaflow_algorithms.dox</name>
+  </compound>
+  <compound refid="cudaflow__find_8dox" kind="file"><name>cudaflow_find.dox</name>
   </compound>
   <compound refid="cudaflow__for__each_8dox" kind="file"><name>cudaflow_for_each.dox</name>
   </compound>
@@ -1719,6 +1751,8 @@
   </compound>
   <compound refid="cudaFlowSort" kind="page"><name>cudaFlowSort</name>
   </compound>
+  <compound refid="cudaFlowFind" kind="page"><name>cudaFlowFind</name>
+  </compound>
   <compound refid="syclFlowAlgorithms" kind="page"><name>syclFlowAlgorithms</name>
   </compound>
   <compound refid="SingleTaskSYCL" kind="page"><name>SingleTaskSYCL</name>
@@ -1744,6 +1778,8 @@
   <compound refid="CUDASTDMerge" kind="page"><name>CUDASTDMerge</name>
   </compound>
   <compound refid="CUDASTDSort" kind="page"><name>CUDASTDSort</name>
+  </compound>
+  <compound refid="CUDASTDFind" kind="page"><name>CUDASTDFind</name>
   </compound>
   <compound refid="Examples" kind="page"><name>Examples</name>
   </compound>

@@ -21,7 +21,7 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronize<sp/>the<sp/>execution</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a33596174fe764d85356ed9b8c0934bb7" kindref="member">synchronize</ref>();</highlight></codeline>
-</programlisting></para><para>Each iteration is independent of each other and is assigned one kernel thread to run the callable. The transform algorithm call runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results.</para></sect1>
+</programlisting></para><para>Each iteration is independent of each other and is assigned one kernel thread to run the callable. The transform algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results.</para></sect1>
 <sect1 id="CUDASTDTransform_1CUDASTDTransformTwoRangesOfItems">
 <title>Transform Two Ranges of Items</title>
 <para>You can transform two ranges of items to an output range through a binary operator. The task created by <ref refid="namespacetf_1abdcb5b755f7ace2aa452541d5bf93b5f" kindref="member">tf::cuda_transform(P&amp;&amp; p, I1 first1, I1 last1, I2 first2, O output, C op)</ref> represents a parallel execution for the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first1<sp/>!=<sp/>last1)<sp/>{</highlight></codeline>

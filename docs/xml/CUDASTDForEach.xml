@@ -27,7 +27,7 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronize<sp/>the<sp/>execution</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a33596174fe764d85356ed9b8c0934bb7" kindref="member">synchronize</ref>();</highlight></codeline>
-</programlisting></para><para>The parallel-iteration algorithm call runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results.</para></sect1>
+</programlisting></para><para>The parallel-iteration algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results.</para></sect1>
 <sect1 id="CUDASTDForEach_1CUDASTDIteratorBasedParallelFor">
 <title>Iterator-based Parallel Iterations</title>
 <para>Iterator-based parallel-for performs parallel iterations over a range specified by two STL-styled iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by <ref refid="namespacetf_1a7c449cec0b93503b8280d05add35e9f4" kindref="member">tf::cuda_for_each</ref> represents a parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i++)<sp/>{</highlight></codeline>

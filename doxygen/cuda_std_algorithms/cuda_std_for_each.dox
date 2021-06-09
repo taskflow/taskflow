@@ -44,7 +44,7 @@ tf::cuda_for_each_index(
 policy.synchronize();
 @endcode
 
-The parallel-iteration algorithm call runs @em asynchronously through the stream specified
+The parallel-iteration algorithm runs @em asynchronously through the stream specified
 in the execution policy. You need to synchronize the stream to
 obtain correct results.
 

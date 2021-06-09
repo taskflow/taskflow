@@ -762,11 +762,95 @@ class cudaFlowCapturer {
     cudaTask find_if(I first, I last, unsigned* idx, U op);
     
     /**
-    @brief updates the parameters of the task created from 
-           tf::cudaFlow::find_if
+    @brief updates the parameters of a find-if task
+
+    This method is similar to tf::cudaFlowCapturer::find_if but operates
+    on an existing task.
     */
     template <typename I, typename U>
     void find_if(cudaTask task, I first, I last, unsigned* idx, U op);
+    
+    /**
+    @brief finds the index of the minimum element in a range
+    
+    @tparam I input iterator type
+    @tparam O comparator type
+    
+    @param first iterator to the beginning of the range
+    @param last iterator to the end of the range
+    @param idx solution index of the minimum element
+    @param op comparison function object
+    
+    The function launches kernels asynchronously to find 
+    the smallest element in the range <tt>[first, last)</tt>
+    using the given comparator @c op. 
+    The function is equivalent to a parallel execution of the following loop:
+    
+    @code{.cpp}
+    if(first == last) {
+      return 0;
+    }
+    auto smallest = first;
+    for (++first; first != last; ++first) {
+      if (op(*first, *smallest)) {
+        smallest = first;
+      }
+    }
+    return std::distance(first, smallest);
+    @endcode
+    */
+    template <typename I, typename O>
+    cudaTask min_element(I first, I last, unsigned* idx, O op);
+    
+    /**
+    @brief updates the parameters of a min-element task
+    
+    This method is similar to cudaFlowCapturer::min_element but operates
+    on an existing task.
+    */
+    template <typename I, typename O>
+    void min_element(cudaTask task, I first, I last, unsigned* idx, O op);
+    
+    /**
+    @brief finds the index of the maximum element in a range
+    
+    @tparam I input iterator type
+    @tparam O comparator type
+    
+    @param first iterator to the beginning of the range
+    @param last iterator to the end of the range
+    @param idx solution index of the maximum element
+    @param op comparison function object
+    
+    The function launches kernels asynchronously to find 
+    the largest element in the range <tt>[first, last)</tt>
+    using the given comparator @c op. 
+    The function is equivalent to a parallel execution of the following loop:
+    
+    @code{.cpp}
+    if(first == last) {
+      return 0;
+    }
+    auto largest = first;
+    for (++first; first != last; ++first) {
+      if (op(*largest, *first)) {
+        largest = first;
+      }
+    }
+    return std::distance(first, largest);
+    @endcode
+    */
+    template <typename I, typename O>
+    cudaTask max_element(I first, I last, unsigned* idx, O op);
+    
+    /**
+    @brief updates the parameters of a max-element task
+    
+    This method is similar to cudaFlowCapturer::max_element but operates
+    on an existing task.
+     */
+    template <typename I, typename O>
+    void max_element(cudaTask task, I first, I last, unsigned* idx, O op);
     
     // ------------------------------------------------------------------------
     // offload methods

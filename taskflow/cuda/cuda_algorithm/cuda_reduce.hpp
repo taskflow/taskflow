@@ -283,9 +283,10 @@ void cuda_transform_reduce(
   }
 
   // reduction loop
-  //detail::cuda_transform_reduce_loop(p, first, count, res, bop, uop, true, s, buf);
   detail::cuda_reduce_loop(p, 
-    cuda_make_load_iterator<T>([=]__device__(auto i){ return uop(*(first+i)); }), 
+    cuda_make_load_iterator<T>([=]__device__(auto i){ 
+      return uop(*(first+i)); 
+    }), 
     count, res, bop, buf
   );
 }
@@ -389,90 +390,6 @@ void cuda_transform_uninitialized_reduce(
 //    }
 //  }
 //}
-
-// ----------------------------------------------------------------------------
-// cudaFlow 
-// ----------------------------------------------------------------------------
-
-// Function: reduce
-template <typename I, typename T, typename B>
-cudaTask cudaFlow::reduce(I first, I last, T* result, B bop) {
-  return capture([=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.reduce(first, last, result, bop);
-  });
-}
-
-// Function: uninitialized_reduce
-template <typename I, typename T, typename B>
-cudaTask cudaFlow::uninitialized_reduce(I first, I last, T* result, B bop) {
-  return capture([=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.uninitialized_reduce(first, last, result, bop);
-  });
-}
-
-// Function: transform_reduce
-template <typename I, typename T, typename B, typename U>
-cudaTask cudaFlow::transform_reduce(I first, I last, T* result, B bop, U uop) {
-  return capture([=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.transform_reduce(first, last, result, bop, uop);
-  });
-}
-
-// Function: transform_uninitialized_reduce
-template <typename I, typename T, typename B, typename U>
-cudaTask cudaFlow::transform_uninitialized_reduce(
-  I first, I last, T* result, B bop, U uop
-) {
-  return capture([=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.transform_uninitialized_reduce(first, last, result, bop, uop);
-  });
-}
-
-// Function: reduce
-template <typename I, typename T, typename C>
-void cudaFlow::reduce(cudaTask task, I first, I last, T* result, C op) {
-  capture(task, [=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.reduce(first, last, result, op);
-  });
-}
-
-// Function: uninitialized_reduce
-template <typename I, typename T, typename C>
-void cudaFlow::uninitialized_reduce(
-  cudaTask task, I first, I last, T* result, C op
-) {
-  capture(task, [=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.uninitialized_reduce(first, last, result, op);
-  });
-}
-
-// Function: transform_reduce
-template <typename I, typename T, typename B, typename U>
-void cudaFlow::transform_reduce(
-  cudaTask task, I first, I last, T* result, B bop, U uop
-) {
-  capture(task, [=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.transform_reduce(first, last, result, bop, uop);
-  });
-}
-
-// Function: transform_uninitialized_reduce
-template <typename I, typename T, typename B, typename U>
-void cudaFlow::transform_uninitialized_reduce(
-  cudaTask task, I first, I last, T* result, B bop, U uop
-) {
-  capture(task, [=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.transform_uninitialized_reduce(first, last, result, bop, uop);
-  });
-}
 
 // ----------------------------------------------------------------------------
 // cudaFlowCapturer
@@ -623,6 +540,92 @@ void cudaFlowCapturer::transform_uninitialized_reduce(
     );
   });
 }
+
+
+// ----------------------------------------------------------------------------
+// cudaFlow 
+// ----------------------------------------------------------------------------
+
+// Function: reduce
+template <typename I, typename T, typename B>
+cudaTask cudaFlow::reduce(I first, I last, T* result, B bop) {
+  return capture([=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.reduce(first, last, result, bop);
+  });
+}
+
+// Function: uninitialized_reduce
+template <typename I, typename T, typename B>
+cudaTask cudaFlow::uninitialized_reduce(I first, I last, T* result, B bop) {
+  return capture([=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.uninitialized_reduce(first, last, result, bop);
+  });
+}
+
+// Function: transform_reduce
+template <typename I, typename T, typename B, typename U>
+cudaTask cudaFlow::transform_reduce(I first, I last, T* result, B bop, U uop) {
+  return capture([=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.transform_reduce(first, last, result, bop, uop);
+  });
+}
+
+// Function: transform_uninitialized_reduce
+template <typename I, typename T, typename B, typename U>
+cudaTask cudaFlow::transform_uninitialized_reduce(
+  I first, I last, T* result, B bop, U uop
+) {
+  return capture([=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.transform_uninitialized_reduce(first, last, result, bop, uop);
+  });
+}
+
+// Function: reduce
+template <typename I, typename T, typename C>
+void cudaFlow::reduce(cudaTask task, I first, I last, T* result, C op) {
+  capture(task, [=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.reduce(first, last, result, op);
+  });
+}
+
+// Function: uninitialized_reduce
+template <typename I, typename T, typename C>
+void cudaFlow::uninitialized_reduce(
+  cudaTask task, I first, I last, T* result, C op
+) {
+  capture(task, [=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.uninitialized_reduce(first, last, result, op);
+  });
+}
+
+// Function: transform_reduce
+template <typename I, typename T, typename B, typename U>
+void cudaFlow::transform_reduce(
+  cudaTask task, I first, I last, T* result, B bop, U uop
+) {
+  capture(task, [=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.transform_reduce(first, last, result, bop, uop);
+  });
+}
+
+// Function: transform_uninitialized_reduce
+template <typename I, typename T, typename B, typename U>
+void cudaFlow::transform_uninitialized_reduce(
+  cudaTask task, I first, I last, T* result, B bop, U uop
+) {
+  capture(task, [=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.transform_uninitialized_reduce(first, last, result, bop, uop);
+  });
+}
+
 
 }  // end of namespace tf -----------------------------------------------------
 

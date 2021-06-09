@@ -37,7 +37,7 @@ policy.synchronize();
 
 Each iteration is independent of each other and is assigned one kernel thread 
 to run the callable.
-The transform algorithm call runs @em asynchronously through the stream specified
+The transform algorithm runs @em asynchronously through the stream specified
 in the execution policy. You need to synchronize the stream to
 obtain correct results.
 

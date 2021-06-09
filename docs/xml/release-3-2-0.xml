@@ -26,6 +26,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <title>Working Items</title>
 <para><itemizedlist>
 <listitem><para>enhancing support for SYCL with Intel DPC++ </para></listitem>
+<listitem><para>enhancing parallel CPU and GPU algorithms </para></listitem>
 <listitem><para>designing pipeline interface and its scheduling algorithms</para></listitem>
 </itemizedlist>
 </para></sect1>
@@ -59,6 +60,9 @@ New algorithms in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFl
 <listitem><para>added <ref refid="classtf_1_1cudaFlow_1ae80df494109b0dc6db77111917207e6b" kindref="member">tf::cudaFlow::transform_exclusive_scan</ref> </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlow_1af8fa5d69a57d010d7a3ee2756d85859c" kindref="member">tf::cudaFlow::merge</ref> </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlow_1ae462d455fed06dfcdbd1e25a2c9c5da6" kindref="member">tf::cudaFlow::sort</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a4812f4eccece9217da13dbc09992670c" kindref="member">tf::cudaFlow::find_if</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a63d18c5a42bb351fda43305258f51262" kindref="member">tf::cudaFlow::min_element</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a7c99f8f1a961a225e2ea708afaa34905" kindref="member">tf::cudaFlow::max_element</ref> </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a326516e69ca7a1b15aad237428990791" kindref="member">tf::cudaFlowCapturer::reduce</ref> </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a02045cacdcff36864243aa9ca0c1d2ef" kindref="member">tf::cudaFlowCapturer::transform_reduce</ref> </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a99044cf477b1bd23c120eb8beea28eea" kindref="member">tf::cudaFlowCapturer::uninitialized_reduce</ref> </para></listitem>
@@ -69,6 +73,9 @@ New algorithms in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFl
 <listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a91bc91e5f13fda5f119d9b9f5f679782" kindref="member">tf::cudaFlowCapturer::transform_exclusive_scan</ref> </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1ac2eec500f313481926197ff0b3aed343" kindref="member">tf::cudaFlowCapturer::merge</ref> </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a3bcb91eb1579451ece602206f20845f4" kindref="member">tf::cudaFlowCapturer::sort</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a861e098e939c07c592c00e75583a68c0" kindref="member">tf::cudaFlowCapturer::find_if</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a8b846063445cd2314c24d03f478d0540" kindref="member">tf::cudaFlowCapturer::min_element</ref> </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1acf68a3c66c67d6dc6870dd38513aa786" kindref="member">tf::cudaFlowCapturer::max_element</ref> </para></listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaLinearCapturing" kindref="compound">tf::cudaLinearCapturing</ref></para></listitem>
 </itemizedlist>
 </para></sect2>
@@ -90,14 +97,17 @@ New algorithms in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFl
 <listitem><para>added <ref refid="namespacetf_1afa4aa760ddb6efbda1b9bab505ad5baf" kindref="member">tf::cuda_transform_inclusive_scan</ref> </para></listitem>
 <listitem><para>added <ref refid="namespacetf_1a2e739895c1c73538967af060ca714366" kindref="member">tf::cuda_transform_exclusive_scan</ref> </para></listitem>
 <listitem><para>added <ref refid="namespacetf_1a91627df53e76d19f3118558d4c118a6b" kindref="member">tf::cuda_merge</ref> </para></listitem>
-<listitem><para>added <ref refid="namespacetf_1aeaed6f5d4a4cfa5c3a2c42d0dba54664" kindref="member">tf::cuda_sort</ref></para></listitem>
+<listitem><para>added <ref refid="namespacetf_1aeaed6f5d4a4cfa5c3a2c42d0dba54664" kindref="member">tf::cuda_sort</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a5f9dabd7c5d0fa5166cf76d9fa5a038e" kindref="member">tf::cuda_find_if</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a572c13198191c46765264f8afabe2e9f" kindref="member">tf::cuda_min_element</ref> </para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a3fc577fd0a8f127770bcf68bc56c073e" kindref="member">tf::cuda_max_element</ref></para></listitem>
 </itemizedlist>
 </para></sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_utilities">
 <title>Utilities</title>
 <para><itemizedlist>
 <listitem><para>added CUDA meta programming </para></listitem>
-<listitem><para>added CUDA standard algorithms</para></listitem>
+<listitem><para>added SYCL meta programming</para></listitem>
 </itemizedlist>
 </para></sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_profiler">
@@ -139,7 +149,7 @@ New algorithms in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFl
 <listitem><para><ref refid="cudaFlowReduce" kindref="compound">Parallel Reduction</ref></para></listitem><listitem><para><ref refid="cudaFlowScan" kindref="compound">Parallel Scan</ref></para></listitem><listitem><para><ref refid="cudaFlowMerge" kindref="compound">Parallel Merge</ref></para></listitem><listitem><para><ref refid="cudaFlowSort" kindref="compound">Parallel Sort</ref> </para></listitem></itemizedlist>
 </para></listitem>
 <listitem><para>added <ref refid="cudaStandardAlgorithms" kindref="compound">CUDA Standard Algorithms</ref><itemizedlist>
-<listitem><para><ref refid="CUDASTDExecutionPolicy" kindref="compound">Execution Policy</ref></para></listitem><listitem><para><ref refid="CUDASTDReduce" kindref="compound">Parallel Reduction</ref></para></listitem><listitem><para><ref refid="CUDASTDScan" kindref="compound">Parallel Scan</ref></para></listitem><listitem><para><ref refid="CUDASTDMerge" kindref="compound">Parallel Merge</ref></para></listitem><listitem><para><ref refid="CUDASTDSort" kindref="compound">Parallel Sort</ref></para></listitem></itemizedlist>
+<listitem><para><ref refid="CUDASTDExecutionPolicy" kindref="compound">Execution Policy</ref></para></listitem><listitem><para><ref refid="CUDASTDReduce" kindref="compound">Parallel Reduction</ref></para></listitem><listitem><para><ref refid="CUDASTDScan" kindref="compound">Parallel Scan</ref></para></listitem><listitem><para><ref refid="CUDASTDMerge" kindref="compound">Parallel Merge</ref></para></listitem><listitem><para><ref refid="CUDASTDSort" kindref="compound">Parallel Sort</ref></para></listitem><listitem><para><ref refid="CUDASTDFind" kindref="compound">Parallel Find</ref></para></listitem></itemizedlist>
 </para></listitem>
 </itemizedlist>
 </para></sect1>

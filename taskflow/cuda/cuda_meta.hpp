@@ -374,17 +374,17 @@ struct cudaLoadStoreIterator : std::iterator_traits<const T*> {
 //  __device__ void operator()(T v, I index) const { }
 //};
 
-template <typename T, typename I = int, typename L, typename S>
+template <typename T, typename I = unsigned, typename L, typename S>
 auto cuda_make_load_store_iterator(L load, S store, I base = 0) {
   return cudaLoadStoreIterator<L, S, T, I>(load, store, base);
 }
 
-template <typename T, typename I = int, typename L>
+template <typename T, typename I = unsigned, typename L>
 auto cuda_make_load_iterator(L load, I base = 0) {
   return cuda_make_load_store_iterator<T>(load, cudaEmpty(), base);
 }
 
-template <typename T, typename I = int, typename S>
+template <typename T, typename I = unsigned, typename S>
 auto cuda_make_store_iterator(S store, I base = 0) {
   return cuda_make_load_store_iterator<T>(cudaEmpty(), store, base);
 }

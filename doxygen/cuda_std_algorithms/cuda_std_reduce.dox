@@ -48,15 +48,17 @@ tf::cuda_reduce(policy,
 // synchronize the execution
 policy.synchronize();
 
-// delete the buffer
+// delete the memory
 tf::cuda_free(buffer);
+tf::cuda_free(res);
+tf::cuda_free(vec);
 @endcode
 
-The reduce algorithm call runs @em asynchronously through the stream specified
+The reduce algorithm runs @em asynchronously through the stream specified
 in the execution policy. You need to synchronize the stream to
 obtain correct results.
 Since the GPU reduction algorithm may require extra buffer to store the 
-temporary results, you must provide a buffer of size at least the bytes
+temporary results, you must provide a buffer of size at least bytes
 returned from tf::cuda_reduce_buffer_size.
 
 @attention

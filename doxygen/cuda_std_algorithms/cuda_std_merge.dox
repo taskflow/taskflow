@@ -46,11 +46,11 @@ assert(std::is_sorted(output, output + 2*N));
 tf::cuda_free(buffer);
 @endcode
 
-The merge algorithm call runs @em asynchronously through the stream specified
+The merge algorithm runs @em asynchronously through the stream specified
 in the execution policy. You need to synchronize the stream to
 obtain correct results.
 Since the GPU merge algorithm may require extra buffer to store the 
-temporary results, you must provide a buffer of size at least the bytes
+temporary results, you must provide a buffer of size at least bytes
 returned from tf::cuda_merge_buffer_size.
 
 @attention

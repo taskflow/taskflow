@@ -40,7 +40,7 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(buffer);</highlight></codeline>
-</programlisting></para><para>The merge algorithm call runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results. Since the GPU merge algorithm may require extra buffer to store the temporary results, you must provide a buffer of size at least the bytes returned from <ref refid="namespacetf_1a3db5b8f718e7f6a6fa2da3a689bd8828" kindref="member">tf::cuda_merge_buffer_size</ref>.</para><para><simplesect kind="attention"><para>You must keep the buffer alive before the merge call completes. </para></simplesect>
+</programlisting></para><para>The merge algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results. Since the GPU merge algorithm may require extra buffer to store the temporary results, you must provide a buffer of size at least bytes returned from <ref refid="namespacetf_1a3db5b8f718e7f6a6fa2da3a689bd8828" kindref="member">tf::cuda_merge_buffer_size</ref>.</para><para><simplesect kind="attention"><para>You must keep the buffer alive before the merge call completes. </para></simplesect>
 </para></sect1>
     </detaileddescription>
   </compounddef>

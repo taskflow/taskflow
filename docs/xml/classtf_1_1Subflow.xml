@@ -266,18 +266,6 @@ This method is thread-safe and can be called by multiple tasks in the subflow at
 <codeline><highlight class="normal">C.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(D);<sp/><sp/></highlight><highlight class="comment">//<sp/>D<sp/>runs<sp/>after<sp/>C<sp/></highlight></codeline>
 </programlisting> </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="142">
-        <label>tf::FlowBuilder</label>
-        <link refid="classtf_1_1FlowBuilder"/>
-      </node>
-      <node id="141">
-        <label>tf::Subflow</label>
-        <link refid="classtf_1_1Subflow"/>
-        <childnode refid="142" relation="public-inheritance">
-        </childnode>
-      </node>
-    </inheritancegraph>
-    <collaborationgraph>
       <node id="144">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
@@ -286,6 +274,18 @@ This method is thread-safe and can be called by multiple tasks in the subflow at
         <label>tf::Subflow</label>
         <link refid="classtf_1_1Subflow"/>
         <childnode refid="144" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="146">
+        <label>tf::FlowBuilder</label>
+        <link refid="classtf_1_1FlowBuilder"/>
+      </node>
+      <node id="145">
+        <label>tf::Subflow</label>
+        <link refid="classtf_1_1Subflow"/>
+        <childnode refid="146" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>

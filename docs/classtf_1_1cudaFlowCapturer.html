@@ -443,6 +443,57 @@
             </dt>
             <dd>updates a capture task to a sort task</dd>
             <dt>
+              <div class="m-doc-template">template&lt;typename I, typename U&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a861e098e939c07c592c00e75583a68c0" class="m-doc">find_if</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              unsigned* idx,
+              U op) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>creates a task to find the index of the first element in a range</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename U&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a039e57d518c43826bba3b8138e034212" class="m-doc">find_if</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              I first,
+              I last,
+              unsigned* idx,
+              U op)</span>
+            </dt>
+            <dd>updates the parameters of a find-if task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename O&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a8b846063445cd2314c24d03f478d0540" class="m-doc">min_element</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              unsigned* idx,
+              O op) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>finds the index of the minimum element in a range</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename O&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#ad88b4d4bcf8bbd9afd8d83b91365cca5" class="m-doc">min_element</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              I first,
+              I last,
+              unsigned* idx,
+              O op)</span>
+            </dt>
+            <dd>updates the parameters of a min-element task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename O&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#acf68a3c66c67d6dc6870dd38513aa786" class="m-doc">max_element</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              unsigned* idx,
+              O op) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>finds the index of the maximum element in a range</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename I, typename O&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a259989d70b0092f0273ece9283c42dcd" class="m-doc">max_element</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              I first,
+              I last,
+              unsigned* idx,
+              O op)</span>
+            </dt>
+            <dd>updates the parameters of a max-element task</dd>
+            <dt>
               <div class="m-doc-template">template&lt;typename P&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#a8678573f19e01f441a6b4108e62781f3" class="m-doc">offload_until</a>(</span><span class="m-doc-wrap">P&amp;&amp; predicate)</span>
             </dt>
@@ -1660,6 +1711,219 @@
             </h3>
             <p>updates a capture task to a sort task</p>
 <p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a3bcb91eb1579451ece602206f20845f4" class="m-doc">cudaFlowCapturer::<wbr />sort</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="a861e098e939c07c592c00e75583a68c0"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename U&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a861e098e939c07c592c00e75583a68c0" class="m-doc-self">find_if</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              unsigned* idx,
+              U op)</span></span>
+            </h3>
+            <p>creates a task to find the index of the first element in a range</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">I</td>
+                  <td>input iterator type</td>
+                </tr>
+                <tr>
+                  <td>U</td>
+                  <td>unary operator type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first</td>
+                  <td>iterator to the beginning of the range</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>iterator to the end of the range</td>
+                </tr>
+                <tr>
+                  <td>idx</td>
+                  <td>pointer to the index of the found element</td>
+                </tr>
+                <tr>
+                  <td>op</td>
+                  <td>unary operator which returns <code>true</code> for the required element</td>
+                </tr>
+              </tbody>
+            </table>
+<p>Finds the index <code>idx</code> of the first element in the range <code>[first, last)</code> such that <code>op(*(first+idx))</code> is true. This is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="kt">unsigned</span> <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">for</span><span class="p">(;</span> <span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">;</span> <span class="o">++</span><span class="n">first</span><span class="p">,</span> <span class="o">++</span><span class="n">idx</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">p</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">idx</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="k">return</span> <span class="n">idx</span><span class="p">;</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a039e57d518c43826bba3b8138e034212"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename U&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a039e57d518c43826bba3b8138e034212" class="m-doc-self">find_if</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              I first,
+              I last,
+              unsigned* idx,
+              U op)</span></span>
+            </h3>
+            <p>updates the parameters of a find-if task</p>
+<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a861e098e939c07c592c00e75583a68c0" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />find_if</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="a8b846063445cd2314c24d03f478d0540"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename O&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8b846063445cd2314c24d03f478d0540" class="m-doc-self">min_element</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              unsigned* idx,
+              O op)</span></span>
+            </h3>
+            <p>finds the index of the minimum element in a range</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">I</td>
+                  <td>input iterator type</td>
+                </tr>
+                <tr>
+                  <td>O</td>
+                  <td>comparator type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first</td>
+                  <td>iterator to the beginning of the range</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>iterator to the end of the range</td>
+                </tr>
+                <tr>
+                  <td>idx</td>
+                  <td>solution index of the minimum element</td>
+                </tr>
+                <tr>
+                  <td>op</td>
+                  <td>comparison function object</td>
+                </tr>
+              </tbody>
+            </table>
+<p>The function launches kernels asynchronously to find the smallest element in the range <code>[first, last)</code> using the given comparator <code>op</code>. The function is equivalent to a parallel execution of the following loop:</p><pre class="m-code"><span class="k">if</span><span class="p">(</span><span class="n">first</span> <span class="o">==</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">auto</span> <span class="n">smallest</span> <span class="o">=</span> <span class="n">first</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="o">++</span><span class="n">first</span><span class="p">;</span> <span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">;</span> <span class="o">++</span><span class="n">first</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="p">,</span> <span class="o">*</span><span class="n">smallest</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">smallest</span> <span class="o">=</span> <span class="n">first</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">distance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">smallest</span><span class="p">);</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="ad88b4d4bcf8bbd9afd8d83b91365cca5"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename O&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad88b4d4bcf8bbd9afd8d83b91365cca5" class="m-doc-self">min_element</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              I first,
+              I last,
+              unsigned* idx,
+              O op)</span></span>
+            </h3>
+            <p>updates the parameters of a min-element task</p>
+<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a8b846063445cd2314c24d03f478d0540" class="m-doc">cudaFlowCapturer::<wbr />min_element</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="acf68a3c66c67d6dc6870dd38513aa786"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename O&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#acf68a3c66c67d6dc6870dd38513aa786" class="m-doc-self">max_element</a>(</span><span class="m-doc-wrap">I first,
+              I last,
+              unsigned* idx,
+              O op)</span></span>
+            </h3>
+            <p>finds the index of the maximum element in a range</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">I</td>
+                  <td>input iterator type</td>
+                </tr>
+                <tr>
+                  <td>O</td>
+                  <td>comparator type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first</td>
+                  <td>iterator to the beginning of the range</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>iterator to the end of the range</td>
+                </tr>
+                <tr>
+                  <td>idx</td>
+                  <td>solution index of the maximum element</td>
+                </tr>
+                <tr>
+                  <td>op</td>
+                  <td>comparison function object</td>
+                </tr>
+              </tbody>
+            </table>
+<p>The function launches kernels asynchronously to find the largest element in the range <code>[first, last)</code> using the given comparator <code>op</code>. The function is equivalent to a parallel execution of the following loop:</p><pre class="m-code"><span class="k">if</span><span class="p">(</span><span class="n">first</span> <span class="o">==</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">auto</span> <span class="n">largest</span> <span class="o">=</span> <span class="n">first</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="o">++</span><span class="n">first</span><span class="p">;</span> <span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">;</span> <span class="o">++</span><span class="n">first</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">largest</span><span class="p">,</span> <span class="o">*</span><span class="n">first</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">largest</span> <span class="o">=</span> <span class="n">first</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">distance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">largest</span><span class="p">);</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a259989d70b0092f0273ece9283c42dcd"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I, typename O&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a259989d70b0092f0273ece9283c42dcd" class="m-doc-self">max_element</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              I first,
+              I last,
+              unsigned* idx,
+              O op)</span></span>
+            </h3>
+            <p>updates the parameters of a max-element task</p>
+<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#acf68a3c66c67d6dc6870dd38513aa786" class="m-doc">cudaFlowCapturer::<wbr />max_element</a> but operates on an existing task.</p>
           </div></section>
           <section class="m-doc-details" id="a8678573f19e01f441a6b4108e62781f3"><div>
             <h3>

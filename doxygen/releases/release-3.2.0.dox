@@ -32,6 +32,7 @@ To use %Taskflow v3.2.0, you need a compiler that supports C++17:
 @section release-3-2-0_working_items Working Items
 
 @li enhancing support for SYCL with Intel DPC++
+@li enhancing parallel CPU and GPU algorithms
 @li designing pipeline interface and its scheduling algorithms
 
 @section release-3-2-0_new_features New Features
@@ -66,6 +67,9 @@ New algorithms in tf::cudaFlow and tf::cudaFlowCapturer:
 @li added tf::cudaFlow::transform_exclusive_scan
 @li added tf::cudaFlow::merge 
 @li added tf::cudaFlow::sort
+@li added tf::cudaFlow::find_if
+@li added tf::cudaFlow::min_element
+@li added tf::cudaFlow::max_element
 @li added tf::cudaFlowCapturer::reduce
 @li added tf::cudaFlowCapturer::transform_reduce
 @li added tf::cudaFlowCapturer::uninitialized_reduce
@@ -76,6 +80,9 @@ New algorithms in tf::cudaFlow and tf::cudaFlowCapturer:
 @li added tf::cudaFlowCapturer::transform_exclusive_scan
 @li added tf::cudaFlowCapturer::merge 
 @li added tf::cudaFlowCapturer::sort
+@li added tf::cudaFlowCapturer::find_if
+@li added tf::cudaFlowCapturer::min_element
+@li added tf::cudaFlowCapturer::max_element
 @li added tf::cudaLinearCapturing
 
 @subsection release-3-2-0_syclflow syclFlow
@@ -95,11 +102,14 @@ New algorithms in tf::cudaFlow and tf::cudaFlowCapturer:
 @li added tf::cuda_transform_exclusive_scan
 @li added tf::cuda_merge
 @li added tf::cuda_sort
+@li added tf::cuda_find_if
+@li added tf::cuda_min_element
+@li added tf::cuda_max_element
 
 @subsection release-3-2-0_utilities Utilities
 
 @li added CUDA meta programming
-@li added CUDA standard algorithms
+@li added SYCL meta programming
 
 @subsection release-3-2-0_profiler Taskflow Profiler (TFProf)
 
@@ -140,6 +150,7 @@ There are no breaking changes in this release.
   + @ref CUDASTDScan
   + @ref CUDASTDMerge
   + @ref CUDASTDSort
+  + @ref CUDASTDFind
 
 
 

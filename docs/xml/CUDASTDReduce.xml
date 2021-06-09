@@ -35,9 +35,11 @@
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronize<sp/>the<sp/>execution</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a33596174fe764d85356ed9b8c0934bb7" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(buffer);</highlight></codeline>
-</programlisting></para><para>The reduce algorithm call runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results. Since the GPU reduction algorithm may require extra buffer to store the temporary results, you must provide a buffer of size at least the bytes returned from <ref refid="namespacetf_1a1ca0bd68df882048e4b9b4d92efc3168" kindref="member">tf::cuda_reduce_buffer_size</ref>.</para><para><simplesect kind="attention"><para>You must keep the buffer alive before the reduction call completes.</para></simplesect>
+<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(res);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(vec);</highlight></codeline>
+</programlisting></para><para>The reduce algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results. Since the GPU reduction algorithm may require extra buffer to store the temporary results, you must provide a buffer of size at least bytes returned from <ref refid="namespacetf_1a1ca0bd68df882048e4b9b4d92efc3168" kindref="member">tf::cuda_reduce_buffer_size</ref>.</para><para><simplesect kind="attention"><para>You must keep the buffer alive before the reduction call completes.</para></simplesect>
 </para></sect1>
 <sect1 id="CUDASTDReduce_1CUDASTDReduceItemsWithoutAnInitialValue">
 <title>Reduce a Range of Items without an Initial Value</title>

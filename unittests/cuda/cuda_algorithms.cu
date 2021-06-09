@@ -1089,7 +1089,7 @@ void min_element() {
   tf::Executor executor;
   tf::Taskflow taskflow;
 
-  for(int N=0; N<=1234567; N += std::max(N/100, 1)) {
+  for(int N=0; N<=1234567; N += std::max(N/10, 1)) {
 
     taskflow.clear();
 
@@ -1112,7 +1112,7 @@ void min_element() {
     );
 
     tf::cuda_min_element(
-      p, a, a+N, r, []__device__(int a, int b){ return a < b; }, buf.data()
+      p, a, a+N, r, tf::cuda_less<T>{}, buf.data()
     );
     p.synchronize();
 
@@ -1123,33 +1123,120 @@ void min_element() {
       REQUIRE(*r == N);
     }
     
-    /*
-    // ----------------- cudaflow capturer
+    // ----------------- cudaflow
     *r = 1234;
     
     taskflow.emplace([&](F& cudaflow){
-      cudaflow.find_if(a, a+N, r, []__device__(int v){ return v == 5000; });
+      cudaflow.min_element(a, a+N, r, tf::cuda_less<T>{});
     });
 
     executor.run(taskflow).wait();
     
-    if(!N) {
-      REQUIRE(*r == 1234);
-    }
-    else if(N <= 5000) {
-      REQUIRE(*r == N);
+    if(min != std::numeric_limits<T>::max()) {
+      REQUIRE(a[*r] == min);
     }
     else {
-      REQUIRE(*r == 5000);
-    }*/
+      REQUIRE(*r == N);
+    }
     
     REQUIRE(cudaFree(a) == cudaSuccess);
     REQUIRE(cudaFree(r) == cudaSuccess);
   }
 }
 
+TEST_CASE("cudaflow.min_element.int" * doctest::timeout(300)) {
+  min_element<int, tf::cudaFlow>();
+}
+
+TEST_CASE("cudaflow.min_element.float" * doctest::timeout(300)) {
+  min_element<float, tf::cudaFlow>();
+}
+
 TEST_CASE("capturer.min_element.int" * doctest::timeout(300)) {
   min_element<int, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capturer.min_element.float" * doctest::timeout(300)) {
+  min_element<float, tf::cudaFlowCapturer>();
+}
+
+// ----------------------------------------------------------------------------
+// max_element
+// ----------------------------------------------------------------------------
+
+template <typename T, typename F>
+void max_element() {
+    
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+
+  for(int N=0; N<=1234567; N += std::max(N/10, 1)) {
+
+    taskflow.clear();
+
+    auto a = tf::cuda_malloc_shared<T>(N);
+    auto r = tf::cuda_malloc_shared<unsigned>(1);
+    auto p = tf::cudaDefaultExecutionPolicy{};
+    auto max = std::numeric_limits<T>::lowest();
+
+    // initialize the data
+    for(int i=0; i<N; i++) {
+      a[i] = rand();
+      max = std::max(max, a[i]);
+    }
+    *r = 1234;
+
+    // ----------------- standalone asynchronous algorithms
+
+    tf::cudaScopedDeviceMemory<std::byte> buf(
+      tf::cuda_max_element_buffer_size<decltype(p), T>(N)
+    );
+
+    tf::cuda_max_element(p, a, a+N, r, tf::cuda_less<T>{}, buf.data());
+    p.synchronize();
+
+    if(max != std::numeric_limits<T>::lowest()) {
+      REQUIRE(a[*r] == max);
+    }
+    else {
+      REQUIRE(*r == N);
+    }
+    
+    // ----------------- cudaflow
+    *r = 1234;
+    
+    taskflow.emplace([&](F& cudaflow){
+      cudaflow.max_element(a, a+N, r, tf::cuda_less<T>{});
+    });
+
+    executor.run(taskflow).wait();
+    
+    if(max != std::numeric_limits<T>::lowest()) {
+      REQUIRE(a[*r] == max);
+    }
+    else {
+      REQUIRE(*r == N);
+    }
+    
+    REQUIRE(cudaFree(a) == cudaSuccess);
+    REQUIRE(cudaFree(r) == cudaSuccess);
+  }
+}
+
+TEST_CASE("cudaflow.max_element.int" * doctest::timeout(300)) {
+  max_element<int, tf::cudaFlow>();
+}
+
+TEST_CASE("cudaflow.max_element.float" * doctest::timeout(300)) {
+  max_element<float, tf::cudaFlow>();
+}
+
+TEST_CASE("capturer.max_element.int" * doctest::timeout(300)) {
+  max_element<int, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capturer.max_element.float" * doctest::timeout(300)) {
+  max_element<float, tf::cudaFlowCapturer>();
 }
 
 /*// --------------------------------------------------------------------------
