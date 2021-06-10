@@ -455,8 +455,8 @@ namespace tf {
 @param a_count number of elements in the first input array 
 @param b_count number of elements in the second input array
 
-The function is used to allocate a buffer for calling asynchronous merge.
-Please refer to @ref CUDASTDMerge for details.
+The function is used to allocate a buffer for calling 
+tf::cuda_merge.
 */
 template <typename P>
 unsigned cuda_merge_buffer_size(unsigned a_count, unsigned b_count) {
@@ -529,7 +529,6 @@ unsigned cuda_merge_buffer_size(unsigned a_count, unsigned b_count) {
 @param comp comparator
 @param buf pointer to the temporary buffer
 
-Please refer to @ref CUDASTDMerge for details.
 */
 template<
   typename P,
@@ -601,7 +600,6 @@ void cuda_merge(
 @param comp comparator
 @param buf pointer to the temporary buffer
 
-Please refer to @ref CUDASTDMerge for details.
 */
 template<typename P,
   typename a_keys_it, typename b_keys_it, typename c_keys_it, typename C

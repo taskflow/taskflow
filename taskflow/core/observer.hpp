@@ -682,7 +682,7 @@ inline TFProfManager::~TFProfManager() {
       for(size_t i=0; i<_observers.size(); ++i) {
         data.timelines.push_back(std::move(_observers[i]->_timeline));
       }
-      Serializer serializer(ofs); 
+      Serializer<std::ofstream> serializer(ofs); 
       serializer(data);
     }
     // .json

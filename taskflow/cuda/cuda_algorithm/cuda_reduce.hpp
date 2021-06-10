@@ -170,8 +170,9 @@ namespace tf {
 
 @param count number of elements to reduce
 
-The function is used to allocate a buffer for calling asynchronous reduce.
-Please refer to @ref CUDASTDReduce for details.
+The function is used to allocate a buffer for calling tf::cuda_reduce,
+tf::cuda_uninitialized_reduce, tf::cuda_transform_reduce, and
+tf::cuda_transform_uninitialized_reduce.
 */
 template <typename P, typename T>
 unsigned cuda_reduce_buffer_size(unsigned count) {
@@ -201,7 +202,13 @@ unsigned cuda_reduce_buffer_size(unsigned count) {
 @param op binary operator to apply to reduce elements
 @param buf pointer to the temporary buffer
 
-Please refer to @ref CUDASTDReduce for details.
+This method is equivalent to the parallel execution of the following loop on a GPU:
+
+@code{.cpp}
+while (first != last) {
+  *result = op(*result, *first++);
+}
+@endcode
  */
 template <typename P, typename I, typename T, typename O>
 void cuda_reduce(
@@ -234,7 +241,15 @@ void cuda_reduce(
 @param op binary operator to apply to reduce elements
 @param buf pointer to the temporary buffer
 
-Please refer to @ref CUDASTDReduce for more details.
+This method is equivalent to the parallel execution of the following loop
+on a GPU:
+
+@code{.cpp}
+*result = *first++;  // no initial values partitipcate in the loop
+while (first != last) {
+  *result = op(*result, *first++);
+}
+@endcode
 */
 template <typename P, typename I, typename T, typename O>
 void cuda_uninitialized_reduce(
@@ -269,7 +284,13 @@ void cuda_uninitialized_reduce(
 @param uop unary operator to apply to transform elements
 @param buf pointer to the temporary buffer
 
-Please refer to @ref CUDASTDReduce for more details.
+This method is equivalent to the parallel execution of the following loop on a GPU:
+
+@code{.cpp}
+while (first != last) {
+  *result = bop(*result, uop(*first++));
+}
+@endcode
 */
 template<typename P, typename I, typename T, typename O, typename U>
 void cuda_transform_reduce(
@@ -313,7 +334,15 @@ void cuda_transform_reduce(
 @param uop unary operator to apply to transform elements
 @param buf pointer to the temporary buffer
 
-Please refer to @ref CUDASTDReduce for more details.
+This method is equivalent to the parallel execution of the following loop 
+on a GPU:
+
+@code{.cpp}
+*result = uop(*first++);  // no initial values partitipcate in the loop
+while (first != last) {
+  *result = bop(*result, uop(*first++));
+}
+@endcode
 */
 template<typename P, typename I, typename T, typename O, typename U>
 void cuda_transform_uninitialized_reduce(

@@ -125,7 +125,7 @@ cudaPerThreadDeviceObjectPool<H, C, D>::Object::~Object() {
 template <typename H, typename C, typename D>
 std::shared_ptr<typename cudaPerThreadDeviceObjectPool<H, C, D>::Object>
 cudaPerThreadDeviceObjectPool<H, C, D>::cudaGlobalDeviceObjectPool::acquire(int d) {
-  std::scoped_lock lock(mutex);
+  std::scoped_lock<std::mutex> lock(mutex);
   if(auto itr = pool.find(d); itr != pool.end()) {
     while(!itr->second.empty()) {
       auto sptr = itr->second.back().lock();
@@ -142,7 +142,7 @@ template <typename H, typename C, typename D>
 void cudaPerThreadDeviceObjectPool<H, C, D>::cudaGlobalDeviceObjectPool::release(
   int d, std::weak_ptr<Object> ptr
 ) {
-  std::scoped_lock lock(mutex);
+  std::scoped_lock<std::mutex> lock(mutex);
   pool[d].push_back(ptr);
 }
 

@@ -1048,7 +1048,9 @@
                 </tr>
               </tbody>
             </table>
-<p>Please refer to <a href="CUDASTDForEach.html" class="m-doc">Parallel Iterations</a> for details.</p>
+<p>This function is equivalent to a parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">itr</span> <span class="o">=</span> <span class="n">first</span><span class="p">;</span> <span class="n">itr</span> <span class="o">!=</span> <span class="n">last</span><span class="p">;</span> <span class="n">itr</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">c</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">);</span>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="a01ad7ce62fa6f42f2f2fbff3659b7884"><div>
             <h3>
@@ -1106,7 +1108,15 @@
                 </tr>
               </tbody>
             </table>
-<p>Please refer to <a href="CUDASTDForEach.html" class="m-doc">Parallel Iterations</a> for details.</p>
+<p>This function is equivalent to a parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="c1">// step is positive [first, last)</span>
+<span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">last</span><span class="p">;</span> <span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">c</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// step is negative [first, last)</span>
+<span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">i</span><span class="o">&gt;</span><span class="n">last</span><span class="p">;</span> <span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">c</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="a3ed764530620a419e3400e1f9ab6c956"><div>
             <h3>
@@ -1170,7 +1180,7 @@
             </table>
 <p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
   <span class="o">*</span><span class="n">output</span><span class="o">++</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
-<span class="p">}</span></pre><p>Please refer to <a href="CUDASTDTransform.html" class="m-doc">Parallel Transforms</a> for details.</p>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="abdcb5b755f7ace2aa452541d5bf93b5f"><div>
             <h3>
@@ -1243,7 +1253,7 @@
             </table>
 <p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first1</span> <span class="o">!=</span> <span class="n">last1</span><span class="p">)</span> <span class="p">{</span>
   <span class="o">*</span><span class="n">output</span><span class="o">++</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">first1</span><span class="o">++</span><span class="p">,</span> <span class="o">*</span><span class="n">first2</span><span class="o">++</span><span class="p">);</span>
-<span class="p">}</span></pre><p>Please refer to <a href="CUDASTDTransform.html" class="m-doc">Parallel Transforms</a> for details.</p>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="a1ca0bd68df882048e4b9b4d92efc3168"><div>
             <h3>
@@ -1277,7 +1287,7 @@
                 </tr>
               </tbody>
             </table>
-<p>The function is used to allocate a buffer for calling asynchronous reduce. Please refer to <a href="CUDASTDReduce.html" class="m-doc">Parallel Reduction</a> for details.</p>
+<p>The function is used to allocate a buffer for calling <a href="namespacetf.html#a8a872d2a0ac73a676713cb5be5aa688c" class="m-doc">tf::<wbr />cuda_reduce</a>, <a href="namespacetf.html#a492e8410db032a0273a99dd905486161" class="m-doc">tf::<wbr />cuda_uninitialized_reduce</a>, <a href="namespacetf.html#a4463d06240d608bc31d8b3546a851e4e" class="m-doc">tf::<wbr />cuda_transform_reduce</a>, and <a href="namespacetf.html#a747a41c0474fd34da370839b60ddc4ca" class="m-doc">tf::<wbr />cuda_transform_uninitialized_reduce</a>.</p>
           </div></section>
           <section class="m-doc-details" id="a8a872d2a0ac73a676713cb5be5aa688c"><div>
             <h3>
@@ -1344,7 +1354,9 @@
                 </tr>
               </tbody>
             </table>
-<p>Please refer to <a href="CUDASTDReduce.html" class="m-doc">Parallel Reduction</a> for details.</p>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="a492e8410db032a0273a99dd905486161"><div>
             <h3>
@@ -1411,7 +1423,10 @@
                 </tr>
               </tbody>
             </table>
-<p>Please refer to <a href="CUDASTDReduce.html" class="m-doc">Parallel Reduction</a> for more details.</p>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">;</span>  <span class="c1">// no initial values partitipcate in the loop</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="a4463d06240d608bc31d8b3546a851e4e"><div>
             <h3>
@@ -1487,7 +1502,9 @@
                 </tr>
               </tbody>
             </table>
-<p>Please refer to <a href="CUDASTDReduce.html" class="m-doc">Parallel Reduction</a> for more details.</p>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">bop</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">));</span>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="a747a41c0474fd34da370839b60ddc4ca"><div>
             <h3>
@@ -1563,7 +1580,10 @@
                 </tr>
               </tbody>
             </table>
-<p>Please refer to <a href="CUDASTDReduce.html" class="m-doc">Parallel Reduction</a> for more details.</p>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>  <span class="c1">// no initial values partitipcate in the loop</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">bop</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">));</span>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="afd7e7a0886352201cced5c55205f3229"><div>
             <h3>
@@ -1597,7 +1617,7 @@
                 </tr>
               </tbody>
             </table>
-<p>The function is used to allocate a buffer for calling asynchronous scan. Please refer to <a href="CUDASTDScan.html" class="m-doc">Parallel Scan</a> for details.</p>
+<p>The function is used to allocate a buffer for calling <a href="namespacetf.html#a2e1b44c84a09e0a8495a611cb9a7ea40" class="m-doc">tf::<wbr />cuda_inclusive_scan</a>, <a href="namespacetf.html#aeb391c40120844318fd715b8c3a716bb" class="m-doc">tf::<wbr />cuda_exclusive_scan</a>, <a href="namespacetf.html#afa4aa760ddb6efbda1b9bab505ad5baf" class="m-doc">tf::<wbr />cuda_transform_inclusive_scan</a>, and <a href="namespacetf.html#a2e739895c1c73538967af060ca714366" class="m-doc">tf::<wbr />cuda_transform_exclusive_scan</a>.</p>
           </div></section>
           <section class="m-doc-details" id="a2e1b44c84a09e0a8495a611cb9a7ea40"><div>
             <h3>
@@ -1664,7 +1684,6 @@
                 </tr>
               </tbody>
             </table>
-<p>Please refer to <a href="CUDASTDScan.html" class="m-doc">Parallel Scan</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="afa4aa760ddb6efbda1b9bab505ad5baf"><div>
             <h3>
@@ -1740,7 +1759,6 @@
                 </tr>
               </tbody>
             </table>
-<p>Please refer to <a href="CUDASTDScan.html" class="m-doc">Parallel Scan</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="aeb391c40120844318fd715b8c3a716bb"><div>
             <h3>
@@ -1807,7 +1825,6 @@
                 </tr>
               </tbody>
             </table>
-<p>Please refer to <a href="CUDASTDScan.html" class="m-doc">Parallel Scan</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="a2e739895c1c73538967af060ca714366"><div>
             <h3>
@@ -1883,7 +1900,6 @@
                 </tr>
               </tbody>
             </table>
-<p>Please refer to <a href="CUDASTDScan.html" class="m-doc">Parallel Scan</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="a3db5b8f718e7f6a6fa2da3a689bd8828"><div>
             <h3>
@@ -1918,7 +1934,7 @@
                 </tr>
               </tbody>
             </table>
-<p>The function is used to allocate a buffer for calling asynchronous merge. Please refer to <a href="CUDASTDMerge.html" class="m-doc">Parallel Merge</a> for details.</p>
+<p>The function is used to allocate a buffer for calling <a href="namespacetf.html#a91627df53e76d19f3118558d4c118a6b" class="m-doc">tf::<wbr />cuda_merge</a>.</p>
           </div></section>
           <section class="m-doc-details" id="a91627df53e76d19f3118558d4c118a6b"><div>
             <h3>
@@ -2026,7 +2042,6 @@
                 </tr>
               </tbody>
             </table>
-<p>Please refer to <a href="CUDASTDMerge.html" class="m-doc">Parallel Merge</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="a37ec481149c2f01669353033d75ed72a"><div>
             <h3>
@@ -2107,7 +2122,6 @@
                 </tr>
               </tbody>
             </table>
-<p>Please refer to <a href="CUDASTDMerge.html" class="m-doc">Parallel Merge</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="a9c69906a4dfd1e2d0cd7ed496d29dafd"><div>
             <h3>
@@ -2145,7 +2159,7 @@
                 </tr>
               </tbody>
             </table>
-<p>The function is used to allocate a buffer for calling asynchronous sort. Please refer to <a href="CUDASTDSort.html" class="m-doc">Parallel Sort</a> for details.</p>
+<p>The function is used to allocate a buffer for calling <a href="namespacetf.html#aeaed6f5d4a4cfa5c3a2c42d0dba54664" class="m-doc">tf::<wbr />cuda_sort</a>.</p>
           </div></section>
           <section class="m-doc-details" id="aeaed6f5d4a4cfa5c3a2c42d0dba54664"><div>
             <h3>
@@ -2212,7 +2226,6 @@
                 </tr>
               </tbody>
             </table>
-<p>Please refer to <a href="CUDASTDSort.html" class="m-doc">Parallel Sort</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="a06804cb1598e965febc7bd35fc0fbbb0"><div>
             <h3>
@@ -2270,7 +2283,6 @@
                 </tr>
               </tbody>
             </table>
-<p>Please refer to <a href="CUDASTDSort.html" class="m-doc">Parallel Sort</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="a5f9dabd7c5d0fa5166cf76d9fa5a038e"><div>
             <h3>

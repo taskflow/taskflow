@@ -44,7 +44,8 @@ You can associate an execution policy with another stream as shown below:
 @code{.cpp}
 // assign a stream to a policy at construction time
 tf::cudaExecutionPolicy<512, 11> policy(my_stream);
-// reassign another stream to a policy
+
+// assign another stream to the policy
 policy.stream(another_stream);
 @endcode
 

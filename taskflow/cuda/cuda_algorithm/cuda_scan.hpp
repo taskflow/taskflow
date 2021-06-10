@@ -334,8 +334,9 @@ namespace tf {
 
 @param count number of elements to scan
 
-The function is used to allocate a buffer for calling asynchronous scan.
-Please refer to @ref CUDASTDScan for details.
+The function is used to allocate a buffer for calling 
+tf::cuda_inclusive_scan, tf::cuda_exclusive_scan,
+tf::cuda_transform_inclusive_scan, and tf::cuda_transform_exclusive_scan.
 */
 template <typename P, typename T>
 unsigned cuda_scan_buffer_size(unsigned count) {
@@ -390,7 +391,6 @@ unsigned cuda_scan_buffer_size(unsigned count) {
 @param op binary operator to apply to scan
 @param buf pointer to the temporary buffer
 
-Please refer to @ref CUDASTDScan for details.
 */
 template<typename P, typename I, typename O, typename C>
 void cuda_inclusive_scan(
@@ -458,7 +458,6 @@ void cuda_inclusive_scan(
 @param uop unary operator to apply to transform each item before scan
 @param buf pointer to the temporary buffer
 
-Please refer to @ref CUDASTDScan for details.
 */
 template<typename P, typename I, typename O, typename C, typename U>
 void cuda_transform_inclusive_scan(
@@ -524,7 +523,6 @@ void cuda_transform_inclusive_scan(
 @param op binary operator to apply to scan
 @param buf pointer to the temporary buffer
 
-Please refer to @ref CUDASTDScan for details.
 */
 template<typename P, typename I, typename O, typename C>
 void cuda_exclusive_scan(
@@ -592,7 +590,6 @@ void cuda_exclusive_scan(
 @param uop unary operator to apply to transform each item before scan
 @param buf pointer to the temporary buffer
 
-Please refer to @ref CUDASTDScan for details.
 */
 template<typename P, typename I, typename O, typename C, typename U>
 void cuda_transform_exclusive_scan(

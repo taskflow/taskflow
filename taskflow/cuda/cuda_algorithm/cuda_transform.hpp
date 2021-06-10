@@ -80,8 +80,6 @@ while (first != last) {
 }
 @endcode
 
-Please refer to @ref CUDASTDTransform for details.
-
 */
 template <typename P, typename I, typename O, typename C>
 void cuda_transform(P&& p, I first, I last, O output, C op) {
@@ -118,9 +116,6 @@ while (first1 != last1) {
   *output++ = op(*first1++, *first2++);
 }
 @endcode
-
-Please refer to @ref CUDASTDTransform for details.
-
 */
 template <typename P, typename I1, typename I2, typename O, typename C>
 void cuda_transform(

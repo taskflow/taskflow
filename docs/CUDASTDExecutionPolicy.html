@@ -61,7 +61,8 @@
 
 <span class="n">tf</span><span class="o">::</span><span class="n">cudaExecutionPolicy</span><span class="o">&lt;</span><span class="mi">512</span><span class="p">,</span> <span class="mi">11</span><span class="o">&gt;</span> <span class="n">policy</span><span class="p">;</span></pre><p>By default, the execution policy object is associated with the CUDA <em>default stream</em> (i.e., 0). Default stream can incur significant overhead due to the global synchronization. You can associate an execution policy with another stream as shown below:</p><pre class="m-code"><span class="c1">// assign a stream to a policy at construction time</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">cudaExecutionPolicy</span><span class="o">&lt;</span><span class="mi">512</span><span class="p">,</span> <span class="mi">11</span><span class="o">&gt;</span> <span class="n">policy</span><span class="p">(</span><span class="n">my_stream</span><span class="p">);</span>
-<span class="c1">// reassign another stream to a policy</span>
+
+<span class="c1">// assign another stream to the policy</span>
 <span class="n">policy</span><span class="p">.</span><span class="n">stream</span><span class="p">(</span><span class="n">another_stream</span><span class="p">);</span></pre><p>The best-performing configurations for each algorithm, each GPU architecture, and each data type can vary significantly. You should experiment different configurations and find the optimal tuning parameters for your applications. A default policy is given in <a href="namespacetf.html#aa18f102977c3257b75e21fde05efdb68" class="m-doc">tf::<wbr />cudaDefaultExecutionPolicy</a>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">cudaDefaultExecutionPolicy</span> <span class="n">default_policy</span><span class="p">;</span></pre></section>
       </div>
     </div>

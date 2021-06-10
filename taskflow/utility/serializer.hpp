@@ -284,7 +284,7 @@ MapItem<KeyT, ValueT> make_kv_pair(KeyT&& k, ValueT&& v) {
 // ----------------------------------------------------------------------------
 
 template <typename T>
-constexpr auto is_default_serializable_v = 
+constexpr auto is_default_serializable_v = ( 
   std::is_arithmetic_v<T>    ||
   std::is_enum_v<T>          ||
   is_std_basic_string_v<T>   ||
@@ -301,23 +301,29 @@ constexpr auto is_default_serializable_v =
   is_std_variant_v<T>        ||
   is_std_optional_v<T>       ||
   is_std_tuple_v<T>          ||
-  is_std_array_v<T>;
+  is_std_array_v<T>
+);
 
 
 // Class: Serializer
-template <typename Device = std::ostream, typename SizeType = std::streamsize>
+template <typename Stream, typename SizeType = std::streamsize>
 class Serializer {
 
   public:
-    
-    Serializer(Device& device);
+
+    Serializer(Stream& stream);
     
     template <typename... T>
     SizeType operator()(T&&... items);
   
   private:
 
-    Device& _device;
+    Stream& _stream;
+    
+    template <typename T, 
+      std::enable_if_t<!is_default_serializable_v<std::decay_t<T>>, void>* = nullptr
+    >
+    SizeType _save(T&&);
     
     template <typename T, 
       std::enable_if_t<std::is_arithmetic_v<std::decay_t<T>>, void>* = nullptr
@@ -404,43 +410,40 @@ class Serializer {
     >
     SizeType _save(T&&);
     
-    template <typename T, 
-      std::enable_if_t<!is_default_serializable_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _save(T&&);
+
 };
 
 // Constructor
-template <typename Device, typename SizeType>
-Serializer<Device, SizeType>::Serializer(Device& device) : _device(device) {
+template <typename Stream, typename SizeType>
+Serializer<Stream, SizeType>::Serializer(Stream& stream) : _stream(stream) {
 }
 
 // Operator ()
-template <typename Device, typename SizeType>
+template <typename Stream, typename SizeType>
 template <typename... T>
-SizeType Serializer<Device, SizeType>::operator() (T&&... items) {
+SizeType Serializer<Stream, SizeType>::operator() (T&&... items) {
   return (_save(std::forward<T>(items)) + ...);
 }
 
 // arithmetic data type
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<std::is_arithmetic_v<std::decay_t<T>>, void>*
 >
-SizeType Serializer<Device, SizeType>::_save(T&& t) {
-  _device.write(reinterpret_cast<const char*>(std::addressof(t)), sizeof(t));
+SizeType Serializer<Stream, SizeType>::_save(T&& t) {
+  _stream.write(reinterpret_cast<const char*>(std::addressof(t)), sizeof(t));
   return sizeof(t);
 }
 
 // std::basic_string
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_basic_string_v<std::decay_t<T>>, void>*
 >
-SizeType Serializer<Device, SizeType>::_save(T&& t) {
+SizeType Serializer<Stream, SizeType>::_save(T&& t) {
   using U = std::decay_t<T>;
   auto sz = _save(make_size_tag(t.size()));
-  _device.write(
+  _stream.write(
     reinterpret_cast<const char*>(t.data()), 
     t.size()*sizeof(typename U::value_type)
   );
@@ -448,18 +451,18 @@ SizeType Serializer<Device, SizeType>::_save(T&& t) {
 }
 
 // std::vector
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_vector_v<std::decay_t<T>>, void>*
 >
-SizeType Serializer<Device, SizeType>::_save(T&& t) {
+SizeType Serializer<Stream, SizeType>::_save(T&& t) {
 
   using U = std::decay_t<T>;
     
   auto sz = _save(make_size_tag(t.size()));
 
   if constexpr (std::is_arithmetic_v<typename U::value_type>) {
-    _device.write(
+    _stream.write(
       reinterpret_cast<const char*>(t.data()), 
       t.size() * sizeof(typename U::value_type)
     );
@@ -474,12 +477,12 @@ SizeType Serializer<Device, SizeType>::_save(T&& t) {
 }
 
 // std::list and std::deque
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_deque_v<std::decay_t<T>> ||
                    is_std_list_v<std::decay_t<T>>, void>*
 >
-SizeType Serializer<Device, SizeType>::_save(T&& t) {
+SizeType Serializer<Stream, SizeType>::_save(T&& t) {
   auto sz = _save(make_size_tag(t.size()));
   for(auto&& item : t) {
     sz += _save(item);
@@ -488,11 +491,11 @@ SizeType Serializer<Device, SizeType>::_save(T&& t) {
 }
 
 // std::forward_list
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_forward_list_v<std::decay_t<T>>, void>*
 >
-SizeType Serializer<Device, SizeType>::_save(T&& t) {
+SizeType Serializer<Stream, SizeType>::_save(T&& t) {
   auto sz = _save(make_size_tag(std::distance(t.begin(), t.end())));
   for(auto&& item : t) {
     sz += _save(item);
@@ -501,13 +504,13 @@ SizeType Serializer<Device, SizeType>::_save(T&& t) {
 }
 
 // std::map and std::unordered_map
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, std::enable_if_t<
   is_std_map_v<std::decay_t<T>> ||
   is_std_unordered_map_v<std::decay_t<T>>, 
   void
 >*>
-SizeType Serializer<Device, SizeType>::_save(T&& t) {
+SizeType Serializer<Stream, SizeType>::_save(T&& t) {
   auto sz = _save(make_size_tag(t.size()));
   for(auto&& [k, v] : t) {
     sz += _save(make_kv_pair(k, v));
@@ -516,13 +519,13 @@ SizeType Serializer<Device, SizeType>::_save(T&& t) {
 }
 
 // std::set and std::unordered_set
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, std::enable_if_t<
   is_std_set_v<std::decay_t<T>> ||
   is_std_unordered_set_v<std::decay_t<T>>, 
   void
 >*>
-SizeType Serializer<Device, SizeType>::_save(T&& t) {
+SizeType Serializer<Stream, SizeType>::_save(T&& t) {
   auto sz = _save(make_size_tag(t.size()));
   for(auto&& item : t) {
     sz += _save(item);
@@ -531,39 +534,39 @@ SizeType Serializer<Device, SizeType>::_save(T&& t) {
 }
 
 // enum data type
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<std::is_enum_v<std::decay_t<T>>, void>*
 >
-SizeType Serializer<Device, SizeType>::_save(T&& t) {
+SizeType Serializer<Stream, SizeType>::_save(T&& t) {
   using U = std::decay_t<T>;
   return _save(static_cast<std::underlying_type_t<U>>(t));
 }
 
 // duration data type
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_duration_v<std::decay_t<T>>, void>*
 >
-SizeType Serializer<Device, SizeType>::_save(T&& t) {
+SizeType Serializer<Stream, SizeType>::_save(T&& t) {
   return _save(t.count());
 }
 
 // time point data type
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_time_point_v<std::decay_t<T>>, void>*
 >
-SizeType Serializer<Device, SizeType>::_save(T&& t) {
+SizeType Serializer<Stream, SizeType>::_save(T&& t) {
   return _save(t.time_since_epoch());
 }
 
 // optional data type
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_optional_v<std::decay_t<T>>, void>*
 >
-SizeType Serializer<Device, SizeType>::_save(T&& t) {
+SizeType Serializer<Stream, SizeType>::_save(T&& t) {
   if(bool flag = t.has_value(); flag) {
     return _save(flag) + _save(*t);
   }
@@ -573,21 +576,21 @@ SizeType Serializer<Device, SizeType>::_save(T&& t) {
 }
 
 // variant type
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_variant_v<std::decay_t<T>>, void>*
 >
-SizeType Serializer<Device, SizeType>::_save(T&& t) {
+SizeType Serializer<Stream, SizeType>::_save(T&& t) {
   return _save(t.index()) + 
          std::visit([&] (auto&& arg){ return _save(arg);}, t);
 }
 
 // tuple type
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_tuple_v<std::decay_t<T>>, void>*
 >
-SizeType Serializer<Device, SizeType>::_save(T&& t) {
+SizeType Serializer<Stream, SizeType>::_save(T&& t) {
   return std::apply(
     [&] (auto&&... args) {
       return (_save(std::forward<decltype(args)>(args)) + ... + 0); 
@@ -597,11 +600,11 @@ SizeType Serializer<Device, SizeType>::_save(T&& t) {
 }
 
 // array
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_array_v<std::decay_t<T>>, void>*
 >
-SizeType Serializer<Device, SizeType>::_save(T&& t) {
+SizeType Serializer<Stream, SizeType>::_save(T&& t) {
 
   using U = std::decay_t<T>;
 
@@ -610,7 +613,7 @@ SizeType Serializer<Device, SizeType>::_save(T&& t) {
   SizeType sz;
 
   if constexpr(std::is_arithmetic_v<typename U::value_type>) {
-    _device.write(reinterpret_cast<const char*>(t.data()), sizeof(t));
+    _stream.write(reinterpret_cast<const char*>(t.data()), sizeof(t));
     sz = sizeof(t);
   } 
   else {
@@ -624,11 +627,11 @@ SizeType Serializer<Device, SizeType>::_save(T&& t) {
 }
 
 // custom save method    
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<!is_default_serializable_v<std::decay_t<T>>, void>*
 >
-SizeType Serializer<Device, SizeType>::_save(T&& t) {
+SizeType Serializer<Stream, SizeType>::_save(T&& t) {
   return t.save(*this);
 }
 
@@ -657,19 +660,19 @@ constexpr auto is_default_deserializable_v =
   is_std_array_v<T>;
 
 // Class: Deserializer
-template <typename Device = std::istream, typename SizeType = std::streamsize>
+template <typename Stream, typename SizeType = std::streamsize>
 class Deserializer {
 
   public:
     
-    Deserializer(Device& device);
+    Deserializer(Stream& stream);
     
     template <typename... T>
     SizeType operator()(T&&... items);
   
   private:
 
-    Device& _device;
+    Stream& _stream;
     
     // Function: _variant_helper
     template <
@@ -772,28 +775,28 @@ class Deserializer {
 };
 
 // Constructor
-template <typename Device, typename SizeType>
-Deserializer<Device, SizeType>::Deserializer(Device& device) : _device(device) {
+template <typename Stream, typename SizeType>
+Deserializer<Stream, SizeType>::Deserializer(Stream& stream) : _stream(stream) {
 }
 
 // Operator ()
-template <typename Device, typename SizeType>
+template <typename Stream, typename SizeType>
 template <typename... T>
-SizeType Deserializer<Device, SizeType>::operator() (T&&... items) {
+SizeType Deserializer<Stream, SizeType>::operator() (T&&... items) {
   return (_load(std::forward<T>(items)) + ...);
 }
 
 // Function: _variant_helper
-template <typename Device, typename SizeType>
+template <typename Stream, typename SizeType>
 template <size_t I, typename... ArgsT, std::enable_if_t<I==sizeof...(ArgsT)>*>
-SizeType Deserializer<Device, SizeType>::_variant_helper(size_t, std::variant<ArgsT...>&) {
+SizeType Deserializer<Stream, SizeType>::_variant_helper(size_t, std::variant<ArgsT...>&) {
   return 0;
 }
 
 // Function: _variant_helper
-template <typename Device, typename SizeType>
+template <typename Stream, typename SizeType>
 template <size_t I, typename... ArgsT, std::enable_if_t<I<sizeof...(ArgsT)>*>
-SizeType Deserializer<Device, SizeType>::_variant_helper(size_t i, std::variant<ArgsT...>& v) {
+SizeType Deserializer<Stream, SizeType>::_variant_helper(size_t i, std::variant<ArgsT...>& v) {
   if(i == 0) {
     using type = ExtractType_t<I, std::variant<ArgsT...>>;
     if(v.index() != I) {
@@ -809,35 +812,35 @@ SizeType Deserializer<Device, SizeType>::_variant_helper(size_t i, std::variant<
 }
 
 // arithmetic data type
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<std::is_arithmetic_v<std::decay_t<T>>, void>*
 >
-SizeType Deserializer<Device, SizeType>::_load(T&& t) {
-  _device.read(reinterpret_cast<char*>(std::addressof(t)), sizeof(t));
+SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
+  _stream.read(reinterpret_cast<char*>(std::addressof(t)), sizeof(t));
   return sizeof(t);
 }
 
 // std::basic_string
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_basic_string_v<std::decay_t<T>>, void>*
 >
-SizeType Deserializer<Device, SizeType>::_load(T&& t) {
+SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
   using U = std::decay_t<T>;
   typename U::size_type num_chars;
   auto sz = _load(make_size_tag(num_chars));
   t.resize(num_chars);
-  _device.read(reinterpret_cast<char*>(t.data()), num_chars*sizeof(typename U::value_type));
+  _stream.read(reinterpret_cast<char*>(t.data()), num_chars*sizeof(typename U::value_type));
   return sz + num_chars*sizeof(typename U::value_type);
 }
 
 // std::vector
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_vector_v<std::decay_t<T>>, void>*
 >
-SizeType Deserializer<Device, SizeType>::_load(T&& t) {
+SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
 
   using U = std::decay_t<T>;
   
@@ -847,7 +850,7 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
 
   if constexpr(std::is_arithmetic_v<typename U::value_type>) {
     t.resize(num_data);
-    _device.read(reinterpret_cast<char*>(t.data()), num_data * sizeof(typename U::value_type));
+    _stream.read(reinterpret_cast<char*>(t.data()), num_data * sizeof(typename U::value_type));
     sz += num_data * sizeof(typename U::value_type);
   } 
   else {
@@ -860,13 +863,13 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
 }
 
 // std::list and std::deque
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_deque_v<std::decay_t<T>> ||
                    is_std_list_v<std::decay_t<T>>  ||
                    is_std_forward_list_v<std::decay_t<T>>, void>*
 >
-SizeType Deserializer<Device, SizeType>::_load(T&& t) {
+SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
   using U = std::decay_t<T>;
     
   typename U::size_type num_data;
@@ -880,11 +883,11 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
 }
 
 // std::map 
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_map_v<std::decay_t<T>>, void>*
 >
-SizeType Deserializer<Device, SizeType>::_load(T&& t) {
+SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
   
   using U = std::decay_t<T>;
 
@@ -905,11 +908,11 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
 }
 
 // std::unordered_map
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_unordered_map_v<std::decay_t<T>>, void>*
 >
-SizeType Deserializer<Device, SizeType>::_load(T&& t) {
+SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
   using U = std::decay_t<T>;
   typename U::size_type num_data;
   auto sz = _load(make_size_tag(num_data));
@@ -929,11 +932,11 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
 }
 
 // std::set 
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_set_v<std::decay_t<T>>, void>*
 >
-SizeType Deserializer<Device, SizeType>::_load(T&& t) {
+SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
   
   using U = std::decay_t<T>;
 
@@ -953,11 +956,11 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
 }
 
 // std::unordered_set
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_unordered_set_v<std::decay_t<T>>, void>*
 >
-SizeType Deserializer<Device, SizeType>::_load(T&& t) {
+SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
    
   using U = std::decay_t<T>;
    
@@ -977,11 +980,11 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
 }
 
 // enum data type
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<std::is_enum_v<std::decay_t<T>>, void>*
 >
-SizeType Deserializer<Device, SizeType>::_load(T&& t) {
+SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
   using U = std::decay_t<T>;
   std::underlying_type_t<U> k;
   auto sz = _load(k);
@@ -990,11 +993,11 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
 }
 
 // duration data type
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_duration_v<std::decay_t<T>>, void>*
 >
-SizeType Deserializer<Device, SizeType>::_load(T&& t) {
+SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
   using U = std::decay_t<T>;
   typename U::rep count;
   auto s = _load(count);
@@ -1003,11 +1006,11 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
 }
 
 // time point data type
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_time_point_v<std::decay_t<T>>, void>*
 >
-SizeType Deserializer<Device, SizeType>::_load(T&& t) {
+SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
   using U = std::decay_t<T>;
   typename U::duration elapsed;
   auto s = _load(elapsed);
@@ -1016,11 +1019,11 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
 }
 
 // optional data type
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_optional_v<std::decay_t<T>>, void>*
 >
-SizeType Deserializer<Device, SizeType>::_load(T&& t) {
+SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
   
   using U = std::decay_t<T>;
 
@@ -1039,22 +1042,22 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
 }
 
 // variant type
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_variant_v<std::decay_t<T>>, void>*
 >
-SizeType Deserializer<Device, SizeType>::_load(T&& t) {
+SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
   std::decay_t<decltype(t.index())> idx;
   auto s = _load(idx);
   return s + _variant_helper(idx, t);
 }
 
 // tuple type
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_tuple_v<std::decay_t<T>>, void>*
 >
-SizeType Deserializer<Device, SizeType>::_load(T&& t) {
+SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
   return std::apply(
     [&] (auto&&... args) {
       return (_load(std::forward<decltype(args)>(args)) + ... + 0); 
@@ -1064,11 +1067,11 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
 }
 
 // array
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<is_std_array_v<std::decay_t<T>>, void>*
 >
-SizeType Deserializer<Device, SizeType>::_load(T&& t) {
+SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
 
   using U = std::decay_t<T>;
 
@@ -1077,7 +1080,7 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
   SizeType sz;
     
   if constexpr(std::is_arithmetic_v<typename U::value_type>) {
-    _device.read(reinterpret_cast<char*>(t.data()), sizeof(t));
+    _stream.read(reinterpret_cast<char*>(t.data()), sizeof(t));
     sz = sizeof(t);
   } 
   else {
@@ -1091,11 +1094,11 @@ SizeType Deserializer<Device, SizeType>::_load(T&& t) {
 }
 
 // custom save method    
-template <typename Device, typename SizeType>  
+template <typename Stream, typename SizeType>  
 template <typename T, 
   std::enable_if_t<!is_default_deserializable_v<std::decay_t<T>>, void>*
 >
-SizeType Deserializer<Device, SizeType>::_load(T&& t) {
+SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
   return t.load(*this);
 }
 

@@ -119,6 +119,9 @@ New algorithms in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFl
 <para><itemizedlist>
 <listitem><para>fixed compilation errors in constructing <ref refid="classtf_1_1cudaRoundRobinCapturing" kindref="compound">tf::cudaRoundRobinCapturing</ref> </para></listitem>
 <listitem><para>fixed compilation errors of TLS worker pointer in <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> </para></listitem>
+<listitem><para>fixed compilation errors of nvcc v11.3 in auto template deduction<itemizedlist>
+<listitem><para>std::scoped_lock</para></listitem><listitem><para>tf::Serializer and tf::Deserializer </para></listitem></itemizedlist>
+</para></listitem>
 <listitem><para>fixed memory leak when moving a <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref></para></listitem>
 </itemizedlist>
 </para></sect1>

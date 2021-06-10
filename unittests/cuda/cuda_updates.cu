@@ -826,6 +826,11 @@ struct LessOrGreater {
   bool v;
 };
 
+struct IsEqual {
+  int v;
+  __device__ bool operator()(int a) const { return v == a; }
+};
+
 // ----------------------------------------------------------------------------
 // update for_each
 // ----------------------------------------------------------------------------
@@ -1442,7 +1447,7 @@ void update_sort() {
    
   F cf;
 
-  for(int N=1; N<=100000; N += (N/10+1)) {
+  for(int N=1; N<=100000; N += (N/100+1)) {
   
     cf.clear();
 
@@ -1489,4 +1494,118 @@ TEST_CASE("cudaFlowCapturer.update.sort" * doctest::timeout(300)) {
   update_sort<tf::cudaFlowCapturer>();
 }
 
+// ----------------------------------------------------------------------------
+// update find
+// ----------------------------------------------------------------------------
+
+template <typename F>
+void update_find() {
+   
+  F cf;
+
+  for(unsigned N=1; N<=100000; N += (N/100+1)) {
+  
+    cf.clear();
+
+    auto input1 = tf::cuda_malloc_shared<int>(N);
+    auto input2 = tf::cuda_malloc_shared<int>(N);
+    auto index1 = tf::cuda_malloc_shared<unsigned>(1);
+    auto index2 = tf::cuda_malloc_shared<unsigned>(1);
+
+    for(unsigned i=0; i<N; i++) {
+      input1[i] = i;
+      input2[i] = i;
+    }
+    
+    // create find
+    auto find_if = cf.find_if(input1, input1+N, index1, IsEqual{(int)(N/2)});
+    cf.offload();
+
+    REQUIRE(*index1 != N);
+    REQUIRE(input1[*index1] == N/2);
+
+    // update find
+    cf.find_if(find_if, input2, input2+N, index2, IsEqual{(int)(N/2 + 1)});
+    cf.offload();
+    
+    REQUIRE(cf.num_tasks() == 1);
+
+    if( N/2+1 >= N) {
+      REQUIRE(*index2 == N);
+    }
+    else {
+      REQUIRE(input2[*index2] == (N/2+1));
+    }
+
+    // free the data 
+    tf::cuda_free(input1);
+    tf::cuda_free(input2);
+    tf::cuda_free(index1);
+    tf::cuda_free(index2);
+  }
+}
+
+TEST_CASE("cudaFlow.update.find" * doctest::timeout(300)) {
+  update_find<tf::cudaFlow>();
+}
+
+TEST_CASE("cudaFlowCapturer.update.find" * doctest::timeout(300)) {
+  update_find<tf::cudaFlowCapturer>();
+}
+
+// ----------------------------------------------------------------------------
+// update min-/max-element
+// ----------------------------------------------------------------------------
+
+template <typename F>
+void update_minmax_element() {
+   
+  F cf;
+
+  for(unsigned N=1; N<=100000; N += (N/100+1)) {
+  
+    cf.clear();
+
+    auto input1 = tf::cuda_malloc_shared<int>(N);
+    auto input2 = tf::cuda_malloc_shared<int>(N);
+    auto index1 = tf::cuda_malloc_shared<unsigned>(1);
+    auto index2 = tf::cuda_malloc_shared<unsigned>(1);
+
+    for(unsigned i=0; i<N; i++) {
+      input1[i] = rand();
+      input2[i] = rand();
+    }
+    
+    // create find
+    auto find_min = cf.min_element(input1, input1+N, index1, tf::cuda_less<int>());
+    auto find_max = cf.max_element(input2, input2+N, index2, tf::cuda_less<int>());
+    cf.offload();
+
+    REQUIRE(input1[*index1] == *std::min_element(input1, input1+N));
+    REQUIRE(input2[*index2] == *std::max_element(input2, input2+N));
+
+    // update find
+    cf.min_element(find_min, input2, input2+N, index2, tf::cuda_less<int>());
+    cf.max_element(find_max, input1, input1+N, index1, tf::cuda_less<int>());
+    cf.offload();
+
+    REQUIRE(cf.num_tasks() == 2);
+    REQUIRE(input2[*index2] == *std::min_element(input2, input2+N));
+    REQUIRE(input1[*index1] == *std::max_element(input1, input1+N));
+
+    // free the data 
+    tf::cuda_free(input1);
+    tf::cuda_free(input2);
+    tf::cuda_free(index1);
+    tf::cuda_free(index2);
+  }
+}
+
+TEST_CASE("cudaFlow.update.minmax_element" * doctest::timeout(300)) {
+  update_minmax_element<tf::cudaFlow>();
+}
+
+TEST_CASE("cudaFlowCapturer.update.minmax_element" * doctest::timeout(300)) {
+  update_minmax_element<tf::cudaFlowCapturer>();
+}
 

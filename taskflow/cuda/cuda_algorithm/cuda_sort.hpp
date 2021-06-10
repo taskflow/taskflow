@@ -417,8 +417,7 @@ namespace tf {
 
 @param count number of keys/values to sort
 
-The function is used to allocate a buffer for calling asynchronous sort.
-Please refer to @ref CUDASTDSort for details.
+The function is used to allocate a buffer for calling tf::cuda_sort.
 
 */
 template <typename P, typename K, typename V = cudaEmpty>
@@ -474,7 +473,6 @@ unsigned cuda_sort_buffer_size(unsigned count) {
 @param comp binary comparator
 @param buf pointer to the temporary buffer
 
-Please refer to @ref CUDASTDSort for details.
 */
 template<typename P, typename K_it, typename V_it, typename C>
 void cuda_sort(
@@ -507,7 +505,6 @@ void cuda_sort(
 @param comp binary comparator
 @param buf pointer to the temporary buffer
 
-Please refer to @ref CUDASTDSort for details.
 */
 template<typename P, typename K_it, typename C>
 void cuda_sort(P&& p, K_it k_first, K_it k_last, C comp, void* buf) {

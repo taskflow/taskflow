@@ -86,7 +86,14 @@ void cuda_single_task(P&& p, C c) {
 @param last iterator to the end of the range
 @param c unary operator to apply to each dereferenced iterator
 
-Please refer to @ref CUDASTDForEach for details.
+This function is equivalent to a parallel execution of the following loop 
+on a GPU:
+
+@code{.cpp}
+for(auto itr = first; itr != last; itr++) {
+  c(*itr);
+}
+@endcode
 */
 template <typename P, typename I, typename C>
 void cuda_for_each(P&& p, I first, I last, C c) {
@@ -114,7 +121,20 @@ void cuda_for_each(P&& p, I first, I last, C c) {
 @param inc step size between successive iterations
 @param c unary operator to apply to each index
 
-Please refer to @ref CUDASTDForEach for details.
+This function is equivalent to a parallel execution of 
+the following loop on a GPU:
+
+@code{.cpp}
+// step is positive [first, last)
+for(auto i=first; i<last; i+=step) {
+  c(i);
+}
+
+// step is negative [first, last)
+for(auto i=first; i>last; i+=step) {
+  c(i);
+}
+@endcode
 */
 template <typename P, typename I, typename C>
 void cuda_for_each_index(P&& p, I first, I last, I inc, C c) {

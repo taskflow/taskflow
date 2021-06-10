@@ -117,6 +117,9 @@ New algorithms in tf::cudaFlow and tf::cudaFlowCapturer:
 
 @li fixed compilation errors in constructing tf::cudaRoundRobinCapturing
 @li fixed compilation errors of TLS worker pointer in tf::Executor
+@li fixed compilation errors of nvcc v11.3 in auto template deduction
+  + std::scoped_lock
+  + tf::Serializer and tf::Deserializer
 @li fixed memory leak when moving a tf::Taskflow
 
 @section release-3-2-0_breaking_changes Breaking Changes

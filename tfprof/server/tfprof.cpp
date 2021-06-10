@@ -151,7 +151,7 @@ class Database {
     }
     
     ProfileData pd;
-    tf::Deserializer deserializer(ifs);
+    tf::Deserializer<std::ifstream> deserializer(ifs);
     deserializer(pd);
     
     // find the minimum starting point
