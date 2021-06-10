@@ -120,7 +120,7 @@
 
 <span class="c1">// initializes the data</span>
 <span class="o">*</span><span class="n">res</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">;</span>
-<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> 
+<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
 <span class="p">}</span> 
 
@@ -149,7 +149,7 @@
 <span class="kt">int</span><span class="o">*</span> <span class="n">vec</span> <span class="o">=</span> <span class="n">tf</span><span class="o">::</span><span class="n">cuda_malloc_shared</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">N</span><span class="p">);</span>  <span class="c1">// vector</span>
 
 <span class="c1">// initializes the data</span>
-<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> 
+<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
 <span class="p">}</span> 
 
@@ -169,8 +169,10 @@
 <span class="c1">// synchronize the execution</span>
 <span class="n">policy</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span>
 
-<span class="c1">// delete the buffer</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">cuda_free</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span></pre></section>
+<span class="c1">// delete the data</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">cuda_free</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">cuda_free</span><span class="p">(</span><span class="n">res</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">cuda_free</span><span class="p">(</span><span class="n">vec</span><span class="p">);</span></pre></section>
       </div>
     </div>
   </div>

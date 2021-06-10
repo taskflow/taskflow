@@ -22,9 +22,7 @@ int* input  = tf::cuda_malloc_shared<int>(N);  // input  vector
 int* output = tf::cuda_malloc_shared<int>(N);  // output vector
 
 // initializes the data
-for(size_t i=0; i<N; i++) 
-  input[i] = rand();
-}
+for(size_t i=0; i<N; input[i++]=rand());
  
 // creates a cudaFlow of one task to perform inclusive scan 
 tf::cudaFlow cf;
@@ -101,9 +99,7 @@ int* input  = tf::cuda_malloc_shared<int>(N);  // input  vector
 int* output = tf::cuda_malloc_shared<int>(N);  // output vector
 
 // initializes the data
-for(size_t i=0; i<N; i++) 
-  input[i] = rand();
-} 
+for(size_t i=0; i<N; input[i++]=rand()); 
 
 // creates a cudaFlow of one task to exclusively scan over transformed input 
 tf::cudaFlow cf;

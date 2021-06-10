@@ -18,9 +18,7 @@ const size_t N = 1000000;
 int* vec = tf::cuda_malloc_shared<int>(N);  // vector
 
 // initializes the data
-for(size_t i=0; i<N; i++) {
-  vec[i] = rand();
-} 
+for(size_t i=0; i<N; vec[i++]=rand());
 
 // create a cudaFlow of one task to perform parallel sort
 tf::cudaFlow cf;
@@ -41,9 +39,7 @@ const size_t N = 1000000;
 int* vec = tf::cuda_malloc_shared<int>(N);  // vector
 
 // initializes the data
-for(size_t i=0; i<N; i++) {
-  vec[i] = rand();
-} 
+for(size_t i=0; i<N; vec[i++]=rand());
 
 // create a cudaFlow of one task to perform parallel sort
 tf::cudaFlow cf;

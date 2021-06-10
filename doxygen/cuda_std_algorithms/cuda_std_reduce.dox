@@ -137,7 +137,7 @@ int* vec = tf::cuda_malloc_shared<int>(N);  // vector
 
 // initializes the data
 *res = 1000;
-for(size_t i=0; i<N; i++) 
+for(size_t i=0; i<N; i++) {
   vec[i] = i;
 } 
 
@@ -187,7 +187,7 @@ int* res = tf::cuda_malloc_shared<int>(1);  // result
 int* vec = tf::cuda_malloc_shared<int>(N);  // vector
 
 // initializes the data
-for(size_t i=0; i<N; i++) 
+for(size_t i=0; i<N; i++) {
   vec[i] = i;
 } 
 
@@ -207,8 +207,10 @@ tf::cuda_uninitialized_reduce(policy,
 // synchronize the execution
 policy.synchronize();
 
-// delete the buffer
+// delete the data
 tf::cuda_free(buffer);
+tf::cuda_free(res);
+tf::cuda_free(vec);
 @endcode
 
 

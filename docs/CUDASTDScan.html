@@ -61,9 +61,7 @@
 <span class="kt">int</span><span class="o">*</span> <span class="n">output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">::</span><span class="n">cuda_malloc_shared</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">N</span><span class="p">);</span>  <span class="c1">// output vector</span>
 
 <span class="c1">// initializes the data</span>
-<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> 
-  <span class="n">input</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">rand</span><span class="p">();</span>
-<span class="p">}</span> 
+<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span> <span class="n">input</span><span class="p">[</span><span class="n">i</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">rand</span><span class="p">());</span> 
 
 <span class="c1">// queries the required buffer size to scan N elements using the given policy</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">cudaDefaultExecutionPolicy</span> <span class="n">policy</span><span class="p">;</span>
@@ -96,9 +94,7 @@
 <span class="kt">int</span><span class="o">*</span> <span class="n">output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">::</span><span class="n">cuda_malloc_shared</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">N</span><span class="p">);</span>  <span class="c1">// output vector</span>
 
 <span class="c1">// initializes the data</span>
-<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> 
-  <span class="n">input</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">rand</span><span class="p">();</span>
-<span class="p">}</span> 
+<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span> <span class="n">input</span><span class="p">[</span><span class="n">i</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">rand</span><span class="p">());</span> 
 
 <span class="c1">// queries the required buffer size to scan N elements using the given policy</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">cudaDefaultExecutionPolicy</span> <span class="n">policy</span><span class="p">;</span>
@@ -112,9 +108,9 @@
   <span class="p">[]</span> <span class="n">__device__</span> <span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">a</span><span class="o">*</span><span class="mi">10</span><span class="p">;</span> <span class="p">},</span>          <span class="c1">// unary transform operator</span>
   <span class="n">buffer</span>
 <span class="p">);</span>
-
-<span class="c1">// synchronizes the execution and verifies the result</span>
 <span class="n">policy</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span>
+
+<span class="c1">// verifies the result</span>
 <span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">assert</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="mi">-1</span><span class="p">]</span> <span class="o">+</span> <span class="n">input</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span><span class="p">);</span>
 <span class="p">}</span></pre><p>Similarly, <a href="namespacetf.html#a2e739895c1c73538967af060ca714366" class="m-doc">tf::<wbr />cuda_transform_exclusive_scan</a> performs an exclusive prefix sum over a range of transformed items. The following code computes the exclusive prefix sum over 1000000 transformed items each multipled by 10.</p><pre class="m-code"><span class="k">const</span> <span class="kt">size_t</span> <span class="n">N</span> <span class="o">=</span> <span class="mi">1000000</span><span class="p">;</span>
@@ -122,9 +118,7 @@
 <span class="kt">int</span><span class="o">*</span> <span class="n">output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">::</span><span class="n">cuda_malloc_shared</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">N</span><span class="p">);</span>  <span class="c1">// output vector</span>
 
 <span class="c1">// initializes the data</span>
-<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> 
-  <span class="n">input</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">rand</span><span class="p">();</span>
-<span class="p">}</span> 
+<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span> <span class="n">input</span><span class="p">[</span><span class="n">i</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">rand</span><span class="p">());</span> 
 
 <span class="c1">// queries the required buffer size to scan N elements using the given policy</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">cudaDefaultExecutionPolicy</span> <span class="n">policy</span><span class="p">;</span>
@@ -138,9 +132,9 @@
   <span class="p">[]</span> <span class="n">__device__</span> <span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">a</span><span class="o">*</span><span class="mi">10</span><span class="p">;</span> <span class="p">},</span>          <span class="c1">// unary transform operator</span>
   <span class="n">buffer</span>
 <span class="p">);</span>
-
-<span class="c1">// synchronizes the execution and verifies the result</span>
 <span class="n">policy</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span>
+
+<span class="c1">// verifies the result</span>
 <span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">assert</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="mi">-1</span><span class="p">]</span> <span class="o">+</span> <span class="n">input</span><span class="p">[</span><span class="n">i</span><span class="mi">-1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span><span class="p">);</span>
 <span class="p">}</span></pre></section>
