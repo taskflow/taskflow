@@ -9,7 +9,7 @@
     <detaileddescription>
 <para>Taskflow provides standalone template methods for merging two sorted ranges of items into a sorted range of items.</para><sect1 id="CUDASTDMerge_1CUDASTDMergeItems">
 <title>Merge Two Sorted Ranges of Items</title>
-<para><ref refid="namespacetf_1a91627df53e76d19f3118558d4c118a6b" kindref="member">tf::cuda_merge</ref> merges two sorted ranges of items into a sorted range. The following code merges two sorted arrays <computeroutput>input_1</computeroutput> and <computeroutput>input_2</computeroutput>, each of 1000 items, into a sorted array <computeroutput>output</computeroutput> of 2000 items.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000;</highlight></codeline>
+<para><ref refid="namespacetf_1a37ec481149c2f01669353033d75ed72a" kindref="member">tf::cuda_merge</ref> merges two sorted ranges of items into a sorted range. The following code merges two sorted arrays <computeroutput>input_1</computeroutput> and <computeroutput>input_2</computeroutput>, each of 1000 items, into a sorted array <computeroutput>output</computeroutput> of 2000 items.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>input_1<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>input<sp/>vector<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>input_2<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>input<sp/>vector<sp/>2</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>output<sp/><sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(2*N);<sp/><sp/></highlight><highlight class="comment">//<sp/>output<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
@@ -28,7 +28,7 @@
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>merge<sp/>input_1<sp/>and<sp/>input_2<sp/>to<sp/>output</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1a91627df53e76d19f3118558d4c118a6b" kindref="member">tf::cuda_merge</ref>(policy,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1a37ec481149c2f01669353033d75ed72a" kindref="member">tf::cuda_merge</ref>(policy,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>input_1,<sp/>input_1<sp/>+<sp/>N,<sp/>input_2,<sp/>input_2<sp/>+<sp/>N,<sp/>output,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>&lt;<sp/>b;<sp/>},<sp/><sp/></highlight><highlight class="comment">//<sp/>comparator</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>buffer</highlight></codeline>
@@ -40,8 +40,52 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(buffer);</highlight></codeline>
-</programlisting></para><para>The merge algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results. Since the GPU merge algorithm may require extra buffer to store the temporary results, you must provide a buffer of size at least bytes returned from <ref refid="namespacetf_1a3db5b8f718e7f6a6fa2da3a689bd8828" kindref="member">tf::cuda_merge_buffer_size</ref>.</para><para><simplesect kind="attention"><para>You must keep the buffer alive before the merge call completes. </para></simplesect>
+</programlisting></para><para>The merge algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results. Since the GPU merge algorithm may require extra buffer to store the temporary results, you must provide a buffer of size at least bytes returned from <ref refid="namespacetf_1a3db5b8f718e7f6a6fa2da3a689bd8828" kindref="member">tf::cuda_merge_buffer_size</ref>.</para><para><simplesect kind="attention"><para>You must keep the buffer alive before the merge call completes.</para></simplesect>
 </para></sect1>
+<sect1 id="CUDASTDMerge_1CUDASTDMergeKeyValueItems">
+<title>Merge Two Sorted Ranges of Key-Value Items</title>
+<para><ref refid="namespacetf_1aa84d4c68d2cbe9f6efc4a1eb1a115458" kindref="member">tf::cuda_merge_by_key</ref> performs key-value merge over two sorted ranges in a similar way to <ref refid="namespacetf_1a37ec481149c2f01669353033d75ed72a" kindref="member">tf::cuda_merge</ref>; additionally, it copies elements from the two ranges of values associated with the two input keys, respectively. The following code performs key-value merge over <computeroutput>a</computeroutput> and <computeroutput>b:</computeroutput> </para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>2;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>a_keys<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>a_vals<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>b_keys<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>b_vals<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>c_keys<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(2*N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>c_vals<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(2*N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">a_keys[0]<sp/>=<sp/>8,<sp/>a_keys[1]<sp/>=<sp/>1;</highlight></codeline>
+<codeline><highlight class="normal">a_vals[0]<sp/>=<sp/>1,<sp/>a_vals[1]<sp/>=<sp/>2;</highlight></codeline>
+<codeline><highlight class="normal">b_keys[0]<sp/>=<sp/>3,<sp/>b_keys[1]<sp/>=<sp/>7;</highlight></codeline>
+<codeline><highlight class="normal">b_vals[0]<sp/>=<sp/>3,<sp/>b_vals[1]<sp/>=<sp/>4;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>merge<sp/>the<sp/>two<sp/>key-value<sp/>items</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>tf::cuda_merge_buffer_size&lt;tf::cudaDefaultExecutionPolicy&gt;(N,<sp/>N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>merge<sp/>keys<sp/>and<sp/>values<sp/>of<sp/>a<sp/>and<sp/>b<sp/>to<sp/>c</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1aa84d4c68d2cbe9f6efc4a1eb1a115458" kindref="member">tf::cuda_merge_by_key</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>policy,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>a_keys,<sp/>a_keys+N,<sp/>a_vals,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>b_keys,<sp/>b_keys+N,<sp/>b_vals,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>c_keys,<sp/>c_vals,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>&lt;<sp/>b;<sp/>},<sp/><sp/></highlight><highlight class="comment">//<sp/>comparator</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>buffer</highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a33596174fe764d85356ed9b8c0934bb7" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now,<sp/>c_keys<sp/>=<sp/>{1,<sp/>3,<sp/>7,<sp/>8}</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now,<sp/>c_vals<sp/>=<sp/>{2,<sp/>3,<sp/>4,<sp/>1}</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>device<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(buffer);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(a_keys);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(b_keys);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(c_keys);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(a_vals);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(b_vals);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(c_vals);</highlight></codeline>
+</programlisting></para><para>The buffer size required by <ref refid="namespacetf_1aa84d4c68d2cbe9f6efc4a1eb1a115458" kindref="member">tf::cuda_merge_by_key</ref> is the same as <ref refid="namespacetf_1a37ec481149c2f01669353033d75ed72a" kindref="member">tf::cuda_merge</ref> and must be at least equal to or larger than the value returned by <ref refid="namespacetf_1a3db5b8f718e7f6a6fa2da3a689bd8828" kindref="member">tf::cuda_merge_buffer_size</ref>. </para></sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

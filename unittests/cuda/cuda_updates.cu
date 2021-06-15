@@ -1495,6 +1495,83 @@ TEST_CASE("cudaFlowCapturer.update.sort" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
+// update sort_by_key
+// ----------------------------------------------------------------------------
+ 
+template <typename F>
+void update_sort_by_key() {
+  
+  std::random_device rd;
+  std::mt19937 g(rd());
+   
+  F cf;
+
+  for(int N=1; N<=100000; N += (N/100+1)) {
+  
+    cf.clear();
+
+    auto input1 = tf::cuda_malloc_shared<int>(N);
+    auto input2 = tf::cuda_malloc_shared<int>(N);
+    auto index1 = tf::cuda_malloc_shared<int>(N);
+    auto index2 = tf::cuda_malloc_shared<int>(N);
+    std::vector<int> index(N);
+
+    for(int i=0; i<N; i++) {
+      input1[i] = i;
+      input2[i] = i;
+      index1[i] = i;
+      index2[i] = i;
+      index [i] = i;
+    }
+    std::shuffle(input1, input1+N, g);
+    std::shuffle(input2, input2+N, g);
+    
+    // create sort
+    std::sort(index.begin(), index.end(), [&](auto i, auto j){
+      return input1[i] < input1[j];
+    });
+    auto sort = cf.sort_by_key(input1, input1+N, index1, LessOrGreater{true});
+    cf.offload();
+
+    REQUIRE(cf.num_tasks() == 1);
+    REQUIRE(std::is_sorted(input1, input1+N));
+    for(int i=0; i<N; i++) {
+      REQUIRE(index[i] == index1[i]);
+    }
+
+    // update sort
+    for(int i=0; i<N; i++) {
+      index[i] = i;
+    }
+    std::sort(index.begin(), index.end(), [&](auto i, auto j){
+      return input2[i] > input2[j];
+    });
+    cf.sort_by_key(sort, input2, input2+N, index2, LessOrGreater{false});
+    cf.offload();
+    
+    REQUIRE(cf.num_tasks() == 1);
+    REQUIRE(std::is_sorted(input2, input2+N, std::greater<int>()));
+    for(int i=0; i<N; i++) {
+      REQUIRE(index[i] == index2[i]);
+    }
+    
+    // free the data 
+    tf::cuda_free(input1);
+    tf::cuda_free(input2);
+    tf::cuda_free(index1);
+    tf::cuda_free(index2);
+  }
+}
+
+TEST_CASE("cudaFlow.update.sort_by_key" * doctest::timeout(300)) {
+  update_sort_by_key<tf::cudaFlow>();
+}
+
+TEST_CASE("cudaFlowCapturer.update.sort_by_key" * doctest::timeout(300)) {
+  update_sort_by_key<tf::cudaFlowCapturer>();
+}
+
+// ----------------------------------------------------------------------------
 // update find
 // ----------------------------------------------------------------------------
 

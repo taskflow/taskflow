@@ -534,13 +534,13 @@
             <dd>queries the buffer size in bytes needed to call merge kernels</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename P, typename a_keys_it, typename a_vals_it, typename b_keys_it, typename b_vals_it, typename c_keys_it, typename c_vals_it, typename C&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#a91627df53e76d19f3118558d4c118a6b" class="m-doc">cuda_merge</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              <span class="m-doc-wrap-bumper">void <a href="#aa84d4c68d2cbe9f6efc4a1eb1a115458" class="m-doc">cuda_merge_by_key</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
               a_keys_it a_keys_first,
-              a_vals_it a_vals_first,
               a_keys_it a_keys_last,
+              a_vals_it a_vals_first,
               b_keys_it b_keys_first,
-              b_vals_it b_vals_first,
               b_keys_it b_keys_last,
+              b_vals_it b_vals_first,
               c_keys_it c_keys_first,
               c_vals_it c_vals_first,
               C comp,
@@ -1934,20 +1934,20 @@
                 </tr>
               </tbody>
             </table>
-<p>The function is used to allocate a buffer for calling <a href="namespacetf.html#a91627df53e76d19f3118558d4c118a6b" class="m-doc">tf::<wbr />cuda_merge</a>.</p>
+<p>The function is used to allocate a buffer for calling <a href="namespacetf.html#a37ec481149c2f01669353033d75ed72a" class="m-doc">tf::<wbr />cuda_merge</a>.</p>
           </div></section>
-          <section class="m-doc-details" id="a91627df53e76d19f3118558d4c118a6b"><div>
+          <section class="m-doc-details" id="aa84d4c68d2cbe9f6efc4a1eb1a115458"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename P, typename a_keys_it, typename a_vals_it, typename b_keys_it, typename b_vals_it, typename c_keys_it, typename c_vals_it, typename C&gt;
               </div>
-              <span class="m-doc-wrap-bumper">void tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a91627df53e76d19f3118558d4c118a6b" class="m-doc-self">cuda_merge</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              <span class="m-doc-wrap-bumper">void tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa84d4c68d2cbe9f6efc4a1eb1a115458" class="m-doc-self">cuda_merge_by_key</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
               a_keys_it a_keys_first,
-              a_vals_it a_vals_first,
               a_keys_it a_keys_last,
+              a_vals_it a_vals_first,
               b_keys_it b_keys_first,
-              b_vals_it b_vals_first,
               b_keys_it b_keys_last,
+              b_vals_it b_vals_first,
               c_keys_it c_keys_first,
               c_vals_it c_vals_first,
               C comp,
@@ -2005,24 +2005,24 @@
                   <td>iterator to the beginning of the first key range</td>
                 </tr>
                 <tr>
-                  <td>a_vals_first</td>
-                  <td>iterator to the beginning of the first value range</td>
-                </tr>
-                <tr>
                   <td>a_keys_last</td>
                   <td>iterator to the end of the first key range</td>
+                </tr>
+                <tr>
+                  <td>a_vals_first</td>
+                  <td>iterator to the beginning of the first value range</td>
                 </tr>
                 <tr>
                   <td>b_keys_first</td>
                   <td>iterator to the beginning of the second key range</td>
                 </tr>
                 <tr>
-                  <td>b_vals_first</td>
-                  <td>iterator to the beginning of the second value range</td>
-                </tr>
-                <tr>
                   <td>b_keys_last</td>
                   <td>iterator to the end of the second key range</td>
+                </tr>
+                <tr>
+                  <td>b_vals_first</td>
+                  <td>iterator to the beginning of the second value range</td>
                 </tr>
                 <tr>
                   <td>c_keys_first</td>
@@ -2042,6 +2042,7 @@
                 </tr>
               </tbody>
             </table>
+<p>Performs a key-value merge that copies elements from <code>[a_keys_first, a_keys_last)</code> and <code>[b_keys_first, b_keys_last)</code> into a single range, <code>[c_keys_first, c_keys_last + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</code> such that the resulting range is in ascending key order.</p><p>At the same time, the merge copies elements from the two associated ranges <code>[a_vals_first + (a_keys_last - a_keys_first))</code> and <code>[b_vals_first + (b_keys_last - b_keys_first))</code> into a single range, <code>[c_vals_first, c_vals_first + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</code> such that the resulting range is in ascending order implied by each input element&#x27;s associated key.</p><p>For example, assume:</p><ul><li><code>a_keys</code> = {8, 1};</li><li><code>a_vals</code> = {1, 2};</li><li><code>b_keys</code> = {3, 7};</li><li><code>b_vals</code> = {3, 4};</li></ul><p>After the merge, we have:</p><ul><li><code>c_keys</code> = {1, 3, 7, 8}</li><li><code>c_vals</code> = {2, 3, 4, 1}</li></ul>
           </div></section>
           <section class="m-doc-details" id="a37ec481149c2f01669353033d75ed72a"><div>
             <h3>
@@ -2122,6 +2123,7 @@
                 </tr>
               </tbody>
             </table>
+<p>This function is equivalent to <a href="namespacetf.html#aa84d4c68d2cbe9f6efc4a1eb1a115458" class="m-doc">tf::<wbr />cuda_merge_by_key</a> without values.</p>
           </div></section>
           <section class="m-doc-details" id="a9c69906a4dfd1e2d0cd7ed496d29dafd"><div>
             <h3>
@@ -2284,7 +2286,7 @@
                 </tr>
               </tbody>
             </table>
-<p>This method is equivalent to the parallel execution of std::sort on a CUDA GPU.</p>
+<p>This method is equivalent to <a href="namespacetf.html#a3461b9179221dd7230ce2a0e45156c7f" class="m-doc">tf::<wbr />cuda_sort_by_key</a> without values.</p>
           </div></section>
           <section class="m-doc-details" id="a5f9dabd7c5d0fa5166cf76d9fa5a038e"><div>
             <h3>

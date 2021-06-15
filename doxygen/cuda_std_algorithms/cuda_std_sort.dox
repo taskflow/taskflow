@@ -93,6 +93,9 @@ tf::cuda_free(vec);
 tf::cuda_free(idx);
 @endcode
 
+The buffer size required by tf::cuda_sort_by_key is the same as tf::cuda_sort
+and must be at least equal to or larger than the value returned 
+by tf::cuda_sort_buffer_size.
 While you can capture the values into the lambda and sort them indirectly
 using plain tf::cuda_sort,
 this organization will result in frequent and costly access to the global memory.

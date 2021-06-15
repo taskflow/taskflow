@@ -428,6 +428,33 @@
             </dt>
             <dd>updates a capture task to a merge task</dd>
             <dt>
+              <div class="m-doc-template">template&lt;typename a_keys_it, typename a_vals_it, typename b_keys_it, typename b_vals_it, typename c_keys_it, typename c_vals_it, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a2abf795a03b5431c105a70cee4cf5051" class="m-doc">merge_by_key</a>(</span><span class="m-doc-wrap">a_keys_it a_keys_first,
+              a_keys_it a_keys_last,
+              a_vals_it a_vals_first,
+              b_keys_it b_keys_first,
+              b_keys_it b_keys_last,
+              b_vals_it b_vals_first,
+              c_keys_it c_keys_first,
+              c_vals_it c_vals_first,
+              C comp) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>captures kernels that perform parallel key-value merge</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename a_keys_it, typename a_vals_it, typename b_keys_it, typename b_vals_it, typename c_keys_it, typename c_vals_it, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a941bd8141ab25430a264041b9dfd6c28" class="m-doc">merge_by_key</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              a_keys_it a_keys_first,
+              a_keys_it a_keys_last,
+              a_vals_it a_vals_first,
+              b_keys_it b_keys_first,
+              b_keys_it b_keys_last,
+              b_vals_it b_vals_first,
+              c_keys_it c_keys_first,
+              c_vals_it c_vals_first,
+              C comp)</span>
+            </dt>
+            <dd>updates a capture task to a key-value merge task</dd>
+            <dt>
               <div class="m-doc-template">template&lt;typename I, typename C&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a3bcb91eb1579451ece602206f20845f4" class="m-doc">sort</a>(</span><span class="m-doc-wrap">I first,
               I last,
@@ -1648,7 +1675,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>Merges two sorted ranges <code>[a_first, a_last)</code> and <code>[b_first, b_last)</code> into one sorted range beginning at <code>c_first</code>.</p><p>A sequence is said to be sorted with respect to a comparator <code>comp</code> if for any iterator it pointing to the sequence and any non-negative integer <code>n</code> such that <code>it + n</code> is a valid iterator pointing to an element of the sequence, <code>comp(*(it + n), *it)</code> evaluates to false.</p>
+<p>Merges two sorted ranges <code>[a_first, a_last)</code> and <code>[b_first, b_last)</code> into one sorted range beginning at <code>c_first</code>.</p><p>A sequence is said to be sorted with respect to a comparator <code>comp</code> if for any iterator it pointing to the sequence and any non-negative integer <code>n</code> such that <code>it + n</code> is a valid iterator pointing to an element of the sequence, <code>comp(*(it + n), *it)</code> evaluates to <code>false</code>.</p>
           </div></section>
           <section class="m-doc-details" id="a4a69fa9de723f703d6d69fc96fdc978f"><div>
             <h3>
@@ -1665,6 +1692,119 @@
             </h3>
             <p>updates a capture task to a merge task</p>
 <p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#ac2eec500f313481926197ff0b3aed343" class="m-doc">cudaFlowCapturer::<wbr />merge</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="a2abf795a03b5431c105a70cee4cf5051"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename a_keys_it, typename a_vals_it, typename b_keys_it, typename b_vals_it, typename c_keys_it, typename c_vals_it, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a2abf795a03b5431c105a70cee4cf5051" class="m-doc-self">merge_by_key</a>(</span><span class="m-doc-wrap">a_keys_it a_keys_first,
+              a_keys_it a_keys_last,
+              a_vals_it a_vals_first,
+              b_keys_it b_keys_first,
+              b_keys_it b_keys_last,
+              b_vals_it b_vals_first,
+              c_keys_it c_keys_first,
+              c_vals_it c_vals_first,
+              C comp)</span></span>
+            </h3>
+            <p>captures kernels that perform parallel key-value merge</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">a_keys_it</td>
+                  <td>first key iterator type</td>
+                </tr>
+                <tr>
+                  <td>a_vals_it</td>
+                  <td>first value iterator type</td>
+                </tr>
+                <tr>
+                  <td>b_keys_it</td>
+                  <td>second key iterator type</td>
+                </tr>
+                <tr>
+                  <td>b_vals_it</td>
+                  <td>second value iterator type</td>
+                </tr>
+                <tr>
+                  <td>c_keys_it</td>
+                  <td>output key iterator type</td>
+                </tr>
+                <tr>
+                  <td>c_vals_it</td>
+                  <td>output value iterator type</td>
+                </tr>
+                <tr>
+                  <td>C</td>
+                  <td>comparator type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>a_keys_first</td>
+                  <td>iterator to the beginning of the first key range</td>
+                </tr>
+                <tr>
+                  <td>a_keys_last</td>
+                  <td>iterator to the end of the first key range</td>
+                </tr>
+                <tr>
+                  <td>a_vals_first</td>
+                  <td>iterator to the beginning of the first value range</td>
+                </tr>
+                <tr>
+                  <td>b_keys_first</td>
+                  <td>iterator to the beginning of the second key range</td>
+                </tr>
+                <tr>
+                  <td>b_keys_last</td>
+                  <td>iterator to the end of the second key range</td>
+                </tr>
+                <tr>
+                  <td>b_vals_first</td>
+                  <td>iterator to the beginning of the second value range</td>
+                </tr>
+                <tr>
+                  <td>c_keys_first</td>
+                  <td>iterator to the beginning of the output key range</td>
+                </tr>
+                <tr>
+                  <td>c_vals_first</td>
+                  <td>iterator to the beginning of the output value range</td>
+                </tr>
+                <tr>
+                  <td>comp</td>
+                  <td>comparator</td>
+                </tr>
+              </tbody>
+            </table>
+<p>Performs a key-value merge that copies elements from <code>[a_keys_first, a_keys_last)</code> and <code>[b_keys_first, b_keys_last)</code> into a single range, <code>[c_keys_first, c_keys_last + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</code> such that the resulting range is in ascending key order.</p><p>At the same time, the merge copies elements from the two associated ranges <code>[a_vals_first + (a_keys_last - a_keys_first))</code> and <code>[b_vals_first + (b_keys_last - b_keys_first))</code> into a single range, <code>[c_vals_first, c_vals_first + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</code> such that the resulting range is in ascending order implied by each input element&#x27;s associated key.</p><p>For example, assume:</p><ul><li><code>a_keys</code> = <code>{8, 1}</code></li><li><code>a_vals</code> = <code>{1, 2}</code></li><li><code>b_keys</code> = <code>{3, 7}</code></li><li><code>b_vals</code> = <code>{3, 4}</code></li></ul><p>After the merge, we have:</p><ul><li><code>c_keys</code> = <code>{1, 3, 7, 8}</code></li><li><code>c_vals</code> = <code>{2, 3, 4, 1}</code></li></ul>
+          </div></section>
+          <section class="m-doc-details" id="a941bd8141ab25430a264041b9dfd6c28"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename a_keys_it, typename a_vals_it, typename b_keys_it, typename b_vals_it, typename c_keys_it, typename c_vals_it, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a941bd8141ab25430a264041b9dfd6c28" class="m-doc-self">merge_by_key</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              a_keys_it a_keys_first,
+              a_keys_it a_keys_last,
+              a_vals_it a_vals_first,
+              b_keys_it b_keys_first,
+              b_keys_it b_keys_last,
+              b_vals_it b_vals_first,
+              c_keys_it c_keys_first,
+              c_vals_it c_vals_first,
+              C comp)</span></span>
+            </h3>
+            <p>updates a capture task to a key-value merge task</p>
+<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a2abf795a03b5431c105a70cee4cf5051" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />merge_by_key</a> but operates on an existing task.</p>
           </div></section>
           <section class="m-doc-details" id="a3bcb91eb1579451ece602206f20845f4"><div>
             <h3>

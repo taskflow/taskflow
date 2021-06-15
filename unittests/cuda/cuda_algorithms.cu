@@ -944,6 +944,106 @@ TEST_CASE("capture.merge_keys.float" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
+// merge_by_keys
+// ----------------------------------------------------------------------------
+
+template <typename T, typename F>
+void merge_keys_values() {
+    
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+
+  for(int N=0; N<=1234567; N = N*2 + 1) {
+
+    taskflow.clear();
+
+    auto a_k = tf::cuda_malloc_shared<T>(N);
+    auto b_k = tf::cuda_malloc_shared<T>(N);
+    auto c_k = tf::cuda_malloc_shared<T>(2*N);
+    auto a_v = tf::cuda_malloc_shared<int>(N);
+    auto b_v = tf::cuda_malloc_shared<int>(N);
+    auto c_v = tf::cuda_malloc_shared<int>(2*N);
+
+    auto p = tf::cudaDefaultExecutionPolicy{};
+
+    // ----------------- standalone algorithms
+
+    // initialize the data
+    for(int i=0; i<N; i++) {
+      a_k[i] =  (i*2+1);
+      a_v[i] = -(i*2+1);
+      b_k[i] =  (i+1)*2;
+      b_v[i] = -(i+1)*2;
+      c_k[i] = c_k[i+N] = c_v[i] = c_v[i+N] = 0;
+    }
+
+    auto bufsz = tf::cuda_merge_buffer_size<decltype(p)>(N, N);
+    tf::cudaScopedDeviceMemory<std::byte> buf(bufsz);
+
+    tf::cuda_merge_by_key(
+      p, 
+      a_k, a_k+N, a_v, 
+      b_k, b_k+N, b_v,
+      c_k, c_v,
+      tf::cuda_less<T>{}, 
+      buf.data()
+    );
+    p.synchronize();
+
+    for(int i=0; i<2*N; i++) {
+      REQUIRE(c_k[i] == (i+1));
+      REQUIRE(c_v[i] == -(i+1));
+    }
+    
+    // ----------------- cudaFlow capturer
+    // initialize the data
+    for(int i=0; i<N; i++) {
+      a_k[i] =  (i*2+1);
+      a_v[i] = -(i*2+1);
+      b_k[i] =  (i+1)*2;
+      b_v[i] = -(i+1)*2;
+      c_k[i] = c_k[i+N] = c_v[i] = c_v[i+N] = 0;
+    }
+    
+    taskflow.emplace([&](F& cudaflow){
+      cudaflow.merge_by_key(
+        a_k, a_k+N, a_v, b_k, b_k+N, b_v, c_k, c_v, tf::cuda_less<T>{}
+      );
+    });
+
+    executor.run(taskflow).wait();
+    
+    for(int i=0; i<2*N; i++) {
+      REQUIRE(c_k[i] == (i+1));
+      REQUIRE(c_v[i] == -(i+1));
+    }
+    
+    REQUIRE(cudaFree(a_k) == cudaSuccess);
+    REQUIRE(cudaFree(b_k) == cudaSuccess);
+    REQUIRE(cudaFree(c_k) == cudaSuccess);
+    REQUIRE(cudaFree(a_v) == cudaSuccess);
+    REQUIRE(cudaFree(b_v) == cudaSuccess);
+    REQUIRE(cudaFree(c_v) == cudaSuccess);
+  }
+}
+
+TEST_CASE("cudaflow.merge_keys_values.int" * doctest::timeout(300)) {
+  merge_keys_values<int, tf::cudaFlow>();
+}
+
+TEST_CASE("cudaflow.merge_keys_values.float" * doctest::timeout(300)) {
+  merge_keys_values<float, tf::cudaFlow>();
+}
+
+TEST_CASE("capturer.merge_keys_values.int" * doctest::timeout(300)) {
+  merge_keys_values<int, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capturer.merge_keys_values.float" * doctest::timeout(300)) {
+  merge_keys_values<float, tf::cudaFlowCapturer>();
+}
+
+// ----------------------------------------------------------------------------
 // sort
 // ----------------------------------------------------------------------------
 

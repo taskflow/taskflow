@@ -701,6 +701,9 @@ class cudaFlow {
     /**
     @brief updates the parameters of a task created 
            from tf::cudaFlow::inclusive_scan
+    
+    This method is similar to tf::cudaFlow::inclusive_scan 
+    but operates on an existing task.
     */
     template <typename I, typename O, typename C>
     void inclusive_scan(cudaTask task, I first, I last, O output, C op);
@@ -714,6 +717,9 @@ class cudaFlow {
     /**
     @brief updates the parameters of a task created from
            tf::cudaFlow::exclusive_scan
+    
+    This method is similar to tf::cudaFlow::exclusive_scan 
+    but operates on an existing task.
     */
     template <typename I, typename O, typename C>
     void exclusive_scan(cudaTask task, I first, I last, O output, C op);
@@ -750,6 +756,9 @@ class cudaFlow {
     /**
     @brief updates the parameters of a task created from 
            tf::cudaFlow::transform_inclusive_scan
+    
+    This method is similar to tf::cudaFlow::transform_inclusive_scan 
+    but operates on an existing task.
     */
     template <typename I, typename O, typename B, typename U>
     void transform_inclusive_scan(
@@ -766,6 +775,9 @@ class cudaFlow {
     /**
     @brief updates the parameters of a task created from 
            tf::cudaFlow::transform_exclusive_scan
+    
+    This method is similar to tf::cudaFlow::transform_exclusive_scan 
+    but operates on an existing task.
     */
     template <typename I, typename O, typename B, typename U>
     void transform_exclusive_scan(
@@ -804,6 +816,9 @@ class cudaFlow {
     /**
     @brief updates the parameters of a task created from 
            tf::cudaFlow::merge
+    
+    This method is similar to tf::cudaFlow::merge but operates on
+    an existing task.
     */
     template <typename A, typename B, typename C, typename Comp>
     void merge(
@@ -831,6 +846,9 @@ class cudaFlow {
     /**
     @brief updates the parameters of the task created from 
            tf::cudaFlow::sort
+    
+    This method is similar to tf::cudaFlow::sort but operates on
+    an existing task.
     */
     template <typename I, typename C>
     void sort(cudaTask task, I first, I last, C comp);
@@ -871,10 +889,88 @@ class cudaFlow {
     /**
     @brief updates the parameters of a task created from 
            tf::cudaFlow::sort_by_key
+
+    This method is similar to tf::cudaFlow::sort_by_key but operates on
+    an existing task.
     */
     template <typename K_it, typename V_it, typename C>
     void sort_by_key(
       cudaTask task, K_it k_first, K_it k_last, V_it v_first, C comp
+    );
+    
+    /**
+    @brief creates a task to perform parallel key-value merge 
+
+    @tparam a_keys_it first key iterator type
+    @tparam a_vals_it first value iterator type
+    @tparam b_keys_it second key iterator type
+    @tparam b_vals_it second value iterator type
+    @tparam c_keys_it output key iterator type
+    @tparam c_vals_it output value iterator type
+    @tparam C comparator type
+    
+    @param a_keys_first iterator to the beginning of the first key range
+    @param a_keys_last iterator to the end of the first key range
+    @param a_vals_first iterator to the beginning of the first value range
+    @param b_keys_first iterator to the beginning of the second key range
+    @param b_keys_last iterator to the end of the second key range
+    @param b_vals_first iterator to the beginning of the second value range
+    @param c_keys_first iterator to the beginning of the output key range
+    @param c_vals_first iterator to the beginning of the output value range
+    @param comp comparator
+    
+    Performs a key-value merge that copies elements from 
+    <tt>[a_keys_first, a_keys_last)</tt> and <tt>[b_keys_first, b_keys_last)</tt> 
+    into a single range, <tt>[c_keys_first, c_keys_last + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</tt>
+    such that the resulting range is in ascending key order.
+    
+    At the same time, the merge copies elements from the two associated ranges 
+    <tt>[a_vals_first + (a_keys_last - a_keys_first))</tt> and 
+    <tt>[b_vals_first + (b_keys_last - b_keys_first))</tt> into a single range, 
+    <tt>[c_vals_first, c_vals_first + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</tt>
+    such that the resulting range is in ascending order 
+    implied by each input element's associated key.
+    
+    For example, assume: 
+      + @c a_keys = <tt>{8, 1}</tt>
+      + @c a_vals = <tt>{1, 2}</tt>
+      + @c b_keys = <tt>{3, 7}</tt>
+      + @c b_vals = <tt>{3, 4}</tt>
+    
+    After the merge, we have:
+      + @c c_keys = <tt>{1, 3, 7, 8}</tt>
+      + @c c_vals = <tt>{2, 3, 4, 1}</tt>
+    */
+    template<
+      typename a_keys_it, typename a_vals_it, 
+      typename b_keys_it, typename b_vals_it,
+      typename c_keys_it, typename c_vals_it, 
+      typename C
+    >
+    cudaTask merge_by_key(
+      a_keys_it a_keys_first, a_keys_it a_keys_last, a_vals_it a_vals_first, 
+      b_keys_it b_keys_first, b_keys_it b_keys_last, b_vals_it b_vals_first, 
+      c_keys_it c_keys_first, c_vals_it c_vals_first, C comp
+    );
+    
+    /**
+    @brief updates the parameters of a task created from 
+           tf::cudaFlow::merge_by_key
+    
+    This method is similar to tf::cudaFlow::merge_by_key but operates
+    on an existing task.
+    */
+    template<
+      typename a_keys_it, typename a_vals_it, 
+      typename b_keys_it, typename b_vals_it,
+      typename c_keys_it, typename c_vals_it, 
+      typename C
+    >
+    void merge_by_key(
+      cudaTask task,
+      a_keys_it a_keys_first, a_keys_it a_keys_last, a_vals_it a_vals_first, 
+      b_keys_it b_keys_first, b_keys_it b_keys_last, b_vals_it b_vals_first, 
+      c_keys_it c_keys_first, c_vals_it c_vals_first, C comp
     );
 
     /**

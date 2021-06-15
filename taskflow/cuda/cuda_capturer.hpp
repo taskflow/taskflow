@@ -690,7 +690,7 @@ class cudaFlowCapturer {
     if for any iterator it pointing to the sequence and 
     any non-negative integer @c n such that <tt>it + n</tt> is a valid iterator 
     pointing to an element of the sequence, <tt>comp(*(it + n), *it)</tt> 
-    evaluates to false.
+    evaluates to @c false.
      */
     template <typename A, typename B, typename C, typename Comp>
     cudaTask merge(A a_first, A a_last, B b_first, B b_last, C c_first, Comp comp);
@@ -706,6 +706,80 @@ class cudaFlowCapturer {
       cudaTask task, A a_first, A a_last, B b_first, B b_last, C c_first, Comp comp
     );
     
+    /**
+    @brief captures kernels that perform parallel key-value merge 
+
+    @tparam a_keys_it first key iterator type
+    @tparam a_vals_it first value iterator type
+    @tparam b_keys_it second key iterator type
+    @tparam b_vals_it second value iterator type
+    @tparam c_keys_it output key iterator type
+    @tparam c_vals_it output value iterator type
+    @tparam C comparator type
+    
+    @param a_keys_first iterator to the beginning of the first key range
+    @param a_keys_last iterator to the end of the first key range
+    @param a_vals_first iterator to the beginning of the first value range
+    @param b_keys_first iterator to the beginning of the second key range
+    @param b_keys_last iterator to the end of the second key range
+    @param b_vals_first iterator to the beginning of the second value range
+    @param c_keys_first iterator to the beginning of the output key range
+    @param c_vals_first iterator to the beginning of the output value range
+    @param comp comparator
+    
+    Performs a key-value merge that copies elements from 
+    <tt>[a_keys_first, a_keys_last)</tt> and <tt>[b_keys_first, b_keys_last)</tt> 
+    into a single range, <tt>[c_keys_first, c_keys_last + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</tt>
+    such that the resulting range is in ascending key order.
+    
+    At the same time, the merge copies elements from the two associated ranges 
+    <tt>[a_vals_first + (a_keys_last - a_keys_first))</tt> and 
+    <tt>[b_vals_first + (b_keys_last - b_keys_first))</tt> into a single range, 
+    <tt>[c_vals_first, c_vals_first + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</tt>
+    such that the resulting range is in ascending order 
+    implied by each input element's associated key.
+    
+    For example, assume: 
+      + @c a_keys = <tt>{8, 1}</tt>
+      + @c a_vals = <tt>{1, 2}</tt>
+      + @c b_keys = <tt>{3, 7}</tt>
+      + @c b_vals = <tt>{3, 4}</tt>
+    
+    After the merge, we have:
+      + @c c_keys = <tt>{1, 3, 7, 8}</tt>
+      + @c c_vals = <tt>{2, 3, 4, 1}</tt>
+    */
+    template<
+      typename a_keys_it, typename a_vals_it, 
+      typename b_keys_it, typename b_vals_it,
+      typename c_keys_it, typename c_vals_it, 
+      typename C
+    >
+    cudaTask merge_by_key(
+      a_keys_it a_keys_first, a_keys_it a_keys_last, a_vals_it a_vals_first, 
+      b_keys_it b_keys_first, b_keys_it b_keys_last, b_vals_it b_vals_first, 
+      c_keys_it c_keys_first, c_vals_it c_vals_first, C comp
+    );
+    
+    /**
+    @brief updates a capture task to a key-value merge task
+
+    This method is similar to tf::cudaFlowCapturer::merge_by_key but operates
+    on an existing task.
+    */
+    template<
+      typename a_keys_it, typename a_vals_it, 
+      typename b_keys_it, typename b_vals_it,
+      typename c_keys_it, typename c_vals_it, 
+      typename C
+    >
+    void merge_by_key(
+      cudaTask task,
+      a_keys_it a_keys_first, a_keys_it a_keys_last, a_vals_it a_vals_first, 
+      b_keys_it b_keys_first, b_keys_it b_keys_last, b_vals_it b_vals_first, 
+      c_keys_it c_keys_first, c_vals_it c_vals_first, C comp
+    );
+
     /**
     @brief captures kernels that sort the given array
     

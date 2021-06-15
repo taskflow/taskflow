@@ -262,7 +262,7 @@ tf::cudaTask cuda1 = cudaflow.for_each( // assign each element to 100 on GPU
   dfirst, dlast, [] __device__ (auto i) { i = 100; }
 );
 tf::cudaTask cuda2 = cudaflow.reduce(   // reduce a range of items on GPU
-  dfirst, dlast, [] __device__ (auto a, auto b) { return a + b; }
+  dfirst, dlast, init, [] __device__ (auto a, auto b) { return a + b; }
 );
 tf::cudaTask cuda3 = cudaflow.sort(     // sort a range of items on GPU
   dfirst, dlast, [] __device__ (auto a, auto b) { return a < b; }

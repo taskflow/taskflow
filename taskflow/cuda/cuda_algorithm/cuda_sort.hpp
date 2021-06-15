@@ -500,8 +500,7 @@ void cuda_sort_by_key(
 @param comp binary comparator
 @param buf pointer to the temporary buffer
 
-This method is equivalent to the parallel execution of std::sort
-on a CUDA GPU.
+This method is equivalent to tf::cuda_sort_by_key without values.
 
 */
 template<typename P, typename K_it, typename C>

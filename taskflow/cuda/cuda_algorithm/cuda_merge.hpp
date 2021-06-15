@@ -519,15 +519,37 @@ unsigned cuda_merge_buffer_size(unsigned a_count, unsigned b_count) {
 
 @param p execution policy
 @param a_keys_first iterator to the beginning of the first key range
-@param a_vals_first iterator to the beginning of the first value range
 @param a_keys_last iterator to the end of the first key range
+@param a_vals_first iterator to the beginning of the first value range
 @param b_keys_first iterator to the beginning of the second key range
-@param b_vals_first iterator to the beginning of the second value range
 @param b_keys_last iterator to the end of the second key range
+@param b_vals_first iterator to the beginning of the second value range
 @param c_keys_first iterator to the beginning of the output key range
 @param c_vals_first iterator to the beginning of the output value range
 @param comp comparator
 @param buf pointer to the temporary buffer
+
+Performs a key-value merge that copies elements from 
+<tt>[a_keys_first, a_keys_last)</tt> and <tt>[b_keys_first, b_keys_last)</tt> 
+into a single range, <tt>[c_keys_first, c_keys_last + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</tt>
+such that the resulting range is in ascending key order.
+
+At the same time, the merge copies elements from the two associated ranges 
+<tt>[a_vals_first + (a_keys_last - a_keys_first))</tt> and 
+<tt>[b_vals_first + (b_keys_last - b_keys_first))</tt> into a single range, 
+<tt>[c_vals_first, c_vals_first + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</tt>
+such that the resulting range is in ascending order 
+implied by each input element's associated key.
+
+For example, assume: 
+  + @c a_keys = {8, 1};
+  + @c a_vals = {1, 2};
+  + @c b_keys = {3, 7};
+  + @c b_vals = {3, 4};
+
+After the merge, we have:
+  + @c c_keys = {1, 3, 7, 8}
+  + @c c_vals = {2, 3, 4, 1}
 
 */
 template<
@@ -537,10 +559,10 @@ template<
   typename c_keys_it, typename c_vals_it, 
   typename C
 >
-void cuda_merge(
+void cuda_merge_by_key(
   P&& p, 
-  a_keys_it a_keys_first, a_vals_it a_vals_first, a_keys_it a_keys_last, 
-  b_keys_it b_keys_first, b_vals_it b_vals_first, b_keys_it b_keys_last,
+  a_keys_it a_keys_first, a_keys_it a_keys_last, a_vals_it a_vals_first, 
+  b_keys_it b_keys_first, b_keys_it b_keys_last, b_vals_it b_vals_first, 
   c_keys_it c_keys_first, c_vals_it c_vals_first, C comp,
   void* buf
 ) {
@@ -600,6 +622,8 @@ void cuda_merge(
 @param comp comparator
 @param buf pointer to the temporary buffer
 
+This function is equivalent to tf::cuda_merge_by_key without values.
+
 */
 template<typename P,
   typename a_keys_it, typename b_keys_it, typename c_keys_it, typename C
@@ -612,10 +636,10 @@ void cuda_merge(
   C comp,
   void* buf
 ) {
-  cuda_merge(
+  cuda_merge_by_key(
     p, 
-    a_keys_first, (const cudaEmpty*)nullptr, a_keys_last, 
-    b_keys_first, (const cudaEmpty*)nullptr, b_keys_last, 
+    a_keys_first, a_keys_last, (const cudaEmpty*)nullptr,
+    b_keys_first, b_keys_last, (const cudaEmpty*)nullptr, 
     c_keys_first, (cudaEmpty*)nullptr, comp,
     buf
   );
@@ -647,6 +671,53 @@ void cudaFlow::merge(
   });
 }
 
+// Function: merge_by_key
+template<
+  typename a_keys_it, typename a_vals_it, 
+  typename b_keys_it, typename b_vals_it,
+  typename c_keys_it, typename c_vals_it, 
+  typename C
+>
+cudaTask cudaFlow::merge_by_key(
+  a_keys_it a_keys_first, a_keys_it a_keys_last, a_vals_it a_vals_first, 
+  b_keys_it b_keys_first, b_keys_it b_keys_last, b_vals_it b_vals_first, 
+  c_keys_it c_keys_first, c_vals_it c_vals_first, C comp
+) {
+  return capture([=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.merge_by_key(
+      a_keys_first, a_keys_last, a_vals_first,
+      b_keys_first, b_keys_last, b_vals_first,
+      c_keys_first, c_vals_first,
+      comp
+    );
+  });
+}
+
+// Function: merge_by_key
+template<
+  typename a_keys_it, typename a_vals_it, 
+  typename b_keys_it, typename b_vals_it,
+  typename c_keys_it, typename c_vals_it, 
+  typename C
+>
+void cudaFlow::merge_by_key(
+  cudaTask task,
+  a_keys_it a_keys_first, a_keys_it a_keys_last, a_vals_it a_vals_first, 
+  b_keys_it b_keys_first, b_keys_it b_keys_last, b_vals_it b_vals_first, 
+  c_keys_it c_keys_first, c_vals_it c_vals_first, C comp
+) {
+  capture(task, [=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.merge_by_key(
+      a_keys_first, a_keys_last, a_vals_first,
+      b_keys_first, b_keys_last, b_vals_first,
+      c_keys_first, c_vals_first,
+      comp
+    );
+  });
+}
+
 // ----------------------------------------------------------------------------
 // cudaFlowCapturer merge algorithms
 // ----------------------------------------------------------------------------
@@ -669,7 +740,7 @@ cudaTask cudaFlowCapturer::merge(
   });
 }
 
-// Procedure: rebind
+// Procedure: merge (update)
 template<typename A, typename B, typename C, typename Comp>
 void cudaFlowCapturer::merge(
   cudaTask task, A a_first, A a_last, B b_first, B b_last, C c_first, Comp comp
@@ -686,6 +757,68 @@ void cudaFlowCapturer::merge(
     );
   });
 }
+    
+// Function: merge_by_key
+template<
+  typename a_keys_it, typename a_vals_it, 
+  typename b_keys_it, typename b_vals_it,
+  typename c_keys_it, typename c_vals_it, 
+  typename C
+>
+cudaTask cudaFlowCapturer::merge_by_key(
+  a_keys_it a_keys_first, a_keys_it a_keys_last, a_vals_it a_vals_first, 
+  b_keys_it b_keys_first, b_keys_it b_keys_last, b_vals_it b_vals_first, 
+  c_keys_it c_keys_first, c_vals_it c_vals_first, C comp
+) {
+
+  auto bufsz = cuda_merge_buffer_size<cudaDefaultExecutionPolicy>(
+    std::distance(a_keys_first, a_keys_last), 
+    std::distance(b_keys_first, b_keys_last)
+  );
+
+  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  (cudaStream_t stream) mutable {
+    cuda_merge_by_key(cudaDefaultExecutionPolicy{stream}, 
+      a_keys_first, a_keys_last, a_vals_first,
+      b_keys_first, b_keys_last, b_vals_first,
+      c_keys_first, c_vals_first, 
+      comp,
+      buf.get().data()
+    );
+  });
+}
+
+// Function: merge_by_key
+template<
+  typename a_keys_it, typename a_vals_it, 
+  typename b_keys_it, typename b_vals_it,
+  typename c_keys_it, typename c_vals_it, 
+  typename C
+>
+void cudaFlowCapturer::merge_by_key(
+  cudaTask task,
+  a_keys_it a_keys_first, a_keys_it a_keys_last, a_vals_it a_vals_first, 
+  b_keys_it b_keys_first, b_keys_it b_keys_last, b_vals_it b_vals_first, 
+  c_keys_it c_keys_first, c_vals_it c_vals_first, C comp
+) {
+
+  auto bufsz = cuda_merge_buffer_size<cudaDefaultExecutionPolicy>(
+    std::distance(a_keys_first, a_keys_last), 
+    std::distance(b_keys_first, b_keys_last)
+  );
+
+  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  (cudaStream_t stream) mutable {
+    cuda_merge_by_key(cudaDefaultExecutionPolicy{stream}, 
+      a_keys_first, a_keys_last, a_vals_first,
+      b_keys_first, b_keys_last, b_vals_first,
+      c_keys_first, c_vals_first, 
+      comp,
+      buf.get().data()
+    );
+  });
+}
+
 
 
 }  // end of namespace tf -----------------------------------------------------

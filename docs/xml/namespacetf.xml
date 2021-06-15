@@ -2937,12 +2937,12 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
 <para>number of elements in the second input array</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-The function is used to allocate a buffer for calling <ref refid="namespacetf_1a91627df53e76d19f3118558d4c118a6b" kindref="member">tf::cuda_merge</ref>. </para>        </detaileddescription>
+The function is used to allocate a buffer for calling <ref refid="namespacetf_1a37ec481149c2f01669353033d75ed72a" kindref="member">tf::cuda_merge</ref>. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" line="462" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" bodystart="462" bodyend="466"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1a91627df53e76d19f3118558d4c118a6b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacetf_1aa84d4c68d2cbe9f6efc4a1eb1a115458" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename P</type>
@@ -2970,9 +2970,9 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
           </param>
         </templateparamlist>
         <type>void</type>
-        <definition>void tf::cuda_merge</definition>
-        <argsstring>(P &amp;&amp;p, a_keys_it a_keys_first, a_vals_it a_vals_first, a_keys_it a_keys_last, b_keys_it b_keys_first, b_vals_it b_vals_first, b_keys_it b_keys_last, c_keys_it c_keys_first, c_vals_it c_vals_first, C comp, void *buf)</argsstring>
-        <name>cuda_merge</name>
+        <definition>void tf::cuda_merge_by_key</definition>
+        <argsstring>(P &amp;&amp;p, a_keys_it a_keys_first, a_keys_it a_keys_last, a_vals_it a_vals_first, b_keys_it b_keys_first, b_keys_it b_keys_last, b_vals_it b_vals_first, c_keys_it c_keys_first, c_vals_it c_vals_first, C comp, void *buf)</argsstring>
+        <name>cuda_merge_by_key</name>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -2982,24 +2982,24 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
           <declname>a_keys_first</declname>
         </param>
         <param>
-          <type>a_vals_it</type>
-          <declname>a_vals_first</declname>
-        </param>
-        <param>
           <type>a_keys_it</type>
           <declname>a_keys_last</declname>
+        </param>
+        <param>
+          <type>a_vals_it</type>
+          <declname>a_vals_first</declname>
         </param>
         <param>
           <type>b_keys_it</type>
           <declname>b_keys_first</declname>
         </param>
         <param>
-          <type>b_vals_it</type>
-          <declname>b_vals_first</declname>
-        </param>
-        <param>
           <type>b_keys_it</type>
           <declname>b_keys_last</declname>
+        </param>
+        <param>
+          <type>b_vals_it</type>
+          <declname>b_vals_first</declname>
         </param>
         <param>
           <type>c_keys_it</type>
@@ -3093,17 +3093,17 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
 </parameteritem>
 <parameteritem>
 <parameternamelist>
-<parametername>a_vals_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the first value range </para></parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
 <parametername>a_keys_last</parametername>
 </parameternamelist>
 <parameterdescription>
 <para>iterator to the end of the first key range </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>a_vals_first</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>iterator to the beginning of the first value range </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
@@ -3114,17 +3114,17 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
 </parameteritem>
 <parameteritem>
 <parameternamelist>
-<parametername>b_vals_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the second value range </para></parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
 <parametername>b_keys_last</parametername>
 </parameternamelist>
 <parameterdescription>
 <para>iterator to the end of the second key range </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>b_vals_first</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>iterator to the beginning of the second value range </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
@@ -3152,13 +3152,17 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
 <parametername>buf</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the temporary buffer </para></parameterdescription>
+<para>pointer to the temporary buffer</para></parameterdescription>
 </parameteritem>
 </parameterlist>
+Performs a key-value merge that copies elements from <computeroutput>[a_keys_first, a_keys_last)</computeroutput> and <computeroutput>[b_keys_first, b_keys_last)</computeroutput> into a single range, <computeroutput>[c_keys_first, c_keys_last + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</computeroutput> such that the resulting range is in ascending key order.</para><para>At the same time, the merge copies elements from the two associated ranges <computeroutput>[a_vals_first + (a_keys_last - a_keys_first))</computeroutput> and <computeroutput>[b_vals_first + (b_keys_last - b_keys_first))</computeroutput> into a single range, <computeroutput>[c_vals_first, c_vals_first + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</computeroutput> such that the resulting range is in ascending order implied by each input element&apos;s associated key.</para><para>For example, assume:<itemizedlist>
+<listitem><para><computeroutput>a_keys</computeroutput> = {8, 1};</para></listitem><listitem><para><computeroutput>a_vals</computeroutput> = {1, 2};</para></listitem><listitem><para><computeroutput>b_keys</computeroutput> = {3, 7};</para></listitem><listitem><para><computeroutput>b_vals</computeroutput> = {3, 4};</para></listitem></itemizedlist>
+</para><para>After the merge, we have:<itemizedlist>
+<listitem><para><computeroutput>c_keys</computeroutput> = {1, 3, 7, 8}</para></listitem><listitem><para><computeroutput>c_vals</computeroutput> = {2, 3, 4, 1} </para></listitem></itemizedlist>
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" line="540" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" bodystart="540" bodyend="561"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" line="562" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" bodystart="562" bodyend="583"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a37ec481149c2f01669353033d75ed72a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3307,13 +3311,13 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
 <parametername>buf</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the temporary buffer </para></parameterdescription>
+<para>pointer to the temporary buffer</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+This function is equivalent to <ref refid="namespacetf_1aa84d4c68d2cbe9f6efc4a1eb1a115458" kindref="member">tf::cuda_merge_by_key</ref> without values. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" line="607" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" bodystart="607" bodyend="622"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" line="631" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_merge.hpp" bodystart="631" bodyend="646"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9c69906a4dfd1e2d0cd7ed496d29dafd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3598,10 +3602,10 @@ Sorts key-value elements in <computeroutput>[k_first, k_last)</computeroutput> a
 <para>pointer to the temporary buffer</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-This method is equivalent to the parallel execution of std::sort on a CUDA GPU. </para>        </detaileddescription>
+This method is equivalent to <ref refid="namespacetf_1a3461b9179221dd7230ce2a0e45156c7f" kindref="member">tf::cuda_sort_by_key</ref> without values. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" line="508" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" bodystart="508" bodyend="510"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" line="507" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" bodystart="507" bodyend="509"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a5f9dabd7c5d0fa5166cf76d9fa5a038e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
