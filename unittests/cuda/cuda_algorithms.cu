@@ -1007,6 +1007,99 @@ TEST_CASE("capture.sort_keys.float" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
+// sort key-value
+// ----------------------------------------------------------------------------
+
+template <typename T, typename F>
+void sort_keys_values() {
+
+  std::random_device rd;
+  std::mt19937 g(rd());
+    
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+
+  for(int N=1; N<=1234567; N = N*2 + 1) {
+
+    taskflow.clear();
+
+    auto a = tf::cuda_malloc_shared<T>(N);
+    auto b = tf::cuda_malloc_shared<int>(N);
+    auto p = tf::cudaDefaultExecutionPolicy{};
+
+    std::vector<int> indices(N);
+
+    // ----------------- standalone asynchronous algorithms
+
+    // initialize the data
+    for(int i=0; i<N; i++) {
+      a[i] = i;
+      b[i] = i;
+      indices[i] = i;
+      //printf("a[%d]=%d, b[%d]=%d\n", i, a[i], i, b[i]);
+    }
+    std::shuffle(a, a+N, g);
+
+    std::sort(indices.begin(), indices.end(), [&](auto i, auto j){
+      return a[i] < a[j];
+    });
+
+    auto bufsz = tf::cuda_sort_buffer_size<decltype(p), T, int>(N);
+    tf::cudaScopedDeviceMemory<std::byte> buf(bufsz);
+    tf::cuda_sort_by_key(p, a, a+N, b, tf::cuda_less<T>{}, buf.data());
+    p.synchronize();
+
+    REQUIRE(std::is_sorted(a, a+N));
+    for(int i=0; i<N; i++) {
+      REQUIRE(indices[i] == b[i]);
+    }
+
+    // ----------------- cudaflow capturer
+    // initialize the data
+    for(int i=0; i<N; i++) {
+      b[i] = i;
+      indices[i] = i;
+      //printf("a[%d]=%d, b[%d]=%d\n", i, a[i], i, b[i]);
+    }
+    std::shuffle(a, a+N, g);
+
+    std::sort(indices.begin(), indices.end(), [&](auto i, auto j){
+      return a[i] > a[j];
+    });
+
+    taskflow.emplace([&](F& cudaflow){
+      cudaflow.sort_by_key(a, a+N, b, tf::cuda_greater<T>{});
+    });
+
+    executor.run(taskflow).wait();
+
+    REQUIRE(std::is_sorted(a, a+N, std::greater<T>{}));
+    for(int i=0; i<N; i++) {
+      REQUIRE(indices[i] == b[i]);
+    }
+    
+    REQUIRE(cudaFree(a) == cudaSuccess);
+    REQUIRE(cudaFree(b) == cudaSuccess);
+  }
+}
+
+TEST_CASE("cudaflow.sort_keys_values.int" * doctest::timeout(300)) {
+  sort_keys_values<int, tf::cudaFlow>();
+}
+
+TEST_CASE("cudaflow.sort_keys_values.float" * doctest::timeout(300)) {
+  sort_keys_values<float, tf::cudaFlow>();
+}
+
+TEST_CASE("capture.sort_keys_values.int" * doctest::timeout(300)) {
+  sort_keys_values<int, tf::cudaFlowCapturer>();
+}
+
+TEST_CASE("capture.sort_keys_values.float" * doctest::timeout(300)) {
+  sort_keys_values<float, tf::cudaFlowCapturer>();
+}
+
+// ----------------------------------------------------------------------------
 // find-if
 // ----------------------------------------------------------------------------
 

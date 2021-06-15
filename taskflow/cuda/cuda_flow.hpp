@@ -834,6 +834,48 @@ class cudaFlow {
     */
     template <typename I, typename C>
     void sort(cudaTask task, I first, I last, C comp);
+    
+    /**
+    @brief creates kernels that sort the given array
+    
+    @tparam K_it iterator type of the key
+    @tparam V_it iterator type of the value
+    @tparam C comparator type
+
+    @param k_first iterator to the beginning of the key array
+    @param k_last iterator to the end of the key array
+    @param v_first iterator to the beginning of the value array
+    @param comp binary comparator
+    
+    @return a tf::cudaTask handle
+
+    Sorts key-value elements in <tt>[k_first, k_last)</tt> and 
+    <tt>[v_first, v_first + (k_last - k_first))</tt> into ascending key order
+    using the given comparator @c comp.
+    If @c i and @c j are any two valid iterators in <tt>[k_first, k_last)</tt> 
+    such that @c i precedes @c j, and @c p and @c q are iterators in 
+    <tt>[v_first, v_first + (k_last - k_first))</tt> corresponding to 
+    @c i and @c j respectively, then <tt>comp(*j, *i)</tt> evaluates to @c false.
+    
+    For example, assume:
+      + @c keys are <tt>{1, 4, 2, 8, 5, 7}</tt>
+      + @c values are <tt>{'a', 'b', 'c', 'd', 'e', 'f'}</tt>
+    
+    After sort:
+      + @c keys are <tt>{1, 2, 4, 5, 7, 8}</tt>
+      + @c values are <tt>{'a', 'c', 'b', 'e', 'f', 'd'}</tt>
+    */
+    template <typename K_it, typename V_it, typename C>
+    cudaTask sort_by_key(K_it k_first, K_it k_last, V_it v_first, C comp);
+    
+    /**
+    @brief updates the parameters of a task created from 
+           tf::cudaFlow::sort_by_key
+    */
+    template <typename K_it, typename V_it, typename C>
+    void sort_by_key(
+      cudaTask task, K_it k_first, K_it k_last, V_it v_first, C comp
+    );
 
     /**
     @brief creates a task to find the index of the first element in a range

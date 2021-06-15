@@ -443,6 +443,23 @@
             </dt>
             <dd>updates a capture task to a sort task</dd>
             <dt>
+              <div class="m-doc-template">template&lt;typename K_it, typename V_it, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ac1d2e6ba2eca8ad35a5257e7aedc568f" class="m-doc">sort_by_key</a>(</span><span class="m-doc-wrap">K_it k_first,
+              K_it k_last,
+              V_it v_first,
+              C comp) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>captures kernels that sort the given array</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename K_it, typename V_it, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a353174f6b5bd7707b860280e89486db0" class="m-doc">sort_by_key</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              K_it k_first,
+              K_it k_last,
+              V_it v_first,
+              C comp)</span>
+            </dt>
+            <dd>updates a capture task to a key-value sort task</dd>
+            <dt>
               <div class="m-doc-template">template&lt;typename I, typename U&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a861e098e939c07c592c00e75583a68c0" class="m-doc">find_if</a>(</span><span class="m-doc-wrap">I first,
               I last,
@@ -1711,6 +1728,79 @@
             </h3>
             <p>updates a capture task to a sort task</p>
 <p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a3bcb91eb1579451ece602206f20845f4" class="m-doc">cudaFlowCapturer::<wbr />sort</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="ac1d2e6ba2eca8ad35a5257e7aedc568f"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename K_it, typename V_it, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac1d2e6ba2eca8ad35a5257e7aedc568f" class="m-doc-self">sort_by_key</a>(</span><span class="m-doc-wrap">K_it k_first,
+              K_it k_last,
+              V_it v_first,
+              C comp)</span></span>
+            </h3>
+            <p>captures kernels that sort the given array</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">K_it</td>
+                  <td>iterator type of the key</td>
+                </tr>
+                <tr>
+                  <td>V_it</td>
+                  <td>iterator type of the value</td>
+                </tr>
+                <tr>
+                  <td>C</td>
+                  <td>comparator type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>k_first</td>
+                  <td>iterator to the beginning of the key array</td>
+                </tr>
+                <tr>
+                  <td>k_last</td>
+                  <td>iterator to the end of the key array</td>
+                </tr>
+                <tr>
+                  <td>v_first</td>
+                  <td>iterator to the beginning of the value array</td>
+                </tr>
+                <tr>
+                  <td>comp</td>
+                  <td>binary comparator</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1cudaTask.html" class="m-doc">tf::<wbr />cudaTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>Sorts key-value elements in <code>[k_first, k_last)</code> and <code>[v_first, v_first + (k_last - k_first))</code> into ascending key order using the given comparator <code>comp</code>. If <code>i</code> and <code>j</code> are any two valid iterators in <code>[k_first, k_last)</code> such that <code>i</code> precedes <code>j</code>, and <code>p</code> and <code>q</code> are iterators in <code>[v_first, v_first + (k_last - k_first))</code> corresponding to <code>i</code> and <code>j</code> respectively, then <code>comp(*j, *i)</code> evaluates to <code>false</code>.</p><p>For example, assume:</p><ul><li><code>keys</code> are <code>{1, 4, 2, 8, 5, 7}</code></li><li><code>values</code> are <code>{&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;, &#x27;d&#x27;, &#x27;e&#x27;, &#x27;f&#x27;}</code></li></ul><p>After sort:</p><ul><li><code>keys</code> are <code>{1, 2, 4, 5, 7, 8}</code></li><li><code>values</code> are <code>{&#x27;a&#x27;, &#x27;c&#x27;, &#x27;b&#x27;, &#x27;e&#x27;, &#x27;f&#x27;, &#x27;d&#x27;}</code></li></ul>
+          </div></section>
+          <section class="m-doc-details" id="a353174f6b5bd7707b860280e89486db0"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename K_it, typename V_it, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a353174f6b5bd7707b860280e89486db0" class="m-doc-self">sort_by_key</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              K_it k_first,
+              K_it k_last,
+              V_it v_first,
+              C comp)</span></span>
+            </h3>
+            <p>updates a capture task to a key-value sort task</p>
+<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#ac1d2e6ba2eca8ad35a5257e7aedc568f" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />sort_by_key</a> but operates on an existing task.</p>
           </div></section>
           <section class="m-doc-details" id="a861e098e939c07c592c00e75583a68c0"><div>
             <h3>

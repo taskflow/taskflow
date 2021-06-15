@@ -9,10 +9,6 @@ execution parameters.
 
 @tableofcontents
 
-@section CUDASTDIncludeHeader Include the Header
-
-To use CUDA standard algorithms, you need to include cudaflow.hpp.
-
 @section CUDASTDParameterizePerformance Parameterize Performance
 
 %Taskflow parameterizes most CUDA algorithms in terms of <i>the number of threads per block</i>
@@ -36,6 +32,10 @@ to avoid bank conflicts.
 tf::cudaExecutionPolicy<512, 11> policy;
 @endcode
 
+@note
+To use CUDA standard algorithms, you need to include the header 
+taskflow/cudaflow.hpp.
+
 By default, the execution policy object is associated with the CUDA 
 <i>default stream</i> (i.e., 0).
 Default stream can incur significant overhead due to the global synchronization.
@@ -49,6 +49,16 @@ tf::cudaExecutionPolicy<512, 11> policy(my_stream);
 policy.stream(another_stream);
 @endcode
 
+All the CUDA standard algorithms in %Taskflow are asynchronous
+with respect to the stream assigned to the execution policy.
+This enables high execution efficiency for large GPU workloads
+that call for many different algorithms.
+You can synchronize the execution at your own wish by calling @c synchronize.
+
+@code{.cpp}
+policy.synchronize();  // synchronize the associated stream
+@endcode
+
 The best-performing configurations for each algorithm, each GPU architecture,
 and each data type can vary significantly.
 You should experiment different configurations and find
@@ -59,6 +69,19 @@ A default policy is given in tf::cudaDefaultExecutionPolicy.
 tf::cudaDefaultExecutionPolicy default_policy;
 @endcode
 
+@section CUDASTDAllocateMemoryBufferForAlgorithms Allocate Memory Buffer for Algorithms
+
+A key difference between our CUDA standard algorithms and others (e.g., Thrust) 
+is the <i>memory management</i>.
+Unlike CPU-parallel algorithms, many GPU-parallel algorithms require
+extra buffer to store the temporary results during the multi-phase computation,
+for instance, tf::cuda_reduce and tf::cuda_sort.
+We <i>DO NOT</i> allocate any memory during these algorithms call but ask you
+to provide the memory buffer required for each of such algorithms.
+This decision seems to complicate the code a little bit, but it gives
+applications freedom to optimize the memory;
+also, it makes all algorithm calls capturable to a CUDA graph
+to improve the execution efficiency.
 
 */
 }

@@ -215,7 +215,7 @@ executor.run(taskflow).wait();
 
 
 
-@section QuickStartExecuteATaskflowInDifferentWays Run a Taskflow through an Executor
+@section QuickStartRunATaskflowThroughAnExecution Run a Taskflow through an Executor
 
 The executor provides several @em thread-safe methods to run a taskflow. 
 You can run a taskflow once, multiple times, or until a stopping criteria is met. 
@@ -239,6 +239,35 @@ executor.run_until(taskflow, [counter=5](){ return --counter == 0; });
 executor.wait_for_all();
 @endcode
 
+@section QuickStartLeverageStandardParallelAlgorithms Leverage Standard Parallel Algorithms
+
+%Taskflow defines algorithms for you to quickly express common parallel patterns
+using standard C++ syntaxes, 
+such as parallel iterations, parallel reductions, and parallel sort.
+
+@code{.cpp}
+// standard parallel CPU algorithms
+tf::Task task1 = taskflow.for_each( // assign each element to 100 in parallel
+  first, last, [] (auto& i) { i = 100; }    
+);
+tf::Task task2 = taskflow.reduce(   // reduce a range of items in parallel
+  first, last, init, [] (auto a, auto b) { return a + b; }
+);
+tf::Task task3 = taskflow.sort(     // sort a range of items in parallel
+  first, last, [] (auto a, auto b) { return a < b; }
+);
+
+// standard parallel GPU algorithms
+tf::cudaTask cuda1 = cudaflow.for_each( // assign each element to 100 on GPU
+  dfirst, dlast, [] __device__ (auto i) { i = 100; }
+);
+tf::cudaTask cuda2 = cudaflow.reduce(   // reduce a range of items on GPU
+  dfirst, dlast, [] __device__ (auto a, auto b) { return a + b; }
+);
+tf::cudaTask cuda3 = cudaflow.sort(     // sort a range of items on GPU
+  dfirst, dlast, [] __device__ (auto a, auto b) { return a < b; }
+);
+@endcode
 
 @section QuickStartVisualizeATaskflow Visualize Taskflow Graphs
 
@@ -294,6 +323,11 @@ both academic and industrial research projects in parallel
 and heterogeneous computing. 
 At the same time, we appreciate all %Taskflow @ref contributors and 
 welcome any collaborations!
+If you are using %Taskflow, please cite the following paper we publised at 2019 IEEE IPDPS:
+
++ Tsung-Wei Huang, Chun-Xun Lin, Guannan Guo, and Martin Wong, &quot;[Cpp-Taskflow: Fast Task-based Parallel Programming using Modern C++](ipdps19.pdf),&quot; <i>IEEE International Parallel and Distributed Processing Symposium (IPDPS)</i>, pp. 974-983, Rio de Janeiro, Brazil, 2019
+
+
 
 
 @section License License
@@ -302,7 +336,7 @@ welcome any collaborations!
 You are completely free to use, modify, and redistribute any work 
 on top of %Taskflow.
 The source code is available in @ProjectGitHub and is actively
-maintained by @twhuang at the University of Utah.
+maintained by @twhuang and his research group at the University of Utah.
 
 */
 

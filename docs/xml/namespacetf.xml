@@ -159,7 +159,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="716" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="716" bodyend="720"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="715" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="715" bodyend="719"/>
       </memberdef>
       <memberdef kind="enum" id="namespacetf_1afebc56ae6d5765010d0dd13a5f04132e" prot="public" static="no" strong="yes">
         <type>int</type>
@@ -242,7 +242,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="21" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="21" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="20" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="20" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="namespacetf_1a632bb71dc4ddedbf2c26f6f25a2d6a49" prot="public" static="no">
         <type>cudaPerThreadDeviceObjectPool&lt; cudaStream_t, cudaStreamCreator, cudaStreamDeleter &gt;</type>
@@ -473,7 +473,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="725" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="725" bodyend="731"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="724" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="724" bodyend="730"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1abffa70155a5f160b7ceb86ee52ab2136" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -3369,12 +3369,12 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
 <para>number of keys/values to sort</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-The function is used to allocate a buffer for calling <ref refid="namespacetf_1aeaed6f5d4a4cfa5c3a2c42d0dba54664" kindref="member">tf::cuda_sort</ref>. </para>        </detaileddescription>
+The function is used to allocate a buffer for calling <ref refid="namespacetf_1a06804cb1598e965febc7bd35fc0fbbb0" kindref="member">tf::cuda_sort</ref>. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" line="424" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" bodystart="424" bodyend="435"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" line="423" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" bodystart="423" bodyend="434"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1aeaed6f5d4a4cfa5c3a2c42d0dba54664" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacetf_1a3461b9179221dd7230ce2a0e45156c7f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename P</type>
@@ -3390,9 +3390,9 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
           </param>
         </templateparamlist>
         <type>void</type>
-        <definition>void tf::cuda_sort</definition>
+        <definition>void tf::cuda_sort_by_key</definition>
         <argsstring>(P &amp;&amp;p, K_it k_first, K_it k_last, V_it v_first, C comp, void *buf)</argsstring>
-        <name>cuda_sort</name>
+        <name>cuda_sort_by_key</name>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -3489,13 +3489,17 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
 <parametername>buf</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the temporary buffer </para></parameterdescription>
+<para>pointer to the temporary buffer</para></parameterdescription>
 </parameteritem>
 </parameterlist>
+Sorts key-value elements in <computeroutput>[k_first, k_last)</computeroutput> and <computeroutput>[v_first, v_first + (k_last - k_first))</computeroutput> into ascending key order using the given comparator <computeroutput>comp</computeroutput>. If <computeroutput>i</computeroutput> and <computeroutput>j</computeroutput> are any two valid iterators in <computeroutput>[k_first, k_last)</computeroutput> such that <computeroutput>i</computeroutput> precedes <computeroutput>j</computeroutput>, and <computeroutput>p</computeroutput> and <computeroutput>q</computeroutput> are iterators in <computeroutput>[v_first, v_first + (k_last - k_first))</computeroutput> corresponding to <computeroutput>i</computeroutput> and <computeroutput>j</computeroutput> respectively, then <computeroutput>comp(*j, *i)</computeroutput> evaluates to <computeroutput>false</computeroutput>.</para><para>For example, assume:<itemizedlist>
+<listitem><para><computeroutput>keys</computeroutput> are <computeroutput>{1, 4, 2, 8, 5, 7}</computeroutput></para></listitem><listitem><para><computeroutput>values</computeroutput> are <computeroutput>{&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;, &apos;f&apos;}</computeroutput></para></listitem></itemizedlist>
+</para><para>After sort:<itemizedlist>
+<listitem><para><computeroutput>keys</computeroutput> are <computeroutput>{1, 2, 4, 5, 7, 8}</computeroutput></para></listitem><listitem><para><computeroutput>values</computeroutput> are <computeroutput>{&apos;a&apos;, &apos;c&apos;, &apos;b&apos;, &apos;e&apos;, &apos;f&apos;, &apos;d&apos;}</computeroutput> </para></listitem></itemizedlist>
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" line="478" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" bodystart="478" bodyend="489"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" line="473" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" bodystart="473" bodyend="484"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a06804cb1598e965febc7bd35fc0fbbb0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3591,13 +3595,13 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
 <parametername>buf</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to the temporary buffer </para></parameterdescription>
+<para>pointer to the temporary buffer</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>        </detaileddescription>
+This method is equivalent to the parallel execution of std::sort on a CUDA GPU. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" line="510" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" bodystart="510" bodyend="512"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" line="508" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_algorithm/cuda_sort.hpp" bodystart="508" bodyend="510"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a5f9dabd7c5d0fa5166cf76d9fa5a038e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>

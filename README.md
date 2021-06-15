@@ -160,6 +160,7 @@ embeds in-graph control flow.
 4. [Compose Task Graphs](#compose-task-graphs)
 5. [Launch Asynchronous Tasks](#launch-asynchronous-tasks)
 6. [Execute a Taskflow](#execute-a-taskflow)
+7. [Leverage Standard Parallel Algorithms](#leverage-standard-parallel-algorithms)
 
 ## Create a Subflow Graph
 
@@ -339,6 +340,36 @@ executor.run_until(taskflow, [counter=5](){ return --counter == 0; });
 
 // block the executor until all submitted taskflows complete
 executor.wait_for_all();
+```
+
+## Leverage Standard Parallel Algorithms
+
+Taskflow defines algorithms for you to quickly express common parallel
+patterns using standard C++ syntaxes, 
+such as parallel iterations, parallel reductions, and parallel sort.
+
+```cpp
+// standard parallel CPU algorithms
+tf::Task task1 = taskflow.for_each( // assign each element to 100 in parallel
+  first, last, [] (auto& i) { i = 100; }    
+);
+tf::Task task2 = taskflow.reduce(   // reduce a range of items in parallel
+  first, last, init, [] (auto a, auto b) { return a + b; }
+);
+tf::Task task3 = taskflow.sort(     // sort a range of items in parallel
+  first, last, [] (auto a, auto b) { return a < b; }
+);
+
+// standard parallel GPU algorithms
+tf::cudaTask cuda1 = cudaflow.for_each( // assign each element to 100 on GPU
+  dfirst, dlast, [] __device__ (auto i) { i = 100; }
+);
+tf::cudaTask cuda2 = cudaflow.reduce(   // reduce a range of items on GPU
+  dfirst, dlast, [] __device__ (auto a, auto b) { return a + b; }
+);
+tf::cudaTask cuda3 = cudaflow.sort(     // sort a range of items on GPU
+  dfirst, dlast, [] __device__ (auto a, auto b) { return a < b; }
+);
 ```
 
 

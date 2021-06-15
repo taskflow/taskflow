@@ -359,7 +359,6 @@ void merge_sort_loop(
       p, keys_input, count, coop, E::nv, comp, mp_data
     );
     
-    // TODO
     cuda_kernel<<<B, E::nt, 0, p.stream()>>>([=]__device__(auto tid, auto bid) {
 
       __shared__ union {
@@ -438,26 +437,6 @@ unsigned cuda_sort_buffer_size(unsigned count) {
 // key-value sort
 // ----------------------------------------------------------------------------
 
-//template<typename P, typename K_it, typename V_it, typename C>
-//void cuda_sort(P&& p, K_it k_first, K_it k_last, V_it v_first, C comp) {
-//  
-//  using K = typename std::iterator_traits<K_it>::value_type;
-//  using V = typename std::iterator_traits<V_it>::value_type;
-//
-//  unsigned N = std::distance(k_first, k_last);
-//
-//  if(N <= 1) {
-//    return;
-//  }
-//
-//  cudaScopedDeviceMemory<std::byte> temp(cuda_sort_buffer_size<P, K, V>(N));
-//
-//  detail::merge_sort_loop(p, k_first, v_first, N, comp, temp.data());
-//  
-//  // synchronize the execution
-//  p.synchronize();
-//}
-
 /**
 @brief performs asynchronous key-value sort on a range of items
 
@@ -473,9 +452,25 @@ unsigned cuda_sort_buffer_size(unsigned count) {
 @param comp binary comparator
 @param buf pointer to the temporary buffer
 
+Sorts key-value elements in <tt>[k_first, k_last)</tt> and 
+<tt>[v_first, v_first + (k_last - k_first))</tt> into ascending key order
+using the given comparator @c comp.
+If @c i and @c j are any two valid iterators in <tt>[k_first, k_last)</tt> 
+such that @c i precedes @c j, and @c p and @c q are iterators in 
+<tt>[v_first, v_first + (k_last - k_first))</tt> corresponding to 
+@c i and @c j respectively, then <tt>comp(*j, *i)</tt> evaluates to @c false.
+
+For example, assume:
+  + @c keys are <tt>{1, 4, 2, 8, 5, 7}</tt>
+  + @c values are <tt>{'a', 'b', 'c', 'd', 'e', 'f'}</tt>
+
+After sort:
+  + @c keys are <tt>{1, 2, 4, 5, 7, 8}</tt>
+  + @c values are <tt>{'a', 'c', 'b', 'e', 'f', 'd'}</tt>
+
 */
 template<typename P, typename K_it, typename V_it, typename C>
-void cuda_sort(
+void cuda_sort_by_key(
   P&& p, K_it k_first, K_it k_last, V_it v_first, C comp, void* buf
 ) {
 
@@ -505,10 +500,13 @@ void cuda_sort(
 @param comp binary comparator
 @param buf pointer to the temporary buffer
 
+This method is equivalent to the parallel execution of std::sort
+on a CUDA GPU.
+
 */
 template<typename P, typename K_it, typename C>
 void cuda_sort(P&& p, K_it k_first, K_it k_last, C comp, void* buf) {
-  cuda_sort(p, k_first, k_last, (cudaEmpty*)nullptr, comp, buf);
+  cuda_sort_by_key(p, k_first, k_last, (cudaEmpty*)nullptr, comp, buf);
 }
 
 // ----------------------------------------------------------------------------
@@ -530,6 +528,26 @@ void cudaFlow::sort(cudaTask task, I first, I last, C comp) {
   capture(task, [=](cudaFlowCapturer& cap){
     cap.make_optimizer<cudaLinearCapturing>();
     cap.sort(first, last, comp);
+  });
+}
+
+// Function: sort_by_key
+template <typename K_it, typename V_it, typename C>
+cudaTask cudaFlow::sort_by_key(K_it k_first, K_it k_last, V_it v_first, C comp) {
+  return capture([=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.sort_by_key(k_first, k_last, v_first, comp);
+  });
+}
+
+// Function: sort_by_key
+template <typename K_it, typename V_it, typename C>
+void cudaFlow::sort_by_key(
+  cudaTask task, K_it k_first, K_it k_last, V_it v_first, C comp
+) {
+  capture(task, [=](cudaFlowCapturer& cap){
+    cap.make_optimizer<cudaLinearCapturing>();
+    cap.sort_by_key(k_first, k_last, v_first, comp);
   });
 }
 
@@ -569,6 +587,48 @@ void cudaFlowCapturer::sort(cudaTask task, I first, I last, C comp) {
   (cudaStream_t stream) mutable {
     cuda_sort(
       cudaDefaultExecutionPolicy{stream}, first, last, comp, buf.get().data()
+    );
+  });
+}
+
+// Function: sort_by_key
+template <typename K_it, typename V_it, typename C>
+cudaTask cudaFlowCapturer::sort_by_key(
+  K_it k_first, K_it k_last, V_it v_first, C comp
+) {
+
+  using K = typename std::iterator_traits<K_it>::value_type;
+  using V = typename std::iterator_traits<V_it>::value_type;
+
+  auto bufsz = cuda_sort_buffer_size<cudaDefaultExecutionPolicy, K, V>(
+    std::distance(k_first, k_last)
+  );
+
+  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  (cudaStream_t stream) mutable {
+    cuda_sort_by_key(cudaDefaultExecutionPolicy{stream}, 
+      k_first, k_last, v_first, comp, buf.get().data()
+    );
+  });
+}
+
+// Function: sort_by_key
+template <typename K_it, typename V_it, typename C>
+void cudaFlowCapturer::sort_by_key(
+  cudaTask task, K_it k_first, K_it k_last, V_it v_first, C comp
+) {
+
+  using K = typename std::iterator_traits<K_it>::value_type;
+  using V = typename std::iterator_traits<V_it>::value_type;
+
+  auto bufsz = cuda_sort_buffer_size<cudaDefaultExecutionPolicy, K, V>(
+    std::distance(k_first, k_last)
+  );
+
+  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  (cudaStream_t stream) mutable {
+    cuda_sort_by_key(cudaDefaultExecutionPolicy{stream}, 
+      k_first, k_last, v_first, comp, buf.get().data()
     );
   });
 }
