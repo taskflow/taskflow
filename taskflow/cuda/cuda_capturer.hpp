@@ -159,6 +159,28 @@ class cudaFlowCapturer {
     void on(cudaTask task, C&& callable);
     
     /**
+    @brief captures a no-operation task
+    
+    @return a tf::cudaTask handle
+
+    An empty node performs no operation during execution, 
+    but can be used for transitive ordering. 
+    For example, a phased execution graph with 2 groups of @c n nodes 
+    with a barrier between them can be represented using an empty node 
+    and @c 2*n dependency edges, 
+    rather than no empty node and @c n^2 dependency edges.
+    */
+    cudaTask noop();
+    
+    /**
+    @brief updates a task to a no-operation task
+    
+    The method is similar to tf::cudaFlowCapturer::noop but 
+    operates on an existing task.
+    */
+    void noop(cudaTask task);
+    
+    /**
     @brief copies data between host and device asynchronously through a stream
     
     @param dst destination memory address
@@ -1082,6 +1104,16 @@ cudaTask cudaFlowCapturer::on(C&& callable) {
   return cudaTask(node);
 }
 
+// Function: noop
+inline cudaTask cudaFlowCapturer::noop() {
+  return on([](cudaStream_t){});
+}
+
+// Function: noop
+inline void cudaFlowCapturer::noop(cudaTask task) {
+  on(task, [](cudaStream_t){});
+}
+
 // Function: memcpy
 inline cudaTask cudaFlowCapturer::memcpy(
   void* dst, const void* src, size_t count
@@ -1093,7 +1125,7 @@ inline cudaTask cudaFlowCapturer::memcpy(
     );
   });
 }
-    
+
 template <typename T, std::enable_if_t<!std::is_same_v<T, void>, void>*>
 cudaTask cudaFlowCapturer::copy(T* tgt, const T* src, size_t num) {
   return on([tgt, src, num] (cudaStream_t stream) mutable {
@@ -1145,6 +1177,8 @@ void cudaFlowCapturer::offload_until(P&& predicate) {
       cudaGraphInstantiate(&_executable, g, nullptr, nullptr, 0),
       "failed to create an executable graph"
     );
+
+    //cuda_dump_graph(std::cout, g);
 
     // TODO: store the native graph?
     TF_CHECK_CUDA(cudaGraphDestroy(g), "failed to destroy captured graph");

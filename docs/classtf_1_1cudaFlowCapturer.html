@@ -124,6 +124,14 @@
             </dt>
             <dd>updates a capture task to another sequential CUDA operations</dd>
             <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a593335760ea517cea597237137ef9333" class="m-doc">noop</a>(</span><span class="m-doc-wrap">) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+            </dt>
+            <dd>captures a no-operation task</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#a168a968d7f5833700fcc14a210ad39bc" class="m-doc">noop</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task)</span>
+            </dt>
+            <dd>updates a task to a no-operation task</dd>
+            <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#ae84d097cdae9e2e8ce108dea760483ed" class="m-doc">memcpy</a>(</span><span class="m-doc-wrap">void* dst,
               const void* src,
               size_t count) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
@@ -641,6 +649,28 @@
             </h3>
             <p>updates a capture task to another sequential CUDA operations</p>
 <p>The method is similar to <a href="classtf_1_1cudaFlowCapturer.html#ad0d937ae0d77239f148b66a77e35db41" class="m-doc">cudaFlowCapturer::<wbr />on</a> but operates on an existing task.</p>
+          </div></section>
+          <section class="m-doc-details" id="a593335760ea517cea597237137ef9333"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a593335760ea517cea597237137ef9333" class="m-doc-self">noop</a>(</span><span class="m-doc-wrap">)</span></span>
+            </h3>
+            <p>captures a no-operation task</p>
+            <table class="m-table m-fullwidth m-flat">
+              <tfoot>
+                <tr>
+                  <th style="width: 1%">Returns</th>
+                  <td>a <a href="classtf_1_1cudaTask.html" class="m-doc">tf::<wbr />cudaTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>An empty node performs no operation during execution, but can be used for transitive ordering. For example, a phased execution graph with 2 groups of <code>n</code> nodes with a barrier between them can be represented using an empty node and <code>2*n</code> dependency edges, rather than no empty node and <code>n^2</code> dependency edges.</p>
+          </div></section>
+          <section class="m-doc-details" id="a168a968d7f5833700fcc14a210ad39bc"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a168a968d7f5833700fcc14a210ad39bc" class="m-doc-self">noop</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task)</span></span>
+            </h3>
+            <p>updates a task to a no-operation task</p>
+<p>The method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a593335760ea517cea597237137ef9333" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />noop</a> but operates on an existing task.</p>
           </div></section>
           <section class="m-doc-details" id="ae84d097cdae9e2e8ce108dea760483ed"><div>
             <h3>
