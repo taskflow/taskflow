@@ -35,6 +35,7 @@ class Graph {
   friend class Node;
   friend class Taskflow;
   friend class Executor;
+  friend class Sanitizer;
 
   public:
 
@@ -77,6 +78,7 @@ class Node {
   friend class Executor;
   friend class FlowBuilder;
   friend class Subflow;
+  friend class Sanitizer;
 
   TF_ENABLE_POOLABLE_ON_THIS;
 

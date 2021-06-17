@@ -49,8 +49,8 @@ That is, the callable that describes a %cudaFlowCapturer
 will be executed sequentially.
 Inside a %cudaFlow capturer task, different GPU tasks (tf::cudaTask) may run
 in parallel depending on the selected optimization algorithm.
-By default, we use tf::cudaSequentialCapturing to generate a sequential
-CUDA graph.
+By default, we use tf::cudaRoundRobinCapturing to transform a user-level
+graph into a native CUDA graph.
 
 Please refer to @ref GPUTaskingcudaFlowCapturer for details.
 */
@@ -125,6 +125,11 @@ class cudaFlowCapturer {
     a user-described %cudaFlow:
       + tf::cudaSequentialCapturing
       + tf::cudaRoundRobinCapturing
+      + tf::cudaLinearCapturing
+
+    By default, tf::cudaFlowCapturer uses the round-robin optimization 
+    algorithm with four streams to transform a user-level graph into
+    a native CUDA graph.
     */
     template <typename OPT, typename... ArgsT>
     OPT& make_optimizer(ArgsT&&... args);
@@ -1126,6 +1131,7 @@ inline cudaTask cudaFlowCapturer::memcpy(
   });
 }
 
+// Function: copy
 template <typename T, std::enable_if_t<!std::is_same_v<T, void>, void>*>
 cudaTask cudaFlowCapturer::copy(T* tgt, const T* src, size_t num) {
   return on([tgt, src, num] (cudaStream_t stream) mutable {
