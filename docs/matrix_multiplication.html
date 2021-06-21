@@ -54,34 +54,30 @@
           <ul>
             <li><a href="#MatrixMultiplicationProblem">Problem Formulation</a></li>
             <li><a href="#MatrixMultiplicationParallelPattern">Parallel Patterns</a></li>
-            <li><a href="#GPUAcceleratedMatrixMultiplication">GPU-based Acceleration</a></li>
-            <li><a href="#MatrixMultiplicationBenchmarking">Benchmarking</a></li>
+            <li><a href="#udaflow_1MatrixMultiplicationBenchmarking">Benchmarking</a></li>
           </ul>
         </div>
-<p>We study the classic problem, <em>2D matrix multiplication</em>. We will start with a short introduction about the problem and then discuss how to solve it using CPU and GPU parallel computing.</p><section id="MatrixMultiplicationProblem"><h2><a href="#MatrixMultiplicationProblem">Problem Formulation</a></h2><p>We are multiplying two matrices, A (MxK) and B (KxN). The numbers of columns of A must match the number of rows of B. The output matrix C has the shape of (MxN) where M is the rows of A and N the columns of B. The following example multiplies a 3x3 matrix with a 3x2 matrix to derive a 3x2 matrix.</p><img class="m-image" src="matrix_multiplication_1.png" alt="Image" style="width: 50%;" /><p>As a general view, for each element of C we iterate a complete row of A and a complete column of B, multiplying each element and summing them.</p><img class="m-image" src="matrix_multiplication_2.png" alt="Image" style="width: 50%;" /><p>We can implement matrix multiplication using three nested loops.</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">m</span><span class="o">&lt;</span><span class="n">M</span><span class="p">;</span> <span class="n">m</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+<p>We study the classic problem, <em>2D matrix multiplication</em>. We will start with a short introduction about the problem and then discuss how to solve it parallel CPUs.</p><section id="MatrixMultiplicationProblem"><h2><a href="#MatrixMultiplicationProblem">Problem Formulation</a></h2><p>We are multiplying two matrices, <code>A</code> (<code>MxK</code>) and <code>B</code> (<code>KxN</code>). The numbers of columns of <code>A</code> must match the number of rows of <code>B</code>. The output matrix <code>C</code> has the shape of (MxN) where <code>M</code> is the rows of <code>A</code> and <code>N</code> the columns of <code>B</code>. The following example multiplies a <code>3x3</code> matrix with a <code>3x2</code> matrix to derive a <code>3x2</code> matrix.</p><img class="m-image" src="matrix_multiplication_1.png" alt="Image" style="width: 50%;" /><p>As a general view, for each element of <code>C</code> we iterate a complete row of <code>A</code> and a complete column of <code>B</code>, multiplying each element and summing them.</p><img class="m-image" src="matrix_multiplication_2.png" alt="Image" style="width: 50%;" /><p>We can implement matrix multiplication using three nested loops.</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">m</span><span class="o">&lt;</span><span class="n">M</span><span class="p">;</span> <span class="n">m</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">n</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span> <span class="n">n</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">C</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
     <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">k</span><span class="o">&lt;</span><span class="n">K</span><span class="p">;</span> <span class="n">k</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
       <span class="n">C</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">+=</span> <span class="n">A</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">n</span><span class="p">];</span>
     <span class="p">}</span>
   <span class="p">}</span>
-<span class="p">}</span></pre></section><section id="MatrixMultiplicationParallelPattern"><h2><a href="#MatrixMultiplicationParallelPattern">Parallel Patterns</a></h2><p>At a fine-grained level, computing each element of C is independent of each other. Similarly, computing each row of C or each column of C is also independent of one another. With task parallelism, we prefer <em>coarse-grained</em> model to have each task perform rather large computation to amortize the overhead of creating and scheduling tasks. In this case, we avoid intensive tasks each working on only a single element. by creating a task per row of C to multiply a row of A by every column of B.</p><pre class="m-code"><span class="c1">// C = A * B</span>
+<span class="p">}</span></pre></section><section id="MatrixMultiplicationParallelPattern"><h2><a href="#MatrixMultiplicationParallelPattern">Parallel Patterns</a></h2><p>At a fine-grained level, computing each element of <code>C</code> is independent of each other. Similarly, computing each row of <code>C</code> or each column of <code>C</code> is also independent of one another. With task parallelism, we prefer <em>coarse-grained</em> model to have each task perform rather large computation to amortize the overhead of creating and scheduling tasks. In this case, we avoid intensive tasks each working on only a single element. by creating a task per row of <code>C</code> to multiply a row of <code>A</code> by every column of <code>B</code>.</p><pre class="m-code"><span class="c1">// C = A * B</span>
 <span class="c1">// A is a MxK matrix, B is a KxN matrix, and C is a MxN matrix</span>
 <span class="kt">void</span> <span class="nf">matrix_multiplication</span><span class="p">(</span><span class="kt">int</span><span class="o">**</span> <span class="n">A</span><span class="p">,</span> <span class="kt">int</span><span class="o">**</span> <span class="n">B</span><span class="p">,</span> <span class="kt">int</span><span class="o">**</span> <span class="n">C</span><span class="p">,</span> <span class="kt">int</span> <span class="n">M</span><span class="p">,</span> <span class="kt">int</span> <span class="n">K</span><span class="p">,</span> <span class="kt">int</span> <span class="n">N</span><span class="p">)</span> <span class="p">{</span>
-
   <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
   <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
-  
   <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">m</span><span class="o">&lt;</span><span class="n">M</span><span class="p">;</span> <span class="o">++</span><span class="n">m</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="n">m</span><span class="p">,</span> <span class="o">&amp;</span><span class="p">]</span> <span class="p">()</span> <span class="p">{</span>
       <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">n</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span> <span class="n">n</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">k</span><span class="o">&lt;</span><span class="n">K</span><span class="p">;</span> <span class="n">k</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-          <span class="n">C</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">+=</span> <span class="n">A</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">n</span><span class="p">];</span>
+          <span class="n">C</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">+=</span> <span class="n">A</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">n</span><span class="p">];</span>  <span class="c1">// inner product</span>
         <span class="p">}</span>
       <span class="p">}</span>
     <span class="p">});</span>
   <span class="p">}</span>
-
   <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
 <span class="p">}</span></pre><p>Instead of creating tasks one-by-one over a loop, you can leverage <a href="classtf_1_1FlowBuilder.html#ab8417b211b18bb1e0f45a049331f084d" class="m-doc">Taskflow::<wbr />for_each_index</a> to create a <em>parallel-for</em> task. A parallel-for task spawns a subflow to perform parallel iterations over the given range.</p><pre class="m-code"><span class="c1">// perform parallel iterations on the range [0, M) with the step size of 1</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">task</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">for_each_index</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">]</span> <span class="p">(</span><span class="kt">int</span> <span class="n">m</span><span class="p">)</span> <span class="p">{</span>
@@ -90,224 +86,7 @@
       <span class="n">C</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">+=</span> <span class="n">A</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">n</span><span class="p">];</span>
     <span class="p">}</span>   
   <span class="p">}</span>   
-<span class="p">});</span></pre><p>Please visit <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for more details.</p></section><section id="GPUAcceleratedMatrixMultiplication"><h2><a href="#GPUAcceleratedMatrixMultiplication">GPU-based Acceleration</a></h2><p>GPU is able to do a lot of parallel computations more than CPUs. It is especially useful for data-intensive computing such as matrix multiplication. With GPU, we express the parallel patterns at a fine-grained level. The kernel, written in CUDA, is described as follows:</p><pre class="m-code"><span class="c1">// CUDA kernel to perform matrix multiplication</span>
-<span class="n">__global__</span> <span class="kt">void</span> <span class="n">matmul</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">A</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">B</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">C</span><span class="p">,</span> <span class="kt">int</span> <span class="n">M</span><span class="p">,</span> <span class="kt">int</span> <span class="n">K</span><span class="p">,</span> <span class="kt">int</span> <span class="n">N</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">row</span> <span class="o">=</span> <span class="n">blockIdx</span><span class="p">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">blockDim</span><span class="p">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">threadIdx</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="n">col</span> <span class="o">=</span> <span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">blockDim</span><span class="p">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="k">if</span><span class="p">(</span><span class="n">col</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="o">&amp;&amp;</span> <span class="n">row</span> <span class="o">&lt;</span> <span class="n">M</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">K</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">sum</span> <span class="o">+=</span> <span class="n">a</span><span class="p">[</span><span class="n">row</span> <span class="o">*</span> <span class="n">K</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">N</span> <span class="o">+</span> <span class="n">col</span><span class="p">];</span>
-    <span class="p">}</span>
-    <span class="n">c</span><span class="p">[</span><span class="n">row</span> <span class="o">*</span> <span class="n">N</span> <span class="o">+</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span></pre><p>Each CUDA thread corresponds to an element of C and compute its result. Instead of storing each matrix in a 2D array, we use 1D layout to ease the data transfer between CPU and GPU. In a row-major layout, an element <code>(x, y)</code> in the 2D matrix can be addressed at <code>x * width + y</code> in the transformed 1D layout.</p><img class="m-image" src="matrix_multiplication_4.png" alt="Image" style="width: 70%;" /><p>The next step is to allocate memory for A, B, and C at a GPU. We create three tasks each calling <code>cudaMalloc</code> to allocate space for one matrix. Then, we create a cudaFlow to offload matrix multiplication to a GPU. The entire code is described as follows:</p><pre class="m-code"><span class="kt">void</span> <span class="nf">matrix_multiplication</span><span class="p">(</span><span class="kt">int</span><span class="o">*</span> <span class="n">A</span><span class="p">,</span> <span class="kt">int</span><span class="o">*</span> <span class="n">B</span><span class="p">,</span> <span class="kt">int</span><span class="o">*</span> <span class="n">C</span><span class="p">,</span> <span class="kt">int</span> <span class="n">M</span><span class="p">,</span> <span class="kt">int</span> <span class="n">K</span><span class="p">,</span> <span class="kt">int</span> <span class="n">N</span><span class="p">)</span> <span class="p">{</span>
-  
-  <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
-
-  <span class="c1">// allocate the host and gpu storage for A</span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">allocate_a</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
-    <span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">da</span><span class="p">,</span> <span class="n">M</span><span class="o">*</span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-  <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_a&quot;</span><span class="p">);</span>
-  
-  <span class="c1">// allocate the host and gpu storage for B</span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">allocate_b</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
-    <span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">db</span><span class="p">,</span> <span class="n">K</span><span class="o">*</span><span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-  <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_b&quot;</span><span class="p">);</span>
-  
-  <span class="c1">// allocate the host and gpu storage for C</span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">allocate_c</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
-    <span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dc</span><span class="p">,</span> <span class="n">M</span><span class="o">*</span><span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-  <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_c&quot;</span><span class="p">);</span>
-  
-  <span class="c1">// create a cudaFlow to run the matrix multiplication</span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">cudaFlow</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span> <span class="n">cf</span><span class="p">){</span>
-  
-    <span class="c1">// copy data to da, db, and dc</span>
-    <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">copy_da</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">M</span><span class="o">*</span><span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;H2D_A&quot;</span><span class="p">);</span>
-    <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">copy_db</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">K</span><span class="o">*</span><span class="n">N</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;H2D_B&quot;</span><span class="p">);</span>
-    <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">copy_hc</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dc</span><span class="p">,</span> <span class="n">M</span><span class="o">*</span><span class="n">N</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;D2H_C&quot;</span><span class="p">);</span>
-  
-    <span class="n">dim3</span> <span class="n">grid</span>  <span class="p">((</span><span class="n">K</span><span class="o">+</span><span class="mi">16-1</span><span class="p">)</span><span class="o">/</span><span class="mi">16</span><span class="p">,</span> <span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="mi">16-1</span><span class="p">)</span><span class="o">/</span><span class="mi">16</span><span class="p">);</span>
-    <span class="n">dim3</span> <span class="n">block</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">);</span>
-  
-    <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">kmatmul</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">matmul</span><span class="p">,</span> <span class="n">da</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">dc</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
-                             <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;matmul&quot;</span><span class="p">);</span>
-  
-    <span class="n">kmatmul</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">copy_da</span><span class="p">,</span> <span class="n">copy_db</span><span class="p">)</span>
-           <span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">copy_hc</span><span class="p">);</span>
-  
-  <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;cudaFlow&quot;</span><span class="p">);</span>
-  
-  <span class="c1">// free the gpu storage</span>
-  <span class="k">auto</span> <span class="n">free</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
-    <span class="n">cudaFree</span><span class="p">(</span><span class="n">da</span><span class="p">);</span>
-    <span class="n">cudaFree</span><span class="p">(</span><span class="n">db</span><span class="p">);</span>
-    <span class="n">cudaFree</span><span class="p">(</span><span class="n">dc</span><span class="p">);</span>
-  <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;free&quot;</span><span class="p">);</span>
-  
-  <span class="c1">// create dependency</span>
-  <span class="n">cudaFlow</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">allocate_a</span><span class="p">,</span> <span class="n">allocate_b</span><span class="p">,</span> <span class="n">allocate_c</span><span class="p">)</span>
-          <span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">free</span><span class="p">);</span>
-  
-  <span class="c1">// dump the graph without unfolding the cudaFlow</span>
-  <span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
-
-  <span class="c1">// run the taskflow</span>
-  <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
-
-  <span class="c1">// dump the entire execution graph including unfolded cudaFlow</span>
-  <span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
-<span class="p">}</span></pre><p>Within the cudaFlow, we create two host-to-device (H2D) tasks that copy data from <code>A</code> and <code>B</code> to <code>da</code> and <code>db</code>, one device-to-host (D2H) task that copies the result from <code>dc</code> to <code>C</code>, and one kernel task that launches <code>matmul</code> on the GPU (by default, GPU 0). H2D tasks precede the kernel and the kernel precedes the D2H task. These GPU operations form a GPU task graph managed by a cudaFlow. The first dump of the taskflow gives the following graph:</p><div class="m-graph"><svg style="width: 28.688rem; height: 11.875rem;" viewBox="0.00 0.00 458.89 189.54">
-<g transform="scale(1 1) rotate(0) translate(4 185.5391)">
-<title>Taskflow</title>
-<g class="m-node m-flat">
-<title>p0x55d923794f10</title>
-<ellipse cx="69.2965" cy="-163.1543" rx="69.0935" ry="18.2703"/>
-<text text-anchor="middle" x="69.2965" y="-159.3543">allocate_a</text>
-</g>
-<g class="m-node">
-<title>p0x55d923795240</title>
-<polygon points="271.7965,-108.7696 268.7965,-112.7696 247.7965,-112.7696 244.7965,-108.7696 180.7965,-108.7696 180.7965,-72.7696 271.7965,-72.7696 271.7965,-108.7696"/>
-<text text-anchor="middle" x="226.2965" y="-86.9696">cudaFlow</text>
-</g>
-<g class="m-edge">
-<title>p0x55d923794f10&#45;&gt;p0x55d923795240</title>
-<path d="M104.1399,-147.0898C125.8325,-137.0884 154.0467,-124.0803 177.8939,-113.0855"/>
-<polygon points="179.5184,-116.1907 187.1343,-108.8253 176.5875,-109.8338 179.5184,-116.1907"/>
-</g>
-<g class="m-node m-flat">
-<title>p0x55d923795350</title>
-<ellipse cx="226.2965" cy="-18.3848" rx="33.8824" ry="18.2703"/>
-<text text-anchor="middle" x="226.2965" y="-14.5848">free</text>
-</g>
-<g class="m-edge">
-<title>p0x55d923795240&#45;&gt;p0x55d923795350</title>
-<path d="M226.2965,-72.5038C226.2965,-64.7623 226.2965,-55.5567 226.2965,-46.9533"/>
-<polygon points="229.7966,-46.8964 226.2965,-36.8964 222.7966,-46.8965 229.7966,-46.8964"/>
-</g>
-<g class="m-node m-flat">
-<title>p0x55d923795020</title>
-<ellipse cx="226.2965" cy="-163.1543" rx="69.0935" ry="18.2703"/>
-<text text-anchor="middle" x="226.2965" y="-159.3543">allocate_b</text>
-</g>
-<g class="m-edge">
-<title>p0x55d923795020&#45;&gt;p0x55d923795240</title>
-<path d="M226.2965,-144.5135C226.2965,-136.8556 226.2965,-127.8146 226.2965,-119.3544"/>
-<polygon points="229.7966,-119.0966 226.2965,-109.0967 222.7966,-119.0967 229.7966,-119.0966"/>
-</g>
-<g class="m-node m-flat">
-<title>p0x55d923795130</title>
-<ellipse cx="382.2965" cy="-163.1543" rx="68.6788" ry="18.2703"/>
-<text text-anchor="middle" x="382.2965" y="-159.3543">allocate_c</text>
-</g>
-<g class="m-edge">
-<title>p0x55d923795130&#45;&gt;p0x55d923795240</title>
-<path d="M347.675,-147.0898C326.1206,-137.0884 298.0861,-124.0803 274.3907,-113.0855"/>
-<polygon points="275.7535,-109.8595 265.2092,-108.8253 272.8071,-116.2092 275.7535,-109.8595"/>
-</g>
-</g>
-</svg>
-</div><p>A cudaFlow encapsulates a GPU task dependency graph similar to a subflow (see <a href="DynamicTasking.html" class="m-doc">Dynamic Tasking</a>). In order to visualize it, we need to execute the graph first and then dump the taskflow.</p><div class="m-graph"><svg style="width: 42.625rem; height: 23.500rem;" viewBox="0.00 0.00 681.89 376.31">
-<g transform="scale(1 1) rotate(0) translate(4 372.3087)">
-<title>Taskflow</title>
-<g class="m-cluster">
-<title>cluster_p0x5558af971240</title>
-<polygon points="146.2965,-64.7696 146.2965,-360.3087 372.2965,-360.3087 372.2965,-64.7696 146.2965,-64.7696"/>
-<text text-anchor="middle" x="259.2965" y="-343.5087">cudaFlow: cudaFlow</text>
-</g>
-<g class="m-node m-flat">
-<title>p0x5558af970f10</title>
-<ellipse cx="69.2965" cy="-163.1543" rx="69.0935" ry="18.2703"/>
-<text text-anchor="middle" x="69.2965" y="-159.3543">allocate_a</text>
-</g>
-<g class="m-node">
-<title>p0x5558af971240</title>
-<polygon points="361.7965,-108.7696 358.7965,-112.7696 337.7965,-112.7696 334.7965,-108.7696 270.7965,-108.7696 270.7965,-72.7696 361.7965,-72.7696 361.7965,-108.7696"/>
-<text text-anchor="middle" x="316.2965" y="-86.9696">cudaFlow</text>
-</g>
-<g class="m-edge">
-<title>p0x5558af970f10&#45;&gt;p0x5558af971240</title>
-<path d="M116.0457,-149.4542C157.1771,-137.4004 217.1263,-119.832 260.7048,-107.061"/>
-<polygon points="261.9617,-110.3399 270.5738,-104.1688 259.9931,-103.6225 261.9617,-110.3399"/>
-</g>
-<g class="m-node m-flat">
-<title>p0x5558af971350</title>
-<ellipse cx="316.2965" cy="-18.3848" rx="33.8824" ry="18.2703"/>
-<text text-anchor="middle" x="316.2965" y="-14.5848">free</text>
-</g>
-<g class="m-edge">
-<title>p0x5558af971240&#45;&gt;p0x5558af971350</title>
-<path d="M316.2965,-72.5038C316.2965,-64.7623 316.2965,-55.5567 316.2965,-46.9533"/>
-<polygon points="319.7966,-46.8964 316.2965,-36.8964 312.7966,-46.8965 319.7966,-46.8964"/>
-</g>
-<g class="m-node m-flat">
-<title>p0x5558af971020</title>
-<ellipse cx="449.2965" cy="-163.1543" rx="69.0935" ry="18.2703"/>
-<text text-anchor="middle" x="449.2965" y="-159.3543">allocate_b</text>
-</g>
-<g class="m-edge">
-<title>p0x5558af971020&#45;&gt;p0x5558af971240</title>
-<path d="M418.7836,-146.5478C400.9078,-136.819 378.0675,-124.3882 358.4875,-113.7318"/>
-<polygon points="359.9193,-110.5264 349.4627,-108.8202 356.573,-116.6748 359.9193,-110.5264"/>
-</g>
-<g class="m-node m-flat">
-<title>p0x5558af971130</title>
-<ellipse cx="605.2965" cy="-163.1543" rx="68.6788" ry="18.2703"/>
-<text text-anchor="middle" x="605.2965" y="-159.3543">allocate_c</text>
-</g>
-<g class="m-edge">
-<title>p0x5558af971130&#45;&gt;p0x5558af971240</title>
-<path d="M554.9565,-150.5459C503.9087,-137.7601 425.0917,-118.0191 372.1487,-104.7586"/>
-<polygon points="372.7998,-101.3137 362.2491,-102.2791 371.099,-108.1039 372.7998,-101.3137"/>
-</g>
-<g class="m-node m-flat">
-<title>p0x7f6fd8000b20</title>
-<ellipse cx="316.2965" cy="-307.9239" rx="48.1667" ry="18.2703"/>
-<text text-anchor="middle" x="316.2965" y="-304.1239">H2D_a</text>
-</g>
-<g class="m-node">
-<title>p0x7f6fd8000db0</title>
-<polygon points="352.7965,-253.5391 279.7965,-253.5391 275.7965,-249.5391 275.7965,-217.5391 348.7965,-217.5391 352.7965,-221.5391 352.7965,-253.5391"/>
-<polyline points="348.7965,-249.5391 275.7965,-249.5391 "/>
-<polyline points="348.7965,-249.5391 348.7965,-217.5391 "/>
-<polyline points="348.7965,-249.5391 352.7965,-253.5391 "/>
-<text text-anchor="middle" x="314.2965" y="-231.7391">matmul</text>
-</g>
-<g class="m-edge">
-<title>p0x7f6fd8000b20&#45;&gt;p0x7f6fd8000db0</title>
-<path d="M315.7814,-289.283C315.5698,-281.6252 315.32,-272.5842 315.0863,-264.124"/>
-<polygon points="318.5778,-263.7657 314.8028,-253.8662 311.5805,-263.9591 318.5778,-263.7657"/>
-</g>
-<g class="m-node m-flat">
-<title>p0x7f6fd8000ce0</title>
-<ellipse cx="314.2965" cy="-163.1543" rx="48.1667" ry="18.2703"/>
-<text text-anchor="middle" x="314.2965" y="-159.3543">D2H_c</text>
-</g>
-<g class="m-edge">
-<title>p0x7f6fd8000db0&#45;&gt;p0x7f6fd8000ce0</title>
-<path d="M314.2965,-217.2734C314.2965,-209.5318 314.2965,-200.3263 314.2965,-191.7228"/>
-<polygon points="317.7966,-191.666 314.2965,-181.666 310.7966,-191.666 317.7966,-191.666"/>
-</g>
-<g class="m-node m-flat">
-<title>p0x7f6fd8000c00</title>
-<ellipse cx="202.2965" cy="-307.9239" rx="48.1667" ry="18.2703"/>
-<text text-anchor="middle" x="202.2965" y="-304.1239">H2D_b</text>
-</g>
-<g class="m-edge">
-<title>p0x7f6fd8000c00&#45;&gt;p0x7f6fd8000db0</title>
-<path d="M226.8753,-292.0387C241.7903,-282.3993 261.1019,-269.9183 277.7797,-259.1396"/>
-<polygon points="279.725,-262.0498 286.2238,-253.6822 275.9254,-256.1707 279.725,-262.0498"/>
-</g>
-<g class="m-edge">
-<title>p0x7f6fd8000ce0&#45;&gt;p0x5558af971240</title>
-<path d="M314.8115,-144.5135C315.0231,-136.8556 315.2729,-127.8146 315.5067,-119.3544"/>
-<polygon points="319.0125,-119.1896 315.7901,-109.0967 312.0151,-118.9962 319.0125,-119.1896"/>
-</g>
-</g>
-</svg>
-</div></section><section id="MatrixMultiplicationBenchmarking"><h2><a href="#MatrixMultiplicationBenchmarking">Benchmarking</a></h2><p>We run three versions of matrix multiplication, sequential CPU, parallel CPUs, and one GPU, on a machine of 6 Intel i7-8700 CPUs at 3.20GHz and a Nvidia RTX 2080 GPU using various matrix sizes of A, B, and C.</p><table class="m-table"><thead><tr><th>A</th><th>B</th><th>C</th><th>CPU Sequential</th><th>CPU Parallel</th><th>GPU Parallel</th></tr></thead><tbody><tr><td>10x10</td><td>10x10</td><td>10x10</td><td>0.142 ms</td><td>0.414 ms</td><td>82 ms</td></tr><tr><td>100x100</td><td>100x100</td><td>100x100</td><td>1.641 ms</td><td>0.733 ms</td><td>83 ms</td></tr><tr><td>1000x1000</td><td>1000x1000</td><td>1000x1000</td><td>1532 ms</td><td>504 ms</td><td>85 ms</td></tr><tr><td>2000x2000</td><td>2000x2000</td><td>2000x2000</td><td>25688 ms</td><td>4387 ms</td><td>133 ms</td></tr><tr><td>3000x3000</td><td>3000x3000</td><td>3000x3000</td><td>104838 ms</td><td>16170 ms</td><td>214 ms</td></tr><tr><td>4000x4000</td><td>4000x4000</td><td>4000x4000</td><td>250133 ms</td><td>39646 ms</td><td>427 ms</td></tr></tbody></table><p>With the matrix size going up to 1000, the speed-up of GPU over CPUs becomes prominent.</p></section>
+<span class="p">});</span></pre><p>Please visit <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for more details.</p></section><section id="udaflow_1MatrixMultiplicationBenchmarking"><h2><a href="#udaflow_1MatrixMultiplicationBenchmarking">Benchmarking</a></h2><p>Based on the discussion above, we compare the runtime of computing various matrix sizes of <code>A</code>, <code>B</code>, and <code>C</code> between a sequential CPU and parallel CPUs on a machine of 12 Intel i7-8700 CPUs at 3.2 GHz.</p><table class="m-table"><thead><tr><th>A</th><th>B</th><th>C</th><th>CPU Sequential</th><th>CPU Parallel</th></tr></thead><tbody><tr><td>10x10</td><td>10x10</td><td>10x10</td><td>0.142 ms</td><td>0.414 ms</td></tr><tr><td>100x100</td><td>100x100</td><td>100x100</td><td>1.641 ms</td><td>0.733 ms</td></tr><tr><td>1000x1000</td><td>1000x1000</td><td>1000x1000</td><td>1532 ms</td><td>504 ms</td></tr><tr><td>2000x2000</td><td>2000x2000</td><td>2000x2000</td><td>25688 ms</td><td>4387 ms</td></tr><tr><td>3000x3000</td><td>3000x3000</td><td>3000x3000</td><td>104838 ms</td><td>16170 ms</td></tr><tr><td>4000x4000</td><td>4000x4000</td><td>4000x4000</td><td>250133 ms</td><td>39646 ms</td></tr></tbody></table><p>The speed-up of parallel execution becomes clean as we increase the problem size. For example, at <code>4000x4000</code>, the parallel runtime is 6.3 times faster than the sequential runtime.</p></section>
       </div>
     </div>
   </div>
