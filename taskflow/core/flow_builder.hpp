@@ -369,6 +369,52 @@ class FlowBuilder {
     template <typename B, typename E, typename S, typename C>
     Task for_each_index(B&& first, E&& last, S&& step, C&& callable);
     
+    /**
+    @brief constructs an index-based parallel-for task and passes a new Subflow to each subtask
+
+    @tparam B beginning index type (must be integral)
+    @tparam E ending index type (must be integral)
+    @tparam S step type (must be integral)
+    @tparam C callable type
+
+    @param first index of the beginning (inclusive)
+    @param last index of the end (exclusive)
+    @param step step size 
+    @param callable a callable object to apply to each valid index
+
+    @return a tf::Task handle
+    
+    The task spawns a subflow that applies the callable object to each index in the range <tt>[first, last)</tt> with the step size.
+    
+    This method is equivalent to the parallel execution of the following loop:
+    
+    @code{.cpp}
+    // case 1: step size is positive
+    for(auto i=first; i<last; i+=step) {
+      taskflow.emplace([i](tf::Subflow&sf)
+      {
+        callable(sf,i);
+      })
+    }
+
+    // case 2: step size is negative
+    for(auto i=first, i>last; i+=step) {
+      taskflow.emplace([i](tf::Subflow&sf)
+      {
+        callable(sf,i);
+      })
+    }
+    @endcode
+
+    Arguments are templated to enable stateful passing using std::reference_wrapper.
+    The callable needs to take two arguments the first of which is a non const
+    reference to a tf::Subflow and the second is a single argument of the integral index type.
+    
+    Please refer to @ref ParallelIterations for details.
+    */
+    template <typename B, typename E, typename S, typename C>
+    Task for_each_index_nested(B&& beg, E&& end, S&& inc, C&& c);
+
     // ------------------------------------------------------------------------
     // reduction
     // ------------------------------------------------------------------------

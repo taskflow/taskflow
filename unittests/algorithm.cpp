@@ -288,41 +288,68 @@ void stateful_for_each(unsigned W, TYPE) {
   std::vector<int> vec;
   std::atomic<int> counter {0};
   
-  for(size_t n = 0; n <= 150; n++) {
+  for(size_t third = 1; third <= 50; third++) {
+
+    size_t n = third * 3;
+
     for(size_t c=0; c<=17; c++) {
   
-    std::vector<int>::iterator beg, end;
-    size_t ibeg = 0, iend = 0;
-    size_t half = n/2;
+    using ILimit = std::pair<size_t,size_t>;
+    using Limit = std::pair<std::vector<int>::iterator,std::vector<int>::iterator>;
+    std::array<Limit,3> limits;
+    std::array<ILimit,3> ilimits;
+
     
     taskflow.clear();
+
     
     auto init = taskflow.emplace([&](){ 
       vec.resize(n);
       std::fill_n(vec.begin(), vec.size(), -1);
 
-      beg = vec.begin();
-      end = beg + half;
-
-      ibeg = half;
-      iend = n;
-
+      auto initL = [&](Limit & l, ILimit & il, size_t offset){
+        l.first = vec.begin()+offset;
+        l.second = vec.begin()+offset+third;
+        
+        il.first = l.first-vec.begin();
+        il.second = l.second-vec.begin();
+      };
+      initL(limits[0],ilimits[0],0);
+      initL(limits[1],ilimits[1],third);
+      initL(limits[2],ilimits[2],2*third);
       counter = 0;
     });
+    
 
-    tf::Task pf1, pf2;
+    tf::Task pf1, pf2, pf3;
     
     pf1 = taskflow.for_each(
-      std::ref(beg), std::ref(end), [&](int& i){
+      std::ref(limits[0].first), std::ref(limits[0].second), [&](int& i){
       counter++;
       i = 8;
     });
 
     pf2 = taskflow.for_each_index(
-      std::ref(ibeg), std::ref(iend), size_t{1}, [&] (size_t i) {
+      std::ref(ilimits[1].first), std::ref(ilimits[1].second), size_t{1}, [&] (size_t i) {
         counter++;
         vec[i] = -8;
     });
+    
+    #if true
+      pf3 = taskflow.for_each_index_nested(
+        std::ref(ilimits[2].first), std::ref(ilimits[2].second), size_t{1}, [&] (size_t i, tf::Subflow&sf) {
+          sf.silent_async([&](){
+            counter++;
+            vec[i] = -16;
+          });
+      });
+    #else
+      pf3 = taskflow.for_each_index(
+        std::ref(ilimits[2].first), std::ref(ilimits[2].second), size_t{1}, [&] (size_t i) {
+          counter++;
+          vec[i] = -16;
+      });
+    #endif
     
     //switch (type) {
 
@@ -369,20 +396,22 @@ void stateful_for_each(unsigned W, TYPE) {
     //  break;
     //}
 
-    init.precede(pf1, pf2);
+    init.precede(pf1,pf2,pf3);
 
     executor.run(taskflow).wait();
     REQUIRE(counter == n);
 
-    for(size_t i=0; i<half; ++i) {
-      REQUIRE(vec[i] == 8);
-      vec[i] = 0;
-    }
+    auto check = [&](size_t set, size_t val){
+      for(size_t i=ilimits[set].first; i<ilimits[set].second; ++i) {
+        REQUIRE(vec[i] == val);
+      }
+    };
+    
+    check(0,8);
+    check(1,-8);
+    check(2,-16);
 
-    for(size_t i=half; i<n; ++i) {
-      REQUIRE(vec[i] == -8);
-      vec[i] = 0;
-    }
+
     }
   }
 }

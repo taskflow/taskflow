@@ -34,6 +34,35 @@ void for_each_index(int N) {
   executor.run(taskflow).get();
 }
 
+
+void for_each_index_nested() {
+	auto N = 10;
+
+	if (N < 0)
+	{
+		throw std::runtime_error("N must be non-negative");
+	}
+
+	int res;  // result
+
+	tf::Executor executor;
+	tf::Taskflow taskflow("nestedfor");
+
+	std::mutex mtx;
+
+	taskflow.for_each_index_nested(0,5,1,[&mtx](int i, tf::Subflow&sfi){
+		sfi.for_each_index(25,30,1,[i,&mtx](int j){
+			std::scoped_lock lock(mtx);
+			std::cout << "foreach_index_nested " << i << " "  << j << std::endl;
+		});
+	});
+
+	executor.run(taskflow).wait();
+	//taskflow.dump(std::cout);
+
+
+}
+
 // ----------------------------------------------------------------------------
 
 // Function: main
@@ -41,6 +70,8 @@ int main() {
   
   for_each(100);
   for_each_index(100);
+  for_each_index_nested();
+  
 
   return 0;
 }
