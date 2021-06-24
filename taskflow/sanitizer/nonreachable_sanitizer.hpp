@@ -20,7 +20,7 @@ class NonReachableSanitizer {
     NonReachableSanitizer(const Taskflow& taskflow) : _taskflow {taskflow} {
     }
 
-    std::vector<Task> operator ()(std::ostream& os) {
+    std::vector<Task> operator ()(std::ostream& ) {
       
       // copy _taskflow to _graph
       return {};
