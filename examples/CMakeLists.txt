@@ -20,7 +20,6 @@ list(APPEND TF_EXAMPLES
   limited_concurrency
   cancel
   cancel_async
-  sanitizer
 )
 
 foreach(example IN LISTS TF_EXAMPLES)
