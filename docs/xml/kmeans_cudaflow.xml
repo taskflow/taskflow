@@ -224,7 +224,7 @@
 <codeline><highlight class="normal">stop.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(free);</highlight></codeline>
 </programlisting></para><para>At the last line of the cudaFlow closure, we call <computeroutput>cf.offload_n(M)</computeroutput> to ask the executor to repeatedly run the cudaFlow by <computeroutput>M</computeroutput> times. Compared with the version using conditional tasking, the cudaFlow here is created only one time and thus the overhead is reduced.</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/kmeans_5.dot"></dotfile>
 </para><para>We can see from the above taskflow the condition task is removed.</para></sect1>
-<sect1 id="kmeans_cudaflow_1KMeansBenchmarking">
+<sect1 id="kmeans_cudaflow_1KMeanscudaFlowBenchmarking">
 <title>Benchmarking</title>
 <para>We run three versions of k-means, sequential CPU, parallel CPUs, and one GPU, on a machine of 12 Intel i7-8700 CPUs at 3.20 GHz and a Nvidia RTX 2080 GPU using various numbers of 2D point counts and iterations.</para><para> <table rows="6" cols="7"><row>
 <entry thead="yes"><para>N  </para></entry><entry thead="yes"><para>K  </para></entry><entry thead="yes"><para>M  </para></entry><entry thead="yes"><para>CPU Sequential  </para></entry><entry thead="yes"><para>CPU Parallel  </para></entry><entry thead="yes"><para>GPU (conditional taksing)  </para></entry><entry thead="yes"><para>GPU (using offload_n)   </para></entry></row>
