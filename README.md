@@ -7,7 +7,7 @@
 [![Windows](https://github.com/taskflow/taskflow/workflows/Windows/badge.svg)](https://github.com/taskflow/taskflow/actions?query=workflow%3AWindows)
 [![Wiki](image/api-doc.svg)][documentation]
 [![TFProf](image/tfprof.svg)](https://taskflow.github.io/tfprof/)
-[![Cite](image/cite-ipdps.svg)][IPDPS19]
+[![Cite](image/cite-tpds.svg)][TPDS21]
 
 Taskflow helps you quickly write parallel and heterogeneous task programs in modern C++
 
@@ -70,7 +70,7 @@ in parallel computing. Check out [Who is Using Taskflow](https://taskflow.github
 
 See a quick [presentation](https://taskflow.github.io/) and
 visit the [documentation][documentation] to learn more about Taskflow.
-Technical details can be referred to our [IPDPS paper][IPDPS19].
+Technical details can be referred to our [TPDS paper][TPDS21].
 
 # Start Your First Taskflow Program
 
@@ -449,6 +449,8 @@ You are completely free to re-distribute your work derived from Taskflow.
 [email me]:              mailto:twh760812@gmail.com
 [Cpp Conference 2018]:   https://github.com/CppCon/CppCon2018
 [IPDPS19]:               https://tsung-wei-huang.github.io/papers/ipdps19.pdf
+[TPDS21]:                https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf
+
 
 [cuda-zone]:             https://developer.nvidia.com/cuda-zone
 [nvcc]:                  https://developer.nvidia.com/cuda-llvm-compiler

@@ -1,23 +1,36 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="SYCLReduce" kind="page">
     <compoundname>SYCLReduce</compoundname>
     <title>Parallel Reduction</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Reduce Items with an Initial Value</name>
+        <reference>SYCLReduce_1SYCLReduceItemsWithAnInitialValue</reference>
+    </tocsect>
+      <tocsect>
+        <name>Reduce Items without an Initial Value</name>
+        <reference>SYCLReduce_1SYCLReduceItemsWithoutAnInitialValue</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para><ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> provides two template methods, <ref refid="classtf_1_1syclFlow_1acddd05832e53597ae9d30dc913d422ca" kindref="member">tf::syclFlow::reduce</ref> and <ref refid="classtf_1_1syclFlow_1a7a3af92f105114b1095a2cec2ccdffbf" kindref="member">tf::syclFlow::uninitialized_reduce</ref>, for creating tasks to perform parallel reductions over a range of items.</para><sect1 id="SYCLReduce_1SYCLReduceItemsWithAnInitialValue">
+<para><ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> provides two template methods, <ref refid="classtf_1_1syclFlow_1acddd05832e53597ae9d30dc913d422ca" kindref="member">tf::syclFlow::reduce</ref> and <ref refid="classtf_1_1syclFlow_1a7a3af92f105114b1095a2cec2ccdffbf" kindref="member">tf::syclFlow::uninitialized_reduce</ref>, for creating tasks to perform parallel reductions over a range of items.</para>
+<sect1 id="SYCLReduce_1SYCLReduceItemsWithAnInitialValue">
 <title>Reduce Items with an Initial Value</title>
-<para>The reduction task created by <ref refid="classtf_1_1syclFlow_1acddd05832e53597ae9d30dc913d422ca" kindref="member">tf::syclFlow::reduce(I first, I last, T* result, C&amp;&amp; bop)</ref> performs parallel reduction over a range of elements specified by <computeroutput>[first, last)</computeroutput> using the binary operator <computeroutput>bop</computeroutput> and stores the reduced result in <computeroutput>result</computeroutput>. It represents the parallel execution of the following reduction loop on a SYCL device:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
+<para>The reduction task created by <ref refid="classtf_1_1syclFlow_1acddd05832e53597ae9d30dc913d422ca" kindref="member">tf::syclFlow::reduce(I first, I last, T* result, C&amp;&amp; bop)</ref> performs parallel reduction over a range of elements specified by <computeroutput>[first, last)</computeroutput> using the binary operator <computeroutput>bop</computeroutput> and stores the reduced result in <computeroutput>result</computeroutput>. It represents the parallel execution of the following reduction loop on a SYCL device:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>op(*result,<sp/>*first++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>The variable <computeroutput>result</computeroutput> participates in the reduction loop and must be initialized with an initial value. The following code performs a parallel reduction to sum all the numbers in the given range with an initial value <computeroutput>1000</computeroutput>:</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+</programlisting></para>
+<para>The variable <computeroutput>result</computeroutput> participates in the reduction loop and must be initialized with an initial value. The following code performs a parallel reduction to sum all the numbers in the given range with an initial value <computeroutput>1000</computeroutput>:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>soln<sp/>=<sp/>sycl::malloc_shared&lt;int&gt;(1);<sp/><sp/></highlight><highlight class="comment">//<sp/>solution</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>data<sp/>=<sp/>sycl::malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/algorithm/for_each" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::for_each</ref>(data,<sp/>data+N,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>v){<sp/>d<sp/>=<sp/>1;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/algorithm/for_each" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::for_each</ref>(data,<sp/>data+N,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>v){<sp/>d<sp/>=<sp/>1;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">*soln<sp/>=<sp/>1000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>syclflow<sp/>to<sp/>perform<sp/>parallel<sp/>reduction<sp/>on<sp/>a<sp/>SYCL<sp/>device</highlight><highlight class="normal"></highlight></codeline>
@@ -27,19 +40,23 @@
 <codeline><highlight class="normal">syclflow.<ref refid="classtf_1_1syclFlow_1a2928c2edc466dd625741080c147de4ef" kindref="member">offload</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(sol<sp/>==<sp/>N<sp/>+<sp/>1000);</highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+</sect1>
 <sect1 id="SYCLReduce_1SYCLReduceItemsWithoutAnInitialValue">
 <title>Reduce Items without an Initial Value</title>
-<para>You can use <ref refid="classtf_1_1syclFlow_1a7a3af92f105114b1095a2cec2ccdffbf" kindref="member">tf::syclFlow::uninitialized_reduce</ref> to perform parallel reduction without any initial value. This method represents a parallel execution of the following reduction loop on a SYCL device that does not assum any initial value to reduce.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">*result<sp/>=<sp/>*first++;<sp/><sp/></highlight><highlight class="comment">//<sp/>no<sp/>initial<sp/>values<sp/>participate<sp/>in<sp/>the<sp/>reduction<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
+<para>You can use <ref refid="classtf_1_1syclFlow_1a7a3af92f105114b1095a2cec2ccdffbf" kindref="member">tf::syclFlow::uninitialized_reduce</ref> to perform parallel reduction without any initial value. This method represents a parallel execution of the following reduction loop on a SYCL device that does not assum any initial value to reduce.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">*result<sp/>=<sp/>*first++;<sp/><sp/></highlight><highlight class="comment">//<sp/>no<sp/>initial<sp/>values<sp/>participate<sp/>in<sp/>the<sp/>reduction<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>op(*result,<sp/>*first++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>The variable <computeroutput>result</computeroutput> is overwritten with the reduced value and no initial values participate in the reduction loop. The following code performs a parallel reduction to sum all the numbers in the given range without any initial value:</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+</programlisting></para>
+<para>The variable <computeroutput>result</computeroutput> is overwritten with the reduced value and no initial values participate in the reduction loop. The following code performs a parallel reduction to sum all the numbers in the given range without any initial value:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>soln<sp/>=<sp/>sycl::malloc_shared&lt;int&gt;(1);<sp/><sp/></highlight><highlight class="comment">//<sp/>solution</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>data<sp/>=<sp/>sycl::malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>data<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/algorithm/for_each" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::for_each</ref>(data,<sp/>data+N,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>v){<sp/>d<sp/>=<sp/>1;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/algorithm/for_each" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::for_each</ref>(data,<sp/>data+N,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>v){<sp/>d<sp/>=<sp/>1;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">*soln<sp/>=<sp/>1000;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>no<sp/>effect</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>syclflow<sp/>to<sp/>perform<sp/>parallel<sp/>reduction<sp/>on<sp/>a<sp/>SYCL<sp/>device</highlight><highlight class="normal"></highlight></codeline>
@@ -51,7 +68,8 @@
 <codeline><highlight class="normal">syclflow.<ref refid="classtf_1_1syclFlow_1a2928c2edc466dd625741080c147de4ef" kindref="member">offload</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(sol<sp/>==<sp/>N);</highlight></codeline>
-</programlisting> </para></sect1>
+</programlisting> </para>
+</sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>
