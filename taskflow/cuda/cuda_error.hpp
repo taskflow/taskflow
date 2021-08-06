@@ -19,7 +19,7 @@ if(TF_CUDA_GET_FIRST(__VA_ARGS__) != cudaSuccess) {              \
   auto ev = TF_CUDA_GET_FIRST(__VA_ARGS__);                      \
   oss << "[" << __FILE__ << ":" << __LINE__ << "] "              \
       << (cudaGetErrorString(ev)) << " ("                        \
-      << (cudaGetErrorName(ev)) << ") -";                        \
+      << (cudaGetErrorName(ev)) << ") - ";                       \
   tf::ostreamize(oss, TF_CUDA_REMOVE_FIRST(__VA_ARGS__));        \
   throw std::runtime_error(oss.str());                           \
 }
