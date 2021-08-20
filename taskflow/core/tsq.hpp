@@ -48,9 +48,8 @@ class TaskQueue {
       return C;
     }
     
-    template <typename O>
-    void push(int64_t i, O&& o) noexcept {
-      S[i & M].store(std::forward<O>(o), std::memory_order_relaxed);
+    void push(int64_t i, T o) noexcept {
+      S[i & M].store(o, std::memory_order_relaxed);
     }
 
     T pop(int64_t i) noexcept {
@@ -178,7 +177,9 @@ void TaskQueue<T>::push(T o) {
     Array* tmp = a->resize(b, t);
     _garbage.push_back(a);
     std::swap(a, tmp);
-    _array.store(a, std::memory_order_relaxed);
+    _array.store(a, std::memory_order_release);
+    // Note: the original paper using relaxed causes t-san to complain
+    //_array.store(a, std::memory_order_relaxed);
   }
 
   a->push(b, o);

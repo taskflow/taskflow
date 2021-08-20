@@ -434,10 +434,8 @@ Task FlowBuilder::sort(B&& beg, E&& end, C&& cmp) {
   using I = stateful_iterator_t<B, E>;
 
   Task task = emplace(
-  [b=std::forward<B>(beg),
-   e=std::forward<E>(end), 
-   c=std::forward<C>(cmp)
-   ] (Subflow& sf) mutable {
+  [b=std::forward<B>(beg), e=std::forward<E>(end), c=std::forward<C>(cmp)] 
+  (Subflow& sf) mutable {
     
     // fetch the iterator values
     I beg = b;

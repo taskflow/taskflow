@@ -134,17 +134,15 @@ void tsq_test_n_thieves(size_t M) {
     REQUIRE(queue.pop() == nullptr);
     REQUIRE(queue.empty()); 
 
+    // join thieves
+    for(auto& thread : threads) thread.join();
+    
     // merge items
     for(size_t i=0; i<M; ++i) {
       for(auto s : stolens[i]) {
         items.push_back(s);
       }
     }
-
-    // join thieves
-    for(auto& thread : threads) thread.join();
-    
-
 
     std::sort(items.begin(), items.end());
     std::sort(gold.begin(), gold.end());

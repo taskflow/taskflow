@@ -43,9 +43,6 @@ class syclGraph;
 class syclTask;
 class syclFlow;
 
-// clas
-class Sanitizer;
-
 
 }  // end of namespace tf -----------------------------------------------------
 
