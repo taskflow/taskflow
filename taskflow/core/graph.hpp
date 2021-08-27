@@ -459,7 +459,7 @@ inline void Node::_set_up_join_counter() {
     }
   }
 
-  _join_counter.store(c, std::memory_order_relaxed);
+  _join_counter = c;
 }
 
 

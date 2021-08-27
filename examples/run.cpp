@@ -5,7 +5,7 @@
 int main(){
   
   // create an executor and a taskflow
-  tf::Executor executor;
+  tf::Executor executor(1);
   tf::Taskflow taskflow("Demo");
 
   auto A = taskflow.emplace([&](){ std::cout << "TaskA\n"; }).name("A");
@@ -32,19 +32,19 @@ int main(){
   std::cout << "Run the taskflow once without callback\n" << std::endl;
   executor.run(taskflow).get();
   std::cout << std::endl;
-  
+
   // after execution, we can visualize subflow tasks
   std::cout << "Dump the taskflow after execution:\n";
   taskflow.dump(std::cout);
   std::cout << std::endl;
 
   std::cout << "Use wait_for_all to wait for the execution to finish\n";
-  executor.run(taskflow);
+  executor.run(taskflow).get();
   executor.wait_for_all();
   std::cout << std::endl;
 
   std::cout << "Execute the taskflow two times without a callback\n";
-  executor.run_n(taskflow, 2).get();
+  executor.run(taskflow).get();
   std::cout << "Dump after two executions:\n";
   taskflow.dump(std::cout);
   std::cout << std::endl;
@@ -61,6 +61,6 @@ int main(){
   }).get();
 
   taskflow.dump(std::cout);
-
+  
   return 0;
 }

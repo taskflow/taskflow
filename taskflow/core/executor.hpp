@@ -713,14 +713,14 @@ inline void Executor::_schedule(const std::vector<Node*>& nodes) {
 
 // Procedure: _invoke
 inline void Executor::_invoke(Worker& worker, Node* node) {
-  
+    
   // no need to do other things if the topology is cancelled
   //if(node->_topology && node->_topology->_is_cancelled) {
   if(node->_is_cancelled()) {
     _tear_down_invoke(node, true);
     return;
   }
-
+  
   // if acquiring semaphore(s) exists, acquire them first
   if(node->_semaphores && !node->_semaphores->to_acquire.empty()) {
     std::vector<Node*> nodes;
@@ -737,7 +737,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   
   // condition task
   int cond = -1;
-  
+
   // switch is faster than nested if-else due to jump table
   switch(node->_handle.index()) {
     // static task
@@ -1205,7 +1205,7 @@ inline void Executor::wait_for_all() {
 
 // Function: _set_up_topology
 inline void Executor::_set_up_topology(Topology* tpg) {
-
+  
   if(tpg->_is_cancelled) {
     _tear_down_topology(tpg);
     return;
@@ -1228,6 +1228,7 @@ inline void Executor::_set_up_topology(Topology* tpg) {
   }
 
   tpg->_join_counter = tpg->_sources.size();
+  
   _schedule(tpg->_sources);
 }
 
@@ -1236,7 +1237,7 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
 
   auto &f = tpg->_taskflow;
 
-  //assert(&tpg == &(f._topologies.front()));
+  assert(tpg == f._topologies.front().get());
 
   // case 1: we still need to run the topology again
   if(!tpg->_is_cancelled && !tpg->_pred()) {
@@ -1275,26 +1276,21 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
     else {
       assert(f._topologies.size() == 1);
 
-      // Need to back up the promise first here becuz taskflow might be 
-      // destroy soon after calling get
-      auto p {std::move(tpg->_promise)};
-
-      // Back up lambda capture in case it has the topology pointer, 
-      // to avoid it releasing on pop_front ahead of _mutex.unlock & 
-      // _promise.set_value. Released safely when leaving scope.
-      auto c {std::move(tpg->_call)};
+      auto t = std::move(f._topologies.front());
+      f._topologies.pop();
 
       // Get the satellite if any
       auto s {f._satellite};
       
       // Now we remove the topology from this taskflow
-      f._topologies.pop();
+      //f._topologies.pop();
 
       f._mutex.unlock();
       
       // We set the promise in the end in case taskflow leaves the scope.
       // After set_value, the caller will return from wait
-      p.set_value();
+      // Taskflow may become invalid at this moment.
+      t->_promise.set_value();
 
       _decrement_topology_and_notify();
       

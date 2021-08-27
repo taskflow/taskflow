@@ -1209,9 +1209,9 @@ void cudaFlowCapturer::offload_until(P&& predicate) {
         cudaGraphInstantiate(&_executable, g, nullptr, nullptr, 0),
         "failed to re-create an executable graph after updates fail"
       );
-      // TODO: store the native graph?
-      TF_CHECK_CUDA(cudaGraphDestroy(g), "failed to destroy captured graph");
     }
+    // TODO: store the native graph?
+    TF_CHECK_CUDA(cudaGraphDestroy(g), "failed to destroy captured graph");
   }
    
   // offload the executable

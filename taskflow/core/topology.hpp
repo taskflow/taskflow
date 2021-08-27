@@ -15,7 +15,7 @@ class TopologyBase {
 
   protected:
 
-  bool _is_cancelled { false };
+  std::atomic<bool> _is_cancelled { false };
 };
 
 // ----------------------------------------------------------------------------
