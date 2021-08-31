@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="classtf_1_1FlowBuilder" kind="class" language="C++" prot="public">
     <compoundname>tf::FlowBuilder</compoundname>
     <derivedcompoundref refid="classtf_1_1Subflow" prot="public" virt="non-virtual">tf::Subflow</derivedcompoundref>
@@ -17,7 +17,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="20" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="20" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="20" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="20" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="protected-attrib">
@@ -27,13 +27,12 @@
         <argsstring></argsstring>
         <name>_graph</name>
         <briefdescription>
-<para>associated graph object </para>
-        </briefdescription>
+<para>associated graph object </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="503" column="11" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="503" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="503" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="503" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -56,16 +55,14 @@
           <declname>callable</declname>
         </param>
         <briefdescription>
-<para>creates a static task </para>
-        </briefdescription>
+<para>creates a static task </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type constructible from std::function&lt;void()&gt;</para>
-</parameterdescription>
+<para>callable type constructible from std::function&lt;void()&gt;</para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -73,20 +70,15 @@
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable to construct a static task</para>
-</parameterdescription>
+<para>callable to construct a static task</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
-</simplesect>
-The following example creates a static task.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>static_task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){});</highlight></codeline>
-</programlisting></para>
-<para>Please refer to <ref refid="StaticTasking" kindref="compound">Static Tasking</ref> for details. </para>
-        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
+The following example creates a static task.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>static_task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){});</highlight></codeline>
+</programlisting></para><para>Please refer to <ref refid="StaticTasking" kindref="compound">Static Tasking</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="44" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="518" bodyend="522"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="44" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="518" bodyend="522"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -107,16 +99,14 @@ The following example creates a static task.</para>
           <declname>callable</declname>
         </param>
         <briefdescription>
-<para>creates a dynamic task </para>
-        </briefdescription>
+<para>creates a dynamic task </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type constructible from std::function&lt;void(tf::Subflow&amp;)&gt;</para>
-</parameterdescription>
+<para>callable type constructible from std::function&lt;void(tf::Subflow&amp;)&gt;</para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -124,23 +114,18 @@ The following example creates a static task.</para>
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable to construct a dynamic task</para>
-</parameterdescription>
+<para>callable to construct a dynamic task</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
-</simplesect>
-The following example creates a dynamic task (<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>) that spawns two static tasks.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>dynamic_task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>sf){</highlight></codeline>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
+The following example creates a dynamic task (<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>) that spawns two static tasks.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>dynamic_task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>sf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>static_task1<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>static_task2<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){});</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-</programlisting></para>
-<para>Please refer to <ref refid="DynamicTasking" kindref="compound">Dynamic Tasking</ref> for details. </para>
-        </detaileddescription>
+</programlisting></para><para>Please refer to <ref refid="DynamicTasking" kindref="compound">Dynamic Tasking</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="70" column="10"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="70" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -161,16 +146,14 @@ The following example creates a dynamic task (<ref refid="classtf_1_1Subflow" ki
           <declname>callable</declname>
         </param>
         <briefdescription>
-<para>creates a condition task </para>
-        </briefdescription>
+<para>creates a condition task </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type constructible from std::function&lt;int()&gt;</para>
-</parameterdescription>
+<para>callable type constructible from std::function&lt;int()&gt;</para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -178,31 +161,26 @@ The following example creates a dynamic task (<ref refid="classtf_1_1Subflow" ki
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable to construct a condition task</para>
-</parameterdescription>
+<para>callable to construct a condition task</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
-</simplesect>
-The following example creates an if-else block using one condition task and three static tasks.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
+The following example creates an if-else block using one condition task and three static tasks.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[init,<sp/>cond,<sp/>yes,<sp/>no]<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;yes\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;no\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;yes\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;no\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>executes<sp/>yes<sp/>if<sp/>cond<sp/>returns<sp/>0,<sp/>or<sp/>no<sp/>if<sp/>cond<sp/>returns<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">cond.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(yes,<sp/>no);</highlight></codeline>
 <codeline><highlight class="normal">cond.<ref refid="classtf_1_1Task_1a331b1b726555072e7c7d10941257f664" kindref="member">succeed</ref>(init);</highlight></codeline>
-</programlisting></para>
-<para>Please refer to <ref refid="ConditionalTasking" kindref="compound">Conditional Tasking</ref> for details. </para>
-        </detaileddescription>
+</programlisting></para><para>Please refer to <ref refid="ConditionalTasking" kindref="compound">Conditional Tasking</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="104" column="10"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="104" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a1f6118326ad434f6c839007a1a79fe1b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -212,8 +190,9 @@ The following example creates an if-else block using one condition task and thre
             <defname>C</defname>
           </param>
           <param>
-            <type>std::enable_if_t&lt;(sizeof...(C)&gt;1), void &gt; *</type>
-            <defval>nullptr</defval>
+            <type>std::enable_if_t&lt;(sizeof...(C)&gt;</type>
+            <declname>1</declname>
+            <defname>1</defname>
           </param>
         </templateparamlist>
         <type>auto</type>
@@ -225,16 +204,14 @@ The following example creates an if-else block using one condition task and thre
           <declname>callables</declname>
         </param>
         <briefdescription>
-<para>creates multiple tasks from a list of callable objects </para>
-        </briefdescription>
+<para>creates multiple tasks from a list of callable objects </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable types</para>
-</parameterdescription>
+<para>callable types</para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -242,24 +219,20 @@ The following example creates an if-else block using one condition task and thre
 <parametername>callables</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>one or multiple callable objects constructible from each task category</para>
-</parameterdescription>
+<para>one or multiple callable objects constructible from each task category</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
-</simplesect>
-The method returns a tuple of tasks each corresponding to the given callable target. You can use structured binding to get the return tasks one by one. The following example creates four static tasks and assign them to <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput> using structured binding.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[A,<sp/>B,<sp/>C,<sp/>D]<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
+The method returns a tuple of tasks each corresponding to the given callable target. You can use structured binding to get the return tasks one by one. The following example creates four static tasks and assign them to <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput> using structured binding.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[A,<sp/>B,<sp/>C,<sp/>D]<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
+</programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="131" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="542" bodyend="544"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="131" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="542" bodyend="544"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a0a01192f4f92c15380a4f259e2fec2d9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref></type>
@@ -271,25 +244,21 @@ The method returns a tuple of tasks each corresponding to the given callable tar
           <declname>taskflow</declname>
         </param>
         <briefdescription>
-<para>creates a module task from a taskflow </para>
-        </briefdescription>
+<para>creates a module task from a taskflow </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>taskflow</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a taskflow object for the module</para>
-</parameterdescription>
+<para>a taskflow object for the module</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
-</simplesect>
-Please refer to <ref refid="ComposableTasking" kindref="compound">Composable Tasking</ref> for details. </para>
-        </detaileddescription>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
+Please refer to <ref refid="ComposableTasking" kindref="compound">Composable Tasking</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="142" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="547" bodyend="552"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="142" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="547" bodyend="552"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1acab0b4ac82260f47fdb36a3244ee3aaf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref></type>
@@ -297,28 +266,24 @@ Please refer to <ref refid="ComposableTasking" kindref="compound">Composable Tas
         <argsstring>()</argsstring>
         <name>placeholder</name>
         <briefdescription>
-<para>creates a placeholder task </para>
-        </briefdescription>
+<para>creates a placeholder task </para>        </briefdescription>
         <detaileddescription>
-<para><simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
-</simplesect>
-A placeholder task maps to a node in the taskflow graph, but it does not have any callable work assigned yet. A placeholder task is different from an empty task handle that does not point to any node in a graph.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>create<sp/>a<sp/>placeholder<sp/>task<sp/>with<sp/>no<sp/>callable<sp/>target<sp/>assigned</highlight><highlight class="normal"></highlight></codeline>
+<para><simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
+A placeholder task maps to a node in the taskflow graph, but it does not have any callable work assigned yet. A placeholder task is different from an empty task handle that does not point to any node in a graph.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>create<sp/>a<sp/>placeholder<sp/>task<sp/>with<sp/>no<sp/>callable<sp/>target<sp/>assigned</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/><ref refid="classtf_1_1FlowBuilder_1acab0b4ac82260f47fdb36a3244ee3aaf" kindref="member">placeholder</ref><sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1acab0b4ac82260f47fdb36a3244ee3aaf" kindref="member">placeholder</ref>();<sp/></highlight></codeline>
 <codeline><highlight class="normal">assert(<ref refid="classtf_1_1FlowBuilder_1acab0b4ac82260f47fdb36a3244ee3aaf" kindref="member">placeholder</ref>.<ref refid="classtf_1_1Task_1a8149edcf9ec2bfac18dd171f7a55ce06" kindref="member">empty</ref>()<sp/>==<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal"><sp/>&amp;&amp;<sp/><ref refid="classtf_1_1FlowBuilder_1acab0b4ac82260f47fdb36a3244ee3aaf" kindref="member">placeholder</ref>.<ref refid="classtf_1_1Task_1afc4ecb89dd4e4645b3ec3fb7c1bb0ec5" kindref="member">has_work</ref>()<sp/>==<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>empty<sp/>task<sp/>handle</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task;</highlight></codeline>
-<codeline><highlight class="normal">assert(task.<ref refid="classtf_1_1Task_1a8149edcf9ec2bfac18dd171f7a55ce06" kindref="member">empty</ref>()<sp/>==<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">assert(task.empty()<sp/>==<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>assign<sp/>the<sp/>task<sp/>handle<sp/>to<sp/>the<sp/>placeholder<sp/>task</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">task<sp/>=<sp/><ref refid="classtf_1_1FlowBuilder_1acab0b4ac82260f47fdb36a3244ee3aaf" kindref="member">placeholder</ref>;</highlight></codeline>
-<codeline><highlight class="normal">assert(task.<ref refid="classtf_1_1Task_1a8149edcf9ec2bfac18dd171f7a55ce06" kindref="member">empty</ref>()<sp/>==<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal"><sp/>&amp;&amp;<sp/>task.<ref refid="classtf_1_1Task_1afc4ecb89dd4e4645b3ec3fb7c1bb0ec5" kindref="member">has_work</ref>()<sp/>==<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
+<codeline><highlight class="normal">assert(task.empty()<sp/>==<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal"><sp/>&amp;&amp;<sp/>task.has_work()<sp/>==<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="168" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="555" bodyend="558"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="168" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="555" bodyend="558"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -339,22 +304,18 @@ A placeholder task maps to a node in the taskflow graph, but it does not have an
           <declname>callable</declname>
         </param>
         <briefdescription>
-<para>creates a cudaFlow task on the caller&apos;s GPU device context </para>
-        </briefdescription>
+<para>creates a cudaFlow task on the caller&apos;s GPU device context </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type constructible from <computeroutput>std::function&lt;void(tf::cudaFlow&amp;)&gt;</computeroutput> </para>
-</parameterdescription>
+<para>callable type constructible from <computeroutput>std::function&lt;void(tf::cudaFlow&amp;)&gt;</computeroutput> </para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
-</simplesect>
-This method is equivalent to calling tf::FlowBuilder::emplace_on(callable, d) where <computeroutput>d</computeroutput> is the caller&apos;s device context. The following example creates a cudaFlow of two kernel tasks, <computeroutput>task1</computeroutput> and <computeroutput>task2</computeroutput>, where <computeroutput>task1</computeroutput> runs before <computeroutput>task2</computeroutput>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
+This method is equivalent to calling tf::FlowBuilder::emplace_on(callable, d) where <computeroutput>d</computeroutput> is the caller&apos;s device context. The following example creates a cudaFlow of two kernel tasks, <computeroutput>task1</computeroutput> and <computeroutput>task2</computeroutput>, where <computeroutput>task1</computeroutput> runs before <computeroutput>task2</computeroutput>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>two<sp/>kernel<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task1<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1adb731be71bdd436dfb5e36e6213a9a17" kindref="member">kernel</ref>(grid1,<sp/>block1,<sp/>shm1,<sp/>kernel1,<sp/>args1);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task2<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1adb731be71bdd436dfb5e36e6213a9a17" kindref="member">kernel</ref>(grid2,<sp/>block2,<sp/>shm2,<sp/>kernel2,<sp/>args2);</highlight></codeline>
@@ -362,12 +323,10 @@ This method is equivalent to calling tf::FlowBuilder::emplace_on(callable, d) wh
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>kernel1<sp/>runs<sp/>before<sp/>kernel2</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>task1.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(task2);</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-</programlisting></para>
-<para>Please refer to <ref refid="GPUTaskingcudaFlow" kindref="compound">GPU Tasking (cudaFlow)</ref> and <ref refid="GPUTaskingcudaFlowCapturer" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref> for details. </para>
-        </detaileddescription>
+</programlisting></para><para>Please refer to <ref refid="GPUTaskingcudaFlow" kindref="compound">GPU Tasking (cudaFlow)</ref> and <ref refid="GPUTaskingcudaFlowCapturer" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="199" column="10"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="199" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -395,30 +354,25 @@ This method is equivalent to calling tf::FlowBuilder::emplace_on(callable, d) wh
           <declname>device</declname>
         </param>
         <briefdescription>
-<para>creates a cudaFlow task on the given device </para>
-        </briefdescription>
+<para>creates a cudaFlow task on the given device </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type constructible from std::function&lt;void(tf::cudaFlow&amp;)&gt; </para>
-</parameterdescription>
+<para>callable type constructible from std::function&lt;void(tf::cudaFlow&amp;)&gt; </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>D</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>device type, either <computeroutput>int</computeroutput> or <computeroutput>std::ref&lt;int&gt;</computeroutput> (stateful)</para>
-</parameterdescription>
+<para>device type, either <computeroutput>int</computeroutput> or <computeroutput>std::ref&lt;int&gt;</computeroutput> (stateful)</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
-</simplesect>
-The following example creates a cudaFlow of two kernel tasks, <computeroutput>task1</computeroutput> and <computeroutput>task2</computeroutput> on GPU <computeroutput>2</computeroutput>, where <computeroutput>task1</computeroutput> runs before <computeroutput>task2</computeroutput> </para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
+The following example creates a cudaFlow of two kernel tasks, <computeroutput>task1</computeroutput> and <computeroutput>task2</computeroutput> on GPU <computeroutput>2</computeroutput>, where <computeroutput>task1</computeroutput> runs before <computeroutput>task2</computeroutput> </para><para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>two<sp/>kernel<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task1<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1adb731be71bdd436dfb5e36e6213a9a17" kindref="member">kernel</ref>(grid1,<sp/>block1,<sp/>shm1,<sp/>kernel1,<sp/>args1);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task2<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1adb731be71bdd436dfb5e36e6213a9a17" kindref="member">kernel</ref>(grid2,<sp/>block2,<sp/>shm2,<sp/>kernel2,<sp/>args2);</highlight></codeline>
@@ -426,11 +380,10 @@ The following example creates a cudaFlow of two kernel tasks, <computeroutput>ta
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>kernel1<sp/>runs<sp/>before<sp/>kernel2</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>task1.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(task2);</highlight></codeline>
 <codeline><highlight class="normal">},<sp/>2);</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
+</programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="226" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="1664" bodyend="1674"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="226" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_flow.hpp" bodystart="1664" bodyend="1674"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -451,16 +404,14 @@ The following example creates a cudaFlow of two kernel tasks, <computeroutput>ta
           <declname>callable</declname>
         </param>
         <briefdescription>
-<para>creates a syclFlow task on the default queue </para>
-        </briefdescription>
+<para>creates a syclFlow task on the default queue </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type constructible from std::function&lt;void(tf::syclFlow&amp;)&gt;</para>
-</parameterdescription>
+<para>callable type constructible from std::function&lt;void(tf::syclFlow&amp;)&gt;</para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -468,14 +419,11 @@ The following example creates a cudaFlow of two kernel tasks, <computeroutput>ta
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a callable that takes a referenced <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> object</para>
-</parameterdescription>
+<para>a callable that takes a referenced <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> object</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
-</simplesect>
-The following example creates a syclFlow on the default queue to submit two kernel tasks, <computeroutput>task1</computeroutput> and <computeroutput>task2</computeroutput>, where <computeroutput>task1</computeroutput> runs before <computeroutput>task2</computeroutput>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>cf){</highlight></codeline>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
+The following example creates a syclFlow on the default queue to submit two kernel tasks, <computeroutput>task1</computeroutput> and <computeroutput>task2</computeroutput>, where <computeroutput>task1</computeroutput> runs before <computeroutput>task2</computeroutput>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>two<sp/>single-thread<sp/>kernel<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>task1<sp/>=<sp/>cf.<ref refid="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" kindref="member">single_task</ref>([](){});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>task2<sp/>=<sp/>cf.<ref refid="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" kindref="member">single_task</ref>([](){});</highlight></codeline>
@@ -483,11 +431,10 @@ The following example creates a syclFlow on the default queue to submit two kern
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>kernel1<sp/>runs<sp/>before<sp/>kernel2</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>task1.<ref refid="classtf_1_1syclTask_1a92d0dd0929b9ac4e46baf4d546497389" kindref="member">precede</ref>(task2);</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
+</programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="252" column="10"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="252" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1af7c878fa6f0c4539ab88c0a85e6052d8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -515,24 +462,21 @@ The following example creates a syclFlow on the default queue to submit two kern
           <declname>queue</declname>
         </param>
         <briefdescription>
-<para>creates a syclFlow task on the given queue </para>
-        </briefdescription>
+<para>creates a syclFlow task on the given queue </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type constructible from std::function&lt;void(tf::syclFlow&amp;)&gt; </para>
-</parameterdescription>
+<para>callable type constructible from std::function&lt;void(tf::syclFlow&amp;)&gt; </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>Q</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>queue type</para>
-</parameterdescription>
+<para>queue type</para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -540,22 +484,18 @@ The following example creates a syclFlow on the default queue to submit two kern
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a callable that takes a referenced <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> object </para>
-</parameterdescription>
+<para>a callable that takes a referenced <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> object </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>queue</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a queue of type sycl::queue</para>
-</parameterdescription>
+<para>a queue of type sycl::queue</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
-</simplesect>
-The following example creates a syclFlow on the given queue to submit two kernel tasks, <computeroutput>task1</computeroutput> and <computeroutput>task2</computeroutput>, where <computeroutput>task1</computeroutput> runs before <computeroutput>task2</computeroutput>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([&amp;](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>cf){</highlight></codeline>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
+The following example creates a syclFlow on the given queue to submit two kernel tasks, <computeroutput>task1</computeroutput> and <computeroutput>task2</computeroutput>, where <computeroutput>task1</computeroutput> runs before <computeroutput>task2</computeroutput>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([&amp;](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>two<sp/>single-thread<sp/>kernel<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>task1<sp/>=<sp/>cf.<ref refid="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" kindref="member">single_task</ref>([](){});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>task2<sp/>=<sp/>cf.<ref refid="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" kindref="member">single_task</ref>([](){});</highlight></codeline>
@@ -563,11 +503,10 @@ The following example creates a syclFlow on the given queue to submit two kernel
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>kernel1<sp/>runs<sp/>before<sp/>kernel2</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>task1.<ref refid="classtf_1_1syclTask_1a92d0dd0929b9ac4e46baf4d546497389" kindref="member">precede</ref>(task2);</highlight></codeline>
 <codeline><highlight class="normal">},<sp/>queue);</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
+</programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="282" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="780" bodyend="790"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="282" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="780" bodyend="790"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a90f3d9b9d6fcf4df8e7d7878dfdd130d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -575,27 +514,24 @@ The following example creates a syclFlow on the given queue to submit two kernel
         <argsstring>(std::vector&lt; Task &gt; &amp;tasks)</argsstring>
         <name>linearize</name>
         <param>
-          <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt; &amp;</type>
+          <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt; &amp;</type>
           <declname>tasks</declname>
         </param>
         <briefdescription>
-<para>adds adjacent dependency links to a linear list of tasks </para>
-        </briefdescription>
+<para>adds adjacent dependency links to a linear list of tasks </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>tasks</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a vector of tasks </para>
-</parameterdescription>
+<para>a vector of tasks </para></parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>
-        </detaileddescription>
+</para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="289" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="579" bodyend="581"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="289" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="579" bodyend="581"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a4ec89b554d15ad5fb96f4fdb10dbbb16" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -603,27 +539,24 @@ The following example creates a syclFlow on the given queue to submit two kernel
         <argsstring>(std::initializer_list&lt; Task &gt; tasks)</argsstring>
         <name>linearize</name>
         <param>
-          <type><ref refid="cpp/utility/initializer_list" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::initializer_list</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt;</type>
+          <type><ref refid="cpp/utility/initializer_list" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::initializer_list</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt;</type>
           <declname>tasks</declname>
         </param>
         <briefdescription>
-<para>adds adjacent dependency links to a linear list of tasks </para>
-        </briefdescription>
+<para>adds adjacent dependency links to a linear list of tasks </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>tasks</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>an initializer list of tasks </para>
-</parameterdescription>
+<para>an initializer list of tasks </para></parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>
-        </detaileddescription>
+</para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="296" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="584" bodyend="586"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="296" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="584" bodyend="586"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a564252001be679600b20ca9ed9920f6a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -654,32 +587,28 @@ The following example creates a syclFlow on the given queue to submit two kernel
           <declname>callable</declname>
         </param>
         <briefdescription>
-<para>constructs a STL-styled parallel-for task </para>
-        </briefdescription>
+<para>constructs a STL-styled parallel-for task </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning iterator type </para>
-</parameterdescription>
+<para>beginning iterator type </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending iterator type </para>
-</parameterdescription>
+<para>ending iterator type </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type</para>
-</parameterdescription>
+<para>callable type</para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -687,39 +616,31 @@ The following example creates a syclFlow on the given queue to submit two kernel
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para>
-</parameterdescription>
+<para>iterator to the beginning (inclusive) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive) </para>
-</parameterdescription>
+<para>iterator to the end (exclusive) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a callable object to apply to the dereferenced iterator</para>
-</parameterdescription>
+<para>a callable object to apply to the dereferenced iterator</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
-</simplesect>
-The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <computeroutput>[first, last)</computeroutput>. This method is equivalent to the parallel execution of the following loop:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr!=last;<sp/>itr++)<sp/>{</highlight></codeline>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
+The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <computeroutput>[first, last)</computeroutput>. This method is equivalent to the parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr!=last;<sp/>itr++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(*itr);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para>
-<para>Arguments templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para>
-<para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>
-        </detaileddescription>
+</programlisting></para><para>Arguments templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="331" column="10"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="331" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1ab8417b211b18bb1e0f45a049331f084d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -757,40 +678,35 @@ The task spawns a subflow that applies the callable object to each object obtain
           <declname>callable</declname>
         </param>
         <briefdescription>
-<para>constructs an index-based parallel-for task </para>
-        </briefdescription>
+<para>constructs an index-based parallel-for task </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning index type (must be integral) </para>
-</parameterdescription>
+<para>beginning index type (must be integral) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending index type (must be integral) </para>
-</parameterdescription>
+<para>ending index type (must be integral) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>S</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>step type (must be integral) </para>
-</parameterdescription>
+<para>step type (must be integral) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type</para>
-</parameterdescription>
+<para>callable type</para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -798,39 +714,32 @@ The task spawns a subflow that applies the callable object to each object obtain
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>index of the beginning (inclusive) </para>
-</parameterdescription>
+<para>index of the beginning (inclusive) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>index of the end (exclusive) </para>
-</parameterdescription>
+<para>index of the end (exclusive) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>step</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>step size </para>
-</parameterdescription>
+<para>step size </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a callable object to apply to each valid index</para>
-</parameterdescription>
+<para>a callable object to apply to each valid index</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
-</simplesect>
-The task spawns a subflow that applies the callable object to each index in the range <computeroutput>[first, last)</computeroutput> with the step size.</para>
-<para>This method is equivalent to the parallel execution of the following loop:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>case<sp/>1:<sp/>step<sp/>size<sp/>is<sp/>positive</highlight><highlight class="normal"></highlight></codeline>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
+The task spawns a subflow that applies the callable object to each index in the range <computeroutput>[first, last)</computeroutput> with the step size.</para><para>This method is equivalent to the parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>case<sp/>1:<sp/>step<sp/>size<sp/>is<sp/>positive</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -839,13 +748,10 @@ The task spawns a subflow that applies the callable object to each index in the 
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first,<sp/>i&gt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para>
-<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the integral index type.</para>
-<para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>
-        </detaileddescription>
+</programlisting></para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the integral index type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="370" column="10"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="370" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1ad999cd75045db225a42d5881d6db1223" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -883,40 +789,35 @@ The task spawns a subflow that applies the callable object to each index in the 
           <declname>bop</declname>
         </param>
         <briefdescription>
-<para>constructs a STL-styled parallel-reduce task </para>
-        </briefdescription>
+<para>constructs a STL-styled parallel-reduce task </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning iterator type </para>
-</parameterdescription>
+<para>beginning iterator type </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending iterator type </para>
-</parameterdescription>
+<para>ending iterator type </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>result type </para>
-</parameterdescription>
+<para>result type </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>O</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary reducer type</para>
-</parameterdescription>
+<para>binary reducer type</para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -924,48 +825,38 @@ The task spawns a subflow that applies the callable object to each index in the 
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para>
-</parameterdescription>
+<para>iterator to the beginning (inclusive) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive) </para>
-</parameterdescription>
+<para>iterator to the end (exclusive) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>init</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>initial value of the reduction and the storage for the reduced result </para>
-</parameterdescription>
+<para>initial value of the reduction and the storage for the reduced result </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>bop</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary operator that will be applied</para>
-</parameterdescription>
+<para>binary operator that will be applied</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
-</simplesect>
-The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>.</para>
-<para>This method is equivalent to the parallel execution of the following loop:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr!=last;<sp/>itr++)<sp/>{</highlight></codeline>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
+The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>.</para><para>This method is equivalent to the parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr!=last;<sp/>itr++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>init<sp/>=<sp/>bop(init,<sp/>*itr);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para>
-<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
-<para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>
-        </detaileddescription>
+</programlisting></para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="406" column="10"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="406" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1ad8d03524f15292610ebee63d53b89579" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1010,48 +901,42 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
           <declname>uop</declname>
         </param>
         <briefdescription>
-<para>constructs a STL-styled parallel transform-reduce task </para>
-        </briefdescription>
+<para>constructs a STL-styled parallel transform-reduce task </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning iterator type </para>
-</parameterdescription>
+<para>beginning iterator type </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending iterator type </para>
-</parameterdescription>
+<para>ending iterator type </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>result type </para>
-</parameterdescription>
+<para>result type </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>BOP</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary reducer type </para>
-</parameterdescription>
+<para>binary reducer type </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>UOP</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>unary transformion type</para>
-</parameterdescription>
+<para>unary transformion type</para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -1059,56 +944,45 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para>
-</parameterdescription>
+<para>iterator to the beginning (inclusive) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive) </para>
-</parameterdescription>
+<para>iterator to the end (exclusive) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>init</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>initial value of the reduction and the storage for the reduced result </para>
-</parameterdescription>
+<para>initial value of the reduction and the storage for the reduced result </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>bop</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>binary operator that will be applied in unspecified order to the results of <computeroutput>uop</computeroutput> </para>
-</parameterdescription>
+<para>binary operator that will be applied in unspecified order to the results of <computeroutput>uop</computeroutput> </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>uop</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>unary operator that will be applied to transform each element in the range to the result type</para>
-</parameterdescription>
+<para>unary operator that will be applied to transform each element in the range to the result type</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
-</simplesect>
-The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the transformed elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>.</para>
-<para>This method is equivalent to the parallel execution of the following loop:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr!=last;<sp/>itr++)<sp/>{</highlight></codeline>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
+The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the transformed elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>.</para><para>This method is equivalent to the parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr!=last;<sp/>itr++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>init<sp/>=<sp/>bop(init,<sp/>uop(*itr));</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para>
-<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
-<para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>
-        </detaileddescription>
+</programlisting></para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="445" column="10"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="445" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1af4848ab51fa3bf5525af58e2440b01c1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1139,32 +1013,28 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
           <declname>cmp</declname>
         </param>
         <briefdescription>
-<para>constructs a dynamic task to perform STL-styled parallel sort </para>
-        </briefdescription>
+<para>constructs a dynamic task to perform STL-styled parallel sort </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning iterator type (random-accessible) </para>
-</parameterdescription>
+<para>beginning iterator type (random-accessible) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending iterator type (random-accessible) </para>
-</parameterdescription>
+<para>ending iterator type (random-accessible) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>comparator type</para>
-</parameterdescription>
+<para>comparator type</para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -1172,33 +1042,27 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para>
-</parameterdescription>
+<para>iterator to the beginning (inclusive) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive) </para>
-</parameterdescription>
+<para>iterator to the end (exclusive) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>cmp</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>comparison function object</para>
-</parameterdescription>
+<para>comparison function object</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-The task spawns a subflow to parallelly sort elements in the range <computeroutput>[first, last)</computeroutput>.</para>
-<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
-<para>Please refer to <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref> for details. </para>
-        </detaileddescription>
+The task spawns a subflow to parallelly sort elements in the range <computeroutput>[first, last)</computeroutput>.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="470" column="10"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="470" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a559afa5066782bc6c38738260e3d4c2e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1222,24 +1086,21 @@ The task spawns a subflow to parallelly sort elements in the range <computeroutp
           <declname>last</declname>
         </param>
         <briefdescription>
-<para>constructs a dynamic task to perform STL-styled parallel sort using the <computeroutput>std::less&lt;T&gt;</computeroutput> comparator, where <computeroutput>T</computeroutput> is the element type </para>
-        </briefdescription>
+<para>constructs a dynamic task to perform STL-styled parallel sort using the <computeroutput>std::less&lt;T&gt;</computeroutput> comparator, where <computeroutput>T</computeroutput> is the element type </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>B</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>beginning iterator type (random-accessible) </para>
-</parameterdescription>
+<para>beginning iterator type (random-accessible) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>E</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>ending iterator type (random-accessible)</para>
-</parameterdescription>
+<para>ending iterator type (random-accessible)</para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -1247,25 +1108,20 @@ The task spawns a subflow to parallelly sort elements in the range <computeroutp
 <parametername>first</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the beginning (inclusive) </para>
-</parameterdescription>
+<para>iterator to the beginning (inclusive) </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>last</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>iterator to the end (exclusive)</para>
-</parameterdescription>
+<para>iterator to the end (exclusive)</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-The task spawns a subflow to parallelly sort elements in the range <computeroutput>[first, last)</computeroutput> using the <computeroutput>std::less&lt;T&gt;</computeroutput> comparator, where <computeroutput>T</computeroutput> is the dereferenced iterator type.</para>
-<para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
-<para>Please refer to <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref> for details. </para>
-        </detaileddescription>
+The task spawns a subflow to parallelly sort elements in the range <computeroutput>[first, last)</computeroutput> using the <computeroutput>std::less&lt;T&gt;</computeroutput> comparator, where <computeroutput>T</computeroutput> is the dereferenced iterator type.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="491" column="10"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="491" column="1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="protected-func">
@@ -1279,13 +1135,12 @@ The task spawns a subflow to parallelly sort elements in the range <computeroutp
           <declname>graph</declname>
         </param>
         <briefdescription>
-<para>constructs a flow builder with a graph </para>
-        </briefdescription>
+<para>constructs a flow builder with a graph </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="498" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="512" bodyend="514"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="498" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="512" bodyend="514"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -1309,33 +1164,32 @@ The task spawns a subflow to parallelly sort elements in the range <computeroutp
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="508" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="562" bodyend="576"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="508" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="562" bodyend="576"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>building methods of a task dependency graph </para>
-    </briefdescription>
+<para>building methods of a task dependency graph </para>    </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="1">
+      <node id="101">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
       </node>
-      <node id="2">
+      <node id="102">
         <label>tf::Subflow</label>
         <link refid="classtf_1_1Subflow"/>
-        <childnode refid="1" relation="public-inheritance">
+        <childnode refid="101" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="3">
+      <node id="103">
         <label>tf::Taskflow</label>
         <link refid="classtf_1_1Taskflow"/>
-        <childnode refid="1" relation="public-inheritance">
+        <childnode refid="101" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="18" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="18" bodyend="509"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="18" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="18" bodyend="509"/>
     <listofallmembers>
       <member refid="classtf_1_1FlowBuilder_1a9404a57d9d37a4d49d20b686e4e5f68f" prot="protected" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>_graph</name></member>
       <member refid="classtf_1_1FlowBuilder_1a04115519f61efc42d018ea697054135d" prot="private" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>_linearize</name></member>

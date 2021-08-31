@@ -240,8 +240,8 @@ what to do when a thread enters and leaves the execution context of a task.
 class ObserverInterface {
   virtual ~ObserverInterface() = default;
   virtual void set_up(size_t num_workers) = 0;
-  virtual void on_entry(size_t worker_id, tf::TaskView task_view) = 0;
-  virtual void on_exit(size_t worker_id, tf::TaskView task_view) = 0;
+  virtual void on_entry(tf::WorkerView worker_view, tf::TaskView task_view) = 0;
+  virtual void on_exit(tf::WorkerView worker_view, tf::TaskView task_view) = 0;
 };
 @endcode
 
@@ -256,6 +256,8 @@ The methods, tf::ObserverInterface::on_entry and
 tf::ObserverInterface::on_exit,
 are called by a worker thread before and after the execution context of a task,
 respectively.
+Both methods provide immutable access to the underlying worker and the running task
+using tf::WorkerView and tf::TaskView.
 You may use them to record timepoints and calculate the elapsed time of a task.
 
 You can associate an executor with one or multiple observers (though one is common)
@@ -276,15 +278,15 @@ struct MyObserver : public tf::ObserverInterface {
     std::cout << "setting up observer with " << num_workers << " workers\n";
   }
 
-  void on_entry(size_t w, tf::TaskView tv) override final {
+  void on_entry(tf::WorkerView w, tf::TaskView tv) override final {
     std::ostringstream oss;
-    oss << "worker " << w << " ready to run " << tv.name() << '\n';
+    oss << "worker " << w.id() << " ready to run " << tv.name() << '\n';
     std::cout << oss.str();
   }
 
-  void on_exit(size_t w, tf::TaskView tv) override final {
+  void on_exit(tf::WorkerView w, tf::TaskView tv) override final {
     std::ostringstream oss;
-    oss << "worker " << w << " finished running " << tv.name() << '\n';
+    oss << "worker " << w.id() << " finished running " << tv.name() << '\n';
     std::cout << oss.str();
   }
 
