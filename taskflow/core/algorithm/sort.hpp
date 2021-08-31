@@ -17,12 +17,12 @@ constexpr size_t parallel_sort_cutoff() {
     return 128;
   }
   else {
-    if(object_size < 16) return 4096;
-    else if(object_size < 32) return 2048;
-    else if(object_size < 64) return 1024;
-    else if(object_size < 128) return 768;
-    else if(object_size < 256) return 512;
-    else if(object_size < 512) return 256;
+    if constexpr(object_size < 16) return 4096;
+    else if constexpr(object_size < 32) return 2048;
+    else if constexpr(object_size < 64) return 1024;
+    else if constexpr(object_size < 128) return 768;
+    else if constexpr(object_size < 256) return 512;
+    else if constexpr(object_size < 512) return 256;
     else return 128;
   }
 }
@@ -343,7 +343,7 @@ void parallel_pdqsort(
     // Sort the left partition first using recursion and 
     // do tail recursion elimination for the right-hand partition.
     sf.silent_async(
-      [&sf, begin, pivot_pos, &comp, bad_allowed, leftmost] () mutable {
+      [&sf, begin, pivot_pos, comp, bad_allowed, leftmost] () mutable {
         parallel_pdqsort(sf, begin, pivot_pos, comp, bad_allowed, leftmost);
       }
     );
