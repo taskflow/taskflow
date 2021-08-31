@@ -343,7 +343,7 @@ void parallel_pdqsort(
     // Sort the left partition first using recursion and 
     // do tail recursion elimination for the right-hand partition.
     sf.silent_async(
-      [&sf, begin, pivot_pos, &comp, bad_allowed, leftmost] () mutable {
+      [&sf, begin, pivot_pos, comp, bad_allowed, leftmost] () mutable {
         parallel_pdqsort(sf, begin, pivot_pos, comp, bad_allowed, leftmost);
       }
     );
