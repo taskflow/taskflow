@@ -9,7 +9,7 @@ namespace tf {
 @section A1IndexBasedParallelFor Index-based Parallel Iterations
 
 Index-based parallel-for performs parallel iterations over a range <tt>[first, last)</tt> with the given @c step size.
-The task created by tf::Taskflow::for_each_index(B&& first, E&& last, S&& step, C&& callable) represents parallel execution of the following loop:
+The task created by tf::Taskflow::for_each_index(B&& first, E&& last, S&& step, C callable) represents parallel execution of the following loop:
 
 @code{.cpp}
 // positive step
@@ -73,7 +73,7 @@ This property is especially important for task graph parallelism, because users 
 @section A1IteratorBasedParallelFor Iterator-based Parallel Iterations
 
 Iterator-based parallel-for performs parallel iterations over a range specified by two <a href="https://en.cppreference.com/w/cpp/iterator/iterator">STL-styled iterators</a>, @c first and @c last. 
-The task created by tf::Taskflow::for_each(B&& first, E&& last, C&& callable) represents 
+The task created by tf::Taskflow::for_each(B&& first, E&& last, C callable) represents 
 a parallel execution of the following loop:
 
 @code{.cpp}

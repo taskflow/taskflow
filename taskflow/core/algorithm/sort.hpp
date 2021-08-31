@@ -429,13 +429,12 @@ void parallel_3wqsort(tf::Subflow& sf, RandItr first, RandItr last, C compare) {
 
 // Function: sort
 template <typename B, typename E, typename C>
-Task FlowBuilder::sort(B&& beg, E&& end, C&& cmp) {
+Task FlowBuilder::sort(B&& beg, E&& end, C cmp) {
   
   using I = stateful_iterator_t<B, E>;
 
   Task task = emplace(
-  [b=std::forward<B>(beg), e=std::forward<E>(end), c=std::forward<C>(cmp)] 
-  (Subflow& sf) mutable {
+  [b=std::forward<B>(beg), e=std::forward<E>(end), cmp] (Subflow& sf) mutable {
     
     // fetch the iterator values
     I beg = b;
@@ -450,12 +449,12 @@ Task FlowBuilder::sort(B&& beg, E&& end, C&& cmp) {
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= parallel_sort_cutoff<I>()) {
-      std::sort(beg, end, c);
+      std::sort(beg, end, cmp);
       return;
     }
 
     //parallel_3wqsort(sf, beg, end-1, c);
-    parallel_pdqsort(sf, beg, end, c, log2(end - beg));
+    parallel_pdqsort(sf, beg, end, cmp, log2(end - beg));
 
     sf.join();
   });  

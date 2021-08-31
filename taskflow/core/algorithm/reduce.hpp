@@ -9,20 +9,14 @@ namespace tf {
 // ----------------------------------------------------------------------------
 
 template <typename B, typename E, typename T, typename O>
-Task FlowBuilder::reduce(
-  B&& beg, E&& end, T& init, O&& bop
-) {
+Task FlowBuilder::reduce(B&& beg, E&& end, T& init, O bop) {
   
   using I = stateful_iterator_t<B, E>;
   using namespace std::string_literals;
 
   Task task = emplace(
-  [b=std::forward<B>(beg),
-   e=std::forward<E>(end), 
-   &r=init,
-   o=std::forward<O>(bop)
-   //c=std::forward<H>(chunk_size)
-   ] (Subflow& sf) mutable {
+  [b=std::forward<B>(beg), e=std::forward<E>(end), &r=init, bop] 
+  (Subflow& sf) mutable {
     
     // fetch the iterator values
     I beg = b;
@@ -39,7 +33,7 @@ Task FlowBuilder::reduce(
     
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= C) {
-      for(; beg!=end; r = o(r, *beg++));
+      for(; beg!=end; r = bop(r, *beg++));
       return;
     }
     
@@ -56,8 +50,8 @@ Task FlowBuilder::reduce(
         break;
       }
 
-      //sf.emplace([&mutex, &next, &r, beg, N, W, &o, C] () mutable {
-      sf.silent_async([&mutex, &next, &r, beg, N, W, &o, C] () mutable {
+      //sf.emplace([&mutex, &next, &r, beg, N, W, o, C] () mutable {
+      sf.silent_async([&mutex, &next, &r, beg, N, W, bop, C] () mutable {
         
         size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
@@ -69,14 +63,14 @@ Task FlowBuilder::reduce(
 
         if(N - s0 == 1) {
           std::lock_guard<std::mutex> lock(mutex);
-          r = o(r, *beg);
+          r = bop(r, *beg);
           return;
         }
 
         auto beg1 = beg++;
         auto beg2 = beg++;
         
-        T sum = o(*beg1, *beg2);
+        T sum = bop(*beg1, *beg2);
               
         size_t z = s0 + 2;
         size_t p1 = 2 * W * (C + 1);
@@ -97,7 +91,7 @@ Task FlowBuilder::reduce(
               size_t e0 = (C <= (N - s0)) ? s0 + C : N;
               std::advance(beg, s0-z);
               for(size_t x=s0; x<e0; x++, beg++) {
-                sum = o(sum, *beg); 
+                sum = bop(sum, *beg); 
               }
               z = e0;
             }
@@ -114,7 +108,7 @@ Task FlowBuilder::reduce(
                                                     std::memory_order_relaxed)) {
               std::advance(beg, s0-z);
               for(size_t x = s0; x<e0; x++, beg++) {
-                sum = o(sum, *beg); 
+                sum = bop(sum, *beg); 
               }
               z = e0;
               s0 = next.load(std::memory_order_relaxed);
@@ -123,7 +117,7 @@ Task FlowBuilder::reduce(
         }
 
         std::lock_guard<std::mutex> lock(mutex);
-        r = o(r, sum);
+        r = bop(r, sum);
       //}).name("prg_"s + std::to_string(w));
       });
     }
@@ -140,20 +134,15 @@ Task FlowBuilder::reduce(
 
 template <typename B, typename E, typename T, typename BOP, typename UOP>
 Task FlowBuilder::transform_reduce(
-  B&& beg, E&& end, T& init, BOP&& bop, UOP&& uop
+  B&& beg, E&& end, T& init, BOP bop, UOP uop
 ) {
 
   using I = stateful_iterator_t<B, E>;
   using namespace std::string_literals;
 
   Task task = emplace(
-  [b=std::forward<B>(beg),
-   e=std::forward<E>(end), 
-   &r=init,
-   bop=std::forward<BOP>(bop),
-   uop=std::forward<UOP>(uop)
-   //c=std::forward<H>(chunk_size)
-   ] (Subflow& sf) mutable {
+  [b=std::forward<B>(beg), e=std::forward<E>(end), &r=init, bop, uop] 
+  (Subflow& sf) mutable {
     
     // fetch the iterator values
     I beg = b;
@@ -187,8 +176,8 @@ Task FlowBuilder::transform_reduce(
         break;
       }
 
-      //sf.emplace([&mutex, &next, &r, beg, N, W, &bop, &uop, C] () mutable {
-      sf.silent_async([&mutex, &next, &r, beg, N, W, &bop, &uop, C] () mutable {
+      //sf.emplace([&mutex, &next, &r, beg, N, W, bop, uop, C] () mutable {
+      sf.silent_async([&mutex, &next, &r, beg, N, W, bop, uop, C] () mutable {
         
         size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 

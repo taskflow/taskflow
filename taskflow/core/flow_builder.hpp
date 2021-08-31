@@ -328,7 +328,7 @@ class FlowBuilder {
     Please refer to @ref ParallelIterations for details.
     */
     template <typename B, typename E, typename C>
-    Task for_each(B&& first, E&& last, C&& callable);
+    Task for_each(B&& first, E&& last, C callable);
     
     /**
     @brief constructs an index-based parallel-for task 
@@ -367,7 +367,7 @@ class FlowBuilder {
     Please refer to @ref ParallelIterations for details.
     */
     template <typename B, typename E, typename S, typename C>
-    Task for_each_index(B&& first, E&& last, S&& step, C&& callable);
+    Task for_each_index(B&& first, E&& last, S&& step, C callable);
     
     // ------------------------------------------------------------------------
     // reduction
@@ -403,7 +403,7 @@ class FlowBuilder {
     Please refer to @ref ParallelReduction for details.
     */
     template <typename B, typename E, typename T, typename O>
-    Task reduce(B&& first, E&& last, T& init, O&& bop);
+    Task reduce(B&& first, E&& last, T& init, O bop);
 
     // ------------------------------------------------------------------------
     // transfrom and reduction
@@ -442,7 +442,7 @@ class FlowBuilder {
     Please refer to @ref ParallelReduction for details. 
     */
     template <typename B, typename E, typename T, typename BOP, typename UOP>
-    Task transform_reduce(B&& first, E&& last, T& init, BOP&& bop, UOP&& uop);
+    Task transform_reduce(B&& first, E&& last, T& init, BOP bop, UOP uop);
     
     // ------------------------------------------------------------------------
     // sort
@@ -467,7 +467,7 @@ class FlowBuilder {
     Please refer to @ref ParallelSort for details.
     */
     template <typename B, typename E, typename C>
-    Task sort(B&& first, E&& last, C&& cmp);
+    Task sort(B&& first, E&& last, C cmp);
     
     /**
     @brief constructs a dynamic task to perform STL-styled parallel sort using

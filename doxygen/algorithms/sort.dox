@@ -32,7 +32,7 @@ Elements are compared using the operator @c <.
 
 @section SortARangeOfItemsWithACustomComparator Sort a Range of Items with a Custom Comparator
 
-tf::Taskflow::sort(B&& first, E&& last, C&& cmp) is an overload of 
+tf::Taskflow::sort(B&& first, E&& last, C cmp) is an overload of 
 parallel sort that allows users to specify a custom comparator.
 The following example sorts a data vector in decreasing order.
 

@@ -29,7 +29,9 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <title>New Features</title>
 <sect2 id="release-3-3-0_1release-3-3-0_taskflow_core">
 <title>Taskflow Core</title>
-</sect2>
+<para><itemizedlist>
+<listitem><para>Changed all lambda operators in parallel algorithms to copy by default</para></listitem></itemizedlist>
+</para></sect2>
 <sect2 id="release-3-3-0_1release-3-3-0_cudaflow">
 <title>cudaFlow</title>
 </sect2>
@@ -49,7 +51,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_bug_fixes">
 <title>Bug Fixes</title>
 <para><itemizedlist>
-<listitem><para>Fixed memory leak in updating <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> of un-freed graph</para></listitem></itemizedlist>
+<listitem><para>Fixed memory leak in updating <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> of un-freed graph</para></listitem><listitem><para>Fixed invalid lambda capture by reference in tf::sort</para></listitem></itemizedlist>
 </para></sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_breaking_changes">
 <title>Breaking Changes</title>
