@@ -86,6 +86,7 @@ class Node {
   constexpr static int BRANCHED = 0x1;
   constexpr static int DETACHED = 0x2;
   constexpr static int ACQUIRED = 0x4;
+  constexpr static int READY    = 0x8;
   
   // static work handle
   struct Static {
@@ -223,14 +224,15 @@ class Node {
     
     Node* _parent {nullptr};
 
-    int _state {0};
+    //int _state {0};
+    std::atomic<int> _state {0};
 
     std::atomic<size_t> _join_counter {0};
     
     void _precede(Node*);
-    void _set_state(int);
-    void _unset_state(int);
-    void _clear_state();
+    //void _set_state(int);
+    //void _unset_state(int);
+    //void _clear_state();
     void _set_up_join_counter();
 
     bool _has_state(int) const;
@@ -413,25 +415,25 @@ inline const std::string& Node::name() const {
   return _name;
 }
 
-// Procedure: _set_state
-inline void Node::_set_state(int flag) { 
-  _state |= flag; 
-}
-
-// Procedure: _unset_state
-inline void Node::_unset_state(int flag) { 
-  _state &= ~flag; 
-}
-
-// Procedure: _clear_state
-inline void Node::_clear_state() { 
-  _state = 0; 
-}
-
-// Function: _has_state
-inline bool Node::_has_state(int flag) const {
-  return _state & flag;
-}
+//// Procedure: _set_state
+//inline void Node::_set_state(int flag) { 
+//  _state |= flag; 
+//}
+//
+//// Procedure: _unset_state
+//inline void Node::_unset_state(int flag) { 
+//  _state &= ~flag; 
+//}
+//
+//// Procedure: _clear_state
+//inline void Node::_clear_state() { 
+//  _state = 0; 
+//}
+//
+//// Function: _has_state
+//inline bool Node::_has_state(int flag) const {
+//  return _state & flag;
+//}
 
 // Function: _is_cancelled
 inline bool Node::_is_cancelled() const {
@@ -452,14 +454,15 @@ inline void Node::_set_up_join_counter() {
 
   for(auto p : _dependents) {
     if(p->_handle.index() == Node::CONDITION) {
-      _set_state(Node::BRANCHED);
+      //_set_state(Node::BRANCHED);
+      _state.fetch_or(Node::BRANCHED, std::memory_order_relaxed);
     }
     else {
       c++;
     }
   }
 
-  _join_counter = c;
+  _join_counter.store(c, std::memory_order_release);
 }
 
 
@@ -535,7 +538,8 @@ inline void Graph::clear() {
 inline void Graph::clear_detached() {
 
   auto mid = std::partition(_nodes.begin(), _nodes.end(), [] (Node* node) {
-    return !(node->_has_state(Node::DETACHED));
+    //return !(node->_has_state(Node::DETACHED));
+    return !(node->_state.load(std::memory_order_relaxed) & Node::DETACHED);
   });
   
   //auto& np = _node_pool();

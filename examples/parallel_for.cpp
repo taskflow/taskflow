@@ -14,7 +14,7 @@ void for_each(int N) {
   std::iota(range.begin(), range.end(), 0);
 
   taskflow.for_each(range.begin(), range.end(), [&] (int i) { 
-    printf("for_each on container item: %d\n", i);
+    //printf("for_each on container item: %d\n", i);
   });
 
   executor.run(taskflow).get();
@@ -37,10 +37,15 @@ void for_each_index(int N) {
 // ----------------------------------------------------------------------------
 
 // Function: main
-int main() {
-  
-  for_each(100);
-  for_each_index(100);
+int main(int argc, char* argv[]) {
+ 
+  if(argc != 2) {
+    std::cerr << "Usage: ./parallel_for num_iterations" << std::endl; 
+    std::exit(EXIT_FAILURE);
+  }
+
+  for_each(std::atoi(argv[1]));
+  for_each_index(std::atoi(argv[1]));
 
   return 0;
 }

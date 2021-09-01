@@ -416,7 +416,7 @@ auto Executor::async(F&& f, ArgsT&&... args) {
     },
     std::move(tpg)
   );
-
+  
   _schedule(node);
 
   return fu;
@@ -434,7 +434,7 @@ void Executor::silent_async(F&& f, ArgsT&&... args) {
       f(args...); 
     }
   );
-
+  
   _schedule(node);
 }
 
@@ -655,6 +655,8 @@ inline size_t Executor::num_observers() const {
 inline void Executor::_schedule(Node* node) {
   
   //assert(_workers.size() != 0);
+  
+  node->_state.fetch_or(Node::READY, std::memory_order_release);
 
   // caller is a worker to this pool
   //auto worker = _per_thread.worker;
@@ -688,6 +690,11 @@ inline void Executor::_schedule(const std::vector<Node*>& nodes) {
   if(num_nodes == 0) {
     return;
   }
+  
+  // make the node ready
+  for(size_t i=0; i<num_nodes; ++i) {
+    nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
+  }
 
   // worker thread
   //auto worker = _per_thread.worker;
@@ -713,6 +720,8 @@ inline void Executor::_schedule(const std::vector<Node*>& nodes) {
 
 // Procedure: _invoke
 inline void Executor::_invoke(Worker& worker, Node* node) {
+
+  while(!(node->_state.load(std::memory_order_acquire) & Node::READY));
   
   // no need to do other things if the topology is cancelled
   //if(node->_topology && node->_topology->_is_cancelled) {
@@ -728,7 +737,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       _schedule(nodes);
       return;
     }
-    node->_set_state(Node::ACQUIRED);
+    //node->_set_state(Node::ACQUIRED);
+    node->_state.fetch_or(Node::ACQUIRED, std::memory_order_release);
   }
 
   // Here we need to fetch the num_successors first to avoid the invalid memory
@@ -805,7 +815,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // We MUST recover the dependency since the graph may have cycles.
   // This must be done before scheduling the successors, otherwise this might cause 
   // race condition on the _dependents
-  if(node->_has_state(Node::BRANCHED)) {
+  //if(node->_has_state(Node::BRANCHED)) {
+  if((node->_state.load(std::memory_order_relaxed) & Node::BRANCHED)) {
     node->_join_counter = node->num_strong_dependents();
   }
   else {
@@ -954,7 +965,8 @@ inline void Executor::_invoke_dynamic_task_internal(
 
     if(detach) {
       n->_parent = nullptr;
-      n->_set_state(Node::DETACHED);
+      //n->_set_state(Node::DETACHED);
+      n->_state.fetch_or(Node::DETACHED, std::memory_order_release);
     }
     else {
       n->_parent = p;
@@ -1218,7 +1230,8 @@ inline void Executor::_set_up_topology(Topology* tpg) {
   for(auto node : tpg->_taskflow._graph._nodes) {
     
     node->_topology = tpg;
-    node->_clear_state();
+    //node->_clear_state();
+    node->_state.store(0, std::memory_order_relaxed);
 
     if(node->num_dependents() == 0) {
       tpg->_sources.push_back(node);
