@@ -1136,8 +1136,16 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
 
   _increment_topology();
   
-  // Special case 
-  if(f.empty() || p()) {
+  // Need to check the empty under the lock since dynamic task may
+  // define detached blocks that modify the taskflow at the same time
+  bool empty;
+  {
+    std::lock_guard<std::mutex> lock(f._mutex);
+    empty = f.empty();
+  }
+  
+  // No need to create a real topology but returns an dummy future
+  if(empty || p()) {
     c();
     std::promise<void> promise;
     promise.set_value();
@@ -1154,9 +1162,7 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
   // modifying topology needs to be protected under the lock
   {
     std::lock_guard<std::mutex> lock(f._mutex);
-    
     f._topologies.push(t);
-   
     if(f._topologies.size() == 1) {
       _set_up_topology(t.get());
     }
