@@ -213,6 +213,8 @@ class Node {
 
     std::string _name;
 
+    void* _data {nullptr};
+
     handle_t _handle;
 
     SmallVector<Node*> _successors;
@@ -224,15 +226,10 @@ class Node {
     
     Node* _parent {nullptr};
 
-    //int _state {0};
     std::atomic<int> _state {0};
-
     std::atomic<size_t> _join_counter {0};
     
     void _precede(Node*);
-    //void _set_state(int);
-    //void _unset_state(int);
-    //void _clear_state();
     void _set_up_join_counter();
 
     bool _has_state(int) const;
@@ -415,26 +412,6 @@ inline const std::string& Node::name() const {
   return _name;
 }
 
-//// Procedure: _set_state
-//inline void Node::_set_state(int flag) { 
-//  _state |= flag; 
-//}
-//
-//// Procedure: _unset_state
-//inline void Node::_unset_state(int flag) { 
-//  _state &= ~flag; 
-//}
-//
-//// Procedure: _clear_state
-//inline void Node::_clear_state() { 
-//  _state = 0; 
-//}
-//
-//// Function: _has_state
-//inline bool Node::_has_state(int flag) const {
-//  return _state & flag;
-//}
-
 // Function: _is_cancelled
 inline bool Node::_is_cancelled() const {
   if(_handle.index() == Node::ASYNC) {
@@ -535,7 +512,6 @@ inline void Graph::clear() {
 inline void Graph::clear_detached() {
 
   auto mid = std::partition(_nodes.begin(), _nodes.end(), [] (Node* node) {
-    //return !(node->_has_state(Node::DETACHED));
     return !(node->_state.load(std::memory_order_relaxed) & Node::DETACHED);
   });
   
