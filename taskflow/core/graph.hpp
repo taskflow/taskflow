@@ -207,10 +207,12 @@ class Node {
     size_t num_weak_dependents() const;
 
     const std::string& name() const;
+    void* data() const;
 
   private:
 
     std::string _name;
+    void* _data;
 
     handle_t _handle;
 
@@ -411,6 +413,11 @@ inline size_t Node::num_strong_dependents() const {
 // Function: name
 inline const std::string& Node::name() const {
   return _name;
+}
+
+// Function: data
+inline void* Node::data() const {
+  return _data;
 }
 
 // Procedure: _set_state

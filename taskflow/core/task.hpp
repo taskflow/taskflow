@@ -311,6 +311,20 @@ class Task {
     */
     void dump(std::ostream& ostream) const;
 
+    /**
+    @brief queries pointer to user data
+    */
+    void* data() const;
+
+    /**
+    @brief assigns pointer to user data
+
+    @param data pointer to user data
+
+    @return @c *this
+    */
+    Task& data(void* data);
+
   private:
     
     Task(Node*);
@@ -504,6 +518,17 @@ Task& Task::work(C&& c) {
   else {
     static_assert(dependent_false_v<C>, "invalid task callable");
   }
+  return *this;
+}
+
+// Function: name
+inline void* Task::data() const {
+  return _node->_data;
+}
+
+// Function: name
+inline Task& Task::data(void* data) {
+  _node->_data = data;
   return *this;
 }
 
