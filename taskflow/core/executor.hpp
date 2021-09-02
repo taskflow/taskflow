@@ -720,7 +720,8 @@ inline void Executor::_schedule(const std::vector<Node*>& nodes) {
 
 // Procedure: _invoke
 inline void Executor::_invoke(Worker& worker, Node* node) {
-
+  
+  // synchronize all outstanding memory operations caused by reordering
   while(!(node->_state.load(std::memory_order_acquire) & Node::READY));
   
   // no need to do other things if the topology is cancelled
@@ -1131,12 +1132,12 @@ tf::Future<void> Executor::run_until(Taskflow&& f, P&& pred) {
 
 // Function: run_until
 template <typename P, typename C>
-tf::Future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
+tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
 
   _increment_topology();
   
-  // Special case of predicate
-  if(f.empty() || pred()) {
+  // Special case 
+  if(f.empty() || p()) {
     c();
     std::promise<void> promise;
     promise.set_value();
@@ -1144,31 +1145,21 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
     return tf::Future<void>(promise.get_future(), std::monostate{});
   }
   
-  // Multi-threaded execution.
-  bool run_now {false};
-  
   // create a topology for this run
-  auto tpg = std::make_shared<Topology>(
-    f, std::forward<P>(pred), std::forward<C>(c)
-  );
+  auto t = std::make_shared<Topology>(f, std::forward<P>(p), std::forward<C>(c));
   
   // need to create future before the topology got torn down quickly
-  tf::Future<void> future(tpg->_promise.get_future(), tpg);
-
+  tf::Future<void> future(t->_promise.get_future(), t);
+  
+  // modifying topology needs to be protected under the lock
   {
     std::lock_guard<std::mutex> lock(f._mutex);
     
-    f._topologies.push(tpg);
+    f._topologies.push(t);
    
     if(f._topologies.size() == 1) {
-      run_now = true;
+      _set_up_topology(t.get());
     }
-  }
-  
-  // Notice here calling schedule may cause the topology to be removed sonner 
-  // before the function leaves.
-  if(run_now) {
-    _set_up_topology(tpg.get());
   }
 
   return future;
@@ -1218,10 +1209,7 @@ inline void Executor::wait_for_all() {
 // Function: _set_up_topology
 inline void Executor::_set_up_topology(Topology* tpg) {
 
-  if(tpg->_is_cancelled) {
-    _tear_down_topology(tpg);
-    return;
-  }
+  // ---- under taskflow lock ----
 
   tpg->_sources.clear();
   tpg->_taskflow._graph.clear_detached();
@@ -1254,8 +1242,10 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
   // case 1: we still need to run the topology again
   if(!tpg->_is_cancelled && !tpg->_pred()) {
     assert(tpg->_join_counter == 0);
+    f._mutex.lock();
     tpg->_join_counter = tpg->_sources.size();
     _schedule(tpg->_sources); 
+    f._mutex.unlock();
   }
   // case 2: the final run of this topology
   else {
@@ -1277,13 +1267,15 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
       tpg->_promise.set_value();
       f._topologies.pop();
       tpg = f._topologies.front().get();
-
-      f._mutex.unlock();
       
       // decrement the topology but since this is not the last we don't notify
       _decrement_topology();
-
+      
       _set_up_topology(tpg);
+      
+      // set up topology needs to be under the lock or it can
+      // introduce memory order error with pop
+      f._mutex.unlock();
     }
     else {
       assert(f._topologies.size() == 1);

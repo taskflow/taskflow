@@ -14,7 +14,8 @@
 // --------------------------------------------------------
 TEST_CASE("SmallVector" * doctest::timeout(300)) {
 
-  SUBCASE("constructor") {
+  //SUBCASE("constructor") 
+  {
     tf::SmallVector<int> vec1;
     REQUIRE(vec1.size() == 0);
     REQUIRE(vec1.empty() == true);
@@ -26,8 +27,9 @@ TEST_CASE("SmallVector" * doctest::timeout(300)) {
     REQUIRE(vec2.capacity() == 4);
   }
 
-  SUBCASE("constructor_n") {
-    for(int N=0; N<=65536; ++N) {
+  //SUBCASE("constructor_n") 
+  {
+    for(int N=0; N<=65536; N = (N ? N << 1 : 1)) {
       tf::SmallVector<int> vec(N);
       REQUIRE(vec.size() == N);
       REQUIRE(vec.empty() == (N == 0));
@@ -36,7 +38,8 @@ TEST_CASE("SmallVector" * doctest::timeout(300)) {
     }
   }
 
-  SUBCASE("copy_constructor") {
+  //SUBCASE("copy_constructor") 
+  {
     for(int N=0; N<=65536; N = (N ? N << 1 : 1)) {
       tf::SmallVector<int> vec1(N);
       for(auto& item : vec1) {
@@ -53,7 +56,8 @@ TEST_CASE("SmallVector" * doctest::timeout(300)) {
     }
   }
   
-  SUBCASE("move_constructor") {
+  //SUBCASE("move_constructor") 
+  {
     for(int N=0; N<=65536; N = (N ? N << 1 : 1)) {
       tf::SmallVector<int> vec1(N);
       for(auto& item : vec1) {
@@ -71,7 +75,8 @@ TEST_CASE("SmallVector" * doctest::timeout(300)) {
     }
   }
 
-  SUBCASE("push_back") {
+  //SUBCASE("push_back") 
+  {
     for(int N=0; N<=65536; N = (N ? N << 1 : 1)) {
       tf::SmallVector<int> vec;
       size_t pcap {0};
@@ -90,12 +95,13 @@ TEST_CASE("SmallVector" * doctest::timeout(300)) {
     }
   }
 
-  SUBCASE("pop_back") {
+  //SUBCASE("pop_back") 
+  {
     size_t size {0};
     size_t pcap {0};
     size_t ncap {0};
     tf::SmallVector<int> vec;
-    for(int N=0; N<=65536; ++N) {
+    for(int N=0; N<=65536; N = (N ? N << 1 : N + 1)) {
       vec.push_back(N);
       ++size;
       REQUIRE(vec.size() == size);
@@ -114,7 +120,8 @@ TEST_CASE("SmallVector" * doctest::timeout(300)) {
     }
   }
 
-  SUBCASE("iterator") {
+  //SUBCASE("iterator") 
+  {
     for(int N=0; N<=65536; N = (N ? N << 1 : 1)) {
       tf::SmallVector<int> vec;
       for(int n=0; n<N; ++n) {
@@ -152,7 +159,8 @@ TEST_CASE("SmallVector" * doctest::timeout(300)) {
     }
   }
 
-  SUBCASE("clear") {
+  //SUBCASE("clear") 
+  {
     for(int N=0; N<=65536; N = (N ? N << 1 : 1)) {
       tf::SmallVector<int> vec(N);
       auto cap = vec.capacity();
@@ -163,7 +171,8 @@ TEST_CASE("SmallVector" * doctest::timeout(300)) {
     }
   }
 
-  SUBCASE("comparison") {
+  //SUBCASE("comparison") 
+  {
     for(int N=0; N<=65536; N = (N ? N << 1 : 1)) {
       tf::SmallVector<int> vec1;
       for(int i=0; i<N; ++i) {

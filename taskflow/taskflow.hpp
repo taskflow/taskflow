@@ -28,8 +28,8 @@
 // TF_VERSION / 100 % 1000 is the minor version
 // TF_VERSION / 100000 is the major version
 
-// current version: 3.2.0
-#define TF_VERSION 300200
+// current version: 3.3.0
+#define TF_VERSION 300300
 
 #define TF_MAJOR_VERSION TF_VERSION/100000
 #define TF_MINOR_VERSION TF_VERSION/100%1000
@@ -50,7 +50,7 @@ namespace detail { }
 @brief queries the version information in a string format @c major.minor.patch
 */
 constexpr const char* version() {
-  return "3.2.0";
+  return "3.3.0";
 }
 
 

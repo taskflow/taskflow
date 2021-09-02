@@ -624,14 +624,11 @@ void sequential_runs(unsigned W) {
       [&](){
         REQUIRE(count == 70);
         count = 0;
-        auto E = f.emplace([&](){ count ++; });
-        auto F = f.emplace([&](){ count ++; });
-        A.precede(E).precede(F);
     });
 
     executor.run_until(f, [run=10]() mutable { return run-- == 0; }, 
       [&](){
-        REQUIRE(count == 90);
+        REQUIRE(count == 70);
         count = 0;
       }
     ).get();

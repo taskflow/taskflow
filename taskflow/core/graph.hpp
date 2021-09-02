@@ -525,10 +525,7 @@ inline Graph& Graph::operator = (Graph&& other) {
 
 // Procedure: clear
 inline void Graph::clear() {
-  //auto& np = _node_pool();
   for(auto node : _nodes) {
-    //node->~Node();
-    //np.deallocate(node);
     node_pool.recycle(node);
   }
   _nodes.clear();
@@ -542,7 +539,6 @@ inline void Graph::clear_detached() {
     return !(node->_state.load(std::memory_order_relaxed) & Node::DETACHED);
   });
   
-  //auto& np = _node_pool();
   for(auto itr = mid; itr != _nodes.end(); ++itr) {
     node_pool.recycle(*itr);
   }
@@ -571,9 +567,6 @@ inline bool Graph::empty() const {
 // create a node from a give argument; constructor is called if necessary
 template <typename ...ArgsT>
 Node* Graph::emplace_back(ArgsT&&... args) {
-  //auto node = _node_pool().allocate();
-  //new (node) Node(std::forward<ArgsT>(args)...);
-  //_nodes.push_back(node);
   _nodes.push_back(node_pool.animate(std::forward<ArgsT>(args)...));
   return _nodes.back();
 }
@@ -581,9 +574,6 @@ Node* Graph::emplace_back(ArgsT&&... args) {
 // Function: emplace_back
 // create a node from a give argument; constructor is called if necessary
 inline Node* Graph::emplace_back() {
-  //auto node = _node_pool().allocate();
-  //new (node) Node();
-  //_nodes.push_back(node);
   _nodes.push_back(node_pool.animate());
   return _nodes.back();
 }

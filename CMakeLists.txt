@@ -1,9 +1,20 @@
+# -------------------------------------------------------------------
+# Taskflow CMake 
+#
+# To enable thread sanitizer: 
+# -DCMAKE_CXX_FLAGS="-fsanitize=thread -g"
+#
+# To enable address and leak sanitizers
+# -DCMAKE_CXX_FLAGS="-fsanitize=address  -fsanitize=leak -g"
+# -------------------------------------------------------------------
+
+
 # CMake version
 cmake_minimum_required (VERSION 3.12)
 MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 
 # Project name
-project(Taskflow VERSION 3.2.0 LANGUAGES CXX)
+project(Taskflow VERSION 3.3.0 LANGUAGES CXX)
 
 # build options
 option(TF_BUILD_BENCHMARKS "Enables builds of benchmarks" OFF)
@@ -157,11 +168,6 @@ target_compile_options(
   $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:Clang>>:-Wall -Wextra -Wfatal-errors>
   $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:GNU>>:-Wall -Wextra -Wfatal-errors>
   $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/W3 /permissive->
-  #$<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=-Wall,-Wextra,-Wfatal-errors>
-  #$<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra -Wfatal-errors>
-  #$<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wfatal-errors>
-  #$<$<CXX_COMPILER_ID:MSVC>:/W3 /permissive->
-  #$<$<CXX_COMPILER_ID:NVIDIA>:-Xcompiler=-Wall,-Wextra,-Wfatal-errors>
 )
 
 # cuda compiler options

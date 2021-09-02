@@ -14,7 +14,7 @@ void for_each(int N) {
   std::iota(range.begin(), range.end(), 0);
 
   taskflow.for_each(range.begin(), range.end(), [&] (int i) { 
-    //printf("for_each on container item: %d\n", i);
+    printf("for_each on container item: %d\n", i);
   });
 
   executor.run(taskflow).get();
