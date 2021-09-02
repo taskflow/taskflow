@@ -3,17 +3,45 @@ name: macOS
 on: [push, pull_request]
 
 jobs:
-  build:
-    # The CMake configure and build commands are platform agnostic and should work equally
-    # well on Windows or Mac.  You can convert this to a matrix build if you need
-    # cross-platform coverage.
-    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+  debug-test:
     runs-on: macos-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: cmake
       run: cmake -S . -B build -D CMAKE_BUILD_TYPE=Debug -D CMAKE_BUILD_BENCHMARKS=ON -D CMAKE_BUILD_PROFILER=ON
+    - name: build
+      run: cmake --build build --parallel 10
+    - name: test
+      run: cd build ; ctest -j 10 --output-on-failure
+  
+  release-test:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: cmake
+      run: cmake -S . -B build -D CMAKE_BUILD_TYPE=Release
+    - name: build
+      run: cmake --build build --parallel 10
+    - name: test
+      run: cd build ; ctest -j 10 --output-on-failure
+  
+  leak-test:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: cmake
+      run: cmake -S . -B build -DCMAKE_CXX_FLAGS="-fsanitize=address -fsanitize=leak"
+    - name: build
+      run: cmake --build build --parallel 10
+    - name: test
+      run: cd build ; ctest -j 10 --output-on-failure
+  
+  tsan-test:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: cmake
+      run: cmake -S . -B build -DCMAKE_CXX_FLAGS="-fsanitize=thread"
     - name: build
       run: cmake --build build --parallel 10
     - name: test
