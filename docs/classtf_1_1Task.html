@@ -145,6 +145,10 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a076ab9c6f3a0346e16cfb5fee7dc4ce8" class="m-doc-self">acquire</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Semaphore.html" class="m-doc">Semaphore</a>&amp; semaphore) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
             </dt>
             <dd>makes the task acquire this semaphore</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#afd82ab6d6518d1142a72c4d2c97ff114" class="m-doc">data</a>(</span><span class="m-doc-wrap">void* data) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
+            </dt>
+            <dd>assigns pointer to user data</dd>
             <dt id="a302f51ed717d0a4e99edc50f92a571f3">
               <span class="m-doc-wrap-bumper">void <a href="#a302f51ed717d0a4e99edc50f92a571f3" class="m-doc-self">reset</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
@@ -183,6 +187,10 @@
               <span class="m-doc-wrap-bumper">void <a href="#a3318a49ff9d0a01cd1e8ee675251e3b7" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; ostream) const</span>
             </dt>
             <dd>dumps the task through an output stream</dd>
+            <dt id="a320827cb70295a6fe2cc37691405409c">
+              <span class="m-doc-wrap-bumper">auto <a href="#a320827cb70295a6fe2cc37691405409c" class="m-doc-self">data</a>(</span><span class="m-doc-wrap">) const -&gt; void*</span>
+            </dt>
+            <dd>queries pointer to user data</dd>
           </dl>
         </section>
         <section>
@@ -328,6 +336,29 @@
                 <tr>
                   <td>tasks</td>
                   <td>one or multiple tasks</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><code>*this</code></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div></section>
+          <section class="m-doc-details" id="afd82ab6d6518d1142a72c4d2c97ff114"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#afd82ab6d6518d1142a72c4d2c97ff114" class="m-doc-self">data</a>(</span><span class="m-doc-wrap">void* data)</span></span>
+            </h3>
+            <p>assigns pointer to user data</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">data</td>
+                  <td>pointer to user data</td>
                 </tr>
               </tbody>
               <tfoot>

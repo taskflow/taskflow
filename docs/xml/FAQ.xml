@@ -91,7 +91,10 @@
 <para>We ask users to describe a GPU workload in a task graph and execute it in a second moment. This organization minimizes kernels launch overhead and allows the GPU runtime (e.g., CUDA) to optimize the whole workflow.</para></sect2>
 <sect2 id="FAQ_1ProgrammingQuestions11">
 <title>Q11: Can I limit the concurrency in certain sections of tasks?</title>
-<para>Yes, Taskflow provides a lightweight mechanism, <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref>, for you to limit the maximum concurrency (i.e., the number of workers) in a section of tasks. Please refer to <ref refid="LimitTheMaximumConcurrency" kindref="compound">Limit the Maximum Concurrency</ref>. </para></sect2>
+<para>Yes, Taskflow provides a lightweight mechanism, <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref>, for you to limit the maximum concurrency (i.e., the number of workers) in a section of tasks. Please refer to <ref refid="LimitTheMaximumConcurrency" kindref="compound">Limit the Maximum Concurrency</ref>.</para></sect2>
+<sect2 id="FAQ_1ProgrammingQuestions12">
+<title>Q12: How can I attach custom data to a task and access it?</title>
+<para>Each node in a taskflow is associated with a C-styled data pointer (i.e., <computeroutput>void*</computeroutput>) you can use to point to user data and access it in the body of a task callable. Please refer to <ref refid="StaticTasking_1AttachUserDataToATask" kindref="member">Attach User Data to a Task</ref>. </para></sect2>
 </sect1>
     </detaileddescription>
   </compounddef>

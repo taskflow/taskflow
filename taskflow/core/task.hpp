@@ -265,6 +265,15 @@ class Task {
     Task& acquire(Semaphore& semaphore);
     
     /**
+    @brief assigns pointer to user data
+
+    @param data pointer to user data
+
+    @return @c *this
+    */
+    Task& data(void* data);
+    
+    /**
     @brief resets the task handle to null
     */
     void reset();
@@ -316,14 +325,6 @@ class Task {
     */
     void* data() const;
 
-    /**
-    @brief assigns pointer to user data
-
-    @param data pointer to user data
-
-    @return @c *this
-    */
-    Task& data(void* data);
 
   private:
     

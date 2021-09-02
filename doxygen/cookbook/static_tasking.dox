@@ -193,6 +193,34 @@ my_task.for_each_dependent([d=0] (tf::Task dependent) mutable {
 });
 @endcode
 
+@section AttachUserDataToATask Attach User Data to a Task
+
+You can attach custom data to a task using tf::Task::data(void*)
+and access it using tf::Task::data().
+Each node in a taskflow is associated with a C-styled data pointer
+(i.e., `void*`) you can use to point to user data and access it in the body
+of a task callable.
+The following example attaches an integer to a task and accesses that integer
+through capturing the data in the callable.
+
+@code{.cpp}
+int my_data = 5;
+tf::Task task = taskflow.placeholder();
+task.data(&my_data)
+    .work([task](){
+      int my_date = *static_cast<int*>(task.data());
+      std::cout << "my_data: " << my_data; 
+    })  
+@endcode
+
+Notice that you need to create a placeholder task first before assigning it
+a work callable. Only this way can you capture that task in the lambda
+and access its attached data in the lambda body.
+
+@attention
+It is your responsibility to ensure that the attached data stay alive
+during the execution of its task.
+
 
 @section UnderstandTheLifetimeOfATask Understand the Lifetime of a Task
 
