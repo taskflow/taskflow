@@ -22,15 +22,12 @@
 <listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</para></listitem>
 </itemizedlist>
 Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
-<sect1 id="release-3-3-0_1release-3-3-0_working_items">
-<title>Working Items</title>
-</sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_new_features">
 <title>New Features</title>
 <sect2 id="release-3-3-0_1release-3-3-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>Changed all lambda operators in parallel algorithms to copy by default</para></listitem></itemizedlist>
+<listitem><para>Changed all lambda operators in parallel algorithms to copy by default</para></listitem><listitem><para>Cleaned up data race errors in <ulink url="https://github.com/google/sanitizers">tsan</ulink> caused by incorrect memory order</para></listitem></itemizedlist>
 </para></sect2>
 <sect2 id="release-3-3-0_1release-3-3-0_cudaflow">
 <title>cudaFlow</title>

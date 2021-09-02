@@ -34,7 +34,7 @@ To use %Taskflow v3.3.0, you need a compiler that supports C++17:
 @subsection release-3-3-0_taskflow_core Taskflow Core
 
 + Changed all lambda operators in parallel algorithms to copy by default
-+ Cleaned up data race caused by incorrect memory order (tsan)
++ Cleaned up data race errors in [tsan](https://github.com/google/sanitizers) caused by incorrect memory order
 
 @subsection release-3-3-0_cudaflow cudaFlow
 
