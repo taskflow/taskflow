@@ -18,7 +18,7 @@ We have a new <a href="https://taskflow.github.io/">webpage</a> for %Taskflow!
 
 @li added explicit join behavior of tf::Subflow (see @ref JoinASubflow and @ref fibonacci)
 @li added version macro (@c TF_VERSION, @c TF_MAJOR_VERSION, @c TF_MINOR_VERSION, @c TF_PATCH_VERSION) to retrieve version info programmatically (tf::version)
-@li added @c TF_BUILD_TESTS and @c TF_BUILD_EXAMPLES (default on) to let users disable the build of tests and examples (see @ref BAIConfigureCMakeOptions)
+@li added @c TF_BUILD_TESTS and @c TF_BUILD_EXAMPLES (default on) to let users disable the build of tests and examples (see @ref install)
 @li renamed tf::Taskflkow::parallel_for to tf::Taskflow::for_each to follow the STL convention
 @li redesigned tf::Taskflow::for_each and tf::Taskflow::for_each_index using OpenMP-styled scheduling algorithms; this redesign largely improved the performance of parallel-for using a single dynamic task return, but it breaks the previous API that returned a std::pair of tasks to synchronize on a set of static parallel-for tasks. Yet, we believe adopting this change is not difficult (see @ref ParallelIterations).
 @li added multiple unit tests for tf::Taskflow::for_each and tf::Taskflow::for_each_index at different partition algorithms; we have implemented our partition algorithms based on the OpenMP library implementation of LLVM and GCC.

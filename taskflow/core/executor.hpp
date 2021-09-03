@@ -481,31 +481,13 @@ inline void Executor::_spawn(size_t N) {
 inline void Executor::_explore_task(Worker& w, Node*& t) {
   
   //assert(_workers[w].wsq.empty());
-  assert(!t);
+  //assert(!t);
 
   size_t num_steals = 0;
   size_t num_yields = 0;
   size_t max_steals = ((_workers.size() + 1) << 1);
 
   std::uniform_int_distribution<size_t> rdvtm(0, _workers.size()-1);
-
-  //while(!_done) {
-  //
-  //  size_t vtm = rdvtm(w._rdgen);
-  //    
-  //  t = (vtm == w._id) ? _wsq[d].steal() : _workers[vtm].wsq[d].steal();
-
-  //  if(t) {
-  //    break;
-  //  }
-
-  //  if(num_steal++ > _MAX_STEALS) {
-  //    std::this_thread::yield();
-  //    if(num_yields++ > _MAX_YIELDS) {
-  //      break;
-  //    }
-  //  }
-  //}
 
   do {
     t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
@@ -549,7 +531,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 
   wait_for_task:
 
-  assert(!t);
+  //assert(!t);
 
   ++_num_thieves;
 
@@ -942,7 +924,7 @@ inline void Executor::_invoke_dynamic_task_external(Node*p, Graph& g, bool detac
   //auto worker = _per_thread.worker;
   auto worker = this_worker().worker;
 
-  assert(worker && worker->_executor == this);
+  //assert(worker && worker->_executor == this);
   
   _invoke_dynamic_task_internal(*worker, p, g, detach);
 }
@@ -967,7 +949,7 @@ inline void Executor::_invoke_dynamic_task_internal(
     if(detach) {
       n->_parent = nullptr;
       //n->_set_state(Node::DETACHED);
-      n->_state.fetch_or(Node::DETACHED, std::memory_order_release);
+      n->_state.fetch_or(Node::DETACHED, std::memory_order_relaxed);
     }
     else {
       n->_parent = p;
@@ -1247,7 +1229,7 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
 
   // case 1: we still need to run the topology again
   if(!tpg->_is_cancelled && !tpg->_pred()) {
-    assert(tpg->_join_counter == 0);
+    //assert(tpg->_join_counter == 0);
     f._mutex.lock();
     tpg->_join_counter = tpg->_sources.size();
     _schedule(tpg->_sources); 
@@ -1267,7 +1249,7 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
     // If there is another run (interleave between lock)
     if(f._topologies.size() > 1) {
 
-      assert(tpg->_join_counter == 0);
+      //assert(tpg->_join_counter == 0);
 
       // Set the promise
       tpg->_promise.set_value();
@@ -1284,7 +1266,7 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
       f._mutex.unlock();
     }
     else {
-      assert(f._topologies.size() == 1);
+      //assert(f._topologies.size() == 1);
 
       // Need to back up the promise first here becuz taskflow might be 
       // destroy soon after calling get

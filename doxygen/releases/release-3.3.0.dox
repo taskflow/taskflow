@@ -29,6 +29,12 @@ To use %Taskflow v3.3.0, you need a compiler that supports C++17:
 
 %Taskflow works on Linux, Windows, and Mac OS X.
 
+@section release-3-3-0_summary Release Summary
+
+This release has resolved data race issues and incorporated essential
+sanitizers into the @CI to detect data race, illegal memory access,
+and memory leak of the %Taskflow codebase.
+
 @section release-3-3-0_new_features New Features
 
 @subsection release-3-3-0_taskflow_core Taskflow Core
@@ -49,8 +55,8 @@ To use %Taskflow v3.3.0, you need a compiler that supports C++17:
 
 @section release-3-3-0_bug_fixes Bug Fixes 
 
-+ Fixed memory leak in updating tf::cudaFlowCapturer of un-freed graph
-+ Fixed invalid lambda capture by reference in tf::sort
++ Fixed memory leak in updating tf::cudaFlowCapturer of undestroyed graph
++ Fixed invalid lambda capture by reference in tf::Taskflow::sort
 
 @section release-3-3-0_breaking_changes Breaking Changes
 
@@ -58,6 +64,8 @@ To use %Taskflow v3.3.0, you need a compiler that supports C++17:
 
 @section release-3-3-0_documentation Documentation
 
++ Revised @ref install
+  + @ref BAIBuildSanitizers
 + Revised @ref StaticTasking 
   + @ref AttachUserDataToATask
 

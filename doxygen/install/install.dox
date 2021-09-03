@@ -76,10 +76,6 @@ Total Test time (real) =  29.67 sec
 
 When the building completes, you can find the executables for examples and tests
 under the two folders, @c examples/ and @c unittests/.
-
-
-@section BAIConfigureCMakeOptions Configure CMake Options
-
 You can list a set of available options in the cmake.
 
 @code{.shell-session}
@@ -127,8 +123,6 @@ and use it to compile and link @c .cu code.
 ~$ make
 @endcode
 
-@subsection BAICompileTaskflowWithCUDA Compile Taskflow with CUDA
-
 Please visit the page @subpage CompileTaskflowWithCUDA for details.
 
 
@@ -152,9 +146,42 @@ You can acquire the DPC++ clang compiler at the official page of
 ~$ make
 @endcode
 
-@subsection BAICompileTaskflowWithSYCL Compile Taskflow with SYCL
-
 Please visit the page @subpage CompileTaskflowWithSYCL for details.
+
+@section BAIBuildSanitizers Build Sanitizers
+
+You can build %Taskflow with @em sanitizers to detect a variety of errors,
+such as data race, memory leak, undefined behavior, and others.
+To enable a sanitizer, add the sanitizer flag to the CMake variable
+`CMAKE_CXX_FLAGS`.
+The following example enables thread sanitizer in building %Taskflow code
+to detect data race:
+
+@code{.shell-session}
+# build Taskflow code with thread sanitizer to detect data race
+~$ cmake ../ -DCMAKE_CXX_FLAGS="-fsanitize=thread -g"
+
+# build Taskflow code with address sanitizer to detect illegal memory access
+~$ cmake ../ -DCMAKE_CXX_FLAGS="-fsanitize=address -g"
+
+# build Taskflow code with ub sanitizer to detect undefined behavior
+~$ cmake ../ -DCMAKE_CXX_FLAGS="-fsanitize=undefined -g"
+@endcode
+
+Our @CI incorporates 
+thread sanitizer ([-fsanitize=thread](https://clang.llvm.org/docs/ThreadSanitizer.html)),
+address sanitizer ([-fsanitize=address](https://clang.llvm.org/docs/AddressSanitizer.html)), and
+leak sanitizer ([-fsanitize=leak](https://clang.llvm.org/docs/LeakSanitizer.html))
+to detect data race, illegal memory address, and memory leak.
+To our best knowledge,
+%Taskflow is one of the very few parallel programming libraries
+that are free from data race.
+
+@note
+Some sanitizers are supported by certain computing architectures.
+You can find the information about architecture support of each sanitizer at 
+[Clang Documentation](https://clang.llvm.org/docs/index.html) and
+[GCC Instrumentation Options](https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html).
 
 @section BAIBuildBenchmarks Build Benchmarks
 
@@ -167,8 +194,6 @@ enable the CMake option @c TF_BUILD_BENCHMARKS to @c ON as follows:
 ~$ cmake ../ -DTF_BUILD_BENCHMARKS=ON
 ~$ make
 @endcode
-
-@subsection BAIBenchmarkTaskflow Benchmark Taskflow
 
 Please visit the page @subpage BenchmarkTaskflow for details.
 

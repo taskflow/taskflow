@@ -22,6 +22,9 @@
 <listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</para></listitem>
 </itemizedlist>
 Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
+<sect1 id="release-3-3-0_1release-3-3-0_summary">
+<title>Release Summary</title>
+<para>This release has resolved data race issues and incorporated essential sanitizers into the <ulink url="https://github.com/taskflow/taskflow/actions">continuous integration workflows</ulink> to detect data race, illegal memory access, and memory leak of the Taskflow codebase.</para></sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_new_features">
 <title>New Features</title>
 <sect2 id="release-3-3-0_1release-3-3-0_taskflow_core">
@@ -48,7 +51,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_bug_fixes">
 <title>Bug Fixes</title>
 <para><itemizedlist>
-<listitem><para>Fixed memory leak in updating <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> of un-freed graph</para></listitem><listitem><para>Fixed invalid lambda capture by reference in tf::sort</para></listitem></itemizedlist>
+<listitem><para>Fixed memory leak in updating <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> of undestroyed graph</para></listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a7ef36ae799b89a5a37a2c5b09b12349c" kindref="member">tf::Taskflow::sort</ref></para></listitem></itemizedlist>
 </para></sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_breaking_changes">
 <title>Breaking Changes</title>
@@ -59,7 +62,9 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_documentation">
 <title>Documentation</title>
 <para><itemizedlist>
-<listitem><para>Revised <ref refid="StaticTasking" kindref="compound">Static Tasking</ref><itemizedlist>
+<listitem><para>Revised <ref refid="install" kindref="compound">Building and Installing</ref><itemizedlist>
+<listitem><para><ref refid="install_1BAIBuildSanitizers" kindref="member">Build Sanitizers</ref></para></listitem></itemizedlist>
+</para></listitem><listitem><para>Revised <ref refid="StaticTasking" kindref="compound">Static Tasking</ref><itemizedlist>
 <listitem><para><ref refid="StaticTasking_1AttachUserDataToATask" kindref="member">Attach User Data to a Task</ref></para></listitem></itemizedlist>
 </para></listitem></itemizedlist>
 </para></sect1>

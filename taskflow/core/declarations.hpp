@@ -35,7 +35,6 @@ class cudaCapturingBase;
 class cudaLinearCapturing;
 class cudaSequentialCapturing;
 class cudaRoundRobinCapturing;
-class cublasFlowCapturer;
 
 // syclFlow
 class syclNode;

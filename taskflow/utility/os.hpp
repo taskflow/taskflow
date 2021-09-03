@@ -14,7 +14,7 @@
 #define TF_OS_CNK 0
 #define TF_OS_HURD 0
 #define TF_OS_SOLARIS 0
-#define TF_OS_UNIX 0 /* disjunction of TF_OS_LINUX, TF_OS_DARWIN etc. */
+#define TF_OS_UNIX 0 
 
 #ifdef _WIN32
 #undef TF_OS_WINDOWS

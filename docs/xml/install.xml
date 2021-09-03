@@ -52,10 +52,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <codeline><highlight class="normal">100%<sp/>tests<sp/>passed,<sp/>0<sp/>tests<sp/>failed<sp/>out<sp/>of<sp/>254</highlight></codeline>
 <codeline></codeline>
 <codeline><highlight class="normal">Total<sp/>Test<sp/>time<sp/>(real)<sp/>=<sp/><sp/>29.67<sp/>sec</highlight></codeline>
-</programlisting></para><para>When the building completes, you can find the executables for examples and tests under the two folders, <computeroutput>examples/</computeroutput> and <computeroutput>unittests/</computeroutput>.</para></sect1>
-<sect1 id="install_1BAIConfigureCMakeOptions">
-<title>Configure CMake Options</title>
-<para>You can list a set of available options in the cmake.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cmake<sp/>-LA</highlight></codeline>
+</programlisting></para><para>When the building completes, you can find the executables for examples and tests under the two folders, <computeroutput>examples/</computeroutput> and <computeroutput>unittests/</computeroutput>. You can list a set of available options in the cmake.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cmake<sp/>-LA</highlight></codeline>
 <codeline><highlight class="normal">...</highlight></codeline>
 <codeline><highlight class="normal">TF_BUILD_EXAMPLES:BOOL=ON<sp/><sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>by<sp/>default,<sp/>we<sp/>compile<sp/>examples</highlight></codeline>
 <codeline><highlight class="normal">TF_BUILD_TESTS:BOOL=ON<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>#<sp/>by<sp/>default,<sp/>we<sp/>compile<sp/>tests</highlight></codeline>
@@ -84,10 +81,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <title>Build CUDA Examples and Unit Tests</title>
 <para>To build CUDA code, including unit tests and examples, enable the CMake option <computeroutput>TF_BUILD_CUDA</computeroutput> to <computeroutput>ON</computeroutput>. Cmake will automatically detect the existence of <computeroutput>nvcc</computeroutput> and use it to compile and link <computeroutput></computeroutput>.cu code.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_CUDA=ON</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>make</highlight></codeline>
-</programlisting></para><sect2 id="install_1BAICompileTaskflowWithCUDA">
-<title>Compile Taskflow with CUDA</title>
-<para>Please visit the page <ref refid="CompileTaskflowWithCUDA" kindref="compound">Compile Taskflow with CUDA</ref> for details.</para></sect2>
-</sect1>
+</programlisting></para><para>Please visit the page <ref refid="CompileTaskflowWithCUDA" kindref="compound">Compile Taskflow with CUDA</ref> for details.</para></sect1>
 <sect1 id="install_1BAIBuildSYCLCode">
 <title>Build SYCL Code Examples and Unit Tests</title>
 <para>To build SYCL code, including unit tests and examples, enable the CMake option <computeroutput>TF_BUILD_SYCL</computeroutput> to <computeroutput>ON</computeroutput> and direct the CMake compiler <computeroutput>CMAKE_CXX_COMPILER</computeroutput> to the location of DPC++ clang compiler. You can acquire the DPC++ clang compiler at the official page of <ulink url="https://intel.github.io/llvm-docs/GetStartedGuide.html">Getting Started with oneAPI DPC++</ulink>.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>after<sp/>succesfully<sp/>build<sp/>Intel<sp/>DPCPP<sp/>clang:<sp/>https://intel.github.io/llvm-docs/</highlight></codeline>
@@ -98,18 +92,24 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <codeline><highlight class="normal">#<sp/>build<sp/>Taskflow<sp/>SYCL<sp/>code<sp/>using<sp/>Intel<sp/>oneAPI<sp/>dpc++<sp/>clang<sp/>compiler</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_SYCL=ON<sp/>-DCMAKE_CXX_COMPILER=clang++</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>make</highlight></codeline>
-</programlisting></para><sect2 id="install_1BAICompileTaskflowWithSYCL">
-<title>Compile Taskflow with SYCL</title>
-<para>Please visit the page <ref refid="CompileTaskflowWithSYCL" kindref="compound">Compile Taskflow with SYCL</ref> for details.</para></sect2>
-</sect1>
+</programlisting></para><para>Please visit the page <ref refid="CompileTaskflowWithSYCL" kindref="compound">Compile Taskflow with SYCL</ref> for details.</para></sect1>
+<sect1 id="install_1BAIBuildSanitizers">
+<title>Build Sanitizers</title>
+<para>You can build Taskflow with <emphasis>sanitizers</emphasis> to detect a variety of errors, such as data race, memory leak, undefined behavior, and others. To enable a sanitizer, add the sanitizer flag to the CMake variable <computeroutput>CMAKE_CXX_FLAGS</computeroutput>. The following example enables thread sanitizer in building Taskflow code to detect data race:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>build<sp/>Taskflow<sp/>code<sp/>with<sp/>thread<sp/>sanitizer<sp/>to<sp/>detect<sp/>data<sp/>race</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DCMAKE_CXX_FLAGS=&quot;-fsanitize=thread<sp/>-g&quot;</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">#<sp/>build<sp/>Taskflow<sp/>code<sp/>with<sp/>address<sp/>sanitizer<sp/>to<sp/>detect<sp/>illegal<sp/>memory<sp/>access</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DCMAKE_CXX_FLAGS=&quot;-fsanitize=address<sp/>-g&quot;</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">#<sp/>build<sp/>Taskflow<sp/>code<sp/>with<sp/>ub<sp/>sanitizer<sp/>to<sp/>detect<sp/>undefined<sp/>behavior</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DCMAKE_CXX_FLAGS=&quot;-fsanitize=undefined<sp/>-g&quot;</highlight></codeline>
+</programlisting></para><para>Our <ulink url="https://github.com/taskflow/taskflow/actions">continuous integration workflows</ulink> incorporates thread sanitizer (<ulink url="https://clang.llvm.org/docs/ThreadSanitizer.html">-fsanitize=thread</ulink>), address sanitizer (<ulink url="https://clang.llvm.org/docs/AddressSanitizer.html">-fsanitize=address</ulink>), and leak sanitizer (<ulink url="https://clang.llvm.org/docs/LeakSanitizer.html">-fsanitize=leak</ulink>) to detect data race, illegal memory address, and memory leak. To our best knowledge, Taskflow is one of the very few parallel programming libraries that are free from data race.</para><para><simplesect kind="note"><para>Some sanitizers are supported by certain computing architectures. You can find the information about architecture support of each sanitizer at <ulink url="https://clang.llvm.org/docs/index.html">Clang Documentation</ulink> and <ulink url="https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html">GCC Instrumentation Options</ulink>.</para></simplesect>
+</para></sect1>
 <sect1 id="install_1BAIBuildBenchmarks">
 <title>Build Benchmarks</title>
 <para>The Taskflow project contains a set of benchmarks to evaluate and compare the performance of <ref refid="classtf_1_1Taskflow" kindref="compound">Taskflow</ref> with existing parallel programming libraries. To build the benchmark code, enable the CMake option <computeroutput>TF_BUILD_BENCHMARKS</computeroutput> to <computeroutput>ON</computeroutput> as follows:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_BENCHMARKS=ON</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>make</highlight></codeline>
-</programlisting></para><sect2 id="install_1BAIBenchmarkTaskflow">
-<title>Benchmark Taskflow</title>
-<para>Please visit the page <ref refid="BenchmarkTaskflow" kindref="compound">Benchmark Taskflow</ref> for details.</para></sect2>
-</sect1>
+</programlisting></para><para>Please visit the page <ref refid="BenchmarkTaskflow" kindref="compound">Benchmark Taskflow</ref> for details.</para></sect1>
 <sect1 id="install_1BAIBuildDocumentation">
 <title>Build Documentation</title>
 <para>Taskflow uses <ulink url="https://www.doxygen.nl/index.html">Doxygen</ulink> and <ulink url="https://mcss.mosra.cz/documentation/doxygen/">m.css</ulink> to generate this documentation. The source of documentation is located in the folder <computeroutput>taskflow/doxygen</computeroutput> and the generated html is output to the folder <computeroutput>taskflow/docs</computeroutput>. To generate the documentation, clone the m.css project and enter the <computeroutput>m.css/documentation</computeroutput> directory:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>git<sp/>clone<sp/>git://github.com/mosra/m.css</highlight></codeline>

@@ -210,7 +210,7 @@ task.data(&my_data)
     .work([task](){
       int my_date = *static_cast<int*>(task.data());
       std::cout << "my_data: " << my_data; 
-    })  
+    });
 @endcode
 
 Notice that you need to create a placeholder task first before assigning it
