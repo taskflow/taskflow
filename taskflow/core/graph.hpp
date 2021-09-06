@@ -61,6 +61,8 @@ class Graph {
 
     Node* emplace_back();
 
+    void erase(Node*);
+
   private:
 
     std::vector<Node*> _nodes;
@@ -554,6 +556,15 @@ inline Node* Graph::emplace_back() {
   return _nodes.back();
 }
 
+// Function: erase
+inline void Graph::erase(Node* node) {
+  auto I = ::std::find(_nodes.begin(), _nodes.end(), node);
+  if (I != _nodes.end()) {
+    _nodes.erase(I);
+  }
+
+  node_pool.recycle(node);
+}
 
 }  // end of namespace tf. ---------------------------------------------------
 
