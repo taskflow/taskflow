@@ -270,9 +270,6 @@ class Executor {
 
   private:
 
-    //inline static thread_local PerThread _per_thread;
-    //inline static thread_local Worker* _this_worker {nullptr};
-
     std::condition_variable _topology_cv;
     std::mutex _taskflow_mutex;
     std::mutex _topology_mutex;
@@ -365,9 +362,6 @@ inline Executor::~Executor() {
   for(auto& t : _threads){
     t.join();
   } 
-  
-  // flush the default observer
-  //_flush_tfprof();
 }
 
 // Function: num_workers
@@ -440,7 +434,6 @@ void Executor::silent_async(F&& f, ArgsT&&... args) {
 
 // Function: this_worker_id
 inline int Executor::this_worker_id() const {
-  //auto worker = _per_thread.worker;
   Worker* worker = this_worker().worker;
   return worker ? static_cast<int>(worker->_id) : -1;
 }
@@ -456,7 +449,6 @@ inline void Executor::_spawn(size_t N) {
     
     _threads.emplace_back([this] (Worker& w) -> void {
 
-      //_per_thread.worker = &w;
       this_worker().worker = &w;
 
       Node* t = nullptr;
@@ -641,7 +633,6 @@ inline void Executor::_schedule(Node* node) {
   node->_state.fetch_or(Node::READY, std::memory_order_release);
 
   // caller is a worker to this pool
-  //auto worker = _per_thread.worker;
   auto worker = this_worker().worker;
 
   if(worker != nullptr && worker->_executor == this) {
@@ -679,7 +670,6 @@ inline void Executor::_schedule(const std::vector<Node*>& nodes) {
   }
 
   // worker thread
-  //auto worker = _per_thread.worker;
   auto worker = this_worker().worker;
 
   if(worker != nullptr && worker->_executor == this) {
@@ -921,7 +911,6 @@ inline void Executor::_invoke_dynamic_task(Worker& w, Node* node) {
 // Procedure: _invoke_dynamic_task_external
 inline void Executor::_invoke_dynamic_task_external(Node*p, Graph& g, bool detach) {
 
-  //auto worker = _per_thread.worker;
   auto worker = this_worker().worker;
 
   //assert(worker && worker->_executor == this);
@@ -1206,7 +1195,6 @@ inline void Executor::_set_up_topology(Topology* tpg) {
   for(auto node : tpg->_taskflow._graph._nodes) {
     
     node->_topology = tpg;
-    //node->_clear_state();
     node->_state.store(0, std::memory_order_relaxed);
 
     if(node->num_dependents() == 0) {
@@ -1230,10 +1218,9 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
   // case 1: we still need to run the topology again
   if(!tpg->_is_cancelled && !tpg->_pred()) {
     //assert(tpg->_join_counter == 0);
-    f._mutex.lock();
+    std::lock_guard<std::mutex> lock(f._mutex);
     tpg->_join_counter = tpg->_sources.size();
     _schedule(tpg->_sources); 
-    f._mutex.unlock();
   }
   // case 2: the final run of this topology
   else {
@@ -1244,11 +1231,8 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
       tpg->_call();
     }
 
-    f._mutex.lock();
-
     // If there is another run (interleave between lock)
-    if(f._topologies.size() > 1) {
-
+    if(std::unique_lock<std::mutex> lock(f._mutex); f._topologies.size()>1) {
       //assert(tpg->_join_counter == 0);
 
       // Set the promise
@@ -1259,12 +1243,10 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
       // decrement the topology but since this is not the last we don't notify
       _decrement_topology();
       
-      _set_up_topology(tpg);
-      
       // set up topology needs to be under the lock or it can
       // introduce memory order error with pop
-      f._mutex.unlock();
-    }
+      _set_up_topology(tpg);
+    } 
     else {
       //assert(f._topologies.size() == 1);
 
@@ -1283,7 +1265,8 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
       // Now we remove the topology from this taskflow
       f._topologies.pop();
 
-      f._mutex.unlock();
+      //f._mutex.unlock();
+      lock.unlock();
       
       // We set the promise in the end in case taskflow leaves the scope.
       // After set_value, the caller will return from wait
@@ -1298,7 +1281,6 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
         std::scoped_lock<std::mutex> lock(_taskflow_mutex);
         _taskflows.erase(*s);
       } 
-
     }
   }
 }

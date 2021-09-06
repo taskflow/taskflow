@@ -558,12 +558,10 @@ inline Node* Graph::emplace_back() {
 
 // Function: erase
 inline void Graph::erase(Node* node) {
-  auto I = ::std::find(_nodes.begin(), _nodes.end(), node);
-  if (I != _nodes.end()) {
+  if(auto I = std::find(_nodes.begin(), _nodes.end(), node); I != _nodes.end()) {
     _nodes.erase(I);
+    node_pool.recycle(node);
   }
-
-  node_pool.recycle(node);
 }
 
 }  // end of namespace tf. ---------------------------------------------------

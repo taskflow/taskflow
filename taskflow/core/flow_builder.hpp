@@ -134,6 +134,9 @@ class FlowBuilder {
     @brief removes a task from a taskflow
 
     @param task task to remove
+
+    Removes a task and its input and output dependencies from this graph. 
+    If the task does not belong to this graph, nothing will happen.
     */
     void erase(Task task);
 
@@ -552,23 +555,22 @@ auto FlowBuilder::emplace(C&&... cs) {
 
 // Function: erase
 inline void FlowBuilder::erase(Task task) {
+
   if (!task._node) {
     return;
   }
 
   task.for_each_dependent([&] (Task dependent) {
-    auto& successors = dependent._node->_successors;
-    auto I = ::std::find(successors.begin(), successors.end(), task._node);
-    if (I != successors.end()) {
-      successors.erase(I);
+    auto& S = dependent._node->_successors;
+    if(auto I = std::find(S.begin(), S.end(), task._node); I != S.end()) {
+      S.erase(I);
     }
   });
 
   task.for_each_successor([&] (Task dependent) {
-    auto& dependents = dependent._node->_dependents;
-    auto I = ::std::find(dependents.begin(), dependents.end(), task._node);
-    if (I != dependents.end()) {
-      dependents.erase(I);
+    auto& D = dependent._node->_dependents;
+    if(auto I = std::find(D.begin(), D.end(), task._node); I != D.end()) {
+      D.erase(I);
     }
   });
   

@@ -25,8 +25,19 @@ jobs:
     - name: test
       run: cd build ; ctest -j 10 --output-on-failure
   
+  undefined-test:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: cmake
+      run: cmake -S . -B build -DCMAKE_CXX_FLAGS="-fsanitize=undefined -g"
+    - name: build
+      run: cmake --build build --parallel 10
+    - name: test
+      run: cd build ; ctest -j 10 --output-on-failure
+  
   leak-test:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
     - name: cmake
