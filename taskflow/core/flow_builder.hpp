@@ -131,6 +131,13 @@ class FlowBuilder {
     auto emplace(C&&... callables);
 
     /**
+    @brief removes a task from a taskflow
+
+    @param task task to remove
+    */
+    void erase(Task task);
+
+    /**
     @brief creates a module task from a taskflow
 
     @param taskflow a taskflow object for the module
@@ -541,6 +548,31 @@ Task FlowBuilder::emplace(C&& c) {
 template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
 auto FlowBuilder::emplace(C&&... cs) {
   return std::make_tuple(emplace(std::forward<C>(cs))...);
+}
+
+// Function: erase
+inline void FlowBuilder::erase(Task task) {
+  if (!task._node) {
+    return;
+  }
+
+  task.for_each_dependent([&] (Task dependent) {
+    auto& successors = dependent._node->_successors;
+    auto I = ::std::find(successors.begin(), successors.end(), task._node);
+    if (I != successors.end()) {
+      successors.erase(I);
+    }
+  });
+
+  task.for_each_successor([&] (Task dependent) {
+    auto& dependents = dependent._node->_dependents;
+    auto I = ::std::find(dependents.begin(), dependents.end(), task._node);
+    if (I != dependents.end()) {
+      dependents.erase(I);
+    }
+  });
+  
+  _graph.erase(task._node);
 }
 
 // Function: composed_of    
