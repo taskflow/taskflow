@@ -109,6 +109,10 @@
             </dt>
             <dd>creates multiple tasks from a list of callable objects</dd>
             <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#a5627f7962099ac7c4986993cffa7b909" class="m-doc">erase</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Task.html" class="m-doc">Task</a> task)</span>
+            </dt>
+            <dd>removes a task from a taskflow</dd>
+            <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#a0a01192f4f92c15380a4f259e2fec2d9" class="m-doc">composed_of</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Taskflow.html" class="m-doc">Taskflow</a>&amp; taskflow) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>creates a module task from a taskflow</dd>
@@ -370,6 +374,24 @@
   <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;C&quot;</span><span class="p">;</span> <span class="p">},</span>
   <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;D&quot;</span><span class="p">;</span> <span class="p">}</span>
 <span class="p">);</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a5627f7962099ac7c4986993cffa7b909"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a5627f7962099ac7c4986993cffa7b909" class="m-doc-self">erase</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Task.html" class="m-doc">Task</a> task)</span></span>
+            </h3>
+            <p>removes a task from a taskflow</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">task</td>
+                  <td>task to remove</td>
+                </tr>
+              </tbody>
+            </table>
+<p>Removes a task and its input and output dependencies from this graph. If the task does not belong to this graph, nothing will happen.</p>
           </div></section>
           <section class="m-doc-details" id="a0a01192f4f92c15380a4f259e2fec2d9"><div>
             <h3>

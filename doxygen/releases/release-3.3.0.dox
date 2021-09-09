@@ -31,8 +31,9 @@ To use %Taskflow v3.3.0, you need a compiler that supports C++17:
 
 @section release-3-3-0_summary Release Summary
 
-This release has resolved data race issues and incorporated essential
-sanitizers into the @CI to detect data race, illegal memory access,
+This release has resolved data race issues reported by 
+[tsan](https://github.com/google/sanitizers) and has incorporated essential
+sanitizers into the @CI for detecting data race, illegal memory access,
 and memory leak of the %Taskflow codebase.
 
 @section release-3-3-0_new_features New Features
@@ -68,6 +69,10 @@ and memory leak of the %Taskflow codebase.
   + @ref BAIBuildSanitizers
 + Revised @ref StaticTasking 
   + @ref AttachUserDataToATask
++ Revised @ref GPUTaskingcudaFlow
++ Revised @ref GPUTaskingcudaFlowCapturer
++ Revised @ref LimitTheMaximumConcurrency 
+  + @ref DefineAConflictGraph
 
 @section release-3-3-0_miscellaneous_items Miscellaneous Items
 

@@ -146,4 +146,64 @@ TEST_CASE("OverlappedSemaphore.8threads") {
   overlapped_semaphore(8);
 }
 
+// --------------------------------------------------------
+// Testcase: Conflict Graph
+// --------------------------------------------------------
 
+void conflict_graph(size_t W) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+  tf::Semaphore conflict_AB(1);
+  tf::Semaphore conflict_AC(1);
+
+  int counter {0};
+  std::mutex mutex;
+  
+  tf::Task A = taskflow.emplace([&](){ counter++; });
+
+  // B and C can run together
+  tf::Task B = taskflow.emplace([&](){ 
+    std::lock_guard<std::mutex> lock(mutex);
+    counter++;
+  });
+  tf::Task C = taskflow.emplace([&](){
+    std::lock_guard<std::mutex> lock(mutex);
+    counter++;
+  });
+  
+  // describe the conflict between A and B
+  A.acquire(conflict_AB).release(conflict_AB);
+  B.acquire(conflict_AB).release(conflict_AB);
+  
+  // describe the conflict between A and C
+  A.acquire(conflict_AC).release(conflict_AC);
+  C.acquire(conflict_AC).release(conflict_AC);
+  
+  executor.run(taskflow).wait();
+
+  REQUIRE(counter == 3);
+  
+  for(size_t i=0; i<10; i++) {
+    executor.run_n(taskflow, 10);
+  }
+  executor.wait_for_all();
+
+  REQUIRE(counter == 303);
+}
+
+TEST_CASE("ConflictGraph.1thread") {
+  conflict_graph(1);
+}
+
+TEST_CASE("ConflictGraph.2threads") {
+  conflict_graph(2);
+}
+
+TEST_CASE("ConflictGraph.3threads") {
+  conflict_graph(3);
+}
+
+TEST_CASE("ConflictGraph.4threads") {
+  conflict_graph(4);
+}

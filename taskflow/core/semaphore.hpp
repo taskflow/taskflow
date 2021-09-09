@@ -74,18 +74,18 @@ class Semaphore {
     /**
     @brief constructs a semaphore with the given counter
     */
-    explicit Semaphore(int max_workers);
+    explicit Semaphore(size_t max_workers);
     
     /**
     @brief queries the counter value (not thread-safe during the run)
     */
-    int count() const;
+    size_t count() const;
     
   private:
 
     std::mutex _mtx;
 
-    int _counter;
+    size_t _counter;
 
     std::vector<Node*> _waiters;
     
@@ -94,7 +94,7 @@ class Semaphore {
     std::vector<Node*> _release();
 };
 
-inline Semaphore::Semaphore(int max_workers) : 
+inline Semaphore::Semaphore(size_t max_workers) : 
   _counter(max_workers) {
 }
     
@@ -117,7 +117,7 @@ inline std::vector<Node*> Semaphore::_release() {
   return r;
 }
 
-inline int Semaphore::count() const {
+inline size_t Semaphore::count() const {
   return _counter;
 }
 

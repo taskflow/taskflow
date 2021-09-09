@@ -53,7 +53,7 @@ class CriticalSection : public Semaphore {
     /**
     @brief constructs a critical region of a limited number of workers
     */
-    explicit CriticalSection(int max_workers = 1);
+    explicit CriticalSection(size_t max_workers = 1);
     
     /**
     @brief adds a task into the critical region
@@ -62,7 +62,7 @@ class CriticalSection : public Semaphore {
     void add(Tasks...tasks);
 };
 
-inline CriticalSection::CriticalSection(int max_workers) : 
+inline CriticalSection::CriticalSection(size_t max_workers) : 
   Semaphore {max_workers} {
 }
 

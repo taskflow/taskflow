@@ -24,7 +24,7 @@
 Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_summary">
 <title>Release Summary</title>
-<para>This release has resolved data race issues and incorporated essential sanitizers into the <ulink url="https://github.com/taskflow/taskflow/actions">continuous integration workflows</ulink> to detect data race, illegal memory access, and memory leak of the Taskflow codebase.</para></sect1>
+<para>This release has resolved data race issues reported by <ulink url="https://github.com/google/sanitizers">tsan</ulink> and has incorporated essential sanitizers into the <ulink url="https://github.com/taskflow/taskflow/actions">continuous integration workflows</ulink> for detecting data race, illegal memory access, and memory leak of the Taskflow codebase.</para></sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_new_features">
 <title>New Features</title>
 <sect2 id="release-3-3-0_1release-3-3-0_taskflow_core">
@@ -66,6 +66,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <listitem><para><ref refid="install_1BAIBuildSanitizers" kindref="member">Build Sanitizers</ref></para></listitem></itemizedlist>
 </para></listitem><listitem><para>Revised <ref refid="StaticTasking" kindref="compound">Static Tasking</ref><itemizedlist>
 <listitem><para><ref refid="StaticTasking_1AttachUserDataToATask" kindref="member">Attach User Data to a Task</ref></para></listitem></itemizedlist>
+</para></listitem><listitem><para>Revised <ref refid="GPUTaskingcudaFlow" kindref="compound">GPU Tasking (cudaFlow)</ref></para></listitem><listitem><para>Revised <ref refid="GPUTaskingcudaFlowCapturer" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref></para></listitem><listitem><para>Revised <ref refid="LimitTheMaximumConcurrency" kindref="compound">Limit the Maximum Concurrency</ref><itemizedlist>
+<listitem><para><ref refid="LimitTheMaximumConcurrency_1DefineAConflictGraph" kindref="member">Define a Conflict Graph</ref></para></listitem></itemizedlist>
 </para></listitem></itemizedlist>
 </para></sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_miscellaneous_items">

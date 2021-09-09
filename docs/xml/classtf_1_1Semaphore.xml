@@ -33,9 +33,9 @@
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" line="86" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="86" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classtf_1_1Semaphore_1a895f01222afdc86d9d475d0d9c15524b" prot="private" static="no" mutable="no">
-        <type>int</type>
-        <definition>int tf::Semaphore::_counter</definition>
+      <memberdef kind="variable" id="classtf_1_1Semaphore_1a385c4e1622677e20bb53b01c8eb85e9b" prot="private" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t tf::Semaphore::_counter</definition>
         <argsstring></argsstring>
         <name>_counter</name>
         <briefdescription>
@@ -61,13 +61,13 @@
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
-      <memberdef kind="function" id="classtf_1_1Semaphore_1a383f31970a822941988f1641da914302" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Semaphore_1a70ffe5c1611dba350d105b70377f8cd2" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::Semaphore::Semaphore</definition>
-        <argsstring>(int max_workers)</argsstring>
+        <argsstring>(size_t max_workers)</argsstring>
         <name>Semaphore</name>
         <param>
-          <type>int</type>
+          <type>size_t</type>
           <declname>max_workers</declname>
         </param>
         <briefdescription>
@@ -78,9 +78,9 @@
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" line="77" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="97" bodyend="99"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Semaphore_1ad6cad6f9cb643348adf27fc491c918ef" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type>int</type>
-        <definition>int tf::Semaphore::count</definition>
+      <memberdef kind="function" id="classtf_1_1Semaphore_1a8e4236750edd903ec0492231076ba2ba" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::Semaphore::count</definition>
         <argsstring>() const</argsstring>
         <name>count</name>
         <briefdescription>
@@ -161,14 +161,14 @@
     </inheritancegraph>
     <location file="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" line="68" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="68" bodyend="95"/>
     <listofallmembers>
-      <member refid="classtf_1_1Semaphore_1a895f01222afdc86d9d475d0d9c15524b" prot="private" virt="non-virtual"><scope>tf::Semaphore</scope><name>_counter</name></member>
+      <member refid="classtf_1_1Semaphore_1a385c4e1622677e20bb53b01c8eb85e9b" prot="private" virt="non-virtual"><scope>tf::Semaphore</scope><name>_counter</name></member>
       <member refid="classtf_1_1Semaphore_1a329424188b5287ca596f1af3f6db58f1" prot="private" virt="non-virtual"><scope>tf::Semaphore</scope><name>_mtx</name></member>
       <member refid="classtf_1_1Semaphore_1a47b8ed63d5deecb0878a0b9cc99da20e" prot="private" virt="non-virtual"><scope>tf::Semaphore</scope><name>_release</name></member>
       <member refid="classtf_1_1Semaphore_1aeb12ad1db7794e13829a0a62549d157b" prot="private" virt="non-virtual"><scope>tf::Semaphore</scope><name>_try_acquire_or_wait</name></member>
       <member refid="classtf_1_1Semaphore_1ab05d171c0852d2c6584d62de004f52fb" prot="private" virt="non-virtual"><scope>tf::Semaphore</scope><name>_waiters</name></member>
-      <member refid="classtf_1_1Semaphore_1ad6cad6f9cb643348adf27fc491c918ef" prot="public" virt="non-virtual"><scope>tf::Semaphore</scope><name>count</name></member>
+      <member refid="classtf_1_1Semaphore_1a8e4236750edd903ec0492231076ba2ba" prot="public" virt="non-virtual"><scope>tf::Semaphore</scope><name>count</name></member>
       <member refid="classtf_1_1Semaphore_1a6db9d28bd448a131448276ee03de1e6d" prot="private" virt="non-virtual"><scope>tf::Semaphore</scope><name>Node</name></member>
-      <member refid="classtf_1_1Semaphore_1a383f31970a822941988f1641da914302" prot="public" virt="non-virtual"><scope>tf::Semaphore</scope><name>Semaphore</name></member>
+      <member refid="classtf_1_1Semaphore_1a70ffe5c1611dba350d105b70377f8cd2" prot="public" virt="non-virtual"><scope>tf::Semaphore</scope><name>Semaphore</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>
