@@ -134,7 +134,7 @@
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>asynchronous<sp/>tasks<sp/>directly<sp/>from<sp/>an<sp/>executor</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">tf::future&lt;std::optional&lt;int&gt;&gt;<sp/>future<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">async</ref>([](){<sp/></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Future" kindref="compound">tf::Future&lt;std::optional&lt;int&gt;</ref>&gt;<sp/>future<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">async</ref>([](){<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;async<sp/>task<sp/>returns<sp/>1\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
 <codeline><highlight class="normal">});<sp/></highlight></codeline>

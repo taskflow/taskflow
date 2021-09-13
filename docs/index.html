@@ -444,7 +444,7 @@
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 
 <span class="c1">// create asynchronous tasks directly from an executor</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="n">future</span> <span class="o">=</span> <span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">([](){</span> 
+<span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="n">future</span> <span class="o">=</span> <span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">([](){</span> 
   <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;async task returns 1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
   <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
 <span class="p">});</span> 

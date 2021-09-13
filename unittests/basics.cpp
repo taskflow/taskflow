@@ -975,7 +975,7 @@ void for_each(unsigned W) {
   
   using namespace std::chrono_literals;
 
-  const auto mapper = [](unsigned w, size_t num_data, bool){
+  const auto mapper = [](unsigned w, size_t num_data){
     tf::Executor executor(w);
     tf::Taskflow tf;
     std::vector<int> vec(num_data, 0);
@@ -992,7 +992,7 @@ void for_each(unsigned W) {
     }
   };
 
-  const auto reducer = [](unsigned w, size_t num_data, bool){
+  const auto reducer = [](unsigned w, size_t num_data){
     tf::Executor executor(w);
     tf::Taskflow tf;
     std::vector<int> vec(num_data, 0);
@@ -1007,16 +1007,14 @@ void for_each(unsigned W) {
   // map
   SUBCASE("Map") {
     for(size_t num_data=1; num_data<=59049; num_data *= 3){
-      mapper(W, num_data, true);
-      mapper(W, num_data, false);
+      mapper(W, num_data);
     }
   }
 
   // reduce
   SUBCASE("Reduce") {
     for(size_t num_data=1; num_data<=59049; num_data *= 3){
-      reducer(W, num_data, true);
-      reducer(W, num_data, false);
+      reducer(W, num_data);
     }
   }
 }
