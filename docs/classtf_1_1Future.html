@@ -131,6 +131,7 @@
                 </tr>
               </tfoot>
             </table>
+<p>When you request a cancellation, the executor will stop scheduling any tasks onwards. Tasks that are already running will continue to finish (non-preemptive). You can call tf::Future::wait to wait for the cancellation to complete.</p>
           </div></section>
         </section>
       </div>

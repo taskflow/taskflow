@@ -662,7 +662,7 @@ The following example creates a syclFlow on the given queue to submit two kernel
 The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <computeroutput>[first, last)</computeroutput>. This method is equivalent to the parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr!=last;<sp/>itr++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(*itr);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>Arguments templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
+</programlisting></para><para>Arguments templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="341" column="1"/>
@@ -773,7 +773,7 @@ The task spawns a subflow that applies the callable object to each index in the 
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first,<sp/>i&gt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the integral index type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
+</programlisting></para><para>Arguments are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the integral index type.</para><para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="380" column="1"/>
@@ -878,7 +878,7 @@ The task spawns a subflow that applies the callable object to each index in the 
 The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>.</para><para>This method is equivalent to the parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr!=last;<sp/>itr++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>init<sp/>=<sp/>bop(init,<sp/>*itr);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
+</programlisting></para><para>Arguments are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="416" column="1"/>
@@ -1004,7 +1004,7 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 The task spawns a subflow to perform parallel reduction over <computeroutput>init</computeroutput> and the transformed elements in the range <computeroutput>[first, last)</computeroutput>. The reduced result is store in <computeroutput>init</computeroutput>.</para><para>This method is equivalent to the parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr!=last;<sp/>itr++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>init<sp/>=<sp/>bop(init,<sp/>uop(*itr));</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
+</programlisting></para><para>Arguments are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="455" column="1"/>
@@ -1084,7 +1084,7 @@ The task spawns a subflow to perform parallel reduction over <computeroutput>ini
 <para>comparison function object</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-The task spawns a subflow to parallelly sort elements in the range <computeroutput>[first, last)</computeroutput>.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref> for details. </para>        </detaileddescription>
+The task spawns a subflow to parallelly sort elements in the range <computeroutput>[first, last)</computeroutput>.</para><para>Arguments are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="480" column="1"/>
@@ -1143,7 +1143,7 @@ The task spawns a subflow to parallelly sort elements in the range <computeroutp
 <para>iterator to the end (exclusive)</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-The task spawns a subflow to parallelly sort elements in the range <computeroutput>[first, last)</computeroutput> using the <computeroutput>std::less&lt;T&gt;</computeroutput> comparator, where <computeroutput>T</computeroutput> is the dereferenced iterator type.</para><para>Arguments are templated to enable stateful passing using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref> for details. </para>        </detaileddescription>
+The task spawns a subflow to parallelly sort elements in the range <computeroutput>[first, last)</computeroutput> using the <computeroutput>std::less&lt;T&gt;</computeroutput> comparator, where <computeroutput>T</computeroutput> is the dereferenced iterator type.</para><para>Arguments are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para><para>Please refer to <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref> for details. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="501" column="1"/>
@@ -1193,7 +1193,7 @@ The task spawns a subflow to parallelly sort elements in the range <computeroutp
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>building methods of a task dependency graph </para>    </briefdescription>
+<para>class to build a task dependency graph </para>    </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>

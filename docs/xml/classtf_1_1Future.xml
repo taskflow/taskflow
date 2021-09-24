@@ -96,7 +96,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="503" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="503" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="508" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="508" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -185,11 +185,11 @@
         <briefdescription>
 <para>cancels the execution of the running taskflow associated with this future object </para>        </briefdescription>
         <detaileddescription>
-<para><simplesect kind="return"><para><computeroutput>true</computeroutput> if the execution can be cancelled or <computeroutput>false</computeroutput> if the execution has already completed </para></simplesect>
-</para>        </detaileddescription>
+<para><simplesect kind="return"><para><computeroutput>true</computeroutput> if the execution can be cancelled or <computeroutput>false</computeroutput> if the execution has already completed</para></simplesect>
+When you request a cancellation, the executor will stop scheduling any tasks onwards. Tasks that are already running will continue to finish (non-preemptive). You can call tf::Future::wait to wait for the cancellation to complete. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="499" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="518" bodyend="533"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="504" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="523" bodyend="538"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -217,7 +217,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="506" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="511" bodyend="514"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="511" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="516" bodyend="519"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -263,7 +263,7 @@
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="452" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="452" bodyend="507"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="452" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="452" bodyend="512"/>
     <listofallmembers>
       <member refid="classtf_1_1Future_1a55bc4d50e32e28e8c904a75f9e7c7e9f" prot="private" virt="non-virtual"><scope>tf::Future</scope><name>_handle</name></member>
       <member refid="classtf_1_1Future_1ac1ce88887a135442eeac7b2eb29d8e23" prot="private" virt="non-virtual"><scope>tf::Future</scope><name>ASYNC</name></member>

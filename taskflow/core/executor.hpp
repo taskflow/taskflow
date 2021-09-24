@@ -14,14 +14,38 @@ namespace tf {
 // Executor Definition
 // ----------------------------------------------------------------------------
 
-
 /** @class Executor
 
-@brief execution interface for running a taskflow graph
+@brief class to create an executor for running a taskflow graph
 
-An executor object manages a set of worker threads to run taskflow(s)
+An executor manages a set of worker threads to run one or multiple taskflows
 using an efficient work-stealing scheduling algorithm.
 
+@code{.cpp}
+// Declare an executor and a taskflow
+tf::Executor executor;
+tf::Taskflow taskflow;
+
+// Add three tasks into the taskflow
+tf::Task A = taskflow.emplace([] () { std::cout << "This is TaskA\n"; });
+tf::Task B = taskflow.emplace([] () { std::cout << "This is TaskB\n"; });
+tf::Task C = taskflow.emplace([] () { std::cout << "This is TaskC\n"; });
+
+// Build precedence between tasks
+A.precede(B, C); 
+
+tf::Future<void> fu = executor.run(taskflow);
+fu.wait();                // block until the execution completes
+
+executor.run(taskflow, [](){ std::cout << "end of 1 run"; }).wait();
+executor.run_n(taskflow, 4);
+executor.wait_for_all();  // block until all associated executions finish
+executor.run_n(taskflow, 4, [](){ std::cout << "end of 4 runs"; }).wait();
+executor.run_until(taskflow, [cnt=0] () mutable { return ++cnt == 10; });
+@endcode
+
+All the @c run methods are @em thread-safe. You can submit multiple
+taskflows at the same time to an executor from different threads.
 */
 class Executor {
 
@@ -36,12 +60,22 @@ class Executor {
   public:
 
     /**
-    @brief constructs the executor with N worker threads
+    @brief constructs the executor with @c N worker threads
+
+    The constructor spawns @c N worker threads to run tasks in a
+    work-stealing loop. The number of workers must be greater than zero
+    or an exception will be thrown.
+    By default, the number of worker threads is equal to the maximum
+    hardware concurrency returned by std::thread::hardware_concurrency.
     */
     explicit Executor(size_t N = std::thread::hardware_concurrency());
     
     /**
     @brief destructs the executor 
+
+    The destructor calls Executor::wait_for_all to wait for all submitted
+    taskflows to complete and then notifies all worker threads to stop
+    and join these threads.
     */
     ~Executor();
 
@@ -51,6 +85,8 @@ class Executor {
     @param taskflow a tf::Taskflow object
 
     @return a tf::Future that holds the result of the execution
+    
+    This member function is thread-safe.
     */
     tf::Future<void> run(Taskflow& taskflow);
     
@@ -62,6 +98,8 @@ class Executor {
     @return a tf::Future that holds the result of the execution
 
     The executor will take care of the lifetime of the moved taskflow.
+    
+    This member function is thread-safe.
     */
     tf::Future<void> run(Taskflow&& taskflow);
 
@@ -72,6 +110,8 @@ class Executor {
     @param callable a callable object to be invoked after this run
 
     @return a tf::Future that holds the result of the execution
+    
+    This member function is thread-safe.
     */
     template<typename C>
     tf::Future<void> run(Taskflow& taskflow, C&& callable);
@@ -85,6 +125,8 @@ class Executor {
     @return a tf::Future that holds the result of the execution
 
     The executor will take care of the lifetime of the moved taskflow.
+    
+    This member function is thread-safe.
     */
     template<typename C>
     tf::Future<void> run(Taskflow&& taskflow, C&& callable);
@@ -96,6 +138,8 @@ class Executor {
     @param N number of runs
 
     @return a tf::Future that holds the result of the execution
+    
+    This member function is thread-safe.
     */
     tf::Future<void> run_n(Taskflow& taskflow, size_t N);
     
@@ -108,6 +152,8 @@ class Executor {
     @return a tf::Future that holds the result of the execution
 
     The executor will take care of the lifetime of the moved taskflow.
+    
+    This member function is thread-safe.
     */
     tf::Future<void> run_n(Taskflow&& taskflow, size_t N);
 
@@ -119,6 +165,8 @@ class Executor {
     @param callable a callable object to be invoked after this run
 
     @return a tf::Future that holds the result of the execution
+    
+    This member function is thread-safe.
     */
     template<typename C>
     tf::Future<void> run_n(Taskflow& taskflow, size_t N, C&& callable);
@@ -131,6 +179,8 @@ class Executor {
     @param callable a callable object to be invoked after this run
 
     @return a tf::Future that holds the result of the execution
+    
+    This member function is thread-safe.
     */
     template<typename C>
     tf::Future<void> run_n(Taskflow&& taskflow, size_t N, C&& callable);
@@ -142,6 +192,8 @@ class Executor {
     @param pred a boolean predicate to return true for stop
 
     @return a tf::Future that holds the result of the execution
+    
+    This member function is thread-safe.
     */
     template<typename P>
     tf::Future<void> run_until(Taskflow& taskflow, P&& pred);
@@ -156,6 +208,8 @@ class Executor {
     @return a tf::Future that holds the result of the execution
     
     The executor will take care of the lifetime of a moved taskflow.
+    
+    This member function is thread-safe.
     */
     template<typename P>
     tf::Future<void> run_until(Taskflow&& taskflow, P&& pred);
@@ -169,6 +223,8 @@ class Executor {
     @param callable a callable object to be invoked after this run compltes
 
     @return a tf::Future that holds the result of the execution
+    
+    This member function is thread-safe.
     */
     template<typename P, typename C>
     tf::Future<void> run_until(Taskflow& taskflow, P&& pred, C&& callable);
@@ -184,17 +240,22 @@ class Executor {
     @return a tf::Future that holds the result of the execution
 
     The executor will take care of the lifetime of a moved taskflow.
+    
+    This member function is thread-safe.
     */
     template<typename P, typename C>
     tf::Future<void> run_until(Taskflow&& taskflow, P&& pred, C&& callable);
     
     /**
-    @brief wait for all pending graphs to complete
+    @brief wait for all tasks to complete
+
+    This member function waits until all submitted tasks 
+    (e.g., taskflows, asynchronous tasks) to finish.
     */
     void wait_for_all();
 
     /**
-    @brief queries the number of worker threads (can be zero)
+    @brief queries the number of worker threads
     */
     size_t num_workers() const;
     
@@ -214,7 +275,8 @@ class Executor {
     /**
     @brief queries the id of the caller thread in this executor
 
-    Each worker has an unique id from 0 to N-1 exclusive to the associated executor.
+    Each worker has an unique id in the range of 0 to N-1 associated with
+    its parent executor.
     If the caller thread does not belong to the executor, -1 is returned.
     */
     int this_worker_id() const;
@@ -232,20 +294,25 @@ class Executor {
 
     This method is thread-safe. Multiple threads can launch asynchronous tasks 
     at the same time.
+    
+    This member function is thread-safe.
     */
     template <typename F, typename... ArgsT>
     auto async(F&& f, ArgsT&&... args);
     
     /**
     @brief similar to tf::Executor::async but does not return a future object
+
+    This member function is more efficient than tf::Executor::async
+    and is encouraged to use when there is no data returned.
+
+    This member function is thread-safe.
     */
     template <typename F, typename... ArgsT>
     void silent_async(F&& f, ArgsT&&... args);
     
     /**
     @brief constructs an observer to inspect the activities of worker threads
-
-    Each executor manage a list of observers in shared ownership with callers.
     
     @tparam Observer observer type derived from tf::ObserverInterface
     @tparam ArgsT argument parameter pack
@@ -253,12 +320,21 @@ class Executor {
     @param args arguments to forward to the constructor of the observer
     
     @return a shared pointer to the created observer
+    
+    Each executor manages a list of observers with shared ownership with callers.
+    For each of these observers, the two member functions,
+    tf::ObserverInterface::on_entry and tf::ObserverInterface::on_exit
+    will be called before and after the execution of a task.
+
+    This member function is not thread-safe.
     */
     template <typename Observer, typename... ArgsT>
     std::shared_ptr<Observer> make_observer(ArgsT&&... args);
     
     /**
     @brief removes the associated observer
+
+    This member function is not thread-safe.
     */
     template <typename Observer>
     void remove_observer(std::shared_ptr<Observer> observer);

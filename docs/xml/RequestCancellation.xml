@@ -27,7 +27,7 @@
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>wait<sp/>until<sp/>the<sp/>cancellation<sp/>completes</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">fu.get();</highlight></codeline>
 </programlisting></para><para><simplesect kind="note"><para><ref refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kindref="member">tf::Future::cancel</ref> is <emphasis>non-deterministic</emphasis> and <emphasis>out-of-order</emphasis>.</para></simplesect>
-When you request a cancellation, the executor will stop scheduling the rest tasks of the taskflow. Tasks that are already running at the time of requesting cancellation will continue to finish, but their successor tasks will not be scheduled to run. A cancellation is considered complete when all these running tasks finish. To wait for a cancellation to complete, you may explicitly call <computeroutput>tf::Future::get</computeroutput>.</para><para><simplesect kind="attention"><para>It is your responsibility to ensure the taskflow remains alive before the cancellation completes.</para></simplesect>
+When you request a cancellation, the executor will stop scheduling the rest tasks of the taskflow. Tasks that are already running will continue to finish, but their successor tasks will not be scheduled to run. A cancellation is considered complete when all these running tasks finish. To wait for a cancellation to complete, you may explicitly call <computeroutput>tf::Future::get</computeroutput>.</para><para><simplesect kind="attention"><para>It is your responsibility to ensure that the taskflow remains alive before the cancellation completes.</para></simplesect>
 For instance, the following code results in undefined behavior:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
@@ -102,8 +102,8 @@ For instance, the following code results in undefined behavior:</para><para><pro
 <codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;asynchronous<sp/>task<sp/>1<sp/>returns<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>ret.value()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para></sect1>
-<sect1 id="RequestCancellation_1LimitationsOfCancellation">
-<title>Limitations of Cancellation</title>
+<sect1 id="RequestCancellation_1UnderstandTheLimitationsOfCancellation">
+<title>Understand the Limitations of Cancellation</title>
 <para>Canceling the execution of a running taskflow has the following limitations:<itemizedlist>
 <listitem><para>Cancellation is non-preemptive. A running task will not be cancelled until it finishes.</para></listitem><listitem><para>Cancelling a taskflow with tasks acquiring and/or releasing <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> results is currently not supported.</para></listitem></itemizedlist>
 </para><para>We may overcome these limitations in the future releases. </para></sect1>

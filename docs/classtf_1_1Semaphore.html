@@ -80,7 +80,7 @@
   <span class="n">task</span><span class="p">.</span><span class="n">release</span><span class="p">(</span><span class="n">semaphore</span><span class="p">);</span>
 <span class="p">}</span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The above example creates five tasks with no dependencies between them. Under normal circumstances, the five tasks would be executed concurrently. However, this example has a semaphore with initial count 1, and all tasks need to acquire that semaphore before running and release that semaphore after they are done. This organization limits the number of concurrently running tasks to only one.</p>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The above example creates five tasks with no dependencies between them. Under normal circumstances, the five tasks would be executed concurrently. However, this example has a semaphore with initial count 1, and all tasks need to acquire that semaphore before running and release that semaphore after they are done. This arrangement limits the number of concurrently running tasks to only one.</p>
         <section id="derived-classes">
           <h2><a href="#derived-classes">Derived classes</a></h2>
           <dl class="m-doc">

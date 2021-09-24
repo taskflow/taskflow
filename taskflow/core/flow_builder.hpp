@@ -12,7 +12,7 @@ namespace tf {
 /** 
 @class FlowBuilder
 
-@brief building methods of a task dependency graph
+@brief class to build a task dependency graph
 
 */
 class FlowBuilder {
@@ -331,7 +331,7 @@ class FlowBuilder {
     }
     @endcode
     
-    Arguments templated to enable stateful passing using std::reference_wrapper. 
+    Arguments templated to enable stateful range using std::reference_wrapper. 
     The callable needs to take a single argument of 
     the dereferenced iterator type.
 
@@ -371,7 +371,7 @@ class FlowBuilder {
     }
     @endcode
 
-    Arguments are templated to enable stateful passing using std::reference_wrapper.
+    Arguments are templated to enable stateful range using std::reference_wrapper.
     The callable needs to take a single argument of the integral index type.
     
     Please refer to @ref ParallelIterations for details.
@@ -408,7 +408,7 @@ class FlowBuilder {
     }
     @endcode
     
-    Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    Arguments are templated to enable stateful range using std::reference_wrapper. 
 
     Please refer to @ref ParallelReduction for details.
     */
@@ -447,7 +447,7 @@ class FlowBuilder {
     }
     @endcode
     
-    Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    Arguments are templated to enable stateful range using std::reference_wrapper. 
    
     Please refer to @ref ParallelReduction for details. 
     */
@@ -472,7 +472,7 @@ class FlowBuilder {
     The task spawns a subflow to parallelly sort elements in the range 
     <tt>[first, last)</tt>. 
     
-    Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    Arguments are templated to enable stateful range using std::reference_wrapper. 
 
     Please refer to @ref ParallelSort for details.
     */
@@ -493,7 +493,7 @@ class FlowBuilder {
     <tt>[first, last)</tt> using the @c std::less<T> comparator, 
     where @c T is the dereferenced iterator type.
 
-    Arguments are templated to enable stateful passing using std::reference_wrapper. 
+    Arguments are templated to enable stateful range using std::reference_wrapper. 
     
     Please refer to @ref ParallelSort for details.
      */

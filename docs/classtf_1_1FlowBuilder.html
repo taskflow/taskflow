@@ -48,7 +48,7 @@
         <h1>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>FlowBuilder <span class="m-thin">class</span>
         </h1>
-        <p>building methods of a task dependency graph</p>
+        <p>class to build a task dependency graph</p>
         <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -698,7 +698,7 @@
             </table>
 <p>The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <code>[first, last)</code>. This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">itr</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">itr</span><span class="o">!=</span><span class="n">last</span><span class="p">;</span> <span class="n">itr</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">);</span>
-<span class="p">}</span></pre><p>Arguments templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the dereferenced iterator type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
+<span class="p">}</span></pre><p>Arguments templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the dereferenced iterator type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="ac17879c60511d573e35f73ef3f620d8d"><div>
             <h3>
@@ -769,7 +769,7 @@
 <span class="c1">// case 2: step size is negative</span>
 <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">,</span> <span class="n">i</span><span class="o">&gt;</span><span class="n">last</span><span class="p">;</span> <span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
-<span class="p">}</span></pre><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the integral index type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
+<span class="p">}</span></pre><p>Arguments are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the integral index type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="a7daf66bf41bd60dc35ed7bbb754c81b3"><div>
             <h3>
@@ -834,7 +834,7 @@
             </table>
 <p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>.</p><p>This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">itr</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">itr</span><span class="o">!=</span><span class="n">last</span><span class="p">;</span> <span class="n">itr</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">init</span> <span class="o">=</span> <span class="n">bop</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="o">*</span><span class="n">itr</span><span class="p">);</span>
-<span class="p">}</span></pre><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
+<span class="p">}</span></pre><p>Arguments are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="af41e6cf7585ad9d55493fa7d6ca62aa3"><div>
             <h3>
@@ -908,7 +908,7 @@
             </table>
 <p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>.</p><p>This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">itr</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">itr</span><span class="o">!=</span><span class="n">last</span><span class="p">;</span> <span class="n">itr</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">init</span> <span class="o">=</span> <span class="n">bop</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">));</span>
-<span class="p">}</span></pre><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
+<span class="p">}</span></pre><p>Arguments are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="a7ef36ae799b89a5a37a2c5b09b12349c"><div>
             <h3>
@@ -956,7 +956,7 @@
                 </tr>
               </tbody>
             </table>
-<p>The task spawns a subflow to parallelly sort elements in the range <code>[first, last)</code>.</p><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelSort.html" class="m-doc">Parallel Sort</a> for details.</p>
+<p>The task spawns a subflow to parallelly sort elements in the range <code>[first, last)</code>.</p><p>Arguments are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelSort.html" class="m-doc">Parallel Sort</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="a559afa5066782bc6c38738260e3d4c2e"><div>
             <h3>
@@ -995,7 +995,7 @@
                 </tr>
               </tbody>
             </table>
-<p>The task spawns a subflow to parallelly sort elements in the range <code>[first, last)</code> using the <code>std::less&lt;T&gt;</code> comparator, where <code>T</code> is the dereferenced iterator type.</p><p>Arguments are templated to enable stateful passing using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelSort.html" class="m-doc">Parallel Sort</a> for details.</p>
+<p>The task spawns a subflow to parallelly sort elements in the range <code>[first, last)</code> using the <code>std::less&lt;T&gt;</code> comparator, where <code>T</code> is the dereferenced iterator type.</p><p>Arguments are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelSort.html" class="m-doc">Parallel Sort</a> for details.</p>
           </div></section>
         </section>
       </div>
