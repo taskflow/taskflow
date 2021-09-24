@@ -62,7 +62,7 @@ Under normal circumstances, the five tasks would be executed concurrently.
 However, this example has a semaphore with initial count 1,
 and all tasks need to acquire that semaphore before running and release that
 semaphore after they are done.
-This organization limits the number of concurrently running tasks to only one.
+This arrangement limits the number of concurrently running tasks to only one.
 
 */
 class Semaphore {

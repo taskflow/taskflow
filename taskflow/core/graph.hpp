@@ -3,7 +3,6 @@
 #include "../utility/iterator.hpp"
 #include "../utility/object_pool.hpp"
 #include "../utility/traits.hpp"
-#include "../utility/singleton.hpp"
 #include "../utility/os.hpp"
 #include "../utility/math.hpp"
 #include "../utility/small_vector.hpp"
@@ -222,14 +221,14 @@ class Node {
     SmallVector<Node*> _successors;
     SmallVector<Node*> _dependents;
 
-    std::unique_ptr<Semaphores> _semaphores;
-
     Topology* _topology {nullptr};
     
     Node* _parent {nullptr};
 
     std::atomic<int> _state {0};
     std::atomic<size_t> _join_counter {0};
+    
+    std::unique_ptr<Semaphores> _semaphores;
     
     void _precede(Node*);
     void _set_up_join_counter();
@@ -472,7 +471,8 @@ inline std::vector<Node*> Node::_release_all() {
     auto r = sem->_release();
     nodes.insert(end(nodes), begin(r), end(r));
   }
-  return nodes;
+
+  return std::move(nodes);
 }
 
 // ----------------------------------------------------------------------------

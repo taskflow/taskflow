@@ -495,6 +495,11 @@ class Future : public std::future<T>  {
 
     @return @c true if the execution can be cancelled or
             @c false if the execution has already completed
+
+    When you request a cancellation, the executor will stop scheduling
+    any tasks onwards. Tasks that are already running will continue to finish
+    (non-preemptive).
+    You can call tf::Future::wait to wait for the cancellation to complete.
     */
     bool cancel();
 

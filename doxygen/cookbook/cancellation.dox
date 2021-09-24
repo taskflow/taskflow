@@ -42,15 +42,14 @@ tf::Future::cancel is @em non-deterministic and @em out-of-order.
 
 When you request a cancellation, the executor will stop scheduling 
 the rest tasks of the taskflow.
-Tasks that are already running at the time of requesting cancellation 
-will continue to finish, 
+Tasks that are already running will continue to finish, 
 but their successor tasks will not be scheduled to run.
 A cancellation is considered complete when all these running tasks finish.
 To wait for a cancellation to complete, 
 you may explicitly call @c tf::Future::get.
 
 @attention
-It is your responsibility to ensure the taskflow remains alive before the 
+It is your responsibility to ensure that the taskflow remains alive before the 
 cancellation completes.
 
 For instance, the following code results in undefined behavior:
@@ -161,7 +160,7 @@ else {
 }
 @endcode
 
-@section LimitationsOfCancellation Limitations of Cancellation
+@section UnderstandTheLimitationsOfCancellation Understand the Limitations of Cancellation
 
 Canceling the execution of a running taskflow has the following limitations:
   + Cancellation is non-preemptive. A running task will not be cancelled until it finishes.

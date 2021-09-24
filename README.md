@@ -449,12 +449,9 @@ You are completely free to re-distribute your work derived from Taskflow.
 [Cpp Conference 2018]:   https://github.com/CppCon/CppCon2018
 [IPDPS19]:               https://tsung-wei-huang.github.io/papers/ipdps19.pdf
 [TPDS21]:                https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf
-
-
 [cuda-zone]:             https://developer.nvidia.com/cuda-zone
 [nvcc]:                  https://developer.nvidia.com/cuda-llvm-compiler
 [cudaGraph]:             https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__GRAPH.html
-
 [Firestorm]:             https://github.com/ForgeMistress/Firestorm
 [Shiva]:                 https://shiva.gitbook.io/project/shiva
 [PID Framework]:         http://pid.lirmm.net/pid-framework/index.html
