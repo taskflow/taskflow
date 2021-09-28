@@ -472,7 +472,7 @@ inline std::vector<Node*> Node::_release_all() {
   for(const auto& sem : to_release) {
     auto r = sem->_release();
     nodes.insert(end(nodes), begin(r), end(r));
-  }
+  
 
   return nodes;
 }
