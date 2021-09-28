@@ -806,7 +806,7 @@ SizeType Deserializer<Stream, SizeType>::_variant_helper(size_t i, std::variant<
       );
       v = type();
     }
-    return _load(std::get<type>(v));
+    return _load(*std::get_if<type>(&v));
   }
   return _variant_helper<I+1, ArgsT...>(i-1, v);
 }

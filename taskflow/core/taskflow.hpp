@@ -328,15 +328,14 @@ inline void Taskflow::_dump(
       // case edge is dashed
       os << 'p' << node << " -> p" << node->_successors[s] 
          << " [style=dashed label=\"" << s << "\"];\n";
-    }
-    else {
-      os << 'p' << node << " -> p" << node->_successors[s] << ";\n";
+    } else {
+        os << 'p' << node << " -> p" << node->_successors[s] << ";\n";
     }
   }
-  
+
   // subflow join node
-  if(node->_parent && node->_successors.size() == 0) {
-    os << 'p' << node << " -> p" << node->_parent << ";\n";
+  if (node->_parent && node->_successors.size() == 0) {
+      os << 'p' << node << " -> p" << node->_parent << ";\n";
   }
 
   switch(node->_handle.index()) {
@@ -387,7 +386,6 @@ inline void Taskflow::_dump(
     }
     // module task
     else {
-
       auto module = std::get_if<Node::Module>(&n->_handle)->module;
 
       os << 'p' << n << "[shape=box3d, color=blue, label=\"";
@@ -539,7 +537,3 @@ bool Future<T>::cancel() {
 
 
 }  // end of namespace tf. ---------------------------------------------------
-
-
-
-

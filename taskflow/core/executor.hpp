@@ -516,6 +516,7 @@ inline int Executor::this_worker_id() const {
 
 // Procedure: _spawn
 inline void Executor::_spawn(size_t N) {
+
   for(size_t id=0; id<N; ++id) {
 
     _workers[id]._id = id;
@@ -1446,6 +1447,3 @@ void Subflow::silent_async(F&& f, ArgsT&&... args) {
 
 
 }  // end of namespace tf -----------------------------------------------------
-
-
-
