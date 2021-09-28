@@ -20,6 +20,7 @@ list(APPEND TF_EXAMPLES
   limited_concurrency
   cancel
   cancel_async
+  pipeline
 )
 
 foreach(example IN LISTS TF_EXAMPLES)
