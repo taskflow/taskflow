@@ -472,7 +472,7 @@ inline std::vector<Node*> Node::_release_all() {
     nodes.insert(end(nodes), begin(r), end(r));
   }
 
-  return std::move(nodes);
+  return nodes;
 }
 
 // ----------------------------------------------------------------------------
