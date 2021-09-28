@@ -337,7 +337,7 @@ inline Node::~Node() {
 
   if(_handle.index() == DYNAMIC) {
 
-    auto& subgraph = std::get<Dynamic>(_handle).subgraph;
+    auto& subgraph = std::get_if<Dynamic>(&_handle)->subgraph;
 
     std::vector<Node*> nodes;
     nodes.reserve(subgraph.size());
@@ -353,7 +353,7 @@ inline Node::~Node() {
 
       if(nodes[i]->_handle.index() == DYNAMIC) {
 
-        auto& sbg = std::get<Dynamic>(nodes[i]->_handle).subgraph;
+        auto& sbg = std::get_if<Dynamic>(&(nodes[i]->_handle))->subgraph;
         std::move(
           sbg._nodes.begin(), sbg._nodes.end(), std::back_inserter(nodes)
         );
@@ -416,8 +416,8 @@ inline const std::string& Node::name() const {
 // Function: _is_cancelled
 inline bool Node::_is_cancelled() const {
   if(_handle.index() == Node::ASYNC) {
-    auto& h = std::get<Node::Async>(_handle);
-    if(h.topology && h.topology->_is_cancelled) {
+    auto h = std::get_if<Node::Async>(&_handle);
+    if(h->topology && h->topology->_is_cancelled) {
       return true;
     }
   }

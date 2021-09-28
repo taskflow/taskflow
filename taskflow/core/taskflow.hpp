@@ -342,7 +342,7 @@ inline void Taskflow::_dump(
   switch(node->_handle.index()) {
 
     case Node::DYNAMIC: {
-      auto& sbg = std::get<Node::Dynamic>(node->_handle).subgraph;
+      auto& sbg = std::get_if<Node::Dynamic>(&node->_handle)->subgraph;
       if(!sbg.empty()) {
         os << "subgraph cluster_p" << node << " {\nlabel=\"Subflow: ";
         if(node->_name.empty()) os << 'p' << node;
@@ -356,14 +356,14 @@ inline void Taskflow::_dump(
     break;
     
     case Node::CUDAFLOW: {
-      std::get<Node::cudaFlow>(node->_handle).graph->dump(
+      std::get_if<Node::cudaFlow>(&node->_handle)->graph->dump(
         os, node, node->_name
       );
     }
     break;
     
     case Node::SYCLFLOW: {
-      std::get<Node::syclFlow>(node->_handle).graph->dump(
+      std::get_if<Node::syclFlow>(&node->_handle)->graph->dump(
         os, node, node->_name
       );
     }
@@ -388,7 +388,7 @@ inline void Taskflow::_dump(
     // module task
     else {
 
-      auto module = std::get<Node::Module>(n->_handle).module;
+      auto module = std::get_if<Node::Module>(&n->_handle)->module;
 
       os << 'p' << n << "[shape=box3d, color=blue, label=\"";
       if(n->_name.empty()) os << n;

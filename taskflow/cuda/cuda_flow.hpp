@@ -1150,7 +1150,7 @@ class cudaFlow {
 // Construct a standalone cudaFlow
 inline cudaFlow::cudaFlow() :
   _handle {std::in_place_type_t<External>{}},
-  _graph  {std::get<External>(_handle).graph} {
+  _graph  {std::get_if<External>(&_handle)->graph} {
   
   TF_CHECK_CUDA(
     cudaGraphCreate(&_graph._native_handle, 0), 
@@ -1250,11 +1250,11 @@ cudaTask cudaFlow::host(C&& c) {
     _graph, std::in_place_type_t<cudaNode::Host>{}, std::forward<C>(c)
   );
 
-  auto& h = std::get<cudaNode::Host>(node->_handle);
+  auto h = std::get_if<cudaNode::Host>(&node->_handle);
 
   cudaHostNodeParams p;
   p.fn = cudaNode::Host::callback;
-  p.userData = &h;
+  p.userData = h;
 
   TF_CHECK_CUDA(
     cudaGraphAddHostNode(
@@ -1412,9 +1412,9 @@ void cudaFlow::host(cudaTask task, C&& c) {
     TF_THROW(task, " is not a host task");
   }
 
-  auto& h = std::get<cudaNode::Host>(task._node->_handle);
+  auto h = std::get_if<cudaNode::Host>(&task._node->_handle);
 
-  h.func = std::forward<C>(c);
+  h->func = std::forward<C>(c);
 }
 
 // Function: update kernel parameters
@@ -1551,10 +1551,10 @@ void cudaFlow::capture(cudaTask task, C c) {
 
   // insert a subflow node
   // construct a captured flow from the callable
-  auto& node_handle = std::get<cudaNode::Subflow>(task._node->_handle);
-  node_handle.graph.clear();
+  auto node_handle = std::get_if<cudaNode::Subflow>(&task._node->_handle);
+  node_handle->graph.clear();
 
-  cudaFlowCapturer capturer(node_handle.graph);
+  cudaFlowCapturer capturer(node_handle->graph);
 
   c(capturer);
   
@@ -1586,9 +1586,9 @@ cudaTask cudaFlow::capture(C&& c) {
   );
   
   // construct a captured flow from the callable
-  auto& node_handle = std::get<cudaNode::Subflow>(node->_handle);
-  node_handle.graph.clear();
-  cudaFlowCapturer capturer(node_handle.graph);
+  auto node_handle = std::get_if<cudaNode::Subflow>(&node->_handle);
+  node_handle->graph.clear();
+  cudaFlowCapturer capturer(node_handle->graph);
 
   c(capturer);
   
@@ -1691,9 +1691,9 @@ void Executor::_invoke_cudaflow_task_entry(Node* node, C&& c) {
     std::is_invocable_r_v<void, C, cudaFlow&>, cudaFlow, cudaFlowCapturer
   >;
   
-  auto& h = std::get<Node::cudaFlow>(node->_handle);
+  auto h = std::get_if<Node::cudaFlow>(&node->_handle);
 
-  cudaGraph* g = dynamic_cast<cudaGraph*>(h.graph.get());
+  cudaGraph* g = dynamic_cast<cudaGraph*>(h->graph.get());
   
   g->clear();
 
@@ -1714,9 +1714,9 @@ template <typename C,
 >
 void Executor::_invoke_cudaflow_task_entry(Node* node, C&& c) {
 
-  auto& h = std::get<Node::cudaFlow>(node->_handle);
+  auto h = std::get_if<Node::cudaFlow>(&node->_handle);
 
-  cudaGraph* g = dynamic_cast<cudaGraph*>(h.graph.get());
+  cudaGraph* g = dynamic_cast<cudaGraph*>(h->graph.get());
   
   g->clear();
 
@@ -1735,9 +1735,9 @@ template <typename C,
 >
 void Executor::_invoke_cudaflow_task_entry(Node* node, C&& c) {
 
-  auto& h = std::get<Node::cudaFlow>(node->_handle);
+  auto h = std::get_if<Node::cudaFlow>(&node->_handle);
 
-  cudaGraph* g = dynamic_cast<cudaGraph*>(h.graph.get());
+  cudaGraph* g = dynamic_cast<cudaGraph*>(h->graph.get());
   
   g->clear();
   

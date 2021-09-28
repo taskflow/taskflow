@@ -513,7 +513,7 @@ inline syclFlow::syclFlow() :
     _queue.get_device().get_info<sycl::info::device::max_work_group_size>()
   },
   _handle {std::in_place_type_t<External>{}},
-  _graph  {std::get<External>(_handle).graph} {
+  _graph  {std::get_if<External>(&_handle)->graph} {
 }
 
 // constructor
@@ -523,7 +523,7 @@ inline syclFlow::syclFlow(sycl::queue queue) :
     _queue.get_device().get_info<sycl::info::device::max_work_group_size>()
   },
   _handle {std::in_place_type_t<External>{}},
-  _graph  {std::get<External>(_handle).graph} {
+  _graph  {std::get_if<External>(&_handle)->graph} {
 }
 
 // Construct the syclFlow from executor (internal graph)
@@ -672,7 +672,7 @@ void syclFlow::offload_until(P&& predicate) {
                 h.depends_on(p->_event);
               }
             }
-            std::get<syclNode::CommandGroupHandler>(u->_handle).work(h);
+            std::get_if<syclNode::CommandGroupHandler>(&u->_handle)->work(h);
           });
         break;
         
@@ -685,7 +685,7 @@ void syclFlow::offload_until(P&& predicate) {
               events.push_back(p->_event);
             }
           }
-          u->_event = std::get<syclNode::DependentSubmit>(u->_handle).work(
+          u->_event = std::get_if<syclNode::DependentSubmit>(&u->_handle)->work(
             _queue, std::move(events)
           );
         break;
@@ -714,7 +714,7 @@ template <typename F, std::enable_if_t<
   std::is_invocable_r_v<void, F, sycl::handler&>, void>*
 >
 void syclFlow::on(syclTask task, F&& f) {
-  std::get<syclNode::CommandGroupHandler>((task._node)->_handle).work = 
+  std::get_if<syclNode::CommandGroupHandler>(&task._node->_handle)->work = 
     std::forward<F>(f);
 }
 
@@ -723,7 +723,7 @@ template <typename F, std::enable_if_t<std::is_invocable_r_v<
   sycl::event, F, sycl::queue&, std::vector<sycl::event>>, void
 >*>
 void syclFlow::on(syclTask task, F&& f) {
-  std::get<syclNode::DependentSubmit>((task._node)->_handle).work =
+  std::get_if<syclNode::DependentSubmit>(&task._node->_handle)->work =
     std::forward<F>(f);
 }
     
@@ -805,9 +805,9 @@ template <typename C, typename Q,
 >
 void Executor::_invoke_syclflow_task_entry(Node* node, C&& c, Q& queue) {
 
-  auto& h = std::get<Node::syclFlow>(node->_handle);
+  auto h = std::get_if<Node::syclFlow>(&node->_handle);
 
-  syclGraph* g = dynamic_cast<syclGraph*>(h.graph.get());
+  syclGraph* g = dynamic_cast<syclGraph*>(h->graph.get());
   
   g->clear();
 
