@@ -336,31 +336,31 @@ inline Node::~Node() {
   // this is to avoid stack overflow
 
   if(_handle.index() == DYNAMIC) {
+      // using std::get_if instead of std::get makes this compatible with older macOS versions
+      // the result of std::get_if is guaranteed to be non-null due to the index check above
+      auto& subgraph = std::get_if<Dynamic>(&_handle)->subgraph;
 
-    auto& subgraph = std::get<Dynamic>(_handle).subgraph;
+      std::vector<Node*> nodes;
+      nodes.reserve(subgraph.size());
 
-    std::vector<Node*> nodes;
-    nodes.reserve(subgraph.size());
+      std::move(
+              subgraph._nodes.begin(), subgraph._nodes.end(), std::back_inserter(nodes));
+      subgraph._nodes.clear();
 
-    std::move(
-      subgraph._nodes.begin(), subgraph._nodes.end(), std::back_inserter(nodes)
-    );
-    subgraph._nodes.clear();
+      size_t i = 0;
 
-    size_t i = 0;
-
-    while(i < nodes.size()) {
+      while(i < nodes.size()) {
 
       if(nodes[i]->_handle.index() == DYNAMIC) {
+              // using std::get_if instead of std::get makes this compatible with older macOS versions
+              // the result of std::get_if is guaranteed to be non-null due to the index check above
+              auto& sbg = std::get_if<Dynamic>(&(nodes[i]->_handle))->subgraph;
+              std::move(
+                      sbg._nodes.begin(), sbg._nodes.end(), std::back_inserter(nodes));
+              sbg._nodes.clear();
+          }
 
-        auto& sbg = std::get<Dynamic>(nodes[i]->_handle).subgraph;
-        std::move(
-          sbg._nodes.begin(), sbg._nodes.end(), std::back_inserter(nodes)
-        );
-        sbg._nodes.clear();
-      }
-
-      ++i;
+          ++i;
     }
       
     //auto& np = Graph::_node_pool();
@@ -416,12 +416,14 @@ inline const std::string& Node::name() const {
 // Function: _is_cancelled
 inline bool Node::_is_cancelled() const {
   if(_handle.index() == Node::ASYNC) {
-    auto& h = std::get<Node::Async>(_handle);
-    if(h.topology && h.topology->_is_cancelled) {
-      return true;
+        // using std::get_if instead of std::get makes this compatible with older macOS versions
+        // the result of std::get_if is guaranteed to be non-null due to the index check above
+        auto& h = *(std::get_if<Node::Async>(&_handle));
+        if (h.topology && h.topology->_is_cancelled) {
+            return true;
+        }
     }
-  }
-  // async tasks spawned from subflow does not have topology
+    // async tasks spawned from subflow does not have topology
   return _topology && _topology->_is_cancelled;
 }
 
@@ -472,7 +474,7 @@ inline std::vector<Node*> Node::_release_all() {
     nodes.insert(end(nodes), begin(r), end(r));
   }
 
-  return std::move(nodes);
+  return nodes;
 }
 
 // ----------------------------------------------------------------------------
@@ -565,8 +567,3 @@ inline void Graph::erase(Node* node) {
 }
 
 }  // end of namespace tf. ---------------------------------------------------
-
-
-
-
-

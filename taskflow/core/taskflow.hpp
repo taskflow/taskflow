@@ -328,44 +328,43 @@ inline void Taskflow::_dump(
       // case edge is dashed
       os << 'p' << node << " -> p" << node->_successors[s] 
          << " [style=dashed label=\"" << s << "\"];\n";
-    }
-    else {
-      os << 'p' << node << " -> p" << node->_successors[s] << ";\n";
+    } else {
+        os << 'p' << node << " -> p" << node->_successors[s] << ";\n";
     }
   }
-  
+
   // subflow join node
-  if(node->_parent && node->_successors.size() == 0) {
-    os << 'p' << node << " -> p" << node->_parent << ";\n";
+  if (node->_parent && node->_successors.size() == 0) {
+      os << 'p' << node << " -> p" << node->_parent << ";\n";
   }
 
-  switch(node->_handle.index()) {
+  // using std::get_if instead of std::get in the following makes this compatible with older macOS versions
+  // the result of std::get_if is guaranteed to be non-null due to the index check
+  switch (node->_handle.index()) {
+      case Node::DYNAMIC: {
+          auto& sbg = std::get_if<Node::Dynamic>(&(node->_handle))->subgraph;
+          if (!sbg.empty()) {
+              os << "subgraph cluster_p" << node << " {\nlabel=\"Subflow: ";
+              if (node->_name.empty())
+                  os << 'p' << node;
+              else
+                  os << node->_name;
 
-    case Node::DYNAMIC: {
-      auto& sbg = std::get<Node::Dynamic>(node->_handle).subgraph;
-      if(!sbg.empty()) {
-        os << "subgraph cluster_p" << node << " {\nlabel=\"Subflow: ";
-        if(node->_name.empty()) os << 'p' << node;
-        else os << node->_name;
-
-        os << "\";\n" << "color=blue\n";
-        _dump(os, sbg, dumper);
+              os << "\";\n"
+                 << "color=blue\n";
+              _dump(os, sbg, dumper);
         os << "}\n";
       }
     }
     break;
     
     case Node::CUDAFLOW: {
-      std::get<Node::cudaFlow>(node->_handle).graph->dump(
-        os, node, node->_name
-      );
+        std::get_if<Node::cudaFlow>(&(node->_handle))->graph->dump(os, node, node->_name);
     }
     break;
     
     case Node::SYCLFLOW: {
-      std::get<Node::syclFlow>(node->_handle).graph->dump(
-        os, node, node->_name
-      );
+        std::get_if<Node::syclFlow>(&(node->_handle))->graph->dump(os, node, node->_name);
     }
     break;
 
@@ -387,19 +386,24 @@ inline void Taskflow::_dump(
     }
     // module task
     else {
+        // using std::get_if instead of std::get makes this compatible with older macOS versions
+        // the result of std::get_if is guaranteed to be non-null due to the index check above
+        auto module = std::get_if<Node::Module>(&(n->_handle))->module;
 
-      auto module = std::get<Node::Module>(n->_handle).module;
+        os << 'p' << n << "[shape=box3d, color=blue, label=\"";
+        if (n->_name.empty())
+            os << n;
+        else
+            os << n->_name;
+        os << " [Taskflow: ";
+        if (module->_name.empty())
+            os << 'p' << module;
+        else
+            os << module->_name;
+        os << "]\"];\n";
 
-      os << 'p' << n << "[shape=box3d, color=blue, label=\"";
-      if(n->_name.empty()) os << n;
-      else os << n->_name;
-      os << " [Taskflow: ";
-      if(module->_name.empty()) os << 'p' << module;
-      else os << module->_name;
-      os << "]\"];\n";
-
-      if(dumper.visited.find(module) == dumper.visited.end()) {
-        dumper.visited.insert(module);
+        if (dumper.visited.find(module) == dumper.visited.end()) {
+            dumper.visited.insert(module);
         dumper.stack.push(module);
       }
 
@@ -539,7 +543,3 @@ bool Future<T>::cancel() {
 
 
 }  // end of namespace tf. ---------------------------------------------------
-
-
-
-
