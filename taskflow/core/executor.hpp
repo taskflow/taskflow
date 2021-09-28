@@ -919,7 +919,7 @@ inline void Executor::_tear_down_invoke(Node* node, bool cancel) {
     // async task needs to carry out the promise
     case Node::ASYNC:
       if(cancel) {
-        std::get<Node::Async>(node->_handle).work(true);
+          std::get_if<Node::Async>(&(node->_handle))->work(true);
       }
       _tear_down_async(node);
     break;
@@ -960,9 +960,9 @@ inline void Executor::_observer_epilogue(Worker& worker, Node* node) {
 
 // Procedure: _invoke_static_task
 inline void Executor::_invoke_static_task(Worker& worker, Node* node) {
-  _observer_prologue(worker, node);
-  std::get<Node::Static>(node->_handle).work();
-  _observer_epilogue(worker, node);
+    _observer_prologue(worker, node);
+    std::get_if<Node::Static>(&(node->_handle))->work();
+    _observer_epilogue(worker, node);
 }
 
 // Procedure: _invoke_dynamic_task
@@ -970,7 +970,7 @@ inline void Executor::_invoke_dynamic_task(Worker& w, Node* node) {
 
   _observer_prologue(w, node);
 
-  auto& handle = std::get<Node::Dynamic>(node->_handle);
+  auto& handle = *(std::get_if<Node::Dynamic>(&(node->_handle)));
 
   handle.subgraph.clear();
 
@@ -1077,45 +1077,45 @@ inline void Executor::_invoke_dynamic_task_internal(
 inline void Executor::_invoke_condition_task(
   Worker& worker, Node* node, int& cond
 ) {
-  _observer_prologue(worker, node);
-  cond = std::get<Node::Condition>(node->_handle).work();
-  _observer_epilogue(worker, node);
+    _observer_prologue(worker, node);
+    cond = std::get_if<Node::Condition>(&(node->_handle))->work();
+    _observer_epilogue(worker, node);
 }
 
 // Procedure: _invoke_cudaflow_task
 inline void Executor::_invoke_cudaflow_task(Worker& worker, Node* node) {
-  _observer_prologue(worker, node);  
-  std::get<Node::cudaFlow>(node->_handle).work(*this, node);
-  _observer_epilogue(worker, node);
+    _observer_prologue(worker, node);
+    std::get_if<Node::cudaFlow>(&(node->_handle))->work(*this, node);
+    _observer_epilogue(worker, node);
 }
 
 // Procedure: _invoke_syclflow_task
 inline void Executor::_invoke_syclflow_task(Worker& worker, Node* node) {
-  _observer_prologue(worker, node);  
-  std::get<Node::syclFlow>(node->_handle).work(*this, node);
-  _observer_epilogue(worker, node);
+    _observer_prologue(worker, node);
+    std::get_if<Node::syclFlow>(&(node->_handle))->work(*this, node);
+    _observer_epilogue(worker, node);
 }
 
 // Procedure: _invoke_module_task
 inline void Executor::_invoke_module_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
-  auto module = std::get<Node::Module>(node->_handle).module;
+  auto module = std::get_if<Node::Module>(&(node->_handle))->module;
   _invoke_dynamic_task_internal(w, node, module->_graph, false);
   _observer_epilogue(w, node);  
 }
 
 // Procedure: _invoke_async_task
 inline void Executor::_invoke_async_task(Worker& w, Node* node) {
-  _observer_prologue(w, node);
-  std::get<Node::Async>(node->_handle).work(false);
-  _observer_epilogue(w, node);  
+    _observer_prologue(w, node);
+    std::get_if<Node::Async>(&(node->_handle))->work(false);
+    _observer_epilogue(w, node);
 }
 
 // Procedure: _invoke_silent_async_task
 inline void Executor::_invoke_silent_async_task(Worker& w, Node* node) {
-  _observer_prologue(w, node);
-  std::get<Node::SilentAsync>(node->_handle).work();
-  _observer_epilogue(w, node);  
+    _observer_prologue(w, node);
+    std::get_if<Node::SilentAsync>(&(node->_handle))->work();
+    _observer_epilogue(w, node);
 }
 
 // Function: run
@@ -1447,6 +1447,3 @@ void Subflow::silent_async(F&& f, ArgsT&&... args) {
 
 
 }  // end of namespace tf -----------------------------------------------------
-
-
-
