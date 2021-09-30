@@ -173,7 +173,7 @@ struct Pipeline {
 
 
   BufferData& _get_buffer_data(size_t l, size_t f) {
-    return _buffers[l*num_filters + f];
+    return _buffers[l*_filters.size() + f];
   }
   
   void _on_filter(size_t f, data_type& d_in, data_type& d_out) {
@@ -216,7 +216,7 @@ int main()
 {
    static_assert(
      std::is_same_v<
-       unique_tuple_t<std::tuple<int, double, double, void>>, std::tuple<int, double, void>
+       unique_tuple_t<std::variant<int, double, double, void>>, std::variant<int, double, void>
      >,
      ""
    );
