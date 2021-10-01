@@ -5,7 +5,7 @@
   <title>tf::FlowBuilder class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -103,6 +103,11 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>creates a condition task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#a78c40dc8776735b0f2c27cd446481aff" class="m-doc">is_<wbr />multi_<wbr />condition_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+            </dt>
+            <dd>creates a multi-condition task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a1f6118326ad434f6c839007a1a79fe1b" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C &amp;&amp; ... callables) -&gt; auto</span>
@@ -320,14 +325,62 @@
 <p>The following example creates an if-else block using one condition task and three static tasks.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 
 <span class="k">auto</span> <span class="p">[</span><span class="n">init</span><span class="p">,</span> <span class="n">cond</span><span class="p">,</span> <span class="n">yes</span><span class="p">,</span> <span class="n">no</span><span class="p">]</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
- <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="p">},</span>
- <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> <span class="p">},</span>
- <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;yes</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">},</span>
- <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;no</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
+  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="p">},</span>
+  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> <span class="p">},</span>
+  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;yes</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">},</span>
+  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;no</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
 <span class="p">);</span>
 
 <span class="c1">// executes yes if cond returns 0, or no if cond returns 1</span>
 <span class="n">cond</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">yes</span><span class="p">,</span> <span class="n">no</span><span class="p">);</span>
+<span class="n">cond</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">init</span><span class="p">);</span></pre><p>Please refer to <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a> for details.</p>
+          </div></section>
+          <section class="m-doc-details" id="a60d7a666cab71ecfa3010b2efb0d6b57"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#a78c40dc8776735b0f2c27cd446481aff" class="m-doc">is_<wbr />multi_<wbr />condition_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc-self">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable)</span></span>
+            </h3>
+            <p>creates a multi-condition task</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">C</td>
+                  <td>callable type constructible from <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function</a>&lt;tf::SmallVector&lt;int&gt;()&gt;</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>callable</td>
+                  <td>callable to construct a multi-condition task</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>The following example creates a multi-condition task that selectively jumps to two successor tasks.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+
+<span class="k">auto</span> <span class="p">[</span><span class="n">init</span><span class="p">,</span> <span class="n">cond</span><span class="p">,</span> <span class="n">branch1</span><span class="p">,</span> <span class="n">branch2</span><span class="p">,</span> <span class="n">branch3</span><span class="p">]</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
+  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="p">},</span>
+  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">tf</span><span class="o">::</span><span class="n">SmallVector</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">};</span> <span class="p">},</span>
+  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;branch1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">},</span>
+  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;branch2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">},</span>
+  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;branch3</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">);</span>
+
+<span class="c1">// executes branch1 and branch3 when cond returns 0 and 2</span>
+<span class="n">cond</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">branch1</span><span class="p">,</span> <span class="n">branch2</span><span class="p">,</span> <span class="n">branch3</span><span class="p">);</span>
 <span class="n">cond</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">init</span><span class="p">);</span></pre><p>Please refer to <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="a1f6118326ad434f6c839007a1a79fe1b"><div>

@@ -43,6 +43,7 @@ and memory leak of the %Taskflow codebase.
 + Changed all lambda operators in parallel algorithms to copy by default
 + Cleaned up data race errors in [tsan](https://github.com/google/sanitizers) caused by incorrect memory order
 + Added tf::Task::data to allow associating a task with user-level data
++ Added multi-conditional tasking to allow a task to jump to multiple branches
 
 @subsection release-3-3-0_cudaflow cudaFlow
 
@@ -69,6 +70,8 @@ and memory leak of the %Taskflow codebase.
   + @ref BAIBuildSanitizers
 + Revised @ref StaticTasking 
   + @ref AttachUserDataToATask
++ Revised @ref ConditionalTasking
+  + @ref CreateAMultiConditionTask
 + Revised @ref GPUTaskingcudaFlow
 + Revised @ref GPUTaskingcudaFlowCapturer
 + Revised @ref LimitTheMaximumConcurrency 

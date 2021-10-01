@@ -5,7 +5,7 @@
   <title>tf namespace | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -128,7 +128,7 @@
               <div class="m-doc-template">template&lt;typename T&gt;</div>
               class <a href="classtf_1_1Future.html" class="m-doc">Future</a>
             </dt>
-            <dd>class to access the result of task execution</dd>
+            <dd>class to access the result of an execution</dd>
             <dt>
               class <a href="classtf_1_1ObserverInterface.html" class="m-doc">ObserverInterface</a>
             </dt>
@@ -181,6 +181,7 @@
               <a href="#a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" class="m-doc">STATIC</a>,
               <a href="#a1355048578785a80414707ff308b395aa0fcc90da4811c877ba9f9c12f7d60bc9" class="m-doc">DYNAMIC</a>,
               <a href="#a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac" class="m-doc">CONDITION</a>,
+              <a href="#a1355048578785a80414707ff308b395aa2b3254ba9c686e11902551e79c8e1672" class="m-doc">MULTI_CONDITION</a>,
               <a href="#a1355048578785a80414707ff308b395aa1cf5e1f5569acda3c4a88a91c5130a69" class="m-doc">MODULE</a>,
               <a href="#a1355048578785a80414707ff308b395aabe553330beb7b3d994656e0a4e66cd96" class="m-doc">ASYNC</a>,
               <a href="#a1355048578785a80414707ff308b395aa0db45d2a4141101bdfe48e3314cfbca3" class="m-doc">UNDEFINED</a> }</span>
@@ -229,8 +230,8 @@
         <section id="func-members">
           <h2><a href="#func-members">Functions</a></h2>
           <dl class="m-doc">
-            <dt id="a9ca58dc6c666698cc7373eb0262140ef">
-              <span class="m-doc-wrap-bumper">auto <a href="#a9ca58dc6c666698cc7373eb0262140ef" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a> type) -&gt; const char*</span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a9ca58dc6c666698cc7373eb0262140ef" class="m-doc">to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a> type) -&gt; const char*</span>
             </dt>
             <dd>convert a task type to a human-readable string</dd>
             <dt id="ad216aea4d0f648e149e47374ad015b1f">
@@ -636,8 +637,8 @@
         <section id="var-members">
           <h2><a href="#var-members">Variables</a></h2>
           <dl class="m-doc">
-            <dt id="a8d01ffdf02fde31dcda586ca81b7f058">
-              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>, 8&gt; <a href="#a8d01ffdf02fde31dcda586ca81b7f058" class="m-doc-self">TASK_TYPES</a> <span class="m-label m-flat m-primary">constexpr</span>
+            <dt id="adb6a1cbed8eac9ee7bb67609142cbd9c">
+              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>, 9&gt; <a href="#adb6a1cbed8eac9ee7bb67609142cbd9c" class="m-doc-self">TASK_TYPES</a> <span class="m-label m-flat m-primary">constexpr</span>
             </dt>
             <dd>array of all task types (used for iterating task types)</dd>
             <dt>
@@ -655,6 +656,11 @@
               bool <a href="#a00ca2fc2de0e679a7d9b8039340343df" class="m-doc">is_condition_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
             </dt>
             <dd>determines if a callable is a condition task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename C&gt;</div>
+              bool <a href="#a78c40dc8776735b0f2c27cd446481aff" class="m-doc">is_multi_condition_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
+            </dt>
+            <dd>determines if a callable is a multi-condition task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename C&gt;</div>
               bool <a href="#adb8433555d8cdc0b3c5d95e8d51a90f0" class="m-doc">is_cudaflow_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
@@ -711,6 +717,12 @@
                   <td><a href="#a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac" class="m-doc-self" id="a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac">CONDITION</a></td>
                   <td>
                   <p>condition task type</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#a1355048578785a80414707ff308b395aa2b3254ba9c686e11902551e79c8e1672" class="m-doc-self" id="a1355048578785a80414707ff308b395aa2b3254ba9c686e11902551e79c8e1672">MULTI_CONDITION</a></td>
+                  <td>
+                  <p>multi-condition task type</p>
                   </td>
                 </tr>
                 <tr>
@@ -796,6 +808,21 @@
         </section>
         <section>
           <h2>Function documentation</h2>
+          <section class="m-doc-details" id="a9ca58dc6c666698cc7373eb0262140ef"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">const char* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a9ca58dc6c666698cc7373eb0262140ef" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a> type)</span></span>
+            </h3>
+            <p>convert a task type to a human-readable string</p>
+<p>The name of each task type is the litte-case string of its characters.</p><pre class="m-code"><span class="n">TaskType</span><span class="o">::</span><span class="n">PLACEHOLDER</span>     <span class="o">-&gt;</span>  <span class="s">&quot;placeholder&quot;</span>    
+<span class="n">TaskType</span><span class="o">::</span><span class="n">CUDAFLOW</span>        <span class="o">-&gt;</span>  <span class="s">&quot;cudaflow&quot;</span>       
+<span class="n">TaskType</span><span class="o">::</span><span class="n">SYCLFLOW</span>        <span class="o">-&gt;</span>  <span class="s">&quot;syclflow&quot;</span>       
+<span class="n">TaskType</span><span class="o">::</span><span class="n">STATIC</span>          <span class="o">-&gt;</span>  <span class="s">&quot;static&quot;</span>         
+<span class="n">TaskType</span><span class="o">::</span><span class="n">DYNAMIC</span>         <span class="o">-&gt;</span>  <span class="s">&quot;subflow&quot;</span>        
+<span class="n">TaskType</span><span class="o">::</span><span class="n">CONDITION</span>       <span class="o">-&gt;</span>  <span class="s">&quot;condition&quot;</span>      
+<span class="n">TaskType</span><span class="o">::</span><span class="n">MULTI_CONDITION</span> <span class="o">-&gt;</span>  <span class="s">&quot;multi_condition&quot;</span>
+<span class="n">TaskType</span><span class="o">::</span><span class="n">MODULE</span>          <span class="o">-&gt;</span>  <span class="s">&quot;module&quot;</span>         
+<span class="n">TaskType</span><span class="o">::</span><span class="n">ASYNC</span>           <span class="o">-&gt;</span>  <span class="s">&quot;async&quot;</span></pre>
+          </div></section>
           <section class="m-doc-details" id="a6f04fd3168c45eeb2dffb223e5c81e45"><div>
             <h3>
               <div class="m-doc-template">
@@ -2596,6 +2623,16 @@
             </h3>
             <p>determines if a callable is a condition task</p>
 <p>A condition task is a callable object constructible from std::function&lt;int()&gt;.</p>
+          </div></section>
+          <section class="m-doc-details" id="a78c40dc8776735b0f2c27cd446481aff"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename C&gt;
+              </div>
+              bool tf::<wbr /><a href="#a78c40dc8776735b0f2c27cd446481aff" class="m-doc-self">is_multi_condition_task_v</a> <span class="m-label m-primary">constexpr</span>
+            </h3>
+            <p>determines if a callable is a multi-condition task</p>
+<p>A multi-condition task is a callable object constructible from <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function</a>&lt;tf::SmallVector&lt;int&gt;()&gt;.</p>
           </div></section>
           <section class="m-doc-details" id="adb8433555d8cdc0b3c5d95e8d51a90f0"><div>
             <h3>

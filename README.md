@@ -69,7 +69,7 @@ in parallel computing. Check out [Who is Using Taskflow](https://taskflow.github
 
 See a quick [presentation](https://taskflow.github.io/) and
 visit the [documentation][documentation] to learn more about Taskflow.
-Technical details can be referred to our [TPDS paper][TPDS21].
+Technical details can be referred to our [IEEE TPDS paper][TPDS21].
 
 # Start Your First Taskflow Program
 
@@ -404,7 +404,16 @@ to learn more about Taskflow. To get involved:
 We are committed to support trustworthy developments for 
 both academic and industrial research projects in parallel 
 and heterogeneous computing. 
-At the same time, we appreciate all Taskflow [contributors][contributors]!
+If you are using Taskflow, please cite the following paper we publised at 2021 IEEE TPDS:
+
++ Tsung-Wei Huang, Dian-Lun Lin, Chun-Xun Lin, and Yibo Lin, &quot;[Taskflow: A Lightweight Parallel and Heterogeneous Task Graph Computing System](https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf),&quot; <i>IEEE Transactions on Parallel and Distributed Systems (TPDS)</i>, accepted, 2021
+
+More importantly, we appreciate all Taskflow [contributors][contributors] and 
+the following organizations for sponsoring the Taskflow project!
+
+| <!-- --> | <!-- --> | <!-- --> | <!-- --> |
+|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
+|<img src="doxygen/images/utah-ece-logo.png">|<img src="doxygen/images/nsf.png"> | <img src="doxygen/images/darpa.png"> | <img src="doxygen/images/NumFocus.png">|
 
 # License
 
@@ -416,7 +425,6 @@ You are completely free to re-distribute your work derived from Taskflow.
 [Tsung-Wei Huang]:       https://tsung-wei-huang.github.io/
 [Chun-Xun Lin]:          https://github.com/clin99
 [Martin Wong]:           https://ece.illinois.edu/directory/profile/mdfwong
-[Gitter badge]:          ./image/gitter_badge.svg
 [GitHub releases]:       https://github.com/taskflow/taskflow/releases
 [GitHub issues]:         https://github.com/taskflow/taskflow/issues
 [GitHub insights]:       https://github.com/taskflow/taskflow/pulse

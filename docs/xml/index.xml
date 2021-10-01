@@ -432,7 +432,8 @@
     <member refid="classtf_1_1Executor_1a4a000baf70b108201e3787787309c272" kind="function"><name>_invoke_dynamic_task</name></member>
     <member refid="classtf_1_1Executor_1a1714817bb86c97a78e7efa149cc5058e" kind="function"><name>_invoke_dynamic_task_internal</name></member>
     <member refid="classtf_1_1Executor_1a073460c4398c8be36cefc890370239c1" kind="function"><name>_invoke_dynamic_task_external</name></member>
-    <member refid="classtf_1_1Executor_1ad2b0401c6102db1f3f638132a6529427" kind="function"><name>_invoke_condition_task</name></member>
+    <member refid="classtf_1_1Executor_1afa6be6aab23ff4b2a293a2245818916d" kind="function"><name>_invoke_condition_task</name></member>
+    <member refid="classtf_1_1Executor_1a19b3f10d4eab40143d3f76b946ded252" kind="function"><name>_invoke_multi_condition_task</name></member>
     <member refid="classtf_1_1Executor_1a4c5324657bf02bc2da0294192ab80233" kind="function"><name>_invoke_module_task</name></member>
     <member refid="classtf_1_1Executor_1a505ccafa7ab1855c200d5590499adf5a" kind="function"><name>_invoke_async_task</name></member>
     <member refid="classtf_1_1Executor_1ae2bb8ef1456ec6414e46d7ed77628bd9" kind="function"><name>_invoke_silent_async_task</name></member>
@@ -453,6 +454,7 @@
   <compound refid="classtf_1_1FlowBuilder" kind="class"><name>tf::FlowBuilder</name>
     <member refid="classtf_1_1FlowBuilder_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
     <member refid="classtf_1_1FlowBuilder_1a9404a57d9d37a4d49d20b686e4e5f68f" kind="variable"><name>_graph</name></member>
+    <member refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kind="function"><name>emplace</name></member>
     <member refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kind="function"><name>emplace</name></member>
     <member refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kind="function"><name>emplace</name></member>
     <member refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kind="function"><name>emplace</name></member>
@@ -1319,6 +1321,7 @@
     <member refid="namespacetf_1a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" kind="enumvalue"><name>STATIC</name></member>
     <member refid="namespacetf_1a1355048578785a80414707ff308b395aa0fcc90da4811c877ba9f9c12f7d60bc9" kind="enumvalue"><name>DYNAMIC</name></member>
     <member refid="namespacetf_1a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac" kind="enumvalue"><name>CONDITION</name></member>
+    <member refid="namespacetf_1a1355048578785a80414707ff308b395aa2b3254ba9c686e11902551e79c8e1672" kind="enumvalue"><name>MULTI_CONDITION</name></member>
     <member refid="namespacetf_1a1355048578785a80414707ff308b395aa1cf5e1f5569acda3c4a88a91c5130a69" kind="enumvalue"><name>MODULE</name></member>
     <member refid="namespacetf_1a1355048578785a80414707ff308b395aabe553330beb7b3d994656e0a4e66cd96" kind="enumvalue"><name>ASYNC</name></member>
     <member refid="namespacetf_1a1355048578785a80414707ff308b395aa0db45d2a4141101bdfe48e3314cfbca3" kind="enumvalue"><name>UNDEFINED</name></member>
@@ -1339,10 +1342,11 @@
     <member refid="namespacetf_1a632bb71dc4ddedbf2c26f6f25a2d6a49" kind="typedef"><name>cudaPerThreadStreamPool</name></member>
     <member refid="namespacetf_1a7356453a9963094ac069f6597bee50cd" kind="typedef"><name>cudaPerThreadEventPool</name></member>
     <member refid="namespacetf_1aa18f102977c3257b75e21fde05efdb68" kind="typedef"><name>cudaDefaultExecutionPolicy</name></member>
-    <member refid="namespacetf_1a8d01ffdf02fde31dcda586ca81b7f058" kind="variable"><name>TASK_TYPES</name></member>
+    <member refid="namespacetf_1adb6a1cbed8eac9ee7bb67609142cbd9c" kind="variable"><name>TASK_TYPES</name></member>
     <member refid="namespacetf_1a11fc9c98eb3a0d3a9aa55598b1f4d614" kind="variable"><name>is_static_task_v</name></member>
     <member refid="namespacetf_1a1eea7593f25ab348cfb656dbdf4e5b05" kind="variable"><name>is_dynamic_task_v</name></member>
     <member refid="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" kind="variable"><name>is_condition_task_v</name></member>
+    <member refid="namespacetf_1a78c40dc8776735b0f2c27cd446481aff" kind="variable"><name>is_multi_condition_task_v</name></member>
     <member refid="namespacetf_1adb8433555d8cdc0b3c5d95e8d51a90f0" kind="variable"><name>is_cudaflow_task_v</name></member>
     <member refid="namespacetf_1a574038aaa99e0220eedca4e8ea9389cf" kind="variable"><name>is_syclflow_task_v</name></member>
     <member refid="namespacetf_1a4d2543d6c1f4f0025ae0df525cce70ae" kind="function"><name>this_worker</name></member>
