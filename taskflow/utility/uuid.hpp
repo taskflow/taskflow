@@ -221,7 +221,6 @@ inline std::ostream& operator << (std::ostream& os, const UUID& rhs) {
 
 //-----------------------------------------------------------------------------
 
-
 namespace std {
 
 // Partial specialization: hash<tf::UUID>

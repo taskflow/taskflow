@@ -389,7 +389,8 @@ class Executor {
     void _invoke_dynamic_task(Worker&, Node*);
     void _invoke_dynamic_task_internal(Worker&, Node*, Graph&, bool);
     void _invoke_dynamic_task_external(Node*, Graph&, bool);
-    void _invoke_condition_task(Worker&, Node*, int&);
+    void _invoke_condition_task(Worker&, Node*, SmallVector<int>&);
+    void _invoke_multi_condition_task(Worker&, Node*, SmallVector<int>&);
     void _invoke_module_task(Worker&, Node*);
     void _invoke_async_task(Worker&, Node*);
     void _invoke_silent_async_task(Worker&, Node*);
@@ -796,7 +797,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   const auto num_successors = node->num_successors();
   
   // condition task
-  int cond = -1;
+  //int cond = -1;
+  SmallVector<int> conds = { -1 };
   
   // switch is faster than nested if-else due to jump table
   switch(node->_handle.index()) {
@@ -814,7 +816,13 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     
     // condition task
     case Node::CONDITION: {
-      _invoke_condition_task(worker, node, cond);
+      _invoke_condition_task(worker, node, conds);
+    }
+    break;
+    
+    // multi-condition task
+    case Node::MULTI_CONDITION: {
+      _invoke_multi_condition_task(worker, node, conds);
     }
     break;
 
@@ -852,7 +860,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     }
     break; 
 
-    // monostate
+    // monostate (placeholder)
     default:
     break;
   }
@@ -865,8 +873,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // We MUST recover the dependency since the graph may have cycles.
   // This must be done before scheduling the successors, otherwise this might cause 
   // race condition on the _dependents
-  //if(node->_has_state(Node::BRANCHED)) {
-  if((node->_state.load(std::memory_order_relaxed) & Node::BRANCHED)) {
+  //if(node->_has_state(Node::CONDITIONED)) {
+  if((node->_state.load(std::memory_order_relaxed) & Node::CONDITIONED)) {
     node->_join_counter = node->num_strong_dependents();
   }
   else {
@@ -879,23 +887,53 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   
   // At this point, the node storage might be destructed (to be verified)
   // case 1: non-condition task
-  if(node->_handle.index() != Node::CONDITION) {
-    for(size_t i=0; i<num_successors; ++i) {
-      if(--(node->_successors[i]->_join_counter) == 0) {
-        j.fetch_add(1);
-        _schedule(node->_successors[i]);
+  switch(node->_handle.index()) {
+
+    // condition and multi-condition tasks
+    case Node::CONDITION: 
+    case Node::MULTI_CONDITION: {
+      for(auto cond : conds) {
+        if(cond >= 0 && static_cast<size_t>(cond) < num_successors) {
+          auto s = node->_successors[cond];
+          // zeroing the join counter seems redundant but it keeps invariant
+          s->_join_counter.store(0, std::memory_order_relaxed);
+          j.fetch_add(1);
+          _schedule(s);
+        }
       }
     }
-  }
-  // case 2: condition task
-  else {
-    if(cond >= 0 && static_cast<size_t>(cond) < num_successors) {
-      auto s = node->_successors[cond];
-      s->_join_counter.store(0);  // seems redundant but just for invariant
-      j.fetch_add(1);
-      _schedule(s);
+    break;
+    
+    // non-condition task
+    default: {
+      for(size_t i=0; i<num_successors; ++i) {
+        if(--(node->_successors[i]->_join_counter) == 0) {
+          j.fetch_add(1);
+          _schedule(node->_successors[i]);
+        }
+      }
     }
+    break;
   }
+
+  //// case 1: non-condition task
+  //if(node->_handle.index() != Node::CONDITION) {
+  //  for(size_t i=0; i<num_successors; ++i) {
+  //    if(--(node->_successors[i]->_join_counter) == 0) {
+  //      j.fetch_add(1);
+  //      _schedule(node->_successors[i]);
+  //    }
+  //  }
+  //}
+  //// case 2: condition task
+  //else {
+  //  if(cond >= 0 && static_cast<size_t>(cond) < num_successors) {
+  //    auto s = node->_successors[cond];
+  //    s->_join_counter.store(0);  // seems redundant but just for invariant
+  //    j.fetch_add(1);
+  //    _schedule(s);
+  //  }
+  //}
   
   // tear_down the invoke
   _tear_down_invoke(node, false);
@@ -1075,10 +1113,19 @@ inline void Executor::_invoke_dynamic_task_internal(
 
 // Procedure: _invoke_condition_task
 inline void Executor::_invoke_condition_task(
-  Worker& worker, Node* node, int& cond
+  Worker& worker, Node* node, SmallVector<int>& conds
 ) {
   _observer_prologue(worker, node);
-  cond = std::get_if<Node::Condition>(&node->_handle)->work();
+  conds[0] = std::get_if<Node::Condition>(&node->_handle)->work();
+  _observer_epilogue(worker, node);
+}
+
+// Procedure: _invoke_multi_condition_task
+inline void Executor::_invoke_multi_condition_task(
+  Worker& worker, Node* node, SmallVector<int>& conds
+) {
+  _observer_prologue(worker, node);
+  conds = std::get_if<Node::MultiCondition>(&node->_handle)->work();
   _observer_epilogue(worker, node);
 }
 
@@ -1302,7 +1349,7 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
   // case 2: the final run of this topology
   else {
 
-    // TODO: if the topology is cancelled, need to release all constraints
+    // TODO: if the topology is cancelled, need to release all semaphores
     
     if(tpg->_call != nullptr) {
       tpg->_call();
@@ -1352,8 +1399,8 @@ inline void Executor::_tear_down_topology(Topology* tpg) {
       _decrement_topology_and_notify();
       
       // remove the taskflow if it is managed by the executor
-      // TODO: we may need to synchronize on wait (which means the following
-      // code should the moved before set_value
+      // TODO: in the future, we may need to synchronize on wait 
+      // (which means the following code should the moved before set_value)
       if(s) {
         std::scoped_lock<std::mutex> lock(_taskflow_mutex);
         _taskflows.erase(*s);

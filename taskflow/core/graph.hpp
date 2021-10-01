@@ -84,10 +84,10 @@ class Node {
   TF_ENABLE_POOLABLE_ON_THIS;
 
   // state bit flag
-  constexpr static int BRANCHED = 0x1;
-  constexpr static int DETACHED = 0x2;
-  constexpr static int ACQUIRED = 0x4;
-  constexpr static int READY    = 0x8;
+  constexpr static int CONDITIONED = 0x1;
+  constexpr static int DETACHED    = 0x2;
+  constexpr static int ACQUIRED    = 0x4;
+  constexpr static int READY       = 0x8;
   
   // static work handle
   struct Static {
@@ -115,6 +115,15 @@ class Node {
     Condition(C&&);
 
     std::function<int()> work;
+  };
+
+  // multi-condition work handle
+  struct MultiCondition {
+
+    template <typename C>
+    MultiCondition(C&&);
+
+    std::function<SmallVector<int>()> work;
   };
 
   // module work handle
@@ -173,6 +182,7 @@ class Node {
     Static,          // static tasking
     Dynamic,         // dynamic tasking
     Condition,       // conditional tasking
+    MultiCondition,  // multi-conditional tasking
     Module,          // composable tasking
     Async,           // async tasking
     SilentAsync,     // async tasking (no future)
@@ -188,15 +198,16 @@ class Node {
   public:
   
   // variant index
-  constexpr static auto PLACEHOLDER  = get_index_v<std::monostate, handle_t>;
-  constexpr static auto STATIC       = get_index_v<Static, handle_t>;
-  constexpr static auto DYNAMIC      = get_index_v<Dynamic, handle_t>;
-  constexpr static auto CONDITION    = get_index_v<Condition, handle_t>; 
-  constexpr static auto MODULE       = get_index_v<Module, handle_t>; 
-  constexpr static auto ASYNC        = get_index_v<Async, handle_t>; 
-  constexpr static auto SILENT_ASYNC = get_index_v<SilentAsync, handle_t>; 
-  constexpr static auto CUDAFLOW     = get_index_v<cudaFlow, handle_t>; 
-  constexpr static auto SYCLFLOW     = get_index_v<syclFlow, handle_t>; 
+  constexpr static auto PLACEHOLDER     = get_index_v<std::monostate, handle_t>;
+  constexpr static auto STATIC          = get_index_v<Static, handle_t>;
+  constexpr static auto DYNAMIC         = get_index_v<Dynamic, handle_t>;
+  constexpr static auto CONDITION       = get_index_v<Condition, handle_t>; 
+  constexpr static auto MULTI_CONDITION = get_index_v<MultiCondition, handle_t>; 
+  constexpr static auto MODULE          = get_index_v<Module, handle_t>; 
+  constexpr static auto ASYNC           = get_index_v<Async, handle_t>; 
+  constexpr static auto SILENT_ASYNC    = get_index_v<SilentAsync, handle_t>; 
+  constexpr static auto CUDAFLOW        = get_index_v<cudaFlow, handle_t>; 
+  constexpr static auto SYCLFLOW        = get_index_v<syclFlow, handle_t>; 
 
     template <typename... Args>
     Node(Args&&... args);
@@ -235,6 +246,7 @@ class Node {
 
     bool _has_state(int) const;
     bool _is_cancelled() const;
+    bool _is_conditioner() const;
     bool _acquire_all(std::vector<Node*>&);
 
     std::vector<Node*> _release_all();
@@ -270,6 +282,15 @@ Node::Dynamic::Dynamic(C&& c) : work {std::forward<C>(c)} {
 // Constructor
 template <typename C> 
 Node::Condition::Condition(C&& c) : work {std::forward<C>(c)} {
+}
+
+// ----------------------------------------------------------------------------
+// Definition for Node::MultiCondition
+// ----------------------------------------------------------------------------
+    
+// Constructor
+template <typename C> 
+Node::MultiCondition::MultiCondition(C&& c) : work {std::forward<C>(c)} {
 }
 
 // ----------------------------------------------------------------------------
@@ -345,7 +366,8 @@ inline Node::~Node() {
     nodes.reserve(subgraph.size());
 
     std::move(
-            subgraph._nodes.begin(), subgraph._nodes.end(), std::back_inserter(nodes));
+      subgraph._nodes.begin(), subgraph._nodes.end(), std::back_inserter(nodes)
+    );
     subgraph._nodes.clear();
 
     size_t i = 0;
@@ -390,7 +412,8 @@ inline size_t Node::num_dependents() const {
 inline size_t Node::num_weak_dependents() const {
   size_t n = 0;
   for(size_t i=0; i<_dependents.size(); i++) {
-    if(_dependents[i]->_handle.index() == Node::CONDITION) {
+    //if(_dependents[i]->_handle.index() == Node::CONDITION) {
+    if(_dependents[i]->_is_conditioner()) {
       n++;
     }
   }
@@ -401,7 +424,8 @@ inline size_t Node::num_weak_dependents() const {
 inline size_t Node::num_strong_dependents() const {
   size_t n = 0;
   for(size_t i=0; i<_dependents.size(); i++) {
-    if(_dependents[i]->_handle.index() != Node::CONDITION) {
+    //if(_dependents[i]->_handle.index() != Node::CONDITION) {
+    if(!_dependents[i]->_is_conditioner()) {
       n++;
     }
   }
@@ -411,6 +435,12 @@ inline size_t Node::num_strong_dependents() const {
 // Function: name
 inline const std::string& Node::name() const {
   return _name;
+}
+
+// Function: _is_conditioner
+inline bool Node::_is_conditioner() const {
+  return _handle.index() == Node::CONDITION ||
+         _handle.index() == Node::MULTI_CONDITION;
 }
 
 // Function: _is_cancelled
@@ -427,19 +457,16 @@ inline bool Node::_is_cancelled() const {
 
 // Procedure: _set_up_join_counter
 inline void Node::_set_up_join_counter() {
-
   size_t c = 0;
-
   for(auto p : _dependents) {
-    if(p->_handle.index() == Node::CONDITION) {
-      //_set_state(Node::BRANCHED);
-      _state.fetch_or(Node::BRANCHED, std::memory_order_relaxed);
+    //if(p->_handle.index() == Node::CONDITION) {
+    if(p->_is_conditioner()) {
+      _state.fetch_or(Node::CONDITIONED, std::memory_order_relaxed);
     }
     else {
       c++;
     }
   }
-
   _join_counter.store(c, std::memory_order_release);
 }
 

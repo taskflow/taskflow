@@ -85,10 +85,10 @@ class FlowBuilder {
     tf::Taskflow taskflow;
     
     auto [init, cond, yes, no] = taskflow.emplace(
-     [] () { },
-     [] () { return 0; },
-     [] () { std::cout << "yes\n"; },
-     [] () { std::cout << "no\n"; }
+      [] () { },
+      [] () { return 0; },
+      [] () { std::cout << "yes\n"; },
+      [] () { std::cout << "no\n"; }
     );
     
     // executes yes if cond returns 0, or no if cond returns 1
@@ -100,6 +100,42 @@ class FlowBuilder {
     */
     template <typename C, 
       std::enable_if_t<is_condition_task_v<C>, void>* = nullptr
+    >
+    Task emplace(C&& callable);
+    
+    /**
+    @brief creates a multi-condition task
+    
+    @tparam C callable type constructible from 
+            std::function<tf::SmallVector<int>()>
+
+    @param callable callable to construct a multi-condition task
+
+    @return a tf::Task handle
+    
+    The following example creates a multi-condition task that selectively 
+    jumps to two successor tasks.
+    
+    @code{.cpp}
+    tf::Taskflow taskflow;
+    
+    auto [init, cond, branch1, branch2, branch3] = taskflow.emplace(
+      [] () { },
+      [] () { return tf::SmallVector{0, 2}; },
+      [] () { std::cout << "branch1\n"; },
+      [] () { std::cout << "branch2\n"; },
+      [] () { std::cout << "branch3\n"; }
+    );
+    
+    // executes branch1 and branch3 when cond returns 0 and 2
+    cond.precede(branch1, branch2, branch3);
+    cond.succeed(init);
+    @endcode
+
+    Please refer to @ref ConditionalTasking for details.
+    */
+    template <typename C, 
+      std::enable_if_t<is_multi_condition_task_v<C>, void>* = nullptr
     >
     Task emplace(C&& callable);
 
@@ -544,6 +580,14 @@ template <typename C, std::enable_if_t<is_condition_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
   return Task(_graph.emplace_back(
     std::in_place_type_t<Node::Condition>{}, std::forward<C>(c)
+  ));
+}
+
+// Function: emplace
+template <typename C, std::enable_if_t<is_multi_condition_task_v<C>, void>*>
+Task FlowBuilder::emplace(C&& c) {
+  return Task(_graph.emplace_back(
+    std::in_place_type_t<Node::MultiCondition>{}, std::forward<C>(c)
   ));
 }
 

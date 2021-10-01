@@ -31,6 +31,8 @@ enum class TaskType : int {
   DYNAMIC,
   /** @brief condition task type */
   CONDITION,
+  /** @brief multi-condition task type */
+  MULTI_CONDITION,
   /** @brief module task type */
   MODULE,
   /** @brief asynchronous task type */
@@ -40,36 +42,53 @@ enum class TaskType : int {
 };
 
 /**
+@private
 @brief array of all task types (used for iterating task types)
 */
-inline constexpr std::array<TaskType, 8> TASK_TYPES = {
+inline constexpr std::array<TaskType, 9> TASK_TYPES = {
   TaskType::PLACEHOLDER,
   TaskType::CUDAFLOW,
   TaskType::SYCLFLOW,
   TaskType::STATIC,
   TaskType::DYNAMIC,
   TaskType::CONDITION,
+  TaskType::MULTI_CONDITION,
   TaskType::MODULE,
   TaskType::ASYNC
 };
 
 /**
 @brief convert a task type to a human-readable string
+
+The name of each task type is the litte-case string of its characters.
+
+@code{.cpp}
+TaskType::PLACEHOLDER     ->  "placeholder"    
+TaskType::CUDAFLOW        ->  "cudaflow"       
+TaskType::SYCLFLOW        ->  "syclflow"       
+TaskType::STATIC          ->  "static"         
+TaskType::DYNAMIC         ->  "subflow"        
+TaskType::CONDITION       ->  "condition"      
+TaskType::MULTI_CONDITION ->  "multi_condition"
+TaskType::MODULE          ->  "module"         
+TaskType::ASYNC           ->  "async"          
+@endcode
 */
 inline const char* to_string(TaskType type) {
 
   const char* val;
 
   switch(type) {
-    case TaskType::PLACEHOLDER: val = "placeholder"; break;
-    case TaskType::CUDAFLOW:    val = "cudaflow";    break;
-    case TaskType::SYCLFLOW:    val = "syclflow";    break;
-    case TaskType::STATIC:      val = "static";      break;
-    case TaskType::DYNAMIC:     val = "subflow";     break;
-    case TaskType::CONDITION:   val = "condition";   break;
-    case TaskType::MODULE:      val = "module";      break;
-    case TaskType::ASYNC:       val = "async";       break;
-    default:                    val = "undefined";   break;
+    case TaskType::PLACEHOLDER:      val = "placeholder";     break;
+    case TaskType::CUDAFLOW:         val = "cudaflow";        break;
+    case TaskType::SYCLFLOW:         val = "syclflow";        break;
+    case TaskType::STATIC:           val = "static";          break;
+    case TaskType::DYNAMIC:          val = "subflow";         break;
+    case TaskType::CONDITION:        val = "condition";       break;
+    case TaskType::MULTI_CONDITION:  val = "multi_condition"; break;
+    case TaskType::MODULE:           val = "module";          break;
+    case TaskType::ASYNC:            val = "async";           break;
+    default:                         val = "undefined";       break;
   }
 
   return val;
@@ -85,8 +104,10 @@ inline const char* to_string(TaskType type) {
 A static task is a callable object constructible from std::function<void()>.
 */
 template <typename C>
-constexpr bool is_static_task_v = std::is_invocable_r_v<void, C> &&
-                                 !std::is_invocable_r_v<int, C>;
+constexpr bool is_static_task_v = 
+  std::is_invocable_r_v<void, C> &&
+  !std::is_invocable_r_v<int, C> &&
+  !std::is_invocable_r_v<tf::SmallVector<int>, C>;
 
 /**
 @brief determines if a callable is a dynamic task
@@ -103,6 +124,16 @@ A condition task is a callable object constructible from std::function<int()>.
 */
 template <typename C>
 constexpr bool is_condition_task_v = std::is_invocable_r_v<int, C>;
+
+/**
+@brief determines if a callable is a multi-condition task
+
+A multi-condition task is a callable object constructible from 
+std::function<tf::SmallVector<int>()>.
+*/
+template <typename C>
+constexpr bool is_multi_condition_task_v = 
+  std::is_invocable_r_v<SmallVector<int>, C>;
 
 /**
 @brief determines if a callable is a %cudaFlow task
@@ -459,16 +490,17 @@ inline bool Task::has_work() const {
 // Function: task_type
 inline TaskType Task::type() const {
   switch(_node->_handle.index()) {
-    case Node::PLACEHOLDER:  return TaskType::PLACEHOLDER;
-    case Node::STATIC:       return TaskType::STATIC;
-    case Node::DYNAMIC:      return TaskType::DYNAMIC;
-    case Node::CONDITION:    return TaskType::CONDITION;
-    case Node::MODULE:       return TaskType::MODULE;
-    case Node::ASYNC:        return TaskType::ASYNC;
-    case Node::SILENT_ASYNC: return TaskType::ASYNC;
-    case Node::CUDAFLOW:     return TaskType::CUDAFLOW;
-    case Node::SYCLFLOW:     return TaskType::SYCLFLOW;
-    default:                 return TaskType::UNDEFINED;
+    case Node::PLACEHOLDER:     return TaskType::PLACEHOLDER;
+    case Node::STATIC:          return TaskType::STATIC;
+    case Node::DYNAMIC:         return TaskType::DYNAMIC;
+    case Node::CONDITION:       return TaskType::CONDITION;
+    case Node::MULTI_CONDITION: return TaskType::MULTI_CONDITION;
+    case Node::MODULE:          return TaskType::MODULE;
+    case Node::ASYNC:           return TaskType::ASYNC;
+    case Node::SILENT_ASYNC:    return TaskType::ASYNC;
+    case Node::CUDAFLOW:        return TaskType::CUDAFLOW;
+    case Node::SYCLFLOW:        return TaskType::SYCLFLOW;
+    default:                    return TaskType::UNDEFINED;
   }
 }
 
@@ -504,6 +536,7 @@ inline void Task::dump(std::ostream& os) const {
 // Function: work
 template <typename C>
 Task& Task::work(C&& c) {
+
   if constexpr(is_static_task_v<C>) {
     _node->_handle.emplace<Node::Static>(std::forward<C>(c));
   }
@@ -512,6 +545,9 @@ Task& Task::work(C&& c) {
   }
   else if constexpr(is_condition_task_v<C>) {
     _node->_handle.emplace<Node::Condition>(std::forward<C>(c));
+  }
+  else if constexpr(is_multi_condition_task_v<C>) {
+    _node->_handle.emplace<Node::MultiCondition>(std::forward<C>(c));
   }
   else if constexpr(is_cudaflow_task_v<C>) {
     _node->_handle.emplace<Node::cudaFlow>(std::forward<C>(c));
@@ -645,16 +681,17 @@ inline size_t TaskView::num_successors() const {
 // Function: type
 inline TaskType TaskView::type() const {
   switch(_node._handle.index()) {
-    case Node::PLACEHOLDER:  return TaskType::PLACEHOLDER;
-    case Node::STATIC:       return TaskType::STATIC;
-    case Node::DYNAMIC:      return TaskType::DYNAMIC;
-    case Node::CONDITION:    return TaskType::CONDITION;
-    case Node::MODULE:       return TaskType::MODULE;
-    case Node::ASYNC:        return TaskType::ASYNC;
-    case Node::SILENT_ASYNC: return TaskType::ASYNC;
-    case Node::CUDAFLOW:     return TaskType::CUDAFLOW;
-    case Node::SYCLFLOW:     return TaskType::SYCLFLOW;
-    default:                 return TaskType::UNDEFINED;
+    case Node::PLACEHOLDER:     return TaskType::PLACEHOLDER;
+    case Node::STATIC:          return TaskType::STATIC;
+    case Node::DYNAMIC:         return TaskType::DYNAMIC;
+    case Node::CONDITION:       return TaskType::CONDITION;
+    case Node::MULTI_CONDITION: return TaskType::MULTI_CONDITION;
+    case Node::MODULE:          return TaskType::MODULE;
+    case Node::ASYNC:           return TaskType::ASYNC;
+    case Node::SILENT_ASYNC:    return TaskType::ASYNC;
+    case Node::CUDAFLOW:        return TaskType::CUDAFLOW;
+    case Node::SYCLFLOW:        return TaskType::SYCLFLOW;
+    default:                    return TaskType::UNDEFINED;
   }
 }
   

@@ -7,6 +7,7 @@ list(APPEND TF_UNITTESTS
   tsq 
   serializer 
   basics 
+  control_flow
   movable
   cancellation
   semaphore

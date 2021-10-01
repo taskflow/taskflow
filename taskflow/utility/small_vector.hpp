@@ -22,9 +22,12 @@
 
 namespace tf { namespace detail {
 
-// NextCapacity - Returns the next power of two (in 64-bits)
-// that is strictly greater than A.  Returns zero on overflow.
-// this function assumes A to be positive
+/**
+@private
+@brief NextCapacity - Returns the next power of two (in 64-bits)
+       that is strictly greater than A.  Returns zero on overflow.
+       this function assumes A to be positive
+*/
 inline uint64_t NextCapacity(uint64_t A) {
   A |= (A >> 1);
   A |= (A >> 2);
@@ -40,7 +43,10 @@ inline uint64_t NextCapacity(uint64_t A) {
 
 namespace tf {
 
-// std::is_pod has been deprecated in C++20.
+/**
+@private
+@brief std::is_pod has been deprecated in C++20.
+*/
 template <typename T>
 struct IsPod : std::integral_constant<bool, std::is_standard_layout<T>::value &&
                                             std::is_trivial<T>::value> {};
