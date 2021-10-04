@@ -93,8 +93,8 @@
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
-            <dt id="a70ffe5c1611dba350d105b70377f8cd2">
-              <span class="m-doc-wrap-bumper"><a href="#a70ffe5c1611dba350d105b70377f8cd2" class="m-doc-self">Semaphore</a>(</span><span class="m-doc-wrap">size_t max_workers) <span class="m-label m-flat m-info">explicit</span> </span>
+            <dt>
+              <span class="m-doc-wrap-bumper"><a href="#a70ffe5c1611dba350d105b70377f8cd2" class="m-doc">Semaphore</a>(</span><span class="m-doc-wrap">size_t max_workers) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
             <dd>constructs a semaphore with the given counter</dd>
           </dl>
@@ -107,6 +107,16 @@
             </dt>
             <dd>queries the counter value (not thread-safe during the run)</dd>
           </dl>
+        </section>
+        <section>
+          <h2>Function documentation</h2>
+          <section class="m-doc-details" id="a70ffe5c1611dba350d105b70377f8cd2"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />Semaphore::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a70ffe5c1611dba350d105b70377f8cd2" class="m-doc-self">Semaphore</a>(</span><span class="m-doc-wrap">size_t max_workers) <span class="m-label m-info">explicit</span> </span></span>
+            </h3>
+            <p>constructs a semaphore with the given counter</p>
+<p>A semaphore creates a constraint that limits the maximum concurrency, i.e., the number of workers, in a set of tasks.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Semaphore</span> <span class="n">semaphore</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>  <span class="c1">// concurrency constraint of 4 workers</span></pre>
+          </div></section>
         </section>
       </div>
     </div>

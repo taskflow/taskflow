@@ -63,6 +63,7 @@
             </li>
           </ul>
         </div>
+<p>The class provides essential methods to construct a task dependency graph from which <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> and <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> are derived.</p>
         <section id="derived-classes">
           <h2><a href="#derived-classes">Derived classes</a></h2>
           <dl class="m-doc">
@@ -103,6 +104,11 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>creates a condition task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#a78c40dc8776735b0f2c27cd446481aff" class="m-doc">is_<wbr />multi_<wbr />condition_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+            </dt>
+            <dd>creates a multi-condition task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a1f6118326ad434f6c839007a1a79fe1b" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C &amp;&amp; ... callables) -&gt; auto</span>
@@ -320,14 +326,62 @@
 <p>The following example creates an if-else block using one condition task and three static tasks.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 
 <span class="k">auto</span> <span class="p">[</span><span class="n">init</span><span class="p">,</span> <span class="n">cond</span><span class="p">,</span> <span class="n">yes</span><span class="p">,</span> <span class="n">no</span><span class="p">]</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
- <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="p">},</span>
- <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> <span class="p">},</span>
- <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;yes</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">},</span>
- <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;no</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
+  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="p">},</span>
+  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> <span class="p">},</span>
+  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;yes</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">},</span>
+  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;no</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
 <span class="p">);</span>
 
 <span class="c1">// executes yes if cond returns 0, or no if cond returns 1</span>
 <span class="n">cond</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">yes</span><span class="p">,</span> <span class="n">no</span><span class="p">);</span>
+<span class="n">cond</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">init</span><span class="p">);</span></pre><p>Please refer to <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a> for details.</p>
+          </div></section>
+          <section class="m-doc-details" id="a60d7a666cab71ecfa3010b2efb0d6b57"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#a78c40dc8776735b0f2c27cd446481aff" class="m-doc">is_<wbr />multi_<wbr />condition_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc-self">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable)</span></span>
+            </h3>
+            <p>creates a multi-condition task</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">C</td>
+                  <td>callable type constructible from <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function</a>&lt;tf::SmallVector&lt;int&gt;()&gt;</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>callable</td>
+                  <td>callable to construct a multi-condition task</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>The following example creates a multi-condition task that selectively jumps to two successor tasks.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+
+<span class="k">auto</span> <span class="p">[</span><span class="n">init</span><span class="p">,</span> <span class="n">cond</span><span class="p">,</span> <span class="n">branch1</span><span class="p">,</span> <span class="n">branch2</span><span class="p">,</span> <span class="n">branch3</span><span class="p">]</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
+  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="p">},</span>
+  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">tf</span><span class="o">::</span><span class="n">SmallVector</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">};</span> <span class="p">},</span>
+  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;branch1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">},</span>
+  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;branch2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">},</span>
+  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;branch3</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">);</span>
+
+<span class="c1">// executes branch1 and branch3 when cond returns 0 and 2</span>
+<span class="n">cond</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">branch1</span><span class="p">,</span> <span class="n">branch2</span><span class="p">,</span> <span class="n">branch3</span><span class="p">);</span>
 <span class="n">cond</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">init</span><span class="p">);</span></pre><p>Please refer to <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="a1f6118326ad434f6c839007a1a79fe1b"><div>
@@ -391,7 +445,14 @@
                 </tr>
               </tbody>
             </table>
-<p>Removes a task and its input and output dependencies from this graph. If the task does not belong to this graph, nothing will happen.</p>
+<p>Removes a task and its input and output dependencies from this graph. If the task does not belong to this graph, nothing will happen.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">A</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;A&quot;</span><span class="p">;</span> <span class="p">});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">B</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;B&quot;</span><span class="p">;</span> <span class="p">});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">C</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;C&quot;</span><span class="p">;</span> <span class="p">});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">D</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;D&quot;</span><span class="p">;</span> <span class="p">});</span>
+<span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">);</span>
+
+<span class="c1">// erase A from the taskflow and its dependencies to B, C, and D</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">A</span><span class="p">);</span></pre>
           </div></section>
           <section class="m-doc-details" id="a0a01192f4f92c15380a4f259e2fec2d9"><div>
             <h3>
@@ -626,6 +687,12 @@
                 </tr>
               </tbody>
             </table>
+<p>This member function creates linear dependencies over a vector of tasks.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">A</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;A&quot;</span><span class="p">;</span> <span class="p">});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">B</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;B&quot;</span><span class="p">;</span> <span class="p">});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">C</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;C&quot;</span><span class="p">;</span> <span class="p">});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">D</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;D&quot;</span><span class="p">;</span> <span class="p">});</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="o">&gt;</span> <span class="n">tasks</span> <span class="p">{</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">}</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">linearize</span><span class="p">(</span><span class="n">tasks</span><span class="p">);</span>  <span class="c1">// A-&gt;B-&gt;C-&gt;D</span></pre>
           </div></section>
           <section class="m-doc-details" id="a4ec89b554d15ad5fb96f4fdb10dbbb16"><div>
             <h3>
@@ -643,6 +710,11 @@
                 </tr>
               </tbody>
             </table>
+<p>This member function creates linear dependencies over a list of tasks.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">A</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;A&quot;</span><span class="p">;</span> <span class="p">});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">B</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;B&quot;</span><span class="p">;</span> <span class="p">});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">C</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;C&quot;</span><span class="p">;</span> <span class="p">});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">D</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;D&quot;</span><span class="p">;</span> <span class="p">});</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">linearize</span><span class="p">({</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">});</span>  <span class="c1">// A-&gt;B-&gt;C-&gt;D</span></pre>
           </div></section>
           <section class="m-doc-details" id="abc7f5fa54f40901d10f5f26062be3f40"><div>
             <h3>
@@ -761,7 +833,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>The task spawns a subflow that applies the callable object to each index in the range <code>[first, last)</code> with the step size.</p><p>This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="c1">// case 1: step size is positive</span>
+<p>The task spawns a subflow that applies the callable object to each index in the range <code>[first, last)</code> with the step size. This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="c1">// case 1: step size is positive</span>
 <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">last</span><span class="p">;</span> <span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
 <span class="p">}</span>
@@ -832,7 +904,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>.</p><p>This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">itr</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">itr</span><span class="o">!=</span><span class="n">last</span><span class="p">;</span> <span class="n">itr</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">itr</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">itr</span><span class="o">!=</span><span class="n">last</span><span class="p">;</span> <span class="n">itr</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">init</span> <span class="o">=</span> <span class="n">bop</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="o">*</span><span class="n">itr</span><span class="p">);</span>
 <span class="p">}</span></pre><p>Arguments are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
           </div></section>
@@ -906,7 +978,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>.</p><p>This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">itr</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">itr</span><span class="o">!=</span><span class="n">last</span><span class="p">;</span> <span class="n">itr</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+<p>The task spawns a subflow to perform parallel reduction over <code>init</code> and the transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">itr</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">itr</span><span class="o">!=</span><span class="n">last</span><span class="p">;</span> <span class="n">itr</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">init</span> <span class="o">=</span> <span class="n">bop</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">));</span>
 <span class="p">}</span></pre><p>Arguments are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
           </div></section>

@@ -73,6 +73,13 @@ class Semaphore {
     
     /**
     @brief constructs a semaphore with the given counter
+
+    A semaphore creates a constraint that limits the maximum concurrency,
+    i.e., the number of workers, in a set of tasks.
+
+    @code{.cpp}
+    tf::Semaphore semaphore(4);  // concurrency constraint of 4 workers
+    @endcode
     */
     explicit Semaphore(size_t max_workers);
     

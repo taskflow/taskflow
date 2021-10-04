@@ -14,6 +14,9 @@ namespace tf {
 
 @brief class to build a task dependency graph
 
+The class provides essential methods to construct a task dependency graph
+from which tf::Taskflow and tf::Subflow are derived.
+
 */
 class FlowBuilder {
 
@@ -173,6 +176,17 @@ class FlowBuilder {
 
     Removes a task and its input and output dependencies from this graph. 
     If the task does not belong to this graph, nothing will happen.
+
+    @code{.cpp}
+    tf::Task A = taskflow.emplace([](){ std::cout << "A"; });
+    tf::Task B = taskflow.emplace([](){ std::cout << "B"; });
+    tf::Task C = taskflow.emplace([](){ std::cout << "C"; });
+    tf::Task D = taskflow.emplace([](){ std::cout << "D"; });
+    A.precede(B, C, D);
+
+    // erase A from the taskflow and its dependencies to B, C, and D
+    taskflow.erase(A);
+    @endcode
     */
     void erase(Task task);
 
@@ -331,6 +345,18 @@ class FlowBuilder {
     @brief adds adjacent dependency links to a linear list of tasks
 
     @param tasks a vector of tasks
+    
+    This member function creates linear dependencies over a vector of tasks.
+    
+    @code{.cpp}
+    tf::Task A = taskflow.emplace([](){ std::cout << "A"; });
+    tf::Task B = taskflow.emplace([](){ std::cout << "B"; });
+    tf::Task C = taskflow.emplace([](){ std::cout << "C"; });
+    tf::Task D = taskflow.emplace([](){ std::cout << "D"; });
+    std::vector<tf::Task> tasks {A, B, C, D}
+    taskflow.linearize(tasks);  // A->B->C->D
+    @endcode
+    
     */
     void linearize(std::vector<Task>& tasks);
 
@@ -338,6 +364,16 @@ class FlowBuilder {
     @brief adds adjacent dependency links to a linear list of tasks
 
     @param tasks an initializer list of tasks
+
+    This member function creates linear dependencies over a list of tasks.
+
+    @code{.cpp}
+    tf::Task A = taskflow.emplace([](){ std::cout << "A"; });
+    tf::Task B = taskflow.emplace([](){ std::cout << "B"; });
+    tf::Task C = taskflow.emplace([](){ std::cout << "C"; });
+    tf::Task D = taskflow.emplace([](){ std::cout << "D"; });
+    taskflow.linearize({A, B, C, D});  // A->B->C->D
+    @endcode
     */
     void linearize(std::initializer_list<Task> tasks);
 
@@ -358,7 +394,8 @@ class FlowBuilder {
 
     @return a tf::Task handle
 
-    The task spawns a subflow that applies the callable object to each object obtained by dereferencing every iterator in the range <tt>[first, last)</tt>.
+    The task spawns a subflow that applies the callable object to each object 
+    obtained by dereferencing every iterator in the range <tt>[first, last)</tt>.
     This method is equivalent to the parallel execution of the following loop:
     
     @code{.cpp}
@@ -391,8 +428,8 @@ class FlowBuilder {
 
     @return a tf::Task handle
     
-    The task spawns a subflow that applies the callable object to each index in the range <tt>[first, last)</tt> with the step size.
-    
+    The task spawns a subflow that applies the callable object to each index 
+    in the range <tt>[first, last)</tt> with the step size.
     This method is equivalent to the parallel execution of the following loop:
     
     @code{.cpp}
@@ -434,8 +471,9 @@ class FlowBuilder {
 
     @return a tf::Task handle
     
-    The task spawns a subflow to perform parallel reduction over @c init and the elements in the range <tt>[first, last)</tt>. The reduced result is store in @c init.
-    
+    The task spawns a subflow to perform parallel reduction over @c init 
+    and the elements in the range <tt>[first, last)</tt>. 
+    The reduced result is store in @c init.
     This method is equivalent to the parallel execution of the following loop:
     
     @code{.cpp}
@@ -472,9 +510,9 @@ class FlowBuilder {
 
     @return a tf::Task handle
     
-    The task spawns a subflow to perform parallel reduction over @c init and the transformed elements in the range <tt>[first, last)</tt>. 
+    The task spawns a subflow to perform parallel reduction over @c init and 
+    the transformed elements in the range <tt>[first, last)</tt>. 
     The reduced result is store in @c init.
-    
     This method is equivalent to the parallel execution of the following loop:
     
     @code{.cpp}
@@ -711,6 +749,13 @@ class Subflow : public FlowBuilder {
 
     Performs an immediate action to join the subflow. Once the subflow is joined,
     it is considered finished and you may not modify the subflow anymore.
+    
+    @code{.cpp}
+    taskflow.emplace([](tf::Subflow& sf){
+      sf.emplace([](){});
+      sf.join();  // join the subflow of one task
+    });
+    @endcode
     */
     void join();
 
@@ -719,15 +764,32 @@ class Subflow : public FlowBuilder {
 
     Performs an immediate action to detach the subflow. Once the subflow is detached,
     it is considered finished and you may not modify the subflow anymore.
+    
+    @code{.cpp}
+    taskflow.emplace([](tf::Subflow& sf){
+      sf.emplace([](){});
+      sf.detach();
+    });
+    @endcode
     */
     void detach();
     
     /**
     @brief queries if the subflow is joinable
 
+    This member function queries if the subflow is joinable.
     When a subflow is joined or detached, it becomes not joinable.
+
+    @code{.cpp}
+    taskflow.emplace([](tf::Subflow& sf){
+      sf.emplace([](){});
+      std::cout << sf.joinable() << '\n';  // true
+      sf.join();
+      std::cout << sf.joinable() << '\n';  // false
+    });
+    @endcode
     */
-    bool joinable() const;
+    bool joinable() const noexcept;
 
     /** 
     @brief runs a given function asynchronously
@@ -740,8 +802,8 @@ class Subflow : public FlowBuilder {
     
     @return a tf::Future that will holds the result of the execution
 
-    This method is thread-safe and can be called by multiple tasks in the 
-    subflow at the same time.
+    The method creates an asynchronous task to launch the given
+    function on the given arguments.
     The difference to tf::Executor::async is that the created asynchronous task
     pertains to the subflow. 
     When the subflow joins, all asynchronous tasks created from the subflow
@@ -758,18 +820,99 @@ class Subflow : public FlowBuilder {
       assert(counter == 100);
     });
     @endcode
+    
+    This method is thread-safe and can be called by multiple tasks in the 
+    subflow at the same time.
 
+    @attention
     You cannot create asynchronous tasks from a detached subflow.
     Doing this results in undefined behavior.
     */
     template <typename F, typename... ArgsT>
     auto async(F&& f, ArgsT&&... args);
+
+    /** 
+    @brief runs the given function asynchronously and assigns the task a name
+
+    @tparam F callable type
+    @tparam ArgsT parameter types
+
+    @param name name of the asynchronous task 
+    @param f callable object to call
+    @param args parameters to pass to the callable
+    
+    @return a tf::Future that will holds the result of the execution
+    
+    The method creates a named asynchronous task to launch the given
+    function on the given arguments.
+    The difference from tf::Executor::async is that the created asynchronous task
+    pertains to the subflow. 
+    When the subflow joins, all asynchronous tasks created from the subflow
+    are guaranteed to finish before the join.
+    For example:
+
+    @code{.cpp}
+    std::atomic<int> counter(0);
+    taskflow.empalce([&](tf::Subflow& sf){
+      for(int i=0; i<100; i++) {
+        sf.async("name", [&](){ counter++; });
+      }
+      sf.join();
+      assert(counter == 100);
+    });
+    @endcode
+
+    This method is thread-safe and can be called by multiple tasks in the 
+    subflow at the same time.
+
+    @attention
+    You cannot create named asynchronous tasks from a detached subflow.
+    Doing this results in undefined behavior.
+    */
+    template <typename F, typename... ArgsT>
+    auto named_async(const std::string& name, F&& f, ArgsT&&... args);
     
     /**
-    @brief similar to tf::Subflow::async but did not return a future object
-     */
+    @brief similar to tf::Subflow::async but does not return a future object
+
+    This member function is more efficient than tf::Subflow::async
+    and is encouraged to use when there is no data returned.
+    
+    @code{.cpp}
+    taskflow.empalce([&](tf::Subflow& sf){
+      for(int i=0; i<100; i++) {
+        sf.silent_async([&](){ counter++; });
+      }
+      sf.join();
+      assert(counter == 100);
+    });
+    @endcode
+
+    This member function is thread-safe.
+    */
     template <typename F, typename... ArgsT>
     void silent_async(F&& f, ArgsT&&... args);
+    
+    /**
+    @brief similar to tf::Subflow::named_async but does not return a future object
+    
+    This member function is more efficient than tf::Subflow::named_async
+    and is encouraged to use when there is no data returned.
+    
+    @code{.cpp}
+    taskflow.empalce([&](tf::Subflow& sf){
+      for(int i=0; i<100; i++) {
+        sf.named_silent_async("name", [&](){ counter++; });
+      }
+      sf.join();
+      assert(counter == 100);
+    });
+    @endcode
+
+    This member function is thread-safe.
+     */
+    template <typename F, typename... ArgsT>
+    void named_silent_async(const std::string& name, F&& f, ArgsT&&... args);
 
   private:
     
@@ -789,7 +932,7 @@ inline Subflow::Subflow(Executor& executor, Node* parent, Graph& graph) :
 }
 
 // Function: joined
-inline bool Subflow::joinable() const {
+inline bool Subflow::joinable() const noexcept {
   return _joinable;
 }
 

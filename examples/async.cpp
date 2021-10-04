@@ -17,9 +17,19 @@ int main() {
     std::cout << "async task 2 does not return (silent)\n";
   });
 
+  // create asynchronous tasks with names (for profiling)
+  executor.named_async("async_task", [](){
+    std::cout << "named async task returns 1\n";
+    return 1;
+  });
+
+  executor.named_silent_async("silent_async_task", [](){
+    std::cout << "named silent async task does not return\n";
+  });
+
   executor.wait_for_all();  // wait for the two async tasks to finish
 
-  // create asynchronous tasks from the subflow
+  // create asynchronous tasks from a subflow
   // all asynchronous tasks are guaranteed to finish when the subflow joins
   tf::Taskflow taskflow;
 
@@ -44,8 +54,4 @@ int main() {
 
   return 0;
 }
-
-
-
-
 

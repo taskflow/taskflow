@@ -66,6 +66,14 @@ executor.wait_for_all();   // wait for all tasks to finish
 @note
 Asynchronous tasks created from an executor does not belong to any taskflows.
 
+You can name an asynchronous task to facilitate profiling by
+using the methods tf::Executor::named_async and tf::Executor::named_silent_async.
+
+@code{.cpp}
+tf::Future<void> future = executor.named_async("name of the task", [](){});
+executor.silent_named_async("another name of the task", [](){});
+@endcode
+
 @section LaunchAsynchronousTasksFromAnSubflow Launch Asynchronous Tasks from a Subflow
 
 You can launch asynchronous tasks from a subflow (tf::Subflow) using
@@ -124,6 +132,18 @@ without conquering or merging (e.g., parallel quick sort).
 You should only create asynchronous tasks from a joined subflow.
 Launching asynchronous tasks from a detached subflow results in
 undefined behavior.
+
+Similar to tf::Executor::named_async and tf::Executor::named_silent_async,
+you can name an asynchronous task in tf::Subflow to facilitate profiling by
+using the methods tf::Subflow::named_async and tf::Subflow::named_silent_async.
+
+@code{.cpp}
+taskflow.emplace([](tf::Subflow& sf){
+  tf::Future<void> future = sf.named_async("name of the task", [](){});
+  sf.silent_named_async("another name of the task", [](){});
+  sf.join();
+});
+@endcode
 
 */
 

@@ -27,7 +27,7 @@ dependency between two tasks. A task is one of the following types:
   3. condition task      : the callable is constructible from 
                            @c std::function<int()>
   4. multi-condition task: the callable is constructible from 
-                           @c std::function<tf::SmallVector<int>()>
+                           @c %std::function<tf::SmallVector<int>()>
   5. module task         : the task is constructed from tf::Taskflow::composed_of
   6. %cudaFlow task      : the callable is constructible from 
                            @c std::function<void(tf::cudaFlow&)> or

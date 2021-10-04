@@ -209,47 +209,47 @@ class Node {
   constexpr static auto CUDAFLOW        = get_index_v<cudaFlow, handle_t>; 
   constexpr static auto SYCLFLOW        = get_index_v<syclFlow, handle_t>; 
 
-    template <typename... Args>
-    Node(Args&&... args);
+  template <typename... Args>
+  Node(Args&&... args);
 
-    ~Node();
+  ~Node();
 
-    size_t num_successors() const;
-    size_t num_dependents() const;
-    size_t num_strong_dependents() const;
-    size_t num_weak_dependents() const;
+  size_t num_successors() const;
+  size_t num_dependents() const;
+  size_t num_strong_dependents() const;
+  size_t num_weak_dependents() const;
 
-    const std::string& name() const;
+  const std::string& name() const;
 
   private:
 
-    std::string _name;
+  std::string _name;
 
-    void* _data {nullptr};
+  void* _data {nullptr};
 
-    handle_t _handle;
+  handle_t _handle;
 
-    SmallVector<Node*> _successors;
-    SmallVector<Node*> _dependents;
+  SmallVector<Node*> _successors;
+  SmallVector<Node*> _dependents;
 
-    Topology* _topology {nullptr};
-    
-    Node* _parent {nullptr};
+  Topology* _topology {nullptr};
+  
+  Node* _parent {nullptr};
 
-    std::atomic<int> _state {0};
-    std::atomic<size_t> _join_counter {0};
-    
-    std::unique_ptr<Semaphores> _semaphores;
-    
-    void _precede(Node*);
-    void _set_up_join_counter();
+  std::atomic<int> _state {0};
+  std::atomic<size_t> _join_counter {0};
+  
+  std::unique_ptr<Semaphores> _semaphores;
+  
+  void _precede(Node*);
+  void _set_up_join_counter();
 
-    bool _has_state(int) const;
-    bool _is_cancelled() const;
-    bool _is_conditioner() const;
-    bool _acquire_all(std::vector<Node*>&);
+  bool _has_state(int) const;
+  bool _is_cancelled() const;
+  bool _is_conditioner() const;
+  bool _acquire_all(std::vector<Node*>&);
 
-    std::vector<Node*> _release_all();
+  std::vector<Node*> _release_all();
 };
 
 // ----------------------------------------------------------------------------

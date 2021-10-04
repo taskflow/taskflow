@@ -456,7 +456,7 @@ the scheduler starts with @c init and then decrements the strong dependency of
 the loop condition task, <tt>while i<5</tt>. 
 After this, there remains one strong dependency, i.e., introduced by
 the loop body task, @c i++.
-However, task @c i++ will not be executed until loop condition task returns @c 0,
+However, task @c i++ will not be executed until the loop condition task returns @c 0,
 causing a deadlock.
 
 */

@@ -30,7 +30,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect2 id="release-3-3-0_1release-3-3-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>Changed all lambda operators in parallel algorithms to copy by default</para></listitem><listitem><para>Cleaned up data race errors in <ulink url="https://github.com/google/sanitizers">tsan</ulink> caused by incorrect memory order</para></listitem><listitem><para>Added <ref refid="classtf_1_1Task_1afd82ab6d6518d1142a72c4d2c97ff114" kindref="member">tf::Task::data</ref> to allow associating a task with user-level data</para></listitem></itemizedlist>
+<listitem><para>Changed all lambda operators in parallel algorithms to copy by default</para></listitem><listitem><para>Cleaned up data race errors in <ulink url="https://github.com/google/sanitizers">tsan</ulink> caused by incorrect memory order</para></listitem><listitem><para>Added <ref refid="classtf_1_1Task_1afd82ab6d6518d1142a72c4d2c97ff114" kindref="member">tf::Task::data</ref> to allow associating a task with user-level data</para></listitem><listitem><para>Added <ref refid="classtf_1_1Executor_1a51acee1670e9f246c7ccd7f6a63f1524" kindref="member">tf::Executor::named_async</ref> to allow associating an asynchronous task a name</para></listitem><listitem><para>Added <ref refid="classtf_1_1Executor_1a1febfaa7a99cac8466263c58fd2a7c06" kindref="member">tf::Executor::named_silent_async</ref> to allow associating a silent asynchronous task a name</para></listitem><listitem><para>Added <ref refid="classtf_1_1Subflow_1ae528c2de98ec89afc50b8815c0306b5e" kindref="member">tf::Subflow::named_async</ref> to allow associating an asynchronous task a name</para></listitem><listitem><para>Added <ref refid="classtf_1_1Subflow_1a3290b8f729c4511f2023199e4c067951" kindref="member">tf::Subflow::named_silent_async</ref> to allow associating a silent asynchronous task a name</para></listitem></itemizedlist>
 </para></sect2>
 <sect2 id="release-3-3-0_1release-3-3-0_cudaflow">
 <title>cudaFlow</title>
@@ -51,7 +51,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_bug_fixes">
 <title>Bug Fixes</title>
 <para><itemizedlist>
-<listitem><para>Fixed memory leak in updating <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> of undestroyed graph</para></listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a7ef36ae799b89a5a37a2c5b09b12349c" kindref="member">tf::Taskflow::sort</ref></para></listitem></itemizedlist>
+<listitem><para>Fixed memory leak in updating <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> of undestroyed graph</para></listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a7ef36ae799b89a5a37a2c5b09b12349c" kindref="member">tf::Taskflow::sort</ref></para></listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1abc7f5fa54f40901d10f5f26062be3f40" kindref="member">tf::Taskflow::for_each</ref></para></listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1ac17879c60511d573e35f73ef3f620d8d" kindref="member">tf::Taskflow::for_each_index</ref></para></listitem></itemizedlist>
 </para></sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_breaking_changes">
 <title>Breaking Changes</title>

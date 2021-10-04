@@ -12,7 +12,7 @@ namespace tf {
 /**
 @class: TaskQueue
 
-@tparam T data type (must be a pointer)
+@tparam T data type (must be a pointer type)
 
 @brief Lock-free unbounded single-producer multiple-consumer queue.
 

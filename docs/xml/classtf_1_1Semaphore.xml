@@ -31,7 +31,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" line="86" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="86" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" line="93" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="93" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Semaphore_1a385c4e1622677e20bb53b01c8eb85e9b" prot="private" static="no" mutable="no">
         <type>size_t</type>
@@ -44,7 +44,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" line="88" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="88" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" line="95" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="95" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Semaphore_1ab05d171c0852d2c6584d62de004f52fb" prot="private" static="no" mutable="no">
         <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Node * &gt;</type>
@@ -57,7 +57,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" line="90" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="90" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" line="97" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="97" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -73,10 +73,11 @@
         <briefdescription>
 <para>constructs a semaphore with the given counter </para>        </briefdescription>
         <detaileddescription>
-        </detaileddescription>
+<para>A semaphore creates a constraint that limits the maximum concurrency, i.e., the number of workers, in a set of tasks.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref><sp/>semaphore(4);<sp/><sp/></highlight><highlight class="comment">//<sp/>concurrency<sp/>constraint<sp/>of<sp/>4<sp/>workers</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" line="77" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="97" bodyend="99"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" line="84" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="104" bodyend="106"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Semaphore_1a8e4236750edd903ec0492231076ba2ba" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -89,7 +90,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" line="82" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="120" bodyend="122"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" line="89" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="127" bodyend="129"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -108,7 +109,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" line="92" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="101" bodyend="111"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" line="99" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="108" bodyend="118"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Semaphore_1a47b8ed63d5deecb0878a0b9cc99da20e" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Node * &gt;</type>
@@ -121,7 +122,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" line="94" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="113" bodyend="118"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" line="101" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="120" bodyend="125"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -159,7 +160,7 @@
         <link refid="classtf_1_1Semaphore"/>
       </node>
     </inheritancegraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" line="68" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="68" bodyend="95"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" line="68" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="68" bodyend="102"/>
     <listofallmembers>
       <member refid="classtf_1_1Semaphore_1a385c4e1622677e20bb53b01c8eb85e9b" prot="private" virt="non-virtual"><scope>tf::Semaphore</scope><name>_counter</name></member>
       <member refid="classtf_1_1Semaphore_1a329424188b5287ca596f1af3f6db58f1" prot="private" virt="non-virtual"><scope>tf::Semaphore</scope><name>_mtx</name></member>
