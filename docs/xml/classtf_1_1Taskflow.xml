@@ -434,26 +434,26 @@
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();<sp/><sp/><sp/><sp/><sp/></highlight></codeline>
 </programlisting></para><para>The taskflow object itself is NOT thread-safe. You should not modifying the graph while it is running, such as adding new tasks, adding new dependencies, and moving the taskflow to another. To minimize the overhead of task creation, our runtime leverages a global object pool to recycle tasks in a thread-safe manner.</para><para>Please refer to <ref refid="Cookbook" kindref="compound">Cookbook</ref> to learn more about each task type and how to submit a taskflow to an executor. </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="154">
+      <node id="203">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
       </node>
-      <node id="153">
+      <node id="202">
         <label>tf::Taskflow</label>
         <link refid="classtf_1_1Taskflow"/>
-        <childnode refid="154" relation="public-inheritance">
+        <childnode refid="203" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="156">
+      <node id="205">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
       </node>
-      <node id="155">
+      <node id="204">
         <label>tf::Taskflow</label>
         <link refid="classtf_1_1Taskflow"/>
-        <childnode refid="156" relation="public-inheritance">
+        <childnode refid="205" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>

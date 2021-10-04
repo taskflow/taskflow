@@ -47,6 +47,7 @@ and memory leak of the %Taskflow codebase.
 + Added tf::Executor::named_silent_async to allow associating a silent asynchronous task a name
 + Added tf::Subflow::named_async to allow associating an asynchronous task a name
 + Added tf::Subflow::named_silent_async to allow associating a silent asynchronous task a name
++ Added multi-conditional tasking to allow a task to jump to multiple branches
 
 @subsection release-3-3-0_cudaflow cudaFlow
 
@@ -55,6 +56,8 @@ and memory leak of the %Taskflow codebase.
 @subsection release-3-3-0_cuda_std_algorithms CUDA Standard Parallel Algorithms
 
 @subsection release-3-3-0_utilities Utilities
+
++ Added tf::SmallVector to the documentation
 
 @subsection release-3-3-0_profiler Taskflow Profiler (TFProf)
 
@@ -75,6 +78,8 @@ and memory leak of the %Taskflow codebase.
   + @ref BAIBuildSanitizers
 + Revised @ref StaticTasking 
   + @ref AttachUserDataToATask
++ Revised @ref ConditionalTasking
+  + @ref CreateAMultiConditionTask
 + Revised @ref GPUTaskingcudaFlow
 + Revised @ref GPUTaskingcudaFlowCapturer
 + Revised @ref LimitTheMaximumConcurrency 

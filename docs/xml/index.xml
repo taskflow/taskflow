@@ -444,14 +444,14 @@
     <member refid="classtf_1_1Executor_1aeeecfcac09ba22db0aeaf2f5b534b802" kind="function"><name>_invoke_cudaflow_task_entry</name></member>
     <member refid="classtf_1_1Executor_1a42a995c2a5299761cf3c2e2d17cfca34" kind="function"><name>_invoke_syclflow_task_entry</name></member>
   </compound>
+  <compound refid="structtf_1_1cudaFlow_1_1External" kind="struct"><name>tf::cudaFlow::External</name>
+    <member refid="structtf_1_1cudaFlow_1_1External_1add55ef590408418dee0c8b79db7a747b" kind="variable"><name>graph</name></member>
+  </compound>
   <compound refid="structtf_1_1cudaFlowCapturer_1_1External" kind="struct"><name>tf::cudaFlowCapturer::External</name>
     <member refid="structtf_1_1cudaFlowCapturer_1_1External_1acb0595d884b28d21f661595e718c3cc2" kind="variable"><name>graph</name></member>
   </compound>
   <compound refid="structtf_1_1syclFlow_1_1External" kind="struct"><name>tf::syclFlow::External</name>
     <member refid="structtf_1_1syclFlow_1_1External_1ace2afbeee949bd808c7e374bdceb0467" kind="variable"><name>graph</name></member>
-  </compound>
-  <compound refid="structtf_1_1cudaFlow_1_1External" kind="struct"><name>tf::cudaFlow::External</name>
-    <member refid="structtf_1_1cudaFlow_1_1External_1add55ef590408418dee0c8b79db7a747b" kind="variable"><name>graph</name></member>
   </compound>
   <compound refid="classtf_1_1FlowBuilder" kind="class"><name>tf::FlowBuilder</name>
     <member refid="classtf_1_1FlowBuilder_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -494,13 +494,15 @@
     <member refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kind="function"><name>cancel</name></member>
     <member refid="classtf_1_1Future_1a26402c8b71a99835902794f4257dbc35" kind="function"><name>Future</name></member>
   </compound>
+  <compound refid="structtf_1_1cudaFlow_1_1Internal" kind="struct"><name>tf::cudaFlow::Internal</name>
+  </compound>
+  <compound refid="structtf_1_1cudaFlowCapturer_1_1Internal" kind="struct"><name>tf::cudaFlowCapturer::Internal</name>
+  </compound>
   <compound refid="structtf_1_1syclFlow_1_1Internal" kind="struct"><name>tf::syclFlow::Internal</name>
     <member refid="structtf_1_1syclFlow_1_1Internal_1a9bbc7eb920ae573d5360cae1cd7fb03d" kind="variable"><name>executor</name></member>
     <member refid="structtf_1_1syclFlow_1_1Internal_1a25015cffaeb326799d37ecb8ca5baceb" kind="function"><name>Internal</name></member>
   </compound>
-  <compound refid="structtf_1_1cudaFlow_1_1Internal" kind="struct"><name>tf::cudaFlow::Internal</name>
-  </compound>
-  <compound refid="structtf_1_1cudaFlowCapturer_1_1Internal" kind="struct"><name>tf::cudaFlowCapturer::Internal</name>
+  <compound refid="structtf_1_1IsPod" kind="struct"><name>tf::IsPod</name>
   </compound>
   <compound refid="classtf_1_1ObserverInterface" kind="class"><name>tf::ObserverInterface</name>
     <member refid="classtf_1_1ObserverInterface_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -554,12 +556,139 @@
     <member refid="classtf_1_1Semaphore_1aeb12ad1db7794e13829a0a62549d157b" kind="function"><name>_try_acquire_or_wait</name></member>
     <member refid="classtf_1_1Semaphore_1a47b8ed63d5deecb0878a0b9cc99da20e" kind="function"><name>_release</name></member>
   </compound>
-  <compound refid="uniontf_1_1detail_1_1cudaBlockSort_1_1Storage" kind="union"><name>tf::detail::cudaBlockSort::Storage</name>
-    <member refid="uniontf_1_1detail_1_1cudaBlockSort_1_1Storage_1a08bff3542e11e199012d1ca64b14881c" kind="variable"><name>keys</name></member>
-    <member refid="uniontf_1_1detail_1_1cudaBlockSort_1_1Storage_1a45d6a1f7e31ddb9905bc4c802f7e3e7a" kind="variable"><name>vals</name></member>
+  <compound refid="classtf_1_1SmallVector" kind="class"><name>tf::SmallVector</name>
+    <member refid="classtf_1_1SmallVector_1a752752b1856c279b5ccb7c71106ddae0" kind="variable"><name>Storage</name></member>
+    <member refid="classtf_1_1SmallVector_1a7948bf82d89a97740fc6ae7eb484a14d" kind="function"><name>SmallVector</name></member>
+    <member refid="classtf_1_1SmallVector_1a092160eaf54d09827daaa8875c089226" kind="function"><name>SmallVector</name></member>
+    <member refid="classtf_1_1SmallVector_1a0e0c9ea3b175d1e48e640434f9839380" kind="function"><name>SmallVector</name></member>
+    <member refid="classtf_1_1SmallVector_1ad45a8ae1e4b0d313e56d84787e3d9c91" kind="function"><name>SmallVector</name></member>
+    <member refid="classtf_1_1SmallVector_1a7a3ca548c2b19ce570265b6dad2dfff7" kind="function"><name>SmallVector</name></member>
+    <member refid="classtf_1_1SmallVector_1acf74c15d1ba09f9d71e706859613c005" kind="function"><name>SmallVector</name></member>
+    <member refid="classtf_1_1SmallVector_1aa2a3549a42d052ecb9f9c348f547406e" kind="function"><name>operator=</name></member>
+    <member refid="classtf_1_1SmallVector_1a66c2613642723060c21f0539d4a86b2d" kind="function"><name>operator=</name></member>
+    <member refid="classtf_1_1SmallVector_1a2507828c99bdc8d13cc57ec762689e2b" kind="function"><name>SmallVector</name></member>
+    <member refid="classtf_1_1SmallVector_1a06e0c4f610e6ede440b8f2ec38392781" kind="function"><name>operator=</name></member>
+    <member refid="classtf_1_1SmallVector_1a18276baf5b8c09d8452d198b5f568576" kind="function"><name>operator=</name></member>
+  </compound>
+  <compound refid="classtf_1_1SmallVectorBase" kind="class"><name>tf::SmallVectorBase</name>
+    <member refid="classtf_1_1SmallVectorBase_1a5d08aaf8e30cf35422fd5fc00a08365e" kind="variable"><name>BeginX</name></member>
+    <member refid="classtf_1_1SmallVectorBase_1ac1a0459890042d10254b7be5dd7c1752" kind="variable"><name>EndX</name></member>
+    <member refid="classtf_1_1SmallVectorBase_1a13c5c546448248a63e004725258f1ea3" kind="variable"><name>CapacityX</name></member>
+    <member refid="classtf_1_1SmallVectorBase_1a326c733a440cd9a1197bed0f75892152" kind="function"><name>SmallVectorBase</name></member>
+    <member refid="classtf_1_1SmallVectorBase_1a39b8b0b14783568a42fc606dee073096" kind="function"><name>grow_pod</name></member>
+    <member refid="classtf_1_1SmallVectorBase_1ab2a8fa067f915dc2b67c6e0c33527081" kind="function"><name>size_in_bytes</name></member>
+    <member refid="classtf_1_1SmallVectorBase_1a11236e318bfb73ce440e6f29985b08f3" kind="function"><name>capacity_in_bytes</name></member>
+    <member refid="classtf_1_1SmallVectorBase_1a538b6a18b5dfe80f650a2ada367a2050" kind="function"><name>empty</name></member>
+  </compound>
+  <compound refid="classtf_1_1SmallVectorImpl" kind="class"><name>tf::SmallVectorImpl</name>
+    <member refid="classtf_1_1SmallVectorImpl_1aeb53b6c473df3c8278add81d71846718" kind="typedef"><name>SuperClass</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a56906d9b3af4322205884dccccda4557" kind="typedef"><name>iterator</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a0214b0ea02db158851fdc27c726eb5c6" kind="typedef"><name>const_iterator</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1ad777bf745a771240340b41ef95b23f94" kind="typedef"><name>size_type</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a54467e7ac16f186941e384eb25557830" kind="function"><name>SmallVectorImpl</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a7e9e271548156643b2a6066472a6901c" kind="function"><name>SmallVectorImpl</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a4ac1132c5abed54299b9c05f5a6c3a5e" kind="function"><name>~SmallVectorImpl</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a0c4d7c6d68cdab50dd2e263dcb9338a5" kind="function"><name>clear</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a3fd39cea3aa24104f31f051cc858ae31" kind="function"><name>resize</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1ab4b71ea99487d0561849b4ed9c32f493" kind="function"><name>resize</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a50e86216100abce0a02f758ec48dec26" kind="function"><name>reserve</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a787679e464d7605da42cfa51c932b357" kind="function"><name>pop_back_val</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1ac79ba4c3607daede2f497cb7f14cc3cb" kind="function"><name>swap</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a7701c640b693502323a27937ad2433f4" kind="function"><name>append</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a945b8b7e14f3d535754323d85848f00c" kind="function"><name>append</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a63bb5bb28bc13af096f7d0f750ca065d" kind="function"><name>append</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1ac70567cd0a62080782399d6031f42fb3" kind="function"><name>assign</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a3aac17a8dd8a5b05024e3bc3e588bf78" kind="function"><name>assign</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a84bab9df70d6e59f3078da08280022c8" kind="function"><name>erase</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a5d28ee2577dc8da6d096235a3c67b587" kind="function"><name>erase</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1ad0cd1dc5bdc5e85bd891d5e8cbf04aa6" kind="function"><name>insert</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a67186df9203fbf6da88bb868768543e3" kind="function"><name>insert</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1adef89d46d895560d98b9d2a8d5cf58c7" kind="function"><name>insert</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a2f1549f06d7d5899e5e5636c2b5836d2" kind="function"><name>insert</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a183b0273245a9e08281ecf3fcdd6c326" kind="function"><name>insert</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a917970b8ad88f2782c0fdf610422229e" kind="function"><name>emplace_back</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1aaec66ca9e10e70d11c194eecec877a1e" kind="function"><name>operator=</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a014f3cc0e83e01a42e621fc693ab7139" kind="function"><name>operator=</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a9d7b77ff6197e5c30cd0c267196f1ff6" kind="function"><name>operator==</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1a0d3239c335aaa933165c3da83e6544da" kind="function"><name>operator!=</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1af696392bdb0d114a8ead523260045e29" kind="function"><name>operator&lt;</name></member>
+    <member refid="classtf_1_1SmallVectorImpl_1aa67a4c5e467bb19b1f16960854a0b010" kind="function"><name>set_size</name></member>
+  </compound>
+  <compound refid="structtf_1_1SmallVectorStorage" kind="struct"><name>tf::SmallVectorStorage</name>
+    <member refid="structtf_1_1SmallVectorStorage_1a389c95f804527bd86d52ee5a2ece0e6c" kind="variable"><name>InlineElts</name></member>
+  </compound>
+  <compound refid="structtf_1_1SmallVectorStorage_3_01T_00_010_01_4" kind="struct"><name>tf::SmallVectorStorage&lt; T, 0 &gt;</name>
+  </compound>
+  <compound refid="structtf_1_1SmallVectorStorage_3_01T_00_011_01_4" kind="struct"><name>tf::SmallVectorStorage&lt; T, 1 &gt;</name>
+  </compound>
+  <compound refid="classtf_1_1SmallVectorTemplateBase" kind="class"><name>tf::SmallVectorTemplateBase</name>
+    <member refid="classtf_1_1SmallVectorTemplateBase_1adc772391e02b84d14f4c5513542b29a9" kind="function"><name>SmallVectorTemplateBase</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateBase_1ab804c48d808741a114c698847860d64c" kind="function"><name>grow</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateBase_1a00ebcf9e81eed0b433be97131fd3d1d1" kind="function"><name>destroy_range</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateBase_1adf1b336ce5b5f404de1bb43c354fe1dd" kind="function"><name>uninitialized_move</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateBase_1ab8738fe3287f4ef437fe7363e8ae2d60" kind="function"><name>uninitialized_copy</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateBase_1a6b7c01c4c054379358315a1aac0d49a7" kind="function"><name>push_back</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateBase_1a6509b362398934d6ceed4a74ad0e6547" kind="function"><name>push_back</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateBase_1aaa3d3554c2ae0be47eed43c324e5e73b" kind="function"><name>pop_back</name></member>
+  </compound>
+  <compound refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4" kind="class"><name>tf::SmallVectorTemplateBase&lt; T, true &gt;</name>
+    <member refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4_1a6b9849e3fc0a0dbd6e30f8c69c7db935" kind="function"><name>SmallVectorTemplateBase</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4_1af4f15a8eb802cb9388356d5995eb70e1" kind="function"><name>grow</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4_1a1c3bcbc4c635b97d99ece152d8c3b29d" kind="function"><name>destroy_range</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4_1a736e3e5914675f5bbd9350b2351f0e54" kind="function"><name>uninitialized_move</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4_1a92be65048cff5789a37b93e9c7f71e02" kind="function"><name>uninitialized_copy</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4_1a73f97021aca0b8f5b263abbb9346aa36" kind="function"><name>uninitialized_copy</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4_1afd3661d5e240bf35cd814c486916ad8b" kind="function"><name>push_back</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4_1a83dc7f432fa5eb3f6a69dd4c4eee1b89" kind="function"><name>pop_back</name></member>
+  </compound>
+  <compound refid="classtf_1_1SmallVectorTemplateCommon" kind="class"><name>tf::SmallVectorTemplateCommon</name>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a2c67ab82161ca339eeac98f7848c6f95" kind="typedef"><name>U</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a0af2aaae74afd35894e91e96e221f2b4" kind="typedef"><name>size_type</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1adbfcf9d6ec0b239d48567a420a43b6f6" kind="typedef"><name>difference_type</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1ad92ebf3b12a1cd9a7a80d5161cc4449b" kind="typedef"><name>value_type</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1acee58895a98d40868ce8f1a1ff284ab7" kind="typedef"><name>iterator</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a39c4f2406153fd86003f67136e096bf1" kind="typedef"><name>const_iterator</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1ae8618ae79998e522734cf4b15fa7956e" kind="typedef"><name>const_reverse_iterator</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a20b7a8544e963fe20fd8a139bddce658" kind="typedef"><name>reverse_iterator</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a4b9db31beb2fe6aef612cd8ce248eb4a" kind="typedef"><name>reference</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1ac60fb9e83232f170a2f1af419054b30d" kind="typedef"><name>const_reference</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a4762cde1bfad65cb37752b4df255ddab" kind="typedef"><name>pointer</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1ab2ca1203dec28f3d9c626c85b4f36448" kind="typedef"><name>const_pointer</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a793abe4bcf6dc77d4cc24d207a4958b8" kind="friend"><name>SmallVectorStorage</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a5ef73aff6ad53a6b0568fb4ed3530bf2" kind="variable"><name>FirstEl</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a4717897cb4e6fea34640801c69469355" kind="function"><name>SmallVectorTemplateCommon</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a607fabb915c09ab97b1d80fb463e91fc" kind="function"><name>grow_pod</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1ad541b208571c7244efc8fbe42b90d608" kind="function"><name>isSmall</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1aed80eb722677292606f4c4e3b14d9639" kind="function"><name>resetToSmall</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1ae5fa1f3af9c829c120fd6ee9be5cf562" kind="function"><name>setEnd</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1ae101bcc51df9f276a517b7634cc885d0" kind="function"><name>capacity_ptr</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a6785a26fc28425df3fab4e06ccf436e3" kind="function"><name>capacity_ptr</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a5022deed40c9c9f983230c38d99658f4" kind="function"><name>begin</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1af41e27410f801a6aef0e61173ed8c18d" kind="function"><name>begin</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a59e18797630dc06cef6c2ae5acf591a0" kind="function"><name>end</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a0a34e20e970dce1f4e61893982886d49" kind="function"><name>end</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a83f50a1376ad1b3c828e89b9fa34b56d" kind="function"><name>rbegin</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a96c2d2979402cc76f84a76ff08720933" kind="function"><name>rbegin</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1ae26b374c3ca4f75054eb17ec85b26cf0" kind="function"><name>rend</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a411820e49d8ab402ac29c7537cd22049" kind="function"><name>rend</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a4416437b41cf9d57a6ed6b061e1cc1e8" kind="function"><name>size</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1ab79607f378fcf2fa8772f02c95a73073" kind="function"><name>max_size</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a82d552c39834d18a03a5a7f62031aac3" kind="function"><name>capacity</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a65c0541a7bf64e1ac4ae2a326d103cee" kind="function"><name>data</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a6d3b04be0f7fef50e88269934c4f95cd" kind="function"><name>data</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a42143086f104cda6e3d2ed2a4f7f9a29" kind="function"><name>operator[]</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1af77ae362f96acd803ed7577fb48b5efd" kind="function"><name>operator[]</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a2a1b3b20ba44906c4df269f6033c1f36" kind="function"><name>front</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a0d17587a21aeba5f1230d183be131252" kind="function"><name>front</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a009d8ff154f5ce94202db6c0591ce9e2" kind="function"><name>back</name></member>
+    <member refid="classtf_1_1SmallVectorTemplateCommon_1a14a2f4a352c7ea71bea641125fa64c19" kind="function"><name>back</name></member>
   </compound>
   <compound refid="structtf_1_1detail_1_1cudaBlockReduce_1_1Storage" kind="struct"><name>tf::detail::cudaBlockReduce::Storage</name>
     <member refid="structtf_1_1detail_1_1cudaBlockReduce_1_1Storage_1ae96b4912d9ac0413c68bfce227a15d04" kind="variable"><name>data</name></member>
+  </compound>
+  <compound refid="uniontf_1_1detail_1_1cudaBlockSort_1_1Storage" kind="union"><name>tf::detail::cudaBlockSort::Storage</name>
+    <member refid="uniontf_1_1detail_1_1cudaBlockSort_1_1Storage_1a08bff3542e11e199012d1ca64b14881c" kind="variable"><name>keys</name></member>
+    <member refid="uniontf_1_1detail_1_1cudaBlockSort_1_1Storage_1a45d6a1f7e31ddb9905bc4c802f7e3e7a" kind="variable"><name>vals</name></member>
   </compound>
   <compound refid="uniontf_1_1detail_1_1cudaBlockScan_1_1storage__t" kind="union"><name>tf::detail::cudaBlockScan::storage_t</name>
     <member refid="uniontf_1_1detail_1_1cudaBlockScan_1_1storage__t_1a9cc602c1e7c8358505637a42b958f398" kind="variable"><name>data</name></member>
@@ -756,11 +885,6 @@
     <member refid="classtf_1_1TFProfObserver_1a5debfce27f7e012d22872c134b261c63" kind="function"><name>on_entry</name></member>
     <member refid="classtf_1_1TFProfObserver_1af3a1630b5b1db5341a239a5d4c12c891" kind="function"><name>on_exit</name></member>
   </compound>
-  <compound refid="structtf_1_1ChromeObserver_1_1Timeline" kind="struct"><name>tf::ChromeObserver::Timeline</name>
-    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a3b3761840cd96e8af15e35ba65093e3d" kind="variable"><name>origin</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a68e28885dc55ee0c4a910efb8e89919e" kind="variable"><name>segments</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a9094de2f3a2857b6e0d8ccea358aaa0e" kind="variable"><name>stacks</name></member>
-  </compound>
   <compound refid="structtf_1_1Timeline" kind="struct"><name>tf::Timeline</name>
     <member refid="structtf_1_1Timeline_1ad2de68d870637ec1fccd98c2c8973c9f" kind="variable"><name>uid</name></member>
     <member refid="structtf_1_1Timeline_1ad38c8a527bc603571c53cfce08ccbab7" kind="variable"><name>origin</name></member>
@@ -772,6 +896,11 @@
     <member refid="structtf_1_1Timeline_1a9f315578cf84dd0ddfa4bff43762eebb" kind="function"><name>operator=</name></member>
     <member refid="structtf_1_1Timeline_1a435fff911fa14d75c7000f1a908cee57" kind="function"><name>save</name></member>
     <member refid="structtf_1_1Timeline_1af08d956eca1550dcbe161eb53a11fe46" kind="function"><name>load</name></member>
+  </compound>
+  <compound refid="structtf_1_1ChromeObserver_1_1Timeline" kind="struct"><name>tf::ChromeObserver::Timeline</name>
+    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a3b3761840cd96e8af15e35ba65093e3d" kind="variable"><name>origin</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a68e28885dc55ee0c4a910efb8e89919e" kind="variable"><name>segments</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a9094de2f3a2857b6e0d8ccea358aaa0e" kind="variable"><name>stacks</name></member>
   </compound>
   <compound refid="classtf_1_1Worker" kind="class"><name>tf::Worker</name>
     <member refid="classtf_1_1Worker_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -1316,6 +1445,8 @@
     <member refid="cpp/io/c/fprintf_1" kind="function"><name>printf</name></member>
     <member refid="cpp/io/manip/setfill_1" kind="function"><name>setfill</name></member>
     <member refid="cpp/algorithm/inner_product_1" kind="function"><name>inner_product</name></member>
+    <member refid="small__vector_8hpp_1a6a0d9efe4f3de0b5046c0afa87556582" kind="function"><name>swap</name></member>
+    <member refid="small__vector_8hpp_1ac8164ee2aeb48c22836ad8e3f6c6f067" kind="function"><name>swap</name></member>
   </compound>
   <compound refid="namespacetf" kind="namespace"><name>tf</name>
     <member refid="namespacetf_1a1355048578785a80414707ff308b395a" kind="enum"><name>TaskType</name></member>
@@ -1353,6 +1484,7 @@
     <member refid="namespacetf_1a78c40dc8776735b0f2c27cd446481aff" kind="variable"><name>is_multi_condition_task_v</name></member>
     <member refid="namespacetf_1adb8433555d8cdc0b3c5d95e8d51a90f0" kind="variable"><name>is_cudaflow_task_v</name></member>
     <member refid="namespacetf_1a574038aaa99e0220eedca4e8ea9389cf" kind="variable"><name>is_syclflow_task_v</name></member>
+    <member refid="namespacetf_1aea9fe5c87d4439816239b5af6ebeec55" kind="function"><name>capacity_in_bytes</name></member>
     <member refid="namespacetf_1a4d2543d6c1f4f0025ae0df525cce70ae" kind="function"><name>this_worker</name></member>
     <member refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kind="function"><name>to_string</name></member>
     <member refid="namespacetf_1ad216aea4d0f648e149e47374ad015b1f" kind="function"><name>operator&lt;&lt;</name></member>
@@ -1428,6 +1560,7 @@
     <member refid="dummy_1a93988a64371309e28f815e1266b875f9aa7c48ba367e019d004bfb0239b85f2b3" kind="enumvalue"><name>LOWER</name></member>
     <member refid="dummy_1a93988a64371309e28f815e1266b875f9a9e43f5291e6fcb2ad99c8e3f91acd179" kind="enumvalue"><name>UPPER</name></member>
     <member refid="cuda__scan_8hpp_1acb48d657669121bb9dfd45662e5bf9e1" kind="variable"><name>cudaScanRecursionThreshold</name></member>
+    <member refid="small__vector_8hpp_1af7219c0a48eb7108171068b23dd93c92" kind="function"><name>NextCapacity</name></member>
     <member refid="cuda__for__each_8hpp_1a4a1aed04a826c2991e3fa36358dfcaca" kind="function"><name>cuda_for_each_loop</name></member>
     <member refid="cuda__for__each_8hpp_1adb0301752c89d8b515d00c4c771f74d7" kind="function"><name>cuda_for_each_index_loop</name></member>
     <member refid="cuda__transform_8hpp_1aefd61e0b4f1e0e9518bed187dd840ba6" kind="function"><name>cuda_transform_loop</name></member>
@@ -1652,6 +1785,8 @@
   </compound>
   <compound refid="semaphore_8hpp" kind="file"><name>semaphore.hpp</name>
   </compound>
+  <compound refid="small__vector_8hpp" kind="file"><name>small_vector.hpp</name>
+  </compound>
   <compound refid="sort_8dox" kind="file"><name>sort.dox</name>
   </compound>
   <compound refid="static__tasking_8dox" kind="file"><name>static_tasking.dox</name>
@@ -1863,6 +1998,8 @@
   <compound refid="dir_59407bc40a15c2167fedcd9ce80ec8b9" kind="dir"><name>sycl</name>
   </compound>
   <compound refid="dir_88dad41ea55ca2177e141d32a93e931c" kind="dir"><name>taskflow</name>
+  </compound>
+  <compound refid="dir_ce5b1d0a1b287ae7223729d7a3a091a8" kind="dir"><name>utility</name>
   </compound>
   <compound refid="indexpage" kind="page"><name>index</name>
   </compound>

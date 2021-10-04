@@ -243,7 +243,9 @@ conditioned.
 We suggest that you @ref TaskSchedulingPolicy and infer if task race
 exists in the execution of your graph.
 
-@section ImplementIfElseControlFlow Implement If-Else Control Flow
+@section ImplementControlFlowGraphs Implement Control-flow Graphs
+
+@subsection ImplementIfElseControlFlow Implement If-Else Control Flow
 
 You can use conditional tasking to implement if-else control flow.
 The following example creates a nested if-else control flow diagram that 
@@ -273,7 +275,7 @@ cond3.precede(equl3, grtr3);  // goes to grtr3 if i>3
 @dotfile images/conditional-tasking-nested-if-else.dot
 
 
-@section ImplementSwitchControlFlow Implement Switch Control Flow
+@subsection ImplementSwitchControlFlow Implement Switch Control Flow
 
 You can use conditional tasking to implement @em switch control flow.
 The following example creates a switch control flow diagram that 
@@ -337,7 +339,7 @@ This is because @c swcond is a condition task,
 and only one case task will be executed depending on the return of @c swcond.
 
 
-@section ImplementDoWhileLoopControlFlow Implement Do-While-Loop Control Flow
+@subsection ImplementDoWhileLoopControlFlow Implement Do-While-Loop Control Flow
 
 You can use conditional tasking to implement @em do-while-loop control flow.
 The following example creates a do-while-loop control flow diagram that 
@@ -374,7 +376,7 @@ i++ => i=5
 done
 @endcode
 
-@section ImplementWhileLoopControlFlow Implement While-Loop Control Flow
+@subsection ImplementWhileLoopControlFlow Implement While-Loop Control Flow
 
 You can use conditional tasking to implement @em while-loop control flow.
 The following example creates a while-loop control flow diagram that 
@@ -459,7 +461,90 @@ the loop body task, @c i++.
 However, task @c i++ will not be executed until the loop condition task returns @c 0,
 causing a deadlock.
 
+
+@section CreateAMultiConditionTask Create a Multi-condition Task
+
+A <i>multi-condition task</i> is a generalized version of conditional tasking.
+In some cases, applications need to jump to multiple branches from a parent task.
+This can be done by creating a <i>multi-condition task</i> which allows a task
+to select one or more successor tasks to execute.
+Similar to a condition task, a multi-condition task returns
+a vector of integer indices that indicate the successors to execute
+when the multi-condition task completes.
+The index is defined with respect to the order of successors preceded by
+a multi-condition task.
+For example, the following code creates a multi-condition task, @c A,
+that informs the scheduler to run on its two successors, @c B and @c D.
+
+@code{.cpp}
+tf::Executor executor;
+tf::Taskflow taskflow;
+
+auto A = taskflow.emplace([&]() -> tf::SmallVector<int> { 
+  std::cout << "A\n"; 
+  return {0, 2};
+}).name("A");
+auto B = taskflow.emplace([&](){ std::cout << "B\n"; }).name("B");
+auto C = taskflow.emplace([&](){ std::cout << "C\n"; }).name("C");
+auto D = taskflow.emplace([&](){ std::cout << "D\n"; }).name("D");
+
+A.precede(B, C, D);
+
+executor.run(taskflow).wait();
+@endcode
+
+@dotfile images/multi-condition-task-1.dot
+
+@note
+The return type of a multi-condition task is tf::SmallVector,
+which provides C++ vector-style functionalities but comes with small buffer optimization.
+
+One important application of conditional tasking is implementing 
+<i>iterative control flow</i>.
+You can use multi-condition tasks to create multiple loops that run concurrently.
+The following code creates a sequential chain of four loops in which
+each loop increments a counter variable ten times.
+When the program completes, the value of the counter variable is @c 40.
+
+@code{.cpp}
+tf::Executor executor;
+tf::Taskflow taskflow;
+std::atomic<int> counter{0};
+
+auto loop = [&, i=bool{true}, c = int(0)]() mutable -> tf::SmallVector<int> {
+  if(i) {
+    i = false;
+    return {0, -1};
+  }
+  else {
+    counter.fetch_add(1, std::memory_order_relaxed);
+    return {++c < 10 ? 0 : -1};
+  }
+}
+auto A = taskflow.emplace([](){});
+auto B = taskflow.emplace(loop);
+auto C = taskflow.emplace(loop);
+auto D = taskflow.emplace(loop);
+
+A.precede(B);
+B.precede(B, C);
+C.precede(C, D);
+D.precede(D);
+
+executor.run(taskflow).wait();  // counter == 40
+@endcode
+
+@dotfile images/multi-condition-task-2.dot
+
+@attention
+It is your responsibility to ensure the return of a multi-condition task 
+goes to a correct successor task.
+If a returned index falls outside the successor range of a multi-condition task,
+the scheduler will skip that index without doing anything.
+
 */
 
 }
+
+
 

@@ -19,6 +19,10 @@
   #define TF_SMALLVEC_UNLIKELY(x) (x)
 #endif
 
+/** 
+@file small_vector.hpp
+@brief small vector include file
+*/
 
 namespace tf { namespace detail {
 
@@ -45,7 +49,6 @@ namespace tf {
 
 /**
 @private
-@brief std::is_pod has been deprecated in C++20.
 */
 template <typename T>
 struct IsPod : std::integral_constant<bool, std::is_standard_layout<T>::value &&
@@ -53,7 +56,6 @@ struct IsPod : std::integral_constant<bool, std::is_standard_layout<T>::value &&
 
 /** 
 @private 
-@brief This is all the non-templated stuff common to all SmallVectors.
 */
 class SmallVectorBase {
 protected:
@@ -103,11 +105,14 @@ public:
   bool empty() const { return BeginX == EndX; }
 };
 
+/**
+@private
+*/
 template <typename T, unsigned N> struct SmallVectorStorage;
 
-/// This is the part of SmallVectorTemplateBase which does not depend on whether
-/// the type T is a POD. The extra dummy template argument is used by ArrayRef
-/// to avoid unnecessarily requiring T to be complete.
+/** 
+@private 
+*/
 template <typename T, typename = void>
 class SmallVectorTemplateCommon : public SmallVectorBase {
 
@@ -218,10 +223,12 @@ class SmallVectorTemplateCommon : public SmallVectorBase {
   }
 };
 
-/// SmallVectorTemplateBase<isPodLike = false> - This is where we put method
-/// implementations that are designed to work with non-POD-like T's.
+/**
+@private
+*/
 template <typename T, bool isPodLike>
 class SmallVectorTemplateBase : public SmallVectorTemplateCommon<T> {
+
 protected:
   SmallVectorTemplateBase(size_t Size) : SmallVectorTemplateCommon<T>(Size) {}
 
@@ -273,7 +280,9 @@ public:
   }
 };
 
-// Define this out-of-line to dissuade the C++ compiler from inlining it.
+/**
+@private
+*/
 template <typename T, bool isPodLike>
 void SmallVectorTemplateBase<T, isPodLike>::grow(size_t MinSize) {
   size_t CurCapacity = this->capacity();
@@ -299,9 +308,9 @@ void SmallVectorTemplateBase<T, isPodLike>::grow(size_t MinSize) {
   this->CapacityX = this->begin()+NewCapacity;
 }
 
-
-/// SmallVectorTemplateBase<isPodLike = true> - This is where we put method
-/// implementations that are designed to work with POD-like T's.
+/**
+@private
+*/
 template <typename T>
 class SmallVectorTemplateBase<T, true> : public SmallVectorTemplateCommon<T> {
 protected:
@@ -359,9 +368,9 @@ public:
   }
 };
 
-
-/// This class consists of common code factored out of the SmallVector class to
-/// reduce code duplication based on the SmallVector 'N' template parameter.
+/** 
+@private
+*/
 template <typename T>
 class SmallVectorImpl : public SmallVectorTemplateBase<T, IsPod<T>::value> {
   typedef SmallVectorTemplateBase<T, IsPod<T>::value> SuperClass;
@@ -867,85 +876,138 @@ SmallVectorImpl<T> &SmallVectorImpl<T>::operator=(SmallVectorImpl<T> &&RHS) {
   return *this;
 }
 
-/// Storage for the SmallVector elements which aren't contained in
-/// SmallVectorTemplateCommon. There are 'N-1' elements here. The remaining '1'
-/// element is in the base class. This is specialized for the N=1 and N=0 cases
-/// to avoid allocating unnecessary storage.
+/**
+@private
+*/
 template <typename T, unsigned N>
 struct SmallVectorStorage {
+  /**
+  @private
+  */
   typename SmallVectorTemplateCommon<T>::U InlineElts[N - 1];
 };
+
+/**
+@private
+*/
 template <typename T> struct SmallVectorStorage<T, 1> {};
+
+/**
+@private
+*/
 template <typename T> struct SmallVectorStorage<T, 0> {};
 
-/// This is a 'vector' (really, a variable-sized array), optimized
-/// for the case when the array is small.  It contains some number of elements
-/// in-place, which allows it to avoid heap allocation when the actual number of
-/// elements is below that threshold.  This allows normal "small" cases to be
-/// fast without losing generality for large inputs.
-///
-/// Note that this does not attempt to be exception safe.
-///
+/**
+@brief class to define a vector optimized for small array
+
+@tparam T data type
+@tparam N threshold of the number of elements in the initial storage
+
+The class defines a C++ STL-styled vector (a variable-sized array)
+optimized for the case when the array is small.
+It contains some number of elements in-place, 
+which allows it to avoid heap allocation when the actual number of
+elements is below that threshold. This allows normal @em small cases to be
+fast without losing generality for large inputs.
+All the methods in [std::vector](https://en.cppreference.com/w/cpp/container/vector)
+can apply to this class.
+
+The class is stripped from the LLVM codebase. 
+*/
 template <typename T, unsigned N = 2>
 class SmallVector : public SmallVectorImpl<T> {
   /// Inline space for elements which aren't stored in the base class.
   SmallVectorStorage<T, N> Storage;
+
 public:
+
+  /**
+  @brief constructs an empty vector
+  */
   SmallVector() : SmallVectorImpl<T>(N) {
   }
-
+  
+  /**
+  @brief constructs a vector with @c Size copies of elements with value @c value
+  */
   explicit SmallVector(size_t Size, const T &Value = T())
     : SmallVectorImpl<T>(N) {
     this->assign(Size, Value);
   }
-
+  
+  /**
+  @brief constructs a vector with the contents of the range 
+         <tt>[S, E)</tt>
+   */
   template<typename ItTy>
   SmallVector(ItTy S, ItTy E) : SmallVectorImpl<T>(N) {
     this->append(S, E);
   }
 
-/*
-  template <typename RangeTy>
-  explicit SmallVector(const tf::iterator_range<RangeTy> &R)
-      : SmallVectorImpl<T>(N) {
-    this->append(R.begin(), R.end());
-  }
-*/
-
+  //template <typename RangeTy>
+  //explicit SmallVector(const tf::iterator_range<RangeTy> &R)
+  //    : SmallVectorImpl<T>(N) {
+  //  this->append(R.begin(), R.end());
+  //}
+  
+  /**
+  @brief constructs a vector with the contents of the initializer list @c IL
+  */
   SmallVector(std::initializer_list<T> IL) : SmallVectorImpl<T>(N) {
     this->assign(IL);
   }
-
+  
+  /**
+  @brief constructs the vector with the copy of the contents of @c RHS
+  */
   SmallVector(const SmallVector &RHS) : SmallVectorImpl<T>(N) {
     if (!RHS.empty())
       SmallVectorImpl<T>::operator=(RHS);
   }
-
-  const SmallVector &operator=(const SmallVector &RHS) {
-    SmallVectorImpl<T>::operator=(RHS);
-    return *this;
-  }
-
+  
+  /**
+  @brief constructs the vector with the contents of @c RHS using move semantics
+  */
   SmallVector(SmallVector &&RHS) : SmallVectorImpl<T>(N) {
     if (!RHS.empty())
       SmallVectorImpl<T>::operator=(::std::move(RHS));
   }
-
+  
+  /**
+  @brief replaces the contents with a copy of the contents of @c RHS
+  */
+  const SmallVector &operator=(const SmallVector &RHS) {
+    SmallVectorImpl<T>::operator=(RHS);
+    return *this;
+  }
+  
+  /**
+  @brief replaces the contents with the contents of @c RHS using move semantics
+  */
   const SmallVector &operator=(SmallVector &&RHS) {
     SmallVectorImpl<T>::operator=(::std::move(RHS));
     return *this;
   }
-
+  
+  /**
+  @brief constructs a vector with the contents of @c RHS using move semantics
+  */
   SmallVector(SmallVectorImpl<T> &&RHS) : SmallVectorImpl<T>(N) {
     if (!RHS.empty())
       SmallVectorImpl<T>::operator=(::std::move(RHS));
   }
-
+  
+  /**
+  @brief replaces the contents with the contents of @c RHS using move semantics
+   */
   const SmallVector &operator=(SmallVectorImpl<T> &&RHS) {
     SmallVectorImpl<T>::operator=(::std::move(RHS));
     return *this;
   }
-
+  
+  /**
+  @brief replaces the contents with the copy of the contents of an initializer list @c IL
+   */
   const SmallVector &operator=(std::initializer_list<T> IL) {
     this->assign(IL);
     return *this;

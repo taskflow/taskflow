@@ -131,7 +131,9 @@ Condition task can go cyclic to describe <emphasis>iterative</emphasis> control 
 <para>Condition tasks are handy in creasing dynamic and cyclic control flows, but they are also easy to make mistakes. It is your responsibility to ensure a taskflow is properly conditioned. Top things to avoid include <emphasis>no source tasks</emphasis> to start with and <emphasis>task race</emphasis>. The figure below shows common pitfalls and their remedies.</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/conditional-tasking-pitfalls.dot"></dotfile>
 </para><para>In the <computeroutput>error1</computeroutput> scenario, there is no source task for the scheduler to start with, and the simplest fix is to add a task <computeroutput>S</computeroutput> that has no dependents. In the <computeroutput>error2</computeroutput> scenario, <computeroutput>D</computeroutput> might be scheduled twice by <computeroutput>E</computeroutput> through the strong dependency and <computeroutput>C</computeroutput> through the weak dependency (on returning <computeroutput>1</computeroutput>). To fix this problem, you can add an auxiliary task <computeroutput>D-aux</computeroutput> to break the mixed use of strong dependency and weak dependency. In the risky scenario, task <computeroutput>X</computeroutput> may be raced by <computeroutput>M</computeroutput> and <computeroutput>P</computeroutput> if <computeroutput>M</computeroutput> returns <computeroutput>0</computeroutput> and P returns <computeroutput>1</computeroutput>.</para><para><simplesect kind="attention"><para>It is your responsibility to ensure a written taskflow graph is properly conditioned. We suggest that you <ref refid="ConditionalTasking_1TaskSchedulingPolicy" kindref="member">Understand our Task-level Scheduling</ref> and infer if task race exists in the execution of your graph.</para></simplesect>
 </para></sect1>
-<sect1 id="ConditionalTasking_1ImplementIfElseControlFlow">
+<sect1 id="ConditionalTasking_1ImplementControlFlowGraphs">
+<title>Implement Control-flow Graphs</title>
+<sect2 id="ConditionalTasking_1ImplementIfElseControlFlow">
 <title>Implement If-Else Control Flow</title>
 <para>You can use conditional tasking to implement if-else control flow. The following example creates a nested if-else control flow diagram that executes three condition tasks to check the range of <computeroutput>i</computeroutput>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -152,8 +154,8 @@ Condition task can go cyclic to describe <emphasis>iterative</emphasis> control 
 <codeline><highlight class="normal">cond2.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(equl2,<sp/>cond3);<sp/><sp/></highlight><highlight class="comment">//<sp/>goes<sp/>to<sp/>cond3<sp/>if<sp/>i&gt;2</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">cond3.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(equl3,<sp/>grtr3);<sp/><sp/></highlight><highlight class="comment">//<sp/>goes<sp/>to<sp/>grtr3<sp/>if<sp/>i&gt;3</highlight></codeline>
 </programlisting></para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/conditional-tasking-nested-if-else.dot"></dotfile>
-</para></sect1>
-<sect1 id="ConditionalTasking_1ImplementSwitchControlFlow">
+</para></sect2>
+<sect2 id="ConditionalTasking_1ImplementSwitchControlFlow">
 <title>Implement Switch Control Flow</title>
 <para>You can use conditional tasking to implement <emphasis>switch</emphasis> control flow. The following example creates a switch control flow diagram that executes one of the three cases at random using four condition tasks.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -190,8 +192,8 @@ Condition task can go cyclic to describe <emphasis>iterative</emphasis> control 
 <codeline><highlight class="normal">swcond.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(case1,<sp/>case2,<sp/>case3);</highlight></codeline>
 <codeline><highlight class="normal">target.<ref refid="classtf_1_1Task_1a331b1b726555072e7c7d10941257f664" kindref="member">succeed</ref>(case1,<sp/>case2,<sp/>case3);</highlight></codeline>
 </programlisting></para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/conditional-tasking-switch-wrong.dot"></dotfile>
-</para><para>In this faulty implementation, task <computeroutput>target</computeroutput> has three strong dependencies but only one of them will be met. This is because <computeroutput>swcond</computeroutput> is a condition task, and only one case task will be executed depending on the return of <computeroutput>swcond</computeroutput>.</para></sect1>
-<sect1 id="ConditionalTasking_1ImplementDoWhileLoopControlFlow">
+</para><para>In this faulty implementation, task <computeroutput>target</computeroutput> has three strong dependencies but only one of them will be met. This is because <computeroutput>swcond</computeroutput> is a condition task, and only one case task will be executed depending on the return of <computeroutput>swcond</computeroutput>.</para></sect2>
+<sect2 id="ConditionalTasking_1ImplementDoWhileLoopControlFlow">
 <title>Implement Do-While-Loop Control Flow</title>
 <para>You can use conditional tasking to implement <emphasis>do-while-loop</emphasis> control flow. The following example creates a do-while-loop control flow diagram that repeatedly increments variable <computeroutput>i</computeroutput> five times using one condition task.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -215,8 +217,8 @@ Condition task can go cyclic to describe <emphasis>iterative</emphasis> control 
 <codeline><highlight class="normal">i++<sp/>=&gt;<sp/>i=4</highlight></codeline>
 <codeline><highlight class="normal">i++<sp/>=&gt;<sp/>i=5</highlight></codeline>
 <codeline><highlight class="normal">done</highlight></codeline>
-</programlisting></para></sect1>
-<sect1 id="ConditionalTasking_1ImplementWhileLoopControlFlow">
+</programlisting></para></sect2>
+<sect2 id="ConditionalTasking_1ImplementWhileLoopControlFlow">
 <title>Implement While-Loop Control Flow</title>
 <para>You can use conditional tasking to implement <emphasis>while-loop</emphasis> control flow. The following example creates a while-loop control flow diagram that repeatedly increments variable <computeroutput>i</computeroutput> five times using two condition task.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -269,7 +271,54 @@ Condition task can go cyclic to describe <emphasis>iterative</emphasis> control 
 <codeline><highlight class="normal">cond.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(body,<sp/>done);</highlight></codeline>
 <codeline><highlight class="normal">body.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(cond);</highlight></codeline>
 </programlisting></para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/conditional-tasking-while-wrong.dot"></dotfile>
-</para><para>In the taskflow diagram above, the scheduler starts with <computeroutput>init</computeroutput> and then decrements the strong dependency of the loop condition task, <computeroutput>while i&lt;5</computeroutput>. After this, there remains one strong dependency, i.e., introduced by the loop body task, <computeroutput>i++</computeroutput>. However, task <computeroutput>i++</computeroutput> will not be executed until loop condition task returns <computeroutput>0</computeroutput>, causing a deadlock. </para></sect1>
+</para><para>In the taskflow diagram above, the scheduler starts with <computeroutput>init</computeroutput> and then decrements the strong dependency of the loop condition task, <computeroutput>while i&lt;5</computeroutput>. After this, there remains one strong dependency, i.e., introduced by the loop body task, <computeroutput>i++</computeroutput>. However, task <computeroutput>i++</computeroutput> will not be executed until the loop condition task returns <computeroutput>0</computeroutput>, causing a deadlock.</para></sect2>
+</sect1>
+<sect1 id="ConditionalTasking_1CreateAMultiConditionTask">
+<title>Create a Multi-condition Task</title>
+<para>A <emphasis>multi-condition task</emphasis> is a generalized version of conditional tasking. In some cases, applications need to jump to multiple branches from a parent task. This can be done by creating a <emphasis>multi-condition task</emphasis> which allows a task to select one or more successor tasks to execute. Similar to a condition task, a multi-condition task returns a vector of integer indices that indicate the successors to execute when the multi-condition task completes. The index is defined with respect to the order of successors preceded by a multi-condition task. For example, the following code creates a multi-condition task, <computeroutput>A</computeroutput>, that informs the scheduler to run on its two successors, <computeroutput>B</computeroutput> and <computeroutput>D</computeroutput>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>A<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;]()<sp/>-&gt;<sp/><ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector&lt;int&gt;</ref><sp/>{<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">;<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>{0,<sp/>2};</highlight></codeline>
+<codeline><highlight class="normal">}).name(</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>B<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">;<sp/>}).name(</highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>C<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C\n&quot;</highlight><highlight class="normal">;<sp/>}).name(</highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>D<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D\n&quot;</highlight><highlight class="normal">;<sp/>}).name(</highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B,<sp/>C,<sp/>D);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+</programlisting></para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/multi-condition-task-1.dot"></dotfile>
+</para><para><simplesect kind="note"><para>The return type of a multi-condition task is <ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector</ref>, which provides C++ vector-style functionalities but comes with small buffer optimization.</para></simplesect>
+One important application of conditional tasking is implementing <emphasis>iterative control flow</emphasis>. You can use multi-condition tasks to create multiple loops that run concurrently. The following code creates a sequential chain of four loops in which each loop increments a counter variable ten times. When the program completes, the value of the counter variable is <computeroutput>40</computeroutput>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/>counter{0};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>loop<sp/>=<sp/>[&amp;,<sp/>i=</highlight><highlight class="keywordtype">bool</highlight><highlight class="normal">{</highlight><highlight class="keyword">true</highlight><highlight class="normal">},<sp/>c<sp/>=<sp/>int(0)]()<sp/></highlight><highlight class="keyword">mutable</highlight><highlight class="normal"><sp/>-&gt;<sp/><ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector&lt;int&gt;</ref><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(i)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>i<sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>{0,<sp/>-1};</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>counter.fetch_add(1,<sp/>std::memory_order_relaxed);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>{++c<sp/>&lt;<sp/>10<sp/>?<sp/>0<sp/>:<sp/>-1};</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>A<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){});</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>B<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(loop);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>C<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(loop);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>D<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(loop);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B);</highlight></codeline>
+<codeline><highlight class="normal">B.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B,<sp/>C);</highlight></codeline>
+<codeline><highlight class="normal">C.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(C,<sp/>D);</highlight></codeline>
+<codeline><highlight class="normal">D.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(D);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();<sp/><sp/></highlight><highlight class="comment">//<sp/>counter<sp/>==<sp/>40</highlight></codeline>
+</programlisting></para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/multi-condition-task-2.dot"></dotfile>
+</para><para><simplesect kind="attention"><para>It is your responsibility to ensure the return of a multi-condition task goes to a correct successor task. If a returned index falls outside the successor range of a multi-condition task, the scheduler will skip that index without doing anything. </para></simplesect>
+</para></sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

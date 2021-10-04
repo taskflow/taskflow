@@ -35,11 +35,21 @@
     <innerclass refid="classtf_1_1Executor" prot="public">tf::Executor</innerclass>
     <innerclass refid="classtf_1_1FlowBuilder" prot="public">tf::FlowBuilder</innerclass>
     <innerclass refid="classtf_1_1Future" prot="public">tf::Future</innerclass>
+    <innerclass refid="structtf_1_1IsPod" prot="private">tf::IsPod</innerclass>
     <innerclass refid="classtf_1_1ObserverInterface" prot="public">tf::ObserverInterface</innerclass>
     <innerclass refid="structtf_1_1PerThreadWorker" prot="private">tf::PerThreadWorker</innerclass>
     <innerclass refid="structtf_1_1ProfileData" prot="private">tf::ProfileData</innerclass>
     <innerclass refid="structtf_1_1Segment" prot="private">tf::Segment</innerclass>
     <innerclass refid="classtf_1_1Semaphore" prot="public">tf::Semaphore</innerclass>
+    <innerclass refid="classtf_1_1SmallVector" prot="public">tf::SmallVector</innerclass>
+    <innerclass refid="classtf_1_1SmallVectorBase" prot="private">tf::SmallVectorBase</innerclass>
+    <innerclass refid="classtf_1_1SmallVectorImpl" prot="private">tf::SmallVectorImpl</innerclass>
+    <innerclass refid="structtf_1_1SmallVectorStorage" prot="private">tf::SmallVectorStorage</innerclass>
+    <innerclass refid="structtf_1_1SmallVectorStorage_3_01T_00_010_01_4" prot="private">tf::SmallVectorStorage&lt; T, 0 &gt;</innerclass>
+    <innerclass refid="structtf_1_1SmallVectorStorage_3_01T_00_011_01_4" prot="private">tf::SmallVectorStorage&lt; T, 1 &gt;</innerclass>
+    <innerclass refid="classtf_1_1SmallVectorTemplateBase" prot="private">tf::SmallVectorTemplateBase</innerclass>
+    <innerclass refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4" prot="private">tf::SmallVectorTemplateBase&lt; T, true &gt;</innerclass>
+    <innerclass refid="classtf_1_1SmallVectorTemplateCommon" prot="private">tf::SmallVectorTemplateCommon</innerclass>
     <innerclass refid="classtf_1_1Subflow" prot="public">tf::Subflow</innerclass>
     <innerclass refid="classtf_1_1syclFlow" prot="public">tf::syclFlow</innerclass>
     <innerclass refid="classtf_1_1syclTask" prot="public">tf::syclTask</innerclass>
@@ -329,7 +339,7 @@
         <initializer>= 
   std::is_invocable_r_v&lt;void, C&gt; &amp;&amp;
   !std::is_invocable_r_v&lt;int, C&gt; &amp;&amp;
-  !std::is_invocable_r_v&lt;tf::SmallVector&lt;int&gt;, C&gt;</initializer>
+  !std::is_invocable_r_v&lt;<ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector</ref>&lt;int&gt;, C&gt;</initializer>
         <briefdescription>
 <para>determines if a callable is a static task </para>        </briefdescription>
         <detaileddescription>
@@ -387,7 +397,7 @@
         <argsstring></argsstring>
         <name>is_multi_condition_task_v</name>
         <initializer>= 
-  std::is_invocable_r_v&lt;SmallVector&lt;int&gt;, C&gt;</initializer>
+  std::is_invocable_r_v&lt;<ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt;int&gt;, C&gt;</initializer>
         <briefdescription>
 <para>determines if a callable is a multi-condition task </para>        </briefdescription>
         <detaileddescription>
@@ -437,6 +447,33 @@
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
+      <memberdef kind="function" id="namespacetf_1aea9fe5c87d4439816239b5af6ebeec55" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>unsigned</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+        </templateparamlist>
+        <type>size_t</type>
+        <definition>static size_t tf::capacity_in_bytes</definition>
+        <argsstring>(const SmallVector&lt; T, N &gt; &amp;X)</argsstring>
+        <name>capacity_in_bytes</name>
+        <param>
+          <type>const <ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt; T, N &gt; &amp;</type>
+          <declname>X</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="1018" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="1018" bodyend="1020"/>
+      </memberdef>
       <memberdef kind="function" id="namespacetf_1a4d2543d6c1f4f0025ae0df525cce70ae" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>PerThreadWorker &amp;</type>
         <definition>PerThreadWorker&amp; tf::this_worker</definition>
@@ -4136,6 +4173,6 @@ The function launches kernels asynchronously to find the largest element in the 
 <para>taskflow namespace </para>    </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="10" column="1"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="27" column="1"/>
   </compounddef>
 </doxygen>

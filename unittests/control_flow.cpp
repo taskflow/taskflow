@@ -895,7 +895,7 @@ void multiple_loops(unsigned W) {
   
   executor.run(taskflow).wait();
 
-  taskflow.dump(std::cout);
+  //taskflow.dump(std::cout);
 
   REQUIRE(counter == 40);
 }
