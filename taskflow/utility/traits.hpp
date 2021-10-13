@@ -183,6 +183,21 @@ struct stateful_index {
 template <typename B, typename E, typename S>
 using stateful_index_t = typename stateful_index<B, E, S>::type;
 
+// ----------------------------------------------------------------------------
+// visit a tuple with a functor at runtime
+// ----------------------------------------------------------------------------
+
+template <typename Func, typename Tuple, size_t N = 0>
+void visit_tuple(Func func, Tuple& tup, size_t idx) {
+  if (N == idx) {
+    std::invoke(func, std::get<N>(tup));
+    return;
+  }
+  if constexpr (N + 1 < std::tuple_size_v<Tuple>) {
+    return visit_tuple<Func, Tuple, N + 1>(func, tup, idx);
+  }
+}
+
 
 }  // end of namespace tf. ----------------------------------------------------
 

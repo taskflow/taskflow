@@ -574,6 +574,13 @@ class FlowBuilder {
     template <typename B, typename E>
     Task sort(B&& first, E&& last);
     
+    // ------------------------------------------------------------------------
+    // pipeline
+    // ------------------------------------------------------------------------
+
+    template <typename Pipeline>
+    auto pipeline(Pipeline& p);
+    
   protected:
     
     /**

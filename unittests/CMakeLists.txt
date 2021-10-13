@@ -14,6 +14,7 @@ list(APPEND TF_UNITTESTS
   algorithm 
   traverse 
   sorting
+  pipelines
 )
 
 foreach(unittest IN LISTS TF_UNITTESTS)

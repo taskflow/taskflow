@@ -849,7 +849,7 @@ void multiple_loops(unsigned W) {
   auto B = taskflow.emplace([&, i=bool{true}, c = int(0)]() mutable -> tf::SmallVector<int> {
     if(i) {
       i = false;
-      return {1, 0};
+      return {0, 1};
     }
     else {
       counter.fetch_add(1, std::memory_order_relaxed);
@@ -859,7 +859,7 @@ void multiple_loops(unsigned W) {
   auto C = taskflow.emplace([&, i=bool{true}, c = int(0)]() mutable -> tf::SmallVector<int> {
     if(i) {
       i = false;
-      return {1, 0};
+      return {0, 1};
     }
     else {
       counter.fetch_add(1, std::memory_order_relaxed);
@@ -869,7 +869,7 @@ void multiple_loops(unsigned W) {
   auto D = taskflow.emplace([&, i=bool{true}, c = int(0)]() mutable -> tf::SmallVector<int> {
     if(i) {
       i = false;
-      return {1, 0};
+      return {0, 1};
     }
     else {
       counter.fetch_add(1, std::memory_order_relaxed);
@@ -879,7 +879,7 @@ void multiple_loops(unsigned W) {
   auto E = taskflow.emplace([&, i=bool{true}, c = int(0)]() mutable -> tf::SmallVector<int> {
     if(i) {
       i = false;
-      return {1, 0};
+      return {0, 1};
     }
     else {
       counter.fetch_add(1, std::memory_order_relaxed);
@@ -931,4 +931,85 @@ TEST_CASE("MultipleLoops.7threads") {
 TEST_CASE("MultipleLoops.8threads") {
   multiple_loops(8);
 }
+
+// ----------------------------------------------------------------------------
+// binary tree
+// ----------------------------------------------------------------------------
+
+void binary_tree(unsigned w) {
+  
+  const int N = 10;
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(w);
+
+  std::atomic<int> counter{0};
+  std::vector<tf::Task> tasks;
+
+  for(int i=1; i<(1<<N); i++) {
+    tasks.emplace_back(taskflow.emplace([&counter]() -> tf::SmallVector<int>{
+      counter.fetch_add(1, std::memory_order_relaxed);
+      return {0, 1};
+    }));
+  }
+
+  for(size_t i=0; i<tasks.size(); i++) {
+    size_t l = i*2+1;
+    size_t r = l + 1;
+    if(l < tasks.size()) tasks[i].precede(tasks[l]);
+    if(r < tasks.size()) tasks[i].precede(tasks[r]);
+  }
+
+  executor.run_n(taskflow, N).wait();
+
+  REQUIRE(((1<<N)-1)*N == counter);
+}
+
+TEST_CASE("MultiCondBinaryTree.1thread") {
+  binary_tree(1);
+}
+
+TEST_CASE("MultiCondBinaryTree.2threads") {
+  binary_tree(2);
+}
+
+TEST_CASE("MultiCondBinaryTree.3threads") {
+  binary_tree(3);
+}
+
+TEST_CASE("MultiCondBinaryTree.4threads") {
+  binary_tree(4);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

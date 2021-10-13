@@ -1316,7 +1316,6 @@ inline void Executor::_invoke_dynamic_task_internal(
 
     if(detach) {
       n->_parent = nullptr;
-      //n->_set_state(Node::DETACHED);
       n->_state.fetch_or(Node::DETACHED, std::memory_order_relaxed);
     }
     else {
