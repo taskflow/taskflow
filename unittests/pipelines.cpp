@@ -36,6 +36,19 @@ void pipeline_1F(unsigned w, tf::FilterType type) {
       taskflow.pipeline(pl);
       executor.run(taskflow).wait();
       REQUIRE(j == N);
+
+      j = 0;
+      executor.run(taskflow).wait();
+      REQUIRE(j == N);
+
+      j = 0;
+      auto fu = executor.run(taskflow);
+      fu.cancel();
+      fu.get();
+
+      j = 0;
+      executor.run(taskflow).wait();
+      REQUIRE(j == N);
     }
     // parallel filter
     else if(type == tf::FilterType::PARALLEL) {
@@ -61,7 +74,15 @@ void pipeline_1F(unsigned w, tf::FilterType type) {
 
       taskflow.pipeline(pl);
       executor.run(taskflow).wait();
-      
+      REQUIRE(collection.size() == N);
+      std::sort(collection.begin(), collection.end());
+      for(size_t k=0; k<N; k++) {
+        REQUIRE(collection[k] == k);
+      }
+
+      j = 0;
+      collection.clear();
+      executor.run(taskflow).wait();
       REQUIRE(collection.size() == N);
       std::sort(collection.begin(), collection.end());
       for(size_t k=0; k<N; k++) {
@@ -251,14 +272,21 @@ void pipeline_2FSS(unsigned w) {
     
     taskflow.pipeline(pl);
     executor.run(taskflow).wait();
-
+    REQUIRE(j1 == N);
+    REQUIRE(j2 == N);
+    
+    j1 = j2 = 0;
+    executor.run(taskflow).wait();
+    REQUIRE(j1 == N);
+    REQUIRE(j2 == N);
+    
+    j1 = j2 = 0;
+    executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
   }
 }
 
-// TODOD (10/13): bug??? only L=1 works
-/*
 // two filters (SS)
 TEST_CASE("Pipeline.2F(SS).1L.1W" * doctest::timeout(300)) {
   pipeline_2FSS<1>(1);
@@ -323,10 +351,135 @@ TEST_CASE("Pipeline.2F(SS).4L.3W" * doctest::timeout(300)) {
 TEST_CASE("Pipeline.2F(SS).4L.4W" * doctest::timeout(300)) {
   pipeline_2FSS<4>(4);
 }
-*/
 
+// ----------------------------------------------------------------------------
+// two filters (SP), L lines, W workers
+// ----------------------------------------------------------------------------
 
+template <size_t L>
+void pipeline_2FSP(unsigned w) {
 
+  tf::Executor executor(w);
+
+  const size_t maxN = 100;
+
+  std::vector<int> source(maxN);
+  std::iota(source.begin(), source.end(), 0);
+
+  for(size_t N=0; N<=maxN; N++) {
+
+    tf::Taskflow taskflow;
+      
+    size_t j1 = 0;
+    std::atomic<size_t> j2 = 0;
+    std::mutex mutex;
+    std::vector<int> collection;
+
+    auto pl = tf::make_pipeline<int, L>(
+      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j1](auto& df) mutable {
+        if(j1 == N) {
+          df.stop();
+          return;
+        }
+        REQUIRE(j1 == source[j1]);
+        *(df.output()) = source[j1] + 1;
+        j1++;
+      }},
+      tf::Filter{tf::FilterType::PARALLEL, 
+      [N, &collection, &source, &mutex, &j2](auto& df) mutable {
+        REQUIRE(j2++ < N);
+        {
+          std::scoped_lock<std::mutex> lock(mutex);
+          collection.push_back(*df.input());
+        }
+      }}
+    );
+    
+    taskflow.pipeline(pl);
+    executor.run(taskflow).wait();
+    REQUIRE(j1 == N);
+    REQUIRE(j2 == N);
+    std::sort(collection.begin(), collection.end());
+    for(size_t i=0; i<N; i++) {
+      REQUIRE(collection[i] == i+1);
+    }
+    
+    j1 = j2 = 0;
+    collection.clear();
+    executor.run(taskflow).wait();
+    REQUIRE(j1 == N);
+    REQUIRE(j2 == N);
+    std::sort(collection.begin(), collection.end());
+    for(size_t i=0; i<N; i++) {
+      REQUIRE(collection[i] == i+1);
+    }
+  }
+}
+
+// two filters (SP)
+TEST_CASE("Pipeline.2F(SP).1L.1W" * doctest::timeout(300)) {
+  pipeline_2FSP<1>(1);
+}
+
+TEST_CASE("Pipeline.2F(SP).1L.2W" * doctest::timeout(300)) {
+  pipeline_2FSP<1>(2);
+}
+
+TEST_CASE("Pipeline.2F(SP).1L.3W" * doctest::timeout(300)) {
+  pipeline_2FSP<1>(3);
+}
+
+TEST_CASE("Pipeline.2F(SP).1L.4W" * doctest::timeout(300)) {
+  pipeline_2FSP<1>(4);
+}
+
+TEST_CASE("Pipeline.2F(SP).2L.1W" * doctest::timeout(300)) {
+  pipeline_2FSP<2>(1);
+}
+
+TEST_CASE("Pipeline.2F(SP).2L.2W" * doctest::timeout(300)) {
+  pipeline_2FSP<2>(2);
+}
+
+TEST_CASE("Pipeline.2F(SP).2L.3W" * doctest::timeout(300)) {
+  pipeline_2FSP<2>(3);
+}
+
+TEST_CASE("Pipeline.2F(SP).2L.4W" * doctest::timeout(300)) {
+  pipeline_2FSP<2>(4);
+}
+
+TEST_CASE("Pipeline.2F(SP).3L.1W" * doctest::timeout(300)) {
+  pipeline_2FSP<3>(1);
+}
+
+TEST_CASE("Pipeline.2F(SP).3L.2W" * doctest::timeout(300)) {
+  pipeline_2FSP<3>(2);
+}
+
+TEST_CASE("Pipeline.2F(SP).3L.3W" * doctest::timeout(300)) {
+  pipeline_2FSP<3>(3);
+}
+
+TEST_CASE("Pipeline.2F(SP).3L.4W" * doctest::timeout(300)) {
+  pipeline_2FSP<3>(4);
+}
+
+TEST_CASE("Pipeline.2F(SP).4L.1W" * doctest::timeout(300)) {
+  pipeline_2FSP<4>(1);
+}
+
+TEST_CASE("Pipeline.2F(SP).4L.2W" * doctest::timeout(300)) {
+  pipeline_2FSP<4>(2);
+}
+
+TEST_CASE("Pipeline.2F(SP).4L.3W" * doctest::timeout(300)) {
+  pipeline_2FSP<4>(3);
+}
+
+TEST_CASE("Pipeline.2F(SP).4L.4W" * doctest::timeout(300)) {
+  pipeline_2FSP<4>(4);
+}
 
 
 
