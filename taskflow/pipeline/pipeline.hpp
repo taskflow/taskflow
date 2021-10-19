@@ -73,16 +73,14 @@ class Dataflow {
   
   std::atomic<bool>& _stop;
 };
- 
-
 
 template <typename D, size_t L, typename... Fs>
 class Pipeline {
-
-  friend class FlowBuilder;
-
+  
   static_assert(sizeof...(Fs)>0, "must have at least one filter");
   static_assert(L>0, "must have at least one data line");
+
+  friend class FlowBuilder;
 
   struct BufferData {
     D data;
@@ -116,16 +114,19 @@ class Pipeline {
   
   std::tuple<Fs...> _filters;
   
-  std::array<BufferData, L*sizeof...(Fs)> _buffers;
+  std::array<std::array<BufferData, sizeof...(Fs)>, L> _buffers;
+
+  //std::vector<std::array<BufferData, sizeof...(Fs)>> _buffers
+
   std::array<FilterMeta, sizeof...(Fs)> _meta;
 
   BufferData& _get_buffer(size_t l, size_t f);
 
   bool _on_filter(size_t f, D* d_in, D* d_out);
 
-  void _set_up_join_counter();
+  void _set_up_pipeline();
   
-  auto _make(FlowBuilder&);
+  auto _build(FlowBuilder&);
 
 };
 
@@ -147,10 +148,13 @@ constexpr size_t Pipeline<D, L, Fs...>::num_filters() const noexcept {
 }
 
 template <typename D, size_t L, typename... Fs>
-void Pipeline<D, L, Fs...>::_set_up_join_counter() {
-  _get_buffer(0, 0).join_counter = 0;
+void Pipeline<D, L, Fs...>::_set_up_pipeline() {
 
-  for(size_t l=1; l<L; l++) {
+  _stop.store(false, std::memory_order_relaxed);
+
+  _get_buffer(0, 0).join_counter.store(0, std::memory_order_relaxed);
+
+  for(size_t l=1; l<num_lines(); l++) {
     for(size_t f=1; f<num_filters(); f++) {
       _get_buffer(l, f).join_counter.store(
         static_cast<size_t>(_meta[f].type), std::memory_order_relaxed
@@ -172,7 +176,7 @@ void Pipeline<D, L, Fs...>::_set_up_join_counter() {
 template <typename D, size_t L, typename... Fs>
 typename Pipeline<D, L, Fs...>::BufferData& 
 Pipeline<D, L, Fs...>::_get_buffer(size_t l, size_t f) {
-  return _buffers[l * sizeof...(Fs) + f];
+  return _buffers[l][f];
 }
 
 template <typename D, size_t L, typename... Fs>
@@ -185,16 +189,14 @@ bool Pipeline<D, L, Fs...>::_on_filter(size_t f, D* d_in, D* d_out) {
 }
 
 template <typename D, size_t L, typename... Fs>
-auto Pipeline<D, L, Fs...>::_make(FlowBuilder& fb) {
+auto Pipeline<D, L, Fs...>::_build(FlowBuilder& fb) {
 
   std::array<tf::Task, L + 1> tasks;
   
   // init task
-  tasks[0] = fb.emplace([&]() -> SmallVector<int> {
+  tasks[0] = fb.emplace([this]() -> SmallVector<int> {
 
-    _stop.store(false, std::memory_order_relaxed);
-
-    _set_up_join_counter();
+    _set_up_pipeline();
 
     // first filter is SERIAL
     if (std::get<0>(_filters)._type == FilterType::SERIAL) {
@@ -215,7 +217,7 @@ auto Pipeline<D, L, Fs...>::_make(FlowBuilder& fb) {
   // create a task for each layer
   for(size_t l = 0; l < num_lines(); l++) {
     tasks[l+1] = fb.emplace(
-    [&, l, f = size_t{0}]() mutable -> SmallVector<int> {
+    [this, l, f = size_t{0}]() mutable -> SmallVector<int> {
       
       _get_buffer(l, f).join_counter.store(
         static_cast<size_t>(_meta[f].type), std::memory_order_relaxed
@@ -265,7 +267,6 @@ auto Pipeline<D, L, Fs...>::_make(FlowBuilder& fb) {
       }
 
       return retval;
-
     });
   }
 
@@ -287,17 +288,26 @@ auto make_pipeline(Fs&&... filters) {
   return Pipeline<D, L, Fs...>{std::forward<Fs>(filters)...};
 }
 
+template <typename D, size_t L, typename... Fs>
+auto make_unique_pipeline(Fs&&... filters) {
+  return std::make_unique<Pipeline<D, L, Fs...>>(std::forward<Fs>(filters)...);
+}
+
+template <typename D, size_t L, typename... Fs>
+auto make_shared_pipeline(Fs&&... filters) {
+  return std::make_shared<Pipeline<D, L, Fs...>>(std::forward<Fs>(filters)...);
+}
+
 // ----------------------------------------------------------------------------
 // Forward declaration: FlowBuilder::pipeline
 // ----------------------------------------------------------------------------
 
 template <typename Pipeline>
 auto FlowBuilder::pipeline(Pipeline& p) {
-  return p._make(*this);  
+  return p._build(*this);  
 }
 
 }  // end of namespace tf -----------------------------------------------------
-
 
 
 
