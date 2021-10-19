@@ -10,7 +10,7 @@ int main()
   // std::variant as the data type
   using data_type = std::variant<std::monostate, int, float>;
 
-  auto pl = tf::make_pipeline<data_type, 4>(
+  auto pl = tf::make_pipeline<data_type>(4,
     tf::Filter{tf::FilterType::SERIAL, [i=0](auto& df) mutable {
       if(i++==5) {
         df.stop();

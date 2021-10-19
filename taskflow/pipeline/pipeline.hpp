@@ -10,7 +10,7 @@ enum class FilterType : int{
 template <typename C>
 class Filter{
 
-  template <typename D, size_t L, typename... Fs>
+  template <typename D, typename... Fs>
   friend class Pipeline;
 
   public:
@@ -29,7 +29,7 @@ class Filter{
 template <typename T>
 class Dataflow {
 
-  template <typename D, size_t L, typename... Fs>
+  template <typename D, typename... Fs>
   friend class Pipeline;
 
   public:
@@ -74,11 +74,10 @@ class Dataflow {
   std::atomic<bool>& _stop;
 };
 
-template <typename D, size_t L, typename... Fs>
+template <typename D, typename... Fs>
 class Pipeline {
   
   static_assert(sizeof...(Fs)>0, "must have at least one filter");
-  static_assert(L>0, "must have at least one data line");
 
   friend class FlowBuilder;
 
@@ -90,18 +89,18 @@ class Pipeline {
   struct FilterMeta {
     FilterType type;
   };
- 
+
   public:
 
   /**
   @brief constructs a pipeline object
   */
-  Pipeline(Fs&&... fs);
+  Pipeline(size_t throttle, Fs&&... fs);
 
   /**
   @brief queries the number of dataflow lines
   */
-  constexpr size_t num_lines() const noexcept;
+  size_t num_lines() const noexcept;
 
   /**
   @brief queries the number of filters
@@ -113,12 +112,10 @@ class Pipeline {
   std::atomic<bool> _stop;
   
   std::tuple<Fs...> _filters;
-  
-  std::array<std::array<BufferData, sizeof...(Fs)>, L> _buffers;
-
-  //std::vector<std::array<BufferData, sizeof...(Fs)>> _buffers
 
   std::array<FilterMeta, sizeof...(Fs)> _meta;
+  
+  std::vector<std::array<BufferData, sizeof...(Fs)>> _buffers; 
 
   BufferData& _get_buffer(size_t l, size_t f);
 
@@ -131,24 +128,25 @@ class Pipeline {
 };
 
 // constructor
-template <typename D, size_t L, typename... Fs>
-Pipeline<D, L, Fs...>::Pipeline(Fs&&... fs) :
+template <typename D, typename... Fs>
+Pipeline<D, Fs...>::Pipeline(size_t throttle, Fs&&... fs) :
   _filters {std::make_tuple(std::forward<Fs>(fs)...)},
-  _meta    {FilterMeta{fs._type}...} {
+  _meta    {FilterMeta{fs._type}...},
+  _buffers (throttle) {
 }
 
-template <typename D, size_t L, typename... Fs>
-constexpr size_t Pipeline<D, L, Fs...>::num_lines() const noexcept {
-  return L;
+template <typename D, typename... Fs>
+size_t Pipeline<D, Fs...>::num_lines() const noexcept {
+  return _buffers.size();
 }
 
-template <typename D, size_t L, typename... Fs>
-constexpr size_t Pipeline<D, L, Fs...>::num_filters() const noexcept {
+template <typename D, typename... Fs>
+constexpr size_t Pipeline<D, Fs...>::num_filters() const noexcept {
   return sizeof...(Fs);
 }
 
-template <typename D, size_t L, typename... Fs>
-void Pipeline<D, L, Fs...>::_set_up_pipeline() {
+template <typename D, typename... Fs>
+void Pipeline<D, Fs...>::_set_up_pipeline() {
 
   _stop.store(false, std::memory_order_relaxed);
 
@@ -173,14 +171,14 @@ void Pipeline<D, L, Fs...>::_set_up_pipeline() {
   }
 }
   
-template <typename D, size_t L, typename... Fs>
-typename Pipeline<D, L, Fs...>::BufferData& 
-Pipeline<D, L, Fs...>::_get_buffer(size_t l, size_t f) {
+template <typename D, typename... Fs>
+typename Pipeline<D, Fs...>::BufferData& 
+Pipeline<D, Fs...>::_get_buffer(size_t l, size_t f) {
   return _buffers[l][f];
 }
 
-template <typename D, size_t L, typename... Fs>
-bool Pipeline<D, L, Fs...>::_on_filter(size_t f, D* d_in, D* d_out) {
+template <typename D, typename... Fs>
+bool Pipeline<D, Fs...>::_on_filter(size_t f, D* d_in, D* d_out) {
   visit_tuple([&](auto&& filter){
     Dataflow<D> df(d_in, d_out, _stop);
     filter._callable(df);
@@ -188,10 +186,10 @@ bool Pipeline<D, L, Fs...>::_on_filter(size_t f, D* d_in, D* d_out) {
   return _stop.load(std::memory_order_relaxed);
 }
 
-template <typename D, size_t L, typename... Fs>
-auto Pipeline<D, L, Fs...>::_build(FlowBuilder& fb) {
+template <typename D, typename... Fs>
+auto Pipeline<D, Fs...>::_build(FlowBuilder& fb) {
 
-  std::array<tf::Task, L + 1> tasks;
+  std::vector<tf::Task> tasks(num_lines() + 1);
   
   // init task
   tasks[0] = fb.emplace([this]() -> SmallVector<int> {
@@ -283,19 +281,23 @@ auto Pipeline<D, L, Fs...>::_build(FlowBuilder& fb) {
 // helper functions
 // ----------------------------------------------------------------------------
 
-template <typename D, size_t L, typename... Fs>
-auto make_pipeline(Fs&&... filters) {
-  return Pipeline<D, L, Fs...>{std::forward<Fs>(filters)...};
+template <typename D, typename... Fs>
+auto make_pipeline(size_t throttle, Fs&&... filters) {
+  return Pipeline<D, Fs...>{throttle, std::forward<Fs>(filters)...};
 }
 
-template <typename D, size_t L, typename... Fs>
-auto make_unique_pipeline(Fs&&... filters) {
-  return std::make_unique<Pipeline<D, L, Fs...>>(std::forward<Fs>(filters)...);
+template <typename D, typename... Fs>
+auto make_unique_pipeline(size_t throttle, Fs&&... filters) {
+  return std::make_unique<Pipeline<D, Fs...>>(
+    throttle, std::forward<Fs>(filters)...
+  );
 }
 
-template <typename D, size_t L, typename... Fs>
-auto make_shared_pipeline(Fs&&... filters) {
-  return std::make_shared<Pipeline<D, L, Fs...>>(std::forward<Fs>(filters)...);
+template <typename D, typename... Fs>
+auto make_shared_pipeline(size_t throttle, Fs&&... filters) {
+  return std::make_shared<Pipeline<D, Fs...>>(
+    throttle, std::forward<Fs>(filters)...
+  );
 }
 
 // ----------------------------------------------------------------------------
