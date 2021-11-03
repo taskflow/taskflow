@@ -216,11 +216,11 @@ auto Pipeline<D, Fs...>::_build(FlowBuilder& fb) {
   for(size_t l = 0; l < num_lines(); l++) {
     tasks[l+1] = fb.emplace(
     [this, l, f = size_t{0}]() mutable -> SmallVector<int> {
-      
+
       _get_buffer(l, f).join_counter.store(
         static_cast<size_t>(_meta[f].type), std::memory_order_relaxed
       );
-
+      
       if (f == 0) {
         if (_on_filter(0, nullptr, &_get_buffer(l, f).data) == true) {
           return {};
