@@ -81,7 +81,8 @@ void tsq_test_owner() {
     for(size_t i=0; i<N; ++i) {
       queue.push(gold[i]);
     }
-    for(size_t i=0; i<N; ++i) {
+    // i starts from 1 to avoid cache effect
+    for(size_t i=1; i<N; ++i) {
       auto ptr = queue.steal();
       REQUIRE(ptr != nullptr);
       REQUIRE(gold[i] == ptr);

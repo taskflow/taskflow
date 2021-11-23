@@ -69,6 +69,15 @@ class Graph {
 
 // ----------------------------------------------------------------------------
 
+// TODO
+struct Runtime {
+  Runtime(Executor& e) : executor{e} {}
+  Executor& executor;
+};
+
+
+// ----------------------------------------------------------------------------
+
 // Class: Node
 class Node {
   
@@ -96,6 +105,15 @@ class Node {
     Static(C&&);
 
     std::function<void()> work;
+  };
+
+  // TODO: runtime task
+  struct Runtime {
+
+    template <typename C>
+    Runtime(C&&);
+     
+    std::function<void(Runtime&)> work;
   };
 
   // dynamic work handle

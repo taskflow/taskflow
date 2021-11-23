@@ -5,11 +5,14 @@
 #include <taskflow/taskflow.hpp>
 #include <taskflow/pipeline.hpp>
 
+// TODO (11/5):
+// 1. change the testing logic => my pipe's data is data[line()][pipe()]
+// 2. use std::vector<std::array<data, num_pipes>> data(L)
 
 // --------------------------------------------------------
-// Testcase: 1 filter, L lines, w workers
+// Testcase: 1 pipe, L lines, w workers
 // --------------------------------------------------------
-void pipeline_1F(size_t L, unsigned w, tf::FilterType type) {
+void pipeline_1F(size_t L, unsigned w, tf::PipeType type) {
 
   tf::Executor executor(w);
     
@@ -19,222 +22,222 @@ void pipeline_1F(size_t L, unsigned w, tf::FilterType type) {
   std::iota(source.begin(), source.end(), 0);
 
   // iterate different data amount (1, 2, 3, 4, 5, ... 1000000)
-  for (size_t N=0; N<=maxN; N++) {
+  for (size_t N = 0; N <= maxN; N++) {
     
     // serial direction
-    if(type == tf::FilterType::SERIAL) {
+    if (type == tf::PipeType::SERIAL) {
       tf::Taskflow taskflow;
       size_t j = 0;
-      auto pl = tf::make_pipeline<int>(L, tf::Filter{type, [N, &j, &source](auto& df) mutable {
-        if(j==N) {
-          df.stop();
+      tf::Pipeline pl (L, tf::Pipe{type, [L, N, &j, &source](auto& pf) mutable {
+        if (j == N) {
+          pf.stop();
           return;
         }
         REQUIRE(j == source[j]);
+        REQUIRE(pf.token() % L == pf.line());
         j++;
       }});
+
       taskflow.pipeline(pl);
       executor.run(taskflow).wait();
       REQUIRE(j == N);
-
-      j = 0;
-      executor.run(taskflow).wait();
-      REQUIRE(j == N);
-
-      j = 0;
-      auto fu = executor.run(taskflow);
-      fu.cancel();
-      fu.get();
-
-      j = 0;
-      executor.run(taskflow).wait();
-      REQUIRE(j == N);
-    }
-    // parallel filter
-    else if(type == tf::FilterType::PARALLEL) {
+      REQUIRE(pl.num_tokens() == N);
       
-      tf::Taskflow taskflow;
-
-      std::atomic<size_t> j = 0;
-      std::mutex mutex;
-      std::vector<int> collection;
-
-      auto pl = tf::make_pipeline<int>(L, tf::Filter{type, 
-      [N, &j, &mutex, &collection](auto& df) mutable {
-
-        auto ticket = j.fetch_add(1);
-
-        if(ticket >= N) {
-          df.stop();
-          return;
-        }
-        std::scoped_lock<std::mutex> lock(mutex);
-        collection.push_back(ticket);
-      }});
-
-      taskflow.pipeline(pl);
+      j = 0;
       executor.run(taskflow).wait();
-      REQUIRE(collection.size() == N);
-      std::sort(collection.begin(), collection.end());
-      for(size_t k=0; k<N; k++) {
-        REQUIRE(collection[k] == k);
-      }
+      REQUIRE(j == N);
+      REQUIRE(pl.num_tokens() == 2 * N);
 
       j = 0;
-      collection.clear();
       executor.run(taskflow).wait();
-      REQUIRE(collection.size() == N);
-      std::sort(collection.begin(), collection.end());
-      for(size_t k=0; k<N; k++) {
-        REQUIRE(collection[k] == k);
-      }
+      REQUIRE(j == N);
+      REQUIRE(pl.num_tokens() == 3 * N);
     }
+    // parallel pipe
+    //else if(type == tf::PipeType::PARALLEL) {
+    //  
+    //  tf::Taskflow taskflow;
+
+    //  std::atomic<size_t> j = 0;
+    //  std::mutex mutex;
+    //  std::vector<int> collection;
+
+    //  tf::Pipeline pl(L, tf::Pipe{type, 
+    //  [N, &j, &mutex, &collection](auto& pf) mutable {
+
+    //    auto ticket = j.fetch_add(1);
+
+    //    if(ticket >= N) {
+    //      pf.stop();
+    //      return;
+    //    }
+    //    std::scoped_lock<std::mutex> lock(mutex);
+    //    collection.push_back(ticket);
+    //  }});
+
+    //  taskflow.pipeline(pl);
+    //  executor.run(taskflow).wait();
+    //  REQUIRE(collection.size() == N);
+    //  std::sort(collection.begin(), collection.end());
+    //  for(size_t k=0; k<N; k++) {
+    //    REQUIRE(collection[k] == k);
+    //  }
+
+    //  j = 0;
+    //  collection.clear();
+    //  executor.run(taskflow).wait();
+    //  REQUIRE(collection.size() == N);
+    //  std::sort(collection.begin(), collection.end());
+    //  for(size_t k=0; k<N; k++) {
+    //    REQUIRE(collection[k] == k);
+    //  }
+    //}
   }
 }
 
-// ---- serial filter ----
+// ---- serial pipe ----
 
-// serial filter with one line
+// serial pipe with one line
 TEST_CASE("Pipeline.1F(S).1L.1W" * doctest::timeout(300)) {
-  pipeline_1F(1, 1, tf::FilterType::SERIAL);
+  pipeline_1F(1, 1, tf::PipeType::SERIAL);
 }
 
 TEST_CASE("Pipeline.1F(S).1L.2W" * doctest::timeout(300)) {
-  pipeline_1F(1, 2, tf::FilterType::SERIAL);
+  pipeline_1F(1, 2, tf::PipeType::SERIAL);
 }
 
 TEST_CASE("Pipeline.1F(S).1L.3W" * doctest::timeout(300)) {
-  pipeline_1F(1, 3, tf::FilterType::SERIAL);
+  pipeline_1F(1, 3, tf::PipeType::SERIAL);
 }
 
 TEST_CASE("Pipeline.1F(S).1L.4W" * doctest::timeout(300)) {
-  pipeline_1F(1, 4, tf::FilterType::SERIAL);
+  pipeline_1F(1, 4, tf::PipeType::SERIAL);
 }
 
-// serial filter with two lines
+// serial pipe with two lines
 TEST_CASE("Pipeline.1F(S).2L.1W" * doctest::timeout(300)) {
-  pipeline_1F(2, 1, tf::FilterType::SERIAL);
+  pipeline_1F(2, 1, tf::PipeType::SERIAL);
 }
 
 TEST_CASE("Pipeline.1F(S).2L.2W" * doctest::timeout(300)) {
-  pipeline_1F(2, 2, tf::FilterType::SERIAL);
+  pipeline_1F(2, 2, tf::PipeType::SERIAL);
 }
 
 TEST_CASE("Pipeline.1F(S).2L.3W" * doctest::timeout(300)) {
-  pipeline_1F(2, 3, tf::FilterType::SERIAL);
+  pipeline_1F(2, 3, tf::PipeType::SERIAL);
 }
 
 TEST_CASE("Pipeline.1F(S).2L.4W" * doctest::timeout(300)) {
-  pipeline_1F(2, 4, tf::FilterType::SERIAL);
+  pipeline_1F(2, 4, tf::PipeType::SERIAL);
 }
 
-// serial filter with three lines
+// serial pipe with three lines
 TEST_CASE("Pipeline.1F(S).3L.1W" * doctest::timeout(300)) {
-  pipeline_1F(3, 1, tf::FilterType::SERIAL);
+  pipeline_1F(3, 1, tf::PipeType::SERIAL);
 }
 
 TEST_CASE("Pipeline.1F(S).3L.2W" * doctest::timeout(300)) {
-  pipeline_1F(3, 2, tf::FilterType::SERIAL);
+  pipeline_1F(3, 2, tf::PipeType::SERIAL);
 }
 
 TEST_CASE("Pipeline.1F(S).3L.3W" * doctest::timeout(300)) {
-  pipeline_1F(3, 3, tf::FilterType::SERIAL);
+  pipeline_1F(3, 3, tf::PipeType::SERIAL);
 }
 
 TEST_CASE("Pipeline.1F(S).3L.4W" * doctest::timeout(300)) {
-  pipeline_1F(3, 4, tf::FilterType::SERIAL);
+  pipeline_1F(3, 4, tf::PipeType::SERIAL);
 }
 
-// serial filter with three lines
+// serial pipe with three lines
 TEST_CASE("Pipeline.1F(S).4L.1W" * doctest::timeout(300)) {
-  pipeline_1F(4, 1, tf::FilterType::SERIAL);
+  pipeline_1F(4, 1, tf::PipeType::SERIAL);
 }
 
 TEST_CASE("Pipeline.1F(S).4L.2W" * doctest::timeout(300)) {
-  pipeline_1F(4, 2, tf::FilterType::SERIAL);
+  pipeline_1F(4, 2, tf::PipeType::SERIAL);
 }
 
 TEST_CASE("Pipeline.1F(S).4L.3W" * doctest::timeout(300)) {
-  pipeline_1F(4, 3, tf::FilterType::SERIAL);
+  pipeline_1F(4, 3, tf::PipeType::SERIAL);
 }
 
 TEST_CASE("Pipeline.1F(S).4L.4W" * doctest::timeout(300)) {
-  pipeline_1F(4, 4, tf::FilterType::SERIAL);
+  pipeline_1F(4, 4, tf::PipeType::SERIAL);
 }
 
 
-// ---- parallel filter ----
-
-// parallel filter with one line
-TEST_CASE("Pipeline.1F(P).1L.1W" * doctest::timeout(300)) {
-  pipeline_1F(1, 1, tf::FilterType::PARALLEL);
-}
-
-TEST_CASE("Pipeline.1F(P).1L.2W" * doctest::timeout(300)) {
-  pipeline_1F(1, 2, tf::FilterType::PARALLEL);
-}
-
-TEST_CASE("Pipeline.1F(P).1L.3W" * doctest::timeout(300)) {
-  pipeline_1F(1, 3, tf::FilterType::PARALLEL);
-}
-
-TEST_CASE("Pipeline.1F(P).1L.4W" * doctest::timeout(300)) {
-  pipeline_1F(1, 4, tf::FilterType::PARALLEL);
-}
-
-// parallel filter with two lines
-TEST_CASE("Pipeline.1F(P).2L.1W" * doctest::timeout(300)) {
-  pipeline_1F(2, 1, tf::FilterType::PARALLEL);
-}
-
-TEST_CASE("Pipeline.1F(P).2L.2W" * doctest::timeout(300)) {
-  pipeline_1F(2, 2, tf::FilterType::PARALLEL);
-}
-
-TEST_CASE("Pipeline.1F(P).2L.3W" * doctest::timeout(300)) {
-  pipeline_1F(2, 3, tf::FilterType::PARALLEL);
-}
-
-TEST_CASE("Pipeline.1F(P).2L.4W" * doctest::timeout(300)) {
-  pipeline_1F(2, 4, tf::FilterType::PARALLEL);
-}
-
-// parallel filter with three lines
-TEST_CASE("Pipeline.1F(P).3L.1W" * doctest::timeout(300)) {
-  pipeline_1F(3, 1, tf::FilterType::PARALLEL);
-}
-
-TEST_CASE("Pipeline.1F(P).3L.2W" * doctest::timeout(300)) {
-  pipeline_1F(3, 2, tf::FilterType::PARALLEL);
-}
-
-TEST_CASE("Pipeline.1F(P).3L.3W" * doctest::timeout(300)) {
-  pipeline_1F(3, 3, tf::FilterType::PARALLEL);
-}
-
-TEST_CASE("Pipeline.1F(P).3L.4W" * doctest::timeout(300)) {
-  pipeline_1F(3, 4, tf::FilterType::PARALLEL);
-}
-
-// parallel filter with four lines
-TEST_CASE("Pipeline.1F(P).4L.1W" * doctest::timeout(300)) {
-  pipeline_1F(4, 1, tf::FilterType::PARALLEL);
-}
-
-TEST_CASE("Pipeline.1F(P).4L.2W" * doctest::timeout(300)) {
-  pipeline_1F(4, 2, tf::FilterType::PARALLEL);
-}
-
-TEST_CASE("Pipeline.1F(P).4L.3W" * doctest::timeout(300)) {
-  pipeline_1F(4, 3, tf::FilterType::PARALLEL);
-}
-
-TEST_CASE("Pipeline.1F(P).4L.4W" * doctest::timeout(300)) {
-  pipeline_1F(4, 4, tf::FilterType::PARALLEL);
-}
+//// ---- parallel pipe ----
+//
+//// parallel pipe with one line
+//TEST_CASE("Pipeline.1F(P).1L.1W" * doctest::timeout(300)) {
+//  pipeline_1F(1, 1, tf::PipeType::PARALLEL);
+//}
+//
+//TEST_CASE("Pipeline.1F(P).1L.2W" * doctest::timeout(300)) {
+//  pipeline_1F(1, 2, tf::PipeType::PARALLEL);
+//}
+//
+//TEST_CASE("Pipeline.1F(P).1L.3W" * doctest::timeout(300)) {
+//  pipeline_1F(1, 3, tf::PipeType::PARALLEL);
+//}
+//
+//TEST_CASE("Pipeline.1F(P).1L.4W" * doctest::timeout(300)) {
+//  pipeline_1F(1, 4, tf::PipeType::PARALLEL);
+//}
+//
+//// parallel pipe with two lines
+//TEST_CASE("Pipeline.1F(P).2L.1W" * doctest::timeout(300)) {
+//  pipeline_1F(2, 1, tf::PipeType::PARALLEL);
+//}
+//
+//TEST_CASE("Pipeline.1F(P).2L.2W" * doctest::timeout(300)) {
+//  pipeline_1F(2, 2, tf::PipeType::PARALLEL);
+//}
+//
+//TEST_CASE("Pipeline.1F(P).2L.3W" * doctest::timeout(300)) {
+//  pipeline_1F(2, 3, tf::PipeType::PARALLEL);
+//}
+//
+//TEST_CASE("Pipeline.1F(P).2L.4W" * doctest::timeout(300)) {
+//  pipeline_1F(2, 4, tf::PipeType::PARALLEL);
+//}
+//
+//// parallel pipe with three lines
+//TEST_CASE("Pipeline.1F(P).3L.1W" * doctest::timeout(300)) {
+//  pipeline_1F(3, 1, tf::PipeType::PARALLEL);
+//}
+//
+//TEST_CASE("Pipeline.1F(P).3L.2W" * doctest::timeout(300)) {
+//  pipeline_1F(3, 2, tf::PipeType::PARALLEL);
+//}
+//
+//TEST_CASE("Pipeline.1F(P).3L.3W" * doctest::timeout(300)) {
+//  pipeline_1F(3, 3, tf::PipeType::PARALLEL);
+//}
+//
+//TEST_CASE("Pipeline.1F(P).3L.4W" * doctest::timeout(300)) {
+//  pipeline_1F(3, 4, tf::PipeType::PARALLEL);
+//}
+//
+//// parallel pipe with four lines
+//TEST_CASE("Pipeline.1F(P).4L.1W" * doctest::timeout(300)) {
+//  pipeline_1F(4, 1, tf::PipeType::PARALLEL);
+//}
+//
+//TEST_CASE("Pipeline.1F(P).4L.2W" * doctest::timeout(300)) {
+//  pipeline_1F(4, 2, tf::PipeType::PARALLEL);
+//}
+//
+//TEST_CASE("Pipeline.1F(P).4L.3W" * doctest::timeout(300)) {
+//  pipeline_1F(4, 3, tf::PipeType::PARALLEL);
+//}
+//
+//TEST_CASE("Pipeline.1F(P).4L.4W" * doctest::timeout(300)) {
+//  pipeline_1F(4, 4, tf::PipeType::PARALLEL);
+//}
 
 // ----------------------------------------------------------------------------
-// two filters (SS), L lines, W workers
+// two pipes (SS), L lines, W workers
 // ----------------------------------------------------------------------------
 
 void pipeline_2FSS(size_t L, unsigned w) {
@@ -245,27 +248,33 @@ void pipeline_2FSS(size_t L, unsigned w) {
 
   std::vector<int> source(maxN);
   std::iota(source.begin(), source.end(), 0);
+  std::vector<std::array<int, 2>> mybuffer(L);
 
-  for(size_t N=0; N<=maxN; N++) {
+  for(size_t N = 0; N <= maxN; N++) {
 
     tf::Taskflow taskflow;
       
     size_t j1 = 0, j2 = 0;
 
-    auto pl = tf::make_pipeline<int>(
+    tf::Pipeline pl(
       L,
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j1](auto& df) mutable {
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1, &mybuffer, L](auto& pf) mutable {
         if(j1 == N) {
-          df.stop();
+          pf.stop();
           return;
         }
         REQUIRE(j1 == source[j1]);
-        *(df.output()) = source[j1] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        //*(pf.output()) = source[j1] + 1;
+        mybuffer[pf.line()][pf.pipe()] = source[j1] + 1;
         j1++;
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j2](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j2, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j2 < N);
-        REQUIRE(source[j2] + 1 == *(df.input()));
+        REQUIRE(pf.token() % L == pf.line());
+        REQUIRE(source[j2] + 1 == mybuffer[pf.line()][pf.pipe() - 1]);
+        //REQUIRE(source[j2] + 1 == *(pf.input()));
         j2++;
       }}
     );
@@ -274,20 +283,33 @@ void pipeline_2FSS(size_t L, unsigned w) {
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
-    
+    REQUIRE(pl.num_tokens() == N);
+        
     j1 = j2 = 0;
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
-    
+    REQUIRE(pl.num_tokens() == 2 * N);
+
     j1 = j2 = 0;
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
+    REQUIRE(pl.num_tokens() == 3 * N);
   }
 }
 
-// two filters (SS)
+// two pipes (SS)
 TEST_CASE("Pipeline.2F(SS).1L.1W" * doctest::timeout(300)) {
   pipeline_2FSS(1, 1);
 }
@@ -353,7 +375,7 @@ TEST_CASE("Pipeline.2F(SS).4L.4W" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
-// two filters (SP), L lines, W workers
+// two pipes (SP), L lines, W workers
 // ----------------------------------------------------------------------------
 void pipeline_2FSP(size_t L, unsigned w) {
 
@@ -363,8 +385,9 @@ void pipeline_2FSP(size_t L, unsigned w) {
 
   std::vector<int> source(maxN);
   std::iota(source.begin(), source.end(), 0);
+  std::vector<std::array<int, 2>> mybuffer(L);
 
-  for(size_t N=0; N<=maxN; N++) {
+  for(size_t N = 0; N <= maxN; N++) {
 
     tf::Taskflow taskflow;
       
@@ -373,22 +396,26 @@ void pipeline_2FSP(size_t L, unsigned w) {
     std::mutex mutex;
     std::vector<int> collection;
 
-    auto pl = tf::make_pipeline<int>(L,
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j1](auto& df) mutable {
+    tf::Pipeline pl(L,
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1, &mybuffer, L](auto& pf) mutable {
         if(j1 == N) {
-          df.stop();
+          pf.stop();
           return;
         }
         REQUIRE(j1 == source[j1]);
-        *(df.output()) = source[j1] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        //*(pf.output()) = source[j1] + 1;
+        mybuffer[pf.line()][pf.pipe()] = source[j1] + 1;
         j1++;
       }},
-      tf::Filter{tf::FilterType::PARALLEL, 
-      [N, &collection, &source, &mutex, &j2](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::PARALLEL, 
+      [N, &collection, &mutex, &j2, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j2++ < N);
         {
           std::scoped_lock<std::mutex> lock(mutex);
-          collection.push_back(*df.input());
+          REQUIRE(pf.token() % L == pf.line());
+          collection.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
         }
       }}
     );
@@ -398,23 +425,46 @@ void pipeline_2FSP(size_t L, unsigned w) {
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
     std::sort(collection.begin(), collection.end());
-    for(size_t i=0; i<N; i++) {
-      REQUIRE(collection[i] == i+1);
+    for(size_t i = 0; i < N; i++) {
+      REQUIRE(collection[i] == i + 1);
     }
+    REQUIRE(pl.num_tokens() == N);
     
     j1 = j2 = 0;
     collection.clear();
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
     std::sort(collection.begin(), collection.end());
-    for(size_t i=0; i<N; i++) {
-      REQUIRE(collection[i] == i+1);
+    for(size_t i = 0; i < N; i++) {
+      REQUIRE(collection[i] == i + 1);
     }
+    REQUIRE(pl.num_tokens() == 2 * N);
+    
+    j1 = j2 = 0;
+    collection.clear();
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
+    executor.run(taskflow).wait();
+    REQUIRE(j1 == N);
+    REQUIRE(j2 == N);
+    std::sort(collection.begin(), collection.end());
+    for(size_t i = 0; i < N; i++) {
+      REQUIRE(collection[i] == i + 1);
+    }
+    REQUIRE(pl.num_tokens() == 3 * N);
   }
 }
 
-// two filters (SP)
+// two pipes (SP)
 TEST_CASE("Pipeline.2F(SP).1L.1W" * doctest::timeout(300)) {
   pipeline_2FSP(1, 1);
 }
@@ -479,9 +529,9 @@ TEST_CASE("Pipeline.2F(SP).4L.4W" * doctest::timeout(300)) {
   pipeline_2FSP(4, 4);
 }
 
-
+/*
 // ----------------------------------------------------------------------------
-// two filters (PS), L lines, W workers
+// two pipes (PS), L lines, W workers
 // ----------------------------------------------------------------------------
 
 // TODO: need to discuss the interface
@@ -504,26 +554,27 @@ void pipeline_2FPS(size_t L, unsigned w) {
     std::vector<int> collection1;
     std::vector<int> collection2;
 
-    auto pl = tf::make_pipeline<int>(L, 
-      tf::Filter{tf::FilterType::PARALLEL, 
-      [N, &source, &j1, &mutex, &collection1](auto& df) mutable {
+    tf::Pipeline pl(L, 
+      tf::Pipe{tf::PipeType::PARALLEL, 
+      [N, &source, &j1, &mutex, &collection1](auto& pf) mutable {
+
         auto ticket = j1.fetch_add(1);
 
         if(ticket >= N) {
-          df.stop();
+          pf.stop();
           return;
         }
 
-        *(df.output()) = source[ticket] + 1;
+        *(pf.output()) = source[ticket] + 1;
         {
           std::scoped_lock<std::mutex> lock(mutex);
           collection1.push_back(source[ticket]);
         }
       }},
-      tf::Filter{tf::FilterType::SERIAL, 
-      [N, &collection2, &source, &j2](auto& df) mutable {
+      tf::Pipe{tf::PipeType::SERIAL, 
+      [N, &collection2, &source, &j2](auto& pf) mutable {
         REQUIRE(j2 < N);
-        collection2.push_back(*(df.input()));
+        collection2.push_back(*(pf.input()));
         j2++;
       }}
     );
@@ -557,7 +608,7 @@ void pipeline_2FPS(size_t L, unsigned w) {
   }
 }
 
-// two filters (PS)
+// two pipes (PS)
 //TEST_CASE("Pipeline.2F(PS).1L.1W" * doctest::timeout(300)) {
 //  pipeline_2FPS(1, 1);
 //}
@@ -624,7 +675,7 @@ void pipeline_2FPS(size_t L, unsigned w) {
 
 
 // ----------------------------------------------------------------------------
-// two filters (PP), L lines, W workers
+// two pipes (PP), L lines, W workers
 // ----------------------------------------------------------------------------
 void pipeline_2FPP(size_t L, unsigned w) {
 
@@ -646,28 +697,28 @@ void pipeline_2FPP(size_t L, unsigned w) {
     std::vector<int> collection1;
     std::vector<int> collection2;
 
-    auto pl = tf::make_pipeline<int>(L, 
-      tf::Filter{tf::FilterType::PARALLEL, 
-      [N, &source, &j1, &mutex1, &collection1](auto& df) mutable {
+    tf::Pipeline pl(L, 
+      tf::Pipe{tf::PipeType::PARALLEL, 
+      [N, &source, &j1, &mutex1, &collection1](auto& pf) mutable {
         auto ticket = j1.fetch_add(1);
 
         if(ticket >= N) {
-          df.stop();
+          pf.stop();
           return;
         }
 
-        *(df.output()) = source[ticket] + 1;
+        *(pf.output()) = source[ticket] + 1;
         {
           std::scoped_lock<std::mutex> lock(mutex1);
           collection1.push_back(source[ticket]);
         }
       }},
-      tf::Filter{tf::FilterType::SERIAL, 
-      [N, &collection2, &source, &j2, &mutex2](auto& df) mutable {
+      tf::Pipe{tf::PipeType::SERIAL, 
+      [N, &collection2, &source, &j2, &mutex2](auto& pf) mutable {
         REQUIRE(j2++ < N);
         {
           std::scoped_lock<std::mutex> lock(mutex2);
-          collection2.push_back(*(df.input()));
+          collection2.push_back(*(pf.input()));
         }
       }}
     );
@@ -701,7 +752,7 @@ void pipeline_2FPP(size_t L, unsigned w) {
   }
 }
 
-// two filters (PP)
+// two pipes (PP)
 //TEST_CASE("Pipeline.2F(PP).1L.1W" * doctest::timeout(300)) {
 //  pipeline_2FPP(1, 1);
 //}
@@ -765,10 +816,10 @@ void pipeline_2FPP(size_t L, unsigned w) {
 //TEST_CASE("Pipeline.2F(PP).4L.4W" * doctest::timeout(300)) {
 //  pipeline_2FPP(4, 4);
 //}
-
+*/
 
 // ----------------------------------------------------------------------------
-// three filters (SSS), L lines, W workers
+// three pipes (SSS), L lines, W workers
 // ----------------------------------------------------------------------------
 void pipeline_3FSSS(size_t L, unsigned w) {
 
@@ -778,32 +829,41 @@ void pipeline_3FSSS(size_t L, unsigned w) {
 
   std::vector<int> source(maxN);
   std::iota(source.begin(), source.end(), 0);
+  std::vector<std::array<int, 3>> mybuffer(L);
 
-  for(size_t N=0; N<=maxN; N++) {
+  for(size_t N = 0; N <= maxN; N++) {
 
     tf::Taskflow taskflow;
       
     size_t j1 = 0, j2 = 0, j3 = 0;
 
-    auto pl = tf::make_pipeline<int>(L, 
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j1](auto& df) mutable {
+    tf::Pipeline pl(L, 
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1, &mybuffer, L](auto& pf) mutable {
         if(j1 == N) {
-          df.stop();
+          pf.stop();
           return;
         }
         REQUIRE(j1 == source[j1]);
-        *(df.output()) = source[j1] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        //*(pf.output()) = source[j1] + 1;
+        mybuffer[pf.line()][pf.pipe()] = source[j1] + 1;
         j1++;
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j2](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j2, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j2 < N);
-        REQUIRE(source[j2] + 1 == *(df.input()));
-        *(df.output()) = source[j2] + 1;
+        REQUIRE(source[j2] + 1 == mybuffer[pf.line()][pf.pipe() - 1]);
+        REQUIRE(pf.token() % L == pf.line());
+
+        //*(pf.output()) = source[j2] + 1;
+        mybuffer[pf.line()][pf.pipe()] = source[j2] + 1;
         j2++;
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j3](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j3, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j3 < N);
-        REQUIRE(source[j3] + 1 == *(df.input()));
+        REQUIRE(source[j3] + 1 == mybuffer[pf.line()][pf.pipe() - 1]);
+        REQUIRE(pf.token() % L == pf.line());
         j3++;
       }}
     );
@@ -813,22 +873,36 @@ void pipeline_3FSSS(size_t L, unsigned w) {
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
     REQUIRE(j3 == N);
+    REQUIRE(pl.num_tokens() == N);
     
     j1 = j2 = j3 = 0;
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
     REQUIRE(j3 == N);
+    REQUIRE(pl.num_tokens() == 2 * N);
     
+
     j1 = j2 = j3 = 0;
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
     REQUIRE(j3 == N);
+    REQUIRE(pl.num_tokens() == 3 * N);
   }
 }
 
-// three filters (SSS)
+// three pipes (SSS)
 TEST_CASE("Pipeline.3F(SSS).1L.1W" * doctest::timeout(300)) {
   pipeline_3FSSS(1, 1);
 }
@@ -896,7 +970,7 @@ TEST_CASE("Pipeline.3F(SSS).4L.4W" * doctest::timeout(300)) {
 
 
 // ----------------------------------------------------------------------------
-// three filters (SSP), L lines, W workers
+// three pipes (SSP), L lines, W workers
 // ----------------------------------------------------------------------------
 void pipeline_3FSSP(size_t L, unsigned w) {
 
@@ -906,6 +980,7 @@ void pipeline_3FSSP(size_t L, unsigned w) {
 
   std::vector<int> source(maxN);
   std::iota(source.begin(), source.end(), 0);
+  std::vector<std::array<int, 3>> mybuffer(L);
 
   for(size_t N = 0; N <= maxN; N++) {
 
@@ -916,27 +991,34 @@ void pipeline_3FSSP(size_t L, unsigned w) {
     std::mutex mutex;
     std::vector<int> collection;
 
-    auto pl = tf::make_pipeline<int>(L, 
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j1](auto& df) mutable {
+    tf::Pipeline pl(L, 
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1, &mybuffer, L](auto& pf) mutable {
         if(j1 == N) {
-          df.stop();
+          pf.stop();
           return;
         }
         REQUIRE(j1 == source[j1]);
-        *(df.output()) = source[j1] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        //*(pf.output()) = source[j1] + 1;
+        mybuffer[pf.line()][pf.pipe()] = source[j1] + 1;
         j1++;
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j2](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j2, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j2 < N);
-        REQUIRE(source[j2] + 1 == *(df.input()));
-        *(df.output()) = source[j2] + 1;
+        REQUIRE(source[j2] + 1 == mybuffer[pf.line()][pf.pipe() - 1]);
+        REQUIRE(pf.token() % L == pf.line());
+        //*(pf.output()) = source[j2] + 1;
+        mybuffer[pf.line()][pf.pipe()] = source[j2] + 1;
         j2++;
       }},
-      tf::Filter{tf::FilterType::PARALLEL, [N, &source, &j3, &mutex, &collection](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::PARALLEL, [N, &j3, &mutex, &collection, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j3++ < N);
         {
           std::scoped_lock<std::mutex> lock(mutex);
-          collection.push_back(*df.input());
+          REQUIRE(pf.token() % L == pf.line());  
+          collection.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
         }
       }}
     );
@@ -951,9 +1033,15 @@ void pipeline_3FSSP(size_t L, unsigned w) {
     for (size_t i = 0; i < N; ++i) {
       REQUIRE(collection[i] == i + 1);
     }
+    REQUIRE(pl.num_tokens() == N);
     
     j1 = j2 = j3 = 0;
     collection.clear();
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -963,9 +1051,15 @@ void pipeline_3FSSP(size_t L, unsigned w) {
     for (size_t i = 0; i < N; ++i) {
       REQUIRE(collection[i] == i + 1);
     }
+    REQUIRE(pl.num_tokens() == 2 * N);
     
     j1 = j2 = j3 = 0;
     collection.clear();
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -975,10 +1069,11 @@ void pipeline_3FSSP(size_t L, unsigned w) {
     for (size_t i = 0; i < N; ++i) {
       REQUIRE(collection[i] == i + 1);
     }
+    REQUIRE(pl.num_tokens() == 3 * N);
   }
 }
 
-// three filters (SSP)
+// three pipes (SSP)
 TEST_CASE("Pipeline.3F(SSP).1L.1W" * doctest::timeout(300)) {
   pipeline_3FSSP(1, 1);
 }
@@ -1046,7 +1141,7 @@ TEST_CASE("Pipeline.3F(SSP).4L.4W" * doctest::timeout(300)) {
 
 
 // ----------------------------------------------------------------------------
-// three filters (SPS), L lines, W workers
+// three pipes (SPS), L lines, W workers
 // ----------------------------------------------------------------------------
 void pipeline_3FSPS(size_t L, unsigned w) {
 
@@ -1056,6 +1151,7 @@ void pipeline_3FSPS(size_t L, unsigned w) {
 
   std::vector<int> source(maxN);
   std::iota(source.begin(), source.end(), 0);
+  std::vector<std::array<int, 3>> mybuffer(L);
 
   for(size_t N = 0; N <= maxN; N++) {
 
@@ -1066,27 +1162,34 @@ void pipeline_3FSPS(size_t L, unsigned w) {
     std::mutex mutex;
     std::vector<int> collection;
 
-    auto pl = tf::make_pipeline<int>(L, 
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j1](auto& df) mutable {
+    tf::Pipeline pl(L, 
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1, &mybuffer, L](auto& pf) mutable {
         if(j1 == N) {
-          df.stop();
+          pf.stop();
           return;
         }
         REQUIRE(j1 == source[j1]);
-        *(df.output()) = source[j1] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        //*(pf.output()) = source[j1] + 1;
+        mybuffer[pf.line()][pf.pipe()] = source[j1] + 1;
         j1++;
       }},
-      tf::Filter{tf::FilterType::PARALLEL, [N, &source, &j2, &mutex, &collection](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::PARALLEL, [N, &j2, &mutex, &collection, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j2++ < N);
-        *(df.output()) = *(df.input()) + 1;
+        //*(pf.output()) = *(pf.input()) + 1;
         {
           std::scoped_lock<std::mutex> lock(mutex);
-          collection.push_back(*df.input());
+          mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 1;
+          REQUIRE(pf.token() % L == pf.line());
+          collection.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
         }
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j3](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j3, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j3 < N);
-        REQUIRE(source[j3] + 2 == *(df.input()));
+        REQUIRE(pf.token() % L == pf.line());
+        REQUIRE(source[j3] + 2 == mybuffer[pf.line()][pf.pipe() - 1]);
         j3++;
       }}
     );
@@ -1101,9 +1204,15 @@ void pipeline_3FSPS(size_t L, unsigned w) {
     for (size_t i = 0; i < N; ++i) {
       REQUIRE(collection[i] == i + 1);
     }
+    REQUIRE(pl.num_tokens() == N);
     
     j1 = j2 = j3 = 0;
     collection.clear();
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -1113,9 +1222,15 @@ void pipeline_3FSPS(size_t L, unsigned w) {
     for (size_t i = 0; i < N; ++i) {
       REQUIRE(collection[i] == i + 1);
     }
+    REQUIRE(pl.num_tokens() == 2 * N);
     
     j1 = j2 = j3 = 0;
     collection.clear();
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -1125,10 +1240,11 @@ void pipeline_3FSPS(size_t L, unsigned w) {
     for (size_t i = 0; i < N; ++i) {
       REQUIRE(collection[i] == i + 1);
     }
+    REQUIRE(pl.num_tokens() == 3 * N);
   }
 }
 
-// three filters (SPS)
+// three pipes (SPS)
 TEST_CASE("Pipeline.3F(SPS).1L.1W" * doctest::timeout(300)) {
   pipeline_3FSPS(1, 1);
 }
@@ -1195,7 +1311,7 @@ TEST_CASE("Pipeline.3F(SPS).4L.4W" * doctest::timeout(300)) {
 
 
 // ----------------------------------------------------------------------------
-// three filters (SPP), L lines, W workers
+// three pipes (SPP), L lines, W workers
 // ----------------------------------------------------------------------------
 
 
@@ -1207,6 +1323,7 @@ void pipeline_3FSPP(size_t L, unsigned w) {
 
   std::vector<int> source(maxN);
   std::iota(source.begin(), source.end(), 0);
+  std::vector<std::array<int, 3>> mybuffer(L);
 
   for(size_t N = 0; N <= maxN; N++) {
 
@@ -1220,29 +1337,36 @@ void pipeline_3FSPP(size_t L, unsigned w) {
     std::vector<int> collection2;
     std::vector<int> collection3;
 
-    auto pl = tf::make_pipeline<int>(L, 
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j1](auto& df) mutable {
+    tf::Pipeline pl(L, 
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1, &mybuffer, L](auto& pf) mutable {
         if(j1 == N) {
-          df.stop();
+          pf.stop();
           return;
         }
         REQUIRE(j1 == source[j1]);
-        *(df.output()) = source[j1] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        //*(pf.output()) = source[j1] + 1;
+        mybuffer[pf.line()][pf.pipe()] = source[j1] + 1;
         j1++;
       }},
-      tf::Filter{tf::FilterType::PARALLEL, [N, &source, &j2, &mutex2, &collection2](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::PARALLEL, [N, &j2, &mutex2, &collection2, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j2++ < N);
-        *df.output() = *df.input() + 1;
+        //*pf.output() = *pf.input() + 1;
         {
           std::scoped_lock<std::mutex> lock(mutex2);
-          collection2.push_back(*df.input());
+          REQUIRE(pf.token() % L == pf.line());
+          mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 1;
+          collection2.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
         }
       }},
-      tf::Filter{tf::FilterType::PARALLEL, [N, &source, &j3, &mutex3, &collection3](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::PARALLEL, [N, &j3, &mutex3, &collection3, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j3++ < N);
         {
           std::scoped_lock<std::mutex> lock(mutex3);
-          collection3.push_back(*df.input());
+          REQUIRE(pf.token() % L == pf.line());
+          collection3.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
         }
       }}
     );
@@ -1259,12 +1383,17 @@ void pipeline_3FSPP(size_t L, unsigned w) {
     for (size_t i = 0; i < N; ++i) {
       REQUIRE(collection2[i] == i + 1);
       REQUIRE(collection3[i] == i + 2);
-
     }
+    REQUIRE(pl.num_tokens() == N);
     
     j1 = j2 = j3 = 0;
     collection2.clear();
     collection3.clear();
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -1277,10 +1406,16 @@ void pipeline_3FSPP(size_t L, unsigned w) {
       REQUIRE(collection2[i] == i + 1);
       REQUIRE(collection3[i] == i + 2);
     }
+    REQUIRE(pl.num_tokens() == 2 * N);
     
     j1 = j2 = j3 = 0;
     collection2.clear();
     collection3.clear();
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -1293,10 +1428,11 @@ void pipeline_3FSPP(size_t L, unsigned w) {
       REQUIRE(collection2[i] == i + 1);
       REQUIRE(collection3[i] == i + 2);
     }
+    REQUIRE(pl.num_tokens() == 3 * N);
   }
 }
 
-// three filters (SPP)
+// three pipes (SPP)
 TEST_CASE("Pipeline.3F(SPP).1L.1W" * doctest::timeout(300)) {
   pipeline_3FSPP(1, 1);
 }
@@ -1361,9 +1497,9 @@ TEST_CASE("Pipeline.3F(SPP).4L.4W" * doctest::timeout(300)) {
   pipeline_3FSPP(4, 4);
 }
 
-
+/*
 // ----------------------------------------------------------------------------
-// three filters (PSS), L lines, W workers
+// three pipes (PSS), L lines, W workers
 // ----------------------------------------------------------------------------
 void pipeline_3FPSS(size_t L, unsigned w) {
 
@@ -1383,30 +1519,30 @@ void pipeline_3FPSS(size_t L, unsigned w) {
     std::mutex mutex;
     std::vector<int> collection;
 
-    auto pl = tf::make_pipeline<int>(L, 
-      tf::Filter{tf::FilterType::PARALLEL, 
-      [N, &source, &j1, &collection, &mutex](auto& df) mutable {
+    tf::Pipeline pl(L, 
+      tf::Pipe{tf::PipeType::PARALLEL, 
+      [N, &source, &j1, &collection, &mutex](auto& pf) mutable {
         auto ticket = j1.fetch_add(1);
         
         if(ticket >= N) {
-          df.stop();
+          pf.stop();
           return;
         }
         {
           std::scoped_lock<std::mutex> lock(mutex);
           collection.push_back(ticket);
-          *(df.output()) = *(df.input()) + 1;
+          *(pf.output()) = *(pf.input()) + 1;
         }
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j2](auto& df) mutable {
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j2](auto& pf) mutable {
         REQUIRE(j2 < N);
-        REQUIRE(source[j2] + 1 == *(df.input()));
-        *(df.output()) = source[j2] + 1;
+        REQUIRE(source[j2] + 1 == *(pf.input()));
+        *(pf.output()) = source[j2] + 1;
         j2++;
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j3](auto& df) mutable {
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j3](auto& pf) mutable {
         REQUIRE(j3 < N);
-        REQUIRE(source[j3] + 1 == *(df.input()));
+        REQUIRE(source[j3] + 1 == *(pf.input()));
         j3++;
       }}
     );
@@ -1446,7 +1582,7 @@ void pipeline_3FPSS(size_t L, unsigned w) {
   }
 }
 
-// three filters (PSS)
+// three pipes (PSS)
 //TEST_CASE("Pipeline.3F(PSS).1L.1W" * doctest::timeout(300)) {
 //  pipeline_3FPSS(1, 1);
 //}
@@ -1513,7 +1649,7 @@ void pipeline_3FPSS(size_t L, unsigned w) {
 
 
 // ----------------------------------------------------------------------------
-// three filters (PSP), L lines, W workers
+// three pipes (PSP), L lines, W workers
 // ----------------------------------------------------------------------------
 void pipeline_3FPSP(size_t L, unsigned w) {
 
@@ -1536,33 +1672,33 @@ void pipeline_3FPSP(size_t L, unsigned w) {
     std::vector<int> collection1;
     std::vector<int> collection3;
 
-    auto pl = tf::make_pipeline<int>(L, 
-      tf::Filter{tf::FilterType::PARALLEL, 
-      [N, &source, &j1, &collection1, &mutex1](auto& df) mutable {
+    tf::Pipeline pl(L, 
+      tf::Pipe{tf::PipeType::PARALLEL, 
+      [N, &source, &j1, &collection1, &mutex1](auto& pf) mutable {
         auto ticket = j1.fetch_add(1);
         
         if(ticket >= N) {
-          df.stop();
+          pf.stop();
           return;
         }
         {
           std::scoped_lock<std::mutex> lock(mutex1);
           collection1.push_back(ticket);
-          *(df.output()) = source[ticket] + 1;
+          *(pf.output()) = source[ticket] + 1;
         }
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j2](auto& df) mutable {
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j2](auto& pf) mutable {
         REQUIRE(j2 < N);
-        REQUIRE(source[j2] + 1 == *(df.input()));
-        *(df.output()) = source[j2] + 1;
+        REQUIRE(source[j2] + 1 == *(pf.input()));
+        *(pf.output()) = source[j2] + 1;
         j2++;
       }},
-      tf::Filter{tf::FilterType::PARALLEL, 
-      [N, &source, &j3, &mutex3, &collection3](auto& df) mutable {
+      tf::Pipe{tf::PipeType::PARALLEL, 
+      [N, &source, &j3, &mutex3, &collection3](auto& pf) mutable {
         REQUIRE(j3++ < N);
         {
           std::scoped_lock<std::mutex> lock(mutex3);
-          collection3.push_back(*(df.input()));
+          collection3.push_back(*(pf.input()));
         }
       }}
     );
@@ -1613,7 +1749,7 @@ void pipeline_3FPSP(size_t L, unsigned w) {
   }
 }
 
-// three filters (PSP)
+// three pipes (PSP)
 //TEST_CASE("Pipeline.3F(PSP).1L.1W" * doctest::timeout(300)) {
 //  pipeline_3FPSP(1, 1);
 //}
@@ -1680,7 +1816,7 @@ void pipeline_3FPSP(size_t L, unsigned w) {
 
 
 // ----------------------------------------------------------------------------
-// three filters (PPS), L lines, W workers
+// three pipes (PPS), L lines, W workers
 // ----------------------------------------------------------------------------
 
 
@@ -1705,33 +1841,33 @@ void pipeline_3FPPS(size_t L, unsigned w) {
     std::vector<int> collection1;
     std::vector<int> collection2;
 
-    auto pl = tf::make_pipeline<int>(L, 
-      tf::Filter{tf::FilterType::PARALLEL, 
-      [N, &source, &j1, &collection1, &mutex1](auto& df) mutable {
+    tf::Pipeline pl(L, 
+      tf::Pipe{tf::PipeType::PARALLEL, 
+      [N, &source, &j1, &collection1, &mutex1](auto& pf) mutable {
         auto ticket = j1.fetch_add(1);
         
         if(ticket >= N) {
-          df.stop();
+          pf.stop();
           return;
         }
         {
           std::scoped_lock<std::mutex> lock(mutex1);
           collection1.push_back(ticket);
-          *(df.output()) = source[ticket] + 1;
+          *(pf.output()) = source[ticket] + 1;
         }
       }},
-      tf::Filter{tf::FilterType::PARALLEL, 
-      [N, &source, &j2, &mutex2, &collection2](auto& df) mutable {
+      tf::Pipe{tf::PipeType::PARALLEL, 
+      [N, &source, &j2, &mutex2, &collection2](auto& pf) mutable {
         REQUIRE(j2++ < N);
         {
           std::scoped_lock<std::mutex> lock(mutex2);
-          collection2.push_back(*(df.input()));
-          *(df.output()) = *(df.input()) + 1;
+          collection2.push_back(*(pf.input()));
+          *(pf.output()) = *(pf.input()) + 1;
         }
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j3](auto& df) mutable {
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j3](auto& pf) mutable {
         REQUIRE(j3 < N);
-        REQUIRE(source[j3] + 1 == *(df.input()));
+        REQUIRE(source[j3] + 1 == *(pf.input()));
         j3++;
       }}
     );
@@ -1782,7 +1918,7 @@ void pipeline_3FPPS(size_t L, unsigned w) {
   }
 }
 
-// three filters (PPS)
+// three pipes (PPS)
 //TEST_CASE("Pipeline.3F(PPS).1L.1W" * doctest::timeout(300)) {
 //  pipeline_3FPPS(1, 1);
 //}
@@ -1849,7 +1985,7 @@ void pipeline_3FPPS(size_t L, unsigned w) {
 
 
 // ----------------------------------------------------------------------------
-// three filters (PPP), L lines, W workers
+// three pipes (PPP), L lines, W workers
 // ----------------------------------------------------------------------------
 
 
@@ -1876,36 +2012,36 @@ void pipeline_3FPPP(size_t L, unsigned w) {
     std::vector<int> collection2;
     std::vector<int> collection3;
 
-    auto pl = tf::make_pipeline<int>(L, 
-      tf::Filter{tf::FilterType::PARALLEL, 
-      [N, &source, &j1, &collection1, &mutex1](auto& df) mutable {
+    tf::Pipeline pl(L, 
+      tf::Pipe{tf::PipeType::PARALLEL, 
+      [N, &source, &j1, &collection1, &mutex1](auto& pf) mutable {
         auto ticket = j1.fetch_add(1);
         
         if(ticket >= N) {
-          df.stop();
+          pf.stop();
           return;
         }
         {
           std::scoped_lock<std::mutex> lock(mutex1);
           collection1.push_back(ticket);
-          *(df.output()) = source[ticket] + 1;
+          *(pf.output()) = source[ticket] + 1;
         }
       }},
-      tf::Filter{tf::FilterType::PARALLEL, 
-      [N, &source, &j2, &mutex2, &collection2](auto& df) mutable {
+      tf::Pipe{tf::PipeType::PARALLEL, 
+      [N, &source, &j2, &mutex2, &collection2](auto& pf) mutable {
         REQUIRE(j2++ < N);
         {
           std::scoped_lock<std::mutex> lock(mutex2);
-          collection2.push_back(*(df.input()));
-          *(df.output()) = *(df.input()) + 1;
+          collection2.push_back(*(pf.input()));
+          *(pf.output()) = *(pf.input()) + 1;
         }
       }},
-      tf::Filter{tf::FilterType::PARALLEL, 
-      [N, &source, &j3, &mutex3, &collection3](auto& df) mutable {
+      tf::Pipe{tf::PipeType::PARALLEL, 
+      [N, &source, &j3, &mutex3, &collection3](auto& pf) mutable {
         REQUIRE(j3++ < N);
         {
           std::scoped_lock<std::mutex> lock(mutex3);
-          collection3.push_back(*(df.input()));
+          collection3.push_back(*(pf.input()));
         }
       }}
     );
@@ -1967,7 +2103,7 @@ void pipeline_3FPPP(size_t L, unsigned w) {
   }
 }
 
-// three filters (PPP)
+// three pipes (PPP)
 //TEST_CASE("Pipeline.3F(PPP).1L.1W" * doctest::timeout(300)) {
 //  pipeline_3FPPP(1, 1);
 //}
@@ -2034,10 +2170,8 @@ void pipeline_3FPPP(size_t L, unsigned w) {
 
 
 
-
-/*
 // ----------------------------------------------------------------------------
-// four filters (SSSS), L lines, W workers
+// four pipes (SSSS), L lines, W workers
 // ----------------------------------------------------------------------------
 
 
@@ -2049,6 +2183,7 @@ void pipeline_4FSSSS(size_t L, unsigned w) {
 
   std::vector<int> source(maxN);
   std::iota(source.begin(), source.end(), 0);
+  std::vector<std::array<int, 4>> mybuffer(L);
 
   for(size_t N = 0; N <= maxN; N++) {
 
@@ -2056,31 +2191,44 @@ void pipeline_4FSSSS(size_t L, unsigned w) {
       
     size_t j1 = 0, j2 = 0, j3 = 0, j4 = 0;
 
-    auto pl = tf::make_pipeline<int>(L, 
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j1](auto& df) mutable {
+    tf::Pipeline pl(L, 
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1, &mybuffer, L](auto& pf) mutable {
         if(j1 == N) {
-          df.stop();
+          pf.stop();
           return;
         }
         REQUIRE(j1 == source[j1]);
-        *(df.output()) = source[j1] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        // *(pf.output()) = source[j1] + 1;
+        mybuffer[pf.line()][pf.pipe()] = source[j1] + 1;
         j1++;
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j2](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j2, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j2 < N);
-        REQUIRE(source[j2] + 1 == *(df.input()));
-        *(df.output()) = source[j2] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        REQUIRE(source[j2] + 1 == mybuffer[pf.line()][pf.pipe() - 1]);
+        // REQUIRE(source[j2] + 1 == *(pf.input()));
+        // *(pf.output()) = source[j2] + 1;
+        mybuffer[pf.line()][pf.pipe()] = source[j2] + 1;
         j2++;
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j3](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j3, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j3 < N);
-        REQUIRE(source[j3] + 1 == *(df.input()));
-        *(df.output()) = source[j3] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        // REQUIRE(source[j3] + 1 == *(pf.input()));
+        REQUIRE(source[j3] + 1 == mybuffer[pf.line()][pf.pipe() - 1]);
+        // *(pf.output()) = source[j3] + 1;
+        mybuffer[pf.line()][pf.pipe()] = source[j3] + 1;
         j3++;
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j4](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j4, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j4 < N);
-        REQUIRE(source[j4] + 1 == *(df.input()));
+        REQUIRE(pf.token() % L == pf.line());
+        // REQUIRE(source[j4] + 1 == *(pf.input()));
+        REQUIRE(source[j4] + 1 == mybuffer[pf.line()][pf.pipe() - 1]);
         j4++;
       }}
     );
@@ -2091,24 +2239,37 @@ void pipeline_4FSSSS(size_t L, unsigned w) {
     REQUIRE(j2 == N);
     REQUIRE(j3 == N);
     REQUIRE(j4 == N);
+    REQUIRE(pl.num_tokens() == N);
     
     j1 = j2 = j3 = j4 = 0;
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
     REQUIRE(j3 == N);
     REQUIRE(j4 == N);
+    REQUIRE(pl.num_tokens() == 2 * N);
     
     j1 = j2 = j3 = j4 = 0;
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
     REQUIRE(j3 == N);
     REQUIRE(j4 == N);
+    REQUIRE(pl.num_tokens() == 3 * N);
   }
 }
 
-// four filters (SSSS)
+// four pipes (SSSS)
 TEST_CASE("Pipeline.4F(SSSS).1L.1W" * doctest::timeout(300)) {
   pipeline_4FSSSS(1, 1);
 }
@@ -2366,7 +2527,7 @@ TEST_CASE("Pipeline.4F(SSSS).8L.8W" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
-// four filters (SSSP), L lines, W workers
+// four pipes (SSSP), L lines, W workers
 // ----------------------------------------------------------------------------
 
 
@@ -2378,6 +2539,7 @@ void pipeline_4FSSSP(size_t L, unsigned w) {
 
   std::vector<int> source(maxN);
   std::iota(source.begin(), source.end(), 0);
+  std::vector<std::array<int, 4>> mybuffer(L);
 
   for(size_t N = 0; N <= maxN; N++) {
 
@@ -2388,33 +2550,46 @@ void pipeline_4FSSSP(size_t L, unsigned w) {
     std::mutex mutex;
     std::vector<int> collection;
 
-    auto pl = tf::make_pipeline<int>(L, 
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j1](auto& df) mutable {
+    tf::Pipeline pl(L, 
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1, &mybuffer, L](auto& pf) mutable {
         if(j1 == N) {
-          df.stop();
+          pf.stop();
           return;
         }
         REQUIRE(j1 == source[j1]);
-        *(df.output()) = source[j1] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        // *(pf.output()) = source[j1] + 1;
+        mybuffer[pf.line()][pf.pipe()] = source[j1] + 1;
         j1++;
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j2](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j2, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j2 < N);
-        REQUIRE(source[j2] + 1 == *(df.input()));
-        *(df.output()) = source[j2] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        REQUIRE(source[j2] + 1 == mybuffer[pf.line()][pf.pipe() - 1]);
+        //REQUIRE(source[j2] + 1 == *(pf.input()));
+        // *(pf.output()) = source[j2] + 1;
+        mybuffer[pf.line()][pf.pipe()] = source[j2] + 1;
         j2++;
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j3](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j3, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j3 < N);
-        REQUIRE(source[j3] + 1 == *(df.input()));
-        *(df.output()) = source[j3] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        REQUIRE(source[j3] + 1 == mybuffer[pf.line()][pf.pipe() - 1]);
+        //REQUIRE(source[j3] + 1 == *(pf.input()));
+        // *(pf.output()) = source[j3] + 1;
+        mybuffer[pf.line()][pf.pipe()] = source[j3] + 1;
         j3++;
       }},
-      tf::Filter{tf::FilterType::PARALLEL, [N, &source, &j4, &mutex, &collection](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::PARALLEL, [N, &source, &j4, &mutex, &collection, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j4++ < N);
         {
           std::scoped_lock<std::mutex> lock(mutex);
-          collection.push_back(*df.input());
+          REQUIRE(pf.token() % L == pf.line());
+          //collection.push_back(*pf.input());
+          collection.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
         }
       }}
     );
@@ -2430,9 +2605,15 @@ void pipeline_4FSSSP(size_t L, unsigned w) {
     for (size_t i = 0; i < N; ++i) {
       REQUIRE(collection[i] == i + 1);
     }
+    REQUIRE(pl.num_tokens() == N);
     
     j1 = j2 = j3 = j4 = 0;
     collection.clear();
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -2443,9 +2624,15 @@ void pipeline_4FSSSP(size_t L, unsigned w) {
     for (size_t i = 0; i < N; ++i) {
       REQUIRE(collection[i] == i + 1);
     }
+    REQUIRE(pl.num_tokens() == 2 * N);
     
     j1 = j2 = j3 = j4 = 0;
     collection.clear();
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -2456,10 +2643,11 @@ void pipeline_4FSSSP(size_t L, unsigned w) {
     for (size_t i = 0; i < N; ++i) {
       REQUIRE(collection[i] == i + 1);
     }
+    REQUIRE(pl.num_tokens() == 3 * N);
   }
 }
 
-// four filters (SSSP)
+// four pipes (SSSP)
 TEST_CASE("Pipeline.4F(SSSP).1L.1W" * doctest::timeout(300)) {
   pipeline_4FSSSP(1, 1);
 }
@@ -2717,7 +2905,7 @@ TEST_CASE("Pipeline.4F(SSSP).8L.8W" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
-// four filters (SSPS), L lines, W workers
+// four pipes (SSPS), L lines, W workers
 // ----------------------------------------------------------------------------
 
 void pipeline_4FSSPS(size_t L, unsigned w) {
@@ -2728,6 +2916,7 @@ void pipeline_4FSSPS(size_t L, unsigned w) {
 
   std::vector<int> source(maxN);
   std::iota(source.begin(), source.end(), 0);
+  std::vector<std::array<int, 4>> mybuffer(L);
 
   for(size_t N = 0; N <= maxN; N++) {
 
@@ -2738,33 +2927,46 @@ void pipeline_4FSSPS(size_t L, unsigned w) {
     std::mutex mutex;
     std::vector<int> collection;
 
-    auto pl = tf::make_pipeline<int>(L, 
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j1](auto& df) mutable {
+    tf::Pipeline pl(L, 
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1, &mybuffer, L](auto& pf) mutable {
         if(j1 == N) {
-          df.stop();
+          pf.stop();
           return;
         }
         REQUIRE(j1 == source[j1]);
-        *(df.output()) = source[j1] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        // *(pf.output()) = source[j1] + 1;
+        mybuffer[pf.line()][pf.pipe()] = source[j1] + 1;
         j1++;
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j2](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j2, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j2 < N);
-        REQUIRE(source[j2] + 1 == *(df.input()));
-        *df.output() = source[j2] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        REQUIRE(source[j2] + 1 == mybuffer[pf.line()][pf.pipe() - 1]);
+        // REQUIRE(source[j2] + 1 == *(pf.input()));
+        // *pf.output() = source[j2] + 1;
+        mybuffer[pf.line()][pf.pipe()] = source[j2] + 1;
         j2++;
       }},
-      tf::Filter{tf::FilterType::PARALLEL, [N, &source, &j3, &mutex, &collection](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::PARALLEL, [N, &source, &j3, &mutex, &collection, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j3++ < N);
-        *(df.output()) = *(df.input()) + 1;
+        // *(pf.output()) = *(pf.input()) + 1;
         {
           std::scoped_lock<std::mutex> lock(mutex);
-          collection.push_back(*df.input());
+          REQUIRE(pf.token() % L == pf.line());
+          collection.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
+          mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 1;
+          //collection.push_back(*pf.input());
         }
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j4](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j4, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j4 < N);
-        REQUIRE(source[j4] + 2 == *(df.input()));
+        REQUIRE(pf.token() % L == pf.line());
+        // REQUIRE(source[j4] + 2 == *(pf.input()));
+        REQUIRE(source[j4] + 2 == mybuffer[pf.line()][pf.pipe() - 1]);
         j4++;
       }}
     );
@@ -2780,8 +2982,14 @@ void pipeline_4FSSPS(size_t L, unsigned w) {
     for (size_t i = 0; i < N; ++i) {
       REQUIRE(collection[i] == i + 1);
     }
+    REQUIRE(pl.num_tokens() == N);
     
     j1 = j2 = j3 = j4 = 0;
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     collection.clear();
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
@@ -2793,8 +3001,14 @@ void pipeline_4FSSPS(size_t L, unsigned w) {
     for (size_t i = 0; i < N; ++i) {
       REQUIRE(collection[i] == i + 1);
     }
+    REQUIRE(pl.num_tokens() == 2 * N);
     
     j1 = j2 = j3 = j4 = 0;
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     collection.clear();
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
@@ -2806,10 +3020,11 @@ void pipeline_4FSSPS(size_t L, unsigned w) {
     for (size_t i = 0; i < N; ++i) {
       REQUIRE(collection[i] == i + 1);
     }
+    REQUIRE(pl.num_tokens() == 3 * N);
   }
 }
 
-// four filters (SSPS)
+// four pipes (SSPS)
 TEST_CASE("Pipeline.4F(SSPS).1L.1W" * doctest::timeout(300)) {
   pipeline_4FSSPS(1, 1);
 }
@@ -3067,7 +3282,7 @@ TEST_CASE("Pipeline.4F(SSPS).8L.8W" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
-// four filters (SSPP), L lines, W workers
+// four pipes (SSPP), L lines, W workers
 // ----------------------------------------------------------------------------
 
 void pipeline_4FSSPP(size_t L, unsigned w) {
@@ -3078,6 +3293,7 @@ void pipeline_4FSSPP(size_t L, unsigned w) {
 
   std::vector<int> source(maxN);
   std::iota(source.begin(), source.end(), 0);
+  std::vector<std::array<int, 4>> mybuffer(L);
 
   for(size_t N = 0; N <= maxN; N++) {
 
@@ -3091,35 +3307,48 @@ void pipeline_4FSSPP(size_t L, unsigned w) {
     std::vector<int> collection3;
     std::vector<int> collection4;
 
-    auto pl = tf::make_pipeline<int>(L, 
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j1](auto& df) mutable {
+    tf::Pipeline pl(L, 
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1, &mybuffer, L](auto& pf) mutable {
         if(j1 == N) {
-          df.stop();
+          pf.stop();
           return;
         }
         REQUIRE(j1 == source[j1]);
-        *(df.output()) = source[j1] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        // *(pf.output()) = source[j1] + 1;
+        mybuffer[pf.line()][pf.pipe()] = source[j1] + 1;
         j1++;
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j2](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j2, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j2 < N);
-        REQUIRE(source[j2] + 1 == *(df.input()));
-        *df.output() = source[j2] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        REQUIRE(source[j2] + 1 == mybuffer[pf.line()][pf.pipe() - 1]);
+        // REQUIRE(source[j2] + 1 == *(pf.input()));
+        // *pf.output() = source[j2] + 1;
+        mybuffer[pf.line()][pf.pipe()] = source[j2] + 1;
         j2++;
       }},
-      tf::Filter{tf::FilterType::PARALLEL, [N, &source, &j3, &mutex3, &collection3](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::PARALLEL, [N, &source, &j3, &mutex3, &collection3, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j3++ < N);
-        *df.output() = *df.input() + 1;
+        // *pf.output() = *pf.input() + 1;
         {
           std::scoped_lock<std::mutex> lock(mutex3);
-          collection3.push_back(*df.input());
+          REQUIRE(pf.token() % L == pf.line());
+          mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 1;
+          //collection3.push_back(*pf.input());
+          collection3.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
         }
       }},
-      tf::Filter{tf::FilterType::PARALLEL, [N, &source, &j4, &mutex4, &collection4](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::PARALLEL, [N, &source, &j4, &mutex4, &collection4, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j4++ < N);
         {
           std::scoped_lock<std::mutex> lock(mutex4);
-          collection4.push_back(*df.input());
+          REQUIRE(pf.token() % L == pf.line());
+          //collection4.push_back(*pf.input());
+          collection4.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
         }
       }}
     );
@@ -3137,10 +3366,15 @@ void pipeline_4FSSPP(size_t L, unsigned w) {
     for (size_t i = 0; i < N; ++i) {
       REQUIRE(collection3[i] == i + 1);
       REQUIRE(collection4[i] == i + 2);
-
     }
+    REQUIRE(pl.num_tokens() == N);
     
     j1 = j2 = j3 = j4 = 0;
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     collection3.clear();
     collection4.clear();
     executor.run(taskflow).wait();
@@ -3156,8 +3390,14 @@ void pipeline_4FSSPP(size_t L, unsigned w) {
       REQUIRE(collection3[i] == i + 1);
       REQUIRE(collection4[i] == i + 2);
     }
+    REQUIRE(pl.num_tokens() == 2 * N);
     
     j1 = j2 = j3 = j4 = 0;
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     collection3.clear();
     collection4.clear();
     executor.run(taskflow).wait();
@@ -3173,10 +3413,11 @@ void pipeline_4FSSPP(size_t L, unsigned w) {
       REQUIRE(collection3[i] == i + 1);
       REQUIRE(collection4[i] == i + 2);
     }
+    REQUIRE(pl.num_tokens() == 3 * N);
   }
 }
 
-// four filters (SSPP)
+// four pipes (SSPP)
 TEST_CASE("Pipeline.4F(SSPP).1L.1W" * doctest::timeout(300)) {
   pipeline_4FSSPP(1, 1);
 }
@@ -3434,7 +3675,7 @@ TEST_CASE("Pipeline.4F(SSPP).8L.8W" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
-// four filters (SPSS), L lines, W workers
+// four pipes (SPSS), L lines, W workers
 // ----------------------------------------------------------------------------
 
 void pipeline_4FSPSS(size_t L, unsigned w) {
@@ -3445,6 +3686,7 @@ void pipeline_4FSPSS(size_t L, unsigned w) {
 
   std::vector<int> source(maxN);
   std::iota(source.begin(), source.end(), 0);
+  std::vector<std::array<int, 4>> mybuffer(L);
 
   for(size_t N = 0; N <= maxN; N++) {
 
@@ -3455,33 +3697,46 @@ void pipeline_4FSPSS(size_t L, unsigned w) {
     std::mutex mutex;
     std::vector<int> collection;
 
-    auto pl = tf::make_pipeline<int>(L, 
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j1](auto& df) mutable {
+    tf::Pipeline pl(L, 
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1, &mybuffer, L](auto& pf) mutable {
         if(j1 == N) {
-          df.stop();
+          pf.stop();
           return;
         }
         REQUIRE(j1 == source[j1]);
-        *(df.output()) = source[j1] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        // *(pf.output()) = source[j1] + 1;
+        mybuffer[pf.line()][pf.pipe()] = source[j1] + 1;
         j1++;
       }},
-      tf::Filter{tf::FilterType::PARALLEL, [N, &source, &j2, &mutex, &collection](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::PARALLEL, [N, &source, &j2, &mutex, &collection, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j2++ < N);
-        *(df.output()) = *(df.input()) + 1;
+        // *(pf.output()) = *(pf.input()) + 1;
         {
           std::scoped_lock<std::mutex> lock(mutex);
-          collection.push_back(*df.input());
+          REQUIRE(pf.token() % L == pf.line());
+          mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 1;
+          //collection.push_back(*pf.input());
+          collection.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
         }
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j3](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j3, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j3 < N);
-        REQUIRE(source[j3] + 2 == *(df.input()));
-        *df.output() = *df.input() + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        REQUIRE(source[j3] + 2 == mybuffer[pf.line()][pf.pipe() - 1]);
+        mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 1;
+        // REQUIRE(source[j3] + 2 == *(pf.input()));
+        // *pf.output() = *pf.input() + 1;
         j3++;
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j4](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j4, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j4 < N);
-        REQUIRE(source[j4] + 3 == *(df.input()));
+        REQUIRE(pf.token() % L == pf.line());
+        REQUIRE(source[j4] + 3 == mybuffer[pf.line()][pf.pipe() - 1]);
+        //REQUIRE(source[j4] + 3 == *(pf.input()));
         j4++;
       }}
     );
@@ -3497,8 +3752,14 @@ void pipeline_4FSPSS(size_t L, unsigned w) {
     for (size_t i = 0; i < N; ++i) {
       REQUIRE(collection[i] == i + 1);
     }
+    REQUIRE(pl.num_tokens() == N);
     
     j1 = j2 = j3 = j4 = 0;
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     collection.clear();
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
@@ -3510,8 +3771,14 @@ void pipeline_4FSPSS(size_t L, unsigned w) {
     for (size_t i = 0; i < N; ++i) {
       REQUIRE(collection[i] == i + 1);
     }
+    REQUIRE(pl.num_tokens() == 2 * N);
     
     j1 = j2 = j3 = j4 = 0;
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     collection.clear();
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
@@ -3523,10 +3790,11 @@ void pipeline_4FSPSS(size_t L, unsigned w) {
     for (size_t i = 0; i < N; ++i) {
       REQUIRE(collection[i] == i + 1);
     }
+    REQUIRE(pl.num_tokens() == 3 * N);
   }
 }
 
-// four filters (SPSS)
+// four pipes (SPSS)
 TEST_CASE("Pipeline.4F(SPSS).1L.1W" * doctest::timeout(300)) {
   pipeline_4FSPSS(1, 1);
 }
@@ -3784,7 +4052,7 @@ TEST_CASE("Pipeline.4F(SPSS).8L.8W" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
-// four filters (SPSP), L lines, W workers
+// four pipes (SPSP), L lines, W workers
 // ----------------------------------------------------------------------------
 
 void pipeline_4FSPSP(size_t L, unsigned w) {
@@ -3795,6 +4063,7 @@ void pipeline_4FSPSP(size_t L, unsigned w) {
 
   std::vector<int> source(maxN);
   std::iota(source.begin(), source.end(), 0);
+  std::vector<std::array<int, 4>> mybuffer(L);
 
   for(size_t N = 0; N <= maxN; N++) {
 
@@ -3808,35 +4077,48 @@ void pipeline_4FSPSP(size_t L, unsigned w) {
     std::vector<int> collection2;
     std::vector<int> collection4;
 
-    auto pl = tf::make_pipeline<int>(L, 
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j1](auto& df) mutable {
+    tf::Pipeline pl(L, 
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1, &mybuffer, L](auto& pf) mutable {
         if(j1 == N) {
-          df.stop();
+          pf.stop();
           return;
         }
         REQUIRE(j1 == source[j1]);
-        *(df.output()) = source[j1] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        mybuffer[pf.line()][pf.pipe()] = source[j1] + 1;
+        // *(pf.output()) = source[j1] + 1;
         j1++;
       }},
-      tf::Filter{tf::FilterType::PARALLEL, [N, &source, &j2, &mutex2, &collection2](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::PARALLEL, [N, &source, &j2, &mutex2, &collection2, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j2++ < N);
-        *(df.output()) = *(df.input()) + 1;
+        // *(pf.output()) = *(pf.input()) + 1;
         {
           std::scoped_lock<std::mutex> lock(mutex2);
-          collection2.push_back(*df.input());
+          REQUIRE(pf.token() % L == pf.line());
+          mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 1;
+          collection2.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
+          //collection2.push_back(*pf.input());
         }
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j3](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j3, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j3 < N);
-        REQUIRE(source[j3] + 2 == *(df.input()));
-        *df.output() = *df.input() + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        REQUIRE(source[j3] + 2 == mybuffer[pf.line()][pf.pipe() - 1]);
+        mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 1;
+        // REQUIRE(source[j3] + 2 == *(pf.input()));
+        // *pf.output() = *pf.input() + 1;
         j3++;
       }},
-      tf::Filter{tf::FilterType::PARALLEL, [N, &source, &j4, &mutex4, &collection4](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::PARALLEL, [N, &source, &j4, &mutex4, &collection4, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j4++ < N);
         {
           std::scoped_lock<std::mutex> lock(mutex4);
-          collection4.push_back(*df.input());
+          REQUIRE(pf.token() % L == pf.line());
+          collection4.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
+          //collection4.push_back(*pf.input());
         }
       }}
     );
@@ -3855,8 +4137,14 @@ void pipeline_4FSPSP(size_t L, unsigned w) {
       REQUIRE(collection2[i] == i + 1);
       REQUIRE(collection4[i] == i + 3);
     }
+    REQUIRE(pl.num_tokens() == N);
     
     j1 = j2 = j3 = j4 = 0;
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     collection2.clear();
     collection4.clear();
     executor.run(taskflow).wait();
@@ -3872,8 +4160,14 @@ void pipeline_4FSPSP(size_t L, unsigned w) {
       REQUIRE(collection2[i] == i + 1);
       REQUIRE(collection4[i] == i + 3);
     }
+    REQUIRE(pl.num_tokens() == 2 * N);
     
     j1 = j2 = j3 = j4 = 0;
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     collection2.clear();
     collection4.clear();
     executor.run(taskflow).wait();
@@ -3889,10 +4183,11 @@ void pipeline_4FSPSP(size_t L, unsigned w) {
       REQUIRE(collection2[i] == i + 1);
       REQUIRE(collection4[i] == i + 3);
     }
+    REQUIRE(pl.num_tokens() == 3 * N);
   }
 }
 
-// four filters (SPSP)
+// four pipes (SPSP)
 TEST_CASE("Pipeline.4F(SPSP).1L.1W" * doctest::timeout(300)) {
   pipeline_4FSPSP(1, 1);
 }
@@ -4150,7 +4445,7 @@ TEST_CASE("Pipeline.4F(SPSP).8L.8W" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
-// four filters (SPPS), L lines, W workers
+// four pipes (SPPS), L lines, W workers
 // ----------------------------------------------------------------------------
 void pipeline_4FSPPS(size_t L, unsigned w) {
 
@@ -4160,6 +4455,7 @@ void pipeline_4FSPPS(size_t L, unsigned w) {
 
   std::vector<int> source(maxN);
   std::iota(source.begin(), source.end(), 0);
+  std::vector<std::array<int, 4>> mybuffer(L);
 
   for(size_t N = 0; N <= maxN; N++) {
 
@@ -4173,35 +4469,48 @@ void pipeline_4FSPPS(size_t L, unsigned w) {
     std::vector<int> collection2;
     std::vector<int> collection3;
 
-    auto pl = tf::make_pipeline<int>(L, 
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j1](auto& df) mutable {
+    tf::Pipeline pl(L, 
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1, &mybuffer, L](auto& pf) mutable {
         if(j1 == N) {
-          df.stop();
+          pf.stop();
           return;
         }
         REQUIRE(j1 == source[j1]);
-        *(df.output()) = source[j1] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        mybuffer[pf.line()][pf.pipe()] = source[j1] + 1;
+        // *(pf.output()) = source[j1] + 1;
         j1++;
       }},
-      tf::Filter{tf::FilterType::PARALLEL, [N, &source, &j2, &mutex2, &collection2](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::PARALLEL, [N, &source, &j2, &mutex2, &collection2, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j2++ < N);
-        *df.output() = *df.input() + 1;
+        // *pf.output() = *pf.input() + 1;
         {
           std::scoped_lock<std::mutex> lock(mutex2);
-          collection2.push_back(*df.input());
+          REQUIRE(pf.token() % L == pf.line());
+          mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 1;
+          collection2.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
+          //collection2.push_back(*pf.input());
         }
       }},
-      tf::Filter{tf::FilterType::PARALLEL, [N, &source, &j3, &mutex3, &collection3](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::PARALLEL, [N, &source, &j3, &mutex3, &collection3, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j3++ < N);
-        *df.output() = *df.input() + 1;
+        // *pf.output() = *pf.input() + 1;
         {
           std::scoped_lock<std::mutex> lock(mutex3);
-          collection3.push_back(*df.input());
+          REQUIRE(pf.token() % L == pf.line());
+          mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 1;
+          collection3.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
+          //collection3.push_back(*pf.input());
         }
       }},
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j4](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j4, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j4 < N);
-        REQUIRE(source[j4] + 3 == *(df.input()));
+        REQUIRE(pf.token() % L == pf.line());
+        REQUIRE(source[j4] + 3 == mybuffer[pf.line()][pf.pipe() - 1]);
+        //REQUIRE(source[j4] + 3 == *(pf.input()));
         j4++;
       }}
     );
@@ -4219,10 +4528,15 @@ void pipeline_4FSPPS(size_t L, unsigned w) {
     for (size_t i = 0; i < N; ++i) {
       REQUIRE(collection2[i] == i + 1);
       REQUIRE(collection3[i] == i + 2);
-
     }
+    REQUIRE(pl.num_tokens() == N);
     
     j1 = j2 = j3 = j4 = 0;
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     collection2.clear();
     collection3.clear();
     executor.run(taskflow).wait();
@@ -4238,8 +4552,14 @@ void pipeline_4FSPPS(size_t L, unsigned w) {
       REQUIRE(collection2[i] == i + 1);
       REQUIRE(collection3[i] == i + 2);
     }
+    REQUIRE(pl.num_tokens() == 2 * N);
     
     j1 = j2 = j3 = j4 = 0;
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     collection2.clear();
     collection3.clear();
     executor.run(taskflow).wait();
@@ -4255,10 +4575,11 @@ void pipeline_4FSPPS(size_t L, unsigned w) {
       REQUIRE(collection2[i] == i + 1);
       REQUIRE(collection3[i] == i + 2);
     }
+    REQUIRE(pl.num_tokens() == 3 * N);
   }
 }
 
-// four filters (SPPS)
+// four pipes (SPPS)
 TEST_CASE("Pipeline.4F(SPPS).1L.1W" * doctest::timeout(300)) {
   pipeline_4FSPPS(1, 1);
 }
@@ -4516,7 +4837,7 @@ TEST_CASE("Pipeline.4F(SPPS).8L.8W" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
-// four filters (SPPP), L lines, W workers
+// four pipes (SPPP), L lines, W workers
 // ----------------------------------------------------------------------------
 
 void pipeline_4FSPPP(size_t L, unsigned w) {
@@ -4527,6 +4848,7 @@ void pipeline_4FSPPP(size_t L, unsigned w) {
 
   std::vector<int> source(maxN);
   std::iota(source.begin(), source.end(), 0);
+  std::vector<std::array<int, 4>> mybuffer(L);
 
   for(size_t N = 0; N <= maxN; N++) {
 
@@ -4543,37 +4865,50 @@ void pipeline_4FSPPP(size_t L, unsigned w) {
     std::vector<int> collection3;
     std::vector<int> collection4;
 
-    auto pl = tf::make_pipeline<int>(L, 
-      tf::Filter{tf::FilterType::SERIAL, [N, &source, &j1](auto& df) mutable {
+    tf::Pipeline pl(L, 
+      tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1, &mybuffer, L](auto& pf) mutable {
         if(j1 == N) {
-          df.stop();
+          pf.stop();
           return;
         }
         REQUIRE(j1 == source[j1]);
-        *(df.output()) = source[j1] + 1;
+        REQUIRE(pf.token() % L == pf.line());
+        mybuffer[pf.line()][pf.pipe()] = source[j1] + 1;
+        // *(pf.output()) = source[j1] + 1;
         j1++;
       }},
-      tf::Filter{tf::FilterType::PARALLEL, [N, &source, &j2, &mutex2, &collection2](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::PARALLEL, [N, &source, &j2, &mutex2, &collection2, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j2++ < N);
-        *df.output() = *df.input() + 1;
+        // *pf.output() = *pf.input() + 1;
         {
           std::scoped_lock<std::mutex> lock(mutex2);
-          collection2.push_back(*df.input());
+          REQUIRE(pf.token() % L == pf.line());
+          mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 1;
+          collection2.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
+          //collection2.push_back(*pf.input());
         }
       }},
-      tf::Filter{tf::FilterType::PARALLEL, [N, &source, &j3, &mutex3, &collection3](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::PARALLEL, [N, &source, &j3, &mutex3, &collection3, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j3++ < N);
-        *df.output() = *df.input() + 1;
+        // *pf.output() = *pf.input() + 1;
         {
           std::scoped_lock<std::mutex> lock(mutex3);
-          collection3.push_back(*df.input());
+          REQUIRE(pf.token() % L == pf.line());
+          mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 1;
+          collection3.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
+          // collection3.push_back(*pf.input());
         }
       }},
-      tf::Filter{tf::FilterType::PARALLEL, [N, &source, &j4, &mutex4, &collection4](auto& df) mutable {
+
+      tf::Pipe{tf::PipeType::PARALLEL, [N, &source, &j4, &mutex4, &collection4, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j4++ < N);
         {
           std::scoped_lock<std::mutex> lock(mutex4);
-          collection4.push_back(*df.input());
+          REQUIRE(pf.token() % L == pf.line());
+          collection4.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
+          // collection4.push_back(*pf.input());
         }
       }}
     );
@@ -4594,10 +4929,15 @@ void pipeline_4FSPPP(size_t L, unsigned w) {
       REQUIRE(collection2[i] == i + 1);
       REQUIRE(collection3[i] == i + 2);
       REQUIRE(collection4[i] == i + 3);
-
     }
+    REQUIRE(pl.num_tokens() == N);
     
     j1 = j2 = j3 = j4 = 0;
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     collection2.clear();
     collection3.clear();
     collection4.clear();
@@ -4617,8 +4957,14 @@ void pipeline_4FSPPP(size_t L, unsigned w) {
       REQUIRE(collection3[i] == i + 2);
       REQUIRE(collection4[i] == i + 3);
     }
+    REQUIRE(pl.num_tokens() == 2 * N);
     
     j1 = j2 = j3 = j4 = 0;
+    for(size_t i = 0; i < mybuffer.size(); ++i){
+      for(size_t j = 0; j < mybuffer[0].size(); ++j){
+        mybuffer[i][j] = 0;
+      }
+    }
     collection2.clear();
     collection3.clear();
     collection4.clear();
@@ -4638,10 +4984,11 @@ void pipeline_4FSPPP(size_t L, unsigned w) {
       REQUIRE(collection3[i] == i + 2);
       REQUIRE(collection4[i] == i + 3);
     }
+    REQUIRE(pl.num_tokens() == 3 * N);
   }
 }
 
-// four filters (SPPP)
+// four pipes (SPPP)
 TEST_CASE("Pipeline.4F(SPPP).1L.1W" * doctest::timeout(300)) {
   pipeline_4FSPPP(1, 1);
 }

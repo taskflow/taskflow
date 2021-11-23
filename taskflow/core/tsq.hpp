@@ -7,6 +7,13 @@
 #include <cstddef>
 #include <cstdlib>
 
+#ifdef __cpp_lib_hardware_interference_size
+  #define TF_HARDWARE_DESTRUCTIVE_INTERFERENCE_SIZE \
+  std::hardware_destructive_interference_size
+#else
+  #define TF_HARDWARE_DESTRUCTIVE_INTERFERENCE_SIZE 128
+#endif
+
 namespace tf {
 
 /**
@@ -66,10 +73,12 @@ class TaskQueue {
 
   };
 
-  std::atomic<int64_t> _top;
-  std::atomic<int64_t> _bottom;
+  alignas(TF_HARDWARE_DESTRUCTIVE_INTERFERENCE_SIZE) std::atomic<int64_t> _top;
+  alignas(TF_HARDWARE_DESTRUCTIVE_INTERFERENCE_SIZE) std::atomic<int64_t> _bottom;
   std::atomic<Array*> _array;
   std::vector<Array*> _garbage;
+
+  T _cache {nullptr};
 
   public:
     
@@ -109,9 +118,25 @@ class TaskQueue {
 
     @tparam O data type 
 
-    @param item the item to perfect-forward to the queue
+    @param item the item to push to the queue
     */
     void push(T item);
+  
+    /**
+    @brief inserts an item to the queue without cache optimization
+
+    Only the owner thread can insert an item to the queue. 
+    The operation can trigger the queue to resize its capacity 
+    if more space is required.
+    Compared to the normal push, uncached push will directly
+    insert the item to the owner's queue without going through
+    its private cache storage.
+
+    @tparam O data type 
+
+    @param item the item to push to the queue
+    */
+    void uncached_push(T item);
     
     /**
     @brief pops out an item from the queue
@@ -154,7 +179,7 @@ template <typename T>
 bool TaskQueue<T>::empty() const noexcept {
   int64_t b = _bottom.load(std::memory_order_relaxed);
   int64_t t = _top.load(std::memory_order_relaxed);
-  return b <= t;
+  return (b <= t) && (_cache == nullptr);
 }
 
 // Function: size
@@ -162,12 +187,22 @@ template <typename T>
 size_t TaskQueue<T>::size() const noexcept {
   int64_t b = _bottom.load(std::memory_order_relaxed);
   int64_t t = _top.load(std::memory_order_relaxed);
-  return static_cast<size_t>(b >= t ? b - t : 0);
+  return static_cast<size_t>(b >= t ? b - t : 0) + (_cache == nullptr ? 0: 1);
 }
 
 // Function: push
 template <typename T>
 void TaskQueue<T>::push(T o) {
+  if(_cache) {
+    auto tmp = _cache;
+    uncached_push(tmp);
+  }
+  _cache = o;
+}
+
+// Function: uncached_push
+template <typename T>
+void TaskQueue<T>::uncached_push(T o) {
   int64_t b = _bottom.load(std::memory_order_relaxed);
   int64_t t = _top.load(std::memory_order_acquire);
   Array* a = _array.load(std::memory_order_relaxed);
@@ -187,9 +222,17 @@ void TaskQueue<T>::push(T o) {
   _bottom.store(b + 1, std::memory_order_relaxed);
 }
 
+
 // Function: pop
 template <typename T>
 T TaskQueue<T>::pop() {
+
+  if(_cache) {
+    auto tmp = _cache;
+    _cache = nullptr;
+    return tmp;
+  }
+
   int64_t b = _bottom.load(std::memory_order_relaxed) - 1;
   Array* a = _array.load(std::memory_order_relaxed);
   _bottom.store(b, std::memory_order_relaxed);

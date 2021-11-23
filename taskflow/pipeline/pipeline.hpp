@@ -2,92 +2,85 @@
 
 namespace tf {
 
-enum class FilterType : int{
+enum class PipeType : int{
   PARALLEL = 1,  
   SERIAL   = 2
 };
 
 template <typename C>
-class Filter{
+class Pipe{
 
-  template <typename D, typename... Fs>
+  template <typename... Fs>
   friend class Pipeline;
 
   public:
 
-  Filter(FilterType d, C&& callable) :
+  Pipe(PipeType d, C&& callable) :
     _type{d}, _callable{std::forward<C>(callable)} {
   }
 
   private:
 
-  FilterType _type;
+  PipeType _type;
 
   C _callable;
 };
 
-template <typename T>
-class Dataflow {
 
-  template <typename D, typename... Fs>
+class Pipeflow {
+
+  template <typename... Fs>
   friend class Pipeline;
 
   public:
 
+  size_t line() const {
+    return _line;
+  }
+
+  size_t pipe() const {
+    return _pipe;
+  }
+
+  size_t token() const {
+    return _token;
+  }
+
   void stop() {
-    _stop.store(true, std::memory_order_relaxed);
+    _stop = true;
   }
 
-  T& at_input() { 
-    if(!_input) {
-      throw std::logic_error("input doesn't exist");
-    }
-    return *_input;  
-  }
-
-  T& at_output() { 
-    if(!_output) {
-      throw std::logic_error("output doesn't exist");
-    }
-    return *_output; 
-  }
-
-  T* input() {
-    return _input;
-  }
-
-  T* output() {
-    return _output;
-  }
-
+  //tf::Subflow& subflow() {
+  //  return _sf;   
+  //}
+  
   private:
 
-  Dataflow(T* input, T* output, std::atomic<bool>& stop) : 
-    _input  {input}, 
-    _output {output},
-    _stop   {stop} {
+  Pipeflow(size_t line, size_t pipe) :
+    _line {line},
+    _pipe {pipe} {
   }
 
-  T* _input;
-  T* _output;
-  
-  std::atomic<bool>& _stop;
+  size_t _line;
+  size_t _pipe;
+  size_t _token;
+  bool   _stop {false};
+  //tf::Subflow& _sf;
 };
 
-template <typename D, typename... Fs>
+template <typename... Fs>
 class Pipeline {
   
-  static_assert(sizeof...(Fs)>0, "must have at least one filter");
+  static_assert(sizeof...(Fs)>0, "must have at least one pipe");
 
   friend class FlowBuilder;
 
-  struct BufferData {
-    D data;
+  struct Line {
     std::atomic<size_t> join_counter;
   };
 
-  struct FilterMeta {
-    FilterType type;
+  struct PipeMeta {
+    PipeType type;
   };
 
   public:
@@ -95,7 +88,7 @@ class Pipeline {
   /**
   @brief constructs a pipeline object
   */
-  Pipeline(size_t throttle, Fs&&... fs);
+  Pipeline(size_t max_lines, Fs&&... fs);
 
   /**
   @brief queries the number of dataflow lines
@@ -103,105 +96,128 @@ class Pipeline {
   size_t num_lines() const noexcept;
 
   /**
-  @brief queries the number of filters
+  @brief queries the number of pipes
   */
-  constexpr size_t num_filters() const noexcept;
+  constexpr size_t num_pipes() const noexcept;
+  
+  /**
+  @brief resets the pipeline
+  */
+  void reset();
+  
+  /**
+  @brief queries the number of tokens in the pipeline
+  */
+  size_t num_tokens() const noexcept;
+
+
 
   private:
-
-  std::atomic<bool> _stop;
   
-  std::tuple<Fs...> _filters;
+  std::tuple<Fs...> _pipes;
 
-  std::array<FilterMeta, sizeof...(Fs)> _meta;
+  std::array<PipeMeta, sizeof...(Fs)> _meta;
   
-  std::vector<std::array<BufferData, sizeof...(Fs)>> _buffers; 
-
-  BufferData& _get_buffer(size_t l, size_t f);
-
-  bool _on_filter(size_t f, D* d_in, D* d_out);
-
-  void _set_up_pipeline();
+  std::vector<std::array<Line, sizeof...(Fs)>> _lines; 
   
+  std::vector<tf::Task> _tasks;
+  
+  Line& _get_line(size_t l, size_t f);
+
+  size_t _num_tokens;
+  
+  void _on_pipe(Pipeflow&);
+
   auto _build(FlowBuilder&);
 
 };
 
 // constructor
-template <typename D, typename... Fs>
-Pipeline<D, Fs...>::Pipeline(size_t throttle, Fs&&... fs) :
-  _filters {std::make_tuple(std::forward<Fs>(fs)...)},
-  _meta    {FilterMeta{fs._type}...},
-  _buffers (throttle) {
+template <typename... Fs>
+Pipeline<Fs...>::Pipeline(size_t max_lines, Fs&&... fs) :
+  _pipes {std::make_tuple(std::forward<Fs>(fs)...)},
+  _meta  {PipeMeta{fs._type}...},
+  _lines (max_lines),
+  _tasks (max_lines + 1) {
+
+  // TODO: throw exception if the first pipe is not serial
+  reset();
 }
 
-template <typename D, typename... Fs>
-size_t Pipeline<D, Fs...>::num_lines() const noexcept {
-  return _buffers.size();
+template <typename... Fs>
+size_t Pipeline<Fs...>::num_lines() const noexcept {
+  return _lines.size();
 }
 
-template <typename D, typename... Fs>
-constexpr size_t Pipeline<D, Fs...>::num_filters() const noexcept {
+template <typename... Fs>
+constexpr size_t Pipeline<Fs...>::num_pipes() const noexcept {
   return sizeof...(Fs);
 }
 
-template <typename D, typename... Fs>
-void Pipeline<D, Fs...>::_set_up_pipeline() {
+template <typename... Fs>
+size_t Pipeline<Fs...>::num_tokens() const noexcept {
+  return _num_tokens;
+}
 
-  _stop.store(false, std::memory_order_relaxed);
+template <typename... Fs>
+void Pipeline<Fs...>::reset() {
 
-  _get_buffer(0, 0).join_counter.store(0, std::memory_order_relaxed);
+  _num_tokens = 0;
+
+  _get_line(0, 0).join_counter.store(0, std::memory_order_relaxed);
 
   for(size_t l=1; l<num_lines(); l++) {
-    for(size_t f=1; f<num_filters(); f++) {
-      _get_buffer(l, f).join_counter.store(
+    for(size_t f=1; f<num_pipes(); f++) {
+      _get_line(l, f).join_counter.store(
         static_cast<size_t>(_meta[f].type), std::memory_order_relaxed
       );
     }
   }
 
-  for(size_t f=1; f<num_filters(); f++) {
-    _get_buffer(0, f).join_counter.store(1, std::memory_order_relaxed);
+  for(size_t f=1; f<num_pipes(); f++) {
+    _get_line(0, f).join_counter.store(1, std::memory_order_relaxed);
   }
 
   for(size_t l=1; l<num_lines(); l++) {
-    _get_buffer(l, 0).join_counter.store(
+    _get_line(l, 0).join_counter.store(
       static_cast<size_t>(_meta[0].type) - 1, std::memory_order_relaxed
     );
   }
 }
   
-template <typename D, typename... Fs>
-typename Pipeline<D, Fs...>::BufferData& 
-Pipeline<D, Fs...>::_get_buffer(size_t l, size_t f) {
-  return _buffers[l][f];
+template <typename... Fs>
+typename Pipeline<Fs...>::Line& 
+Pipeline<Fs...>::_get_line(size_t l, size_t f) {
+  return _lines[l][f];
 }
 
-template <typename D, typename... Fs>
-bool Pipeline<D, Fs...>::_on_filter(size_t f, D* d_in, D* d_out) {
-  visit_tuple([&](auto&& filter){
-    Dataflow<D> df(d_in, d_out, _stop);
-    filter._callable(df);
-  }, _filters, f);
-  return _stop.load(std::memory_order_relaxed);
+template <typename... Fs>
+void Pipeline<Fs...>::_on_pipe(Pipeflow& pf) {
+
+  //pf._subflow.reset();
+
+  visit_tuple(
+    [&](auto&& pipe){ pipe._callable(pf); },
+    _pipes, pf._pipe
+  );
+
+  //if(pf._subflow._joinable) {
+  //  pf._subflow.join();
+  //}
 }
 
-template <typename D, typename... Fs>
-auto Pipeline<D, Fs...>::_build(FlowBuilder& fb) {
+template <typename... Fs>
+auto Pipeline<Fs...>::_build(FlowBuilder& fb) {
 
-  std::vector<tf::Task> tasks(num_lines() + 1);
-  
   // init task
-  tasks[0] = fb.emplace([this]() -> SmallVector<int> {
-
-    _set_up_pipeline();
-
-    // first filter is SERIAL
-    if (std::get<0>(_filters)._type == FilterType::SERIAL) {
-      return {0};
+  _tasks[0] = fb.emplace([this]() {
+    return  static_cast<int>(_num_tokens % num_lines());
+    /*// first pipe is SERIAL
+    if (std::get<0>(_pipes)._type == PipeType::SERIAL) {
+      return { static_cast<int>(_num_tokens % num_lines()) };
     }
 
-    // first filter is PARALLEL
+    // first pipe is PARALLEL
     else {
       SmallVector<int> ret;
       ret.reserve(num_lines());
@@ -209,34 +225,39 @@ auto Pipeline<D, Fs...>::_build(FlowBuilder& fb) {
         ret.push_back(l);
       }
       return ret;
-    }
+    }*/
   });
 
   // create a task for each layer
   for(size_t l = 0; l < num_lines(); l++) {
-    tasks[l+1] = fb.emplace(
-    [this, l, f = size_t{0}]() mutable -> SmallVector<int> {
 
-      _get_buffer(l, f).join_counter.store(
-        static_cast<size_t>(_meta[f].type), std::memory_order_relaxed
+    _tasks[l + 1] = fb.emplace(
+    [this, pf = Pipeflow{l, 0}] (tf::Subflow& sf) mutable {
+
+    pipeline:
+
+      _get_line(pf._line, pf._pipe).join_counter.store(
+        static_cast<size_t>(_meta[pf._pipe].type), std::memory_order_relaxed
       );
-      
-      if (f == 0) {
-        if (_on_filter(0, nullptr, &_get_buffer(l, f).data) == true) {
-          return {};
+
+      if (pf._pipe == 0) {
+        pf._token = _num_tokens;
+        if (pf._stop = false, _on_pipe(pf); pf._stop == true) {
+           
+          //return {};
+          return;
         }
+        ++_num_tokens;
       }
       else {
-        _on_filter(
-          f, &_get_buffer(l, f - 1).data, &_get_buffer(l, f).data
-        );
+        _on_pipe(pf);
       }
-      
-      size_t c_f = f;
-      size_t n_f = (f + 1) % num_filters();
-      size_t n_l = (l + 1) % num_lines();
 
-      f = n_f;
+      size_t c_f = pf._pipe;
+      size_t n_f = (pf._pipe + 1) % num_pipes();
+      size_t n_l = (pf._line + 1) % num_lines();
+
+      pf._pipe = n_f;
       
       // ---- scheduling starts here ----
       // Notice that the shared variable f must not be changed after this
@@ -251,52 +272,66 @@ auto Pipeline<D, Fs...>::_build(FlowBuilder& fb) {
       // d will be spawned by either c or b, so if c changes f but b spawns d
       // then data race on f will happen
 
-      SmallVector<int> retval;
+      SmallVector<int, 2> retval;
 
       // downward dependency
-      if(_meta[c_f].type == FilterType::SERIAL && 
-         _get_buffer(n_l, c_f).join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+      if(_meta[c_f].type == PipeType::SERIAL && 
+         _get_line(n_l, c_f).join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
         retval.push_back(1);
       }
       
       // forward dependency
-      if(_get_buffer(l, n_f).join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+      if(_get_line(pf._line, n_f).join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
         retval.push_back(0);
       }
-
-      return retval;
+      
+      // notice that the index of task starts from 1
+      switch(retval.size()) {
+        case 2: {
+          sf.executor().schedule(_tasks[n_l+1]);
+          goto pipeline;
+        }
+        case 1: {
+          if (retval[0] == 0) {
+            goto pipeline;
+          }
+          else {
+            sf.executor().schedule(_tasks[n_l+1]);
+          }
+        }
+      }
     });
   }
 
   // Specify the dependencies of tasks
   for (size_t l = 1; l < num_lines() + 1; l++) {
-    tasks[0].precede(tasks[l]);
-    tasks[l].precede(tasks[l], tasks[l % num_lines() + 1]);
+    _tasks[0].precede(_tasks[l]);
+    //tasks[l].precede(tasks[l], tasks[l % num_lines() + 1]);
   }
 
-  return tasks;
+  return _tasks;
 }
 
 // ----------------------------------------------------------------------------
 // helper functions
 // ----------------------------------------------------------------------------
 
-template <typename D, typename... Fs>
-auto make_pipeline(size_t throttle, Fs&&... filters) {
-  return Pipeline<D, Fs...>{throttle, std::forward<Fs>(filters)...};
+template <typename... Fs>
+auto make_pipeline(size_t max_lines, Fs&&... pipes) {
+  return Pipeline<Fs...>{max_lines, std::forward<Fs>(pipes)...};
 }
 
-template <typename D, typename... Fs>
-auto make_unique_pipeline(size_t throttle, Fs&&... filters) {
-  return std::make_unique<Pipeline<D, Fs...>>(
-    throttle, std::forward<Fs>(filters)...
+template <typename... Fs>
+auto make_unique_pipeline(size_t max_lines, Fs&&... pipes) {
+  return std::make_unique<Pipeline<Fs...>>(
+    max_lines, std::forward<Fs>(pipes)...
   );
 }
 
-template <typename D, typename... Fs>
-auto make_shared_pipeline(size_t throttle, Fs&&... filters) {
-  return std::make_shared<Pipeline<D, Fs...>>(
-    throttle, std::forward<Fs>(filters)...
+template <typename... Fs>
+auto make_shared_pipeline(size_t max_lines, Fs&&... pipes) {
+  return std::make_shared<Pipeline<Fs...>>(
+    max_lines, std::forward<Fs>(pipes)...
   );
 }
 

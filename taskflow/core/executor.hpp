@@ -409,6 +409,15 @@ class Executor {
     */
     template<typename P, typename C>
     tf::Future<void> run_until(Taskflow&& taskflow, P&& pred, C&& callable);
+
+    /**
+    @brief schedules a parented task immediatelly
+    
+    This member function immediately schedules the give task.
+    The task must not be running and must alreday be present in a
+    taskflow or a subflow.
+    */
+    void schedule(Task task);
     
     /**
     @brief wait for all tasks to complete
@@ -983,6 +992,15 @@ void Executor::remove_observer(std::shared_ptr<Observer> ptr) {
 inline size_t Executor::num_observers() const noexcept {
   return _observers.size();
 }
+  
+// Procedure: schedule
+inline void Executor::schedule(Task task) { 
+  auto node = task._node; 
+  auto& j = node->_parent ? node->_parent->_join_counter : 
+                            node->_topology->_join_counter;
+  j.fetch_add(1);
+  _schedule(node);
+}
 
 // Procedure: _schedule
 // The main procedure to schedule a give task node.
@@ -1004,7 +1022,7 @@ inline void Executor::_schedule(Node* node) {
   // other threads
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
-    _wsq.push(node);
+    _wsq.uncached_push(node);
   }
 
   _notifier.notify(false);
@@ -1044,7 +1062,7 @@ inline void Executor::_schedule(const std::vector<Node*>& nodes) {
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     for(size_t k=0; k<num_nodes; ++k) {
-      _wsq.push(nodes[k]);
+      _wsq.uncached_push(nodes[k]);
     }
   }
   
@@ -1768,7 +1786,6 @@ template <typename F, typename... ArgsT>
 void Subflow::silent_async(F&& f, ArgsT&&... args) {
   named_silent_async("", std::forward<F>(f), std::forward<ArgsT>(args)...);
 }
-
 
 }  // end of namespace tf -----------------------------------------------------
 

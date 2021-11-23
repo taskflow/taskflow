@@ -45,7 +45,7 @@ enum class TaskType : int {
 @private
 @brief array of all task types (used for iterating task types)
 */
-inline constexpr std::array<TaskType, 9> TASK_TYPES = {
+inline constexpr std::array<TaskType, 10> TASK_TYPES = {
   TaskType::PLACEHOLDER,
   TaskType::CUDAFLOW,
   TaskType::SYCLFLOW,
@@ -173,7 +173,8 @@ class Task {
   friend class FlowBuilder;
   friend class Taskflow;
   friend class TaskView;
-  
+  friend class Executor;
+
   public:
 
     /**

@@ -780,6 +780,11 @@ class Subflow : public FlowBuilder {
     @endcode
     */
     void detach();
+
+    /**
+    @brief resets the subflow to a clean graph of joinable state
+    */
+    void reset();
     
     /**
     @brief queries if the subflow is joinable
@@ -920,6 +925,11 @@ class Subflow : public FlowBuilder {
      */
     template <typename F, typename... ArgsT>
     void named_silent_async(const std::string& name, F&& f, ArgsT&&... args);
+    
+    /**
+    @brief returns the executor that runs this subflow
+    */
+    inline Executor& executor();
 
   private:
     
@@ -943,6 +953,25 @@ inline bool Subflow::joinable() const noexcept {
   return _joinable;
 }
 
+// Function: executor
+inline Executor& Subflow::executor() {
+  return _executor;
+}
+
+// Procedure: reset
+inline void Subflow::reset() {
+  _graph.clear();
+  _joinable = true;
+}
+
 }  // end of namespace tf. ---------------------------------------------------
+
+
+
+
+
+
+
+
 
 
