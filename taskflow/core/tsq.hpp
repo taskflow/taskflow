@@ -7,13 +7,6 @@
 #include <cstddef>
 #include <cstdlib>
 
-#ifdef __cpp_lib_hardware_interference_size
-  #define TF_HARDWARE_DESTRUCTIVE_INTERFERENCE_SIZE \
-  std::hardware_destructive_interference_size
-#else
-  #define TF_HARDWARE_DESTRUCTIVE_INTERFERENCE_SIZE 128
-#endif
-
 namespace tf {
 
 /**
@@ -72,9 +65,11 @@ class TaskQueue {
     }
 
   };
-
-  alignas(TF_HARDWARE_DESTRUCTIVE_INTERFERENCE_SIZE) std::atomic<int64_t> _top;
-  alignas(TF_HARDWARE_DESTRUCTIVE_INTERFERENCE_SIZE) std::atomic<int64_t> _bottom;
+  
+  // Doubling the alignment by 2 seems to generate the most
+  // decent performance.
+  alignas(2*TF_CACHELINE_SIZE) std::atomic<int64_t> _top;
+  alignas(2*TF_CACHELINE_SIZE) std::atomic<int64_t> _bottom;
   std::atomic<Array*> _array;
   std::vector<Array*> _garbage;
 

@@ -13,14 +13,6 @@ int main() {
   
   sycl::queue queue;
 
-  typedef sycl::usm_allocator<int, sycl::usm::alloc::shared> vec_alloc;
-
-  // Create std vectors with the allocator
-  std::vector<int, vec_alloc >
-  a(10, vec_alloc(queue));
-
-  return 0;
-  
   // allocate shared memory
   auto X = sycl::malloc_shared<float>(N, queue);
   auto Y = sycl::malloc_shared<float>(N, queue);
