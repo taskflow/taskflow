@@ -232,7 +232,7 @@ auto Pipeline<Fs...>::_build(FlowBuilder& fb) {
   for(size_t l = 0; l < num_lines(); l++) {
 
     _tasks[l + 1] = fb.emplace(
-    [this, pf = Pipeflow{l, 0}] (tf::Subflow& sf) mutable {
+    [this, pf = Pipeflow{l, 0}] (tf::Runtime& rt) mutable {
 
     pipeline:
 
@@ -243,7 +243,6 @@ auto Pipeline<Fs...>::_build(FlowBuilder& fb) {
       if (pf._pipe == 0) {
         pf._token = _num_tokens;
         if (pf._stop = false, _on_pipe(pf); pf._stop == true) {
-           
           //return {};
           return;
         }
@@ -288,7 +287,7 @@ auto Pipeline<Fs...>::_build(FlowBuilder& fb) {
       // notice that the index of task starts from 1
       switch(retval.size()) {
         case 2: {
-          sf.executor().schedule(_tasks[n_l+1]);
+          rt.executor().schedule(_tasks[n_l+1]);
           goto pipeline;
         }
         case 1: {
@@ -296,7 +295,7 @@ auto Pipeline<Fs...>::_build(FlowBuilder& fb) {
             goto pipeline;
           }
           else {
-            sf.executor().schedule(_tasks[n_l+1]);
+            rt.executor().schedule(_tasks[n_l+1]);
           }
         }
       }

@@ -670,6 +670,7 @@ class Executor {
     void _invoke_silent_async_task(Worker&, Node*);
     void _invoke_cudaflow_task(Worker&, Node*);
     void _invoke_syclflow_task(Worker&, Node*);
+    void _invoke_runtime_task(Worker&, Node*);
 
     template <typename C, 
       std::enable_if_t<is_cudaflow_task_v<C>, void>* = nullptr
@@ -1161,6 +1162,12 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     }
     break; 
 
+    // runtime task
+    case Node::RUNTIME: {
+      _invoke_runtime_task(worker, node);
+    }
+    break;
+
     // monostate (placeholder)
     default:
     break;
@@ -1443,6 +1450,14 @@ inline void Executor::_invoke_async_task(Worker& w, Node* node) {
 inline void Executor::_invoke_silent_async_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
   std::get_if<Node::SilentAsync>(&node->_handle)->work();
+  _observer_epilogue(w, node);  
+}
+
+// Procedure: _invoke_runtime_task
+inline void Executor::_invoke_runtime_task(Worker& w, Node* node) {
+  _observer_prologue(w, node);
+  Runtime rt(*this);
+  std::get_if<Node::Runtime>(&node->_handle)->work(rt);
   _observer_epilogue(w, node);  
 }
 
@@ -1786,6 +1801,8 @@ template <typename F, typename... ArgsT>
 void Subflow::silent_async(F&& f, ArgsT&&... args) {
   named_silent_async("", std::forward<F>(f), std::forward<ArgsT>(args)...);
 }
+
+
 
 }  // end of namespace tf -----------------------------------------------------
 

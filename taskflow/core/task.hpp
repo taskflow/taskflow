@@ -37,6 +37,8 @@ enum class TaskType : int {
   MODULE,
   /** @brief asynchronous task type */
   ASYNC,
+  /** @brief runtime task type */
+  RUNTIME, 
   /** @brief undefined task type (for internal use only) */
   UNDEFINED 
 };
@@ -54,7 +56,8 @@ inline constexpr std::array<TaskType, 10> TASK_TYPES = {
   TaskType::CONDITION,
   TaskType::MULTI_CONDITION,
   TaskType::MODULE,
-  TaskType::ASYNC
+  TaskType::ASYNC,
+  TaskType::RUNTIME
 };
 
 /**
@@ -72,6 +75,7 @@ TaskType::CONDITION       ->  "condition"
 TaskType::MULTI_CONDITION ->  "multi_condition"
 TaskType::MODULE          ->  "module"         
 TaskType::ASYNC           ->  "async"          
+TaskType::RUNTIME         ->  "runtime"
 @endcode
 */
 inline const char* to_string(TaskType type) {
@@ -88,6 +92,7 @@ inline const char* to_string(TaskType type) {
     case TaskType::MULTI_CONDITION:  val = "multi_condition"; break;
     case TaskType::MODULE:           val = "module";          break;
     case TaskType::ASYNC:            val = "async";           break;
+    case TaskType::RUNTIME:          val = "runtime";         break;
     default:                         val = "undefined";       break;
   }
 
@@ -153,6 +158,15 @@ std::function<void(tf::syclFlow&)>.
 */
 template <typename C>
 constexpr bool is_syclflow_task_v = std::is_invocable_r_v<void, C, syclFlow&>;
+
+/**
+@brief determines if a callable is a %Runtime task
+
+A Runtime task is a callable object constructible from 
+std::function<void(tf::Runtime&)>.
+*/
+template <typename C>
+constexpr bool is_runtime_task_v = std::is_invocable_r_v<void, C, Runtime&>;
 
 // ----------------------------------------------------------------------------
 // Task
@@ -501,6 +515,7 @@ inline TaskType Task::type() const {
     case Node::SILENT_ASYNC:    return TaskType::ASYNC;
     case Node::CUDAFLOW:        return TaskType::CUDAFLOW;
     case Node::SYCLFLOW:        return TaskType::SYCLFLOW;
+    case Node::RUNTIME:         return TaskType::RUNTIME;
     default:                    return TaskType::UNDEFINED;
   }
 }
@@ -552,6 +567,9 @@ Task& Task::work(C&& c) {
   }
   else if constexpr(is_cudaflow_task_v<C>) {
     _node->_handle.emplace<Node::cudaFlow>(std::forward<C>(c));
+  }
+  else if constexpr(is_runtime_task_v<C>) {
+    _node->_handle.emplace<Node::Runtime>(std::forward<C>(c));
   }
   else {
     static_assert(dependent_false_v<C>, "invalid task callable");
@@ -692,6 +710,7 @@ inline TaskType TaskView::type() const {
     case Node::SILENT_ASYNC:    return TaskType::ASYNC;
     case Node::CUDAFLOW:        return TaskType::CUDAFLOW;
     case Node::SYCLFLOW:        return TaskType::SYCLFLOW;
+    case Node::RUNTIME:         return TaskType::RUNTIME;
     default:                    return TaskType::UNDEFINED;
   }
 }

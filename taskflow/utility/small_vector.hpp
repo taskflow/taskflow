@@ -12,11 +12,11 @@
 #include <memory>
 
 #if defined(__GNUC__)
-  #define TF_SMALLVEC_LIKELY(x) (__builtin_expect((x), 1))
-  #define TF_SMALLVEC_UNLIKELY(x) (__builtin_expect((x), 0))
+  #define TF_LIKELY(x) (__builtin_expect((x), 1))
+  #define TF_UNLIKELY(x) (__builtin_expect((x), 0))
 #else
-  #define TF_SMALLVEC_LIKELY(x) (x)
-  #define TF_SMALLVEC_UNLIKELY(x) (x)
+  #define TF_LIKELY(x) (x)
+  #define TF_UNLIKELY(x) (x)
 #endif
 
 /** 
@@ -261,14 +261,14 @@ protected:
 
 public:
   void push_back(const T &Elt) {
-    if (TF_SMALLVEC_UNLIKELY(this->EndX >= this->CapacityX))
+    if (TF_UNLIKELY(this->EndX >= this->CapacityX))
       this->grow();
     ::new ((void*) this->end()) T(Elt);
     this->setEnd(this->end()+1);
   }
 
   void push_back(T &&Elt) {
-    if (TF_SMALLVEC_UNLIKELY(this->EndX >= this->CapacityX))
+    if (TF_UNLIKELY(this->EndX >= this->CapacityX))
       this->grow();
     ::new ((void*) this->end()) T(::std::move(Elt));
     this->setEnd(this->end()+1);
@@ -357,7 +357,7 @@ protected:
   }
 public:
   void push_back(const T &Elt) {
-    if (TF_SMALLVEC_UNLIKELY(this->EndX >= this->CapacityX))
+    if (TF_UNLIKELY(this->EndX >= this->CapacityX))
       this->grow();
     memcpy(this->end(), &Elt, sizeof(T));
     this->setEnd(this->end()+1);
@@ -688,7 +688,7 @@ public:
   }
 
   template <typename... ArgTypes> void emplace_back(ArgTypes &&... Args) {
-    if (TF_SMALLVEC_UNLIKELY(this->EndX >= this->CapacityX))
+    if (TF_UNLIKELY(this->EndX >= this->CapacityX))
       this->grow();
     ::new ((void *)this->end()) T(std::forward<ArgTypes>(Args)...);
     this->setEnd(this->end() + 1);

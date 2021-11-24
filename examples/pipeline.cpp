@@ -36,7 +36,6 @@ int main() {
       
       // save the result of this pipe into the buffer of next pipe
       mybuffer[pf.line()][pf.pipe()] = 2;
-
     }},
 
     tf::Pipe{tf::PipeType::SERIAL, [&mybuffer](auto& pf){
@@ -53,6 +52,11 @@ int main() {
 
   //executor.run(taskflow).wait();
   return 0;
+
+  // TODO: now pipeline needs to inherit taskflow
+  // 
+  // tf::Pipeline pl (...);
+  // executor.run(pl).wait();
 }
 
 

@@ -78,7 +78,7 @@ class TaskQueue {
   std::atomic<Array*> _array;
   std::vector<Array*> _garbage;
 
-  T _cache {nullptr};
+  std::atomic<T> _cache {nullptr};
 
   public:
     
@@ -179,7 +179,7 @@ template <typename T>
 bool TaskQueue<T>::empty() const noexcept {
   int64_t b = _bottom.load(std::memory_order_relaxed);
   int64_t t = _top.load(std::memory_order_relaxed);
-  return (b <= t) && (_cache == nullptr);
+  return (b <= t) && (_cache.load(std::memory_order_relaxed) == nullptr);
 }
 
 // Function: size
@@ -187,17 +187,18 @@ template <typename T>
 size_t TaskQueue<T>::size() const noexcept {
   int64_t b = _bottom.load(std::memory_order_relaxed);
   int64_t t = _top.load(std::memory_order_relaxed);
-  return static_cast<size_t>(b >= t ? b - t : 0) + (_cache == nullptr ? 0: 1);
+  return static_cast<size_t>(b >= t ? b - t : 0) + 
+         (_cache.load(std::memory_order_relaxed) == nullptr ? 0: 1);
 }
 
 // Function: push
 template <typename T>
 void TaskQueue<T>::push(T o) {
   if(_cache) {
-    auto tmp = _cache;
+    auto tmp = _cache.load(std::memory_order_relaxed);
     uncached_push(tmp);
   }
-  _cache = o;
+  _cache.store(o, std::memory_order_relaxed);
 }
 
 // Function: uncached_push
@@ -226,10 +227,10 @@ void TaskQueue<T>::uncached_push(T o) {
 // Function: pop
 template <typename T>
 T TaskQueue<T>::pop() {
-
-  if(_cache) {
-    auto tmp = _cache;
-    _cache = nullptr;
+  auto tmp = _cache.load(std::memory_order_relaxed);
+  if(tmp) {
+    //auto tmp = _cache;
+    _cache.store(nullptr, std::memory_order_relaxed);
     return tmp;
   }
 

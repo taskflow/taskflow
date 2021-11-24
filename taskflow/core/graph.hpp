@@ -70,9 +70,18 @@ class Graph {
 // ----------------------------------------------------------------------------
 
 // TODO
-struct Runtime {
-  Runtime(Executor& e) : executor{e} {}
-  Executor& executor;
+class Runtime {
+
+  public:
+
+  explicit Runtime(Executor& e) : _executor{e} {
+  }
+
+  Executor& executor() { return _executor; }
+
+  private:
+
+  Executor& _executor;
 };
 
 
@@ -107,13 +116,13 @@ class Node {
     std::function<void()> work;
   };
 
-  // TODO: runtime task
+  // TODO: runtime work handle
   struct Runtime {
 
     template <typename C>
     Runtime(C&&);
      
-    std::function<void(Runtime&)> work;
+    std::function<void(tf::Runtime&)> work;
   };
 
   // dynamic work handle
@@ -205,7 +214,8 @@ class Node {
     Async,           // async tasking
     SilentAsync,     // async tasking (no future)
     cudaFlow,        // cudaFlow
-    syclFlow         // syclFlow
+    syclFlow,        // syclFlow
+    Runtime          // runtime tasking
   >;
     
   struct Semaphores {  
@@ -226,6 +236,7 @@ class Node {
   constexpr static auto SILENT_ASYNC    = get_index_v<SilentAsync, handle_t>; 
   constexpr static auto CUDAFLOW        = get_index_v<cudaFlow, handle_t>; 
   constexpr static auto SYCLFLOW        = get_index_v<syclFlow, handle_t>; 
+  constexpr static auto RUNTIME         = get_index_v<Runtime, handle_t>;
 
   template <typename... Args>
   Node(Args&&... args);
@@ -358,6 +369,16 @@ Node::Async::Async(C&& c, std::shared_ptr<AsyncTopology>tpg) :
 // Constructor
 template <typename C>
 Node::SilentAsync::SilentAsync(C&& c) :
+  work {std::forward<C>(c)} {
+}
+
+// ----------------------------------------------------------------------------
+// Definition for Node::Runtime
+// ----------------------------------------------------------------------------
+
+// Constructor
+template <typename C>
+Node::Runtime::Runtime(C&& c) :
   work {std::forward<C>(c)} {
 }
 

@@ -9,6 +9,7 @@ class Graph;
 class FlowBuilder;
 class Semaphore;
 class Subflow;
+class Runtime;
 class Task;
 class TaskView;
 class Taskflow;
