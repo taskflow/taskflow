@@ -16,12 +16,14 @@ TEST_CASE("Type" * doctest::timeout(300)) {
   auto t3 = taskflow.emplace([](tf::Subflow&){ });
   auto t4 = taskflow.composed_of(taskflow2);
   auto t5 = taskflow.emplace([](){ return tf::SmallVector{1, 2}; });
+  auto t6 = taskflow.emplace([](tf::Runtime&){});
 
   REQUIRE(t1.type() == tf::TaskType::STATIC);
   REQUIRE(t2.type() == tf::TaskType::CONDITION);
   REQUIRE(t3.type() == tf::TaskType::DYNAMIC);
   REQUIRE(t4.type() == tf::TaskType::MODULE);
   REQUIRE(t5.type() == tf::TaskType::MULTI_CONDITION);
+  REQUIRE(t6.type() == tf::TaskType::RUNTIME);
 }
 
 // --------------------------------------------------------
@@ -2511,5 +2513,32 @@ TEST_CASE("OverlappedSemaphore.4threads") {
 TEST_CASE("OverlappedSemaphore.8threads") {
   overlapped_semaphore(8);
 }
+
+// --------------------------------------------------------
+// Testcase: RuntimeTasking
+// --------------------------------------------------------
+TEST_CASE("RuntimeTasking" * doctest::timeout(300)) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+   
+  taskflow.emplace([&](tf::Runtime& rt){
+    REQUIRE(&(rt.executor()) == &executor);
+  });
+
+  taskflow.emplace([&](tf::Subflow& sf){
+    sf.emplace([&](tf::Runtime& rt){
+      REQUIRE(&(rt.executor()) == &executor);
+    });
+  });
+
+  executor.run(taskflow).wait();
+}
+
+
+
+
+
+
 
 

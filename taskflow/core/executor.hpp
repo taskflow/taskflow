@@ -617,7 +617,7 @@ class Executor {
     @brief queries the number of observers
     */
     size_t num_observers() const noexcept;
-
+    
   private:
 
     std::condition_variable _topology_cv;
