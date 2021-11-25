@@ -472,7 +472,7 @@ inline void Taskflow::_dump(
     }
     // module task
     else {
-      auto module = std::get_if<Node::Module>(&n->_handle)->module;
+      auto module = &(std::get_if<Node::Module>(&n->_handle)->module);
 
       os << 'p' << n << "[shape=box3d, color=blue, label=\"";
       if(n->_name.empty()) os << n;

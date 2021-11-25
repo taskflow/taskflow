@@ -156,10 +156,9 @@ class Node {
   // module work handle
   struct Module {
 
-    template <typename T>
-    Module(T&&);
+    Module(Taskflow&);
 
-    Taskflow* module {nullptr};
+    Taskflow& module;
   };
 
   // Async work
@@ -347,8 +346,7 @@ Node::syclFlow::syclFlow(C&& c, G&& g) :
 // ----------------------------------------------------------------------------
     
 // Constructor
-template <typename T>
-Node::Module::Module(T&& tf) : module {tf} {
+inline Node::Module::Module(Taskflow& tf) : module {tf} {
 }
 
 // ----------------------------------------------------------------------------

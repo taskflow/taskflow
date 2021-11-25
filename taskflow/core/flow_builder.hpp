@@ -699,7 +699,7 @@ inline void FlowBuilder::erase(Task task) {
 // Function: composed_of    
 inline Task FlowBuilder::composed_of(Taskflow& taskflow) {
   auto node = _graph.emplace_back(
-    std::in_place_type_t<Node::Module>{}, &taskflow
+    std::in_place_type_t<Node::Module>{}, taskflow
   );
   return Task(node);
 }

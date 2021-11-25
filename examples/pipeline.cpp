@@ -46,7 +46,7 @@ int main() {
     }}
   );
 
-  taskflow.pipeline(pl);
+  auto tests = taskflow.pipeline(pl);
   //taskflow.dump(std::cout);
   executor.run(taskflow).wait();
 

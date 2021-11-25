@@ -405,7 +405,7 @@ Task& Task::succeed(Ts&&... tasks) {
 
 // Function: composed_of
 inline Task& Task::composed_of(Taskflow& tf) {
-  _node->_handle.emplace<Node::Module>(&tf);
+  _node->_handle.emplace<Node::Module>(tf);
   return *this;
 }
 
