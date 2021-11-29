@@ -47,16 +47,13 @@ int main() {
   );
 
   auto tests = taskflow.pipeline(pl);
-  //taskflow.dump(std::cout);
+  
+  //tf::Task task = taskflow.composed_of(pipeline);
+
+  taskflow.dump(std::cout);
   executor.run(taskflow).wait();
 
-  //executor.run(taskflow).wait();
   return 0;
-
-  // TODO: now pipeline needs to inherit taskflow
-  // 
-  // tf::Pipeline pl (...);
-  // executor.run(pl).wait();
 }
 
 

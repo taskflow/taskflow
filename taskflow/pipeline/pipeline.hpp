@@ -8,7 +8,7 @@ enum class PipeType : int{
 };
 
 template <typename C>
-class Pipe{
+class Pipe {
 
   template <typename... Fs>
   friend class Pipeline;
@@ -50,10 +50,6 @@ class Pipeflow {
     _stop = true;
   }
 
-  //tf::Subflow& subflow() {
-  //  return _sf;   
-  //}
-  
   private:
 
   Pipeflow(size_t line, size_t pipe) :
@@ -65,7 +61,6 @@ class Pipeflow {
   size_t _pipe;
   size_t _token;
   bool   _stop {false};
-  //tf::Subflow& _sf;
 };
 
 template <typename... Fs>
@@ -110,8 +105,6 @@ class Pipeline {
   */
   size_t num_tokens() const noexcept;
 
-
-
   private:
   
   std::tuple<Fs...> _pipes;
@@ -122,8 +115,6 @@ class Pipeline {
   
   std::vector<tf::Task> _tasks;
   
-  Line& _get_line(size_t l, size_t f);
-
   size_t _num_tokens;
   
   void _on_pipe(Pipeflow&);
@@ -164,54 +155,43 @@ void Pipeline<Fs...>::reset() {
 
   _num_tokens = 0;
 
-  _get_line(0, 0).join_counter.store(0, std::memory_order_relaxed);
+  _lines[0][0].join_counter.store(0, std::memory_order_relaxed);
 
   for(size_t l=1; l<num_lines(); l++) {
     for(size_t f=1; f<num_pipes(); f++) {
-      _get_line(l, f).join_counter.store(
+      _lines[l][f].join_counter.store(
         static_cast<size_t>(_meta[f].type), std::memory_order_relaxed
       );
     }
   }
 
   for(size_t f=1; f<num_pipes(); f++) {
-    _get_line(0, f).join_counter.store(1, std::memory_order_relaxed);
+    _lines[0][f].join_counter.store(1, std::memory_order_relaxed);
   }
 
   for(size_t l=1; l<num_lines(); l++) {
-    _get_line(l, 0).join_counter.store(
+    _lines[l][0].join_counter.store(
       static_cast<size_t>(_meta[0].type) - 1, std::memory_order_relaxed
     );
   }
 }
   
 template <typename... Fs>
-typename Pipeline<Fs...>::Line& 
-Pipeline<Fs...>::_get_line(size_t l, size_t f) {
-  return _lines[l][f];
-}
-
-template <typename... Fs>
 void Pipeline<Fs...>::_on_pipe(Pipeflow& pf) {
-
-  //pf._subflow.reset();
-
   visit_tuple(
     [&](auto&& pipe){ pipe._callable(pf); },
     _pipes, pf._pipe
   );
-
-  //if(pf._subflow._joinable) {
-  //  pf._subflow.join();
-  //}
 }
 
 template <typename... Fs>
 auto Pipeline<Fs...>::_build(FlowBuilder& fb) {
+  
+  using namespace std::literals::string_literals;
 
   // init task
   _tasks[0] = fb.emplace([this]() {
-    return  static_cast<int>(_num_tokens % num_lines());
+    return static_cast<int>(_num_tokens % num_lines());
     /*// first pipe is SERIAL
     if (std::get<0>(_pipes)._type == PipeType::SERIAL) {
       return { static_cast<int>(_num_tokens % num_lines()) };
@@ -226,9 +206,9 @@ auto Pipeline<Fs...>::_build(FlowBuilder& fb) {
       }
       return ret;
     }*/
-  });
+  }).name("p-cond");
 
-  // create a task for each layer
+  // line task
   for(size_t l = 0; l < num_lines(); l++) {
 
     _tasks[l + 1] = fb.emplace(
@@ -236,14 +216,15 @@ auto Pipeline<Fs...>::_build(FlowBuilder& fb) {
 
     pipeline:
 
-      _get_line(pf._line, pf._pipe).join_counter.store(
+      _lines[pf._line][pf._pipe].join_counter.store(
         static_cast<size_t>(_meta[pf._pipe].type), std::memory_order_relaxed
       );
 
       if (pf._pipe == 0) {
         pf._token = _num_tokens;
         if (pf._stop = false, _on_pipe(pf); pf._stop == true) {
-          //return {};
+          // here, the pipeline is not stopped yet because other
+          // lines of tasks may still be running their last stages
           return;
         }
         ++_num_tokens;
@@ -275,12 +256,12 @@ auto Pipeline<Fs...>::_build(FlowBuilder& fb) {
 
       // downward dependency
       if(_meta[c_f].type == PipeType::SERIAL && 
-         _get_line(n_l, c_f).join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+         _lines[n_l][c_f].join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
         retval.push_back(1);
       }
       
       // forward dependency
-      if(_get_line(pf._line, n_f).join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+      if(_lines[pf._line][n_f].join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
         retval.push_back(0);
       }
       
@@ -299,39 +280,14 @@ auto Pipeline<Fs...>::_build(FlowBuilder& fb) {
           }
         }
       }
-    });
+    }).name("line-"s + std::to_string(l));
+
+    _tasks[0].precede(_tasks[l+1]);
   }
 
-  // Specify the dependencies of tasks
-  for (size_t l = 1; l < num_lines() + 1; l++) {
-    _tasks[0].precede(_tasks[l]);
-    //tasks[l].precede(tasks[l], tasks[l % num_lines() + 1]);
-  }
+  // stop task
 
   return _tasks;
-}
-
-// ----------------------------------------------------------------------------
-// helper functions
-// ----------------------------------------------------------------------------
-
-template <typename... Fs>
-auto make_pipeline(size_t max_lines, Fs&&... pipes) {
-  return Pipeline<Fs...>{max_lines, std::forward<Fs>(pipes)...};
-}
-
-template <typename... Fs>
-auto make_unique_pipeline(size_t max_lines, Fs&&... pipes) {
-  return std::make_unique<Pipeline<Fs...>>(
-    max_lines, std::forward<Fs>(pipes)...
-  );
-}
-
-template <typename... Fs>
-auto make_shared_pipeline(size_t max_lines, Fs&&... pipes) {
-  return std::make_shared<Pipeline<Fs...>>(
-    max_lines, std::forward<Fs>(pipes)...
-  );
 }
 
 // ----------------------------------------------------------------------------

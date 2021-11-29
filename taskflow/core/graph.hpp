@@ -157,7 +157,8 @@ class Node {
   struct Module {
 
     Module(Taskflow&);
-
+    
+    // TODO: change the reference to graph
     Taskflow& module;
   };
 
@@ -218,8 +219,8 @@ class Node {
   >;
     
   struct Semaphores {  
-    std::vector<Semaphore*> to_acquire;
-    std::vector<Semaphore*> to_release;
+    SmallVector<Semaphore*> to_acquire;
+    SmallVector<Semaphore*> to_release;
   };
 
   public:
@@ -275,9 +276,9 @@ class Node {
   bool _has_state(int) const;
   bool _is_cancelled() const;
   bool _is_conditioner() const;
-  bool _acquire_all(std::vector<Node*>&);
+  bool _acquire_all(SmallVector<Node*>&);
 
-  std::vector<Node*> _release_all();
+  SmallVector<Node*> _release_all();
 };
 
 // ----------------------------------------------------------------------------
@@ -509,7 +510,7 @@ inline void Node::_set_up_join_counter() {
 
 
 // Function: _acquire_all
-inline bool Node::_acquire_all(std::vector<Node*>& nodes) {
+inline bool Node::_acquire_all(SmallVector<Node*>& nodes) {
 
   auto& to_acquire = _semaphores->to_acquire;
 
@@ -517,7 +518,7 @@ inline bool Node::_acquire_all(std::vector<Node*>& nodes) {
     if(!to_acquire[i]->_try_acquire_or_wait(this)) {
       for(size_t j = 1; j <= i; ++j) {
         auto r = to_acquire[i-j]->_release();
-        nodes.insert(end(nodes), begin(r), end(r));
+        nodes.insert(std::end(nodes), std::begin(r), std::end(r));
       }
       return false;
     }
@@ -526,14 +527,14 @@ inline bool Node::_acquire_all(std::vector<Node*>& nodes) {
 }
 
 // Function: _release_all
-inline std::vector<Node*> Node::_release_all() {
+inline SmallVector<Node*> Node::_release_all() {
 
   auto& to_release = _semaphores->to_release;
 
-  std::vector<Node*> nodes;
+  SmallVector<Node*> nodes;
   for(const auto& sem : to_release) {
     auto r = sem->_release();
-    nodes.insert(end(nodes), begin(r), end(r));
+    nodes.insert(std::end(nodes), std::begin(r), std::end(r));
   }
 
   return nodes;

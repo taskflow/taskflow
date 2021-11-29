@@ -25,6 +25,11 @@ class FlowBuilder {
   public:
     
     /**
+    @brief constructs a flow builder with a graph
+    */
+    FlowBuilder(Graph& graph);
+    
+    /**
     @brief creates a static task
     
     @tparam C callable type constructible from std::function<void()>
@@ -605,10 +610,7 @@ class FlowBuilder {
     
   protected:
     
-    /**
-    @brief constructs a flow builder with a graph
-    */
-    FlowBuilder(Graph& graph);
+
     
     /**
     @brief associated graph object
@@ -753,7 +755,7 @@ the execution of task @c B, and the subflow contains three tasks, @c B1,
 @c B2, and @c B3, where @c B3 runs after @c B1 and @c B2.
 
 @code{.cpp}
-// create three regular tasks
+// create three static tasks
 tf::Task A = taskflow.emplace([](){}).name("A");
 tf::Task C = taskflow.emplace([](){}).name("C");
 tf::Task D = taskflow.emplace([](){}).name("D");
