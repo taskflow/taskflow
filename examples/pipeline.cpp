@@ -1,11 +1,9 @@
 #include <taskflow/taskflow.hpp>
 #include <taskflow/pipeline.hpp>
 
-// TODO: you can use printf to avoid interleaving strings
-
 int main() {
 
-  tf::Taskflow taskflow;
+  tf::Taskflow taskflow("pipeline");
   tf::Executor executor;
 
   const size_t num_lines = 4;
@@ -46,9 +44,17 @@ int main() {
     }}
   );
 
-  auto tests = taskflow.pipeline(pl);
+  //auto tests = taskflow.pipeline(pl);
   
-  //tf::Task task = taskflow.composed_of(pipeline);
+  tf::Task init = taskflow.emplace([](){ std::cout << "ready\n"; })
+                          .name("starting pipeline");
+  tf::Task task = taskflow.composed_of(pl)
+                          .name("pipeline");
+  tf::Task stop = taskflow.emplace([](){ std::cout << "stopped\n"; })
+                          .name("pipeline stopped");
+
+  init.precede(task);
+  task.precede(stop);
 
   taskflow.dump(std::cout);
   executor.run(taskflow).wait();

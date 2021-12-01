@@ -22,6 +22,9 @@ class ChromeTracingObserver;
 class TFProfObserver;
 class TFProfManager;
 
+template <typename...Fs>
+class Pipeline;
+
 template <typename T>
 class Future;
 

@@ -29,10 +29,10 @@ int main(int argc, char* argv[]) {
         if (p[0] == 'p') {
           return "the first pipe should be \"s\" (serial)";
         }
-        else if (pipes.size() > 10) {
-          return "no more than 10 pipes";
+        else if (p.size() > 16) {
+          return "no more than 16 pipes";
         }
-        else if (pipes.size() == 0) {
+        else if (p.size() == 0) {
           return "at least one pipe is required";
         }
         return "";
@@ -74,5 +74,28 @@ int main(int argc, char* argv[]) {
     std::cout << std::setw(12) << L 
               << std::setw(12) << runtime / num_rounds / 1e3
               << std::endl;
+
+    if (model == "tf") {
+      std::ofstream outputfile;
+      outputfile.open("./tf_time.csv", std::ofstream::app);
+      outputfile << num_threads << ','
+                 << num_lines   << ','
+                 << pipes       << ','
+                 << L           << ','
+                 << runtime / num_rounds / 1e3 << '\n';
+
+      outputfile.close();
+    }
+    else if (model == "tbb") {
+      std::ofstream outputfile;
+      outputfile.open("./tbb_time.csv", std::ofstream::app);
+      outputfile << num_threads << ','
+                 << num_lines   << ','
+                 << pipes       << ','
+                 << L           << ','
+                 << runtime / num_rounds / 1e3 << '\n';
+
+      outputfile.close();
+    }
   }
 }

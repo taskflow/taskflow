@@ -72,18 +72,18 @@ void composition_example_2() {
 
   f2A.precede(f2C);
   f2B.precede(f2C);
-  f2.composed_of(f1);
+  f2.composed_of(f1).name("module_of_f1");
 
   // f3 has a module task (f2) and a regular task
   tf::Taskflow f3("F3");
-  f3.composed_of(f2);
+  f3.composed_of(f2).name("module_of_f2");
   f3.emplace([](){ std::cout << "      F3 TaskA\n"; }).name("f3A");
 
   // f4: f3_module_task -> f2_module_task
   tf::Taskflow f4; 
   f4.name("F4");
-  auto f3_module_task = f4.composed_of(f3);
-  auto f2_module_task = f4.composed_of(f2);
+  auto f3_module_task = f4.composed_of(f3).name("module_of_f3");
+  auto f2_module_task = f4.composed_of(f2).name("module_of_f2");
   f3_module_task.precede(f2_module_task);
 
   f4.dump(std::cout);

@@ -38,7 +38,8 @@ void pipeline_1F(size_t L, unsigned w, tf::PipeType type) {
         j++;
       }});
 
-      taskflow.pipeline(pl);
+      //taskflow.pipeline(pl);
+      taskflow.composed_of(pl);
       executor.run(taskflow).wait();
       REQUIRE(j == N);
       REQUIRE(pl.num_tokens() == N);
@@ -75,7 +76,7 @@ void pipeline_1F(size_t L, unsigned w, tf::PipeType type) {
     //    collection.push_back(ticket);
     //  }});
 
-    //  taskflow.pipeline(pl);
+    //  taskflow.composed_of(pl);
     //  executor.run(taskflow).wait();
     //  REQUIRE(collection.size() == N);
     //  std::sort(collection.begin(), collection.end());
@@ -279,7 +280,7 @@ void pipeline_2FSS(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -420,7 +421,7 @@ void pipeline_2FSP(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -579,7 +580,7 @@ void pipeline_2FPS(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     
     REQUIRE(collection1.size() == N);
@@ -723,7 +724,7 @@ void pipeline_2FPP(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     
     REQUIRE(collection1.size() == N);
@@ -868,7 +869,7 @@ void pipeline_3FSSS(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -1023,7 +1024,7 @@ void pipeline_3FSSP(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -1194,7 +1195,7 @@ void pipeline_3FSPS(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -1371,7 +1372,7 @@ void pipeline_3FSPP(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -1547,7 +1548,7 @@ void pipeline_3FPSS(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     REQUIRE(j2 == N);
     REQUIRE(j3 == N);
@@ -1703,7 +1704,7 @@ void pipeline_3FPSP(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     REQUIRE(j2 == N);
     REQUIRE(j3 == N);
@@ -1872,7 +1873,7 @@ void pipeline_3FPPS(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     REQUIRE(j2 == N);
     REQUIRE(j3 == N);
@@ -2046,7 +2047,7 @@ void pipeline_3FPPP(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     REQUIRE(j2 == N);
     REQUIRE(j3 == N);
@@ -2233,7 +2234,7 @@ void pipeline_4FSSSS(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -2594,7 +2595,7 @@ void pipeline_4FSSSP(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -2971,7 +2972,7 @@ void pipeline_4FSSPS(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -3353,7 +3354,7 @@ void pipeline_4FSSPP(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -3741,7 +3742,7 @@ void pipeline_4FSPSS(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -4123,7 +4124,7 @@ void pipeline_4FSPSP(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -4515,7 +4516,7 @@ void pipeline_4FSPPS(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
@@ -4913,7 +4914,7 @@ void pipeline_4FSPPP(size_t L, unsigned w) {
       }}
     );
     
-    taskflow.pipeline(pl);
+    taskflow.composed_of(pl);
     executor.run(taskflow).wait();
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);

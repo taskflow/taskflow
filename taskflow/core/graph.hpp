@@ -34,7 +34,6 @@ class Graph {
   friend class Node;
   friend class Taskflow;
   friend class Executor;
-  friend class Sanitizer;
 
   public:
 
@@ -99,6 +98,7 @@ class Node {
   friend class Subflow;
   friend class Sanitizer;
 
+
   TF_ENABLE_POOLABLE_ON_THIS;
 
   // state bit flag
@@ -156,10 +156,12 @@ class Node {
   // module work handle
   struct Module {
 
-    Module(Taskflow&);
-    
+    template <typename T>
+    Module(T&);
+
     // TODO: change the reference to graph
-    Taskflow& module;
+    //Taskflow& module;
+    Graph& graph;
   };
 
   // Async work
@@ -345,9 +347,10 @@ Node::syclFlow::syclFlow(C&& c, G&& g) :
 // ----------------------------------------------------------------------------
 // Definition for Node::Module
 // ----------------------------------------------------------------------------
-    
+
 // Constructor
-inline Node::Module::Module(Taskflow& tf) : module {tf} {
+template <typename T>
+inline Node::Module::Module(T& obj) : graph{ obj.graph() } {
 }
 
 // ----------------------------------------------------------------------------

@@ -6,6 +6,8 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <cmath>
+
 //#include "../../3rd-party/tbb/examples/common/utility/utility.h"
 //#include "../../3rd-party/tbb/examples/common/utility/get_default_num_threads.h"
 
@@ -135,6 +137,66 @@ public:
   }
 };
 
+// Filter 10 
+class MyTransformFunc9 {
+public:
+  int operator()(int input) const {
+    int retval = 0;
+    retval = static_cast<int>(std::sqrt(input));
+    return retval;
+  }
+};
+
+// Filter 11 
+class MyTransformFunc10 {
+public:
+  int operator()(int input) const {
+    int retval = 0;
+    retval = static_cast<int>(std::log(input));
+    return retval;
+  }
+};
+
+// Filter 12 
+class MyTransformFunc11 {
+public:
+  int operator()(int input) const {
+    int retval = 0;
+    retval = input << 3;
+    return retval;
+  }
+};
+
+// Filter 13
+class MyTransformFunc12 {
+public:
+  int operator()(int input) const {
+    int retval = 0;
+    retval = 0 - input;
+    return retval;
+  }
+};
+
+// Filter 14
+class MyTransformFunc13 {
+public:
+  int operator()(int input) const {
+    int retval = 0;
+    retval = input * input;
+    return retval;
+  }
+};
+
+// Filter 15
+class MyTransformFunc14 {
+public:
+  int operator()(int input) const {
+    int retval = 0;
+    retval = static_cast<int>(input / 97);
+    return retval;
+  }
+};
+
 // Filter last 
 class MyOutputFunc {
 public:
@@ -143,190 +205,394 @@ public:
     int retval = 0;
     retval = input + 99999;
     //result.emplace_back(retval); 
+    //printf("%d\n", retval);
   }
 };
 
 
 // parallel_pipeline_tbb_1_pipe
-void parallel_pipeline_tbb_1_pipe(std::string pipes, unsigned num_lines, size_t size) {
-    tbb::parallel_pipeline(
-      num_lines,
-      tbb::make_filter<void, void>(
-        tbb::filter::serial_in_order, MyFunc(size))  
-    );
+void parallel_pipeline_tbb_1_pipe(unsigned num_lines, size_t size) {
+  tbb::parallel_pipeline(
+    num_lines,
+    tbb::make_filter<void, void>(
+      tbb::filter::serial_in_order, MyFunc(size))  
+  );
 }
 
 // parallel_pipeline_tbb_2_pipes
 void parallel_pipeline_tbb_2_pipes(std::string pipes, unsigned num_lines, size_t size) {
-    tbb::parallel_pipeline(
-      num_lines,
-      tbb::make_filter<void, int>(
-        tbb::filter::serial_in_order, MyInputFunc(size))  &
-      tbb::make_filter<int, void>(
-        pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
-    );
+  tbb::parallel_pipeline(
+    num_lines,
+    tbb::make_filter<void, int>(
+      tbb::filter::serial_in_order, MyInputFunc(size))  &
+    tbb::make_filter<int, void>(
+      pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
+  );
 }
 
 // parallel_pipeline_tbb_3_pipes
 void parallel_pipeline_tbb_3_pipes(std::string pipes, unsigned num_lines, size_t size) {
-    tbb::parallel_pipeline(
-      num_lines,
-      tbb::make_filter<void, int>(
-        tbb::filter::serial_in_order, MyInputFunc(size))  &
-      tbb::make_filter<int, int>(
-        pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
-      tbb::make_filter<int, void>(
-        pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
-    );
+  tbb::parallel_pipeline(
+    num_lines,
+    tbb::make_filter<void, int>(
+      tbb::filter::serial_in_order, MyInputFunc(size))  &
+    tbb::make_filter<int, int>(
+      pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
+    tbb::make_filter<int, void>(
+      pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
+  );
 }
 
 // parallel_pipeline_tbb_4_pipes
 void parallel_pipeline_tbb_4_pipes(std::string pipes, unsigned num_lines, size_t size) {
-    tbb::parallel_pipeline(
-      num_lines,
-      tbb::make_filter<void, int>(
-        tbb::filter::serial_in_order, MyInputFunc(size))  &
-      tbb::make_filter<int, int>(
-        pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
-      tbb::make_filter<int, int>(
-        pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
-      tbb::make_filter<int, void>(
-        pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
-    );
+  tbb::parallel_pipeline(
+    num_lines,
+    tbb::make_filter<void, int>(
+      tbb::filter::serial_in_order, MyInputFunc(size))  &
+    tbb::make_filter<int, int>(
+      pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
+    tbb::make_filter<int, int>(
+      pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
+    tbb::make_filter<int, void>(
+      pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
+  );
 }
 
 // parallel_pipeline_tbb_5_pipes
 void parallel_pipeline_tbb_5_pipes(std::string pipes, unsigned num_lines, size_t size) {
-    tbb::parallel_pipeline(
-      num_lines,
-      tbb::make_filter<void, int>(
-        tbb::filter::serial_in_order, MyInputFunc(size))  &
-      tbb::make_filter<int, int>(
-        pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
-      tbb::make_filter<int, int>(
-        pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
-      tbb::make_filter<int, int>(
-        pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc3()) &
-      tbb::make_filter<int, void>(
-        pipes[4] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
-    );
+  tbb::parallel_pipeline(
+    num_lines,
+    tbb::make_filter<void, int>(
+      tbb::filter::serial_in_order, MyInputFunc(size))  &
+    tbb::make_filter<int, int>(
+      pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
+    tbb::make_filter<int, int>(
+      pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
+    tbb::make_filter<int, int>(
+      pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc3()) &
+    tbb::make_filter<int, void>(
+      pipes[4] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
+  );
 }
 
 // parallel_pipeline_tbb_6_pipes
 void parallel_pipeline_tbb_6_pipes(std::string pipes, unsigned num_lines, size_t size) {
-    tbb::parallel_pipeline(
-      num_lines,
-      tbb::make_filter<void, int>(
-        tbb::filter::serial_in_order, MyInputFunc(size))  &
-      tbb::make_filter<int, int>(
-        pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
-      tbb::make_filter<int, int>(
-        pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
-      tbb::make_filter<int, int>(
-        pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc3()) &
-      tbb::make_filter<int, int>(
-        pipes[4] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc4()) &
-      tbb::make_filter<int, void>(
-        pipes[5] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
-    );
+  tbb::parallel_pipeline(
+    num_lines,
+    tbb::make_filter<void, int>(
+      tbb::filter::serial_in_order, MyInputFunc(size))  &
+    tbb::make_filter<int, int>(
+      pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
+    tbb::make_filter<int, int>(
+      pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
+    tbb::make_filter<int, int>(
+      pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc3()) &
+    tbb::make_filter<int, int>(
+      pipes[4] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc4()) &
+    tbb::make_filter<int, void>(
+      pipes[5] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
+  );
 }
 
 // parallel_pipeline_tbb_7_pipes
 void parallel_pipeline_tbb_7_pipes(std::string pipes, unsigned num_lines, size_t size) {
-    tbb::parallel_pipeline(
-      num_lines,
-      tbb::make_filter<void, int>(
-        tbb::filter::serial_in_order, MyInputFunc(size))  &
-      tbb::make_filter<int, int>(
-        pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
-      tbb::make_filter<int, int>(
-        pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
-      tbb::make_filter<int, int>(
-        pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc3()) &
-      tbb::make_filter<int, int>(
-        pipes[4] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc4()) &
-      tbb::make_filter<int, int>(
-        pipes[5] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc5()) &
-      tbb::make_filter<int, void>(
-        pipes[6] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
-    );
+  tbb::parallel_pipeline(
+    num_lines,
+    tbb::make_filter<void, int>(
+      tbb::filter::serial_in_order, MyInputFunc(size))  &
+    tbb::make_filter<int, int>(
+      pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
+    tbb::make_filter<int, int>(
+      pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
+    tbb::make_filter<int, int>(
+      pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc3()) &
+    tbb::make_filter<int, int>(
+      pipes[4] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc4()) &
+    tbb::make_filter<int, int>(
+      pipes[5] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc5()) &
+    tbb::make_filter<int, void>(
+      pipes[6] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
+  );
 }
 
 // parallel_pipeline_tbb_8_pipes
 void parallel_pipeline_tbb_8_pipes(std::string pipes, unsigned num_lines, size_t size) {
-    tbb::parallel_pipeline(
-      num_lines,
-      tbb::make_filter<void, int>(
-        tbb::filter::serial_in_order, MyInputFunc(size))  &
-      tbb::make_filter<int, int>(
-        pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
-      tbb::make_filter<int, int>(
-        pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
-      tbb::make_filter<int, int>(
-        pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc3()) &
-      tbb::make_filter<int, int>(
-        pipes[4] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc4()) &
-      tbb::make_filter<int, int>(
-        pipes[5] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc5()) &
-      tbb::make_filter<int, int>(
-        pipes[6] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc6()) &
-      tbb::make_filter<int, void>(
-        pipes[7] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
-    );
+  tbb::parallel_pipeline(
+    num_lines,
+    tbb::make_filter<void, int>(
+      tbb::filter::serial_in_order, MyInputFunc(size))  &
+    tbb::make_filter<int, int>(
+      pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
+    tbb::make_filter<int, int>(
+      pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
+    tbb::make_filter<int, int>(
+      pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc3()) &
+    tbb::make_filter<int, int>(
+      pipes[4] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc4()) &
+    tbb::make_filter<int, int>(
+      pipes[5] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc5()) &
+    tbb::make_filter<int, int>(
+      pipes[6] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc6()) &
+    tbb::make_filter<int, void>(
+      pipes[7] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
+  );
 }
 
 // parallel_pipeline_tbb_9_pipes
 void parallel_pipeline_tbb_9_pipes(std::string pipes, unsigned num_lines, size_t size) {
-    tbb::parallel_pipeline(
-      num_lines,
-      tbb::make_filter<void, int>(
-        tbb::filter::serial_in_order, MyInputFunc(size))  &
-      tbb::make_filter<int, int>(
-        pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
-      tbb::make_filter<int, int>(
-        pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
-      tbb::make_filter<int, int>(
-        pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc3()) &
-      tbb::make_filter<int, int>(
-        pipes[4] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc4()) &
-      tbb::make_filter<int, int>(
-        pipes[5] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc5()) &
-      tbb::make_filter<int, int>(
-        pipes[6] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc6()) &
-      tbb::make_filter<int, int>(
-        pipes[7] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc7()) &
-      tbb::make_filter<int, void>(
-        pipes[8] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
-    );
+  tbb::parallel_pipeline(
+    num_lines,
+    tbb::make_filter<void, int>(
+      tbb::filter::serial_in_order, MyInputFunc(size))  &
+    tbb::make_filter<int, int>(
+      pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
+    tbb::make_filter<int, int>(
+      pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
+    tbb::make_filter<int, int>(
+      pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc3()) &
+    tbb::make_filter<int, int>(
+      pipes[4] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc4()) &
+    tbb::make_filter<int, int>(
+      pipes[5] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc5()) &
+    tbb::make_filter<int, int>(
+      pipes[6] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc6()) &
+    tbb::make_filter<int, int>(
+      pipes[7] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc7()) &
+    tbb::make_filter<int, void>(
+      pipes[8] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
+  );
 }
 
 // parallel_pipeline_tbb_10_pipes
 void parallel_pipeline_tbb_10_pipes(std::string pipes, unsigned num_lines, size_t size) {
-    tbb::parallel_pipeline(
-      num_lines,
-      tbb::make_filter<void, int>(
-        tbb::filter::serial_in_order, MyInputFunc(size))  &
-      tbb::make_filter<int, int>(
-        pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
-      tbb::make_filter<int, int>(
-        pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
-      tbb::make_filter<int, int>(
-        pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc3()) &
-      tbb::make_filter<int, int>(
-        pipes[4] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc4()) &
-      tbb::make_filter<int, int>(
-        pipes[5] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc5()) &
-      tbb::make_filter<int, int>(
-        pipes[6] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc6()) &
-      tbb::make_filter<int, int>(
-        pipes[7] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc7()) &
-      tbb::make_filter<int, int>(
-        pipes[8] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc8()) &
-      tbb::make_filter<int, void>(
-        pipes[9] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
-    );
+  tbb::parallel_pipeline(
+    num_lines,
+    tbb::make_filter<void, int>(
+      tbb::filter::serial_in_order, MyInputFunc(size))  &
+    tbb::make_filter<int, int>(
+      pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
+    tbb::make_filter<int, int>(
+      pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
+    tbb::make_filter<int, int>(
+      pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc3()) &
+    tbb::make_filter<int, int>(
+      pipes[4] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc4()) &
+    tbb::make_filter<int, int>(
+      pipes[5] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc5()) &
+    tbb::make_filter<int, int>(
+      pipes[6] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc6()) &
+    tbb::make_filter<int, int>(
+      pipes[7] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc7()) &
+    tbb::make_filter<int, int>(
+      pipes[8] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc8()) &
+    tbb::make_filter<int, void>(
+      pipes[9] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
+  );
 }
 
+// parallel_pipeline_tbb_11_pipes
+void parallel_pipeline_tbb_11_pipes(std::string pipes, unsigned num_lines, size_t size) {
+  tbb::parallel_pipeline(
+    num_lines,
+    tbb::make_filter<void, int>(
+      tbb::filter::serial_in_order, MyInputFunc(size))  &
+    tbb::make_filter<int, int>(
+      pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
+    tbb::make_filter<int, int>(
+      pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
+    tbb::make_filter<int, int>(
+      pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc3()) &
+    tbb::make_filter<int, int>(
+      pipes[4] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc4()) &
+    tbb::make_filter<int, int>(
+      pipes[5] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc5()) &
+    tbb::make_filter<int, int>(
+      pipes[6] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc6()) &
+    tbb::make_filter<int, int>(
+      pipes[7] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc7()) &
+    tbb::make_filter<int, int>(
+      pipes[8] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc8()) &
+    tbb::make_filter<int, int>(
+      pipes[9] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc9()) &
+    tbb::make_filter<int, void>(
+      pipes[10] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
+  );
+}
+
+// parallel_pipeline_tbb_12_pipes
+void parallel_pipeline_tbb_12_pipes(std::string pipes, unsigned num_lines, size_t size) {
+  tbb::parallel_pipeline(
+    num_lines,
+    tbb::make_filter<void, int>(
+      tbb::filter::serial_in_order, MyInputFunc(size))  &
+    tbb::make_filter<int, int>(
+      pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
+    tbb::make_filter<int, int>(
+      pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
+    tbb::make_filter<int, int>(
+      pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc3()) &
+    tbb::make_filter<int, int>(
+      pipes[4] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc4()) &
+    tbb::make_filter<int, int>(
+      pipes[5] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc5()) &
+    tbb::make_filter<int, int>(
+      pipes[6] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc6()) &
+    tbb::make_filter<int, int>(
+      pipes[7] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc7()) &
+    tbb::make_filter<int, int>(
+      pipes[8] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc8()) &
+    tbb::make_filter<int, int>(
+      pipes[9] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc9()) &
+    tbb::make_filter<int, int>(
+      pipes[10] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc10()) &
+    tbb::make_filter<int, void>(
+      pipes[11] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
+  );
+}
+
+// parallel_pipeline_tbb_13_pipes
+void parallel_pipeline_tbb_13_pipes(std::string pipes, unsigned num_lines, size_t size) {
+  tbb::parallel_pipeline(
+    num_lines,
+    tbb::make_filter<void, int>(
+      tbb::filter::serial_in_order, MyInputFunc(size))  &
+    tbb::make_filter<int, int>(
+      pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
+    tbb::make_filter<int, int>(
+      pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
+    tbb::make_filter<int, int>(
+      pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc3()) &
+    tbb::make_filter<int, int>(
+      pipes[4] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc4()) &
+    tbb::make_filter<int, int>(
+      pipes[5] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc5()) &
+    tbb::make_filter<int, int>(
+      pipes[6] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc6()) &
+    tbb::make_filter<int, int>(
+      pipes[7] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc7()) &
+    tbb::make_filter<int, int>(
+      pipes[8] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc8()) &
+    tbb::make_filter<int, int>(
+      pipes[9] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc9()) &
+    tbb::make_filter<int, int>(
+      pipes[10] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc10()) &
+    tbb::make_filter<int, int>(
+      pipes[11] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc11()) &
+    tbb::make_filter<int, void>(
+      pipes[12] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
+  );
+}
+
+// parallel_pipeline_tbb_14_pipes
+void parallel_pipeline_tbb_14_pipes(std::string pipes, unsigned num_lines, size_t size) {
+  tbb::parallel_pipeline(
+    num_lines,
+    tbb::make_filter<void, int>(
+      tbb::filter::serial_in_order, MyInputFunc(size))  &
+    tbb::make_filter<int, int>(
+      pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
+    tbb::make_filter<int, int>(
+      pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
+    tbb::make_filter<int, int>(
+      pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc3()) &
+    tbb::make_filter<int, int>(
+      pipes[4] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc4()) &
+    tbb::make_filter<int, int>(
+      pipes[5] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc5()) &
+    tbb::make_filter<int, int>(
+      pipes[6] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc6()) &
+    tbb::make_filter<int, int>(
+      pipes[7] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc7()) &
+    tbb::make_filter<int, int>(
+      pipes[8] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc8()) &
+    tbb::make_filter<int, int>(
+      pipes[9] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc9()) &
+    tbb::make_filter<int, int>(
+      pipes[10] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc10()) &
+    tbb::make_filter<int, int>(
+      pipes[11] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc11()) &
+    tbb::make_filter<int, int>(
+      pipes[12] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc12()) &
+    tbb::make_filter<int, void>(
+      pipes[13] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
+  );
+}
+
+// parallel_pipeline_tbb_15_pipes
+void parallel_pipeline_tbb_15_pipes(std::string pipes, unsigned num_lines, size_t size) {
+  tbb::parallel_pipeline(
+    num_lines,
+    tbb::make_filter<void, int>(
+      tbb::filter::serial_in_order, MyInputFunc(size))  &
+    tbb::make_filter<int, int>(
+      pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
+    tbb::make_filter<int, int>(
+      pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
+    tbb::make_filter<int, int>(
+      pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc3()) &
+    tbb::make_filter<int, int>(
+      pipes[4] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc4()) &
+    tbb::make_filter<int, int>(
+      pipes[5] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc5()) &
+    tbb::make_filter<int, int>(
+      pipes[6] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc6()) &
+    tbb::make_filter<int, int>(
+      pipes[7] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc7()) &
+    tbb::make_filter<int, int>(
+      pipes[8] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc8()) &
+    tbb::make_filter<int, int>(
+      pipes[9] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc9()) &
+    tbb::make_filter<int, int>(
+      pipes[10] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc10()) &
+    tbb::make_filter<int, int>(
+      pipes[11] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc11()) &
+    tbb::make_filter<int, int>(
+      pipes[12] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc12()) &
+    tbb::make_filter<int, int>(
+      pipes[13] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc13()) &
+    tbb::make_filter<int, void>(
+      pipes[14] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
+  );
+}
+
+// parallel_pipeline_tbb_16_pipes
+void parallel_pipeline_tbb_16_pipes(std::string pipes, unsigned num_lines, size_t size) {
+  tbb::parallel_pipeline(
+    num_lines,
+    tbb::make_filter<void, int>(
+      tbb::filter::serial_in_order, MyInputFunc(size))  &
+    tbb::make_filter<int, int>(
+      pipes[1] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc1()) &
+    tbb::make_filter<int, int>(
+      pipes[2] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc2()) &
+    tbb::make_filter<int, int>(
+      pipes[3] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc3()) &
+    tbb::make_filter<int, int>(
+      pipes[4] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc4()) &
+    tbb::make_filter<int, int>(
+      pipes[5] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc5()) &
+    tbb::make_filter<int, int>(
+      pipes[6] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc6()) &
+    tbb::make_filter<int, int>(
+      pipes[7] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc7()) &
+    tbb::make_filter<int, int>(
+      pipes[8] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc8()) &
+    tbb::make_filter<int, int>(
+      pipes[9] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc9()) &
+    tbb::make_filter<int, int>(
+      pipes[10] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc10()) &
+    tbb::make_filter<int, int>(
+      pipes[11] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc11()) &
+    tbb::make_filter<int, int>(
+      pipes[12] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc12()) &
+    tbb::make_filter<int, int>(
+      pipes[13] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc13()) &
+    tbb::make_filter<int, int>(
+      pipes[14] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyTransformFunc14()) &
+    tbb::make_filter<int, void>(
+      pipes[15] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, MyOutputFunc())
+  );
+}
 
 std::chrono::microseconds measure_time_tbb(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
@@ -340,7 +606,7 @@ std::chrono::microseconds measure_time_tbb(
   switch(pipes.size()) {
     case 1:
       beg = std::chrono::high_resolution_clock::now();
-      parallel_pipeline_tbb_1_pipe(pipes, num_lines, size);
+      parallel_pipeline_tbb_1_pipe(num_lines, size);
       end = std::chrono::high_resolution_clock::now();
       break;
     
@@ -397,11 +663,58 @@ std::chrono::microseconds measure_time_tbb(
       parallel_pipeline_tbb_10_pipes(pipes, num_lines, size);
       end = std::chrono::high_resolution_clock::now();
       break;
+    case 11:
+      beg = std::chrono::high_resolution_clock::now();
+      parallel_pipeline_tbb_11_pipes(pipes, num_lines, size);
+      end = std::chrono::high_resolution_clock::now();
+      break;
+    
+    case 12:
+      beg = std::chrono::high_resolution_clock::now();
+      parallel_pipeline_tbb_12_pipes(pipes, num_lines, size);
+      end = std::chrono::high_resolution_clock::now();
+      break;
+
+    case 13:
+      beg = std::chrono::high_resolution_clock::now();
+      parallel_pipeline_tbb_13_pipes(pipes, num_lines, size);
+      end = std::chrono::high_resolution_clock::now();
+      break;
+    
+    case 14:
+      beg = std::chrono::high_resolution_clock::now();
+      parallel_pipeline_tbb_14_pipes(pipes, num_lines, size);
+      end = std::chrono::high_resolution_clock::now();
+      break;
+
+    case 15:
+      beg = std::chrono::high_resolution_clock::now();
+      parallel_pipeline_tbb_15_pipes(pipes, num_lines, size);
+      end = std::chrono::high_resolution_clock::now();
+      break;
+    
+    case 16:
+      beg = std::chrono::high_resolution_clock::now();
+      parallel_pipeline_tbb_16_pipes(pipes, num_lines, size);
+      end = std::chrono::high_resolution_clock::now();
+      break;
   }
+
   //std::ofstream outputfile;
   //outputfile.open("./tbb_result.txt", std::ofstream::app);
   //for (auto r:result) {
   //  outputfile << r << '\n';
   //}
+  
+  //std::ofstream outputfile;
+  //outputfile.open("./build/benchmarks/tbb_time.csv", std::ofstream::app);
+  //outputfile << num_threads << ','
+  //           << num_lines   << ','
+  //           << pipes       << ','
+  //           << size        << ','
+  //           << (std::chrono::duration_cast<std::chrono::microseconds>(end - beg).count())/1e3
+  //           << '\n';
+  //outputfile.close();
+
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }

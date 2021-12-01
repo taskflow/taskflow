@@ -1438,8 +1438,11 @@ inline void Executor::_invoke_syclflow_task(Worker& worker, Node* node) {
 // Procedure: _invoke_module_task
 inline void Executor::_invoke_module_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
-  auto& module = std::get_if<Node::Module>(&node->_handle)->module;
-  _invoke_dynamic_task_internal(w, node, module._graph, false);
+  //auto& module = std::get_if<Node::Module>(&node->_handle)->module;
+  //_invoke_dynamic_task_internal(w, node, module._graph, false);
+  //auto& graph = std::get_if<Node::Module>(&node->_handle)->module._graph;
+  auto& graph = std::get_if<Node::Module>(&node->_handle)->graph;
+  _invoke_dynamic_task_internal(w, node, graph, false);
   _observer_epilogue(w, node);  
 }
 

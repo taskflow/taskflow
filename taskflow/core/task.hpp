@@ -270,12 +270,13 @@ class Task {
     /**
     @brief creates a module task from a taskflow
 
-    @param taskflow a taskflow object for the module
+    @param graph a custom object that defines @c T::graph() method
 
     @return @c *this
     */
-    Task& composed_of(Taskflow& taskflow);
-    
+    template <typename T>
+    Task& composed_of(T& object);
+   
     /**
     @brief adds precedence links from this to other tasks
 
@@ -404,8 +405,9 @@ Task& Task::succeed(Ts&&... tasks) {
 }
 
 // Function: composed_of
-inline Task& Task::composed_of(Taskflow& tf) {
-  _node->_handle.emplace<Node::Module>(tf);
+template <typename T>
+Task& Task::composed_of(T& object) {
+  _node->_handle.emplace<Node::Module>(object);
   return *this;
 }
 

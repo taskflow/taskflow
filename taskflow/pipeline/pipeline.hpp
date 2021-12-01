@@ -68,7 +68,6 @@ class Pipeline {
   
   static_assert(sizeof...(Fs)>0, "must have at least one pipe");
 
-  friend class FlowBuilder;
 
   struct Line {
     std::atomic<size_t> join_counter;
@@ -105,6 +104,10 @@ class Pipeline {
   */
   size_t num_tokens() const noexcept;
 
+  //FlowBuilder fb;
+
+  Graph& graph() { return _graph; }
+
   private:
   
   std::tuple<Fs...> _pipes;
@@ -116,16 +119,19 @@ class Pipeline {
   std::vector<tf::Task> _tasks;
   
   size_t _num_tokens;
-  
+
+  Graph _graph;
+    
   void _on_pipe(Pipeflow&);
 
-  auto _build(FlowBuilder&);
+  void _build();
 
 };
 
 // constructor
 template <typename... Fs>
 Pipeline<Fs...>::Pipeline(size_t max_lines, Fs&&... fs) :
+  //fb     {_graph},
   _pipes {std::make_tuple(std::forward<Fs>(fs)...)},
   _meta  {PipeMeta{fs._type}...},
   _lines (max_lines),
@@ -133,6 +139,7 @@ Pipeline<Fs...>::Pipeline(size_t max_lines, Fs&&... fs) :
 
   // TODO: throw exception if the first pipe is not serial
   reset();
+  _build();
 }
 
 template <typename... Fs>
@@ -185,9 +192,11 @@ void Pipeline<Fs...>::_on_pipe(Pipeflow& pf) {
 }
 
 template <typename... Fs>
-auto Pipeline<Fs...>::_build(FlowBuilder& fb) {
+void Pipeline<Fs...>::_build() {
   
   using namespace std::literals::string_literals;
+ 
+  FlowBuilder fb(_graph); 
 
   // init task
   _tasks[0] = fb.emplace([this]() {
@@ -287,17 +296,17 @@ auto Pipeline<Fs...>::_build(FlowBuilder& fb) {
 
   // stop task
 
-  return _tasks;
+  //return _tasks;
 }
 
 // ----------------------------------------------------------------------------
 // Forward declaration: FlowBuilder::pipeline
 // ----------------------------------------------------------------------------
 
-template <typename Pipeline>
-auto FlowBuilder::pipeline(Pipeline& p) {
-  return p._build(*this);  
-}
+//template <typename Pipeline>
+//auto FlowBuilder::pipeline(Pipeline& p) {
+//  return p._build(*this);  
+//}
 
 }  // end of namespace tf -----------------------------------------------------
 

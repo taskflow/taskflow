@@ -75,8 +75,11 @@ class Taskflow : public FlowBuilder {
   friend class FlowBuilder;
 
   struct Dumper {
-    std::stack<const Taskflow*> stack;
-    std::unordered_set<const Taskflow*> visited;
+    //std::stack<const Taskflow*> stack;
+    //std::unordered_set<const Taskflow*> visited;
+    size_t id;
+    std::stack<std::pair<const Node*, const Graph*>> stack;
+    std::unordered_map<const Graph*, size_t> visited;
   };
 
   public:
@@ -249,6 +252,8 @@ class Taskflow : public FlowBuilder {
     template <typename V>
     void for_each_task(V&& visitor) const;
 
+    Graph& graph() { return _graph; }
+
   private:
     
     mutable std::mutex _mutex;
@@ -261,9 +266,9 @@ class Taskflow : public FlowBuilder {
 
     std::optional<std::list<Taskflow>::iterator> _satellite;
     
-    void _dump(std::ostream&, const Taskflow*) const;
+    void _dump(std::ostream&, const Graph*) const;
     void _dump(std::ostream&, const Node*, Dumper&) const;
-    void _dump(std::ostream&, const Graph&, Dumper&) const;
+    void _dump(std::ostream&, const Graph*, Dumper&) const;
 };
 
 // Constructor
@@ -345,28 +350,40 @@ inline std::string Taskflow::dump() const {
 // Function: dump
 inline void Taskflow::dump(std::ostream& os) const {
   os << "digraph Taskflow {\n";
-  _dump(os, this);
+  _dump(os, &_graph);
   os << "}\n";
 }
 
 // Procedure: _dump
-inline void Taskflow::_dump(std::ostream& os, const Taskflow* top) const {
+inline void Taskflow::_dump(std::ostream& os, const Graph* top) const {
   
   Dumper dumper;
   
-  dumper.stack.push(top);
-  dumper.visited.insert(top);
+  dumper.id = 0;
+  dumper.stack.push({nullptr, top});
+  dumper.visited[top] = dumper.id++;
 
   while(!dumper.stack.empty()) {
     
-    auto f = dumper.stack.top();
+    auto [p, f] = dumper.stack.top();
     dumper.stack.pop();
+   
+    os << "subgraph cluster_p" << f << " {\nlabel=\"";
     
-    os << "subgraph cluster_p" << f << " {\nlabel=\"Taskflow: ";
-    if(f->_name.empty()) os << 'p' << f;
-    else os << f->_name;
+    // n-level module
+    if(p) {
+      os << 'm' << dumper.visited[f];
+    }
+    // top-level taskflow graph
+    else {
+      os << "Taskflow: ";
+      if(_name.empty()) os << 'p' << this;
+      else os << _name;
+    }
+
     os << "\";\n";
-    _dump(os, f->_graph, dumper);
+
+    _dump(os, f, dumper);
     os << "}\n";
   }
 }
@@ -434,7 +451,7 @@ inline void Taskflow::_dump(
         else os << node->_name;
 
         os << "\";\n" << "color=blue\n";
-        _dump(os, sbg, dumper);
+        _dump(os, &sbg, dumper);
         os << "}\n";
       }
     }
@@ -461,10 +478,10 @@ inline void Taskflow::_dump(
 
 // Procedure: _dump
 inline void Taskflow::_dump(
-  std::ostream& os, const Graph& graph, Dumper& dumper
+  std::ostream& os, const Graph* graph, Dumper& dumper
 ) const {
-    
-  for(const auto& n : graph._nodes) {
+  
+  for(const auto& n : graph->_nodes) {
 
     // regular task
     if(n->_handle.index() != Node::MODULE) {
@@ -472,20 +489,19 @@ inline void Taskflow::_dump(
     }
     // module task
     else {
-      auto module = &(std::get_if<Node::Module>(&n->_handle)->module);
-
+      //auto module = &(std::get_if<Node::Module>(&n->_handle)->module);
+      auto module = &(std::get_if<Node::Module>(&n->_handle)->graph);
+      
       os << 'p' << n << "[shape=box3d, color=blue, label=\"";
-      if(n->_name.empty()) os << n;
+      if(n->_name.empty()) os << 'p' << n;
       else os << n->_name;
-      os << " [Taskflow: ";
-      if(module->_name.empty()) os << 'p' << module;
-      else os << module->_name;
-      os << "]\"];\n";
 
       if(dumper.visited.find(module) == dumper.visited.end()) {
-        dumper.visited.insert(module);
-        dumper.stack.push(module);
+        dumper.visited[module] = dumper.id++;
+        dumper.stack.push({n, module});
       }
+      
+      os << " [m" << dumper.visited[module] << "]\"];\n";
 
       for(const auto s : n->_successors) {
         os << 'p' << n << "->" << 'p' << s << ";\n";

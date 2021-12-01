@@ -198,13 +198,14 @@ class FlowBuilder {
     /**
     @brief creates a module task from a taskflow
 
-    @param taskflow a taskflow object for the module
+    @param taskflow a custom object that defines @c T::graph() method
 
     @return a tf::Task handle
 
     Please refer to @ref ComposableTasking for details.
     */
-    Task composed_of(Taskflow& taskflow);
+    template <typename T>
+    Task composed_of(T& object);
 
     /**
     @brief creates a placeholder task
@@ -601,16 +602,7 @@ class FlowBuilder {
     template <typename B, typename E>
     Task sort(B&& first, E&& last);
     
-    // ------------------------------------------------------------------------
-    // pipeline
-    // ------------------------------------------------------------------------
-
-    template <typename Pipeline>
-    auto pipeline(Pipeline& p);
-    
   protected:
-    
-
     
     /**
     @brief associated graph object
@@ -699,9 +691,10 @@ inline void FlowBuilder::erase(Task task) {
 }
 
 // Function: composed_of    
-inline Task FlowBuilder::composed_of(Taskflow& taskflow) {
+template <typename T>
+Task FlowBuilder::composed_of(T& object) {
   auto node = _graph.emplace_back(
-    std::in_place_type_t<Node::Module>{}, taskflow
+    std::in_place_type_t<Node::Module>{}, object
   );
   return Task(node);
 }
