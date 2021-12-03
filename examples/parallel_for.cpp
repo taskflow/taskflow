@@ -9,7 +9,7 @@ void for_each(int N) {
 
   tf::Executor executor;
   tf::Taskflow taskflow;
-
+  
   std::vector<int> range(N);
   std::iota(range.begin(), range.end(), 0);
 

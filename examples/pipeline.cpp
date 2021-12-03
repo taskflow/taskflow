@@ -1,5 +1,5 @@
 #include <taskflow/taskflow.hpp>
-#include <taskflow/pipeline.hpp>
+#include <taskflow/algorithm/pipeline.hpp>
 
 int main() {
 
@@ -44,8 +44,6 @@ int main() {
     }}
   );
 
-  //auto tests = taskflow.pipeline(pl);
-  
   tf::Task init = taskflow.emplace([](){ std::cout << "ready\n"; })
                           .name("starting pipeline");
   tf::Task task = taskflow.composed_of(pl)
@@ -58,7 +56,7 @@ int main() {
 
   taskflow.dump(std::cout);
   executor.run(taskflow).wait();
-
+  
   return 0;
 }
 

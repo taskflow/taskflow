@@ -22,6 +22,7 @@ list(APPEND TF_EXAMPLES
   cancel
   cancel_async
   pipeline
+  #pipeline_2
 )
 
 foreach(example IN LISTS TF_EXAMPLES)

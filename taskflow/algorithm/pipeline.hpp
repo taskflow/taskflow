@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../taskflow.hpp"
+
 namespace tf {
 
 enum class PipeType : int{
@@ -25,6 +27,8 @@ class Pipe {
 
   C _callable;
 };
+
+
 
 
 class Pipeflow {
@@ -104,8 +108,6 @@ class Pipeline {
   */
   size_t num_tokens() const noexcept;
 
-  //FlowBuilder fb;
-
   Graph& graph() { return _graph; }
 
   private:
@@ -131,13 +133,15 @@ class Pipeline {
 // constructor
 template <typename... Fs>
 Pipeline<Fs...>::Pipeline(size_t max_lines, Fs&&... fs) :
-  //fb     {_graph},
   _pipes {std::make_tuple(std::forward<Fs>(fs)...)},
   _meta  {PipeMeta{fs._type}...},
   _lines (max_lines),
   _tasks (max_lines + 1) {
 
-  // TODO: throw exception if the first pipe is not serial
+  if(std::get<0>(_pipes)._type == PipeType::PARALLEL) {
+    TF_THROW("first pipe must be serial");
+  }
+
   reset();
   _build();
 }
@@ -265,12 +269,16 @@ void Pipeline<Fs...>::_build() {
 
       // downward dependency
       if(_meta[c_f].type == PipeType::SERIAL && 
-         _lines[n_l][c_f].join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+         _lines[n_l][c_f].join_counter.fetch_sub(
+           1, std::memory_order_acq_rel) == 1
+        ) {
         retval.push_back(1);
       }
       
       // forward dependency
-      if(_lines[pf._line][n_f].join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+      if(_lines[pf._line][n_f].join_counter.fetch_sub(
+          1, std::memory_order_acq_rel) == 1
+        ) {
         retval.push_back(0);
       }
       
@@ -293,20 +301,7 @@ void Pipeline<Fs...>::_build() {
 
     _tasks[0].precede(_tasks[l+1]);
   }
-
-  // stop task
-
-  //return _tasks;
 }
-
-// ----------------------------------------------------------------------------
-// Forward declaration: FlowBuilder::pipeline
-// ----------------------------------------------------------------------------
-
-//template <typename Pipeline>
-//auto FlowBuilder::pipeline(Pipeline& p) {
-//  return p._build(*this);  
-//}
 
 }  // end of namespace tf -----------------------------------------------------
 

@@ -1,6 +1,6 @@
 #include "parallel_pipeline.hpp"
 #include <taskflow/taskflow.hpp> 
-#include <taskflow/pipeline.hpp>
+#include <taskflow/algorithm/pipeline.hpp>
 
 // parallel_pipeline_taskflow_1_pipe
 std::chrono::microseconds parallel_pipeline_taskflow_1_pipe(
