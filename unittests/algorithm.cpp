@@ -3,11 +3,7 @@
 #include <doctest.h>
 
 #include <taskflow/taskflow.hpp>
-#include <vector>
-#include <utility>
-#include <chrono>
-#include <limits.h>
-#include <array>
+#include <taskflow/algorithm/transform.hpp>
 
 // --------------------------------------------------------
 // Testcase: for_each
@@ -1098,4 +1094,136 @@ TEST_CASE("ps.object.4.100000") {
   ps_object(4, 100000);
 }
 
+// ----------------------------------------------------------------------------
+// parallel transform
+// ----------------------------------------------------------------------------
 
+void parallel_transform(size_t W) {
+  
+  std::srand(static_cast<unsigned int>(time(NULL)));
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  for(size_t N=0; N<1000; N++) {
+
+    std::vector<int>::iterator src_beg;
+    std::vector<int>::iterator src_end;
+    std::list<std::string>::iterator tgt_beg;
+
+    std::vector<int> src;
+    std::list<std::string> tgt;
+    
+    taskflow.clear();
+
+    auto from = taskflow.emplace([&](){
+      src.resize(N);
+      for(auto& d : src) {
+        d = ::rand() % 10;
+        tgt.push_back("hi");
+      }
+      src_beg = src.begin();
+      src_end = src.end();
+      tgt_beg = tgt.begin();
+    });
+
+    auto to = taskflow.transform(
+      std::ref(src_beg), std::ref(src_end), std::ref(tgt_beg),
+      [] (int in) {
+        return std::to_string(in+10);
+      }
+    );
+
+    from.precede(to);
+
+    executor.run(taskflow).wait();
+
+    auto s_itr = src.begin();
+    auto d_itr = tgt.begin();
+    while(s_itr != src.end()) {
+      REQUIRE(*d_itr++ == std::to_string(*s_itr++ + 10));
+    }
+
+  }
+}
+
+TEST_CASE("parallel_transform.1thread") {
+  parallel_transform(1);
+}
+
+TEST_CASE("parallel_transform.2threads") {
+  parallel_transform(2);
+}
+
+TEST_CASE("parallel_transform.3threads") {
+  parallel_transform(3);
+}
+
+TEST_CASE("parallel_transform.4threads") {
+  parallel_transform(4);
+}
+
+void parallel_transform2(size_t W) {
+  
+  std::srand(static_cast<unsigned int>(time(NULL)));
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  for(size_t N=0; N<1000; N++) {
+
+    std::vector<int>::iterator src_beg;
+    std::vector<int>::iterator src_end;
+    std::list<std::string>::iterator tgt_beg;
+
+    std::vector<int> src;
+    std::list<std::string> tgt;
+    
+    taskflow.clear();
+
+    auto from = taskflow.emplace([&](){
+      src.resize(N);
+      for(auto& d : src) {
+        d = ::rand() % 10;
+        tgt.push_back("hi");
+      }
+      src_beg = src.begin();
+      src_end = src.end();
+      tgt_beg = tgt.begin();
+    });
+
+    auto to = taskflow.transform(
+      std::ref(src_beg), std::ref(src_end), std::ref(src_beg), std::ref(tgt_beg),
+      [] (int in1, int in2) {
+        return std::to_string(in1 + in2 + 10);
+      }
+    );
+
+    from.precede(to);
+
+    executor.run(taskflow).wait();
+
+    auto s_itr = src.begin();
+    auto d_itr = tgt.begin();
+    while(s_itr != src.end()) {
+      REQUIRE(*d_itr++ == std::to_string(2 * *s_itr++ + 10));
+    }
+
+  }
+}
+
+TEST_CASE("parallel_transform2.1thread") {
+  parallel_transform2(1);
+}
+
+TEST_CASE("parallel_transform2.2threads") {
+  parallel_transform2(2);
+}
+
+TEST_CASE("parallel_transform2.3threads") {
+  parallel_transform2(3);
+}
+
+TEST_CASE("parallel_transform2.4threads") {
+  parallel_transform2(4);
+}

@@ -155,7 +155,7 @@ Task FlowBuilder::for_each_index(B&& beg, E&& end, S&& inc, C c){
         
           size_t r = N - s0;
           
-          // find-grained
+          // fine-grained
           if(r < p1) {
             while(1) { 
               s0 = next.fetch_add(chunk_size, std::memory_order_relaxed);

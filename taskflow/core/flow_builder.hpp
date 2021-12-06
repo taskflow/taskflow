@@ -479,6 +479,16 @@ class FlowBuilder {
     */
     template <typename B, typename E, typename S, typename C>
     Task for_each_index(B&& first, E&& last, S&& step, C callable);
+
+
+
+    template <typename B, typename E, typename O, typename C>
+    Task transform(B first1, E last1, O d_first, C c);
+    
+
+    template <typename B1, typename E1, typename B2, typename O, typename C>
+    Task transform(B1 first1, E1 last1, B2 first2, O d_first, C c);
+    
     
     // ------------------------------------------------------------------------
     // reduction
