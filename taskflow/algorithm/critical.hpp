@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../task.hpp"
+#include "../core/task.hpp"
 
 /** 
 @file critical.hpp

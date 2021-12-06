@@ -1,10 +1,10 @@
 #pragma once
 
 #include "core/executor.hpp"
-#include "core/algorithm/critical.hpp"
-#include "core/algorithm/for_each.hpp"
-#include "core/algorithm/reduce.hpp"
-#include "core/algorithm/sort.hpp"
+#include "algorithm/critical.hpp"
+#include "algorithm/for_each.hpp"
+#include "algorithm/reduce.hpp"
+#include "algorithm/sort.hpp"
 
 
 /** @dir taskflow
