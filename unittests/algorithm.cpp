@@ -1098,29 +1098,30 @@ TEST_CASE("ps.object.4.100000") {
 // parallel transform
 // ----------------------------------------------------------------------------
 
+template<class T>
 void parallel_transform(size_t W) {
-  
+
   std::srand(static_cast<unsigned int>(time(NULL)));
-  
+
   tf::Taskflow taskflow;
   tf::Executor executor(W);
 
   for(size_t N=0; N<1000; N++) {
 
-    std::vector<int>::iterator src_beg;
-    std::vector<int>::iterator src_end;
+    typename T::const_iterator src_beg;
+    typename T::const_iterator src_end;
     std::list<std::string>::iterator tgt_beg;
 
-    std::vector<int> src;
+    T src;
     std::list<std::string> tgt;
-    
+
     taskflow.clear();
 
     auto from = taskflow.emplace([&](){
       src.resize(N);
       for(auto& d : src) {
         d = ::rand() % 10;
-        tgt.push_back("hi");
+        tgt.emplace_back("hi");
       }
       src_beg = src.begin();
       src_end = src.end();
@@ -1129,7 +1130,7 @@ void parallel_transform(size_t W) {
 
     auto to = taskflow.transform(
       std::ref(src_beg), std::ref(src_end), std::ref(tgt_beg),
-      [] (int in) {
+      [] (const auto& in) {
         return std::to_string(in+10);
       }
     );
@@ -1148,44 +1149,49 @@ void parallel_transform(size_t W) {
 }
 
 TEST_CASE("parallel_transform.1thread") {
-  parallel_transform(1);
+  parallel_transform<std::vector<int>>(1);
+  parallel_transform<std::list<int>>(1);
 }
 
 TEST_CASE("parallel_transform.2threads") {
-  parallel_transform(2);
+  parallel_transform<std::vector<int>>(2);
+  parallel_transform<std::list<int>>(2);
 }
 
 TEST_CASE("parallel_transform.3threads") {
-  parallel_transform(3);
+  parallel_transform<std::vector<int>>(3);
+  parallel_transform<std::list<int>>(3);
 }
 
 TEST_CASE("parallel_transform.4threads") {
-  parallel_transform(4);
+  parallel_transform<std::vector<int>>(4);
+  parallel_transform<std::list<int>>(4);
 }
 
+template<class T>
 void parallel_transform2(size_t W) {
-  
+
   std::srand(static_cast<unsigned int>(time(NULL)));
-  
+
   tf::Taskflow taskflow;
   tf::Executor executor(W);
 
   for(size_t N=0; N<1000; N++) {
 
-    std::vector<int>::iterator src_beg;
-    std::vector<int>::iterator src_end;
+    typename T::const_iterator src_beg;
+    typename T::const_iterator src_end;
     std::list<std::string>::iterator tgt_beg;
 
-    std::vector<int> src;
+    T src;
     std::list<std::string> tgt;
-    
+
     taskflow.clear();
 
     auto from = taskflow.emplace([&](){
       src.resize(N);
       for(auto& d : src) {
         d = ::rand() % 10;
-        tgt.push_back("hi");
+        tgt.emplace_back("hi");
       }
       src_beg = src.begin();
       src_end = src.end();
@@ -1194,7 +1200,7 @@ void parallel_transform2(size_t W) {
 
     auto to = taskflow.transform(
       std::ref(src_beg), std::ref(src_end), std::ref(src_beg), std::ref(tgt_beg),
-      [] (int in1, int in2) {
+      [] (const auto& in1, const auto& in2) {
         return std::to_string(in1 + in2 + 10);
       }
     );
@@ -1213,17 +1219,21 @@ void parallel_transform2(size_t W) {
 }
 
 TEST_CASE("parallel_transform2.1thread") {
-  parallel_transform2(1);
+  parallel_transform2<std::vector<int>>(1);
+  parallel_transform2<std::list<int>>(1);
 }
 
 TEST_CASE("parallel_transform2.2threads") {
-  parallel_transform2(2);
+  parallel_transform2<std::vector<int>>(2);
+  parallel_transform2<std::list<int>>(2);
 }
 
 TEST_CASE("parallel_transform2.3threads") {
-  parallel_transform2(3);
+  parallel_transform2<std::vector<int>>(3);
+  parallel_transform2<std::list<int>>(3);
 }
 
 TEST_CASE("parallel_transform2.4threads") {
-  parallel_transform2(4);
+  parallel_transform2<std::vector<int>>(4);
+  parallel_transform2<std::list<int>>(4);
 }
