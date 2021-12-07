@@ -1237,3 +1237,106 @@ TEST_CASE("parallel_transform2.4threads") {
   parallel_transform2<std::vector<int>>(4);
   parallel_transform2<std::list<int>>(4);
 }
+
+void parallel_transform3(size_t W) {
+
+  std::srand(static_cast<unsigned int>(time(NULL)));
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  using std::string;
+  using std::size_t;
+
+  for(size_t N=0; N<1000; N++) {
+
+    std::multimap<int, size_t> src;
+
+    /** Reference implementation with std::transform */
+    std::vector<string> ref;
+
+    /** Target implementation with Subflow::transform */
+    std::vector<string> tgt;
+
+    std::vector<string>::iterator tgt_beg;
+
+    /** A generic function to cast integers to string */
+    const auto myFunction = [](const size_t x) -> string {
+      return "id_" + std::to_string(x);
+    };
+
+    taskflow.clear();
+
+    /** Group integers 0..(N-1) into ten groups,
+     * each having an unique key `d`.
+     */
+    auto from = taskflow.emplace([&, N](){
+      for(size_t i = 0; i < N; i++) {
+        const int d = ::rand() % 10;
+        src.emplace(d, i);
+      }
+
+      ref.resize(N);
+
+      tgt.resize(N);
+      tgt_beg = tgt.begin();
+    });
+
+    auto to_ref = taskflow.emplace([&, N]() {
+
+      // Find entries matching key = 0.
+      // This can return empty results.
+      const auto [src_beg, src_end] = src.equal_range(0);
+      const size_t n_matching = std::distance(src_beg, src_end);
+      ref.resize(n_matching);
+
+      // Extract all values having matching key value.
+      std::transform(src_beg, src_end, ref.begin(),
+        [&](const auto& x) -> string {
+          return myFunction(x.second);
+      });
+    });
+
+    /** Dynamic scheduling with Subflow::transform */
+    auto to_tgt = taskflow.emplace([&, N](tf::Subflow& subflow) {
+
+      // Find entries matching key = 0
+      const auto [src_beg, src_end] = src.equal_range(0);
+      const size_t n_matching = std::distance(src_beg, src_end);
+      tgt.resize(n_matching);
+
+      subflow.transform(std::ref(src_beg), std::ref(src_end), std::ref(tgt_beg),
+        [&] (const auto& x) -> string {
+          return myFunction(x.second);
+      });
+    });
+
+    from.precede(to_ref);
+    from.precede(to_tgt);
+
+    executor.run(taskflow).wait();
+
+    /** Target entries much match. */
+    REQUIRE(std::equal(tgt.begin(), tgt.end(), ref.begin()));
+  }
+}
+
+TEST_CASE("parallel_transform3.1thread") {
+  parallel_transform3(1);
+  parallel_transform3(1);
+}
+
+TEST_CASE("parallel_transform3.2threads") {
+  parallel_transform3(2);
+  parallel_transform3(2);
+}
+
+TEST_CASE("parallel_transform3.3threads") {
+  parallel_transform3(3);
+  parallel_transform3(3);
+}
+
+TEST_CASE("parallel_transform3.4threads") {
+  parallel_transform3(4);
+  parallel_transform3(4);
+}
