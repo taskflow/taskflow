@@ -442,7 +442,7 @@ class FlowBuilder {
     Task for_each(B&& first, E&& last, C callable);
     
     /**
-    @brief constructs an index-based parallel-for task 
+    @brief constructs a parallel-transform task
 
     @tparam B beginning index type (must be integral)
     @tparam E ending index type (must be integral)
@@ -480,15 +480,75 @@ class FlowBuilder {
     template <typename B, typename E, typename S, typename C>
     Task for_each_index(B&& first, E&& last, S&& step, C callable);
 
+    // ------------------------------------------------------------------------
+    // transform
+    // ------------------------------------------------------------------------
 
+    /**
+    @brief constructs a parallel-transform task 
 
+    @tparam B beginning input iterator type
+    @tparam E ending input iterator type
+    @tparam O output iterator type
+    @tparam C callable type
+
+    @param first1 iterator to the beginning of the first range
+    @param last1 iterator to the end of the first range
+    @param d_first iterator to the beginning of the output range 
+    @param c an unary callable to apply to dereferenced input elements
+
+    @return a tf::Task handle
+    
+    The task spawns a subflow that applies the callable object to an
+    input range and stores the result in another output range.
+    This method is equivalent to the parallel execution of the following loop:
+    
+    @code{.cpp}
+    while (first1 != last1) {
+      *d_first++ = c(*first1++);
+    }
+    @endcode
+
+    Arguments are templated to enable stateful range using std::reference_wrapper.
+    The callable needs to take a single argument of the dereferenced 
+    iterator type.
+    */
     template <typename B, typename E, typename O, typename C>
     Task transform(B first1, E last1, O d_first, C c);
-    
 
+    /**
+    @brief constructs a parallel-transform task
+
+    @tparam B1 beginning input iterator type for the first input range
+    @tparam E1 ending input iterator type for the first input range
+    @tparam B2 beginning input iterator type for the first second range
+    @tparam O output iterator type
+    @tparam C callable type
+
+    @param first1 iterator to the beginning of the first input range
+    @param last1 iterator to the end of the first input range
+    @param first2 iterator to the beginning of the second input range
+    @param d_first iterator to the beginning of the output range
+    @param c a binary operator to apply to dereferenced input elements
+
+    @return a tf::Task handle
+    
+    The task spawns a subflow that applies the callable object to two
+    input ranges and stores the result in another output range.
+    This method is equivalent to the parallel execution of the following loop:
+    
+    @code{.cpp}
+    while (first1 != last1) {
+      *d_first++ = c(*first1++, *first2++);
+    }
+    @endcode
+
+    Arguments are templated to enable stateful range using std::reference_wrapper.
+    The callable needs to take two arguments of dereferenced elements
+    from the two input ranges.
+    */
     template <typename B1, typename E1, typename B2, typename O, typename C>
     Task transform(B1 first1, E1 last1, B2 first2, O d_first, C c);
-    
     
     // ------------------------------------------------------------------------
     // reduction

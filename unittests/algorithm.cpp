@@ -1309,6 +1309,8 @@ void parallel_transform3(size_t W) {
         [&] (const auto& x) -> string {
           return myFunction(x.second);
       });
+      
+      subflow.join();
     });
 
     from.precede(to_ref);
