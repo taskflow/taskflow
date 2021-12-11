@@ -50,7 +50,7 @@ Task FlowBuilder::transform(B first1, E last1, O d_first, C c) {
 
       //sf.emplace([&next, beg, N, chunk_size, W, c] () mutable {
       sf._named_silent_async(
-        &sf._worker, "part_"s + std::to_string(w), [=, &next] () mutable {
+        sf._worker, "part-"s + std::to_string(w), [=, &next] () mutable {
         
         size_t z = 0;
         size_t p1 = 2 * W * (chunk_size + 1);
@@ -150,7 +150,7 @@ Task FlowBuilder::transform(B1 first1, E1 last1, B2 first2, O d_first, C c) {
     for(size_t w=0; w<W; w++) {
 
       sf._named_silent_async(
-        &sf._worker, "part_"s + std::to_string(w), [=, &next] () mutable {
+        sf._worker, "part-"s + std::to_string(w), [=, &next] () mutable {
         
         size_t z = 0;
         size_t p1 = 2 * W * (chunk_size + 1);

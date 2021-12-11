@@ -681,8 +681,11 @@ class Executor {
     void _worker_loop(Worker&);
     void _exploit_task(Worker&, Node*&);
     void _explore_task(Worker&, Node*&);
-    void _schedule(Worker*, Node*);
-    void _schedule(Worker*, const SmallVector<Node*>&);
+    void _schedule(Worker&, Node*);
+    void _schedule(Node*);
+    void _schedule(Worker&, const SmallVector<Node*>&);
+    void _schedule(const SmallVector<Node*>&);
+    void _schedule_uncached(Worker&, Node*);
     void _set_up_topology(Worker*, Topology*);
     void _tear_down_topology(Worker&, Topology*); 
     void _tear_down_async(Node*);
@@ -802,7 +805,12 @@ auto Executor::named_async(const std::string& name, F&& f, ArgsT&&... args) {
 
   node->_name = name;
   
-  _schedule(_this_worker(), node);
+  if(auto w = _this_worker(); w) {
+    _schedule_uncached(*w, node);
+  }
+  else{
+    _schedule(node);
+  }
 
   return fu;
 }
@@ -830,7 +838,12 @@ void Executor::named_silent_async(
 
   node->_name = name;
   
-  _schedule(_this_worker(), node);
+  if(auto w = _this_worker(); w) {
+    _schedule_uncached(*w, node);
+  }
+  else {
+    _schedule(node);
+  }
 }
 
 // Function: silent_async
@@ -862,7 +875,8 @@ inline void Executor::_spawn(size_t N) {
     _threads.emplace_back([this] (
       Worker& w, std::mutex& mutex, std::condition_variable& cond, size_t& n
     ) -> void {
-
+      
+      // enables the mapping
       {
         std::scoped_lock lock(mutex);
         _wids[std::this_thread::get_id()] = w._id;
@@ -1054,29 +1068,21 @@ inline void Executor::schedule(Worker& worker, Task task) {
   auto& j = node->_parent ? node->_parent->_join_counter : 
                             node->_topology->_join_counter;
   j.fetch_add(1);
-  _schedule(&worker, node);
+  _schedule(worker, node);
 }
 
 // Procedure: _schedule
-// The main procedure to schedule a give task node.
-// Each task node has two types of tasks - regular and subflow.
-inline void Executor::_schedule(Worker* worker, Node* node) {
-  
-  //assert(_workers.size() != 0);
-  
+inline void Executor::_schedule(Worker& worker, Node* node) {
+
   node->_state.fetch_or(Node::READY, std::memory_order_release);
 
   // caller is a worker to this pool
-  //auto worker = this_worker().worker;
-
-  if(worker && worker->_executor == this) {
-    worker->_wsq.push(node);
+  if(worker._executor == this) {
+    worker._wsq.push(node);
     return;
   }
 
-  // other threads push the node into the globally shared queue
-  // since there will be no threads popping nodes from the queue,
-  // we need to call uncached_push
+  // call uncached_push since it requires workers to steal the shared queue
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     _wsq.uncached_push(node);
@@ -1086,12 +1092,44 @@ inline void Executor::_schedule(Worker* worker, Node* node) {
 }
 
 // Procedure: _schedule
-// The main procedure to schedule a set of task nodes.
-// Each task node has two types of tasks - regular and subflow.
-inline void Executor::_schedule(Worker* worker, const SmallVector<Node*>& nodes) {
+inline void Executor::_schedule_uncached(Worker& worker, Node* node) {
 
-  //assert(_workers.size() != 0);
+  node->_state.fetch_or(Node::READY, std::memory_order_release);
+
+  // caller is a worker to this pool
+  if(worker._executor == this) {
+    worker._wsq.uncached_push(node);
+    return;
+  }
   
+  // call uncached_push since it requires workers to steal the shared queue
+  {
+    std::lock_guard<std::mutex> lock(_wsq_mutex);
+    _wsq.uncached_push(node);
+  }
+
+  _notifier.notify(false);
+}
+
+// Procedure: _schedule
+inline void Executor::_schedule(Node* node) {
+  
+  node->_state.fetch_or(Node::READY, std::memory_order_release);
+
+  // call uncached_push since it requires workers to steal the shared queue
+  {
+    std::lock_guard<std::mutex> lock(_wsq_mutex);
+    _wsq.uncached_push(node);
+  }
+
+  _notifier.notify(false);
+}
+
+// Procedure: _schedule
+inline void Executor::_schedule(
+  Worker& worker, const SmallVector<Node*>& nodes
+) {
+
   // We need to cacth the node count to avoid accessing the nodes
   // vector while the parent topology is removed!
   const auto num_nodes = nodes.size();
@@ -1105,19 +1143,40 @@ inline void Executor::_schedule(Worker* worker, const SmallVector<Node*>& nodes)
     nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
   }
 
-  // worker thread
-  //auto worker = this_worker().worker;
-
-  if(worker && worker->_executor == this) {
+  if(worker._executor == this) {
     for(size_t i=0; i<num_nodes; ++i) {
-      worker->_wsq.push(nodes[i]);
+      worker._wsq.push(nodes[i]);
     }
     return;
   }
   
-  // other threads push the node into the globally shared queue
-  // since there will be no threads popping nodes from the queue,
-  // we need to call uncached_push
+  // call uncached_push since it requires workers to steal the shared queue
+  {
+    std::lock_guard<std::mutex> lock(_wsq_mutex);
+    for(size_t k=0; k<num_nodes; ++k) {
+      _wsq.uncached_push(nodes[k]);
+    }
+  }
+  
+  _notifier.notify_n(num_nodes);
+}
+
+// Procedure: _schedule
+inline void Executor::_schedule(const SmallVector<Node*>& nodes) {
+
+  // parent topology may be removed!
+  const auto num_nodes = nodes.size();
+  
+  if(num_nodes == 0) {
+    return;
+  }
+  
+  // make the node ready
+  for(size_t i=0; i<num_nodes; ++i) {
+    nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
+  }
+
+  // call uncached_push since it requires workers to steal the shared queue
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     for(size_t k=0; k<num_nodes; ++k) {
@@ -1145,7 +1204,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   if(node->_semaphores && !node->_semaphores->to_acquire.empty()) {
     SmallVector<Node*> nodes;
     if(!node->_acquire_all(nodes)) {
-      _schedule(&worker, nodes);
+      _schedule(worker, nodes);
       return;
     }
     //node->_set_state(Node::ACQUIRED);
@@ -1233,7 +1292,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
   // if releasing semaphores exist, release them
   if(node->_semaphores && !node->_semaphores->to_release.empty()) {
-    _schedule(&worker, node->_release_all());
+    _schedule(worker, node->_release_all());
   }
 
   // We MUST recover the dependency since the graph may have cycles.
@@ -1264,7 +1323,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
           // zeroing the join counter seems redundant but it keeps invariant
           s->_join_counter.store(0, std::memory_order_relaxed);
           j.fetch_add(1);
-          _schedule(&worker, s);
+          _schedule(worker, s);
         }
       }
     }
@@ -1275,7 +1334,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       for(size_t i=0; i<num_successors; ++i) {
         if(--(node->_successors[i]->_join_counter) == 0) {
           j.fetch_add(1);
-          _schedule(&worker, node->_successors[i]);
+          _schedule(worker, node->_successors[i]);
         }
       }
     }
@@ -1416,12 +1475,12 @@ inline void Executor::_invoke_dynamic_task_internal(
     }
 
     p->_topology->_join_counter.fetch_add(src.size());
-    _schedule(&w, src);
+    _schedule(w, src);
   }
   // join here
   else {  
     p->_join_counter.fetch_add(src.size());
-    _schedule(&w, src);
+    _schedule(w, src);
     Node* t = nullptr;
   
     std::uniform_int_distribution<size_t> rdvtm(0, _workers.size()-1);
@@ -1681,7 +1740,13 @@ inline void Executor::_set_up_topology(Worker* worker, Topology* tpg) {
   }
 
   tpg->_join_counter = tpg->_sources.size();
-  _schedule(worker, tpg->_sources);
+
+  if(worker) {
+    _schedule(*worker, tpg->_sources);
+  }
+  else {
+    _schedule(tpg->_sources);
+  }
 }
 
 // Function: _tear_down_topology
@@ -1696,7 +1761,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
     //assert(tpg->_join_counter == 0);
     std::lock_guard<std::mutex> lock(f._mutex);
     tpg->_join_counter = tpg->_sources.size();
-    _schedule(&worker, tpg->_sources); 
+    _schedule(worker, tpg->_sources); 
   }
   // case 2: the final run of this topology
   else {
@@ -1795,14 +1860,14 @@ inline void Subflow::detach() {
 template <typename F, typename... ArgsT>
 auto Subflow::named_async(const std::string& name, F&& f, ArgsT&&... args) {
   return _named_async(
-    _executor._this_worker(), name, std::forward<F>(f), std::forward<ArgsT>(args)...
+    *_executor._this_worker(), name, std::forward<F>(f), std::forward<ArgsT>(args)...
   );
 }
 
 // Function: _named_async
 template <typename F, typename... ArgsT>
 auto Subflow::_named_async(
-  Worker* w,
+  Worker& w,
   const std::string& name, 
   F&& f, 
   ArgsT&&... args
@@ -1840,7 +1905,7 @@ auto Subflow::_named_async(
   node->_topology = _parent->_topology;
   node->_parent = _parent;
 
-  _executor._schedule(w, node);
+  _executor._schedule_uncached(w, node);
 
   return fu;
 }
@@ -1854,7 +1919,7 @@ auto Subflow::async(F&& f, ArgsT&&... args) {
 // Function: _named_silent_async
 template <typename F, typename... ArgsT>
 void Subflow::_named_silent_async(
-  Worker* w, const std::string& name, F&& f, ArgsT&&... args
+  Worker& w, const std::string& name, F&& f, ArgsT&&... args
 ) {
 
   _parent->_join_counter.fetch_add(1);
@@ -1870,14 +1935,14 @@ void Subflow::_named_silent_async(
   node->_topology = _parent->_topology;
   node->_parent = _parent;
   
-  _executor._schedule(w, node);
+  _executor._schedule_uncached(w, node);
 }
 
 // Function: silent_async
 template <typename F, typename... ArgsT>
 void Subflow::named_silent_async(const std::string& name, F&& f, ArgsT&&... args) {
   _named_silent_async(
-    _executor._this_worker(), name, std::forward<F>(f), std::forward<ArgsT>(args)...
+    *_executor._this_worker(), name, std::forward<F>(f), std::forward<ArgsT>(args)...
   );
 }
 

@@ -241,21 +241,22 @@ void parallel_pdqsort(
 
     //diff_t size = end - begin;
     size_t size = end - begin;
+
+    // Insertion sort is faster for small arrays.
+    if (size < insertion_sort_threshold) {
+      if (leftmost) {
+        insertion_sort(begin, end, comp);
+      }
+      else {
+        unguarded_insertion_sort(begin, end, comp);
+      }
+      return;
+    }
     
     if(size <= cutoff) {
       std::sort(begin, end, comp);
       return;
     }
-    //// Insertion sort is faster for small arrays.
-    //if (size < insertion_sort_threshold) {
-    //  if (leftmost) {
-    //    insertion_sort(begin, end, comp);
-    //  }
-    //  else {
-    //    unguarded_insertion_sort(begin, end, comp);
-    //  }
-    //  return;
-    //}
 
     // Choose pivot as median of 3 or pseudomedian of 9.
     //diff_t s2 = size / 2;
@@ -453,7 +454,7 @@ Task FlowBuilder::sort(B beg, E end, C cmp) {
       return;
     }
 
-    //parallel_3wqsort(sf, beg, end-1, c);
+    //parallel_3wqsort(sf, beg, end-1, cmp);
     parallel_pdqsort(sf, beg, end, cmp, log2(end - beg));
 
     sf.join();

@@ -176,7 +176,7 @@ class Node {
     std::function<void()> work;
   };
 
-  // TODO: runtime work handle
+  // runtime work handle
   struct Runtime {
 
     template <typename C>
@@ -609,12 +609,6 @@ inline SmallVector<Node*> Node::_release_all() {
 // Graph definition
 // ----------------------------------------------------------------------------
     
-//// Function: _node_pool
-//inline ObjectPool<Node>& Graph::_node_pool() {
-//  static ObjectPool<Node> pool;
-//  return pool;
-//}
-
 // Destructor
 inline Graph::~Graph() {
   _clear();

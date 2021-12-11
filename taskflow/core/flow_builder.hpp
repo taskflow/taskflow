@@ -1094,10 +1094,10 @@ class Subflow : public FlowBuilder {
     Subflow(Executor&, Worker&, Node*, Graph&);
     
     template <typename F, typename... ArgsT>
-    auto _named_async(Worker*, const std::string&, F&&, ArgsT&&...);
+    auto _named_async(Worker&, const std::string&, F&&, ArgsT&&...);
     
     template <typename F, typename... ArgsT>
-    void _named_silent_async(Worker*, const std::string&, F&&, ArgsT&&...);
+    void _named_silent_async(Worker&, const std::string&, F&&, ArgsT&&...);
 };
 
 // Constructor
