@@ -1,8 +1,8 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include <doctest.h>
-
 #include <taskflow/taskflow.hpp>
+#include <taskflow/algorithm/sort.hpp>
 #include <taskflow/algorithm/transform.hpp>
 
 // --------------------------------------------------------

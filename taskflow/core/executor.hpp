@@ -411,13 +411,39 @@ class Executor {
     tf::Future<void> run_until(Taskflow&& taskflow, P&& pred, C&& callable);
 
     /**
-    @brief schedules a parented task immediatelly
+    @brief schedules an active task immediatelly to a worker's queue
     
-    This member function immediately schedules the give task from a running
-    taskflow graph. 
-    The task must not be running.
+    This member function immediately schedules an active task 
+    to a worker's queue. A active task is a task in a running taskflow
+    or a subflow. The task may or may not be running, for example,
+    due to a condition task. 
+    Scheduling the task in a worker's queue will put the task into 
+    the execution list which allows direct control over the scheduler.
+    Consider the following example:
+    
+    @code{.cpp}
+    tf::Task A, B, C, D;
+    std::tie(A, B, C, D) = taskflow.emplace(
+      [] () { return 0; },
+      [&C] (tf::Runtime& rt) { 
+        std::cout << "B\n"; 
+        rt.executor().schedule(rt.worker(), C);
+      },
+      [] () { std::cout << "C\n"; },
+      [] () { std::cout << "D\n"; }
+    );
+    A.precede(B, C, D);
+    executor.run(taskflow).wait();
+    @endcode
+
+    The executor will first run the condition task @c A which returns @c 0
+    to inform the scheduler to go to the runtime task @c B.
+    Task @c B then direclty schedules task @c C into the running executor.
+    At this moment, task @c C is @em active because its parent taskflow
+    is running. When the taskflow finishes, we will see both @c B and @c C 
+    in the output.
     */
-    void schedule(Task task);
+    void schedule(Worker& worker, Task task);
     
     /**
     @brief wait for all tasks to complete
@@ -437,12 +463,15 @@ class Executor {
     /**
     @brief queries the number of worker threads
 
+    Each worker represents one unique thread spawned by an executor
+    upon its construction time.
+
     @code{.cpp}
     tf::Executor executor(4);
     std::cout << executor.num_workers();    // 4
     @endcode
     */
-    size_t num_workers() const;
+    size_t num_workers() const noexcept;
     
     /**
     @brief queries the number of running topologies at the time of this call
@@ -627,6 +656,7 @@ class Executor {
 
     size_t _num_topologies {0};
     
+    std::unordered_map<std::thread::id, size_t> _wids;
     std::vector<Worker> _workers;
     std::vector<std::thread> _threads;
     std::list<Taskflow> _taskflows;
@@ -640,6 +670,8 @@ class Executor {
     std::atomic<bool>   _done {0};
     
     std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
+
+    Worker* _this_worker();
 
     bool _wait_for_task(Worker&, Node*&);
     
@@ -662,7 +694,6 @@ class Executor {
     void _invoke_static_task(Worker&, Node*);
     void _invoke_dynamic_task(Worker&, Node*);
     void _invoke_dynamic_task_internal(Worker&, Node*, Graph&, bool);
-    void _invoke_dynamic_task_external(Node*, Graph&, bool);
     void _invoke_condition_task(Worker&, Node*, SmallVector<int>&);
     void _invoke_multi_condition_task(Worker&, Node*, SmallVector<int>&);
     void _invoke_module_task(Worker&, Node*);
@@ -717,9 +748,9 @@ inline Executor::~Executor() {
 }
 
 // Function: num_workers
-inline size_t Executor::num_workers() const {
+inline size_t Executor::num_workers() const noexcept {
   return _workers.size();
-}
+} 
 
 // Function: num_topologies
 inline size_t Executor::num_topologies() const {
@@ -729,6 +760,12 @@ inline size_t Executor::num_topologies() const {
 // Function: num_taskflows
 inline size_t Executor::num_taskflows() const {
   return _taskflows.size();
+}
+
+// Function: _this_worker
+inline Worker* Executor::_this_worker() {
+  auto itr = _wids.find(std::this_thread::get_id());
+  return itr == _wids.end() ? nullptr : &_workers[itr->second];
 }
 
 // Function: named_async
@@ -765,7 +802,7 @@ auto Executor::named_async(const std::string& name, F&& f, ArgsT&&... args) {
 
   node->_name = name;
   
-  _schedule(this_worker().worker, node);
+  _schedule(_this_worker(), node);
 
   return fu;
 }
@@ -793,7 +830,7 @@ void Executor::named_silent_async(
 
   node->_name = name;
   
-  _schedule(this_worker().worker, node);
+  _schedule(_this_worker(), node);
 }
 
 // Function: silent_async
@@ -804,12 +841,16 @@ void Executor::silent_async(F&& f, ArgsT&&... args) {
 
 // Function: this_worker_id
 inline int Executor::this_worker_id() const {
-  Worker* worker = this_worker().worker;
-  return worker ? static_cast<int>(worker->_id) : -1;
+  auto itr = _wids.find(std::this_thread::get_id());
+  return itr == _wids.end() ? -1 : _workers[itr->second]._id;
 }
 
 // Procedure: _spawn
 inline void Executor::_spawn(size_t N) {
+
+  std::mutex mutex;
+  std::condition_variable cond;
+  size_t n=0;
 
   for(size_t id=0; id<N; ++id) {
 
@@ -818,9 +859,19 @@ inline void Executor::_spawn(size_t N) {
     _workers[id]._executor = this;
     _workers[id]._waiter = &_notifier._waiters[id];
     
-    _threads.emplace_back([this] (Worker& w) -> void {
+    _threads.emplace_back([this] (
+      Worker& w, std::mutex& mutex, std::condition_variable& cond, size_t& n
+    ) -> void {
 
-      this_worker().worker = &w;
+      {
+        std::scoped_lock lock(mutex);
+        _wids[std::this_thread::get_id()] = w._id;
+        if(n++; n == num_workers()) {
+          cond.notify_one();
+        }
+      }
+
+      //this_worker().worker = &w;
 
       Node* t = nullptr;
 
@@ -836,8 +887,11 @@ inline void Executor::_spawn(size_t N) {
         }
       }
       
-    }, std::ref(_workers[id]));     
+    }, std::ref(_workers[id]), std::ref(mutex), std::ref(cond), std::ref(n));
   }
+
+  std::unique_lock<std::mutex> lock(mutex);
+  cond.wait(lock, [&](){ return n==N; });
 }
 
 // Function: _explore_task
@@ -995,12 +1049,12 @@ inline size_t Executor::num_observers() const noexcept {
 }
   
 // Procedure: schedule
-inline void Executor::schedule(Task task) { 
+inline void Executor::schedule(Worker& worker, Task task) {
   auto node = task._node; 
   auto& j = node->_parent ? node->_parent->_join_counter : 
                             node->_topology->_join_counter;
   j.fetch_add(1);
-  _schedule(this_worker().worker, node);
+  _schedule(&worker, node);
 }
 
 // Procedure: _schedule
@@ -1015,7 +1069,7 @@ inline void Executor::_schedule(Worker* worker, Node* node) {
   // caller is a worker to this pool
   //auto worker = this_worker().worker;
 
-  if(worker != nullptr && worker->_executor == this) {
+  if(worker && worker->_executor == this) {
     worker->_wsq.push(node);
     return;
   }
@@ -1054,7 +1108,7 @@ inline void Executor::_schedule(Worker* worker, const SmallVector<Node*>& nodes)
   // worker thread
   //auto worker = this_worker().worker;
 
-  if(worker != nullptr && worker->_executor == this) {
+  if(worker && worker->_executor == this) {
     for(size_t i=0; i<num_nodes; ++i) {
       worker->_wsq.push(nodes[i]);
     }
@@ -1303,9 +1357,9 @@ inline void Executor::_invoke_dynamic_task(Worker& w, Node* node) {
 
   auto handle = std::get_if<Node::Dynamic>(&node->_handle);
 
-  handle->subgraph.clear();
+  handle->subgraph._clear();
 
-  Subflow sf(*this, node, handle->subgraph); 
+  Subflow sf(*this, w, node, handle->subgraph); 
 
   handle->work(sf);
 
@@ -1317,14 +1371,11 @@ inline void Executor::_invoke_dynamic_task(Worker& w, Node* node) {
 }
 
 // Procedure: _invoke_dynamic_task_external
-inline void Executor::_invoke_dynamic_task_external(Node*p, Graph& g, bool detach) {
-
-  auto worker = this_worker().worker;
-
-  //assert(worker && worker->_executor == this);
-  
-  _invoke_dynamic_task_internal(*worker, p, g, detach);
-}
+//inline void Executor::_invoke_dynamic_task_external(Node*p, Graph& g, bool detach) {
+//  auto worker = this_worker().worker;
+//  //assert(worker && worker->_executor == this);
+//  _invoke_dynamic_task_internal(*worker, p, g, detach);
+//}
 
 // Procedure: _invoke_dynamic_task_internal
 inline void Executor::_invoke_dynamic_task_internal(
@@ -1357,11 +1408,11 @@ inline void Executor::_invoke_dynamic_task_internal(
   }
 
   // detach here
-  if(detach) {    
+  if(detach) {
     
     {
       std::lock_guard<std::mutex> lock(p->_topology->_taskflow._mutex);
-      p->_topology->_taskflow._graph.merge(std::move(g));
+      p->_topology->_taskflow._graph._merge(std::move(g));
     }
 
     p->_topology->_join_counter.fetch_add(src.size());
@@ -1438,11 +1489,9 @@ inline void Executor::_invoke_syclflow_task(Worker& worker, Node* node) {
 // Procedure: _invoke_module_task
 inline void Executor::_invoke_module_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
-  //auto& module = std::get_if<Node::Module>(&node->_handle)->module;
-  //_invoke_dynamic_task_internal(w, node, module._graph, false);
-  //auto& graph = std::get_if<Node::Module>(&node->_handle)->module._graph;
-  auto& graph = std::get_if<Node::Module>(&node->_handle)->graph;
-  _invoke_dynamic_task_internal(w, node, graph, false);
+  _invoke_dynamic_task_internal(
+    w, node, std::get_if<Node::Module>(&node->_handle)->graph, false
+  );
   _observer_epilogue(w, node);  
 }
 
@@ -1463,7 +1512,7 @@ inline void Executor::_invoke_silent_async_task(Worker& w, Node* node) {
 // Procedure: _invoke_runtime_task
 inline void Executor::_invoke_runtime_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
-  Runtime rt(*this);
+  Runtime rt(*this, w);
   std::get_if<Node::Runtime>(&node->_handle)->work(rt);
   _observer_epilogue(w, node);  
 }
@@ -1562,7 +1611,7 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
     std::lock_guard<std::mutex> lock(f._mutex);
     f._topologies.push(t);
     if(f._topologies.size() == 1) {
-      _set_up_topology(this_worker().worker, t.get());
+      _set_up_topology(_this_worker(), t.get());
     }
   }
 
@@ -1616,7 +1665,7 @@ inline void Executor::_set_up_topology(Worker* worker, Topology* tpg) {
   // ---- under taskflow lock ----
 
   tpg->_sources.clear();
-  tpg->_taskflow._graph.clear_detached();
+  tpg->_taskflow._graph._clear_detached();
   
   // scan each node in the graph and build up the links
   for(auto node : tpg->_taskflow._graph._nodes) {
@@ -1718,27 +1767,46 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
 
 inline void Subflow::join() {
 
+  // assert(this_worker().worker == &_worker);
+  
   if(!_joinable) {
     TF_THROW("subflow not joinable");
   }
-
-  _executor._invoke_dynamic_task_external(_parent, _graph, false);
+  
+  // only the parent worker can join the subflow
+  _executor._invoke_dynamic_task_internal(_worker, _parent, _graph, false);
   _joinable = false;
 }
 
 inline void Subflow::detach() {
 
+  // assert(this_worker().worker == &_worker);
+  
   if(!_joinable) {
     TF_THROW("subflow already joined or detached");
   }
 
-  _executor._invoke_dynamic_task_external(_parent, _graph, true);
+  // only the parent worker can detach the subflow
+  _executor._invoke_dynamic_task_internal(_worker, _parent, _graph, true);
   _joinable = false;
 }
 
 // Function: named_async
 template <typename F, typename... ArgsT>
 auto Subflow::named_async(const std::string& name, F&& f, ArgsT&&... args) {
+  return _named_async(
+    _executor._this_worker(), name, std::forward<F>(f), std::forward<ArgsT>(args)...
+  );
+}
+
+// Function: _named_async
+template <typename F, typename... ArgsT>
+auto Subflow::_named_async(
+  Worker* w,
+  const std::string& name, 
+  F&& f, 
+  ArgsT&&... args
+) {
 
   _parent->_join_counter.fetch_add(1);
 
@@ -1772,7 +1840,7 @@ auto Subflow::named_async(const std::string& name, F&& f, ArgsT&&... args) {
   node->_topology = _parent->_topology;
   node->_parent = _parent;
 
-  _executor._schedule(this_worker().worker, node);
+  _executor._schedule(w, node);
 
   return fu;
 }
@@ -1783,9 +1851,11 @@ auto Subflow::async(F&& f, ArgsT&&... args) {
   return named_async("", std::forward<F>(f), std::forward<ArgsT>(args)...);
 }
 
-// Function: silent_async
+// Function: _named_silent_async
 template <typename F, typename... ArgsT>
-void Subflow::named_silent_async(const std::string& name, F&& f, ArgsT&&... args) {
+void Subflow::_named_silent_async(
+  Worker* w, const std::string& name, F&& f, ArgsT&&... args
+) {
 
   _parent->_join_counter.fetch_add(1);
 
@@ -1800,7 +1870,15 @@ void Subflow::named_silent_async(const std::string& name, F&& f, ArgsT&&... args
   node->_topology = _parent->_topology;
   node->_parent = _parent;
   
-  _executor._schedule(this_worker().worker, node);
+  _executor._schedule(w, node);
+}
+
+// Function: silent_async
+template <typename F, typename... ArgsT>
+void Subflow::named_silent_async(const std::string& name, F&& f, ArgsT&&... args) {
+  _named_silent_async(
+    _executor._this_worker(), name, std::forward<F>(f), std::forward<ArgsT>(args)...
+  );
 }
 
 // Function: named_silent_async

@@ -9,18 +9,17 @@ namespace tf {
 // ----------------------------------------------------------------------------
 
 template <typename B, typename E, typename T, typename O>
-Task FlowBuilder::reduce(B&& beg, E&& end, T& init, O bop) {
+Task FlowBuilder::reduce(B beg, E end, T& init, O bop) {
   
-  using I = stateful_iterator_t<B, E>;
+  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  Task task = emplace(
-  [b=std::forward<B>(beg), e=std::forward<E>(end), &r=init, bop] 
-  (Subflow& sf) mutable {
+  Task task = emplace([b=beg, e=end, &r=init, bop] (Subflow& sf) mutable {
     
     // fetch the iterator values
-    I beg = b;
-    I end = e;
+    B_t beg = b;
+    E_t end = e;
   
     if(beg == end) {
       return;
@@ -51,7 +50,8 @@ Task FlowBuilder::reduce(B&& beg, E&& end, T& init, O bop) {
       }
 
       //sf.emplace([&mutex, &next, &r, beg, N, W, o, C] () mutable {
-      sf.silent_async([&mutex, &next, &r, beg, N, W, bop, C] () mutable {
+      sf._named_silent_async(
+        &sf._worker, "part_"s + std::to_string(w), [=, &mutex, &next, &r] () mutable {
         
         size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
@@ -134,19 +134,18 @@ Task FlowBuilder::reduce(B&& beg, E&& end, T& init, O bop) {
 
 template <typename B, typename E, typename T, typename BOP, typename UOP>
 Task FlowBuilder::transform_reduce(
-  B&& beg, E&& end, T& init, BOP bop, UOP uop
+  B beg, E end, T& init, BOP bop, UOP uop
 ) {
 
-  using I = stateful_iterator_t<B, E>;
+  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  Task task = emplace(
-  [b=std::forward<B>(beg), e=std::forward<E>(end), &r=init, bop, uop] 
-  (Subflow& sf) mutable {
+  Task task = emplace([b=beg, e=end, &r=init, bop, uop] (Subflow& sf) mutable {
     
     // fetch the iterator values
-    I beg = b;
-    I end = e;
+    B_t beg = b;
+    E_t end = e;
   
     if(beg == end) {
       return;
@@ -177,7 +176,8 @@ Task FlowBuilder::transform_reduce(
       }
 
       //sf.emplace([&mutex, &next, &r, beg, N, W, bop, uop, C] () mutable {
-      sf.silent_async([&mutex, &next, &r, beg, N, W, bop, uop, C] () mutable {
+      sf._named_silent_async(
+        &sf._worker, "part_"s + std::to_string(w), [=, &mutex, &next, &r] () mutable {
         
         size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 

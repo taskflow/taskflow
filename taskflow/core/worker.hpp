@@ -11,8 +11,20 @@
 
 namespace tf {
 
+// ----------------------------------------------------------------------------
+// Class Definition: Worker
+// ----------------------------------------------------------------------------
+
 /**
-@private
+@class Worker
+
+@brief class to create a worker thread in an executor
+
+A worker is a high-level data structure that represents a thread
+spawned from an executor.
+
+The worker class is mainly used as an opaque data structure for
+users to perform detailed scheduling controls.
 */
 class Worker {
 
@@ -28,31 +40,51 @@ class Worker {
     std::default_random_engine _rdgen { std::random_device{}() };
     TaskQueue<Node*> _wsq;
 
+  public:
+
+    /**
+    @brief queries the worker id associated with its executor
+
+    A worker id is a unsigned integer in the range <tt>[0, N)</tt>,
+    where @c N is the number of workers spawned at the construction
+    time of the executor.
+    */
+    size_t id() const;
+
 };
 
-/**
-@private
-*/
-struct PerThreadWorker {
-
-  Worker* worker;
-
-  PerThreadWorker() : worker {nullptr} {}
-
-  PerThreadWorker(const PerThreadWorker&) = delete;
-  PerThreadWorker(PerThreadWorker&&) = delete;
-
-  PerThreadWorker& operator = (const PerThreadWorker&) = delete;
-  PerThreadWorker& operator = (PerThreadWorker&&) = delete;
-};
-
-/**
-@private
-*/
-inline PerThreadWorker& this_worker() {
-  thread_local PerThreadWorker worker;
-  return worker;
+// Function: id
+inline size_t Worker::id() const {
+  return _id;
 }
+
+// ----------------------------------------------------------------------------
+// Class Definition: PerThreadWorker
+// ----------------------------------------------------------------------------
+
+/**
+@private
+*/
+//struct PerThreadWorker {
+//
+//  Worker* worker;
+//
+//  PerThreadWorker() : worker {nullptr} {}
+//
+//  PerThreadWorker(const PerThreadWorker&) = delete;
+//  PerThreadWorker(PerThreadWorker&&) = delete;
+//
+//  PerThreadWorker& operator = (const PerThreadWorker&) = delete;
+//  PerThreadWorker& operator = (PerThreadWorker&&) = delete;
+//};
+
+/**
+@private
+*/
+//inline PerThreadWorker& this_worker() {
+//  thread_local PerThreadWorker worker;
+//  return worker;
+//}
 
 // ----------------------------------------------------------------------------
 // Class Definition: WorkerView

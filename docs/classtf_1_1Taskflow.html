@@ -62,7 +62,7 @@
             </li>
           </ul>
         </div>
-<p>A taskflow manages a task dependency graph where each task represents a callable object (e.g., <a href="https://en.cppreference.com/w/cpp/language/lambda">lambda</a>, <a href="https://en.cppreference.com/w/cpp/utility/functional/function">std::<wbr />function</a>) and an edge represents a dependency between two tasks. A task is one of the following types:</p><ol><li>static task : the callable is constructible from <code>std::function&lt;void()&gt;</code></li><li>dynamic task : the callable is constructible from <code>std::function&lt;void(tf::Subflow&amp;)&gt;</code></li><li>condition task : the callable is constructible from <code>std::function&lt;int()&gt;</code></li><li>multi-condition task: the callable is constructible from <code>std::function&lt;tf::SmallVector&lt;int&gt;()&gt;</code></li><li>module task : the task is constructed from <a href="classtf_1_1FlowBuilder.html#a0a01192f4f92c15380a4f259e2fec2d9" class="m-doc">tf::<wbr />Taskflow::<wbr />composed_of</a></li><li>cudaFlow task : the callable is constructible from <code>std::function&lt;void(tf::cudaFlow&amp;)&gt;</code> or <code>std::function&lt;void(tf::cudaFlowCapturer&amp;)&gt;</code></li><li>syclFlow task : the callable is constructible from <code>std::function&lt;void(tf::syclFlow&amp;)&gt;</code></li></ol><p>Each task is a basic computation unit and is run by one worker thread from an executor. The following example creates a simple taskflow graph of four static tasks, <code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code>, where <code>A</code> runs before <code>B</code> and <code>C</code> and <code>D</code> runs after <code>B</code> and <code>C</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
+<p>A taskflow manages a task dependency graph where each task represents a callable object (e.g., <a href="https://en.cppreference.com/w/cpp/language/lambda">lambda</a>, <a href="https://en.cppreference.com/w/cpp/utility/functional/function">std::<wbr />function</a>) and an edge represents a dependency between two tasks. A task is one of the following types:</p><ol><li>static task : the callable is constructible from <code>std::function&lt;void()&gt;</code></li><li>dynamic task : the callable is constructible from <code>std::function&lt;void(tf::Subflow&amp;)&gt;</code></li><li>condition task : the callable is constructible from <code>std::function&lt;int()&gt;</code></li><li>multi-condition task: the callable is constructible from <code>std::function&lt;tf::SmallVector&lt;int&gt;()&gt;</code></li><li>module task : the task is constructed from <a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc">tf::<wbr />Taskflow::<wbr />composed_of</a></li><li>cudaFlow task : the callable is constructible from <code>std::function&lt;void(tf::cudaFlow&amp;)&gt;</code> or <code>std::function&lt;void(tf::cudaFlowCapturer&amp;)&gt;</code></li><li>syclFlow task : the callable is constructible from <code>std::function&lt;void(tf::syclFlow&amp;)&gt;</code></li></ol><p>Each task is a basic computation unit and is run by one worker thread from an executor. The following example creates a simple taskflow graph of four static tasks, <code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code>, where <code>A</code> runs before <code>B</code> and <code>C</code> and <code>D</code> runs after <code>B</code> and <code>C</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;simple&quot;</span><span class="p">);</span>
 
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">A</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TaskA</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span> 
@@ -144,6 +144,10 @@
               <span class="m-doc-wrap-bumper">void <a href="#a6350d0d6653ae9ae7b94c35e42fffe07" class="m-doc">for_each_task</a>(</span><span class="m-doc-wrap">V&amp;&amp; visitor) const</span>
             </dt>
             <dd>applies a visitor to each task in the taskflow</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a8da984d149b439e88468bf26e02ecf27" class="m-doc">graph</a>(</span><span class="m-doc-wrap">) -&gt; Graph&amp;</span>
+            </dt>
+            <dd>returns a reference to the underlying graph object</dd>
           </dl>
         </section>
         <section>
@@ -246,6 +250,13 @@
 <p>A visitor is a callable that takes an argument of type <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> and returns nothing. The following example iterates each task in a taskflow and prints its name:</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">for_each_task</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">task</span><span class="p">){</span>
   <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">task</span><span class="p">.</span><span class="n">name</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span>
 <span class="p">});</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a8da984d149b439e88468bf26e02ecf27"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">Graph&amp; tf::<wbr />Taskflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8da984d149b439e88468bf26e02ecf27" class="m-doc-self">graph</a>(</span><span class="m-doc-wrap">)</span></span>
+            </h3>
+            <p>returns a reference to the underlying graph object</p>
+<p>A graph object (of type tf::Graph) is the ultimate storage for the task dependency graph and should only be used as an opaque data structure to interact with the executor (e.g., composition).</p>
           </div></section>
         </section>
       </div>

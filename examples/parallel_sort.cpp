@@ -2,6 +2,7 @@
 // in parallel using tf::Taskflow::sort and compares it against
 // the sequential sort std::sort.
 #include <taskflow/taskflow.hpp>
+#include <taskflow/algorithm/sort.hpp>
 
 // generate a random string
 std::string random_string(size_t len) {

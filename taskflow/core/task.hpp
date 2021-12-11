@@ -269,8 +269,9 @@ class Task {
     
     /**
     @brief creates a module task from a taskflow
-
-    @param graph a custom object that defines @c T::graph() method
+    
+    @tparam T object type
+    @param object a custom object that defines @c T::graph() method
 
     @return @c *this
     */

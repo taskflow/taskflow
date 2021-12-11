@@ -2,14 +2,15 @@ namespace tf {
 
 /** @page ParallelIterations Parallel Iterations
 
-%Taskflow provides template function that constructs a task to perform parallel iterations over a range of items.
+%Taskflow provides template functions for constructing
+tasks to perform parallel iterations over ranges of items.
 
 @tableofcontents
 
-@section A1IndexBasedParallelFor Index-based Parallel Iterations
+@section A1IndexBasedParallelFor Create an Index-based Parallel-Iteration Task
 
 Index-based parallel-for performs parallel iterations over a range <tt>[first, last)</tt> with the given @c step size.
-The task created by tf::Taskflow::for_each_index(B&& first, E&& last, S&& step, C callable) represents parallel execution of the following loop:
+The task created by tf::Taskflow::for_each_index(B first, E last, S step, C callable) represents parallel execution of the following loop:
 
 @code{.cpp}
 // positive step
@@ -70,10 +71,10 @@ When @c init finishes, the parallel-for task @c pf will see @c first as 0 and @c
 This property is especially important for task graph parallelism, because users can define end-to-end parallelism through stateful closures that marshal parameter exchange between dependent tasks.
 
 
-@section A1IteratorBasedParallelFor Iterator-based Parallel Iterations
+@section A1IteratorBasedParallelFor Create an Iterator-based Parallel-Iteration Task
 
 Iterator-based parallel-for performs parallel iterations over a range specified by two <a href="https://en.cppreference.com/w/cpp/iterator/iterator">STL-styled iterators</a>, @c first and @c last. 
-The task created by tf::Taskflow::for_each(B&& first, E&& last, C callable) represents 
+The task created by tf::Taskflow::for_each(B first, E last, C callable) represents 
 a parallel execution of the following loop:
 
 @code{.cpp}
@@ -82,7 +83,7 @@ for(auto i=first; i<last; i++) {
 }
 @endcode
 
-By default, tf::Taskflow::for_each(B&& first, E&& last, C&& callable) creates a task that spawns a subflow (see @ref DynamicTasking) that applies the callable to the object obtained by dereferencing every iterator in the range <tt>[first, last)</tt>.
+By default, tf::Taskflow::for_each(B first, E last, C callable) creates a task that spawns a subflow (see @ref DynamicTasking) that applies the callable to the object obtained by dereferencing every iterator in the range <tt>[first, last)</tt>.
 It is user's responsibility for ensuring the range is valid within the execution of the parallel-for task. Iterators must have the post-increment operator @++ defined. This version of parallel-for applies to all iterable STL containers.
 
 @code{.cpp}

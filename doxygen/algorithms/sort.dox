@@ -2,13 +2,19 @@ namespace tf {
 
 /** @page ParallelSort Parallel Sort
 
-%Taskflow provides template function that constructs a task to sort a range of items in parallel.
+%Taskflow provides template functions for constructing tasks
+to sort ranges of items in parallel.
 
 @tableofcontents
 
+@section ParallelSortInclude Include the Header
+
+You need to include the header file, <tt>taskflow/algorithm/transform.hpp</tt>,
+for creating a parallel-sort task.
+
 @section SortARangeOfItems Sort a Range of Items
 
-The task created by tf::Taskflow::sort(B&& first, E&& last) 
+The task created by tf::Taskflow::sort(B first, E last) 
 performs parallel sort to rank a range of elements specified by 
 <tt>[first, last)</tt> in increasing order.
 The given iterators must be @em random-accessible.
@@ -32,7 +38,7 @@ Elements are compared using the operator @c <.
 
 @section SortARangeOfItemsWithACustomComparator Sort a Range of Items with a Custom Comparator
 
-tf::Taskflow::sort(B&& first, E&& last, C cmp) is an overload of 
+tf::Taskflow::sort(B first, E last, C cmp) is an overload of 
 parallel sort that allows users to specify a custom comparator.
 The following example sorts a data vector in decreasing order.
 

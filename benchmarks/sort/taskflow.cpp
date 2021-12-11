@@ -1,5 +1,6 @@
 #include "sort.hpp"
 #include <taskflow/taskflow.hpp> 
+#include <taskflow/algorithm/sort.hpp>
 
 void sort_taskflow(unsigned num_threads) {
 

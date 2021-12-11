@@ -14,17 +14,17 @@ namespace tf {
 
 // Function: for_each
 template <typename B, typename E, typename C>
-Task FlowBuilder::for_each(B&& beg, E&& end, C c) {
+Task FlowBuilder::for_each(B beg, E end, C c) {
   
-  using I = stateful_iterator_t<B, E>;
+  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  Task task = emplace(
-  [b=std::forward<B>(beg), e=std::forward<E>(end), c] (Subflow& sf) mutable {
+  Task task = emplace([b=beg, e=end, c] (Subflow& sf) mutable {
     
     // fetch the stateful values
-    I beg = b;
-    I end = e;
+    B_t beg = b;
+    E_t end = e;
 
     if(beg == end) {
       return;
@@ -49,7 +49,8 @@ Task FlowBuilder::for_each(B&& beg, E&& end, C c) {
     for(size_t w=0; w<W; w++) {
 
       //sf.emplace([&next, beg, N, chunk_size, W, c] () mutable {
-      sf.silent_async([&next, beg, N, chunk_size, W, c] () mutable {
+      sf._named_silent_async(
+        &sf._worker, "part_"s + std::to_string(w), [=, &next] () mutable {
         
         size_t z = 0;
         size_t p1 = 2 * W * (chunk_size + 1);
@@ -94,7 +95,6 @@ Task FlowBuilder::for_each(B&& beg, E&& end, C c) {
             }
           }
         }
-      //}).name("pfg_"s + std::to_string(w));
       });
     }
     
@@ -106,19 +106,20 @@ Task FlowBuilder::for_each(B&& beg, E&& end, C c) {
 
 // Function: for_each_index
 template <typename B, typename E, typename S, typename C>
-Task FlowBuilder::for_each_index(B&& beg, E&& end, S&& inc, C c){
+Task FlowBuilder::for_each_index(B beg, E end, S inc, C c){
   
-  using I = stateful_index_t<B, E, S>;
   using namespace std::string_literals;
+  
+  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using S_t = std::decay_t<unwrap_ref_decay_t<S>>;
 
-  Task task = emplace(
-  [b=std::forward<B>(beg), e=std::forward<E>(end), a=std::forward<S>(inc), c] 
-  (Subflow& sf) mutable {
+  Task task = emplace([b=beg, e=end, a=inc, c] (Subflow& sf) mutable {
     
     // fetch the iterator values
-    I beg = b;
-    I end = e;
-    I inc = a;
+    B_t beg = b;
+    E_t end = e;
+    S_t inc = a;
 
     if(is_range_invalid(beg, end, inc)) {
       TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
@@ -145,7 +146,8 @@ Task FlowBuilder::for_each_index(B&& beg, E&& end, S&& inc, C c){
     for(size_t w=0; w<W; w++) {
 
       //sf.emplace([&next, beg, inc, N, chunk_size, W, c] () mutable {
-      sf.silent_async([&next, beg, inc, N, chunk_size, W, c] () mutable {
+      sf._named_silent_async(
+        &sf._worker, "part_"s + std::to_string(w), [=, &next] () mutable {
         
         size_t p1 = 2 * W * (chunk_size + 1);
         double p2 = 0.5 / static_cast<double>(W);
@@ -163,7 +165,7 @@ Task FlowBuilder::for_each_index(B&& beg, E&& end, S&& inc, C c){
                 return;
               }
               size_t e0 = (chunk_size <= (N - s0)) ? s0 + chunk_size : N;
-              auto s = static_cast<I>(s0) * inc + beg;
+              auto s = static_cast<B_t>(s0) * inc + beg;
               for(size_t x=s0; x<e0; x++, s+=inc) {
                 c(s);
               }
@@ -179,7 +181,7 @@ Task FlowBuilder::for_each_index(B&& beg, E&& end, S&& inc, C c){
             size_t e0 = (q <= r) ? s0 + q : N;
             if(next.compare_exchange_strong(s0, e0, std::memory_order_relaxed,
                                                     std::memory_order_relaxed)) {
-              auto s = static_cast<I>(s0) * inc + beg;
+              auto s = static_cast<B_t>(s0) * inc + beg;
               for(size_t x=s0; x<e0; x++, s+= inc) {
                 c(s);
               }

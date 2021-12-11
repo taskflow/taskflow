@@ -75,8 +75,6 @@ class Taskflow : public FlowBuilder {
   friend class FlowBuilder;
 
   struct Dumper {
-    //std::stack<const Taskflow*> stack;
-    //std::unordered_set<const Taskflow*> visited;
     size_t id;
     std::stack<std::pair<const Node*, const Graph*>> stack;
     std::unordered_map<const Graph*, size_t> visited;
@@ -251,8 +249,15 @@ class Taskflow : public FlowBuilder {
     */
     template <typename V>
     void for_each_task(V&& visitor) const;
+    
+    /**
+    @brief returns a reference to the underlying graph object
 
-    Graph& graph() { return _graph; }
+    A graph object (of type tf::Graph) is the ultimate storage for the 
+    task dependency graph and should only be used as an opaque
+    data structure to interact with the executor (e.g., composition).
+    */
+    Graph& graph();
 
   private:
     
@@ -309,7 +314,7 @@ inline Taskflow& Taskflow::operator = (Taskflow&& rhs) {
 
 // Procedure:
 inline void Taskflow::clear() {
-  _graph.clear();
+  _graph._clear();
 }
 
 // Function: num_tasks
@@ -330,6 +335,11 @@ inline void Taskflow::name(const std::string &name) {
 // Function: name
 inline const std::string& Taskflow::name() const {
   return _name;
+}
+
+// Function: graph
+inline Graph& Taskflow::graph() {
+  return _graph;
 }
 
 // Function: for_each_task
@@ -629,7 +639,7 @@ bool Future<T>::cancel() {
     else {
       auto ptr = arg.lock();
       if(ptr) {
-        ptr->_is_cancelled = true;
+        ptr->_is_cancelled.store(true, std::memory_order_relaxed);
         return true;
       }
       return false;

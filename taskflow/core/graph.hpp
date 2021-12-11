@@ -13,11 +13,20 @@
 #include "environment.hpp"
 #include "topology.hpp"
 
+/** 
+@file graph.hpp
+@brief graph include file
+*/
+
 namespace tf {
 
 // ----------------------------------------------------------------------------
 // Class: CustomGraphBase
 // ----------------------------------------------------------------------------
+
+/**
+@private
+*/
 class CustomGraphBase {
 
   public:
@@ -29,64 +38,115 @@ class CustomGraphBase {
 // ----------------------------------------------------------------------------
 // Class: Graph
 // ----------------------------------------------------------------------------
+
+/**
+@class Graph
+
+@brief class to create a graph object 
+
+A graph is the ultimate storage for a task dependency graph and is the main
+gateway to interact with an executor.
+A graph manages a set of nodes in a global object pool that animates and
+recycles node objects efficiently without going through repetitive and
+expensive memory allocations and deallocations.
+This class is mainly used for creating an opaque graph object in a custom
+class to interact with the executor through taskflow composition.
+
+A graph object is move-only.
+*/
 class Graph {
 
   friend class Node;
+  friend class FlowBuilder;
+  friend class Subflow;
   friend class Taskflow;
   friend class Executor;
 
   public:
-
+    
+    /**
+    @brief constructs a graph object
+    */
     Graph() = default;
+
+    /**
+    @brief disabled copy constructor
+    */
     Graph(const Graph&) = delete;
+
+    /**
+    @brief constructs a graph using move semantics
+    */
     Graph(Graph&&);
 
+    /**
+    @brief destructs the graph object
+    */
     ~Graph();
-
+    
+    /**
+    @brief disabled copy assignment operator
+    */
     Graph& operator = (const Graph&) = delete;
+
+    /**
+    @brief assigns a graph using move semantics
+    */
     Graph& operator = (Graph&&);
     
-    void clear();
-    void clear_detached();
-    void merge(Graph&&);
-
+    /**
+    @brief queries if the graph is empty
+    */
     bool empty() const;
-
-    size_t size() const;
     
-    template <typename ...Args>
-    Node* emplace_back(Args&& ...); 
-
-    Node* emplace_back();
-
-    void erase(Node*);
+    /**
+    @brief queries the number of nodes in the graph
+    */
+    size_t size() const;
 
   private:
 
     std::vector<Node*> _nodes;
+    
+    void _clear();
+    void _clear_detached();
+    void _merge(Graph&&);
+    void _erase(Node*);
+    
+    template <typename ...Args>
+    Node* _emplace_back(Args&& ...); 
+
+    Node* _emplace_back();
 };
 
 // ----------------------------------------------------------------------------
 
-// TODO
 class Runtime {
 
   public:
 
-  explicit Runtime(Executor& e) : _executor{e} {
+  explicit Runtime(Executor& e, Worker& w) : _executor{e}, _worker{w} {
   }
 
   Executor& executor() { return _executor; }
 
+  Worker& worker() { return _worker; }
+
   private:
 
   Executor& _executor;
+
+  Worker& _worker;
 };
 
 
 // ----------------------------------------------------------------------------
+// Node
+// ----------------------------------------------------------------------------
 
-// Class: Node
+/**
+@private
+*/
 class Node {
   
   friend class Graph;
@@ -159,8 +219,6 @@ class Node {
     template <typename T>
     Module(T&);
 
-    // TODO: change the reference to graph
-    //Taskflow& module;
     Graph& graph;
   };
 
@@ -286,6 +344,10 @@ class Node {
 // ----------------------------------------------------------------------------
 // Node Object Pool
 // ----------------------------------------------------------------------------
+
+/**
+@private
+*/
 inline ObjectPool<Node> node_pool;
 
 // ----------------------------------------------------------------------------
@@ -555,7 +617,7 @@ inline SmallVector<Node*> Node::_release_all() {
 
 // Destructor
 inline Graph::~Graph() {
-  clear();
+  _clear();
 }
 
 // Move constructor
@@ -565,13 +627,13 @@ inline Graph::Graph(Graph&& other) :
 
 // Move assignment
 inline Graph& Graph::operator = (Graph&& other) {
-  clear();
+  _clear();
   _nodes = std::move(other._nodes);
   return *this;
 }
 
 // Procedure: clear
-inline void Graph::clear() {
+inline void Graph::_clear() {
   for(auto node : _nodes) {
     node_pool.recycle(node);
   }
@@ -579,7 +641,7 @@ inline void Graph::clear() {
 }
 
 // Procedure: clear_detached
-inline void Graph::clear_detached() {
+inline void Graph::_clear_detached() {
 
   auto mid = std::partition(_nodes.begin(), _nodes.end(), [] (Node* node) {
     return !(node->_state.load(std::memory_order_relaxed) & Node::DETACHED);
@@ -592,11 +654,19 @@ inline void Graph::clear_detached() {
 }
 
 // Procedure: merge
-inline void Graph::merge(Graph&& g) {
+inline void Graph::_merge(Graph&& g) {
   for(auto n : g._nodes) {
     _nodes.push_back(n);
   }
   g._nodes.clear();
+}
+
+// Function: erase
+inline void Graph::_erase(Node* node) {
+  if(auto I = std::find(_nodes.begin(), _nodes.end(), node); I != _nodes.end()) {
+    _nodes.erase(I);
+    node_pool.recycle(node);
+  }
 }
 
 // Function: size
@@ -612,24 +682,18 @@ inline bool Graph::empty() const {
 // Function: emplace_back
 // create a node from a give argument; constructor is called if necessary
 template <typename ...ArgsT>
-Node* Graph::emplace_back(ArgsT&&... args) {
+Node* Graph::_emplace_back(ArgsT&&... args) {
   _nodes.push_back(node_pool.animate(std::forward<ArgsT>(args)...));
   return _nodes.back();
 }
 
 // Function: emplace_back
 // create a node from a give argument; constructor is called if necessary
-inline Node* Graph::emplace_back() {
+inline Node* Graph::_emplace_back() {
   _nodes.push_back(node_pool.animate());
   return _nodes.back();
 }
 
-// Function: erase
-inline void Graph::erase(Node* node) {
-  if(auto I = std::find(_nodes.begin(), _nodes.end(), node); I != _nodes.end()) {
-    _nodes.erase(I);
-    node_pool.recycle(node);
-  }
-}
+
 
 }  // end of namespace tf. ---------------------------------------------------

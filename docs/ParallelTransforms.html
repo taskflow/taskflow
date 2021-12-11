@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Taskflow Algorithms &raquo; Parallel Transforms | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="Algorithms.html">Taskflow Algorithms</a> &raquo;</span>
+          Parallel Transforms
+        </h1>
+        <div class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li><a href="#ParallelTransformsInclude">Include the Header</a></li>
+            <li><a href="#ParallelTransformsOverARange">Create a Unary Parallel-Transform Task</a></li>
+            <li><a href="#ParallelBinaryTransformsOverARange">Create a Binary Parallel-Transform Task</a></li>
+          </ul>
+        </div>
+<p>Taskflow provides template functions for constructing tasks to perform parallel transforms over ranges of items.</p><section id="ParallelTransformsInclude"><h2><a href="#ParallelTransformsInclude">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/algorithm/transform.hpp</code>, for creating a parallel-transform task.</p></section><section id="ParallelTransformsOverARange"><h2><a href="#ParallelTransformsOverARange">Create a Unary Parallel-Transform Task</a></h2><p>Parallel-transform transforms a range of items, possibly with a different type for the transformed data, and stores the result in another range. The task created by <a href="classtf_1_1FlowBuilder.html#abd813bd7afcbd8e6f56dc67883917d1a" class="m-doc">tf::<wbr />Taskflow::<wbr />transform(B first1, E last1, O d_first, C c)</a> is equivalent to a parallel execution of the following loop:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first1</span> <span class="o">!=</span> <span class="n">last1</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">d_first</span><span class="o">++</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="o">*</span><span class="n">first1</span><span class="o">++</span><span class="p">);</span>
+<span class="p">}</span></pre><p>By default, <a href="classtf_1_1FlowBuilder.html#abd813bd7afcbd8e6f56dc67883917d1a" class="m-doc">tf::<wbr />Taskflow::<wbr />transform(B first1, E last1, O d_first, C c)</a> creates a task to spawn a subflow (see <a href="DynamicTasking.html" class="m-doc">Dynamic Tasking</a>) that simultaneously applies the callable <code>c</code> to the object obtained by dereferencing every iterator in the range <code>[first1, last1)</code> and stores the result in another range beginning at <code>d_first</code>. It is user&#x27;s responsibility for ensuring the range is valid within the execution of the parallel-transform task. <a href="classtf_1_1Taskflow.html" class="m-doc">Taskflow</a>&#x27;s parallel-transform tasks work on all iterable STL containers.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">src</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">tgt</span><span class="p">(</span><span class="n">src</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">transform</span><span class="p">(</span><span class="n">src</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">src</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="p">[](</span><span class="kt">int</span> <span class="n">i</span><span class="p">){</span> 
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;transforming item &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; to &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+  <span class="k">return</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">});</span></pre><p>You can enable stateful iterators by creating a reference wrapper and pass the wrapped iterator to the argument of <a href="classtf_1_1FlowBuilder.html#abd813bd7afcbd8e6f56dc67883917d1a" class="m-doc">tf::<wbr />Taskflow::<wbr />transform</a>. This is especially useful when the range is not known at the time of creating a parallel-transform task, but through another task.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">src</span><span class="p">,</span> <span class="n">tgt</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">,</span> <span class="n">d_first</span><span class="p">;</span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">init</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
+  <span class="n">src</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+  <span class="n">tgt</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+  <span class="n">first</span>   <span class="o">=</span> <span class="n">src</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+  <span class="n">last</span>    <span class="o">=</span> <span class="n">src</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
+  <span class="n">d_first</span> <span class="o">=</span> <span class="n">tgt</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+<span class="p">});</span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">transform</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">for_each</span><span class="p">(</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">ref</span><span class="p">(</span><span class="n">first</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">ref</span><span class="p">(</span><span class="n">last</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">ref</span><span class="p">(</span><span class="n">d_first</span><span class="p">),</span> 
+  <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;transforming item &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; to &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">);</span>
+
+<span class="n">init</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">transform</span><span class="p">);</span></pre><p>When <code>init</code> finishes, the parallel-transform task <code>transform</code> will see <code>first</code> pointing to the beginning of <code>src</code> and <code>last</code> pointing to the end of <code>src</code>. Then, it simultaneously transforms these 1000 items by adding one to each element and stores the result in another range starting at <code>d_first</code>.</p></section><section id="ParallelBinaryTransformsOverARange"><h2><a href="#ParallelBinaryTransformsOverARange">Create a Binary Parallel-Transform Task</a></h2><p>You can use the overload, <a href="classtf_1_1FlowBuilder.html#aa0b3271b34317710a1e32053a9abc3cf" class="m-doc">tf::<wbr />Taskflow::<wbr />transform(B1 first1, E1 last1, B2 first2, O d_first, C c)</a>, to perform parallel transforms on two source ranges pointed by <code>first1</code> and <code>first2</code> using the binary operator <code>c</code> and store the result in another range pointed by <code>d_first</code>. This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first1</span> <span class="o">!=</span> <span class="n">last1</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">d_first</span><span class="o">++</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="o">*</span><span class="n">first1</span><span class="o">++</span><span class="p">,</span> <span class="o">*</span><span class="n">first2</span><span class="o">++</span><span class="p">);</span>
+<span class="p">}</span></pre><p>The following example creates a parallel-transform task that adds two ranges of elements one by one and stores the result in a target range:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">src1</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">src2</span> <span class="o">=</span> <span class="p">{</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">tgt</span><span class="p">(</span><span class="n">src</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">transform</span><span class="p">(</span>
+  <span class="n">src1</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">src1</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">src2</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">tgt</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> 
+  <span class="p">[](</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">){</span> 
+    <span class="k">return</span> <span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">);</span></pre></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

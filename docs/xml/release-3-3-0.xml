@@ -30,16 +30,13 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect2 id="release-3-3-0_1release-3-3-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>Changed all lambda operators in parallel algorithms to copy by default</para></listitem><listitem><para>Cleaned up data race errors in <ulink url="https://github.com/google/sanitizers">tsan</ulink> caused by incorrect memory order</para></listitem><listitem><para>Added <ref refid="classtf_1_1Task_1afd82ab6d6518d1142a72c4d2c97ff114" kindref="member">tf::Task::data</ref> to allow associating a task with user-level data</para></listitem><listitem><para>Added <ref refid="classtf_1_1Executor_1a51acee1670e9f246c7ccd7f6a63f1524" kindref="member">tf::Executor::named_async</ref> to allow associating an asynchronous task a name</para></listitem><listitem><para>Added <ref refid="classtf_1_1Executor_1a1febfaa7a99cac8466263c58fd2a7c06" kindref="member">tf::Executor::named_silent_async</ref> to allow associating a silent asynchronous task a name</para></listitem><listitem><para>Added <ref refid="classtf_1_1Subflow_1ae528c2de98ec89afc50b8815c0306b5e" kindref="member">tf::Subflow::named_async</ref> to allow associating an asynchronous task a name</para></listitem><listitem><para>Added <ref refid="classtf_1_1Subflow_1a3290b8f729c4511f2023199e4c067951" kindref="member">tf::Subflow::named_silent_async</ref> to allow associating a silent asynchronous task a name</para></listitem><listitem><para>Added multi-conditional tasking to allow a task to jump to multiple branches</para></listitem></itemizedlist>
+<listitem><para>Changed all lambda operators in parallel algorithms to copy by default</para></listitem><listitem><para>Cleaned up data race errors in <ulink url="https://github.com/google/sanitizers">tsan</ulink> caused by incorrect memory order</para></listitem><listitem><para>Added <ref refid="classtf_1_1Task_1afd82ab6d6518d1142a72c4d2c97ff114" kindref="member">tf::Task::data</ref> to allow associating a task with user-level data</para></listitem><listitem><para>Added <ref refid="classtf_1_1Executor_1a51acee1670e9f246c7ccd7f6a63f1524" kindref="member">tf::Executor::named_async</ref> to allow associating an asynchronous task a name</para></listitem><listitem><para>Added <ref refid="classtf_1_1Executor_1a1febfaa7a99cac8466263c58fd2a7c06" kindref="member">tf::Executor::named_silent_async</ref> to allow associating a silent asynchronous task a name</para></listitem><listitem><para>Added <ref refid="classtf_1_1Subflow_1ae528c2de98ec89afc50b8815c0306b5e" kindref="member">tf::Subflow::named_async</ref> to allow associating an asynchronous task a name</para></listitem><listitem><para>Added <ref refid="classtf_1_1Subflow_1a3290b8f729c4511f2023199e4c067951" kindref="member">tf::Subflow::named_silent_async</ref> to allow associating a silent asynchronous task a name</para></listitem><listitem><para>Added multi-conditional tasking to allow a task to jump to multiple branches</para></listitem><listitem><para>Added runtime tasking to allow in-task control over the running executor</para></listitem><listitem><para>Added <ref refid="classtf_1_1FlowBuilder_1abd813bd7afcbd8e6f56dc67883917d1a" kindref="member">tf::Taskflow::transform</ref> parallel-transform algorithms</para></listitem></itemizedlist>
 </para></sect2>
 <sect2 id="release-3-3-0_1release-3-3-0_cudaflow">
 <title>cudaFlow</title>
 </sect2>
 <sect2 id="release-3-3-0_1release-3-3-0_syclflow">
 <title>syclFlow</title>
-</sect2>
-<sect2 id="release-3-3-0_1release-3-3-0_cuda_std_algorithms">
-<title>CUDA Standard Parallel Algorithms</title>
 </sect2>
 <sect2 id="release-3-3-0_1release-3-3-0_utilities">
 <title>Utilities</title>
@@ -53,11 +50,13 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_bug_fixes">
 <title>Bug Fixes</title>
 <para><itemizedlist>
-<listitem><para>Fixed memory leak in updating <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> of undestroyed graph</para></listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a7ef36ae799b89a5a37a2c5b09b12349c" kindref="member">tf::Taskflow::sort</ref></para></listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1abc7f5fa54f40901d10f5f26062be3f40" kindref="member">tf::Taskflow::for_each</ref></para></listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1ac17879c60511d573e35f73ef3f620d8d" kindref="member">tf::Taskflow::for_each_index</ref></para></listitem></itemizedlist>
+<listitem><para>Fixed memory leak in updating <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> of undestroyed graph</para></listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" kindref="member">tf::Taskflow::sort</ref></para></listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1ab405d7b10040530d8b04c11767b4960d" kindref="member">tf::Taskflow::for_each</ref></para></listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a38ffe176bc3ae1827b9964322e3769d4" kindref="member">tf::Taskflow::for_each_index</ref></para></listitem></itemizedlist>
 </para></sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_breaking_changes">
 <title>Breaking Changes</title>
-</sect1>
+<para>For compilation speed purpose, you will need to separately include the follwoing files for using specific features:<itemizedlist>
+<listitem><para><computeroutput>taskflow/algorithm/sort.hpp</computeroutput> for creating a parallel-sort task</para></listitem><listitem><para><computeroutput>taskflow/algorithm/transform.hpp</computeroutput> for creating a parallel-transform task</para></listitem><listitem><para><computeroutput>taskflow/algorithm/pipeline.hpp</computeroutput> for creating a parallel-pipeline task</para></listitem></itemizedlist>
+</para></sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_deprecated_items">
 <title>Deprecated and Removed Items</title>
 </sect1>
@@ -72,12 +71,12 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <listitem><para><ref refid="ConditionalTasking_1CreateAMultiConditionTask" kindref="member">Create a Multi-condition Task</ref></para></listitem></itemizedlist>
 </para></listitem><listitem><para>Revised <ref refid="GPUTaskingcudaFlow" kindref="compound">GPU Tasking (cudaFlow)</ref></para></listitem><listitem><para>Revised <ref refid="GPUTaskingcudaFlowCapturer" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref></para></listitem><listitem><para>Revised <ref refid="LimitTheMaximumConcurrency" kindref="compound">Limit the Maximum Concurrency</ref><itemizedlist>
 <listitem><para><ref refid="LimitTheMaximumConcurrency_1DefineAConflictGraph" kindref="member">Define a Conflict Graph</ref></para></listitem></itemizedlist>
-</para></listitem></itemizedlist>
+</para></listitem><listitem><para>Revised <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref></para></listitem><listitem><para>Added <ref refid="ParallelTransforms" kindref="compound">Parallel Transforms</ref></para></listitem></itemizedlist>
 </para></sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_miscellaneous_items">
 <title>Miscellaneous Items</title>
-<para>We have published Taskflow in the following journal:<itemizedlist>
-<listitem><para>Tsung-Wei Huang, Dian-Lun Lin, Chun-Xun Lin, and Yibo Lin, "<ulink url="https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf">Taskflow: A Lightweight Parallel and Heterogeneous Task Graph Computing System</ulink>," <emphasis>IEEE Transactions on Parallel and Distributed Systems (TPDS)</emphasis>, 2021 </para></listitem></itemizedlist>
+<para>We have published Taskflow in the following venues:<itemizedlist>
+<listitem><para>Tsung-Wei Huang, Dian-Lun Lin, Chun-Xun Lin, and Yibo Lin, "<ulink url="https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf">Taskflow: A Lightweight Parallel and Heterogeneous Task Graph Computing System</ulink>," <emphasis>IEEE Transactions on Parallel and Distributed Systems (TPDS)</emphasis>, vol. 33, no. 6, pp. 1303-1320, June 2022 </para></listitem></itemizedlist>
 </para></sect1>
     </detaileddescription>
   </compounddef>

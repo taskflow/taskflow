@@ -171,6 +171,10 @@
             </dt>
             <dd>observer interface based on the built-in taskflow profiler format</dd>
             <dt>
+              class <a href="classtf_1_1Worker.html" class="m-doc">Worker</a>
+            </dt>
+            <dd>class to create a worker thread in an executor</dd>
+            <dt>
               class <a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a>
             </dt>
             <dd>class to create an immutable view of a worker in an executor</dd>
@@ -189,6 +193,7 @@
               <a href="#a1355048578785a80414707ff308b395aa2b3254ba9c686e11902551e79c8e1672" class="m-doc">MULTI_CONDITION</a>,
               <a href="#a1355048578785a80414707ff308b395aa1cf5e1f5569acda3c4a88a91c5130a69" class="m-doc">MODULE</a>,
               <a href="#a1355048578785a80414707ff308b395aabe553330beb7b3d994656e0a4e66cd96" class="m-doc">ASYNC</a>,
+              <a href="#a1355048578785a80414707ff308b395aae5f5cd9fe71ac064a678f27c7d539ae8" class="m-doc">RUNTIME</a>,
               <a href="#a1355048578785a80414707ff308b395aa0db45d2a4141101bdfe48e3314cfbca3" class="m-doc">UNDEFINED</a> }</span>
             </dt>
             <dd>enumeration of all task types</dd>
@@ -642,8 +647,8 @@
         <section id="var-members">
           <h2><a href="#var-members">Variables</a></h2>
           <dl class="m-doc">
-            <dt id="adb6a1cbed8eac9ee7bb67609142cbd9c">
-              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>, 9&gt; <a href="#adb6a1cbed8eac9ee7bb67609142cbd9c" class="m-doc-self">TASK_TYPES</a> <span class="m-label m-flat m-primary">constexpr</span>
+            <dt id="ab74c19e0e6c9a4e3456dbae54ab9eed9">
+              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>, 10&gt; <a href="#ab74c19e0e6c9a4e3456dbae54ab9eed9" class="m-doc-self">TASK_TYPES</a> <span class="m-label m-flat m-primary">constexpr</span>
             </dt>
             <dd>array of all task types (used for iterating task types)</dd>
             <dt>
@@ -676,6 +681,11 @@
               bool <a href="#a574038aaa99e0220eedca4e8ea9389cf" class="m-doc">is_syclflow_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
             </dt>
             <dd>determines if a callable is a syclFlow task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename C&gt;</div>
+              bool <a href="#af3d94f0be0f7b49e195c4e92737b1f85" class="m-doc">is_runtime_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
+            </dt>
+            <dd>determines if a callable is a Runtime task</dd>
           </dl>
         </section>
         <section>
@@ -740,6 +750,12 @@
                   <td><a href="#a1355048578785a80414707ff308b395aabe553330beb7b3d994656e0a4e66cd96" class="m-doc-self" id="a1355048578785a80414707ff308b395aabe553330beb7b3d994656e0a4e66cd96">ASYNC</a></td>
                   <td>
                   <p>asynchronous task type</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#a1355048578785a80414707ff308b395aae5f5cd9fe71ac064a678f27c7d539ae8" class="m-doc-self" id="a1355048578785a80414707ff308b395aae5f5cd9fe71ac064a678f27c7d539ae8">RUNTIME</a></td>
+                  <td>
+                  <p>runtime task type</p>
                   </td>
                 </tr>
                 <tr>
@@ -826,7 +842,8 @@
 <span class="n">TaskType</span><span class="o">::</span><span class="n">CONDITION</span>       <span class="o">-&gt;</span>  <span class="s">&quot;condition&quot;</span>      
 <span class="n">TaskType</span><span class="o">::</span><span class="n">MULTI_CONDITION</span> <span class="o">-&gt;</span>  <span class="s">&quot;multi_condition&quot;</span>
 <span class="n">TaskType</span><span class="o">::</span><span class="n">MODULE</span>          <span class="o">-&gt;</span>  <span class="s">&quot;module&quot;</span>         
-<span class="n">TaskType</span><span class="o">::</span><span class="n">ASYNC</span>           <span class="o">-&gt;</span>  <span class="s">&quot;async&quot;</span></pre>
+<span class="n">TaskType</span><span class="o">::</span><span class="n">ASYNC</span>           <span class="o">-&gt;</span>  <span class="s">&quot;async&quot;</span>          
+<span class="n">TaskType</span><span class="o">::</span><span class="n">RUNTIME</span>         <span class="o">-&gt;</span>  <span class="s">&quot;runtime&quot;</span></pre>
           </div></section>
           <section class="m-doc-details" id="a6f04fd3168c45eeb2dffb223e5c81e45"><div>
             <h3>
@@ -2658,6 +2675,16 @@
             </h3>
             <p>determines if a callable is a syclFlow task</p>
 <p>A <a href="classtf_1_1syclFlow.html" class="m-doc">syclFlow</a> task is a callable object constructible from std::function&lt;void(tf::syclFlow&amp;)&gt;.</p>
+          </div></section>
+          <section class="m-doc-details" id="af3d94f0be0f7b49e195c4e92737b1f85"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename C&gt;
+              </div>
+              bool tf::<wbr /><a href="#af3d94f0be0f7b49e195c4e92737b1f85" class="m-doc-self">is_runtime_task_v</a> <span class="m-label m-primary">constexpr</span>
+            </h3>
+            <p>determines if a callable is a Runtime task</p>
+<p>A Runtime task is a callable object constructible from std::function&lt;void(tf::Runtime&amp;)&gt;.</p>
           </div></section>
         </section>
       </div>

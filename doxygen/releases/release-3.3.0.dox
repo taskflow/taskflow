@@ -48,12 +48,12 @@ and memory leak of the %Taskflow codebase.
 + Added tf::Subflow::named_async to allow associating an asynchronous task a name
 + Added tf::Subflow::named_silent_async to allow associating a silent asynchronous task a name
 + Added multi-conditional tasking to allow a task to jump to multiple branches
++ Added runtime tasking to allow in-task control over the running executor 
++ Added tf::Taskflow::transform parallel-transform algorithms
 
 @subsection release-3-3-0_cudaflow cudaFlow
 
 @subsection release-3-3-0_syclflow syclFlow
-
-@subsection release-3-3-0_cuda_std_algorithms CUDA Standard Parallel Algorithms
 
 @subsection release-3-3-0_utilities Utilities
 
@@ -70,6 +70,12 @@ and memory leak of the %Taskflow codebase.
 
 @section release-3-3-0_breaking_changes Breaking Changes
 
+For compilation speed purpose, you will need to separately include the follwoing
+files for using specific features:
++ `taskflow/algorithm/sort.hpp` for creating a parallel-sort task
++ `taskflow/algorithm/transform.hpp` for creating a parallel-transform task
++ `taskflow/algorithm/pipeline.hpp` for creating a parallel-pipeline task
+
 @section release-3-3-0_deprecated_items Deprecated and Removed Items 
 
 @section release-3-3-0_documentation Documentation
@@ -84,11 +90,13 @@ and memory leak of the %Taskflow codebase.
 + Revised @ref GPUTaskingcudaFlowCapturer
 + Revised @ref LimitTheMaximumConcurrency 
   + @ref DefineAConflictGraph
++ Revised @ref ParallelSort
++ Added @ref ParallelTransforms
 
 @section release-3-3-0_miscellaneous_items Miscellaneous Items
 
-We have published %Taskflow in the following journal:
-  + Tsung-Wei Huang, Dian-Lun Lin, Chun-Xun Lin, and Yibo Lin, &quot;[Taskflow: A Lightweight Parallel and Heterogeneous Task Graph Computing System](https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf),&quot; <em>IEEE Transactions on Parallel and Distributed Systems (TPDS)</em>, 2021
+We have published %Taskflow in the following venues:
+  + Tsung-Wei Huang, Dian-Lun Lin, Chun-Xun Lin, and Yibo Lin, &quot;[Taskflow: A Lightweight Parallel and Heterogeneous Task Graph Computing System](https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf),&quot; <em>IEEE Transactions on Parallel and Distributed Systems (TPDS)</em>, vol. 33, no. 6, pp. 1303-1320, June 2022
 
 */
 

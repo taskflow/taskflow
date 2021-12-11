@@ -2,7 +2,6 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="classtf_1_1WorkerView" kind="class" language="C++" prot="public">
     <compoundname>tf::WorkerView</compoundname>
-    <includes refid="worker_8hpp" local="no">worker.hpp</includes>
       <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1WorkerView_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>friend class</type>
@@ -15,12 +14,12 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="73" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="73" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="105" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="105" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1WorkerView_1ad4df9bf3972a4fe4253fd27477f51808" prot="private" static="no" mutable="no">
-        <type>const Worker &amp;</type>
+        <type>const <ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
         <definition>const Worker&amp; tf::WorkerView::_worker</definition>
         <argsstring></argsstring>
         <name>_worker</name>
@@ -30,7 +29,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="102" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="102" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="134" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="134" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -45,7 +44,7 @@
 <para>A worker id is a unsigned integer in the range <computeroutput>[0, N)</computeroutput>, where <computeroutput>N</computeroutput> is the number of workers spawned at the construction time of the executor. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="84" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="111" bodyend="113"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="116" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="143" bodyend="145"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1WorkerView_1afb99c27c8224732921fadb98ceff42e4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -58,7 +57,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="90" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="116" bodyend="118"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="122" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="148" bodyend="150"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1WorkerView_1aed408a9cbf65b0598fa27cd75d9b915e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -71,7 +70,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="95" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="121" bodyend="123"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="127" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="153" bodyend="155"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -81,7 +80,7 @@
         <argsstring>(const Worker &amp;)</argsstring>
         <name>WorkerView</name>
         <param>
-          <type>const Worker &amp;</type>
+          <type>const <ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>w</defname>
         </param>
         <briefdescription>
@@ -90,7 +89,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="99" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="107" bodyend="108"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="131" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="139" bodyend="140"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1WorkerView_1a4b39c214f3cd23c241faa56f4c94042f" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -106,14 +105,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="100" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="132" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
 <para>class to create an immutable view of a worker in an executor </para>    </briefdescription>
     <detaileddescription>
 <para>An executor keeps a set of internal worker threads to run tasks. A worker view provides users an immutable interface to observe when a worker runs a task, and the view object is only accessible from an observer derived from <ref refid="classtf_1_1ObserverInterface" kindref="compound">tf::ObserverInterface</ref>. </para>    </detaileddescription>
-    <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="71" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="71" bodyend="104"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="103" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="103" bodyend="136"/>
     <listofallmembers>
       <member refid="classtf_1_1WorkerView_1ad4df9bf3972a4fe4253fd27477f51808" prot="private" virt="non-virtual"><scope>tf::WorkerView</scope><name>_worker</name></member>
       <member refid="classtf_1_1WorkerView_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::WorkerView</scope><name>Executor</name></member>

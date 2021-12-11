@@ -124,7 +124,8 @@
             </dt>
             <dd>assigns a callable</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#ac5278492a4d43a191b321eee60e7d629" class="m-doc">composed_of</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Taskflow.html" class="m-doc">Taskflow</a>&amp; taskflow) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ab38be520fe700cb4ca1f312308a95585" class="m-doc">composed_of</a>(</span><span class="m-doc-wrap">T&amp; object) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
             </dt>
             <dd>creates a module task from a taskflow</dd>
             <dt>
@@ -253,19 +254,31 @@
               </tfoot>
             </table>
           </div></section>
-          <section class="m-doc-details" id="ac5278492a4d43a191b321eee60e7d629"><div>
+          <section class="m-doc-details" id="ab38be520fe700cb4ca1f312308a95585"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac5278492a4d43a191b321eee60e7d629" class="m-doc-self">composed_of</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Taskflow.html" class="m-doc">Taskflow</a>&amp; taskflow)</span></span>
+              <div class="m-doc-template">
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab38be520fe700cb4ca1f312308a95585" class="m-doc-self">composed_of</a>(</span><span class="m-doc-wrap">T&amp; object)</span></span>
             </h3>
             <p>creates a module task from a taskflow</p>
             <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">T</td>
+                  <td>object type</td>
+                </tr>
+              </tbody>
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
               </thead>
               <tbody>
                 <tr>
-                  <td style="width: 1%">taskflow</td>
-                  <td>a taskflow object for the module</td>
+                  <td>object</td>
+                  <td>a custom object that defines <code>T::graph()</code> method</td>
                 </tr>
               </tbody>
               <tfoot>

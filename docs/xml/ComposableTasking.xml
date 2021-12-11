@@ -40,7 +40,7 @@
 <codeline><highlight class="normal">29:<sp/>f2A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(f2C);</highlight></codeline>
 <codeline><highlight class="normal">30:<sp/>f2B.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(f2C);</highlight></codeline>
 <codeline><highlight class="normal">31:</highlight></codeline>
-<codeline><highlight class="normal">32:<sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>f1_module_task<sp/>=<sp/>f2.<ref refid="classtf_1_1FlowBuilder_1a0a01192f4f92c15380a4f259e2fec2d9" kindref="member">composed_of</ref>(f1).<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;module&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">32:<sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>f1_module_task<sp/>=<sp/>f2.<ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">composed_of</ref>(f1).<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;module&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">33:<sp/>f2C.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(f1_module_task);</highlight></codeline>
 <codeline><highlight class="normal">34:<sp/>f1_module_task.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(f2D);</highlight></codeline>
 <codeline><highlight class="normal">35:</highlight></codeline>
@@ -49,14 +49,14 @@
 </para><para>Debrief:</para><para><itemizedlist>
 <listitem><para>Lines 1-12 create a taskflow of three tasks f1A, f1B, and f1C with f1A and f1B preceding f1C </para></listitem>
 <listitem><para>Lines 17-30 create a taskflow of four tasks f2A, f2B, f2C, and f2D </para></listitem>
-<listitem><para>Line 32 creates a module task from taskflow f1 through the method <ref refid="classtf_1_1FlowBuilder_1a0a01192f4f92c15380a4f259e2fec2d9" kindref="member">Taskflow::composed_of</ref> </para></listitem>
+<listitem><para>Line 32 creates a module task from taskflow f1 through the method <ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">Taskflow::composed_of</ref> </para></listitem>
 <listitem><para>Line 33 enforces task f2C to run before the module task </para></listitem>
 <listitem><para>Line 34 enforces the module task to run before task f2D</para></listitem>
 </itemizedlist>
 </para></sect1>
 <sect1 id="ComposableTasking_1CreateAModuleTask">
 <title>Create a Module Task</title>
-<para>The task created from <ref refid="classtf_1_1FlowBuilder_1a0a01192f4f92c15380a4f259e2fec2d9" kindref="member">Taskflow::composed_of</ref> is a <emphasis>module</emphasis> task that runs on a pre-defined taskflow. A module task does not own the taskflow but maintains a soft mapping to the taskflow. You can create multiple module tasks from the same taskflow but only one module task can run at one time. For example, the following composition is valid. Even though the two module tasks <computeroutput>module1</computeroutput> and <computeroutput>module2</computeroutput> refer to the same taskflow <computeroutput>F1</computeroutput>, the dependency link prevents <computeroutput>F1</computeroutput> from multiple executions at the same time.</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/composition_static_2.dot"></dotfile>
+<para>The task created from <ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">Taskflow::composed_of</ref> is a <emphasis>module</emphasis> task that runs on a pre-defined taskflow. A module task does not own the taskflow but maintains a soft mapping to the taskflow. You can create multiple module tasks from the same taskflow but only one module task can run at one time. For example, the following composition is valid. Even though the two module tasks <computeroutput>module1</computeroutput> and <computeroutput>module2</computeroutput> refer to the same taskflow <computeroutput>F1</computeroutput>, the dependency link prevents <computeroutput>F1</computeroutput> from multiple executions at the same time.</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/composition_static_2.dot"></dotfile>
 </para><para>However, the following composition is <emphasis>invalid</emphasis>. Both module tasks refer to the same taskflow. They can not run at the same time because they are associated with the same graph.</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/composition_static_invalid.dot"></dotfile>
  </para></sect1>
     </detaileddescription>

@@ -1,0 +1,122 @@
+namespace tf {
+
+/** @page ParallelTransforms Parallel Transforms
+
+%Taskflow provides template functions for constructing tasks to 
+perform parallel transforms over ranges of items.
+
+@tableofcontents
+
+@section ParallelTransformsInclude Include the Header
+
+You need to include the header file, <tt>taskflow/algorithm/transform.hpp</tt>,
+for creating a parallel-transform task.
+
+@section ParallelTransformsOverARange Create a Unary Parallel-Transform Task
+
+Parallel-transform transforms a range of items, possibly
+with a different type for the transformed data, and stores the result in another range.
+The task created by tf::Taskflow::transform(B first1, E last1, O d_first, C c)
+is equivalent to a parallel execution of the following loop:
+
+@code{.cpp}
+while (first1 != last1) {
+  *d_first++ = c(*first1++);
+}
+@endcode
+
+By default, tf::Taskflow::transform(B first1, E last1, O d_first, C c)
+creates a task to spawn a subflow (see @ref DynamicTasking) 
+that simultaneously applies the callable @c c to the object obtained by dereferencing 
+every iterator in the range <tt>[first1, last1)</tt> and stores
+the result in another range beginning at @c d_first.
+It is user's responsibility for ensuring the range is valid 
+within the execution of the parallel-transform task. 
+Taskflow's parallel-transform tasks work on all iterable STL containers.
+
+@code{.cpp}
+std::vector<int> src = {1, 2, 3, 4, 5};
+std::vector<int> tgt(src.size());
+taskflow.transform(src.begin(), src.end(), [](int i){ 
+  std::cout << "transforming item " << i << " to " << i + 1 << '\n';
+  return i + 1;
+});
+@endcode
+
+You can enable stateful iterators by creating a reference wrapper
+and pass the wrapped iterator to the argument of tf::Taskflow::transform.
+This is especially useful when the range is not known
+at the time of creating a parallel-transform task,
+but through another task.
+
+@code{.cpp}
+std::vector<int> src, tgt;
+std::vector<int>::iterator first, last, d_first;
+
+tf::Task init = taskflow.emplace([&](){
+  src.resize(1000);
+  tgt.resize(1000);
+  first   = src.begin();
+  last    = src.end();
+  d_first = tgt.begin();
+});
+
+tf::Task transform = taskflow.for_each(
+  std::ref(first), std::ref(last), std::ref(d_first), 
+  [&](int i) {
+    std::cout << "transforming item " << i << " to " << i + 1 << '\n';
+    return i+1;
+  }
+);
+
+init.precede(transform);
+@endcode
+
+When @c init finishes, the parallel-transform task @c transform 
+will see @c first pointing to the beginning of @c src and 
+@c last pointing to the end of @c src.
+Then, it simultaneously transforms these 1000 items 
+by adding one to each element and stores the result 
+in another range starting at @c d_first.
+
+@section ParallelBinaryTransformsOverARange Create a Binary Parallel-Transform Task
+
+You can use the overload, 
+tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c),
+to perform parallel transforms on two source ranges pointed by
+@c first1 and @c first2 using the binary
+operator @c c
+and store the result in another range pointed by @c d_first.
+This method is equivalent to the parallel execution of the following loop:
+    
+@code{.cpp}
+while (first1 != last1) {
+  *d_first++ = c(*first1++, *first2++);
+}
+@endcode
+
+The following example creates a parallel-transform task 
+that adds two ranges of elements one by one
+and stores the result in a target range:
+
+@code{.cpp}
+std::vector<int> src1 = {1, 2, 3, 4, 5};
+std::vector<int> src2 = {5, 4, 3, 2, 1};
+std::vector<int> tgt(src.size());
+taskflow.transform(
+  src1.begin(), src1.end(), src2.begin(), tgt.begin(), 
+  [](int i, int j){ 
+    return i + j;
+  }
+);
+@endcode
+
+*/
+
+}
+
+
+
+
+
+
