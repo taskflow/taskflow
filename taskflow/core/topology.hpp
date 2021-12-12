@@ -30,6 +30,7 @@ class AsyncTopology : public TopologyBase {
 class Topology : public TopologyBase {
   
   friend class Executor;
+  friend class Runtime;
 
   public:
 

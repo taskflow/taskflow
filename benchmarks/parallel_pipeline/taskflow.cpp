@@ -2,6 +2,27 @@
 #include <taskflow/taskflow.hpp> 
 #include <taskflow/algorithm/pipeline.hpp>
 
+struct Input {
+  size_t i;
+  size_t size;
+  void operator()(tf::Pipeflow& pf) {
+    work();
+    if (i++ == size) {
+      pf.stop(); 
+    }
+  }
+};
+
+struct Filter {
+  void operator()(tf::Pipeflow&) {
+    work();
+  }
+};
+
+tf::PipeType to_pipe_type(char t) {
+  return t == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL;
+}
+
 // parallel_pipeline_taskflow_1_pipe
 std::chrono::microseconds parallel_pipeline_taskflow_1_pipe(
   unsigned num_lines, unsigned num_threads, size_t size) {
@@ -9,20 +30,9 @@ std::chrono::microseconds parallel_pipeline_taskflow_1_pipe(
   tf::Taskflow taskflow;
   tf::Executor executor(num_threads);
 
-  std::vector<std::array<int, 1>> mybuffer(num_lines);
-
   auto beg = std::chrono::high_resolution_clock::now();
   tf::Pipeline pl(num_lines,
-    // 1st pipe
-    tf::Pipe{tf::PipeType::SERIAL, [i = size_t{0}, size, &mybuffer](auto& pf) mutable {
-      if (i++ == size) {
-        pf.stop(); 
-      }
-      else {
-        mybuffer[pf.line()][pf.pipe()] = 1; 
-        //printf("%d\n", mybuffer[pf.line()][pf.pipe()]);
-      }
-    }}
+    tf::Pipe{tf::PipeType::SERIAL, Input{0, size}}
   ); 
 
   taskflow.composed_of(pl);
@@ -43,22 +53,8 @@ std::chrono::microseconds parallel_pipeline_taskflow_2_pipes(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::Pipeline pl(num_lines,
-    // 1st pipe
-    tf::Pipe{tf::PipeType::SERIAL, [i = size_t{0}, size, &mybuffer](auto& pf) mutable {
-      if (i++ == size) {
-        pf.stop(); 
-      }
-      else {
-        mybuffer[pf.line()][pf.pipe()] = 1; 
-      }
-    }},
-    
-    // 2th pipe
-    tf::Pipe{pipes[1] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 99999;   
-      //result.emplace_back(mybuffer[pf.line()][pf.pipe()]);
-      //printf("%d\n", mybuffer[pf.line()][pf.pipe()]);
-    }} 
+    tf::Pipe{tf::PipeType::SERIAL, Input{0, size}},
+    tf::Pipe{to_pipe_type(pipes[1]), Filter{}} 
   ); 
   
   taskflow.composed_of(pl);
@@ -78,27 +74,9 @@ std::chrono::microseconds parallel_pipeline_taskflow_3_pipes(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::Pipeline pl(num_lines,
-    // 1st pipe
-    tf::Pipe{tf::PipeType::SERIAL, [i = size_t{0}, size, &mybuffer](auto& pf) mutable {
-      if (i++ == size) {
-        pf.stop(); 
-      }
-      else {
-        mybuffer[pf.line()][pf.pipe()] = 1; 
-      }
-    }},
-    
-    // 2nd pipe
-    tf::Pipe{pipes[1] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;  
-    }}, 
-  
-    // 3th pipe
-    tf::Pipe{pipes[2] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 99999;   
-      //result.emplace_back(mybuffer[pf.line()][pf.pipe()]);
-      //printf("%d\n", mybuffer[pf.line()][pf.pipe()]);
-    }} 
+    tf::Pipe{tf::PipeType::SERIAL, Input{0, size}},
+    tf::Pipe{to_pipe_type(pipes[1]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[2]), Filter{}}
   ); 
   
   taskflow.composed_of(pl);
@@ -118,32 +96,10 @@ std::chrono::microseconds parallel_pipeline_taskflow_4_pipes(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::Pipeline pl(num_lines,
-    // 1st pipe
-    tf::Pipe{tf::PipeType::SERIAL, [i = size_t{0}, size, &mybuffer](auto& pf) mutable {
-      if (i++ == size) {
-        pf.stop(); 
-      }
-      else {
-        mybuffer[pf.line()][pf.pipe()] = 1; 
-      }
-    }},
-    
-    // 2nd pipe
-    tf::Pipe{pipes[1] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;  
-    }}, 
-  
-    // 3rd pipe
-    tf::Pipe{pipes[2] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 999;   
-    }},
-     
-    // 4th pipe
-    tf::Pipe{pipes[3] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 99999;   
-      //result.emplace_back(mybuffer[pf.line()][pf.pipe()]);
-      //printf("%d\n", mybuffer[pf.line()][pf.pipe()]);
-    }} 
+    tf::Pipe{tf::PipeType::SERIAL, Input{0, size}},
+    tf::Pipe{to_pipe_type(pipes[1]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[2]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[3]), Filter{}}
   ); 
   
   taskflow.composed_of(pl);
@@ -159,41 +115,13 @@ std::chrono::microseconds parallel_pipeline_taskflow_5_pipes(
   tf::Taskflow taskflow;
   tf::Executor executor(num_threads);
 
-  std::vector<std::array<int, 5>> mybuffer(num_lines);
-
   auto beg = std::chrono::high_resolution_clock::now();
   tf::Pipeline pl(num_lines,
-    // 1st pipe
-    tf::Pipe{tf::PipeType::SERIAL, [i = size_t{0}, size, &mybuffer](auto& pf) mutable {
-      if (i++ == size) {
-        pf.stop(); 
-      }
-      else {
-        mybuffer[pf.line()][pf.pipe()] = 1; 
-      }
-    }},
-    
-    // 2nd pipe
-    tf::Pipe{pipes[1] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;  
-    }}, 
-  
-    // 3rd pipe
-    tf::Pipe{pipes[2] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 999;   
-    }},
-     
-    // 4th pipe
-    tf::Pipe{pipes[3] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;   
-    }}, 
-
-    // 5th pipe
-    tf::Pipe{pipes[4] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 99999;   
-      //result.emplace_back(mybuffer[pf.line()][pf.pipe()]);
-      //printf("%d\n", mybuffer[pf.line()][pf.pipe()]);
-    }} 
+    tf::Pipe{tf::PipeType::SERIAL, Input{0, size}},
+    tf::Pipe{to_pipe_type(pipes[1]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[2]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[3]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[4]), Filter{}}
   ); 
   
   taskflow.composed_of(pl);
@@ -209,46 +137,14 @@ std::chrono::microseconds parallel_pipeline_taskflow_6_pipes(
   tf::Taskflow taskflow;
   tf::Executor executor(num_threads);
 
-  std::vector<std::array<int, 6>> mybuffer(num_lines);
-
   auto beg = std::chrono::high_resolution_clock::now();
   tf::Pipeline pl(num_lines,
-    // 1st pipe
-    tf::Pipe{tf::PipeType::SERIAL, [i = size_t{0}, size, &mybuffer](auto& pf) mutable {
-      if (i++ == size) {
-        pf.stop(); 
-      }
-      else {
-        mybuffer[pf.line()][pf.pipe()] = 1; 
-      }
-    }},
-    
-    // 2nd pipe
-    tf::Pipe{pipes[1] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;  
-    }}, 
-  
-    // 3rd pipe
-    tf::Pipe{pipes[2] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 999;   
-    }},
-     
-    // 4th pipe
-    tf::Pipe{pipes[3] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;   
-    }}, 
-
-    // 5th pipe
-    tf::Pipe{pipes[4] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] - 792;  
-    }}, 
-  
-    // 6th pipe
-    tf::Pipe{pipes[5] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 99999;   
-      //result.emplace_back(mybuffer[pf.line()][pf.pipe()]);
-      //printf("%d\n", mybuffer[pf.line()][pf.pipe()]);
-    }} 
+    tf::Pipe{tf::PipeType::SERIAL, Input{0, size}},
+    tf::Pipe{to_pipe_type(pipes[1]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[2]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[3]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[4]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[5]), Filter{}}
   ); 
   
   taskflow.composed_of(pl);
@@ -268,47 +164,13 @@ std::chrono::microseconds parallel_pipeline_taskflow_7_pipes(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::Pipeline pl(num_lines,
-    // 1st pipe
-    tf::Pipe{tf::PipeType::SERIAL, [i = size_t{0}, size, &mybuffer](auto& pf) mutable {
-      if (i++ == size) {
-        pf.stop(); 
-      }
-      else {
-        mybuffer[pf.line()][pf.pipe()] = 1; 
-      }
-    }},
-    
-    // 2nd pipe
-    tf::Pipe{pipes[1] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;  
-    }}, 
-  
-    // 3rd pipe
-    tf::Pipe{pipes[2] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 999;   
-    }},
-     
-    // 4th pipe
-    tf::Pipe{pipes[3] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;   
-    }}, 
-
-    // 5th pipe
-    tf::Pipe{pipes[4] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] - 792;  
-    }}, 
-  
-    // 6th pipe
-    tf::Pipe{pipes[5] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] * 35;   
-    }},
-     
-    // 7th pipe
-    tf::Pipe{pipes[6] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 99999;   
-      //result.emplace_back(mybuffer[pf.line()][pf.pipe()]);
-      //printf("%d\n", mybuffer[pf.line()][pf.pipe()]);
-    }} 
+    tf::Pipe{tf::PipeType::SERIAL, Input{0, size}},
+    tf::Pipe{to_pipe_type(pipes[1]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[2]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[3]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[4]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[5]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[6]), Filter{}}
   ); 
   
   taskflow.composed_of(pl);
@@ -320,71 +182,25 @@ std::chrono::microseconds parallel_pipeline_taskflow_7_pipes(
 // parallel_pipeline_taskflow_8_pipes
 std::chrono::microseconds parallel_pipeline_taskflow_8_pipes(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
-  //std::ofstream outputfile;
-  //outputfile.open("./tf_result.txt", std::ofstream::app);
   
   tf::Taskflow taskflow;
   tf::Executor executor(num_threads);
 
-  std::vector<std::array<int, 28>> mybuffer(num_lines);
-  //std::vector<double> result;
-
   auto beg = std::chrono::high_resolution_clock::now();
   tf::Pipeline pl(num_lines,
-    // 1st pipe
-    tf::Pipe{tf::PipeType::SERIAL, [i = size_t{0}, size, &mybuffer](auto& pf) mutable {
-      if (i++ == size) {
-        pf.stop(); 
-      }
-      else {
-        mybuffer[pf.line()][pf.pipe()] = 1; 
-      }
-    }},
-    
-    // 2nd pipe
-    tf::Pipe{pipes[1] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;  
-    }}, 
-  
-    // 3rd pipe
-    tf::Pipe{pipes[2] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 999;   
-    }},
-     
-    // 4th pipe
-    tf::Pipe{pipes[3] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;   
-    }}, 
-
-    // 5th pipe
-    tf::Pipe{pipes[4] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] - 792;  
-    }}, 
-  
-    // 6th pipe
-    tf::Pipe{pipes[5] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] * 35;   
-    }},
-     
-    // 7th pipe
-    tf::Pipe{pipes[6] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] >> 1;   
-    }}, 
-
-    // 8th pipe
-    tf::Pipe{pipes[7] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 99999;   
-      //result.emplace_back(mybuffer[pf.line()][pf.pipe()]);
-      //printf("%d\n", mybuffer[pf.line()][pf.pipe()]);
-    }} 
+    tf::Pipe{tf::PipeType::SERIAL, Input{0, size}},
+    tf::Pipe{to_pipe_type(pipes[1]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[2]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[3]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[4]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[5]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[6]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[7]), Filter{}}
   ); 
   
   taskflow.composed_of(pl);
   executor.run(taskflow).wait(); 
   auto end = std::chrono::high_resolution_clock::now();
-  //for(auto r:result) {
-  //  outputfile << r << '\n';
-  //}
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
@@ -395,61 +211,17 @@ std::chrono::microseconds parallel_pipeline_taskflow_9_pipes(
   tf::Taskflow taskflow;
   tf::Executor executor(num_threads);
 
-  std::vector<std::array<int, 9>> mybuffer(num_lines);
-
   auto beg = std::chrono::high_resolution_clock::now();
   tf::Pipeline pl(num_lines,
-    // 1st pipe
-    tf::Pipe{tf::PipeType::SERIAL, [i = size_t{0}, size, &mybuffer](auto& pf) mutable {
-      if (i++ == size) {
-        pf.stop(); 
-      }
-      else {
-        mybuffer[pf.line()][pf.pipe()] = 1; 
-      }
-    }},
-    
-    // 2nd pipe
-    tf::Pipe{pipes[1] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;  
-    }}, 
-  
-    // 3rd pipe
-    tf::Pipe{pipes[2] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 999;   
-    }},
-     
-    // 4th pipe
-    tf::Pipe{pipes[3] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;   
-    }}, 
-
-    // 5th pipe
-    tf::Pipe{pipes[4] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] - 792;  
-    }}, 
-  
-    // 6th pipe
-    tf::Pipe{pipes[5] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] * 35;   
-    }},
-     
-    // 7th pipe
-    tf::Pipe{pipes[6] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] >> 1;   
-    }}, 
-
-    // 8th pipe
-    tf::Pipe{pipes[7] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      int input = mybuffer[pf.line()][pf.pipe()-1];
-      mybuffer[pf.line()][pf.pipe()] = input * input * input;   
-    }}, 
-
-    // 9th pipe
-    tf::Pipe{pipes[8] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 99999;   
-      //printf("%d\n", mybuffer[pf.line()][pf.pipe()]);
-    }}
+    tf::Pipe{tf::PipeType::SERIAL, Input{0, size}},
+    tf::Pipe{to_pipe_type(pipes[1]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[2]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[3]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[4]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[5]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[6]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[7]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[8]), Filter{}}
   ); 
   
   taskflow.composed_of(pl);
@@ -465,66 +237,18 @@ std::chrono::microseconds parallel_pipeline_taskflow_10_pipes(
   tf::Taskflow taskflow;
   tf::Executor executor(num_threads);
 
-  std::vector<std::array<int, 10>> mybuffer(num_lines);
-
   auto beg = std::chrono::high_resolution_clock::now();
   tf::Pipeline pl(num_lines,
-    // 1st pipe
-    tf::Pipe{tf::PipeType::SERIAL, [i = size_t{0}, size, &mybuffer](auto& pf) mutable {
-      if (i++ == size) {
-        pf.stop(); 
-      }
-      else {
-        mybuffer[pf.line()][pf.pipe()] = 1; 
-      }
-    }},
-    
-    // 2nd pipe
-    tf::Pipe{pipes[1] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;  
-    }}, 
-  
-    // 3rd pipe
-    tf::Pipe{pipes[2] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 999;   
-    }},
-     
-    // 4th pipe
-    tf::Pipe{pipes[3] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;   
-    }}, 
-
-    // 5th pipe
-    tf::Pipe{pipes[4] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] - 792;  
-    }}, 
-  
-    // 6th pipe
-    tf::Pipe{pipes[5] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] * 35;   
-    }},
-     
-    // 7th pipe
-    tf::Pipe{pipes[6] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] >> 1;   
-    }}, 
-
-    // 8th pipe
-    tf::Pipe{pipes[7] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      int input = mybuffer[pf.line()][pf.pipe()-1];
-      mybuffer[pf.line()][pf.pipe()] = input * input * input;   
-    }}, 
-
-    // 9th pipe
-    tf::Pipe{pipes[8] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] >> 2;   
-    }},
-
-    // 10th pipe
-    tf::Pipe{pipes[9] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 99999;   
-      //printf("%d\n", mybuffer[pf.line()][pf.pipe()]);
-    }}
+    tf::Pipe{tf::PipeType::SERIAL, Input{0, size}},
+    tf::Pipe{to_pipe_type(pipes[1]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[2]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[3]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[4]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[5]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[6]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[7]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[8]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[9]), Filter{}}
   ); 
   
   taskflow.composed_of(pl);
@@ -541,71 +265,19 @@ std::chrono::microseconds parallel_pipeline_taskflow_11_pipes(
   tf::Taskflow taskflow;
   tf::Executor executor(num_threads);
 
-  std::vector<std::array<int, 11>> mybuffer(num_lines);
-
   auto beg = std::chrono::high_resolution_clock::now();
   tf::Pipeline pl(num_lines,
-    // 1st pipe
-    tf::Pipe{tf::PipeType::SERIAL, [i = size_t{0}, size, &mybuffer](auto& pf) mutable {
-      if (i++ == size) {
-        pf.stop(); 
-      }
-      else {
-        mybuffer[pf.line()][pf.pipe()] = 1; 
-      }
-    }},
-    
-    // 2nd pipe
-    tf::Pipe{pipes[1] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;  
-    }}, 
-  
-    // 3rd pipe
-    tf::Pipe{pipes[2] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 999;   
-    }},
-     
-    // 4th pipe
-    tf::Pipe{pipes[3] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;   
-    }}, 
-
-    // 5th pipe
-    tf::Pipe{pipes[4] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] - 792;  
-    }}, 
-  
-    // 6th pipe
-    tf::Pipe{pipes[5] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] * 35;   
-    }},
-     
-    // 7th pipe
-    tf::Pipe{pipes[6] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] >> 1;   
-    }}, 
-
-    // 8th pipe
-    tf::Pipe{pipes[7] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      int input = mybuffer[pf.line()][pf.pipe()-1];
-      mybuffer[pf.line()][pf.pipe()] = input * input * input;   
-    }}, 
-
-    // 9th pipe
-    tf::Pipe{pipes[8] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] >> 2;   
-    }},
-
-    // 10th pipe
-    tf::Pipe{pipes[9] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = static_cast<int>(std::sqrt(mybuffer[pf.line()][pf.pipe() - 1]));
-    }},
-
-    // 11th pipe
-    tf::Pipe{pipes[10] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 99999;   
-      //printf("%d\n", mybuffer[pf.line()][pf.pipe()]);
-    }}
+    tf::Pipe{tf::PipeType::SERIAL, Input{0, size}},
+    tf::Pipe{to_pipe_type(pipes[1]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[2]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[3]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[4]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[5]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[6]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[7]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[8]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[9]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[10]), Filter{}}
   ); 
   
   taskflow.composed_of(pl);
@@ -621,76 +293,20 @@ std::chrono::microseconds parallel_pipeline_taskflow_12_pipes(
   tf::Taskflow taskflow;
   tf::Executor executor(num_threads);
 
-  std::vector<std::array<int, 12>> mybuffer(num_lines);
-
   auto beg = std::chrono::high_resolution_clock::now();
   tf::Pipeline pl(num_lines,
-    // 1st pipe
-    tf::Pipe{tf::PipeType::SERIAL, [i = size_t{0}, size, &mybuffer](auto& pf) mutable {
-      if (i++ == size) {
-        pf.stop(); 
-      }
-      else {
-        mybuffer[pf.line()][pf.pipe()] = 1; 
-      }
-    }},
-    
-    // 2nd pipe
-    tf::Pipe{pipes[1] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;  
-    }}, 
-  
-    // 3rd pipe
-    tf::Pipe{pipes[2] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 999;   
-    }},
-     
-    // 4th pipe
-    tf::Pipe{pipes[3] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;   
-    }}, 
-
-    // 5th pipe
-    tf::Pipe{pipes[4] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] - 792;  
-    }}, 
-  
-    // 6th pipe
-    tf::Pipe{pipes[5] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] * 35;   
-    }},
-     
-    // 7th pipe
-    tf::Pipe{pipes[6] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] >> 1;   
-    }}, 
-
-    // 8th pipe
-    tf::Pipe{pipes[7] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      int input = mybuffer[pf.line()][pf.pipe()-1];
-      mybuffer[pf.line()][pf.pipe()] = input * input * input;   
-    }}, 
-
-    // 9th pipe
-    tf::Pipe{pipes[8] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] >> 2;   
-    }},
-
-    // 10th pipe
-    tf::Pipe{pipes[9] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = static_cast<int>(std::sqrt(mybuffer[pf.line()][pf.pipe() - 1]));
-    }},
-
-    // 11th pipe
-    tf::Pipe{pipes[10] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = static_cast<int>(std::log(mybuffer[pf.line()][pf.pipe() - 1]));
-    }},
-
-    // 12th pipe
-    tf::Pipe{pipes[11] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 99999;   
-      //printf("%d\n", mybuffer[pf.line()][pf.pipe()]);
-    }}
+    tf::Pipe{tf::PipeType::SERIAL, Input{0, size}},
+    tf::Pipe{to_pipe_type(pipes[1]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[2]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[3]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[4]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[5]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[6]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[7]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[8]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[9]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[10]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[11]), Filter{}}
   ); 
   
   taskflow.composed_of(pl);
@@ -706,81 +322,21 @@ std::chrono::microseconds parallel_pipeline_taskflow_13_pipes(
   tf::Taskflow taskflow;
   tf::Executor executor(num_threads);
 
-  std::vector<std::array<int, 13>> mybuffer(num_lines);
-
   auto beg = std::chrono::high_resolution_clock::now();
   tf::Pipeline pl(num_lines,
-    // 1st pipe
-    tf::Pipe{tf::PipeType::SERIAL, [i = size_t{0}, size, &mybuffer](auto& pf) mutable {
-      if (i++ == size) {
-        pf.stop(); 
-      }
-      else {
-        mybuffer[pf.line()][pf.pipe()] = 1; 
-      }
-    }},
-    
-    // 2nd pipe
-    tf::Pipe{pipes[1] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;  
-    }}, 
-  
-    // 3rd pipe
-    tf::Pipe{pipes[2] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 999;   
-    }},
-     
-    // 4th pipe
-    tf::Pipe{pipes[3] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;   
-    }}, 
-
-    // 5th pipe
-    tf::Pipe{pipes[4] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] - 792;  
-    }}, 
-  
-    // 6th pipe
-    tf::Pipe{pipes[5] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] * 35;   
-    }},
-     
-    // 7th pipe
-    tf::Pipe{pipes[6] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] >> 1;   
-    }}, 
-
-    // 8th pipe
-    tf::Pipe{pipes[7] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      int input = mybuffer[pf.line()][pf.pipe()-1];
-      mybuffer[pf.line()][pf.pipe()] = input * input * input;   
-    }}, 
-
-    // 9th pipe
-    tf::Pipe{pipes[8] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] >> 2;   
-    }},
-
-    // 10th pipe
-    tf::Pipe{pipes[9] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = static_cast<int>(std::sqrt(mybuffer[pf.line()][pf.pipe() - 1]));
-    }},
-
-    // 11th pipe
-    tf::Pipe{pipes[10] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = static_cast<int>(std::log(mybuffer[pf.line()][pf.pipe() - 1]));
-    }},
-
-    // 12th pipe
-    tf::Pipe{pipes[11] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 3;
-    }},
-
-    // 13th pipe
-    tf::Pipe{pipes[12] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 99999;   
-      //printf("%d\n", mybuffer[pf.line()][pf.pipe()]);
-    }}
+    tf::Pipe{tf::PipeType::SERIAL, Input{0, size}},
+    tf::Pipe{to_pipe_type(pipes[1]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[2]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[3]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[4]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[5]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[6]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[7]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[8]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[9]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[10]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[11]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[12]), Filter{}}
   ); 
   
   taskflow.composed_of(pl);
@@ -796,86 +352,22 @@ std::chrono::microseconds parallel_pipeline_taskflow_14_pipes(
   tf::Taskflow taskflow;
   tf::Executor executor(num_threads);
 
-  std::vector<std::array<int, 14>> mybuffer(num_lines);
-
   auto beg = std::chrono::high_resolution_clock::now();
   tf::Pipeline pl(num_lines,
-    // 1st pipe
-    tf::Pipe{tf::PipeType::SERIAL, [i = size_t{0}, size, &mybuffer](auto& pf) mutable {
-      if (i++ == size) {
-        pf.stop(); 
-      }
-      else {
-        mybuffer[pf.line()][pf.pipe()] = 1; 
-      }
-    }},
-    
-    // 2nd pipe
-    tf::Pipe{pipes[1] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;  
-    }}, 
-  
-    // 3rd pipe
-    tf::Pipe{pipes[2] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 999;   
-    }},
-     
-    // 4th pipe
-    tf::Pipe{pipes[3] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;   
-    }}, 
-
-    // 5th pipe
-    tf::Pipe{pipes[4] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] - 792;  
-    }}, 
-  
-    // 6th pipe
-    tf::Pipe{pipes[5] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] * 35;   
-    }},
-     
-    // 7th pipe
-    tf::Pipe{pipes[6] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] >> 1;   
-    }}, 
-
-    // 8th pipe
-    tf::Pipe{pipes[7] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      int input = mybuffer[pf.line()][pf.pipe()-1];
-      mybuffer[pf.line()][pf.pipe()] = input * input * input;   
-    }}, 
-
-    // 9th pipe
-    tf::Pipe{pipes[8] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] >> 2;   
-    }},
-
-    // 10th pipe
-    tf::Pipe{pipes[9] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = static_cast<int>(std::sqrt(mybuffer[pf.line()][pf.pipe() - 1]));
-    }},
-
-    // 11th pipe
-    tf::Pipe{pipes[10] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = static_cast<int>(std::log(mybuffer[pf.line()][pf.pipe() - 1]));
-    }},
-
-    // 12th pipe
-    tf::Pipe{pipes[11] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 3;
-    }},
-
-    // 13th pipe
-    tf::Pipe{pipes[12] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = 0 - mybuffer[pf.line()][pf.pipe() - 1];
-    }},
-
-    // 14th pipe
-    tf::Pipe{pipes[13] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 99999;   
-      //printf("%d\n", mybuffer[pf.line()][pf.pipe()]);
-    }}
+    tf::Pipe{tf::PipeType::SERIAL, Input{0, size}},
+    tf::Pipe{to_pipe_type(pipes[1]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[2]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[3]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[4]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[5]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[6]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[7]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[8]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[9]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[10]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[11]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[12]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[13]), Filter{}}
   ); 
   
   taskflow.composed_of(pl);
@@ -891,91 +383,23 @@ std::chrono::microseconds parallel_pipeline_taskflow_15_pipes(
   tf::Taskflow taskflow;
   tf::Executor executor(num_threads);
 
-  std::vector<std::array<int, 15>> mybuffer(num_lines);
-
   auto beg = std::chrono::high_resolution_clock::now();
   tf::Pipeline pl(num_lines,
-    // 1st pipe
-    tf::Pipe{tf::PipeType::SERIAL, [i = size_t{0}, size, &mybuffer](auto& pf) mutable {
-      if (i++ == size) {
-        pf.stop(); 
-      }
-      else {
-        mybuffer[pf.line()][pf.pipe()] = 1; 
-      }
-    }},
-    
-    // 2nd pipe
-    tf::Pipe{pipes[1] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;  
-    }}, 
-  
-    // 3rd pipe
-    tf::Pipe{pipes[2] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 999;   
-    }},
-     
-    // 4th pipe
-    tf::Pipe{pipes[3] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;   
-    }}, 
-
-    // 5th pipe
-    tf::Pipe{pipes[4] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] - 792;  
-    }}, 
-  
-    // 6th pipe
-    tf::Pipe{pipes[5] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] * 35;   
-    }},
-     
-    // 7th pipe
-    tf::Pipe{pipes[6] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] >> 1;   
-    }}, 
-
-    // 8th pipe
-    tf::Pipe{pipes[7] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      int input = mybuffer[pf.line()][pf.pipe()-1];
-      mybuffer[pf.line()][pf.pipe()] = input * input * input;   
-    }}, 
-
-    // 9th pipe
-    tf::Pipe{pipes[8] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] >> 2;   
-    }},
-
-    // 10th pipe
-    tf::Pipe{pipes[9] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = static_cast<int>(std::sqrt(mybuffer[pf.line()][pf.pipe() - 1]));
-    }},
-
-    // 11th pipe
-    tf::Pipe{pipes[10] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = static_cast<int>(std::log(mybuffer[pf.line()][pf.pipe() - 1]));
-    }},
-
-    // 12th pipe
-    tf::Pipe{pipes[11] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 3;
-    }},
-
-    // 13th pipe
-    tf::Pipe{pipes[12] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = 0 - mybuffer[pf.line()][pf.pipe() - 1];
-    }},
-
-    // 14th pipe
-    tf::Pipe{pipes[13] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = (mybuffer[pf.line()][pf.pipe() - 1]) * (mybuffer[pf.line()][pf.pipe() - 1]);
-    }},
-
-    // 15th pipe
-    tf::Pipe{pipes[14] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 99999;   
-      //printf("%d\n", mybuffer[pf.line()][pf.pipe()]);
-    }}
+    tf::Pipe{tf::PipeType::SERIAL, Input{0, size}},
+    tf::Pipe{to_pipe_type(pipes[1]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[2]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[3]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[4]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[5]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[6]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[7]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[8]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[9]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[10]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[11]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[12]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[13]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[14]), Filter{}}
   ); 
   
   taskflow.composed_of(pl);
@@ -991,96 +415,24 @@ std::chrono::microseconds parallel_pipeline_taskflow_16_pipes(
   tf::Taskflow taskflow;
   tf::Executor executor(num_threads);
 
-  std::vector<std::array<int, 16>> mybuffer(num_lines);
-
   auto beg = std::chrono::high_resolution_clock::now();
   tf::Pipeline pl(num_lines,
-    // 1st pipe
-    tf::Pipe{tf::PipeType::SERIAL, [i = size_t{0}, size, &mybuffer](auto& pf) mutable {
-      if (i++ == size) {
-        pf.stop(); 
-      }
-      else {
-        mybuffer[pf.line()][pf.pipe()] = 1; 
-      }
-    }},
-    
-    // 2nd pipe
-    tf::Pipe{pipes[1] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;  
-    }}, 
-  
-    // 3rd pipe
-    tf::Pipe{pipes[2] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 999;   
-    }},
-     
-    // 4th pipe
-    tf::Pipe{pipes[3] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 1;   
-    }}, 
-
-    // 5th pipe
-    tf::Pipe{pipes[4] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] - 792;  
-    }}, 
-  
-    // 6th pipe
-    tf::Pipe{pipes[5] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] * 35;   
-    }},
-     
-    // 7th pipe
-    tf::Pipe{pipes[6] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] >> 1;   
-    }}, 
-
-    // 8th pipe
-    tf::Pipe{pipes[7] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      int input = mybuffer[pf.line()][pf.pipe()-1];
-      mybuffer[pf.line()][pf.pipe()] = input * input * input;   
-    }}, 
-
-    // 9th pipe
-    tf::Pipe{pipes[8] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] >> 2;   
-    }},
-
-    // 10th pipe
-    tf::Pipe{pipes[9] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = static_cast<int>(std::sqrt(mybuffer[pf.line()][pf.pipe() - 1]));
-    }},
-
-    // 11th pipe
-    tf::Pipe{pipes[10] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = static_cast<int>(std::log(mybuffer[pf.line()][pf.pipe() - 1]));
-    }},
-
-    // 12th pipe
-    tf::Pipe{pipes[11] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] << 3;
-    }},
-
-    // 13th pipe
-    tf::Pipe{pipes[12] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = 0 - mybuffer[pf.line()][pf.pipe() - 1];
-    }},
-
-    // 14th pipe
-    tf::Pipe{pipes[13] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = (mybuffer[pf.line()][pf.pipe() - 1]) * (mybuffer[pf.line()][pf.pipe() - 1]);
-    }},
-
-    // 15th pipe
-    tf::Pipe{pipes[14] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = static_cast<int>(mybuffer[pf.line()][pf.pipe() - 1] / 97);
-    }},
-
-    // 16th pipe
-    tf::Pipe{pipes[15] == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL, [&mybuffer](auto& pf) {
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe() - 1] + 99999;   
-      //printf("%d\n", mybuffer[pf.line()][pf.pipe()]);
-    }}
+    tf::Pipe{tf::PipeType::SERIAL, Input{0, size}},
+    tf::Pipe{to_pipe_type(pipes[1]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[2]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[3]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[4]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[5]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[6]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[7]), Filter{}}, 
+    tf::Pipe{to_pipe_type(pipes[8]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[9]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[10]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[11]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[12]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[13]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[14]), Filter{}},
+    tf::Pipe{to_pipe_type(pipes[15]), Filter{}}
   ); 
   
   taskflow.composed_of(pl);

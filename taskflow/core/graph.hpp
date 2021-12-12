@@ -132,6 +132,8 @@ class Runtime {
 
   Worker& worker() { return _worker; }
 
+  void schedule(Task);
+
   private:
 
   Executor& _executor;
@@ -156,8 +158,7 @@ class Node {
   friend class Executor;
   friend class FlowBuilder;
   friend class Subflow;
-  friend class Sanitizer;
-
+  friend class Runtime;
 
   TF_ENABLE_POOLABLE_ON_THIS;
 

@@ -1079,11 +1079,6 @@ class Subflow : public FlowBuilder {
     */
     inline Executor& executor();
 
-    /**
-    @brief returns the worker that spawns this subflow
-    */
-    inline Worker& worker();
-
   private:
     
     Executor& _executor;
@@ -1119,11 +1114,6 @@ inline bool Subflow::joinable() const noexcept {
 // Function: executor
 inline Executor& Subflow::executor() {
   return _executor;
-}
-
-// Function: worker
-inline Worker& Subflow::worker() {
-  return _worker;
 }
 
 // Procedure: reset

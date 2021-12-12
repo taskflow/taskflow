@@ -24,6 +24,9 @@ public:
   size_t s;
   
   void operator()(tbb::flow_control& fc) const {
+
+    work();
+
     int retval = 0;
       
     if (i++ == s) {
@@ -45,6 +48,7 @@ public:
   size_t s;
   
   int operator()(tbb::flow_control& fc) const {
+    work();
     int retval = 0;
           
     if (i++ == s) {
@@ -61,6 +65,7 @@ public:
 class MyTransformFunc1 {
 public:
   int operator()(int input) const {
+    work();
     int retval = 0;
     retval = input << 1;
     return retval;  
@@ -71,6 +76,7 @@ public:
 class MyTransformFunc2 {
 public:
   int operator()(int input) const {
+    work();
     int retval = 0;
     retval = input + 999;
     return retval;
@@ -81,6 +87,7 @@ public:
 class MyTransformFunc3 {
 public:
   int operator()(int input) const {
+    work();
     int retval = 0;
     retval = input << 1;
     return retval;
@@ -91,6 +98,7 @@ public:
 class MyTransformFunc4 {
 public:
   int operator()(int input) const {
+    work();
     int retval = 0;
     retval = input - 792;
     return retval;
@@ -101,6 +109,7 @@ public:
 class MyTransformFunc5 {
 public:
   int operator()(int input) const {
+    work();
     int retval = 0;
     retval = input * 35;
     return retval;
@@ -111,6 +120,7 @@ public:
 class MyTransformFunc6 {
 public:
   int operator()(int input) const {
+    work();
     int retval = 0;
     retval = input >> 1;
     return retval;
@@ -121,6 +131,7 @@ public:
 class MyTransformFunc7 {
 public:
   int operator()(int input) const {
+    work();
     int retval = 0;
     retval = input * input * input;
     return retval;
@@ -131,6 +142,7 @@ public:
 class MyTransformFunc8 {
 public:
   int operator()(int input) const {
+    work();
     int retval = 0;
     retval = input >> 2;
     return retval;
@@ -141,6 +153,7 @@ public:
 class MyTransformFunc9 {
 public:
   int operator()(int input) const {
+    work();
     int retval = 0;
     retval = static_cast<int>(std::sqrt(input));
     return retval;
@@ -151,6 +164,7 @@ public:
 class MyTransformFunc10 {
 public:
   int operator()(int input) const {
+    work();
     int retval = 0;
     retval = static_cast<int>(std::log(input));
     return retval;
@@ -161,6 +175,7 @@ public:
 class MyTransformFunc11 {
 public:
   int operator()(int input) const {
+    work();
     int retval = 0;
     retval = input << 3;
     return retval;
@@ -171,6 +186,7 @@ public:
 class MyTransformFunc12 {
 public:
   int operator()(int input) const {
+    work();
     int retval = 0;
     retval = 0 - input;
     return retval;
@@ -181,6 +197,7 @@ public:
 class MyTransformFunc13 {
 public:
   int operator()(int input) const {
+    work();
     int retval = 0;
     retval = input * input;
     return retval;
@@ -191,6 +208,7 @@ public:
 class MyTransformFunc14 {
 public:
   int operator()(int input) const {
+    work();
     int retval = 0;
     retval = static_cast<int>(input / 97);
     return retval;
@@ -202,6 +220,7 @@ class MyOutputFunc {
 public:
   MyOutputFunc(){}
   void operator()(int input) const {
+    work();
     int retval = 0;
     retval = input + 99999;
     //result.emplace_back(retval); 

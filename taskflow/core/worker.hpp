@@ -16,15 +16,7 @@ namespace tf {
 // ----------------------------------------------------------------------------
 
 /**
-@class Worker
-
-@brief class to create a worker thread in an executor
-
-A worker is a high-level data structure that represents a thread
-spawned from an executor.
-
-The worker class is mainly used as an opaque data structure for
-users to perform detailed scheduling controls.
+@private
 */
 class Worker {
 
@@ -39,24 +31,7 @@ class Worker {
     Notifier::Waiter* _waiter;
     std::default_random_engine _rdgen { std::random_device{}() };
     TaskQueue<Node*> _wsq;
-
-  public:
-
-    /**
-    @brief queries the worker id associated with its executor
-
-    A worker id is a unsigned integer in the range <tt>[0, N)</tt>,
-    where @c N is the number of workers spawned at the construction
-    time of the executor.
-    */
-    size_t id() const;
-
 };
-
-// Function: id
-inline size_t Worker::id() const {
-  return _id;
-}
 
 // ----------------------------------------------------------------------------
 // Class Definition: PerThreadWorker

@@ -51,11 +51,7 @@ class Executor {
 
   friend class FlowBuilder;
   friend class Subflow;
-
-  //struct PerThread {
-  //  Worker* worker;
-  //  inline PerThread() : worker {nullptr} { }
-  //};
+  friend class Runtime;
 
   public:
 
@@ -411,41 +407,6 @@ class Executor {
     tf::Future<void> run_until(Taskflow&& taskflow, P&& pred, C&& callable);
 
     /**
-    @brief schedules an active task immediatelly to a worker's queue
-    
-    This member function immediately schedules an active task 
-    to a worker's queue. A active task is a task in a running taskflow
-    or a subflow. The task may or may not be running, for example,
-    due to a condition task. 
-    Scheduling the task in a worker's queue will put the task into 
-    the execution list which allows direct control over the scheduler.
-    Consider the following example:
-    
-    @code{.cpp}
-    tf::Task A, B, C, D;
-    std::tie(A, B, C, D) = taskflow.emplace(
-      [] () { return 0; },
-      [&C] (tf::Runtime& rt) { 
-        std::cout << "B\n"; 
-        rt.executor().schedule(rt.worker(), C);
-      },
-      [] () { std::cout << "C\n"; },
-      [] () { std::cout << "D\n"; }
-    );
-    A.precede(B, C, D);
-    executor.run(taskflow).wait();
-    @endcode
-
-    The executor will first run the condition task @c A which returns @c 0
-    to inform the scheduler to go to the runtime task @c B.
-    Task @c B then direclty schedules task @c C into the running executor.
-    At this moment, task @c C is @em active because its parent taskflow
-    is running. When the taskflow finishes, we will see both @c B and @c C 
-    in the output.
-    */
-    void schedule(Worker& worker, Task task);
-    
-    /**
     @brief wait for all tasks to complete
 
     This member function waits until all submitted tasks 
@@ -685,7 +646,6 @@ class Executor {
     void _schedule(Node*);
     void _schedule(Worker&, const SmallVector<Node*>&);
     void _schedule(const SmallVector<Node*>&);
-    void _schedule_uncached(Worker&, Node*);
     void _set_up_topology(Worker*, Topology*);
     void _tear_down_topology(Worker&, Topology*); 
     void _tear_down_async(Node*);
@@ -806,7 +766,7 @@ auto Executor::named_async(const std::string& name, F&& f, ArgsT&&... args) {
   node->_name = name;
   
   if(auto w = _this_worker(); w) {
-    _schedule_uncached(*w, node);
+    _schedule(*w, node);
   }
   else{
     _schedule(node);
@@ -839,7 +799,7 @@ void Executor::named_silent_async(
   node->_name = name;
   
   if(auto w = _this_worker(); w) {
-    _schedule_uncached(*w, node);
+    _schedule(*w, node);
   }
   else {
     _schedule(node);
@@ -1062,15 +1022,6 @@ inline size_t Executor::num_observers() const noexcept {
   return _observers.size();
 }
   
-// Procedure: schedule
-inline void Executor::schedule(Worker& worker, Task task) {
-  auto node = task._node; 
-  auto& j = node->_parent ? node->_parent->_join_counter : 
-                            node->_topology->_join_counter;
-  j.fetch_add(1);
-  _schedule(worker, node);
-}
-
 // Procedure: _schedule
 inline void Executor::_schedule(Worker& worker, Node* node) {
 
@@ -1082,30 +1033,9 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
     return;
   }
 
-  // call uncached_push since it requires workers to steal the shared queue
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
-    _wsq.uncached_push(node);
-  }
-
-  _notifier.notify(false);
-}
-
-// Procedure: _schedule
-inline void Executor::_schedule_uncached(Worker& worker, Node* node) {
-
-  node->_state.fetch_or(Node::READY, std::memory_order_release);
-
-  // caller is a worker to this pool
-  if(worker._executor == this) {
-    worker._wsq.uncached_push(node);
-    return;
-  }
-  
-  // call uncached_push since it requires workers to steal the shared queue
-  {
-    std::lock_guard<std::mutex> lock(_wsq_mutex);
-    _wsq.uncached_push(node);
+    _wsq.push(node);
   }
 
   _notifier.notify(false);
@@ -1116,10 +1046,9 @@ inline void Executor::_schedule(Node* node) {
   
   node->_state.fetch_or(Node::READY, std::memory_order_release);
 
-  // call uncached_push since it requires workers to steal the shared queue
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
-    _wsq.uncached_push(node);
+    _wsq.push(node);
   }
 
   _notifier.notify(false);
@@ -1150,11 +1079,10 @@ inline void Executor::_schedule(
     return;
   }
   
-  // call uncached_push since it requires workers to steal the shared queue
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     for(size_t k=0; k<num_nodes; ++k) {
-      _wsq.uncached_push(nodes[k]);
+      _wsq.push(nodes[k]);
     }
   }
   
@@ -1176,11 +1104,10 @@ inline void Executor::_schedule(const SmallVector<Node*>& nodes) {
     nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
   }
 
-  // call uncached_push since it requires workers to steal the shared queue
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     for(size_t k=0; k<num_nodes; ++k) {
-      _wsq.uncached_push(nodes[k]);
+      _wsq.push(nodes[k]);
     }
   }
   
@@ -1193,6 +1120,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // synchronize all outstanding memory operations caused by reordering
   while(!(node->_state.load(std::memory_order_acquire) & Node::READY));
   
+  begin_invoke:
+
   // no need to do other things if the topology is cancelled
   //if(node->_topology && node->_topology->_is_cancelled) {
   if(node->_is_cancelled()) {
@@ -1309,6 +1238,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // acquire the parent flow counter
   auto& j = (node->_parent) ? node->_parent->_join_counter : 
                               node->_topology->_join_counter;
+ 
+  Node* cache {nullptr};
   
   // At this point, the node storage might be destructed (to be verified)
   // case 1: non-condition task
@@ -1320,10 +1251,15 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       for(auto cond : conds) {
         if(cond >= 0 && static_cast<size_t>(cond) < num_successors) {
           auto s = node->_successors[cond];
-          // zeroing the join counter seems redundant but it keeps invariant
+          // zeroing the join counter for invariant
           s->_join_counter.store(0, std::memory_order_relaxed);
           j.fetch_add(1);
-          _schedule(worker, s);
+          if(cache) {
+            _schedule(worker, cache);
+          }
+          cache = s;
+          //j.fetch_add(1);
+          //_schedule(worker, s);
         }
       }
     }
@@ -1334,7 +1270,12 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       for(size_t i=0; i<num_successors; ++i) {
         if(--(node->_successors[i]->_join_counter) == 0) {
           j.fetch_add(1);
-          _schedule(worker, node->_successors[i]);
+          if(cache) {
+            _schedule(worker, cache);
+          }
+          cache = node->_successors[i];
+          //j.fetch_add(1);
+          //_schedule(worker, node->_successors[i]);
         }
       }
     }
@@ -1343,6 +1284,14 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
   // tear_down the invoke
   _tear_down_invoke(worker, node, false);
+  
+  // perform tail recursion elimination for the right-most child to reduce
+  // the number of expensive pop/push operations through the task queue
+  if(cache) {
+    node = cache;
+    //node->_state.fetch_or(Node::READY, std::memory_order_release);
+    goto begin_invoke;
+  }
 }
 
 // Procedure: _tear_down_async
@@ -1905,7 +1854,7 @@ auto Subflow::_named_async(
   node->_topology = _parent->_topology;
   node->_parent = _parent;
 
-  _executor._schedule_uncached(w, node);
+  _executor._schedule(w, node);
 
   return fu;
 }
@@ -1935,7 +1884,7 @@ void Subflow::_named_silent_async(
   node->_topology = _parent->_topology;
   node->_parent = _parent;
   
-  _executor._schedule_uncached(w, node);
+  _executor._schedule(w, node);
 }
 
 // Function: silent_async
@@ -1952,6 +1901,18 @@ void Subflow::silent_async(F&& f, ArgsT&&... args) {
   named_silent_async("", std::forward<F>(f), std::forward<ArgsT>(args)...);
 }
 
+// ############################################################################
+// Forward Declaration: Runtime
+// ############################################################################
+
+// Procedure: schedule
+inline void Runtime::schedule(Task task) {
+  auto node = task._node; 
+  auto& j = node->_parent ? node->_parent->_join_counter : 
+                            node->_topology->_join_counter;
+  j.fetch_add(1);
+  _executor._schedule(_worker, node);
+}
 
 
 }  // end of namespace tf -----------------------------------------------------

@@ -29,8 +29,6 @@ class Pipe {
 };
 
 
-
-
 class Pipeflow {
 
   template <typename... Fs>
@@ -125,9 +123,7 @@ class Pipeline {
   Graph _graph;
     
   void _on_pipe(Pipeflow&);
-
   void _build();
-
 };
 
 // constructor
@@ -285,7 +281,8 @@ void Pipeline<Fs...>::_build() {
       // notice that the index of task starts from 1
       switch(retval.size()) {
         case 2: {
-          rt.executor().schedule(rt.worker(), _tasks[n_l+1]);
+          // TODO: performance issue (need schedule_uncached?)
+          rt.schedule(_tasks[n_l+1]);
           goto pipeline;
         }
         case 1: {
@@ -293,7 +290,7 @@ void Pipeline<Fs...>::_build() {
             goto pipeline;
           }
           else {
-            rt.executor().schedule(rt.worker(), _tasks[n_l+1]);
+            rt.schedule(_tasks[n_l+1]);
           }
         }
       }

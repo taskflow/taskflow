@@ -185,6 +185,7 @@ the associated graph node without directly touching internal node data.
 class Task {
 
   friend class FlowBuilder;
+  friend class Runtime;
   friend class Taskflow;
   friend class TaskView;
   friend class Executor;
