@@ -9,7 +9,8 @@
     <detaileddescription>
 <para>Taskflow provides template functions for constructing tasks to perform parallel transforms over ranges of items.</para><sect1 id="ParallelTransforms_1ParallelTransformsInclude">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/algorithm/transform.hpp</computeroutput>, for creating a parallel-transform task.</para></sect1>
+<para>You need to include the header file, <computeroutput>taskflow/algorithm/transform.hpp</computeroutput>, for creating a parallel-transform task.</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;taskflow/algorithm/transform.hpp&gt;</highlight></codeline>
+</programlisting></para></sect1>
 <sect1 id="ParallelTransforms_1ParallelTransformsOverARange">
 <title>Create a Unary Parallel-Transform Task</title>
 <para>Parallel-transform transforms a range of items, possibly with a different type for the transformed data, and stores the result in another range. The task created by <ref refid="classtf_1_1FlowBuilder_1abd813bd7afcbd8e6f56dc67883917d1a" kindref="member">tf::Taskflow::transform(B first1, E last1, O d_first, C c)</ref> is equivalent to a parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first1<sp/>!=<sp/>last1)<sp/>{</highlight></codeline>

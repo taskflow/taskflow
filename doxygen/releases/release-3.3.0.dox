@@ -42,6 +42,8 @@ and memory leak of the %Taskflow codebase.
 
 + Changed all lambda operators in parallel algorithms to copy by default
 + Cleaned up data race errors in [tsan](https://github.com/google/sanitizers) caused by incorrect memory order
++ Fixed TLS (thread-local storage) issues when building %Taskflow in a shared lib
++ Enhanced scheduling performance by caching tasks in the invoke loop
 + Added tf::Task::data to allow associating a task with user-level data
 + Added tf::Executor::named_async to allow associating an asynchronous task a name
 + Added tf::Executor::named_silent_async to allow associating a silent asynchronous task a name
@@ -50,6 +52,7 @@ and memory leak of the %Taskflow codebase.
 + Added multi-conditional tasking to allow a task to jump to multiple branches
 + Added runtime tasking to allow in-task control over the running executor 
 + Added tf::Taskflow::transform parallel-transform algorithms
++ Added a public graph interface for users to create graph modules
 
 @subsection release-3-3-0_cudaflow cudaFlow
 
@@ -65,12 +68,14 @@ and memory leak of the %Taskflow codebase.
 
 + Fixed memory leak in updating tf::cudaFlowCapturer of undestroyed graph
 + Fixed invalid lambda capture by reference in tf::Taskflow::sort
++ Fixed invalid lambda capture by reference in tf::Taskflow::reduce
++ Fixed invalid lambda capture by reference in tf::Taskflow::transform_reduce
 + Fixed invalid lambda capture by reference in tf::Taskflow::for_each
 + Fixed invalid lambda capture by reference in tf::Taskflow::for_each_index
 
 @section release-3-3-0_breaking_changes Breaking Changes
 
-For compilation speed purpose, you will need to separately include the follwoing
+For the purpose of compilation speed, you will need to separately include the follwoing
 files for using specific features:
 + `taskflow/algorithm/sort.hpp` for creating a parallel-sort task
 + `taskflow/algorithm/transform.hpp` for creating a parallel-transform task

@@ -273,7 +273,7 @@ inline int cuda_get_runtime_version() {
 
 /** @class cudaScopedDevice
 
-@brief RAII-styled device context switch
+@brief class to create an RAII-styled context switch
 
 Sample usage:
     

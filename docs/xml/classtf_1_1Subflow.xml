@@ -31,6 +31,19 @@
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="891" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="891" bodyend="-1"/>
       </memberdef>
+      <memberdef kind="friend" id="classtf_1_1Subflow_1af3d14e26ba8af9e6cc5a32aad8446de7" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class Runtime</definition>
+        <argsstring></argsstring>
+        <name>Runtime</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="892" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="892" bodyend="-1"/>
+      </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1Subflow_1a31a68355e05081fed16fff307b6b4e33" prot="private" static="no" mutable="no">
@@ -44,10 +57,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1089" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1089" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1085" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1085" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Subflow_1ac04dc0e5d4001c6d3f73ea867387b186" prot="private" static="no" mutable="no">
-        <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
+        <type>Worker &amp;</type>
         <definition>Worker&amp; tf::Subflow::_worker</definition>
         <argsstring></argsstring>
         <name>_worker</name>
@@ -57,7 +70,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1090" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1090" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1086" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1086" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Subflow_1a350edd619ad0a3f28c8373b4ee937ebe" prot="private" static="no" mutable="no">
         <type>Node *</type>
@@ -70,7 +83,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1091" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1091" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1087" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1087" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Subflow_1ac8db48417a0777f3c00257689dc63695" prot="private" static="no" mutable="no">
         <type>bool</type>
@@ -84,7 +97,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1092" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1092" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1088" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1088" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -103,7 +116,7 @@
 </programlisting></para><para>Only the worker that spawns this subflow can join it. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="910" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1768" bodyend="1779"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="911" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1775" bodyend="1786"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Subflow_1acfdedc7e9676126e9a38ecf7b5a37864" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -120,7 +133,7 @@
 </programlisting></para><para>Only the worker that spawns this subflow can detach it. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="927" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1781" bodyend="1792"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="928" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1788" bodyend="1799"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Subflow_1a28fea7acb1dbce88cc87318bea36002c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -133,7 +146,7 @@
 <para>Resetting a subflow will first clear the underlying task dependency graphs and then change the subflow to a joinable state. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="935" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1130" bodyend="1133"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="936" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1121" bodyend="1124"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Subflow_1ac3805e898b6a55b6e5173c74c5555e57" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -152,7 +165,7 @@
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="952" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1115" bodyend="1117"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="953" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1111" bodyend="1113"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Subflow_1a70681068507b224a96df69cc1f3168f1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -223,7 +236,7 @@ The method creates an asynchronous task to launch the given function on the give
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="992" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1850" bodyend="1852"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="993" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1857" bodyend="1859"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Subflow_1ae528c2de98ec89afc50b8815c0306b5e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -305,7 +318,7 @@ The method creates a named asynchronous task to launch the given function on the
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1033" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1796" bodyend="1800"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1034" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1803" bodyend="1807"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Subflow_1af9671aa8548882b3425e5a1f10f7a868" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -343,7 +356,7 @@ The method creates a named asynchronous task to launch the given function on the
 </programlisting></para><para>This member function is thread-safe. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1054" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1886" bodyend="1888"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1055" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1893" bodyend="1895"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Subflow_1a3290b8f729c4511f2023199e4c067951" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -385,7 +398,7 @@ The method creates a named asynchronous task to launch the given function on the
 </programlisting></para><para>This member function is thread-safe. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1075" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1878" bodyend="1882"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1076" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1885" bodyend="1889"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Subflow_1ac513ebf8a73ef55f0ad480be869bd796" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> &amp;</type>
@@ -398,98 +411,7 @@ The method creates a named asynchronous task to launch the given function on the
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1080" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1120" bodyend="1122"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1Subflow_1a53ba851cf62e0d5f2cd04989c9b0d3aa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
-        <definition>Worker &amp; tf::Subflow::worker</definition>
-        <argsstring>()</argsstring>
-        <name>worker</name>
-        <briefdescription>
-<para>returns the worker that spawns this subflow </para>        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1085" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1125" bodyend="1127"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1Subflow_1ab515b1179bb7093143cda39ef32b0b32" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename F</type>
-          </param>
-          <param>
-            <type>typename...</type>
-            <declname>ArgsT</declname>
-            <defname>ArgsT</defname>
-          </param>
-        </templateparamlist>
-        <type>auto</type>
-        <definition>auto tf::Subflow::_named_async</definition>
-        <argsstring>(Worker *w, const std::string &amp;name, F &amp;&amp;f, ArgsT &amp;&amp;... args)</argsstring>
-        <name>_named_async</name>
-        <param>
-          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> *</type>
-          <declname>w</declname>
-        </param>
-        <param>
-          <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
-          <declname>name</declname>
-        </param>
-        <param>
-          <type>F &amp;&amp;</type>
-          <declname>f</declname>
-        </param>
-        <param>
-          <type>ArgsT &amp;&amp;...</type>
-          <declname>args</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="1804" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1804" bodyend="1846"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1Subflow_1a8758329ddf997daf34311f6dfb695434" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename F</type>
-          </param>
-          <param>
-            <type>typename...</type>
-            <declname>ArgsT</declname>
-            <defname>ArgsT</defname>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::Subflow::_named_silent_async</definition>
-        <argsstring>(Worker *w, const std::string &amp;name, F &amp;&amp;f, ArgsT &amp;&amp;... args)</argsstring>
-        <name>_named_silent_async</name>
-        <param>
-          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> *</type>
-          <declname>w</declname>
-        </param>
-        <param>
-          <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
-          <declname>name</declname>
-        </param>
-        <param>
-          <type>F &amp;&amp;</type>
-          <declname>f</declname>
-        </param>
-        <param>
-          <type>ArgsT &amp;&amp;...</type>
-          <declname>args</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="1856" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1856" bodyend="1874"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1081" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1116" bodyend="1118"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -503,7 +425,7 @@ The method creates a named asynchronous task to launch the given function on the
           <defname>executor</defname>
         </param>
         <param>
-          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
+          <type>Worker &amp;</type>
           <defname>worker</defname>
         </param>
         <param>
@@ -511,7 +433,7 @@ The method creates a named asynchronous task to launch the given function on the
           <defname>parent</defname>
         </param>
         <param>
-          <type>Graph &amp;</type>
+          <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> &amp;</type>
           <defname>graph</defname>
         </param>
         <briefdescription>
@@ -520,9 +442,9 @@ The method creates a named asynchronous task to launch the given function on the
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1094" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1104" bodyend="1112"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1090" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1100" bodyend="1108"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Subflow_1a89d2e10d101b8bd318f3f7115f482b41" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Subflow_1a1c0af82b2cd8ee9fb381714452d6912b" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename F</type>
@@ -535,20 +457,23 @@ The method creates a named asynchronous task to launch the given function on the
         </templateparamlist>
         <type>auto</type>
         <definition>auto tf::Subflow::_named_async</definition>
-        <argsstring>(Worker *, const std::string &amp;, F &amp;&amp;, ArgsT &amp;&amp;...)</argsstring>
+        <argsstring>(Worker &amp;w, const std::string &amp;name, F &amp;&amp;f, ArgsT &amp;&amp;... args)</argsstring>
         <name>_named_async</name>
         <param>
-          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> *</type>
+          <type>Worker &amp;</type>
+          <declname>w</declname>
         </param>
         <param>
           <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
+          <declname>name</declname>
         </param>
         <param>
           <type>F &amp;&amp;</type>
+          <declname>f</declname>
         </param>
         <param>
-          <type>ArgsT &amp;&amp;</type>
-          <declname>...</declname>
+          <type>ArgsT &amp;&amp;...</type>
+          <declname>args</declname>
         </param>
         <briefdescription>
         </briefdescription>
@@ -556,9 +481,9 @@ The method creates a named asynchronous task to launch the given function on the
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1097" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1093" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1811" bodyend="1853"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Subflow_1aa7dbcb44b118c0f05d71b3a7af6a7881" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Subflow_1a85ef182a840e26d424b961c488a464d9" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename F</type>
@@ -571,20 +496,23 @@ The method creates a named asynchronous task to launch the given function on the
         </templateparamlist>
         <type>void</type>
         <definition>void tf::Subflow::_named_silent_async</definition>
-        <argsstring>(Worker *, const std::string &amp;, F &amp;&amp;, ArgsT &amp;&amp;...)</argsstring>
+        <argsstring>(Worker &amp;w, const std::string &amp;name, F &amp;&amp;f, ArgsT &amp;&amp;... args)</argsstring>
         <name>_named_silent_async</name>
         <param>
-          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> *</type>
+          <type>Worker &amp;</type>
+          <declname>w</declname>
         </param>
         <param>
           <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
+          <declname>name</declname>
         </param>
         <param>
           <type>F &amp;&amp;</type>
+          <declname>f</declname>
         </param>
         <param>
-          <type>ArgsT &amp;&amp;</type>
-          <declname>...</declname>
+          <type>ArgsT &amp;&amp;...</type>
+          <declname>args</declname>
         </param>
         <briefdescription>
         </briefdescription>
@@ -592,7 +520,7 @@ The method creates a named asynchronous task to launch the given function on the
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1100" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1096" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1863" bodyend="1881"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -618,38 +546,43 @@ The method creates a named asynchronous task to launch the given function on the
 <codeline><highlight class="normal">C.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(D);<sp/><sp/></highlight><highlight class="comment">//<sp/>D<sp/>runs<sp/>after<sp/>C<sp/></highlight></codeline>
 </programlisting> </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="190">
+      <node id="256">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
       </node>
-      <node id="189">
+      <node id="255">
         <label>tf::Subflow</label>
         <link refid="classtf_1_1Subflow"/>
-        <childnode refid="190" relation="public-inheritance">
+        <childnode refid="256" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="192">
+      <node id="258">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
+        <childnode refid="259" relation="usage">
+          <edgelabel>_graph</edgelabel>
+        </childnode>
       </node>
-      <node id="191">
+      <node id="259">
+        <label>tf::Graph</label>
+        <link refid="classtf_1_1Graph"/>
+      </node>
+      <node id="257">
         <label>tf::Subflow</label>
         <link refid="classtf_1_1Subflow"/>
-        <childnode refid="192" relation="public-inheritance">
+        <childnode refid="258" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="888" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="888" bodyend="1101"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="888" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="888" bodyend="1097"/>
     <listofallmembers>
       <member refid="classtf_1_1Subflow_1a31a68355e05081fed16fff307b6b4e33" prot="private" virt="non-virtual"><scope>tf::Subflow</scope><name>_executor</name></member>
       <member refid="classtf_1_1FlowBuilder_1a9404a57d9d37a4d49d20b686e4e5f68f" prot="protected" virt="non-virtual"><scope>tf::Subflow</scope><name>_graph</name></member>
       <member refid="classtf_1_1Subflow_1ac8db48417a0777f3c00257689dc63695" prot="private" virt="non-virtual"><scope>tf::Subflow</scope><name>_joinable</name></member>
-      <member refid="classtf_1_1Subflow_1a89d2e10d101b8bd318f3f7115f482b41" prot="private" virt="non-virtual"><scope>tf::Subflow</scope><name>_named_async</name></member>
-      <member refid="classtf_1_1Subflow_1ab515b1179bb7093143cda39ef32b0b32" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>_named_async</name></member>
-      <member refid="classtf_1_1Subflow_1aa7dbcb44b118c0f05d71b3a7af6a7881" prot="private" virt="non-virtual"><scope>tf::Subflow</scope><name>_named_silent_async</name></member>
-      <member refid="classtf_1_1Subflow_1a8758329ddf997daf34311f6dfb695434" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>_named_silent_async</name></member>
+      <member refid="classtf_1_1Subflow_1a1c0af82b2cd8ee9fb381714452d6912b" prot="private" virt="non-virtual"><scope>tf::Subflow</scope><name>_named_async</name></member>
+      <member refid="classtf_1_1Subflow_1a85ef182a840e26d424b961c488a464d9" prot="private" virt="non-virtual"><scope>tf::Subflow</scope><name>_named_silent_async</name></member>
       <member refid="classtf_1_1Subflow_1a350edd619ad0a3f28c8373b4ee937ebe" prot="private" virt="non-virtual"><scope>tf::Subflow</scope><name>_parent</name></member>
       <member refid="classtf_1_1Subflow_1ac04dc0e5d4001c6d3f73ea867387b186" prot="private" virt="non-virtual"><scope>tf::Subflow</scope><name>_worker</name></member>
       <member refid="classtf_1_1Subflow_1a70681068507b224a96df69cc1f3168f1" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>async</name></member>
@@ -666,8 +599,8 @@ The method creates a named asynchronous task to launch the given function on the
       <member refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>emplace_on</name></member>
       <member refid="classtf_1_1FlowBuilder_1af7c878fa6f0c4539ab88c0a85e6052d8" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>emplace_on</name></member>
       <member refid="classtf_1_1FlowBuilder_1a5627f7962099ac7c4986993cffa7b909" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>erase</name></member>
-      <member refid="classtf_1_1Subflow_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::Subflow</scope><name>Executor</name></member>
       <member refid="classtf_1_1Subflow_1ac513ebf8a73ef55f0ad480be869bd796" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>executor</name></member>
+      <member refid="classtf_1_1Subflow_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::Subflow</scope><name>Executor</name></member>
       <member refid="classtf_1_1Subflow_1a61184f9bd9c801d0a5eccecfdbddc641" prot="private" virt="non-virtual"><scope>tf::Subflow</scope><name>FlowBuilder</name></member>
       <member refid="classtf_1_1FlowBuilder_1a67d023d5493da1594a1d2eaea89da179" prot="public" virt="non-virtual" ambiguityscope="tf::FlowBuilder::"><scope>tf::Subflow</scope><name>FlowBuilder</name></member>
       <member refid="classtf_1_1FlowBuilder_1ab405d7b10040530d8b04c11767b4960d" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>for_each</name></member>
@@ -681,6 +614,7 @@ The method creates a named asynchronous task to launch the given function on the
       <member refid="classtf_1_1FlowBuilder_1acab0b4ac82260f47fdb36a3244ee3aaf" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>placeholder</name></member>
       <member refid="classtf_1_1FlowBuilder_1aa9494fe7b862fc832884ce318e8a37f5" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>reduce</name></member>
       <member refid="classtf_1_1Subflow_1a28fea7acb1dbce88cc87318bea36002c" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>reset</name></member>
+      <member refid="classtf_1_1Subflow_1af3d14e26ba8af9e6cc5a32aad8446de7" prot="private" virt="non-virtual"><scope>tf::Subflow</scope><name>Runtime</name></member>
       <member refid="classtf_1_1Subflow_1af9671aa8548882b3425e5a1f10f7a868" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>silent_async</name></member>
       <member refid="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>sort</name></member>
       <member refid="classtf_1_1FlowBuilder_1a7d844e9856c7c65b26ccdb83ffdab1d6" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>sort</name></member>
@@ -688,7 +622,6 @@ The method creates a named asynchronous task to launch the given function on the
       <member refid="classtf_1_1FlowBuilder_1abd813bd7afcbd8e6f56dc67883917d1a" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>transform</name></member>
       <member refid="classtf_1_1FlowBuilder_1aa0b3271b34317710a1e32053a9abc3cf" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>transform</name></member>
       <member refid="classtf_1_1FlowBuilder_1a024a1e5b4f138b6caebb427411fb0a2d" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>transform_reduce</name></member>
-      <member refid="classtf_1_1Subflow_1a53ba851cf62e0d5f2cd04989c9b0d3aa" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>worker</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

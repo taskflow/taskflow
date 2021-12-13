@@ -221,7 +221,7 @@
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>observer interface based on the built-in taskflow profiler format </para>    </briefdescription>
+<para>class to create an observer based on the built-in taskflow profiler format </para>    </briefdescription>
     <detaileddescription>
 <para>A <ref refid="classtf_1_1TFProfObserver" kindref="compound">tf::TFProfObserver</ref> inherits <ref refid="classtf_1_1ObserverInterface" kindref="compound">tf::ObserverInterface</ref> and defines methods to dump the observed thread activities into a format that can be visualized through <ulink url="https://taskflow.github.io/tfprof/">Taskflow Profiler</ulink>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
@@ -239,26 +239,26 @@
 <codeline><highlight class="normal">observer-&gt;dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 </programlisting></para><para>We recommend using our <ulink url="https://taskflow.github.io/tfprof/">Taskflow Profiler</ulink> python script to observe thread activities instead of the raw function call. The script will turn on environment variables needed for observing all executors in a taskflow program and dump the result to a valid, clean JSON file compatible with the format of <ulink url="https://taskflow.github.io/tfprof/">Taskflow Profiler</ulink>. </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="208">
+      <node id="280">
         <label>tf::ObserverInterface</label>
         <link refid="classtf_1_1ObserverInterface"/>
       </node>
-      <node id="207">
+      <node id="279">
         <label>tf::TFProfObserver</label>
         <link refid="classtf_1_1TFProfObserver"/>
-        <childnode refid="208" relation="public-inheritance">
+        <childnode refid="280" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="210">
+      <node id="282">
         <label>tf::ObserverInterface</label>
         <link refid="classtf_1_1ObserverInterface"/>
       </node>
-      <node id="209">
+      <node id="281">
         <label>tf::TFProfObserver</label>
         <link refid="classtf_1_1TFProfObserver"/>
-        <childnode refid="210" relation="public-inheritance">
+        <childnode refid="282" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>

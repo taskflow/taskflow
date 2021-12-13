@@ -48,7 +48,7 @@
         <h1>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>Task <span class="m-thin">class</span>
         </h1>
-        <p>handle to a node in a task dependency graph</p>
+        <p>class to create a task handle over a node in a taskflow graph</p>
         <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -61,7 +61,7 @@
             </li>
           </ul>
         </div>
-<p>A <a href="classtf_1_1Task.html" class="m-doc">Task</a> is handle to manipulate a node in a taskflow graph. It provides a set of methods for users to access and modify the attributes of the associated graph node without directly touching internal node data.</p>
+<p>A task is a wrapper over a node in a taskflow graph. It provides a set of methods for users to access and modify the attributes of the associated node in the taskflow graph. A task is very lightweight object (i.e., only storing a node pointer) that can be trivially copied around, and it does not own the lifetime of the associated node.</p>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">

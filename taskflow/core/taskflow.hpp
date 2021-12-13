@@ -14,7 +14,7 @@ namespace tf {
 /**
 @class Taskflow 
 
-@brief main entry to create a task dependency graph
+@brief class to create a taskflow object 
 
 A %taskflow manages a task dependency graph where each task represents a 
 callable object (e.g., @std_lambda, @std_function) and an edge represents a 
@@ -416,6 +416,10 @@ inline void Taskflow::_dump(
       os << "shape=diamond color=black fillcolor=aquamarine style=filled";
     break;
 
+    case Node::RUNTIME:
+      os << "shape=component";
+    break;
+
     case Node::CUDAFLOW:
       os << " style=\"filled\""
          << " color=\"black\" fillcolor=\"purple\""
@@ -442,7 +446,7 @@ inline void Taskflow::_dump(
       os << 'p' << node << " -> p" << node->_successors[s] 
          << " [style=dashed label=\"" << s << "\"];\n";
     } else {
-        os << 'p' << node << " -> p" << node->_successors[s] << ";\n";
+      os << 'p' << node << " -> p" << node->_successors[s] << ";\n";
     }
   }
 
@@ -450,7 +454,8 @@ inline void Taskflow::_dump(
   if (node->_parent && node->_successors.size() == 0) {
       os << 'p' << node << " -> p" << node->_parent << ";\n";
   }
-
+  
+  // node info
   switch(node->_handle.index()) {
 
     case Node::DYNAMIC: {

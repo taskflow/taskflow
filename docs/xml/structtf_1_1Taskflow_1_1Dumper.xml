@@ -17,7 +17,7 @@
         <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="78" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="78" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1Taskflow_1_1Dumper_1aaf12aeff9ab5fdc366886711130e1f1f" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/container/stack" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::stack</ref>&lt; <ref refid="cpp/utility/pair" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::pair</ref>&lt; const Node *, const Graph * &gt; &gt;</type>
+        <type><ref refid="cpp/container/stack" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::stack</ref>&lt; <ref refid="cpp/utility/pair" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::pair</ref>&lt; const Node *, const <ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> * &gt; &gt;</type>
         <definition>std::stack&lt;std::pair&lt;const Node*, const Graph*&gt; &gt; tf::Taskflow::Dumper::stack</definition>
         <argsstring></argsstring>
         <name>stack</name>
@@ -30,7 +30,7 @@
         <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="79" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="79" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1Taskflow_1_1Dumper_1a3419470cb683a0eef3a8fb03ec0cf126" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/container/unordered_map" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_map</ref>&lt; const Graph *, size_t &gt;</type>
+        <type><ref refid="cpp/container/unordered_map" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_map</ref>&lt; const <ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> *, size_t &gt;</type>
         <definition>std::unordered_map&lt;const Graph*, size_t&gt; tf::Taskflow::Dumper::visited</definition>
         <argsstring></argsstring>
         <name>visited</name>
@@ -48,20 +48,20 @@
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
-      <node id="92">
-        <label>std::unordered_map&lt; const Graph *, size_t &gt;</label>
+      <node id="105">
+        <label>std::stack&lt; std::pair&lt; const Node *, const tf::Graph *&gt; &gt;</label>
       </node>
-      <node id="90">
+      <node id="103">
         <label>tf::Taskflow::Dumper</label>
-        <childnode refid="91" relation="usage">
-          <edgelabel>stack</edgelabel>
-        </childnode>
-        <childnode refid="92" relation="usage">
+        <childnode refid="104" relation="usage">
           <edgelabel>visited</edgelabel>
         </childnode>
+        <childnode refid="105" relation="usage">
+          <edgelabel>stack</edgelabel>
+        </childnode>
       </node>
-      <node id="91">
-        <label>std::stack&lt; std::pair&lt; const Node *, const Graph *&gt; &gt;</label>
+      <node id="104">
+        <label>std::unordered_map&lt; const tf::Graph *, size_t &gt;</label>
       </node>
     </collaborationgraph>
     <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="77" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="77" bodyend="81"/>

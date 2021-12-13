@@ -73,7 +73,7 @@
 </para></listitem>
 <listitem><para>Lines 49-53 define the task dependency between host tasks and the cudaFlow tasks and execute the taskflow</para></listitem>
 </itemizedlist>
-<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> is a lightweight abstraction over CUDA Graph. We do not expend yet another effort on simplifying kernel programming but focus on tasking CUDA operations and their dependencies. This organization lets users fully take advantage of CUDA featuress that are commensurate with their domain knowledge, while leaving difficult task parallelism details to Taskflow.</para><para><simplesect kind="attention"><para>You need to include <computeroutput><ref refid="cudaflow_8hpp" kindref="compound">taskflow/cudaflow.hpp</ref></computeroutput> in order to use <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>.</para></simplesect>
+<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> is a lightweight abstraction over CUDA <ref refid="classtf_1_1Graph" kindref="compound">Graph</ref>. We do not expend yet another effort on simplifying kernel programming but focus on tasking CUDA operations and their dependencies. This organization lets users fully take advantage of CUDA featuress that are commensurate with their domain knowledge, while leaving difficult task parallelism details to Taskflow.</para><para><simplesect kind="attention"><para>You need to include <computeroutput><ref refid="cudaflow_8hpp" kindref="compound">taskflow/cudaflow.hpp</ref></computeroutput> in order to use <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>.</para></simplesect>
 </para></sect1>
 <sect1 id="GPUTaskingcudaFlow_1Compile_a_cudaFlow_program">
 <title>Compile a cudaFlow Program</title>

@@ -9,7 +9,8 @@
     <detaileddescription>
 <para>Taskflow provides template functions for constructing tasks to sort ranges of items in parallel.</para><sect1 id="ParallelSort_1ParallelSortInclude">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/algorithm/transform.hpp</computeroutput>, for creating a parallel-sort task.</para></sect1>
+<para>You need to include the header file, <computeroutput>taskflow/algorithm/sort.hpp</computeroutput>, for creating a parallel-sort task.</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;taskflow/algorithm/sort.hpp&gt;</highlight></codeline>
+</programlisting></para></sect1>
 <sect1 id="ParallelSort_1SortARangeOfItems">
 <title>Sort a Range of Items</title>
 <para>The task created by <ref refid="classtf_1_1FlowBuilder_1a7d844e9856c7c65b26ccdb83ffdab1d6" kindref="member">tf::Taskflow::sort(B first, E last)</ref> performs parallel sort to rank a range of elements specified by <computeroutput>[first, last)</computeroutput> in increasing order. The given iterators must be <emphasis>random-accessible</emphasis>. The following example creates a task to sort a data vector in increasing order.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>

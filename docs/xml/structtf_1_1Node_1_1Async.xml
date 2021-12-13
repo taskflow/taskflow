@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+  <compounddef id="structtf_1_1Node_1_1Async" kind="struct" language="C++" prot="private">
+    <compoundname>tf::Node::Async</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structtf_1_1Node_1_1Async_1a30f60a220f185b716b8794b09b3774cb" prot="public" static="no" mutable="no">
+        <type><ref refid="cpp/utility/functional/function" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(bool)&gt;</type>
+        <definition>std::function&lt;void(bool)&gt; tf::Node::Async::work</definition>
+        <argsstring></argsstring>
+        <name>work</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="297" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="297" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtf_1_1Node_1_1Async_1af77ca9af9f28c7377428f5f91deb2347" prot="public" static="no" mutable="no">
+        <type><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; AsyncTopology &gt;</type>
+        <definition>std::shared_ptr&lt;AsyncTopology&gt; tf::Node::Async::topology</definition>
+        <argsstring></argsstring>
+        <name>topology</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="299" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="299" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structtf_1_1Node_1_1Async_1a4f10710d80c1630961bf796ae9058661" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>tf::Node::Async::Async</definition>
+        <argsstring>(T &amp;&amp;, std::shared_ptr&lt; AsyncTopology &gt;)</argsstring>
+        <name>Async</name>
+        <param>
+          <type>T &amp;&amp;</type>
+        </param>
+        <param>
+          <type><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; AsyncTopology &gt;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="295" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="structtf_1_1Node_1_1Async_1ad7d3a34562e1bdd0e58fd552a8ffed33" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>tf::Node::Async::Async</definition>
+        <argsstring>(C &amp;&amp;c, std::shared_ptr&lt; AsyncTopology &gt;tpg)</argsstring>
+        <name>Async</name>
+        <param>
+          <type>C &amp;&amp;</type>
+          <declname>c</declname>
+        </param>
+        <param>
+          <type><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; AsyncTopology &gt;</type>
+          <declname>tpg</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="490" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="490" bodyend="493"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>tf::Node::Async</label>
+        <childnode refid="2" relation="usage">
+          <edgelabel>work</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>topology</edgelabel>
+        </childnode>
+      </node>
+      <node id="2">
+        <label>std::function&lt; void(bool)&gt;</label>
+      </node>
+      <node id="3">
+        <label>std::shared_ptr&lt; AsyncTopology &gt;</label>
+      </node>
+    </collaborationgraph>
+    <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="292" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="292" bodyend="300"/>
+    <listofallmembers>
+      <member refid="structtf_1_1Node_1_1Async_1a4f10710d80c1630961bf796ae9058661" prot="public" virt="non-virtual"><scope>tf::Node::Async</scope><name>Async</name></member>
+      <member refid="structtf_1_1Node_1_1Async_1ad7d3a34562e1bdd0e58fd552a8ffed33" prot="public" virt="non-virtual"><scope>tf::Node::Async</scope><name>Async</name></member>
+      <member refid="structtf_1_1Node_1_1Async_1af77ca9af9f28c7377428f5f91deb2347" prot="public" virt="non-virtual"><scope>tf::Node::Async</scope><name>topology</name></member>
+      <member refid="structtf_1_1Node_1_1Async_1a30f60a220f185b716b8794b09b3774cb" prot="public" virt="non-virtual"><scope>tf::Node::Async</scope><name>work</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

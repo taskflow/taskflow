@@ -139,7 +139,7 @@
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>The interface class for creating an executor observer. </para>    </briefdescription>
+<para>class to derive an executor observer </para>    </briefdescription>
     <detaileddescription>
 <para>The <ref refid="classtf_1_1ObserverInterface" kindref="compound">tf::ObserverInterface</ref> class let users define custom methods to monitor the behaviors of an executor. This is particularly useful when you want to inspect the performance of an executor and visualize when each thread participates in the execution of a task. To prevent users from direct access to the internal threads and tasks, <ref refid="classtf_1_1ObserverInterface" kindref="compound">tf::ObserverInterface</ref> provides immutable wrappers, <ref refid="classtf_1_1WorkerView" kindref="compound">tf::WorkerView</ref> and <ref refid="classtf_1_1TaskView" kindref="compound">tf::TaskView</ref>, over workers and tasks.</para><para>Please refer to <ref refid="classtf_1_1WorkerView" kindref="compound">tf::WorkerView</ref> and <ref refid="classtf_1_1TaskView" kindref="compound">tf::TaskView</ref> for details.</para><para>Example usage:</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">MyObserver<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classtf_1_1ObserverInterface" kindref="compound">tf::ObserverInterface</ref><sp/>{</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -177,20 +177,20 @@
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting> </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="120">
+      <node id="150">
         <label>tf::ObserverInterface</label>
         <link refid="classtf_1_1ObserverInterface"/>
       </node>
-      <node id="121">
+      <node id="151">
         <label>tf::ChromeObserver</label>
         <link refid="classtf_1_1ChromeObserver"/>
-        <childnode refid="120" relation="public-inheritance">
+        <childnode refid="150" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="122">
+      <node id="152">
         <label>tf::TFProfObserver</label>
         <link refid="classtf_1_1TFProfObserver"/>
-        <childnode refid="120" relation="public-inheritance">
+        <childnode refid="150" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>

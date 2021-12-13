@@ -22,7 +22,7 @@
       </sectiondef>
       <sectiondef kind="protected-attrib">
       <memberdef kind="variable" id="classtf_1_1FlowBuilder_1a9404a57d9d37a4d49d20b686e4e5f68f" prot="protected" static="no" mutable="no">
-        <type>Graph &amp;</type>
+        <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> &amp;</type>
         <definition>Graph&amp; tf::FlowBuilder::_graph</definition>
         <argsstring></argsstring>
         <name>_graph</name>
@@ -42,7 +42,7 @@
         <argsstring>(Graph &amp;graph)</argsstring>
         <name>FlowBuilder</name>
         <param>
-          <type>Graph &amp;</type>
+          <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> &amp;</type>
           <declname>graph</declname>
         </param>
         <briefdescription>
@@ -381,9 +381,9 @@ The example below demonstrates a taskflow composition using the <computeroutput>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>comp<sp/>=<sp/>t2.<ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">composed_of</ref>(t1);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>t2.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;t2&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">init.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(comp);</highlight></codeline>
-</programlisting></para><para>The taskflow object <computeroutput>t2</computeroutput> is composed of another taskflow object <computeroutput>t1</computeroutput>, preceded by another static task <computeroutput>init</computeroutput>. When taskflow <computeroutput>t2</computeroutput> is submitted to an executor, <computeroutput>init</computeroutput> will run first and then <computeroutput>comp</computeroutput> which spwans its definition in taskflow <computeroutput>t1</computeroutput>.</para><para>The target <computeroutput>object</computeroutput> being composed must define the method <computeroutput>T::graph()</computeroutput> that returns a reference to a graph object of type tf::Graph such that it can interact with the executor. For example:</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>custom<sp/>struct</highlight><highlight class="normal"></highlight></codeline>
+</programlisting></para><para>The taskflow object <computeroutput>t2</computeroutput> is composed of another taskflow object <computeroutput>t1</computeroutput>, preceded by another static task <computeroutput>init</computeroutput>. When taskflow <computeroutput>t2</computeroutput> is submitted to an executor, <computeroutput>init</computeroutput> will run first and then <computeroutput>comp</computeroutput> which spwans its definition in taskflow <computeroutput>t1</computeroutput>.</para><para>The target <computeroutput>object</computeroutput> being composed must define the method <computeroutput>T::graph()</computeroutput> that returns a reference to a graph object of type <ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref> such that it can interact with the executor. For example:</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>custom<sp/>struct</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">MyObj<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::Graph<sp/>graph;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref><sp/>graph;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>MyObj()<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1FlowBuilder" kindref="compound">tf::FlowBuilder</ref><sp/>builder(graph);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>builder.emplace([](){</highlight></codeline>
@@ -686,7 +686,7 @@ The following example creates a syclFlow on the given queue to submit two kernel
 </parameteritem>
 </parameterlist>
 <simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>
-The following example creates a runtime task that enables in-task control over the running executor.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>runtime_task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](tf::Runtime&amp;<sp/>rt){</highlight></codeline>
+The following example creates a runtime task that enables in-task control over the running executor.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>runtime_task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>executor<sp/>=<sp/>rt.executor();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>executor.<ref refid="classtf_1_1Executor_1a9d2d464ab2a84ecb3b3ea7747e8e276b" kindref="member">num_workers</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
@@ -1582,23 +1582,36 @@ The task spawns a subflow to parallelly sort elements in the range <computeroutp
     <detaileddescription>
 <para>The class provides essential methods to construct a task dependency graph from which <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> and <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> are derived. </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="101">
+      <node id="118">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
       </node>
-      <node id="102">
+      <node id="119">
         <label>tf::Subflow</label>
         <link refid="classtf_1_1Subflow"/>
-        <childnode refid="101" relation="public-inheritance">
+        <childnode refid="118" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="103">
+      <node id="120">
         <label>tf::Taskflow</label>
         <link refid="classtf_1_1Taskflow"/>
-        <childnode refid="101" relation="public-inheritance">
+        <childnode refid="118" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
+    <collaborationgraph>
+      <node id="121">
+        <label>tf::FlowBuilder</label>
+        <link refid="classtf_1_1FlowBuilder"/>
+        <childnode refid="122" relation="usage">
+          <edgelabel>_graph</edgelabel>
+        </childnode>
+      </node>
+      <node id="122">
+        <label>tf::Graph</label>
+        <link refid="classtf_1_1Graph"/>
+      </node>
+    </collaborationgraph>
     <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="21" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="21" bodyend="732"/>
     <listofallmembers>
       <member refid="classtf_1_1FlowBuilder_1a9404a57d9d37a4d49d20b686e4e5f68f" prot="protected" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>_graph</name></member>

@@ -814,8 +814,8 @@ void Executor::silent_async(F&& f, ArgsT&&... args) {
 
 // Function: this_worker_id
 inline int Executor::this_worker_id() const {
-  auto itr = _wids.find(std::this_thread::get_id());
-  return itr == _wids.end() ? -1 : _workers[itr->second]._id;
+  auto i = _wids.find(std::this_thread::get_id());
+  return i == _wids.end() ? -1 : static_cast<int>(_workers[i->second]._id);
 }
 
 // Procedure: _spawn
@@ -1378,13 +1378,6 @@ inline void Executor::_invoke_dynamic_task(Worker& w, Node* node) {
   _observer_epilogue(w, node);
 }
 
-// Procedure: _invoke_dynamic_task_external
-//inline void Executor::_invoke_dynamic_task_external(Node*p, Graph& g, bool detach) {
-//  auto worker = this_worker().worker;
-//  //assert(worker && worker->_executor == this);
-//  _invoke_dynamic_task_internal(*worker, p, g, detach);
-//}
-
 // Procedure: _invoke_dynamic_task_internal
 inline void Executor::_invoke_dynamic_task_internal(
   Worker& w, Node* p, Graph& g, bool detach
@@ -1520,7 +1513,7 @@ inline void Executor::_invoke_silent_async_task(Worker& w, Node* node) {
 // Procedure: _invoke_runtime_task
 inline void Executor::_invoke_runtime_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
-  Runtime rt(*this, w);
+  Runtime rt(*this, w, node);
   std::get_if<Node::Runtime>(&node->_handle)->work(rt);
   _observer_epilogue(w, node);  
 }
@@ -1812,7 +1805,7 @@ auto Subflow::named_async(const std::string& name, F&& f, ArgsT&&... args) {
     *_executor._this_worker(), name, std::forward<F>(f), std::forward<ArgsT>(args)...
   );
 }
-
+    
 // Function: _named_async
 template <typename F, typename... ArgsT>
 auto Subflow::_named_async(
@@ -1914,6 +1907,29 @@ inline void Runtime::schedule(Task task) {
   _executor._schedule(_worker, node);
 }
 
+// Procedure: run
+template <typename C>
+void Runtime::run(C&& callable) {
+  
+  // dynamic task (subflow)
+  if constexpr(is_dynamic_task_v<C>) {
+    Graph graph;
+    Subflow sf(_executor, _worker, _parent, graph); 
+    callable(sf);
+    if(sf._joinable) {
+      _executor._invoke_dynamic_task_internal(_worker, _parent, graph, false);
+    }
+  }
+  else {
+    static_assert(dependent_false_v<C>, "unsupported task callable to run");
+  }
+}
 
 }  // end of namespace tf -----------------------------------------------------
+
+
+
+
+
+
 

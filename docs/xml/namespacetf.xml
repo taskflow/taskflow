@@ -32,12 +32,19 @@
     <innerclass refid="structtf_1_1cudaStreamCreator" prot="private">tf::cudaStreamCreator</innerclass>
     <innerclass refid="structtf_1_1cudaStreamDeleter" prot="private">tf::cudaStreamDeleter</innerclass>
     <innerclass refid="classtf_1_1cudaTask" prot="public">tf::cudaTask</innerclass>
+    <innerclass refid="classtf_1_1CustomGraphBase" prot="private">tf::CustomGraphBase</innerclass>
     <innerclass refid="classtf_1_1Executor" prot="public">tf::Executor</innerclass>
     <innerclass refid="classtf_1_1FlowBuilder" prot="public">tf::FlowBuilder</innerclass>
     <innerclass refid="classtf_1_1Future" prot="public">tf::Future</innerclass>
+    <innerclass refid="classtf_1_1Graph" prot="public">tf::Graph</innerclass>
     <innerclass refid="structtf_1_1IsPod" prot="private">tf::IsPod</innerclass>
+    <innerclass refid="classtf_1_1Node" prot="private">tf::Node</innerclass>
     <innerclass refid="classtf_1_1ObserverInterface" prot="public">tf::ObserverInterface</innerclass>
+    <innerclass refid="classtf_1_1Pipe" prot="public">tf::Pipe</innerclass>
+    <innerclass refid="classtf_1_1Pipeflow" prot="public">tf::Pipeflow</innerclass>
+    <innerclass refid="classtf_1_1Pipeline" prot="public">tf::Pipeline</innerclass>
     <innerclass refid="structtf_1_1ProfileData" prot="private">tf::ProfileData</innerclass>
+    <innerclass refid="classtf_1_1Runtime" prot="public">tf::Runtime</innerclass>
     <innerclass refid="structtf_1_1Segment" prot="private">tf::Segment</innerclass>
     <innerclass refid="classtf_1_1Semaphore" prot="public">tf::Semaphore</innerclass>
     <innerclass refid="classtf_1_1SmallVector" prot="public">tf::SmallVector</innerclass>
@@ -58,7 +65,7 @@
     <innerclass refid="classtf_1_1TFProfManager" prot="private">tf::TFProfManager</innerclass>
     <innerclass refid="classtf_1_1TFProfObserver" prot="public">tf::TFProfObserver</innerclass>
     <innerclass refid="structtf_1_1Timeline" prot="private">tf::Timeline</innerclass>
-    <innerclass refid="classtf_1_1Worker" prot="public">tf::Worker</innerclass>
+    <innerclass refid="classtf_1_1Worker" prot="private">tf::Worker</innerclass>
     <innerclass refid="classtf_1_1WorkerView" prot="public">tf::WorkerView</innerclass>
     <innernamespace refid="namespacetf_1_1detail">tf::detail</innernamespace>
       <sectiondef kind="enum">
@@ -184,6 +191,33 @@
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="715" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="715" bodyend="719"/>
       </memberdef>
+      <memberdef kind="enum" id="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" prot="public" static="no" strong="yes">
+        <type>int</type>
+        <name>PipeType</name>
+        <enumvalue id="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" prot="public">
+          <name>PARALLEL</name>
+          <initializer>= 1</initializer>
+          <briefdescription>
+<para>parallel type </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" prot="public">
+          <name>SERIAL</name>
+          <initializer>= 2</initializer>
+          <briefdescription>
+<para>serial type </para>          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>enumeration of all pipe types </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="17" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="17" bodyend="22"/>
+      </memberdef>
       <memberdef kind="enum" id="namespacetf_1afebc56ae6d5765010d0dd13a5f04132e" prot="public" static="no" strong="yes">
         <type>int</type>
         <name>cudaTaskType</name>
@@ -308,6 +342,19 @@
       </memberdef>
       </sectiondef>
       <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacetf_1a6e7c9182ac3f60e339a7497c16633d28" prot="private" static="no" mutable="no">
+        <type>ObjectPool&lt; Node &gt;</type>
+        <definition>ObjectPool&lt;Node&gt; tf::node_pool</definition>
+        <argsstring></argsstring>
+        <name>node_pool</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="417" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="417" bodyend="-1"/>
+      </memberdef>
       <memberdef kind="variable" id="namespacetf_1ab74c19e0e6c9a4e3456dbae54ab9eed9" prot="private" static="no" mutable="no">
         <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 10 &gt;</type>
         <definition>constexpr std::array&lt;TaskType, 10&gt; tf::TASK_TYPES</definition>
@@ -462,11 +509,11 @@
         <definition>constexpr bool tf::is_runtime_task_v</definition>
         <argsstring></argsstring>
         <name>is_runtime_task_v</name>
-        <initializer>= std::is_invocable_r_v&lt;void, C, Runtime&amp;&gt;</initializer>
+        <initializer>= std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;</initializer>
         <briefdescription>
-<para>determines if a callable is a Runtime task </para>        </briefdescription>
+<para>determines if a callable is a runtime task </para>        </briefdescription>
         <detaileddescription>
-<para>A Runtime task is a callable object constructible from std::function&lt;void(tf::Runtime&amp;)&gt;. </para>        </detaileddescription>
+<para>A runtime task is a callable object constructible from std::function&lt;void(tf::Runtime&amp;)&gt;. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="169" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="169" bodyend="-1"/>
@@ -546,7 +593,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="601" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="601" bodyend="604"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="604" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="604" bodyend="607"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aa3fc0699b2c2b8f2f76bb39f91be1acb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
@@ -890,7 +937,7 @@
         <argsstring>()</argsstring>
         <name>cuda_get_runtime_version</name>
         <briefdescription>
-<para>queries the CUDA Runtime version (1000 * major + 10 * minor) </para>        </briefdescription>
+<para>queries the CUDA <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref> version (1000 * major + 10 * minor) </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -4180,7 +4227,7 @@ The function launches kernels asynchronously to find the largest element in the 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/taskflow.hpp" line="53" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/taskflow.hpp" bodystart="53" bodyend="55"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/taskflow.hpp" line="58" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/taskflow.hpp" bodystart="58" bodyend="60"/>
       </memberdef>
       </sectiondef>
     <briefdescription>

@@ -17,7 +17,7 @@ namespace tf {
 /**
 @class cudaFlow
 
-@brief class for building a CUDA task dependency graph
+@brief class to create a %cudaFlow task dependency graph
 
 A %cudaFlow is a high-level interface over CUDA Graph to perform GPU operations 
 using the task dependency graph model.
@@ -1662,7 +1662,7 @@ template <typename C, typename D,
   std::enable_if_t<is_cudaflow_task_v<C>, void>*
 >
 Task FlowBuilder::emplace_on(C&& c, D&& d) {
-  auto n = _graph.emplace_back(
+  auto n = _graph._emplace_back(
     std::in_place_type_t<Node::cudaFlow>{},
     [c=std::forward<C>(c), d=std::forward<D>(d)] (Executor& e, Node* p) mutable {
       cudaScopedDevice ctx(d);

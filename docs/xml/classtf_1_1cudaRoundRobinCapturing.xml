@@ -137,27 +137,27 @@
 <para>class to capture a CUDA graph using a round-robin algorithm </para>    </briefdescription>
     <detaileddescription>
 <para>A round-robin capturing algorithm levelizes the user-described graph and assign streams to nodes in a round-robin order level by level. The algorithm is based on the following paper published in Euro-Par 2021:<itemizedlist>
-<listitem><para>Dian-Lun Lin and Tsung-Wei Huang, "Efficient GPU Computation using Task Graph Parallelism," <emphasis>European Conference on Parallel and Distributed Computing (Euro-Par)</emphasis>, 2021</para></listitem></itemizedlist>
+<listitem><para>Dian-Lun Lin and Tsung-Wei Huang, "Efficient GPU Computation using Task <ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> Parallelism," <emphasis>European Conference on Parallel and Distributed Computing (Euro-Par)</emphasis>, 2021</para></listitem></itemizedlist>
 </para><para>The round-robin optimization algorithm is best suited for large cudaFlow graphs that compose hundreds of or thousands of GPU operations (e.g., kernels and memory copies) with many of them being able to run in parallel. You can configure the number of streams to the optimizer to adjust the maximum kernel currency in the captured CUDA graph. </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="39">
+      <node id="50">
         <label>tf::cudaRoundRobinCapturing</label>
         <link refid="classtf_1_1cudaRoundRobinCapturing"/>
-        <childnode refid="40" relation="public-inheritance">
+        <childnode refid="51" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="40">
+      <node id="51">
         <label>tf::cudaCapturingBase</label>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="41">
+      <node id="52">
         <label>tf::cudaRoundRobinCapturing</label>
         <link refid="classtf_1_1cudaRoundRobinCapturing"/>
-        <childnode refid="42" relation="public-inheritance">
+        <childnode refid="53" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="42">
+      <node id="53">
         <label>tf::cudaCapturingBase</label>
       </node>
     </collaborationgraph>

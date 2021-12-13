@@ -74,7 +74,7 @@
         <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="266" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="266" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Taskflow_1a78a7df50a7d2aeacb7c5c6948f5dd94a" prot="private" static="no" mutable="no">
-        <type>Graph</type>
+        <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref></type>
         <definition>Graph tf::Taskflow::_graph</definition>
         <argsstring></argsstring>
         <name>_graph</name>
@@ -342,14 +342,14 @@
         <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="251" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="347" bodyend="351"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1a8da984d149b439e88468bf26e02ecf27" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>Graph &amp;</type>
+        <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> &amp;</type>
         <definition>Graph &amp; tf::Taskflow::graph</definition>
         <argsstring>()</argsstring>
         <name>graph</name>
         <briefdescription>
 <para>returns a reference to the underlying graph object </para>        </briefdescription>
         <detaileddescription>
-<para>A graph object (of type tf::Graph) is the ultimate storage for the task dependency graph and should only be used as an opaque data structure to interact with the executor (e.g., composition). </para>        </detaileddescription>
+<para>A graph object (of type <ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref>) is the ultimate storage for the task dependency graph and should only be used as an opaque data structure to interact with the executor (e.g., composition). </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="260" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="341" bodyend="343"/>
@@ -366,7 +366,7 @@
           <defname>os</defname>
         </param>
         <param>
-          <type>const Graph *</type>
+          <type>const <ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> *</type>
           <defname>top</defname>
         </param>
         <briefdescription>
@@ -400,7 +400,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="275" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="402" bodyend="487"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="275" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="402" bodyend="492"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1afdfa1f01d5471d3cddc39b3bae11c464" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -412,7 +412,7 @@
           <defname>os</defname>
         </param>
         <param>
-          <type>const Graph *</type>
+          <type>const <ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> *</type>
           <defname>graph</defname>
         </param>
         <param>
@@ -425,11 +425,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="276" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="490" bodyend="521"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="276" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="495" bodyend="526"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>main entry to create a task dependency graph </para>    </briefdescription>
+<para>class to create a taskflow object </para>    </briefdescription>
     <detaileddescription>
 <para>A taskflow manages a task dependency graph where each task represents a callable object (e.g., <ulink url="https://en.cppreference.com/w/cpp/language/lambda">lambda</ulink>, <ulink url="https://en.cppreference.com/w/cpp/utility/functional/function">std::function</ulink>) and an edge represents a dependency between two tasks. A task is one of the following types:</para><para><orderedlist>
 <listitem><para>static task : the callable is constructible from <computeroutput>std::function&lt;void()&gt;</computeroutput> </para></listitem><listitem><para>dynamic task : the callable is constructible from <computeroutput>std::function&lt;void(tf::Subflow&amp;)&gt;</computeroutput> </para></listitem><listitem><para>condition task : the callable is constructible from <computeroutput>std::function&lt;int()&gt;</computeroutput> </para></listitem><listitem><para>multi-condition task: the callable is constructible from <computeroutput>std::function&lt;tf::SmallVector&lt;int&gt;()&gt;</computeroutput> </para></listitem><listitem><para>module task : the task is constructed from <ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">tf::Taskflow::composed_of</ref></para></listitem><listitem><para>cudaFlow task : the callable is constructible from <computeroutput>std::function&lt;void(tf::cudaFlow&amp;)&gt;</computeroutput> or <computeroutput>std::function&lt;void(tf::cudaFlowCapturer&amp;)&gt;</computeroutput> </para></listitem><listitem><para>syclFlow task : the callable is constructible from <computeroutput>std::function&lt;void(tf::syclFlow&amp;)&gt;</computeroutput> </para></listitem></orderedlist>
@@ -447,26 +447,33 @@
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();<sp/><sp/><sp/><sp/><sp/></highlight></codeline>
 </programlisting></para><para>The taskflow object itself is NOT thread-safe. You should not modifying the graph while it is running, such as adding new tasks, adding new dependencies, and moving the taskflow to another. To minimize the overhead of task creation, our runtime leverages a global object pool to recycle tasks in a thread-safe manner.</para><para>Please refer to <ref refid="Cookbook" kindref="compound">Cookbook</ref> to learn more about each task type and how to submit a taskflow to an executor. </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="200">
+      <node id="271">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
       </node>
-      <node id="199">
+      <node id="270">
         <label>tf::Taskflow</label>
         <link refid="classtf_1_1Taskflow"/>
-        <childnode refid="200" relation="public-inheritance">
+        <childnode refid="271" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="202">
+      <node id="273">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
+        <childnode refid="274" relation="usage">
+          <edgelabel>_graph</edgelabel>
+        </childnode>
       </node>
-      <node id="201">
+      <node id="274">
+        <label>tf::Graph</label>
+        <link refid="classtf_1_1Graph"/>
+      </node>
+      <node id="272">
         <label>tf::Taskflow</label>
         <link refid="classtf_1_1Taskflow"/>
-        <childnode refid="202" relation="public-inheritance">
+        <childnode refid="273" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>

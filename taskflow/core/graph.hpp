@@ -113,33 +113,98 @@ class Graph {
     void _merge(Graph&&);
     void _erase(Node*);
     
-    template <typename ...Args>
-    Node* _emplace_back(Args&& ...); 
-
-    Node* _emplace_back();
+    template <typename ...ArgsT>
+    Node* _emplace_back(ArgsT&&... args); 
+    
+    Node* _emplace_back(); 
 };
 
 // ----------------------------------------------------------------------------
 
+/**
+@class Runtime
+
+@brief class to create a runtime object used by a runtime task
+
+A runtime object is used by a runtime task for users to interact with the
+scheduling runtime, such as scheduling an active task and
+spawning a subflow.
+
+@code{.cpp}
+taskflow.emplace([](tf::Runtime& rt){
+  rt.run([](tf::Subflow& sf){
+    tf::Task A = sf.emplace([](){});
+    tf::Task B = sf.emplace([](){});
+    A.precede(B);
+  });
+});
+@endcode
+
+A runtime task is associated with an executor and a worker that
+runs the runtime task.
+*/
 class Runtime {
 
+  friend class Executor;
+
   public:
+  
+  /**
+  @brief schedules an active task immediately to the worker's queue
 
-  explicit Runtime(Executor& e, Worker& w) : _executor{e}, _worker{w} {
-  }
+  This member function immediately schedules an active task to the
+  task queue of the associated worker in the runtime task.
+  An active task is a task in a running taskflow or a subflow. 
+  The task may or may not be running, and scheduling that task 
+  in the worker's queue will put the task 
+  into the execution list. 
+  Consider the following example:
 
-  Executor& executor() { return _executor; }
+  @code{.cpp}
+  tf::Task A, B, C, D;
+  std::tie(A, B, C, D) = taskflow.emplace(
+    [] () { return 0; },
+    [&C] (tf::Runtime& rt) {  // C must be captured by reference
+      std::cout << "B\n"; 
+      rt.schedule(C);
+    },
+    [] () { std::cout << "C\n"; },
+    [] () { std::cout << "D\n"; }
+  );
+  A.precede(B, C, D);
+  executor.run(taskflow).wait();
+  @endcode
 
-  Worker& worker() { return _worker; }
-
+  The executor will first run the condition task @c A which returns @c 0 
+  to inform the scheduler to go to the runtime task @c B. 
+  During the execution of @c B, it directly schedules task @c C without
+  going through the normal taskflow graph scheduling process.
+  At this moment, task @c C is active because its parent taskflow is running. 
+  When the taskflow finishes, we will see both @c B and @c C in the output.
+  */
   void schedule(Task);
+  
+  /**
+  @brief runs a task callable synchronously
+  */
+  template <typename C>
+  void run(C&&);
 
   private:
+  
+  explicit Runtime(Executor&, Worker&, Node*);
 
   Executor& _executor;
-
   Worker& _worker;
+  Node* _parent;
 };
+
+// constructor
+inline Runtime::Runtime(Executor& e, Worker& w, Node* p) : 
+  _executor{e},
+  _worker  {w},
+  _parent  {p}{
+}
 
 
 // ----------------------------------------------------------------------------
@@ -675,7 +740,6 @@ inline bool Graph::empty() const {
 }
     
 // Function: emplace_back
-// create a node from a give argument; constructor is called if necessary
 template <typename ...ArgsT>
 Node* Graph::_emplace_back(ArgsT&&... args) {
   _nodes.push_back(node_pool.animate(std::forward<ArgsT>(args)...));
@@ -683,12 +747,10 @@ Node* Graph::_emplace_back(ArgsT&&... args) {
 }
 
 // Function: emplace_back
-// create a node from a give argument; constructor is called if necessary
 inline Node* Graph::_emplace_back() {
   _nodes.push_back(node_pool.animate());
   return _nodes.back();
 }
-
 
 
 }  // end of namespace tf. ---------------------------------------------------

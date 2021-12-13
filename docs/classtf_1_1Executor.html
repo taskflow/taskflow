@@ -168,11 +168,6 @@
             </dt>
             <dd>runs a moved taskflow and keeps running it until the predicate becomes true and then invokes the callback</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a5e79875916452e53b48accf05bf5e88d" class="m-doc">schedule</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Worker.html" class="m-doc">Worker</a>&amp; worker,
-              <a href="classtf_1_1Task.html" class="m-doc">Task</a> task)</span>
-            </dt>
-            <dd>schedules an active task immediatelly to a worker&#x27;s queue</dd>
-            <dt>
               <span class="m-doc-wrap-bumper">void <a href="#ab9aa252f70e9a40020a1e5a89d485b85" class="m-doc">wait_for_all</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
             <dd>wait for all tasks to complete</dd>
@@ -674,25 +669,6 @@
 <span class="p">);</span>
 <span class="c1">// do something else </span>
 <span class="n">future</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span></pre><p>This member function is thread-safe.</p>
-          </div></section>
-          <section class="m-doc-details" id="a5e79875916452e53b48accf05bf5e88d"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a5e79875916452e53b48accf05bf5e88d" class="m-doc-self">schedule</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Worker.html" class="m-doc">Worker</a>&amp; worker,
-              <a href="classtf_1_1Task.html" class="m-doc">Task</a> task)</span></span>
-            </h3>
-            <p>schedules an active task immediatelly to a worker&#x27;s queue</p>
-<p>This member function immediately schedules an active task to a worker&#x27;s queue. A active task is a task in a running taskflow or a subflow. The task may or may not be running, for example, due to a condition task. Scheduling the task in a worker&#x27;s queue will put the task into the execution list which allows direct control over the scheduler. Consider the following example:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">;</span>
-<span class="n">std</span><span class="o">::</span><span class="n">tie</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
-  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> <span class="p">},</span>
-  <span class="p">[</span><span class="o">&amp;</span><span class="n">C</span><span class="p">]</span> <span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span> <span class="n">rt</span><span class="p">)</span> <span class="p">{</span> 
-    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> 
-    <span class="n">rt</span><span class="p">.</span><span class="n">executor</span><span class="p">().</span><span class="n">schedule</span><span class="p">(</span><span class="n">rt</span><span class="p">.</span><span class="n">worker</span><span class="p">(),</span> <span class="n">C</span><span class="p">);</span>
-  <span class="p">},</span>
-  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;C</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">},</span>
-  <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;D</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
-<span class="p">);</span>
-<span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">);</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The executor will first run the condition task <code>A</code> which returns <code>0</code> to inform the scheduler to go to the runtime task <code>B</code>. <a href="classtf_1_1Task.html" class="m-doc">Task</a> <code>B</code> then direclty schedules task <code>C</code> into the running executor. At this moment, task <code>C</code> is <em>active</em> because its parent taskflow is running. When the taskflow finishes, we will see both <code>B</code> and <code>C</code> in the output.</p>
           </div></section>
           <section class="m-doc-details" id="ab9aa252f70e9a40020a1e5a89d485b85"><div>
             <h3>

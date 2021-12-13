@@ -114,7 +114,7 @@ struct ProfileData {
 /**
 @class: ObserverInterface
 
-@brief The interface class for creating an executor observer.
+@brief class to derive an executor observer 
 
 The tf::ObserverInterface class let users define custom methods to monitor 
 the behaviors of an executor. This is particularly useful when you want to 
@@ -205,7 +205,7 @@ class ObserverInterface {
 /**
 @class: ChromeObserver
 
-@brief observer interface based on Chrome tracing format
+@brief class to create an observer based on Chrome tracing format
 
 A tf::ChromeObserver inherits tf::ObserverInterface and defines methods to dump
 the observed thread activities into a format that can be visualized through
@@ -415,7 +415,7 @@ inline size_t ChromeObserver::num_tasks() const {
 /**
 @class TFProfObserver
 
-@brief observer interface based on the built-in taskflow profiler format
+@brief class to create an observer based on the built-in taskflow profiler format
 
 A tf::TFProfObserver inherits tf::ObserverInterface and defines methods to dump
 the observed thread activities into a format that can be visualized through

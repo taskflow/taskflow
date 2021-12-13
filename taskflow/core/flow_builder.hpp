@@ -889,6 +889,7 @@ class Subflow : public FlowBuilder {
 
   friend class Executor;
   friend class FlowBuilder;
+  friend class Runtime;
 
   public:
     
@@ -1089,10 +1090,10 @@ class Subflow : public FlowBuilder {
     Subflow(Executor&, Worker&, Node*, Graph&);
     
     template <typename F, typename... ArgsT>
-    auto _named_async(Worker&, const std::string&, F&&, ArgsT&&...);
+    auto _named_async(Worker& w, const std::string& name, F&& f, ArgsT&&... args);
     
     template <typename F, typename... ArgsT>
-    void _named_silent_async(Worker&, const std::string&, F&&, ArgsT&&...);
+    void _named_silent_async(Worker& w, const std::string& name, F&& f, ArgsT&&... args);
 };
 
 // Constructor

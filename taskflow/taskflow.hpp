@@ -16,6 +16,11 @@
 */
 
 /** 
+@dir taskflow/algorithm
+@brief taskflow algorithms include dir
+*/
+
+/** 
 @dir taskflow/cuda
 @brief taskflow CUDA include dir
 */

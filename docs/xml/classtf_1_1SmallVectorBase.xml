@@ -2,7 +2,11 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="classtf_1_1SmallVectorBase" kind="class" language="C++" prot="private">
     <compoundname>tf::SmallVectorBase</compoundname>
+    <derivedcompoundref refid="classtf_1_1SmallVectorTemplateCommon" prot="public" virt="non-virtual">tf::SmallVectorTemplateCommon&lt; Node * &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classtf_1_1SmallVectorTemplateCommon" prot="public" virt="non-virtual">tf::SmallVectorTemplateCommon&lt; Node *&gt;</derivedcompoundref>
     <derivedcompoundref refid="classtf_1_1SmallVectorTemplateCommon" prot="public" virt="non-virtual">tf::SmallVectorTemplateCommon&lt; T &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classtf_1_1SmallVectorTemplateCommon" prot="public" virt="non-virtual">tf::SmallVectorTemplateCommon&lt; tf::Semaphore * &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classtf_1_1SmallVectorTemplateCommon" prot="public" virt="non-virtual">tf::SmallVectorTemplateCommon&lt; tf::Semaphore *&gt;</derivedcompoundref>
       <sectiondef kind="protected-attrib">
       <memberdef kind="variable" id="classtf_1_1SmallVectorBase_1a5d08aaf8e30cf35422fd5fc00a08365e" prot="protected" static="no" mutable="no">
         <type>void *</type>
@@ -138,13 +142,33 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="149">
-        <label>tf::SmallVectorTemplateCommon&lt; T &gt;</label>
-        <childnode refid="148" relation="public-inheritance">
+      <node id="206">
+        <label>tf::SmallVectorTemplateCommon&lt; tf::Semaphore *&gt;</label>
+        <childnode refid="201" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="148">
+      <node id="204">
+        <label>tf::SmallVectorTemplateCommon&lt; T &gt;</label>
+        <childnode refid="201" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="202">
+        <label>tf::SmallVectorTemplateCommon&lt; Node * &gt;</label>
+        <childnode refid="201" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="205">
+        <label>tf::SmallVectorTemplateCommon&lt; tf::Semaphore * &gt;</label>
+        <childnode refid="201" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="201">
         <label>tf::SmallVectorBase</label>
+      </node>
+      <node id="203">
+        <label>tf::SmallVectorTemplateCommon&lt; Node *&gt;</label>
+        <childnode refid="201" relation="public-inheritance">
+        </childnode>
       </node>
     </inheritancegraph>
     <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="60" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="60" bodyend="106"/>

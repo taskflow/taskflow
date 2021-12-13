@@ -3558,7 +3558,7 @@ Immediately offloads the cudaFlow captured so far onto a GPU and repeatedly runs
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class for building a CUDA task dependency graph through stream capture </para>    </briefdescription>
+<para>class to create a cudaFlow graph using stream capture </para>    </briefdescription>
     <detaileddescription>
 <para>The usage of <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> is similar to <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>, except users can call the method <ref refid="classtf_1_1cudaFlowCapturer_1ad0d937ae0d77239f148b66a77e35db41" kindref="member">tf::cudaFlowCapturer::on</ref> to capture a sequence of asynchronous CUDA operations through the given stream. The following example creates a CUDA graph that captures two kernel tasks, <computeroutput>task_1</computeroutput> and <computeroutput>task_2</computeroutput>, where <computeroutput>task_1</computeroutput> runs before <computeroutput>task_2</computeroutput>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>capturer){</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>

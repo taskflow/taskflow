@@ -60,7 +60,7 @@ constexpr const char* to_string(cudaTaskType type) {
 /**
 @class cudaTask
 
-@brief handle to a node of the internal CUDA graph
+@brief class to create a task handle over an internal node of a %cudaFlow graph
 */
 class cudaTask {
 

@@ -197,7 +197,7 @@
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>observer interface based on Chrome tracing format </para>    </briefdescription>
+<para>class to create an observer based on Chrome tracing format </para>    </briefdescription>
     <detaileddescription>
 <para>A <ref refid="classtf_1_1ChromeObserver" kindref="compound">tf::ChromeObserver</ref> inherits <ref refid="classtf_1_1ObserverInterface" kindref="compound">tf::ObserverInterface</ref> and defines methods to dump the observed thread activities into a format that can be visualized through <ulink url="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chrome Tracing</ulink>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
@@ -215,26 +215,26 @@
 <codeline><highlight class="normal">observer-&gt;dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 </programlisting> </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="1">
+      <node id="5">
         <label>tf::ObserverInterface</label>
         <link refid="classtf_1_1ObserverInterface"/>
       </node>
-      <node id="0">
+      <node id="4">
         <label>tf::ChromeObserver</label>
         <link refid="classtf_1_1ChromeObserver"/>
-        <childnode refid="1" relation="public-inheritance">
+        <childnode refid="5" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="3">
+      <node id="7">
         <label>tf::ObserverInterface</label>
         <link refid="classtf_1_1ObserverInterface"/>
       </node>
-      <node id="2">
+      <node id="6">
         <label>tf::ChromeObserver</label>
         <link refid="classtf_1_1ChromeObserver"/>
-        <childnode refid="3" relation="public-inheritance">
+        <childnode refid="7" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>

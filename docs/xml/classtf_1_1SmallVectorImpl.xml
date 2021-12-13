@@ -3,6 +3,8 @@
   <compounddef id="classtf_1_1SmallVectorImpl" kind="class" language="C++" prot="private">
     <compoundname>tf::SmallVectorImpl</compoundname>
     <basecompoundref prot="public" virt="non-virtual">tf::SmallVectorTemplateBase&lt; T, IsPod&lt; T &gt;::value &gt;</basecompoundref>
+    <derivedcompoundref refid="classtf_1_1SmallVector" prot="public" virt="non-virtual">tf::SmallVector&lt; Node *&gt;</derivedcompoundref>
+    <derivedcompoundref refid="classtf_1_1SmallVector" prot="public" virt="non-virtual">tf::SmallVector&lt; tf::Semaphore *&gt;</derivedcompoundref>
     <derivedcompoundref refid="classtf_1_1SmallVector" prot="public" virt="non-virtual">tf::SmallVector&lt; T, N &gt;</derivedcompoundref>
     <templateparamlist>
       <param>
@@ -606,48 +608,60 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="153">
+      <node id="210">
         <label>tf::SmallVectorTemplateCommon&lt; T &gt;</label>
-        <childnode refid="154" relation="public-inheritance">
+        <childnode refid="211" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="151">
+      <node id="212">
+        <label>SmallVector&lt; Node *&gt;</label>
+        <link refid="classtf_1_1SmallVector"/>
+        <childnode refid="208" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="208">
         <label>tf::SmallVectorImpl&lt; T &gt;</label>
-        <childnode refid="152" relation="public-inheritance">
+        <childnode refid="209" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="155">
+      <node id="213">
+        <label>SmallVector&lt; tf::Semaphore *&gt;</label>
+        <link refid="classtf_1_1SmallVector"/>
+        <childnode refid="208" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="214">
         <label>tf::SmallVector&lt; T &gt;</label>
         <link refid="classtf_1_1SmallVector"/>
-        <childnode refid="151" relation="public-inheritance">
+        <childnode refid="208" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="152">
+      <node id="209">
         <label>tf::SmallVectorTemplateBase&lt; T, IsPod&lt; T &gt;::value &gt;</label>
-        <childnode refid="153" relation="public-inheritance">
+        <childnode refid="210" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="154">
+      <node id="211">
         <label>tf::SmallVectorBase</label>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="158">
+      <node id="217">
         <label>tf::SmallVectorTemplateCommon&lt; T &gt;</label>
-        <childnode refid="159" relation="public-inheritance">
+        <childnode refid="218" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="156">
+      <node id="215">
         <label>tf::SmallVectorImpl&lt; T &gt;</label>
-        <childnode refid="157" relation="public-inheritance">
+        <childnode refid="216" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="157">
+      <node id="216">
         <label>tf::SmallVectorTemplateBase&lt; T, IsPod&lt; T &gt;::value &gt;</label>
-        <childnode refid="158" relation="public-inheritance">
+        <childnode refid="217" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="159">
+      <node id="218">
         <label>tf::SmallVectorBase</label>
       </node>
     </collaborationgraph>

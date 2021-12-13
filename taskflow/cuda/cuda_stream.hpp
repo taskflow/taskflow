@@ -57,7 +57,7 @@ inline cudaPerThreadStreamPool& cuda_per_thread_stream_pool() {
 // ----------------------------------------------------------------------------
 
 /**
-@brief class that provides RAII-styled guard of stream acquisition
+@brief class to create an RAII-styled guard of stream acquisition
 
 Sample usage:
     
@@ -192,7 +192,7 @@ inline cudaPerThreadEventPool& cuda_per_thread_event_pool() {
 // ----------------------------------------------------------------------------
 
 /**
-@brief class that provides RAII-styled guard of event acquisition
+@brief class to create an RAII-styled guard of event acquisition
 
 Sample usage:
     

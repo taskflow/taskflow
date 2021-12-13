@@ -17,7 +17,7 @@ namespace tf {
 /**
 @class cudaFlowCapturer
 
-@brief class for building a CUDA task dependency graph through stream capture
+@brief class to create a %cudaFlow graph using stream capture
 
 The usage of tf::cudaFlowCapturer is similar to tf::cudaFlow, except users can
 call the method tf::cudaFlowCapturer::on to capture a sequence of asynchronous 
