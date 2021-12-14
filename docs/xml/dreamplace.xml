@@ -1,11 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
   <compounddef id="dreamplace" kind="page">
     <compoundname>dreamplace</compoundname>
     <title>Standard Cell Placement</title>
-    <tableofcontents/>
-    <briefdescription>
-    </briefdescription>
     <detaileddescription>
 <para>We applied Taskflow to solve a VLSI placement problem. The goal is to determine the physical locations of cells (logic gates) in a fixed layout region using minimal interconnect wirelength.</para><sect1 id="dreamplace_1UseCasesDreamPlace">
 <title>DreamPlace: GPU-accelerated Placement Engine</title>
@@ -19,15 +16,15 @@ Each iteration contains overlapped CPU and GPU tasks with nested conditions to d
 </para></sect1>
 <sect1 id="dreamplace_1UseCasesDreamPlaceProgrammingEffort">
 <title>Programming Effort</title>
-<para>We implemented the hybrid CPU-GPU placement algorithm using Taskflow, <ulink url="https://github.com/oneapi-src/oneTBB">Intel TBB</ulink>, and <ulink url="http://starpu.gforge.inria.fr/">StarPU</ulink>. The algorithm is crafted on one GPU and many CPUs. Since TBB and StarPU have no support for nested conditions, we unroll their task graphs across fixed-length iterations found in hindsight. The figure below shows a partial taskflow of 4 cudaFlows, 1 conditioned cycle, and 12 static tasks for one placement iteration.</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/dreamplace_3.dot"></dotfile>
+<para>We implemented the hybrid CPU-GPU placement algorithm using Taskflow, <ulink url="https://github.com/oneapi-src/oneTBB">Intel TBB</ulink>, and <ulink url="http://starpu.gforge.inria.fr/">StarPU</ulink>. The algorithm is crafted on one GPU and many CPUs. Since TBB and StarPU have no support for nested conditions, we unroll their task graphs across fixed-length iterations found in hindsight. The figure below shows a partial taskflow of 4 cudaFlows, 1 conditioned cycle, and 12 static tasks for one placement iteration.</para><para><dotfile name="/home/chiu/pipeline/taskflow/doxygen/images/dreamplace_3.dot"></dotfile>
 </para><para>The table below lists the programming effort of each method, measured by <ulink url="https://dwheeler.com/sloccount/">SLOCCount</ulink>. Taskflow outperforms TBB and StarPU in all aspects. The whole program is about 1.5x and 1.7x less complex than that of TBB and StarPU, respectively.</para><para> <table rows="4" cols="5"><row>
-<entry thead="yes"><para>Method  </para></entry><entry thead="yes"><para>Lines of Code  </para></entry><entry thead="yes"><para>Number of Tokens  </para></entry><entry thead="yes"><para>Cyclomatic Complexity  </para></entry><entry thead="yes"><para>Cost   </para></entry></row>
+<entry thead="yes"><para>Method </para></entry><entry thead="yes"><para>Lines of Code </para></entry><entry thead="yes"><para>Number of Tokens </para></entry><entry thead="yes"><para>Cyclomatic Complexity </para></entry><entry thead="yes"><para>Cost  </para></entry></row>
 <row>
-<entry thead="no"><para>Taskflow  </para></entry><entry thead="no"><para>677  </para></entry><entry thead="no"><para>4180  </para></entry><entry thead="no"><para>53  </para></entry><entry thead="no"><para>$15,054   </para></entry></row>
+<entry thead="no"><para>Taskflow </para></entry><entry thead="no"><para>677 </para></entry><entry thead="no"><para>4180 </para></entry><entry thead="no"><para>53 </para></entry><entry thead="no"><para>$15,054 </para></entry></row>
 <row>
-<entry thead="no"><para>TBB  </para></entry><entry thead="no"><para>1000  </para></entry><entry thead="no"><para>6415  </para></entry><entry thead="no"><para>78  </para></entry><entry thead="no"><para>$21,736   </para></entry></row>
+<entry thead="no"><para>TBB </para></entry><entry thead="no"><para>1000 </para></entry><entry thead="no"><para>6415 </para></entry><entry thead="no"><para>78 </para></entry><entry thead="no"><para>$21,736 </para></entry></row>
 <row>
-<entry thead="no"><para>StarPU  </para></entry><entry thead="no"><para>1279  </para></entry><entry thead="no"><para>8136  </para></entry><entry thead="no"><para>90  </para></entry><entry thead="no"><para>$29,686   </para></entry></row>
+<entry thead="no"><para>StarPU </para></entry><entry thead="no"><para>1279 </para></entry><entry thead="no"><para>8136 </para></entry><entry thead="no"><para>90 </para></entry><entry thead="no"><para>$29,686 </para></entry></row>
 </table>
 </para></sect1>
 <sect1 id="dreamplace_1UseCasesDreamPlacePerformance">

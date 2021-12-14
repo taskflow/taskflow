@@ -29,7 +29,6 @@
       <xsd:element name="innergroup" type="refType" minOccurs="0" maxOccurs="unbounded" />
       <xsd:element name="templateparamlist" type="templateparamlistType" minOccurs="0" />
       <xsd:element name="sectiondef" type="sectiondefType" minOccurs="0" maxOccurs="unbounded" />
-      <xsd:element name="tableofcontents" minOccurs="0" maxOccurs="1" />
       <xsd:element name="briefdescription" type="descriptionType" minOccurs="0" />
       <xsd:element name="detaileddescription" type="descriptionType" minOccurs="0" />
       <xsd:element name="inheritancegraph" type="graphType" minOccurs="0" />
@@ -147,7 +146,6 @@
     <xsd:attribute name="id" type="xsd:string" />
     <xsd:attribute name="prot" type="DoxProtectionKind" />
     <xsd:attribute name="static" type="DoxBool" />
-    <xsd:attribute name="strong" type="DoxBool" use="optional"/>
     <xsd:attribute name="const" type="DoxBool" use="optional"/>
     <xsd:attribute name="explicit" type="DoxBool" use="optional"/>
     <xsd:attribute name="inline" type="DoxBool" use="optional"/>
@@ -266,7 +264,6 @@
     <xsd:sequence>
       <xsd:element name="codeline" type="codelineType" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>
-    <xsd:attribute name="filename" type="xsd:string" use="optional"/>
   </xsd:complexType>
 
   <xsd:complexType name="codelineType">
@@ -281,14 +278,10 @@
 
   <xsd:complexType name="highlightType" mixed="true">
     <xsd:choice minOccurs="0" maxOccurs="unbounded">
-      <xsd:element name="sp" type="spType" />
+      <xsd:element name="sp" />
       <xsd:element name="ref" type="refTextType" />
     </xsd:choice>
     <xsd:attribute name="class" type="DoxHighlightClass" />
-  </xsd:complexType>
-
-  <xsd:complexType name="spType" mixed="true">
-    <xsd:attribute name="value" type="xsd:integer" use="optional"/>
   </xsd:complexType>
 
   <xsd:complexType name="referenceType" mixed="true">

@@ -831,7 +831,7 @@
               size_t bytes)</span></span>
             </h3>
             <p>updates parameters of a memcpy task</p>
-<p>The method is similar to <a href="classtf_1_1cudaFlow.html#ad37637606f0643f360e9eda1f9a6e559" class="m-doc">tf::<wbr />cudaFlow::<wbr />memcpy</a> but operates on a task of type <a href="namespacetf.html#afebc56ae6d5765010d0dd13a5f04132eac5d10cc70cce96265c445f14e7f5aba4" class="m-doc">tf::<wbr />cudaTaskType::<wbr />MEMCPY</a>.<br />The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
+<p>The method is similar to <a href="classtf_1_1cudaFlow.html#ad37637606f0643f360e9eda1f9a6e559" class="m-doc">tf::<wbr />cudaFlow::<wbr />memcpy</a> but operates on a task of type <a href="namespacetf.html#afebc56ae6d5765010d0dd13a5f04132eac5d10cc70cce96265c445f14e7f5aba4" class="m-doc">tf::<wbr />cudaTaskType::<wbr />MEMCPY</a>. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
           </div></section>
           <section class="m-doc-details" id="a40172fac4464f6d805f75921ea3c2a3b"><div>
             <h3>
@@ -1649,7 +1649,7 @@
               </tfoot>
             </table>
 <p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">distance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-  <span class="o">*</span><span class="p">(</span><span class="n">output</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">=</span> <span class="n">i</span> <span class="o">?</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">first</span><span class="o">+</span><span class="n">i</span><span class="p">),</span> <span class="o">*</span><span class="p">(</span><span class="n">output</span><span class="o">+</span><span class="n">i</span><span class="mi">-1</span><span class="p">))</span> <span class="o">:</span> <span class="o">*</span><span class="p">(</span><span class="n">first</span><span class="o">+</span><span class="n">i</span><span class="p">);</span>
+  <span class="o">*</span><span class="p">(</span><span class="n">output</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">=</span> <span class="n">i</span> <span class="o">?</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">first</span><span class="o">+</span><span class="n">i</span><span class="p">),</span> <span class="o">*</span><span class="p">(</span><span class="n">output</span><span class="o">+</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">:</span> <span class="o">*</span><span class="p">(</span><span class="n">first</span><span class="o">+</span><span class="n">i</span><span class="p">);</span>
 <span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="a98ceb9d36d7e0ceeeb2acfdd6a2e6084"><div>
@@ -1747,7 +1747,7 @@
               </tfoot>
             </table>
 <p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">distance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-  <span class="o">*</span><span class="p">(</span><span class="n">output</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">=</span> <span class="n">i</span> <span class="o">?</span> <span class="n">op</span><span class="p">(</span><span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">first</span><span class="o">+</span><span class="n">i</span><span class="p">)),</span> <span class="o">*</span><span class="p">(</span><span class="n">output</span><span class="o">+</span><span class="n">i</span><span class="mi">-1</span><span class="p">))</span> <span class="o">:</span> <span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">first</span><span class="o">+</span><span class="n">i</span><span class="p">));</span>
+  <span class="o">*</span><span class="p">(</span><span class="n">output</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">=</span> <span class="n">i</span> <span class="o">?</span> <span class="n">op</span><span class="p">(</span><span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">first</span><span class="o">+</span><span class="n">i</span><span class="p">)),</span> <span class="o">*</span><span class="p">(</span><span class="n">output</span><span class="o">+</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">:</span> <span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">first</span><span class="o">+</span><span class="n">i</span><span class="p">));</span>
 <span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="abc38ad73ae8cb09cc743e08ad3a35c5f"><div>
@@ -2393,7 +2393,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

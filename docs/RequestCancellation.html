@@ -49,14 +49,6 @@
           <span class="m-breadcrumb"><a href="Cookbook.html">Cookbook</a> &raquo;</span>
           Request Cancellation
         </h1>
-        <div class="m-block m-default">
-          <h3>Contents</h3>
-          <ul>
-            <li><a href="#CancelARunningTaskflow">Cancel Execution of Taskflows</a></li>
-            <li><a href="#CancelAnAsynchronousTask">Cancel Execution of Asynchronous Tasks</a></li>
-            <li><a href="#UnderstandTheLimitationsOfCancellation">Understand the Limitations of Cancellation</a></li>
-          </ul>
-        </div>
 <p>This chapters discusses how to cancel submitted tasks.</p><section id="CancelARunningTaskflow"><h2><a href="#CancelARunningTaskflow">Cancel Execution of Taskflows</a></h2><p>When you submit a taskflow to an executor (e.g., <a href="classtf_1_1Executor.html#a519777f5783981d534e9e53b99712069" class="m-doc">tf::<wbr />Executor::<wbr />run</a>), the executor returns a <a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> object that will hold the result of the execution. <a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> is a derived class from <a href="http://en.cppreference.com/w/cpp/thread/future.html" class="m-doc-external">std::<wbr />future</a>. In addition to base methods of <a href="http://en.cppreference.com/w/cpp/thread/future.html" class="m-doc-external">std::<wbr />future</a>, you can call <a href="classtf_1_1Future.html#a3bf5f104864ab2590b6409712d3a469b" class="m-doc">tf::<wbr />Future::<wbr />cancel</a> to cancel the execution of a running taskflow. The following example cancels a submission of a taskflow that contains 1000 tasks each running one second.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 
@@ -115,18 +107,18 @@
 <span class="p">}</span>
 
 <span class="c1">// wait until the 10000 cancellations complete</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span></pre><pre class="m-console"><span class="go">task 0</span>
-<span class="go">task 5</span>
-<span class="go">task 7</span>
-<span class="go">task 9</span>
-<span class="go">task 4</span>
-<span class="go">task 1</span>
-<span class="go">task 6</span>
-<span class="go">task 8</span>
-<span class="go">task 2</span>
-<span class="go">task 10</span>
-<span class="go">task 3</span>
-<span class="go">task 11</span></pre><p>Similar to cancelling a running taskflow, cancelling a submitted asynchronous task does not guarantee the execution will be cancelled. The result depends on the present available workers and whether the asynchronous task is being run by a worker. To wait for a cancellation to complete, you may explicitly call <code>tf::Future::get</code>. The result may be a <a href="https://en.cppreference.com/w/cpp/utility/optional/nullopt">std::<wbr />nullopt</a> if that asynchronous task does not run.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span></pre><pre class="m-code"><span class="n">task</span> <span class="mi">0</span>
+<span class="n">task</span> <span class="mi">5</span>
+<span class="n">task</span> <span class="mi">7</span>
+<span class="n">task</span> <span class="mi">9</span>
+<span class="n">task</span> <span class="mi">4</span>
+<span class="n">task</span> <span class="mi">1</span>
+<span class="n">task</span> <span class="mi">6</span>
+<span class="n">task</span> <span class="mi">8</span>
+<span class="n">task</span> <span class="mi">2</span>
+<span class="n">task</span> <span class="mi">10</span>
+<span class="n">task</span> <span class="mi">3</span>
+<span class="n">task</span> <span class="mi">11</span></pre><p>Similar to cancelling a running taskflow, cancelling a submitted asynchronous task does not guarantee the execution will be cancelled. The result depends on the present available workers and whether the asynchronous task is being run by a worker. To wait for a cancellation to complete, you may explicitly call <code>tf::Future::get</code>. The result may be a <a href="https://en.cppreference.com/w/cpp/utility/optional/nullopt">std::<wbr />nullopt</a> if that asynchronous task does not run.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
 
 <span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="n">fu</span> <span class="o">=</span> <span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">([](){</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span> <span class="p">};</span>
 
@@ -183,7 +175,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

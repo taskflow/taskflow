@@ -49,29 +49,6 @@
           <span class="m-breadcrumb"><a href="Cookbook.html">Cookbook</a> &raquo;</span>
           Conditional Tasking
         </h1>
-        <div class="m-block m-default">
-          <h3>Contents</h3>
-          <ul>
-            <li><a href="#CreateAConditionTask">Create a Condition Task</a></li>
-            <li>
-              <a href="#TaskSchedulingPolicy">Understand our Task-level Scheduling</a>
-              <ul>
-                <li><a href="#TaskLevelSchedulingExample">Example</a></li>
-              </ul>
-            </li>
-            <li><a href="#AvoidCommonPitfalls">Avoid Common Pitfalls</a></li>
-            <li>
-              <a href="#ImplementControlFlowGraphs">Implement Control-flow Graphs</a>
-              <ul>
-                <li><a href="#ImplementIfElseControlFlow">Implement If-Else Control Flow</a></li>
-                <li><a href="#ImplementSwitchControlFlow">Implement Switch Control Flow</a></li>
-                <li><a href="#ImplementDoWhileLoopControlFlow">Implement Do-While-Loop Control Flow</a></li>
-                <li><a href="#ImplementWhileLoopControlFlow">Implement While-Loop Control Flow</a></li>
-              </ul>
-            </li>
-            <li><a href="#CreateAMultiConditionTask">Create a Multi-condition Task</a></li>
-          </ul>
-        </div>
 <p>Parallel workloads often require making control-flow decisions across dependent tasks. Taskflow supports an very efficient interface of conditional tasking for users to implement general control flow such as dynamic flow, cycles, and conditionals that are otherwise difficult to do with existing frameworks.</p><section id="CreateAConditionTask"><h2><a href="#CreateAConditionTask">Create a Condition Task</a></h2><p>A condition task evalutes a set of instructions and returns an integer index of the next successor task to execute. The index is defined with respect to the order of its successor construction. The following example creates an if-else block using a single condition task.</p><pre class="m-code"> <span class="mi">1</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
  <span class="mi">2</span><span class="o">:</span>
  <span class="mi">3</span><span class="o">:</span> <span class="k">auto</span> <span class="p">[</span><span class="n">init</span><span class="p">,</span> <span class="n">cond</span><span class="p">,</span> <span class="n">yes</span><span class="p">,</span> <span class="n">no</span><span class="p">]</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
@@ -923,10 +900,10 @@
 </g>
 </g>
 </svg>
-</div><p>Assuming <code>swcond</code> returns 1, the program outputs:</p><pre class="m-console"><span class="go">source</span>
-<span class="go">switch</span>
-<span class="go">case 2</span>
-<span class="go">target</span></pre><p>Keep in mind, both switch and case tasks must be described as condition tasks. The following implementation is a common mistake in which case tasks are not described as condition tasks.</p><pre class="m-code"><span class="c1">// wrong implementation of switch control flow using only one condition task</span>
+</div><p>Assuming <code>swcond</code> returns 1, the program outputs:</p><pre class="m-code"><span class="n">source</span>
+<span class="k">switch</span>
+<span class="k">case</span> <span class="mi">2</span>
+<span class="n">target</span></pre><p>Keep in mind, both switch and case tasks must be described as condition tasks. The following implementation is a common mistake in which case tasks are not described as condition tasks.</p><pre class="m-code"><span class="c1">// wrong implementation of switch control flow using only one condition task</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 
 <span class="k">auto</span> <span class="p">[</span><span class="n">source</span><span class="p">,</span> <span class="n">swcond</span><span class="p">,</span> <span class="n">case1</span><span class="p">,</span> <span class="n">case2</span><span class="p">,</span> <span class="n">case3</span><span class="p">,</span> <span class="n">target</span><span class="p">]</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
@@ -1073,13 +1050,13 @@
 </g>
 </g>
 </svg>
-</div><p>The program outputs:</p><pre class="m-console"><span class="go">i=0</span>
-<span class="go">i++ =&gt; i=1</span>
-<span class="go">i++ =&gt; i=2</span>
-<span class="go">i++ =&gt; i=3</span>
-<span class="go">i++ =&gt; i=4</span>
-<span class="go">i++ =&gt; i=5</span>
-<span class="go">done</span></pre></section><section id="ImplementWhileLoopControlFlow"><h3><a href="#ImplementWhileLoopControlFlow">Implement While-Loop Control Flow</a></h3><p>You can use conditional tasking to implement <em>while-loop</em> control flow. The following example creates a while-loop control flow diagram that repeatedly increments variable <code>i</code> five times using two condition task.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+</div><p>The program outputs:</p><pre class="m-code"><span class="n">i</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">i</span><span class="o">++</span> <span class="o">=&gt;</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">i</span><span class="o">++</span> <span class="o">=&gt;</span> <span class="n">i</span><span class="o">=</span><span class="mi">2</span>
+<span class="n">i</span><span class="o">++</span> <span class="o">=&gt;</span> <span class="n">i</span><span class="o">=</span><span class="mi">3</span>
+<span class="n">i</span><span class="o">++</span> <span class="o">=&gt;</span> <span class="n">i</span><span class="o">=</span><span class="mi">4</span>
+<span class="n">i</span><span class="o">++</span> <span class="o">=&gt;</span> <span class="n">i</span><span class="o">=</span><span class="mi">5</span>
+<span class="n">done</span></pre></section><section id="ImplementWhileLoopControlFlow"><h3><a href="#ImplementWhileLoopControlFlow">Implement While-Loop Control Flow</a></h3><p>You can use conditional tasking to implement <em>while-loop</em> control flow. The following example creates a while-loop control flow diagram that repeatedly increments variable <code>i</code> five times using two condition task.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 
 <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
 
@@ -1152,24 +1129,24 @@
 </g>
 </g>
 </svg>
-</div><p>The program outputs:</p><pre class="m-console"><span class="go">i=0</span>
-<span class="go">while i&lt;5</span>
-<span class="go">i++=0</span>
-<span class="go">back</span>
-<span class="go">while i&lt;5</span>
-<span class="go">i++=1</span>
-<span class="go">back</span>
-<span class="go">while i&lt;5</span>
-<span class="go">i++=2</span>
-<span class="go">back</span>
-<span class="go">while i&lt;5</span>
-<span class="go">i++=3</span>
-<span class="go">back</span>
-<span class="go">while i&lt;5</span>
-<span class="go">i++=4</span>
-<span class="go">back</span>
-<span class="go">while i&lt;5</span>
-<span class="go">done</span></pre><p>Notice that, when you implement a while-loop block, you cannot direct a dependency from the body task to the loop condition task. Doing so will introduce a strong dependency between the body task and the loop condition task, and the loop condition task will never be executed. The following code shows a common faulty implementation of while-loop control flow.</p><pre class="m-code"><span class="c1">// wrong implementation of while-loop using only one condition task</span>
+</div><p>The program outputs:</p><pre class="m-code"><span class="n">i</span><span class="o">=</span><span class="mi">0</span>
+<span class="k">while</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">5</span>
+<span class="n">i</span><span class="o">++=</span><span class="mi">0</span>
+<span class="n">back</span>
+<span class="k">while</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">5</span>
+<span class="n">i</span><span class="o">++=</span><span class="mi">1</span>
+<span class="n">back</span>
+<span class="k">while</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">5</span>
+<span class="n">i</span><span class="o">++=</span><span class="mi">2</span>
+<span class="n">back</span>
+<span class="k">while</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">5</span>
+<span class="n">i</span><span class="o">++=</span><span class="mi">3</span>
+<span class="n">back</span>
+<span class="k">while</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">5</span>
+<span class="n">i</span><span class="o">++=</span><span class="mi">4</span>
+<span class="n">back</span>
+<span class="k">while</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">5</span>
+<span class="n">done</span></pre><p>Notice that, when you implement a while-loop block, you cannot direct a dependency from the body task to the loop condition task. Doing so will introduce a strong dependency between the body task and the loop condition task, and the loop condition task will never be executed. The following code shows a common faulty implementation of while-loop control flow.</p><pre class="m-code"><span class="c1">// wrong implementation of while-loop using only one condition task</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 
 <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
@@ -1293,11 +1270,11 @@
 <span class="k">auto</span> <span class="n">loop</span> <span class="o">=</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="kt">bool</span><span class="p">{</span><span class="nb">true</span><span class="p">},</span> <span class="n">c</span> <span class="o">=</span> <span class="kt">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)]()</span> <span class="k">mutable</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">::</span><span class="n">SmallVector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="p">{</span>
   <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">i</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
-    <span class="k">return</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">-1</span><span class="p">};</span>
+    <span class="k">return</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">};</span>
   <span class="p">}</span>
   <span class="k">else</span> <span class="p">{</span>
     <span class="n">counter</span><span class="p">.</span><span class="n">fetch_add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">memory_order_relaxed</span><span class="p">);</span>
-    <span class="k">return</span> <span class="p">{</span><span class="o">++</span><span class="n">c</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="mi">-1</span><span class="p">};</span>
+    <span class="k">return</span> <span class="p">{</span><span class="o">++</span><span class="n">c</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">};</span>
   <span class="p">}</span>
 <span class="p">}</span>
 <span class="k">auto</span> <span class="n">A</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
@@ -1432,7 +1409,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

@@ -226,7 +226,7 @@ target_link_libraries(
 set_target_properties(sort PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 
-## TODO: benchmark 11: parallel_pipeline
+## benchmark 11: parallel_pipeline
 add_executable(
   parallel_pipeline
   ${TF_BENCHMARK_DIR}/parallel_pipeline/main.cpp
@@ -243,6 +243,26 @@ target_link_libraries(
   tf::default_settings
 )
 set_target_properties(parallel_pipeline PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
+
+## benchmark 12: graph_pipeline
+add_executable(
+  graph_pipeline
+  ${TF_BENCHMARK_DIR}/graph_pipeline/main.cpp
+  ${TF_BENCHMARK_DIR}/graph_pipeline/omp.cpp
+  ${TF_BENCHMARK_DIR}/graph_pipeline/tbb.cpp
+  ${TF_BENCHMARK_DIR}/graph_pipeline/taskflow.cpp
+  ${TF_BENCHMARK_DIR}/graph_pipeline/gold.cpp
+)
+target_include_directories(graph_pipeline PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  graph_pipeline 
+  ${PROJECT_NAME} 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
+)
+set_target_properties(graph_pipeline PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 
 ###############################################################################

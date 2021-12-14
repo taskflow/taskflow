@@ -97,11 +97,11 @@
   <span class="p">}},</span>
   <span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> <span class="p">[</span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">]</span> <span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span> <span class="n">pf</span><span class="p">)</span> <span class="p">{</span>
     <span class="c1">// propagate the previous result to this pipe by adding one</span>
-    <span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()][</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()]</span> <span class="o">=</span> <span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()][</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()</span><span class="mi">-1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()][</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()]</span> <span class="o">=</span> <span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()][</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
   <span class="p">}},</span>
   <span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> <span class="p">[</span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span> <span class="n">pf</span><span class="p">){</span>
     <span class="c1">// propagate the previous result to this pipe by adding one</span>
-    <span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()][</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()]</span> <span class="o">=</span> <span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()][</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()</span><span class="mi">-1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()][</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()]</span> <span class="o">=</span> <span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()][</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
   <span class="p">}}</span>
 <span class="p">);</span>
 
@@ -118,16 +118,16 @@
 <span class="n">task</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">stop</span><span class="p">);</span>
 
 <span class="c1">// run the pipeline</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The above example creates a pipeline scheduling graph that rolls over four scheduling tokens in a cyclic fashion, as depicted below:</p><pre class="m-code">o -&gt; o -&gt; o
-|    |    |
-v    v    v
-o -&gt; o -&gt; o
-|    |    |
-v    v    v
-o -&gt; o -&gt; o
-|    |    |
-v    v    v
-o -&gt; o -&gt; o</pre><p>At each pipe stage, the program propagates the result to the next pipe by adding one to the result stored in a custom data storage, <code>buffer</code>. The pipeline scheduler will generate five scheduling tokens and then stop.</p>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The above example creates a pipeline scheduling graph that rolls over four scheduling tokens in a cyclic fashion, as depicted below:</p><pre class="m-code"><span class="n">o</span> <span class="o">-&gt;</span> <span class="n">o</span> <span class="o">-&gt;</span> <span class="n">o</span>
+<span class="o">|</span>    <span class="o">|</span>    <span class="o">|</span>
+<span class="n">v</span>    <span class="n">v</span>    <span class="n">v</span>
+<span class="n">o</span> <span class="o">-&gt;</span> <span class="n">o</span> <span class="o">-&gt;</span> <span class="n">o</span>
+<span class="o">|</span>    <span class="o">|</span>    <span class="o">|</span>
+<span class="n">v</span>    <span class="n">v</span>    <span class="n">v</span>
+<span class="n">o</span> <span class="o">-&gt;</span> <span class="n">o</span> <span class="o">-&gt;</span> <span class="n">o</span>
+<span class="o">|</span>    <span class="o">|</span>    <span class="o">|</span>
+<span class="n">v</span>    <span class="n">v</span>    <span class="n">v</span>
+<span class="n">o</span> <span class="o">-&gt;</span> <span class="n">o</span> <span class="o">-&gt;</span> <span class="n">o</span></pre><p>At each pipe stage, the program propagates the result to the next pipe by adding one to the result stored in a custom data storage, <code>buffer</code>. The pipeline scheduler will generate five scheduling tokens and then stop.</p>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
@@ -286,7 +286,7 @@ o -&gt; o -&gt; o</pre><p>At each pipe stage, the program propagates the result 
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

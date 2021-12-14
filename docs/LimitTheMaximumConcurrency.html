@@ -49,14 +49,6 @@
           <span class="m-breadcrumb"><a href="Cookbook.html">Cookbook</a> &raquo;</span>
           Limit the Maximum Concurrency
         </h1>
-        <div class="m-block m-default">
-          <h3>Contents</h3>
-          <ul>
-            <li><a href="#DefineASemaphore">Define a Semaphore</a></li>
-            <li><a href="#DefineACriticalRegion">Define a Critical Section</a></li>
-            <li><a href="#DefineAConflictGraph">Define a Conflict Graph</a></li>
-          </ul>
-        </div>
 <p>This chapters discusses how to limit the concurrency or the maximum number of workers in subgraphs of a taskflow.</p><section id="DefineASemaphore"><h2><a href="#DefineASemaphore">Define a Semaphore</a></h2><p>Taskflow provides a mechanism, <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a>, for you to limit the maximum concurrency in a section of tasks. You can let a task acquire/release one or multiple semaphores before/after executing its work. A task can acquire and release a semaphore, or just acquire or just release it. A <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a> object starts with an initial count. As long as that count is above 0, tasks can acquire the semaphore and do their work. If the count is 0 or less, a task trying to acquire the semaphore will not run but goes to a waiting list of that semaphore. When the semaphore is released by another task, it reschedules all tasks on that waiting list.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>   <span class="c1">// create an executor of 8 workers</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 
@@ -105,12 +97,12 @@
 </g>
 </g>
 </svg>
-</div><p>The above example creates five tasks with no dependencies between them. Under normal circumstances, the five tasks would be executed concurrently. However, this example has a semaphore with initial count 1, and all tasks need to acquire that semaphore before running and release that semaphore after they are done. This organization limits the number of concurrently running tasks to only one. One possible output is shown below:</p><pre class="m-console"><span class="gp">#</span> the output is a sequential chain of five tasks
-<span class="go">A</span>
-<span class="go">B</span>
-<span class="go">E</span>
-<span class="go">D</span>
-<span class="go">C</span></pre><aside class="m-note m-warning"><h4>Attention</h4><p>It is your responsibility to ensure the semaphore stays alive during the execution of tasks that acquire and release it. The executor and taskflow do not manage lifetime of any semaphores.</p></aside><p>For the same example above, we can limit the semaphore concurrency to another value different from 1, say 3, which will limit only three workers to run the five tasks, <code>A</code>, <code>B</code>, <code>C</code>, <code>D</code>, and <code>E</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>   <span class="c1">// create an executor of 8 workers</span>
+</div><p>The above example creates five tasks with no dependencies between them. Under normal circumstances, the five tasks would be executed concurrently. However, this example has a semaphore with initial count 1, and all tasks need to acquire that semaphore before running and release that semaphore after they are done. This organization limits the number of concurrently running tasks to only one. One possible output is shown below:</p><pre class="m-code"><span class="cp"># the output is a sequential chain of five tasks</span>
+<span class="n">A</span>
+<span class="n">B</span>
+<span class="n">E</span>
+<span class="n">D</span>
+<span class="n">C</span></pre><aside class="m-note m-warning"><h4>Attention</h4><p>It is your responsibility to ensure the semaphore stays alive during the execution of tasks that acquire and release it. The executor and taskflow do not manage lifetime of any semaphores.</p></aside><p>For the same example above, we can limit the semaphore concurrency to another value different from 1, say 3, which will limit only three workers to run the five tasks, <code>A</code>, <code>B</code>, <code>C</code>, <code>D</code>, and <code>E</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>   <span class="c1">// create an executor of 8 workers</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 
 <span class="n">tf</span><span class="o">::</span><span class="n">Semaphore</span> <span class="n">semaphore</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span> <span class="c1">// create a semaphore with initial count 3</span>
@@ -128,9 +120,9 @@
   <span class="n">task</span><span class="p">.</span><span class="n">release</span><span class="p">(</span><span class="n">semaphore</span><span class="p">);</span>
 <span class="p">}</span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><pre class="m-console"><span class="gp">#</span> One possible output: A, B, and C run concurrently, D and E run concurrently
-<span class="go">ABC</span>
-<span class="go">ED</span></pre><p>Semaphores are powerful for limiting the maximum concurrency of not only a section of tasks but also different sections of tasks. Specifically, you can have one task acquire a semaphore and have another task release that semaphore to impose concurrency on subgraphs of tasks. The following example serializes the execution of five pairs of tasks using a semaphore rather than explicit dependencies.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>  <span class="c1">// creates an executor of 4 workers</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><pre class="m-code"><span class="cp"># One possible output: A, B, and C run concurrently, D and E run concurrently</span>
+<span class="n">ABC</span>
+<span class="n">ED</span></pre><p>Semaphores are powerful for limiting the maximum concurrency of not only a section of tasks but also different sections of tasks. Specifically, you can have one task acquire a semaphore and have another task release that semaphore to impose concurrency on subgraphs of tasks. The following example serializes the execution of five pairs of tasks using a semaphore rather than explicit dependencies.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>  <span class="c1">// creates an executor of 4 workers</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Semaphore</span> <span class="n">semaphore</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 
@@ -291,9 +283,9 @@
 <span class="n">A</span><span class="p">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">conflict_AC</span><span class="p">).</span><span class="n">release</span><span class="p">(</span><span class="n">conflict_AC</span><span class="p">);</span>
 <span class="n">C</span><span class="p">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">conflict_AC</span><span class="p">).</span><span class="n">release</span><span class="p">(</span><span class="n">conflict_AC</span><span class="p">);</span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><pre class="m-console"><span class="gp">#</span> One possible output: B and C run concurrently after A
-<span class="go">A</span>
-<span class="go">BC</span></pre><aside class="m-note m-info"><h4>Note</h4><p>A task can acquire and release multiple semaphores. When the executor is running a task, it will first try to acquire all semaphores of that task. When the executor finishes a task, it will release all acquired semaphores of that task.</p></aside><p>The above code can be rewritten with <a href="classtf_1_1CriticalSection.html" class="m-doc">tf::<wbr />CriticalSection</a> for simplicity, as shown below:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><pre class="m-code"><span class="cp"># One possible output: B and C run concurrently after A</span>
+<span class="n">A</span>
+<span class="n">BC</span></pre><aside class="m-note m-info"><h4>Note</h4><p>A task can acquire and release multiple semaphores. When the executor is running a task, it will first try to acquire all semaphores of that task. When the executor finishes a task, it will release all acquired semaphores of that task.</p></aside><p>The above code can be rewritten with <a href="classtf_1_1CriticalSection.html" class="m-doc">tf::<wbr />CriticalSection</a> for simplicity, as shown below:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 
 <span class="n">tf</span><span class="o">::</span><span class="n">CriticalSection</span> <span class="n">critical_section_AB</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
@@ -352,7 +344,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

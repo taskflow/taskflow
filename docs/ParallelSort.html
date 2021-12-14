@@ -49,19 +49,10 @@
           <span class="m-breadcrumb"><a href="Algorithms.html">Taskflow Algorithms</a> &raquo;</span>
           Parallel Sort
         </h1>
-        <div class="m-block m-default">
-          <h3>Contents</h3>
-          <ul>
-            <li><a href="#ParallelSortInclude">Include the Header</a></li>
-            <li><a href="#SortARangeOfItems">Sort a Range of Items</a></li>
-            <li><a href="#SortARangeOfItemsWithACustomComparator">Sort a Range of Items with a Custom Comparator</a></li>
-            <li><a href="#ParallelSortEnableStatefulDataPassing">Enable Stateful Data Passing</a></li>
-          </ul>
-        </div>
 <p>Taskflow provides template functions for constructing tasks to sort ranges of items in parallel.</p><section id="ParallelSortInclude"><h2><a href="#ParallelSortInclude">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/algorithm/sort.hpp</code>, for creating a parallel-sort task.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;taskflow/algorithm/sort.hpp&gt;</span><span class="cp"></span></pre></section><section id="SortARangeOfItems"><h2><a href="#SortARangeOfItems">Sort a Range of Items</a></h2><p>The task created by <a href="classtf_1_1FlowBuilder.html#a7d844e9856c7c65b26ccdb83ffdab1d6" class="m-doc">tf::<wbr />Taskflow::<wbr />sort(B first, E last)</a> performs parallel sort to rank a range of elements specified by <code>[first, last)</code> in increasing order. The given iterators must be <em>random-accessible</em>. The following example creates a task to sort a data vector in increasing order.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
 
-<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">-8</span><span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="o">-</span><span class="mi">8</span><span class="p">};</span>
 
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">sort</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">data</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
 
@@ -70,7 +61,7 @@
 <span class="n">assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_sorted</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">data</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span></pre><aside class="m-note m-info"><h4>Note</h4><p>Elements are compared using the operator <code>&lt;</code>.</p></aside></section><section id="SortARangeOfItemsWithACustomComparator"><h2><a href="#SortARangeOfItemsWithACustomComparator">Sort a Range of Items with a Custom Comparator</a></h2><p><a href="classtf_1_1FlowBuilder.html#a35e180eb63de6c9f28e43185e837a4fa" class="m-doc">tf::<wbr />Taskflow::<wbr />sort(B first, E last, C cmp)</a> is an overload of parallel sort that allows users to specify a custom comparator. The following example sorts a data vector in decreasing order.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
 
-<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">-8</span><span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="o">-</span><span class="mi">8</span><span class="p">};</span>
 
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">sort</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">data</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> 
   <span class="p">[](</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">a</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">;</span> <span class="p">}</span>
@@ -85,7 +76,7 @@
 <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">;</span>
 
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">init</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> 
-  <span class="n">data</span>  <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">-8</span><span class="p">};</span> 
+  <span class="n">data</span>  <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="o">-</span><span class="mi">8</span><span class="p">};</span> 
   <span class="n">first</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
   <span class="n">last</span>  <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
 <span class="p">});</span>
@@ -141,7 +132,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

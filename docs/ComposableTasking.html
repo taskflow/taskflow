@@ -49,13 +49,6 @@
           <span class="m-breadcrumb"><a href="Cookbook.html">Cookbook</a> &raquo;</span>
           Composable Tasking
         </h1>
-        <div class="m-block m-default">
-          <h3>Contents</h3>
-          <ul>
-            <li><a href="#ComposeATaskflow">Compose a Taskflow</a></li>
-            <li><a href="#CreateAModuleTask">Create a Module Task</a></li>
-          </ul>
-        </div>
 <p>Composition is a key to improve the programmability of a complex workflow. This chapter describes how to create a large parallel graph through composition of modular and reusable blocks that are easier to optimize.</p><section id="ComposeATaskflow"><h2><a href="#ComposeATaskflow">Compose a Taskflow</a></h2><p>A powerful feature of <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> is its <em>composable</em> interface. You can break down a large parallel workload into smaller pieces each designed to run a specific task dependency graph. This largely facilitates the <em>modularity</em> of writing a parallel task program.</p><pre class="m-code"> <span class="mi">1</span><span class="o">:</span> <span class="c1">// f1 has three independent tasks</span>
  <span class="mi">2</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">f1</span><span class="p">;</span>
  <span class="mi">3</span><span class="o">:</span> <span class="n">f1</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;F1&quot;</span><span class="p">);</span>
@@ -91,298 +84,298 @@
 <span class="mi">33</span><span class="o">:</span> <span class="n">f2C</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">f1_module_task</span><span class="p">);</span>
 <span class="mi">34</span><span class="o">:</span> <span class="n">f1_module_task</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">f2D</span><span class="p">);</span>
 <span class="mi">35</span><span class="o">:</span>
-<span class="mi">36</span><span class="o">:</span> <span class="n">f2</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre><div class="m-graph"><svg style="width: 24.312rem; height: 20.000rem;" viewBox="0.00 0.00 389.00 320.31">
+<span class="mi">36</span><span class="o">:</span> <span class="n">f2</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre><div class="m-graph"><svg style="width: 24.188rem; height: 20.000rem;" viewBox="0.00 0.00 387.00 320.31">
 <g transform="scale(1 1) rotate(0) translate(4 316.3087)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x7ffee9223970</title>
-<polygon points="8,-8 8,-304.3087 212,-304.3087 212,-8 8,-8"/>
-<text text-anchor="middle" x="110" y="-287.5087">Taskflow: F2</text>
+<polygon points="8,-8 8,-304.3087 210,-304.3087 210,-8 8,-8"/>
+<text text-anchor="middle" x="109" y="-287.5087">Taskflow: F2</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7ffee92238d0</title>
-<polygon points="220,-152.7696 220,-304.3087 373,-304.3087 373,-152.7696 220,-152.7696"/>
-<text text-anchor="middle" x="296.5" y="-287.5087">Taskflow: F1</text>
+<polygon points="218,-152.7696 218,-304.3087 371,-304.3087 371,-152.7696 218,-152.7696"/>
+<text text-anchor="middle" x="294.5" y="-287.5087">Taskflow: F1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402b60</title>
-<ellipse cx="148" cy="-251.9239" rx="29.8983" ry="18.2703"/>
-<text text-anchor="middle" x="148" y="-248.1239">f2A</text>
+<ellipse cx="147" cy="-251.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="147" y="-248.1239">f2A</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402d80</title>
-<ellipse cx="110" cy="-179.1543" rx="30.3115" ry="18.2703"/>
-<text text-anchor="middle" x="110" y="-175.3543">f2C</text>
+<ellipse cx="109" cy="-179.1543" rx="30.3115" ry="18.2703"/>
+<text text-anchor="middle" x="109" y="-175.3543">f2C</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402b60&#45;&gt;p0x7f816f402d80</title>
-<path d="M138.8013,-234.3084C134.3533,-225.7906 128.9185,-215.383 123.9732,-205.9128"/>
-<polygon points="126.9771,-204.1039 119.2457,-196.8598 120.7722,-207.3441 126.9771,-204.1039"/>
+<path d="M137.8013,-234.3084C133.3533,-225.7906 127.9185,-215.383 122.9732,-205.9128"/>
+<polygon points="125.9771,-204.1039 118.2457,-196.8598 119.7722,-207.3441 125.9771,-204.1039"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402fa0</title>
-<polygon points="203.5,-124.7696 20.5,-124.7696 16.5,-120.7696 16.5,-88.7696 199.5,-88.7696 203.5,-92.7696 203.5,-124.7696"/>
-<polyline points="199.5,-120.7696 16.5,-120.7696 "/>
-<polyline points="199.5,-120.7696 199.5,-88.7696 "/>
-<polyline points="199.5,-120.7696 203.5,-124.7696 "/>
-<text text-anchor="middle" x="110" y="-102.9696">module [Taskflow: F1]</text>
+<polygon points="202.5,-124.7696 19.5,-124.7696 15.5,-120.7696 15.5,-88.7696 198.5,-88.7696 202.5,-92.7696 202.5,-124.7696"/>
+<polyline points="198.5,-120.7696 15.5,-120.7696 "/>
+<polyline points="198.5,-120.7696 198.5,-88.7696 "/>
+<polyline points="198.5,-120.7696 202.5,-124.7696 "/>
+<text text-anchor="middle" x="109" y="-102.9696">module [Taskflow: F1]</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402d80&#45;&gt;p0x7f816f402fa0</title>
-<path d="M110,-160.5135C110,-152.8556 110,-143.8146 110,-135.3544"/>
-<polygon points="113.5001,-135.0966 110,-125.0967 106.5001,-135.0967 113.5001,-135.0966"/>
+<path d="M109,-160.5135C109,-152.8556 109,-143.8146 109,-135.3544"/>
+<polygon points="112.5001,-135.0966 109,-125.0967 105.5001,-135.0967 112.5001,-135.0966"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402c70</title>
-<ellipse cx="71" cy="-251.9239" rx="29.8983" ry="18.2703"/>
-<text text-anchor="middle" x="71" y="-248.1239">f2B</text>
+<ellipse cx="70" cy="-251.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="70" y="-248.1239">f2B</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402c70&#45;&gt;p0x7f816f402d80</title>
-<path d="M80.4408,-234.3084C85.0058,-225.7906 90.5837,-215.383 95.6591,-205.9128"/>
-<polygon points="98.872,-207.3271 100.511,-196.8598 92.7023,-204.0205 98.872,-207.3271"/>
+<path d="M79.4408,-234.3084C84.0058,-225.7906 89.5837,-215.383 94.6591,-205.9128"/>
+<polygon points="97.872,-207.3271 99.511,-196.8598 91.7023,-204.0205 97.872,-207.3271"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402e90</title>
-<ellipse cx="110" cy="-34.3848" rx="31.2258" ry="18.2703"/>
-<text text-anchor="middle" x="110" y="-30.5848">f2D</text>
+<ellipse cx="109" cy="-34.3848" rx="31.2258" ry="18.2703"/>
+<text text-anchor="middle" x="109" y="-30.5848">f2D</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402fa0&#45;&gt;p0x7f816f402e90</title>
-<path d="M110,-88.5038C110,-80.7623 110,-71.5567 110,-62.9533"/>
-<polygon points="113.5001,-62.8964 110,-52.8964 106.5001,-62.8965 113.5001,-62.8964"/>
+<path d="M109,-88.5038C109,-80.7623 109,-71.5567 109,-62.9533"/>
+<polygon points="112.5001,-62.8964 109,-52.8964 105.5001,-62.8965 112.5001,-62.8964"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402830</title>
-<ellipse cx="335" cy="-251.9239" rx="29.8983" ry="18.2703"/>
-<text text-anchor="middle" x="335" y="-248.1239">f1A</text>
+<ellipse cx="333" cy="-251.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="333" y="-248.1239">f1A</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402a50</title>
-<ellipse cx="296" cy="-179.1543" rx="30.3115" ry="18.2703"/>
-<text text-anchor="middle" x="296" y="-175.3543">f1C</text>
+<ellipse cx="294" cy="-179.1543" rx="30.3115" ry="18.2703"/>
+<text text-anchor="middle" x="294" y="-175.3543">f1C</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402830&#45;&gt;p0x7f816f402a50</title>
-<path d="M325.5592,-234.3084C320.9942,-225.7906 315.4163,-215.383 310.3409,-205.9128"/>
-<polygon points="313.2977,-204.0205 305.489,-196.8598 307.128,-207.3271 313.2977,-204.0205"/>
+<path d="M323.5592,-234.3084C318.9942,-225.7906 313.4163,-215.383 308.3409,-205.9128"/>
+<polygon points="311.2977,-204.0205 303.489,-196.8598 305.128,-207.3271 311.2977,-204.0205"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402940</title>
-<ellipse cx="258" cy="-251.9239" rx="29.8983" ry="18.2703"/>
-<text text-anchor="middle" x="258" y="-248.1239">f1B</text>
+<ellipse cx="256" cy="-251.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="256" y="-248.1239">f1B</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402940&#45;&gt;p0x7f816f402a50</title>
-<path d="M267.1987,-234.3084C271.6467,-225.7906 277.0815,-215.383 282.0268,-205.9128"/>
-<polygon points="285.2278,-207.3441 286.7543,-196.8598 279.0229,-204.1039 285.2278,-207.3441"/>
+<path d="M265.1987,-234.3084C269.6467,-225.7906 275.0815,-215.383 280.0268,-205.9128"/>
+<polygon points="283.2278,-207.3441 284.7543,-196.8598 277.0229,-204.1039 283.2278,-207.3441"/>
 </g>
 </g>
 </svg>
-</div><p>Debrief:</p><ul><li>Lines 1-12 create a taskflow of three tasks f1A, f1B, and f1C with f1A and f1B preceding f1C</li><li>Lines 17-30 create a taskflow of four tasks f2A, f2B, f2C, and f2D</li><li>Line 32 creates a module task from taskflow f1 through the method <a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc">Taskflow::<wbr />composed_of</a></li><li>Line 33 enforces task f2C to run before the module task</li><li>Line 34 enforces the module task to run before task f2D</li></ul></section><section id="CreateAModuleTask"><h2><a href="#CreateAModuleTask">Create a Module Task</a></h2><p>The task created from <a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc">Taskflow::<wbr />composed_of</a> is a <em>module</em> task that runs on a pre-defined taskflow. A module task does not own the taskflow but maintains a soft mapping to the taskflow. You can create multiple module tasks from the same taskflow but only one module task can run at one time. For example, the following composition is valid. Even though the two module tasks <code>module1</code> and <code>module2</code> refer to the same taskflow <code>F1</code>, the dependency link prevents <code>F1</code> from multiple executions at the same time.</p><div class="m-graph"><svg style="width: 24.312rem; height: 24.500rem;" viewBox="0.00 0.00 389.00 392.31">
+</div><p>Debrief:</p><ul><li>Lines 1-12 create a taskflow of three tasks f1A, f1B, and f1C with f1A and f1B preceding f1C</li><li>Lines 17-30 create a taskflow of four tasks f2A, f2B, f2C, and f2D</li><li>Line 32 creates a module task from taskflow f1 through the method <a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc">Taskflow::<wbr />composed_of</a></li><li>Line 33 enforces task f2C to run before the module task</li><li>Line 34 enforces the module task to run before task f2D</li></ul></section><section id="CreateAModuleTask"><h2><a href="#CreateAModuleTask">Create a Module Task</a></h2><p>The task created from <a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc">Taskflow::<wbr />composed_of</a> is a <em>module</em> task that runs on a pre-defined taskflow. A module task does not own the taskflow but maintains a soft mapping to the taskflow. You can create multiple module tasks from the same taskflow but only one module task can run at one time. For example, the following composition is valid. Even though the two module tasks <code>module1</code> and <code>module2</code> refer to the same taskflow <code>F1</code>, the dependency link prevents <code>F1</code> from multiple executions at the same time.</p><div class="m-graph"><svg style="width: 24.188rem; height: 24.500rem;" viewBox="0.00 0.00 387.00 392.31">
 <g transform="scale(1 1) rotate(0) translate(4 388.3087)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x7ffee9223970</title>
-<polygon points="8,-8 8,-376.3087 212,-376.3087 212,-8 8,-8"/>
-<text text-anchor="middle" x="110" y="-359.5087">Taskflow: F2</text>
+<polygon points="8,-8 8,-376.3087 210,-376.3087 210,-8 8,-8"/>
+<text text-anchor="middle" x="109" y="-359.5087">Taskflow: F2</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7ffee92238d0</title>
-<polygon points="220,-224.7696 220,-376.3087 373,-376.3087 373,-224.7696 220,-224.7696"/>
-<text text-anchor="middle" x="296.5" y="-359.5087">Taskflow: F1</text>
+<polygon points="218,-224.7696 218,-376.3087 371,-376.3087 371,-224.7696 218,-224.7696"/>
+<text text-anchor="middle" x="294.5" y="-359.5087">Taskflow: F1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402b60</title>
-<ellipse cx="148" cy="-323.9239" rx="29.8983" ry="18.2703"/>
-<text text-anchor="middle" x="148" y="-320.1239">f2A</text>
+<ellipse cx="147" cy="-323.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="147" y="-320.1239">f2A</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402d80</title>
-<ellipse cx="110" cy="-251.1543" rx="30.3115" ry="18.2703"/>
-<text text-anchor="middle" x="110" y="-247.3543">f2C</text>
+<ellipse cx="109" cy="-251.1543" rx="30.3115" ry="18.2703"/>
+<text text-anchor="middle" x="109" y="-247.3543">f2C</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402b60&#45;&gt;p0x7f816f402d80</title>
-<path d="M138.8013,-306.3084C134.3533,-297.7906 128.9185,-287.383 123.9732,-277.9128"/>
-<polygon points="126.9771,-276.1039 119.2457,-268.8598 120.7722,-279.3441 126.9771,-276.1039"/>
+<path d="M137.8013,-306.3084C133.3533,-297.7906 127.9185,-287.383 122.9732,-277.9128"/>
+<polygon points="125.9771,-276.1039 118.2457,-268.8598 119.7722,-279.3441 125.9771,-276.1039"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402fa0</title>
-<polygon points="203.5,-196.7696 20.5,-196.7696 16.5,-192.7696 16.5,-160.7696 199.5,-160.7696 203.5,-164.7696 203.5,-196.7696"/>
-<polyline points="199.5,-192.7696 16.5,-192.7696 "/>
-<polyline points="199.5,-192.7696 199.5,-160.7696 "/>
-<polyline points="199.5,-192.7696 203.5,-196.7696 "/>
-<text text-anchor="middle" x="110" y="-174.9696">module [Taskflow: F1]</text>
+<polygon points="202.5,-196.7696 19.5,-196.7696 15.5,-192.7696 15.5,-160.7696 198.5,-160.7696 202.5,-164.7696 202.5,-196.7696"/>
+<polyline points="198.5,-192.7696 15.5,-192.7696 "/>
+<polyline points="198.5,-192.7696 198.5,-160.7696 "/>
+<polyline points="198.5,-192.7696 202.5,-196.7696 "/>
+<text text-anchor="middle" x="109" y="-174.9696">module [Taskflow: F1]</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402d80&#45;&gt;p0x7f816f402fa0</title>
-<path d="M110,-232.5135C110,-224.8556 110,-215.8146 110,-207.3544"/>
-<polygon points="113.5001,-207.0966 110,-197.0967 106.5001,-207.0967 113.5001,-207.0966"/>
+<path d="M109,-232.5135C109,-224.8556 109,-215.8146 109,-207.3544"/>
+<polygon points="112.5001,-207.0966 109,-197.0967 105.5001,-207.0967 112.5001,-207.0966"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402c70</title>
-<ellipse cx="71" cy="-323.9239" rx="29.8983" ry="18.2703"/>
-<text text-anchor="middle" x="71" y="-320.1239">f2B</text>
+<ellipse cx="70" cy="-323.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="70" y="-320.1239">f2B</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402c70&#45;&gt;p0x7f816f402d80</title>
-<path d="M80.4408,-306.3084C85.0058,-297.7906 90.5837,-287.383 95.6591,-277.9128"/>
-<polygon points="98.872,-279.3271 100.511,-268.8598 92.7023,-276.0205 98.872,-279.3271"/>
+<path d="M79.4408,-306.3084C84.0058,-297.7906 89.5837,-287.383 94.6591,-277.9128"/>
+<polygon points="97.872,-279.3271 99.511,-268.8598 91.7023,-276.0205 97.872,-279.3271"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402fa1</title>
-<polygon points="203.5,-124.7696 20.5,-124.7696 16.5,-120.7696 16.5,-88.7696 199.5,-88.7696 203.5,-92.7696 203.5,-124.7696"/>
-<polyline points="199.5,-120.7696 16.5,-120.7696 "/>
-<polyline points="199.5,-120.7696 199.5,-88.7696 "/>
-<polyline points="199.5,-120.7696 203.5,-124.7696 "/>
-<text text-anchor="middle" x="110" y="-102.9696">module [Taskflow: F1]</text>
+<polygon points="202.5,-124.7696 19.5,-124.7696 15.5,-120.7696 15.5,-88.7696 198.5,-88.7696 202.5,-92.7696 202.5,-124.7696"/>
+<polyline points="198.5,-120.7696 15.5,-120.7696 "/>
+<polyline points="198.5,-120.7696 198.5,-88.7696 "/>
+<polyline points="198.5,-120.7696 202.5,-124.7696 "/>
+<text text-anchor="middle" x="109" y="-102.9696">module [Taskflow: F1]</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402fa0&#45;&gt;p0x7f816f402fa1</title>
-<path d="M110,-160.6009C110,-152.9005 110,-143.7439 110,-135.1862"/>
-<polygon points="113.5001,-135.1828 110,-125.1828 106.5001,-135.1829 113.5001,-135.1828"/>
+<path d="M109,-160.6009C109,-152.9005 109,-143.7439 109,-135.1862"/>
+<polygon points="112.5001,-135.1828 109,-125.1828 105.5001,-135.1829 112.5001,-135.1828"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402e90</title>
-<ellipse cx="110" cy="-34.3848" rx="31.2258" ry="18.2703"/>
-<text text-anchor="middle" x="110" y="-30.5848">f2D</text>
+<ellipse cx="109" cy="-34.3848" rx="31.2258" ry="18.2703"/>
+<text text-anchor="middle" x="109" y="-30.5848">f2D</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402fa1&#45;&gt;p0x7f816f402e90</title>
-<path d="M110,-88.5038C110,-80.7623 110,-71.5567 110,-62.9533"/>
-<polygon points="113.5001,-62.8964 110,-52.8964 106.5001,-62.8965 113.5001,-62.8964"/>
+<path d="M109,-88.5038C109,-80.7623 109,-71.5567 109,-62.9533"/>
+<polygon points="112.5001,-62.8964 109,-52.8964 105.5001,-62.8965 112.5001,-62.8964"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402830</title>
-<ellipse cx="335" cy="-323.9239" rx="29.8983" ry="18.2703"/>
-<text text-anchor="middle" x="335" y="-320.1239">f1A</text>
+<ellipse cx="333" cy="-323.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="333" y="-320.1239">f1A</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402a50</title>
-<ellipse cx="296" cy="-251.1543" rx="30.3115" ry="18.2703"/>
-<text text-anchor="middle" x="296" y="-247.3543">f1C</text>
+<ellipse cx="294" cy="-251.1543" rx="30.3115" ry="18.2703"/>
+<text text-anchor="middle" x="294" y="-247.3543">f1C</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402830&#45;&gt;p0x7f816f402a50</title>
-<path d="M325.5592,-306.3084C320.9942,-297.7906 315.4163,-287.383 310.3409,-277.9128"/>
-<polygon points="313.2977,-276.0205 305.489,-268.8598 307.128,-279.3271 313.2977,-276.0205"/>
+<path d="M323.5592,-306.3084C318.9942,-297.7906 313.4163,-287.383 308.3409,-277.9128"/>
+<polygon points="311.2977,-276.0205 303.489,-268.8598 305.128,-279.3271 311.2977,-276.0205"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402940</title>
-<ellipse cx="258" cy="-323.9239" rx="29.8983" ry="18.2703"/>
-<text text-anchor="middle" x="258" y="-320.1239">f1B</text>
+<ellipse cx="256" cy="-323.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="256" y="-320.1239">f1B</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402940&#45;&gt;p0x7f816f402a50</title>
-<path d="M267.1987,-306.3084C271.6467,-297.7906 277.0815,-287.383 282.0268,-277.9128"/>
-<polygon points="285.2278,-279.3441 286.7543,-268.8598 279.0229,-276.1039 285.2278,-279.3441"/>
+<path d="M265.1987,-306.3084C269.6467,-297.7906 275.0815,-287.383 280.0268,-277.9128"/>
+<polygon points="283.2278,-279.3441 284.7543,-268.8598 277.0229,-276.1039 283.2278,-279.3441"/>
 </g>
 </g>
 </svg>
-</div><p>However, the following composition is <em>invalid</em>. Both module tasks refer to the same taskflow. They can not run at the same time because they are associated with the same graph.</p><div class="m-graph"><svg style="width: 37.125rem; height: 20.000rem;" viewBox="0.00 0.00 594.00 320.31">
+</div><p>However, the following composition is <em>invalid</em>. Both module tasks refer to the same taskflow. They can not run at the same time because they are associated with the same graph.</p><div class="m-graph"><svg style="width: 37.000rem; height: 20.000rem;" viewBox="0.00 0.00 592.00 320.31">
 <g transform="scale(1 1) rotate(0) translate(4 316.3087)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x7ffee9223970</title>
-<polygon points="8,-8 8,-304.3087 417,-304.3087 417,-8 8,-8"/>
-<text text-anchor="middle" x="212.5" y="-287.5087">Taskflow: F2</text>
+<polygon points="8,-8 8,-304.3087 415,-304.3087 415,-8 8,-8"/>
+<text text-anchor="middle" x="211.5" y="-287.5087">Taskflow: F2</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7ffee92238d0</title>
-<polygon points="425,-152.7696 425,-304.3087 578,-304.3087 578,-152.7696 425,-152.7696"/>
-<text text-anchor="middle" x="501.5" y="-287.5087">Taskflow: F1</text>
+<polygon points="423,-152.7696 423,-304.3087 576,-304.3087 576,-152.7696 423,-152.7696"/>
+<text text-anchor="middle" x="499.5" y="-287.5087">Taskflow: F1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402b60</title>
-<ellipse cx="155" cy="-251.9239" rx="29.8983" ry="18.2703"/>
-<text text-anchor="middle" x="155" y="-248.1239">f2A</text>
+<ellipse cx="154" cy="-251.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="154" y="-248.1239">f2A</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402d80</title>
-<ellipse cx="132" cy="-179.1543" rx="30.3115" ry="18.2703"/>
-<text text-anchor="middle" x="132" y="-175.3543">f2C</text>
+<ellipse cx="131" cy="-179.1543" rx="30.3115" ry="18.2703"/>
+<text text-anchor="middle" x="131" y="-175.3543">f2C</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402b60&#45;&gt;p0x7f816f402d80</title>
-<path d="M149.1961,-233.5611C146.6435,-225.4849 143.59,-215.824 140.7692,-206.8991"/>
-<polygon points="144.0734,-205.7395 137.7223,-197.2592 137.3988,-207.8491 144.0734,-205.7395"/>
+<path d="M148.1961,-233.5611C145.6435,-225.4849 142.59,-215.824 139.7692,-206.8991"/>
+<polygon points="143.0734,-205.7395 136.7223,-197.2592 136.3988,-207.8491 143.0734,-205.7395"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402fa0</title>
-<polygon points="203.5,-124.7696 20.5,-124.7696 16.5,-120.7696 16.5,-88.7696 199.5,-88.7696 203.5,-92.7696 203.5,-124.7696"/>
-<polyline points="199.5,-120.7696 16.5,-120.7696 "/>
-<polyline points="199.5,-120.7696 199.5,-88.7696 "/>
-<polyline points="199.5,-120.7696 203.5,-124.7696 "/>
-<text text-anchor="middle" x="110" y="-102.9696">module [Taskflow: F1]</text>
+<polygon points="202.5,-124.7696 19.5,-124.7696 15.5,-120.7696 15.5,-88.7696 198.5,-88.7696 202.5,-92.7696 202.5,-124.7696"/>
+<polyline points="198.5,-120.7696 15.5,-120.7696 "/>
+<polyline points="198.5,-120.7696 198.5,-88.7696 "/>
+<polyline points="198.5,-120.7696 202.5,-124.7696 "/>
+<text text-anchor="middle" x="109" y="-102.9696">module [Taskflow: F1]</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402d80&#45;&gt;p0x7f816f402fa0</title>
-<path d="M126.4485,-160.8886C124.0069,-152.8552 121.0861,-143.2453 118.3879,-134.3677"/>
-<polygon points="121.7303,-133.3287 115.4735,-124.7787 115.0328,-135.3644 121.7303,-133.3287"/>
+<path d="M125.4485,-160.8886C123.0069,-152.8552 120.0861,-143.2453 117.3879,-134.3677"/>
+<polygon points="120.7303,-133.3287 114.4735,-124.7787 114.0328,-135.3644 120.7303,-133.3287"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402fa1</title>
-<polygon points="408.5,-124.7696 225.5,-124.7696 221.5,-120.7696 221.5,-88.7696 404.5,-88.7696 408.5,-92.7696 408.5,-124.7696"/>
-<polyline points="404.5,-120.7696 221.5,-120.7696 "/>
-<polyline points="404.5,-120.7696 404.5,-88.7696 "/>
-<polyline points="404.5,-120.7696 408.5,-124.7696 "/>
-<text text-anchor="middle" x="315" y="-102.9696">module [Taskflow: F1]</text>
+<polygon points="407.5,-124.7696 224.5,-124.7696 220.5,-120.7696 220.5,-88.7696 403.5,-88.7696 407.5,-92.7696 407.5,-124.7696"/>
+<polyline points="403.5,-120.7696 220.5,-120.7696 "/>
+<polyline points="403.5,-120.7696 403.5,-88.7696 "/>
+<polyline points="403.5,-120.7696 407.5,-124.7696 "/>
+<text text-anchor="middle" x="314" y="-102.9696">module [Taskflow: F1]</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402d80&#45;&gt;p0x7f816f402fa1</title>
-<path d="M157.4454,-169.0895C183.8377,-158.6502 225.9296,-142.0009 259.9698,-128.5365"/>
-<polygon points="261.326,-131.764 269.3376,-124.8311 258.7512,-125.2547 261.326,-131.764"/>
+<path d="M156.4454,-169.0895C182.8377,-158.6502 224.9296,-142.0009 258.9698,-128.5365"/>
+<polygon points="260.326,-131.764 268.3376,-124.8311 257.7512,-125.2547 260.326,-131.764"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402c70</title>
-<ellipse cx="78" cy="-251.9239" rx="29.8983" ry="18.2703"/>
-<text text-anchor="middle" x="78" y="-248.1239">f2B</text>
+<ellipse cx="77" cy="-251.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="77" y="-248.1239">f2B</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402c70&#45;&gt;p0x7f816f402d80</title>
-<path d="M90.5244,-235.0462C97.3399,-225.8617 105.9025,-214.3229 113.4753,-204.1179"/>
-<polygon points="116.395,-206.0567 119.5435,-195.9405 110.7736,-201.8853 116.395,-206.0567"/>
+<path d="M89.5244,-235.0462C96.3399,-225.8617 104.9025,-214.3229 112.4753,-204.1179"/>
+<polygon points="115.395,-206.0567 118.5435,-195.9405 109.7736,-201.8853 115.395,-206.0567"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402e90</title>
-<ellipse cx="212" cy="-34.3848" rx="31.2258" ry="18.2703"/>
-<text text-anchor="middle" x="212" y="-30.5848">f2D</text>
+<ellipse cx="211" cy="-34.3848" rx="31.2258" ry="18.2703"/>
+<text text-anchor="middle" x="211" y="-30.5848">f2D</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402fa0&#45;&gt;p0x7f816f402e90</title>
-<path d="M135.4758,-88.6905C150.0764,-78.3292 168.4374,-65.2992 183.5142,-54.5999"/>
-<polygon points="185.8288,-57.2491 191.9584,-48.6074 181.7776,-51.5405 185.8288,-57.2491"/>
+<path d="M134.4758,-88.6905C149.0764,-78.3292 167.4374,-65.2992 182.5142,-54.5999"/>
+<polygon points="184.8288,-57.2491 190.9584,-48.6074 180.7776,-51.5405 184.8288,-57.2491"/>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402fa1&#45;&gt;p0x7f816f402e90</title>
-<path d="M289.2744,-88.6905C274.5307,-78.3292 255.9897,-65.2992 240.7651,-54.5999"/>
-<polygon points="242.4322,-51.4936 232.2381,-48.6074 238.4074,-57.2208 242.4322,-51.4936"/>
+<path d="M288.2744,-88.6905C273.5307,-78.3292 254.9897,-65.2992 239.7651,-54.5999"/>
+<polygon points="241.4322,-51.4936 231.2381,-48.6074 237.4074,-57.2208 241.4322,-51.4936"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402830</title>
-<ellipse cx="540" cy="-251.9239" rx="29.8983" ry="18.2703"/>
-<text text-anchor="middle" x="540" y="-248.1239">f1A</text>
+<ellipse cx="538" cy="-251.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="538" y="-248.1239">f1A</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402a50</title>
-<ellipse cx="501" cy="-179.1543" rx="30.3115" ry="18.2703"/>
-<text text-anchor="middle" x="501" y="-175.3543">f1C</text>
+<ellipse cx="499" cy="-179.1543" rx="30.3115" ry="18.2703"/>
+<text text-anchor="middle" x="499" y="-175.3543">f1C</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402830&#45;&gt;p0x7f816f402a50</title>
-<path d="M530.5592,-234.3084C525.9942,-225.7906 520.4163,-215.383 515.3409,-205.9128"/>
-<polygon points="518.2977,-204.0205 510.489,-196.8598 512.128,-207.3271 518.2977,-204.0205"/>
+<path d="M528.5592,-234.3084C523.9942,-225.7906 518.4163,-215.383 513.3409,-205.9128"/>
+<polygon points="516.2977,-204.0205 508.489,-196.8598 510.128,-207.3271 516.2977,-204.0205"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f816f402940</title>
-<ellipse cx="463" cy="-251.9239" rx="29.8983" ry="18.2703"/>
-<text text-anchor="middle" x="463" y="-248.1239">f1B</text>
+<ellipse cx="461" cy="-251.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="461" y="-248.1239">f1B</text>
 </g>
 <g class="m-edge">
 <title>p0x7f816f402940&#45;&gt;p0x7f816f402a50</title>
-<path d="M472.1987,-234.3084C476.6467,-225.7906 482.0815,-215.383 487.0268,-205.9128"/>
-<polygon points="490.2278,-207.3441 491.7543,-196.8598 484.0229,-204.1039 490.2278,-207.3441"/>
+<path d="M470.1987,-234.3084C474.6467,-225.7906 480.0815,-215.383 485.0268,-205.9128"/>
+<polygon points="488.2278,-207.3441 489.7543,-196.8598 482.0229,-204.1039 488.2278,-207.3441"/>
 </g>
 </g>
 </svg>
@@ -431,7 +424,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

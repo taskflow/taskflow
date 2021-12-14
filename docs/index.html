@@ -48,23 +48,6 @@
         <h1>
           Modern C++ Parallel Task Programming
         </h1>
-        <div class="m-block m-default">
-          <h3>Contents</h3>
-          <ul>
-            <li><a href="#ASimpleFirstProgram">Start Your First Taskflow Program</a></li>
-            <li><a href="#QuickStartCreateASubflowGraph">Create a Subflow Graph</a></li>
-            <li><a href="#QuickStartIntegrateControlFlowIntoATaskGraph">Integrate Control Flow into a Task Graph</a></li>
-            <li><a href="#QuickStartOffloadTasksToGPU">Offload Tasks to a GPU</a></li>
-            <li><a href="#QuickStartComposeTaskGraphs">Compose Task Graphs</a></li>
-            <li><a href="#QuickStartLaunchAsyncTasks">Launch Asynchronous Tasks</a></li>
-            <li><a href="#QuickStartRunATaskflowThroughAnExecution">Run a Taskflow through an Executor</a></li>
-            <li><a href="#QuickStartLeverageStandardParallelAlgorithms">Leverage Standard Parallel Algorithms</a></li>
-            <li><a href="#QuickStartVisualizeATaskflow">Visualize Taskflow Graphs</a></li>
-            <li><a href="#SupportedCompilers">Supported Compilers</a></li>
-            <li><a href="#QuickStartGetInvolved">Get Involved</a></li>
-            <li><a href="#License">License</a></li>
-          </ul>
-        </div>
 <p>Taskflow helps you quickly write parallel and heterogeneous task programs with <em>high performance</em> and simultaneous <em>high productivity</em>. It is faster, more expressive, fewer lines of code, and easier for drop-in integration than many of existing task programming libraries. The source code is available in <a href="https://github.com/taskflow/">project GitHub</a>.</p><section id="ASimpleFirstProgram"><h2><a href="#ASimpleFirstProgram">Start Your First Taskflow Program</a></h2><p>The following program (<code>simple.cpp</code>) creates four tasks <code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code>, where <code>A</code> runs before <code>B</code> and <code>C</code>, and <code>D</code> runs after <code>B</code> and <code>C</code>. When <code>A</code> finishes, <code>B</code> and <code>C</code> can run in parallel.</p><div class="m-graph"><svg style="width: 15.125rem; height: 6.250rem;" viewBox="0.00 0.00 242.00 99.77">
 <g transform="scale(1 1) rotate(0) translate(4 95.7696)">
 <title>G</title>
@@ -110,7 +93,7 @@
 </g>
 </g>
 </svg>
-</div><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span><span class="c1">  // Taskflow is header-only</span><span class="cp"></span>
+</div><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;taskflow/taskflow.hpp&gt;  // Taskflow is header-only</span><span class="cp"></span>
 
 <span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
   
@@ -130,19 +113,19 @@
   <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span> 
 
   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span></pre><p>Taskflow is <em>header-only</em> and there is no wrangle with installation. To compile the program, clone the Taskflow project and tell the compiler to include the headers under <code>taskflow/</code>.</p><pre class="m-console"><span class="go">~$ git clone https://github.com/taskflow/taskflow.git  # clone it only once</span>
-<span class="go">~$ g++ -std=c++17 simple.cpp -I taskflow/taskflow -O2 -pthread -o simple</span>
-<span class="go">~$ ./simple</span>
-<span class="go">TaskA</span>
-<span class="go">TaskC </span>
-<span class="go">TaskB </span>
-<span class="go">TaskD</span></pre><p>Taskflow comes with a built-in profiler, <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a>, for you to profile and visualize taskflow programs in an easy-to-use web-based interface.</p><img class="m-image" src="tfprof.png" alt="Image" /><pre class="m-console"><span class="gp">#</span> run the program with the environment variable TF_ENABLE_PROFILER enabled
-<span class="go">~$ TF_ENABLE_PROFILER=simple.json ./simple</span>
-<span class="go">~$ cat simple.json</span>
-<span class="go">[</span>
-<span class="go">{&quot;executor&quot;:&quot;0&quot;,&quot;data&quot;:[{&quot;worker&quot;:0,&quot;level&quot;:0,&quot;data&quot;:[{&quot;span&quot;:[172,186],&quot;name&quot;:&quot;0_0&quot;,&quot;type&quot;:&quot;static&quot;},{&quot;span&quot;:[187,189],&quot;name&quot;:&quot;0_1&quot;,&quot;type&quot;:&quot;static&quot;}]},{&quot;worker&quot;:2,&quot;level&quot;:0,&quot;data&quot;:[{&quot;span&quot;:[93,164],&quot;name&quot;:&quot;2_0&quot;,&quot;type&quot;:&quot;static&quot;},{&quot;span&quot;:[170,179],&quot;name&quot;:&quot;2_1&quot;,&quot;type&quot;:&quot;static&quot;}]}]}</span>
-<span class="go">]</span>
-<span class="gp">#</span> paste the profiling json data to https://taskflow.github.io/tfprof/</pre></section><section id="QuickStartCreateASubflowGraph"><h2><a href="#QuickStartCreateASubflowGraph">Create a Subflow Graph</a></h2><p>Taskflow supports <em>dynamic tasking</em> for you to create a subflow graph from the execution of a task to perform dynamic parallelism. The following program spawns a task dependency graph parented at task <code>B</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">A</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span>  
+<span class="p">}</span></pre><p>Taskflow is <em>header-only</em> and there is no wrangle with installation. To compile the program, clone the Taskflow project and tell the compiler to include the headers under <code>taskflow/</code>.</p><pre class="m-code"><span class="o">~</span><span class="err">$</span> <span class="n">git</span> <span class="n">clone</span> <span class="nl">https</span><span class="p">:</span><span class="c1">//github.com/taskflow/taskflow.git  # clone it only once</span>
+<span class="o">~</span><span class="err">$</span> <span class="n">g</span><span class="o">++</span> <span class="o">-</span><span class="n">std</span><span class="o">=</span><span class="n">c</span><span class="o">++</span><span class="mi">17</span> <span class="n">simple</span><span class="p">.</span><span class="n">cpp</span> <span class="o">-</span><span class="n">I</span> <span class="n">taskflow</span><span class="o">/</span><span class="n">taskflow</span> <span class="o">-</span><span class="n">O2</span> <span class="o">-</span><span class="n">pthread</span> <span class="o">-</span><span class="n">o</span> <span class="n">simple</span>
+<span class="o">~</span><span class="err">$</span> <span class="p">.</span><span class="o">/</span><span class="n">simple</span>
+<span class="n">TaskA</span>
+<span class="n">TaskC</span> 
+<span class="n">TaskB</span> 
+<span class="n">TaskD</span></pre><p>Taskflow comes with a built-in profiler, <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a>, for you to profile and visualize taskflow programs in an easy-to-use web-based interface.</p><img class="m-image" src="tfprof.png" alt="Image" /><pre class="m-code"><span class="cp"># run the program with the environment variable TF_ENABLE_PROFILER enabled</span>
+<span class="o">~</span><span class="err">$</span> <span class="n">TF_ENABLE_PROFILER</span><span class="o">=</span><span class="n">simple</span><span class="p">.</span><span class="n">json</span> <span class="p">.</span><span class="o">/</span><span class="n">simple</span>
+<span class="o">~</span><span class="err">$</span> <span class="n">cat</span> <span class="n">simple</span><span class="p">.</span><span class="n">json</span>
+<span class="p">[</span>
+<span class="p">{</span><span class="s">&quot;executor&quot;</span><span class="o">:</span><span class="s">&quot;0&quot;</span><span class="p">,</span><span class="s">&quot;data&quot;</span><span class="o">:</span><span class="p">[{</span><span class="s">&quot;worker&quot;</span><span class="o">:</span><span class="mi">0</span><span class="p">,</span><span class="s">&quot;level&quot;</span><span class="o">:</span><span class="mi">0</span><span class="p">,</span><span class="s">&quot;data&quot;</span><span class="o">:</span><span class="p">[{</span><span class="s">&quot;span&quot;</span><span class="o">:</span><span class="p">[</span><span class="mi">172</span><span class="p">,</span><span class="mi">186</span><span class="p">],</span><span class="s">&quot;name&quot;</span><span class="o">:</span><span class="s">&quot;0_0&quot;</span><span class="p">,</span><span class="s">&quot;type&quot;</span><span class="o">:</span><span class="s">&quot;static&quot;</span><span class="p">},{</span><span class="s">&quot;span&quot;</span><span class="o">:</span><span class="p">[</span><span class="mi">187</span><span class="p">,</span><span class="mi">189</span><span class="p">],</span><span class="s">&quot;name&quot;</span><span class="o">:</span><span class="s">&quot;0_1&quot;</span><span class="p">,</span><span class="s">&quot;type&quot;</span><span class="o">:</span><span class="s">&quot;static&quot;</span><span class="p">}]},{</span><span class="s">&quot;worker&quot;</span><span class="o">:</span><span class="mi">2</span><span class="p">,</span><span class="s">&quot;level&quot;</span><span class="o">:</span><span class="mi">0</span><span class="p">,</span><span class="s">&quot;data&quot;</span><span class="o">:</span><span class="p">[{</span><span class="s">&quot;span&quot;</span><span class="o">:</span><span class="p">[</span><span class="mi">93</span><span class="p">,</span><span class="mi">164</span><span class="p">],</span><span class="s">&quot;name&quot;</span><span class="o">:</span><span class="s">&quot;2_0&quot;</span><span class="p">,</span><span class="s">&quot;type&quot;</span><span class="o">:</span><span class="s">&quot;static&quot;</span><span class="p">},{</span><span class="s">&quot;span&quot;</span><span class="o">:</span><span class="p">[</span><span class="mi">170</span><span class="p">,</span><span class="mi">179</span><span class="p">],</span><span class="s">&quot;name&quot;</span><span class="o">:</span><span class="s">&quot;2_1&quot;</span><span class="p">,</span><span class="s">&quot;type&quot;</span><span class="o">:</span><span class="s">&quot;static&quot;</span><span class="p">}]}]}</span>
+<span class="p">]</span>
+<span class="cp"># paste the profiling json data to https:</span><span class="c1">//taskflow.github.io/tfprof/</span></pre></section><section id="QuickStartCreateASubflowGraph"><h2><a href="#QuickStartCreateASubflowGraph">Create a Subflow Graph</a></h2><p>Taskflow supports <em>dynamic tasking</em> for you to create a subflow graph from the execution of a task to perform dynamic parallelism. The following program spawns a task dependency graph parented at task <code>B</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">A</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span>  
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">C</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;C&quot;</span><span class="p">);</span>  
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">D</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;D&quot;</span><span class="p">);</span>  
 
@@ -284,7 +267,7 @@
 </g>
 </g>
 </svg>
-</div></section><section id="QuickStartOffloadTasksToGPU"><h2><a href="#QuickStartOffloadTasksToGPU">Offload Tasks to a GPU</a></h2><p>Taskflow supports GPU tasking for you to accelerate a wide range of scientific computing applications by harnessing the power of CPU-GPU collaborative computing using CUDA.</p><pre class="m-code"><span class="n">__global__</span> <span class="kt">void</span> <span class="n">saxpy</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">float</span> <span class="n">a</span><span class="p">,</span> <span class="kt">float</span> <span class="o">*</span><span class="n">x</span><span class="p">,</span> <span class="kt">float</span> <span class="o">*</span><span class="n">y</span><span class="p">)</span> <span class="p">{</span>
+</div></section><section id="QuickStartOffloadTasksToGPU"><h2><a href="#QuickStartOffloadTasksToGPU">Offload Tasks to a GPU</a></h2><p>Taskflow supports GPU tasking for you to accelerate a wide range of scientific computing applications by harnessing the power of CPU-GPU collaborative computing using CUDA.</p><pre class="m-code"><span class="n">__global__</span> <span class="kt">void</span> <span class="nf">saxpy</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">float</span> <span class="n">a</span><span class="p">,</span> <span class="kt">float</span> <span class="o">*</span><span class="n">x</span><span class="p">,</span> <span class="kt">float</span> <span class="o">*</span><span class="n">y</span><span class="p">)</span> <span class="p">{</span>
   <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span><span class="o">*</span><span class="n">blockDim</span><span class="p">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
   <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
@@ -605,7 +588,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

@@ -49,23 +49,16 @@
           <span class="m-breadcrumb"><a href="Examples.html">Learning from Examples</a> &raquo;</span>
           Fibonacci Number
         </h1>
-        <div class="m-block m-default">
-          <h3>Contents</h3>
-          <ul>
-            <li><a href="#FibonacciNumberProblem">Problem Formulation</a></li>
-            <li><a href="#RecursiveFibonacciParallelism">Recursive Fibonacci Parallelism</a></li>
-          </ul>
-        </div>
 <p>We study the classic problem, <em>Fibonacci Number</em>, to demonstrate the use of recursive task parallelism.</p><section id="FibonacciNumberProblem"><h2><a href="#FibonacciNumberProblem">Problem Formulation</a></h2><p>In mathematics, the Fibonacci numbers, commonly denoted <code>F(n)</code>, form a sequence such that each number is the sum of the two preceding ones, starting from 0 and 1.</p><p><code>0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...</code></p><p>A common solution for computing fibonacci numbers is <em>recursion</em>.</p><pre class="m-code"><span class="kt">int</span> <span class="nf">fib</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">if</span><span class="p">(</span><span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="k">return</span> <span class="n">n</span><span class="p">;</span>
-  <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="mi">-1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="mi">-2</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span>
 <span class="p">}</span></pre></section><section id="RecursiveFibonacciParallelism"><h2><a href="#RecursiveFibonacciParallelism">Recursive Fibonacci Parallelism</a></h2><p>We use <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> to recursively compute fibonacci numbers in parallel.</p><pre class="m-code"><span class="kt">int</span> <span class="nf">spawn</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span> <span class="n">sbf</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="k">return</span> <span class="n">n</span><span class="p">;</span>
   <span class="kt">int</span> <span class="n">res1</span><span class="p">,</span> <span class="n">res2</span><span class="p">;</span>
   <span class="n">sbf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">res1</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span> <span class="n">sbf</span><span class="p">)</span> <span class="p">{</span> <span class="n">res1</span> <span class="o">=</span> <span class="n">spawn</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">sbf</span><span class="p">);</span> <span class="p">}</span> <span class="p">)</span>
-     <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">n</span><span class="mi">-1</span><span class="p">));</span>  
+     <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">));</span>  
   <span class="n">sbf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">res2</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span> <span class="n">sbf</span><span class="p">)</span> <span class="p">{</span> <span class="n">res2</span> <span class="o">=</span> <span class="n">spawn</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sbf</span><span class="p">);</span> <span class="p">}</span> <span class="p">)</span>
-     <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">n</span><span class="mi">-2</span><span class="p">));</span>
+     <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">));</span>
   <span class="n">sbf</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
   <span class="k">return</span> <span class="n">res1</span> <span class="o">+</span> <span class="n">res2</span><span class="p">;</span>
 <span class="p">}</span>
@@ -323,7 +316,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>
