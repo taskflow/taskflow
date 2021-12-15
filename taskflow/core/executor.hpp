@@ -642,6 +642,7 @@ class Executor {
     void _worker_loop(Worker&);
     void _exploit_task(Worker&, Node*&);
     void _explore_task(Worker&, Node*&);
+    void _consume_task(Worker&, Node*);
     void _schedule(Worker&, Node*);
     void _schedule(Node*);
     void _schedule(Worker&, const SmallVector<Node*>&);
@@ -660,6 +661,7 @@ class Executor {
     void _invoke_condition_task(Worker&, Node*, SmallVector<int>&);
     void _invoke_multi_condition_task(Worker&, Node*, SmallVector<int>&);
     void _invoke_module_task(Worker&, Node*);
+    void _invoke_module_task_internal(Worker&, Node*, Graph&);
     void _invoke_async_task(Worker&, Node*);
     void _invoke_silent_async_task(Worker&, Node*);
     void _invoke_cudaflow_task(Worker&, Node*);
@@ -866,6 +868,38 @@ inline void Executor::_spawn(size_t N) {
 
   std::unique_lock<std::mutex> lock(mutex);
   cond.wait(lock, [&](){ return n==N; });
+}
+
+// Function: _consume_task
+inline void Executor::_consume_task(Worker& w, Node* p) {
+
+  std::uniform_int_distribution<size_t> rdvtm(0, _workers.size()-1);
+
+  while(p->_join_counter != 0) {
+
+    auto t = w._wsq.pop();
+
+    exploit:
+
+    if(t) {
+      _invoke(w, t);
+    }
+    else {
+      explore:
+      t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
+      if(t) {
+        goto exploit;
+      }
+      else if(p->_join_counter != 0){
+        std::this_thread::yield();
+        w._vtm = rdvtm(w._rdgen);
+        goto explore;
+      }
+      else {
+        break;
+      }
+    }
+  }
 }
 
 // Function: _explore_task
@@ -1258,8 +1292,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
             _schedule(worker, cache);
           }
           cache = s;
-          //j.fetch_add(1);
-          //_schedule(worker, s);
         }
       }
     }
@@ -1274,8 +1306,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
             _schedule(worker, cache);
           }
           cache = node->_successors[i];
-          //j.fetch_add(1);
-          //_schedule(worker, node->_successors[i]);
         }
       }
     }
@@ -1329,7 +1359,7 @@ inline void Executor::_tear_down_invoke(Worker& worker, Node* node, bool cancel)
           _tear_down_topology(worker, node->_topology);
         }
       }
-      else {  // joined subflow
+      else {  // joined subflow/module
         node->_parent->_join_counter.fetch_sub(1);
       }
     }
@@ -1410,12 +1440,10 @@ inline void Executor::_invoke_dynamic_task_internal(
 
   // detach here
   if(detach) {
-    
     {
       std::lock_guard<std::mutex> lock(p->_topology->_taskflow._mutex);
       p->_topology->_taskflow._graph._merge(std::move(g));
     }
-
     p->_topology->_join_counter.fetch_add(src.size());
     _schedule(w, src);
   }
@@ -1423,35 +1451,7 @@ inline void Executor::_invoke_dynamic_task_internal(
   else {  
     p->_join_counter.fetch_add(src.size());
     _schedule(w, src);
-    Node* t = nullptr;
-  
-    std::uniform_int_distribution<size_t> rdvtm(0, _workers.size()-1);
-
-    while(p->_join_counter != 0) {
-
-      t = w._wsq.pop();
-
-      exploit:
-
-      if(t) {
-        _invoke(w, t);
-      }
-      else {
-        explore:
-        t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
-        if(t) {
-          goto exploit;
-        }
-        else if(p->_join_counter != 0){
-          std::this_thread::yield();
-          w._vtm = rdvtm(w._rdgen);
-          goto explore;
-        }
-        else {
-          break;
-        }
-      }
-    }
+    _consume_task(w, p);
   }
 }
 
@@ -1490,10 +1490,34 @@ inline void Executor::_invoke_syclflow_task(Worker& worker, Node* node) {
 // Procedure: _invoke_module_task
 inline void Executor::_invoke_module_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
-  _invoke_dynamic_task_internal(
-    w, node, std::get_if<Node::Module>(&node->_handle)->graph, false
+  _invoke_module_task_internal(
+    w, node, std::get_if<Node::Module>(&node->_handle)->graph
   );
   _observer_epilogue(w, node);  
+}
+
+// Procedure: _invoke_module_task_internal
+inline void Executor::_invoke_module_task_internal(Worker& w, Node* p, Graph& g) {
+
+  // graph is empty
+  if(g.empty()) {
+    return;
+  }
+
+  SmallVector<Node*> src; 
+
+  for(auto n : g._nodes) {
+    n->_topology = p->_topology;
+    n->_set_up_join_counter();
+    n->_parent = p;
+    if(n->num_dependents() == 0) {
+      src.push_back(n);
+    }
+  }
+
+  p->_join_counter.fetch_add(src.size());
+  _schedule(w, src);
+  _consume_task(w, p);
 }
 
 // Procedure: _invoke_async_task

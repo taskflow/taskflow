@@ -148,6 +148,11 @@ class Runtime {
   friend class Executor;
 
   public:
+
+  /**
+  @brief obtains the running executor
+  */
+  Executor& executor();
   
   /**
   @brief schedules an active task immediately to the worker's queue
@@ -206,6 +211,10 @@ inline Runtime::Runtime(Executor& e, Worker& w, Node* p) :
   _parent  {p}{
 }
 
+// Function: executor
+inline Executor& Runtime::executor() {
+  return _executor;
+}
 
 // ----------------------------------------------------------------------------
 // Node
@@ -232,6 +241,7 @@ class Node {
   constexpr static int DETACHED    = 0x2;
   constexpr static int ACQUIRED    = 0x4;
   constexpr static int READY       = 0x8;
+  constexpr static int SPAWNED     = 0xF;
   
   // static work handle
   struct Static {
@@ -399,10 +409,10 @@ class Node {
   void _precede(Node*);
   void _set_up_join_counter();
 
-  bool _has_state(int) const;
   bool _is_cancelled() const;
   bool _is_conditioner() const;
   bool _acquire_all(SmallVector<Node*>&);
+  bool _is_reentered() const;
 
   SmallVector<Node*> _release_all();
 };
@@ -622,6 +632,15 @@ inline bool Node::_is_cancelled() const {
     // async tasks spawned from subflow does not have topology
   }
   return _topology && _topology->_is_cancelled;
+}
+
+// Function: _is_reentered
+inline bool Node::_is_reentered() const {
+  if(_handle.index() == Node::MODULE &&
+     (_state.load(std::memory_order_relaxed) & Node::SPAWNED)) {
+    return true;
+  }
+  return false;
 }
 
 // Procedure: _set_up_join_counter

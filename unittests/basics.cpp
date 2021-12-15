@@ -1,8 +1,8 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
-#include <chrono>
-#include <limits.h>
+#include <taskflow/algorithm/reduce.hpp>
 
 // --------------------------------------------------------
 // Testcase: Type
@@ -2527,6 +2527,7 @@ TEST_CASE("RuntimeTasking" * doctest::timeout(300)) {
 
   taskflow.emplace([&](tf::Runtime& rt){
     rt.run([&](tf::Subflow& sf){
+      REQUIRE(&rt.executor() == &executor);
       auto task1 = sf.emplace([&](){a++;});
       auto task2 = sf.emplace([&](){a++;});
       auto task3 = sf.emplace([&](){a++;});
@@ -2541,6 +2542,7 @@ TEST_CASE("RuntimeTasking" * doctest::timeout(300)) {
 
   taskflow.emplace([&](tf::Subflow& sf){
     sf.emplace([&](tf::Runtime& rt){
+      REQUIRE(&rt.executor() == &executor);
       rt.run([&](tf::Subflow& sf){
         auto task1 = sf.emplace([&](){b++;});
         auto task2 = sf.emplace([&](){b++;});

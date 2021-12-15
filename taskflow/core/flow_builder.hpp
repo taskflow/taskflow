@@ -179,8 +179,9 @@ class FlowBuilder {
 
     @param task task to remove
 
-    Removes a task and its input and output dependencies from this graph. 
-    If the task does not belong to this graph, nothing will happen.
+    Removes a task and its input and output dependencies from the graph
+    associated with the flow builder. 
+    If the task does not belong to the graph, nothing will happen.
 
     @code{.cpp}
     tf::Task A = taskflow.emplace([](){ std::cout << "A"; });
@@ -196,10 +197,10 @@ class FlowBuilder {
     void erase(Task task);
 
     /**
-    @brief creates a module task from a taskflow
+    @brief creates a module task for the target object
     
-    @tparam T custom object type
-    @param object a custom object that defines @c T::graph() method
+    @tparam T target object type
+    @param object a custom object that defines the method @c T::graph()
 
     @return a tf::Task handle
 

@@ -355,14 +355,14 @@ Removes a task and its input and output dependencies from this graph. If the tas
           <declname>object</declname>
         </param>
         <briefdescription>
-<para>creates a module task from a taskflow </para>        </briefdescription>
+<para>creates a module task for the target object </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>custom object type </para></parameterdescription>
+<para>target object type </para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
@@ -370,7 +370,7 @@ Removes a task and its input and output dependencies from this graph. If the tas
 <parametername>object</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a custom object that defines <computeroutput>T::graph()</computeroutput> method</para></parameterdescription>
+<para>a custom object that defines the method <computeroutput>T::graph()</computeroutput> </para></parameterdescription>
 </parameteritem>
 </parameterlist>
 <simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para></simplesect>

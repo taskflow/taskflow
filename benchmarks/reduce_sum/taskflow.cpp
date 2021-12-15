@@ -1,5 +1,6 @@
 #include "reduce_sum.hpp"
 #include <taskflow/taskflow.hpp> 
+#include <taskflow/algorithm/reduce.hpp>
 
 void reduce_sum_taskflow(unsigned num_threads) {
 

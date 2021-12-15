@@ -3,7 +3,6 @@
 #include "core/executor.hpp"
 #include "algorithm/critical.hpp"
 #include "algorithm/for_each.hpp"
-#include "algorithm/reduce.hpp"
 
 /** 
 @dir taskflow

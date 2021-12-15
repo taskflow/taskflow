@@ -778,7 +778,7 @@ void syclFlow::single_task(syclTask task, F&& func) {
 // FlowBuilder::emplace_on
 template <typename C, typename Q, std::enable_if_t<is_syclflow_task_v<C>, void>*>
 Task FlowBuilder::emplace_on(C&& callable, Q&& q) {
-  auto n = _graph.emplace_back(
+  auto n = _graph._emplace_back(
     std::in_place_type_t<Node::syclFlow>{},
     [c=std::forward<C>(callable), queue=std::forward<Q>(q)] 
     (Executor& e, Node* p) mutable {

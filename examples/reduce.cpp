@@ -1,9 +1,7 @@
-// This example demonstrates how to use 'reduce' method.
+// This example demonstrates how to create a parallel-reduction task.
 
 #include <taskflow/taskflow.hpp>
-
-#include <chrono>
-#include <limits.h>
+#include <taskflow/algorithm/reduce.hpp>
 
 #define MAX_DATA_SIZE 40000000
 

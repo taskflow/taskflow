@@ -122,7 +122,7 @@
               <div class="m-doc-template">template&lt;typename T&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc">composed_of</a>(</span><span class="m-doc-wrap">T&amp; object) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
-            <dd>creates a module task from a taskflow</dd>
+            <dd>creates a module task for the target object</dd>
             <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#acab0b4ac82260f47fdb36a3244ee3aaf" class="m-doc">placeholder</a>(</span><span class="m-doc-wrap">) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
@@ -484,7 +484,7 @@
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc-self">composed_of</a>(</span><span class="m-doc-wrap">T&amp; object)</span></span>
             </h3>
-            <p>creates a module task from a taskflow</p>
+            <p>creates a module task for the target object</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -492,7 +492,7 @@
               <tbody>
                 <tr>
                   <td style="width: 1%">T</td>
-                  <td>custom object type</td>
+                  <td>target object type</td>
                 </tr>
               </tbody>
               <thead>
@@ -501,7 +501,7 @@
               <tbody>
                 <tr>
                   <td>object</td>
-                  <td>a custom object that defines <code>T::graph()</code> method</td>
+                  <td>a custom object that defines the method <code>T::graph()</code></td>
                 </tr>
               </tbody>
               <tfoot>

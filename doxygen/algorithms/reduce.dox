@@ -6,6 +6,15 @@ namespace tf {
 
 @tableofcontents
 
+@section ParallelReductionInclude Include the Header
+
+You need to include the header file, <tt>taskflow/algorithm/reduce.hpp</tt>,
+for creating a parallel-reduction task.
+
+@code{.cpp}
+#include <taskflow/algorithm/reduce.hpp>
+@endcode
+
 @section A2ParallelReduction Create a Parallel-Reduction Task
 
 The reduction task created by 
@@ -75,7 +84,7 @@ In the above example, when @c init finishes, @c vec has been initialized to 10 e
 (i.e., end of the range).
 These changes are visible to the execution context of the reduction task.
 
-@section A2ParallelTransformationReduction Create a Parallel Transform-Reduction Task
+@section A2ParallelTransformationReduction Create a Parallel-Transform-Reduction Task
 
 It is common to transform each element into a new data type and
 then perform reduction on the transformed elements.
@@ -97,7 +106,6 @@ and then sums up all integers in parallel.
 @code{.cpp}
 std::string str = "12345678";
 int sum {0};
-
 tf::Task task = taskflow.transform_reduce(str.begin(), str.end(), sum,
   [] (int a, int b) {      // binary reduction operator
     return a + b;
@@ -106,9 +114,7 @@ tf::Task task = taskflow.transform_reduce(str.begin(), str.end(), sum,
     return c - '0';
   }   
 ); 
-
 executor.run(taskflow).wait(); 
-
 assert(sum == 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8);  // sum will be 36 
 @endcode
 
