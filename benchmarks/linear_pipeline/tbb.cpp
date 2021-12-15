@@ -1,4 +1,4 @@
-#include "parallel_pipeline.hpp"
+#include "linear_pipeline.hpp"
 #include <tbb/pipeline.h>
 #include <tbb/tick_count.h>
 #include <tbb/tbb_allocator.h>
