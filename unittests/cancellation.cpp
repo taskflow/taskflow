@@ -329,3 +329,65 @@ TEST_CASE("CancelSubflowAsync") {
   }
 }
 
+// cancel composition tasks
+TEST_CASE("CancelComposition") {
+  
+  tf::Executor executor(4);
+
+  // f1 has two independent tasks
+  tf::Taskflow f1("F1");
+  auto f1A = f1.emplace([&](){ });
+  auto f1B = f1.emplace([&](){ });
+  f1A.name("f1A");
+  f1B.name("f1B");
+
+  //  f2A ---
+  //         |----> f2C
+  //  f2B --- 
+  //
+  //  f1_module_task
+  tf::Taskflow f2("F2");
+  auto f2A = f2.emplace([&](){ });
+  auto f2B = f2.emplace([&](){ });
+  auto f2C = f2.emplace([&](){ });
+  f2A.name("f2A");
+  f2B.name("f2B");
+  f2C.name("f2C");
+
+  f2A.precede(f2C);
+  f2B.precede(f2C);
+  f2.composed_of(f1).name("module_of_f1");
+
+  // f3 has a module task (f2) and a regular task
+  tf::Taskflow f3("F3");
+  f3.composed_of(f2).name("module_of_f2");
+  f3.emplace([](){ }).name("f3A");
+
+  // f4: f3_module_task -> f2_module_task
+  tf::Taskflow f4; 
+  f4.name("F4");
+  auto f3_module_task = f4.composed_of(f3).name("module_of_f3");
+  auto f2_module_task = f4.composed_of(f2).name("module_of_f2");
+  f3_module_task.precede(f2_module_task);
+
+  for(int r=0; r<100; r++) {
+  
+    size_t N = 100;
+    size_t success = 0;
+
+    std::vector<tf::Future<void>> futures;
+
+    for(int i=0; i<100; i++) {
+      futures.emplace_back(executor.run(f4));
+    }
+
+    for(auto& fu: futures) {
+      success += (fu.cancel() ? 1 : 0);
+    }
+
+    executor.wait_for_all();
+
+    REQUIRE(success <= N);
+  }
+}
+

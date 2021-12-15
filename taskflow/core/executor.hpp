@@ -876,10 +876,8 @@ inline void Executor::_consume_task(Worker& w, Node* p) {
   std::uniform_int_distribution<size_t> rdvtm(0, _workers.size()-1);
 
   while(p->_join_counter != 0) {
-
-    auto t = w._wsq.pop();
-
     exploit:
+    auto t = w._wsq.pop();
 
     if(t) {
       _invoke(w, t);
@@ -888,6 +886,7 @@ inline void Executor::_consume_task(Worker& w, Node* p) {
       explore:
       t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
       if(t) {
+        _invoke(w, t);
         goto exploit;
       }
       else if(p->_join_counter != 0){
@@ -1042,12 +1041,10 @@ std::shared_ptr<Observer> Executor::make_observer(ArgsT&&... args) {
 // Procedure: remove_observer
 template <typename Observer>
 void Executor::remove_observer(std::shared_ptr<Observer> ptr) {
-  
   static_assert(
     std::is_base_of_v<ObserverInterface, Observer>,
     "Observer must be derived from ObserverInterface"
   );
-
   _observers.erase(std::static_pointer_cast<ObserverInterface>(ptr));
 }
 
@@ -1174,10 +1171,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     node->_state.fetch_or(Node::ACQUIRED, std::memory_order_release);
   }
 
-  // Here we need to fetch the num_successors first to avoid the invalid memory
-  // access caused by topology clear.
-  const auto num_successors = node->num_successors();
-  
   // condition task
   //int cond = -1;
   SmallVector<int> conds = { -1 };
@@ -1283,7 +1276,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     case Node::CONDITION: 
     case Node::MULTI_CONDITION: {
       for(auto cond : conds) {
-        if(cond >= 0 && static_cast<size_t>(cond) < num_successors) {
+        if(cond >= 0 && static_cast<size_t>(cond) < node->_successors.size()) {
           auto s = node->_successors[cond];
           // zeroing the join counter for invariant
           s->_join_counter.store(0, std::memory_order_relaxed);
@@ -1299,7 +1292,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     
     // non-condition task
     default: {
-      for(size_t i=0; i<num_successors; ++i) {
+      for(size_t i=0; i<node->_successors.size(); ++i) {
         if(--(node->_successors[i]->_join_counter) == 0) {
           j.fetch_add(1);
           if(cache) {
@@ -1312,8 +1305,11 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     break;
   }
 
-  // tear_down the invoke
-  _tear_down_invoke(worker, node, false);
+  //_tear_down_invoke(worker, node, false);
+  if(j.fetch_sub(1) == 1 && node->_parent == nullptr) {
+    _tear_down_topology(worker, node->_topology);
+    return;
+  }
   
   // perform tail recursion elimination for the right-most child to reduce
   // the number of expensive pop/push operations through the task queue

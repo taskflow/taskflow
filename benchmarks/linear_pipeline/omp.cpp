@@ -1,4 +1,4 @@
-#include "parallel_pipeline.hpp"
+#include "linear_pipeline.hpp"
 #include <omp.h>
 
 // linear_chain_omp

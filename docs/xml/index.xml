@@ -448,6 +448,7 @@
     <member refid="classtf_1_1Executor_1a8615d8b666bc94e2007f2a1561767895" kind="function"><name>_worker_loop</name></member>
     <member refid="classtf_1_1Executor_1a0b4f231e11016194980b14e76262c8a7" kind="function"><name>_exploit_task</name></member>
     <member refid="classtf_1_1Executor_1aab7cc2e53d75fcc87fcc919f29bf9ca9" kind="function"><name>_explore_task</name></member>
+    <member refid="classtf_1_1Executor_1a2e81517a3d0a9d0c7fc706e181e03bc2" kind="function"><name>_consume_task</name></member>
     <member refid="classtf_1_1Executor_1ab8d98f12a62d10ad6cf1a4011a4d0034" kind="function"><name>_schedule</name></member>
     <member refid="classtf_1_1Executor_1a685c08b62a494359e34c6de2a700fdab" kind="function"><name>_schedule</name></member>
     <member refid="classtf_1_1Executor_1a9cf973d7c5310d058fee003fda9098c4" kind="function"><name>_schedule</name></member>
@@ -466,6 +467,7 @@
     <member refid="classtf_1_1Executor_1afa6be6aab23ff4b2a293a2245818916d" kind="function"><name>_invoke_condition_task</name></member>
     <member refid="classtf_1_1Executor_1a19b3f10d4eab40143d3f76b946ded252" kind="function"><name>_invoke_multi_condition_task</name></member>
     <member refid="classtf_1_1Executor_1a4c5324657bf02bc2da0294192ab80233" kind="function"><name>_invoke_module_task</name></member>
+    <member refid="classtf_1_1Executor_1a5c3cca617c31b9ddf1a1881296970436" kind="function"><name>_invoke_module_task_internal</name></member>
     <member refid="classtf_1_1Executor_1a505ccafa7ab1855c200d5590499adf5a" kind="function"><name>_invoke_async_task</name></member>
     <member refid="classtf_1_1Executor_1ae2bb8ef1456ec6414e46d7ed77628bd9" kind="function"><name>_invoke_silent_async_task</name></member>
     <member refid="classtf_1_1Executor_1ae4be3b787a3c6eaaf18589a25e9c844f" kind="function"><name>_invoke_cudaflow_task</name></member>
@@ -595,6 +597,7 @@
     <member refid="classtf_1_1Node_1acd2a865b64c7b0feea62f0f50c7116fb" kind="variable"><name>DETACHED</name></member>
     <member refid="classtf_1_1Node_1a9d5bb66653a9429effed9f13dc7f1603" kind="variable"><name>ACQUIRED</name></member>
     <member refid="classtf_1_1Node_1ab1ef24ce96fb092597e645f65cc7406a" kind="variable"><name>READY</name></member>
+    <member refid="classtf_1_1Node_1ad3a7bb2c4fd688db2961f1f961888375" kind="variable"><name>SPAWNED</name></member>
     <member refid="classtf_1_1Node_1a53c0636f3e9f8473e564134495a4a615" kind="variable"><name>PLACEHOLDER</name></member>
     <member refid="classtf_1_1Node_1a2ac09057e2116247343ab716dd7788b0" kind="variable"><name>STATIC</name></member>
     <member refid="classtf_1_1Node_1a6b0ac6a07fe2f44d358c1aeb1479a3c5" kind="variable"><name>DYNAMIC</name></member>
@@ -615,10 +618,10 @@
     <member refid="classtf_1_1Node_1a0214bc98366d4c24a1cae941cdffe119" kind="function"><name>name</name></member>
     <member refid="classtf_1_1Node_1a7e6ccc13774475f9ee23af8d37a5311c" kind="function"><name>_precede</name></member>
     <member refid="classtf_1_1Node_1a30ffac5296d61687b8ebb9ff4716a26a" kind="function"><name>_set_up_join_counter</name></member>
-    <member refid="classtf_1_1Node_1ab981572c7dd63313046e21e3b69404c2" kind="function"><name>_has_state</name></member>
     <member refid="classtf_1_1Node_1a4207c300c6ac0c564deef65c73e1ee96" kind="function"><name>_is_cancelled</name></member>
     <member refid="classtf_1_1Node_1aed1c802d5794f881f9c47089003ef62c" kind="function"><name>_is_conditioner</name></member>
     <member refid="classtf_1_1Node_1aed92757987ec46f16b25f061263025b6" kind="function"><name>_acquire_all</name></member>
+    <member refid="classtf_1_1Node_1a53ebe3fc35953e72f6d18622b618fdf2" kind="function"><name>_is_reentered</name></member>
     <member refid="classtf_1_1Node_1a69f967fa92024d7b31cc30d010ccf207" kind="function"><name>_release_all</name></member>
   </compound>
   <compound refid="classtf_1_1ObserverInterface" kind="class"><name>tf::ObserverInterface</name>
@@ -681,6 +684,7 @@
     <member refid="classtf_1_1Runtime_1a8074028372bb09946927b1b6ec01c6e1" kind="variable"><name>_executor</name></member>
     <member refid="classtf_1_1Runtime_1ae9bd2bcb1e004b078f627472fb9e0371" kind="variable"><name>_worker</name></member>
     <member refid="classtf_1_1Runtime_1ac040d7410fbb82703ac39ac3b1baf8fd" kind="variable"><name>_parent</name></member>
+    <member refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kind="function"><name>executor</name></member>
     <member refid="classtf_1_1Runtime_1a135ad751e8a4e7b1fd07a2cee65677b5" kind="function"><name>schedule</name></member>
     <member refid="classtf_1_1Runtime_1a8ee160df481b72d8fdc65ee531b44901" kind="function"><name>run</name></member>
     <member refid="classtf_1_1Runtime_1abe76e072e64f5d1b1fe09c7e7c22777e" kind="function"><name>Runtime</name></member>

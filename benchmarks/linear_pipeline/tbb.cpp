@@ -1,4 +1,4 @@
-#include "parallel_pipeline.hpp"
+#include "linear_pipeline.hpp"
 #include <tbb/pipeline.h>
 #include <tbb/tick_count.h>
 #include <tbb/tbb_allocator.h>
@@ -219,10 +219,10 @@ public:
 class MyOutputFunc {
 public:
   MyOutputFunc(){}
-  void operator()(int input) const {
+  void operator()(int) const {
     work();
-    int retval = 0;
-    retval = input + 99999;
+    //int retval = 0;
+    //retval = input + 99999;
     //result.emplace_back(retval); 
     //printf("%d\n", retval);
   }
