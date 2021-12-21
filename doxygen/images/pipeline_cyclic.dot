@@ -1,0 +1,23 @@
+ digraph Taskflow {
+rankdir="LR";
+#columns
+subgraph{
+p0[label="pipe-0 on item 4"];
+p1[label="pipe-1 on item 4"];
+p2[label="pipe-2 on item 4"];
+p3[label="pipe-3 on item 4"];
+px[label="pipe-3 on item 0",style="dashed"]
+}
+
+subgraph {
+rank="same"
+py[label="pipe-0 on item 3", style="dashed"]    
+p0
+}
+
+p0 -> p1;
+p1 -> p2;
+p2 -> p3;
+px -> p0;  
+py -> p0;
+}
