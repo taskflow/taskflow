@@ -51,10 +51,31 @@ std::unique_ptr<Node[]> make_dag(size_t num_nodes, size_t max_degree) {
   return nodes;
 }
 
+std::unique_ptr<Node[]> make_chain(size_t num_nodes) {
+  
+  std::unique_ptr<Node[]> nodes(new Node[num_nodes]);
+  
+  // Make sure nodes are in clean state
+  for(size_t i=0; i<num_nodes; i++) {
+    nodes[i].idx = i;
+    nodes[i].name = std::to_string(i);
+    REQUIRE(!nodes[i].visited);
+    REQUIRE(nodes[i].successors.empty());
+    REQUIRE(nodes[i].dependents == 0);
+  }
+
+  // Create a DAG
+  for(size_t i=1; i<num_nodes; i++) {
+    nodes[i-1].precede(nodes[i]);
+  }
+
+  return nodes;
+}
+
 // --------------------------------------------------------
-// Testcase: StaticTraverse
+// Testcase: StaticTraversal
 // --------------------------------------------------------
-TEST_CASE("StaticTraverse" * doctest::timeout(300)) {
+TEST_CASE("StaticTraversal" * doctest::timeout(300)) {
   
   size_t max_degree = 4;
   size_t num_nodes = 1000;
@@ -100,9 +121,9 @@ TEST_CASE("StaticTraverse" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
-// Testcase: DynamicTraverse
+// Testcase: DynamicTraversal
 // --------------------------------------------------------
-TEST_CASE("DynamicTraverse" * doctest::timeout(300)) {
+TEST_CASE("DynamicTraversal" * doctest::timeout(300)) {
 
   std::atomic<size_t> level;
 
@@ -160,10 +181,69 @@ TEST_CASE("DynamicTraverse" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
-// Testcase: ParallelTraverse
+// Testcase: RecursiveTraversal
+// --------------------------------------------------------
+//TEST_CASE("RecursiveTraversal" * doctest::timeout(300)) {
+//
+//  std::atomic<size_t> level;
+//
+//  std::function<void(Node*, tf::Subflow&)> traverse;
+//
+//  traverse = [&] (Node* n, tf::Subflow& subflow) {
+//    REQUIRE(!n->visited);
+//    n->visited = true;
+//    size_t S = n->successors.size();
+//    for(size_t i=0; i<S; i++) {
+//      if(n->successors[i]->dependents.fetch_sub(1) == 1) {
+//        n->successors[i]->level = ++level;
+//        subflow.emplace([s=n->successors[i], &traverse](tf::Subflow &subflow){ 
+//          traverse(s, subflow); 
+//        });
+//      }
+//    }
+//  };
+//  
+//  size_t num_nodes = 1000;
+//  
+//  for(unsigned w=1; w<=4; w++) {
+//
+//    auto nodes = make_chain(num_nodes);
+//    
+//    std::vector<Node*> src;
+//    for(size_t i=0; i<num_nodes; i++) {
+//      if(nodes[i].dependents == 0) { 
+//        src.emplace_back(&(nodes[i]));
+//      }
+//    }
+//
+//    level = 0;
+//
+//    tf::Taskflow tf;
+//    tf::Executor executor(w);
+//
+//    for(size_t i=0; i<src.size(); i++) {
+//      tf.emplace([s=src[i], &traverse](tf::Subflow& subflow){ 
+//        traverse(s, subflow); 
+//      });
+//    }
+//    
+//    executor.run(tf).wait();  // block until finished
+//    
+//    for(size_t i=0; i<num_nodes; i++) {
+//      REQUIRE(nodes[i].visited);
+//      REQUIRE(nodes[i].dependents == 0);
+//      for(size_t j=0; j<nodes[i].successors.size(); ++j) {
+//        REQUIRE(nodes[i].level < nodes[i].successors[j]->level);
+//      }
+//    }
+//  }
+//}
+
+// --------------------------------------------------------
+// Testcase: ParallelTraversal
 // --------------------------------------------------------
   
-void parallel_traverse(unsigned num_threads) { 
+void parallel_traversal(unsigned num_threads) { 
 
   tf::Executor executor(num_threads);
 
@@ -226,36 +306,36 @@ void parallel_traverse(unsigned num_threads) {
   for(auto& thread : threads) thread.join();
 }
 
-TEST_CASE("ParallelTraverse.1" * doctest::timeout(300)) {
-  parallel_traverse(1);
+TEST_CASE("ParallelTraversal.1" * doctest::timeout(300)) {
+  parallel_traversal(1);
 }
 
-TEST_CASE("ParallelTraverse.2" * doctest::timeout(300)) {
-  parallel_traverse(2);
+TEST_CASE("ParallelTraversal.2" * doctest::timeout(300)) {
+  parallel_traversal(2);
 }
 
-TEST_CASE("ParallelTraverse.3" * doctest::timeout(300)) {
-  parallel_traverse(3);
+TEST_CASE("ParallelTraversal.3" * doctest::timeout(300)) {
+  parallel_traversal(3);
 }
 
-TEST_CASE("ParallelTraverse.4" * doctest::timeout(300)) {
-  parallel_traverse(4);
+TEST_CASE("ParallelTraversal.4" * doctest::timeout(300)) {
+  parallel_traversal(4);
 }
 
-TEST_CASE("ParallelTraverse.5" * doctest::timeout(300)) {
-  parallel_traverse(5);
+TEST_CASE("ParallelTraversal.5" * doctest::timeout(300)) {
+  parallel_traversal(5);
 }
 
-TEST_CASE("ParallelTraverse.6" * doctest::timeout(300)) {
-  parallel_traverse(6);
+TEST_CASE("ParallelTraversal.6" * doctest::timeout(300)) {
+  parallel_traversal(6);
 }
 
-TEST_CASE("ParallelTraverse.7" * doctest::timeout(300)) {
-  parallel_traverse(7);
+TEST_CASE("ParallelTraversal.7" * doctest::timeout(300)) {
+  parallel_traversal(7);
 }
 
-TEST_CASE("ParallelTraverse.8" * doctest::timeout(300)) {
-  parallel_traverse(8);
+TEST_CASE("ParallelTraversal.8" * doctest::timeout(300)) {
+  parallel_traversal(8);
 }
 
 

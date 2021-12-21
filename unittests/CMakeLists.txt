@@ -7,12 +7,15 @@ list(APPEND TF_UNITTESTS
   tsq 
   serializer 
   basics 
+  asyncs
+  subflows
   control_flow
+  semaphores
   movable
   cancellation
-  semaphore
-  algorithm 
-  traverse 
+  algorithms
+  compositions
+  traversals
   sorting
   pipelines
 )

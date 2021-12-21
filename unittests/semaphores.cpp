@@ -1,10 +1,12 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
 
 // --------------------------------------------------------
 // Testcase: CriticalSection
 // --------------------------------------------------------
+
 void critical_section(size_t W) {
   
   tf::Taskflow taskflow;

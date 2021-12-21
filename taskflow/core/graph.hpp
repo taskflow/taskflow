@@ -237,11 +237,11 @@ class Node {
   TF_ENABLE_POOLABLE_ON_THIS;
 
   // state bit flag
-  constexpr static int CONDITIONED = 0x1;
-  constexpr static int DETACHED    = 0x2;
-  constexpr static int ACQUIRED    = 0x4;
-  constexpr static int READY       = 0x8;
-  constexpr static int SPAWNED     = 0xF;
+  constexpr static int CONDITIONED = 1;
+  constexpr static int DETACHED    = 2;
+  constexpr static int ACQUIRED    = 4;
+  constexpr static int READY       = 8;
+  constexpr static int DEFERRED    = 16;
   
   // static work handle
   struct Static {
@@ -412,7 +412,6 @@ class Node {
   bool _is_cancelled() const;
   bool _is_conditioner() const;
   bool _acquire_all(SmallVector<Node*>&);
-  bool _is_reentered() const;
 
   SmallVector<Node*> _release_all();
 };
@@ -626,21 +625,12 @@ inline bool Node::_is_conditioner() const {
 inline bool Node::_is_cancelled() const {
   if(_handle.index() == Node::ASYNC) {
     auto h = std::get_if<Node::Async>(&_handle);
-    if(h->topology && h->topology->_is_cancelled) {
+    if(h->topology && h->topology->_is_cancelled.load(std::memory_order_relaxed)) {
       return true;
     }
     // async tasks spawned from subflow does not have topology
   }
-  return _topology && _topology->_is_cancelled;
-}
-
-// Function: _is_reentered
-inline bool Node::_is_reentered() const {
-  if(_handle.index() == Node::MODULE &&
-     (_state.load(std::memory_order_relaxed) & Node::SPAWNED)) {
-    return true;
-  }
-  return false;
+  return _topology && _topology->_is_cancelled.load(std::memory_order_relaxed);
 }
 
 // Procedure: _set_up_join_counter

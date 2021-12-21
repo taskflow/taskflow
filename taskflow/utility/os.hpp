@@ -119,6 +119,16 @@
 #endif
 
 //----------------------------------------------------------------------------- 
+// pause
+//----------------------------------------------------------------------------- 
+#if __has_include (<immintrin.h>)
+  #define TF_HAS_MM_PAUSE 1
+  #include <immintrin.h>
+#endif
+
+
+
+
     
 
 namespace tf {
@@ -161,10 +171,12 @@ inline bool has_env(const std::string& str) {
 #endif
 }
 
-// ----------------------------------------------------------------------------
-
-
-
+// Procedure: relax_cpu
+inline void relax_cpu() {
+#ifdef TF_HAS_MM_PAUSE
+  _mm_pause();
+#endif
+}
 
 
 

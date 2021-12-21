@@ -451,8 +451,10 @@ inline void Taskflow::_dump(
   }
 
   // subflow join node
-  if (node->_parent && node->_successors.size() == 0) {
-      os << 'p' << node << " -> p" << node->_parent << ";\n";
+  if(node->_parent && node->_parent->_handle.index() == Node::DYNAMIC &&
+     node->_successors.size() == 0
+    ) {
+    os << 'p' << node << " -> p" << node->_parent << ";\n";
   }
   
   // node info

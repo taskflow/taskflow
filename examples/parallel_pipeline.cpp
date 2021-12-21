@@ -1,4 +1,4 @@
-// This program demonstrates how to create a pipeline execution graph.
+// This program demonstrates how to create a pipeline scheduling framework.
 
 #include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/pipeline.hpp>

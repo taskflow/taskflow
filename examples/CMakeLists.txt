@@ -16,12 +16,13 @@ list(APPEND TF_EXAMPLES
   reduce 
   parallel_for 
   parallel_sort
+  parallel_pipeline
   run 
   composition
   limited_concurrency
   cancel
   cancel_async
-  pipeline
+
   #pipeline_2
 )
 
