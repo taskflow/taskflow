@@ -1,0 +1,91 @@
+
+digraph Taskflow {
+newrank=true;
+#columns
+subgraph {
+p00[label="stage-0-a"];
+p10[label="stage-0-b"];
+p20[label="stage-0-c"];
+p30[label="stage-0-d"];
+}
+
+subgraph  {
+p01[label="stage-1-a"];
+p11[label="stage-1-b"];
+p21[label="stage-1-c"];
+p31[label="stage-1-d"];
+}
+
+subgraph  {
+p02[label="stage-2-a"];
+p12[label="stage-2-b"];
+p22[label="stage-2-c"];
+p32[label="stage-2-d"];
+}
+
+subgraph  {
+p03[label="stage-3-a"];
+p13[label="stage-3-b"];
+p23[label="stage-3-c"];
+p33[label="stage-3-d"];
+}
+
+subgraph cluster0 {
+rank="same";
+style="dashed";
+p00;
+p01;
+p02;
+p03;
+}
+subgraph cluster1 {
+rank="same";
+style="dashed";
+p10;
+p11;
+p12;
+p13;
+}
+subgraph cluster2 {
+rank="same";
+style="dashed";
+p20;
+p21;
+p22;
+p23;
+}
+subgraph cluster3 {
+rank="same";
+style="dashed";
+p30;
+p31;
+p32;
+p33;
+}
+
+p00 -> p01;
+p01 -> p02;
+p02 -> p03;
+p10 -> p11;
+p11 -> p12;
+p12 -> p13;
+p20 -> p21;
+p21 -> p22;
+p22 -> p23;
+p30 -> p31;
+p31 -> p32;
+p32 -> p33;
+p00 -> p10;
+p01 -> p11;
+p02 -> p12;
+p03 -> p13;
+p10 -> p20;
+p11 -> p21;
+p12 -> p22;
+p13 -> p23;
+p20 -> p30;
+p21 -> p31;
+p22 -> p32;
+p23 -> p33;
+}
+
