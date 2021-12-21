@@ -5,7 +5,7 @@
   <title>Taskflow Algorithms &raquo; Parallel Pipeline | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -66,158 +66,158 @@
             <li><a href="#ResetPipeline">Reset a Pipeline</a></li>
           </ul>
         </div>
-<p>Taskflow provides template functions for you to create <em>pipeline scheduling frameworks</em> to implement pipeline algorithms. Pipeline parallelism refers to a parallel execution of multiple data elements through a linear chain of pipes or stages. Each stage processes the data element sent from the previous stage, applies the given callable to that data element, and then sends the result to the next stage. Multiple data elements can be processed simultaneously across different stages.</p><section id="IncludeHeaderFile"><h2><a href="#IncludeHeaderFile">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/algorithm/pipeline.hpp</code>, for creating a pipeline scheduling framework.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;taskflow/algorithm/pipeline.hpp&gt;</span><span class="cp"></span></pre></section><section id="UnderstandPipelineScheduling"><h2><a href="#UnderstandPipelineScheduling">Understand the Pipeline Scheduling Framework</a></h2><p>A <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> object is a composable graph object for users to create a <em>pipeline scheduling framework</em> through a module task in a taskflow. Unlike the conventional pipeline programming frameworks (e.g., Intel TBB), Taskflow&#x27;s pipeline algorithm does not provide any data abstraction, which often restricts users from optimizing data layouts in their applications, but a flexible framework for users to customize their application data atop an efficient pipeline scheduling framework.</p><div class="m-graph"><svg style="width: 22.250rem; height: 22.688rem;" viewBox="0.00 0.00 356.00 363.08">
-<g transform="scale(1 1) rotate(0) translate(4 359.0782)">
+<p>Taskflow provides template functions for you to create <em>pipeline scheduling frameworks</em> to implement pipeline algorithms. Pipeline parallelism refers to a parallel execution of multiple data elements through a linear chain of pipes or stages. Each stage processes the data element sent from the previous stage, applies the given callable to that data element, and then sends the result to the next stage. Multiple data elements can be processed simultaneously across different stages.</p><section id="IncludeHeaderFile"><h2><a href="#IncludeHeaderFile">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/algorithm/pipeline.hpp</code>, for creating a pipeline scheduling framework.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;taskflow/algorithm/pipeline.hpp&gt;</span><span class="cp"></span></pre></section><section id="UnderstandPipelineScheduling"><h2><a href="#UnderstandPipelineScheduling">Understand the Pipeline Scheduling Framework</a></h2><p>A <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> object is a composable graph object for users to create a <em>pipeline scheduling framework</em> through a module task in a taskflow. Unlike the conventional pipeline programming frameworks (e.g., Intel TBB), Taskflow&#x27;s pipeline algorithm does not provide any data abstraction, which often restricts users from optimizing data layouts in their applications, but a flexible framework for users to customize their application data atop an efficient pipeline scheduling framework.</p><div class="m-graph"><svg style="width: 20.000rem; height: 22.000rem;" viewBox="0.00 0.00 320.00 352.00">
+<g transform="scale(1 1) rotate(0) translate(4 348)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster0</title>
-<polygon stroke-dasharray="5,2" points="8,-268.3087 8,-347.0782 340,-347.0782 340,-268.3087 8,-268.3087"/>
-<text text-anchor="middle" x="174" y="-330.2782">line 0</text>
+<polygon stroke-dasharray="5,2" points="8,-260 8,-336 304,-336 304,-260 8,-260"/>
+<text text-anchor="middle" x="156" y="-319.2">line 0</text>
 </g>
 <g class="m-cluster">
 <title>cluster1</title>
-<polygon stroke-dasharray="5,2" points="8,-181.5391 8,-260.3087 340,-260.3087 340,-181.5391 8,-181.5391"/>
-<text text-anchor="middle" x="174" y="-243.5087">line 1</text>
+<polygon stroke-dasharray="5,2" points="8,-176 8,-252 304,-252 304,-176 8,-176"/>
+<text text-anchor="middle" x="156" y="-235.2">line 1</text>
 </g>
 <g class="m-cluster">
 <title>cluster2</title>
-<polygon stroke-dasharray="5,2" points="8,-94.7696 8,-173.5391 340,-173.5391 340,-94.7696 8,-94.7696"/>
-<text text-anchor="middle" x="174" y="-156.7391">line 2</text>
+<polygon stroke-dasharray="5,2" points="8,-92 8,-168 304,-168 304,-92 8,-92"/>
+<text text-anchor="middle" x="156" y="-151.2">line 2</text>
 </g>
 <g class="m-cluster">
 <title>cluster3</title>
-<polygon stroke-dasharray="5,2" points="8,-8 8,-86.7696 340,-86.7696 340,-8 8,-8"/>
-<text text-anchor="middle" x="174" y="-69.9696">line 3</text>
+<polygon stroke-dasharray="5,2" points="8,-8 8,-84 304,-84 304,-8 8,-8"/>
+<text text-anchor="middle" x="156" y="-67.2">line 3</text>
 </g>
 <g class="m-node m-flat">
 <title>p00</title>
-<ellipse cx="63" cy="-294.6934" rx="46.8387" ry="18.2703"/>
-<text text-anchor="middle" x="63" y="-290.8934">pipe&#45;0</text>
+<ellipse cx="57" cy="-286" rx="40.6379" ry="18"/>
+<text text-anchor="middle" x="57" y="-281.2">pipe&#45;0</text>
 </g>
 <g class="m-node m-flat">
 <title>p10</title>
-<ellipse cx="63" cy="-207.9239" rx="46.8387" ry="18.2703"/>
-<text text-anchor="middle" x="63" y="-204.1239">pipe&#45;0</text>
+<ellipse cx="57" cy="-202" rx="40.6379" ry="18"/>
+<text text-anchor="middle" x="57" y="-197.2">pipe&#45;0</text>
 </g>
 <g class="m-edge">
 <title>p00&#45;&gt;p10</title>
-<path d="M63,-276.2918C63,-264.8656 63,-249.9322 63,-236.9378"/>
-<polygon points="66.5001,-236.598 63,-226.5981 59.5001,-236.5981 66.5001,-236.598"/>
+<path d="M57,-267.7733C57,-256.8758 57,-242.7946 57,-230.4587"/>
+<polygon points="60.5001,-230.1911 57,-220.1912 53.5001,-230.1912 60.5001,-230.1911"/>
 </g>
 <g class="m-node m-flat">
 <title>p01</title>
-<ellipse cx="174" cy="-294.6934" rx="46.8387" ry="18.2703"/>
-<text text-anchor="middle" x="174" y="-290.8934">pipe&#45;1</text>
+<ellipse cx="156" cy="-286" rx="40.6379" ry="18"/>
+<text text-anchor="middle" x="156" y="-281.2">pipe&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p00&#45;&gt;p01</title>
-<path d="M109.8281,-294.6934C112.1703,-294.6934 114.5125,-294.6934 116.8548,-294.6934"/>
-<polygon points="117.1245,-298.1935 127.1245,-294.6934 117.1244,-291.1935 117.1245,-298.1935"/>
+<path d="M97.6055,-286C100.2001,-286 102.7948,-286 105.3895,-286"/>
+<polygon points="105.3976,-289.5001 115.3976,-286 105.3975,-282.5001 105.3976,-289.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>p20</title>
-<ellipse cx="63" cy="-121.1543" rx="46.8387" ry="18.2703"/>
-<text text-anchor="middle" x="63" y="-117.3543">pipe&#45;0</text>
+<ellipse cx="57" cy="-118" rx="40.6379" ry="18"/>
+<text text-anchor="middle" x="57" y="-113.2">pipe&#45;0</text>
 </g>
 <g class="m-edge">
 <title>p10&#45;&gt;p20</title>
-<path d="M63,-189.5223C63,-178.096 63,-163.1626 63,-150.1682"/>
-<polygon points="66.5001,-149.8285 63,-139.8285 59.5001,-149.8286 66.5001,-149.8285"/>
+<path d="M57,-183.7733C57,-172.8758 57,-158.7946 57,-146.4587"/>
+<polygon points="60.5001,-146.1911 57,-136.1912 53.5001,-146.1912 60.5001,-146.1911"/>
 </g>
 <g class="m-node m-flat">
 <title>p11</title>
-<ellipse cx="174" cy="-207.9239" rx="46.8387" ry="18.2703"/>
-<text text-anchor="middle" x="174" y="-204.1239">pipe&#45;1</text>
+<ellipse cx="156" cy="-202" rx="40.6379" ry="18"/>
+<text text-anchor="middle" x="156" y="-197.2">pipe&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p10&#45;&gt;p11</title>
-<path d="M109.8281,-207.9239C112.1703,-207.9239 114.5125,-207.9239 116.8548,-207.9239"/>
-<polygon points="117.1245,-211.424 127.1245,-207.9239 117.1244,-204.424 117.1245,-211.424"/>
+<path d="M97.6055,-202C100.2001,-202 102.7948,-202 105.3895,-202"/>
+<polygon points="105.3976,-205.5001 115.3976,-202 105.3975,-198.5001 105.3976,-205.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>p30</title>
-<ellipse cx="63" cy="-34.3848" rx="46.8387" ry="18.2703"/>
-<text text-anchor="middle" x="63" y="-30.5848">pipe&#45;0</text>
+<ellipse cx="57" cy="-34" rx="40.6379" ry="18"/>
+<text text-anchor="middle" x="57" y="-29.2">pipe&#45;0</text>
 </g>
 <g class="m-edge">
 <title>p20&#45;&gt;p30</title>
-<path d="M63,-102.7527C63,-91.3265 63,-76.3931 63,-63.3987"/>
-<polygon points="66.5001,-63.0589 63,-53.059 59.5001,-63.059 66.5001,-63.0589"/>
+<path d="M57,-99.7733C57,-88.8758 57,-74.7946 57,-62.4587"/>
+<polygon points="60.5001,-62.1911 57,-52.1912 53.5001,-62.1912 60.5001,-62.1911"/>
 </g>
 <g class="m-node m-flat">
 <title>p21</title>
-<ellipse cx="174" cy="-121.1543" rx="46.8387" ry="18.2703"/>
-<text text-anchor="middle" x="174" y="-117.3543">pipe&#45;1</text>
+<ellipse cx="156" cy="-118" rx="40.6379" ry="18"/>
+<text text-anchor="middle" x="156" y="-113.2">pipe&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p20&#45;&gt;p21</title>
-<path d="M109.8281,-121.1543C112.1703,-121.1543 114.5125,-121.1543 116.8548,-121.1543"/>
-<polygon points="117.1245,-124.6544 127.1245,-121.1543 117.1244,-117.6544 117.1245,-124.6544"/>
+<path d="M97.6055,-118C100.2001,-118 102.7948,-118 105.3895,-118"/>
+<polygon points="105.3976,-121.5001 115.3976,-118 105.3975,-114.5001 105.3976,-121.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>p31</title>
-<ellipse cx="174" cy="-34.3848" rx="46.8387" ry="18.2703"/>
-<text text-anchor="middle" x="174" y="-30.5848">pipe&#45;1</text>
+<ellipse cx="156" cy="-34" rx="40.6379" ry="18"/>
+<text text-anchor="middle" x="156" y="-29.2">pipe&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p30&#45;&gt;p31</title>
-<path d="M109.8281,-34.3848C112.1703,-34.3848 114.5125,-34.3848 116.8548,-34.3848"/>
-<polygon points="117.1245,-37.8849 127.1245,-34.3848 117.1244,-30.8849 117.1245,-37.8849"/>
+<path d="M97.6055,-34C100.2001,-34 102.7948,-34 105.3895,-34"/>
+<polygon points="105.3976,-37.5001 115.3976,-34 105.3975,-30.5001 105.3976,-37.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>p02</title>
-<ellipse cx="285" cy="-294.6934" rx="46.8387" ry="18.2703"/>
-<text text-anchor="middle" x="285" y="-290.8934">pipe&#45;2</text>
+<ellipse cx="255" cy="-286" rx="40.6379" ry="18"/>
+<text text-anchor="middle" x="255" y="-281.2">pipe&#45;2</text>
 </g>
 <g class="m-edge">
 <title>p01&#45;&gt;p02</title>
-<path d="M220.8281,-294.6934C223.1703,-294.6934 225.5125,-294.6934 227.8548,-294.6934"/>
-<polygon points="228.1245,-298.1935 238.1245,-294.6934 228.1244,-291.1935 228.1245,-298.1935"/>
+<path d="M196.6055,-286C199.2001,-286 201.7948,-286 204.3895,-286"/>
+<polygon points="204.3976,-289.5001 214.3976,-286 204.3975,-282.5001 204.3976,-289.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>p12</title>
-<ellipse cx="285" cy="-207.9239" rx="46.8387" ry="18.2703"/>
-<text text-anchor="middle" x="285" y="-204.1239">pipe&#45;2</text>
+<ellipse cx="255" cy="-202" rx="40.6379" ry="18"/>
+<text text-anchor="middle" x="255" y="-197.2">pipe&#45;2</text>
 </g>
 <g class="m-edge">
 <title>p11&#45;&gt;p12</title>
-<path d="M220.8281,-207.9239C223.1703,-207.9239 225.5125,-207.9239 227.8548,-207.9239"/>
-<polygon points="228.1245,-211.424 238.1245,-207.9239 228.1244,-204.424 228.1245,-211.424"/>
+<path d="M196.6055,-202C199.2001,-202 201.7948,-202 204.3895,-202"/>
+<polygon points="204.3976,-205.5001 214.3976,-202 204.3975,-198.5001 204.3976,-205.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>p22</title>
-<ellipse cx="285" cy="-121.1543" rx="46.8387" ry="18.2703"/>
-<text text-anchor="middle" x="285" y="-117.3543">pipe&#45;2</text>
+<ellipse cx="255" cy="-118" rx="40.6379" ry="18"/>
+<text text-anchor="middle" x="255" y="-113.2">pipe&#45;2</text>
 </g>
 <g class="m-edge">
 <title>p21&#45;&gt;p22</title>
-<path d="M220.8281,-121.1543C223.1703,-121.1543 225.5125,-121.1543 227.8548,-121.1543"/>
-<polygon points="228.1245,-124.6544 238.1245,-121.1543 228.1244,-117.6544 228.1245,-124.6544"/>
+<path d="M196.6055,-118C199.2001,-118 201.7948,-118 204.3895,-118"/>
+<polygon points="204.3976,-121.5001 214.3976,-118 204.3975,-114.5001 204.3976,-121.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>p32</title>
-<ellipse cx="285" cy="-34.3848" rx="46.8387" ry="18.2703"/>
-<text text-anchor="middle" x="285" y="-30.5848">pipe&#45;2</text>
+<ellipse cx="255" cy="-34" rx="40.6379" ry="18"/>
+<text text-anchor="middle" x="255" y="-29.2">pipe&#45;2</text>
 </g>
 <g class="m-edge">
 <title>p31&#45;&gt;p32</title>
-<path d="M220.8281,-34.3848C223.1703,-34.3848 225.5125,-34.3848 227.8548,-34.3848"/>
-<polygon points="228.1245,-37.8849 238.1245,-34.3848 228.1244,-30.8849 228.1245,-37.8849"/>
+<path d="M196.6055,-34C199.2001,-34 201.7948,-34 204.3895,-34"/>
+<polygon points="204.3976,-37.5001 214.3976,-34 204.3975,-30.5001 204.3976,-37.5001"/>
 </g>
 <g class="m-edge">
 <title>p02&#45;&gt;p12</title>
-<path d="M285,-276.2918C285,-264.8656 285,-249.9322 285,-236.9378"/>
-<polygon points="288.5001,-236.598 285,-226.5981 281.5001,-236.5981 288.5001,-236.598"/>
+<path d="M255,-267.7733C255,-256.8758 255,-242.7946 255,-230.4587"/>
+<polygon points="258.5001,-230.1911 255,-220.1912 251.5001,-230.1912 258.5001,-230.1911"/>
 </g>
 <g class="m-edge">
 <title>p12&#45;&gt;p22</title>
-<path d="M285,-189.5223C285,-178.096 285,-163.1626 285,-150.1682"/>
-<polygon points="288.5001,-149.8285 285,-139.8285 281.5001,-149.8286 288.5001,-149.8285"/>
+<path d="M255,-183.7733C255,-172.8758 255,-158.7946 255,-146.4587"/>
+<polygon points="258.5001,-146.1911 255,-136.1912 251.5001,-146.1912 258.5001,-146.1911"/>
 </g>
 <g class="m-edge">
 <title>p22&#45;&gt;p32</title>
-<path d="M285,-102.7527C285,-91.3265 285,-76.3931 285,-63.3987"/>
-<polygon points="288.5001,-63.0589 285,-53.059 281.5001,-63.059 288.5001,-63.0589"/>
+<path d="M255,-99.7733C255,-88.8758 255,-74.7946 255,-62.4587"/>
+<polygon points="258.5001,-62.1911 255,-52.1912 251.5001,-62.1912 258.5001,-62.1911"/>
 </g>
 </g>
 </svg>
@@ -268,115 +268,115 @@
 <span class="mi">45</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">pipeline</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">pl</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span>
 <span class="mi">46</span><span class="o">:</span>
 <span class="mi">47</span><span class="o">:</span> <span class="c1">// execute the taskflow</span>
-<span class="mi">48</span><span class="o">:</span> <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>Debrief:</p><ul><li>Lines 4-5 define the structure of the pipeline scheduling framework</li><li>Line 8 defines the data storage as a two-dimensional array (<code>num_lines</code> by <code>num_pipes</code>)</li><li>Line 12 defines the number of lines in the pipeline</li><li>Lines 13-23 define the first serial pipe, which will stop the pipeline scheduling at the fifth token</li><li>Lines 25-32 define the second parallel pipe</li><li>Lines 34-41 define the third serial pipe</li><li>Line 45 defines the pipeline taskflow graph using composition</li><li>Line 48 executes the taskflow</li></ul><p>Taskflow leverages <a href="RuntimeTasking.html" class="m-doc">Runtime Tasking</a> and <a href="ComposableTasking.html" class="m-doc">Composable Tasking</a> to implement the pipeline scheduling framework. The taskflow graph of this pipeline example is shown as follows:</p><div class="m-graph"><svg style="width: 28.500rem; height: 15.375rem;" viewBox="0.00 0.00 456.00 246.00">
-<g transform="scale(1 1) rotate(0) translate(4 242)">
+<span class="mi">48</span><span class="o">:</span> <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>Debrief:</p><ul><li>Lines 4-5 define the structure of the pipeline scheduling framework</li><li>Line 8 defines the data storage as a two-dimensional array (<code>num_lines</code> by <code>num_pipes</code>)</li><li>Line 12 defines the number of lines in the pipeline</li><li>Lines 13-23 define the first serial pipe, which will stop the pipeline scheduling at the fifth token</li><li>Lines 25-32 define the second parallel pipe</li><li>Lines 34-41 define the third serial pipe</li><li>Line 45 defines the pipeline taskflow graph using composition</li><li>Line 48 executes the taskflow</li></ul><p>Taskflow leverages <a href="RuntimeTasking.html" class="m-doc">Runtime Tasking</a> and <a href="ComposableTasking.html" class="m-doc">Composable Tasking</a> to implement the pipeline scheduling framework. The taskflow graph of this pipeline example is shown as follows:</p><div class="m-graph"><svg style="width: 27.500rem; height: 14.125rem;" viewBox="0.00 0.00 440.00 226.00">
+<g transform="scale(1 1) rotate(0) translate(4 222)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x7ffc47e53358</title>
-<polygon points="8,-144 8,-222 146,-222 146,-144 8,-144"/>
-<text text-anchor="middle" x="77" y="-205.2">Taskflow</text>
+<polygon points="8,-134 8,-210 130,-210 130,-134 8,-134"/>
+<text text-anchor="middle" x="69" y="-193.2">Taskflow</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7ffc47e53220</title>
-<polygon points="154,-8 154,-230 440,-230 440,-8 154,-8"/>
-<text text-anchor="middle" x="297" y="-213.2">m1</text>
+<polygon points="138,-8 138,-210 424,-210 424,-8 138,-8"/>
+<text text-anchor="middle" x="281" y="-193.2">m1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x1878a88</title>
-<polygon points="137.5,-188 20.5,-188 16.5,-184 16.5,-152 133.5,-152 137.5,-156 137.5,-188"/>
-<polyline points="133.5,-184 16.5,-184 "/>
-<polyline points="133.5,-184 133.5,-152 "/>
-<polyline points="133.5,-184 137.5,-188 "/>
-<text text-anchor="middle" x="77" y="-166.2">pipeline [m1]</text>
+<polygon points="122.2191,-178 19.7809,-178 15.7809,-174 15.7809,-142 118.2191,-142 122.2191,-146 122.2191,-178"/>
+<polyline points="118.2191,-174 15.7809,-174 "/>
+<polyline points="118.2191,-174 118.2191,-142 "/>
+<polyline points="118.2191,-174 122.2191,-178 "/>
+<text text-anchor="middle" x="69" y="-155.2">pipeline [m1]</text>
 </g>
 <g class="m-node">
 <title>p0x1878600</title>
-<polygon points="297,-196 242,-170 297,-144 352,-170 297,-196"/>
-<text text-anchor="middle" x="297" y="-166.2">cond</text>
+<polygon points="281,-178 232.8122,-160 281,-142 329.1878,-160 281,-178"/>
+<text text-anchor="middle" x="281" y="-155.2">cond</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x18786e8</title>
-<polygon points="216,-52 162,-52 162,-48 158,-48 158,-44 162,-44 162,-24 158,-24 158,-20 162,-20 162,-16 216,-16 216,-52"/>
-<polyline points="162,-48 166,-48 166,-44 162,-44 "/>
-<polyline points="162,-24 166,-24 166,-20 162,-20 "/>
-<text text-anchor="middle" x="189" y="-30.2">rt&#45;0</text>
+<polygon points="200,-52 146,-52 146,-48 142,-48 142,-44 146,-44 146,-24 142,-24 142,-20 146,-20 146,-16 200,-16 200,-52"/>
+<polyline points="146,-48 150,-48 150,-44 146,-44 "/>
+<polyline points="146,-24 150,-24 150,-20 146,-20 "/>
+<text text-anchor="middle" x="173" y="-29.2">rt&#45;0</text>
 </g>
 <g class="m-edge">
 <title>p0x1878600&#45;&gt;p0x18786e8</title>
-<path stroke-dasharray="5,2" d="M281.9831,-151.0898C263.2598,-127.5123 231.1482,-87.0755 209.996,-60.4394"/>
-<polygon points="212.5041,-57.9696 203.5443,-52.3151 207.0223,-62.3228 212.5041,-57.9696"/>
-<text text-anchor="middle" x="251" y="-94.2">0</text>
+<path stroke-dasharray="5,2" d="M269.0295,-146.0344C251.2113,-125.2465 217.4156,-85.8182 195.0459,-59.7202"/>
+<polygon points="197.6661,-57.399 188.5007,-52.0841 192.3512,-61.9545 197.6661,-57.399"/>
+<text text-anchor="middle" x="236.4492" y="-92.2">0</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x18787d0</title>
-<polygon points="288,-52 234,-52 234,-48 230,-48 230,-44 234,-44 234,-24 230,-24 230,-20 234,-20 234,-16 288,-16 288,-52"/>
-<polyline points="234,-48 238,-48 238,-44 234,-44 "/>
-<polyline points="234,-24 238,-24 238,-20 234,-20 "/>
-<text text-anchor="middle" x="261" y="-30.2">rt&#45;1</text>
+<polygon points="272,-52 218,-52 218,-48 214,-48 214,-44 218,-44 218,-24 214,-24 214,-20 218,-20 218,-16 272,-16 272,-52"/>
+<polyline points="218,-48 222,-48 222,-44 218,-44 "/>
+<polyline points="218,-24 222,-24 222,-20 218,-20 "/>
+<text text-anchor="middle" x="245" y="-29.2">rt&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p0x1878600&#45;&gt;p0x18787d0</title>
-<path stroke-dasharray="5,2" d="M290.8114,-146.6208C284.6195,-123.2294 275.0892,-87.2258 268.4777,-62.249"/>
-<polygon points="271.7836,-61.06 265.8411,-52.2886 265.0166,-62.8513 271.7836,-61.06"/>
-<text text-anchor="middle" x="285" y="-94.2">1</text>
+<path stroke-dasharray="5,2" d="M276.2936,-143.5277C270.3637,-122.7731 260.0848,-86.7968 252.9323,-61.763"/>
+<polygon points="256.2861,-60.7609 250.1735,-52.1072 249.5554,-62.684 256.2861,-60.7609"/>
+<text text-anchor="middle" x="268.4492" y="-92.2">1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x18788b8</title>
-<polygon points="360,-52 306,-52 306,-48 302,-48 302,-44 306,-44 306,-24 302,-24 302,-20 306,-20 306,-16 360,-16 360,-52"/>
-<polyline points="306,-48 310,-48 310,-44 306,-44 "/>
-<polyline points="306,-24 310,-24 310,-20 306,-20 "/>
-<text text-anchor="middle" x="333" y="-30.2">rt&#45;2</text>
+<polygon points="344,-52 290,-52 290,-48 286,-48 286,-44 290,-44 290,-24 286,-24 286,-20 290,-20 290,-16 344,-16 344,-52"/>
+<polyline points="290,-48 294,-48 294,-44 290,-44 "/>
+<polyline points="290,-24 294,-24 294,-20 290,-20 "/>
+<text text-anchor="middle" x="317" y="-29.2">rt&#45;2</text>
 </g>
 <g class="m-edge">
 <title>p0x1878600&#45;&gt;p0x18788b8</title>
-<path stroke-dasharray="5,2" d="M303.1886,-146.6208C309.3805,-123.2294 318.9108,-87.2258 325.5223,-62.249"/>
-<polygon points="328.9834,-62.8513 328.1589,-52.2886 322.2164,-61.06 328.9834,-62.8513"/>
-<text text-anchor="middle" x="323" y="-94.2">2</text>
+<path stroke-dasharray="5,2" d="M285.7064,-143.5277C291.6363,-122.7731 301.9152,-86.7968 309.0677,-61.763"/>
+<polygon points="312.4446,-62.684 311.8265,-52.1072 305.7139,-60.7609 312.4446,-62.684"/>
+<text text-anchor="middle" x="304.4492" y="-92.2">2</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x18789a0</title>
-<polygon points="432,-52 378,-52 378,-48 374,-48 374,-44 378,-44 378,-24 374,-24 374,-20 378,-20 378,-16 432,-16 432,-52"/>
-<polyline points="378,-48 382,-48 382,-44 378,-44 "/>
-<polyline points="378,-24 382,-24 382,-20 378,-20 "/>
-<text text-anchor="middle" x="405" y="-30.2">rt&#45;3</text>
+<polygon points="416,-52 362,-52 362,-48 358,-48 358,-44 362,-44 362,-24 358,-24 358,-20 362,-20 362,-16 416,-16 416,-52"/>
+<polyline points="362,-48 366,-48 366,-44 362,-44 "/>
+<polyline points="362,-24 366,-24 366,-20 362,-20 "/>
+<text text-anchor="middle" x="389" y="-29.2">rt&#45;3</text>
 </g>
 <g class="m-edge">
 <title>p0x1878600&#45;&gt;p0x18789a0</title>
-<path stroke-dasharray="5,2" d="M312.0169,-151.0898C330.7402,-127.5123 362.8518,-87.0755 384.004,-60.4394"/>
-<polygon points="386.9777,-62.3228 390.4557,-52.3151 381.4959,-57.9696 386.9777,-62.3228"/>
-<text text-anchor="middle" x="365" y="-94.2">3</text>
+<path stroke-dasharray="5,2" d="M292.9705,-146.0344C310.7887,-125.2465 344.5844,-85.8182 366.9541,-59.7202"/>
+<polygon points="369.6488,-61.9545 373.4993,-52.0841 364.3339,-57.399 369.6488,-61.9545"/>
+<text text-anchor="middle" x="344.4492" y="-92.2">3</text>
 </g>
 </g>
 </svg>
-</div><p>In this example, we customize the data storage, <code>mybuffer</code>, as a 4-by-3 array. The first dimension is equal to the number of lines (i.e., 4) and the second dimension is equal to the number of pipes (i.e., 3). Each data element in <code>mybuffer</code> stores the data associated with the corresponding pipe in a line. For example, <code>mybuffer[1][2]</code> stores the data processed in <code>pipe-2</code> in line <code>1</code>. The following figure shows the data layout of <code>mybuffer</code>.</p><div class="m-graph"><svg style="width: 25.062rem; height: 7.062rem;" viewBox="0.00 0.00 401.00 113.00">
-<g transform="scale(1 1) rotate(0) translate(4 109)">
+</div><p>In this example, we customize the data storage, <code>mybuffer</code>, as a 4-by-3 array. The first dimension is equal to the number of lines (i.e., 4) and the second dimension is equal to the number of pipes (i.e., 3). Each data element in <code>mybuffer</code> stores the data associated with the corresponding pipe in a line. For example, <code>mybuffer[1][2]</code> stores the data processed in <code>pipe-2</code> in line <code>1</code>. The following figure shows the data layout of <code>mybuffer</code>.</p><div class="m-graph"><svg style="width: 21.812rem; height: 6.562rem;" viewBox="0.00 0.00 348.62 105.00">
+<g transform="scale(1 1) rotate(0) translate(4 101)">
 <title>structs</title>
 <g class="m-node m-flat">
 <title>struct1</title>
-<polygon points="0,-.5 0,-104.5 393,-104.5 393,-.5 0,-.5"/>
-<text text-anchor="middle" x="65.5" y="-87.7">mybuffer[0][0]</text>
-<polyline points="131,-78.5 131,-104.5 "/>
-<text text-anchor="middle" x="196.5" y="-87.7">mybuffer[0][1]</text>
-<polyline points="262,-78.5 262,-104.5 "/>
-<text text-anchor="middle" x="327.5" y="-87.7">mybuffer[0][2]</text>
-<polyline points="0,-78.5 393,-78.5 "/>
-<text text-anchor="middle" x="65.5" y="-61.7">mybuffer[1][0]</text>
-<polyline points="131,-52.5 131,-78.5 "/>
-<text text-anchor="middle" x="196.5" y="-61.7">mybuffer[1][1]</text>
-<polyline points="262,-52.5 262,-78.5 "/>
-<text text-anchor="middle" x="327.5" y="-61.7">mybuffer[1][2]</text>
-<polyline points="0,-52.5 393,-52.5 "/>
-<text text-anchor="middle" x="65.5" y="-35.7">mybuffer[2][0]</text>
-<polyline points="131,-26.5 131,-52.5 "/>
-<text text-anchor="middle" x="196.5" y="-35.7">mybuffer[2][1]</text>
-<polyline points="262,-26.5 262,-52.5 "/>
-<text text-anchor="middle" x="327.5" y="-35.7">mybuffer[2][2]</text>
-<polyline points="0,-26.5 393,-26.5 "/>
-<text text-anchor="middle" x="65.5" y="-9.7">mybuffer[3][0]</text>
-<polyline points="131,-.5 131,-26.5 "/>
-<text text-anchor="middle" x="196.5" y="-9.7">mybuffer[3][1]</text>
-<polyline points="262,-.5 262,-26.5 "/>
-<text text-anchor="middle" x="327.5" y="-9.7">mybuffer[3][2]</text>
+<polygon points="0,-.5 0,-96.5 340.6172,-96.5 340.6172,-.5 0,-.5"/>
+<text text-anchor="middle" x="56.7695" y="-79.7">mybuffer[0][0]</text>
+<polyline points="113.5391,-72.5 113.5391,-96.5 "/>
+<text text-anchor="middle" x="170.3086" y="-79.7">mybuffer[0][1]</text>
+<polyline points="227.0781,-72.5 227.0781,-96.5 "/>
+<text text-anchor="middle" x="283.8477" y="-79.7">mybuffer[0][2]</text>
+<polyline points="0,-72.5 340.6172,-72.5 "/>
+<text text-anchor="middle" x="56.7695" y="-55.7">mybuffer[1][0]</text>
+<polyline points="113.5391,-48.5 113.5391,-72.5 "/>
+<text text-anchor="middle" x="170.3086" y="-55.7">mybuffer[1][1]</text>
+<polyline points="227.0781,-48.5 227.0781,-72.5 "/>
+<text text-anchor="middle" x="283.8477" y="-55.7">mybuffer[1][2]</text>
+<polyline points="0,-48.5 340.6172,-48.5 "/>
+<text text-anchor="middle" x="56.7695" y="-31.7">mybuffer[2][0]</text>
+<polyline points="113.5391,-24.5 113.5391,-48.5 "/>
+<text text-anchor="middle" x="170.3086" y="-31.7">mybuffer[2][1]</text>
+<polyline points="227.0781,-24.5 227.0781,-48.5 "/>
+<text text-anchor="middle" x="283.8477" y="-31.7">mybuffer[2][2]</text>
+<polyline points="0,-24.5 340.6172,-24.5 "/>
+<text text-anchor="middle" x="56.7695" y="-7.7">mybuffer[3][0]</text>
+<polyline points="113.5391,-.5 113.5391,-24.5 "/>
+<text text-anchor="middle" x="170.3086" y="-7.7">mybuffer[3][1]</text>
+<polyline points="227.0781,-.5 227.0781,-24.5 "/>
+<text text-anchor="middle" x="283.8477" y="-7.7">mybuffer[3][2]</text>
 </g>
 </g>
 </svg>
@@ -462,7 +462,124 @@ pipe <span class="m">2</span>: input mybuffer<span class="o">[</span><span class
 <span class="mi">66</span><span class="o">:</span> <span class="n">conditional</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">stop</span><span class="p">);</span>
 <span class="mi">67</span><span class="o">:</span>
 <span class="mi">68</span><span class="o">:</span> <span class="c1">// execute the taskflow</span>
-<span class="mi">69</span><span class="o">:</span> <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>Debrief:</p><ul><li>Lines 4-5 define the structure of the pipeline scheduling framework</li><li>Line 8 defines the data storage as a two-dimensional array (<code>num_lines</code> by <code>num_pipes</code>)</li><li>Line 12 defines the number of lines in the pipeline</li><li>Lines 13-23 define the first serial pipe, which will stop the pipeline scheduling when <code>i</code> is <code>5</code><br /></li><li>Lines 25-32 define the second parallel pipe</li><li>Lines 34-41 define the third serial pipe</li><li>Lines 44-53 define a condition task which returns 0 when <code>N</code> is less than <code>2</code>, otherwise returns <code>1</code></li><li>Line 45 resets variable <code>i</code></li><li>Lines 56-57 define the pipeline graph using composition</li><li>Lines 58-61 define two static tasks</li><li>Line 64-66 define the task dependency</li><li>Line 69 executes the taskflow</li></ul><p>The following snippet shows one of the possible outputs:</p><pre class="m-code">initial
+<span class="mi">69</span><span class="o">:</span> <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>Debrief:</p><ul><li>Lines 4-5 define the structure of the pipeline scheduling framework</li><li>Line 8 defines the data storage as a two-dimensional array (<code>num_lines</code> by <code>num_pipes</code>)</li><li>Line 12 defines the number of lines in the pipeline</li><li>Lines 13-23 define the first serial pipe, which will stop the pipeline scheduling when <code>i</code> is <code>5</code><br /></li><li>Lines 25-32 define the second parallel pipe</li><li>Lines 34-41 define the third serial pipe</li><li>Lines 44-53 define a condition task which returns 0 when <code>N</code> is less than <code>2</code>, otherwise returns <code>1</code></li><li>Line 45 resets variable <code>i</code></li><li>Lines 56-57 define the pipeline graph using composition</li><li>Lines 58-61 define two static tasks</li><li>Line 64-66 define the task dependency</li><li>Line 69 executes the taskflow</li></ul><p>The taskflow graph of this pipeline example is illustrated as follows:</p><div class="m-graph"><svg style="width: 31.875rem; height: 29.875rem;" viewBox="0.00 0.00 510.00 478.00">
+<g transform="scale(1 1) rotate(0) translate(4 474)">
+<title>Taskflow</title>
+<g class="m-cluster">
+<title>cluster_p0x7fff4f1276d8</title>
+<polygon points="8,-8 8,-462 200,-462 200,-8 8,-8"/>
+<text text-anchor="middle" x="104" y="-445.2">Taskflow</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7fff4f127590</title>
+<polygon points="208,-260 208,-462 494,-462 494,-260 208,-260"/>
+<text text-anchor="middle" x="351" y="-445.2">m1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0xdf4c58</title>
+<ellipse cx="86" cy="-412" rx="35.3848" ry="18"/>
+<text text-anchor="middle" x="86" y="-407.2">initial</text>
+</g>
+<g class="m-node m-flat">
+<title>p0xdf4b70</title>
+<polygon points="139.2191,-304 36.7809,-304 32.7809,-300 32.7809,-268 135.2191,-268 139.2191,-272 139.2191,-304"/>
+<polyline points="135.2191,-300 32.7809,-300 "/>
+<polyline points="135.2191,-300 135.2191,-268 "/>
+<polyline points="135.2191,-300 139.2191,-304 "/>
+<text text-anchor="middle" x="86" y="-281.2">pipeline [m1]</text>
+</g>
+<g class="m-edge">
+<title>p0xdf4c58&#45;&gt;p0xdf4b70</title>
+<path d="M86,-393.9473C86,-373.0823 86,-338.4928 86,-314.1006"/>
+<polygon points="89.5001,-314.0192 86,-304.0192 82.5001,-314.0193 89.5001,-314.0192"/>
+</g>
+<g class="m-node">
+<title>p0xdf4a88</title>
+<polygon points="104,-178 16.4929,-160 104,-142 191.5071,-160 104,-178"/>
+<text text-anchor="middle" x="104" y="-155.2">conditional</text>
+</g>
+<g class="m-edge">
+<title>p0xdf4b70&#45;&gt;p0xdf4a88</title>
+<path d="M86.4709,-267.8178C87.0383,-253.4204 88.2825,-232.8353 91,-215 92.4022,-205.7973 94.5506,-195.8616 96.6995,-187.0002"/>
+<polygon points="100.1194,-187.7523 99.1777,-177.1994 93.333,-186.0362 100.1194,-187.7523"/>
+</g>
+<g class="m-edge">
+<title>p0xdf4a88&#45;&gt;p0xdf4b70</title>
+<path stroke-dasharray="5,2" d="M101.8238,-177.6143C99.5397,-195.7753 95.7637,-224.9018 92,-250 91.6218,-252.5221 91.2142,-255.1411 90.7958,-257.7641"/>
+<polygon points="87.3302,-257.2699 89.1679,-267.7042 94.2381,-258.4013 87.3302,-257.2699"/>
+<text text-anchor="middle" x="100.4492" y="-218.2">0</text>
+</g>
+<g class="m-node m-flat">
+<title>p0xdf4d40</title>
+<ellipse cx="104" cy="-34" rx="48.8142" ry="18"/>
+<text text-anchor="middle" x="104" y="-29.2">terminal</text>
+</g>
+<g class="m-edge">
+<title>p0xdf4a88&#45;&gt;p0xdf4d40</title>
+<path stroke-dasharray="5,2" d="M104,-141.9473C104,-121.0823 104,-86.4928 104,-62.1006"/>
+<polygon points="107.5001,-62.0192 104,-52.0192 100.5001,-62.0193 107.5001,-62.0192"/>
+<text text-anchor="middle" x="108.4492" y="-92.2">1</text>
+</g>
+<g class="m-node">
+<title>p0xdf4600</title>
+<polygon points="351,-430 302.8122,-412 351,-394 399.1878,-412 351,-430"/>
+<text text-anchor="middle" x="351" y="-407.2">cond</text>
+</g>
+<g class="m-node m-flat">
+<title>p0xdf46e8</title>
+<polygon points="270,-304 216,-304 216,-300 212,-300 212,-296 216,-296 216,-276 212,-276 212,-272 216,-272 216,-268 270,-268 270,-304"/>
+<polyline points="216,-300 220,-300 220,-296 216,-296 "/>
+<polyline points="216,-276 220,-276 220,-272 216,-272 "/>
+<text text-anchor="middle" x="243" y="-281.2">rt&#45;0</text>
+</g>
+<g class="m-edge">
+<title>p0xdf4600&#45;&gt;p0xdf46e8</title>
+<path stroke-dasharray="5,2" d="M339.0295,-398.0344C321.2113,-377.2465 287.4156,-337.8182 265.0459,-311.7202"/>
+<polygon points="267.6661,-309.399 258.5007,-304.0841 262.3512,-313.9545 267.6661,-309.399"/>
+<text text-anchor="middle" x="306.4492" y="-344.2">0</text>
+</g>
+<g class="m-node m-flat">
+<title>p0xdf47d0</title>
+<polygon points="342,-304 288,-304 288,-300 284,-300 284,-296 288,-296 288,-276 284,-276 284,-272 288,-272 288,-268 342,-268 342,-304"/>
+<polyline points="288,-300 292,-300 292,-296 288,-296 "/>
+<polyline points="288,-276 292,-276 292,-272 288,-272 "/>
+<text text-anchor="middle" x="315" y="-281.2">rt&#45;1</text>
+</g>
+<g class="m-edge">
+<title>p0xdf4600&#45;&gt;p0xdf47d0</title>
+<path stroke-dasharray="5,2" d="M346.2936,-395.5277C340.3637,-374.7731 330.0848,-338.7968 322.9323,-313.763"/>
+<polygon points="326.2861,-312.7609 320.1735,-304.1072 319.5554,-314.684 326.2861,-312.7609"/>
+<text text-anchor="middle" x="338.4492" y="-344.2">1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0xdf48b8</title>
+<polygon points="414,-304 360,-304 360,-300 356,-300 356,-296 360,-296 360,-276 356,-276 356,-272 360,-272 360,-268 414,-268 414,-304"/>
+<polyline points="360,-300 364,-300 364,-296 360,-296 "/>
+<polyline points="360,-276 364,-276 364,-272 360,-272 "/>
+<text text-anchor="middle" x="387" y="-281.2">rt&#45;2</text>
+</g>
+<g class="m-edge">
+<title>p0xdf4600&#45;&gt;p0xdf48b8</title>
+<path stroke-dasharray="5,2" d="M355.7064,-395.5277C361.6363,-374.7731 371.9152,-338.7968 379.0677,-313.763"/>
+<polygon points="382.4446,-314.684 381.8265,-304.1072 375.7139,-312.7609 382.4446,-314.684"/>
+<text text-anchor="middle" x="374.4492" y="-344.2">2</text>
+</g>
+<g class="m-node m-flat">
+<title>p0xdf49a0</title>
+<polygon points="486,-304 432,-304 432,-300 428,-300 428,-296 432,-296 432,-276 428,-276 428,-272 432,-272 432,-268 486,-268 486,-304"/>
+<polyline points="432,-300 436,-300 436,-296 432,-296 "/>
+<polyline points="432,-276 436,-276 436,-272 432,-272 "/>
+<text text-anchor="middle" x="459" y="-281.2">rt&#45;3</text>
+</g>
+<g class="m-edge">
+<title>p0xdf4600&#45;&gt;p0xdf49a0</title>
+<path stroke-dasharray="5,2" d="M362.9705,-398.0344C380.7887,-377.2465 414.5844,-337.8182 436.9541,-311.7202"/>
+<polygon points="439.6488,-313.9545 443.4993,-304.0841 434.3339,-309.399 439.6488,-313.9545"/>
+<text text-anchor="middle" x="414.4492" y="-344.2">3</text>
+</g>
+</g>
+</svg>
+</div><p>The following snippet shows one of the possible outputs:</p><pre class="m-code">initial
 stage <span class="m">0</span>: input <span class="nv">token</span> <span class="o">=</span> <span class="m">0</span>
 stage <span class="m">1</span>: input mybuffer<span class="o">[</span><span class="m">0</span><span class="o">][</span><span class="m">0</span><span class="o">]</span> <span class="o">=</span> <span class="m">0</span>
 stage <span class="m">2</span>: input mybuffer<span class="o">[</span><span class="m">0</span><span class="o">][</span><span class="m">1</span><span class="o">]</span> <span class="o">=</span> <span class="m">1</span>
@@ -581,7 +698,162 @@ stop</pre><p>The pipeline runs twice as controlled by the condition task <code>c
 <span class="mi">85</span><span class="o">:</span> <span class="n">pipeline_1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">pipeline_2</span><span class="p">);</span>
 <span class="mi">86</span><span class="o">:</span>  
 <span class="mi">87</span><span class="o">:</span> <span class="c1">// execute the taskflow</span>
-<span class="mi">88</span><span class="o">:</span> <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre> <p><br />Debrief:</p><ul><li>Line 8 defines the data storage (<code>num_lines</code> by <code>num_pipes</code>) for pipeline <code>pl_1</code></li><li>Line 9 defines the data storage (<code>num_lines</code> by <code>num_pipes</code>) for pipeline <code>pl_2</code></li><li>Lines 14-24 define the first serial pipe in <code>pl_1</code></li><li>Lines 26-33 define the second parallel pipe in <code>pl_1</code></li><li>Lines 35-42 define the third serial pipe in <code>pl_1</code></li><li>Lines 48-59 define the first serial pipe in <code>pl_2</code> that takes the results of <code>pl_1</code> as inputs</li><li>Lines 61-68 define the second parallel pipe in <code>pl_2</code></li><li>Lines 70-77 define the third serial pipe in <code>pl_2</code></li><li>Lines 81-82 define the pipeline graphs using composition</li><li>Line 85 defines the task dependency</li><li>Line 88 runs the taskflow</li></ul><p>The following snippet shows one of the possible outputs:</p><pre class="m-code">pipeline <span class="m">1</span>, pipe <span class="m">0</span>: input <span class="nv">token</span> <span class="o">=</span> <span class="m">0</span>
+<span class="mi">88</span><span class="o">:</span> <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre> <p><br />Debrief:</p><ul><li>Line 8 defines the data storage (<code>num_lines</code> by <code>num_pipes</code>) for pipeline <code>pl_1</code></li><li>Line 9 defines the data storage (<code>num_lines</code> by <code>num_pipes</code>) for pipeline <code>pl_2</code></li><li>Lines 14-24 define the first serial pipe in <code>pl_1</code></li><li>Lines 26-33 define the second parallel pipe in <code>pl_1</code></li><li>Lines 35-42 define the third serial pipe in <code>pl_1</code></li><li>Lines 48-59 define the first serial pipe in <code>pl_2</code> that takes the results of <code>pl_1</code> as inputs</li><li>Lines 61-68 define the second parallel pipe in <code>pl_2</code></li><li>Lines 70-77 define the third serial pipe in <code>pl_2</code></li><li>Lines 81-82 define the pipeline graphs using composition</li><li>Line 85 defines the task dependency</li><li>Line 88 runs the taskflow</li></ul><p>The taskflow graph of this pipeline example is illustrated as follows:</p><div class="m-graph"><svg style="width: 47.000rem; height: 14.125rem;" viewBox="0.00 0.00 752.00 226.00">
+<g transform="scale(1 1) rotate(0) translate(4 222)">
+<title>Taskflow</title>
+<g class="m-cluster">
+<title>cluster_p0x7ffeaf4d98d8</title>
+<polygon points="8,-8 8,-210 148,-210 148,-8 8,-8"/>
+<text text-anchor="middle" x="78" y="-193.2">Taskflow</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7ffeaf4d9510</title>
+<polygon points="156,-8 156,-210 442,-210 442,-8 156,-8"/>
+<text text-anchor="middle" x="299" y="-193.2">m2</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7ffeaf4d95b0</title>
+<polygon points="450,-8 450,-210 736,-210 736,-8 450,-8"/>
+<text text-anchor="middle" x="593" y="-193.2">m1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x1da4f10</title>
+<polygon points="140.0166,-178 19.9834,-178 15.9834,-174 15.9834,-142 136.0166,-142 140.0166,-146 140.0166,-178"/>
+<polyline points="136.0166,-174 15.9834,-174 "/>
+<polyline points="136.0166,-174 136.0166,-142 "/>
+<polyline points="136.0166,-174 140.0166,-178 "/>
+<text text-anchor="middle" x="78" y="-155.2">pipeline_1 [m1]</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x1da4ff8</title>
+<polygon points="140.0166,-52 19.9834,-52 15.9834,-48 15.9834,-16 136.0166,-16 140.0166,-20 140.0166,-52"/>
+<polyline points="136.0166,-48 15.9834,-48 "/>
+<polyline points="136.0166,-48 136.0166,-16 "/>
+<polyline points="136.0166,-48 140.0166,-52 "/>
+<text text-anchor="middle" x="78" y="-29.2">pipeline_2 [m2]</text>
+</g>
+<g class="m-edge">
+<title>p0x1da4f10&#45;&gt;p0x1da4ff8</title>
+<path d="M78,-141.9473C78,-121.0823 78,-86.4928 78,-62.1006"/>
+<polygon points="81.5001,-62.0192 78,-52.0192 74.5001,-62.0193 81.5001,-62.0192"/>
+</g>
+<g class="m-node">
+<title>p0x1da4a88</title>
+<polygon points="299,-178 250.8122,-160 299,-142 347.1878,-160 299,-178"/>
+<text text-anchor="middle" x="299" y="-155.2">cond</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x1da4b70</title>
+<polygon points="218,-52 164,-52 164,-48 160,-48 160,-44 164,-44 164,-24 160,-24 160,-20 164,-20 164,-16 218,-16 218,-52"/>
+<polyline points="164,-48 168,-48 168,-44 164,-44 "/>
+<polyline points="164,-24 168,-24 168,-20 164,-20 "/>
+<text text-anchor="middle" x="191" y="-29.2">rt&#45;0</text>
+</g>
+<g class="m-edge">
+<title>p0x1da4a88&#45;&gt;p0x1da4b70</title>
+<path stroke-dasharray="5,2" d="M287.0295,-146.0344C269.2113,-125.2465 235.4156,-85.8182 213.0459,-59.7202"/>
+<polygon points="215.6661,-57.399 206.5007,-52.0841 210.3512,-61.9545 215.6661,-57.399"/>
+<text text-anchor="middle" x="254.4492" y="-92.2">0</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x1da4c58</title>
+<polygon points="290,-52 236,-52 236,-48 232,-48 232,-44 236,-44 236,-24 232,-24 232,-20 236,-20 236,-16 290,-16 290,-52"/>
+<polyline points="236,-48 240,-48 240,-44 236,-44 "/>
+<polyline points="236,-24 240,-24 240,-20 236,-20 "/>
+<text text-anchor="middle" x="263" y="-29.2">rt&#45;1</text>
+</g>
+<g class="m-edge">
+<title>p0x1da4a88&#45;&gt;p0x1da4c58</title>
+<path stroke-dasharray="5,2" d="M294.2936,-143.5277C288.3637,-122.7731 278.0848,-86.7968 270.9323,-61.763"/>
+<polygon points="274.2861,-60.7609 268.1735,-52.1072 267.5554,-62.684 274.2861,-60.7609"/>
+<text text-anchor="middle" x="286.4492" y="-92.2">1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x1da4d40</title>
+<polygon points="362,-52 308,-52 308,-48 304,-48 304,-44 308,-44 308,-24 304,-24 304,-20 308,-20 308,-16 362,-16 362,-52"/>
+<polyline points="308,-48 312,-48 312,-44 308,-44 "/>
+<polyline points="308,-24 312,-24 312,-20 308,-20 "/>
+<text text-anchor="middle" x="335" y="-29.2">rt&#45;2</text>
+</g>
+<g class="m-edge">
+<title>p0x1da4a88&#45;&gt;p0x1da4d40</title>
+<path stroke-dasharray="5,2" d="M303.7064,-143.5277C309.6363,-122.7731 319.9152,-86.7968 327.0677,-61.763"/>
+<polygon points="330.4446,-62.684 329.8265,-52.1072 323.7139,-60.7609 330.4446,-62.684"/>
+<text text-anchor="middle" x="322.4492" y="-92.2">2</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x1da4e28</title>
+<polygon points="434,-52 380,-52 380,-48 376,-48 376,-44 380,-44 380,-24 376,-24 376,-20 380,-20 380,-16 434,-16 434,-52"/>
+<polyline points="380,-48 384,-48 384,-44 380,-44 "/>
+<polyline points="380,-24 384,-24 384,-20 380,-20 "/>
+<text text-anchor="middle" x="407" y="-29.2">rt&#45;3</text>
+</g>
+<g class="m-edge">
+<title>p0x1da4a88&#45;&gt;p0x1da4e28</title>
+<path stroke-dasharray="5,2" d="M310.9705,-146.0344C328.7887,-125.2465 362.5844,-85.8182 384.9541,-59.7202"/>
+<polygon points="387.6488,-61.9545 391.4993,-52.0841 382.3339,-57.399 387.6488,-61.9545"/>
+<text text-anchor="middle" x="362.4492" y="-92.2">3</text>
+</g>
+<g class="m-node">
+<title>p0x1da4600</title>
+<polygon points="593,-178 544.8122,-160 593,-142 641.1878,-160 593,-178"/>
+<text text-anchor="middle" x="593" y="-155.2">cond</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x1da46e8</title>
+<polygon points="512,-52 458,-52 458,-48 454,-48 454,-44 458,-44 458,-24 454,-24 454,-20 458,-20 458,-16 512,-16 512,-52"/>
+<polyline points="458,-48 462,-48 462,-44 458,-44 "/>
+<polyline points="458,-24 462,-24 462,-20 458,-20 "/>
+<text text-anchor="middle" x="485" y="-29.2">rt&#45;0</text>
+</g>
+<g class="m-edge">
+<title>p0x1da4600&#45;&gt;p0x1da46e8</title>
+<path stroke-dasharray="5,2" d="M581.0295,-146.0344C563.2113,-125.2465 529.4156,-85.8182 507.0459,-59.7202"/>
+<polygon points="509.6661,-57.399 500.5007,-52.0841 504.3512,-61.9545 509.6661,-57.399"/>
+<text text-anchor="middle" x="548.4492" y="-92.2">0</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x1da47d0</title>
+<polygon points="584,-52 530,-52 530,-48 526,-48 526,-44 530,-44 530,-24 526,-24 526,-20 530,-20 530,-16 584,-16 584,-52"/>
+<polyline points="530,-48 534,-48 534,-44 530,-44 "/>
+<polyline points="530,-24 534,-24 534,-20 530,-20 "/>
+<text text-anchor="middle" x="557" y="-29.2">rt&#45;1</text>
+</g>
+<g class="m-edge">
+<title>p0x1da4600&#45;&gt;p0x1da47d0</title>
+<path stroke-dasharray="5,2" d="M588.2936,-143.5277C582.3637,-122.7731 572.0848,-86.7968 564.9323,-61.763"/>
+<polygon points="568.2861,-60.7609 562.1735,-52.1072 561.5554,-62.684 568.2861,-60.7609"/>
+<text text-anchor="middle" x="580.4492" y="-92.2">1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x1da48b8</title>
+<polygon points="656,-52 602,-52 602,-48 598,-48 598,-44 602,-44 602,-24 598,-24 598,-20 602,-20 602,-16 656,-16 656,-52"/>
+<polyline points="602,-48 606,-48 606,-44 602,-44 "/>
+<polyline points="602,-24 606,-24 606,-20 602,-20 "/>
+<text text-anchor="middle" x="629" y="-29.2">rt&#45;2</text>
+</g>
+<g class="m-edge">
+<title>p0x1da4600&#45;&gt;p0x1da48b8</title>
+<path stroke-dasharray="5,2" d="M597.7064,-143.5277C603.6363,-122.7731 613.9152,-86.7968 621.0677,-61.763"/>
+<polygon points="624.4446,-62.684 623.8265,-52.1072 617.7139,-60.7609 624.4446,-62.684"/>
+<text text-anchor="middle" x="616.4492" y="-92.2">2</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x1da49a0</title>
+<polygon points="728,-52 674,-52 674,-48 670,-48 670,-44 674,-44 674,-24 670,-24 670,-20 674,-20 674,-16 728,-16 728,-52"/>
+<polyline points="674,-48 678,-48 678,-44 674,-44 "/>
+<polyline points="674,-24 678,-24 678,-20 674,-20 "/>
+<text text-anchor="middle" x="701" y="-29.2">rt&#45;3</text>
+</g>
+<g class="m-edge">
+<title>p0x1da4600&#45;&gt;p0x1da49a0</title>
+<path stroke-dasharray="5,2" d="M604.9705,-146.0344C622.7887,-125.2465 656.5844,-85.8182 678.9541,-59.7202"/>
+<polygon points="681.6488,-61.9545 685.4993,-52.0841 676.3339,-57.399 681.6488,-61.9545"/>
+<text text-anchor="middle" x="656.4492" y="-92.2">3</text>
+</g>
+</g>
+</svg>
+</div><p>The following snippet shows one of the possible outputs:</p><pre class="m-code">pipeline <span class="m">1</span>, pipe <span class="m">0</span>: input <span class="nv">token</span> <span class="o">=</span> <span class="m">0</span>
 pipeline <span class="m">1</span>, pipe <span class="m">1</span>: input mybuffer_1<span class="o">[</span><span class="m">0</span><span class="o">][</span><span class="m">0</span><span class="o">]</span> <span class="o">=</span> <span class="m">0</span>
 pipeline <span class="m">1</span>, pipe <span class="m">2</span>: input mybuffer_1<span class="o">[</span><span class="m">0</span><span class="o">][</span><span class="m">1</span><span class="o">]</span> <span class="o">=</span> <span class="m">1</span>
 pipeline <span class="m">1</span>, pipe <span class="m">0</span>: input <span class="nv">token</span> <span class="o">=</span> <span class="m">1</span>
@@ -691,7 +963,172 @@ pipeline <span class="m">2</span>, pipe <span class="m">3</span>: input mybuffer
 <span class="mi">85</span><span class="o">:</span>
 <span class="mi">86</span><span class="o">:</span> <span class="n">initial</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">pipeline_1</span><span class="p">,</span> <span class="n">pipeline_2</span><span class="p">);</span>
 <span class="mi">87</span><span class="o">:</span>  
-<span class="mi">88</span><span class="o">:</span> <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>Debrief:</p><ul><li>Line 8 defines the data storage (<code>num_lines</code> by <code>num_pipes</code>) for pipeline <code>pl_1</code></li><li>Line 9 defines the data storage (<code>num_lines</code> by <code>num_pipes</code>) for pipeline <code>pl_2</code></li><li>Lines 14-24 define the first serial pipe in <code>pl_1</code></li><li>Lines 26-33 define the second parallel pipe in <code>pl_1</code></li><li>Lines 35-42 define the third serial pipe in <code>pl_1</code></li><li>Lines 48-58 define the first serial pipe in <code>pl_2</code></li><li>Lines 60-67 define the second parallel pipe in <code>pl_2</code></li><li>Lines 69-76 define the third serial pipe in <code>pl_2</code></li><li>Lines 79-82 define the pipeline graphs using composition</li><li>Lines 83-84 define a static task.</li><li>Line 86 defines the task dependency</li><li>Line 88 runs the taskflow</li></ul><p>The following snippet shows one of the possible outputs:</p><pre class="m-code">initial
+<span class="mi">88</span><span class="o">:</span> <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>Debrief:</p><ul><li>Line 8 defines the data storage (<code>num_lines</code> by <code>num_pipes</code>) for pipeline <code>pl_1</code></li><li>Line 9 defines the data storage (<code>num_lines</code> by <code>num_pipes</code>) for pipeline <code>pl_2</code></li><li>Lines 14-24 define the first serial pipe in <code>pl_1</code></li><li>Lines 26-33 define the second parallel pipe in <code>pl_1</code></li><li>Lines 35-42 define the third serial pipe in <code>pl_1</code></li><li>Lines 48-58 define the first serial pipe in <code>pl_2</code></li><li>Lines 60-67 define the second parallel pipe in <code>pl_2</code></li><li>Lines 69-76 define the third serial pipe in <code>pl_2</code></li><li>Lines 79-82 define the pipeline graphs using composition</li><li>Lines 83-84 define a static task.</li><li>Line 86 defines the task dependency</li><li>Line 88 runs the taskflow</li></ul><p>The taskflow graph of this pipeline example is illustrated as follows:</p><div class="m-graph"><svg style="width: 55.938rem; height: 14.125rem;" viewBox="0.00 0.00 895.00 226.00">
+<g transform="scale(1 1) rotate(0) translate(4 222)">
+<title>Taskflow</title>
+<g class="m-cluster">
+<title>cluster_p0x7ffe35bde158</title>
+<polygon points="8,-8 8,-210 291,-210 291,-8 8,-8"/>
+<text text-anchor="middle" x="149.5" y="-193.2">Taskflow</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7ffe35bddd80</title>
+<polygon points="299,-8 299,-210 585,-210 585,-8 299,-8"/>
+<text text-anchor="middle" x="442" y="-193.2">m2</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7ffe35bdde20</title>
+<polygon points="593,-8 593,-210 879,-210 879,-8 593,-8"/>
+<text text-anchor="middle" x="736" y="-193.2">m1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x131af10</title>
+<polygon points="140.0166,-52 19.9834,-52 15.9834,-48 15.9834,-16 136.0166,-16 140.0166,-20 140.0166,-52"/>
+<polyline points="136.0166,-48 15.9834,-48 "/>
+<polyline points="136.0166,-48 136.0166,-16 "/>
+<polyline points="136.0166,-48 140.0166,-52 "/>
+<text text-anchor="middle" x="78" y="-29.2">pipeline_1 [m1]</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x131aff8</title>
+<polygon points="283.0166,-52 162.9834,-52 158.9834,-48 158.9834,-16 279.0166,-16 283.0166,-20 283.0166,-52"/>
+<polyline points="279.0166,-48 158.9834,-48 "/>
+<polyline points="279.0166,-48 279.0166,-16 "/>
+<polyline points="279.0166,-48 283.0166,-52 "/>
+<text text-anchor="middle" x="221" y="-29.2">pipeline_2 [m2]</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x131b0e0</title>
+<ellipse cx="150" cy="-160" rx="35.3848" ry="18"/>
+<text text-anchor="middle" x="150" y="-155.2">initial</text>
+</g>
+<g class="m-edge">
+<title>p0x131b0e0&#45;&gt;p0x131af10</title>
+<path d="M139.9887,-142.4802C127.9282,-121.3744 107.5351,-85.6865 93.451,-61.0392"/>
+<polygon points="96.3928,-59.1329 88.3925,-52.1869 90.3151,-62.6059 96.3928,-59.1329"/>
+</g>
+<g class="m-edge">
+<title>p0x131b0e0&#45;&gt;p0x131aff8</title>
+<path d="M159.8722,-142.4802C171.7652,-121.3744 191.8751,-85.6865 205.7636,-61.0392"/>
+<polygon points="208.8918,-62.6172 210.7518,-52.1869 202.7934,-59.1808 208.8918,-62.6172"/>
+</g>
+<g class="m-node">
+<title>p0x131aa88</title>
+<polygon points="442,-178 393.8122,-160 442,-142 490.1878,-160 442,-178"/>
+<text text-anchor="middle" x="442" y="-155.2">cond</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x131ab70</title>
+<polygon points="361,-52 307,-52 307,-48 303,-48 303,-44 307,-44 307,-24 303,-24 303,-20 307,-20 307,-16 361,-16 361,-52"/>
+<polyline points="307,-48 311,-48 311,-44 307,-44 "/>
+<polyline points="307,-24 311,-24 311,-20 307,-20 "/>
+<text text-anchor="middle" x="334" y="-29.2">rt&#45;0</text>
+</g>
+<g class="m-edge">
+<title>p0x131aa88&#45;&gt;p0x131ab70</title>
+<path stroke-dasharray="5,2" d="M430.0295,-146.0344C412.2113,-125.2465 378.4156,-85.8182 356.0459,-59.7202"/>
+<polygon points="358.6661,-57.399 349.5007,-52.0841 353.3512,-61.9545 358.6661,-57.399"/>
+<text text-anchor="middle" x="397.4492" y="-92.2">0</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x131ac58</title>
+<polygon points="433,-52 379,-52 379,-48 375,-48 375,-44 379,-44 379,-24 375,-24 375,-20 379,-20 379,-16 433,-16 433,-52"/>
+<polyline points="379,-48 383,-48 383,-44 379,-44 "/>
+<polyline points="379,-24 383,-24 383,-20 379,-20 "/>
+<text text-anchor="middle" x="406" y="-29.2">rt&#45;1</text>
+</g>
+<g class="m-edge">
+<title>p0x131aa88&#45;&gt;p0x131ac58</title>
+<path stroke-dasharray="5,2" d="M437.2936,-143.5277C431.3637,-122.7731 421.0848,-86.7968 413.9323,-61.763"/>
+<polygon points="417.2861,-60.7609 411.1735,-52.1072 410.5554,-62.684 417.2861,-60.7609"/>
+<text text-anchor="middle" x="429.4492" y="-92.2">1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x131ad40</title>
+<polygon points="505,-52 451,-52 451,-48 447,-48 447,-44 451,-44 451,-24 447,-24 447,-20 451,-20 451,-16 505,-16 505,-52"/>
+<polyline points="451,-48 455,-48 455,-44 451,-44 "/>
+<polyline points="451,-24 455,-24 455,-20 451,-20 "/>
+<text text-anchor="middle" x="478" y="-29.2">rt&#45;2</text>
+</g>
+<g class="m-edge">
+<title>p0x131aa88&#45;&gt;p0x131ad40</title>
+<path stroke-dasharray="5,2" d="M446.7064,-143.5277C452.6363,-122.7731 462.9152,-86.7968 470.0677,-61.763"/>
+<polygon points="473.4446,-62.684 472.8265,-52.1072 466.7139,-60.7609 473.4446,-62.684"/>
+<text text-anchor="middle" x="465.4492" y="-92.2">2</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x131ae28</title>
+<polygon points="577,-52 523,-52 523,-48 519,-48 519,-44 523,-44 523,-24 519,-24 519,-20 523,-20 523,-16 577,-16 577,-52"/>
+<polyline points="523,-48 527,-48 527,-44 523,-44 "/>
+<polyline points="523,-24 527,-24 527,-20 523,-20 "/>
+<text text-anchor="middle" x="550" y="-29.2">rt&#45;3</text>
+</g>
+<g class="m-edge">
+<title>p0x131aa88&#45;&gt;p0x131ae28</title>
+<path stroke-dasharray="5,2" d="M453.9705,-146.0344C471.7887,-125.2465 505.5844,-85.8182 527.9541,-59.7202"/>
+<polygon points="530.6488,-61.9545 534.4993,-52.0841 525.3339,-57.399 530.6488,-61.9545"/>
+<text text-anchor="middle" x="505.4492" y="-92.2">3</text>
+</g>
+<g class="m-node">
+<title>p0x131a600</title>
+<polygon points="736,-178 687.8122,-160 736,-142 784.1878,-160 736,-178"/>
+<text text-anchor="middle" x="736" y="-155.2">cond</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x131a6e8</title>
+<polygon points="655,-52 601,-52 601,-48 597,-48 597,-44 601,-44 601,-24 597,-24 597,-20 601,-20 601,-16 655,-16 655,-52"/>
+<polyline points="601,-48 605,-48 605,-44 601,-44 "/>
+<polyline points="601,-24 605,-24 605,-20 601,-20 "/>
+<text text-anchor="middle" x="628" y="-29.2">rt&#45;0</text>
+</g>
+<g class="m-edge">
+<title>p0x131a600&#45;&gt;p0x131a6e8</title>
+<path stroke-dasharray="5,2" d="M724.0295,-146.0344C706.2113,-125.2465 672.4156,-85.8182 650.0459,-59.7202"/>
+<polygon points="652.6661,-57.399 643.5007,-52.0841 647.3512,-61.9545 652.6661,-57.399"/>
+<text text-anchor="middle" x="691.4492" y="-92.2">0</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x131a7d0</title>
+<polygon points="727,-52 673,-52 673,-48 669,-48 669,-44 673,-44 673,-24 669,-24 669,-20 673,-20 673,-16 727,-16 727,-52"/>
+<polyline points="673,-48 677,-48 677,-44 673,-44 "/>
+<polyline points="673,-24 677,-24 677,-20 673,-20 "/>
+<text text-anchor="middle" x="700" y="-29.2">rt&#45;1</text>
+</g>
+<g class="m-edge">
+<title>p0x131a600&#45;&gt;p0x131a7d0</title>
+<path stroke-dasharray="5,2" d="M731.2936,-143.5277C725.3637,-122.7731 715.0848,-86.7968 707.9323,-61.763"/>
+<polygon points="711.2861,-60.7609 705.1735,-52.1072 704.5554,-62.684 711.2861,-60.7609"/>
+<text text-anchor="middle" x="723.4492" y="-92.2">1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x131a8b8</title>
+<polygon points="799,-52 745,-52 745,-48 741,-48 741,-44 745,-44 745,-24 741,-24 741,-20 745,-20 745,-16 799,-16 799,-52"/>
+<polyline points="745,-48 749,-48 749,-44 745,-44 "/>
+<polyline points="745,-24 749,-24 749,-20 745,-20 "/>
+<text text-anchor="middle" x="772" y="-29.2">rt&#45;2</text>
+</g>
+<g class="m-edge">
+<title>p0x131a600&#45;&gt;p0x131a8b8</title>
+<path stroke-dasharray="5,2" d="M740.7064,-143.5277C746.6363,-122.7731 756.9152,-86.7968 764.0677,-61.763"/>
+<polygon points="767.4446,-62.684 766.8265,-52.1072 760.7139,-60.7609 767.4446,-62.684"/>
+<text text-anchor="middle" x="759.4492" y="-92.2">2</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x131a9a0</title>
+<polygon points="871,-52 817,-52 817,-48 813,-48 813,-44 817,-44 817,-24 813,-24 813,-20 817,-20 817,-16 871,-16 871,-52"/>
+<polyline points="817,-48 821,-48 821,-44 817,-44 "/>
+<polyline points="817,-24 821,-24 821,-20 817,-20 "/>
+<text text-anchor="middle" x="844" y="-29.2">rt&#45;3</text>
+</g>
+<g class="m-edge">
+<title>p0x131a600&#45;&gt;p0x131a9a0</title>
+<path stroke-dasharray="5,2" d="M747.9705,-146.0344C765.7887,-125.2465 799.5844,-85.8182 821.9541,-59.7202"/>
+<polygon points="824.6488,-61.9545 828.4993,-52.0841 819.3339,-57.399 824.6488,-61.9545"/>
+<text text-anchor="middle" x="799.4492" y="-92.2">3</text>
+</g>
+</g>
+</svg>
+</div><p>The following snippet shows one of the possible outputs:</p><pre class="m-code">initial
 pipeline <span class="m">2</span>, pipe <span class="m">0</span>: input <span class="nv">token</span> <span class="o">=</span> <span class="m">0</span>
 pipeline <span class="m">2</span>, pipe <span class="m">1</span>: input mybuffer_2<span class="o">[</span><span class="m">0</span><span class="o">][</span><span class="m">0</span><span class="o">]</span> <span class="o">=</span> <span class="m">0</span>
 pipeline <span class="m">2</span>, pipe <span class="m">2</span>: input mybuffer_2<span class="o">[</span><span class="m">0</span><span class="o">][</span><span class="m">1</span><span class="o">]</span> <span class="o">=</span> <span class="m">1</span>

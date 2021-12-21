@@ -34,7 +34,7 @@
 <codeline><highlight class="normal"><sp/><sp/>-t,--num_threads<sp/>UINT<sp/><sp/><sp/><sp/><sp/><sp/><sp/>number<sp/>of<sp/>threads<sp/>(default=1)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>-r,--num_rounds<sp/>UINT<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>number<sp/>of<sp/>rounds<sp/>(default=1)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>-m,--model<sp/>TEXT<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>model<sp/>name<sp/>tbb|omp|tf<sp/>(default=tf)</highlight></codeline>
-</programlisting></para><para>We currently implement the following instances that are commonly used by the parallel computing community to evaluate the system performance.</para><para><table rows="11" cols="2"><row>
+</programlisting></para><para>We currently implement the following instances that are commonly used by the parallel computing community to evaluate the system performance.</para><para><table rows="13" cols="2"><row>
 <entry thead="yes"><para>Instance  </para></entry><entry thead="yes"><para>Description   </para></entry></row>
 <row>
 <entry thead="no"><para>binary_tree  </para></entry><entry thead="no"><para>traverses a complete binary tree   </para></entry></row>
@@ -56,6 +56,10 @@
 <entry thead="no"><para>reduce_sum  </para></entry><entry thead="no"><para>sums a range of items using reduction   </para></entry></row>
 <row>
 <entry thead="no"><para>wavefront  </para></entry><entry thead="no"><para>propagates computations in a 2D grid   </para></entry></row>
+<row>
+<entry thead="no"><para>linear_pipeline  </para></entry><entry thead="no"><para>pipeline scheduling on a linear chain of pipes   </para></entry></row>
+<row>
+<entry thead="no"><para>graph_pipeline  </para></entry><entry thead="no"><para>pipeline scheduling on a graph of pipes   </para></entry></row>
 </table>
 </para></sect1>
 <sect1 id="BenchmarkTaskflow_1ConfigureRunOptions">

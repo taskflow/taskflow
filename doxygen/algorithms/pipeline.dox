@@ -262,24 +262,6 @@ The pipeline module task processes a stream of data.
 The condition task decides the availability of data and reruns the pipeline once the next stream of 
 data is available.  
 
-<!--
-Example 1 demonstrates the connections of the pipeline module task, two static tasks and one condition task
-to achieve if-else control flow.
-This example could be used to emulate a data streaming environment. 
-The condition task could be used to determine the availability of data.
-If data are ready, then the condition task returns 0, which will schedule and rerun the pipeline module task.
-Because our pipeline algorithm maintains a stateful scheduling token, 
-the token in the rerunned pipeine is starting with last unscheduled token.
-For example, the last unscheduled token is five. Then the rerunned pipline will take five as the initial token.
-Here, we use a stateful variable, i, 
-instead of %tf::Pipeflow::token() as a stop condition in the first pipe to stop the pipeline from further scheduling. 
-
-The first pipe stores the value, the token, in the corresponding location in mybuffer.
-The second pipe prints out the value propagated from the first pipe,
-adds 1 to this value, and stores the result in the corresponding location in mybuffer.
-The third pipe does the same work as the one in second pipe.
--->
-
 @code{.cpp}
  1: tf::Taskflow taskflow;
  2: tf::Executor executor;
@@ -366,6 +348,10 @@ Debrief:
 @li Lines 58-61 define two static tasks
 @li Line  64-66 define the task dependency
 @li Line  69    executes the taskflow
+
+The taskflow graph of this pipeline example is illustrated as follows:
+
+@dotfile images/pipeline_example1.dot
 
 The following snippet shows one of the possible outputs:
 
@@ -538,6 +524,10 @@ Debrief:
 @li Line  85    defines the task dependency
 @li Line  88    runs the taskflow 
 
+The taskflow graph of this pipeline example is illustrated as follows:
+
+@dotfile images/pipeline_example2.dot
+
 The following snippet shows one of the possible outputs:
 
 @code{.bash}
@@ -572,18 +562,6 @@ because their second pipes are both parallel types.
 Due to the task dependency between @c pipeline_1 and @c pipeline_2, 
 the output of @c pl_1 precedes the output of @c pl_2.
   
-<!--
-The graph dependency is given below. 
-
-@dotfile images/pipeline_example2.dot
-
-On the left, two 3D rectangular-shaped module tasks are named "pipeline_1" and "pipeline_2" respectively.
-In the middle, "pipeline_2" module task has one multi-condition task ("cond") and 
-four runtime tasks ("rt-0", "rt-1", "rt-2", and "rt-3"). 
-On the right, "pipeline_1" module task has one multi-condition task ("cond") and
-four runtime tasks("rt-0", "rt-1", "rt-2", and "rt-3"). 
--->
-
 @subsection DefineMultipleParallelPipelines Example 3: Define Multiple Parallel Pipelines
 
 This example creates two independent pipelines that run in parallel on different data sets.
@@ -694,6 +672,10 @@ Debrief:
 @li Line  86    defines the task dependency
 @li Line  88    runs the taskflow 
 
+The taskflow graph of this pipeline example is illustrated as follows:
+
+@dotfile images/pipeline_example3.dot
+
 The following snippet shows one of the possible outputs:
 
 @code{.bash}
@@ -733,19 +715,6 @@ pipeline 1, pipe 2: input mybuffer_1[0][1] = 5
 Because pipeline @c pl_1 and pipeline @c pl_2 are running in parallel,
 their outputs may interleave.
 
-<!--
-The graph dependency is given below.
-
-@dotfile images/pipeline_example3.dot
-
-On the left, the oval-shaped task is named "initial." 
-Two 3D rectangular-shaped module tasks are named as "pipeline_1" and "pipeline_2" respectively.
-Module tasks "pipeline_1" and "pipelin_2" are executed parallel when "initial" task is finished. 
-In the middle, "pipeline_2" module task has one multi-condition task ("cond") and 
-four runtime tasks ("rt-0", "rt-1", "rt-2", and "rt-3").
-On the right, "pipeline_1" module task has one multi-condition task ("cond") and
-four runtime tasks("rt-0", "rt-1", "rt-2", and "rt-3");
--->
 
 @section ResetPipeline Reset a Pipeline
 

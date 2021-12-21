@@ -4,7 +4,7 @@ namespace tf {
 
 %Taskflow allows you to interact with the scheduling runtime
 from the execution context of a runtime task.
-Runtime tasking is mostly used for designing specialized parallel algorithms
+%Runtime tasking is mostly used for designing specialized parallel algorithms
 that go beyond the default scheduling rules of taskflows.
 
 @tableofcontents
@@ -40,7 +40,7 @@ Under the normal circumstance, tasks @c C and @c D will not run because their
 conditional dependencies never happen.
 This can be broken by forcefully scheduling @c C or/and @c D via a runtime task
 that resides in the same graph.
-Here, the runtime task @c B call tf::Runtime::schedule to run task @c C
+Here, the runtime task @c B call tf::Runtime::schedule(tf::Task) to run task @c C
 even though the weak dependency between @c A and @c C will never happen
 based on the graph structure itself.
 As a result, we will see both @c B and @c C in the output:
@@ -59,7 +59,7 @@ is running the runtime task.
 
 @section AcquireTheRunningExecutor Acquire the Running Executor
 
-You can acquire the reference to the running executor using tf::Runtime::executor.
+You can acquire the reference to the running executor using tf::Runtime::executor().
 The running executor of a runtime task is the executor that runs the parent taskflow 
 of that runtime task.
   
