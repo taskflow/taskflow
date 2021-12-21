@@ -151,6 +151,18 @@ class Runtime {
 
   /**
   @brief obtains the running executor
+
+  The running executor of a runtime task is the executor that runs 
+  the parent taskflow of that runtime task.
+
+  @code{.cpp}
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+  taskflow.emplace([&](tf::Runtime& rt){
+    assert(&(rt.executor()) == &executor);
+  });
+  executor.run(taskflow).wait();
+  @endcode
   */
   Executor& executor();
   
@@ -159,10 +171,10 @@ class Runtime {
 
   This member function immediately schedules an active task to the
   task queue of the associated worker in the runtime task.
-  An active task is a task in a running taskflow or a subflow. 
+  An active task is a task in a running taskflow. 
   The task may or may not be running, and scheduling that task 
-  in the worker's queue will put the task 
-  into the execution list. 
+  will immediately put the task into the task queue of the worker
+  that is running the runtime task.
   Consider the following example:
 
   @code{.cpp}

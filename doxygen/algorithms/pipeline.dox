@@ -4,8 +4,10 @@ namespace tf {
 
 @tableofcontents
 
-%Pipeline parallelism refers to a parallel execution 
-where multiple data elements are processed through a linear chain of stages.
+%Taskflow provides template functions for you to create 
+<i>pipeline scheduling frameworks</i> to implement pipeline algorithms.
+%Pipeline parallelism refers to a parallel execution of multiple data
+elements through a linear chain of pipes or stages.
 Each stage processes the data element sent from the previous stage, applies the
 given callable to that data element, and then sends the result to the next stage.
 Multiple data elements can be processed simultaneously across different stages.
@@ -52,35 +54,37 @@ a pipeline scheduling framework.
 @section UnderstandPipelineScheduling Understand the Pipeline Scheduling Framework
 
 A tf::Pipeline object is a composable graph object for users to create a 
-<i>pipeline scheduling framework</i>
-using a module task in a taskflow. 
+<i>pipeline scheduling framework</i> through a module task in a taskflow.
 Unlike the conventional pipeline programming frameworks (e.g., Intel TBB), 
 %Taskflow's pipeline algorithm does not provide any data abstraction, 
 which often restricts users from optimizing data layouts in their applications, 
-but a flexible framework for users to customize their application data atop our pipeline scheduling framework.
+but a flexible framework for users to customize their application data atop 
+an efficient pipeline scheduling framework.
 
 @dotfile images/pipeline_our_structure.dot
 
-The figure above gives an example of our pipeline scheduling framework that 
-consists of three pipes (same concept as stages) and four lines (maximum data concurrency).
+The figure above gives an example of our pipeline scheduling framework.
+The framework consists of three @em pipes (same concept as stages) and 
+four @em lines (maximum data concurrency).
 A pipeline of three pipes and four lines will propagate each data element through a sequential chain of 
-three pipes in the specified order and can simultaneously process up to four data elements at four lines.
+three pipes and can simultaneously process up to four data elements at four lines.
 Each edge represents a task dependency.
 For example, the edge from @c pipe-0 to @c pipe-1 in line @c 0 represents the task dependency
 between the first and the second pipes in the first line;
 the edge from @c pipe-0 in line @c 0 to @c pipe-0 in line @c 1 represents the task dependency
-between two adjacent lines when processing two tokens at the same pipe.
-Each pipe can be either a <i>serial</i> (tf::PipeType::SERIAL) or a <i>parallel</i> type (tf::PipeType::PARALLEL).
-A serial pipe must process different input tokens in a sequential order.
-A parallel pipe can process different input tokens simultaneously.
+between two adjacent lines when processing two data elements at the same pipe.
+Each pipe can be either a <i>serial</i> (tf::PipeType::SERIAL) or 
+a <i>parallel</i> type (tf::PipeType::PARALLEL),
+where a serial pipe processes data elements sequentially and
+a parallel pipe processes different data elements simultaneously.
 The example here represents a serial-parallel-serial pipeline.
 Since the second pipe is a parallel type,
-there are no vertical task dependencies between adjacent lines.
+it does not have vertical task dependencies between adjacent lines.
 
 @note
 Due to the nature of pipeline, %Taskflow requires the first pipe to be a serial type.
 
-@section  CreatePipeline Create a Pipeline Module Task
+@section CreatePipeline Create a Pipeline Module Task
 
 In general, there are three steps to create a pipeline application: 
 
@@ -91,9 +95,9 @@ In general, there are three steps to create a pipeline application:
 The following code creates a pipeline scheduling framework
 for the example in the previous section.
 The framework schedules a total of five <i>scheduling tokens</i> labeled from 0 to 4.
-The first pipe stores the token identifier to a custom buffer storage, and each of the rest pipes
+The first pipe stores the token identifier in a <i>custom buffer</i>, and each of the rest pipes
 adds one to the input data from the previous pipe and stores the result into the corresponding
-entry in the buffer storage.
+entry in the buffer.
 
 
 @code{.cpp}
@@ -158,10 +162,16 @@ Debrief:
 @li Line  45    defines the pipeline taskflow graph using composition
 @li Line  48    executes the taskflow 
 
-The data storage, @c mybuffer, is a four-by-three array. 
-The first dimension is identical to the number of lines and the second dimension 
-is identical to the number of pipes.
-Each element in @c mybuffer stores the data associated with the corresponding pipe in a line. 
+%Taskflow leverages @ref RuntimeTasking and @ref ComposableTasking to implement
+the pipeline scheduling framework.
+The taskflow graph of this pipeline example is shown as follows:
+
+@dotfile images/pipeline_basic_dependency_graph.dot
+
+In this example, we customize the data storage, @c mybuffer, as a 4-by-3 array. 
+The first dimension is equal to the number of lines (i.e., 4) and the second dimension 
+is equal to the number of pipes (i.e., 3).
+Each data element in @c mybuffer stores the data associated with the corresponding pipe in a line. 
 For example, <tt>mybuffer[1][2]</tt> stores the data processed in @c pipe-2 in line @c 1.
 The following figure shows the data layout of @c mybuffer.
 
@@ -174,10 +184,12 @@ and tf::Pipeflow::pipe() to get its pipe identifier.
 For example, if a scheduling token is processing an data element at the third pipe of the forth line,
 tf::Pipeflow::line() will return @c 3 and tf::Pipeflow::pipe() will return @c 2
 (index starts from 0).
-To access the value propagated from the previous pipe, 
-you can use <tt>mybuffer[%tf::Pipeflow::line()][%tf::Pipeflow::pipe()-1]</tt>.
-To stop the execution of the pipeline, you call tf::Pipeflow::stop() at the first pipe.
+The input value propagated from the previous pipe can be
+accessed at <tt>mybuffer[%tf::Pipeflow::line()][%tf::Pipeflow::pipe()-1]</tt>.
+To stop the execution of the pipeline, we call tf::Pipeflow::stop() at the first pipe.
 Once the stop signal has been triggered, the pipeline will stop scheduling any new tokens.
+As we can see from this example, tf::Pipeline give you the total flexibility to customize
+your application data on top of a pipeline scheduling framework.
 
 @note
 Calling tf::Pipeflow::stop() not at the first pipe has no effect on the pipeline scheduling.
@@ -217,7 +229,7 @@ On the left, the 3D rectangular-shaped module task is named "pipeline."
 
 On the right, the pipeline graph consists of one multi-condition task (named "cond") 
 and four runtime tasks (named "rt-0", "rt-1", "rt-2", and "rt-3"). 
-Runtime task is the exectuion task in a line.
+Runtime task is the execution task in a line.
 You can think of runtime task as the running pipe in a line. 
 The number of runtime tasks is equal to the number of lines.
 The multi-condition task is used to schedule the beginning runtime task based on the 
@@ -251,11 +263,11 @@ The condition task decides the availability of data and reruns the pipeline once
 data is available.  
 
 <!--
-Examle 1 demonstrates the connections of the pipeline module task, two static tasks and one condition task
+Example 1 demonstrates the connections of the pipeline module task, two static tasks and one condition task
 to achieve if-else control flow.
 This example could be used to emulate a data streaming environment. 
 The condition task could be used to determine the availability of data.
-If data are ready, then the condition task returns 0, which will scheudle and rerun the pipeline module task.
+If data are ready, then the condition task returns 0, which will schedule and rerun the pipeline module task.
 Because our pipeline algorithm maintains a stateful scheduling token, 
 the token in the rerunned pipeine is starting with last unscheduled token.
 For example, the last unscheduled token is five. Then the rerunned pipline will take five as the initial token.
@@ -402,7 +414,7 @@ the remaining five tokens (token @c 5 to @c 9) are processed in the second run.
 In the condition task, we use @c N as a decision-making counter to process the next stream of data.
 
 <!--
-The graph dependency is illstruated in the following. 
+The graph dependency is illustrated in the following. 
 
 @dotfile images/pipeline_example1.dot
 
@@ -514,14 +526,14 @@ The first pipeline task precedes the second pipeline task.
 
 Debrief:
 
-@li Line  8     defines the data storage as a two-dimensional array (@c num_lines by @c num_pipes) for pipeline @c 1
-@li Line  9     defines the data storage as a two-dimensional array (@c num_lines by @c num_pipes) for pipeline @c 2
-@li Lines 14-24 define the first serial pipe in pipeline @c pl_1
-@li Lines 26-33 define the second parallel pipe in pipeline @c pl_1
-@li Lines 35-42 define the third serial pipe in pipeline @c pl_1
-@li Lines 48-59 define the first serial pipe in pipeline @c pl_2 that takes the results of @c pl_1 as the inputs  
-@li Lines 61-68 define the second parallel pipe in pipeline @c pl_2
-@li Lines 70-77 define the third serial pipe in pipeline @c pl_2
+@li Line  8     defines the data storage (@c num_lines by @c num_pipes) for pipeline @c pl_1
+@li Line  9     defines the data storage (@c num_lines by @c num_pipes) for pipeline @c pl_2
+@li Lines 14-24 define the first serial pipe in @c pl_1
+@li Lines 26-33 define the second parallel pipe in @c pl_1
+@li Lines 35-42 define the third serial pipe in @c pl_1
+@li Lines 48-59 define the first serial pipe in @c pl_2 that takes the results of @c pl_1 as inputs
+@li Lines 61-68 define the second parallel pipe in @c pl_2
+@li Lines 70-77 define the third serial pipe in @c pl_2
 @li Lines 81-82 define the pipeline graphs using composition
 @li Line  85    defines the task dependency
 @li Line  88    runs the taskflow 
@@ -555,10 +567,10 @@ pipeline 2, pipe 2: input mybuffer_2[3][0] = 5
 pipeline 2, pipe 3: input mybuffer_2[3][1] = 6
 @endcode
 
-The output in pipeline @c pl_1 can be different from run to run, so does in pipeline @c pl_2,
-because the second pipe in both pipelines are parallel pipes.
+The output of pipelines @c pl_1 and @c pl_2 can be different from run to run
+because their second pipes are both parallel types.
 Due to the task dependency between @c pipeline_1 and @c pipeline_2, 
-the output of pipeline @c pl_1 precedes the output of pipeline @c pl_2.
+the output of @c pl_1 precedes the output of @c pl_2.
   
 <!--
 The graph dependency is given below. 
@@ -669,14 +681,14 @@ This example creates two independent pipelines that run in parallel on different
 
 Debrief:
 
-@li Line  8     defines the data storage as a two-dimensional array (@c num_lines by @c num_pipes) for pipeline @c pl_1
-@li Line  9     defines the data storage as a two-dimensional array (@c num_lines by @c num_pipes) for pipeline @c pl_2
-@li Lines 14-24 define the first serial pipe in pipeline @c pl_1
-@li Lines 26-33 define the second parallel pipe in pipeline @c pl_1
-@li Lines 35-42 define the third serial pipe in pipeline @c pl_1
-@li Lines 48-58 define the first serial pipe in pipeline @c pl_2
-@li Lines 60-67 define the second parallel pipe in pipeline @c pl_2
-@li Lines 69-76 define the third serial pipe in pipeline @c pl_2
+@li Line  8     defines the data storage (@c num_lines by @c num_pipes) for pipeline @c pl_1
+@li Line  9     defines the data storage (@c num_lines by @c num_pipes) for pipeline @c pl_2
+@li Lines 14-24 define the first serial pipe in @c pl_1
+@li Lines 26-33 define the second parallel pipe in @c pl_1
+@li Lines 35-42 define the third serial pipe in @c pl_1
+@li Lines 48-58 define the first serial pipe in @c pl_2
+@li Lines 60-67 define the second parallel pipe in @c pl_2
+@li Lines 69-76 define the third serial pipe in @c pl_2
 @li Lines 79-82 define the pipeline graphs using composition
 @li Lines 83-84 define a static task.
 @li Line  86    defines the task dependency
@@ -737,13 +749,13 @@ four runtime tasks("rt-0", "rt-1", "rt-2", and "rt-3");
 
 @section ResetPipeline Reset a Pipeline
 
-Our pipeline scheduling framework keeps a stateful state for the total number of scheduled tokens 
-at each run.
+Our pipeline scheduling framework keeps a @em stateful number of scheduled tokens 
+at each run submitted to an executor.
 You can reset the pipeline to the initial state using tf::Pipeline::reset(),
-where the identifier of the scheduling token will start from zero in the next run.
+where the number of scheduled tokens will start from zero in the next run.
 Borrowed from the code in @ref IterateAPipeline, 
 the example below resets the pipeline at the second iteration (line 47)
-so the scheduling token will start from zero.
+so the scheduling token will start from zero in the next run.
 
 @code{.cpp}
  1: tf::Taskflow taskflow("pipeline");

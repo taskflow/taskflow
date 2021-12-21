@@ -762,7 +762,7 @@
 <p>The following example creates a runtime task that enables in-task control over the running executor.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">runtime_task</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span> <span class="n">rt</span><span class="p">){</span>
   <span class="k">auto</span><span class="o">&amp;</span> <span class="n">executor</span> <span class="o">=</span> <span class="n">rt</span><span class="p">.</span><span class="n">executor</span><span class="p">();</span>
   <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">executor</span><span class="p">.</span><span class="n">num_workers</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span>
-<span class="p">});</span></pre><p>Please refer to RuntimeTasking for details.</p>
+<span class="p">});</span></pre><p>Please refer to <a href="RuntimeTasking.html" class="m-doc">Runtime Tasking</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="a90f3d9b9d6fcf4df8e7d7878dfdd130d"><div>
             <h3>

@@ -18,6 +18,7 @@ list(APPEND TF_EXAMPLES
   parallel_sort
   parallel_pipeline
   run 
+  runtime
   composition
   limited_concurrency
   cancel

@@ -77,14 +77,12 @@ For example, the following composition is valid.
 Even though the two module tasks @c module1 and @c module2 refer to the same taskflow @c F1,
 the dependency link prevents @c F1 from multiple executions at the same time.
 
-<!-- @image html images/composition_static_2.svg width=60% -->
 @dotfile images/composition_static_2.dot
 
 However, the following composition is @em invalid.
 Both module tasks refer to the same taskflow. They can not run at the same time because
 they are associated with the same graph.
 
-<!-- @image html images/composition_static_invalid.svg width=60% -->
 @dotfile images/composition_static_invalid.dot
 
 @section CreateACustomComposableGraph Create a Custom Composable Graph
