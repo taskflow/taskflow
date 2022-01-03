@@ -3,7 +3,13 @@
 #include <doctest.h>
 
 #include <taskflow/taskflow.hpp>
-#include <taskflow/cudaflow.hpp>
+#include <taskflow/cuda/cudaflow.hpp>
+#include <taskflow/cuda/algorithm/transform.hpp>
+#include <taskflow/cuda/algorithm/for_each.hpp>
+#include <taskflow/cuda/algorithm/reduce.hpp>
+#include <taskflow/cuda/algorithm/scan.hpp>
+#include <taskflow/cuda/algorithm/find.hpp>
+#include <taskflow/cuda/algorithm/sort.hpp>
 
 //verify
 template <typename T>

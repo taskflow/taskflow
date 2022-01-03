@@ -8,6 +8,11 @@ given callable using a single kernel thread.
 
 @tableofcontents
 
+@section CUDASingleTaskIncludeTheHeader Include the Header
+
+You need to include the header file, `%taskflow/cuda/algorithm/for_each.hpp`, 
+for creating a single-threaded task.
+
 @section SingleTaskCUDASingleTask Run a Task with a Single Thread
 
 You can create a task to run a kernel function just once, i.e.,

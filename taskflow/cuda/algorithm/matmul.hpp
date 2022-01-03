@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../cuda_error.hpp"
+#include "../cudaflow.hpp"
 
 namespace tf {
 

@@ -1,8 +1,8 @@
 // This program performs a simple single-precision Ax+Y operation
 // using cudaFlow and verifies its result.
 
-#include <taskflow/cudaflow.hpp>
 #include <taskflow/taskflow.hpp>
+#include <taskflow/cuda/cudaflow.hpp>
 
 // Kernel: saxpy
 __global__ void saxpy(int n, float a, float *x, float *y) {

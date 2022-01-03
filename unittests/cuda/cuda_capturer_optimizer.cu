@@ -2,7 +2,8 @@
 
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
-#include <taskflow/cudaflow.hpp>
+#include <taskflow/cuda/cudaflow.hpp>
+#include <taskflow/cuda/algorithm/for_each.hpp>
 
 #include "./details/graph_executor.hpp"
 #include "./details/tree.hpp"

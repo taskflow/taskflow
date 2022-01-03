@@ -10,6 +10,11 @@ in building GPU task graphs.
 
 @tableofcontents
 
+@section GPUTaskingcudaFlowCapturerIncludeTheHeader Include the Header
+
+You need to include the header file, `%taskflow/cuda/cudaflow.hpp`, 
+for creating a tf::cudaFlowCapturer task.
+
 @section Capture_a_cudaFlow Capture a cudaFlow
 
 When your program has no access to direct kernel calls but invoke
@@ -26,7 +31,7 @@ and
 where @c task_1 runs before @c task_2.
 
 @code{.cpp}
-#include <taskflow/cudaflow.hpp>
+#include <taskflow/cuda/cudaflow.hpp>
 
 int main() {
 

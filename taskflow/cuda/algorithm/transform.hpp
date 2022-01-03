@@ -1,10 +1,9 @@
 #pragma once
 
-#include "../cuda_flow.hpp"
-#include "../cuda_capturer.hpp"
+#include "../cudaflow.hpp"
 
 /** 
-@file cuda_transform.hpp
+@file taskflow/cuda/algorithm/transform.hpp
 @brief cuda parallel-transform algorithms include file
 */
 

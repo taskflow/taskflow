@@ -1,11 +1,10 @@
 #pragma once
 
-#include "../cuda_flow.hpp"
-#include "../cuda_capturer.hpp"
-#include "../cuda_meta.hpp"
+#include "for_each.hpp"
+#include "reduce.hpp"
 
 /** 
-@file cuda_find.hpp
+@file taskflow/cuda/algorithm/find.hpp
 @brief cuda find algorithms include file
 */
 

@@ -1,11 +1,9 @@
 #pragma once
 
-#include "../cuda_flow.hpp"
-#include "../cuda_capturer.hpp"
-#include "../cuda_meta.hpp"
+#include "merge.hpp"
 
 /**
-@file cuda_sort.hpp
+@file taskflow/cuda/algorithm/sort.hpp
 @brief CUDA sort algorithm include file
 */
 

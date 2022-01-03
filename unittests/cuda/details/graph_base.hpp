@@ -1,6 +1,6 @@
 #pragma once
 
-#include <taskflow/cudaflow.hpp>
+#include <taskflow/cuda/cudaflow.hpp>
 
 //-------------------------------------------------------------------------
 //Node

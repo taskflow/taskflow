@@ -1,10 +1,11 @@
 #pragma once
 
+#include "../taskflow.hpp"
 #include "cuda_task.hpp"
 #include "cuda_capturer.hpp"
 
 /** 
-@file cuda_flow.hpp
+@file taskflow/cuda/cudaflow.hpp
 @brief cudaFlow include file
 */
 
@@ -380,12 +381,12 @@ class cudaFlow {
 
     @tparam C callable type
 
-    @param callable callable to run by a single kernel thread
+    @param c callable to run by a single kernel thread
     
     @return a tf::cudaTask handle
     */
     template <typename C>
-    cudaTask single_task(C callable);
+    cudaTask single_task(C c);
     
     /**
     @brief updates a single-threaded kernel task
@@ -394,7 +395,7 @@ class cudaFlow {
     on an existing task.
     */
     template <typename C>
-    void single_task(cudaTask task, C callable);
+    void single_task(cudaTask task, C c);
 
     /**
     @brief applies a callable to each dereferenced element of the data array

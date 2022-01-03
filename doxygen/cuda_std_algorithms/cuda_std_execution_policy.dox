@@ -9,6 +9,11 @@ execution parameters.
 
 @tableofcontents
 
+@section CUDASTDExecutionPolicyIncludeTheHeader Include the Header
+
+You need to include the header file, `%taskflow/cuda/cudaflow.hpp`, 
+for creating a CUDA execution policy object.
+
 @section CUDASTDParameterizePerformance Parameterize Performance
 
 %Taskflow parameterizes most CUDA algorithms in terms of <i>the number of threads per block</i>
@@ -27,8 +32,6 @@ It is always a good idea to specify an odd number in the second parameter
 to avoid bank conflicts.
 
 @code{.cpp}
-#include <taskflow/cudaflow.hpp>
-
 tf::cudaExecutionPolicy<512, 11> policy;
 @endcode
 

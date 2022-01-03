@@ -4,8 +4,8 @@ namespace tf {
 
 @tableofcontents
 
-%Taskflow provides template functions for you to create 
-<i>pipeline scheduling frameworks</i> to implement pipeline algorithms.
+%Taskflow provides a @em task-parallel pipeline programming framework for you to create a
+<i>pipeline scheduling framework</i> to implement pipeline algorithms.
 %Pipeline parallelism refers to a parallel execution of multiple data
 elements through a linear chain of pipes or stages.
 Each stage processes the data element sent from the previous stage, applies the
@@ -53,8 +53,9 @@ a pipeline scheduling framework.
 
 @section UnderstandPipelineScheduling Understand the Pipeline Scheduling Framework
 
-A tf::Pipeline object is a composable graph object for users to create a 
-<i>pipeline scheduling framework</i> through a module task in a taskflow.
+A tf::Pipeline object is a composable graph object to create a 
+<i>pipeline scheduling framework</i> through a module task in a taskflow
+(see @ref ComposableTasking).
 Unlike the conventional pipeline programming frameworks (e.g., Intel TBB), 
 %Taskflow's pipeline algorithm does not provide any data abstraction, 
 which often restricts users from optimizing data layouts in their applications, 
@@ -65,9 +66,9 @@ an efficient pipeline scheduling framework.
 
 The figure above gives an example of our pipeline scheduling framework.
 The framework consists of three @em pipes (same concept as stages) and 
-four @em lines (maximum data concurrency).
+four @em lines (maximum parallelism).
 A pipeline of three pipes and four lines will propagate each data element through a sequential chain of 
-three pipes and can simultaneously process up to four data elements at four lines.
+three pipes and can simultaneously process up to four data elements on the four lines.
 Each edge represents a task dependency.
 For example, the edge from @c pipe-0 to @c pipe-1 in line @c 0 represents the task dependency
 between the first and the second pipes in the first line;
@@ -83,6 +84,7 @@ it does not have vertical task dependencies between adjacent lines.
 
 @note
 Due to the nature of pipeline, %Taskflow requires the first pipe to be a serial type.
+The pipeline scheduling algorithm operates in a cyclic fashion with a factor equal to the line count.
 
 @section CreatePipeline Create a Pipeline Module Task
 
@@ -107,7 +109,7 @@ entry in the buffer.
  4: const size_t num_lines = 4;
  5: const size_t num_pipes = 3;
  6:
- 7: // custom dataflow storage
+ 7: // custom data storage
  8: std::array<std::array<int, num_pipes>, num_lines> mybuffer;
  9:
 10: // the pipeline consists of three pipes (serial-parallel-serial)
@@ -269,7 +271,7 @@ data is available.
  4: const size_t num_lines = 4;
  5: const size_t num_pipes = 3;
  6: int i = 0, N = 0;
- 7: // custom dataflow storage
+ 7: // custom data storage
  8: std::array<std::array<int, num_pipes>, num_lines> mybuffer;
  9:
 10: // the pipeline consists of three pipes (serial-parallel-serial)
@@ -426,7 +428,7 @@ The first pipeline task precedes the second pipeline task.
  4: const size_t num_lines = 4;
  5: const size_t num_pipes = 3;
  6:
- 7: // custom dataflow storage
+ 7: // custom data storage
  8: std::array<std::array<int, num_pipes>, num_lines> mybuffer_1;
  9: std::array<std::array<int, num_pipes>, num_lines> mybuffer_2;
 10: 
@@ -573,7 +575,7 @@ This example creates two independent pipelines that run in parallel on different
  4: const size_t num_lines = 4;
  5: const size_t num_pipes = 3;
  6:
- 7: // custom dataflow storage
+ 7: // custom data storage
  8: std::array<std::array<int, num_pipes>, num_lines> mybuffer_1;
  9: std::array<std::array<int, num_pipes>, num_lines> mybuffer_2;
 10: 
@@ -733,7 +735,7 @@ so the scheduling token will start from zero in the next run.
  4: const size_t num_lines = 4;
  5: const size_t num_pipes = 3;
  6:
- 7: // custom dataflow storage
+ 7: // custom data storage
  8: std::array<std::array<int, num_pipes>, num_lines> mybuffer;
  9:
 10: 

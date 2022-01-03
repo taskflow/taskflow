@@ -7,7 +7,10 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow provides template methods for transforming ranges of items to different outputs.</para><sect1 id="CUDASTDTransform_1CUDASTDTransformARangeOfItems">
+<para>Taskflow provides template methods for transforming ranges of items to different outputs.</para><sect1 id="CUDASTDTransform_1CUDASTDParallelTransformsIncludeTheHeader">
+<title>Include the Header</title>
+<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/transform.hpp</computeroutput>, for using the parallel-transform algorithm.</para></sect1>
+<sect1 id="CUDASTDTransform_1CUDASTDTransformARangeOfItems">
 <title>Transform a Range of Items</title>
 <para>Parallel-transform algorithm applies the given transform function to a range of items and store the result in another range specified by two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by <ref refid="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" kindref="member">tf::cuda_transform(P&amp;&amp; p, I first, I last, O output, C op)</ref> represents a parallel execution for the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*output++<sp/>=<sp/>op(*first++);</highlight></codeline>

@@ -1,7 +1,8 @@
 // This program demonstrates how to rebind a cudaFlowCapturer task
 // to another GPU operation.
 
-#include <taskflow/cudaflow.hpp>
+#include <taskflow/cuda/cudaflow.hpp>
+#include <taskflow/cuda/algorithm/for_each.hpp>
 
 int main() {
 

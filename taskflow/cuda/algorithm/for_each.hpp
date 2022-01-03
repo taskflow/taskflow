@@ -1,11 +1,9 @@
 #pragma once
 
-#include "../cuda_flow.hpp"
-#include "../cuda_capturer.hpp"
-#include "../cuda_meta.hpp"
+#include "../cudaflow.hpp"
 
 /** 
-@file cuda_for_each.hpp
+@file taskflow/cuda/algorithm/for_each.hpp
 @brief cuda parallel-iteration algorithms include file
 */
 

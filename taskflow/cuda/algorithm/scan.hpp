@@ -1,11 +1,9 @@
 #pragma once
 
-#include "../cuda_flow.hpp"
-#include "../cuda_capturer.hpp"
-#include "../cuda_meta.hpp"
+#include "reduce.hpp"
 
 /**
-@file cuda_scan.hpp
+@file taskflow/cuda/algorithm/scan.hpp
 @brief CUDA scan algorithm include file
 */
 
