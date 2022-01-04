@@ -856,9 +856,9 @@ The number of runtime tasks in the pipeline graph is equal to the number of line
 Basically, each line is a runtime task.
 Each runtime task is executing one of the pipes on a data element. 
 When the data element is finished in one pipe, 
-the result is propapated to the next pipe, and 
+the result is propagated to the next pipe, and 
 the runtime time is ready to execute the next pipe on the processed data
-once the dependency of the next pipe is resovled.  
+once the dependency of the next pipe is resolved.  
 
 Generally speaking, one line should be executing by one thread.
 But it is not the case in our algorithm. 

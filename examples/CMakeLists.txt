@@ -17,14 +17,13 @@ list(APPEND TF_EXAMPLES
   parallel_for 
   parallel_sort
   parallel_pipeline
+  parallel_text_pipeline
   run 
   runtime
   composition
   limited_concurrency
   cancel
   cancel_async
-
-  #pipeline_2
 )
 
 foreach(example IN LISTS TF_EXAMPLES)

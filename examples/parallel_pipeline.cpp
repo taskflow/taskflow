@@ -1,4 +1,19 @@
-// This program demonstrates how to create a pipeline scheduling framework.
+// This program demonstrates how to create a pipeline scheduling framework
+// that propagates a series of integers and adds one to the result at each
+// stage.
+//
+// The pipeline has the following structure:
+//
+// o -> o -> o
+// |         |
+// v         v
+// o -> o -> o
+// |         |
+// v         v
+// o -> o -> o
+// |         |
+// v         v
+// o -> o -> o
 
 #include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/pipeline.hpp>
@@ -11,7 +26,7 @@ int main() {
   const size_t num_lines = 4;
   const size_t num_pipes = 3;
 
-  // custom dataflow storage
+  // custom data storage
   std::array<std::array<int, num_pipes>, num_lines> mybuffer;
 
   // the pipeline consists of three pipes (serial-parallel-serial)
