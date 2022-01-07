@@ -11,7 +11,7 @@ string to a final pair type.
 
 @section FormulateTheTextProcessingPipelineProblem Formulate the Text Processing Pipeline Problem
 
-Given an input vector (or stream) of strings, we want to compute the most frequent character
+Given an input vector of strings, we want to compute the most frequent character
 for each string using a series of transform operations. For example:
 
 @code{.shell-session}
@@ -92,7 +92,7 @@ int main() {
   using data_type = std::variant<
     std::string, std::unordered_map<char, size_t>, std::pair<char, size_t>
   >;
-  std::array<std::array<data_type, num_pipes>, num_lines> mybuffer;
+  std::array<data_type, num_lines> mybuffer;
 
   // the pipeline consists of three pipes (serial-parallel-serial)
   // and up to four concurrent scheduling tokens
@@ -104,32 +104,30 @@ int main() {
         pf.stop();
       }
       else {
-        mybuffer[pf.line()][pf.pipe()] = input[pf.token()];
         printf("stage 1: input token = %s\n", input[pf.token()].c_str());
+        mybuffer[pf.line()] = input[pf.token()];
       }
     }},
     
     // second pipe counts the frequency of each character
     tf::Pipe{tf::PipeType::PARALLEL, [&](tf::Pipeflow& pf) {
       std::unordered_map<char, size_t> map;
-      for(auto c : std::get<std::string>(mybuffer[pf.line()][pf.pipe() - 1])) {
+      for(auto c : std::get<std::string>(mybuffer[pf.line()])) {
         map[c]++;
       }
-      mybuffer[pf.line()][pf.pipe()] = map;
       printf("stage 2: map = %s\n", format_map(map).c_str());
+      mybuffer[pf.line()] = map;
     }},
     
     // third pipe reduces the most frequent character
     tf::Pipe{tf::PipeType::SERIAL, [&mybuffer](tf::Pipeflow& pf) {
-      auto& map = std::get<std::unordered_map<char, size_t>>(
-        mybuffer[pf.line()][pf.pipe()-1]
-      );
+      auto& map = std::get<std::unordered_map<char, size_t>>(mybuffer[pf.line()]);
       auto sol = std::max_element(map.begin(), map.end(), [](auto& a, auto& b){
         return a.second < b.second;
       });
-      // not necessary to store the last-stage data, just for demo purpose
-      mybuffer[pf.line()][pf.pipe()] = *sol;  
       printf("stage 3: %c:%zu\n", sol->first, sol->second);
+      // not necessary to store the last-stage data, just for demo purpose
+      mybuffer[pf.line()] = *sol;  
     }}
   );
   
@@ -159,8 +157,8 @@ int main() {
 
 %Taskflow does not provide any data abstraction to perform pipeline scheduling, but
 give users full control over data management in their applications.
-In this example, we create a two-dimensional buffer of a @std_variant data type to store the output
-of each pipe in a unified storage:
+In this example, we create an one-dimensional buffer of a @std_variant data type to store the output
+of each pipe in a uniform storage:
 
 @code{.cpp}
 using data_type = std::variant<
@@ -169,12 +167,15 @@ using data_type = std::variant<
 std::array<std::array<data_type, num_pipes>, num_lines> mybuffer;
 @endcode
 
+@note
+One-dimensional buffer is sufficient because %Taskflow enables only one scheduling token
+per line at a time.
+
 @subsection TextPipelineDefineThePipes Define the Pipes
 
-The first pipe reads one string and puts it in the corresponding entry 
-of the buffer, idexed by two variables `pf.line()` and `pf.pipe()`
-from the tf::Pipeflow object created by the pipeline scheduler upon the
-execution of the pipe callable. Since we read in each string in order,
+The first pipe reads one string and puts it in the corresponding entry at the buffer,
+`mybuffer[pf.line()]`.
+Since we read in each string in order,
 we declare the pipe as a serial type:
 
 @code{.cpp}
@@ -183,15 +184,14 @@ tf::Pipe{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) {
     pf.stop();
   }
   else {
-    mybuffer[pf.line()][pf.pipe()] = input[pf.token()];
+    mybuffer[pf.line()] = input[pf.token()];
     printf("stage 1: input token = %s\n", input[pf.token()].c_str());
   }
 }},
 @endcode
 
-The second pipe needs to get the input string from the previous pipe 
-(`pf.pipe() - 1`) and then
-transforms that input string into a frequency map that record the 
+The second pipe needs to get the input string from the previous pipe and then
+transforms that input string into a frequency map that records the 
 occurrence of each character in the string.
 As multiple transforms can operate simultaneously, 
 we declare the pipe as a parallel type:
@@ -199,10 +199,10 @@ we declare the pipe as a parallel type:
 @code{.cpp}
 tf::Pipe{tf::PipeType::PARALLEL, [&](tf::Pipeflow& pf) {
   std::unordered_map<char, size_t> map;
-  for(auto c : std::get<std::string>(mybuffer[pf.line()][pf.pipe() - 1])) {
+  for(auto c : std::get<std::string>(mybuffer[pf.line()])) {
     map[c]++;
   }
-  mybuffer[pf.line()][pf.pipe()] = map;
+  mybuffer[pf.line()] = map;
   printf("stage 2: map = %s\n", format_map(map).c_str());
 }}
 @endcode
@@ -216,14 +216,10 @@ we declare the pipe as a serial type:
 
 @code{.cpp}
 tf::Pipe{tf::PipeType::SERIAL, [&mybuffer](tf::Pipeflow& pf) {
-  auto& map = std::get<std::unordered_map<char, size_t>>(
-    mybuffer[pf.line()][pf.pipe()-1]
-  );
+  auto& map = std::get<std::unordered_map<char, size_t>>(mybuffer[pf.line()]);
   auto sol = std::max_element(map.begin(), map.end(), [](auto& a, auto& b){
     return a.second < b.second;
   });
-  // not necessary to store the last-stage data, just for demo purpose
-  mybuffer[pf.line()][pf.pipe()] = *sol;  
   printf("stage 3: %c:%zu\n", sol->first, sol->second);
 }}
 @endcode
@@ -280,8 +276,9 @@ stage 3: k:3
 stopped
 @endcode
 
-
-The taskflow graph of this pipeline is shown below:
+We can see seven outputs at the third stage that show the most frequent character
+for each of the seven strings in order (`a:2`, `d:4`, `e:3`, `z:2`, `j:4`, `i:4`, `k:3`).
+The taskflow graph of this pipeline workload is shown below:
 
 @dotfile images/text_processing_pipeline.dot
 

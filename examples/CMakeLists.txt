@@ -1,5 +1,6 @@
 list(APPEND TF_EXAMPLES
   simple 
+  attach_data
   async
   subflow_async
   observer 
@@ -8,8 +9,8 @@ list(APPEND TF_EXAMPLES
   condition
   multi_condition
   switch_case
-  do_while
-  while
+  do_while_loop
+  while_loop
   if_else
   nested_if_else
   visualization 

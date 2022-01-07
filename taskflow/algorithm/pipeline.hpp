@@ -497,7 +497,7 @@ void Pipeline<Ps...>::_build() {
         retval.push_back(0);
       }
       
-      // notice that the index of task starts from 1
+      // notice that the task index starts from 1
       switch(retval.size()) {
         case 2: {
           rt.schedule(_tasks[n_l+1]);

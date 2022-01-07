@@ -24,10 +24,9 @@ int main() {
   tf::Executor executor;
 
   const size_t num_lines = 4;
-  const size_t num_pipes = 3;
 
   // custom data storage
-  std::array<std::array<int, num_pipes>, num_lines> mybuffer;
+  std::array<int, num_lines> mybuffer;
 
   // the pipeline consists of three pipes (serial-parallel-serial)
   // and up to four concurrent scheduling tokens
@@ -40,26 +39,24 @@ int main() {
       // save the result of this pipe into the buffer
       else {
         printf("stage 1: input token = %zu\n", pf.token());
-        mybuffer[pf.line()][pf.pipe()] = pf.token();
+        mybuffer[pf.line()] = pf.token();
       }
     }},
 
     tf::Pipe{tf::PipeType::PARALLEL, [&mybuffer](tf::Pipeflow& pf) {
       printf(
-        "stage 2: input mybuffer[%zu][%zu] = %d\n", 
-        pf.line(), pf.pipe() - 1, mybuffer[pf.line()][pf.pipe() - 1]
+        "stage 2: input mybuffer[%zu] = %d\n", pf.line(), mybuffer[pf.line()]
       );
       // propagate the previous result to this pipe by adding one
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe()-1] + 1;
+      mybuffer[pf.line()] = mybuffer[pf.line()] + 1;
     }},
 
     tf::Pipe{tf::PipeType::SERIAL, [&mybuffer](tf::Pipeflow& pf) {
       printf(
-        "stage 3: input mybuffer[%zu][%zu] = %d\n", 
-        pf.line(), pf.pipe() - 1, mybuffer[pf.line()][pf.pipe() - 1]
+        "stage 3: input mybuffer[%zu] = %d\n", pf.line(), mybuffer[pf.line()]
       );
       // propagate the previous result to this pipe by adding one
-      mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe()-1] + 1;
+      mybuffer[pf.line()] = mybuffer[pf.line()] + 1;
     }}
   );
   

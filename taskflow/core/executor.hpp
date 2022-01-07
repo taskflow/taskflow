@@ -660,7 +660,7 @@ class Executor {
     void _invoke_dynamic_task(Worker&, Node*);
     void _join_dynamic_task_external(Worker&, Node*, Graph&);
     void _join_dynamic_task_internal(Worker&, Node*, Graph&);
-    void _detach_dynamic_tasked(Worker&, Node*, Graph&);
+    void _detach_dynamic_task(Worker&, Node*, Graph&);
     void _invoke_condition_task(Worker&, Node*, SmallVector<int>&);
     void _invoke_multi_condition_task(Worker&, Node*, SmallVector<int>&);
     void _invoke_module_task(Worker&, Node*);
@@ -878,18 +878,21 @@ inline void Executor::_consume_task(Worker& w, Node* p) {
   std::uniform_int_distribution<size_t> rdvtm(0, _workers.size()-1);
 
   while(p->_join_counter != 0) {
+
     exploit:
+
     if(auto t = w._wsq.pop(); t) {
       _invoke(w, t);
     }
     else {
       size_t num_steals = 0;
-      size_t num_pauses = 0;
+      //size_t num_pauses = 0;
       size_t max_steals = ((_workers.size() + 1) << 1);
       
       explore:
 
       t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
+
       if(t) {
         _invoke(w, t);
         goto exploit;
@@ -897,7 +900,8 @@ inline void Executor::_consume_task(Worker& w, Node* p) {
       else if(p->_join_counter != 0){
 
         if(num_steals++ > max_steals) {
-          (num_pauses++ < 100) ? relax_cpu() : std::this_thread::yield();
+          //(num_pauses++ < 100) ? relax_cpu() : std::this_thread::yield();
+          std::this_thread::yield();
         }
 
         //std::this_thread::yield();
@@ -1415,8 +1419,8 @@ inline void Executor::_invoke_dynamic_task(Worker& w, Node* node) {
   _observer_epilogue(w, node);
 }
 
-// Procedure: _detach_dynamic_tasked
-inline void Executor::_detach_dynamic_tasked(
+// Procedure: _detach_dynamic_task
+inline void Executor::_detach_dynamic_task(
   Worker& w, Node* p, Graph& g
 ) {
 
@@ -1841,7 +1845,7 @@ inline void Subflow::detach() {
   }
 
   // only the parent worker can detach the subflow
-  _executor._detach_dynamic_tasked(_worker, _parent, _graph);
+  _executor._detach_dynamic_task(_worker, _parent, _graph);
   _joinable = false;
 }
 

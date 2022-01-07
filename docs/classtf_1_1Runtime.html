@@ -75,7 +75,7 @@
             </dt>
             <dd>obtains the running executor</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a135ad751e8a4e7b1fd07a2cee65677b5" class="m-doc">schedule</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Task.html" class="m-doc">Task</a>)</span>
+              <span class="m-doc-wrap-bumper">void <a href="#aa7e72cc0f298475195b252c8f1793343" class="m-doc">schedule</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Task.html" class="m-doc">Task</a> task)</span>
             </dt>
             <dd>schedules an active task immediately to the worker&#x27;s queue</dd>
             <dt id="a8ee160df481b72d8fdc65ee531b44901">
@@ -99,11 +99,22 @@
 <span class="p">});</span>
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre>
           </div></section>
-          <section class="m-doc-details" id="a135ad751e8a4e7b1fd07a2cee65677b5"><div>
+          <section class="m-doc-details" id="aa7e72cc0f298475195b252c8f1793343"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a135ad751e8a4e7b1fd07a2cee65677b5" class="m-doc-self">schedule</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Task.html" class="m-doc">Task</a>)</span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa7e72cc0f298475195b252c8f1793343" class="m-doc-self">schedule</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Task.html" class="m-doc">Task</a> task)</span></span>
             </h3>
             <p>schedules an active task immediately to the worker&#x27;s queue</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">task</td>
+                  <td>the given active task to schedule immediately</td>
+                </tr>
+              </tbody>
+            </table>
 <p>This member function immediately schedules an active task to the task queue of the associated worker in the runtime task. An active task is a task in a running taskflow. The task may or may not be running, and scheduling that task will immediately put the task into the task queue of the worker that is running the runtime task. Consider the following example:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">;</span>
 <span class="n">std</span><span class="o">::</span><span class="n">tie</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
   <span class="p">[]</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> <span class="p">},</span>

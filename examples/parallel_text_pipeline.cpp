@@ -50,7 +50,6 @@ int main() {
   tf::Executor executor;
 
   const size_t num_lines = 2;
-  const size_t num_pipes = 3;
 
   // input data 
   std::vector<std::string> input = {
@@ -67,7 +66,7 @@ int main() {
   using data_type = std::variant<
     std::string, std::unordered_map<char, size_t>, std::pair<char, size_t>
   >;
-  std::array<std::array<data_type, num_pipes>, num_lines> mybuffer;
+  std::array<data_type, num_lines> buffer;
 
   // the pipeline consists of three pipes (serial-parallel-serial)
   // and up to four concurrent scheduling tokens
@@ -79,7 +78,7 @@ int main() {
         pf.stop();
       }
       else {
-        mybuffer[pf.line()][pf.pipe()] = input[pf.token()];
+        buffer[pf.line()] = input[pf.token()];
         printf("stage 1: input token = %s\n", input[pf.token()].c_str());
       }
     }},
@@ -87,23 +86,19 @@ int main() {
     // second pipe counts the frequency of each character
     tf::Pipe{tf::PipeType::PARALLEL, [&](tf::Pipeflow& pf) {
       std::unordered_map<char, size_t> map;
-      for(auto c : std::get<std::string>(mybuffer[pf.line()][pf.pipe() - 1])) {
+      for(auto c : std::get<std::string>(buffer[pf.line()])) {
         map[c]++;
       }
-      mybuffer[pf.line()][pf.pipe()] = map;
+      buffer[pf.line()] = map;
       printf("stage 2: map = %s\n", format_map(map).c_str());
     }},
     
     // third pipe reduces the most frequent character
-    tf::Pipe{tf::PipeType::SERIAL, [&mybuffer](tf::Pipeflow& pf) {
-      auto& map = std::get<std::unordered_map<char, size_t>>(
-        mybuffer[pf.line()][pf.pipe()-1]
-      );
+    tf::Pipe{tf::PipeType::SERIAL, [&buffer](tf::Pipeflow& pf) {
+      auto& map = std::get<std::unordered_map<char, size_t>>(buffer[pf.line()]);
       auto sol = std::max_element(map.begin(), map.end(), [](auto& a, auto& b){
         return a.second < b.second;
       });
-      // not necessary to store the last-stage data, just for demo purpose
-      mybuffer[pf.line()][pf.pipe()] = *sol;  
       printf("stage 3: %c:%zu\n", sol->first, sol->second);
     }}
   );

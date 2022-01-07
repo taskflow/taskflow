@@ -121,10 +121,10 @@
 //----------------------------------------------------------------------------- 
 // pause
 //----------------------------------------------------------------------------- 
-#if __has_include (<immintrin.h>)
-  #define TF_HAS_MM_PAUSE 1
-  #include <immintrin.h>
-#endif
+//#if __has_include (<immintrin.h>)
+//  #define TF_HAS_MM_PAUSE 1
+//  #include <immintrin.h>
+//#endif
 
 
 
@@ -172,11 +172,11 @@ inline bool has_env(const std::string& str) {
 }
 
 // Procedure: relax_cpu
-inline void relax_cpu() {
-#ifdef TF_HAS_MM_PAUSE
-  _mm_pause();
-#endif
-}
+//inline void relax_cpu() {
+//#ifdef TF_HAS_MM_PAUSE
+//  _mm_pause();
+//#endif
+//}
 
 
 
