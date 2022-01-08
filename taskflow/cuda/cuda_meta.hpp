@@ -413,42 +413,39 @@ __global__ void cuda_kernel(F f, args_t... args) {
 // operators
 // ----------------------------------------------------------------------------
 
-template <typename T>
-struct cuda_plus : public std::binary_function<T, T, T> {
+template <class T>
+struct cuda_plus{
   __device__ T operator()(T a, T b) const { return a + b; }
 };
 
-template <typename T>
-struct cuda_minus : public std::binary_function<T, T, T> {
+ template <class T>
+struct cuda_minus{
   __device__ T operator()(T a, T b) const { return a - b; }
 };
 
-template <typename T>
-struct cuda_multiplies : public std::binary_function<T, T, T> {
+template <class T>
+struct cuda_multiplies{
   __device__ T operator()(T a, T b) const { return a * b; }
 };
 
-template <typename T>
-struct cuda_maximum  : public std::binary_function<T, T, T> {
+template <class T>
+struct cuda_maximum{
   __device__ T operator()(T a, T b) const { return a > b ? a : b; }
 };
 
-template <typename T>
-struct cuda_minimum  : public std::binary_function<T, T, T> {
+template <class T>
+struct cuda_minimum{
   __device__ T operator()(T a, T b) const { return a < b ? a : b; }
 };
 
-template <typename T>
-struct cuda_less : public std::binary_function<T, T, T> {
+template <class T>
+struct cuda_less{
   __device__ T operator()(T a, T b) const { return a < b; }
 };
 
-template <typename T>
-struct cuda_greater : public std::binary_function<T, T, T> {
+template <class T>
+struct cuda_greater{
   __device__ T operator()(T a, T b) const { return a > b; }
 };
 
 }  // end of namespace tf -----------------------------------------------------
-
-
-
