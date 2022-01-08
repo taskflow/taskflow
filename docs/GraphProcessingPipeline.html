@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Learning from Examples &raquo; Graph Processing Pipeline | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="Examples.html">Learning from Examples</a> &raquo;</span>
+          Graph Processing Pipeline
+        </h1>
+        <div class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li><a href="#FormulateTheGraphProcessingPipelineProblem">Formulate the Graph Processing Pipeline Problem</a></li>
+            <li>
+              <a href="#CreateAGraphProcessingPipeline">Create a Graph Processing Pipeline</a>
+              <ul>
+                <li><a href="#GraphPipelineFindATopologicalOrderOfTheGraph">Find a Topological Order of the Graph</a></li>
+                <li><a href="#GraphPipelineDefineTheStageFunction">Define the Stage Function</a></li>
+                <li><a href="#GraphPipelineDefineThePipes">Define the Pipes</a></li>
+                <li><a href="#GraphPipelineDefineTheTaskGraph">Define the Task Graph</a></li>
+                <li><a href="#GraphPipelineSubmitTheTaskGraph">Submit the Task Graph</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+<p>We study a graph processing pipeline that propagates a sequence of linearly dependent tasks over a dependency graph. In this particular workload, we will learn how to transform task graph parallelism into pipeline parallelism.</p><section id="FormulateTheGraphProcessingPipelineProblem"><h2><a href="#FormulateTheGraphProcessingPipelineProblem">Formulate the Graph Processing Pipeline Problem</a></h2><p>Given a directed acyclic graph (DAG), where each node encapsulates a sequence of linearly dependent tasks, namely <em>stage tasks</em>, and each edge represents a dependency between two tasks at the same stages of adjacent nodes. For example, assuming <code>fi(u)</code> represents the <code>i</code><sup>th</sup>-stage task of node <code>u</code>, a dependency from <code>u</code> to <code>v</code> requires <code>fi(u)</code> to run before <code>fi(v)</code>. The following figures shows an example of three stage tasks in a DAG of three nodes (<code>A</code>, <code>B</code>, and <code>C</code>) and two dependencies (<code>A-&gt;B</code> and <code>A-&gt;C</code>):</p><div class="m-graph"><svg style="width: 16.125rem; height: 12.750rem;" viewBox="0.00 0.00 257.50 204.00">
+<g transform="scale(1 1) rotate(0) translate(4 200)">
+<title>L</title>
+<g class="m-node m-flat">
+<title>a</title>
+<polygon points="182,-196 67,-196 67,-116 182,-116 182,-196"/>
+<text text-anchor="start" x="75" y="-179.2">[Node A]</text>
+<text text-anchor="start" x="75" y="-161.2">Step 1: f1(A)</text>
+<text text-anchor="start" x="75" y="-143.2">Step 2: f2(A)</text>
+<text text-anchor="start" x="75" y="-125.2">Step 3: f3(A)</text>
+</g>
+<g class="m-node m-flat">
+<title>b</title>
+<polygon points="115,-80 0,-80 0,0 115,0 115,-80"/>
+<text text-anchor="start" x="8" y="-63.2">[Node B]</text>
+<text text-anchor="start" x="8" y="-45.2">Step 1: f1(B)</text>
+<text text-anchor="start" x="8" y="-27.2">Step 2: f2(B)</text>
+<text text-anchor="start" x="8" y="-9.2">Step 3: f3(B)</text>
+</g>
+<g class="m-edge">
+<title>a&#45;&gt;b</title>
+<path d="M101.2547,-115.7544C96.2657,-107.1167 90.9409,-97.8977 85.7851,-88.9712"/>
+<polygon points="88.7366,-87.0833 80.7042,-80.1745 82.675,-90.5844 88.7366,-87.0833"/>
+</g>
+<g class="m-node m-flat">
+<title>c</title>
+<polygon points="249.5,-80 133.5,-80 133.5,0 249.5,0 249.5,-80"/>
+<text text-anchor="start" x="141.5" y="-63.2">[Node C]</text>
+<text text-anchor="start" x="141.5" y="-45.2">Step 1: f1(C)</text>
+<text text-anchor="start" x="141.5" y="-27.2">Step 2: f2(C)</text>
+<text text-anchor="start" x="141.5" y="-9.2">Step 3: f3(C)</text>
+</g>
+<g class="m-edge">
+<title>a&#45;&gt;c</title>
+<path d="M147.7453,-115.7544C152.7343,-107.1167 158.0591,-97.8977 163.2149,-88.9712"/>
+<polygon points="166.325,-90.5844 168.2958,-80.1745 160.2634,-87.0833 166.325,-90.5844"/>
+</g>
+</g>
+</svg>
+</div><p>While we can directly create a taskflow for the DAG (i.e., each task in the taskflow runs <code>f1</code>, <code>f2</code>, and <code>f3</code> sequentially), we can describe the parallelism as a three-stage pipeline that propagates a topological order of the DAG through three stage tasks. Consider a valid topological order of this DAG, <code>A, B, C</code>, its pipeline parallelism can be illustrated in the following figure:</p><div class="m-graph"><svg style="width: 13.062rem; height: 20.750rem;" viewBox="0.00 0.00 209.00 332.00">
+<g transform="scale(1 1) rotate(0) translate(4 328)">
+<title>R</title>
+<g class="m-node m-flat">
+<title>f1_A</title>
+<polygon points="54.5,-324 .5,-324 .5,-288 54.5,-288 54.5,-324"/>
+<text text-anchor="middle" x="27.5" y="-302.2">f1(A)</text>
+</g>
+<g class="m-node m-flat">
+<title>f1_B</title>
+<polygon points="54.5,-252 .5,-252 .5,-216 54.5,-216 54.5,-252"/>
+<text text-anchor="middle" x="27.5" y="-230.2">f1(B)</text>
+</g>
+<g class="m-edge">
+<title>f1_A&#45;&gt;f1_B</title>
+<path d="M27.5,-287.8314C27.5,-280.131 27.5,-270.9743 27.5,-262.4166"/>
+<polygon points="31.0001,-262.4132 27.5,-252.4133 24.0001,-262.4133 31.0001,-262.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>f2_A</title>
+<polygon points="126.5,-252 72.5,-252 72.5,-216 126.5,-216 126.5,-252"/>
+<text text-anchor="middle" x="99.5" y="-230.2">f2(A)</text>
+</g>
+<g class="m-node m-flat">
+<title>f2_B</title>
+<polygon points="127.5,-180 73.5,-180 73.5,-144 127.5,-144 127.5,-180"/>
+<text text-anchor="middle" x="100.5" y="-158.2">f2(B)</text>
+</g>
+<g class="m-edge">
+<title>f2_A&#45;&gt;f2_B</title>
+<path d="M99.7523,-215.8314C99.8593,-208.131 99.9865,-198.9743 100.1053,-190.4166"/>
+<polygon points="103.6049,-190.4609 100.2443,-180.4133 96.6056,-190.3637 103.6049,-190.4609"/>
+</g>
+<g class="m-node m-flat">
+<title>f3_A</title>
+<polygon points="199.5,-180 145.5,-180 145.5,-144 199.5,-144 199.5,-180"/>
+<text text-anchor="middle" x="172.5" y="-158.2">f3(A)</text>
+</g>
+<g class="m-node m-flat">
+<title>f3_B</title>
+<polygon points="200.5,-108 146.5,-108 146.5,-72 200.5,-72 200.5,-108"/>
+<text text-anchor="middle" x="173.5" y="-86.2">f3(B)</text>
+</g>
+<g class="m-edge">
+<title>f3_A&#45;&gt;f3_B</title>
+<path d="M172.7523,-143.8314C172.8593,-136.131 172.9865,-126.9743 173.1053,-118.4166"/>
+<polygon points="176.6049,-118.4609 173.2443,-108.4133 169.6056,-118.3637 176.6049,-118.4609"/>
+</g>
+<g class="m-edge">
+<title>f1_B&#45;&gt;f2_A</title>
+<path d="M54.7813,-234C60.604,-234 66.4268,-234 72.2495,-234"/>
+</g>
+<g class="m-node m-flat">
+<title>f1_C</title>
+<polygon points="55,-180 0,-180 0,-144 55,-144 55,-180"/>
+<text text-anchor="middle" x="27.5" y="-158.2">f1(C)</text>
+</g>
+<g class="m-edge">
+<title>f1_B&#45;&gt;f1_C</title>
+<path d="M27.5,-215.8314C27.5,-208.131 27.5,-198.9743 27.5,-190.4166"/>
+<polygon points="31.0001,-190.4132 27.5,-180.4133 24.0001,-190.4133 31.0001,-190.4132"/>
+</g>
+<g class="m-edge">
+<title>f2_B&#45;&gt;f3_A</title>
+<path d="M127.7813,-162C133.604,-162 139.4268,-162 145.2495,-162"/>
+</g>
+<g class="m-node m-flat">
+<title>f2_C</title>
+<polygon points="128,-108 73,-108 73,-72 128,-72 128,-108"/>
+<text text-anchor="middle" x="100.5" y="-86.2">f2(C)</text>
+</g>
+<g class="m-edge">
+<title>f2_B&#45;&gt;f2_C</title>
+<path d="M100.5,-143.8314C100.5,-136.131 100.5,-126.9743 100.5,-118.4166"/>
+<polygon points="104.0001,-118.4132 100.5,-108.4133 97.0001,-118.4133 104.0001,-118.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>f3_C</title>
+<polygon points="201,-36 146,-36 146,0 201,0 201,-36"/>
+<text text-anchor="middle" x="173.5" y="-14.2">f3(C)</text>
+</g>
+<g class="m-edge">
+<title>f3_B&#45;&gt;f3_C</title>
+<path d="M173.5,-71.8314C173.5,-64.131 173.5,-54.9743 173.5,-46.4166"/>
+<polygon points="177.0001,-46.4132 173.5,-36.4133 170.0001,-46.4133 177.0001,-46.4132"/>
+</g>
+<g class="m-edge">
+<title>f1_C&#45;&gt;f2_B</title>
+<path d="M55.1602,-162C61.1819,-162 67.2036,-162 73.2253,-162"/>
+</g>
+<g class="m-edge">
+<title>f2_C&#45;&gt;f3_B</title>
+<path d="M128.1602,-90C134.1819,-90 140.2036,-90 146.2253,-90"/>
+</g>
+</g>
+</svg>
+</div><p>At the beginning, <code>f1(A)</code> runs first. When <code>f1(A)</code> completes, it moves on to <code>f2(A)</code> and, meanwhile, <code>f1(B)</code> can start to run together with <code>f2(A)</code>, and so on so forth. The straight line represents two parallel tasks that can overlap in time in the pipeline. For example, <code>f3(A)</code>, <code>f2(B)</code>, and <code>f1(C)</code> can run simultaneously. The following figures shows the task dependency graph of this pipeline workload:</p><div class="m-graph"><svg style="width: 13.000rem; height: 11.750rem;" viewBox="0.00 0.00 207.50 188.00">
+<g transform="scale(1 1) rotate(0) translate(4 184)">
+<title>R</title>
+<g class="m-node m-flat">
+<title>f1_A</title>
+<polygon points="54,-180 0,-180 0,-144 54,-144 54,-180"/>
+<text text-anchor="middle" x="27" y="-158.2">f1(A)</text>
+</g>
+<g class="m-node m-flat">
+<title>f1_B</title>
+<polygon points="126,-180 72,-180 72,-144 126,-144 126,-180"/>
+<text text-anchor="middle" x="99" y="-158.2">f1(B)</text>
+</g>
+<g class="m-edge">
+<title>f1_A&#45;&gt;f1_B</title>
+<path d="M54.2813,-162C56.7377,-162 59.1942,-162 61.6507,-162"/>
+<polygon points="61.7495,-165.5001 71.7495,-162 61.7495,-158.5001 61.7495,-165.5001"/>
+</g>
+<g class="m-node m-flat">
+<title>f2_A</title>
+<polygon points="54,-108 0,-108 0,-72 54,-72 54,-108"/>
+<text text-anchor="middle" x="27" y="-86.2">f2(A)</text>
+</g>
+<g class="m-edge">
+<title>f1_A&#45;&gt;f2_A</title>
+<path d="M27,-143.8314C27,-136.131 27,-126.9743 27,-118.4166"/>
+<polygon points="30.5001,-118.4132 27,-108.4133 23.5001,-118.4133 30.5001,-118.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>f1_C</title>
+<polygon points="199.5,-180 144.5,-180 144.5,-144 199.5,-144 199.5,-180"/>
+<text text-anchor="middle" x="172" y="-158.2">f1(C)</text>
+</g>
+<g class="m-edge">
+<title>f1_B&#45;&gt;f1_C</title>
+<path d="M126.0898,-162C128.8527,-162 131.6157,-162 134.3786,-162"/>
+<polygon points="134.3822,-165.5001 144.3822,-162 134.3821,-158.5001 134.3822,-165.5001"/>
+</g>
+<g class="m-node m-flat">
+<title>f2_B</title>
+<polygon points="126,-108 72,-108 72,-72 126,-72 126,-108"/>
+<text text-anchor="middle" x="99" y="-86.2">f2(B)</text>
+</g>
+<g class="m-edge">
+<title>f1_B&#45;&gt;f2_B</title>
+<path d="M99,-143.8314C99,-136.131 99,-126.9743 99,-118.4166"/>
+<polygon points="102.5001,-118.4132 99,-108.4133 95.5001,-118.4133 102.5001,-118.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>f2_C</title>
+<polygon points="199.5,-108 144.5,-108 144.5,-72 199.5,-72 199.5,-108"/>
+<text text-anchor="middle" x="172" y="-86.2">f2(C)</text>
+</g>
+<g class="m-edge">
+<title>f1_C&#45;&gt;f2_C</title>
+<path d="M172,-143.8314C172,-136.131 172,-126.9743 172,-118.4166"/>
+<polygon points="175.5001,-118.4132 172,-108.4133 168.5001,-118.4133 175.5001,-118.4132"/>
+</g>
+<g class="m-edge">
+<title>f2_A&#45;&gt;f2_B</title>
+<path d="M54.2813,-90C56.7377,-90 59.1942,-90 61.6507,-90"/>
+<polygon points="61.7495,-93.5001 71.7495,-90 61.7495,-86.5001 61.7495,-93.5001"/>
+</g>
+<g class="m-node m-flat">
+<title>f3_A</title>
+<polygon points="54,-36 0,-36 0,0 54,0 54,-36"/>
+<text text-anchor="middle" x="27" y="-14.2">f3(A)</text>
+</g>
+<g class="m-edge">
+<title>f2_A&#45;&gt;f3_A</title>
+<path d="M27,-71.8314C27,-64.131 27,-54.9743 27,-46.4166"/>
+<polygon points="30.5001,-46.4132 27,-36.4133 23.5001,-46.4133 30.5001,-46.4132"/>
+</g>
+<g class="m-edge">
+<title>f2_B&#45;&gt;f2_C</title>
+<path d="M126.0898,-90C128.8527,-90 131.6157,-90 134.3786,-90"/>
+<polygon points="134.3822,-93.5001 144.3822,-90 134.3821,-86.5001 134.3822,-93.5001"/>
+</g>
+<g class="m-node m-flat">
+<title>f3_B</title>
+<polygon points="126,-36 72,-36 72,0 126,0 126,-36"/>
+<text text-anchor="middle" x="99" y="-14.2">f3(B)</text>
+</g>
+<g class="m-edge">
+<title>f2_B&#45;&gt;f3_B</title>
+<path d="M99,-71.8314C99,-64.131 99,-54.9743 99,-46.4166"/>
+<polygon points="102.5001,-46.4132 99,-36.4133 95.5001,-46.4133 102.5001,-46.4132"/>
+</g>
+<g class="m-node m-flat">
+<title>f3_C</title>
+<polygon points="199.5,-36 144.5,-36 144.5,0 199.5,0 199.5,-36"/>
+<text text-anchor="middle" x="172" y="-14.2">f3(C)</text>
+</g>
+<g class="m-edge">
+<title>f2_C&#45;&gt;f3_C</title>
+<path d="M172,-71.8314C172,-64.131 172,-54.9743 172,-46.4166"/>
+<polygon points="175.5001,-46.4132 172,-36.4133 168.5001,-46.4133 175.5001,-46.4132"/>
+</g>
+<g class="m-edge">
+<title>f3_A&#45;&gt;f3_B</title>
+<path d="M54.2813,-18C56.7377,-18 59.1942,-18 61.6507,-18"/>
+<polygon points="61.7495,-21.5001 71.7495,-18 61.7495,-14.5001 61.7495,-21.5001"/>
+</g>
+<g class="m-edge">
+<title>f3_B&#45;&gt;f3_C</title>
+<path d="M126.0898,-18C128.8527,-18 131.6157,-18 134.3786,-18"/>
+<polygon points="134.3822,-21.5001 144.3822,-18 134.3821,-14.5001 134.3822,-21.5001"/>
+</g>
+</g>
+</svg>
+</div><p>As we can see, tasks in diagonal lines (lower-left to upper-right) can run in parallel. This type of parallelism is also referred to as <em>wavefront</em> parallelism, which sweeps parallel elements in a diagonal direction.</p><aside class="m-note m-info"><h4>Note</h4><p>Depending on the graph size and the number of stage tasks, task graph parallelism and pipeline parallelism can bring very different performance results. For example, a small graph will a long chain of stage tasks may perform better with pipeline parallelism than task graph parallelism, and vice versa.</p></aside></section><section id="CreateAGraphProcessingPipeline"><h2><a href="#CreateAGraphProcessingPipeline">Create a Graph Processing Pipeline</a></h2><p>Using the example from the previous section, we create a three-stage pipeline that encapsulates the three stage tasks (<code>f1, f2, f3</code>) in three pipes. By finding a topological order of the graph, we can transform the node dependency into a sequence of linearly dependent data tokens to feed into the pipeline. The overall implementation is shown below:</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;taskflow/algorithm/pipeline.hpp&gt;</span><span class="cp"></span>
+
+<span class="c1">// 1st-stage function</span>
+<span class="kt">void</span> <span class="nf">f1</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">node</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;f1(%s)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">node</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="c1">// 2nd-stage function</span>
+<span class="kt">void</span> <span class="nf">f2</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">node</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;f2(%s)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">node</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="c1">// 3rd-stage function</span>
+<span class="kt">void</span> <span class="nf">f3</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">node</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;f3(%s)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">node</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;graph processing pipeline&quot;</span><span class="p">);</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
+
+  <span class="k">const</span> <span class="kt">size_t</span> <span class="n">num_lines</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  
+  <span class="c1">// a topological order of the graph</span>
+  <span class="c1">//    |-&gt; B</span>
+  <span class="c1">// A--|</span>
+  <span class="c1">//    |-&gt; C</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">nodes</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;A&quot;</span><span class="p">,</span> <span class="s">&quot;B&quot;</span><span class="p">,</span> <span class="s">&quot;C&quot;</span><span class="p">};</span>
+
+  <span class="c1">// the pipeline consists of three pipes (serial-parallel-serial)</span>
+  <span class="c1">// and up to four concurrent scheduling tokens</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Pipeline</span> <span class="n">pl</span><span class="p">(</span><span class="n">num_lines</span><span class="p">,</span>
+
+    <span class="c1">// first pipe calls f1</span>
+    <span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span> <span class="n">pf</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()</span> <span class="o">==</span> <span class="n">nodes</span><span class="p">.</span><span class="n">size</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">pf</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="n">f1</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()]);</span>
+      <span class="p">}</span>
+    <span class="p">}},</span>
+    
+    <span class="c1">// second pipe calls f2</span>
+    <span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">PARALLEL</span><span class="p">,</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span> <span class="n">pf</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">f2</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()]);</span>
+    <span class="p">}},</span>
+
+    <span class="c1">// third pipe calls f3</span>
+    <span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span> <span class="n">pf</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">f3</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()]);</span>
+    <span class="p">}}</span>
+  <span class="p">);</span>
+
+  <span class="c1">// build the pipeline graph using composition</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">init</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;ready</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">})</span>
+                          <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;starting pipeline&quot;</span><span class="p">);</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">task</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">pl</span><span class="p">)</span>
+                          <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">stop</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;stopped</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">})</span>
+                          <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;pipeline stopped&quot;</span><span class="p">);</span>
+
+  <span class="c1">// create task dependency</span>
+  <span class="n">init</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task</span><span class="p">);</span>
+  <span class="n">task</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">stop</span><span class="p">);</span>
+
+  <span class="c1">// dump the pipeline graph structure (with composition)</span>
+  <span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
+
+  <span class="c1">// run the pipeline</span>
+  <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span></pre><section id="GraphPipelineFindATopologicalOrderOfTheGraph"><h3><a href="#GraphPipelineFindATopologicalOrderOfTheGraph">Find a Topological Order of the Graph</a></h3><p>The first step is to find a valid topological order of the graph, such that we can transform the graph dependency into a linear sequence. In this example, we simply hard-code it:</p><pre class="m-code"><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">nodes</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;A&quot;</span><span class="p">,</span> <span class="s">&quot;B&quot;</span><span class="p">,</span> <span class="s">&quot;C&quot;</span><span class="p">};</span></pre></section><section id="GraphPipelineDefineTheStageFunction"><h3><a href="#GraphPipelineDefineTheStageFunction">Define the Stage Function</a></h3><p>This particular workload does not propagate data directly through the pipeline. In most situations, data is directly stored in a custom graph data structure, and the stage function will just need to know which node to process. For demo&#x27;s sake, we simply output a message to show which stage function is processing which node:</p><pre class="m-code"><span class="c1">// 1st-stage function</span>
+<span class="kt">void</span> <span class="nf">f1</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">node</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;f1(%s)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">node</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="c1">// 2nd-stage function</span>
+<span class="kt">void</span> <span class="nf">f2</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">node</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;f2(%s)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">node</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="c1">// 3rd-stage function</span>
+<span class="kt">void</span> <span class="nf">f3</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">node</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;f3(%s)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">node</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="p">}</span></pre><aside class="m-note m-info"><h4>Note</h4><p>A key advantage of Taskflow&#x27;s pipeline programming model is that we do not provide any data abstraction but give users full control over data management, which is typically application-dependent. In an application like this graph processing pipeline, data is managed in a global custom graph data structure, and any data abstraction provided by the library can become a unnecessary overhead.</p></aside></section><section id="GraphPipelineDefineThePipes"><h3><a href="#GraphPipelineDefineThePipes">Define the Pipes</a></h3><p>The pipe structure is straightforward. Each pipe encapsulates the corresponding stage function and passes the node into the function argument. The first pipe will cease the pipeline scheduling when it has processed all nodes. To identify which node is being processed at a running pipe, we use <a href="classtf_1_1Pipeflow.html#a295e5d884665c076f4ef5d78139f7c51" class="m-doc">tf::<wbr />Pipeflow::<wbr />token</a> to find the index:</p><pre class="m-code"><span class="c1">// first pipe calls f1</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span> <span class="n">pf</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()</span> <span class="o">==</span> <span class="n">nodes</span><span class="p">.</span><span class="n">size</span><span class="p">())</span> <span class="p">{</span>
+    <span class="n">pf</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="n">f1</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()]);</span>
+  <span class="p">}</span>
+<span class="p">}},</span>
+
+<span class="c1">// second pipe calls f2</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">PARALLEL</span><span class="p">,</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span> <span class="n">pf</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">f2</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()]);</span>
+<span class="p">}},</span>
+
+<span class="c1">// third pipe calls f3</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span> <span class="n">pf</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">f3</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()]);</span>
+<span class="p">}}</span></pre></section><section id="GraphPipelineDefineTheTaskGraph"><h3><a href="#GraphPipelineDefineTheTaskGraph">Define the Task Graph</a></h3><p>To build up the taskflow for the pipeline, we create a module task with the defined pipeline structure and connect it with two tasks that output helper messages before and after the pipeline:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">init</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;ready</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">})</span>
+                        <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;starting pipeline&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">task</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">pl</span><span class="p">)</span>
+                        <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">stop</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;stopped</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">})</span>
+                        <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;pipeline stopped&quot;</span><span class="p">);</span>
+<span class="n">init</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task</span><span class="p">);</span>
+<span class="n">task</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">stop</span><span class="p">);</span></pre><div class="m-graph"><svg style="width: 24.875rem; height: 22.375rem;" viewBox="0.00 0.00 398.00 357.77">
+<g transform="scale(1 1) rotate(0) translate(4 353.7696)">
+<title>Taskflow</title>
+<g class="m-cluster">
+<title>cluster_p0x7ffd7418c200</title>
+<polygon points="8,-8 8,-334.1543 232,-334.1543 232,-8 8,-8"/>
+<text text-anchor="middle" x="120" y="-317.3543">Graph Processing Pipeline</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7ffd7418c110</title>
+<polygon points="240,-119.7696 240,-341.7696 382,-341.7696 382,-119.7696 240,-119.7696"/>
+<text text-anchor="middle" x="311" y="-324.9696">m1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7bc4000142e8</title>
+<ellipse cx="120" cy="-281.7696" rx="102.561" ry="18.2703"/>
+<text text-anchor="middle" x="120" y="-277.9696">starting pipeline</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7bc4000143d0</title>
+<polygon points="180.5,-163.7696 63.5,-163.7696 59.5,-159.7696 59.5,-127.7696 176.5,-127.7696 180.5,-131.7696 180.5,-163.7696"/>
+<polyline points="176.5,-159.7696 59.5,-159.7696 "/>
+<polyline points="176.5,-159.7696 176.5,-127.7696 "/>
+<polyline points="176.5,-159.7696 180.5,-163.7696 "/>
+<text text-anchor="middle" x="120" y="-141.9696">pipeline [m1]</text>
+</g>
+<g class="m-edge">
+<title>p0x7bc4000142e8&#45;&gt;p0x7bc4000143d0</title>
+<path d="M120,-263.1445C120,-240.2544 120,-201.1696 120,-174.4397"/>
+<polygon points="123.5001,-174.1696 120,-164.1697 116.5001,-174.1697 123.5001,-174.1696"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7bc4000144b8</title>
+<ellipse cx="120" cy="-34.3848" rx="103.8894" ry="18.2703"/>
+<text text-anchor="middle" x="120" y="-30.5848">pipeline stopped</text>
+</g>
+<g class="m-edge">
+<title>p0x7bc4000143d0&#45;&gt;p0x7bc4000144b8</title>
+<path d="M120,-127.3766C120,-109.8829 120,-83.3019 120,-63.0326"/>
+<polygon points="123.5001,-62.805 120,-52.805 116.5001,-62.8051 123.5001,-62.805"/>
+</g>
+<g class="m-node">
+<title>p0x7bc400014030</title>
+<polygon points="311,-307.7696 256,-281.7696 311,-255.7696 366,-281.7696 311,-307.7696"/>
+<text text-anchor="middle" x="311" y="-277.9696">cond</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7bc400014118</title>
+<polygon points="302,-163.7696 248,-163.7696 248,-159.7696 244,-159.7696 244,-155.7696 248,-155.7696 248,-135.7696 244,-135.7696 244,-131.7696 248,-131.7696 248,-127.7696 302,-127.7696 302,-163.7696"/>
+<polyline points="248,-159.7696 252,-159.7696 252,-155.7696 248,-155.7696 "/>
+<polyline points="248,-135.7696 252,-135.7696 252,-131.7696 248,-131.7696 "/>
+<text text-anchor="middle" x="275" y="-141.9696">rt&#45;0</text>
+</g>
+<g class="m-edge">
+<title>p0x7bc400014030&#45;&gt;p0x7bc400014118</title>
+<path stroke-dasharray="5,2" d="M304.8114,-258.3903C298.6195,-234.9989 289.0892,-198.9954 282.4777,-174.0185"/>
+<polygon points="285.7836,-172.8296 279.8411,-164.0581 279.0166,-174.6209 285.7836,-172.8296"/>
+<text text-anchor="middle" x="299" y="-205.9696">0</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7bc400014200</title>
+<polygon points="374,-163.7696 320,-163.7696 320,-159.7696 316,-159.7696 316,-155.7696 320,-155.7696 320,-135.7696 316,-135.7696 316,-131.7696 320,-131.7696 320,-127.7696 374,-127.7696 374,-163.7696"/>
+<polyline points="320,-159.7696 324,-159.7696 324,-155.7696 320,-155.7696 "/>
+<polyline points="320,-135.7696 324,-135.7696 324,-131.7696 320,-131.7696 "/>
+<text text-anchor="middle" x="347" y="-141.9696">rt&#45;1</text>
+</g>
+<g class="m-edge">
+<title>p0x7bc400014030&#45;&gt;p0x7bc400014200</title>
+<path stroke-dasharray="5,2" d="M317.1886,-258.3903C323.3805,-234.9989 332.9108,-198.9954 339.5223,-174.0185"/>
+<polygon points="342.9834,-174.6209 342.1589,-164.0581 336.2164,-172.8296 342.9834,-174.6209"/>
+<text text-anchor="middle" x="337" y="-205.9696">1</text>
+</g>
+</g>
+</svg>
+</div></section><section id="GraphPipelineSubmitTheTaskGraph"><h3><a href="#GraphPipelineSubmitTheTaskGraph">Submit the Task Graph</a></h3><p>Finally, we submit the taskflow to the execution and run it once:</p><pre class="m-code"><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>Three possible outputs are shown below:</p><pre class="m-console"><span class="gp">#</span> possible output <span class="m">1</span>
+<span class="go">ready</span>
+<span class="go">f1(A)</span>
+<span class="go">f2(A)</span>
+<span class="go">f1(B)</span>
+<span class="go">f2(B)</span>
+<span class="go">f3(A)</span>
+<span class="go">f1(C)</span>
+<span class="go">f2(C)</span>
+<span class="go">f3(B)</span>
+<span class="go">f3(C)</span>
+<span class="go">stopped</span>
+
+<span class="gp">#</span> possible output <span class="m">2</span>
+<span class="go">f1(A)</span>
+<span class="go">f2(A)</span>
+<span class="go">f3(A)</span>
+<span class="go">f1(B)</span>
+<span class="go">f2(B)</span>
+<span class="go">f3(B)</span>
+<span class="go">f1(C)</span>
+<span class="go">f2(C)</span>
+<span class="go">f3(C)</span>
+<span class="go">stopped</span>
+
+<span class="gp">#</span> possible output <span class="m">3</span>
+<span class="go">ready</span>
+<span class="go">f1(A)</span>
+<span class="go">f2(A)</span>
+<span class="go">f3(A)</span>
+<span class="go">f1(B)</span>
+<span class="go">f2(B)</span>
+<span class="go">f1(C)</span>
+<span class="go">f2(C)</span>
+<span class="go">f3(B)</span>
+<span class="go">f3(C)</span>
+<span class="go">stopped</span></pre></section></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

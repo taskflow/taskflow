@@ -75,7 +75,6 @@ int main() {
   tf::Executor executor;
 
   const size_t num_lines = 2;
-  const size_t num_pipes = 3;
 
   // input data 
   std::vector<std::string> input = {
@@ -240,6 +239,8 @@ tf::Task stop = taskflow.emplace([](){ std::cout << "stopped\n"; })
 init.precede(task);
 task.precede(stop);
 @endcode
+
+@subsection TextPipelineSubmitTheTaskGraph Submit the Task Graph
 
 Finally, we submit the taskflow to the execution and run it once:
 
