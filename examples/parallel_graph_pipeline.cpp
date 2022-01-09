@@ -32,8 +32,8 @@ int main() {
   //    |-> C
   const std::vector<std::string> nodes = {"A", "B", "C"};
 
-  // the pipeline consists of three pipes (serial-parallel-serial)
-  // and up to four concurrent scheduling tokens
+  // the pipeline consists of three serial pipes
+  // and up to two concurrent scheduling tokens
   tf::Pipeline pl(num_lines,
 
     // first pipe calls f1
@@ -47,7 +47,7 @@ int main() {
     }},
     
     // second pipe calls f2
-    tf::Pipe{tf::PipeType::PARALLEL, [&](tf::Pipeflow& pf) {
+    tf::Pipe{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) {
       f2(nodes[pf.token()]);
     }},
 

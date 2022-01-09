@@ -69,7 +69,7 @@ int main() {
   std::array<data_type, num_lines> buffer;
 
   // the pipeline consists of three pipes (serial-parallel-serial)
-  // and up to four concurrent scheduling tokens
+  // and up to two concurrent scheduling tokens
   tf::Pipeline pl(num_lines,
 
     // first pipe processes the input data

@@ -20,6 +20,7 @@ list(APPEND TF_EXAMPLES
   parallel_pipeline
   parallel_text_pipeline
   parallel_graph_pipeline
+  parallel_taskflow_pipeline
   run 
   runtime
   composition

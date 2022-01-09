@@ -30,7 +30,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect2 id="release-3-4-0_1release-3-4-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>Added an example of attaching data to a task (examples/attach_data.cpp)</para></listitem><listitem><para>Added an example of text processing pipeline (examples/parallel_text_pipeline.cpp)</para></listitem></itemizedlist>
+<listitem><para>Added an example of attaching data to a task (examples/attach_data.cpp)</para></listitem><listitem><para>Added an example of text processing pipeline (examples/parallel_text_pipeline.cpp)</para></listitem><listitem><para>Added an example of graph processing pipeline (examples/parallel_graph_pipeline.cpp)</para></listitem><listitem><para>Added an example of taskflow processing pipeline (examples/parallel_taskflow_pipeline.cpp)</para></listitem></itemizedlist>
 </para></sect2>
 <sect2 id="release-3-4-0_1release-3-4-0_cudaflow">
 <title>cudaFlow</title>
@@ -47,7 +47,9 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 </sect1>
 <sect1 id="release-3-4-0_1release-3-4-0_bug_fixes">
 <title>Bug Fixes</title>
-<para>If you encounter any potential bugs, please submit an issue at <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>.</para></sect1>
+<para><itemizedlist>
+<listitem><para>Fixed compilation error by non-portable include of <computeroutput>immintrin.h</computeroutput> (<ulink url="https://github.com/taskflow/taskflow/issues/371">#371</ulink>)</para></listitem><listitem><para>Fixed compilation error by old version of doctest (<ulink url="https://github.com/taskflow/taskflow/issues/372">#372</ulink>)</para></listitem></itemizedlist>
+</para><para>If you encounter any potential bugs, please submit an issue at <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>.</para></sect1>
 <sect1 id="release-3-4-0_1release-3-4-0_breaking_changes">
 <title>Breaking Changes</title>
 </sect1>
@@ -57,13 +59,17 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect1 id="release-3-4-0_1release-3-4-0_documentation">
 <title>Documentation</title>
 <para><itemizedlist>
-<listitem><para>Revised <ref refid="ParallelPipeline" kindref="compound">Parallel Pipeline</ref></para></listitem><listitem><para>Revised <ref refid="Examples" kindref="compound">Learning from Examples</ref><itemizedlist>
-<listitem><para>Added <ref refid="TextProcessingPipeline" kindref="compound">Text Processing Pipeline</ref></para></listitem><listitem><para>Added <ref refid="GraphProcessingPipeline" kindref="compound">Graph Processing Pipeline</ref></para></listitem></itemizedlist>
+<listitem><para>Revised <ref refid="ParallelPipeline" kindref="compound">Parallel Pipeline</ref><itemizedlist>
+<listitem><para>Added <ref refid="ParallelPipeline_1ParallelPipelineLearnMore" kindref="member">Learn More about Taskflow Pipeline</ref></para></listitem></itemizedlist>
+</para></listitem><listitem><para>Revised <ref refid="Examples" kindref="compound">Learning from Examples</ref><itemizedlist>
+<listitem><para>Added <ref refid="TextProcessingPipeline" kindref="compound">Text Processing Pipeline</ref></para></listitem><listitem><para>Added <ref refid="GraphProcessingPipeline" kindref="compound">Graph Processing Pipeline</ref></para></listitem><listitem><para>Added <ref refid="TaskflowProcessingPipeline" kindref="compound">Taskflow Processing Pipeline</ref></para></listitem></itemizedlist>
 </para></listitem></itemizedlist>
 </para></sect1>
 <sect1 id="release-3-4-0_1release-3-4-0_miscellaneous_items">
 <title>Miscellaneous Items</title>
-<para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you intend to collaborate with us on using Taskflow in your scientific computing projects. </para></sect1>
+<para>We have published Taskflow in the following venues:<orderedlist>
+<listitem><para>Dian-Lun Lin and Tsung-Wei Huang, "<ulink url="https://ieeexplore.ieee.org/document/9664223">Accelerating Large Sparse Neural Network Inference using GPU Task Graph Parallelism</ulink>," <emphasis>IEEE Transactions on Parallel and Distributed Systems (TPDS)</emphasis>, accepted, 2022</para></listitem></orderedlist>
+</para><para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you intend to collaborate with us on using Taskflow in your scientific computing projects. </para></sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

@@ -38,6 +38,8 @@ To use %Taskflow v3.4.0, you need a compiler that supports C++17:
 
 + Added an example of attaching data to a task (examples/attach_data.cpp)
 + Added an example of text processing pipeline (examples/parallel_text_pipeline.cpp)
++ Added an example of graph processing pipeline (examples/parallel_graph_pipeline.cpp)
++ Added an example of taskflow processing pipeline (examples/parallel_taskflow_pipeline.cpp)
 
 @subsection release-3-4-0_cudaflow cudaFlow
 
@@ -49,6 +51,9 @@ To use %Taskflow v3.4.0, you need a compiler that supports C++17:
 
 @section release-3-4-0_bug_fixes Bug Fixes 
 
++ Fixed compilation error by non-portable include of `immintrin.h` ([#371](https://github.com/taskflow/taskflow/issues/371))
++ Fixed compilation error by old version of doctest ([#372](https://github.com/taskflow/taskflow/issues/372))
+
 If you encounter any potential bugs, please submit an issue at @IssueTracker.
 
 @section release-3-4-0_breaking_changes Breaking Changes
@@ -58,11 +63,16 @@ If you encounter any potential bugs, please submit an issue at @IssueTracker.
 @section release-3-4-0_documentation Documentation
 
 + Revised @ref ParallelPipeline
+  + Added @ref ParallelPipelineLearnMore
 + Revised @ref Examples
   + Added @ref TextProcessingPipeline
   + Added @ref GraphProcessingPipeline
+  + Added @ref TaskflowProcessingPipeline
 
 @section release-3-4-0_miscellaneous_items Miscellaneous Items
+
+We have published %Taskflow in the following venues:
+  1. Dian-Lun Lin and Tsung-Wei Huang, &quot;[Accelerating Large Sparse Neural Network Inference using GPU Task Graph Parallelism](https://ieeexplore.ieee.org/document/9664223),&quot; <em>IEEE Transactions on Parallel and Distributed Systems (TPDS)</em>, accepted, 2022
 
 Please do not hesitate to contact @twhuang if you intend to collaborate with us 
 on using %Taskflow in your scientific computing projects.

@@ -47,8 +47,8 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/>|-&gt;<sp/>C</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;std::string&gt;</ref><sp/>nodes<sp/>=<sp/>{</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">};</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>the<sp/>pipeline<sp/>consists<sp/>of<sp/>three<sp/>pipes<sp/>(serial-parallel-serial)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>and<sp/>up<sp/>to<sp/>four<sp/>concurrent<sp/>scheduling<sp/>tokens</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>the<sp/>pipeline<sp/>consists<sp/>of<sp/>three<sp/>serial<sp/>pipes</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>and<sp/>up<sp/>to<sp/>two<sp/>concurrent<sp/>scheduling<sp/>tokens</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref><sp/>pl(num_lines,</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>first<sp/>pipe<sp/>calls<sp/>f1</highlight><highlight class="normal"></highlight></codeline>
@@ -62,7 +62,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>second<sp/>pipe<sp/>calls<sp/>f2</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::PARALLEL</ref>,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>f2(nodes[pf.token()]);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -127,7 +127,7 @@
 <codeline><highlight class="normal">}},</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>second<sp/>pipe<sp/>calls<sp/>f2</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::PARALLEL</ref>,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>f2(nodes[pf.token()]);</highlight></codeline>
 <codeline><highlight class="normal">}},</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>

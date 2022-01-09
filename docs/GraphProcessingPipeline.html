@@ -341,8 +341,8 @@
   <span class="c1">//    |-&gt; C</span>
   <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">nodes</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;A&quot;</span><span class="p">,</span> <span class="s">&quot;B&quot;</span><span class="p">,</span> <span class="s">&quot;C&quot;</span><span class="p">};</span>
 
-  <span class="c1">// the pipeline consists of three pipes (serial-parallel-serial)</span>
-  <span class="c1">// and up to four concurrent scheduling tokens</span>
+  <span class="c1">// the pipeline consists of three serial pipes</span>
+  <span class="c1">// and up to two concurrent scheduling tokens</span>
   <span class="n">tf</span><span class="o">::</span><span class="n">Pipeline</span> <span class="n">pl</span><span class="p">(</span><span class="n">num_lines</span><span class="p">,</span>
 
     <span class="c1">// first pipe calls f1</span>
@@ -356,7 +356,7 @@
     <span class="p">}},</span>
     
     <span class="c1">// second pipe calls f2</span>
-    <span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">PARALLEL</span><span class="p">,</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span> <span class="n">pf</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span> <span class="n">pf</span><span class="p">)</span> <span class="p">{</span>
       <span class="n">f2</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()]);</span>
     <span class="p">}},</span>
 
@@ -409,7 +409,7 @@
 <span class="p">}},</span>
 
 <span class="c1">// second pipe calls f2</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">PARALLEL</span><span class="p">,</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span> <span class="n">pf</span><span class="p">)</span> <span class="p">{</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span> <span class="n">pf</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">f2</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()]);</span>
 <span class="p">}},</span>
 
