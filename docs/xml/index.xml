@@ -481,11 +481,11 @@
   <compound refid="structtf_1_1cudaFlowCapturer_1_1External" kind="struct"><name>tf::cudaFlowCapturer::External</name>
     <member refid="structtf_1_1cudaFlowCapturer_1_1External_1acb0595d884b28d21f661595e718c3cc2" kind="variable"><name>graph</name></member>
   </compound>
-  <compound refid="structtf_1_1syclFlow_1_1External" kind="struct"><name>tf::syclFlow::External</name>
-    <member refid="structtf_1_1syclFlow_1_1External_1ace2afbeee949bd808c7e374bdceb0467" kind="variable"><name>graph</name></member>
-  </compound>
   <compound refid="structtf_1_1cudaFlow_1_1External" kind="struct"><name>tf::cudaFlow::External</name>
     <member refid="structtf_1_1cudaFlow_1_1External_1add55ef590408418dee0c8b79db7a747b" kind="variable"><name>graph</name></member>
+  </compound>
+  <compound refid="structtf_1_1syclFlow_1_1External" kind="struct"><name>tf::syclFlow::External</name>
+    <member refid="structtf_1_1syclFlow_1_1External_1ace2afbeee949bd808c7e374bdceb0467" kind="variable"><name>graph</name></member>
   </compound>
   <compound refid="classtf_1_1FlowBuilder" kind="class"><name>tf::FlowBuilder</name>
     <member refid="classtf_1_1FlowBuilder_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -645,19 +645,20 @@
     <member refid="classtf_1_1Pipeflow_1a597744cac4ef0dd9e31e1d694f71f7ec" kind="variable"><name>_pipe</name></member>
     <member refid="classtf_1_1Pipeflow_1a16275ecab224bf1ede060d9e24b4eb48" kind="variable"><name>_token</name></member>
     <member refid="classtf_1_1Pipeflow_1a7474a98aa648d96011df53b085d53965" kind="variable"><name>_stop</name></member>
+    <member refid="classtf_1_1Pipeflow_1a801877443f7046b9e450160c05c26d7d" kind="function"><name>Pipeflow</name></member>
     <member refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kind="function"><name>line</name></member>
     <member refid="classtf_1_1Pipeflow_1a4914c1f381a3016e98285b019cf60d6d" kind="function"><name>pipe</name></member>
     <member refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kind="function"><name>token</name></member>
     <member refid="classtf_1_1Pipeflow_1a830b7f204cb87fff17e8d424918d9453" kind="function"><name>stop</name></member>
-    <member refid="classtf_1_1Pipeflow_1afd312b37a83cc881ffa133c2c62226fc" kind="function"><name>Pipeflow</name></member>
   </compound>
   <compound refid="classtf_1_1Pipeline" kind="class"><name>tf::Pipeline</name>
     <member refid="classtf_1_1Pipeline_1a1e3ad41a55de7fdc1f2ad40ee49a4d4a" kind="variable"><name>_graph</name></member>
+    <member refid="classtf_1_1Pipeline_1a9d9fe0c2e30331b1f7e40d2dc3c5a76f" kind="variable"><name>_num_tokens</name></member>
     <member refid="classtf_1_1Pipeline_1a442f95439871ed72fd67edab10fc77a0" kind="variable"><name>_pipes</name></member>
     <member refid="classtf_1_1Pipeline_1a836ee5a9505f07fc032ea69563063378" kind="variable"><name>_meta</name></member>
     <member refid="classtf_1_1Pipeline_1a21eaa8e9904e9ebb9a1b1ea4a1e183de" kind="variable"><name>_lines</name></member>
-    <member refid="classtf_1_1Pipeline_1a7fa382bd228244822bdec3ae91ab27cc" kind="variable"><name>_tasks</name></member>
-    <member refid="classtf_1_1Pipeline_1a9d9fe0c2e30331b1f7e40d2dc3c5a76f" kind="variable"><name>_num_tokens</name></member>
+    <member refid="classtf_1_1Pipeline_1aba0c750fa328b21fcda5cb44801d6289" kind="variable"><name>_tasks</name></member>
+    <member refid="classtf_1_1Pipeline_1a8d0536148e5fdd373b4ed81965498749" kind="variable"><name>_pipeflows</name></member>
     <member refid="classtf_1_1Pipeline_1aad8735676e4f9fd8474ad1ac51b58f3e" kind="function"><name>Pipeline</name></member>
     <member refid="classtf_1_1Pipeline_1a79f066bacd6c1abd28c26d8196955e95" kind="function"><name>num_lines</name></member>
     <member refid="classtf_1_1Pipeline_1adfef0c60f8f8ace267d7cd8548457ff3" kind="function"><name>num_pipes</name></member>
@@ -860,12 +861,12 @@
     <member refid="structtf_1_1Node_1_1Static_1a30c34caf3aa9406c70dbab295c082468" kind="variable"><name>work</name></member>
     <member refid="structtf_1_1Node_1_1Static_1a91ebe904215e44a81df97586f15b4e07" kind="function"><name>Static</name></member>
   </compound>
-  <compound refid="structtf_1_1detail_1_1cudaBlockReduce_1_1Storage" kind="struct"><name>tf::detail::cudaBlockReduce::Storage</name>
-    <member refid="structtf_1_1detail_1_1cudaBlockReduce_1_1Storage_1ae96b4912d9ac0413c68bfce227a15d04" kind="variable"><name>data</name></member>
-  </compound>
   <compound refid="uniontf_1_1detail_1_1cudaBlockSort_1_1Storage" kind="union"><name>tf::detail::cudaBlockSort::Storage</name>
     <member refid="uniontf_1_1detail_1_1cudaBlockSort_1_1Storage_1a08bff3542e11e199012d1ca64b14881c" kind="variable"><name>keys</name></member>
     <member refid="uniontf_1_1detail_1_1cudaBlockSort_1_1Storage_1a45d6a1f7e31ddb9905bc4c802f7e3e7a" kind="variable"><name>vals</name></member>
+  </compound>
+  <compound refid="structtf_1_1detail_1_1cudaBlockReduce_1_1Storage" kind="struct"><name>tf::detail::cudaBlockReduce::Storage</name>
+    <member refid="structtf_1_1detail_1_1cudaBlockReduce_1_1Storage_1ae96b4912d9ac0413c68bfce227a15d04" kind="variable"><name>data</name></member>
   </compound>
   <compound refid="uniontf_1_1detail_1_1cudaBlockScan_1_1storage__t" kind="union"><name>tf::detail::cudaBlockScan::storage_t</name>
     <member refid="uniontf_1_1detail_1_1cudaBlockScan_1_1storage__t_1a9cc602c1e7c8358505637a42b958f398" kind="variable"><name>data</name></member>

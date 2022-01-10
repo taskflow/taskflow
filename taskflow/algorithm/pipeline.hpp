@@ -118,6 +118,12 @@ class Pipeflow {
   friend class Pipeline;
 
   public:
+
+  /**
+  @brief default constructor
+  */
+  Pipeflow() = default;
+
   
   /**
   @brief queries the line identifier of the present token
@@ -151,11 +157,6 @@ class Pipeflow {
   }
   
   private:
-
-  Pipeflow(size_t line, size_t pipe) :
-    _line {line},
-    _pipe {pipe} {
-  }
 
   size_t _line;
   size_t _pipe;
@@ -329,11 +330,14 @@ class Pipeline {
   private:
   
   Graph _graph;
+
+  size_t _num_tokens;
+
   std::tuple<Ps...> _pipes;
   std::array<PipeMeta, sizeof...(Ps)> _meta;
   std::vector<std::array<Line, sizeof...(Ps)>> _lines; 
-  std::vector<tf::Task> _tasks;
-  size_t _num_tokens;
+  std::vector<Task> _tasks;
+  std::vector<Pipeflow> _pipeflows;
     
   void _on_pipe(Pipeflow&, Runtime&);
   void _build();
@@ -342,10 +346,11 @@ class Pipeline {
 // constructor
 template <typename... Ps>
 Pipeline<Ps...>::Pipeline(size_t num_lines, Ps&&... ps) :
-  _pipes {std::make_tuple(std::forward<Ps>(ps)...)},
-  _meta  {PipeMeta{ps._type}...},
-  _lines (num_lines),
-  _tasks (num_lines + 1) {
+  _pipes     {std::make_tuple(std::forward<Ps>(ps)...)},
+  _meta      {PipeMeta{ps._type}...},
+  _lines     (num_lines),
+  _tasks     (num_lines + 1),
+  _pipeflows (num_lines) {
 
   if(std::get<0>(_pipes)._type == PipeType::PARALLEL) {
     TF_THROW("first pipe must be serial");
@@ -384,6 +389,11 @@ template <typename... Ps>
 void Pipeline<Ps...>::reset() {
 
   _num_tokens = 0;
+
+  for(size_t l = 0; l<num_lines(); l++) {
+    _pipeflows[l]._pipe = 0;
+    _pipeflows[l]._line = l;
+  }
 
   _lines[0][0].join_counter.store(0, std::memory_order_relaxed);
 
@@ -440,17 +450,19 @@ void Pipeline<Ps...>::_build() {
   for(size_t l = 0; l < num_lines(); l++) {
 
     _tasks[l + 1] = fb.emplace(
-    [this, pf = Pipeflow{l, 0}] (tf::Runtime& rt) mutable {
+    [this, l] (tf::Runtime& rt) mutable {
+
+    auto pf = &_pipeflows[l];
 
     pipeline:
 
-      _lines[pf._line][pf._pipe].join_counter.store(
-        static_cast<size_t>(_meta[pf._pipe].type), std::memory_order_relaxed
+      _lines[pf->_line][pf->_pipe].join_counter.store(
+        static_cast<size_t>(_meta[pf->_pipe].type), std::memory_order_relaxed
       );
 
-      if (pf._pipe == 0) {
-        pf._token = _num_tokens;
-        if (pf._stop = false, _on_pipe(pf, rt); pf._stop == true) {
+      if (pf->_pipe == 0) {
+        pf->_token = _num_tokens;
+        if (pf->_stop = false, _on_pipe(*pf, rt); pf->_stop == true) {
           // here, the pipeline is not stopped yet because other
           // lines of tasks may still be running their last stages
           return;
@@ -458,14 +470,14 @@ void Pipeline<Ps...>::_build() {
         ++_num_tokens;
       }
       else {
-        _on_pipe(pf, rt);
+        _on_pipe(*pf, rt);
       }
 
-      size_t c_f = pf._pipe;
-      size_t n_f = (pf._pipe + 1) % num_pipes();
-      size_t n_l = (pf._line + 1) % num_lines();
+      size_t c_f = pf->_pipe;
+      size_t n_f = (pf->_pipe + 1) % num_pipes();
+      size_t n_l = (pf->_line + 1) % num_lines();
 
-      pf._pipe = n_f;
+      pf->_pipe = n_f;
       
       // ---- scheduling starts here ----
       // Notice that the shared variable f must not be changed after this
@@ -479,37 +491,36 @@ void Pipeline<Ps...>::_build() {
       //
       // d will be spawned by either c or b, so if c changes f but b spawns d
       // then data race on f will happen
-
-      SmallVector<int, 2> retval;
+      
+      std::array<int, 2> retval;
+      size_t n = 0;
 
       // downward dependency
       if(_meta[c_f].type == PipeType::SERIAL && 
          _lines[n_l][c_f].join_counter.fetch_sub(
            1, std::memory_order_acq_rel) == 1
         ) {
-        retval.push_back(1);
+        retval[n++] = 1;
       }
       
       // forward dependency
-      if(_lines[pf._line][n_f].join_counter.fetch_sub(
+      if(_lines[pf->_line][n_f].join_counter.fetch_sub(
           1, std::memory_order_acq_rel) == 1
         ) {
-        retval.push_back(0);
+        retval[n++] = 0;
       }
       
       // notice that the task index starts from 1
-      switch(retval.size()) {
+      switch(n) {
         case 2: {
           rt.schedule(_tasks[n_l+1]);
           goto pipeline;
         }
         case 1: {
-          if (retval[0] == 0) {
-            goto pipeline;
+          if (retval[0] == 1) {
+            pf = &_pipeflows[n_l];
           }
-          else {
-            rt.schedule(_tasks[n_l+1]);
-          }
+          goto pipeline; 
         }
       }
     }).name("rt-"s + std::to_string(l));

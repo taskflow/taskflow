@@ -29,7 +29,9 @@ Since we need to address the two tasks upper and left to a task when creating it
 we use a 2D vector to pre-allocate all tasks via tf::Taskflow::placeholder.
 
 @code{.cpp}
-void wavefront() {
+#include <taskflow/taskflow.hpp>
+
+int main() {
   tf::Executor executor;
   tf::Taskflow taskflow;
 
@@ -46,7 +48,7 @@ void wavefront() {
   for( int i=num_blocks; --i>=0; ) { 
     for( int j=num_blocks; --j>=0; ) { 
       // deferred task assignment
-      node[i][j].work([=]() { block_computation(i, j); });  
+      node[i][j].work([=]() { printf("compute block (%d, %d)", i, j); });  
       
       // wavefront dependency
       if(j+1 < num_blocks) node[i][j].precede(node[i][j+1]);
@@ -61,14 +63,14 @@ void wavefront() {
 }
 @endcode
 
-The taskflow below depicts the wavefront parallelism in a 3x3 grid.
+The figure below shows the wavefront parallelism in a 3x3 grid:
 
-<!-- @image html images/wavefront_2.svg width=80% -->
 @dotfile images/wavefront_2.dot
 
 Wavefront parallelism has many variations in different applications,
-for instance, Smith-Waterman sequencing, video encoding algorithms, and image analysis.
-The key parallel pattern is to traverse data in a diagonal direction.
+for instance, Smith-Waterman sequencing, video encoding algorithms, image analysis,
+and pipeline parallelism.
+The parallel pattern exhibits in a diagonal direction.
 
 */
 
