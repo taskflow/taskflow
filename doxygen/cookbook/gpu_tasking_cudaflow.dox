@@ -9,6 +9,11 @@ with @NvidiaCUDA.
 
 @tableofcontents
 
+@section GPUTaskingcudaFlowIncludeTheHeader Include the Header
+
+You need to include the header file, `%taskflow/cuda/cudaflow.hpp`, 
+for creating a tf::cudaFlow task.
+
 @section Create_a_cudaFlow Create a cudaFlow
 
 %Taskflow leverages @cudaGraph to enable concurrent CPU-GPU tasking 
@@ -20,7 +25,7 @@ The following example implements the canonical saxpy (A·X Plus Y) task graph
 using tf::cudaFlow.
 
 @code{.cpp}
- 1: #include <taskflow/cudaflow.hpp>
+ 1: #include <taskflow/cuda/cudaflow.hpp>
  2: 
  3: // saxpy (single-precision A·X Plus Y) kernel
  4: __global__ void saxpy(int n, float a, float *x, float *y) {
@@ -96,9 +101,6 @@ but focus on tasking CUDA operations and their dependencies.
 This organization lets users fully take advantage of CUDA featuress
 that are commensurate with their domain knowledge, 
 while leaving difficult task parallelism details to %Taskflow.
-
-@attention
-You need to include @c taskflow/cudaflow.hpp in order to use tf::cudaFlow.
 
 @section Compile_a_cudaFlow_program Compile a cudaFlow Program
 

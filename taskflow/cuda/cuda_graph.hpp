@@ -2,6 +2,7 @@
 
 #include "cuda_memory.hpp"
 #include "cuda_stream.hpp"
+#include "cuda_meta.hpp"
 
 #include "../utility/traits.hpp"
 

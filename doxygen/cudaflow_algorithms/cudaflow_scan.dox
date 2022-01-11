@@ -7,6 +7,11 @@ on a CUDA GPU.
 
 @tableofcontents
 
+@section CUDAParallelScanIncludeTheHeader Include the Header
+
+You need to include the header file, `%taskflow/cuda/algorithm/scan.hpp`, 
+for creating a parallel-scan task.
+
 @section cudaFlowScanARangeOfItems Scan a Range of Items
 
 tf::cudaFlow::inclusive_scan computes an inclusive prefix sum operation using

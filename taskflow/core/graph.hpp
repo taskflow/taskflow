@@ -169,6 +169,8 @@ class Runtime {
   /**
   @brief schedules an active task immediately to the worker's queue
 
+  @param task the given active task to schedule immediately
+
   This member function immediately schedules an active task to the
   task queue of the associated worker in the runtime task.
   An active task is a task in a running taskflow. 
@@ -199,8 +201,8 @@ class Runtime {
   At this moment, task @c C is active because its parent taskflow is running. 
   When the taskflow finishes, we will see both @c B and @c C in the output.
   */
-  void schedule(Task);
-  void schedule(Task, Pipeflow* pf);
+  void schedule(Task task);
+  void schedule(Task task, Pipeflow* pf);
   
   /**
   @brief runs a task callable synchronously

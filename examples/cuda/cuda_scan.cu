@@ -1,7 +1,8 @@
 // This program demonstrate how to perform a parallel scan
 // using cudaFlow.
 
-#include <taskflow/cudaflow.hpp>
+#include <taskflow/cuda/cudaflow.hpp>
+#include <taskflow/cuda/algorithm/scan.hpp>
 
 int main(int argc, char* argv[]) {
 

@@ -7,7 +7,10 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow provides standalone template methods for merging two sorted ranges of items into a sorted range of items.</para><sect1 id="CUDASTDMerge_1CUDASTDMergeItems">
+<para>Taskflow provides standalone template methods for merging two sorted ranges of items into a sorted range of items.</para><sect1 id="CUDASTDMerge_1CUDASTDMergeIncludeTheHeader">
+<title>Include the Header</title>
+<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/merge.hpp</computeroutput>, for using the parallel-merge algorithm.</para></sect1>
+<sect1 id="CUDASTDMerge_1CUDASTDMergeItems">
 <title>Merge Two Sorted Ranges of Items</title>
 <para><ref refid="namespacetf_1a37ec481149c2f01669353033d75ed72a" kindref="member">tf::cuda_merge</ref> merges two sorted ranges of items into a sorted range. The following code merges two sorted arrays <computeroutput>input_1</computeroutput> and <computeroutput>input_2</computeroutput>, each of 1000 items, into a sorted array <computeroutput>output</computeroutput> of 2000 items.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>input_1<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>input<sp/>vector<sp/>1</highlight><highlight class="normal"></highlight></codeline>
@@ -16,11 +19,11 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input_1[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>()%100;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input_2[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>()%100;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input_1[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>()%100;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input_2[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>()%100;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/algorithm/sort" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::sort</ref>(input_1,<sp/>input1<sp/>+<sp/>N);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/algorithm/sort" kindref="compound" external="/Users/twhuang/PhD/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::sort</ref>(input_2,<sp/>input2<sp/>+<sp/>N);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/algorithm/sort" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::sort</ref>(input_1,<sp/>input1<sp/>+<sp/>N);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/algorithm/sort" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::sort</ref>(input_2,<sp/>input2<sp/>+<sp/>N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>merge<sp/>two<sp/>N-element<sp/>vectors<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>

@@ -2,7 +2,7 @@
 
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
-#include <taskflow/cudaflow.hpp>
+#include <taskflow/cuda/cudaflow.hpp>
 
 TEST_CASE("cuda.version") {
   REQUIRE(tf::cuda_get_driver_version() > 0);

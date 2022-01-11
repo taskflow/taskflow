@@ -4,7 +4,7 @@
 #include "../algorithm/pipeline.hpp"
 
 /** 
-@file core/taskflow.hpp
+@file taskflow/core/taskflow.hpp
 @brief taskflow include file
 */
 
@@ -21,19 +21,21 @@ A %taskflow manages a task dependency graph where each task represents a
 callable object (e.g., @std_lambda, @std_function) and an edge represents a 
 dependency between two tasks. A task is one of the following types:
   
-  1. static task         : the callable is constructible from 
+  1. static task         : the callable constructible from 
                            @c std::function<void()>
-  2. dynamic task        : the callable is constructible from 
+  2. dynamic task        : the callable constructible from 
                            @c std::function<void(tf::Subflow&)>
-  3. condition task      : the callable is constructible from 
+  3. condition task      : the callable constructible from 
                            @c std::function<int()>
-  4. multi-condition task: the callable is constructible from 
+  4. multi-condition task: the callable constructible from 
                            @c %std::function<tf::SmallVector<int>()>
-  5. module task         : the task is constructed from tf::Taskflow::composed_of
-  6. %cudaFlow task      : the callable is constructible from 
+  5. module task         : the task constructed from tf::Taskflow::composed_of
+  6. runtime task        : the callable constructible from
+                           @c std::function<void(tf::Runtime&)>
+  7. %cudaFlow task      : the callable constructible from 
                            @c std::function<void(tf::cudaFlow&)> or
                            @c std::function<void(tf::cudaFlowCapturer&)>
-  7. %syclFlow task      : the callable is constructible from
+  8. %syclFlow task      : the callable constructible from
                            @c std::function<void(tf::syclFlow&)>
 
 Each task is a basic computation unit and is run by one worker thread

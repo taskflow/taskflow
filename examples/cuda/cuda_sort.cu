@@ -1,6 +1,7 @@
 // This program demonstrates how to perform parallel sort with CUDA.
 
-#include <taskflow/cudaflow.hpp>
+#include <taskflow/cuda/cudaflow.hpp>
+#include <taskflow/cuda/algorithm/sort.hpp>
 
 int main(int argc, char* argv[]) {
   

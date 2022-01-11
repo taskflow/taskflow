@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+  <compounddef id="release-3-4-0" kind="page">
+    <compoundname>release-3-4-0</compoundname>
+    <title>Release 3.4.0 (Master)</title>
+    <tableofcontents/>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Taskflow 3.4.0 is the newest developing line to new features and improvements we continue to support. It is also where this documentation is generated. Many things are considered <emphasis>experimental</emphasis> and may change or break from time to time. While it may be difficult to be keep all things consistent when introducing new features, we continue to try our best to ensure backward compatibility.</para><sect1 id="release-3-4-0_1release-3-4-0_download">
+<title>Download</title>
+<para>To download the newest version of Taskflow, please clone the master branch from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para></sect1>
+<sect1 id="release-3-4-0_1release-3-4-0_system_requirements">
+<title>System Requirements</title>
+<para>To use Taskflow v3.4.0, you need a compiler that supports C++17:</para><para><itemizedlist>
+<listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para></listitem>
+<listitem><para>Clang C++ Compiler at least v6.0 with -std=c++17 </para></listitem>
+<listitem><para>Microsoft Visual Studio at least v19.27 with /std:c++17 </para></listitem>
+<listitem><para>AppleClang Xode Version at least v12.0 with -std=c++17 </para></listitem>
+<listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17 </para></listitem>
+<listitem><para>Intel C++ Compiler at least v19.0.1 with -std=c++17 </para></listitem>
+<listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</para></listitem>
+</itemizedlist>
+Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
+<sect1 id="release-3-4-0_1release-3-4-0_summary">
+<title>Release Summary</title>
+</sect1>
+<sect1 id="release-3-4-0_1release-3-4-0_new_features">
+<title>New Features</title>
+<sect2 id="release-3-4-0_1release-3-4-0_taskflow_core">
+<title>Taskflow Core</title>
+<para><itemizedlist>
+<listitem><para>Improved the pipeline performance using vertical stack optimization</para></listitem><listitem><para>Added an example of attaching data to a task (examples/attach_data.cpp)</para></listitem><listitem><para>Added an example of text processing pipeline (examples/parallel_text_pipeline.cpp)</para></listitem><listitem><para>Added an example of graph processing pipeline (examples/parallel_graph_pipeline.cpp)</para></listitem><listitem><para>Added an example of taskflow processing pipeline (examples/parallel_taskflow_pipeline.cpp)</para></listitem></itemizedlist>
+</para></sect2>
+<sect2 id="release-3-4-0_1release-3-4-0_cudaflow">
+<title>cudaFlow</title>
+</sect2>
+<sect2 id="release-3-4-0_1release-3-4-0_syclflow">
+<title>syclFlow</title>
+</sect2>
+<sect2 id="release-3-4-0_1release-3-4-0_utilities">
+<title>Utilities</title>
+</sect2>
+<sect2 id="release-3-4-0_1release-3-4-0_profiler">
+<title>Taskflow Profiler (TFProf)</title>
+</sect2>
+</sect1>
+<sect1 id="release-3-4-0_1release-3-4-0_bug_fixes">
+<title>Bug Fixes</title>
+<para><itemizedlist>
+<listitem><para>Fixed compilation error by non-portable include of <computeroutput>immintrin.h</computeroutput> (<ulink url="https://github.com/taskflow/taskflow/issues/371">#371</ulink>)</para></listitem><listitem><para>Fixed compilation error by old version of doctest (<ulink url="https://github.com/taskflow/taskflow/issues/372">#372</ulink>)</para></listitem></itemizedlist>
+</para><para>If you encounter any potential bugs, please submit an issue at <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>.</para></sect1>
+<sect1 id="release-3-4-0_1release-3-4-0_breaking_changes">
+<title>Breaking Changes</title>
+</sect1>
+<sect1 id="release-3-4-0_1release-3-4-0_deprecated_items">
+<title>Deprecated and Removed Items</title>
+</sect1>
+<sect1 id="release-3-4-0_1release-3-4-0_documentation">
+<title>Documentation</title>
+<para><itemizedlist>
+<listitem><para>Revised <ref refid="ParallelPipeline" kindref="compound">Parallel Pipeline</ref><itemizedlist>
+<listitem><para>Added <ref refid="ParallelPipeline_1ParallelPipelineLearnMore" kindref="member">Learn More about Taskflow Pipeline</ref></para></listitem></itemizedlist>
+</para></listitem><listitem><para>Revised <ref refid="Examples" kindref="compound">Learning from Examples</ref><itemizedlist>
+<listitem><para>Added <ref refid="TextProcessingPipeline" kindref="compound">Text Processing Pipeline</ref></para></listitem><listitem><para>Added <ref refid="GraphProcessingPipeline" kindref="compound">Graph Processing Pipeline</ref></para></listitem><listitem><para>Added <ref refid="TaskflowProcessingPipeline" kindref="compound">Taskflow Processing Pipeline</ref></para></listitem></itemizedlist>
+</para></listitem></itemizedlist>
+</para></sect1>
+<sect1 id="release-3-4-0_1release-3-4-0_miscellaneous_items">
+<title>Miscellaneous Items</title>
+<para>We have published Taskflow in the following venues:<orderedlist>
+<listitem><para>Dian-Lun Lin and Tsung-Wei Huang, "<ulink url="https://ieeexplore.ieee.org/document/9664223">Accelerating Large Sparse Neural Network Inference using GPU Task Graph Parallelism</ulink>," <emphasis>IEEE Transactions on Parallel and Distributed Systems (TPDS)</emphasis>, accepted, 2022</para></listitem></orderedlist>
+</para><para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you intend to collaborate with us on using Taskflow in your scientific computing projects. </para></sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -15,7 +15,6 @@ we would like to traverse each vertex in order without breaking dependency const
 The following figure shows a graph of six vertices and seven edges.
 Each vertex represents a particular task and each edge represents a task dependency between two tasks.
 
-<!-- @image html images/task-level-parallelism.svg width=50% -->
 @dotfile images/task-level-parallelism.dot
 
 Traversing the above graph in parallel, the maximum parallelism we can acquire is three.

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "./graph_base.hpp"
-#include <taskflow/cudaflow.hpp>
+#include <taskflow/cuda/cudaflow.hpp>
 #include <cassert>
 
 template <typename OPT>

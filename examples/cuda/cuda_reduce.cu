@@ -1,7 +1,8 @@
 // This program demonstrate how to perform a parallel reduction 
 // using cudaFlow.
 
-#include <taskflow/cudaflow.hpp>
+#include <taskflow/cuda/cudaflow.hpp>
+#include <taskflow/cuda/algorithm/reduce.hpp>
 
 int main(int argc, char* argv[]) {
 

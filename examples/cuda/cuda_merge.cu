@@ -1,4 +1,5 @@
-#include <taskflow/cudaflow.hpp>
+#include <taskflow/cuda/cudaflow.hpp>
+#include <taskflow/cuda/algorithm/merge.hpp>
 
 int main(int argc, char* argv[]) {
   

@@ -4,43 +4,13 @@ namespace tf {
 
 @tableofcontents
 
-%Taskflow provides template functions for you to create 
-<i>pipeline scheduling frameworks</i> to implement pipeline algorithms.
+%Taskflow provides a @em task-parallel pipeline programming framework for you to create a
+<i>pipeline scheduling framework</i> to implement pipeline algorithms.
 %Pipeline parallelism refers to a parallel execution of multiple data
-elements through a linear chain of pipes or stages.
-Each stage processes the data element sent from the previous stage, applies the
-given callable to that data element, and then sends the result to the next stage.
-Multiple data elements can be processed simultaneously across different stages.
-
-<!--
-The following diagram illustrates a pipeline structure. 
-Oval shapes refer to stages, 
-labels inside each oval represent the stage ID together with data element ID,
-and edges denote dependency between stages.
-For example, "stage-1-a" means data element "a" is processed in "stage-1." 
-The edge from "stage-0-a" to "stage-1-a" indicates data elemnt "a" must be processed in "stage-0"
-before in "stage-1."
-And the edge from "stage-0-a" to "stage-0-b" marks data element "b" can be processed in "stage-0"
-only when data element "a" is done in "stage-0." 
-A dashed rectangular includes a chain of four stages ("stage-0", "stage-1", "stage-2", and "stage-3"), 
-where each data element will be processed in order.
-When data element "a" is done in three stages, new data element, say "e", will start
-
-@dotfile images/pipeline_introduction_structure.dot
-
-The concept of pipeline parallelism is not difficult to comprehend. 
-However, the implementation is not that easy for several reasons. 
-First, there is no clock mechanism.
-In hardware pipeline, clock cycle is used to synchronize the propagations of processed data.  
-Unfortunately, in pipeline parallelism, there is no such design. 
-Second, the workloads could be varied significantly from stages to stages.
-In hardware pipeline, every stage is carefully designed to deal with almost identical amounts of workloads, 
-which guarantees in a clock cycle all stages would finish the works.
-In pipeline parallelism, there is no a-priori information about the stages. 
-There is no certainty that all stages finish at the same time. 
-Therefore, a new design must be introduced to implement pipeline parallelism. 
-Next, we talk about the pipeline algorithm in %Taskflow. 
--->   
+tokens through a linear chain of pipes or stages.
+Each stage processes the data token sent from the previous stage, applies the
+given callable to that data token, and then sends the result to the next stage.
+Multiple data tokens can be processed simultaneously across different stages.
 
 @section IncludeHeaderFile Include the Header 
 
@@ -53,9 +23,10 @@ a pipeline scheduling framework.
 
 @section UnderstandPipelineScheduling Understand the Pipeline Scheduling Framework
 
-A tf::Pipeline object is a composable graph object for users to create a 
-<i>pipeline scheduling framework</i> through a module task in a taskflow.
-Unlike the conventional pipeline programming frameworks (e.g., Intel TBB), 
+A tf::Pipeline object is a @em composable graph to create a 
+<i>pipeline scheduling framework</i> through a module task in a taskflow
+(see @ref ComposableTasking).
+Unlike the conventional pipeline programming frameworks (e.g., Intel TBB Parallel Pipeline), 
 %Taskflow's pipeline algorithm does not provide any data abstraction, 
 which often restricts users from optimizing data layouts in their applications, 
 but a flexible framework for users to customize their application data atop 
@@ -64,56 +35,58 @@ an efficient pipeline scheduling framework.
 @dotfile images/pipeline_our_structure.dot
 
 The figure above gives an example of our pipeline scheduling framework.
-The framework consists of three @em pipes (same concept as stages) and 
-four @em lines (maximum data concurrency).
-A pipeline of three pipes and four lines will propagate each data element through a sequential chain of 
-three pipes and can simultaneously process up to four data elements at four lines.
+The framework consists of three @em pipes (serial-parallel-serial stages) and 
+four @em lines (maximum parallelism),
+where each line processes at most one data token.
+A pipeline of three pipes and four lines will propagate each data token through a sequential chain of 
+three pipes and can simultaneously process up to four data tokens on the four lines.
 Each edge represents a task dependency.
 For example, the edge from @c pipe-0 to @c pipe-1 in line @c 0 represents the task dependency
 between the first and the second pipes in the first line;
 the edge from @c pipe-0 in line @c 0 to @c pipe-0 in line @c 1 represents the task dependency
-between two adjacent lines when processing two data elements at the same pipe.
-Each pipe can be either a <i>serial</i> (tf::PipeType::SERIAL) or 
-a <i>parallel</i> type (tf::PipeType::PARALLEL),
-where a serial pipe processes data elements sequentially and
-a parallel pipe processes different data elements simultaneously.
-The example here represents a serial-parallel-serial pipeline.
-Since the second pipe is a parallel type,
-it does not have vertical task dependencies between adjacent lines.
+between two adjacent lines when processing two data tokens at the same pipe.
+Each pipe can be either a <i>serial</i> type or 
+a <i>parallel</i> type,
+where a serial pipe processes data tokens sequentially and
+a parallel pipe processes different data tokens simultaneously.
 
 @note
 Due to the nature of pipeline, %Taskflow requires the first pipe to be a serial type.
+The pipeline scheduling algorithm operates in a circular fashion with a factor of line count.
 
 @section CreatePipeline Create a Pipeline Module Task
 
+%Taskflow leverages modern C++ and template techniques to strike a balance 
+between the @em expressiveness and @em generality
+in designing the pipeline programming model.
 In general, there are three steps to create a pipeline application: 
 
-  1. define the pipeline structure (e.g., pipe type, pipe callable, stopping rule, line count)
-  2. define the data storage and layout for the application
-  3. define the pipeline taskflow graph using composition
+  1. Define the pipeline structure (e.g., pipe type, pipe callable, stopping rule, line count)
+  2. Define the data storage and layout, if needed for the application
+  3. Define the pipeline taskflow graph using composition
 
 The following code creates a pipeline scheduling framework
-for the example in the previous section.
+using the example from the previous section.
 The framework schedules a total of five <i>scheduling tokens</i> labeled from 0 to 4.
-The first pipe stores the token identifier in a <i>custom buffer</i>, and each of the rest pipes
-adds one to the input data from the previous pipe and stores the result into the corresponding
-entry in the buffer.
-
+The first pipe stores the token identifier in a custom data storage, `buffer`,
+and each of the rest pipes
+adds one to the input data from the result of the previous pipe and stores the result into the corresponding
+line entry in the buffer.
 
 @code{.cpp}
  1: tf::Taskflow taskflow;
  2: tf::Executor executor;
  3:
- 4: const size_t num_lines = 4;
- 5: const size_t num_pipes = 3;
+ 4: // maximum parallelism - each line processes one token at a time
+ 5: const size_t num_lines = 4;
  6:
- 7: // custom dataflow storage
- 8: std::array<std::array<int, num_pipes>, num_lines> mybuffer;
+ 7: // custom data storage
+ 8: std::array<int, num_lines> buffer;
  9:
 10: // the pipeline consists of three pipes (serial-parallel-serial)
 11: // and up to four concurrent scheduling tokens
 12: tf::Pipeline pl(num_lines,
-13:   tf::Pipe{tf::PipeType::SERIAL, [&mybuffer](tf::Pipeflow& pf) {
+13:   tf::Pipe{tf::PipeType::SERIAL, [&buffer](tf::Pipeflow& pf) {
 14:     // generate only 5 scheduling tokens
 15:     if(pf.token() == 5) {
 16:       pf.stop();
@@ -121,26 +94,26 @@ entry in the buffer.
 18:     // save the result of this pipe into the buffer
 19:     else {
 20:       printf("pipe 0: input token = %zu\n", pf.token());
-21:       mybuffer[pf.line()][pf.pipe()] = pf.token();
+21:       buffer[pf.line()] = pf.token();
 22:     }
 23:   }},
 24:
-25:   tf::Pipe{tf::PipeType::PARALLEL, [&mybuffer](tf::Pipeflow& pf) {
+25:   tf::Pipe{tf::PipeType::PARALLEL, [&buffer](tf::Pipeflow& pf) {
 26:     printf(
-27:       "pipe 1: input mybuffer[%zu][%zu] = %d\n",
-28:       pf.line(), pf.pipe() - 1, mybuffer[pf.line()][pf.pipe() - 1]
+27:       "pipe 1: input buffer[%zu] = %d\n",
+28:       pf.line(), buffer[pf.line()]
 29:     );
 30:     // propagate the previous result to this pipe by adding one
-31:     mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe()-1] + 1;
+31:     buffer[pf.line()] = buffer[pf.line()] + 1;
 32:   }},
 33:
-34:   tf::Pipe{tf::PipeType::SERIAL, [&mybuffer](tf::Pipeflow& pf) {
+34:   tf::Pipe{tf::PipeType::SERIAL, [&buffer](tf::Pipeflow& pf) {
 35:     printf(
-36:       "pipe 2: input mybuffer[%zu][%zu] = %d\n",
-37:       pf.line(), pf.pipe() - 1, mybuffer[pf.line()][pf.pipe() - 1]
+36:       "pipe 2: input buffer[%zu] = %d\n",
+37:       pf.line(), buffer[pf.line()]
 38:     );
 39:     // propagate the previous result to this pipe by adding one
-40:     mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe()-1] + 1;
+40:     buffer[pf.line()] = buffer[pf.line()] + 1;
 41:   }}
 42: );
 43:
@@ -154,7 +127,7 @@ entry in the buffer.
 Debrief:
 
 @li Lines 4-5   define the structure of the pipeline scheduling framework
-@li Line  8     defines the data storage as a two-dimensional array (@c num_lines by @c num_pipes)
+@li Line  8     defines the data storage as an one-dimensional array of @c num_lines integers
 @li Line  12    defines the number of lines in the pipeline
 @li Lines 13-23 define the first serial pipe, which will stop the pipeline scheduling at the fifth token
 @li Lines 25-32 define the second parallel pipe
@@ -164,85 +137,67 @@ Debrief:
 
 %Taskflow leverages @ref RuntimeTasking and @ref ComposableTasking to implement
 the pipeline scheduling framework.
-The taskflow graph of this pipeline example is shown as follows:
+The taskflow graph of this pipeline example is shown as follows,
+where 1) one condition task is used to decide which runtime task to run and
+2) four runtime tasks is used to schedule tokens at four parallel lines, respectively.
 
 @dotfile images/pipeline_basic_dependency_graph.dot
 
-In this example, we customize the data storage, @c mybuffer, as a 4-by-3 array. 
-The first dimension is equal to the number of lines (i.e., 4) and the second dimension 
-is equal to the number of pipes (i.e., 3).
-Each data element in @c mybuffer stores the data associated with the corresponding pipe in a line. 
-For example, <tt>mybuffer[1][2]</tt> stores the data processed in @c pipe-2 in line @c 1.
-The following figure shows the data layout of @c mybuffer.
-
+In this example, we customize the data storage, @c buffer, as an one-dimensional array
+of 4 integers, since the pipeline structure defines only four parallel lines.
+Each entry of @c buffer stores stores the data being processed in the corresponding line.
+For example, <tt>buffer[1]</tt> stores the processed data at line @c 1.
+The following figure shows the data layout of @c buffer.
 
 @dotfile images/pipeline_memory_layout.dot
+
+@note
+In practice, you may need to add padding to the data type of the buffer or 
+align it with the cacheline size to avoid false sharing.
+If the data type varies at different pipes, you can use @std_variant to store the
+data types in a uniform storage.
 
 For each scheduling token,
 you can use tf::Pipeflow::line() to get its line identifier
 and tf::Pipeflow::pipe() to get its pipe identifier.
-For example, if a scheduling token is processing an data element at the third pipe of the forth line,
+For example, if a scheduling token is at the third pipe of the forth line,
 tf::Pipeflow::line() will return @c 3 and tf::Pipeflow::pipe() will return @c 2
 (index starts from 0).
-The input value propagated from the previous pipe can be
-accessed at <tt>mybuffer[%tf::Pipeflow::line()][%tf::Pipeflow::pipe()-1]</tt>.
-To stop the execution of the pipeline, we call tf::Pipeflow::stop() at the first pipe.
-Once the stop signal has been triggered, the pipeline will stop scheduling any new tokens.
-As we can see from this example, tf::Pipeline give you the total flexibility to customize
+To stop the execution of the pipeline, you need to call tf::Pipeflow::stop() at the first pipe.
+Once the stop signal has been triggered, the pipeline will stop scheduling any new tokens
+after the callable.
+As we can see from this example, tf::Pipeline gives you the full control to customize
 your application data on top of a pipeline scheduling framework.
 
 @note
-Calling tf::Pipeflow::stop() not at the first pipe has no effect on the pipeline scheduling.
+1. Calling tf::Pipeflow::stop() not at the first pipe has no effect on the pipeline scheduling.
+2. In most cases, std::thread::hardware_concurrency is a good number for line count.
 
-Our pipeline algorithm schedules tokens in a cyclic manner, with a factor of @c num_lines.
-That is, token @c t will be processed in line <tt>t % num_lines</tt>.
+Our pipeline algorithm schedules tokens in a circular manner, with a factor of @c num_lines.
+That is, token @c t will be processed at line <tt>t % num_lines</tt>.
 The following snippet shows one of the possible outputs of this pipeline program:
 
 @code{.bash}
 pipe 0: input token = 0
-pipe 1: input mybuffer[0][0] = 0
-pipe 2: input mybuffer[0][1] = 1
+pipe 1: input buffer[0] = 0
+pipe 2: input buffer[0] = 1
 pipe 0: input token = 1
-pipe 1: input mybuffer[1][0] = 1
-pipe 2: input mybuffer[1][1] = 2
+pipe 1: input buffer[1] = 1
+pipe 2: input buffer[1] = 2
 pipe 0: input token = 2
-pipe 1: input mybuffer[2][0] = 2
-pipe 2: input mybuffer[2][1] = 3
+pipe 1: input buffer[2] = 2
+pipe 2: input buffer[2] = 3
 pipe 0: input token = 3
-pipe 1: input mybuffer[3][0] = 3
-pipe 2: input mybuffer[3][1] = 4
+pipe 1: input buffer[3] = 3
+pipe 2: input buffer[3] = 4
 pipe 0: input token = 4
-pipe 1: input mybuffer[0][0] = 4
-pipe 2: input mybuffer[0][1] = 5
+pipe 1: input buffer[0] = 4
+pipe 2: input buffer[0] = 5
 @endcode
 
 There are a total of five tokens running through three pipes.
 Each pipes prints its input data value, except the first pipe that prints its token identifier.
 Since the second pipe is a parallel pipe, the output can interleave.
-
-<!--
-The dependency graph is given in the following. 
-
-@dotfile images/pipeline_basic_dependency_graph.dot
-
-On the left, the 3D rectangular-shaped module task is named "pipeline." 
-
-On the right, the pipeline graph consists of one multi-condition task (named "cond") 
-and four runtime tasks (named "rt-0", "rt-1", "rt-2", and "rt-3"). 
-Runtime task is the execution task in a line.
-You can think of runtime task as the running pipe in a line. 
-The number of runtime tasks is equal to the number of lines.
-The multi-condition task is used to schedule the beginning runtime task based on the 
-scheduling tokens. In this example, the beginning runtime task is rt-0. 
-
-The dependency between the four runtime tasks is depicted in the figure in section \ref UnderstandPipelineScheduling.
-One dashed box represents one line.
-Each runtime task processes one data element through a chain of pipes.
-Remember the pipeline framework is executed in a cyclic manner.
-Token 4 is processed in line 0.
-Token 5 will be processed in line 1 and so on 
-only if more data elements are allowed to be scheduled in the pipeline. 
--->
 
 @section ConnectWithTasks Connect Pipeline with Other Tasks
 
@@ -259,23 +214,23 @@ This example emulates a data streaming application that iteratively runs a strea
 through a pipeline using conditional tasking.
 The taskflow graph consists of one pipeline module task and one condition task.
 The pipeline module task processes a stream of data.
-The condition task decides the availability of data and reruns the pipeline once the next stream of 
-data is available.  
+The condition task decides the availability of data and reruns the pipeline 
+when the next stream of data becomes available.  
 
 @code{.cpp}
  1: tf::Taskflow taskflow;
  2: tf::Executor executor;
  3:
- 4: const size_t num_lines = 4;
- 5: const size_t num_pipes = 3;
+ 4: const size_t num_lines = 4;  // maximum parallelism of the pipeline
+ 5: 
  6: int i = 0, N = 0;
- 7: // custom dataflow storage
- 8: std::array<std::array<int, num_pipes>, num_lines> mybuffer;
+ 7: // custom data storage
+ 8: std::array<int, num_lines> buffer;
  9:
 10: // the pipeline consists of three pipes (serial-parallel-serial)
 11: // and up to four concurrent scheduling tokens
 12: tf::Pipeline pl(num_lines,
-13:   tf::Pipe{tf::PipeType::SERIAL, [&i, &mybuffer](tf::Pipeflow& pf) {
+13:   tf::Pipe{tf::PipeType::SERIAL, [&i, &buffer](tf::Pipeflow& pf) {
 14:     // only 5 scheduling tokens are processed
 15:     if(i++ == 5) {
 16:       pf.stop();
@@ -283,26 +238,26 @@ data is available.
 18:     // save the result of this pipe into the buffer
 19:     else {
 20:       printf("stage 0: input token = %zu\n", pf.token());
-21:       mybuffer[pf.line()][pf.pipe()] = pf.token();
+21:       buffer[pf.line()] = pf.token();
 22:     }
 23:   }},
 24:
-25:   tf::Pipe{tf::PipeType::PARALLEL, [&mybuffer](tf::Pipeflow& pf) {
+25:   tf::Pipe{tf::PipeType::PARALLEL, [&buffer](tf::Pipeflow& pf) {
 26:     printf(
-27:       "stage 1: input mybuffer[%zu][%zu] = %d\n",
-28:       pf.line(), pf.pipe() - 1, mybuffer[pf.line()][pf.pipe() - 1]
+27:       "stage 1: input buffer[%zu] = %d\n",
+28:       pf.line(), buffer[pf.line()]
 29:     );
 30:     // propagate the previous result to this pipe by adding one
-31:     mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe()-1] + 1;
+31:     buffer[pf.line()] = buffer[pf.line()] + 1;
 32:   }},
 33:
-34:   tf::Pipe{tf::PipeType::SERIAL, [&mybuffer](tf::Pipeflow& pf) {
+34:   tf::Pipe{tf::PipeType::SERIAL, [&buffer](tf::Pipeflow& pf) {
 35:     printf(
-36:       "stage 2: input mybuffer[%zu][%zu] = %d\n",
-37:       pf.line(), pf.pipe() - 1, mybuffer[pf.line()][pf.pipe() - 1]
+36:       "stage 2: input buffer[%zu] = %d\n",
+37:       pf.line(), buffer[pf.line()]
 38:     );
 39:     // propagate the previous result to this pipe by adding one
-40:     mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe()-1] + 1;
+40:     buffer[pf.line()] = buffer[pf.line()] + 1;
 41:   }}
 42: );
 43: 
@@ -337,7 +292,7 @@ data is available.
 Debrief:
 
 @li Lines 4-5   define the structure of the pipeline scheduling framework
-@li Line  8     defines the data storage as a two-dimensional array (@c num_lines by @c num_pipes) 
+@li Line  8     defines the data storage as an one-dimensional array (@c num_lines integers) 
 @li Line  12    defines the number of lines in the pipeline
 @li Lines 13-23 define the first serial pipe, which will stop the pipeline scheduling when @c i is @c 5  
 @li Lines 25-32 define the second parallel pipe
@@ -358,36 +313,36 @@ The following snippet shows one of the possible outputs:
 @code{.bash}
 initial
 stage 0: input token = 0
-stage 1: input mybuffer[0][0] = 0
-stage 2: input mybuffer[0][1] = 1
+stage 1: input buffer[0] = 0
+stage 2: input buffer[0] = 1
 stage 0: input token = 1
-stage 1: input mybuffer[1][0] = 1
-stage 2: input mybuffer[1][1] = 2
+stage 1: input buffer[1] = 1
+stage 2: input buffer[1] = 2
 stage 0: input token = 2
-stage 1: input mybuffer[2][0] = 2
-stage 2: input mybuffer[2][1] = 3
+stage 1: input buffer[2] = 2
+stage 2: input buffer[2] = 3
 stage 0: input token = 3
-stage 1: input mybuffer[3][0] = 3
-stage 2: input mybuffer[3][1] = 4
+stage 1: input buffer[3] = 3
+stage 2: input buffer[3] = 4
 stage 0: input token = 4
-stage 1: input mybuffer[0][0] = 4
-stage 2: input mybuffer[0][1] = 5
+stage 1: input buffer[0] = 4
+stage 2: input buffer[0] = 5
 Rerun the pipeline
 stage 0: input token = 5
-stage 1: input mybuffer[1][0] = 5
-stage 2: input mybuffer[1][1] = 6
+stage 1: input buffer[1] = 5
+stage 2: input buffer[1] = 6
 stage 0: input token = 6
-stage 1: input mybuffer[2][0] = 6
-stage 2: input mybuffer[2][1] = 7
+stage 1: input buffer[2] = 6
+stage 2: input buffer[2] = 7
 stage 0: input token = 7
-stage 1: input mybuffer[3][0] = 7
-stage 2: input mybuffer[3][1] = 8
+stage 1: input buffer[3] = 7
+stage 2: input buffer[3] = 8
 stage 0: input token = 8
-stage 1: input mybuffer[0][0] = 8
-stage 2: input mybuffer[0][1] = 9
+stage 1: input buffer[0] = 8
+stage 2: input buffer[0] = 9
 stage 0: input token = 9
-stage 1: input mybuffer[1][0] = 9
-stage 2: input mybuffer[1][1] = 10
+stage 1: input buffer[1] = 9
+stage 2: input buffer[1] = 10
 stop
 @endcode
 
@@ -399,41 +354,27 @@ The first five tokens (token @c 0 to @c 4) are processed in the first run, and
 the remaining five tokens (token @c 5 to @c 9) are processed in the second run.
 In the condition task, we use @c N as a decision-making counter to process the next stream of data.
 
-<!--
-The graph dependency is illustrated in the following. 
-
-@dotfile images/pipeline_example1.dot
-
-On the left, two oval-shaped tasks are named "initial" and "stop", respectively. 
-The 3D rectangular-shaped task is the pipeline module task.
-The diamond-shaped task is a condition task. 
-The edges represent the dependency between the four tasks.
-
-On the right, one diamond-shaped multi-condition task is named "cond."
-Four runtime tasks are named "rt-0", "rt-1", "rt-2", and "rt-3", respectively.   
--->
-
 @subsection ConcatenateTwoPipelines Example 2: Concatenate Two Pipelines
 
 This example demonstrates two concatenated pipelines where
-a sequence of data elements run synchronously from one pipeline to another pipeline.
+a sequence of data tokens run synchronously from one pipeline to another pipeline.
 The first pipeline task precedes the second pipeline task.
 
 @code{.cpp}
  1: tf::Taskflow taskflow("pipeline");
  2: tf::Executor executor;
  3:
- 4: const size_t num_lines = 4;
- 5: const size_t num_pipes = 3;
+ 4: // define the maximum parallelism of the pipeline
+ 5: const size_t num_lines = 4;
  6:
- 7: // custom dataflow storage
- 8: std::array<std::array<int, num_pipes>, num_lines> mybuffer_1;
- 9: std::array<std::array<int, num_pipes>, num_lines> mybuffer_2;
+ 7: // custom data storage
+ 8: std::array<int, num_lines> buffer_1;
+ 9: std::array<int, num_lines> buffer_2;
 10: 
 11: // the pipeline_1 consists of three pipes (serial-parallel-serial)
 12: // and up to four concurrent scheduling tokens
 13: tf::Pipeline pl_1(num_lines,
-14:   tf::Pipe{tf::PipeType::SERIAL, [&mybuffer_1](tf::Pipeflow& pf) mutable{
+14:   tf::Pipe{tf::PipeType::SERIAL, [&buffer_1](tf::Pipeflow& pf) mutable{
 15:     // generate only 4 scheduling tokens
 16:     if(pf.token() == 4) {
 17:       pf.stop();
@@ -441,26 +382,26 @@ The first pipeline task precedes the second pipeline task.
 19:     // save the result of this pipe into the buffer
 20:     else {
 21:       printf("pipeline 1, pipe 0: input token = %zu\n", pf.token());
-22:       mybuffer_1[pf.line()][pf.pipe()] = pf.token();
+22:       buffer_1[pf.line()] = pf.token();
 23:     }
 24:   }},
 25:
-26:   tf::Pipe{tf::PipeType::PARALLEL, [&mybuffer_1](tf::Pipeflow& pf) {
+26:   tf::Pipe{tf::PipeType::PARALLEL, [&buffer_1](tf::Pipeflow& pf) {
 27:     printf(
-28:       "pipeline 1, pipe 1: input mybuffer_1[%zu][%zu] = %d\n", 
-29:       pf.line(), pf.pipe() - 1, mybuffer_1[pf.line()][pf.pipe() - 1]
+28:       "pipeline 1, pipe 1: input buffer_1[%zu] = %d\n", 
+29:       pf.line(), buffer_1[pf.line()]
 30:     );
 31:     // propagate the previous result to this pipe by adding one
-32:     mybuffer_1[pf.line()][pf.pipe()] = mybuffer_1[pf.line()][pf.pipe()-1] + 1;
+32:     buffer_1[pf.line()] = buffer_1[pf.line()] + 1;
 33:   }},
 34:
-35:   tf::Pipe{tf::PipeType::SERIAL, [&mybuffer_1](tf::Pipeflow& pf) {
+35:   tf::Pipe{tf::PipeType::SERIAL, [&buffer_1](tf::Pipeflow& pf) {
 36:     printf(
-37:       "pipeline 1, pipe 2: input mybuffer_1[%zu][%zu] = %d\n", 
-38:       pf.line(), pf.pipe() - 1, mybuffer_1[pf.line()][pf.pipe() - 1]
+37:       "pipeline 1, pipe 2: input buffer_1[%zu] = %d\n", 
+38:       pf.line(), buffer_1[pf.line()]
 39:     );
 40:     // propagate the previous result to this pipe by adding one
-41:     mybuffer_1[pf.line()][pf.pipe()] = mybuffer_1[pf.line()][pf.pipe()-1] + 1;
+41:     buffer_1[pf.line()] = buffer_1[pf.line()] + 1;
 42:   }}
 43: );
 44:  
@@ -468,34 +409,34 @@ The first pipeline task precedes the second pipeline task.
 46: // and up to four concurrent scheduling tokens
 47: tf::Pipeline pl_2(num_lines,
 48:   tf::Pipe{tf::PipeType::SERIAL, 
-49:   [&mybuffer_2, &mybuffer_1](tf::Pipeflow& pf) mutable{
+49:   [&buffer_2, &buffer_1](tf::Pipeflow& pf) mutable{
 50:     // generate only 4 scheduling tokens
 51:     if(pf.token() == 4) {
 52:       pf.stop();
 53:     }
 54:     // save the result of this pipe into the buffer
 55:     else {
-56:       printf("pipeline 2, pipe 0: input value = %d\n", mybuffer_1[pf.line()][2]);
-57:       mybuffer_2[pf.line()][pf.pipe()] = mybuffer_1[pf.line()][2];
+56:       printf("pipeline 2, pipe 0: input value = %d\n", buffer_1[pf.line()]);
+57:       buffer_2[pf.line()] = buffer_1[pf.line()];
 58:     }
 59:   }},
 60:
-61:   tf::Pipe{tf::PipeType::PARALLEL, [&mybuffer_2](tf::Pipeflow& pf) {
+61:   tf::Pipe{tf::PipeType::PARALLEL, [&buffer_2](tf::Pipeflow& pf) {
 62:     printf(
-63:       "pipeline 2, pipe 1: input mybuffer_2[%zu][%zu] = %d\n", 
-64:       pf.line(), pf.pipe() - 1, mybuffer_2[pf.line()][pf.pipe() - 1]
+63:       "pipeline 2, pipe 1: input buffer_2[%zu] = %d\n", 
+64:       pf.line(), buffer_2[pf.line()]
 65:     );
 66:     // propagate the previous result to this pipe by adding 1
-67:     mybuffer_2[pf.line()][pf.pipe()] = mybuffer_2[pf.line()][pf.pipe()-1] + 1;
+67:     buffer_2[pf.line()] = buffer_2[pf.line()] + 1;
 68:   }},
 69:
-70:   tf::Pipe{tf::PipeType::SERIAL, [&mybuffer_2](tf::Pipeflow& pf) {
+70:   tf::Pipe{tf::PipeType::SERIAL, [&buffer_2](tf::Pipeflow& pf) {
 71:     printf(
-72:       "pipeline 2, pipe 2: input mybuffer_2[%zu][%zu] = %d\n", 
-73:       pf.line(), pf.pipe() - 1, mybuffer_2[pf.line()][pf.pipe() - 1]
+72:       "pipeline 2, pipe 2: input buffer_2[%zu] = %d\n", 
+73:       pf.line(), buffer_2[pf.line()]
 74:     );
 75:     // propagate the previous result to this pipe by adding 1
-76:     mybuffer_2[pf.line()][pf.pipe()] = mybuffer_2[pf.line()][pf.pipe()-1] + 1;
+76:     buffer_2[pf.line()] = buffer_2[pf.line()] + 1;
 77:   }}
 78: );
 79:
@@ -512,8 +453,8 @@ The first pipeline task precedes the second pipeline task.
 
 Debrief:
 
-@li Line  8     defines the data storage (@c num_lines by @c num_pipes) for pipeline @c pl_1
-@li Line  9     defines the data storage (@c num_lines by @c num_pipes) for pipeline @c pl_2
+@li Line  8     defines the data storage (@c num_lines integers) for pipeline @c pl_1
+@li Line  9     defines the data storage (@c num_lines integers) for pipeline @c pl_2
 @li Lines 14-24 define the first serial pipe in @c pl_1
 @li Lines 26-33 define the second parallel pipe in @c pl_1
 @li Lines 35-42 define the third serial pipe in @c pl_1
@@ -532,29 +473,29 @@ The following snippet shows one of the possible outputs:
 
 @code{.bash}
 pipeline 1, pipe 0: input token = 0
-pipeline 1, pipe 1: input mybuffer_1[0][0] = 0
-pipeline 1, pipe 2: input mybuffer_1[0][1] = 1
+pipeline 1, pipe 1: input buffer_1[0] = 0
+pipeline 1, pipe 2: input buffer_1[0] = 1
 pipeline 1, pipe 0: input token = 1
-pipeline 1, pipe 1: input mybuffer_1[1][0] = 1
-pipeline 1, pipe 2: input mybuffer_1[1][1] = 2
+pipeline 1, pipe 1: input buffer_1[1] = 1
+pipeline 1, pipe 2: input buffer_1[1] = 2
 pipeline 1, pipe 0: input token = 2
-pipeline 1, pipe 1: input mybuffer_1[2][0] = 2
-pipeline 1, pipe 2: input mybuffer_1[2][1] = 3
+pipeline 1, pipe 1: input buffer_1[2] = 2
+pipeline 1, pipe 2: input buffer_1[2] = 3
 pipeline 1, pipe 0: input token = 3
-pipeline 1, pipe 1: input mybuffer_1[3][0] = 3
-pipeline 1, pipe 2: input mybuffer_1[3][1] = 4
+pipeline 1, pipe 1: input buffer_1[3] = 3
+pipeline 1, pipe 2: input buffer_1[3] = 4
 pipeline 2, pipe 1: input value = 2
-pipeline 2, pipe 2: input mybuffer_2[0][0] = 2
-pipeline 2, pipe 3: input mybuffer_2[0][1] = 3
+pipeline 2, pipe 2: input buffer_2[0] = 2
+pipeline 2, pipe 3: input buffer_2[0] = 3
 pipeline 2, pipe 1: input value = 3
-pipeline 2, pipe 2: input mybuffer_2[1][0] = 3
-pipeline 2, pipe 3: input mybuffer_2[1][1] = 4
+pipeline 2, pipe 2: input buffer_2[1] = 3
+pipeline 2, pipe 3: input buffer_2[1] = 4
 pipeline 2, pipe 1: input value = 4
-pipeline 2, pipe 2: input mybuffer_2[2][0] = 4
-pipeline 2, pipe 3: input mybuffer_2[2][1] = 5
+pipeline 2, pipe 2: input buffer_2[2] = 4
+pipeline 2, pipe 3: input buffer_2[2] = 5
 pipeline 2, pipe 1: input value = 5
-pipeline 2, pipe 2: input mybuffer_2[3][0] = 5
-pipeline 2, pipe 3: input mybuffer_2[3][1] = 6
+pipeline 2, pipe 2: input buffer_2[3] = 5
+pipeline 2, pipe 3: input buffer_2[3] = 6
 @endcode
 
 The output of pipelines @c pl_1 and @c pl_2 can be different from run to run
@@ -570,17 +511,17 @@ This example creates two independent pipelines that run in parallel on different
  1: tf::Taskflow taskflow("pipeline");
  2: tf::Executor executor;
  3:
- 4: const size_t num_lines = 4;
- 5: const size_t num_pipes = 3;
+ 4: // define the maximum parallelism of the pipeline
+ 5: const size_t num_lines = 4;
  6:
- 7: // custom dataflow storage
- 8: std::array<std::array<int, num_pipes>, num_lines> mybuffer_1;
- 9: std::array<std::array<int, num_pipes>, num_lines> mybuffer_2;
+ 7: // custom data storage
+ 8: std::array<int, num_lines> buffer_1;
+ 9: std::array<int, num_lines> buffer_2;
 10: 
 11: // the pipeline_1 consists of three pipes (serial-parallel-serial)
 12: // and up to four concurrent scheduling tokens
 13: tf::Pipeline pl_1(num_lines,
-14:   tf::Pipe{tf::PipeType::SERIAL, [&mybuffer_1](tf::Pipeflow& pf) mutable{
+14:   tf::Pipe{tf::PipeType::SERIAL, [&buffer_1](tf::Pipeflow& pf) mutable{
 15:     // generate only 5 scheduling tokens
 16:     if(pf.token() == 5) {
 17:       pf.stop();
@@ -588,33 +529,33 @@ This example creates two independent pipelines that run in parallel on different
 19:     // save the result of this pipe into the buffer
 20:     else {
 21:       printf("pipeline 1, pipe 0: input token = %zu\n", pf.token());
-22:       mybuffer_1[pf.line()][pf.pipe()] = pf.token();
+22:       buffer_1[pf.line()] = pf.token();
 23:     }
 24:   }},
 25:
-26:   tf::Pipe{tf::PipeType::PARALLEL, [&mybuffer_1](tf::Pipeflow& pf) {
+26:   tf::Pipe{tf::PipeType::PARALLEL, [&buffer_1](tf::Pipeflow& pf) {
 27:     printf(
-28:       "pipeline 1, pipe 1: input mybuffer_1[%zu][%zu] = %d\n", 
-29:       pf.line(), pf.pipe() - 1, mybuffer_1[pf.line()][pf.pipe() - 1]
+28:       "pipeline 1, pipe 1: input buffer_1[%zu] = %d\n", 
+29:       pf.line(), buffer_1[pf.line()]
 30:     );
 31:     // propagate the previous result to this pipe by adding one
-32:     mybuffer_1[pf.line()][pf.pipe()] = mybuffer_1[pf.line()][pf.pipe()-1] + 1;
+32:     buffer_1[pf.line()] = buffer_1[pf.line()] + 1;
 33:   }},
 34:
-35:   tf::Pipe{tf::PipeType::SERIAL, [&mybuffer_1](tf::Pipeflow& pf) {
+35:   tf::Pipe{tf::PipeType::SERIAL, [&buffer_1](tf::Pipeflow& pf) {
 36:     printf(
-37:       "pipeline 1, pipe 2: input mybuffer_1[%zu][%zu] = %d\n", 
-38:       pf.line(), pf.pipe() - 1, mybuffer_1[pf.line()][pf.pipe() - 1]
+37:       "pipeline 1, pipe 2: input buffer_1[%zu] = %d\n", 
+38:       pf.line(), buffer_1[pf.line()]
 39:     );
 40:     // propagate the previous result to this pipe by adding one
-41:     mybuffer_1[pf.line()][pf.pipe()] = mybuffer_1[pf.line()][pf.pipe()-1] + 1;
+41:     buffer_1[pf.line()] = buffer_1[pf.line()] + 1;
 42:   }}
 43: );
 44:  
 45: // the pipeline_2 consists of three pipes (serial-parallel-serial)
 46: // and up to four concurrent scheduling tokens
 47: tf::Pipeline pl_2(num_lines,
-48:   tf::Pipe{tf::PipeType::SERIAL, [&mybuffer_2](tf::Pipeflow& pf) mutable{
+48:   tf::Pipe{tf::PipeType::SERIAL, [&buffer_2](tf::Pipeflow& pf) mutable{
 49:     // generate only 2 scheduling tokens
 50:     if(pf.token() == 5) {
 51:       pf.stop();
@@ -622,26 +563,26 @@ This example creates two independent pipelines that run in parallel on different
 53:     // save the result of this pipe into the buffer
 54:     else {
 55:       printf("pipeline 2, pipe 0: input token = %zu\n", pf.token());
-56:       mybuffer_2[pf.line()][pf.pipe()] = "pipeline";
+56:       buffer_2[pf.line()] = "pipeline";
 57:     }
 58:   }},
 59:
-60:   tf::Pipe{tf::PipeType::PARALLEL, [&mybuffer_2](tf::Pipeflow& pf) {
+60:   tf::Pipe{tf::PipeType::PARALLEL, [&buffer_2](tf::Pipeflow& pf) {
 61:     printf(
-62:       "pipeline 2, pipe 1: input mybuffer_2[%zu][%zu] = %d\n", 
-63:       pf.line(), pf.pipe() - 1, mybuffer_2[pf.line()][pf.pipe() - 1]
+62:       "pipeline 2, pipe 1: input buffer_2[%zu] = %d\n", 
+63:       pf.line(), buffer_2[pf.line()]
 64:     );
 65:     // propagate the previous result to this pipe by concatenating "_"
-66:     mybuffer_2[pf.line()][pf.pipe()] = mybuffer_2[pf.line()][pf.pipe()-1];
+66:     buffer_2[pf.line()] = buffer_2[pf.line()];
 67:   }},
 68:
-69:   tf::Pipe{tf::PipeType::SERIAL, [&mybuffer_2](tf::Pipeflow& pf) {
+69:   tf::Pipe{tf::PipeType::SERIAL, [&buffer_2](tf::Pipeflow& pf) {
 70:     printf(
-71:       "pipeline 2, pipe 2: input mybuffer_2[%zu][%zu] = %d\n", 
-72:       pf.line(), pf.pipe() - 1, mybuffer_2[pf.line()][pf.pipe() - 1]
+71:       "pipeline 2, pipe 2: input buffer_2[%zu] = %d\n", 
+72:       pf.line(), buffer_2[pf.line()]
 73:     );
 74:     // propagate the previous result to this pipe by concatenating "2"
-75:     mybuffer_2[pf.line()][pf.pipe()] = mybuffer_2[pf.line()][pf.pipe()-1];
+75:     buffer_2[pf.line()] = buffer_2[pf.line()];
 76:   }}
 77: );
 78:
@@ -659,8 +600,8 @@ This example creates two independent pipelines that run in parallel on different
 
 Debrief:
 
-@li Line  8     defines the data storage (@c num_lines by @c num_pipes) for pipeline @c pl_1
-@li Line  9     defines the data storage (@c num_lines by @c num_pipes) for pipeline @c pl_2
+@li Line  8     defines the data storage (@c num_lines integers) for pipeline @c pl_1
+@li Line  9     defines the data storage (@c num_lines integers) for pipeline @c pl_2
 @li Lines 14-24 define the first serial pipe in @c pl_1
 @li Lines 26-33 define the second parallel pipe in @c pl_1
 @li Lines 35-42 define the third serial pipe in @c pl_1
@@ -681,35 +622,35 @@ The following snippet shows one of the possible outputs:
 @code{.bash}
 initial
 pipeline 2, pipe 0: input token = 0
-pipeline 2, pipe 1: input mybuffer_2[0][0] = 0
-pipeline 2, pipe 2: input mybuffer_2[0][1] = 1
+pipeline 2, pipe 1: input buffer_2[0] = 0
+pipeline 2, pipe 2: input buffer_2[0] = 1
 pipeline 1, pipe 0: input token = 0
-pipeline 1, pipe 1: input mybuffer_1[0][0] = 0
-pipeline 1, pipe 2: input mybuffer_1[0][1] = 1
+pipeline 1, pipe 1: input buffer_1[0] = 0
+pipeline 1, pipe 2: input buffer_1[0] = 1
 pipeline 1, pipe 0: input token = 1
-pipeline 1, pipe 1: input mybuffer_1[1][0] = 1
+pipeline 1, pipe 1: input buffer_1[1] = 1
 pipeline 1, pipe 0: input token = 2
-pipeline 1, pipe 1: input mybuffer_1[2][0] = 2
+pipeline 1, pipe 1: input buffer_1[2] = 2
 pipeline 1, pipe 0: input token = 3
-pipeline 1, pipe 1: input mybuffer_1[3][0] = 3
+pipeline 1, pipe 1: input buffer_1[3] = 3
 pipeline 1, pipe 0: input token = 4
-pipeline 1, pipe 1: input mybuffer_1[0][0] = 4
+pipeline 1, pipe 1: input buffer_1[0] = 4
 pipeline 2, pipe 0: input token = 1
-pipeline 2, pipe 1: input mybuffer_2[1][0] = 1
-pipeline 2, pipe 0: input mybuffer_2[1][1] = 2
+pipeline 2, pipe 1: input buffer_2[1] = 1
+pipeline 2, pipe 0: input buffer_2[1] = 2
 pipeline 2, pipe 0: input token = 2
-pipeline 2, pipe 1: input mybuffer_2[2][0] = 2
-pipeline 2, pipe 2: input mybuffer_2[2][1] = 3
+pipeline 2, pipe 1: input buffer_2[2] = 2
+pipeline 2, pipe 2: input buffer_2[2] = 3
 pipeline 2, pipe 0: input token = 3
-pipeline 2, pipe 1: input mybuffer_2[3][0] = 3
-pipeline 2, pipe 2: input mybuffer_2[3][1] = 4
+pipeline 2, pipe 1: input buffer_2[3] = 3
+pipeline 2, pipe 2: input buffer_2[3] = 4
 pipeline 2, pipe 0: input token = 4
-pipeline 2, pipe 1: input mybuffer_2[0][0] = 4
-pipeline 2, pipe 2: input mybuffer_2[0][1] = 5
-pipeline 1, pipe 2: input mybuffer_1[1][1] = 2
-pipeline 1, pipe 2: input mybuffer_1[2][1] = 3
-pipeline 1, pipe 2: input mybuffer_1[3][1] = 4
-pipeline 1, pipe 2: input mybuffer_1[0][1] = 5
+pipeline 2, pipe 1: input buffer_2[0] = 4
+pipeline 2, pipe 2: input buffer_2[0] = 5
+pipeline 1, pipe 2: input buffer_1[1] = 2
+pipeline 1, pipe 2: input buffer_1[2] = 3
+pipeline 1, pipe 2: input buffer_1[3] = 4
+pipeline 1, pipe 2: input buffer_1[0] = 5
 @endcode
 
 Because pipeline @c pl_1 and pipeline @c pl_2 are running in parallel,
@@ -719,81 +660,78 @@ their outputs may interleave.
 @section ResetPipeline Reset a Pipeline
 
 Our pipeline scheduling framework keeps a @em stateful number of scheduled tokens 
-at each run submitted to an executor.
+at each submitted run.
 You can reset the pipeline to the initial state using tf::Pipeline::reset(),
 where the number of scheduled tokens will start from zero in the next run.
-Borrowed from the code in @ref IterateAPipeline, 
-the example below resets the pipeline at the second iteration (line 47)
+Borrowed from @ref IterateAPipeline, 
+the program below resets the pipeline at the second iteration (inside the condition task)
 so the scheduling token will start from zero in the next run.
 
 @code{.cpp}
- 1: tf::Taskflow taskflow("pipeline");
- 2: tf::Executor executor;
- 3:
- 4: const size_t num_lines = 4;
- 5: const size_t num_pipes = 3;
- 6:
- 7: // custom dataflow storage
- 8: std::array<std::array<int, num_pipes>, num_lines> mybuffer;
- 9:
-10: 
-11: // the pipeline consists of three pipes (serial-parallel-serial)
-12: // and up to four concurrent scheduling tokens
-13: tf::Pipeline pl(num_lines,
-14:   tf::Pipe{tf::PipeType::SERIAL, [&mybuffer](tf::Pipeflow& pf) mutable{
-15:     // generate only 5 scheduling tokens
-16:     if(pf.token() == 5) {
-17:       pf.stop();
-18:     }
-19:     // save the result of this pipe into the buffer
-20:     else {
-21:       printf("pipe 0: input token = %zu\n", pf.token());
-22:       mybuffer[pf.line()][pf.pipe()] = pf.token();
-23:     }
-24:   }},
-25:
-26:   tf::Pipe{tf::PipeType::PARALLEL, [&mybuffer](tf::Pipeflow& pf) {
-27:     printf(
-28:       "pipe 1: input mybuffer_1[%zu][%zu] = %d\n", 
-29:       pf.line(), pf.pipe() - 1, mybuffer[pf.line()][pf.pipe() - 1]
-30:     );
-31:     // propagate the previous result to this pipe by adding one
-32:     mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe()-1] + 1;
-33:   }},
-34:
-35:   tf::Pipe{tf::PipeType::SERIAL, [&mybuffer](tf::Pipeflow& pf) {
-36:     printf(
-37:       "pipe 2: input mybuffer[%zu][%zu] = %d\n", 
-38:       pf.line(), pf.pipe() - 1, mybuffer[pf.line()][pf.pipe() - 1]
-39:     );
-40:     // propagate the previous result to this pipe by adding one
-41:     mybuffer[pf.line()][pf.pipe()] = mybuffer[pf.line()][pf.pipe()-1] + 1;
-42:   }}
-43: );
-44:  
-45: tf::Task conditional = taskflow.emplace([&](){
-46:   if (++N < 2) {
-47:     pl.reset();
-48:     std::cout << "Rerun the pipeline\n";
-49:     return 0;
-50:   }
-51:   else {
-52:     return 1;
-53:   }
-54: }).name("conditional");
-55:
-56: tf::Task pipeline = taskflow.composed_of(pl)
-57:                             .name("pipeline");
-58: tf::Task initial  = taskflow.emplace([](){ std::cout << "initial"; })
-59:                             .name("initial");
-60: tf::Task stop     = taskflow.emplace([](){ std::cout << "stop"; })
-61:                             .name("stop");
-62:
-63: initial.precede(pipeline);
-64: pipeline.precede(conditional);
-65: conditional.precede(pipeline, stop);
-66:  
-67: executor.run(taskflow).wait();
+tf::Taskflow taskflow("pipeline");
+tf::Executor executor;
+
+// define the maximum parallelism of the pipeline
+const size_t num_lines = 4;
+
+// custom data storage
+std::array<int, num_lines> buffer;
+
+// the pipeline consists of three pipes (serial-parallel-serial)
+// and up to four concurrent scheduling tokens
+tf::Pipeline pl(num_lines,
+  tf::Pipe{tf::PipeType::SERIAL, [&buffer](tf::Pipeflow& pf) mutable{
+    // generate only 5 scheduling tokens
+    if(pf.token() == 5) {
+      pf.stop();
+    }
+    // save the result of this pipe into the buffer
+    else {
+      printf("pipe 0: input token = %zu\n", pf.token());
+      buffer[pf.line()] = pf.token();
+    }
+  }},
+
+  tf::Pipe{tf::PipeType::PARALLEL, [&buffer](tf::Pipeflow& pf) {
+    printf(
+      "pipe 1: input buffer_1[%zu] = %d\n", pf.line(), buffer[pf.line()]
+    );
+    // propagate the previous result to this pipe by adding one
+    buffer[pf.line()] = buffer[pf.line()] + 1;
+  }},
+
+  tf::Pipe{tf::PipeType::SERIAL, [&buffer](tf::Pipeflow& pf) {
+    printf(
+      "pipe 2: input buffer[%zu][%zu] = %d\n", pf.line(), buffer[pf.line()]
+    );
+    // propagate the previous result to this pipe by adding one
+    buffer[pf.line()] = buffer[pf.line()] + 1;
+  }}
+);
+ 
+tf::Task conditional = taskflow.emplace([&](){
+  if (++N < 2) {
+    pl.reset();
+    std::cout << "Rerun the pipeline\n";
+    return 0;
+  }
+  else {
+    return 1;
+  }
+}).name("conditional");
+
+tf::Task pipeline = taskflow.composed_of(pl)
+                            .name("pipeline");
+tf::Task initial  = taskflow.emplace([](){ std::cout << "initial"; })
+                            .name("initial");
+tf::Task stop     = taskflow.emplace([](){ std::cout << "stop"; })
+                            .name("stop");
+
+initial.precede(pipeline);
+pipeline.precede(conditional);
+conditional.precede(pipeline, stop);
+ 
+executor.run(taskflow).wait();
 @endcode
 
 The following snippet shows one of the possible outputs:
@@ -801,36 +739,36 @@ The following snippet shows one of the possible outputs:
 @code{.bash}
 initial
 pipe 0: input token = 0
-pipe 1: input mybuffer_1[0][0] = 0
-pipe 2: input mybuffer_1[0][1] = 1
+pipe 1: input buffer_1[0] = 0
+pipe 2: input buffer_1[0] = 1
 pipe 0: input token = 1
-pipe 1: input mybuffer_1[1][0] = 1
-pipe 2: input mybuffer_1[1][1] = 2
+pipe 1: input buffer_1[1] = 1
+pipe 2: input buffer_1[1] = 2
 pipe 0: input token = 2
-pipe 1: input mybuffer_1[2][0] = 2
-pipe 2: input mybuffer_1[2][1] = 3
+pipe 1: input buffer_1[2] = 2
+pipe 2: input buffer_1[2] = 3
 pipe 0: input token = 3
-pipe 1: input mybuffer_1[3][0] = 3
-pipe 2: input mybuffer_1[3][1] = 4
+pipe 1: input buffer_1[3] = 3
+pipe 2: input buffer_1[3] = 4
 pipe 0: input token = 4
-pipe 1: input mybuffer_1[0][0] = 4
-pipe 2: input mybuffer_1[0][1] = 5
+pipe 1: input buffer_1[0] = 4
+pipe 2: input buffer_1[0] = 5
 Rerun the pipeline
 pipe 0: input token = 0
-pipe 1: input mybuffer_1[0][0] = 0
-pipe 2: input mybuffer_1[0][1] = 1
+pipe 1: input buffer_1[0] = 0
+pipe 2: input buffer_1[0] = 1
 pipe 0: input token = 1
-pipe 1: input mybuffer_1[1][0] = 1
-pipe 2: input mybuffer_1[1][1] = 2
+pipe 1: input buffer_1[1] = 1
+pipe 2: input buffer_1[1] = 2
 pipe 0: input token = 2
-pipe 1: input mybuffer_1[2][0] = 2
-pipe 2: input mybuffer_1[2][1] = 3
+pipe 1: input buffer_1[2] = 2
+pipe 2: input buffer_1[2] = 3
 pipe 0: input token = 3
-pipe 1: input mybuffer_1[3][0] = 3
-pipe 2: input mybuffer_1[3][1] = 4
+pipe 1: input buffer_1[3] = 3
+pipe 2: input buffer_1[3] = 4
 pipe 0: input token = 4
-pipe 1: input mybuffer_1[0][0] = 4
-pipe 2: input mybuffer_1[0][1] = 5
+pipe 1: input buffer_1[0] = 4
+pipe 2: input buffer_1[0] = 5
 stop
 @endcode
 
@@ -838,140 +776,13 @@ The output can be different from run to run, since the second pipe is a parallel
 At the second iteration from the condition task,
 we reset the pipeline so the token identifier starts from @c 0 rather than @c 5.
 
-<!--
-@section UnderstandDetails Understand the Pipeline Scheduling Details 
+@section ParallelPipelineLearnMore Learn More about Taskflow Pipeline
 
-@subsection ConstructPipelineGraph Construct a pipeline graph 
+Visit the following pages to learn more about pipeline:
 
-Our pipeline graph object is constructed with 
-one multi-condition task and multiple runtime tasks. 
-Runtime task is a special task that could immediately schedule an active task 
-without going through the normal taskflow scheduling process. 
-The runtime task plays a critical role in optimizing our pipeline scheduling. 
-Please refer to sub-section \ref OptimizePipelineScheduling for more information.   
-
-The number of runtime tasks in the pipeline graph is equal to the number of lines. 
-Basically, each line is a runtime task.
-Each runtime task is executing one of the pipes on a data element. 
-When the data element is finished in one pipe, 
-the result is propapated to the next pipe, and 
-the runtime time is ready to execute the next pipe on the processed data
-once the dependency of the next pipe is resovled.  
-
-Generally speaking, one line should be executing by one thread.
-But it is not the case in our algorithm. 
-It is possible that two threads are executing the same line.
-However, our design that separates the data processing and the scheduling
-guarantees the impossibility of data race.    
-  
-Next, we talk about how pipeline scheduling implements. 
-  
-@subsection DecrementJoinCounter Decrement and reset join counter 
-
-Our pipeline scheduling relies on the concept of the join counter of every pipe.
-Join counter is an integer number denoting the number of dependency. 
-For example, in the figure above, the pipe-1 in line 1 has a dependency from pipe-1 in line 0
-and a dependency from pipe-0 in line1. Therefore, join counter is 2 for pipe-1 in line 1. 
-When a data elment is done in pipe-1 in line 0, we decrement the join counter of pipe-1 in line 1 by 1.
-When a data element is finshed in pipe-0 in line 1, we decrement the join counter of pipe-1 in line 1 by 1. 
-At this moment, the join counter of pipe-1 in line 1 is 0, 
-it will be scheduled in the future. 
-
-When a pipe in a certain line is scheduled, the first thing is to reset the join counter 
-based on the pipe type. That is, if it is a serial pipe type, join counter is two, otherwise, one.
-
-There is one thing to keep in mind. The initial join counters for all the pipes in line 0 and 
-the pipes in the column pipe-0 are not the same as the initial join counters of the remainings.
-Pipe-0 in line 0 has join counter 0 while pipe-0 in the other lines have join counter 1 in the initinal setting.
-Pipes except pipe-0 in the line 0 have join count 1 in the initial setting as well.
-The initial value of joint counters for these pipes are differnt 
-because these pipes do not have dependency from previous line (line -1) and previous column (column -1).
-We consider the pipes in line -1 and column -1 finished.    
-
-@subsection ReusePipeline Reuse the pipeline graph
-In the figure above, the pipeline graph has four lines. 
-That is, at most four scheduling tokens are being processed in the pipeline.
-To process more data elements, the pipeline graph is running in a cyclic fashion.
-You can think of each line as a state machine. 
-The line rolls back to pipe-0 when the data element is done in pipe-3.
-And the state in this line is kept in the line's local %tf::Pipeflow object.
-The object stores the state information including pipe id and line id.  
-For example, when a data element is finished in pipe-3 in line 2, 
-the state will be updated to (0, 2).
-(0,2) means in line 2 next pipe to be executed by the runtime task is pipe-0.
-
-The cyclic fashion also occurs between different lines not just inside a line.
-For example, when data element 0 is finished in pipe-3 in line 0, 
-the state in line 0 becomes (0, 0), and 
-data elment 4 could be read in and start in pipe-0 in line 0. 
-Hence, the state (0, 0) is now related to data elment 4.  
-You can see the dependency in the following figure when a cyclic graph shows.
-"pipe-0 on item 4" has two dependencis now. 
-One is caused by "pipe-3 on item 0" and the other is originated from "pipe-0 on item 3."
-
-@dotfile images/pipeline_cyclic.dot
-
-Next, we discuss how to know the pipe that is currently processing a data element.
-
-@subsection GetLinePipeInfo Get the information of running pipe
-
-In a line, the data element is processed in only one pipe. 
-To get which pipe is processing the data element,
-you could the the information from a tf::Pipeflow object in the line.  
-Each line has its own %tf::Pipeflow object.
-Using the API tf::Pipeflow::line(), you can know the line id. 
-Using the API tf::Pipeflow::pipe(), you can know the running pipe id.
-The information returned by API line() and pipe() are useful when dealing with your own data storage.
-Please refer to the section \ref CreatePipeline and section \ComposeWithTasks for more examples demonstrating 
-the usage of the two APIs in accessing the customized data storage. 
-
-@subsection AssignToken Assign token to each data element
-
-When a new data element is read in, a unique token is assigned to it. 
-A token is an integer starting with 0 and is incremented by 1 when new data element comes in.
-The token has a tight relationship with the line id.
-The line id is equal to "token mod total_number_of_lines".
-For example, in the figure above, token 5 is goint to be executed in line 1 because 5 mod 4 is 1. 
- 
-@subsection StopAndResumePipeline Stop and resume the pipeline
-
-Pipeline parallelism is widely used in streaming applications. 
-However, the streaming data may not be available all the time. 
-When data are not available, it is important to stop the pipeline from busying waiting. 
-To stop your pipeline, you use tf::Pipeflow::stop(). 
-When stop() is called in one line, the pipline object will stop execution 
-when all of the data elements which are in the middle of processing finish.
-If later new data arrive and are ready to be processed, 
-you can resume the pipeline object.
-The execution is resumed with the line which called the stop() previously. 
-For example, line 2 called stop(), the pipeline later resumes with line 2 
-rather than line 0 or line 3. 
-Since the pipeline graph object maintains a stateful number of tokens,
-the token is used to determine the line the pipeline resumes with.  
-Please refer to section \ComposeWithTasks for examples demonstrating the 
-usage of a condition task and a pipeline module task in emulating 
-a streaming environment.  
-
-@subsection UtilizeMaximumParallelism Take advantage of maximum parallelism
-
-Maximum parallelism refers to the maximum number of data elements that could be processed concurrently in the pipeline.
-And it is equal to the minumum among the number of lines, the number of pipes in a line, 
-and the maximum number of threads supported in your hardware. 
-To prevent under-utilization, it is better to have three similar numbers. 
-
-@subsection OptimizePipelineScheduling Optimize the pipeline scheduling
-
-In the sub-section, we introduce an optimization in our pipeline scheduling.
-In normal taskflow graph scheduling process, tasks are scheduled and put 
-in an exectuion list.
-This design, however, does not fully utilize the data locality in our pipeline. 
-When a thread finishes one pipe on a data element, it is optimized for the same thread 
-to continue the execution on next pipe in the same line. 
-For example, in the figure above, assume thread 1 finishes pipe-1 in line 1 on data elment 1. 
-If the dependency of pipe-2 in line 1 is totally resolved, 
-there is no need to assign thread 2 to pipe-2 in line 1. 
-It is best for thread 1 to work on pipe-2 in the same line, line 1. 
--->
+1. @ref TextProcessingPipeline
+2. @ref GraphProcessingPipeline
+3. @ref TaskflowProcessingPipeline
 
 
 */

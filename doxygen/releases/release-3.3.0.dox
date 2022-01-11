@@ -1,19 +1,20 @@
 namespace tf {
 
-/** @page release-3-3-0 Release 3.3.0 (Master)
+/** @page release-3-3-0 Release 3.3.0 (2022/01/03)
 
-%Taskflow 3.3.0 is the newest developing line to new features and improvements 
-we continue to support.
-It is also where this documentation is generated.
-Many things are considered @em experimental and may change or break from time to time.
-While it may be difficult to be keep all things consistent when introducing new features, 
-we continue to try our best to ensure backward compatibility.
+%Taskflow 3.3.0 is the 4th release in the 3.x line! 
+This release includes several new changes, such as
+sanitized data race, pipeline parallelism, documentation, and unit tests.
+
+@note
+We highly recommend that adopting %Taskflow v3.3 in your projects if possible. This release
+has resolved pretty much all the potential data-race issues induced by incorrect memory order.
 
 @tableofcontents
 
 @section release-3-3-0_download Download
 
-To download the newest version of %Taskflow, please clone from <a href="https://github.com/taskflow/taskflow">%Taskflow's GitHub</a>.
+%Taskflow 3.3.0 can be downloaded from <a href="https://github.com/taskflow/taskflow/releases/tag/v3.3.0">here</a>.
 
 @section release-3-3-0_system_requirements System Requirements
 
@@ -60,7 +61,13 @@ thread-local storage (TLS) errors when building %Taskflow projects in a shared l
 
 @subsection release-3-3-0_cudaflow cudaFlow
 
+Starting from v3.3, using tf::cudaFlow needs to include the header,
+`%taskflow/cuda/cudaflow.hpp`.
+See @ref release-3-3-0_breaking_changes.
+
 @subsection release-3-3-0_syclflow syclFlow
+
+This release does not have any upcate on %syclFlow.
 
 @subsection release-3-3-0_utilities Utilities
 
@@ -68,6 +75,8 @@ thread-local storage (TLS) errors when building %Taskflow projects in a shared l
 + Added relax_cpu call to optimize the work-stealing loop
 
 @subsection release-3-3-0_profiler Taskflow Profiler (TFProf)
+
+This release does not have any upcate on the profiler.
 
 @section release-3-3-0_bug_fixes Bug Fixes 
 
@@ -79,17 +88,30 @@ thread-local storage (TLS) errors when building %Taskflow projects in a shared l
 + Fixed invalid lambda capture by reference in tf::Taskflow::transform_reduce
 + Fixed invalid lambda capture by reference in tf::Taskflow::for_each
 + Fixed invalid lambda capture by reference in tf::Taskflow::for_each_index
+  
+If you encounter any potential bugs, please submit an issue at @IssueTracker.
 
 @section release-3-3-0_breaking_changes Breaking Changes
 
 For the purpose of compilation speed, you will need to separately include the follwoing
 files for using specific features and algorithms:
-+ `taskflow/algorithm/reduce.hpp` for creating a parallel-reduction task
-+ `taskflow/algorithm/sort.hpp` for creating a parallel-sort task
-+ `taskflow/algorithm/transform.hpp` for creating a parallel-transform task
++ `%taskflow/algorithm/reduce.hpp` for creating a parallel-reduction task
++ `%taskflow/algorithm/sort.hpp` for creating a parallel-sort task
++ `%taskflow/algorithm/transform.hpp` for creating a parallel-transform task
 + `%taskflow/algorithm/pipeline.hpp` for creating a parallel-pipeline task
++ `%taskflow/cuda/cudaflow.hpp` for creating a tf::cudaFlow and a tf::cudaFlowCapturer tasks
++ `%taskflow/cuda/algorithm/for_each.hpp` for creating a single-threaded task on a CUDA GPU
++ `%taskflow/cuda/algorithm/for_each.hpp` for creating a parallel-iteration task on a CUDA GPU
++ `%taskflow/cuda/algorithm/transform.hpp` for creating a parallel-transform task on a CUDA GPU
++ `%taskflow/cuda/algorithm/reduce.hpp` for creating a parallel-reduce task on a CUDA GPU
++ `%taskflow/cuda/algorithm/scan.hpp` for creating a parallel-scan task on a CUDA GPU
++ `%taskflow/cuda/algorithm/merge.hpp` for creating a parallel-merge task on a CUDA GPU
++ `%taskflow/cuda/algorithm/sort.hpp` for creating a parallel-sort task on a CUDA GPU
++ `%taskflow/cuda/algorithm/find.hpp` for creating a parallel-find task on a CUDA GPU
 
 @section release-3-3-0_deprecated_items Deprecated and Removed Items 
+
+This release does not have any deprecated and removed items.
 
 @section release-3-3-0_documentation Documentation
 
@@ -105,10 +127,10 @@ files for using specific features and algorithms:
 + Revised @ref GPUTaskingcudaFlowCapturer
 + Revised @ref LimitTheMaximumConcurrency 
   + @ref DefineAConflictGraph
-+ Revised @ref ParallelSort
-  + @ref ParallelSortInclude
-+ Revised @ref ParallelReduction
-  + @ref ParallelReductionInclude
++ Revised @ref ParallelSort to add header-include information
++ Revised @ref ParallelReduction to add header-include information
++ Revised @ref cudaFlowAlgorithms to add header-include information
++ Revised @ref cudaStandardAlgorithms to add header-include information
 + Added @ref RuntimeTasking
 + Added @ref ParallelTransforms
 + Added @ref ParallelPipeline

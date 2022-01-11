@@ -851,25 +851,25 @@ INPUT                  = ../taskflow/utility/small_vector.hpp \
                          ../taskflow/cuda/cuda_memory.hpp \
                          ../taskflow/cuda/cuda_stream.hpp \
                          ../taskflow/cuda/cuda_task.hpp \
-                         ../taskflow/cuda/cuda_flow.hpp \
+                         ../taskflow/cuda/cudaflow.hpp \
                          ../taskflow/cuda/cuda_optimizer.hpp \
                          ../taskflow/cuda/cuda_capturer.hpp \
                          ../taskflow/cuda/cuda_execution_policy.hpp \
-                         ../taskflow/cuda/cuda_algorithm/cuda_for_each.hpp \
-                         ../taskflow/cuda/cuda_algorithm/cuda_transform.hpp \
-                         ../taskflow/cuda/cuda_algorithm/cuda_reduce.hpp \
-                         ../taskflow/cuda/cuda_algorithm/cuda_scan.hpp \
-                         ../taskflow/cuda/cuda_algorithm/cuda_merge.hpp \
-                         ../taskflow/cuda/cuda_algorithm/cuda_sort.hpp \
-                         ../taskflow/cuda/cuda_algorithm/cuda_find.hpp \
+                         ../taskflow/cuda/algorithm/for_each.hpp \
+                         ../taskflow/cuda/algorithm/transform.hpp \
+                         ../taskflow/cuda/algorithm/reduce.hpp \
+                         ../taskflow/cuda/algorithm/scan.hpp \
+                         ../taskflow/cuda/algorithm/merge.hpp \
+                         ../taskflow/cuda/algorithm/sort.hpp \
+                         ../taskflow/cuda/algorithm/find.hpp \
                          ../taskflow/sycl/sycl_task.hpp \
                          ../taskflow/sycl/sycl_flow.hpp \
                          ../taskflow/taskflow.hpp \
-                         ../taskflow/cudaflow.hpp \
                          ../taskflow/syclflow.hpp \
                          QuickStart.dox \
                          releases/releases.dox \
                          releases/release-roadmap.dox \
+                         releases/release-3.4.0.dox \
                          releases/release-3.3.0.dox \
                          releases/release-3.2.0.dox \
                          releases/release-3.1.0.dox \
@@ -941,6 +941,9 @@ INPUT                  = ../taskflow/utility/small_vector.hpp \
                          examples/fibonacci.dox \
                          examples/flipcoins.dox \
                          examples/graph_traversal.dox \
+                         examples/text_pipeline.dox \
+                         examples/graph_pipeline.dox \
+                         examples/taskflow_pipeline.dox \
                          usecases/usecases.dox \
                          usecases/opentimer.dox \
                          usecases/dreamplace.dox \
@@ -1026,7 +1029,7 @@ EXCLUDE_SYMBOLS        = std::*
 # that contain example code fragments that are included (see the \include
 # command).
 
-EXAMPLE_PATH           =
+EXAMPLE_PATH           = ./
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp and

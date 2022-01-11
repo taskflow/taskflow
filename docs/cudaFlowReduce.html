@@ -5,7 +5,7 @@
   <title>cudaFlow Algorithms &raquo; Parallel Reduction | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -52,6 +52,7 @@
         <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
+            <li><a href="#CUDAParallelReductionIncludeTheHeader">Include the Header</a></li>
             <li><a href="#CUDAReduceItemsWithAnInitialValue">Reduce Items with an Initial Value</a></li>
             <li><a href="#CUDAReduceItemsWithoutAnInitialValue">Reduce Items without an Initial Value</a></li>
             <li><a href="#cudaFlowReduceTransformedItemsWithAnInitialValue">Reduce a Range of Transformed Items with an Initial Value</a></li>
@@ -59,7 +60,7 @@
             <li><a href="#CUDAReduceMiscellaneousItems">Miscellaneous Items</a></li>
           </ul>
         </div>
-<p>cudaFlow provides template methods to create parallel reduction tasks on a CUDA GPU.</p><section id="CUDAReduceItemsWithAnInitialValue"><h2><a href="#CUDAReduceItemsWithAnInitialValue">Reduce Items with an Initial Value</a></h2><p>The reduction task created by tf::cudaFlow::reduce(I first, I last, T* result, C&amp;&amp; bop) performs parallel reduction over a range of elements specified by <code>[first, last)</code> using the binary operator <code>bop</code> and stores the reduced result in <code>result</code>. It represents the parallel execution of the following reduction loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+<p>cudaFlow provides template methods to create parallel reduction tasks on a CUDA GPU.</p><section id="CUDAParallelReductionIncludeTheHeader"><h2><a href="#CUDAParallelReductionIncludeTheHeader">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/cuda/algorithm/reduce.hpp</code>, for creating a parallel-reduction task.</p></section><section id="CUDAReduceItemsWithAnInitialValue"><h2><a href="#CUDAReduceItemsWithAnInitialValue">Reduce Items with an Initial Value</a></h2><p>The reduction task created by tf::cudaFlow::reduce(I first, I last, T* result, C&amp;&amp; bop) performs parallel reduction over a range of elements specified by <code>[first, last)</code> using the binary operator <code>bop</code> and stores the reduced result in <code>result</code>. It represents the parallel execution of the following reduction loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
   <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">bop</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
 <span class="p">}</span></pre><p>The variable <code>result</code> participates in the reduction loop and must be initialized with an initial value. The following code performs a parallel reduction to sum all the numbers in the given range with an initial value <code>1000</code>:</p><pre class="m-code"><span class="k">const</span> <span class="kt">size_t</span> <span class="n">N</span> <span class="o">=</span> <span class="mi">1000000</span><span class="p">;</span>
 <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">cpu</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">-1</span><span class="p">);</span>
@@ -82,7 +83,7 @@
 
 <span class="n">cf</span><span class="p">.</span><span class="n">offload</span><span class="p">();</span>
 
-<span class="n">assert</span><span class="p">(</span><span class="n">sol</span> <span class="o">==</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">1000</span><span class="p">);</span></pre></section><section id="CUDAReduceItemsWithoutAnInitialValue"><h2><a href="#CUDAReduceItemsWithoutAnInitialValue">Reduce Items without an Initial Value</a></h2><p>You can use <a href="classtf_1_1cudaFlow.html#a3a5189b9c9494d2a63a983c32cf234f6" class="m-doc">tf::<wbr />cudaFlow::<wbr />uninitialized_reduce</a> to perform parallel reduction without an initial value. This method represents a parallel execution of the following reduction loop on a GPU, thus in no need of <a href="classtf_1_1cudaFlow.html#a6101318f98d4165f6a7bf49457dba5fc" class="m-doc">tf::<wbr />cudaFlow::<wbr />single_task</a> to initialize the variable:</p><pre class="m-code"><span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">;</span>  <span class="c1">// no initial values to participate in the reduction loop</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">sol</span> <span class="o">==</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">1000</span><span class="p">);</span></pre></section><section id="CUDAReduceItemsWithoutAnInitialValue"><h2><a href="#CUDAReduceItemsWithoutAnInitialValue">Reduce Items without an Initial Value</a></h2><p>You can use <a href="classtf_1_1cudaFlow.html#a3a5189b9c9494d2a63a983c32cf234f6" class="m-doc">tf::<wbr />cudaFlow::<wbr />uninitialized_reduce</a> to perform parallel reduction without an initial value. This method represents a parallel execution of the following reduction loop on a GPU, thus in no need of <a href="classtf_1_1cudaFlow.html#ac2906cb0002fc411a983d100a3d58d62" class="m-doc">tf::<wbr />cudaFlow::<wbr />single_task</a> to initialize the variable:</p><pre class="m-code"><span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">;</span>  <span class="c1">// no initial values to participate in the reduction loop</span>
 <span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
   <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">bop</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
 <span class="p">}</span></pre><p>The variable <code>result</code> is directly assigned the reduced value without any initial value to participate in the reduction loop. The following code performs a parallel reduction to sum all the numbers in the given range without any initial value:</p><pre class="m-code"><span class="k">const</span> <span class="kt">size_t</span> <span class="n">N</span> <span class="o">=</span> <span class="mi">1000000</span><span class="p">;</span>
@@ -184,7 +185,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

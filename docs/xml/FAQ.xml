@@ -53,7 +53,10 @@
 <para>OK, let me ask this first: <emphasis>Is your new car just another vehicle? Or, is your new home just another place to live?</emphasis></para><para>The answer to this question is the question itself. As technology advances, we can always find new ways to solve computational problems and achieve new performance milestones that were previously out-of-reach.</para></sect2>
 <sect2 id="FAQ_1GeneralQuestion15">
 <title>Q15: How can I contribute?</title>
-<para>New contributors are always welcome! Please visit <ref refid="Contributing" kindref="compound">Contributing</ref>.</para><para><hruler/>
+<para>New contributors are always welcome! Please visit <ref refid="Contributing" kindref="compound">Contributing</ref>.</para></sect2>
+<sect2 id="FAQ_1GeneralQuestion16">
+<title>Q16: Does Taskflow support pipeline parallelism?</title>
+<para>Yes, Taskflow has a specialized programming model to create a task-parallel pipeline scheduling framework. Please visit <ref refid="ParallelPipeline" kindref="compound">Parallel Pipeline</ref>.</para><para><hruler/>
 </para></sect2>
 </sect1>
 <sect1 id="FAQ_1ProgrammingQuestions">
@@ -75,7 +78,7 @@
 <para>When the program hangs forever it is very likely your taskflow graph has a cycle or not properly conditioned (see <ref refid="ConditionalTasking" kindref="compound">Conditional Tasking</ref>). Try the <ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">tf::Taskflow::dump</ref> method to debug the graph before dispatching your taskflow graph.</para></sect2>
 <sect2 id="FAQ_1ProgrammingQuestions6">
 <title>Q6: In the following example where B spawns a joined subflow of three tasks B1, B2, and B3, do they run concurrently with task A?</title>
-<para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/subflow-join.dot"></dotfile>
+<para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/subflow-join.dot"></dotfile>
 </para><para>No. The subflow is spawned during the execution of <computeroutput>B</computeroutput>, and at this point <computeroutput>A</computeroutput> must have finished because <computeroutput>A</computeroutput> precedes <computeroutput>B</computeroutput>. This gives rise to the fact <computeroutput>B1</computeroutput> and <computeroutput>B2</computeroutput> must run after <computeroutput>A</computeroutput>.</para></sect2>
 <sect2 id="FAQ_1ProgrammingQuestions7">
 <title>Q7: What is the purpose of a condition task?</title>

@@ -28,6 +28,8 @@ int fib(int n) {
 We use tf::Subflow to recursively compute fibonacci numbers in parallel.
 
 @code{.cpp}
+#include <taskflow/taskflow.hpp>
+
 int spawn(int n, tf::Subflow& sbf) {
   if (n < 2) return n;
   int res1, res2;
@@ -63,13 +65,10 @@ int main(int argc, char* argv[]) {
 The spawned taskflow graph for computing up to the fifth fibonacci number is shown below:
 
 
-<!-- @image html images/fibonacci_7.svg width=100% -->
 @dotfile images/fibonacci_7.dot
 
-Even if recursive dynamic tasking or subflows are permitted, 
+Even if recursive dynamic tasking or subflows are possible, 
 the recursion depth may not be too deep or it can cause stack overflow.
-
-
 
 
 */

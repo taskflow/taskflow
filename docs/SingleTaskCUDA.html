@@ -5,7 +5,7 @@
   <title>cudaFlow Algorithms &raquo; Single Task | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -52,11 +52,12 @@
         <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
+            <li><a href="#CUDASingleTaskIncludeTheHeader">Include the Header</a></li>
             <li><a href="#SingleTaskCUDASingleTask">Run a Task with a Single Thread</a></li>
             <li><a href="#SingleTaskCUDAMiscellaneousItems">Miscellaneous Items</a></li>
           </ul>
         </div>
-<p><a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a> provides a template method, <a href="classtf_1_1cudaFlow.html#a6101318f98d4165f6a7bf49457dba5fc" class="m-doc">tf::<wbr />cudaFlow::<wbr />single_task</a>, for creating a task to run the given callable using a single kernel thread.</p><section id="SingleTaskCUDASingleTask"><h2><a href="#SingleTaskCUDASingleTask">Run a Task with a Single Thread</a></h2><p>You can create a task to run a kernel function just once, i.e., using one GPU thread. This is handy when you want to set up a single or a few global variables that do not need multiple threads and will be used by multiple kernels afterwards. The following example creates a single-task kernel that sets <code>gpu_variable</code> to 1.</p><pre class="m-code"><span class="kt">int</span><span class="o">*</span> <span class="n">gpu_variable</span><span class="p">;</span>
+<p><a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a> provides a template method, <a href="classtf_1_1cudaFlow.html#ac2906cb0002fc411a983d100a3d58d62" class="m-doc">tf::<wbr />cudaFlow::<wbr />single_task</a>, for creating a task to run the given callable using a single kernel thread.</p><section id="CUDASingleTaskIncludeTheHeader"><h2><a href="#CUDASingleTaskIncludeTheHeader">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/cuda/algorithm/for_each.hpp</code>, for creating a single-threaded task.</p></section><section id="SingleTaskCUDASingleTask"><h2><a href="#SingleTaskCUDASingleTask">Run a Task with a Single Thread</a></h2><p>You can create a task to run a kernel function just once, i.e., using one GPU thread. This is handy when you want to set up a single or a few global variables that do not need multiple threads and will be used by multiple kernels afterwards. The following example creates a single-task kernel that sets <code>gpu_variable</code> to 1.</p><pre class="m-code"><span class="kt">int</span><span class="o">*</span> <span class="n">gpu_variable</span><span class="p">;</span>
 <span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">gpu_variable</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">]</span> <span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span> <span class="n">cf</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">// create a single task to set the gpu_variable to 1</span>
@@ -69,7 +70,7 @@
   <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span> <span class="n">kernel2</span> <span class="o">=</span> <span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid2</span><span class="p">,</span> <span class="n">block2</span><span class="p">,</span> <span class="n">shm2</span><span class="p">,</span> <span class="n">my_kernel_2</span><span class="p">,</span> <span class="p">...);</span>
 
   <span class="n">set_par</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">kernel1</span><span class="p">,</span> <span class="n">kernel2</span><span class="p">);</span>
-<span class="p">});</span></pre><p>Since the callable runs on GPU, it must be declared with a <code>__device__</code> specifier.</p></section><section id="SingleTaskCUDAMiscellaneousItems"><h2><a href="#SingleTaskCUDAMiscellaneousItems">Miscellaneous Items</a></h2><p>The single-task algorithm is also available in <a href="classtf_1_1cudaFlowCapturer.html#a7d0737ec995f5611c6d706ad105a8a0b" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />single_task</a>.</p></section>
+<span class="p">});</span></pre><p>Since the callable runs on GPU, it must be declared with a <code>__device__</code> specifier.</p></section><section id="SingleTaskCUDAMiscellaneousItems"><h2><a href="#SingleTaskCUDAMiscellaneousItems">Miscellaneous Items</a></h2><p>The single-task algorithm is also available in <a href="classtf_1_1cudaFlowCapturer.html#ac944c7d20056e0633ef84f1a25b52296" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />single_task</a>.</p></section>
       </div>
     </div>
   </div>
@@ -114,7 +115,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2021.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

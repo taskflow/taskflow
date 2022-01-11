@@ -7,7 +7,10 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow provides standard template methods for performing parallel iterations over a range of items a CUDA GPU.</para><sect1 id="CUDASTDForEach_1CUDASTDIndexBasedParallelFor">
+<para>Taskflow provides standard template methods for performing parallel iterations over a range of items a CUDA GPU.</para><sect1 id="CUDASTDForEach_1CUDASTDParallelIterationIncludeTheHeader">
+<title>Include the Header</title>
+<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/for_each.hpp</computeroutput>, for using the parallel-iteration algorithm.</para></sect1>
+<sect1 id="CUDASTDForEach_1CUDASTDIndexBasedParallelFor">
 <title>Index-based Parallel Iterations</title>
 <para>Index-based parallel-for performs parallel iterations over a range <computeroutput>[first, last)</computeroutput> with the given <computeroutput>step</computeroutput> size. The task created by <ref refid="namespacetf_1a01ad7ce62fa6f42f2f2fbff3659b7884" kindref="member">tf::cuda_for_each_index</ref> represents a kernel of parallel execution for the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>positive<sp/>step:<sp/>first,<sp/>first+step,<sp/>first+2*step,<sp/>...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i+=step)<sp/>{</highlight></codeline>

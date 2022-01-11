@@ -1,5 +1,5 @@
 #include <taskflow/taskflow.hpp>
-#include <taskflow/cudaflow.hpp>
+#include <taskflow/cuda/cudaflow.hpp>
 #include <fstream>
 
 struct pair_hash {

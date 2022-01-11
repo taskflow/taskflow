@@ -293,10 +293,10 @@ class cudaFlowCapturer {
 
     @tparam C callable type
 
-    @param callable callable to run by a single kernel thread
+    @param c callable to run by a single kernel thread
     */
     template <typename C>
-    cudaTask single_task(C callable);
+    cudaTask single_task(C c);
     
     /**
     @brief updates a capture task to a single-threaded kernel
@@ -305,7 +305,7 @@ class cudaFlowCapturer {
     on an existing task.
     */
     template <typename C>
-    void single_task(cudaTask task, C callable);
+    void single_task(cudaTask task, C c);
     
     /**
     @brief captures a kernel that applies a callable to each dereferenced element 

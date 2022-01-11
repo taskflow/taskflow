@@ -958,6 +958,7 @@ inline void Executor::_consume_task(Worker& w, Node* p) {
   std::uniform_int_distribution<size_t> rdvtm(0, _workers.size()-1);
 
   while(p->_join_counter != 0) {
+
     exploit:
 
     auto ptr = w._wsq.pop();
@@ -970,7 +971,7 @@ inline void Executor::_consume_task(Worker& w, Node* p) {
     }
     else {
       size_t num_steals = 0;
-      size_t num_pauses = 0;
+      //size_t num_pauses = 0;
       size_t max_steals = ((_workers.size() + 1) << 1);
       
       explore:
@@ -986,7 +987,8 @@ inline void Executor::_consume_task(Worker& w, Node* p) {
       else if(p->_join_counter != 0){
 
         if(num_steals++ > max_steals) {
-          (num_pauses++ < 100) ? relax_cpu() : std::this_thread::yield();
+          //(num_pauses++ < 100) ? relax_cpu() : std::this_thread::yield();
+          std::this_thread::yield();
         }
 
         //std::this_thread::yield();

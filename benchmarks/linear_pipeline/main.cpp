@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
               << std::setw(12) << runtime / num_rounds / 1e3
               << std::endl;
 
-    if (model == "tf") {
+    /*if (model == "tf") {
       std::ofstream outputfile;
       outputfile.open("./tf_time.csv", std::ofstream::app);
       outputfile << num_threads << ','
@@ -96,6 +96,6 @@ int main(int argc, char* argv[]) {
                  << runtime / num_rounds / 1e3 << '\n';
 
       outputfile.close();
-    }
+    }*/
   }
 }

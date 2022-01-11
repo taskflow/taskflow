@@ -1,5 +1,6 @@
 list(APPEND TF_EXAMPLES
   simple 
+  attach_data
   async
   subflow_async
   observer 
@@ -8,8 +9,8 @@ list(APPEND TF_EXAMPLES
   condition
   multi_condition
   switch_case
-  do_while
-  while
+  do_while_loop
+  while_loop
   if_else
   nested_if_else
   visualization 
@@ -17,14 +18,15 @@ list(APPEND TF_EXAMPLES
   parallel_for 
   parallel_sort
   parallel_pipeline
+  parallel_text_pipeline
+  parallel_graph_pipeline
+  parallel_taskflow_pipeline
   run 
   runtime
   composition
   limited_concurrency
   cancel
   cancel_async
-
-  #pipeline_2
 )
 
 foreach(example IN LISTS TF_EXAMPLES)

@@ -20,7 +20,7 @@
 <row>
 <entry thead="no"><para>OpenTimer v2  </para></entry><entry thead="no"><para>Taskflow  </para></entry><entry thead="no"><para>4482  </para></entry><entry thead="no"><para>20  </para></entry><entry thead="no"><para>$130,523   </para></entry></row>
 </table>
-</para><para>OpenTimer v1 relied on a pipeline data structure to adtop loop parallelism with OpenMP. We found it very difficult to go beyond this paradigm because of the insufficient support for dynamic dependencies in OpenMP. With Taskflow in place, we can break this bottleneck and easily model both static and dynamic task dependencies at programming time and runtime. The task dependency graph flows computations naturally with the timing graph, providing improved asynchrony and performance. The following figure shows a task graph to carry one iteration of timing update.</para><para><dotfile name="/Users/twhuang/PhD/Code/taskflow/doxygen/images/opentimer_4.dot"></dotfile>
+</para><para>OpenTimer v1 relied on a pipeline data structure to adtop loop parallelism with OpenMP. We found it very difficult to go beyond this paradigm because of the insufficient support for dynamic dependencies in OpenMP. With Taskflow in place, we can break this bottleneck and easily model both static and dynamic task dependencies at programming time and runtime. The task dependency graph flows computations naturally with the timing graph, providing improved asynchrony and performance. The following figure shows a task graph to carry one iteration of timing update.</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/opentimer_4.dot"></dotfile>
 </para></sect1>
 <sect1 id="opentimer_1UseCaseOpenTimerPerformanceImprovement">
 <title>Performance Improvement</title>
@@ -33,7 +33,8 @@
 <sect1 id="opentimer_1UseCaseOpenTimerReferences">
 <title>References</title>
 <para><itemizedlist>
-<listitem><para>T.-W. Huang, C.-X. Lin, G. Guo, and Martin D. F. Wong, "<ulink url="ipdps19.pdf">Cpp-Taskflow: Fast Task-based Parallel Programming using Modern C++</ulink>," <emphasis>IEEE International Parallel and Distributed Processing Symposium (IPDPS)</emphasis>, pp. 974-983, Rio de Janeiro, Brazil, 2019. </para></listitem>
+<listitem><para>Tsung-Wei Huang, Guannan Guo, Chun-Xun Lin, and Martin Wong, "<ulink url="https://tsung-wei-huang.github.io/papers/tcad21-ot2.pdf">OpenTimer v2: A New Parallel Incremental Timing Analysis Engine</ulink>," <emphasis>IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems (TCAD)</emphasis>, vol. 40, no. 4, pp. 776-786, April 2021 </para></listitem>
+<listitem><para>Tsung-Wei Huang, Chun-Xun Lin, Guannan Guo, and Martin Wong, "<ulink url="ipdps19.pdf">Cpp-Taskflow: Fast Task-based Parallel Programming using Modern C++</ulink>," <emphasis>IEEE International Parallel and Distributed Processing Symposium (IPDPS)</emphasis>, pp. 974-983, Rio de Janeiro, Brazil, 2019. </para></listitem>
 <listitem><para>Tsung-Wei Huang and Martin Wong, "<ulink url="huang_15_01.pdf">OpenTimer: A High-Performance Timing Analysis Tool</ulink>," <emphasis>IEEE/ACM International Conference on Computer-Aided Design (ICCAD)</emphasis>, pp. 895-902, Austin, TX, 2015. </para></listitem>
 </itemizedlist>
 </para></sect1>

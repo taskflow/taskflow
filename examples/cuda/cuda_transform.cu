@@ -1,7 +1,8 @@
 // This program demonstrates how to performs a parallel transform
 // using cudaFlow.
 
-#include <taskflow/cudaflow.hpp>
+#include <taskflow/cuda/cudaflow.hpp>
+#include <taskflow/cuda/algorithm/transform.hpp>
 
 int main(int argc, char* argv[]) {
 

@@ -414,6 +414,7 @@ the following organizations for sponsoring the Taskflow project!
 | <!-- --> | <!-- --> | <!-- --> | <!-- --> |
 |:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
 |<img src="doxygen/images/utah-ece-logo.png">|<img src="doxygen/images/nsf.png"> | <img src="doxygen/images/darpa.png"> | <img src="doxygen/images/NumFocus.png">|
+|<img src="doxygen/images/nvidia-logo.png"> | | | |
 
 # License
 

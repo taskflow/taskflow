@@ -321,6 +321,28 @@ class Task {
 
     @param data pointer to user data
 
+    The following example shows how to attach user data to a task and
+    run the task iteratively while changing the data value:
+
+    @code{.cpp}
+    tf::Executor executor;
+    tf::Taskflow taskflow("attach data to a task");
+    
+    int data;
+    
+    // create a task and attach it the data
+    auto A = taskflow.placeholder();
+    A.data(&data).work([A](){
+      auto d = *static_cast<int*>(A.data());
+      std::cout << "data is " << d << std::endl;
+    }); 
+
+    // run the taskflow iteratively with changing data
+    for(data = 0; data<10; data++){
+      executor.run(taskflow).wait();
+    }
+    @endcode
+
     @return @c *this
     */
     Task& data(void* data);

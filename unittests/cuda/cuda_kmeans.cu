@@ -2,7 +2,8 @@
 
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
-#include <taskflow/cudaflow.hpp>
+#include <taskflow/cuda/cudaflow.hpp>
+#include <taskflow/cuda/algorithm/for_each.hpp>
 
 #define L2(x1, y1, x2, y2) ((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2))
 

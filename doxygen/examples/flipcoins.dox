@@ -26,48 +26,55 @@ If the return is zero (head toss), the execution moves to the next condition tas
 or it (tail toss) goes back to the first condition task to start over the simulation.
 
 @code{.cpp}
-tf::Taskflow taskflow;
-tf::Executor executor;
+#include <taskflow/taskflow.hpp>
 
-size_t rounds = 10000;
-size_t tosses = 0; 
-size_t total_tosses = 0; 
-double average_tosses = 0.0; 
+int main() {
 
-tf::Task A = taskflow.emplace([&](){ tosses = 0; })
-                     .name("init"); 
-
-tf::Task B = taskflow.emplace([&](){ ++tosses; return std::rand()%2; })
-                     .name("flip-coin-1");
-tf::Task C = taskflow.emplace([&](){ return std::rand()%2; })
-                     .name("flip-coin-2");
-tf::Task D = taskflow.emplace([&](){ return std::rand()%2; })
-                     .name("flip-coin-3");
-tf::Task E = taskflow.emplace([&](){ return std::rand()%2; })
-                     .name("flip-coin-4");
-tf::Task F = taskflow.emplace([&](){ return std::rand()%2; })
-                     .name("flip-coin-5");
-
-// reach the target; record the number of tosses 
-tf::Task G = taskflow.emplace([&](){ total_tosses += tosses; })
-                     .name("stop");
-
-A.precede(B);
-
-// five probabilistic conditions
-B.precede(C, B);
-C.precede(D, B);
-D.precede(E, B);
-E.precede(F, B);
-F.precede(G, B);
-
-// repeat the flip-coin simulation by rounds times
-executor.run_n(taskflow, rounds).wait();
-
-// calculate the expected number of tosses
-average_tosses = total_tosses / (double)rounds;
-
-assert(std::fabs(average_tosses-32.0)<1.0);
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+  
+  size_t rounds = 10000;
+  size_t tosses = 0; 
+  size_t total_tosses = 0; 
+  double average_tosses = 0.0; 
+  
+  tf::Task A = taskflow.emplace([&](){ tosses = 0; })
+                       .name("init"); 
+  
+  tf::Task B = taskflow.emplace([&](){ ++tosses; return std::rand()%2; })
+                       .name("flip-coin-1");
+  tf::Task C = taskflow.emplace([&](){ return std::rand()%2; })
+                       .name("flip-coin-2");
+  tf::Task D = taskflow.emplace([&](){ return std::rand()%2; })
+                       .name("flip-coin-3");
+  tf::Task E = taskflow.emplace([&](){ return std::rand()%2; })
+                       .name("flip-coin-4");
+  tf::Task F = taskflow.emplace([&](){ return std::rand()%2; })
+                       .name("flip-coin-5");
+  
+  // reach the target; record the number of tosses 
+  tf::Task G = taskflow.emplace([&](){ total_tosses += tosses; })
+                       .name("stop");
+  
+  A.precede(B);
+  
+  // five probabilistic conditions
+  B.precede(C, B);
+  C.precede(D, B);
+  D.precede(E, B);
+  E.precede(F, B);
+  F.precede(G, B);
+  
+  // repeat the flip-coin simulation by rounds times
+  executor.run_n(taskflow, rounds).wait();
+  
+  // calculate the expected number of tosses
+  average_tosses = total_tosses / (double)rounds;
+  
+  assert(std::fabs(average_tosses-32.0)<1.0);
+  
+  return 0;
+}
 @endcode
 
 Running the taskflow by a fair number of times, the average tosses we have is close to 32.

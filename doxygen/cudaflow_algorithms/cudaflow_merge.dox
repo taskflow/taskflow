@@ -7,6 +7,11 @@ on a CUDA GPU.
 
 @tableofcontents
 
+@section CUDAParallelMergeIncludeTheHeader Include the Header
+
+You need to include the header file, `%taskflow/cuda/algorithm/merge.hpp`, 
+for creating a parallel-merge task.
+
 @section cudaFlowMergeTwoRangesOfItems Merge two Sorted Ranges of Items
 
 tf::cudaFlow::merge performs a parallel merge over two ranges of elements
