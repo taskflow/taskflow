@@ -583,7 +583,7 @@ Task& Task::work(C&& c) {
   return *this;
 }
 
-// Function: name
+// Function: data
 inline void* Task::data() const {
   return _node->_data;
 }
@@ -623,6 +623,11 @@ class TaskView {
     @brief queries the name of the task
     */
     const std::string& name() const;
+
+     /**
+    @brief queries the data of the task
+    */
+    void*  data() const;
     
     /**
     @brief queries the number of successors of the task
@@ -676,6 +681,11 @@ class TaskView {
 
 // Constructor
 inline TaskView::TaskView(const Node& node) : _node {node} {
+}
+
+// Function: data
+inline void* TaskView::data() const {
+  return _node._data;
 }
 
 // Function: name

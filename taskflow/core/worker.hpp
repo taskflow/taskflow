@@ -1,8 +1,9 @@
 #pragma once
-
+#include <tuple>
 #include "declarations.hpp"
 #include "tsq.hpp"
 #include "notifier.hpp"
+
 
 /** 
 @file worker.hpp
@@ -30,7 +31,9 @@ class Worker {
     Executor* _executor;
     Notifier::Waiter* _waiter;
     std::default_random_engine _rdgen { std::random_device{}() };
-    TaskQueue<Node*> _wsq;
+    //TaskQueue<Node*> _wsq;
+    TaskQueue<tf::WSQTuple*> _wsq;
+
 };
 
 // ----------------------------------------------------------------------------

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../taskflow.hpp"
+#include "../core/executor.hpp"
+#include "../core/flow_builder.hpp"
 
 /** 
 @file pipeline.hpp
@@ -150,12 +152,21 @@ class Pipeflow {
     _stop = true;
   }
   
-  private:
-
+  /*
+    GL = moved to pulic from priate
+  */
   Pipeflow(size_t line, size_t pipe) :
     _line {line},
     _pipe {pipe} {
   }
+  private:
+
+/*
+  Pipeflow(size_t line, size_t pipe) :
+    _line {line},
+    _pipe {pipe} {
+  }
+*/
 
   size_t _line;
   size_t _pipe;
@@ -251,7 +262,7 @@ The pipeline scheduler will generate five scheduling tokens and then stop.
 */
 template <typename... Ps>
 class Pipeline {
-  
+
   static_assert(sizeof...(Ps)>0, "must have at least one pipe");
   
   /**

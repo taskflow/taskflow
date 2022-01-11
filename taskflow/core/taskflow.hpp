@@ -1,6 +1,7 @@
 #pragma once
 
 #include "flow_builder.hpp"
+#include "../algorithm/pipeline.hpp"
 
 /** 
 @file core/taskflow.hpp
@@ -113,6 +114,9 @@ class Taskflow : public FlowBuilder {
     during the move operation, or the behavior is undefined.
     */
     Taskflow(Taskflow&& rhs);
+
+ 
+
 
     /**
     @brief move assignment operator
@@ -279,7 +283,7 @@ class Taskflow : public FlowBuilder {
 // Constructor
 inline Taskflow::Taskflow(const std::string& name) : 
   FlowBuilder {_graph},
-  _name       {name} {
+  _name       {name}{
 }
 
 // Constructor

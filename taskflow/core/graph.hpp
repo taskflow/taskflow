@@ -200,12 +200,16 @@ class Runtime {
   When the taskflow finishes, we will see both @c B and @c C in the output.
   */
   void schedule(Task);
+  void schedule(Task, Pipeflow* pf);
   
   /**
   @brief runs a task callable synchronously
   */
   template <typename C>
   void run(C&&);
+
+  template <typename C>
+  void run(C&&, Pipeflow*);
 
   private:
   

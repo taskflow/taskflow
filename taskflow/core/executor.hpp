@@ -1,7 +1,8 @@
 #pragma once
-
+#include <tuple>
 #include "observer.hpp"
 #include "taskflow.hpp"
+#include "../algorithm/pipeline.hpp"
 
 /** 
 @file executor.hpp
@@ -10,6 +11,7 @@
 
 namespace tf {
 
+//typedef std::tuple<Pipeflow, Node*>  WSQTuple;
 // ----------------------------------------------------------------------------
 // Executor Definition
 // ----------------------------------------------------------------------------
@@ -52,6 +54,7 @@ class Executor {
   friend class FlowBuilder;
   friend class Subflow;
   friend class Runtime;
+
 
   public:
 
@@ -98,6 +101,7 @@ class Executor {
     ensure the taskflow remains alive during its execution.
     */
     tf::Future<void> run(Taskflow& taskflow);
+    tf::Future<void> run(Taskflow& taskflow, Pipeflow* pipeflow);
     
     /**
     @brief runs a moved taskflow once
@@ -119,6 +123,7 @@ class Executor {
     This member function is thread-safe.
     */
     tf::Future<void> run(Taskflow&& taskflow);
+    tf::Future<void> run(Taskflow&& taskflow, Pipeflow* pipeflow);
 
     /**
     @brief runs a taskflow once and invoke a callback upon completion
@@ -147,6 +152,11 @@ class Executor {
     */
     template<typename C>
     tf::Future<void> run(Taskflow& taskflow, C&& callable);
+
+    template<typename C>
+    tf::Future<void> run(Taskflow& taskflow, Pipeflow* pipeflow, C&& callable);
+
+    
     
     /**
     @brief runs a moved taskflow once and invoke a callback upon completion
@@ -174,6 +184,8 @@ class Executor {
     */
     template<typename C>
     tf::Future<void> run(Taskflow&& taskflow, C&& callable);
+    template<typename C>
+    tf::Future<void> run(Taskflow&& taskflow, Pipeflow* pipeflow, C&& callable);
 
     /**
     @brief runs a taskflow for @c N times
@@ -199,7 +211,7 @@ class Executor {
     ensure the taskflow remains alive during its execution.
     */
     tf::Future<void> run_n(Taskflow& taskflow, size_t N);
-    
+    tf::Future<void> run_n(Taskflow& taskflow, Pipeflow* pipeflow, size_t N);
     /**
     @brief runs a moved taskflow for @c N times
     
@@ -223,6 +235,7 @@ class Executor {
     This member function is thread-safe.
     */
     tf::Future<void> run_n(Taskflow&& taskflow, size_t N);
+    tf::Future<void> run_n(Taskflow&& taskflow, Pipeflow* pipeflow, size_t N);
 
     /**
     @brief runs a taskflow for @c N times and then invokes a callback
@@ -255,6 +268,9 @@ class Executor {
     */
     template<typename C>
     tf::Future<void> run_n(Taskflow& taskflow, size_t N, C&& callable);
+
+    template<typename C>
+    tf::Future<void> run_n(Taskflow& taskflow, Pipeflow* pipeflow, size_t N, C&& callable);
     
     /**
     @brief runs a moved taskflow for @c N times and then invokes a callback
@@ -283,6 +299,9 @@ class Executor {
     */
     template<typename C>
     tf::Future<void> run_n(Taskflow&& taskflow, size_t N, C&& callable);
+
+    template<typename C>
+    tf::Future<void> run_n(Taskflow&& taskflow, Pipeflow* pipeflow, size_t N, C&& callable);
 
     /**
     @brief runs a taskflow multiple times until the predicate becomes true
@@ -313,6 +332,9 @@ class Executor {
     */
     template<typename P>
     tf::Future<void> run_until(Taskflow& taskflow, P&& pred);
+
+    template<typename P>
+    tf::Future<void> run_until(Taskflow& taskflow, Pipeflow* pipeflow, P&& pred);
     
     /**
     @brief runs a moved taskflow and keeps running it 
@@ -341,6 +363,9 @@ class Executor {
     */
     template<typename P>
     tf::Future<void> run_until(Taskflow&& taskflow, P&& pred);
+
+    template<typename P>
+    tf::Future<void> run_until(Taskflow&& taskflow, Pipeflow* pipeflow, P&& pred);
 
     /**
     @brief runs a taskflow multiple times until the predicate becomes true and 
@@ -374,6 +399,9 @@ class Executor {
     */
     template<typename P, typename C>
     tf::Future<void> run_until(Taskflow& taskflow, P&& pred, C&& callable);
+
+    template<typename P, typename C>
+    tf::Future<void> run_until(Taskflow& taskflow, Pipeflow* pipeflow, P&& pred, C&& callable);
     
     /**
     @brief runs a moved taskflow and keeps running 
@@ -405,6 +433,9 @@ class Executor {
     */
     template<typename P, typename C>
     tf::Future<void> run_until(Taskflow&& taskflow, P&& pred, C&& callable);
+
+    template<typename P, typename C>
+    tf::Future<void> run_until(Taskflow&& taskflow, Pipeflow* pipeflow, P&& pred, C&& callable);
 
     /**
     @brief wait for all tasks to complete
@@ -507,6 +538,9 @@ class Executor {
     */
     template <typename F, typename... ArgsT>
     auto async(F&& f, ArgsT&&... args);
+
+    template <typename F, typename... ArgsT>
+    auto async(F&& f, Pipeflow* pf, ArgsT&&... args);
     
     /** 
     @brief runs a given function asynchronously and gives a name to this task
@@ -540,6 +574,9 @@ class Executor {
     */
     template <typename F, typename... ArgsT>
     auto named_async(const std::string& name, F&& f, ArgsT&&... args);
+
+    template <typename F, typename... ArgsT>
+    auto named_async(const std::string& name, F&& f, Pipeflow* pf, ArgsT&&... args);
     
     /**
     @brief similar to tf::Executor::async but does not return a future object
@@ -558,6 +595,9 @@ class Executor {
     template <typename F, typename... ArgsT>
     void silent_async(F&& f, ArgsT&&... args);
 
+    template <typename F, typename... ArgsT>
+    void silent_async(F&& f, Pipeflow* pf, ArgsT&&... args);
+
     /**
     @brief similar to tf::Executor::named_async but does not return a future object
 
@@ -574,6 +614,9 @@ class Executor {
     */
     template <typename F, typename... ArgsT>
     void named_silent_async(const std::string& name, F&& f, ArgsT&&... args);
+
+    template <typename F, typename... ArgsT>
+    void named_silent_async(const std::string& name, F&& f, Pipeflow* pf, ArgsT&&... args);
     
     /**
     @brief constructs an observer to inspect the activities of worker threads
@@ -624,7 +667,7 @@ class Executor {
 
     Notifier _notifier;
 
-    TaskQueue<Node*> _wsq;
+    TaskQueue<WSQTuple*> _wsq;
 
     std::atomic<size_t> _num_actives {0};
     std::atomic<size_t> _num_thieves {0};
@@ -632,43 +675,50 @@ class Executor {
     
     std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
 
+    Pipeflow* _pf;
+
     Worker* _this_worker();
 
-    bool _wait_for_task(Worker&, Node*&);
+    bool _wait_for_task(Worker&, Node*&, Pipeflow*&);
     
     void _observer_prologue(Worker&, Node*);
+    void _observer_prologue(Worker&, Node*, Pipeflow*);
     void _observer_epilogue(Worker&, Node*);
+    void _observer_epilogue(Worker&, Node*, Pipeflow*);
     void _spawn(size_t);
     void _worker_loop(Worker&);
-    void _exploit_task(Worker&, Node*&);
-    void _explore_task(Worker&, Node*&);
+    void _exploit_task(Worker&, Node*&, Pipeflow*&);
+    void _explore_task(Worker&, Node*&, Pipeflow*&);
     void _consume_task(Worker&, Node*);
-    void _schedule(Worker&, Node*);
-    void _schedule(Node*);
-    void _schedule(Worker&, const SmallVector<Node*>&);
-    void _schedule(const SmallVector<Node*>&);
+    void _schedule(Worker&, Node*, Pipeflow*);
+    void _schedule(Node*, Pipeflow*);
+    void _schedule(Worker&, const SmallVector<Node*>&, Pipeflow*);
+    void _schedule(const SmallVector<Node*>&, Pipeflow*);
     void _set_up_topology(Worker*, Topology*);
+    void _set_up_topology(Worker*, Topology*, Pipeflow*);
     void _tear_down_topology(Worker&, Topology*); 
+    void _tear_down_topology(Worker&, Topology*, Pipeflow*); 
     void _tear_down_async(Node*);
-    void _tear_down_invoke(Worker&, Node*);
-    void _cancel_invoke(Worker&, Node*);
+    void _tear_down_invoke(Worker&, Node*, Pipeflow*);
+    void _cancel_invoke(Worker&, Node*, Pipeflow*);
     void _increment_topology();
     void _decrement_topology();
     void _decrement_topology_and_notify();
     void _invoke(Worker&, Node*);
-    void _invoke_static_task(Worker&, Node*);
-    void _invoke_dynamic_task(Worker&, Node*);
-    void _join_dynamic_task_external(Worker&, Node*, Graph&);
-    void _join_dynamic_task_internal(Worker&, Node*, Graph&);
-    void _detach_dynamic_tasked(Worker&, Node*, Graph&);
-    void _invoke_condition_task(Worker&, Node*, SmallVector<int>&);
-    void _invoke_multi_condition_task(Worker&, Node*, SmallVector<int>&);
-    void _invoke_module_task(Worker&, Node*);
-    void _invoke_async_task(Worker&, Node*);
-    void _invoke_silent_async_task(Worker&, Node*);
-    void _invoke_cudaflow_task(Worker&, Node*);
-    void _invoke_syclflow_task(Worker&, Node*);
-    void _invoke_runtime_task(Worker&, Node*);
+    void _invoke(Worker&, Node*, Pipeflow*);
+    void _invoke_static_task(Worker&, Node*, Pipeflow*);
+    void _invoke_dynamic_task(Worker&, Node*, Pipeflow*);
+    void _join_dynamic_task_external(Worker&, Node*, Graph&, Pipeflow*);
+    void _join_dynamic_task_internal(Worker&, Node*, Graph&, Pipeflow*);
+    void _detach_dynamic_tasked(Worker&, Node*, Graph&, Pipeflow*);
+    void _invoke_condition_task(Worker&, Node*, SmallVector<int>&, Pipeflow*);
+    void _invoke_multi_condition_task(Worker&, Node*, SmallVector<int>&, Pipeflow*);
+    void _invoke_module_task(Worker&, Node*, Pipeflow*);
+    void _invoke_async_task(Worker&, Node*, Pipeflow*);
+    void _invoke_silent_async_task(Worker&, Node*, Pipeflow*);
+    void _invoke_cudaflow_task(Worker&, Node*, Pipeflow*);
+    void _invoke_syclflow_task(Worker&, Node*, Pipeflow*);
+    void _invoke_runtime_task(Worker&, Node*, Pipeflow*);
 
     template <typename C, 
       std::enable_if_t<is_cudaflow_task_v<C>, void>* = nullptr
@@ -685,7 +735,8 @@ class Executor {
 inline Executor::Executor(size_t N) : 
   _workers    {N},
   _notifier   {N} {
-  
+  _pf = new Pipeflow(size_t(-1), size_t(-1));
+
   if(N == 0) {
     TF_THROW("no cpu workers to execute taskflows");
   }
@@ -737,7 +788,14 @@ inline Worker* Executor::_this_worker() {
 
 // Function: named_async
 template <typename F, typename... ArgsT>
-auto Executor::named_async(const std::string& name, F&& f, ArgsT&&... args) {
+auto Executor::named_async(const std::string& name, F&& f, ArgsT&&... args)
+{
+  return named_async(name, f, _pf, args...);
+}
+
+// Function: named_async
+template <typename F, typename... ArgsT>
+auto Executor::named_async(const std::string& name, F&& f, Pipeflow* pf, ArgsT&&... args) {
 
   _increment_topology();
 
@@ -770,10 +828,10 @@ auto Executor::named_async(const std::string& name, F&& f, ArgsT&&... args) {
   node->_name = name;
   
   if(auto w = _this_worker(); w) {
-    _schedule(*w, node);
+    _schedule(*w, node, pf);
   }
   else{
-    _schedule(node);
+    _schedule(node, pf);
   }
 
   return fu;
@@ -782,13 +840,28 @@ auto Executor::named_async(const std::string& name, F&& f, ArgsT&&... args) {
 // Function: async
 template <typename F, typename... ArgsT>
 auto Executor::async(F&& f, ArgsT&&... args) {
-  return named_async("", std::forward<F>(f), std::forward<ArgsT>(args)...);
+  return async(std::forward<F>(f), _pf, std::forward<ArgsT>(args)...);
 }
+
+// Function: async
+template <typename F, typename... ArgsT>
+auto Executor::async(F&& f, Pipeflow* pf, ArgsT&&... args) {
+  return named_async("", std::forward<F>(f), pf, std::forward<ArgsT>(args)...);
+}
+
 
 // Function: named_silent_async
 template <typename F, typename... ArgsT>
 void Executor::named_silent_async(
   const std::string& name, F&& f, ArgsT&&... args
+) {
+  Executor::named_silent_async(name, std::forward<F>(f), _pf, std::forward<ArgsT>(args)...);
+}
+
+// Function: named_silent_async
+template <typename F, typename... ArgsT>
+void Executor::named_silent_async(
+  const std::string& name, F&& f, Pipeflow* pf, ArgsT&&... args
 ) {
 
   _increment_topology();
@@ -803,17 +876,23 @@ void Executor::named_silent_async(
   node->_name = name;
   
   if(auto w = _this_worker(); w) {
-    _schedule(*w, node);
+    _schedule(*w, node, pf);
   }
   else {
-    _schedule(node);
+    _schedule(node, pf);
   }
 }
 
 // Function: silent_async
 template <typename F, typename... ArgsT>
 void Executor::silent_async(F&& f, ArgsT&&... args) {
-  named_silent_async("", std::forward<F>(f), std::forward<ArgsT>(args)...);
+  silent_async(std::forward<F>(f), _pf, std::forward<ArgsT>(args)...);
+}
+
+// Function: silent_async
+template <typename F, typename... ArgsT>
+void Executor::silent_async(F&& f, Pipeflow* pf, ArgsT&&... args) {
+  named_silent_async("", std::forward<F>(f), pf, std::forward<ArgsT>(args)...);
 }
 
 // Function: this_worker_id
@@ -852,15 +931,16 @@ inline void Executor::_spawn(size_t N) {
       //this_worker().worker = &w;
 
       Node* t = nullptr;
+      Pipeflow* pf  = nullptr;
 
       // must use 1 as condition instead of !done
       while(1) {
         
         // execute the tasks.
-        _exploit_task(w, t);
+        _exploit_task(w, t, pf);
 
         // wait for tasks
-        if(_wait_for_task(w, t) == false) {
+        if(_wait_for_task(w, t, pf) == false) {
           break;
         }
       }
@@ -879,8 +959,14 @@ inline void Executor::_consume_task(Worker& w, Node* p) {
 
   while(p->_join_counter != 0) {
     exploit:
-    if(auto t = w._wsq.pop(); t) {
-      _invoke(w, t);
+
+    auto ptr = w._wsq.pop();
+    if(ptr){
+      auto t = std::get<1>(*ptr);
+      Pipeflow* pf = std::get<0>(*ptr);
+      if(t) {
+        _invoke(w, t, pf);
+      }
     }
     else {
       size_t num_steals = 0;
@@ -888,10 +974,13 @@ inline void Executor::_consume_task(Worker& w, Node* p) {
       size_t max_steals = ((_workers.size() + 1) << 1);
       
       explore:
-
-      t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
-      if(t) {
-        _invoke(w, t);
+      
+      ptr = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
+      if (ptr)
+      { 
+        auto t = std::get<1>(*ptr);
+        Pipeflow* pf  = std::get<0>(*ptr);
+        _invoke(w, t, pf);
         goto exploit;
       }
       else if(p->_join_counter != 0){
@@ -912,7 +1001,7 @@ inline void Executor::_consume_task(Worker& w, Node* p) {
 }
 
 // Function: _explore_task
-inline void Executor::_explore_task(Worker& w, Node*& t) {
+inline void Executor::_explore_task(Worker& w, Node*& t, Pipeflow*& pf) {
   
   //assert(_workers[w].wsq.empty());
   //assert(!t);
@@ -924,7 +1013,12 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
   std::uniform_int_distribution<size_t> rdvtm(0, _workers.size()-1);
 
   do {
-    t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
+    auto ptr = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
+    if (ptr)
+    {
+      t = std::get<1>(*ptr);
+      pf = std::get<0>(*ptr);
+    }
 
     if(t) {
       break;
@@ -943,25 +1037,28 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
 }
 
 // Procedure: _exploit_task
-inline void Executor::_exploit_task(Worker& w, Node*& t) {
-  
+inline void Executor::_exploit_task(Worker& w, Node*& t, Pipeflow*& pf) {
   if(t) {
-
     if(_num_actives.fetch_add(1) == 0 && _num_thieves == 0) {
       _notifier.notify(false);
     }
 
     while(t) {
-      _invoke(w, t);
-      t = w._wsq.pop();
+      _invoke(w, t, pf);
+      t = nullptr;
+      WSQTuple* ptr = w._wsq.pop();
+      if(ptr){
+        t = std::get<1>(*ptr);
+        pf = std::get<0>(*ptr);
+      }
+      
     }
-
     --_num_actives;
   }
 }
 
 // Function: _wait_for_task
-inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
+inline bool Executor::_wait_for_task(Worker& worker, Node*& t, Pipeflow*& pf) {
 
   wait_for_task:
 
@@ -971,7 +1068,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 
   explore_task:
 
-  _explore_task(worker, t);
+  _explore_task(worker, t, pf);
 
   if(t) {
     if(_num_thieves.fetch_sub(1) == 1) {
@@ -988,7 +1085,8 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
     _notifier.cancel_wait(worker._waiter);
     //t = (vtm == me) ? _wsq.steal() : _workers[vtm].wsq.steal();
     
-    t = _wsq.steal();  // must steal here
+    auto ptr = _wsq.steal();
+    t = std::get<1>(*ptr);  // must steal here
     if(t) {
       if(_num_thieves.fetch_sub(1) == 1) {
         _notifier.notify(false);
@@ -1066,32 +1164,36 @@ inline size_t Executor::num_observers() const noexcept {
 }
   
 // Procedure: _schedule
-inline void Executor::_schedule(Worker& worker, Node* node) {
+inline void Executor::_schedule(Worker& worker, Node* node, Pipeflow* pf) {
 
   node->_state.fetch_or(Node::READY, std::memory_order_release);
 
   // caller is a worker to this pool
   if(worker._executor == this) {
-    worker._wsq.push(node);
+    WSQTuple* ptr = new WSQTuple(pf,node);
+    worker._wsq.push(ptr);
     return;
   }
 
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
-    _wsq.push(node);
+    WSQTuple* ptr = new WSQTuple(pf,node);
+    _wsq.push(ptr);
   }
 
   _notifier.notify(false);
 }
 
 // Procedure: _schedule
-inline void Executor::_schedule(Node* node) {
+inline void Executor::_schedule(Node* node, Pipeflow* pf) {
   
   node->_state.fetch_or(Node::READY, std::memory_order_release);
 
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
-    _wsq.push(node);
+    WSQTuple* ptr = new WSQTuple(pf,node);
+    _wsq.push(ptr);
+    //_wsq.push(new WSQTuple(pf,node));
   }
 
   _notifier.notify(false);
@@ -1099,7 +1201,7 @@ inline void Executor::_schedule(Node* node) {
 
 // Procedure: _schedule
 inline void Executor::_schedule(
-  Worker& worker, const SmallVector<Node*>& nodes
+  Worker& worker, const SmallVector<Node*>& nodes, Pipeflow* pf
 ) {
 
   // We need to cacth the node count to avoid accessing the nodes
@@ -1117,7 +1219,9 @@ inline void Executor::_schedule(
 
   if(worker._executor == this) {
     for(size_t i=0; i<num_nodes; ++i) {
-      worker._wsq.push(nodes[i]);
+      //worker._wsq.push(nodes[i]);
+      WSQTuple* ptr = new WSQTuple(pf,nodes[i]);
+      worker._wsq.push(ptr);
     }
     return;
   }
@@ -1125,15 +1229,16 @@ inline void Executor::_schedule(
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     for(size_t k=0; k<num_nodes; ++k) {
-      _wsq.push(nodes[k]);
+      _wsq.push(new WSQTuple(pf,nodes[k]));
     }
   }
   
   _notifier.notify_n(num_nodes);
 }
 
+
 // Procedure: _schedule
-inline void Executor::_schedule(const SmallVector<Node*>& nodes) {
+inline void Executor::_schedule(const SmallVector<Node*>& nodes, Pipeflow* pf) {
 
   // parent topology may be removed!
   const auto num_nodes = nodes.size();
@@ -1150,7 +1255,8 @@ inline void Executor::_schedule(const SmallVector<Node*>& nodes) {
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     for(size_t k=0; k<num_nodes; ++k) {
-      _wsq.push(nodes[k]);
+      WSQTuple* ptr = new WSQTuple(pf,nodes[k]);
+      _wsq.push(ptr);
     }
   }
   
@@ -1158,7 +1264,7 @@ inline void Executor::_schedule(const SmallVector<Node*>& nodes) {
 }
 
 // Procedure: _invoke
-inline void Executor::_invoke(Worker& worker, Node* node) {
+inline void Executor::_invoke(Worker& worker, Node* node, Pipeflow* pf) {
   
   // synchronize all outstanding memory operations caused by reordering
   while(!(node->_state.load(std::memory_order_acquire) & Node::READY));
@@ -1167,7 +1273,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
   // no need to do other things if the topology is cancelled
   if(node->_is_cancelled()) {
-    _cancel_invoke(worker, node);
+    _cancel_invoke(worker, node, pf);
     return;
   }
 
@@ -1175,7 +1281,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   if(node->_semaphores && !node->_semaphores->to_acquire.empty()) {
     SmallVector<Node*> nodes;
     if(!node->_acquire_all(nodes)) {
-      _schedule(worker, nodes);
+      _schedule(worker, nodes, pf);
       return;
     }
     node->_state.fetch_or(Node::ACQUIRED, std::memory_order_release);
@@ -1189,37 +1295,37 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   switch(node->_handle.index()) {
     // static task
     case Node::STATIC:{
-      _invoke_static_task(worker, node);
+      _invoke_static_task(worker, node, pf);
     } 
     break;
     
     // dynamic task
     case Node::DYNAMIC: {
-      _invoke_dynamic_task(worker, node);
+      _invoke_dynamic_task(worker, node, pf);
     }
     break;
     
     // condition task
     case Node::CONDITION: {
-      _invoke_condition_task(worker, node, conds);
+      _invoke_condition_task(worker, node, conds, pf);
     }
     break;
     
     // multi-condition task
     case Node::MULTI_CONDITION: {
-      _invoke_multi_condition_task(worker, node, conds);
+      _invoke_multi_condition_task(worker, node, conds, pf);
     }
     break;
 
     // module task
     case Node::MODULE: {
-      _invoke_module_task(worker, node);
+      _invoke_module_task(worker, node, pf);
     }
     break;
 
     // async task
     case Node::ASYNC: {
-      _invoke_async_task(worker, node);
+      _invoke_async_task(worker, node, pf);
       _tear_down_async(node);
       return ;
     }
@@ -1227,7 +1333,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     
     // silent async task
     case Node::SILENT_ASYNC: {
-      _invoke_silent_async_task(worker, node);
+      _invoke_silent_async_task(worker, node, pf);
       _tear_down_async(node);
       return ;
     }
@@ -1235,19 +1341,19 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
     // cudaflow task
     case Node::CUDAFLOW: {
-      _invoke_cudaflow_task(worker, node);
+      _invoke_cudaflow_task(worker, node, pf);
     }
     break; 
     
     // syclflow task
     case Node::SYCLFLOW: {
-      _invoke_syclflow_task(worker, node);
+      _invoke_syclflow_task(worker, node, pf);
     }
     break; 
 
     // runtime task
     case Node::RUNTIME: {
-      _invoke_runtime_task(worker, node);
+      _invoke_runtime_task(worker, node, pf);
     }
     break;
 
@@ -1258,7 +1364,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
   // if releasing semaphores exist, release them
   if(node->_semaphores && !node->_semaphores->to_release.empty()) {
-    _schedule(worker, node->_release_all());
+    _schedule(worker, node->_release_all(), pf);
   }
 
   // We MUST recover the dependency since the graph may have cycles.
@@ -1291,7 +1397,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
           s->_join_counter.store(0, std::memory_order_relaxed);
           j.fetch_add(1);
           if(cache) {
-            _schedule(worker, cache);
+            _schedule(worker, cache, pf);
           }
           cache = s;
         }
@@ -1305,7 +1411,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
         if(--(node->_successors[i]->_join_counter) == 0) {
           j.fetch_add(1);
           if(cache) {
-            _schedule(worker, cache);
+            _schedule(worker, cache, pf);
           }
           cache = node->_successors[i];
         }
@@ -1315,7 +1421,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   }
 
   // tear_down the invoke
-  _tear_down_invoke(worker, node);
+  _tear_down_invoke(worker, node, pf);
   
   // perform tail recursion elimination for the right-most child to reduce
   // the number of expensive pop/push operations through the task queue
@@ -1338,21 +1444,21 @@ inline void Executor::_tear_down_async(Node* node) {
 }
 
 // Proecdure: _tear_down_invoke
-inline void Executor::_tear_down_invoke(Worker& worker, Node* node) {
+inline void Executor::_tear_down_invoke(Worker& worker, Node* node, Pipeflow* pf) {
   // we must check parent first before substracting the join counter,
   // or it can introduce data race
   if(node->_parent == nullptr) {
     if(node->_topology->_join_counter.fetch_sub(1) == 1) {
-      _tear_down_topology(worker, node->_topology);
+      _tear_down_topology(worker, node->_topology, pf);
     }
-  }
+  } 
   else {  // joined subflow
     node->_parent->_join_counter.fetch_sub(1);
   }
 }
 
 // Procedure: _cancel_invoke
-inline void Executor::_cancel_invoke(Worker& worker, Node* node) {
+inline void Executor::_cancel_invoke(Worker& worker, Node* node, Pipeflow* pf) {
 
   switch(node->_handle.index()) {
     // async task needs to carry out the promise
@@ -1368,9 +1474,16 @@ inline void Executor::_cancel_invoke(Worker& worker, Node* node) {
 
     // tear down topology if the node is the last leaf
     default: {
-      _tear_down_invoke(worker, node);
+      _tear_down_invoke(worker, node, pf);
     }
     break;
+  }
+}
+
+// Procedure: _observer_prologue
+inline void Executor::_observer_prologue(Worker& worker, Node* node, Pipeflow* pf) {
+  for(auto& observer : _observers) {
+    observer->on_entry(WorkerView(worker), TaskView(*node), pf);
   }
 }
 
@@ -1388,17 +1501,24 @@ inline void Executor::_observer_epilogue(Worker& worker, Node* node) {
   }
 }
 
+// Procedure: _observer_epilogue
+inline void Executor::_observer_epilogue(Worker& worker, Node* node, Pipeflow* pf) {
+  for(auto& observer : _observers) {
+    observer->on_exit(WorkerView(worker), TaskView(*node), pf);
+  }
+}
+
 // Procedure: _invoke_static_task
-inline void Executor::_invoke_static_task(Worker& worker, Node* node) {
-  _observer_prologue(worker, node);
+inline void Executor::_invoke_static_task(Worker& worker, Node* node, Pipeflow* pf) {
+  _observer_prologue(worker, node, pf);
   std::get_if<Node::Static>(&node->_handle)->work();
-  _observer_epilogue(worker, node);
+  _observer_epilogue(worker, node, pf);
 }
 
 // Procedure: _invoke_dynamic_task
-inline void Executor::_invoke_dynamic_task(Worker& w, Node* node) {
+inline void Executor::_invoke_dynamic_task(Worker& w, Node* node, Pipeflow* pf) {
 
-  _observer_prologue(w, node);
+  _observer_prologue(w, node, pf);
 
   auto handle = std::get_if<Node::Dynamic>(&node->_handle);
 
@@ -1409,15 +1529,15 @@ inline void Executor::_invoke_dynamic_task(Worker& w, Node* node) {
   handle->work(sf);
 
   if(sf._joinable) {
-    _join_dynamic_task_internal(w, node, handle->subgraph);
+    _join_dynamic_task_internal(w, node, handle->subgraph, pf);
   }
   
-  _observer_epilogue(w, node);
+  _observer_epilogue(w, node, pf);
 }
 
 // Procedure: _detach_dynamic_tasked
 inline void Executor::_detach_dynamic_tasked(
-  Worker& w, Node* p, Graph& g
+  Worker& w, Node* p, Graph& g, Pipeflow* pf
 ) {
 
   // graph is empty and has no async tasks
@@ -1445,12 +1565,13 @@ inline void Executor::_detach_dynamic_tasked(
   }
 
   p->_topology->_join_counter.fetch_add(src.size());
-  _schedule(w, src);
+  _schedule(w, src, pf);
 }
+
 
 // Procedure: _join_dynamic_task_external
 inline void Executor::_join_dynamic_task_external(
-  Worker& w, Node* p, Graph& g
+  Worker& w, Node* p, Graph& g, Pipeflow* pf
 ) {
 
   // graph is empty and has no async tasks
@@ -1472,13 +1593,14 @@ inline void Executor::_join_dynamic_task_external(
     }
   }
   p->_join_counter.fetch_add(src.size());
-  _schedule(w, src);
+  _schedule(w, src, pf);
   _consume_task(w, p);
 }
 
+
 // Procedure: _join_dynamic_task_internal
 inline void Executor::_join_dynamic_task_internal(
-  Worker& w, Node* p, Graph& g
+  Worker& w, Node* p, Graph& g, Pipeflow* pf
 ) {
 
   // graph is empty and has no async tasks
@@ -1498,136 +1620,220 @@ inline void Executor::_join_dynamic_task_internal(
     }
   }
   p->_join_counter.fetch_add(src.size());
-  _schedule(w, src);
+  _schedule(w, src, pf);
   _consume_task(w, p);
 }
 
 // Procedure: _invoke_condition_task
 inline void Executor::_invoke_condition_task(
-  Worker& worker, Node* node, SmallVector<int>& conds
+  Worker& worker, Node* node, SmallVector<int>& conds, Pipeflow* pf
 ) {
-  _observer_prologue(worker, node);
+  _observer_prologue(worker, node, pf);
   conds = { std::get_if<Node::Condition>(&node->_handle)->work() };
-  _observer_epilogue(worker, node);
+  _observer_epilogue(worker, node, pf);
 }
 
 // Procedure: _invoke_multi_condition_task
 inline void Executor::_invoke_multi_condition_task(
-  Worker& worker, Node* node, SmallVector<int>& conds
+  Worker& worker, Node* node, SmallVector<int>& conds, Pipeflow* pf
 ) {
-  _observer_prologue(worker, node);
+  _observer_prologue(worker, node, pf);
   conds = std::get_if<Node::MultiCondition>(&node->_handle)->work();
-  _observer_epilogue(worker, node);
+  _observer_epilogue(worker, node, pf);
 }
 
 // Procedure: _invoke_cudaflow_task
-inline void Executor::_invoke_cudaflow_task(Worker& worker, Node* node) {
-  _observer_prologue(worker, node);  
+inline void Executor::_invoke_cudaflow_task(Worker& worker, Node* node, Pipeflow* pf) {
+  _observer_prologue(worker, node, pf);  
   std::get_if<Node::cudaFlow>(&node->_handle)->work(*this, node);
-  _observer_epilogue(worker, node);
+  _observer_epilogue(worker, node, pf);
 }
 
 // Procedure: _invoke_syclflow_task
-inline void Executor::_invoke_syclflow_task(Worker& worker, Node* node) {
-  _observer_prologue(worker, node);  
+inline void Executor::_invoke_syclflow_task(Worker& worker, Node* node, Pipeflow* pf) {
+  _observer_prologue(worker, node, pf);  
   std::get_if<Node::syclFlow>(&node->_handle)->work(*this, node);
-  _observer_epilogue(worker, node);
+  _observer_epilogue(worker, node, pf);
 }
 
 // Procedure: _invoke_module_task
-inline void Executor::_invoke_module_task(Worker& w, Node* node) {
-  _observer_prologue(w, node);
+inline void Executor::_invoke_module_task(Worker& w, Node* node, Pipeflow* pf) {
+  _observer_prologue(w, node, pf);
   _join_dynamic_task_internal(
-    w, node, std::get_if<Node::Module>(&node->_handle)->graph
+    w, node, std::get_if<Node::Module>(&node->_handle)->graph, pf
   );
-  _observer_epilogue(w, node);  
+  _observer_epilogue(w, node, pf);  
 }
 
 // Procedure: _invoke_async_task
-inline void Executor::_invoke_async_task(Worker& w, Node* node) {
-  _observer_prologue(w, node);
+inline void Executor::_invoke_async_task(Worker& w, Node* node, Pipeflow* pf) {
+  _observer_prologue(w, node, pf);
   std::get_if<Node::Async>(&node->_handle)->work(false);
-  _observer_epilogue(w, node);  
+  _observer_epilogue(w, node, pf);  
 }
 
 // Procedure: _invoke_silent_async_task
-inline void Executor::_invoke_silent_async_task(Worker& w, Node* node) {
-  _observer_prologue(w, node);
+inline void Executor::_invoke_silent_async_task(Worker& w, Node* node, Pipeflow* pf) {
+  _observer_prologue(w, node, pf);
   std::get_if<Node::SilentAsync>(&node->_handle)->work();
-  _observer_epilogue(w, node);  
+  _observer_epilogue(w, node, pf);  
 }
 
 // Procedure: _invoke_runtime_task
-inline void Executor::_invoke_runtime_task(Worker& w, Node* node) {
-  _observer_prologue(w, node);
+inline void Executor::_invoke_runtime_task(Worker& w, Node* node, Pipeflow* pf) {
+  _observer_prologue(w, node, pf);
   Runtime rt(*this, w, node);
   std::get_if<Node::Runtime>(&node->_handle)->work(rt);
-  _observer_epilogue(w, node);  
+  _observer_epilogue(w, node, pf);  
 }
 
-// Function: run
+
+// Function: run(1)
 inline tf::Future<void> Executor::run(Taskflow& f) {
-  return run_n(f, 1, [](){});
+  return run_n(f, _pf, 1, [](){});
 }
 
-// Function: run
+// Function: run(1)
+inline tf::Future<void> Executor::run(Taskflow& f, Pipeflow* pf) {
+  return run_n(f, pf, 1, [](){});
+}
+
+
+// Function: run(2))
 inline tf::Future<void> Executor::run(Taskflow&& f) {
-  return run_n(std::move(f), 1, [](){});
+  return run_n(std::move(f), _pf, 1, [](){});
 }
 
-// Function: run
+
+
+// Function: run(2)
+inline tf::Future<void> Executor::run(Taskflow&& f, Pipeflow* pf) {
+  return run_n(std::move(f), pf, 1, [](){});
+}
+
+
+// Function: run(3)
 template <typename C>
 tf::Future<void> Executor::run(Taskflow& f, C&& c) {
-  return run_n(f, 1, std::forward<C>(c));
+  return run_n(f, _pf, 1, std::forward<C>(c));
 }
 
-// Function: run
+// Function: run(3)
+template <typename C>
+tf::Future<void> Executor::run(Taskflow& f, Pipeflow* pf, C&& c) {
+  return run_n(f, pf, 1, std::forward<C>(c));
+}
+
+
+// Function: run(4)
 template <typename C>
 tf::Future<void> Executor::run(Taskflow&& f, C&& c) {
-  return run_n(std::move(f), 1, std::forward<C>(c));
+  return run_n(std::move(f), _pf, 1, std::forward<C>(c));
 }
 
-// Function: run_n
+
+// Function: run(4)
+template <typename C>
+tf::Future<void> Executor::run(Taskflow&& f, Pipeflow* pf, C&& c) {
+  return run_n(std::move(f), pf, 1, std::forward<C>(c));
+}
+
+
+// Function: run_n(5)
 inline tf::Future<void> Executor::run_n(Taskflow& f, size_t repeat) {
-  return run_n(f, repeat, [](){});
+  return run_n(f, _pf, repeat, [](){});
 }
 
-// Function: run_n
+
+// Function: run_n(5)
+inline tf::Future<void> Executor::run_n(Taskflow& f, Pipeflow* pf, size_t repeat) {
+  return run_n(f, pf, repeat, [](){});
+}
+
+
+// Function: run_n(6)
 inline tf::Future<void> Executor::run_n(Taskflow&& f, size_t repeat) {
-  return run_n(std::move(f), repeat, [](){});
+  return run_n(std::move(f), _pf, repeat, [](){});
 }
 
-// Function: run_n
+
+
+// Function: run_n(6)
+inline tf::Future<void> Executor::run_n(Taskflow&& f, Pipeflow* pf, size_t repeat) {
+  return run_n(std::move(f), pf, repeat, [](){});
+}
+
+
+// Function: run_n(7)
 template <typename C>
 tf::Future<void> Executor::run_n(Taskflow& f, size_t repeat, C&& c) {
   return run_until(
-    f, [repeat]() mutable { return repeat-- == 0; }, std::forward<C>(c)
+    f, _pf, [repeat]() mutable { return repeat-- == 0; }, std::forward<C>(c)
   );
 }
 
-// Function: run_n
+// Function: run_n(7)
+template <typename C>
+tf::Future<void> Executor::run_n(Taskflow& f, Pipeflow* pf, size_t repeat, C&& c) {
+  return run_until(
+    f, pf, [repeat]() mutable { return repeat-- == 0; }, std::forward<C>(c)
+  );
+}
+
+
+// Function: run_n(8)
 template <typename C>
 tf::Future<void> Executor::run_n(Taskflow&& f, size_t repeat, C&& c) {
   return run_until(
-    std::move(f), [repeat]() mutable { return repeat-- == 0; }, std::forward<C>(c)
+    std::move(f), _pf, [repeat]() mutable { return repeat-- == 0; }, std::forward<C>(c)
   );
 }
 
-// Function: run_until    
+// Function: run_n(8)
+template <typename C>
+tf::Future<void> Executor::run_n(Taskflow&& f, Pipeflow* pf, size_t repeat, C&& c) {
+  return run_until(
+    std::move(f), pf, [repeat]() mutable { return repeat-- == 0; }, std::forward<C>(c)
+  );
+}
+
+
+// Function: run_until(9)   
 template<typename P>
 tf::Future<void> Executor::run_until(Taskflow& f, P&& pred) {
-  return run_until(f, std::forward<P>(pred), [](){});
+  return run_until(f, _pf, std::forward<P>(pred), [](){});
 }
 
-// Function: run_until    
+
+// Function: run_until(9)   
+template<typename P>
+tf::Future<void> Executor::run_until(Taskflow& f, Pipeflow* pf, P&& pred) {
+  return run_until(f, pf, std::forward<P>(pred), [](){});
+}
+
+
+// Function: run_until(10)    
 template<typename P>
 tf::Future<void> Executor::run_until(Taskflow&& f, P&& pred) {
-  return run_until(std::move(f), std::forward<P>(pred), [](){});
+  return run_until(std::move(f), _pf, std::forward<P>(pred), [](){});
 }
 
-// Function: run_until
+
+// Function: run_until(10)    
+template<typename P>
+tf::Future<void> Executor::run_until(Taskflow&& f, Pipeflow* pf, P&& pred) {
+  return run_until(std::move(f), pf, std::forward<P>(pred), [](){});
+}
+
+
 template <typename P, typename C>
 tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
+  return run_until(f, _pf, std::forward<P>(p), std::forward<C>(c));
+}
+
+// Function: run_until(11)
+template <typename P, typename C>
+tf::Future<void> Executor::run_until(Taskflow& f, Pipeflow* pf, P&& p, C&& c) {
 
   _increment_topology();
   
@@ -1659,16 +1865,23 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
     std::lock_guard<std::mutex> lock(f._mutex);
     f._topologies.push(t);
     if(f._topologies.size() == 1) {
-      _set_up_topology(_this_worker(), t.get());
+      _set_up_topology(_this_worker(), t.get(), pf);
     }
   }
 
   return future;
 }
 
+
 // Function: run_until
 template <typename P, typename C>
 tf::Future<void> Executor::run_until(Taskflow&& f, P&& pred, C&& c) {
+  return run_until(f, _pf, pred, c);
+}
+
+// Function: run_until
+template <typename P, typename C>
+tf::Future<void> Executor::run_until(Taskflow&& f, Pipeflow* pf, P&& pred, C&& c) {
 
   std::list<Taskflow>::iterator itr;
 
@@ -1678,7 +1891,7 @@ tf::Future<void> Executor::run_until(Taskflow&& f, P&& pred, C&& c) {
     itr->_satellite = itr;
   }
 
-  return run_until(*itr, std::forward<P>(pred), std::forward<C>(c));
+  return run_until(*itr, pf, std::forward<P>(pred), std::forward<C>(c));
 }
 
 // Procedure: _increment_topology
@@ -1695,6 +1908,7 @@ inline void Executor::_decrement_topology_and_notify() {
   }
 }
 
+
 // Procedure: _decrement_topology
 inline void Executor::_decrement_topology() {
   std::lock_guard<std::mutex> lock(_topology_mutex);
@@ -1709,6 +1923,11 @@ inline void Executor::wait_for_all() {
 
 // Function: _set_up_topology
 inline void Executor::_set_up_topology(Worker* worker, Topology* tpg) {
+  _set_up_topology(worker, tpg, _pf);
+}
+
+// Function: _set_up_topology
+inline void Executor::_set_up_topology(Worker* worker, Topology* tpg, Pipeflow* pf) {
 
   // ---- under taskflow lock ----
 
@@ -1731,15 +1950,20 @@ inline void Executor::_set_up_topology(Worker* worker, Topology* tpg) {
   tpg->_join_counter = tpg->_sources.size();
 
   if(worker) {
-    _schedule(*worker, tpg->_sources);
+    _schedule(*worker, tpg->_sources, pf);
   }
   else {
-    _schedule(tpg->_sources);
+    _schedule(tpg->_sources, pf);
   }
 }
 
+inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg)
+{
+  _tear_down_topology(worker, tpg, _pf);
+}
+
 // Function: _tear_down_topology
-inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
+inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Pipeflow* pf) {
 
   auto &f = tpg->_taskflow;
 
@@ -1750,7 +1974,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
     //assert(tpg->_join_counter == 0);
     std::lock_guard<std::mutex> lock(f._mutex);
     tpg->_join_counter = tpg->_sources.size();
-    _schedule(worker, tpg->_sources); 
+    _schedule(worker, tpg->_sources, pf); 
   }
   // case 2: the final run of this topology
   else {
@@ -1775,7 +1999,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
       
       // set up topology needs to be under the lock or it can
       // introduce memory order error with pop
-      _set_up_topology(&worker, tpg);
+      _set_up_topology(&worker, tpg, pf);
     } 
     else {
       //assert(f._topologies.size() == 1);
@@ -1820,6 +2044,9 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
 // ############################################################################
 
 inline void Subflow::join() {
+  join(_executor._pf);
+}
+inline void Subflow::join(Pipeflow* pf) {
 
   // assert(this_worker().worker == &_worker);
   
@@ -1828,11 +2055,16 @@ inline void Subflow::join() {
   }
   
   // only the parent worker can join the subflow
-  _executor._join_dynamic_task_external(_worker, _parent, _graph);
+  _executor._join_dynamic_task_external(_worker, _parent, _graph, pf);
   _joinable = false;
 }
 
 inline void Subflow::detach() {
+  Subflow::detach(_executor._pf);
+}
+  
+
+inline void Subflow::detach(Pipeflow* pf) {
 
   // assert(this_worker().worker == &_worker);
   
@@ -1841,15 +2073,21 @@ inline void Subflow::detach() {
   }
 
   // only the parent worker can detach the subflow
-  _executor._detach_dynamic_tasked(_worker, _parent, _graph);
+  _executor._detach_dynamic_tasked(_worker, _parent, _graph, pf);
   _joinable = false;
 }
 
 // Function: named_async
 template <typename F, typename... ArgsT>
 auto Subflow::named_async(const std::string& name, F&& f, ArgsT&&... args) {
+  return named_async(name, std::forward<F>(f), _executor._pf, std::forward<ArgsT>(args)...);
+}
+
+// Function: named_async
+template <typename F, typename... ArgsT>
+auto Subflow::named_async(const std::string& name, F&& f, Pipeflow* pf, ArgsT&&... args) {
   return _named_async(
-    *_executor._this_worker(), name, std::forward<F>(f), std::forward<ArgsT>(args)...
+    *_executor._this_worker(), name, std::forward<F>(f), pf, std::forward<ArgsT>(args)...
   );
 }
     
@@ -1858,7 +2096,8 @@ template <typename F, typename... ArgsT>
 auto Subflow::_named_async(
   Worker& w,
   const std::string& name, 
-  F&& f, 
+  F&& f,
+  Pipeflow* pf, 
   ArgsT&&... args
 ) {
 
@@ -1894,7 +2133,7 @@ auto Subflow::_named_async(
   node->_topology = _parent->_topology;
   node->_parent = _parent;
 
-  _executor._schedule(w, node);
+  _executor._schedule(w, node, pf);
 
   return fu;
 }
@@ -1902,13 +2141,27 @@ auto Subflow::_named_async(
 // Function: async
 template <typename F, typename... ArgsT>
 auto Subflow::async(F&& f, ArgsT&&... args) {
-  return named_async("", std::forward<F>(f), std::forward<ArgsT>(args)...);
+  return async(std::forward<F>(f), _executor._pf, std::forward<ArgsT>(args)...);
+}
+
+// Function: async
+template <typename F, typename... ArgsT>
+auto Subflow::async(F&& f, Pipeflow* pf, ArgsT&&... args) {
+  return named_async("", std::forward<F>(f), pf, std::forward<ArgsT>(args)...);
 }
 
 // Function: _named_silent_async
 template <typename F, typename... ArgsT>
 void Subflow::_named_silent_async(
   Worker& w, const std::string& name, F&& f, ArgsT&&... args
+) {
+  _named_silent_async(w, name, std::forward<F>(f), _executor._pf, std::forward<ArgsT>(args)...);
+}
+
+// Function: _named_silent_async
+template <typename F, typename... ArgsT>
+void Subflow::_named_silent_async(
+  Worker& w, const std::string& name, F&& f, Pipeflow* pf, ArgsT&&... args
 ) {
 
   _parent->_join_counter.fetch_add(1);
@@ -1924,21 +2177,33 @@ void Subflow::_named_silent_async(
   node->_topology = _parent->_topology;
   node->_parent = _parent;
   
-  _executor._schedule(w, node);
+  _executor._schedule(w, node, pf);
 }
 
 // Function: silent_async
 template <typename F, typename... ArgsT>
 void Subflow::named_silent_async(const std::string& name, F&& f, ArgsT&&... args) {
+  named_silent_async(name, std::forward<F>(f), _executor._pf, std::forward<ArgsT>(args)...);
+}
+
+// Function: silent_async
+template <typename F, typename... ArgsT>
+void Subflow::named_silent_async(const std::string& name, F&& f, Pipeflow* pf, ArgsT&&... args) {
   _named_silent_async(
-    *_executor._this_worker(), name, std::forward<F>(f), std::forward<ArgsT>(args)...
+    *_executor._this_worker(), name, std::forward<F>(f), pf, std::forward<ArgsT>(args)...
   );
 }
 
 // Function: named_silent_async
 template <typename F, typename... ArgsT>
 void Subflow::silent_async(F&& f, ArgsT&&... args) {
-  named_silent_async("", std::forward<F>(f), std::forward<ArgsT>(args)...);
+  silent_async(std::forward<F>(f), _executor._pf, std::forward<ArgsT>(args)...);
+}
+
+// Function: named_silent_async
+template <typename F, typename... ArgsT>
+void Subflow::silent_async(F&& f, Pipeflow* pf, ArgsT&&... args) {
+  named_silent_async("", std::forward<F>(f), pf, std::forward<ArgsT>(args)...);
 }
 
 // ############################################################################
@@ -1947,16 +2212,26 @@ void Subflow::silent_async(F&& f, ArgsT&&... args) {
 
 // Procedure: schedule
 inline void Runtime::schedule(Task task) {
+  Runtime::schedule(task, _executor._pf);
+}
+// Procedure: schedule
+inline void Runtime::schedule(Task task, Pipeflow* pf) {
   auto node = task._node; 
   auto& j = node->_parent ? node->_parent->_join_counter : 
                             node->_topology->_join_counter;
   j.fetch_add(1);
-  _executor._schedule(_worker, node);
+  _executor._schedule(_worker, node, pf);
 }
 
 // Procedure: run
 template <typename C>
 void Runtime::run(C&& callable) {
+  Runtime::run(std::forward<C>(callable), _executor._pf);
+}
+
+// Procedure: run
+template <typename C>
+void Runtime::run(C&& callable, Pipeflow* pf) {
   
   // dynamic task (subflow)
   if constexpr(is_dynamic_task_v<C>) {
@@ -1964,7 +2239,7 @@ void Runtime::run(C&& callable) {
     Subflow sf(_executor, _worker, _parent, graph); 
     callable(sf);
     if(sf._joinable) {
-      _executor._join_dynamic_task_internal(_worker, _parent, graph);
+      _executor._join_dynamic_task_internal(_worker, _parent, graph, pf);
     }
   }
   else {

@@ -1,7 +1,8 @@
 #pragma once
-
+#include <tuple>
 #include "observer.hpp"
 #include "taskflow.hpp"
+
 
 /** 
 @file executor.hpp
@@ -9,6 +10,9 @@
 */
 
 namespace tf {
+
+
+
 
 // ----------------------------------------------------------------------------
 // Executor Definition
@@ -54,6 +58,8 @@ class Executor {
   friend class Runtime;
 
   public:
+
+    //GL typedef tuple<Pipeflow, Node*>  WSQTuple;
 
     /**
     @brief constructs the executor with @c N worker threads
@@ -624,7 +630,10 @@ class Executor {
 
     Notifier _notifier;
 
-    TaskQueue<Node*> _wsq;
+    //TaskQueue<Node*> _wsq;
+
+    TaskQueue<WSQTuple*> _wsq;
+
 
     std::atomic<size_t> _num_actives {0};
     std::atomic<size_t> _num_thieves {0};
@@ -879,7 +888,13 @@ inline void Executor::_consume_task(Worker& w, Node* p) {
 
   while(p->_join_counter != 0) {
     exploit:
+    /* GL
     if(auto t = w._wsq.pop(); t) {
+      _invoke(w, t);
+    }
+    */
+
+    if(auto ptr = w._wsq.pop(); auto t = ptr->get<1>(); t) {
       _invoke(w, t);
     }
     else {
@@ -889,7 +904,8 @@ inline void Executor::_consume_task(Worker& w, Node* p) {
       
       explore:
 
-      t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
+      ptr = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
+      t = ptr->get<1>();
       if(t) {
         _invoke(w, t);
         goto exploit;
@@ -924,7 +940,7 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
   std::uniform_int_distribution<size_t> rdvtm(0, _workers.size()-1);
 
   do {
-    t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
+    t = (w._id == w._vtm) ? _wsq.steal()->get<1>() : _workers[w._vtm]._wsq.steal()->get<1>();
 
     if(t) {
       break;
@@ -953,7 +969,9 @@ inline void Executor::_exploit_task(Worker& w, Node*& t) {
 
     while(t) {
       _invoke(w, t);
-      t = w._wsq.pop();
+      WSQTuple* ptr = w._wsq.pop();
+      t = ptr->get<1>();
+      pf = ptr->get<0>();
     }
 
     --_num_actives;
@@ -988,7 +1006,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
     _notifier.cancel_wait(worker._waiter);
     //t = (vtm == me) ? _wsq.steal() : _workers[vtm].wsq.steal();
     
-    t = _wsq.steal();  // must steal here
+    t = _wsq.steal()->get<1>();  // must steal here
     if(t) {
       if(_num_thieves.fetch_sub(1) == 1) {
         _notifier.notify(false);
@@ -1065,33 +1083,45 @@ inline size_t Executor::num_observers() const noexcept {
   return _observers.size();
 }
   
-// Procedure: _schedule
 inline void Executor::_schedule(Worker& worker, Node* node) {
+  _schedule(worker, node, Pipeflow(-1,-1))
+}
+// Procedure: _schedule
+inline void Executor::_schedule(Worker& worker, Node* node, Pipeflow pf) {
 
   node->_state.fetch_or(Node::READY, std::memory_order_release);
 
   // caller is a worker to this pool
   if(worker._executor == this) {
-    worker._wsq.push(node);
+    //GL worker._wsq.push(node);
+    worker._wsq.push(new WSQTuple(pf,node));
     return;
   }
 
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
-    _wsq.push(node);
+    //GL_wsq.push(node);
+    _wsq.push(new WSQTuple(pf,node));
   }
 
   _notifier.notify(false);
 }
 
-// Procedure: _schedule
+/* GL
+*/
 inline void Executor::_schedule(Node* node) {
+  _schedule(Node* node, Pipeflow(-1,-1)) 
+}
+
+// Procedure: _schedule
+inline void Executor::_schedule(Node* node), Pipeflow pf {
   
   node->_state.fetch_or(Node::READY, std::memory_order_release);
 
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
-    _wsq.push(node);
+    //GL _wsq.push(node);
+    _wsq.push(new WSQTuple(pf,node));
   }
 
   _notifier.notify(false);
@@ -1100,6 +1130,16 @@ inline void Executor::_schedule(Node* node) {
 // Procedure: _schedule
 inline void Executor::_schedule(
   Worker& worker, const SmallVector<Node*>& nodes
+)
+{
+  // Procedure: _schedule
+  _schedule(worker, nodes, Pipeflow(-1,-1));
+)
+}
+
+// Procedure: _schedule
+inline void Executor::_schedule(
+  Worker& worker, const SmallVector<Node*>& nodes, Pipeflow pf
 ) {
 
   // We need to cacth the node count to avoid accessing the nodes
@@ -1117,7 +1157,8 @@ inline void Executor::_schedule(
 
   if(worker._executor == this) {
     for(size_t i=0; i<num_nodes; ++i) {
-      worker._wsq.push(nodes[i]);
+      //GL worker._wsq.push(nodes[i]);
+      .worker_wsq.push(new WSQTuple(pf,nodes[i]));
     }
     return;
   }
@@ -1125,15 +1166,21 @@ inline void Executor::_schedule(
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     for(size_t k=0; k<num_nodes; ++k) {
-      _wsq.push(nodes[k]);
+      //GL _wsq.push(nodes[k]);
+      _wsq.push(new WSQTuple(pf,node));
     }
   }
   
   _notifier.notify_n(num_nodes);
 }
 
+
+inline void Executor::_schedule(const SmallVector<Node*>& nodes)
+{
+  _schedule(nodes,Pipeflow(-1,-1));
+}
 // Procedure: _schedule
-inline void Executor::_schedule(const SmallVector<Node*>& nodes) {
+inline void Executor::_schedule(const SmallVector<Node*>& nodes, Pipeflow pf) {
 
   // parent topology may be removed!
   const auto num_nodes = nodes.size();
@@ -1150,7 +1197,9 @@ inline void Executor::_schedule(const SmallVector<Node*>& nodes) {
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     for(size_t k=0; k<num_nodes; ++k) {
-      _wsq.push(nodes[k]);
+      //GL _wsq.push(nodes[k]);
+      _wsq.push(new WSQTuple(pf,node));
+
     }
   }
   

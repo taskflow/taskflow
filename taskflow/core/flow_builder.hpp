@@ -910,6 +910,7 @@ class Subflow : public FlowBuilder {
     Only the worker that spawns this subflow can join it.
     */
     void join();
+    void join(Pipeflow* pf);
 
     /**
     @brief enables the subflow to detach from its parent task
@@ -927,6 +928,7 @@ class Subflow : public FlowBuilder {
     Only the worker that spawns this subflow can detach it.
     */
     void detach();
+     void detach(Pipeflow* pf);
 
     /**
     @brief resets the subflow to a clean graph of joinable state
@@ -993,6 +995,9 @@ class Subflow : public FlowBuilder {
     template <typename F, typename... ArgsT>
     auto async(F&& f, ArgsT&&... args);
 
+    template <typename F, typename... ArgsT>
+    auto async(F&& f, Pipeflow* pf, ArgsT&&... args);
+
     /** 
     @brief runs the given function asynchronously and assigns the task a name
 
@@ -1033,6 +1038,9 @@ class Subflow : public FlowBuilder {
     */
     template <typename F, typename... ArgsT>
     auto named_async(const std::string& name, F&& f, ArgsT&&... args);
+
+    template <typename F, typename... ArgsT>
+    auto named_async(const std::string& name, F&& f, Pipeflow* pf, ArgsT&&... args);
     
     /**
     @brief similar to tf::Subflow::async but does not return a future object
@@ -1054,6 +1062,9 @@ class Subflow : public FlowBuilder {
     */
     template <typename F, typename... ArgsT>
     void silent_async(F&& f, ArgsT&&... args);
+
+    template <typename F, typename... ArgsT>
+    void silent_async(F&& f, Pipeflow* pf, ArgsT&&... args);
     
     /**
     @brief similar to tf::Subflow::named_async but does not return a future object
@@ -1075,6 +1086,9 @@ class Subflow : public FlowBuilder {
     */
     template <typename F, typename... ArgsT>
     void named_silent_async(const std::string& name, F&& f, ArgsT&&... args);
+
+    template <typename F, typename... ArgsT>
+    void named_silent_async(const std::string& name, F&& f, Pipeflow* pf, ArgsT&&... args);
     
     /**
     @brief returns the executor that runs this subflow
@@ -1089,12 +1103,18 @@ class Subflow : public FlowBuilder {
     bool _joinable {true};
     
     Subflow(Executor&, Worker&, Node*, Graph&);
-    
+
     template <typename F, typename... ArgsT>
     auto _named_async(Worker& w, const std::string& name, F&& f, ArgsT&&... args);
     
     template <typename F, typename... ArgsT>
+    auto _named_async(Worker& w, const std::string& name, F&& f, Pipeflow* pf, ArgsT&&... args);
+
+    template <typename F, typename... ArgsT>
     void _named_silent_async(Worker& w, const std::string& name, F&& f, ArgsT&&... args);
+
+    template <typename F, typename... ArgsT>
+    void _named_silent_async(Worker& w, const std::string& name, F&& f, Pipeflow* pf, ArgsT&&... args);
 };
 
 // Constructor

@@ -2,6 +2,7 @@
 
 #include "task.hpp"
 #include "worker.hpp"
+#include "../algorithm/pipeline.hpp"
 
 /** 
 @file observer.hpp
@@ -189,6 +190,10 @@ class ObserverInterface {
   @param task_view a constant wrapper object to the task 
   */
   virtual void on_entry(WorkerView w, TaskView task_view) = 0;
+
+  virtual void on_entry(WorkerView w, TaskView task_view, Pipeflow* pf){
+
+  }
   
   /**
   @brief method to call after a worker thread executed a closure
@@ -196,6 +201,9 @@ class ObserverInterface {
   @param task_view a constant wrapper object to the task
   */
   virtual void on_exit(WorkerView w, TaskView task_view) = 0;
+  virtual void on_exit(WorkerView w, TaskView task_view, Pipeflow* pf){
+
+  }
 };
 
 // ----------------------------------------------------------------------------
@@ -491,10 +499,12 @@ inline void TFProfObserver::set_up(size_t num_workers) {
   _stacks.resize(num_workers);
 }
 
+
 // Procedure: on_entry
 inline void TFProfObserver::on_entry(WorkerView wv, TaskView) {
   _stacks[wv.id()].push(observer_stamp_t::clock::now());
 }
+
 
 // Procedure: on_exit
 inline void TFProfObserver::on_exit(WorkerView wv, TaskView tv) {
