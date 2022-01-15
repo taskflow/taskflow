@@ -80,6 +80,7 @@ class Pipe {
   Pipe(PipeType d, C&& callable) :
     _type{d}, _callable{std::forward<C>(callable)} {
   }
+  Pipe(){}
 
   private:
 
@@ -290,6 +291,8 @@ class Pipeline {
   */
   Pipeline(size_t num_lines, Ps&&... ps);
 
+  Pipeline();
+
   /**
   @brief queries the number of parallel lines
 
@@ -352,6 +355,11 @@ class Pipeline {
 };
 
 // constructor
+template <typename... Ps>
+Pipeline<Ps...>::Pipeline()
+{
+  
+}
 template <typename... Ps>
 Pipeline<Ps...>::Pipeline(size_t num_lines, Ps&&... ps) :
   _pipes     {std::make_tuple(std::forward<Ps>(ps)...)},
