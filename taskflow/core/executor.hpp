@@ -1089,6 +1089,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t, Pipeflow*& pf) {
     
     auto ptr = _wsq.steal();
     t = std::get<1>(*ptr);  // must steal here
+    pf = std::get<0>(*ptr);
     if(t) {
       if(_num_thieves.fetch_sub(1) == 1) {
         _notifier.notify(false);

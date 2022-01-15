@@ -332,6 +332,8 @@ class Pipeline {
   a module task of the this pipeline. 
   */
   Graph& graph();
+  void* data(int line) const;
+  void data(int line, void* data);
 
   private:
   
@@ -526,6 +528,11 @@ void Pipeline<Ps...>::_build() {
           if (retval[0] == 1) {
             pf = &_pipeflows[n_l];
           }
+          if (pf->_pipe == 0)
+          {
+            rt.schedule(_tasks[pf->_line + 1],&_pipeflows[pf->_line]);
+            return;
+          }
           goto pipeline; 
         }
       }
@@ -533,6 +540,18 @@ void Pipeline<Ps...>::_build() {
 
     _tasks[0].precede(_tasks[l+1]);
   }
+}
+// Function: data
+template <typename... Ps>
+void* Pipeline<Ps...>::data(int line) const
+{
+  return _tasks[line + 1].data();
+}
+// Function:data
+template <typename... Ps>
+void Pipeline<Ps...>::data(int line, void *data)
+{
+   _tasks[line + 1].data(data);
 }
 
 }  // end of namespace tf -----------------------------------------------------
