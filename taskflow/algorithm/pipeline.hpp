@@ -269,6 +269,14 @@ class Pipeline {
     PipeType type;
   };
 
+  /**
+  @private
+  */
+  template <std::size_t... indices>
+  inline static std::array<PipeMeta, sizeof...(Ps)> gen_meta(std::tuple<Ps...>&& ps, std::index_sequence<indices...>) {
+    return {PipeMeta{std::get<indices>(ps)._type}...};
+  }
+
   public:
 
   /**
@@ -283,6 +291,19 @@ class Pipeline {
   or an exception will be thrown.
   */
   Pipeline(size_t num_lines, Ps&&... ps);
+
+  /**
+  @brief constructs a pipeline object
+
+  @param num_lines the number of parallel lines
+  @param ps a tuple of pipes
+
+  Constructs a linear pipeline of up to @c num_lines concurrent
+  scheduling tokens flowing through the given linear chain of pipes.
+  The first pipe must define a serial direction (tf::PipeType::SERIAL) 
+  or an exception will be thrown.
+  */
+  Pipeline(size_t num_lines, std::tuple<Ps...>&& ps);
 
   /**
   @brief queries the number of parallel lines
@@ -348,6 +369,23 @@ template <typename... Ps>
 Pipeline<Ps...>::Pipeline(size_t num_lines, Ps&&... ps) :
   _pipes     {std::make_tuple(std::forward<Ps>(ps)...)},
   _meta      {PipeMeta{ps._type}...},
+  _lines     (num_lines),
+  _tasks     (num_lines + 1),
+  _pipeflows (num_lines) {
+
+  if(std::get<0>(_pipes)._type == PipeType::PARALLEL) {
+    TF_THROW("first pipe must be serial");
+  }
+
+  reset();
+  _build();
+}
+
+// constructor
+template <typename... Ps>
+Pipeline<Ps...>::Pipeline(size_t num_lines, std::tuple<Ps...>&& ps) :
+  _pipes     {std::forward<std::tuple<Ps...>>(ps)},
+  _meta      {gen_meta(std::forward<std::tuple<Ps...>>(ps), std::make_index_sequence<sizeof...(Ps)>{})},
   _lines     (num_lines),
   _tasks     (num_lines + 1),
   _pipeflows (num_lines) {
