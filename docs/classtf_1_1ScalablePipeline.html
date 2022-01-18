@@ -168,7 +168,7 @@
 <span class="go">o -&gt; o -&gt; o -&gt; o -&gt; o</span>
 <span class="go">|    |    |    |    |</span>
 <span class="go">v    v    v    v    v</span>
-<span class="go">o -&gt; o -&gt; o -&gt; o -&gt; o</span></pre><p>Each pipe has the same type of <code>tf::Pipe&lt;<a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function</a>&lt;void(tf::Pipeflow&amp;)&gt;&gt;</code> and is kept in a vector that is amenable to change. We construct the scalable pipeline using two range iterators pointing to the beginning and the end of the vector. At each pipe stage, the program propagates the result to the next pipe by adding one to the result stored in a custom data storage, <code>buffer</code>. The pipeline scheduler will generate five scheduling tokens and then stop.</p>
+<span class="go">o -&gt; o -&gt; o -&gt; o -&gt; o</span></pre><p>Each pipe has the same type of <code>tf::Pipe&lt;std::function&lt;void(tf::Pipeflow&amp;)&gt;&gt;</code> and is kept in a vector that is amenable to change. We construct the scalable pipeline using two range iterators pointing to the beginning and the end of the vector. At each pipe stage, the program propagates the result to the next pipe by adding one to the result stored in a custom data storage, <code>buffer</code>. The pipeline scheduler will generate five scheduling tokens and then stop.</p>
         <section id="pub-types">
           <h2><a href="#pub-types">Public types</a></h2>
           <dl class="m-doc">

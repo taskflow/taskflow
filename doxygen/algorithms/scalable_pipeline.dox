@@ -21,18 +21,18 @@ a pipeline scheduling framework.
 #include <taskflow/algorithm/pipeline.hpp>
 @endcode
 
-@section ParallelScalablePipelineCreateAScalablePipelineModuleTask
+@section ParallelScalablePipelineCreateAScalablePipelineModuleTask Create a Scalable Pipeline Module Task
 
-Similar to tf::Pipeline, tf::ScalablePipeline is used to define a composable graph object 
-and embed a pipeline scheduling framework in a taskflow.
+Similar to tf::Pipeline, tf::ScalablePipeline is a composable graph object that can
+be used to embed a <i>pipeline scheduling framework</i> in a taskflow.
 The key difference between tf::Pipeline and tf::ScalablePipeline is that a scalable
 pipeline can accept @em variable assignments of pipes rather than
-instantiating all pipes statically at construction time.
+requiring all pipes to present at construction/programming time.
 Users define a linear range of pipes, each of the same callable type, 
 and apply that range to construct a scalable pipeline.
 Between successive runs, users can reset the pipeline to a different range of pipes.
 The following code creates a scalable pipeline using four parallel lines
-to schedule tokens through three serial pipes defined in a custom storage,
+to schedule tokens through three serial pipes defined in a custom vector,
 then resetting that pipeline to a new range of five serial pipes:
 
 @code{.cpp}
@@ -111,7 +111,7 @@ pl.reset(pipes.begin(), pipes.end());
 executor.run(taskflow).wait();
 @endcode
 
-The program defines a uniform pipe type of `%tf::Pipe<std::function<void(tf::Pipeflow&)>>` 
+The program defines a uniform pipe type of `%tf::Pipe<%std::function<void(%tf::Pipeflow&)>>` 
 and keep all pipes in a vector that is amenable to change.
 Then, it constructs a scalable pipeline using two range iterators, <tt>[first, last)</tt>, 
 pointing to the beginning and the end of the pipe vector,

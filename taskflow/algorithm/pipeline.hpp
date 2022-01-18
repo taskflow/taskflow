@@ -745,7 +745,7 @@ v    v    v    v    v
 o -> o -> o -> o -> o
 @endcode
 
-Each pipe has the same type of `%tf::Pipe<std::function<void(tf::Pipeflow&)>>` 
+Each pipe has the same type of `%tf::Pipe<%std::function<void(%tf::Pipeflow&)>>` 
 and is kept in a vector that is amenable to change.
 We construct the scalable pipeline using two range iterators pointing to the
 beginning and the end of the vector.
