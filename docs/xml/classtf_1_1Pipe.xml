@@ -20,7 +20,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="58" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="58" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="149" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="149" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="friend">
@@ -42,7 +42,25 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="51" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="51" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="139" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="139" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtf_1_1Pipe_1af64ddb98831b893b2388af2a2302acea" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+        </templateparamlist>
+        <type>friend class</type>
+        <definition>friend class ScalablePipeline</definition>
+        <argsstring></argsstring>
+        <name>ScalablePipeline</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="142" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="142" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
@@ -57,7 +75,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="84" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="84" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="210" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="210" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Pipe_1a0337e2bbcf5cf7e204951a489dee7c30" prot="private" static="no" mutable="no">
         <type>C</type>
@@ -70,10 +88,23 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="86" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="86" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="212" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="212" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1Pipe_1ad2c372074ba5daacb54811cb48141570" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tf::Pipe&lt; C &gt;::Pipe</definition>
+        <argsstring>()=default</argsstring>
+        <name>Pipe</name>
+        <briefdescription>
+<para>default constructor </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="154" column="1"/>
+      </memberdef>
       <memberdef kind="function" id="classtf_1_1Pipe_1aebe1462048fa147ad8328fb13577cdf2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::Pipe&lt; C &gt;::Pipe</definition>
@@ -105,12 +136,87 @@
 <para>callable type</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-The constructor constructs a pipe with the given direction (either <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref> or <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::PARALLEL</ref>) and the given callable. The callable is one of the following possible forms:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Pipe_1aebe1462048fa147ad8328fb13577cdf2" kindref="member">Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">PipeType::SERIAL</ref>,<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;){}}</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Pipe_1aebe1462048fa147ad8328fb13577cdf2" kindref="member">Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">PipeType::SERIAL</ref>,<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;,<sp/><ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;){}}</highlight></codeline>
+The constructor constructs a pipe with the given direction (either <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref> or <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::PARALLEL</ref>) and the given callable. The callable must take a <ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref> object in reference:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Pipe_1ad2c372074ba5daacb54811cb48141570" kindref="member">Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">PipeType::SERIAL</ref>,<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;){}}</highlight></codeline>
 </programlisting></para><para>When creating a pipeline, the direction of the first pipe must be serial (<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>). </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="78" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="78" bodyend="80"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="173" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="173" bodyend="175"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1Pipe_1a0a8ad99dbb66ad0bca766da47ef11b21" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" kindref="member">PipeType</ref></type>
+        <definition>PipeType tf::Pipe&lt; C &gt;::type</definition>
+        <argsstring>() const</argsstring>
+        <name>type</name>
+        <briefdescription>
+<para>queries the type of the pipe </para>        </briefdescription>
+        <detaileddescription>
+<para>Returns the type of the callable. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="182" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="182" bodyend="184"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1Pipe_1ad939617c84a9e97ef1dd56ad56b84e33" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void tf::Pipe&lt; C &gt;::type</definition>
+        <argsstring>(PipeType type)</argsstring>
+        <name>type</name>
+        <param>
+          <type><ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" kindref="member">PipeType</ref></type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+<para>assigns a new type to the pipe </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" kindref="member">tf::PipeType</ref> variable </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="191" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="191" bodyend="193"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1Pipe_1a43da5ae4ba56e35e4d0a705f7fa25686" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::Pipe&lt; C &gt;::callable</definition>
+        <argsstring>(U &amp;&amp;callable)</argsstring>
+        <name>callable</name>
+        <param>
+          <type>U &amp;&amp;</type>
+          <declname>callable</declname>
+        </param>
+        <briefdescription>
+<para>assigns a new callable to the pipe </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>U</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>callable type </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>callable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a callable object constructible from std::function&lt;void(tf::Pipeflow&amp;)&gt;</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+Assigns a new callable to the pipe with universal forwarding. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="204" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="204" bodyend="206"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -124,16 +230,20 @@ The constructor constructs a pipe with the given direction (either <ref refid="n
 <para>callable type</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-A pipe represents a stage of a pipeline. A pipe can be either <emphasis>parallel</emphasis> direction or <emphasis>serial</emphasis> direction (specified by <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" kindref="member">tf::PipeType</ref>) and is coupled with a callable to invoke by the pipeline scheduler. The callable is one of the following possible forms:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Pipe_1aebe1462048fa147ad8328fb13577cdf2" kindref="member">Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">PipeType::SERIAL</ref>,<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;){}}</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Pipe_1aebe1462048fa147ad8328fb13577cdf2" kindref="member">Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">PipeType::SERIAL</ref>,<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;,<sp/><ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;){}}</highlight></codeline>
-</programlisting></para><para>The first version takes a pipeflow object for user to to query the present statistics of a pipeline scheduling token. The second version takes an additional runtime object for users to interact with the taskflow scheduler, such as scheduling a task and spawning a subflow. </para>    </detaileddescription>
-    <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="48" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="48" bodyend="87"/>
+A pipe represents a stage of a pipeline. A pipe can be either <emphasis>parallel</emphasis> direction or <emphasis>serial</emphasis> direction (specified by <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" kindref="member">tf::PipeType</ref>) and is coupled with a callable to invoke by the pipeline scheduler. The callable must take a <ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref> object in reference:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Pipe_1ad2c372074ba5daacb54811cb48141570" kindref="member">Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">PipeType::SERIAL</ref>,<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;){}}</highlight></codeline>
+</programlisting></para><para>The pipeflow object is used to query the statistics of a scheduling token in the pipeline, such as pipe, line, and token numbers. </para>    </detaileddescription>
+    <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="136" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="136" bodyend="213"/>
     <listofallmembers>
       <member refid="classtf_1_1Pipe_1a0337e2bbcf5cf7e204951a489dee7c30" prot="private" virt="non-virtual"><scope>tf::Pipe</scope><name>_callable</name></member>
       <member refid="classtf_1_1Pipe_1a2cb97697921ad55788a1d88feb338c8b" prot="private" virt="non-virtual"><scope>tf::Pipe</scope><name>_type</name></member>
+      <member refid="classtf_1_1Pipe_1a43da5ae4ba56e35e4d0a705f7fa25686" prot="public" virt="non-virtual"><scope>tf::Pipe</scope><name>callable</name></member>
       <member refid="classtf_1_1Pipe_1aa3d034d90bc01d42d9dd55f82de1da2a" prot="public" virt="non-virtual"><scope>tf::Pipe</scope><name>callable_t</name></member>
+      <member refid="classtf_1_1Pipe_1ad2c372074ba5daacb54811cb48141570" prot="public" virt="non-virtual"><scope>tf::Pipe</scope><name>Pipe</name></member>
       <member refid="classtf_1_1Pipe_1aebe1462048fa147ad8328fb13577cdf2" prot="public" virt="non-virtual"><scope>tf::Pipe</scope><name>Pipe</name></member>
       <member refid="classtf_1_1Pipe_1af65467c6cb27f4ef42522207f03ab9cf" prot="private" virt="non-virtual"><scope>tf::Pipe</scope><name>Pipeline</name></member>
+      <member refid="classtf_1_1Pipe_1af64ddb98831b893b2388af2a2302acea" prot="private" virt="non-virtual"><scope>tf::Pipe</scope><name>ScalablePipeline</name></member>
+      <member refid="classtf_1_1Pipe_1a0a8ad99dbb66ad0bca766da47ef11b21" prot="public" virt="non-virtual"><scope>tf::Pipe</scope><name>type</name></member>
+      <member refid="classtf_1_1Pipe_1ad939617c84a9e97ef1dd56ad56b84e33" prot="public" virt="non-virtual"><scope>tf::Pipe</scope><name>type</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

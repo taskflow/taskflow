@@ -12,7 +12,7 @@ Each stage processes the data token sent from the previous stage, applies the
 given callable to that data token, and then sends the result to the next stage.
 Multiple data tokens can be processed simultaneously across different stages.
 
-@section IncludeHeaderFile Include the Header 
+@section ParallelPipelineIncludeHeaderFile Include the Header 
 
 You need to include the header file, <tt>%taskflow/algorithm/pipeline.hpp</tt>, for creating
 a pipeline scheduling framework.
@@ -39,7 +39,7 @@ The framework consists of three @em pipes (serial-parallel-serial stages) and
 four @em lines (maximum parallelism),
 where each line processes at most one data token.
 A pipeline of three pipes and four lines will propagate each data token through a sequential chain of 
-three pipes and can simultaneously process up to four data tokens on the four lines.
+three pipes and can simultaneously process up to four data tokens at the four lines.
 Each edge represents a task dependency.
 For example, the edge from @c pipe-0 to @c pipe-1 in line @c 0 represents the task dependency
 between the first and the second pipes in the first line;
@@ -173,7 +173,7 @@ your application data on top of a pipeline scheduling framework.
 1. Calling tf::Pipeflow::stop() not at the first pipe has no effect on the pipeline scheduling.
 2. In most cases, std::thread::hardware_concurrency is a good number for line count.
 
-Our pipeline algorithm schedules tokens in a circular manner, with a factor of @c num_lines.
+Our pipeline algorithm schedules tokens in a @em circular manner, with a factor of @c num_lines.
 That is, token @c t will be processed at line <tt>t % num_lines</tt>.
 The following snippet shows one of the possible outputs of this pipeline program:
 
@@ -780,9 +780,10 @@ we reset the pipeline so the token identifier starts from @c 0 rather than @c 5.
 
 Visit the following pages to learn more about pipeline:
 
-1. @ref TextProcessingPipeline
-2. @ref GraphProcessingPipeline
-3. @ref TaskflowProcessingPipeline
+1. @ref ParallelScalablePipeline
+2. @ref TextProcessingPipeline
+3. @ref GraphProcessingPipeline
+4. @ref TaskflowProcessingPipeline
 
 
 */

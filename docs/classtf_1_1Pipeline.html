@@ -73,7 +73,7 @@
             </li>
           </ul>
         </div>
-<p>A pipeline object is a composable graph object for users to create a <em>pipeline scheduling framework</em> using a module task in a taskflow. Unlike the conventional pipeline programming frameworks (e.g., Intel TBB), Taskflow&#x27;s pipeline algorithm does not provide any data abstraction, which often restricts users from optimizing data layouts in their applications, but a flexible framework for users to customize their application data atop our pipeline scheduling. The following code creates a pipeline of up to four concurrent scheduling tokens flowing through three serial pipes:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+<p>A pipeline is a composable graph object for users to create a <em>pipeline scheduling framework</em> using a module task in a taskflow. Unlike the conventional pipeline programming frameworks (e.g., Intel TBB), Taskflow&#x27;s pipeline algorithm does not provide any data abstraction, which often restricts users from optimizing data layouts in their applications, but a flexible framework for users to customize their application data atop our pipeline scheduling. The following code creates a pipeline of four parallel lines to schedule tokens through three serial pipes:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
 
 <span class="k">const</span> <span class="kt">size_t</span> <span class="n">num_lines</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
@@ -118,22 +118,27 @@
 <span class="n">task</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">stop</span><span class="p">);</span>
 
 <span class="c1">// run the pipeline</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The above example creates a pipeline scheduling graph that rolls over four scheduling tokens in a cyclic fashion, as depicted below:</p><pre class="m-code">o -&gt; o -&gt; o
-|    |    |
-v    v    v
-o -&gt; o -&gt; o
-|    |    |
-v    v    v
-o -&gt; o -&gt; o
-|    |    |
-v    v    v
-o -&gt; o -&gt; o</pre><p>At each pipe stage, the program propagates the result to the next pipe by adding one to the result stored in a custom data storage, <code>buffer</code>. The pipeline scheduler will generate five scheduling tokens and then stop.</p>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The above example creates a pipeline graph that schedules five tokens over four parallel lines in a circular fashion, as depicted below:</p><pre class="m-console"><span class="go">o -&gt; o -&gt; o</span>
+<span class="go">|    |    |</span>
+<span class="go">v    v    v</span>
+<span class="go">o -&gt; o -&gt; o</span>
+<span class="go">|    |    |</span>
+<span class="go">v    v    v</span>
+<span class="go">o -&gt; o -&gt; o</span>
+<span class="go">|    |    |</span>
+<span class="go">v    v    v</span>
+<span class="go">o -&gt; o -&gt; o </span></pre><p>At each pipe stage, the program propagates the result to the next pipe by adding one to the result stored in a custom data storage, <code>buffer</code>. The pipeline scheduler will generate five scheduling tokens and then stop.</p><p>Internally, <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> uses <a href="http://en.cppreference.com/w/cpp/utility/tuple.html" class="m-doc-external">std::<wbr />tuple</a> to store the given sequence of pipes. The definition of each pipe can be different, completely decided by the compiler to optimize the object layout. After a pipeline is constructed, it is not possible to change its pipes. If applications need to change these pipes, please use <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a>.</p>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper"><a href="#aad8735676e4f9fd8474ad1ac51b58f3e" class="m-doc">Pipeline</a>(</span><span class="m-doc-wrap">size_t num_lines,
               Ps &amp;&amp; ... ps)</span>
+            </dt>
+            <dd>constructs a pipeline object</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper"><a href="#a879a54b37af5db33e5768e5b3c135ba6" class="m-doc">Pipeline</a>(</span><span class="m-doc-wrap">size_t num_lines,
+              <a href="http://en.cppreference.com/w/cpp/utility/tuple.html" class="m-doc-external">std::<wbr />tuple</a>&lt;Ps...&gt;&amp;&amp; ps)</span>
             </dt>
             <dd>constructs a pipeline object</dd>
           </dl>
@@ -189,7 +194,33 @@ o -&gt; o -&gt; o</pre><p>At each pipe stage, the program propagates the result 
                 </tr>
               </tbody>
             </table>
-<p>Constructs a linear pipeline of up to <code>num_lines</code> concurrent scheduling tokens flowing through the given linear chain of pipes. The first pipe must define a serial direction (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>) or an exception will be thrown.</p>
+<p>Constructs a pipeline of up to <code>num_lines</code> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>) or an exception will be thrown.</p>
+          </div></section>
+          <section class="m-doc-details" id="a879a54b37af5db33e5768e5b3c135ba6"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename... Ps&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />Pipeline&lt;Ps&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a879a54b37af5db33e5768e5b3c135ba6" class="m-doc-self">Pipeline</a>(</span><span class="m-doc-wrap">size_t num_lines,
+              <a href="http://en.cppreference.com/w/cpp/utility/tuple.html" class="m-doc-external">std::<wbr />tuple</a>&lt;Ps...&gt;&amp;&amp; ps)</span></span>
+            </h3>
+            <p>constructs a pipeline object</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">num_lines</td>
+                  <td>the number of parallel lines</td>
+                </tr>
+                <tr>
+                  <td>ps</td>
+                  <td>a tuple of pipes</td>
+                </tr>
+              </tbody>
+            </table>
+<p>Constructs a pipeline of up to <code>num_lines</code> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>) or an exception will be thrown.</p>
           </div></section>
           <section class="m-doc-details" id="a79f066bacd6c1abd28c26d8196955e95"><div>
             <h3>
