@@ -251,32 +251,6 @@
 </parameterlist>
 The class defines a C++ STL-styled vector (a variable-sized array) optimized for the case when the array is small. It contains some number of elements in-place, which allows it to avoid heap allocation when the actual number of elements is below that threshold. This allows normal <emphasis>small</emphasis> cases to be fast without losing generality for large inputs. All the methods in <ulink url="https://en.cppreference.com/w/cpp/container/vector">std::vector</ulink> can apply to this class.</para><para>The class is stripped from the LLVM codebase. </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="194">
-        <label>tf::SmallVectorTemplateCommon&lt; T &gt;</label>
-        <childnode refid="195" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="192">
-        <label>tf::SmallVectorImpl&lt; T &gt;</label>
-        <childnode refid="193" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="193">
-        <label>tf::SmallVectorTemplateBase&lt; T, IsPod&lt; T &gt;::value &gt;</label>
-        <childnode refid="194" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="195">
-        <label>tf::SmallVectorBase</label>
-      </node>
-      <node id="191">
-        <label>tf::SmallVector&lt; T, N &gt;</label>
-        <link refid="classtf_1_1SmallVector"/>
-        <childnode refid="192" relation="public-inheritance">
-        </childnode>
-      </node>
-    </inheritancegraph>
-    <collaborationgraph>
       <node id="199">
         <label>tf::SmallVectorTemplateCommon&lt; T &gt;</label>
         <childnode refid="200" relation="public-inheritance">
@@ -299,6 +273,32 @@ The class defines a C++ STL-styled vector (a variable-sized array) optimized for
         <label>tf::SmallVector&lt; T, N &gt;</label>
         <link refid="classtf_1_1SmallVector"/>
         <childnode refid="197" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="204">
+        <label>tf::SmallVectorTemplateCommon&lt; T &gt;</label>
+        <childnode refid="205" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="202">
+        <label>tf::SmallVectorImpl&lt; T &gt;</label>
+        <childnode refid="203" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="203">
+        <label>tf::SmallVectorTemplateBase&lt; T, IsPod&lt; T &gt;::value &gt;</label>
+        <childnode refid="204" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="205">
+        <label>tf::SmallVectorBase</label>
+      </node>
+      <node id="201">
+        <label>tf::SmallVector&lt; T, N &gt;</label>
+        <link refid="classtf_1_1SmallVector"/>
+        <childnode refid="202" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>

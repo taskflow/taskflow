@@ -26,12 +26,12 @@ int main() {
   const size_t num_lines = 4;
 
   // custom data storage
-  std::array<int, num_lines> mybuffer;
+  std::array<int, num_lines> buffer;
 
   // the pipeline consists of three pipes (serial-parallel-serial)
   // and up to four concurrent scheduling tokens
   tf::Pipeline pl(num_lines,
-    tf::Pipe{tf::PipeType::SERIAL, [&mybuffer](tf::Pipeflow& pf) {
+    tf::Pipe{tf::PipeType::SERIAL, [&buffer](tf::Pipeflow& pf) {
       // generate only 5 scheduling tokens
       if(pf.token() == 5) {
         pf.stop();
@@ -39,24 +39,26 @@ int main() {
       // save the result of this pipe into the buffer
       else {
         printf("stage 1: input token = %zu\n", pf.token());
-        mybuffer[pf.line()] = pf.token();
+        buffer[pf.line()] = pf.token();
       }
     }},
 
-    tf::Pipe{tf::PipeType::PARALLEL, [&mybuffer](tf::Pipeflow& pf) {
+    tf::Pipe{tf::PipeType::PARALLEL, [&buffer](tf::Pipeflow& pf) {
       printf(
-        "stage 2: input mybuffer[%zu] = %d\n", pf.line(), mybuffer[pf.line()]
+        "stage 2: input buffer[%zu] = %d\n", pf.line(), buffer[pf.line()]
       );
-      // propagate the previous result to this pipe by adding one
-      mybuffer[pf.line()] = mybuffer[pf.line()] + 1;
+      // propagate the previous result to this pipe and increment 
+      // it by one
+      buffer[pf.line()] = buffer[pf.line()] + 1;
     }},
 
-    tf::Pipe{tf::PipeType::SERIAL, [&mybuffer](tf::Pipeflow& pf) {
+    tf::Pipe{tf::PipeType::SERIAL, [&buffer](tf::Pipeflow& pf) {
       printf(
-        "stage 3: input mybuffer[%zu] = %d\n", pf.line(), mybuffer[pf.line()]
+        "stage 3: input buffer[%zu] = %d\n", pf.line(), buffer[pf.line()]
       );
-      // propagate the previous result to this pipe by adding one
-      mybuffer[pf.line()] = mybuffer[pf.line()] + 1;
+      // propagate the previous result to this pipe and increment
+      // it by one
+      buffer[pf.line()] = buffer[pf.line()] + 1;
     }}
   );
   

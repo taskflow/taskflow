@@ -69,12 +69,12 @@
               <ul>
                 <li><a href="#pub-types">Public types</a></li>
                 <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
+                <li><a href="#pub-methods">Public functions</a></li>
               </ul>
             </li>
           </ul>
         </div>
-<p>A pipe represents a stage of a pipeline. A pipe can be either <em>parallel</em> direction or <em>serial</em> direction (specified by <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">tf::<wbr />PipeType</a>) and is coupled with a callable to invoke by the pipeline scheduler. The callable is one of the following possible forms:</p><pre class="m-code"><span class="n">Pipe</span><span class="p">{</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> <span class="p">[](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">){}}</span>
-<span class="n">Pipe</span><span class="p">{</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> <span class="p">[](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="p">){}}</span></pre><p>The first version takes a pipeflow object for user to to query the present statistics of a pipeline scheduling token. The second version takes an additional runtime object for users to interact with the taskflow scheduler, such as scheduling a task and spawning a subflow.</p>
+<p>A pipe represents a stage of a pipeline. A pipe can be either <em>parallel</em> direction or <em>serial</em> direction (specified by <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">tf::<wbr />PipeType</a>) and is coupled with a callable to invoke by the pipeline scheduler. The callable must take a <a href="classtf_1_1Pipeflow.html" class="m-doc">tf::<wbr />Pipeflow</a> object in reference:</p><pre class="m-code"><span class="n">Pipe</span><span class="p">{</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> <span class="p">[](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">){}}</span></pre><p>The pipeflow object is used to query the statistics of a scheduling token in the pipeline, such as pipe, line, and token numbers.</p>
         <section id="pub-types">
           <h2><a href="#pub-types">Public types</a></h2>
           <dl class="m-doc">
@@ -87,11 +87,33 @@
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
+            <dt id="ad2c372074ba5daacb54811cb48141570">
+              <span class="m-doc-wrap-bumper"><a href="#ad2c372074ba5daacb54811cb48141570" class="m-doc-self">Pipe</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
+            </dt>
+            <dd>default constructor</dd>
             <dt>
               <span class="m-doc-wrap-bumper"><a href="#aebe1462048fa147ad8328fb13577cdf2" class="m-doc">Pipe</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">PipeType</a> d,
               C&amp;&amp; callable)</span>
             </dt>
             <dd>constructs the pipe object</dd>
+          </dl>
+        </section>
+        <section id="pub-methods">
+          <h2><a href="#pub-methods">Public functions</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a0a8ad99dbb66ad0bca766da47ef11b21" class="m-doc">type</a>(</span><span class="m-doc-wrap">) const -&gt; <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">PipeType</a></span>
+            </dt>
+            <dd>queries the type of the pipe</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#ad939617c84a9e97ef1dd56ad56b84e33" class="m-doc">type</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">PipeType</a> type)</span>
+            </dt>
+            <dd>assigns a new type to the pipe</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename U&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a43da5ae4ba56e35e4d0a705f7fa25686" class="m-doc">callable</a>(</span><span class="m-doc-wrap">U&amp;&amp; callable)</span>
+            </dt>
+            <dd>assigns a new callable to the pipe</dd>
           </dl>
         </section>
         <section>
@@ -120,8 +142,68 @@
                 </tr>
               </tbody>
             </table>
-<p>The constructor constructs a pipe with the given direction (either <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a> or <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc">tf::<wbr />PipeType::<wbr />PARALLEL</a>) and the given callable. The callable is one of the following possible forms:</p><pre class="m-code"><span class="n">Pipe</span><span class="p">{</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> <span class="p">[](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">){}}</span>
-<span class="n">Pipe</span><span class="p">{</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> <span class="p">[](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="p">){}}</span></pre><p>When creating a pipeline, the direction of the first pipe must be serial (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>).</p>
+<p>The constructor constructs a pipe with the given direction (either <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a> or <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc">tf::<wbr />PipeType::<wbr />PARALLEL</a>) and the given callable. The callable must take a <a href="classtf_1_1Pipeflow.html" class="m-doc">tf::<wbr />Pipeflow</a> object in reference:</p><pre class="m-code"><span class="n">Pipe</span><span class="p">{</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> <span class="p">[](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">){}}</span></pre><p>When creating a pipeline, the direction of the first pipe must be serial (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>).</p>
+          </div></section>
+          <section class="m-doc-details" id="a0a8ad99dbb66ad0bca766da47ef11b21"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">PipeType</a> tf::<wbr />Pipe&lt;C&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0a8ad99dbb66ad0bca766da47ef11b21" class="m-doc-self">type</a>(</span><span class="m-doc-wrap">) const</span></span>
+            </h3>
+            <p>queries the type of the pipe</p>
+<p>Returns the type of the callable.</p>
+          </div></section>
+          <section class="m-doc-details" id="ad939617c84a9e97ef1dd56ad56b84e33"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Pipe&lt;C&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad939617c84a9e97ef1dd56ad56b84e33" class="m-doc-self">type</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">PipeType</a> type)</span></span>
+            </h3>
+            <p>assigns a new type to the pipe</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">type</td>
+                  <td>a <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">tf::<wbr />PipeType</a> variable</td>
+                </tr>
+              </tbody>
+            </table>
+          </div></section>
+          <section class="m-doc-details" id="a43da5ae4ba56e35e4d0a705f7fa25686"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename C&gt;
+                template&lt;typename U&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Pipe&lt;C&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a43da5ae4ba56e35e4d0a705f7fa25686" class="m-doc-self">callable</a>(</span><span class="m-doc-wrap">U&amp;&amp; callable)</span></span>
+            </h3>
+            <p>assigns a new callable to the pipe</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">U</td>
+                  <td>callable type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>callable</td>
+                  <td>a callable object constructible from std::function&lt;void(tf::Pipeflow&amp;)&gt;</td>
+                </tr>
+              </tbody>
+            </table>
+<p>Assigns a new callable to the pipe with universal forwarding.</p>
           </div></section>
         </section>
       </div>
