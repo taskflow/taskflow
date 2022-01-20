@@ -9,9 +9,9 @@ void composition_example_1() {
 
   // f1 has three independent tasks
   tf::Taskflow f1("F1");
-  auto f1A = f1.emplace([](){ std::cout << "F1 TaskA\n"; });
-  auto f1B = f1.emplace([](){ std::cout << "F1 TaskB\n"; });
-  auto f1C = f1.emplace([](){ std::cout << "F1 TaskC\n"; });
+  auto f1A = f1.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "F1 TaskA\n"; });
+  auto f1B = f1.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "F1 TaskB\n"; });
+  auto f1C = f1.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "F1 TaskC\n"; });
   f1A.name("f1A");
   f1B.name("f1B");
   f1C.name("f1C");
@@ -22,10 +22,10 @@ void composition_example_1() {
   //        |----> f2C ----> f1_module_task ----> f2D
   // f2B --- 
   tf::Taskflow f2("F2");
-  auto f2A = f2.emplace([](){ std::cout << "  F2 TaskA\n"; });
-  auto f2B = f2.emplace([](){ std::cout << "  F2 TaskB\n"; });
-  auto f2C = f2.emplace([](){ std::cout << "  F2 TaskC\n"; });
-  auto f2D = f2.emplace([](){ std::cout << "  F2 TaskD\n"; });
+  auto f2A = f2.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "  F2 TaskA\n"; });
+  auto f2B = f2.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "  F2 TaskB\n"; });
+  auto f2C = f2.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "  F2 TaskC\n"; });
+  auto f2D = f2.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "  F2 TaskD\n"; });
   f2A.name("f2A");
   f2B.name("f2B");
   f2C.name("f2C");
@@ -52,8 +52,8 @@ void composition_example_2() {
 
   // f1 has two independent tasks
   tf::Taskflow f1("F1");
-  auto f1A = f1.emplace([&](){ std::cout << "F1 TaskA\n"; });
-  auto f1B = f1.emplace([&](){ std::cout << "F1 TaskB\n"; });
+  auto f1A = f1.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "F1 TaskA\n"; });
+  auto f1B = f1.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "F1 TaskB\n"; });
   f1A.name("f1A");
   f1B.name("f1B");
 
@@ -63,9 +63,9 @@ void composition_example_2() {
   //
   //  f1_module_task
   tf::Taskflow f2("F2");
-  auto f2A = f2.emplace([&](){ std::cout << "  F2 TaskA\n"; });
-  auto f2B = f2.emplace([&](){ std::cout << "  F2 TaskB\n"; });
-  auto f2C = f2.emplace([&](){ std::cout << "  F2 TaskC\n"; });
+  auto f2A = f2.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "  F2 TaskA\n"; });
+  auto f2B = f2.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "  F2 TaskB\n"; });
+  auto f2C = f2.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "  F2 TaskC\n"; });
   f2A.name("f2A");
   f2B.name("f2B");
   f2C.name("f2C");
@@ -77,7 +77,7 @@ void composition_example_2() {
   // f3 has a module task (f2) and a regular task
   tf::Taskflow f3("F3");
   f3.composed_of(f2).name("module_of_f2");
-  f3.emplace([](){ std::cout << "      F3 TaskA\n"; }).name("f3A");
+  f3.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "      F3 TaskA\n"; }).name("f3A");
 
   // f4: f3_module_task -> f2_module_task
   tf::Taskflow f4; 

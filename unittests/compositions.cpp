@@ -16,11 +16,11 @@ TEST_CASE("Composition-1" * doctest::timeout(300)) {
 
     int cnt {0};
 
-    auto A = f0.emplace([&cnt](){ ++cnt; });
-    auto B = f0.emplace([&cnt](){ ++cnt; });
-    auto C = f0.emplace([&cnt](){ ++cnt; });
-    auto D = f0.emplace([&cnt](){ ++cnt; });
-    auto E = f0.emplace([&cnt](){ ++cnt; });
+    auto A = f0.emplace([&cnt](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ ++cnt; });
+    auto B = f0.emplace([&cnt](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ ++cnt; });
+    auto C = f0.emplace([&cnt](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ ++cnt; });
+    auto D = f0.emplace([&cnt](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ ++cnt; });
+    auto E = f0.emplace([&cnt](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ ++cnt; });
 
     A.precede(B);
     B.precede(C);
@@ -31,11 +31,11 @@ TEST_CASE("Composition-1" * doctest::timeout(300)) {
     
     // module 1
     std::tie(A, B, C, D, E) = f1.emplace(
-      [&cnt] () { ++cnt; },
-      [&cnt] () { ++cnt; },
-      [&cnt] () { ++cnt; },
-      [&cnt] () { ++cnt; },
-      [&cnt] () { ++cnt; }
+      [&cnt] (tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) { ++cnt; },
+      [&cnt] (tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) { ++cnt; },
+      [&cnt] (tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) { ++cnt; },
+      [&cnt] (tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) { ++cnt; },
+      [&cnt] (tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) { ++cnt; }
     );
     A.precede(B);
     B.precede(C);
@@ -83,11 +83,11 @@ TEST_CASE("Composition-2" * doctest::timeout(300)) {
     // level 0 (+5)
     tf::Taskflow f0;
 
-    auto A = f0.emplace([&cnt](){ ++cnt; }).name("f0A");
-    auto B = f0.emplace([&cnt](){ ++cnt; }).name("f0B");
-    auto C = f0.emplace([&cnt](){ ++cnt; }).name("f0C");
-    auto D = f0.emplace([&cnt](){ ++cnt; }).name("f0D");
-    auto E = f0.emplace([&cnt](){ ++cnt; }).name("f0E");
+    auto A = f0.emplace([&cnt](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ ++cnt; }).name("f0A");
+    auto B = f0.emplace([&cnt](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ ++cnt; }).name("f0B");
+    auto C = f0.emplace([&cnt](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ ++cnt; }).name("f0C");
+    auto D = f0.emplace([&cnt](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ ++cnt; }).name("f0D");
+    auto E = f0.emplace([&cnt](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ ++cnt; }).name("f0E");
 
     A.precede(B);
     B.precede(C);
@@ -137,8 +137,8 @@ TEST_CASE("Composition-3" * doctest::timeout(300)) {
     // level 0 (+2)
     tf::Taskflow f0;
 
-    auto A = f0.emplace([&cnt](){ ++cnt; });
-    auto B = f0.emplace([&cnt](){ ++cnt; });
+    auto A = f0.emplace([&cnt](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ ++cnt; });
+    auto B = f0.emplace([&cnt](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ ++cnt; });
 
     A.precede(B);
 
@@ -192,14 +192,14 @@ TEST_CASE("ParallelCompositions") {
   for(auto& tf : taskflows) {
     for(size_t n=0; n<100; n++) {
       auto [A, B, C, D, E, F, G, H] = tf.emplace(
-        [&](){ counter.fetch_add(1, std::memory_order_relaxed); },
-        [&](){ counter.fetch_add(1, std::memory_order_relaxed); },
-        [&](){ counter.fetch_add(1, std::memory_order_relaxed); },
-        [&](){ counter.fetch_add(1, std::memory_order_relaxed); },
-        [&](){ counter.fetch_add(1, std::memory_order_relaxed); },
-        [&](){ counter.fetch_add(1, std::memory_order_relaxed); },
-        [&](){ counter.fetch_add(1, std::memory_order_relaxed); },
-        [&](){ counter.fetch_add(1, std::memory_order_relaxed); }
+        [&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); },
+        [&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); },
+        [&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); },
+        [&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); },
+        [&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); },
+        [&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); },
+        [&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); },
+        [&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); }
       );
       A.precede(B);
       A.precede(C);

@@ -103,11 +103,12 @@ class WorkerView {
     @brief queries the current capacity of the queue
     */
     size_t queue_capacity() const;
+    WorkerView(const Worker&);
+    WorkerView(const WorkerView&) = default;
 
   private:
 
-    WorkerView(const Worker&);
-    WorkerView(const WorkerView&) = default;
+    
 
     const Worker& _worker;
 

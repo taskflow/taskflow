@@ -344,7 +344,7 @@ void parallel_pdqsort(
     // Sort the left partition first using recursion and 
     // do tail recursion elimination for the right-hand partition.
     sf.silent_async(
-      [&sf, begin, pivot_pos, comp, bad_allowed, leftmost] () mutable {
+      [&sf, begin, pivot_pos, comp, bad_allowed, leftmost] (WorkerView wv, TaskView tv, Pipeflow* pf) mutable {
         parallel_pdqsort(sf, begin, pivot_pos, comp, bad_allowed, leftmost);
       }
     );
@@ -435,7 +435,7 @@ Task FlowBuilder::sort(B beg, E end, C cmp) {
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
 
-  Task task = emplace([b=beg, e=end, cmp] (Subflow& sf) mutable {
+  Task task = emplace([b=beg, e=end, cmp] (Subflow& sf, WorkerView wv, TaskView tv, Pipeflow* pf ) mutable {
     
     // fetch the iterator values
     B_t beg = b;

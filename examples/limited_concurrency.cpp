@@ -17,11 +17,11 @@ int main() {
 
   // create give tasks in taskflow
   std::vector<tf::Task> tasks {
-    taskflow.emplace([](){ sl(); std::cout << "A" << std::endl; }),
-    taskflow.emplace([](){ sl(); std::cout << "B" << std::endl; }),
-    taskflow.emplace([](){ sl(); std::cout << "C" << std::endl; }),
-    taskflow.emplace([](){ sl(); std::cout << "D" << std::endl; }),
-    taskflow.emplace([](){ sl(); std::cout << "E" << std::endl; })
+    taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ sl(); std::cout << "A" << std::endl; }),
+    taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ sl(); std::cout << "B" << std::endl; }),
+    taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ sl(); std::cout << "C" << std::endl; }),
+    taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ sl(); std::cout << "D" << std::endl; }),
+    taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ sl(); std::cout << "E" << std::endl; })
   };
 
   for(auto & task : tasks) {

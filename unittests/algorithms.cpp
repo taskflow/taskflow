@@ -294,7 +294,7 @@ void stateful_for_each(unsigned W, TYPE) {
     
     taskflow.clear();
     
-    auto init = taskflow.emplace([&](){ 
+    auto init = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ 
       vec.resize(n);
       std::fill_n(vec.begin(), vec.size(), -1);
 
@@ -553,7 +553,7 @@ void reduce(unsigned W, TYPE) {
       auto end = vec.end();
 
       taskflow.clear();
-      auto stask = taskflow.emplace([&](){
+      auto stask = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
         beg = vec.begin();
         end = vec.begin() + n;
         for(auto itr = beg; itr != end; itr++) {
@@ -780,7 +780,7 @@ void transform_reduce(unsigned W, TYPE) {
       auto end = vec.end();
 
       taskflow.clear();
-      auto stask = taskflow.emplace([&](){
+      auto stask = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
         beg = vec.begin();
         end = vec.begin() + n;
         for(auto itr = beg; itr != end; itr++) {
@@ -1118,7 +1118,7 @@ void parallel_transform(size_t W) {
 
     taskflow.clear();
 
-    auto from = taskflow.emplace([&](){
+    auto from = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
       src.resize(N);
       for(auto& d : src) {
         d = ::rand() % 10;
@@ -1188,7 +1188,7 @@ void parallel_transform2(size_t W) {
 
     taskflow.clear();
 
-    auto from = taskflow.emplace([&](){
+    auto from = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
       src.resize(N);
       for(auto& d : src) {
         d = ::rand() % 10;
@@ -1271,7 +1271,7 @@ void parallel_transform3(size_t W) {
     /** Group integers 0..(N-1) into ten groups,
      * each having an unique key `d`.
      */
-    auto from = taskflow.emplace([&, N](){
+    auto from = taskflow.emplace([&, N](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
       for(size_t i = 0; i < N; i++) {
         const int d = ::rand() % 10;
         src.emplace(d, i);
@@ -1283,7 +1283,7 @@ void parallel_transform3(size_t W) {
       tgt_beg = tgt.begin();
     });
 
-    auto to_ref = taskflow.emplace([&, N]() {
+    auto to_ref = taskflow.emplace([&, N](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) {
 
       // Find entries matching key = 0.
       // This can return empty results.
@@ -1299,7 +1299,7 @@ void parallel_transform3(size_t W) {
     });
 
     /** Dynamic scheduling with Subflow::transform */
-    auto to_tgt = taskflow.emplace([&, N](tf::Subflow& subflow) {
+    auto to_tgt = taskflow.emplace([&, N](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) {
 
       // Find entries matching key = 0
       const auto [src_beg, src_end] = src.equal_range(0);

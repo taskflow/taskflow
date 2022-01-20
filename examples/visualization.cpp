@@ -10,11 +10,11 @@ int main(){
   // ------------------------------------------------------
   // Static Tasking
   // ------------------------------------------------------
-  auto A = taskflow.emplace([] () { std::cout << "Task A\n"; });
-  auto B = taskflow.emplace([] () { std::cout << "Task B\n"; });
-  auto C = taskflow.emplace([] () { std::cout << "Task C\n"; });
-  auto D = taskflow.emplace([] () { std::cout << "Task D\n"; });
-  auto E = taskflow.emplace([] () { std::cout << "Task E\n"; });
+  auto A = taskflow.emplace([] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "Task A\n"; });
+  auto B = taskflow.emplace([] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "Task B\n"; });
+  auto C = taskflow.emplace([] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "Task C\n"; });
+  auto D = taskflow.emplace([] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "Task D\n"; });
+  auto E = taskflow.emplace([] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "Task E\n"; });
 
   A.precede(B, C, E); 
   C.precede(D);
@@ -37,10 +37,10 @@ int main(){
   // ------------------------------------------------------
   // Dynamic Tasking
   // ------------------------------------------------------
-  taskflow.emplace([](tf::Subflow& sf){
-    sf.emplace([](){ std::cout << "subflow task1"; }).name("s1");
-    sf.emplace([](){ std::cout << "subflow task2"; }).name("s2");
-    sf.emplace([](){ std::cout << "subflow task3"; }).name("s3");
+  taskflow.emplace([](tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){
+    sf.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "subflow task1"; }).name("s1");
+    sf.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "subflow task2"; }).name("s2");
+    sf.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "subflow task3"; }).name("s3");
   });
   
   // in order to visualize subflow tasks, you need to run the taskflow

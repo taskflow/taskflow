@@ -12,7 +12,7 @@ int main(){
   
   // create a task and attach it the data
   auto A = taskflow.placeholder();
-  A.data(&data).work([A](){
+  A.data(&data).work([A](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){
     auto d = *static_cast<int*>(A.data());
     std::cout << "data is " << d << std::endl;
   }); 
@@ -21,6 +21,5 @@ int main(){
   for(data = 0; data<10; data++){
     executor.run(taskflow).wait();
   }
-
   return 0;
 }

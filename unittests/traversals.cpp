@@ -91,7 +91,7 @@ TEST_CASE("StaticTraversal" * doctest::timeout(300)) {
     std::vector<tf::Task> tasks;
 
     for(size_t i=0; i<num_nodes; ++i) {
-      auto task = tf.emplace([&level, v=&(nodes[i])](){
+      auto task = tf.emplace([&level, v=&(nodes[i])](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
         v->level = ++level;
         v->visited = true;
         for(size_t j=0; j<v->successors.size(); ++j) {
@@ -136,7 +136,7 @@ TEST_CASE("DynamicTraversal" * doctest::timeout(300)) {
     for(size_t i=0; i<S; i++) {
       if(n->successors[i]->dependents.fetch_sub(1) == 1) {
         n->successors[i]->level = ++level;
-        subflow.emplace([s=n->successors[i], &traverse](tf::Subflow &subflow){ 
+        subflow.emplace([s=n->successors[i], &traverse](tf::Subflow &subflow, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ 
           traverse(s, subflow); 
         });
       }
@@ -163,7 +163,7 @@ TEST_CASE("DynamicTraversal" * doctest::timeout(300)) {
     tf::Executor executor(w);
 
     for(size_t i=0; i<src.size(); i++) {
-      tf.emplace([s=src[i], &traverse](tf::Subflow& subflow){ 
+      tf.emplace([s=src[i], &traverse](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ 
         traverse(s, subflow); 
       });
     }
@@ -276,7 +276,7 @@ void parallel_traversal(unsigned num_threads) {
         for(size_t i=0; i<S; i++) {
           if(n->successors[i]->dependents.fetch_sub(1) == 1) {
             n->successors[i]->level = ++level;
-            subflow.emplace([s=n->successors[i], &traverse](tf::Subflow &subflow){ 
+            subflow.emplace([s=n->successors[i], &traverse](tf::Subflow &subflow, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ 
               traverse(s, subflow); 
             });
           }
@@ -286,7 +286,7 @@ void parallel_traversal(unsigned num_threads) {
       tf::Taskflow tf;
 
       for(size_t i=0; i<src.size(); i++) {
-        tf.emplace([s=src[i], &traverse](tf::Subflow& subflow){ 
+        tf.emplace([s=src[i], &traverse](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ 
           traverse(s, subflow); 
         });
       }

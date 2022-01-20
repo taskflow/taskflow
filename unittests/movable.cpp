@@ -39,7 +39,7 @@ TEST_CASE("moved_run") {
   
   auto make_taskflow = [&](){  
     for(int i=0; i<N; i++) {
-      taskflow.emplace([&, c=CountOnDestruction{counter}](){
+      taskflow.emplace([&, c=CountOnDestruction{counter}](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
         counter.fetch_add(1, std::memory_order_relaxed);
       });
     }
@@ -112,7 +112,7 @@ TEST_CASE("moved_taskflows") {
     
   auto make_taskflow = [&counter](tf::Taskflow& taskflow, int N){  
     for(int i=0; i<N; i++) {
-      taskflow.emplace([&counter, c=CountOnDestruction{counter}](){
+      taskflow.emplace([&counter, c=CountOnDestruction{counter}](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
         counter.fetch_add(1, std::memory_order_relaxed);
       });
     }
@@ -191,7 +191,7 @@ TEST_CASE("parallel_moved_runs") {
     
   auto make_taskflow = [&counter](tf::Taskflow& taskflow, int N){  
     for(int i=0; i<N; i++) {
-      taskflow.emplace([&counter, c=CountOnDestruction{counter}](){
+      taskflow.emplace([&counter, c=CountOnDestruction{counter}](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
         counter.fetch_add(1, std::memory_order_relaxed);
       });
     }

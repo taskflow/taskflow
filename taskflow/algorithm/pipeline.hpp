@@ -458,7 +458,7 @@ void Pipeline<Ps...>::_build() {
   FlowBuilder fb(_graph); 
 
   // init task
-  _tasks[0] = fb.emplace([this]() {
+  _tasks[0] = fb.emplace([this](WorkerView wv, TaskView tv, Pipeflow* pf) {
     return static_cast<int>(_num_tokens % num_lines());
   }).name("cond");
 
@@ -466,7 +466,7 @@ void Pipeline<Ps...>::_build() {
   for(size_t l = 0; l < num_lines(); l++) {
 
     _tasks[l + 1] = fb.emplace(
-    [this, l] (tf::Runtime& rt) mutable {
+    [this, l] (tf::Runtime& rt, WorkerView wv, TaskView tv, Pipeflow* pf1) mutable {
 
     auto pf = &_pipeflows[l];
 

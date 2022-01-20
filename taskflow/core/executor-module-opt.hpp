@@ -804,8 +804,8 @@ void Executor::named_silent_async(
 
   Node* node = node_pool.animate(
     std::in_place_type_t<Node::SilentAsync>{},
-    [f=std::forward<F>(f), args...] () mutable { 
-      f(args...); 
+    [f=std::forward<F>(f), args...] (WorkerView wv, TaskView tv, Pipeflow* pf)) mutable { 
+      f(wv,tv,pf,args...); 
     }
   );
 

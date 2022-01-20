@@ -22,7 +22,7 @@ void for_each() {
     T* cpu = nullptr;
     T* gpu = nullptr;
 
-    auto cputask = taskflow.emplace([&](){
+    auto cputask = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
       cpu = static_cast<T*>(std::calloc(n, sizeof(T)));
       gpu = sycl::malloc_device<T>(n, queue);
     });
@@ -83,7 +83,7 @@ void for_each_index() {
     T* cpu = nullptr;
     T* gpu = nullptr;
 
-    auto cputask = taskflow.emplace([&](){
+    auto cputask = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
       cpu = static_cast<T*>(std::calloc(n, sizeof(T)));
       gpu = sycl::malloc_device<T>(n, queue);
     });
@@ -161,7 +161,7 @@ void reduce() {
     T* gpu = nullptr;
     T* res = nullptr;
 
-    auto cputask = taskflow.emplace([&](){
+    auto cputask = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
       gpu = sycl::malloc_shared<T>(N, queue);
       res = sycl::malloc_shared<T>(1, queue);
     });
@@ -240,7 +240,7 @@ void uninitialized_reduce() {
     T* gpu = nullptr;
     T* res = nullptr;
 
-    auto cputask = taskflow.emplace([&](){
+    auto cputask = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
       gpu = sycl::malloc_shared<T>(N, queue);
       res = sycl::malloc_shared<T>(1, queue);
     });
@@ -315,7 +315,7 @@ void transform() {
     double* hsrc3 = nullptr;
     double* src3 = nullptr;
 
-    auto htgttask = taskflow.emplace([&](){
+    auto htgttask = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
       htgt  = static_cast<int*>(std::calloc(n, sizeof(int)));
       hsrc1 = static_cast<int*>(std::calloc(n, sizeof(int)));
       hsrc2 = static_cast<float*>(std::calloc(n, sizeof(float)));

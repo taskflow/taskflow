@@ -9,10 +9,10 @@
 // taskflow on the first pipe
 void make_taskflow1(tf::Taskflow& tf) {
   auto [A1, B1, C1, D1] = tf.emplace(
-    [](){ printf("A1\n"); },
-    [](){ printf("B1\n"); },
-    [](){ printf("C1\n"); },
-    [](){ printf("D1\n"); }
+    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ printf("A1\n"); },
+    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ printf("B1\n"); },
+    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ printf("C1\n"); },
+    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ printf("D1\n"); }
   );
   A1.precede(B1, C1);
   D1.succeed(B1, C1);
@@ -21,10 +21,10 @@ void make_taskflow1(tf::Taskflow& tf) {
 // taskflow on the second pipe
 void make_taskflow2(tf::Taskflow& tf) {
   auto [A2, B2, C2, D2] = tf.emplace(
-    [](){ printf("A2\n"); },
-    [](){ printf("B2\n"); },
-    [](){ printf("C2\n"); },
-    [](){ printf("D2\n"); }
+    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ printf("A2\n"); },
+    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ printf("B2\n"); },
+    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ printf("C2\n"); },
+    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ printf("D2\n"); }
   );
   tf.linearize({A2, B2, C2, D2});
 }
@@ -32,10 +32,10 @@ void make_taskflow2(tf::Taskflow& tf) {
 // taskflow on the third pipe
 void make_taskflow3(tf::Taskflow& tf) {
   auto [A3, B3, C3, D3] = tf.emplace(
-    [](){ printf("A3\n"); },
-    [](){ printf("B3\n"); },
-    [](){ printf("C3\n"); },
-    [](){ printf("D3\n"); }
+    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ printf("A3\n"); },
+    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ printf("B3\n"); },
+    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ printf("C3\n"); },
+    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ printf("D3\n"); }
   );
   A3.precede(B3, C3, D3);
 }
@@ -83,11 +83,11 @@ int main() {
   );
 
   // build the pipeline graph using composition
-  tf::Task init = taskflow.emplace([](){ std::cout << "ready\n"; })
+  tf::Task init = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "ready\n"; })
                           .name("starting pipeline");
   tf::Task task = taskflow.composed_of(pl)
                           .name("pipeline");
-  tf::Task stop = taskflow.emplace([](){ std::cout << "stopped\n"; })
+  tf::Task stop = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "stopped\n"; })
                           .name("pipeline stopped");
 
   // create task dependency

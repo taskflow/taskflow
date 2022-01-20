@@ -5,11 +5,11 @@ int spawn(int n, tf::Subflow& sbf) {
   int res1, res2;
 
   // compute f(n-1)
-  sbf.emplace([&res1, n] (tf::Subflow& sbf) { res1 = spawn(n - 1, sbf); } )
+  sbf.emplace([&res1, n] (tf::Subflow& sbf, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { res1 = spawn(n - 1, sbf); } )
      .name(std::to_string(n-1));
 
   // compute f(n-2)
-  sbf.emplace([&res2, n] (tf::Subflow& sbf) { res2 = spawn(n - 2, sbf); } )
+  sbf.emplace([&res2, n] (tf::Subflow& sbf, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { res2 = spawn(n - 2, sbf); } )
      .name(std::to_string(n-2));
 
   sbf.join();
@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
   tf::Executor executor;
   tf::Taskflow taskflow("fibonacci");
 
-  taskflow.emplace([&res, N] (tf::Subflow& sbf) { 
+  taskflow.emplace([&res, N] (tf::Subflow& sbf, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { 
     res = spawn(N, sbf);  
   }).name(std::to_string(N));
 

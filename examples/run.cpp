@@ -8,18 +8,18 @@ int main(){
   tf::Executor executor(1);
   tf::Taskflow taskflow("Demo");
 
-  auto A = taskflow.emplace([&](){ std::cout << "TaskA\n"; }).name("A");
-  auto B = taskflow.emplace([&](tf::Subflow& subflow){ 
+  auto A = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "TaskA\n"; }).name("A");
+  auto B = taskflow.emplace([&](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ 
     std::cout << "TaskB\n";
-    auto B1 = subflow.emplace([&](){ std::cout << "TaskB1\n"; }).name("B1");
-    auto B2 = subflow.emplace([&](){ std::cout << "TaskB2\n"; }).name("B2");
-    auto B3 = subflow.emplace([&](){ std::cout << "TaskB3\n"; }).name("B3");
+    auto B1 = subflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "TaskB1\n"; }).name("B1");
+    auto B2 = subflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "TaskB2\n"; }).name("B2");
+    auto B3 = subflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "TaskB3\n"; }).name("B3");
     B1.precede(B3); 
     B2.precede(B3);
   }).name("B");
 
-  auto C = taskflow.emplace([&](){ std::cout << "TaskC\n"; }).name("C");
-  auto D = taskflow.emplace([&](){ std::cout << "TaskD\n"; }).name("D");
+  auto C = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "TaskC\n"; }).name("C");
+  auto D = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "TaskD\n"; }).name("D");
 
   A.precede(B, C);
   B.precede(D); 

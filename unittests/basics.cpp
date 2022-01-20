@@ -11,12 +11,12 @@ TEST_CASE("Type" * doctest::timeout(300)) {
 
   tf::Taskflow taskflow, taskflow2;
 
-  auto t1 = taskflow.emplace([](){});
-  auto t2 = taskflow.emplace([](){ return 1; });
-  auto t3 = taskflow.emplace([](tf::Subflow&){ });
+  auto t1 = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){});
+  auto t2 = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ return 1; });
+  auto t3 = taskflow.emplace([](tf::Subflow&, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ });
   auto t4 = taskflow.composed_of(taskflow2);
-  auto t5 = taskflow.emplace([](){ return tf::SmallVector{1, 2}; });
-  auto t6 = taskflow.emplace([](tf::Runtime&){});
+  auto t5 = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ return tf::SmallVector{1, 2}; });
+  auto t6 = taskflow.emplace([](tf::Runtime&, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){});
 
   REQUIRE(t1.type() == tf::TaskType::STATIC);
   REQUIRE(t2.type() == tf::TaskType::CONDITION);
@@ -63,7 +63,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     }
 
     for(auto& task : silent_tasks) {
-      task.work([&counter](){ counter++; });
+      task.work([&counter](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ counter++; });
     }
 
     executor.run(taskflow).get();
@@ -73,7 +73,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
   SUBCASE("EmbarrassinglyParallel"){
 
     for(size_t i=0;i<num_tasks;i++) {
-      tasks.emplace_back(taskflow.emplace([&counter]() {counter += 1;}));
+      tasks.emplace_back(taskflow.emplace([&counter](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {counter += 1;}));
     }
 
     REQUIRE(taskflow.num_tasks() == num_tasks);
@@ -84,7 +84,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     counter = 0;
     
     for(size_t i=0;i<num_tasks;i++){
-      silent_tasks.emplace_back(taskflow.emplace([&counter]() {counter += 1;}));
+      silent_tasks.emplace_back(taskflow.emplace([&counter](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {counter += 1;}));
     }
 
     REQUIRE(taskflow.num_tasks() == num_tasks * 2);
@@ -97,12 +97,12 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     for(size_t i=0;i<num_tasks;i++){
       if(i%2 == 0){
         tasks.emplace_back(
-          taskflow.emplace([&counter]() { REQUIRE(counter == 0); counter += 1;})
+          taskflow.emplace([&counter](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { REQUIRE(counter == 0); counter += 1;})
         );
       }
       else{
         tasks.emplace_back(
-          taskflow.emplace([&counter]() { REQUIRE(counter == 1); counter -= 1;})
+          taskflow.emplace([&counter](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { REQUIRE(counter == 1); counter -= 1;})
         );
       }
       if(i>0){
@@ -125,7 +125,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
   SUBCASE("LinearCounter"){
     for(size_t i=0;i<num_tasks;i++){
       tasks.emplace_back(
-        taskflow.emplace([&counter, i]() { 
+        taskflow.emplace([&counter, i](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { 
           REQUIRE(counter == i); counter += 1;}
         )
       );
@@ -139,10 +139,10 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
   }
  
   SUBCASE("Broadcast"){
-    auto src = taskflow.emplace([&counter]() {counter -= 1;});
+    auto src = taskflow.emplace([&counter](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {counter -= 1;});
     for(size_t i=1; i<num_tasks; i++){
       silent_tasks.emplace_back(
-        taskflow.emplace([&counter]() {REQUIRE(counter == -1);})
+        taskflow.emplace([&counter](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {REQUIRE(counter == -1);})
       );
       src.precede(silent_tasks.back());
     }
@@ -152,10 +152,10 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
   }
 
   SUBCASE("Succeed"){
-    auto dst = taskflow.emplace([&]() { REQUIRE(counter == num_tasks - 1);});
+    auto dst = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { REQUIRE(counter == num_tasks - 1);});
     for(size_t i=1;i<num_tasks;i++){
       silent_tasks.emplace_back(
-        taskflow.emplace([&counter]() {counter += 1;})
+        taskflow.emplace([&counter](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {counter += 1;})
       );
       dst.succeed(silent_tasks.back());
     }
@@ -166,15 +166,15 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
 
   SUBCASE("MapReduce"){
 
-    auto src = taskflow.emplace([&counter]() {counter = 0;});
+    auto src = taskflow.emplace([&counter](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {counter = 0;});
     
     auto dst = taskflow.emplace(
-      [&counter, num_tasks]() { REQUIRE(counter == num_tasks);}
+      [&counter, num_tasks](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { REQUIRE(counter == num_tasks);}
     );
 
     for(size_t i=0;i<num_tasks;i++){
       silent_tasks.emplace_back(
-        taskflow.emplace([&counter]() {counter += 1;})
+        taskflow.emplace([&counter](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {counter += 1;})
       );
       src.precede(silent_tasks.back());
       dst.succeed(silent_tasks.back());
@@ -186,7 +186,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
   SUBCASE("Linearize"){
     for(size_t i=0;i<num_tasks;i++){
       silent_tasks.emplace_back(
-        taskflow.emplace([&counter, i]() { 
+        taskflow.emplace([&counter, i](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { 
           REQUIRE(counter == i); counter += 1;}
         )
       );
@@ -198,10 +198,10 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
   }
 
   SUBCASE("Kite"){
-    auto src = taskflow.emplace([&counter]() {counter = 0;});
+    auto src = taskflow.emplace([&counter](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {counter = 0;});
     for(size_t i=0;i<num_tasks;i++){
       silent_tasks.emplace_back(
-        taskflow.emplace([&counter, i]() { 
+        taskflow.emplace([&counter, i](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { 
           REQUIRE(counter == i); counter += 1; }
         )
       );
@@ -209,7 +209,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     }
     taskflow.linearize(silent_tasks);
     auto dst = taskflow.emplace(
-      [&counter, num_tasks]() { REQUIRE(counter == num_tasks);}
+      [&counter, num_tasks](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { REQUIRE(counter == num_tasks);}
     );
 
     for(auto task : silent_tasks) dst.succeed(task);
@@ -278,10 +278,10 @@ TEST_CASE("STDFunction" * doctest::timeout(300)) {
 
   int counter = 0;
 
-  std::function<void()> func1  = [&] () { ++counter; };
-  std::function<int()>  func2  = [&] () { ++counter; return 0; };
-  std::function<void()> func3  = [&] () { };
-  std::function<void()> func4  = [&] () { ++counter;};
+  std::function<void(tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf)> func1  = [&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { ++counter; };
+   std::function<int(tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf)>  func2  = [&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { ++counter; return 0; };
+  std::function<void(tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf)> func3  = [&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { };
+  std::function<void(tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf)> func4  = [&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { ++counter;};
   
   // scenario 1
   auto A = taskflow.emplace(func1);
@@ -324,11 +324,11 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
   SUBCASE("Order") {
     tf::Taskflow taskflow;
 
-    auto A = taskflow.emplace([](){}).name("A");
-    auto B = taskflow.emplace([](){}).name("B");
-    auto C = taskflow.emplace([](){}).name("C");
-    auto D = taskflow.emplace([](){}).name("D");
-    auto E = taskflow.emplace([](){}).name("E");
+    auto A = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){}).name("A");
+    auto B = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){}).name("B");
+    auto C = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){}).name("C");
+    auto D = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){}).name("D");
+    auto E = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){}).name("E");
 
     A.precede(B, C, D, E);
     E.succeed(B, C, D);
@@ -373,11 +373,11 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
   SUBCASE("Generic") {
     tf::Taskflow taskflow;
 
-    auto A = taskflow.emplace([](){}).name("A");
-    auto B = taskflow.emplace([](){}).name("B");
-    auto C = taskflow.emplace([](){}).name("C");
-    auto D = taskflow.emplace([](){}).name("D");
-    auto E = taskflow.emplace([](){}).name("E");
+    auto A = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){}).name("A");
+    auto B = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){}).name("B");
+    auto C = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){}).name("C");
+    auto D = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){}).name("D");
+    auto E = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){}).name("E");
 
     std::vector<tf::Task> tasks;
 
@@ -469,11 +469,11 @@ TEST_CASE("Hash" * doctest::timeout(300)) {
 
   tf::Taskflow taskflow;
 
-  t1 = taskflow.emplace([](){});
+  t1 = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){});
 
   REQUIRE(((hash(t1) != hash(t2)) || (hash(t1) == hash(t2) && t1 != t2)));
 
-  t2 = taskflow.emplace([](){});
+  t2 = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){});
 
   REQUIRE(((hash(t1) != hash(t2)) || (hash(t1) == hash(t2) && t1 != t2)));
 
@@ -499,7 +499,7 @@ void sequential_runs(unsigned W) {
     
   for(size_t i=0;i<num_tasks;i++){
     silent_tasks.emplace_back(
-      taskflow.emplace([&counter]() {counter += 1;})
+      taskflow.emplace([&counter](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {counter += 1;})
     );
   }
   
@@ -520,16 +520,16 @@ void sequential_runs(unsigned W) {
 
     std::atomic<size_t> count {0};
     tf::Taskflow f;
-    auto A = f.emplace([&](){ count ++; });
-    auto B = f.emplace([&](tf::Subflow& subflow){ 
+    auto A = f.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ count ++; });
+    auto B = f.emplace([&](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ 
       count ++; 
-      auto B1 = subflow.emplace([&](){ count++; });
-      auto B2 = subflow.emplace([&](){ count++; });
-      auto B3 = subflow.emplace([&](){ count++; });
+      auto B1 = subflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ count++; });
+      auto B2 = subflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ count++; });
+      auto B3 = subflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ count++; });
       B1.precede(B3); B2.precede(B3);
     });
-    auto C = f.emplace([&](){ count ++; });
-    auto D = f.emplace([&](){ count ++; });
+    auto C = f.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ count ++; });
+    auto D = f.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ count ++; });
 
     A.precede(B, C);
     B.precede(D); 
@@ -565,16 +565,16 @@ void sequential_runs(unsigned W) {
   SUBCASE("RunWithChange") {
     std::atomic<size_t> count {0};
     tf::Taskflow f;
-    auto A = f.emplace([&](){ count ++; });
-    auto B = f.emplace([&](tf::Subflow& subflow){ 
+    auto A = f.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ count ++; });
+    auto B = f.emplace([&](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ 
       count ++; 
-      auto B1 = subflow.emplace([&](){ count++; });
-      auto B2 = subflow.emplace([&](){ count++; });
-      auto B3 = subflow.emplace([&](){ count++; });
+      auto B1 = subflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ count++; });
+      auto B2 = subflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ count++; });
+      auto B3 = subflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ count++; });
       B1.precede(B3); B2.precede(B3);
     });
-    auto C = f.emplace([&](){ count ++; });
-    auto D = f.emplace([&](){ count ++; });
+    auto C = f.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ count ++; });
+    auto D = f.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ count ++; });
 
     A.precede(B, C);
     B.precede(D); 
@@ -583,12 +583,12 @@ void sequential_runs(unsigned W) {
     executor.run_n(f, 10).get();
     REQUIRE(count == 70);    
 
-    auto E = f.emplace([](){});
+    auto E = f.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){});
     D.precede(E);
     executor.run_n(f, 10).get();
     REQUIRE(count == 140);    
 
-    auto F = f.emplace([](){});
+    auto F = f.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){});
     E.precede(F);
     executor.run_n(f, 10);
     executor.wait_for_all();
@@ -599,16 +599,16 @@ void sequential_runs(unsigned W) {
   SUBCASE("RunWithPred") {
     std::atomic<size_t> count {0};
     tf::Taskflow f;
-    auto A = f.emplace([&](){ count ++; });
-    auto B = f.emplace([&](tf::Subflow& subflow){ 
+    auto A = f.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ count ++; });
+    auto B = f.emplace([&](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ 
       count ++; 
-      auto B1 = subflow.emplace([&](){ count++; });
-      auto B2 = subflow.emplace([&](){ count++; });
-      auto B3 = subflow.emplace([&](){ count++; });
+      auto B1 = subflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ count++; });
+      auto B2 = subflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ count++; });
+      auto B3 = subflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ count++; });
       B1.precede(B3); B2.precede(B3);
     });
-    auto C = f.emplace([&](){ count ++; });
-    auto D = f.emplace([&](){ count ++; });
+    auto C = f.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ count ++; });
+    auto D = f.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ count ++; });
 
     A.precede(B, C);
     B.precede(D); 
@@ -643,19 +643,19 @@ void sequential_runs(unsigned W) {
     tf::Taskflow tf1, tf2, tf3, tf4;
 
     for(size_t n=0; n<16; ++n) {
-      tf1.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
+      tf1.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){counter.fetch_add(1, std::memory_order_relaxed);});
     }
     
     for(size_t n=0; n<1024; ++n) {
-      tf2.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
+      tf2.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){counter.fetch_add(1, std::memory_order_relaxed);});
     }
     
     for(size_t n=0; n<32; ++n) {
-      tf3.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
+      tf3.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){counter.fetch_add(1, std::memory_order_relaxed);});
     }
     
     for(size_t n=0; n<128; ++n) {
-      tf4.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
+      tf4.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){counter.fetch_add(1, std::memory_order_relaxed);});
     }
     
     for(int i=0; i<200; ++i) {
@@ -712,22 +712,22 @@ void worker_id(unsigned w) {
   tf::Executor executor(w);
 
   for(int i=0; i<1000; i++) {
-    auto A = taskflow.emplace([&](){
+    auto A = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){
       auto id = executor.this_worker_id();
       REQUIRE(id>=0);
       REQUIRE(id< w);
     });
 
-    auto B = taskflow.emplace([&](tf::Subflow& sf){
+    auto B = taskflow.emplace([&](tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
       auto id = executor.this_worker_id();
       REQUIRE(id>=0);
       REQUIRE(id< w);
-      sf.emplace([&](){
+      sf.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
         auto id = executor.this_worker_id();
         REQUIRE(id>=0);
         REQUIRE(id< w);
       });
-      sf.emplace([&](tf::Subflow&){
+      sf.emplace([&](tf::Subflow&, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
         auto id = executor.this_worker_id();
         REQUIRE(id>=0);
         REQUIRE(id< w);
@@ -782,10 +782,10 @@ void parallel_runs(unsigned w) {
 
   auto make_taskflow = [&] (tf::Taskflow& tf) {
     for(int i=0; i<1024; i++) {
-      auto A = tf.emplace([&] () { 
+      auto A = tf.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { 
         counter.fetch_add(1, std::memory_order_relaxed); 
       });
-      auto B = tf.emplace([&] () {
+      auto B = tf.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
         counter.fetch_add(1, std::memory_order_relaxed); 
       });
       A.precede(B);
@@ -889,8 +889,8 @@ void nested_runs(unsigned w) {
     void run()
     {
       taskflow.clear();
-      auto A1 = taskflow.emplace([&]() { counter++; });
-      auto A2 = taskflow.emplace([&]() { counter++; });
+      auto A1 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { counter++; });
+      auto A2 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { counter++; });
       A1.precede(A2);
       executor.run_n(taskflow, 10).wait();
     }
@@ -911,8 +911,8 @@ void nested_runs(unsigned w) {
     void run()
     {
       taskflow.clear();
-      auto B1 = taskflow.emplace([&] () { ++counter; });
-      auto B2 = taskflow.emplace([&] () { ++counter; a_sim.run(); });
+      auto B1 = taskflow.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { ++counter; });
+      auto B2 = taskflow.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { ++counter; a_sim.run(); });
       B1.precede(B2);
       executor.run_n(taskflow, 100).wait();
     }
@@ -932,8 +932,8 @@ void nested_runs(unsigned w) {
     void run()
     {
       taskflow.clear();
-      auto C1 = taskflow.emplace([&] () { ++counter; });
-      auto C2 = taskflow.emplace([&] () { ++counter; b_sim.run(); });
+      auto C1 = taskflow.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { ++counter; });
+      auto C2 = taskflow.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { ++counter; b_sim.run(); });
       C1.precede(C2);
       executor.run_n(taskflow, 100).wait();
     }
@@ -1288,7 +1288,7 @@ void observer(unsigned w) {
   std::vector<tf::Task> tasks;
   // Static tasking 
   for(auto i=0; i < 64; i ++) {
-    tasks.emplace_back(taskflowA.emplace([](){}));
+    tasks.emplace_back(taskflowA.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){}));
   }
 
   // Randomly specify dependency
@@ -1336,15 +1336,15 @@ TEST_CASE("RuntimeTasking" * doctest::timeout(300)) {
    
   int a = 0;
   int b = 0;
-
-  taskflow.emplace([&](tf::Runtime& rt){
+/*GL
+  taskflow.emplace([&](tf::Runtime& rt, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){
     rt.run([&](tf::Subflow& sf){
       REQUIRE(&rt.executor() == &executor);
-      auto task1 = sf.emplace([&](){a++;});
-      auto task2 = sf.emplace([&](){a++;});
-      auto task3 = sf.emplace([&](){a++;});
-      auto task4 = sf.emplace([&](){a++;});
-      auto task5 = sf.emplace([&](){a++;});
+      auto task1 = sf.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){a++;});
+      auto task2 = sf.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){a++;});
+      auto task3 = sf.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){a++;});
+      auto task4 = sf.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){a++;});
+      auto task5 = sf.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){a++;});
       task1.precede(task2);
       task2.precede(task3);
       task3.precede(task4);
@@ -1352,15 +1352,15 @@ TEST_CASE("RuntimeTasking" * doctest::timeout(300)) {
     });
   });
 
-  taskflow.emplace([&](tf::Subflow& sf){
-    sf.emplace([&](tf::Runtime& rt){
+  taskflow.emplace([&](tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    sf.emplace([&](tf::Runtime& rt, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
       REQUIRE(&rt.executor() == &executor);
       rt.run([&](tf::Subflow& sf){
-        auto task1 = sf.emplace([&](){b++;});
-        auto task2 = sf.emplace([&](){b++;});
-        auto task3 = sf.emplace([&](){b++;});
-        auto task4 = sf.emplace([&](){b++;});
-        auto task5 = sf.emplace([&](){b++;});
+        auto task1 = sf.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){b++;});
+        auto task2 = sf.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){b++;});
+        auto task3 = sf.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){b++;});
+        auto task4 = sf.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){b++;});
+        auto task5 = sf.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){b++;});
         task1.precede(task2);
         task2.precede(task3);
         task3.precede(task4);
@@ -1369,6 +1369,7 @@ TEST_CASE("RuntimeTasking" * doctest::timeout(300)) {
       });
     });
   });
+  */
 
   executor.run(taskflow).wait();
 

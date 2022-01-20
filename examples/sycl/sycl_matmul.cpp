@@ -15,19 +15,19 @@ auto gpu(int M, int N, int K) {
   sycl::queue queue;
 
   // allocate the host and device storage for a
-  auto allocate_a = taskflow.emplace([&](){
+  auto allocate_a = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
     ha.resize(M*N, M+N);
     da = sycl::malloc_device<int>(M*N, queue);
   }).name("allocate_a");
   
   // allocate the host and device storage for b
-  auto allocate_b = taskflow.emplace([&](){
+  auto allocate_b = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
     hb.resize(N*K, N+K);
     db = sycl::malloc_device<int>(N*K, queue);
   }).name("allocate_b");
   
   // allocate the host and device storage for c
-  auto allocate_c = taskflow.emplace([&](){
+  auto allocate_c = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
     hc.resize(M*K);
     dc = sycl::malloc_device<int>(M*K, queue);
   }).name("allocate_c");
@@ -79,7 +79,7 @@ auto gpu(int M, int N, int K) {
 
   }, queue).name("syclFlow");
 
-  auto free = taskflow.emplace([&](){
+  auto free = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
     sycl::free(da, queue);
     sycl::free(db, queue);
     sycl::free(dc, queue);
@@ -104,15 +104,15 @@ auto cpu(int M, int N, int K) {
   tf::Executor executor;
   tf::Taskflow taskflow;
 
-  auto ha = taskflow.emplace([&](){ 
+  auto ha = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ 
     a.resize(M*N, M+N);
   }).name("allocate_a");
 
-  auto hb = taskflow.emplace([&](){ 
+  auto hb = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ 
     b.resize(N*K, N+K);
   }).name("allocate_b");
 
-  auto hc = taskflow.emplace([&](){
+  auto hc = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
     c.resize(M*K, 0);
   }).name("allocate_c");
 

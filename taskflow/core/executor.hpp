@@ -790,7 +790,7 @@ inline Worker* Executor::_this_worker() {
 template <typename F, typename... ArgsT>
 auto Executor::named_async(const std::string& name, F&& f, ArgsT&&... args)
 {
-  return named_async(name, f, _pf, args...);
+  return named_async(name, std::forward<F>(f), _pf, std::forward<ArgsT>(args)...);
 }
 
 // Function: named_async
@@ -811,10 +811,10 @@ auto Executor::named_async(const std::string& name, F&& f, Pipeflow* pf, ArgsT&&
   auto node = node_pool.animate(
     std::in_place_type_t<Node::Async>{},
     [p=make_moc(std::move(p)), f=std::forward<F>(f), args...] 
-    (bool cancel) mutable {
+    (bool cancel, WorkerView wv, TaskView tv, Pipeflow* pf) mutable {
       if constexpr(std::is_same_v<R, void>) {
         if(!cancel) {
-          f(args...);
+          f(wv,tv,pf,std::forward<ArgsT>(args)...);
         }
         p.object.set_value();
       }
@@ -1466,7 +1466,7 @@ inline void Executor::_cancel_invoke(Worker& worker, Node* node, Pipeflow* pf) {
   switch(node->_handle.index()) {
     // async task needs to carry out the promise
     case Node::ASYNC:
-      std::get_if<Node::Async>(&(node->_handle))->work(true);
+      std::get_if<Node::Async>(&(node->_handle))->work(true, WorkerView(worker), TaskView(*node), pf);
       _tear_down_async(node);
     break;
 
@@ -1514,7 +1514,7 @@ inline void Executor::_observer_epilogue(Worker& worker, Node* node, Pipeflow* p
 // Procedure: _invoke_static_task
 inline void Executor::_invoke_static_task(Worker& worker, Node* node, Pipeflow* pf) {
   _observer_prologue(worker, node, pf);
-  std::get_if<Node::Static>(&node->_handle)->work();
+  std::get_if<Node::Static>(&node->_handle)->work(WorkerView(worker), TaskView(*node), pf);
   _observer_epilogue(worker, node, pf);
 }
 
@@ -1529,7 +1529,7 @@ inline void Executor::_invoke_dynamic_task(Worker& w, Node* node, Pipeflow* pf) 
 
   Subflow sf(*this, w, node, handle->subgraph); 
 
-  handle->work(sf);
+  handle->work(sf, WorkerView(w), TaskView(*node), pf);
 
   if(sf._joinable) {
     _join_dynamic_task_internal(w, node, handle->subgraph, pf);
@@ -1632,7 +1632,7 @@ inline void Executor::_invoke_condition_task(
   Worker& worker, Node* node, SmallVector<int>& conds, Pipeflow* pf
 ) {
   _observer_prologue(worker, node, pf);
-  conds = { std::get_if<Node::Condition>(&node->_handle)->work() };
+  conds = { std::get_if<Node::Condition>(&node->_handle)->work(WorkerView(worker), TaskView(*node), pf) };
   _observer_epilogue(worker, node, pf);
 }
 
@@ -1641,7 +1641,7 @@ inline void Executor::_invoke_multi_condition_task(
   Worker& worker, Node* node, SmallVector<int>& conds, Pipeflow* pf
 ) {
   _observer_prologue(worker, node, pf);
-  conds = std::get_if<Node::MultiCondition>(&node->_handle)->work();
+  conds = std::get_if<Node::MultiCondition>(&node->_handle)->work(WorkerView(worker), TaskView(*node), pf);
   _observer_epilogue(worker, node, pf);
 }
 
@@ -1671,14 +1671,14 @@ inline void Executor::_invoke_module_task(Worker& w, Node* node, Pipeflow* pf) {
 // Procedure: _invoke_async_task
 inline void Executor::_invoke_async_task(Worker& w, Node* node, Pipeflow* pf) {
   _observer_prologue(w, node, pf);
-  std::get_if<Node::Async>(&node->_handle)->work(false);
+  std::get_if<Node::Async>(&node->_handle)->work(false, WorkerView(w), TaskView(*node), pf );
   _observer_epilogue(w, node, pf);  
 }
 
 // Procedure: _invoke_silent_async_task
 inline void Executor::_invoke_silent_async_task(Worker& w, Node* node, Pipeflow* pf) {
   _observer_prologue(w, node, pf);
-  std::get_if<Node::SilentAsync>(&node->_handle)->work();
+  std::get_if<Node::SilentAsync>(&node->_handle)->work(WorkerView(w), TaskView(*node), pf);
   _observer_epilogue(w, node, pf);  
 }
 
@@ -1686,11 +1686,11 @@ inline void Executor::_invoke_silent_async_task(Worker& w, Node* node, Pipeflow*
 inline void Executor::_invoke_runtime_task(Worker& w, Node* node, Pipeflow* pf) {
   _observer_prologue(w, node, pf);
   Runtime rt(*this, w, node);
-  std::get_if<Node::Runtime>(&node->_handle)->work(rt);
+  std::get_if<Node::Runtime>(&node->_handle)->work(rt, WorkerView(w), TaskView(*node), pf);
   _observer_epilogue(w, node, pf);  
 }
 
-
+ 
 // Function: run(1)
 inline tf::Future<void> Executor::run(Taskflow& f) {
   return run_n(f, _pf, 1, [](){});
@@ -2118,10 +2118,10 @@ auto Subflow::_named_async(
   auto node = node_pool.animate(
     std::in_place_type_t<Node::Async>{},
     [p=make_moc(std::move(p)), f=std::forward<F>(f), args...] 
-    (bool cancel) mutable {
+    (bool cancel, WorkerView wv, TaskView tv, Pipeflow* pf) mutable {
       if constexpr(std::is_same_v<R, void>) {
         if(!cancel) {
-          f(args...);
+          f(wv,tv,pf,args...);
         }
         p.object.set_value();
       }
@@ -2171,8 +2171,8 @@ void Subflow::_named_silent_async(
 
   auto node = node_pool.animate(
     std::in_place_type_t<Node::SilentAsync>{},
-    [f=std::forward<F>(f), args...] () mutable { 
-      f(args...); 
+    [f=std::forward<F>(f), args...] (WorkerView wv, TaskView tv, Pipeflow* pf) mutable { 
+      f(wv,tv,pf,args...); 
     }
   );
   

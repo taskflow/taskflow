@@ -267,7 +267,7 @@ class Node {
     template <typename C> 
     Static(C&&);
 
-    std::function<void()> work;
+    std::function<void(WorkerView, TaskView, Pipeflow*)> work;
   };
 
   // runtime work handle
@@ -276,7 +276,7 @@ class Node {
     template <typename C>
     Runtime(C&&);
      
-    std::function<void(tf::Runtime&)> work;
+    std::function<void(tf::Runtime&, WorkerView, TaskView, Pipeflow*)> work;
   };
 
   // dynamic work handle
@@ -285,7 +285,7 @@ class Node {
     template <typename C> 
     Dynamic(C&&);
 
-    std::function<void(Subflow&)> work;
+    std::function<void(Subflow&, WorkerView, TaskView, Pipeflow*)> work;
     Graph subgraph;
   };
   
@@ -295,7 +295,7 @@ class Node {
     template <typename C> 
     Condition(C&&);
 
-    std::function<int()> work;
+    std::function<int(WorkerView, TaskView, Pipeflow*)> work;
   };
 
   // multi-condition work handle
@@ -304,7 +304,7 @@ class Node {
     template <typename C>
     MultiCondition(C&&);
 
-    std::function<SmallVector<int>()> work;
+    std::function<SmallVector<int>(WorkerView, TaskView, Pipeflow*)> work;
   };
 
   // module work handle
@@ -322,7 +322,7 @@ class Node {
     template <typename T>
     Async(T&&, std::shared_ptr<AsyncTopology>);
 
-    std::function<void(bool)> work;
+    std::function<void(bool, WorkerView, TaskView, Pipeflow*)> work;
 
     std::shared_ptr<AsyncTopology> topology;
   };
@@ -333,7 +333,7 @@ class Node {
     template <typename C>
     SilentAsync(C&&);
 
-    std::function<void()> work;
+    std::function<void(WorkerView, TaskView, Pipeflow*)> work;
   };
   
   // cudaFlow work handle

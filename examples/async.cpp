@@ -8,22 +8,23 @@ int main() {
   
   // create asynchronous tasks from the executor
   // (using executor as a thread pool)
-  tf::Future<std::optional<int>> future1 = executor.async([](){
+  /*
+  tf::Future<std::optional<int>> future1 = executor.async([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){
     std::cout << "async task 1 returns 1\n";
     return 1;
   });
 
-  executor.silent_async([](){  // silent async task doesn't return
+  executor.silent_async([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){  // silent async task doesn't return
     std::cout << "async task 2 does not return (silent)\n";
   });
 
   // create asynchronous tasks with names (for profiling)
-  executor.named_async("async_task", [](){
+  executor.named_async("async_task", [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){
     std::cout << "named async task returns 1\n";
     return 1;
   });
 
-  executor.named_silent_async("silent_async_task", [](){
+  executor.named_silent_async("silent_async_task", [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){
     std::cout << "named silent async task does not return\n";
   });
 
@@ -35,9 +36,9 @@ int main() {
 
   std::atomic<int> counter {0};
 
-  taskflow.emplace([&](tf::Subflow& sf){
+  taskflow.emplace([&](tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){
     for(int i=0; i<100; i++) {
-      sf.silent_async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
+      sf.silent_async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); });
     }
     sf.join();
 
@@ -51,7 +52,7 @@ int main() {
   });
 
   executor.run(taskflow).wait();
-
+*/
   return 0;
 }
 

@@ -46,9 +46,7 @@ class FlowBuilder {
     
     Please refer to @ref StaticTasking for details.
     */
-    template <typename C, 
-      std::enable_if_t<is_static_task_v<C>, void>* = nullptr
-    >
+    template <typename C,  std::enable_if_t<is_static_task_v<C>, void>* = nullptr>
     Task emplace(C&& callable);
     
     /**

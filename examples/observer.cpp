@@ -37,14 +37,14 @@ int main(){
   // Create a taskflow of eight tasks
   tf::Taskflow taskflow;
 
-  taskflow.emplace([] () { std::cout << "1\n"; }).name("A");
-  taskflow.emplace([] () { std::cout << "2\n"; }).name("B");
-  taskflow.emplace([] () { std::cout << "3\n"; }).name("C");
-  taskflow.emplace([] () { std::cout << "4\n"; }).name("D");
-  taskflow.emplace([] () { std::cout << "5\n"; }).name("E");
-  taskflow.emplace([] () { std::cout << "6\n"; }).name("F");
-  taskflow.emplace([] () { std::cout << "7\n"; }).name("G");
-  taskflow.emplace([] () { std::cout << "8\n"; }).name("H");
+  taskflow.emplace([] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "1\n"; }).name("A");
+  taskflow.emplace([] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "2\n"; }).name("B");
+  taskflow.emplace([] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "3\n"; }).name("C");
+  taskflow.emplace([] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "4\n"; }).name("D");
+  taskflow.emplace([] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "5\n"; }).name("E");
+  taskflow.emplace([] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "6\n"; }).name("F");
+  taskflow.emplace([] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "7\n"; }).name("G");
+  taskflow.emplace([] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "8\n"; }).name("H");
 
   // create a default observer
   std::shared_ptr<MyObserver> observer = executor.make_observer<MyObserver>("MyObserver");

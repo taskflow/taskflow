@@ -26,17 +26,17 @@ int main() {
 
   int counter;
 
-  auto A = taskflow.emplace([&](){
+  auto A = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){
     std::cout << "initializes the counter to zero\n";
     counter = 0;
   }).name("A");
 
-  auto B = taskflow.emplace([&](){
+  auto B = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){
     std::cout << "loops to increment the counter\n";
     counter++;
   }).name("B");
 
-  auto C = taskflow.emplace([&](){
+  auto C = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){
     std::cout << "counter is " << counter << " -> ";
     if(counter != 5) {
       std::cout << "loops again (goes to B)\n";
@@ -46,7 +46,7 @@ int main() {
     return 1;
   }).name("C");
 
-  auto D = taskflow.emplace([&](){
+  auto D = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){
     std::cout << "done with counter equal to " << counter << '\n';
   }).name("D");
 

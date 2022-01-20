@@ -9,10 +9,10 @@ int main() {
   
   // create three static tasks and one condition task
   auto [init, cond, yes, no] = taskflow.emplace(
-    [] () { },
-    [] () { return 0; },
-    [] () { std::cout << "yes\n"; },
-    [] () { std::cout << "no\n"; }
+    [] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { },
+    [] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { return 0; },
+    [] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "yes\n"; },
+    [] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "no\n"; }
   );
 
   init.name("init");
