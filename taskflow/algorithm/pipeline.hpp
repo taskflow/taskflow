@@ -11,83 +11,9 @@
 
 namespace tf {
 
-/**
-@enum PipeType
-
-@brief enumeration of all pipe types
-*/
-enum class PipeType : int {
-  /** @brief parallel type */
-  PARALLEL = 1,  
-  /** @brief serial type */
-  SERIAL   = 2
-};
-
-/**
-@class Pipe
-
-@brief class to create a pipe object for a pipeline stage
-
-@tparam C callable type
-
-A pipe represents a stage of a pipeline. A pipe can be either
-@em parallel direction or @em serial direction (specified by tf::PipeType)
-and is coupled with a callable to invoke by the pipeline scheduler.
-The callable is one of the following possible forms:
-
-@code{.cpp}
-Pipe{PipeType::SERIAL, [](tf::Pipeflow&){}}
-Pipe{PipeType::SERIAL, [](tf::Pipeflow&, tf::Runtime&){}}
-@endcode
-
-The first version takes a pipeflow object for user to to query the 
-present statistics of a pipeline scheduling token.
-The second version takes an additional runtime object for users to
-interact with the taskflow scheduler, such as scheduling a task
-and spawning a subflow.
-*/
-template <typename C>
-class Pipe {
-
-  template <typename... Ps>
-  friend class Pipeline;
-
-  public:
-  
-  /**
-  @brief alias of the callable type
-  */
-  using callable_t = C;
-  
-  /**
-  @brief constructs the pipe object
-
-  @param d pipe type (tf::PipeType)
-  @param callable callable type
-
-  The constructor constructs a pipe with the given direction
-  (either tf::PipeType::SERIAL or tf::PipeType::PARALLEL) and the
-  given callable. The callable is one of the following possible forms:
-
-  @code{.cpp}
-  Pipe{PipeType::SERIAL, [](tf::Pipeflow&){}}
-  Pipe{PipeType::SERIAL, [](tf::Pipeflow&, tf::Runtime&){}}
-  @endcode
-
-  When creating a pipeline, the direction of the first pipe must be serial 
-  (tf::PipeType::SERIAL).
-  */
-  Pipe(PipeType d, C&& callable) :
-    _type{d}, _callable{std::forward<C>(callable)} {
-  }
-  Pipe(){}
-
-  private:
-
-  PipeType _type;
-
-  C _callable;
-};
+// ----------------------------------------------------------------------------
+// Class Definition: Pipeflow
+// ----------------------------------------------------------------------------
 
 /**
 @class Pipeflow
@@ -390,7 +316,7 @@ If applications need to change these pipes, please use tf::ScalablePipeline.
 */
 template <typename... Ps>
 class Pipeline {
-
+  
   static_assert(sizeof...(Ps)>0, "must have at least one pipe");
   
   /**
@@ -503,10 +429,8 @@ class Pipeline {
 
 // constructor
 template <typename... Ps>
-Pipeline<Ps...>::Pipeline()
-{
-  
-}
+Pipeline<Ps...>::Pipeline(){}
+
 template <typename... Ps>
 Pipeline<Ps...>::Pipeline(size_t num_lines, Ps&&... ps) :
   _pipes     {std::make_tuple(std::forward<Ps>(ps)...)},
@@ -709,6 +633,7 @@ void Pipeline<Ps...>::_build() {
         }
       }
     }).name("rt-"s + std::to_string(l));
+    
 
     _tasks[0].precede(_tasks[l+1]);
   }
