@@ -871,6 +871,9 @@ class ScalablePipeline {
   */
   Graph& graph();
 
+  void* data(int line) const;
+  void data(int line, void* data);
+
   private:
   
   Graph _graph;
@@ -1007,14 +1010,14 @@ void ScalablePipeline<P>::_build() {
   FlowBuilder fb(_graph); 
 
   // init task
-  _tasks[0] = fb.emplace([this]() {
+  _tasks[0] = fb.emplace([this](WorkerView wv, TaskView tv, Pipeflow* pf) {
     return static_cast<int>(_num_tokens % num_lines());
   }).name("cond");
 
   // line task
   for(size_t l = 0; l < num_lines(); l++) {
 
-    _tasks[l + 1] = fb.emplace([this, l] (tf::Runtime& rt) mutable {
+    _tasks[l + 1] = fb.emplace([this, l] (tf::Runtime& rt, WorkerView wv, TaskView tv, Pipeflow* pf1) mutable {
 
       auto pf = &_pipeflows[l];
 
@@ -1084,6 +1087,11 @@ void ScalablePipeline<P>::_build() {
           if (retval[0] == 1) {
             pf = &_pipeflows[n_l];
           }
+          if (pf->_pipe == 0)
+          {
+            rt.schedule(_tasks[pf->_line + 1],&_pipeflows[pf->_line]);
+            return;
+          }
           goto pipeline; 
         }
       }
@@ -1091,6 +1099,18 @@ void ScalablePipeline<P>::_build() {
 
     _tasks[0].precede(_tasks[l+1]);
   }
+}
+// Function: data
+template <typename P>
+void* ScalablePipeline<P>::data(int line) const
+{
+  return _tasks[line + 1].data();
+}
+// Function:data
+template <typename P>
+void ScalablePipeline<P>::data(int line, void *data)
+{
+   _tasks[line + 1].data(data);
 }
 
 }  // end of namespace tf -----------------------------------------------------

@@ -81,11 +81,11 @@ int main() {
   tf::ScalablePipeline pl(num_lines, pipes.begin(), pipes.end());
 
   // build the pipeline graph using composition
-  tf::Task init = taskflow.emplace([](){ std::cout << "ready\n"; })
+  tf::Task init = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "ready\n"; })
                           .name("starting pipeline");
   tf::Task task = taskflow.composed_of(pl)
                           .name("pipeline");
-  tf::Task stop = taskflow.emplace([](){ std::cout << "stopped\n"; })
+  tf::Task stop = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "stopped\n"; })
                           .name("pipeline stopped");
 
   // create task dependency
