@@ -2,7 +2,7 @@
 
 #include "task.hpp"
 #include "worker.hpp"
-#include "../algorithm/pipeline.hpp"
+#include "pipeflow.hpp"
 
 /** 
 @file observer.hpp

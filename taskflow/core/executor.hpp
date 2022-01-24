@@ -2,7 +2,7 @@
 #include <tuple>
 #include "observer.hpp"
 #include "taskflow.hpp"
-#include "../algorithm/pipeline.hpp"
+#include "pipeflow.hpp"
 
 /** 
 @file executor.hpp
@@ -675,13 +675,11 @@ class Executor {
     
     std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
 
-    Pipeflow& _pf;
-    Pipeflow myPf{size_t(-1),size_t(-1)};
-
+    Pipeflow _pf;
 
     Worker* _this_worker();
 
-    bool _wait_for_task(Worker&, Node*&, Pipeflow&);
+    bool _wait_for_task(Worker&, Node*&, Pipeflow*&);
     
     void _observer_prologue(Worker&, Node*);
     void _observer_prologue(Worker&, Node*, Pipeflow&);
@@ -689,7 +687,7 @@ class Executor {
     void _observer_epilogue(Worker&, Node*, Pipeflow&);
     void _spawn(size_t);
     void _worker_loop(Worker&);
-    void _exploit_task(Worker&, Node*&, Pipeflow&);
+    void _exploit_task(Worker&, Node*&, Pipeflow*&);
     void _explore_task(Worker&, Node*&, Pipeflow&);
     void _consume_task(Worker&, Node*);
     void _schedule(Worker&, Node*, Pipeflow&);
@@ -736,10 +734,8 @@ class Executor {
 // Constructor
 inline Executor::Executor(size_t N) : 
   _workers    {N},
-  _notifier   {N},
-  _pf(myPf){
+  _notifier   {N}{
   
-
   if(N == 0) {
     TF_THROW("no cpu workers to execute taskflows");
   }
@@ -934,7 +930,7 @@ inline void Executor::_spawn(size_t N) {
       //this_worker().worker = &w;
 
       Node* t = nullptr;
-      Pipeflow &pf  = myPf;
+      Pipeflow *pf  = nullptr;
 
       // must use 1 as condition instead of !done
       while(1) {
@@ -1042,19 +1038,19 @@ inline void Executor::_explore_task(Worker& w, Node*& t, Pipeflow& pf) {
 }
 
 // Procedure: _exploit_task
-inline void Executor::_exploit_task(Worker& w, Node*& t, Pipeflow& pf) {
+inline void Executor::_exploit_task(Worker& w, Node*& t, Pipeflow*& pf) {
   if(t) {
     if(_num_actives.fetch_add(1) == 0 && _num_thieves == 0) {
       _notifier.notify(false);
     }
 
     while(t) {
-      _invoke(w, t, pf);
+      _invoke(w, t, *pf);
       t = nullptr;
       WSQTuple* ptr = w._wsq.pop();
       if(ptr){
         t = std::get<1>(*ptr);
-        pf = std::get<0>(*ptr);
+        pf = &std::get<0>(*ptr);
       }
       
     }
@@ -1063,7 +1059,7 @@ inline void Executor::_exploit_task(Worker& w, Node*& t, Pipeflow& pf) {
 }
 
 // Function: _wait_for_task
-inline bool Executor::_wait_for_task(Worker& worker, Node*& t, Pipeflow& pf) {
+inline bool Executor::_wait_for_task(Worker& worker, Node*& t, Pipeflow*& pf) {
 
   wait_for_task:
 
@@ -1073,7 +1069,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t, Pipeflow& pf) {
 
   explore_task:
 
-  _explore_task(worker, t, pf);
+  _explore_task(worker, t, *pf);
 
   if(t) {
     if(_num_thieves.fetch_sub(1) == 1) {
@@ -1091,13 +1087,15 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t, Pipeflow& pf) {
     //t = (vtm == me) ? _wsq.steal() : _workers[vtm].wsq.steal();
     
     auto ptr = _wsq.steal();
-    t = std::get<1>(*ptr);  // must steal here
-    pf = std::get<0>(*ptr);
-    if(t) {
-      if(_num_thieves.fetch_sub(1) == 1) {
-        _notifier.notify(false);
+    if (ptr){
+      t = std::get<1>(*ptr);  // must steal here
+      pf = &std::get<0>(*ptr);
+      if(t) {
+        if(_num_thieves.fetch_sub(1) == 1) {
+          _notifier.notify(false);
+        }
+        return true;
       }
-      return true;
     }
     else {
       worker._vtm = worker._id;

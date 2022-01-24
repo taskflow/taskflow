@@ -1,6 +1,7 @@
 #pragma once
 
 #include "graph.hpp"
+#include "Pipeflow.hpp"
 
 /** 
 @file task.hpp

@@ -12,6 +12,7 @@
 #include "semaphore.hpp"
 #include "environment.hpp"
 #include "topology.hpp"
+#include "pipeflow.hpp"
 
 /** 
 @file graph.hpp

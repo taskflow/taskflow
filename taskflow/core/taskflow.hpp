@@ -1,7 +1,7 @@
 #pragma once
 
 #include "flow_builder.hpp"
-#include "../algorithm/pipeline.hpp"
+#include "pipeflow.hpp"
 
 /** 
 @file taskflow/core/taskflow.hpp
