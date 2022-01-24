@@ -688,7 +688,7 @@ class Executor {
     void _spawn(size_t);
     void _worker_loop(Worker&);
     void _exploit_task(Worker&, Node*&, Pipeflow*&);
-    void _explore_task(Worker&, Node*&, Pipeflow&);
+    void _explore_task(Worker&, Node*&, Pipeflow*&);
     void _consume_task(Worker&, Node*);
     void _schedule(Worker&, Node*, Pipeflow&);
     void _schedule(Node*, Pipeflow&);
@@ -1002,7 +1002,7 @@ inline void Executor::_consume_task(Worker& w, Node* p) {
 }
 
 // Function: _explore_task
-inline void Executor::_explore_task(Worker& w, Node*& t, Pipeflow& pf) {
+inline void Executor::_explore_task(Worker& w, Node*& t, Pipeflow*& pf) {
   
   //assert(_workers[w].wsq.empty());
   //assert(!t);
@@ -1018,11 +1018,10 @@ inline void Executor::_explore_task(Worker& w, Node*& t, Pipeflow& pf) {
     if (ptr)
     {
       t = std::get<1>(*ptr);
-      pf = std::get<0>(*ptr);
+      pf = &std::get<0>(*ptr);
     }
-
-    if(t) {
-      break;
+    if(ptr && t) {
+        break;
     }
     
     if(num_steals++ > max_steals) {
@@ -1069,7 +1068,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t, Pipeflow*& pf) {
 
   explore_task:
 
-  _explore_task(worker, t, *pf);
+  _explore_task(worker, t, pf);
 
   if(t) {
     if(_num_thieves.fetch_sub(1) == 1) {
