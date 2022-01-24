@@ -546,7 +546,7 @@ void Pipeline<Ps...>::_build() {
   FlowBuilder fb(_graph); 
 
   // init task
-  _tasks[0] = fb.emplace([this](WorkerView wv, TaskView tv, Pipeflow* pf) {
+  _tasks[0] = fb.emplace([this](WorkerView wv, TaskView tv, Pipeflow& pf) {
     return static_cast<int>(_num_tokens % num_lines());
   }).name("cond");
 
@@ -554,7 +554,7 @@ void Pipeline<Ps...>::_build() {
   for(size_t l = 0; l < num_lines(); l++) {
 
     _tasks[l + 1] = fb.emplace(
-    [this, l] (tf::Runtime& rt, WorkerView wv, TaskView tv, Pipeflow* pf1) mutable {
+    [this, l] (tf::Runtime& rt, WorkerView wv, TaskView tv, Pipeflow& pf1) mutable {
 
       auto pf = &_pipeflows[l];
 
@@ -617,7 +617,7 @@ void Pipeline<Ps...>::_build() {
       // notice that the task index starts from 1
       switch(n) {
         case 2: {
-          rt.schedule(_tasks[n_l+1]);
+          rt.schedule(_tasks[n_l+1]), _pipeflows[n_l];
           goto pipeline;
         }
         case 1: {
@@ -626,7 +626,7 @@ void Pipeline<Ps...>::_build() {
           }
           if (pf->_pipe == 0)
           {
-            rt.schedule(_tasks[pf->_line + 1],&_pipeflows[pf->_line]);
+            rt.schedule(_tasks[pf->_line + 1],_pipeflows[pf->_line]);
             return;
           }
           goto pipeline; 
@@ -800,7 +800,7 @@ class ScalablePipeline {
   /**
   @brief pipe type
   */
-  using pipe_type = typename std::iterator_traits<P>::value_type;
+  //using pipe_type = typename std::iterator_traits<P>::value_type;
 
   /**
   @brief constructs a scalable pipeline object
@@ -1010,14 +1010,14 @@ void ScalablePipeline<P>::_build() {
   FlowBuilder fb(_graph); 
 
   // init task
-  _tasks[0] = fb.emplace([this](WorkerView wv, TaskView tv, Pipeflow* pf) {
+  _tasks[0] = fb.emplace([this](WorkerView wv, TaskView tv, Pipeflow& pf) {
     return static_cast<int>(_num_tokens % num_lines());
   }).name("cond");
 
   // line task
   for(size_t l = 0; l < num_lines(); l++) {
 
-    _tasks[l + 1] = fb.emplace([this, l] (tf::Runtime& rt, WorkerView wv, TaskView tv, Pipeflow* pf1) mutable {
+    _tasks[l + 1] = fb.emplace([this, l] (tf::Runtime& rt, WorkerView wv, TaskView tv, Pipeflow& pf1) mutable {
 
       auto pf = &_pipeflows[l];
 
@@ -1080,7 +1080,7 @@ void ScalablePipeline<P>::_build() {
       // notice that the task index starts from 1
       switch(n) {
         case 2: {
-          rt.schedule(_tasks[n_l+1]);
+          rt.schedule(_tasks[n_l+1],_pipeflows[n_l] );
           goto pipeline;
         }
         case 1: {
@@ -1089,7 +1089,12 @@ void ScalablePipeline<P>::_build() {
           }
           if (pf->_pipe == 0)
           {
-            rt.schedule(_tasks[pf->_line + 1],&_pipeflows[pf->_line]);
+            //Just to mark the end of the line execution, ending the task execution here.
+            //However to continue the pipeline execution, scheduling it again. 
+            //I am assuming that there won't be any race condition here- 
+            //Say before this returns if the scheduled task gets executed, that will eventaully 
+            //execute the same thing that gets executed when there is no "return".
+            rt.schedule(_tasks[pf->_line + 1],_pipeflows[pf->_line]);
             return;
           }
           goto pipeline; 

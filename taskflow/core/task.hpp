@@ -110,9 +110,9 @@ A static task is a callable object constructible from std::function<void()>.
 */
 template <typename C>
 constexpr bool is_static_task_v = 
-  std::is_invocable_r_v<void, C, WorkerView, TaskView, Pipeflow*> &&
-  !std::is_invocable_r_v<int, C, WorkerView, TaskView, Pipeflow*> &&
-  !std::is_invocable_r_v<tf::SmallVector<int>, C, WorkerView, TaskView, Pipeflow*>;
+  std::is_invocable_r_v<void, C, WorkerView, TaskView, Pipeflow&> &&
+  !std::is_invocable_r_v<int, C, WorkerView, TaskView, Pipeflow&> &&
+  !std::is_invocable_r_v<tf::SmallVector<int>, C, WorkerView, TaskView, Pipeflow&>;
 
 /**
 @brief determines if a callable is a dynamic task
@@ -120,7 +120,7 @@ constexpr bool is_static_task_v =
 A dynamic task is a callable object constructible from std::function<void(Subflow&)>.
 */
 template <typename C>
-constexpr bool is_dynamic_task_v = std::is_invocable_r_v<void, C, Subflow&, WorkerView, TaskView, Pipeflow*>;
+constexpr bool is_dynamic_task_v = std::is_invocable_r_v<void, C, Subflow&, WorkerView, TaskView, Pipeflow&>;
 
 /**
 @brief determines if a callable is a condition task
@@ -128,7 +128,7 @@ constexpr bool is_dynamic_task_v = std::is_invocable_r_v<void, C, Subflow&, Work
 A condition task is a callable object constructible from std::function<int()>.
 */
 template <typename C>
-constexpr bool is_condition_task_v = std::is_invocable_r_v<int, C, WorkerView, TaskView, Pipeflow*>;
+constexpr bool is_condition_task_v = std::is_invocable_r_v<int, C, WorkerView, TaskView, Pipeflow&>;
 
 /**
 @brief determines if a callable is a multi-condition task
@@ -138,7 +138,7 @@ std::function<tf::SmallVector<int>()>.
 */
 template <typename C>
 constexpr bool is_multi_condition_task_v = 
-  std::is_invocable_r_v<SmallVector<int>, C, WorkerView, TaskView, Pipeflow*>;
+  std::is_invocable_r_v<SmallVector<int>, C, WorkerView, TaskView, Pipeflow&>;
 
 /**
 @brief determines if a callable is a %cudaFlow task
@@ -166,7 +166,7 @@ A runtime task is a callable object constructible from
 std::function<void(tf::Runtime&)>.
 */
 template <typename C>
-constexpr bool is_runtime_task_v = std::is_invocable_r_v<void, C, Runtime&, WorkerView, TaskView, Pipeflow*>;
+constexpr bool is_runtime_task_v = std::is_invocable_r_v<void, C, Runtime&, WorkerView, TaskView, Pipeflow&>;
 
 // ----------------------------------------------------------------------------
 // Task

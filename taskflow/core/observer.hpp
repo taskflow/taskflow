@@ -191,7 +191,7 @@ class ObserverInterface {
   */
   virtual void on_entry(WorkerView w, TaskView task_view) = 0;
 
-  virtual void on_entry(WorkerView w, TaskView task_view, Pipeflow* pf){
+  virtual void on_entry(WorkerView w, TaskView task_view, Pipeflow& pf){
 
   }
   
@@ -201,7 +201,7 @@ class ObserverInterface {
   @param task_view a constant wrapper object to the task
   */
   virtual void on_exit(WorkerView w, TaskView task_view) = 0;
-  virtual void on_exit(WorkerView w, TaskView task_view, Pipeflow* pf){
+  virtual void on_exit(WorkerView w, TaskView task_view, Pipeflow& pf){
 
   }
 };

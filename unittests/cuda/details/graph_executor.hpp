@@ -60,7 +60,7 @@ void GraphExecutor<OPT>::traversal(OPT_Args&&... args) {
 
   }).name("traverse");
 
-  //auto check_t = taskflow.emplace([this](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+  //auto check_t = taskflow.emplace([this](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
     //assert(_g.traversed());
   //});
   

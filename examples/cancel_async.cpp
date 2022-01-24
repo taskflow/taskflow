@@ -10,7 +10,7 @@ int main() {
   
   // submit 10000 asynchronous tasks
   for(int i=0; i<10000; i++) {
-    futures.push_back(executor.async([i](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){
+    futures.push_back(executor.async([i](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){
       printf("task %d\n", i);
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }));

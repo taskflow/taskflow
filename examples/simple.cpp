@@ -18,10 +18,10 @@ int main(){
   tf::Taskflow taskflow("simple");
 
   auto [A, B, C, D] = taskflow.emplace(
-    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "TaskA\n"; },
-    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "TaskB\n"; },
-    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "TaskC\n"; },
-    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "TaskD\n"; }
+    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { std::cout << "TaskA\n"; },
+    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { std::cout << "TaskB\n"; },
+    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { std::cout << "TaskC\n"; },
+    [](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { std::cout << "TaskD\n"; }
   );
 
   A.precede(B, C);  // A runs before B and C

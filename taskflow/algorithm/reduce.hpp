@@ -15,7 +15,7 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop) {
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  Task task = emplace([b=beg, e=end, &r=init, bop] (Subflow& sf, WorkerView wv, TaskView tv, Pipeflow* pf) mutable {
+  Task task = emplace([b=beg, e=end, &r=init, bop] (Subflow& sf, WorkerView wv, TaskView tv, Pipeflow&pf) mutable {
     
     // fetch the iterator values
     B_t beg = b;
@@ -51,7 +51,7 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop) {
 
       //sf.emplace([&mutex, &next, &r, beg, N, W, o, C] () mutable {
       sf._named_silent_async(
-        sf._worker, "part-"s + std::to_string(w), [=, &mutex, &next, &r] (WorkerView wv, TaskView tv, Pipeflow* pf) mutable {
+        sf._worker, "part-"s + std::to_string(w), [=, &mutex, &next, &r] (WorkerView wv, TaskView tv, Pipeflow&pf) mutable {
         
         size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
@@ -141,7 +141,7 @@ Task FlowBuilder::transform_reduce(
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  Task task = emplace([b=beg, e=end, &r=init, bop, uop] (Subflow& sf, WorkerView wv, TaskView tv, Pipeflow* pf) mutable {
+  Task task = emplace([b=beg, e=end, &r=init, bop, uop] (Subflow& sf, WorkerView wv, TaskView tv, Pipeflow&pf) mutable {
     
     // fetch the iterator values
     B_t beg = b;
@@ -177,7 +177,7 @@ Task FlowBuilder::transform_reduce(
 
       //sf.emplace([&mutex, &next, &r, beg, N, W, bop, uop, C] () mutable {
       sf._named_silent_async(
-        sf._worker, "part-"s + std::to_string(w), [=, &mutex, &next, &r] (WorkerView wv, TaskView tv, Pipeflow* pf) mutable {
+        sf._worker, "part-"s + std::to_string(w), [=, &mutex, &next, &r] (WorkerView wv, TaskView tv, Pipeflow&pf) mutable {
         
         size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 

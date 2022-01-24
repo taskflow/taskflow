@@ -18,7 +18,7 @@ void async(unsigned W) {
   int N = 100000;
 
   for(int i=0; i<N; ++i) {
-    fus.emplace_back(executor.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    fus.emplace_back(executor.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       counter.fetch_add(1, std::memory_order_relaxed);
       return -2;
     }));
@@ -71,13 +71,13 @@ void nested_async(unsigned W) {
   int N = 100000;
 
   for(int i=0; i<N; ++i) {
-    fus.emplace_back(executor.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    fus.emplace_back(executor.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       counter.fetch_add(1, std::memory_order_relaxed);
-      executor.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+      executor.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
         counter.fetch_add(1, std::memory_order_relaxed);
-        executor.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+        executor.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
           counter.fetch_add(1, std::memory_order_relaxed);
-          executor.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+          executor.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
             counter.fetch_add(1, std::memory_order_relaxed);
           });
         });
@@ -134,22 +134,22 @@ void mixed_async(unsigned W) {
     tf::Task A, B, C, D;
     std::tie(A, B, C, D) = taskflow.emplace(
       [&] () {
-        executor.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+        executor.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
           counter.fetch_add(1, std::memory_order_relaxed);
         });
       },
       [&] () {
-        executor.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+        executor.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
           counter.fetch_add(1, std::memory_order_relaxed);
         });
       },
       [&] () {
-        executor.silent_async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+        executor.silent_async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
           counter.fetch_add(1, std::memory_order_relaxed);
         });
       },
       [&] () {
-        executor.silent_async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+        executor.silent_async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
           counter.fetch_add(1, std::memory_order_relaxed);
         });
       }
@@ -198,40 +198,40 @@ void subflow_async(size_t W) {
   std::atomic<int> counter{0};
 
   auto A = taskflow.emplace(
-    [&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); }
+    [&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter.fetch_add(1, std::memory_order_relaxed); }
   );
   auto B = taskflow.emplace(
-    [&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); }
+    [&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter.fetch_add(1, std::memory_order_relaxed); }
   );
   
   taskflow.emplace(
-    [&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); }
+    [&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter.fetch_add(1, std::memory_order_relaxed); }
   );
 
-  auto S1 = taskflow.emplace([&] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+  auto S1 = taskflow.emplace([&] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
     for(int i=0; i<100; i++) {
-      sf.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); });
+      sf.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter.fetch_add(1, std::memory_order_relaxed); });
     }
   });
   
-  auto S2 = taskflow.emplace([&] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
-    sf.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); });
+  auto S2 = taskflow.emplace([&] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
+    sf.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter.fetch_add(1, std::memory_order_relaxed); });
     for(int i=0; i<100; i++) {
-      sf.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); });
+      sf.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter.fetch_add(1, std::memory_order_relaxed); });
     }
   });
   
-  taskflow.emplace([&] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
-    sf.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); });
+  taskflow.emplace([&] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
+    sf.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter.fetch_add(1, std::memory_order_relaxed); });
     for(int i=0; i<100; i++) {
-      sf.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); });
+      sf.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter.fetch_add(1, std::memory_order_relaxed); });
     }
     sf.join();
   });
   
-  taskflow.emplace([&] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+  taskflow.emplace([&] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
     for(int i=0; i<100; i++) {
-      sf.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); });
+      sf.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter.fetch_add(1, std::memory_order_relaxed); });
     }
     sf.join();
   });
@@ -267,23 +267,23 @@ void nested_subflow_async(size_t W) {
 
   std::atomic<int> counter{0};
 
-  taskflow.emplace([&](tf::Subflow& sf1, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ 
+  taskflow.emplace([&](tf::Subflow& sf1, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ 
 
     for(int i=0; i<100; i++) {
-      sf1.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); });
+      sf1.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter.fetch_add(1, std::memory_order_relaxed); });
     }
 
-    sf1.emplace([&](tf::Subflow& sf2, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    sf1.emplace([&](tf::Subflow& sf2, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       for(int i=0; i<100; i++) {
-        sf2.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); });
-        sf1.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); });
+        sf2.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter.fetch_add(1, std::memory_order_relaxed); });
+        sf1.async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter.fetch_add(1, std::memory_order_relaxed); });
       }
 
-      sf2.emplace([&](tf::Subflow& sf3, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+      sf2.emplace([&](tf::Subflow& sf3, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
         for(int i=0; i<100; i++) {
-          sf3.silent_async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); });
-          sf2.silent_async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); });
-          sf1.silent_async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter.fetch_add(1, std::memory_order_relaxed); });
+          sf3.silent_async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter.fetch_add(1, std::memory_order_relaxed); });
+          sf2.silent_async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter.fetch_add(1, std::memory_order_relaxed); });
+          sf1.silent_async([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter.fetch_add(1, std::memory_order_relaxed); });
         }
       });
     });

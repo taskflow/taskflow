@@ -27,19 +27,19 @@ TEST_CASE("BubbleSort" * doctest::timeout(300)) {
       std::atomic<bool>swapped;
 
       // init task
-      auto init = taskflow.emplace([&swapped](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ swapped = false; });
-      auto cond = taskflow.emplace([&swapped](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+      auto init = taskflow.emplace([&swapped](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ swapped = false; });
+      auto cond = taskflow.emplace([&swapped](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
         if(swapped) {
           swapped = false;
           return 0;
         }
         return 1;
       });
-      auto stop = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){});
+      auto stop = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){});
 
-      auto even_phase = taskflow.emplace([&](tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+      auto even_phase = taskflow.emplace([&](tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
         for(size_t i=0; i<data.size(); i+=2) {
-          sf.emplace([&, i](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+          sf.emplace([&, i](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
             if(i+1 < data.size() && data[i] > data[i+1]) {
               std::swap(data[i], data[i+1]);
               swapped = true;
@@ -48,9 +48,9 @@ TEST_CASE("BubbleSort" * doctest::timeout(300)) {
         }
       });
 
-      auto odd_phase = taskflow.emplace([&](tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) {
+      auto odd_phase = taskflow.emplace([&](tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf) {
         for(size_t i=1; i<data.size(); i+=2) {
-          sf.emplace([&, i](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+          sf.emplace([&, i](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
             if(i+1 < data.size() && data[i] > data[i+1]) {
               std::swap(data[i], data[i+1]);
               swapped = true;
@@ -104,7 +104,7 @@ TEST_CASE("SelectionSort" * doctest::timeout(300)) {
     auto minr = new int(-1);
     
     auto SL = sf.emplace(
-      [&spawn, &data, beg, m, l=minl] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) mutable {
+      [&spawn, &data, beg, m, l=minl] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf) mutable {
       spawn(sf, data, beg, m, *l);
     }).name(std::string("[") 
           + std::to_string(beg) 
@@ -113,7 +113,7 @@ TEST_CASE("SelectionSort" * doctest::timeout(300)) {
           + ')');
 
     auto SR = sf.emplace(
-      [&spawn, &data, m, end, r=minr] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) mutable {
+      [&spawn, &data, m, end, r=minr] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf) mutable {
       spawn(sf, data, m, end, *r);
     }).name(std::string("[") 
           + std::to_string(m) 
@@ -121,7 +121,7 @@ TEST_CASE("SelectionSort" * doctest::timeout(300)) {
           + std::to_string(end) 
           + ')');
 
-    auto SM = sf.emplace([&data, &min, minl, minr] (tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) {
+    auto SM = sf.emplace([&data, &min, minl, minr] (tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf) {
       if(*minl == -1) {
         min = *minr;
       }
@@ -159,16 +159,16 @@ TEST_CASE("SelectionSort" * doctest::timeout(300)) {
       int beg = 0;
       int min = -1;
       
-      auto start = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){});
+      auto start = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){});
 
       auto argmin = taskflow.emplace(
-        [&spawn, &data, &beg, end, &min](tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) mutable {
+        [&spawn, &data, &beg, end, &min](tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf) mutable {
         spawn(sf, data, beg, end, min);
       }).name(std::string("[0") 
             + ":" 
             + std::to_string(end) + ")");
 
-      auto putmin = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+      auto putmin = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
         std::swap(data[beg], data[min]);
         //std::cout << "select " << data[beg] << '\n';
         beg++;
@@ -212,7 +212,7 @@ TEST_CASE("MergeSort" * doctest::timeout(300)) {
 
     int m = (beg + end + 1) / 2;
     
-    auto SL = sf.emplace([&spawn, &data, beg, m] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) {
+    auto SL = sf.emplace([&spawn, &data, beg, m] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf) {
       spawn(sf, data, beg, m);
     }).name(std::string("[") 
           + std::to_string(beg) 
@@ -220,7 +220,7 @@ TEST_CASE("MergeSort" * doctest::timeout(300)) {
           + std::to_string(m) 
           + ')');
 
-    auto SR = sf.emplace([&spawn, &data, m, end] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) {
+    auto SR = sf.emplace([&spawn, &data, m, end] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf) {
       spawn(sf, data, m, end);
     }).name(std::string("[") 
           + std::to_string(m) 
@@ -228,7 +228,7 @@ TEST_CASE("MergeSort" * doctest::timeout(300)) {
           + std::to_string(end) 
           + ')');
 
-    auto SM = sf.emplace([&data, beg, end, m] (tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) {
+    auto SM = sf.emplace([&data, beg, end, m] (tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf) {
       std::vector<int> tmpl, tmpr;
       for(int i=beg; i<m; ++i) tmpl.push_back(data[i]);
       for(int i=m; i<end; ++i) tmpr.push_back(data[i]);
@@ -265,7 +265,7 @@ TEST_CASE("MergeSort" * doctest::timeout(300)) {
 
       auto gold = data;
       
-      taskflow.emplace([&spawn, &data, end](tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+      taskflow.emplace([&spawn, &data, end](tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
         spawn(sf, data, 0, end);
       }).name(std::string("[0") 
             + ":" 
@@ -315,7 +315,7 @@ TEST_CASE("QuickSort" * doctest::timeout(300)) {
 
     std::iter_swap(pvt, end-1);
     
-    sf.emplace([&spawn, &data, beg, pvt] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) {
+    sf.emplace([&spawn, &data, beg, pvt] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf) {
       spawn(sf, data, beg, pvt);
     }).name(std::string("[") 
           + std::to_string(beg-data.begin()) 
@@ -323,7 +323,7 @@ TEST_CASE("QuickSort" * doctest::timeout(300)) {
           + std::to_string(pvt-data.begin()) 
           + ')');
 
-    sf.emplace([&spawn, &data, pvt, end] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) {
+    sf.emplace([&spawn, &data, pvt, end] (tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf) {
       spawn(sf, data, pvt+1, end);
     }).name(std::string("[") 
           + std::to_string(pvt-data.begin()) 
@@ -346,7 +346,7 @@ TEST_CASE("QuickSort" * doctest::timeout(300)) {
 
       auto gold = data;
       
-      taskflow.emplace([&spawn, &data](tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+      taskflow.emplace([&spawn, &data](tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
         spawn(sf, data, data.begin(), data.end());
       }).name(std::string("[0") 
             + ":" 

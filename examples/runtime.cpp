@@ -11,13 +11,13 @@ int main() {
   tf::Task A, B, C, D;
 
   std::tie(A, B, C, D) = taskflow.emplace(
-    [] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { return 0; },
-    [&C] (tf::Runtime& rt, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {  // C must be captured by reference
+    [] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { return 0; },
+    [&C] (tf::Runtime& rt, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {  // C must be captured by reference
       std::cout << "B\n"; 
       rt.schedule(C);
     },
-    [] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "C\n"; },
-    [] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "D\n"; }
+    [] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { std::cout << "C\n"; },
+    [] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { std::cout << "D\n"; }
   );
 
   // name tasks

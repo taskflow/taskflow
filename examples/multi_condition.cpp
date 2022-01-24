@@ -14,13 +14,13 @@ int main() {
   tf::Executor executor;
   tf::Taskflow taskflow("Multi-Conditional Tasking Demo");
 
-  auto A = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) -> tf::SmallVector<int> { 
+  auto A = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) -> tf::SmallVector<int> { 
     std::cout << "A\n"; 
     return {0, 2};
   }).name("A");
-  auto B = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "B\n"; }).name("B");
-  auto C = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "C\n"; }).name("C");
-  auto D = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "D\n"; }).name("D");
+  auto B = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ std::cout << "B\n"; }).name("B");
+  auto C = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ std::cout << "C\n"; }).name("C");
+  auto D = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ std::cout << "D\n"; }).name("D");
 
   A.precede(B, C, D);
   

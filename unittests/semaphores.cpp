@@ -17,7 +17,7 @@ void critical_section(size_t W) {
   int counter = 0;
 
   for(int i=0; i<N; ++i) {
-    tf::Task task = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter++; })
+    tf::Task task = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter++; })
                             .name(std::to_string(i));
     section.add(task);
   }
@@ -74,8 +74,8 @@ void semaphore(size_t W) {
   int counter = 0;
 
   for(int i=0; i<N; i++) {
-    auto f = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter++; });
-    auto t = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter++; });
+    auto f = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter++; });
+    auto t = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter++; });
     f.precede(t);
     f.acquire(semaphore);
     t.release(semaphore);
@@ -118,7 +118,7 @@ void overlapped_semaphore(size_t W) {
   int counter = 0;
 
   for(int i=0; i<N; i++) {
-    auto task = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter++; });
+    auto task = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter++; });
     task.acquire(semaphore1);
     task.acquire(semaphore4);
     task.release(semaphore1);
@@ -162,14 +162,14 @@ void conflict_graph(size_t W) {
   int counter {0};
   std::mutex mutex;
   
-  tf::Task A = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ counter++; });
+  tf::Task A = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ counter++; });
 
   // B and C can run together
-  tf::Task B = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ 
+  tf::Task B = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ 
     std::lock_guard<std::mutex> lock(mutex);
     counter++;
   });
-  tf::Task C = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+  tf::Task C = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
     std::lock_guard<std::mutex> lock(mutex);
     counter++;
   });

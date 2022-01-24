@@ -12,7 +12,7 @@ int main() {
   // Ideally, the taskflow completes in 1000/P seconds, where P
   // is the number of workers.
   for(int i=0; i<1000; i++) {
-    taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ 
+    taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ 
       std::this_thread::sleep_for(std::chrono::seconds(1));
     });
   }

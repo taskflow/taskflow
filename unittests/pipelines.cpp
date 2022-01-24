@@ -37,7 +37,7 @@ void pipeline_1P(size_t L, unsigned w, tf::PipeType type) {
       //taskflow.pipeline(pl);
       auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
 
-      auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+      auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
         REQUIRE(j == N);
         REQUIRE(pl.num_tokens() == N);    
       }).name("test");
@@ -275,7 +275,7 @@ void pipeline_2P_SS(size_t L, unsigned w) {
     );
     
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j1 == N);
       REQUIRE(j2 == N);
       REQUIRE(pl.num_tokens() == cnt * N);
@@ -409,7 +409,7 @@ void pipeline_2P_SP(size_t L, unsigned w) {
     );
     
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j1 == N);
       REQUIRE(j2 == N);
       
@@ -551,7 +551,7 @@ void pipeline_2P_PS(size_t L, unsigned w) {
     );
     
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       
       REQUIRE(collection1.size() == N);
       REQUIRE(j2 == N);
@@ -716,7 +716,7 @@ void pipeline_2P_PP(size_t L, unsigned w) {
     );
     
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(collection1.size() == N);
       REQUIRE(collection2.size() == N);
 
@@ -884,7 +884,7 @@ void pipeline_3P_SSS(size_t L, unsigned w) {
     );
     
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j1 == N);
       REQUIRE(j2 == N);
       REQUIRE(j3 == N);
@@ -1028,7 +1028,7 @@ void pipeline_3P_SSP(size_t L, unsigned w) {
     );
     
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j1 == N);
       REQUIRE(j2 == N);
       REQUIRE(j3 == N);
@@ -1180,7 +1180,7 @@ void pipeline_3P_SPS(size_t L, unsigned w) {
     );
     
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j1 == N);
       REQUIRE(j2 == N);
       REQUIRE(j3 == N);
@@ -1339,7 +1339,7 @@ void pipeline_3P_SPP(size_t L, unsigned w) {
     );
     
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j1 == N);
       REQUIRE(j2 == N);
       REQUIRE(j3 == N);
@@ -1488,7 +1488,7 @@ void pipeline_3P_PSS(size_t L, unsigned w) {
     );
     
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j2 == N);
       REQUIRE(j3 == N);
       REQUIRE(collection.size() == N);
@@ -1661,7 +1661,7 @@ void pipeline_3P_PSP(size_t L, unsigned w) {
     );
     
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j2 == N);
       REQUIRE(j3 == N);
       REQUIRE(collection1.size() == N);
@@ -1851,7 +1851,7 @@ void pipeline_3P_PPS(size_t L, unsigned w) {
     );
     
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j2 == N);
       REQUIRE(j3 == N);
       REQUIRE(collection1.size() == N);
@@ -2046,7 +2046,7 @@ void pipeline_3P_PPP(size_t L, unsigned w) {
     );
     
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j2 == N);
       REQUIRE(j3 == N);
       REQUIRE(collection1.size() == N);
@@ -2258,7 +2258,7 @@ void pipeline_4P_SSSS(size_t L, unsigned w) {
     );
     
     tf::Task pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    tf::Task test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    tf::Task test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j1 == N);
       REQUIRE(j2 == N);
       REQUIRE(j3 == N);
@@ -2641,7 +2641,7 @@ void pipeline_4P_SSSP(size_t L, unsigned w) {
     );
     
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j1 == N);
       REQUIRE(j2 == N);
       REQUIRE(j3 == N);
@@ -3047,7 +3047,7 @@ void pipeline_4P_SSPS(size_t L, unsigned w) {
     );
     
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j1 == N);
       REQUIRE(j2 == N);
       REQUIRE(j3 == N);
@@ -3457,7 +3457,7 @@ void pipeline_4P_SSPP(size_t L, unsigned w) {
     );
     
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j1 == N);
       REQUIRE(j2 == N);
       REQUIRE(j3 == N);
@@ -3876,7 +3876,7 @@ void pipeline_4P_SPSS(size_t L, unsigned w) {
     );
     
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j1 == N);
       REQUIRE(j2 == N);
       REQUIRE(j3 == N);
@@ -4285,7 +4285,7 @@ void pipeline_4P_SPSP(size_t L, unsigned w) {
     );
     
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j1 == N);
       REQUIRE(j2 == N);
       REQUIRE(j3 == N);
@@ -4708,7 +4708,7 @@ void pipeline_4P_SPPS(size_t L, unsigned w) {
     );
     
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j1 == N);
       REQUIRE(j2 == N);
       REQUIRE(j3 == N);
@@ -5137,7 +5137,7 @@ void pipeline_4P_SPPP(size_t L, unsigned w) {
     );
     
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j1 == N);
       REQUIRE(j2 == N);
       REQUIRE(j3 == N);
@@ -5574,7 +5574,7 @@ void three_parallel_pipelines(size_t L, unsigned w) {
     );
     
     auto pipeline1 = taskflow.composed_of(pl1).name("module_of_pipeline1");
-    auto test1 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test1 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j1_1 == N);
       REQUIRE(j1_2 == N);
       REQUIRE(j1_3 == N);
@@ -5625,7 +5625,7 @@ void three_parallel_pipelines(size_t L, unsigned w) {
     );
 
     auto pipeline2 = taskflow.composed_of(pl2).name("module_of_pipeline2");
-    auto test2 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test2 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j2_1 == N);
       REQUIRE(j2_2 == N);
       REQUIRE(j2_3 == N);
@@ -5674,7 +5674,7 @@ void three_parallel_pipelines(size_t L, unsigned w) {
     );
     
     auto pipeline3 = taskflow.composed_of(pl3).name("module_of_pipeline3");
-    auto test3 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test3 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j3_1 == N);
       REQUIRE(j3_2 == N);
       
@@ -5688,8 +5688,8 @@ void three_parallel_pipelines(size_t L, unsigned w) {
     pipeline3.precede(test3);
 
 
-    auto initial  = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){}).name("initial");
-    auto terminal = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){}).name("terminal");
+    auto initial  = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){}).name("initial");
+    auto terminal = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){}).name("terminal");
 
     initial.precede(pipeline1, pipeline2, pipeline3);
     terminal.succeed(test1, test2, test3);
@@ -6054,7 +6054,7 @@ void three_concatenated_pipelines(size_t L, unsigned w) {
     );
     
     auto pipeline1 = taskflow.composed_of(pl1).name("module_of_pipeline1");
-    auto test1 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test1 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j1_1 == N);
       REQUIRE(j1_2 == N);
       REQUIRE(j1_3 == N);
@@ -6103,7 +6103,7 @@ void three_concatenated_pipelines(size_t L, unsigned w) {
     );
 
     auto pipeline2 = taskflow.composed_of(pl2).name("module_of_pipeline2");
-    auto test2 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test2 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j2_1 == N);
       REQUIRE(j2_2 == N);
       REQUIRE(j2_3 == N);
@@ -6150,7 +6150,7 @@ void three_concatenated_pipelines(size_t L, unsigned w) {
     );
     
     auto pipeline3 = taskflow.composed_of(pl3).name("module_of_pipeline3");
-    auto test3 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+    auto test3 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
       REQUIRE(j3_1 == N);
       REQUIRE(j3_2 == N);
       
@@ -6162,8 +6162,8 @@ void three_concatenated_pipelines(size_t L, unsigned w) {
     }).name("test3");
     
 
-    auto initial  = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){}).name("initial");
-    auto terminal = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){}).name("terminal");
+    auto initial  = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){}).name("initial");
+    auto terminal = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){}).name("terminal");
 
     initial.precede(pipeline1);
     pipeline1.precede(test1);
@@ -6539,9 +6539,9 @@ void looping_pipelines(size_t L, unsigned w) {
   );
   
   auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
-  auto initial = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){}).name("initial");
+  auto initial = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){}).name("initial");
 
-  auto conditional = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+  auto conditional = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
     REQUIRE(j1 == N);
     REQUIRE(j2 == N);
     REQUIRE(j3 == N);
@@ -6571,7 +6571,7 @@ void looping_pipelines(size_t L, unsigned w) {
     return N < maxN ? 0 : 1;
   }).name("conditional");
 
-  auto terminal = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){}).name("terminal");
+  auto terminal = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){}).name("terminal");
 
   initial.precede(pipeline);
   pipeline.precede(conditional);

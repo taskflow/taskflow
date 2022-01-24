@@ -38,23 +38,23 @@ int main(int argc, char* argv[]) {
   tf::Taskflow taskflow("Dynamic Tasking Demo");
 
   // Task A
-  auto A = taskflow.emplace([] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "TaskA\n"; });
+  auto A = taskflow.emplace([] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { std::cout << "TaskA\n"; });
   auto B = taskflow.emplace(
     // Task B
-    [cap=std::vector<int>{1,2,3,4,5,6,7,8}, detached] (tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+    [cap=std::vector<int>{1,2,3,4,5,6,7,8}, detached] (tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
       std::cout << "TaskB is spawning B1, B2, and B3 ...\n";
 
-      auto B1 = subflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { 
+      auto B1 = subflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { 
         printf("  Subtask B1: reduce sum = %d\n", 
                 std::accumulate(cap.begin(), cap.end(), 0, std::plus<int>()));
       }).name("B1");        
       
-      auto B2 = subflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { 
+      auto B2 = subflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { 
         printf("  Subtask B2: reduce multiply = %d\n", 
                 std::accumulate(cap.begin(), cap.end(), 1, std::multiplies<int>()));
       }).name("B2");        
                                                               
-      auto B3 = subflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { 
+      auto B3 = subflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { 
         printf("  Subtask B3: reduce minus = %d\n", 
                 std::accumulate(cap.begin(), cap.end(), 0, std::minus<int>()));
       }).name("B3");        
@@ -67,8 +67,8 @@ int main(int argc, char* argv[]) {
     }
   );
   
-  auto C = taskflow.emplace([] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "TaskC\n"; });
-  auto D = taskflow.emplace([] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { std::cout << "TaskD\n"; });
+  auto C = taskflow.emplace([] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { std::cout << "TaskC\n"; });
+  auto D = taskflow.emplace([] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { std::cout << "TaskD\n"; });
   A.name("A");
   B.name("B");
   C.name("C");

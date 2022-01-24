@@ -273,7 +273,7 @@ TEST_CASE("syclFlow.condition" * doctest::timeout(300)) {
     
   int* dptr = sycl::malloc_shared<int>(N, queue);
 
-  auto init = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+  auto init = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
     for(size_t i=0; i<N; i++) {
       dptr[i] = -2;
     }
@@ -287,7 +287,7 @@ TEST_CASE("syclFlow.condition" * doctest::timeout(300)) {
     );
   }, queue);
 
-  auto cond = taskflow.emplace([r=5](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) mutable { 
+  auto cond = taskflow.emplace([r=5](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf) mutable { 
     return (r-- > 0) ? 0 : 1;
   });
 
@@ -320,7 +320,7 @@ TEST_CASE("syclFlow.run_n" * doctest::timeout(300)) {
     dptr[i] = 0;
   }
 
-  auto init = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){});
+  auto init = taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){});
 
   auto sycl = taskflow.emplace_on([&](tf::syclFlow& sf) {
     sf.parallel_for(sycl::range<1>(N),

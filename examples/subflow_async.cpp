@@ -9,13 +9,13 @@ int main() {
 
   std::atomic<int> counter{0};
 
-  taskflow.emplace([&](tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf ){
+  taskflow.emplace([&](tf::Subflow& sf, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf ){
     for(int i=0; i<10; i++) {
       // Here, we use "silent_async" instead of "async" because we do
       // not care the return value. The method "silent_async" gives us
       // less overhead compared to "async".
       // The 10 asynchronous tasks run concurrently.
-      sf.silent_async([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){
+      sf.silent_async([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){
         std::cout << "async task from the subflow\n";
         counter.fetch_add(1, std::memory_order_relaxed);
       });

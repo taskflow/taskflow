@@ -9,7 +9,7 @@ class AsyncTopology;
 class Node;
 class Graph;
 class Pipeflow;
-typedef std::tuple<Pipeflow*, Node*>  WSQTuple;
+typedef std::tuple<Pipeflow&, Node*>  WSQTuple;
 class FlowBuilder;
 class Semaphore;
 class Subflow;

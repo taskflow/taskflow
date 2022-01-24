@@ -16,7 +16,7 @@ int main() {
   
   // create an allocate task to allocate a shared memory
   tf::Task allocate = taskflow.emplace(
-    [&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){ data = sycl::malloc_shared<int>(N, queue); }
+    [&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){ data = sycl::malloc_shared<int>(N, queue); }
   );
   
   // create a syclFlow task to add 2 to each element of the vector
@@ -33,7 +33,7 @@ int main() {
   }, queue);
   
   // create a deallocate task that checks the result and frees the memory
-  tf::Task deallocate = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf){
+  tf::Task deallocate = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf){
 
     for(size_t i=0; i<N; i++) {
       if(data[i] != 102) {

@@ -10,10 +10,10 @@ int main() {
   int i;
   
   auto [init, body, cond, done] = taskflow.emplace(
-    [&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "i=0\n"; i=0; },
-    [&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "i++ => i="; i++; },
-    [&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << i << '\n'; return i<5 ? 0 : 1; },
-    [&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "done\n"; }
+    [&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ std::cout << "i=0\n"; i=0; },
+    [&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ std::cout << "i++ => i="; i++; },
+    [&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ std::cout << i << '\n'; return i<5 ? 0 : 1; },
+    [&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ std::cout << "done\n"; }
   );
 
   init.name("init");

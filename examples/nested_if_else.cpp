@@ -10,14 +10,14 @@ int main() {
   int i;
   
   // create three condition tasks for nested control flow
-  auto initi = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ i=3; });
-  auto cond1 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ return i>1 ? 1 : 0; });
-  auto cond2 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ return i>2 ? 1 : 0; });
-  auto cond3 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ return i>3 ? 1 : 0; });
-  auto equl1 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "i=1\n"; });
-  auto equl2 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "i=2\n"; });
-  auto equl3 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "i=3\n"; });
-  auto grtr3 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ std::cout << "i>3\n"; });
+  auto initi = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ i=3; });
+  auto cond1 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ return i>1 ? 1 : 0; });
+  auto cond2 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ return i>2 ? 1 : 0; });
+  auto cond3 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ return i>3 ? 1 : 0; });
+  auto equl1 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ std::cout << "i=1\n"; });
+  auto equl2 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ std::cout << "i=2\n"; });
+  auto equl3 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ std::cout << "i=3\n"; });
+  auto grtr3 = taskflow.emplace([&](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ std::cout << "i>3\n"; });
   
   initi.precede(cond1);
   cond1.precede(equl1, cond2);

@@ -19,7 +19,7 @@ Task FlowBuilder::transform(B first1, E last1, O d_first, C c) {
   using O_t = std::decay_t<unwrap_ref_decay_t<O>>;
 
   Task task = emplace(
-  [first1, last1, d_first, c] (Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) mutable {
+  [first1, last1, d_first, c] (Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf) mutable {
     
     // fetch the stateful values
     B_t beg   = first1;
@@ -50,7 +50,7 @@ Task FlowBuilder::transform(B first1, E last1, O d_first, C c) {
 
       //sf.emplace([&next, beg, N, chunk_size, W, c] () mutable {
       sf._named_silent_async(
-        sf._worker, "part-"s + std::to_string(w), [=, &next] (WorkerView wv, TaskView tv, Pipeflow* pf) mutable {
+        sf._worker, "part-"s + std::to_string(w), [=, &next] (WorkerView wv, TaskView tv, Pipeflow&pf) mutable {
         
         size_t z = 0;
         size_t p1 = 2 * W * (chunk_size + 1);
@@ -119,7 +119,7 @@ Task FlowBuilder::transform(B1 first1, E1 last1, B2 first2, O d_first, C c) {
   using O_t = std::decay_t<unwrap_ref_decay_t<O>>;
 
   Task task = emplace(
-  [first1, last1, first2, d_first, c] (Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow* pf) mutable {
+  [first1, last1, first2, d_first, c] (Subflow& sf, tf::WorkerView wv, tf::TaskView tv,  tf::Pipeflow& pf) mutable {
     
     // fetch the stateful values
     B1_t beg1 = first1;
@@ -150,7 +150,7 @@ Task FlowBuilder::transform(B1 first1, E1 last1, B2 first2, O d_first, C c) {
     for(size_t w=0; w<W; w++) {
 
       sf._named_silent_async(
-        sf._worker, "part-"s + std::to_string(w), [=, &next] (WorkerView wv, TaskView tv, Pipeflow* pf) mutable {
+        sf._worker, "part-"s + std::to_string(w), [=, &next] (WorkerView wv, TaskView tv, Pipeflow&pf) mutable {
         
         size_t z = 0;
         size_t p1 = 2 * W * (chunk_size + 1);

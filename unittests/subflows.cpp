@@ -22,31 +22,31 @@ void joined_subflow(unsigned W) {
     std::atomic<int> fu3v{0}, fu3v_{0};
     
     // empty flow
-    auto subflow1 = tf.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+    auto subflow1 = tf.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
       fu3v++;
       fb.join();
     }).name("subflow1");
     
     // nested empty flow
-    auto subflow2 = tf.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+    auto subflow2 = tf.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
       fu3v++;
-      fb.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+      fb.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
         fu3v++;
-        fb.emplace( [&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+        fb.emplace( [&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
           fu3v++;
           fb.join();
         }).name("subflow2_1_1");
       }).name("subflow2_1");
     }).name("subflow2");
     
-    subflow3 = tf.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+    subflow3 = tf.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
 
       REQUIRE(fu3v == 4);
 
       fu3v++;
       fu3v_++;
       
-      subflow3_ = fb.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+      subflow3_ = fb.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
         REQUIRE(fu3v_ == 3);
         fu3v++;
         fu3v_++;
@@ -56,17 +56,17 @@ void joined_subflow(unsigned W) {
       subflow3_.name("subflow3_");
 
       // hereafter we use 100us to avoid dangling reference ...
-      auto s1 = fb.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { 
+      auto s1 = fb.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { 
         fu3v_++;
         fu3v++;
       }).name("s1");
       
-      auto s2 = fb.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+      auto s2 = fb.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
         fu3v_++;
         fu3v++;
       }).name("s2");
       
-      auto s3 = fb.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+      auto s3 = fb.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
         fu3v++;
         REQUIRE(fu3v_ == 4);
       }).name("s3");
@@ -82,7 +82,7 @@ void joined_subflow(unsigned W) {
     subflow3.name("subflow3");
 
     // empty flow to test future
-    auto subflow4 = tf.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+    auto subflow4 = tf.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
       fu3v++;
     }).name("subflow4");
 
@@ -102,7 +102,7 @@ void joined_subflow(unsigned W) {
     std::vector<int> data;
     int sum {0};
 
-    auto A = tf.emplace([&data] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+    auto A = tf.emplace([&data] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
       for(int i=0; i<10; ++i) {
         data.push_back(1);
       }
@@ -110,31 +110,31 @@ void joined_subflow(unsigned W) {
 
     std::atomic<size_t> count {0};
 
-    auto B = tf.emplace([&count, &data, &sum](tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){
+    auto B = tf.emplace([&count, &data, &sum](tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){
 
       //auto [src, tgt] = fb.reduce(data.begin(), data.end(), sum, std::plus<int>());
       auto task = fb.reduce(data.begin(), data.end(), sum, std::plus<int>());
 
-      fb.emplace([&sum] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { REQUIRE(sum == 0); }).precede(task);
+      fb.emplace([&sum] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { REQUIRE(sum == 0); }).precede(task);
 
-      task.precede(fb.emplace([&sum] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { REQUIRE(sum == 10); }));
+      task.precede(fb.emplace([&sum] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { REQUIRE(sum == 10); }));
 
       for(size_t i=0; i<10; i ++){
         ++count;
       }
 
-      auto n = fb.emplace([&count](tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){
+      auto n = fb.emplace([&count](tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){
 
         REQUIRE(count == 20);
         ++count;
 
-        auto prev = fb.emplace([&count](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){
+        auto prev = fb.emplace([&count](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){
           REQUIRE(count == 21);
           ++count;
         });
 
         for(size_t i=0; i<10; i++){
-          auto next = fb.emplace([&count, i](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){
+          auto next = fb.emplace([&count, i](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){
             REQUIRE(count == 22+i);
             ++count;
           });
@@ -144,7 +144,7 @@ void joined_subflow(unsigned W) {
       });
 
       for(size_t i=0; i<10; i++){
-        fb.emplace([&count](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ ++count; }).precede(n);
+        fb.emplace([&count](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ ++count; }).precede(n);
       }
     });
 
@@ -206,17 +206,17 @@ void detached_subflow(unsigned W) {
     std::atomic<int> fu3v{0}, fu3v_{0};
     
     // empty flow
-    auto subflow1 = tf.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+    auto subflow1 = tf.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
       fu3v++;
       fb.detach();
     }).name("subflow1");
     
     // nested empty flow
-    auto subflow2 = tf.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+    auto subflow2 = tf.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
       fu3v++;
-      fb.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+      fb.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
         fu3v++;
-        fb.emplace( [&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+        fb.emplace( [&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
           fu3v++;
           fb.join();
         }).name("subflow2_1_1");
@@ -225,14 +225,14 @@ void detached_subflow(unsigned W) {
       fb.detach();
     }).name("subflow2");
     
-    subflow3 = tf.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+    subflow3 = tf.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
 
       REQUIRE((fu3v >= 2 && fu3v <= 4));
 
       fu3v++;
       fu3v_++;
       
-      subflow3_ = fb.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+      subflow3_ = fb.emplace([&] (tf::Subflow& fb, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
         REQUIRE(fu3v_ == 3);
         fu3v++;
         fu3v_++;
@@ -241,17 +241,17 @@ void detached_subflow(unsigned W) {
       subflow3_.name("subflow3_");
 
       // hereafter we use 100us to avoid dangling reference ...
-      auto s1 = fb.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { 
+      auto s1 = fb.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { 
         fu3v_++;
         fu3v++;
       }).name("s1");
       
-      auto s2 = fb.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+      auto s2 = fb.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
         fu3v_++;
         fu3v++;
       }).name("s2");
       
-      auto s3 = fb.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+      auto s3 = fb.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
         fu3v++;
         REQUIRE(fu3v_ == 4);
       }).name("s3");
@@ -269,7 +269,7 @@ void detached_subflow(unsigned W) {
     subflow3.name("subflow3");
 
     // empty flow to test future
-    auto subflow4 = tf.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) {
+    auto subflow4 = tf.emplace([&] (tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) {
       REQUIRE((fu3v >= 3 && fu3v <= 9));
       fu3v++;
     }).name("subflow4");
@@ -325,10 +325,10 @@ TEST_CASE("DetachedSubflow.8threads" * doctest::timeout(300)) {
 void detach_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
   if(depth < max_depth) {
     counter.fetch_add(1, std::memory_order_relaxed);
-    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ 
+    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ 
       detach_spawn(max_depth, counter, depth, subflow); }
     );
-    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ 
+    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ 
       detach_spawn(max_depth, counter, depth, subflow); }
     );
     subflow.detach();
@@ -338,10 +338,10 @@ void detach_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf:
 void join_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
   if(depth < max_depth) {
     counter.fetch_add(1, std::memory_order_relaxed);
-    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ 
+    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ 
       join_spawn(max_depth, counter, depth, subflow); }
     );
-    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ 
+    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ 
       join_spawn(max_depth, counter, depth, subflow); }
     );
   }
@@ -353,10 +353,10 @@ void mix_spawn(
 
   if(depth < max_depth) {
     auto ret = counter.fetch_add(1, std::memory_order_relaxed);
-    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ 
+    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ 
       mix_spawn(max_depth, counter, depth, subflow); }
     ).name(std::string("left") + std::to_string(ret%2));
-    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ 
+    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ 
       mix_spawn(max_depth, counter, depth, subflow); }
     ).name(std::string("right") + std::to_string(ret%2));
     if(ret % 2) {
@@ -372,7 +372,7 @@ TEST_CASE("TreeSubflow" * doctest::timeout(300)) {
     for(int W=1; W<=4; W++) {
       std::atomic<int> counter {0};
       tf::Taskflow tf;
-      tf.emplace([&](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ 
+      tf.emplace([&](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ 
         detach_spawn(max_depth, counter, 0, subflow); 
       });
 
@@ -388,7 +388,7 @@ TEST_CASE("TreeSubflow" * doctest::timeout(300)) {
     for(int W=1; W<=4; W++) {
       std::atomic<int> counter {0};
       tf::Taskflow tf;
-      tf.emplace([&](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ 
+      tf.emplace([&](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ 
         join_spawn(max_depth, counter, 0, subflow); 
       });
       tf::Executor executor(W);
@@ -402,7 +402,7 @@ TEST_CASE("TreeSubflow" * doctest::timeout(300)) {
     for(int W=1; W<=4; W++) {
       std::atomic<int> counter {0};
       tf::Taskflow tf;
-      tf.emplace([&](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf){ 
+      tf.emplace([&](tf::Subflow& subflow, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ 
         mix_spawn(max_depth, counter, 0, subflow); 
       }).name("top task");
 
@@ -419,8 +419,8 @@ TEST_CASE("TreeSubflow" * doctest::timeout(300)) {
 int fibonacci_spawn(int n, tf::Subflow& sbf) {
   if (n < 2) return n;
   int res1, res2;
-  sbf.emplace([&res1, n] (tf::Subflow& sbf, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { res1 = fibonacci_spawn(n - 1, sbf); } );
-  sbf.emplace([&res2, n] (tf::Subflow& sbf, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { res2 = fibonacci_spawn(n - 2, sbf); } );
+  sbf.emplace([&res1, n] (tf::Subflow& sbf, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { res1 = fibonacci_spawn(n - 1, sbf); } );
+  sbf.emplace([&res2, n] (tf::Subflow& sbf, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { res2 = fibonacci_spawn(n - 2, sbf); } );
   REQUIRE(sbf.joinable() == true);
   sbf.join();
   REQUIRE(sbf.joinable() == false);
@@ -435,7 +435,7 @@ void fibonacci(size_t W) {
   tf::Executor executor(W);
   tf::Taskflow taskflow;
 
-  taskflow.emplace([&res, N] (tf::Subflow& sbf, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow* pf) { 
+  taskflow.emplace([&res, N] (tf::Subflow& sbf, tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf) { 
     res = fibonacci_spawn(N, sbf);  
   });
 
