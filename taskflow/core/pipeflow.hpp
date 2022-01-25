@@ -16,8 +16,13 @@ class Pipeflow {
   /**
   @brief default constructor
   */
-  Pipeflow() = default;
-  
+  Pipeflow(){
+    _line = -1;
+    _pipe = -1;
+    _token = -1;
+    _stop = false;
+  }
+
   /**
   @brief queries the line identifier of the present token
   */
@@ -52,6 +57,8 @@ class Pipeflow {
   Pipeflow(size_t line, size_t pipe) :
     _line {line},
     _pipe {pipe} {
+    _token = -1;
+    _stop = false;
   }
   private:
 
