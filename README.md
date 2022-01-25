@@ -351,10 +351,10 @@ tf::cudaTask cuda3 = cudaflow.sort(     // sort a range of items on GPU
 );
 ```
 
-Additionally, %Taskflow provides composable graph building blocks for you to 
+Additionally, Taskflow provides composable graph building blocks for you to 
 efficiently implement common parallel algorithms, such as parallel pipeline.
 
-@code{.cpp}
+```cpp
 // create a pipeline to propagate five tokens through three serial stages
 tf::Pipeline pl(num_parallel_lines,
   tf::Pipe{tf::PipeType::SERIAL, [](tf::Pipeflow& pf) {
@@ -371,7 +371,7 @@ tf::Pipeline pl(num_parallel_lines,
 );
 taskflow.composed_of(pl)
 executor.run(taskflow).wait();
-@endcode
+```
 
 
 # Supported Compilers
