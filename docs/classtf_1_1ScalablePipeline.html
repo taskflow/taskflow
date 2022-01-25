@@ -182,6 +182,10 @@
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
             <dt>
+              <span class="m-doc-wrap-bumper"><a href="#a0f99aa297a26b97d549b62722d91e8ca" class="m-doc">ScalablePipeline</a>(</span><span class="m-doc-wrap">size_t num_lines)</span>
+            </dt>
+            <dd>constructs an empty scalable pipeline object</dd>
+            <dt>
               <span class="m-doc-wrap-bumper"><a href="#a884818f628bbd4ab876d566b1d2d62dc" class="m-doc">ScalablePipeline</a>(</span><span class="m-doc-wrap">size_t num_lines,
               P first,
               P last)</span>
@@ -221,6 +225,27 @@
         </section>
         <section>
           <h2>Function documentation</h2>
+          <section class="m-doc-details" id="a0f99aa297a26b97d549b62722d91e8ca"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename P&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />ScalablePipeline&lt;P&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0f99aa297a26b97d549b62722d91e8ca" class="m-doc-self">ScalablePipeline</a>(</span><span class="m-doc-wrap">size_t num_lines)</span></span>
+            </h3>
+            <p>constructs an empty scalable pipeline object</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">num_lines</td>
+                  <td>the number of parallel lines</td>
+                </tr>
+              </tbody>
+            </table>
+<p>An empty scalable pipeline does not have any pipes. The pipeline needs to be reset to a valid range of pipes before running.</p>
+          </div></section>
           <section class="m-doc-details" id="a884818f628bbd4ab876d566b1d2d62dc"><div>
             <h3>
               <div class="m-doc-template">

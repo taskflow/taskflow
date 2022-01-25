@@ -1,7 +1,5 @@
 #include "levelgraph.hpp"
 #include <fstream>
-//#include "matrix_calculation.hpp"
-
 
 
 int pipe_helper(
@@ -600,17 +598,12 @@ std::chrono::microseconds measure_time_gold(
       graph_pipeline_gold_16_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
+    
+    default:
+      throw std::runtime_error("can support only up to 16 pipes");
+    break;
   }
 
-  //std::ofstream outputfile;
-  //outputfile.open("./build/benchmarks/tf_time.csv", std::ofstream::app);
-  //outputfile << num_threads << ','
-  //           << num_lines   << ','
-  //           << pipes       << ','
-  //           << size        << ','
-  //           << elapsed.count()/1e3 << '\n';
-
-  //outputfile.close();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 

@@ -717,6 +717,10 @@ std::chrono::microseconds measure_time_tbb(
       parallel_pipeline_tbb_16_pipes(pipes, num_lines, size);
       end = std::chrono::high_resolution_clock::now();
       break;
+
+    default:
+      throw std::runtime_error("can support only up to 16 pipes");
+    break;
   }
 
   //std::ofstream outputfile;

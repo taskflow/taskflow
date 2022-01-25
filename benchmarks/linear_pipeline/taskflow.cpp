@@ -510,6 +510,10 @@ std::chrono::microseconds measure_time_taskflow(
     case 16:
       elapsed = parallel_pipeline_taskflow_16_pipes(pipes, num_lines, num_threads, size);
       break;
+
+    default:
+      throw std::runtime_error("can support only up to 16 pipes");
+    break;
   }
 
   //std::ofstream outputfile;

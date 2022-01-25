@@ -140,7 +140,7 @@
 Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>) or an exception will be thrown. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="343" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="422" bodyend="435"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="343" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="422" bodyend="439"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Pipeline_1a879a54b37af5db33e5768e5b3c135ba6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -176,7 +176,7 @@ Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parall
 Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>) or an exception will be thrown. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="356" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="439" bodyend="454"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="356" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="443" bodyend="462"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Pipeline_1a79f066bacd6c1abd28c26d8196955e95" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type>size_t</type>
@@ -189,7 +189,7 @@ Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parall
 <para>The function returns the number of parallel lines given by the user upon the construction of the pipeline. The number of lines represents the maximum parallelism this pipeline can achieve. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="366" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="465" bodyend="467"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="366" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="473" bodyend="475"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Pipeline_1adfef0c60f8f8ace267d7cd8548457ff3" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type>constexpr size_t</type>
@@ -202,7 +202,7 @@ Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parall
 <para>The Function returns the number of pipes given by the user upon the construction of the pipeline. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="374" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="471" bodyend="473"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="374" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="479" bodyend="481"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Pipeline_1a311d874b98de6f0def8a7d869e8d15bd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -215,7 +215,7 @@ Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parall
 <para>Resetting the pipeline to the initial state. After resetting a pipeline, its token identifier will start from zero as if the pipeline was just constructed. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="383" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="489" bodyend="517"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="383" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="497" bodyend="525"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Pipeline_1a89af6714b661ded59970cac4c73b3ef9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type>size_t</type>
@@ -228,7 +228,7 @@ Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parall
 <para>The number represents the total scheduling tokens that has been generated by the pipeline so far. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="391" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="477" bodyend="479"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="391" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="485" bodyend="487"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Pipeline_1a4320bdd8b8cf05c9aac1b9fa000e4a35" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> &amp;</type>
@@ -241,7 +241,7 @@ Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parall
 <para>This method is primarily used as an opaque data structure for creating a module task of the this pipeline. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="399" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="483" bodyend="485"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="399" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="491" bodyend="493"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -270,7 +270,7 @@ Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parall
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="414" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="459" bodyend="461"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="414" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="467" bodyend="469"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Pipeline_1aa2e4a635ac4469754f2d922ea67151f9" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -290,7 +290,7 @@ Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parall
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="416" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="521" bodyend="525"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="416" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="529" bodyend="533"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Pipeline_1ad091bbd38c1538884aa83d488fdf40f2" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -303,7 +303,7 @@ Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parall
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="417" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="529" bodyend="620"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="417" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="537" bodyend="628"/>
       </memberdef>
       </sectiondef>
     <briefdescription>

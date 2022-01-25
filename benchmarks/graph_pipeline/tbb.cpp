@@ -491,23 +491,11 @@ std::chrono::microseconds measure_time_tbb(
       graph_pipeline_tbb_16_pipes(graph, num_lines);
       end = std::chrono::high_resolution_clock::now();
     break;
+    
+    default:
+      throw std::runtime_error("can support only up to 16 pipes");
+    break;
   }
-
-  //std::ofstream outputfile;
-  //outputfile.open("./tbb_result.txt", std::ofstream::app);
-  //for (auto r:result) {
-  //  outputfile << r << '\n';
-  //}
-  
-  //std::ofstream outputfile;
-  //outputfile.open("./tbb_time.csv", std::ofstream::app);
-  //outputfile << num_threads               << ','
-  //           << num_lines                 << ','
-  //           << pipes                     << ','
-  //           << graph.graph_size()        << ','
-  //           << (std::chrono::duration_cast<std::chrono::microseconds>(end - beg).count())/1e3
-  //           << '\n';
-  //outputfile.close();
 
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }

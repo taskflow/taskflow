@@ -7,7 +7,7 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow provides a <emphasis>task-parallel</emphasis> pipeline programming framework for you to create a <emphasis>pipeline scheduling framework</emphasis> to implement pipeline algorithms. Pipeline parallelism refers to a parallel execution of multiple data tokens through a linear chain of pipes or stages. Each stage processes the data token sent from the previous stage, applies the given callable to that data token, and then sends the result to the next stage. Multiple data tokens can be processed simultaneously across different stages.</para><sect1 id="ParallelPipeline_1ParallelPipelineIncludeHeaderFile">
+<para>Taskflow provides a <emphasis>task-parallel</emphasis> pipeline programming framework for you to create a <emphasis>pipeline scheduling framework</emphasis>. Pipeline parallelism refers to a parallel execution of multiple data tokens through a linear chain of pipes or stages. Each stage processes the data token sent from the previous stage, applies the given callable to that data token, and then sends the result to the next stage. Multiple data tokens can be processed simultaneously across different stages.</para><sect1 id="ParallelPipeline_1ParallelPipelineIncludeHeaderFile">
 <title>Include the Header</title>
 <para>You need to include the header file, <computeroutput>taskflow/algorithm/pipeline.hpp</computeroutput>, for creating a pipeline scheduling framework.</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="pipeline_8hpp" kindref="compound">taskflow/algorithm/pipeline.hpp</ref>&gt;</highlight></codeline>
 </programlisting></para></sect1>

@@ -29,10 +29,6 @@ void last_pipe_helper(LevelGraph& graph, const size_t i) {
   else {
     graph.node_at(lev, len).set_value(retval);
   }
-  //std::ofstream outputfile;
-  //outputfile.open("./omp_result_.txt", std::ofstream::app);
-  //outputfile << graph.node_at(lev, len).get_value() << '\n';
-  //outputfile.close();
 }
 
 
@@ -1413,18 +1409,11 @@ std::chrono::microseconds measure_time_omp(
       graph_pipeline_omp_16_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
+    
+    default:
+      throw std::runtime_error("can support only up to 16 pipes");
+    break;
   }
-
-  //std::ofstream outputfile;
-  //outputfile.open("./omp_time.csv", std::ofstream::app);
-  //outputfile << num_threads               << ','
-  //           << num_lines                 << ','
-  //           << pipes                     << ','
-  //           << graph.graph_size()        << ','
-  //           << (std::chrono::duration_cast<std::chrono::microseconds>(end - beg).count())/1e3
-  //           << '\n';
-
-  //outputfile.close();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 

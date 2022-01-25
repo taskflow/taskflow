@@ -425,6 +425,10 @@ Pipeline<Ps...>::Pipeline(size_t num_lines, Ps&&... ps) :
   _lines     (num_lines),
   _tasks     (num_lines + 1),
   _pipeflows (num_lines) {
+  
+  if(num_lines == 0) {
+    TF_THROW("must have at least one line");
+  }
 
   if(std::get<0>(_pipes).type() != PipeType::SERIAL) {
     TF_THROW("first pipe must be serial");
@@ -444,6 +448,10 @@ Pipeline<Ps...>::Pipeline(size_t num_lines, std::tuple<Ps...>&& ps) :
   _lines     (num_lines),
   _tasks     (num_lines + 1),
   _pipeflows (num_lines) {
+  
+  if(num_lines == 0) {
+    TF_THROW("must have at least one line");
+  }
 
   if(std::get<0>(_pipes).type() != PipeType::SERIAL) {
     TF_THROW("first pipe must be serial");
@@ -769,6 +777,17 @@ class ScalablePipeline {
   @brief pipe type
   */
   using pipe_type = typename std::iterator_traits<P>::value_type;
+  
+  /**
+  @brief constructs an empty scalable pipeline object
+
+  @param num_lines the number of parallel lines
+
+  An empty scalable pipeline does not have any pipes.
+  The pipeline needs to be reset to a valid range of pipes
+  before running.
+  */
+  ScalablePipeline(size_t num_lines);
 
   /**
   @brief constructs a scalable pipeline object
@@ -858,27 +877,28 @@ class ScalablePipeline {
 
 // constructor
 template <typename P>
-ScalablePipeline<P>::ScalablePipeline(size_t num_lines, P first, P last) :
-  _pipes     {static_cast<size_t>(std::distance(first, last))},
+ScalablePipeline<P>::ScalablePipeline(size_t num_lines) :
   _tasks     (num_lines + 1),
-  _pipeflows (num_lines),
-  _lines     {std::make_unique<Line[]>(num_lines * _pipes.size())} {
-  
-  if(_pipes.size() == 0) {
-    TF_THROW("pipeline cannot be empty");
+  _pipeflows (num_lines) {
+
+  if(num_lines == 0) {
+    TF_THROW("must have at least one line");
   }
 
-  if(first->type() != PipeType::SERIAL) {
-    TF_THROW("first pipe must be serial");
-  }
+  _build();
+}
+
+// constructor
+template <typename P>
+ScalablePipeline<P>::ScalablePipeline(size_t num_lines, P first, P last) :
+  _tasks     (num_lines + 1),
+  _pipeflows (num_lines) {
   
-  // fetch the pipe iterators
-  size_t i=0;
-  for(auto itr = first; itr != last; itr++) {
-    _pipes[i++] = itr;
+  if(num_lines == 0) {
+    TF_THROW("must have at least one line");
   }
 
-  reset();
+  reset(first, last);
   _build();
 }
 
@@ -916,7 +936,17 @@ typename ScalablePipeline<P>::Line& ScalablePipeline<P>::_line(size_t l, size_t 
 template <typename P>
 void ScalablePipeline<P>::reset(P first, P last) {
 
-  _pipes.resize(static_cast<size_t>(std::distance(first, last)));
+  size_t num_pipes = static_cast<size_t>(std::distance(first, last));
+
+  if(num_pipes == 0) {
+    TF_THROW("pipeline cannot be empty");
+  }
+
+  if(first->type() != PipeType::SERIAL) {
+    TF_THROW("first pipe must be serial");
+  }
+  
+  _pipes.resize(num_pipes);
 
   size_t i=0;
   for(auto itr = first; itr != last; itr++) {

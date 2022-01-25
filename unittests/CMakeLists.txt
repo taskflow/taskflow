@@ -18,6 +18,7 @@ list(APPEND TF_UNITTESTS
   traversals
   sorting
   pipelines
+  scalable_pipelines
 )
 
 foreach(unittest IN LISTS TF_UNITTESTS)

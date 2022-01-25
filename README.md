@@ -240,26 +240,6 @@ tf::Task cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
 
 <p align="center"><img src="doxygen/images/saxpy_1_cudaflow.svg"></p>
 
-Taskflow also supports SYCL, a general-purpose heterogeneous programming model,
-to program GPU tasks in a single-source C++ environment using the task graph-based 
-approach.
-
-```cpp
-tf::Task syclflow = taskflow.emplace_on([&](tf::syclFlow& sf){
-  tf::syclTask h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
-  tf::syclTask h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");
-  tf::syclTask d2h_x = cf.copy(hx.data(), dx, N).name("d2h_x");
-  tf::syclTask d2h_y = cf.copy(hy.data(), dy, N).name("d2h_y");
-  tf::syclTask saxpy = sf.parallel_for(sycl::range<1>(N), 
-    [=] (sycl::id<1> id) {
-      dx[id] = 2.0f * dx[id] + dy[id];
-    }
-  ).name("saxpy");
-  saxpy.succeed(h2d_x, h2d_y)
-       .precede(d2h_x, d2h_y);
-}, sycl_queue).name("syclFlow");
-```
-
 ## Compose Task Graphs
 
 Taskflow is composable. 
@@ -371,6 +351,28 @@ tf::cudaTask cuda3 = cudaflow.sort(     // sort a range of items on GPU
 );
 ```
 
+Additionally, %Taskflow provides composable graph building blocks for you to 
+efficiently implement common parallel algorithms, such as parallel pipeline.
+
+@code{.cpp}
+// create a pipeline to propagate five tokens through three serial stages
+tf::Pipeline pl(num_parallel_lines,
+  tf::Pipe{tf::PipeType::SERIAL, [](tf::Pipeflow& pf) {
+    if(pf.token() == 5) {
+      pf.stop();
+    }
+  }},
+  tf::Pipe{tf::PipeType::SERIAL, [](tf::Pipeflow& pf) {
+    printf("stage 2: input buffer[%zu] = %d\n", pf.line(), buffer[pf.line()]);
+  }},
+  tf::Pipe{tf::PipeType::SERIAL, [](tf::Pipeflow& pf) {
+    printf("stage 3: input buffer[%zu] = %d\n", pf.line(), buffer[pf.line()]);
+  }}
+);
+taskflow.composed_of(pl)
+executor.run(taskflow).wait();
+@endcode
+
 
 # Supported Compilers
 
@@ -424,8 +426,6 @@ You are completely free to re-distribute your work derived from Taskflow.
 * * *
 
 [Tsung-Wei Huang]:       https://tsung-wei-huang.github.io/
-[Chun-Xun Lin]:          https://github.com/clin99
-[Martin Wong]:           https://ece.illinois.edu/directory/profile/mdfwong
 [GitHub releases]:       https://github.com/taskflow/taskflow/releases
 [GitHub issues]:         https://github.com/taskflow/taskflow/issues
 [GitHub insights]:       https://github.com/taskflow/taskflow/pulse
@@ -434,15 +434,7 @@ You are completely free to re-distribute your work derived from Taskflow.
 [Project Website]:       https://taskflow.github.io/
 [cppcon20 talk]:         https://www.youtube.com/watch?v=MX15huP5DsM
 [contributors]:          https://taskflow.github.io/taskflow/contributors.html
-[OpenMP Tasking]:        https://www.openmp.org/spec-html/5.0/openmpsu99.html 
-[TBB FlowGraph]:         https://www.threadingbuildingblocks.org/tutorial-intel-tbb-flow-graph
-[OpenTimer]:             https://github.com/OpenTimer/OpenTimer
-[DtCraft]:               https://github.com/tsung-wei-huang/DtCraft
 [totalgee]:              https://github.com/totalgee
-[damienhocking]:         https://github.com/damienhocking
-[ForgeMistress]:         https://github.com/ForgeMistress
-[Patrik Huber]:          https://github.com/patrikhuber
-[KingDuckZ]:             https://github.com/KingDuckZ
 [NSF]:                   https://www.nsf.gov/
 [UIUC]:                  https://illinois.edu/
 [CSL]:                   https://csl.illinois.edu/
@@ -452,18 +444,7 @@ You are completely free to re-distribute your work derived from Taskflow.
 [cookbook]:              https://taskflow.github.io/taskflow/pages.html
 [references]:            https://taskflow.github.io/taskflow/References.html
 [PayMe]:                 https://www.paypal.me/twhuang/10
-[C++17]:                 https://en.wikipedia.org/wiki/C%2B%2B17
-[C++14]:                 https://en.wikipedia.org/wiki/C%2B%2B14
 [email me]:              mailto:twh760812@gmail.com
 [Cpp Conference 2018]:   https://github.com/CppCon/CppCon2018
-[IPDPS19]:               https://tsung-wei-huang.github.io/papers/ipdps19.pdf
 [TPDS21]:                https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf
-[cuda-zone]:             https://developer.nvidia.com/cuda-zone
-[nvcc]:                  https://developer.nvidia.com/cuda-llvm-compiler
-[cudaGraph]:             https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__GRAPH.html
-[Firestorm]:             https://github.com/ForgeMistress/Firestorm
-[Shiva]:                 https://shiva.gitbook.io/project/shiva
-[PID Framework]:         http://pid.lirmm.net/pid-framework/index.html
-[NovusCore]:             https://github.com/novuscore/NovusCore
-[SA-PCB]:                https://github.com/choltz95/SA-PCB
 

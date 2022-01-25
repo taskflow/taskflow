@@ -3,8 +3,6 @@
 #include <taskflow/algorithm/pipeline.hpp>
 //#include "matrix_calculation.hpp"
 
-
-
 struct Input {
   size_t lev;
   size_t len;
@@ -68,11 +66,6 @@ struct FilterFinal {
     else {
       graph.node_at(lev, len).set_value(val);
     }
-
-    //std::ofstream outputfile;
-    //outputfile.open("./tf_result_.txt", std::ofstream::app);
-    //outputfile << graph.node_at(lev, len).get_value() << '\n';
-    //outputfile.close();
   }
 };
 
@@ -597,17 +590,11 @@ std::chrono::microseconds measure_time_taskflow(
     case 16:
       elapsed = graph_pipeline_taskflow_16_pipes(graph, num_lines, num_threads);
     break;
+
+    default:
+      throw std::runtime_error("can support only up to 16 pipes");
+    break;
   }
-
-  //std::ofstream outputfile;
-  //outputfile.open("./tf_time.csv", std::ofstream::app);
-  //outputfile << num_threads               << ','
-  //           << num_lines                 << ','
-  //           << pipes                     << ','
-  //           << graph.graph_size()        << ','
-  //           << elapsed.count()/1e3 << '\n';
-
-  //outputfile.close();
   return elapsed;
 }
 

@@ -145,27 +145,6 @@ tf::Task cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
 
 @dotfile images/saxpy_1_cudaflow.dot
 
-%Taskflow also supports SYCL, a general-purpose heterogeneous programming model,
-to program GPU tasks in a single-source C++ environment using the task graph-based 
-approach.
-
-@code{.cpp}
-tf::Task syclflow = taskflow.emplace_on([&](tf::syclFlow& sf){
-  tf::syclTask h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
-  tf::syclTask h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");
-  tf::syclTask d2h_x = cf.copy(hx.data(), dx, N).name("d2h_x");
-  tf::syclTask d2h_y = cf.copy(hy.data(), dy, N).name("d2h_y");
-  tf::syclTask saxpy = sf.parallel_for(sycl::range<1>(N), 
-    [=] (sycl::id<1> id) {
-      dx[id] = 2.0f * dx[id] + dy[id];
-    }
-  ).name("saxpy");
-  saxpy.succeed(h2d_x, h2d_y)
-       .precede(d2h_x, d2h_y);
-}, sycl_queue).name("syclFlow");
-@endcode
-
-
 @section QuickStartComposeTaskGraphs Compose Task Graphs
 
 %Taskflow is composable. You can create large parallel graphs through composition of modular and reusable blocks that are easier to optimize at an individual scope.
@@ -268,6 +247,28 @@ tf::cudaTask cuda2 = cudaflow.reduce(   // reduce a range of items on GPU
 tf::cudaTask cuda3 = cudaflow.sort(     // sort a range of items on GPU
   dfirst, dlast, [] __device__ (auto a, auto b) { return a < b; }
 );
+@endcode
+
+Additionally, %Taskflow provides composable graph building blocks for you to 
+efficiently implement common parallel algorithms, such as parallel pipeline.
+
+@code{.cpp}
+// create a pipeline to propagate five tokens through three serial stages
+tf::Pipeline pl(num_lines,
+  tf::Pipe{tf::PipeType::SERIAL, [](tf::Pipeflow& pf) {
+    if(pf.token() == 5) {
+      pf.stop();
+    }
+  }},
+  tf::Pipe{tf::PipeType::SERIAL, [](tf::Pipeflow& pf) {
+    printf("stage 2: input buffer[%zu] = %d\n", pf.line(), buffer[pf.line()]);
+  }},
+  tf::Pipe{tf::PipeType::SERIAL, [](tf::Pipeflow& pf) {
+    printf("stage 3: input buffer[%zu] = %d\n", pf.line(), buffer[pf.line()]);
+  }}
+);
+taskflow.composed_of(pl)
+executor.run(taskflow).wait();
 @endcode
 
 @section QuickStartVisualizeATaskflow Visualize Taskflow Graphs

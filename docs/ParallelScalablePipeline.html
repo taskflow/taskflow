@@ -52,12 +52,14 @@
         <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
-            <li><a href="#ParallelScalablePipelineIncludeHeaderFile">Include the Header</a></li>
-            <li><a href="#ParallelScalablePipelineCreateAScalablePipelineModuleTask">Create a Scalable Pipeline Module Task</a></li>
+            <li><a href="#IncludeTheScalablePipelineHeader">Include the Header</a></li>
+            <li><a href="#CreateAScalablePipelineModuleTask">Create a Scalable Pipeline Module Task</a></li>
+            <li><a href="#ResetAPlaceholderScalablePipeline">Reset a Placeholder Scalable Pipeline</a></li>
+            <li><a href="#ScalablePipelineUseOtherIteratorTypes">Use Other Iterator Types</a></li>
             <li><a href="#ParallelScalablePipelineLearnMore">Learn More about Taskflow Pipeline</a></li>
           </ul>
         </div>
-<p>Unlike <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> (see <a href="ParallelPipeline.html" class="m-doc">Parallel Pipeline</a>) that requires instantiation of all pipes at the construction time, Taskflow provides a scalable alternative called <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> to allow variable assignments of pipes using range iterators. A scalable pipeline is thus more flexible for applications to create a pipeline scheduling framework whose pipeline structure depends on runtime variables.</p><section id="ParallelScalablePipelineIncludeHeaderFile"><h2><a href="#ParallelScalablePipelineIncludeHeaderFile">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/algorithm/pipeline.hpp</code>, for creating a pipeline scheduling framework.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;taskflow/algorithm/pipeline.hpp&gt;</span><span class="cp"></span></pre></section><section id="ParallelScalablePipelineCreateAScalablePipelineModuleTask"><h2><a href="#ParallelScalablePipelineCreateAScalablePipelineModuleTask">Create a Scalable Pipeline Module Task</a></h2><p>Similar to <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a>, <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> is a composable graph object that can be used to embed a <em>pipeline scheduling framework</em> in a taskflow. The key difference between <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> and <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> is that a scalable pipeline can accept <em>variable</em> assignments of pipes rather than requiring all pipes to present at construction/programming time. Users define a linear range of pipes, each of the same callable type, and apply that range to construct a scalable pipeline. Between successive runs, users can reset the pipeline to a different range of pipes. The following code creates a scalable pipeline using four parallel lines to schedule tokens through three serial pipes defined in a custom vector, then resetting that pipeline to a new range of five serial pipes:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span>
+<p>Unlike <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> (see <a href="ParallelPipeline.html" class="m-doc">Parallel Pipeline</a>) that instantiates all pipes at the construction time, Taskflow provides a scalable alternative called <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> to allow variable assignments of pipes using range iterators. A scalable pipeline is thus more flexible for applications to create a pipeline scheduling framework whose pipeline structure depends on runtime variables.</p><section id="IncludeTheScalablePipelineHeader"><h2><a href="#IncludeTheScalablePipelineHeader">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/algorithm/pipeline.hpp</code>, for creating a scalable pipeline scheduling framework.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;taskflow/algorithm/pipeline.hpp&gt;</span><span class="cp"></span></pre></section><section id="CreateAScalablePipelineModuleTask"><h2><a href="#CreateAScalablePipelineModuleTask">Create a Scalable Pipeline Module Task</a></h2><p>Similar to <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a>, <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> is a composable graph object to implement a <em>pipeline scheduling framework</em> in a taskflow. The key difference between <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> and <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> is that a scalable pipeline can accept <em>variable</em> assignments of pipes rather than instantiating all pipes at construction or programming time. Users define a linear range of pipes, each of the same callable type, and apply that range to construct a scalable pipeline. Between successive runs, users can reset the pipeline to a different range of pipes. The following code creates a scalable pipeline that uses four parallel lines to schedule tokens through three serial pipes in the given vector, then resetting that pipeline to a new range of five serial pipes:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
 
 <span class="k">const</span> <span class="kt">size_t</span> <span class="n">num_lines</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
@@ -129,7 +131,7 @@
 <span class="p">}</span>
 <span class="n">pl</span><span class="p">.</span><span class="n">reset</span><span class="p">(</span><span class="n">pipes</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">pipes</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The program defines a uniform pipe type of <code>tf::Pipe&lt;std::function&lt;void(tf::Pipeflow&amp;)&gt;&gt;</code> and keep all pipes in a vector that is amenable to change. Then, it constructs a scalable pipeline using two range iterators, <code>[first, last)</code>, pointing to the beginning and the end of the pipe vector, resulting in a pipeline of three serial stages:</p><div class="m-graph"><svg style="width: 22.250rem; height: 18.438rem;" viewBox="0.00 0.00 356.00 295.08">
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The program defines a uniform pipe type of <code>tf::Pipe&lt;std::function&lt;void(tf::Pipeflow&amp;)&gt;&gt;</code> and keep all pipes in a vector that is amenable to change. Then, it constructs a scalable pipeline using two range iterators, <code>[first, last)</code>, that point to the beginning and the end of the pipe vector, resulting in a pipeline of three serial stages:</p><div class="m-graph"><svg style="width: 22.250rem; height: 18.438rem;" viewBox="0.00 0.00 356.00 295.08">
 <g transform="scale(1 1) rotate(0) translate(4 291.0782)">
 <title>Taskflow</title>
 <g class="m-cluster">
@@ -295,7 +297,7 @@
 </g>
 </g>
 </svg>
-</div><p>Then, the program appends another two pipes into the vector and resets the pipeline to the new range, resulting in a pipeline of five serial stages:</p><div class="m-graph"><svg style="width: 36.125rem; height: 18.438rem;" viewBox="0.00 0.00 578.00 295.08">
+</div><p>Then, the program appends another two pipes into the vector and resets the pipeline to the new range of two additional pipes, resulting in a pipeline of five serial stages:</p><div class="m-graph"><svg style="width: 36.125rem; height: 18.438rem;" viewBox="0.00 0.00 578.00 295.08">
 <g transform="scale(1 1) rotate(0) translate(4 291.0782)">
 <title>Taskflow</title>
 <g class="m-cluster">
@@ -566,7 +568,204 @@
 </g>
 </g>
 </svg>
-</div><p>When resetting a scalable pipeline to a new range, it will start from the initial state as if it has just been constructed. The token number will count from zero.</p><aside class="m-note m-warning"><h4>Attention</h4><p>Unlike <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> that keeps the given pipes in a <a href="http://en.cppreference.com/w/cpp/utility/tuple.html" class="m-doc-external">std::<wbr />tuple</a> object, <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> does not own the given pipe but maintains a vector of iterators to each pipe in the given range. It is your responsibility to keep those pipe objects alive during the execution of the pipeline task.</p></aside></section><section id="ParallelScalablePipelineLearnMore"><h2><a href="#ParallelScalablePipelineLearnMore">Learn More about Taskflow Pipeline</a></h2><p>Visit the following pages to learn more about pipeline:</p><ol><li><a href="ParallelPipeline.html" class="m-doc">Parallel Pipeline</a></li><li><a href="TextProcessingPipeline.html" class="m-doc">Text Processing Pipeline</a></li><li><a href="GraphProcessingPipeline.html" class="m-doc">Graph Processing Pipeline</a></li><li><a href="TaskflowProcessingPipeline.html" class="m-doc">Taskflow Processing Pipeline</a></li></ol></section>
+</div><p>When resetting a scalable pipeline to a new range, it will start from the initial state as if it has just been constructed, i.e., the token number counts from zero.</p><aside class="m-note m-warning"><h4>Attention</h4><p>Unlike <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> that keeps the given pipes in a <a href="http://en.cppreference.com/w/cpp/utility/tuple.html" class="m-doc-external">std::<wbr />tuple</a> object, <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> does not own the given pipe but maintains a vector of iterators to each pipe in the given range. It is your responsibility to keep those pipe objects alive during the execution of the pipeline task.</p></aside></section><section id="ResetAPlaceholderScalablePipeline"><h2><a href="#ResetAPlaceholderScalablePipeline">Reset a Placeholder Scalable Pipeline</a></h2><p>It is possible to create a scalable pipeline as a placeholder using the constructor overload <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline(size_t num_lines)</a> and reset it to another range later in the application. The following code creates a task to emplace a range of pipes and reset the pipeline to that range, before running the pipeline task:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+
+<span class="kt">size_t</span> <span class="n">num_pipes</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+<span class="kt">size_t</span> <span class="n">num_lines</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;&gt;&gt;</span> <span class="n">pipes</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">ScalablePipeline</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">decltype</span><span class="p">(</span><span class="n">pipes</span><span class="p">)</span><span class="o">::</span><span class="n">iterator</span><span class="o">&gt;</span> <span class="n">spl</span><span class="p">(</span><span class="n">num_lines</span><span class="p">);</span> 
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">init</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
+  <span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">num_pipes</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">pipes</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span> <span class="n">pf</span><span class="p">)</span> <span class="p">{</span> 
+      <span class="k">if</span><span class="p">(</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1024</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">pf</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span>
+        <span class="k">return</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+  <span class="n">spl</span><span class="p">.</span><span class="n">reset</span><span class="p">(</span><span class="n">pipes</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">pipes</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+<span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;init&quot;</span><span class="p">);</span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">pipeline</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">spl</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span>
+<span class="n">pipeline</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">init</span><span class="p">);</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The task graph of this program is shown below:</p><div class="m-graph"><svg style="width: 55.750rem; height: 15.375rem;" viewBox="0.00 0.00 892.00 246.00">
+<g transform="scale(1 1) rotate(0) translate(4 242)">
+<title>Taskflow</title>
+<g class="m-cluster">
+<title>cluster_p0x7ffcc76abe80</title>
+<polygon points="8,-8 8,-222.3848 150,-222.3848 150,-8 8,-8"/>
+<text text-anchor="middle" x="79" y="-205.5848">Taskflow</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7ffcc76abd30</title>
+<polygon points="158,-8 158,-230 876,-230 876,-8 158,-8"/>
+<text text-anchor="middle" x="517" y="-213.2">m1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x8e9a68</title>
+<ellipse cx="79" cy="-170" rx="62.8651" ry="18.2703"/>
+<text text-anchor="middle" x="79" y="-166.2">init pipes</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x8e9980</title>
+<polygon points="139.5,-52 22.5,-52 18.5,-48 18.5,-16 135.5,-16 139.5,-20 139.5,-52"/>
+<polyline points="135.5,-48 18.5,-48 "/>
+<polyline points="135.5,-48 135.5,-16 "/>
+<polyline points="135.5,-48 139.5,-52 "/>
+<text text-anchor="middle" x="79" y="-30.2">pipeline [m1]</text>
+</g>
+<g class="m-edge">
+<title>p0x8e9a68&#45;&gt;p0x8e9980</title>
+<path d="M79,-151.3749C79,-128.4849 79,-89.4 79,-62.6702"/>
+<polygon points="82.5001,-62.4001 79,-52.4001 75.5001,-62.4002 82.5001,-62.4001"/>
+</g>
+<g class="m-node">
+<title>p0x8ea460</title>
+<polygon points="517,-196 462,-170 517,-144 572,-170 517,-196"/>
+<text text-anchor="middle" x="517" y="-166.2">cond</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x8ea378</title>
+<polygon points="220,-52 166,-52 166,-48 162,-48 162,-44 166,-44 166,-24 162,-24 162,-20 166,-20 166,-16 220,-16 220,-52"/>
+<polyline points="166,-48 170,-48 170,-44 166,-44 "/>
+<polyline points="166,-24 170,-24 170,-20 166,-20 "/>
+<text text-anchor="middle" x="193" y="-30.2">rt&#45;0</text>
+</g>
+<g class="m-edge">
+<title>p0x8ea460&#45;&gt;p0x8ea378</title>
+<path stroke-dasharray="5,2" d="M485.1548,-158.82C451.1696,-146.7118 395.879,-126.5041 349,-107 297.5834,-85.6081 283.3302,-78.1073 229.1318,-52.0145"/>
+<polygon points="230.6076,-48.8406 220.0785,-47.6621 227.5746,-55.1494 230.6076,-48.8406"/>
+<text text-anchor="middle" x="354" y="-94.2">0</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x8ea290</title>
+<polygon points="292,-52 238,-52 238,-48 234,-48 234,-44 238,-44 238,-24 234,-24 234,-20 238,-20 238,-16 292,-16 292,-52"/>
+<polyline points="238,-48 242,-48 242,-44 238,-44 "/>
+<polyline points="238,-24 242,-24 242,-20 238,-20 "/>
+<text text-anchor="middle" x="265" y="-30.2">rt&#45;1</text>
+</g>
+<g class="m-edge">
+<title>p0x8ea460&#45;&gt;p0x8ea290</title>
+<path stroke-dasharray="5,2" d="M490.4496,-156.4502C465.8579,-143.8353 428.3172,-124.413 396,-107 363.7077,-89.6004 327.2819,-69.2421 301.053,-54.4517"/>
+<polygon points="302.6529,-51.3357 292.2243,-49.4663 299.211,-57.4311 302.6529,-51.3357"/>
+<text text-anchor="middle" x="401" y="-94.2">1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x8ea1a8</title>
+<polygon points="364,-52 310,-52 310,-48 306,-48 306,-44 310,-44 310,-24 306,-24 306,-20 310,-20 310,-16 364,-16 364,-52"/>
+<polyline points="310,-48 314,-48 314,-44 310,-44 "/>
+<polyline points="310,-24 314,-24 314,-20 310,-20 "/>
+<text text-anchor="middle" x="337" y="-30.2">rt&#45;2</text>
+</g>
+<g class="m-edge">
+<title>p0x8ea460&#45;&gt;p0x8ea1a8</title>
+<path stroke-dasharray="5,2" d="M495.6448,-153.865C464.3492,-130.2194 405.7898,-85.9745 369.2392,-58.3585"/>
+<polygon points="370.9869,-55.2923 360.8983,-52.0565 366.767,-60.8774 370.9869,-55.2923"/>
+<text text-anchor="middle" x="437" y="-94.2">2</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x8ea0c0</title>
+<polygon points="436,-52 382,-52 382,-48 378,-48 378,-44 382,-44 382,-24 378,-24 378,-20 382,-20 382,-16 436,-16 436,-52"/>
+<polyline points="382,-48 386,-48 386,-44 382,-44 "/>
+<polyline points="382,-24 386,-24 386,-20 382,-20 "/>
+<text text-anchor="middle" x="409" y="-30.2">rt&#45;3</text>
+</g>
+<g class="m-edge">
+<title>p0x8ea460&#45;&gt;p0x8ea0c0</title>
+<path stroke-dasharray="5,2" d="M501.9831,-151.0898C483.2598,-127.5123 451.1482,-87.0755 429.996,-60.4394"/>
+<polygon points="432.5041,-57.9696 423.5443,-52.3151 427.0223,-62.3228 432.5041,-57.9696"/>
+<text text-anchor="middle" x="471" y="-94.2">3</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x8e9fd8</title>
+<polygon points="508,-52 454,-52 454,-48 450,-48 450,-44 454,-44 454,-24 450,-24 450,-20 454,-20 454,-16 508,-16 508,-52"/>
+<polyline points="454,-48 458,-48 458,-44 454,-44 "/>
+<polyline points="454,-24 458,-24 458,-20 454,-20 "/>
+<text text-anchor="middle" x="481" y="-30.2">rt&#45;4</text>
+</g>
+<g class="m-edge">
+<title>p0x8ea460&#45;&gt;p0x8e9fd8</title>
+<path stroke-dasharray="5,2" d="M510.8114,-146.6208C504.6195,-123.2294 495.0892,-87.2258 488.4777,-62.249"/>
+<polygon points="491.7836,-61.06 485.8411,-52.2886 485.0166,-62.8513 491.7836,-61.06"/>
+<text text-anchor="middle" x="505" y="-94.2">4</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x8e9ef0</title>
+<polygon points="580,-52 526,-52 526,-48 522,-48 522,-44 526,-44 526,-24 522,-24 522,-20 526,-20 526,-16 580,-16 580,-52"/>
+<polyline points="526,-48 530,-48 530,-44 526,-44 "/>
+<polyline points="526,-24 530,-24 530,-20 526,-20 "/>
+<text text-anchor="middle" x="553" y="-30.2">rt&#45;5</text>
+</g>
+<g class="m-edge">
+<title>p0x8ea460&#45;&gt;p0x8e9ef0</title>
+<path stroke-dasharray="5,2" d="M523.1886,-146.6208C529.3805,-123.2294 538.9108,-87.2258 545.5223,-62.249"/>
+<polygon points="548.9834,-62.8513 548.1589,-52.2886 542.2164,-61.06 548.9834,-62.8513"/>
+<text text-anchor="middle" x="543" y="-94.2">5</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x8e9e08</title>
+<polygon points="652,-52 598,-52 598,-48 594,-48 594,-44 598,-44 598,-24 594,-24 594,-20 598,-20 598,-16 652,-16 652,-52"/>
+<polyline points="598,-48 602,-48 602,-44 598,-44 "/>
+<polyline points="598,-24 602,-24 602,-20 598,-20 "/>
+<text text-anchor="middle" x="625" y="-30.2">rt&#45;6</text>
+</g>
+<g class="m-edge">
+<title>p0x8ea460&#45;&gt;p0x8e9e08</title>
+<path stroke-dasharray="5,2" d="M532.0169,-151.0898C550.7402,-127.5123 582.8518,-87.0755 604.004,-60.4394"/>
+<polygon points="606.9777,-62.3228 610.4557,-52.3151 601.4959,-57.9696 606.9777,-62.3228"/>
+<text text-anchor="middle" x="585" y="-94.2">6</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x8e9d20</title>
+<polygon points="724,-52 670,-52 670,-48 666,-48 666,-44 670,-44 670,-24 666,-24 666,-20 670,-20 670,-16 724,-16 724,-52"/>
+<polyline points="670,-48 674,-48 674,-44 670,-44 "/>
+<polyline points="670,-24 674,-24 674,-20 670,-20 "/>
+<text text-anchor="middle" x="697" y="-30.2">rt&#45;7</text>
+</g>
+<g class="m-edge">
+<title>p0x8ea460&#45;&gt;p0x8e9d20</title>
+<path stroke-dasharray="5,2" d="M538.3552,-153.865C569.6508,-130.2194 628.2102,-85.9745 664.7608,-58.3585"/>
+<polygon points="667.233,-60.8774 673.1017,-52.0565 663.0131,-55.2923 667.233,-60.8774"/>
+<text text-anchor="middle" x="628" y="-94.2">7</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x8e9c38</title>
+<polygon points="796,-52 742,-52 742,-48 738,-48 738,-44 742,-44 742,-24 738,-24 738,-20 742,-20 742,-16 796,-16 796,-52"/>
+<polyline points="742,-48 746,-48 746,-44 742,-44 "/>
+<polyline points="742,-24 746,-24 746,-20 742,-20 "/>
+<text text-anchor="middle" x="769" y="-30.2">rt&#45;8</text>
+</g>
+<g class="m-edge">
+<title>p0x8ea460&#45;&gt;p0x8e9c38</title>
+<path stroke-dasharray="5,2" d="M543.305,-156.3988C567.6755,-143.7483 604.8943,-124.3028 637,-107 669.5821,-89.4404 706.422,-69.019 732.8871,-54.248"/>
+<polygon points="734.7688,-57.2059 741.7914,-49.2729 731.3544,-51.0951 734.7688,-57.2059"/>
+<text text-anchor="middle" x="674" y="-94.2">8</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x8e9b50</title>
+<polygon points="868,-52 814,-52 814,-48 810,-48 810,-44 814,-44 814,-24 810,-24 810,-20 814,-20 814,-16 868,-16 868,-52"/>
+<polyline points="814,-48 818,-48 818,-44 814,-44 "/>
+<polyline points="814,-24 818,-24 818,-20 814,-20 "/>
+<text text-anchor="middle" x="841" y="-30.2">rt&#45;9</text>
+</g>
+<g class="m-edge">
+<title>p0x8ea460&#45;&gt;p0x8e9b50</title>
+<path stroke-dasharray="5,2" d="M548.43,-158.7186C581.9806,-146.5257 636.588,-126.2479 683,-107 735.1503,-85.3723 749.8169,-78.2477 804.7553,-52.0533"/>
+<polygon points="806.409,-55.1424 813.9302,-47.6804 803.3972,-48.8234 806.409,-55.1424"/>
+<text text-anchor="middle" x="729" y="-94.2">9</text>
+</g>
+</g>
+</svg>
+</div><aside class="m-note m-warning"><h4>Attention</h4><p>It is your responsibility to ensure a scalable pipeline has a valid structure before running it. A valid pipeline must have at least one parallel line and one pipe, where the first pipe is a serial type.</p></aside></section><section id="ScalablePipelineUseOtherIteratorTypes"><h2><a href="#ScalablePipelineUseOtherIteratorTypes">Use Other Iterator Types</a></h2><p>When assigning a range to a scalable pipeline, the pipeline fetches all pipe iterators in that range to an internal vector. This organization allows invoking a pipe callable to be a random accessible operation, regardless of the pipe container type. Taskflow does not have much restriction on the iterator type, as long as these pipes can be iterated in a sequential order using the postfix increment operator, <code>++</code>.</p><pre class="m-code"><span class="c1">// use vector to store pipes</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;&gt;&gt;</span> <span class="n">vector</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">ScalablePipeline</span> <span class="n">spl1</span><span class="p">(</span><span class="n">num_lines</span><span class="p">,</span> <span class="n">vector</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">vector</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+
+<span class="c1">// use list to store pipes</span>
+<span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;&gt;&gt;</span> <span class="n">list</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">ScalablePipeline</span> <span class="n">spl2</span><span class="p">(</span><span class="n">num_lines</span><span class="p">,</span> <span class="n">list</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">list</span><span class="p">.</span><span class="n">end</span><span class="p">());</span></pre></section><section id="ParallelScalablePipelineLearnMore"><h2><a href="#ParallelScalablePipelineLearnMore">Learn More about Taskflow Pipeline</a></h2><p>Visit the following pages to learn more about pipeline:</p><ol><li><a href="ParallelPipeline.html" class="m-doc">Parallel Pipeline</a></li><li><a href="TextProcessingPipeline.html" class="m-doc">Text Processing Pipeline</a></li><li><a href="GraphProcessingPipeline.html" class="m-doc">Graph Processing Pipeline</a></li><li><a href="TaskflowProcessingPipeline.html" class="m-doc">Taskflow Processing Pipeline</a></li></ol></section>
       </div>
     </div>
   </div>
