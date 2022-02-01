@@ -693,7 +693,7 @@ for(size_t i=0; i<3; i++) {
 }
 
 // create a pipeline of four parallel lines based on the given vector of pipes
-tf::ScalablePipeline pl(num_lines, pipes.begin(), pipes.end());
+tf::ScalablePipeline<decltype(pipes)::iterator> pl(num_lines, pipes.begin(), pipes.end());
 
 // build the pipeline graph using composition
 tf::Task init = taskflow.emplace([](){ std::cout << "ready\n"; })

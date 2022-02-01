@@ -78,7 +78,7 @@ int main() {
   }
   
   // create a pipeline of four parallel lines using the given vector of pipes
-  tf::ScalablePipeline pl(num_lines, pipes.begin(), pipes.end());
+  tf::ScalablePipeline<decltype(pipes)::iterator> pl(num_lines, pipes.begin(), pipes.end());
 
   // build the pipeline graph using composition
   tf::Task init = taskflow.emplace([](){ std::cout << "ready\n"; })
