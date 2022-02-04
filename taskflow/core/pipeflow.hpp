@@ -53,13 +53,21 @@ class Pipeflow {
   void stop() {
     _stop = true;
   }
-  
+
+  /**
+  @brief Returns the state of the pipeline stop/running 
+  */
+  bool is_stop() {
+    return _stop;
+  }
+
   Pipeflow(size_t line, size_t pipe) :
     _line {line},
     _pipe {pipe} {
     _token = -1;
     _stop = false;
   }
+  
   private:
 
   size_t _line;

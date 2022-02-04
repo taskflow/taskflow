@@ -1087,16 +1087,16 @@ void ScalablePipeline<P>::_build() {
           if (retval[0] == 1) {
             pf = &_pipeflows[n_l];
           }
-          if (pf->_pipe == 0)
-          {
-            //Just to mark the end of the line execution, ending the task execution here.
-            //However to continue the pipeline execution, scheduling it again. 
-            //I am assuming that there won't be any race condition here- 
-            //Say before this returns if the scheduled task gets executed, that will eventaully 
-            //execute the same thing that gets executed when there is no "return".
-            rt.schedule(_tasks[pf->_line + 1],_pipeflows[pf->_line]);
-            return;
-          }
+          // if (pf->_pipe == 0)
+          // {
+          //   //Just to mark the end of the line execution, ending the task execution here.
+          //   //However to continue the pipeline execution, scheduling it again. 
+          //   //I am assuming that there won't be any race condition here- 
+          //   //Say before this returns if the scheduled task gets executed, that will eventaully 
+          //   //execute the same thing that gets executed when there is no "return".
+          //   rt.schedule(_tasks[pf->_line + 1],_pipeflows[pf->_line]);
+          //   return;
+          // }
           goto pipeline; 
         }
       }
