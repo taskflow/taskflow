@@ -104,6 +104,11 @@ class Graph {
     */
     size_t size() const;
 
+    /**
+    @brief clears the graph 
+    */
+    void clear();
+
   private:
 
     std::vector<Node*> _nodes;
@@ -713,6 +718,11 @@ inline Graph& Graph::operator = (Graph&& other) {
   _clear();
   _nodes = std::move(other._nodes);
   return *this;
+}
+
+// Procedure: clear
+inline void Graph::clear() {
+  _clear();
 }
 
 // Procedure: clear
