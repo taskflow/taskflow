@@ -1,7 +1,8 @@
 /*
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+              Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -25,14 +26,26 @@
 "use strict"; /* it summons the Cthulhu in a proper way, they say */
 
 var Search = {
-    formatVersion: 1, /* the data filename contains this number too */
+    formatVersion: 2, /* the data filename contains this number too */
 
     dataSize: 0, /* used mainly by tests, not here */
     symbolCount: '&hellip;',
     trie: null,
     map: null,
+    mapFlagsOffset: null,
     typeMap: null,
     maxResults: 0,
+
+    /* Type sizes and masks. The data is always fetched as 16/32bit number and
+       then masked to 1, 2, 3 or 4 bytes. Fortunately on LE a mask is enough,
+       on BE we'd have to read N bytes before and then mask. */
+    nameSizeBytes: null,
+    nameSizeMask: null,
+    resultIdBytes: null,
+    resultIdMask: null,
+    fileOffsetBytes: null,
+    fileOffsetMask: null,
+    lookaheadBarrierMask: null,
 
     /* Always contains at least the root node offset and then one node offset
        per entered character */
@@ -57,7 +70,7 @@ var Search = {
 
         /* The file is too short to contain at least the headers and empty
            sections */
-        if(view.byteLength < 26) {
+        if(view.byteLength < 31) {
             console.error("Search data too short");
             return false;
         }
@@ -74,16 +87,61 @@ var Search = {
             return false;
         }
 
-        /* Separate the data into the trie and the result map */
-        let mapOffset = view.getUint32(6, true);
-        let typeMapOffset = view.getUint32(10, true);
-        this.trie = new DataView(buffer, 14, mapOffset - 14);
-        this.map = new DataView(buffer, mapOffset, typeMapOffset - mapOffset);
+        /* Fetch type sizes. The only value that can fail is result ID byte
+           count, where value of 3 has no assigned meaning. */
+        let typeSizes = view.getUint8(4, true);
+        if((typeSizes & 0x01) >> 0 == 0) {
+            this.fileOffsetBytes = 3;
+            this.fileOffsetMask = 0x00ffffff;
+            this.lookaheadBarrierMask = 0x00800000;
+        } else /* (typeSizes & 0x01) >> 0 == 1 */ {
+            this.fileOffsetBytes = 4;
+            this.fileOffsetMask = 0xffffffff;
+            this.lookaheadBarrierMask = 0x80000000;
+        }
+        if((typeSizes & 0x06) >> 1 == 0) {
+            this.resultIdBytes = 2;
+            this.resultIdMask = 0x0000ffff;
+        } else if((typeSizes & 0x06) >> 1 == 1) {
+            this.resultIdBytes = 3;
+            this.resultIdMask = 0x00ffffff;
+        } else if((typeSizes & 0x06) >> 1 == 2) {
+            this.resultIdBytes = 4;
+            this.resultIdMask = 0xffffffff;
+        } else /* (typeSizes & 0x06) >> 1 == 3 */ {
+            console.error("Invalid search data result ID byte value");
+            return false;
+        }
+        if((typeSizes & 0x08) >> 3 == 0) {
+            this.nameSizeBytes = 1;
+            this.nameSizeMask = 0x00ff;
+        } else /* (typeSizes & 0x08) >> 3 == 1 */ {
+            this.nameSizeBytes = 2;
+            this.nameSizeMask = 0xffff;
+        }
+
+        /* Separate the data into the trie and the result / type map. Because
+           we're reading larger values than there might be and then masking out
+           the high bytes, keep extra 1/2 byte padding at the end to avoid
+           OOB errors. */
+        let mapOffset = view.getUint32(12, true);
+        let typeMapOffset = view.getUint32(16, true);
+        /* There may be a 3-byte file offset at the end of the trie which we'll
+           read as 32-bit, add one safety byte in that case */
+        this.trie = new DataView(buffer, 20, mapOffset - 20 + (4 - this.fileOffsetBytes));
+        /* There may be a 3-byte file size (for zero results) which we'll read
+           as 32-bit, add one safety byte in that case */
+        this.map = new DataView(buffer, mapOffset, typeMapOffset - mapOffset + (4 - this.fileOffsetBytes));
+        /* No variable-size types in the type map at the moment */
         this.typeMap = new DataView(buffer, typeMapOffset);
+
+        /* Offset of the first result map item is after N + 1 offsets and N
+           flags, calculate flag offset from that */
+        this.mapFlagsOffset = this.fileOffsetBytes*(((this.map.getUint32(0, true) & this.fileOffsetMask) - this.fileOffsetBytes)/(this.fileOffsetBytes + 1) + 1);
 
         /* Set initial properties */
         this.dataSize = buffer.byteLength;
-        this.symbolCount = view.getUint16(4, true) + " symbols (" + Math.round(this.dataSize/102.4)/10 + " kB)";
+        this.symbolCount = view.getUint32(8, true) + " symbols (" + Math.round(this.dataSize/102.4)/10 + " kB)";
         this.maxResults = maxResults ? maxResults : 100;
         this.searchString = '';
         this.searchStack = [this.trie.getUint32(0, true)];
@@ -256,25 +314,26 @@ var Search = {
         for(; foundPrefix != searchString.length; ++foundPrefix) {
             /* Calculate offset and count of children */
             let offset = this.searchStack[this.searchStack.length - 1];
-            let relChildOffset = 2 + this.trie.getUint8(offset)*2;
 
-            /* Calculate child count. If there's a lot of results, the count
-               "leaks over" to the child count storage. */
+            /* If there's a lot of results, the result count is a 16bit BE value
+               instead */
             let resultCount = this.trie.getUint8(offset);
-            let childCount = this.trie.getUint8(offset + 1);
+            let resultCountSize = 1;
             if(resultCount & 0x80) {
-                resultCount = (resultCount & 0x7f) | ((childCount & 0xf0) << 3);
-                childCount = childCount & 0x0f;
+                resultCount = this.trie.getUint16(offset, false) & ~0x8000;
+                ++resultCountSize;
             }
 
+            let childCount = this.trie.getUint8(offset + resultCountSize);
+
             /* Go through all children and find the next offset */
-            let childOffset = offset + relChildOffset;
+            let childOffset = offset + resultCountSize + 1 + resultCount*this.resultIdBytes;
             let found = false;
             for(let j = 0; j != childCount; ++j) {
-                if(String.fromCharCode(this.trie.getUint8(childOffset + j*4 + 3)) != searchString[foundPrefix])
+                if(String.fromCharCode(this.trie.getUint8(childOffset + j)) != searchString[foundPrefix])
                     continue;
 
-                this.searchStack.push(this.trie.getUint32(childOffset + j*4, true) & 0x007fffff);
+                this.searchStack.push(this.trie.getUint32(childOffset + childCount + j*this.fileOffsetBytes, true) & this.fileOffsetMask & ~this.lookaheadBarrierMask);
                 found = true;
                 break;
             }
@@ -322,15 +381,17 @@ var Search = {
                "leaks over" to the child count storage. */
             /* TODO: hmmm. this is helluvalot duplicated code. hmm. */
             let resultCount = this.trie.getUint8(offset);
-            let childCount = this.trie.getUint8(offset + 1);
+            let resultCountSize = 1;
             if(resultCount & 0x80) {
-                resultCount = (resultCount & 0x7f) | ((childCount & 0xf0) << 3);
-                childCount = childCount & 0x0f;
+                resultCount = this.trie.getUint16(offset, false) & ~0x8000;
+                ++resultCountSize;
             }
+
+            let childCount = this.trie.getUint8(offset + resultCountSize);
 
             /* Populate the results with all values associated with this node */
             for(let i = 0; i != resultCount; ++i) {
-                let index = this.trie.getUint16(offset + 2 + i*2, true);
+                let index = this.trie.getUint32(offset + resultCountSize + 1 + i*this.resultIdBytes, true) & this.resultIdMask;
                 results.push(this.gatherResult(index, suffixLength, 0xffffff)); /* should be enough haha */
 
                 /* 'nuff said. */
@@ -339,17 +400,15 @@ var Search = {
             }
 
             /* Dig deeper */
-            /* TODO: hmmm. this is helluvalot duplicated code. hmm. */
-            let relChildOffset = 2 + this.trie.getUint8(offset)*2;
-            let childOffset = offset + relChildOffset;
+            let childOffset = offset + resultCountSize + 1 + resultCount*this.resultIdBytes;
             for(let j = 0; j != childCount; ++j) {
-                let offsetBarrier = this.trie.getUint32(childOffset + j*4, true);
+                let offsetBarrier = this.trie.getUint32(childOffset + childCount + j*this.fileOffsetBytes, true) & this.fileOffsetMask;
 
                 /* Lookahead barrier, don't dig deeper */
-                if(offsetBarrier & 0x00800000) continue;
+                if(offsetBarrier & this.lookaheadBarrierMask) continue;
 
                 /* Append to the queue */
-                leaves.push([offsetBarrier & 0x007fffff, suffixLength + 1]);
+                leaves.push([offsetBarrier & ~this.lookaheadBarrierMask, suffixLength + 1]);
 
                 /* We don't have anything yet and this is the only path
                    forward, add the char to suggested Tab autocompletion. Can't
@@ -360,7 +419,7 @@ var Search = {
                    absolutely unwanted when all I want is check for truncated
                    UTF-8. */
                 if(!results.length && leaves.length == 1 && childCount == 1)
-                    suggestedTabAutocompletionChars.push(this.trie.getUint8(childOffset + j*4 + 3));
+                    suggestedTabAutocompletionChars.push(this.trie.getUint8(childOffset + j));
             }
         }
 
@@ -368,38 +427,38 @@ var Search = {
     },
 
     gatherResult: function(index, suffixLength, maxUrlPrefix) {
-        let flags = this.map.getUint8(index*4 + 3);
-        let resultOffset = this.map.getUint32(index*4, true) & 0x00ffffff;
+        let flags = this.map.getUint8(this.mapFlagsOffset + index);
+        let resultOffset = this.map.getUint32(index*this.fileOffsetBytes, true) & this.fileOffsetMask;
 
         /* The result is an alias, parse the aliased prefix */
         let aliasedIndex = null;
         if((flags & 0xf0) == 0x00) {
-            aliasedIndex = this.map.getUint16(resultOffset, true);
-            resultOffset += 2;
+            aliasedIndex = this.map.getUint32(resultOffset, true) & this.resultIdMask;
+            resultOffset += this.resultIdBytes;
         }
 
         /* The result has a prefix, parse that first, recursively */
         let name = '';
         let url = '';
         if(flags & (1 << 3)) {
-            let prefixIndex = this.map.getUint16(resultOffset, true);
-            let prefixUrlPrefixLength = Math.min(this.map.getUint8(resultOffset + 2), maxUrlPrefix);
+            let prefixIndex = this.map.getUint32(resultOffset, true) & this.resultIdMask;
+            let prefixUrlPrefixLength = Math.min(this.map.getUint16(resultOffset + this.resultIdBytes, true) & this.nameSizeMask, maxUrlPrefix);
 
             let prefix = this.gatherResult(prefixIndex, 0 /*ignored*/, prefixUrlPrefixLength);
             name = prefix.name;
             url = prefix.url;
 
-            resultOffset += 3;
+            resultOffset += this.resultIdBytes + this.nameSizeBytes;
         }
 
         /* The result has a suffix, extract its length */
         let resultSuffixLength = 0;
         if(flags & (1 << 0)) {
-            resultSuffixLength = this.map.getUint8(resultOffset);
-            ++resultOffset;
+            resultSuffixLength = this.map.getUint16(resultOffset, true) & this.nameSizeMask;
+            resultOffset += this.nameSizeBytes;
         }
 
-        let nextResultOffset = this.map.getUint32((index + 1)*4, true) & 0x00ffffff;
+        let nextResultOffset = this.map.getUint32((index + 1)*this.fileOffsetBytes, true) & this.fileOffsetMask;
 
         /* Extract name */
         let j = resultOffset;
@@ -708,7 +767,6 @@ if(typeof document !== 'undefined') {
                     document.body.style.overflow = 'auto';
                     document.body.style.paddingRight = '0';
                 }
-
                 return false; /* so the form doesn't get sent */
 
             /* Copy (Markdown) link to keyboard */
@@ -739,9 +797,63 @@ if(typeof document !== 'undefined') {
                excluding Ctrl-key, which is usually not for text input. In the
                worst case the autocompletion won't be allowed ever, which is
                much more acceptable behavior than having no ability to disable
-               it and annoying the users. See also this WONTFIX Android bug:
-               https://bugs.chromium.org/p/chromium/issues/detail?id=118639 */
-            } else if(event.key != 'Backspace' && event.key != 'Delete' && !event.metaKey && (!event.ctrlKey || event.altKey)) {
+               it and annoying the users. */
+            } else if(event.key != 'Backspace' && event.key != 'Delete' && !event.metaKey && (!event.ctrlKey || event.altKey)
+                /* Don't ever attempt autocompletion with Android virtual
+                   keyboards, as those report all `event.key`s as
+                   `Unidentified` (on Chrome) or `Process` (on Firefox) with
+                   `event.code` 229 and thus we have no way to tell if a text
+                   is entered or deleted. See this WONTFIX bug for details:
+                    https://bugs.chromium.org/p/chromium/issues/detail?id=118639
+                   Couldn't find any similar bugreport for Firefox, but I
+                   assume the virtual keyboard is to blame.
+
+                   An alternative is to hook into inputEvent, which has the
+                   data, but ... there's more cursed issues right after that:
+
+                    - setSelectionRange() in Chrome on Android only renders
+                      stuff, but doesn't actually act as such. Pressing
+                      Backspace will only remove the highlight, but the text
+                      stays here. Only delay-calling it through a timeout will
+                      work as intended. Possibly related SO suggestion (back
+                      then not even the rendering worked properly):
+                       https://stackoverflow.com/a/13235951
+                      Possibly related Chrome bug:
+                       https://bugs.chromium.org/p/chromium/issues/detail?id=32865
+
+                    - On Firefox Mobile, programmatically changing an input
+                      value (for the autocompletion highlight) will trigger an
+                      input event, leading to search *and* autocompletion being
+                      triggered again. Ultimately that results in newly typed
+                      characters not replacing the autocompletion but rather
+                      inserting before it, corrupting the searched string. This
+                      event has to be explicitly ignored.
+
+                    - On Firefox Mobile, deleting a highlight with the
+                      backspace key will result in *three* input events instead
+                      of one:
+                        1. `deleteContentBackward` removing the selection (same
+                           as Chrome or desktop Firefox)
+                        2. `deleteContentBackward` removing *the whole word*
+                           that contained the selection (or the whole text if
+                           it's just one word)
+                        3. `insertCompositionText`, adding the word back in,
+                           resulting in the same state as (1).
+                      I have no idea WHY it has to do this (possibly some
+                      REALLY NASTY workaround to trigger correct font shaping?)
+                      but ultimately it results in the autocompletion being
+                      added again right after it got deleted, making this whole
+                      thing VERY annoying to use.
+
+                   I attempted to work around the above, but it resulted in a
+                   huge amount of browser-specific code that achieves only 90%
+                   of the goal, with certain corner cases still being rather
+                   broken (such as autocompletion randomly triggering when
+                   erasing the text, even though it shouldn't). So disabling
+                   autocompletion on this HELLISH BROKEN PLATFORM is the best
+                   option at the moment. */
+                && event.key != 'Unidentified' && event.key != 'Process'
+            ) {
                 Search.autocompleteNextInputEvent = true;
             /* Otherwise reset the flag, because when the user would press e.g.
                the 'a' key and then e.g. ArrowRight (which doesn't trigger

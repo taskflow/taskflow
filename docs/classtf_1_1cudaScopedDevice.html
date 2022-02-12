@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>cudaScopedDevice <span class="m-thin">class</span>
         </h1>
         <p>class to create an RAII-styled context switch</p>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
@@ -59,15 +59,15 @@
               </ul>
             </li>
           </ul>
-        </div>
-<p>Sample usage:</p><pre class="m-code"><span class="p">{</span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">cudaScopedDevice</span> <span class="n">device</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>  <span class="c1">// switch to the device context 1</span>
+        </nav>
+<p>Sample usage:</p><pre class="m-code"><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaScopedDevice</span><span class="w"> </span><span class="nf">device</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w">  </span><span class="c1">// switch to the device context 1</span>
 
-  <span class="c1">// create a stream under device context 1</span>
-  <span class="n">cudaStream_t</span> <span class="n">stream</span><span class="p">;</span>
-  <span class="n">cudaStreamCreate</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// create a stream under device context 1</span>
+<span class="w">  </span><span class="n">cudaStream_t</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">cudaStreamCreate</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">);</span><span class="w"></span>
 
-<span class="p">}</span>  <span class="c1">// leaving the scope and goes back to the previous device context</span></pre><p>cudaScopedDevice is neither movable nor copyable.</p>
+<span class="p">}</span><span class="w">  </span><span class="c1">// leaving the scope and goes back to the previous device context</span></pre><p>cudaScopedDevice is neither movable nor copyable.</p>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
@@ -139,8 +139,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

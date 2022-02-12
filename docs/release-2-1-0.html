@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="Releases.html">Release Notes</a> &raquo;</span>
           Release 2.1.0 (2019/02/15)
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#release-2-1-0_download">Download</a></li>
@@ -58,7 +58,7 @@
             <li><a href="#release-2-1-0_breaks_and_deprecated_features">Breaks and Deprecated Features</a></li>
             <li><a href="#release-2-1-0_bug_fixes">Bug Fixes</a></li>
           </ul>
-        </div>
+        </nav>
 <p>Cpp-Taskflow 2.1.0 is the second release in the 2.x line! This release includes several new changes such as tf::Framework, tf::WorkStealingThreadpool, tf::SpeculativeThreadpool, allocators, benchmarks, and so forth. In addition, this release improved usability, stability, and performance.</p><section id="release-2-1-0_download"><h2><a href="#release-2-1-0_download">Download</a></h2><p>Cpp-Taskflow 2.1.0 can be downloaded from <a href="https://github.com/cpp-taskflow/cpp-taskflow/releases/tag/v2.1.0">here</a>.</p></section><section id="release-2-1-0_new_features"><h2><a href="#release-2-1-0_new_features">New Features</a></h2><ul><li>A new reuseable task dependency graph tf::Framework.</li><li>New API (tf::Taskflow::run, tf::Taskflow::run_n, tf::Taskflow::run_until) to execute a framework</li></ul></section><section id="release-2-1-0_improvements_enhancements"><h2><a href="#release-2-1-0_improvements_enhancements">Improvements and Enhancements</a></h2><ul><li>Improved the performance of tf::WorkStealingThreadpool (non-blocking notifier, work stealing strategy, etc.)</li><li>Changed the data structure to store nodes and topologies to <a href="http://en.cppreference.com/w/cpp/container/list.html" class="m-doc-external">std::<wbr />list</a>.</li><li>Added memory pool and allocator to manage the memory allocation of nodes and topologies.</li><li>Added a customized vector (PassiveVector) to hold POD data.</li><li>Added a dependents vector to keep track of the predecessors, in addition to successors, of a node.</li><li>Added more examples to demonstrate the usage of Cpp-Taskflow.</li><li>Added a benchmarking environment with comparison to OpenMP and Intel TBB libraries (micro-benchmarks and machine learning)</li><li>Removed the target node from a topology.</li></ul></section><section id="release-2-1-0_breaks_and_deprecated_features"><h2><a href="#release-2-1-0_breaks_and_deprecated_features">Breaks and Deprecated Features</a></h2><ul><li><a href="classtf_1_1FlowBuilder.html#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc">tf::<wbr />Taskflow::<wbr />emplace</a> is now merged with tf::Taskflow::silent_emplace (both are the same) and no longer returns <a href="http://en.cppreference.com/w/cpp/thread/future.html" class="m-doc-external">std::<wbr />future</a> in order to support tf::Framework</li></ul></section><section id="release-2-1-0_bug_fixes"><h2><a href="#release-2-1-0_bug_fixes">Bug Fixes</a></h2><p>There are no major bug fixes in this release.</p></section>
       </div>
     </div>
@@ -98,8 +98,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

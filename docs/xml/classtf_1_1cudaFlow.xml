@@ -256,7 +256,7 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="157" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1410" bodyend="1419"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1adb731be71bdd436dfb5e36e6213a9a17" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename F</type>
@@ -269,7 +269,7 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
         </templateparamlist>
         <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
         <definition>cudaTask tf::cudaFlow::kernel</definition>
-        <argsstring>(dim3 g, dim3 b, size_t s, F &amp;&amp;f, ArgsT &amp;&amp;... args)</argsstring>
+        <argsstring>(dim3 g, dim3 b, size_t s, F f, ArgsT &amp;&amp;... args)</argsstring>
         <name>kernel</name>
         <param>
           <type>dim3</type>
@@ -284,7 +284,7 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
           <declname>s</declname>
         </param>
         <param>
-          <type>F &amp;&amp;</type>
+          <type>F</type>
           <declname>f</declname>
         </param>
         <param>
@@ -351,7 +351,7 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="174" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1272" bodyend="1297"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a15ed90a010e14abb77797c798675b61f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaFlow_1a6ee746bd98fbb04326d1e76dab9b955c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename F</type>
@@ -364,7 +364,7 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
         </templateparamlist>
         <type>void</type>
         <definition>void tf::cudaFlow::kernel</definition>
-        <argsstring>(cudaTask task, dim3 g, dim3 b, size_t shm, F &amp;&amp;f, ArgsT &amp;&amp;... args)</argsstring>
+        <argsstring>(cudaTask task, dim3 g, dim3 b, size_t shm, F f, ArgsT &amp;&amp;... args)</argsstring>
         <name>kernel</name>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
@@ -383,7 +383,7 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
           <declname>shm</declname>
         </param>
         <param>
-          <type>F &amp;&amp;</type>
+          <type>F</type>
           <declname>f</declname>
         </param>
         <param>
@@ -393,7 +393,7 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
         <briefdescription>
 <para>updates parameters of a kernel task </para>        </briefdescription>
         <detaileddescription>
-<para>The method is similar to <ref refid="classtf_1_1cudaFlow_1adb731be71bdd436dfb5e36e6213a9a17" kindref="member">tf::cudaFlow::kernel</ref> but operates on a task of type <ref refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea35c10219c45ccfb5b07444fd7e17214c" kindref="member">tf::cudaTaskType::KERNEL</ref>. The kernel function name must NOT change. </para>        </detaileddescription>
+<para>The method is similar to <ref refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" kindref="member">tf::cudaFlow::kernel</ref> but operates on a task of type <ref refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea35c10219c45ccfb5b07444fd7e17214c" kindref="member">tf::cudaTaskType::KERNEL</ref>. The kernel function name must NOT change. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="184" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1423" bodyend="1447"/>
@@ -3643,7 +3643,7 @@ The function launches kernels asynchronously to find the largest element in the 
 <simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle</para></simplesect>
 A captured subflow forms a sub-graph to the cudaFlow and can be used to capture custom (or third-party) kernels that cannot be directly constructed from the cudaFlow.</para><para>Example usage:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>my_kernel<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1adb731be71bdd436dfb5e36e6213a9a17" kindref="member">kernel</ref>(my_arguments);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>my_kernel<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" kindref="member">kernel</ref>(my_arguments);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>flow<sp/>capturer<sp/>to<sp/>capture<sp/>custom<sp/>kernels</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>my_subflow<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a89c389fff64a16e5dd8c60875d3b514d" kindref="member">capture</ref>([&amp;](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>capturer){</highlight></codeline>
@@ -3713,8 +3713,8 @@ A captured subflow forms a sub-graph to the cudaFlow and can be used to capture 
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>two<sp/>kernel<sp/>tasks<sp/></highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task1<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1adb731be71bdd436dfb5e36e6213a9a17" kindref="member">kernel</ref>(grid1,<sp/>block1,<sp/>shm_size1,<sp/>kernel1,<sp/>args1);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task2<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1adb731be71bdd436dfb5e36e6213a9a17" kindref="member">kernel</ref>(grid2,<sp/>block2,<sp/>shm_size2,<sp/>kernel2,<sp/>args2);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task1<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" kindref="member">kernel</ref>(grid1,<sp/>block1,<sp/>shm_size1,<sp/>kernel1,<sp/>args1);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task2<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" kindref="member">kernel</ref>(grid2,<sp/>block2,<sp/>shm_size2,<sp/>kernel2,<sp/>args2);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>kernel1<sp/>runs<sp/>before<sp/>kernel2</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>task1.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(task2);</highlight></codeline>
@@ -3753,8 +3753,8 @@ A captured subflow forms a sub-graph to the cudaFlow and can be used to capture 
       <member refid="classtf_1_1cudaFlow_1a02e4e5cf7d03b9d087d6fbf54eb86bbf" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>host</name></member>
       <member refid="classtf_1_1cudaFlow_1a062cc98a0b2d2199b50c3cbad16f5fb8" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>inclusive_scan</name></member>
       <member refid="classtf_1_1cudaFlow_1a98ceb9d36d7e0ceeeb2acfdd6a2e6084" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>inclusive_scan</name></member>
-      <member refid="classtf_1_1cudaFlow_1adb731be71bdd436dfb5e36e6213a9a17" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>kernel</name></member>
-      <member refid="classtf_1_1cudaFlow_1a15ed90a010e14abb77797c798675b61f" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>kernel</name></member>
+      <member refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>kernel</name></member>
+      <member refid="classtf_1_1cudaFlow_1a6ee746bd98fbb04326d1e76dab9b955c" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>kernel</name></member>
       <member refid="classtf_1_1cudaFlow_1a7c99f8f1a961a225e2ea708afaa34905" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>max_element</name></member>
       <member refid="classtf_1_1cudaFlow_1a05593150085596723ee87f9ed1c4bc3e" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>max_element</name></member>
       <member refid="classtf_1_1cudaFlow_1ad37637606f0643f360e9eda1f9a6e559" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>memcpy</name></member>
