@@ -21,8 +21,8 @@
 <codeline><highlight class="normal"><sp/><sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>two<sp/>kernel<sp/>tasks<sp/>that<sp/>need<sp/>access<sp/>to<sp/>gpu_variable</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>kernel1<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1adb731be71bdd436dfb5e36e6213a9a17" kindref="member">kernel</ref>(grid1,<sp/>block1,<sp/>shm1,<sp/>my_kernel_1,<sp/>...);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>kernel2<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1adb731be71bdd436dfb5e36e6213a9a17" kindref="member">kernel</ref>(grid2,<sp/>block2,<sp/>shm2,<sp/>my_kernel_2,<sp/>...);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>kernel1<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" kindref="member">kernel</ref>(grid1,<sp/>block1,<sp/>shm1,<sp/>my_kernel_1,<sp/>...);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>kernel2<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" kindref="member">kernel</ref>(grid2,<sp/>block2,<sp/>shm2,<sp/>my_kernel_2,<sp/>...);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>set_par.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(kernel1,<sp/>kernel2);</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>

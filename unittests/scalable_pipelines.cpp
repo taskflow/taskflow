@@ -5,6 +5,7 @@
 #include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/pipeline.hpp>
 
+
 // ----------------------------------------------------------------------------
 // Scalable Pipeline
 // ----------------------------------------------------------------------------
@@ -512,20 +513,26 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
         subpipes.emplace_back(tf::PipeType::PARALLEL, [&, subN](auto& subpf) mutable {
             REQUIRE(subj2++ < subN);
             REQUIRE(subpf.token() % subL == subpf.line());
-            REQUIRE(source[j1][subpf.token()] + 1 == subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]);
+            REQUIRE(
+              source[j1][subpf.token()] + 1 == 
+              subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]
+            );
             subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
-              = source[j1][subpf.token()] + 1;
+            = source[j1][subpf.token()] + 1;
         });
 
         // subpipe 3
         subpipes.emplace_back(tf::PipeType::SERIAL, [&, subN](auto& subpf) mutable {
-            REQUIRE(subj3 < subN);
-            REQUIRE(subpf.token() % subL == subpf.line());
-            REQUIRE(source[j1][subj3] + 1 == subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]);
-            subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
-              = source[j1][subj3] + 3;
-            subcollection.push_back(subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]);
-            ++subj3;
+          REQUIRE(subj3 < subN);
+          REQUIRE(subpf.token() % subL == subpf.line());
+          REQUIRE(
+            source[j1][subj3] + 1 == 
+            subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]
+          );
+          subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
+            = source[j1][subj3] + 3;
+          subcollection.push_back(subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]);
+          ++subj3;
         });
 
         tf::Executor executor(w);
@@ -577,37 +584,43 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
 
         // subpipe 1
         subpipes.emplace_back(tf::PipeType::SERIAL, [&, subN](auto& subpf) mutable {
-            if(subj1 == subN) {
-              subpf.stop();
-              return;
-            }
+          if(subj1 == subN) {
+            subpf.stop();
+            return;
+          }
 
-            REQUIRE(subpf.token() % subL == subpf.line());
+          REQUIRE(subpf.token() % subL == subpf.line());
 
-            subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
-              = source[j1][subj1] + 1;
+          subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] = 
+          source[j1][subj1] + 1;
 
-            ++subj1;
+          ++subj1;
         });
 
         // subpipe 2
         subpipes.emplace_back(tf::PipeType::PARALLEL, [&, subN](auto& subpf) mutable {
-            REQUIRE(subj2++ < subN);
-            REQUIRE(subpf.token() % subL == subpf.line());
-            REQUIRE(source[j1][subpf.token()] + 1 == subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]);
-            subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
-              = source[j1][subpf.token()] + 1;
+          REQUIRE(subj2++ < subN);
+          REQUIRE(subpf.token() % subL == subpf.line());
+          REQUIRE(
+            source[j1][subpf.token()] + 1 == 
+            subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]
+          );
+          subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
+          = source[j1][subpf.token()] + 1;
         });
 
         // subpipe 3
         subpipes.emplace_back(tf::PipeType::SERIAL, [&, subN](auto& subpf) mutable {
-            REQUIRE(subj3 < subN);
-            REQUIRE(subpf.token() % subL == subpf.line());
-            REQUIRE(source[j1][subj3] + 1 == subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]);
-            subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
-              = source[j1][subj3] + 13;
-            subcollection.push_back(subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]);
-            ++subj3;
+          REQUIRE(subj3 < subN);
+          REQUIRE(subpf.token() % subL == subpf.line());
+          REQUIRE(
+            source[j1][subj3] + 1 == 
+            subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]
+          );
+          subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
+          = source[j1][subj3] + 13;
+          subcollection.push_back(subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]);
+          ++subj3;
         });
 
         tf::Executor executor(w);
@@ -659,37 +672,43 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
 
         // subpipe 1
         subpipes.emplace_back(tf::PipeType::SERIAL, [&, subN](auto& subpf) mutable {
-            if(subj1 == subN) {
-              subpf.stop();
-              return;
-            }
+          if(subj1 == subN) {
+            subpf.stop();
+            return;
+          }
 
-            REQUIRE(subpf.token() % subL == subpf.line());
+          REQUIRE(subpf.token() % subL == subpf.line());
 
-            subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
-              = source[j1][subj1] + 1;
+          subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
+            = source[j1][subj1] + 1;
 
-            ++subj1;
+          ++subj1;
         });
 
         // subpipe 2
         subpipes.emplace_back(tf::PipeType::PARALLEL, [&, subN](auto& subpf) mutable {
-            REQUIRE(subj2++ < subN);
-            REQUIRE(subpf.token() % subL == subpf.line());
-            REQUIRE(source[j1][subpf.token()] + 1 == subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]);
-            subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
-              = source[j1][subpf.token()] + 1;
+          REQUIRE(subj2++ < subN);
+          REQUIRE(subpf.token() % subL == subpf.line());
+          REQUIRE(
+            source[j1][subpf.token()] + 1 == 
+            subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]
+          );
+          subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] = 
+          source[j1][subpf.token()] + 1;
         });
 
         // subpipe 3
         subpipes.emplace_back(tf::PipeType::SERIAL, [&, subN](auto& subpf) mutable {
-            REQUIRE(subj3 < subN);
-            REQUIRE(subpf.token() % subL == subpf.line());
-            REQUIRE(source[j1][subj3] + 1 == subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]);
-            subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
-              = source[j1][subj3] + 7;
-            subcollection.push_back(subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]);
-            ++subj3;
+          REQUIRE(subj3 < subN);
+          REQUIRE(subpf.token() % subL == subpf.line());
+          REQUIRE(
+            source[j1][subj3] + 1 == 
+            subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]
+          );
+          subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] = 
+          source[j1][subj3] + 7;
+          subcollection.push_back(subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]);
+          ++subj3;
         });
 
         tf::Executor executor(w);

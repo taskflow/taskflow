@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="Releases.html">Release Notes</a> &raquo;</span>
           Release 2.5.0 (2020/06/01)
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#release-2-5-0_download">Download</a></li>
@@ -57,7 +57,7 @@
             <li><a href="#release-2-5-0_bug_fixes">Bug Fixes</a></li>
             <li><a href="#release-2-5-0_miscellaneous_items">Miscellaneous Items</a></li>
           </ul>
-        </div>
+        </nav>
 <p>Starting from v2.5.0, we have renamed Cpp-Taskflow to <em>Taskflow</em> to broaden its impact and support. Taskflow will explore multiple scopes of applications and language bindings, rather than just C++. This also made Taskflow naming more succinct and concise.</p><p>Taskflow 2.5.0 is the 7th release in the 2.x line! This release includes several new changes such as CPU-GPU tasking, web-based profiler, documentation, and unit tests.</p><section id="release-2-5-0_download"><h2><a href="#release-2-5-0_download">Download</a></h2><p>Taskflow 2.5.0 can be downloaded from <a href="https://github.com/taskflow/taskflow/releases/tag/v2.5.0">here</a>.</p><p>To download the newest version of Taskflow, please clone from <a href="https://github.com/taskflow/taskflow">Taskflow&#x27;s GitHub</a>.</p></section><section id="release-2-5-0_new_features"><h2><a href="#release-2-5-0_new_features">New Features</a></h2><ul><li>enhanced the performance of the work-stealing algorithm</li><li>enhanced the interface of concurrent CPU-GPU tasking (added <a href="classtf_1_1cudaFlow.html#a40172fac4464f6d805f75921ea3c2a3b" class="m-doc">tf::<wbr />cudaFlow::<wbr />zero</a>, <a href="classtf_1_1cudaFlow.html#a079ca65da35301e5aafd45878a19e9d2" class="m-doc">tf::<wbr />cudaFlow::<wbr />memset</a>, <a href="classtf_1_1cudaFlow.html#ad37637606f0643f360e9eda1f9a6e559" class="m-doc">tf::<wbr />cudaFlow::<wbr />memcpy</a>, <a href="classtf_1_1cudaFlow.html#a21d4447bc834f4d3e1bb4772c850d090" class="m-doc">tf::<wbr />cudaFlow::<wbr />fill</a>)</li><li>enhanced unittests for <a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a></li><li>added per-thread stream to avoid synchronizing with the default stream in running a cudaFlow</li><li>added tf::cudaFlow::repeat and tf::cudaFlow::predicate for iterative execution of a cudaFlow</li><li>added <a href="Examples.html" class="m-doc">Learning from Examples</a> pages</li><li>made observer a <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a> object</li><li>enabled multiple observers to coexit in an executor</li><li>created the <a href="https://github.com/taskflow/tfprof">TFProf project</a> (image below) to provide visualization and tooling needed for Taskflow programs</li></ul><img class="m-image" src="tfprof.png" alt="Image" style="width: 100%;" /></section><section id="release-2-5-0_bug_fixes"><h2><a href="#release-2-5-0_bug_fixes">Bug Fixes</a></h2><ul><li>fixed the bug in assigning the block pointer before constructor of an object in object pool</li><li>fixed the namespace conflicting in using MPark.Variant from upstream code</li></ul></section><section id="release-2-5-0_miscellaneous_items"><h2><a href="#release-2-5-0_miscellaneous_items">Miscellaneous Items</a></h2><ul><li>fixed the warning between unsigned and size_t conversion in <a href="classtf_1_1Executor.html" class="m-doc">tf::<wbr />Executor</a></li><li>submitted the technical paper to arXiv</li></ul></section>
       </div>
     </div>
@@ -97,8 +97,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

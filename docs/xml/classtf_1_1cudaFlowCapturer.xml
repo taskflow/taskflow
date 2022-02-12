@@ -610,7 +610,7 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="257" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="1288" bodyend="1296"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1ad3c5c7847d668f2084cef0583f148eb9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a6f06c7f6954d8d67ad89f0eddfe285e9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename F</type>
@@ -623,7 +623,7 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
         </templateparamlist>
         <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
         <definition>cudaTask tf::cudaFlowCapturer::kernel</definition>
-        <argsstring>(dim3 g, dim3 b, size_t s, F &amp;&amp;f, ArgsT &amp;&amp;... args)</argsstring>
+        <argsstring>(dim3 g, dim3 b, size_t s, F f, ArgsT &amp;&amp;... args)</argsstring>
         <name>kernel</name>
         <param>
           <type>dim3</type>
@@ -638,7 +638,7 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
           <declname>s</declname>
         </param>
         <param>
-          <type>F &amp;&amp;</type>
+          <type>F</type>
           <declname>f</declname>
         </param>
         <param>
@@ -705,7 +705,7 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="274" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="1156" bodyend="1162"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1afa56a4ca1a9f26ad7dc836d5a5c9640b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a850c7c028e1535db1deaecd819d82efb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename F</type>
@@ -718,7 +718,7 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
         </templateparamlist>
         <type>void</type>
         <definition>void tf::cudaFlowCapturer::kernel</definition>
-        <argsstring>(cudaTask task, dim3 g, dim3 b, size_t s, F &amp;&amp;f, ArgsT &amp;&amp;... args)</argsstring>
+        <argsstring>(cudaTask task, dim3 g, dim3 b, size_t s, F f, ArgsT &amp;&amp;... args)</argsstring>
         <name>kernel</name>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
@@ -737,7 +737,7 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
           <declname>s</declname>
         </param>
         <param>
-          <type>F &amp;&amp;</type>
+          <type>F</type>
           <declname>f</declname>
         </param>
         <param>
@@ -747,7 +747,7 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
         <briefdescription>
 <para>updates a capture task to a kernel operation </para>        </briefdescription>
         <detaileddescription>
-<para>The method is similar to <ref refid="classtf_1_1cudaFlowCapturer_1ad3c5c7847d668f2084cef0583f148eb9" kindref="member">cudaFlowCapturer::kernel</ref> but operates on an existing task. </para>        </detaileddescription>
+<para>The method is similar to <ref refid="classtf_1_1cudaFlowCapturer_1a6f06c7f6954d8d67ad89f0eddfe285e9" kindref="member">cudaFlowCapturer::kernel</ref> but operates on an existing task. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" line="283" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_capturer.hpp" bodystart="1300" bodyend="1306"/>
@@ -3603,8 +3603,8 @@ Immediately offloads the cudaFlow captured so far onto a GPU and repeatedly runs
       <member refid="classtf_1_1cudaFlowCapturer_1a5f92f6ccad52aed18441d80bc186049f" prot="private" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>handle_t</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1a67c25aef3adbbc8eca69f8857161509c" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>inclusive_scan</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1acc217d04107eda6f93b1ae9b52171106" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>inclusive_scan</name></member>
-      <member refid="classtf_1_1cudaFlowCapturer_1ad3c5c7847d668f2084cef0583f148eb9" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>kernel</name></member>
-      <member refid="classtf_1_1cudaFlowCapturer_1afa56a4ca1a9f26ad7dc836d5a5c9640b" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>kernel</name></member>
+      <member refid="classtf_1_1cudaFlowCapturer_1a6f06c7f6954d8d67ad89f0eddfe285e9" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>kernel</name></member>
+      <member refid="classtf_1_1cudaFlowCapturer_1a850c7c028e1535db1deaecd819d82efb" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>kernel</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1aa1d016b56c06cb28eabfebfdd7dbb24d" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>make_optimizer</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1acf68a3c66c67d6dc6870dd38513aa786" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>max_element</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1a259989d70b0092f0273ece9283c42dcd" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>max_element</name></member>

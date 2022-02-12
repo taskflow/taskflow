@@ -848,7 +848,7 @@ class ScalablePipeline {
   void reset(P first, P last);
   
   /**
-  @brief resets the pipeline with a new line number and a 
+  @brief resets the pipeline to a new line number and a 
          new range of pipes
   
   @param num_lines number of parallel lines
@@ -856,8 +856,9 @@ class ScalablePipeline {
   @param last iterator to the end of the range
   
   The member function resets the pipeline to a new number of 
-  parallel lines and a new range of pipes, as if the pipeline
-  is just constructed.
+  parallel lines and a new range of pipes specified in
+  <tt>[first, last)</tt>, as if the pipeline is just constructed.
+  After resetting a pipeline, its token identifier will start from zero.
   */
   void reset(size_t num_lines, P first, P last);
   

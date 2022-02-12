@@ -171,7 +171,7 @@ class cudaFlow {
     @return a tf::cudaTask handle
     */
     template <typename F, typename... ArgsT>
-    cudaTask kernel(dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
+    cudaTask kernel(dim3 g, dim3 b, size_t s, F f, ArgsT&&... args);
     
     /**
     @brief updates parameters of a kernel task
@@ -182,7 +182,7 @@ class cudaFlow {
     */
     template <typename F, typename... ArgsT>
     void kernel(
-      cudaTask task, dim3 g, dim3 b, size_t shm, F&& f, ArgsT&&... args
+      cudaTask task, dim3 g, dim3 b, size_t shm, F f, ArgsT&&... args
     );
     
     /**
@@ -1270,7 +1270,7 @@ cudaTask cudaFlow::host(C&& c) {
 // Function: kernel
 template <typename F, typename... ArgsT>
 cudaTask cudaFlow::kernel(
-  dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args
+  dim3 g, dim3 b, size_t s, F f, ArgsT&&... args
 ) {
   
   auto node = _graph.emplace_back(
@@ -1421,7 +1421,7 @@ void cudaFlow::host(cudaTask task, C&& c) {
 // Function: update kernel parameters
 template <typename F, typename... ArgsT>
 void cudaFlow::kernel(
-  cudaTask task, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args
+  cudaTask task, dim3 g, dim3 b, size_t s, F f, ArgsT&&... args
 ) {
 
   if(task.type() != cudaTaskType::KERNEL) {

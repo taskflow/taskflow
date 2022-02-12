@@ -56,7 +56,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>dim3<sp/>grid<sp/><sp/>((K+16-1)/16,<sp/>(M+16-1)/16);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>dim3<sp/>block<sp/>(16,<sp/>16);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>kmatmul<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1adb731be71bdd436dfb5e36e6213a9a17" kindref="member">kernel</ref>(grid,<sp/>block,<sp/>0,<sp/>matmul,<sp/>da,<sp/>db,<sp/>dc,<sp/>M,<sp/>K,<sp/>N)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>kmatmul<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" kindref="member">kernel</ref>(grid,<sp/>block,<sp/>0,<sp/>matmul,<sp/>da,<sp/>db,<sp/>dc,<sp/>M,<sp/>K,<sp/>N)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;matmul&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>kmatmul.<ref refid="classtf_1_1cudaTask_1a4a9ca1a34bac47e4c9b04eb4fb2f7775" kindref="member">succeed</ref>(copy_da,<sp/>copy_db)</highlight></codeline>

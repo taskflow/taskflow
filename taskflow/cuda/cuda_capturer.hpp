@@ -271,7 +271,7 @@ class cudaFlowCapturer {
     @return cudaTask handle
     */ 
     template <typename F, typename... ArgsT>
-    cudaTask kernel(dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args);
+    cudaTask kernel(dim3 g, dim3 b, size_t s, F f, ArgsT&&... args);
     
     /**
     @brief updates a capture task to a kernel operation
@@ -281,7 +281,7 @@ class cudaFlowCapturer {
     */
     template <typename F, typename... ArgsT>
     void kernel(
-      cudaTask task, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args
+      cudaTask task, dim3 g, dim3 b, size_t s, F f, ArgsT&&... args
     );
 
     // ------------------------------------------------------------------------
@@ -1154,7 +1154,7 @@ inline cudaTask cudaFlowCapturer::memset(void* ptr, int v, size_t n) {
 // Function: kernel
 template <typename F, typename... ArgsT>
 cudaTask cudaFlowCapturer::kernel(
-  dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args
+  dim3 g, dim3 b, size_t s, F f, ArgsT&&... args
 ) {
   return on([g, b, s, f, args...] (cudaStream_t stream) mutable {
     f<<<g, b, s, stream>>>(args...);
@@ -1298,7 +1298,7 @@ inline void cudaFlowCapturer::memset(
 // Function: kernel
 template <typename F, typename... ArgsT>
 void cudaFlowCapturer::kernel(
-  cudaTask task, dim3 g, dim3 b, size_t s, F&& f, ArgsT&&... args
+  cudaTask task, dim3 g, dim3 b, size_t s, F f, ArgsT&&... args
 ) {
   on(task, [g, b, s, f, args...] (cudaStream_t stream) mutable {
     f<<<g, b, s, stream>>>(args...);
