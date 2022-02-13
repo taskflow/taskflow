@@ -2540,6 +2540,7 @@ TEST_CASE("Ifelse.Pipelines.7L.4W" * doctest::timeout(300)) {
   ifelse_pipeline(7, 4);
 }
 
+/*
 // ----------------------------------------------------------------------------
 // pipeline in pipeline
 // pipeline has 4 pipes, L lines, W workers
@@ -2929,4 +2930,4 @@ TEST_CASE("PipelineinPipeline.Pipelines.5L.2W.3subL" * doctest::timeout(300)) {
 TEST_CASE("PipelineinPipeline.Pipelines.5L.2W.4subL" * doctest::timeout(300)) {
   pipeline_in_pipeline(5, 2, 4);
 }
-
+*/

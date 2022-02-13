@@ -428,7 +428,7 @@ TEST_CASE("ScalablePipeline.Ifelse.7L.4W" * doctest::timeout(300)) {
   ifelse_spipeline(7, 4);
 }
 
-
+/*
 // ----------------------------------------------------------------------------
 // ScalablePipeline in ScalablePipeline
 // pipeline has 4 pipes, L lines, W workers
@@ -480,7 +480,7 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
 
       // begin of pipeline ---------------------------
         
-        // begin of pipe 1 -----------------------------
+      // begin of pipe 1 -----------------------------
       pipes.emplace_back(tf::PipeType::SERIAL, [&, w, L, N, subN, subL](auto& pf) mutable {
         if(j1 == N) {
           pf.stop();
@@ -833,7 +833,7 @@ TEST_CASE("ScalablePipeline.PipelineinPipeline.5L.2W.3subL" * doctest::timeout(3
 TEST_CASE("ScalablePipeline.PipelineinPipeline.5L.2W.4subL" * doctest::timeout(300)) {
   spipeline_in_spipeline(5, 2, 4);
 }
-
+*/
 
 // ----------------------------------------------------------------------------
 /* SNIG task graph
