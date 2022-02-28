@@ -542,8 +542,8 @@ inline TaskType Task::type() const {
     case Node::MODULE:          return TaskType::MODULE;
     case Node::ASYNC:           return TaskType::ASYNC;
     case Node::SILENT_ASYNC:    return TaskType::ASYNC;
-    case Node::CUDAFLOW:        return TaskType::CUDAFLOW;
-    case Node::SYCLFLOW:        return TaskType::SYCLFLOW;
+    // case Node::CUDAFLOW:        return TaskType::CUDAFLOW;
+    // case Node::SYCLFLOW:        return TaskType::SYCLFLOW;
     case Node::RUNTIME:         return TaskType::RUNTIME;
     default:                    return TaskType::UNDEFINED;
   }
@@ -749,8 +749,8 @@ inline TaskType TaskView::type() const {
     case Node::MODULE:          return TaskType::MODULE;
     case Node::ASYNC:           return TaskType::ASYNC;
     case Node::SILENT_ASYNC:    return TaskType::ASYNC;
-    case Node::CUDAFLOW:        return TaskType::CUDAFLOW;
-    case Node::SYCLFLOW:        return TaskType::SYCLFLOW;
+    // case Node::CUDAFLOW:        return TaskType::CUDAFLOW;
+    // case Node::SYCLFLOW:        return TaskType::SYCLFLOW;
     case Node::RUNTIME:         return TaskType::RUNTIME;
     default:                    return TaskType::UNDEFINED;
   }

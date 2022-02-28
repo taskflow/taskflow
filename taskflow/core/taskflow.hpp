@@ -463,19 +463,19 @@ inline void Taskflow::_dump(
       os << "shape=component";
     break;
 
-    case Node::CUDAFLOW:
-      os << " style=\"filled\""
-         << " color=\"black\" fillcolor=\"purple\""
-         << " fontcolor=\"white\""
-         << " shape=\"folder\"";
-    break;
+    // case Node::CUDAFLOW:
+    //   os << " style=\"filled\""
+    //      << " color=\"black\" fillcolor=\"purple\""
+    //      << " fontcolor=\"white\""
+    //      << " shape=\"folder\"";
+    // break;
 
-    case Node::SYCLFLOW:
-      os << " style=\"filled\""
-         << " color=\"black\" fillcolor=\"red\""
-         << " fontcolor=\"white\""
-         << " shape=\"folder\"";
-    break; 
+    // case Node::SYCLFLOW:
+    //   os << " style=\"filled\""
+    //      << " color=\"black\" fillcolor=\"red\""
+    //      << " fontcolor=\"white\""
+    //      << " shape=\"folder\"";
+    // break; 
 
     default:
     break;
@@ -517,18 +517,18 @@ inline void Taskflow::_dump(
     }
     break;
     
-    case Node::CUDAFLOW: {
-      std::get_if<Node::cudaFlow>(&node->_handle)->graph->dump(
-        os, node, node->_name
-      );
-    }
-    break;
+    // case Node::CUDAFLOW: {
+    //   std::get_if<Node::cudaFlow>(&node->_handle)->graph->dump(
+    //     os, node, node->_name
+    //   );
+    // }
+    // break;
     
-    case Node::SYCLFLOW: {
-      std::get_if<Node::syclFlow>(&node->_handle)->graph->dump(
-        os, node, node->_name
-      );
-    }
+    // case Node::SYCLFLOW: {
+    //   std::get_if<Node::syclFlow>(&node->_handle)->graph->dump(
+    //     os, node, node->_name
+    //   );
+    // }
     break;
 
     default:

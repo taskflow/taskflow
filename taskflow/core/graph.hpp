@@ -378,8 +378,8 @@ class Node {
     Module,          // composable tasking
     Async,           // async tasking
     SilentAsync,     // async tasking (no future)
-    cudaFlow,        // cudaFlow
-    syclFlow,        // syclFlow
+    // cudaFlow,        // cudaFlow -commented by GL
+    // syclFlow,        // syclFlow - commented by GL
     Runtime          // runtime tasking
   >;
     
@@ -399,8 +399,8 @@ class Node {
   constexpr static auto MODULE          = get_index_v<Module, handle_t>; 
   constexpr static auto ASYNC           = get_index_v<Async, handle_t>; 
   constexpr static auto SILENT_ASYNC    = get_index_v<SilentAsync, handle_t>; 
-  constexpr static auto CUDAFLOW        = get_index_v<cudaFlow, handle_t>; 
-  constexpr static auto SYCLFLOW        = get_index_v<syclFlow, handle_t>; 
+  // constexpr static auto CUDAFLOW        = get_index_v<cudaFlow, handle_t>; 
+  // constexpr static auto SYCLFLOW        = get_index_v<syclFlow, handle_t>; 
   constexpr static auto RUNTIME         = get_index_v<Runtime, handle_t>;
 
   template <typename... Args>
@@ -911,10 +911,10 @@ inline Graph& Graph::operator = (const Graph& other) {
   return *this;
 }
 
-// // Move assignment GL todo
-// inline Graph::Graph(const Graph& other) {
-//   *this = other;
-// }
+// Move assignment GL todo
+inline Graph::Graph(const Graph& other) {
+  *this = other;
+}
 
 
 }  // end of namespace tf. ---------------------------------------------------
