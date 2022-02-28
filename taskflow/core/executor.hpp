@@ -1956,6 +1956,7 @@ inline void Executor::_set_up_topology(Worker* worker, Topology* tpg, Pipeflow& 
     _schedule(*worker, tpg->_sources, pf);
   }
   else {
+
     _schedule(tpg->_sources, pf);
   }
 }

@@ -894,11 +894,14 @@ inline Graph& Graph::operator = (const Graph& other) {
     Node* this_node = node_pool.animate();
     *this_node = *that_node; //Set the other fields of the node;
     node_map.insert({that_node,this_node});
+    this->_nodes.push_back(this_node);
   }
   //Set the successor predecessor of each node
   for(auto that_node : other._nodes) {
     Node *this_node = node_map.at(that_node);
-    this_node->_parent = node_map.at(that_node->_parent);
+    if(that_node->_parent){
+      this_node->_parent = node_map.at(that_node->_parent);
+    }
     for(size_t i=0; i < that_node->_successors.size(); ++i) {
       Node* that_node_succesor = that_node->_successors[i];
       this_node->_successors.push_back(node_map.at(that_node_succesor));
