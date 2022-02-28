@@ -34,7 +34,20 @@
 int main() {
 
   tf::Taskflow taskflow("pipeline");
+  
   tf::Executor executor;
+
+  tf::Taskflow sub_taskflow("sub_taskflow");
+  auto task1 = sub_taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ std::cout << "F1 TaskA\n"; });
+  auto task2 = sub_taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ std::cout << "F1 TaskB\n"; });
+  auto task3 = sub_taskflow.emplace([](tf::WorkerView wv, tf::TaskView tv, tf::Pipeflow& pf){ std::cout << "F1 TaskC\n"; });
+  task1.name("task1");
+  task2.name("task2");
+  task3.name("task3");
+  task1.precede(task2);
+  task2.precede(task3);
+
+
 
   const size_t num_lines = 4;
 
@@ -42,7 +55,7 @@ int main() {
   std::array<int, num_lines> buffer;
   
   // define the pipe callable
-  auto pipe_callable = [&buffer] (tf::Pipeflow& pf) mutable {
+  auto pipe_callable = [&buffer, &sub_taskflow, &executor] (tf::Pipeflow& pf) mutable {
     switch(pf.pipe()) {
       // first stage generates only 5 scheduling tokens and saves the 
       // token number into the buffer.
@@ -52,7 +65,9 @@ int main() {
         }
         else {
           printf("stage 1: input token = %zu\n", pf.token());
-          buffer[pf.line()] = pf.token();
+          //buffer[pf.line()] = pf.token();
+          tf::Taskflow *myTaskflow = sub_taskflow.clone();
+          executor.run(*myTaskflow).wait();
         }
         return;
       }

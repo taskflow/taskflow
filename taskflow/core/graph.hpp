@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include "../utility/iterator.hpp"
 #include "../utility/object_pool.hpp"
 #include "../utility/traits.hpp"
@@ -33,6 +34,7 @@ class CustomGraphBase {
   public:
   
   virtual void dump(std::ostream&, const void*, const std::string&) const = 0;
+  CustomGraphBase(const CustomGraphBase&) =default;
   virtual ~CustomGraphBase() = default;  
 };
 
@@ -73,7 +75,7 @@ class Graph {
     /**
     @brief disabled copy constructor
     */
-    Graph(const Graph&) = delete;
+    Graph(const Graph&);
 
     /**
     @brief constructs a graph using move semantics
@@ -88,7 +90,7 @@ class Graph {
     /**
     @brief disabled copy assignment operator
     */
-    Graph& operator = (const Graph&) = delete;
+    Graph& operator = (const Graph&);
 
     /**
     @brief assigns a graph using move semantics
@@ -267,17 +269,9 @@ class Node {
 
     template <typename C> 
     Static(C&&);
-
+    // Static(const Static&);
+    Static& operator = (const Static&);
     std::function<void(WorkerView, TaskView, Pipeflow&)> work;
-  };
-
-  // runtime work handle
-  struct Runtime {
-
-    template <typename C>
-    Runtime(C&&);
-     
-    std::function<void(tf::Runtime&, WorkerView, TaskView, Pipeflow&)> work;
   };
 
   // dynamic work handle
@@ -285,7 +279,9 @@ class Node {
 
     template <typename C> 
     Dynamic(C&&);
-
+    // Dynamic(const Dynamic&);
+    Dynamic& operator = (const Dynamic&);
+    
     std::function<void(Subflow&, WorkerView, TaskView, Pipeflow&)> work;
     Graph subgraph;
   };
@@ -295,7 +291,8 @@ class Node {
 
     template <typename C> 
     Condition(C&&);
-
+    // Condition(const Condition&);
+    Condition& operator = (const Condition&);
     std::function<int(WorkerView, TaskView, Pipeflow&)> work;
   };
 
@@ -304,27 +301,29 @@ class Node {
 
     template <typename C>
     MultiCondition(C&&);
-
+    // MultiCondition(const MultiCondition&);
+    MultiCondition& operator = (const MultiCondition&);
     std::function<SmallVector<int>(WorkerView, TaskView, Pipeflow&)> work;
   };
 
-  // module work handle
+   // module work handle
   struct Module {
 
     template <typename T>
     Module(T&);
-
+    // Module(const Module&);
+    Module& operator = (const Module&);
     Graph& graph;
   };
 
-  // Async work
+    // Async work
   struct Async {
 
     template <typename T>
     Async(T&&, std::shared_ptr<AsyncTopology>);
-
+    // Async(const Async&);
+    Async& operator = (const Async&);
     std::function<void(bool, WorkerView, TaskView, Pipeflow&)> work;
-
     std::shared_ptr<AsyncTopology> topology;
   };
   
@@ -333,7 +332,8 @@ class Node {
     
     template <typename C>
     SilentAsync(C&&);
-
+    // SilentAsync(const SilentAsync&);
+    SilentAsync& operator = (const SilentAsync&);
     std::function<void(WorkerView, TaskView, Pipeflow&)> work;
   };
   
@@ -342,9 +342,9 @@ class Node {
     
     template <typename C, typename G> 
     cudaFlow(C&& c, G&& g);
-
+    // cudaFlow(const cudaFlow&);
+    cudaFlow& operator = (const cudaFlow&);
     std::function<void(Executor&, Node*)> work;
-
     std::unique_ptr<CustomGraphBase> graph;
   };
   
@@ -353,10 +353,20 @@ class Node {
     
     template <typename C, typename G> 
     syclFlow(C&& c, G&& g);
-
+    // syclFlow(const syclFlow&);
+    syclFlow& operator = (const syclFlow&);
     std::function<void(Executor&, Node*)> work;
-
     std::unique_ptr<CustomGraphBase> graph;
+  };
+
+    // runtime work handle
+  struct Runtime {
+
+    template <typename C>
+    Runtime(C&&);
+    // Runtime(const Runtime&);
+    Runtime& operator = (const Runtime&);
+    std::function<void(tf::Runtime&, WorkerView, TaskView, Pipeflow&)> work;
   };
     
   using handle_t = std::variant<
@@ -395,6 +405,8 @@ class Node {
 
   template <typename... Args>
   Node(Args&&... args);
+
+  Node& operator = (const Node&);
 
   ~Node();
 
@@ -450,7 +462,14 @@ inline ObjectPool<Node> node_pool;
     
 // Constructor
 template <typename C> 
-Node::Static::Static(C&& c) : work {std::forward<C>(c)} {
+Node::Static::Static(C&& c) : work {std::forward<C>(c)} {}
+
+// Node::Static::Static(const Static& rhs){
+//   this->work = rhs.work;
+// }
+Node::Static& Node::Static::operator =(const Static& rhs){
+  this->work = rhs.work;
+  return *this;
 }
 
 // ----------------------------------------------------------------------------
@@ -461,6 +480,15 @@ Node::Static::Static(C&& c) : work {std::forward<C>(c)} {
 template <typename C> 
 Node::Dynamic::Dynamic(C&& c) : work {std::forward<C>(c)} {
 }
+// Node::Dynamic::Dynamic(const Dynamic& rhs){
+//   this->work = rhs.work;
+//   this->subgraph = rhs.subgraph;
+// }
+Node::Dynamic& Node::Dynamic::operator =(const Dynamic& rhs){
+  this->work = rhs.work;
+  this->subgraph = rhs.subgraph;
+  return *this;
+}
 
 // ----------------------------------------------------------------------------
 // Definition for Node::Condition
@@ -470,6 +498,13 @@ Node::Dynamic::Dynamic(C&& c) : work {std::forward<C>(c)} {
 template <typename C> 
 Node::Condition::Condition(C&& c) : work {std::forward<C>(c)} {
 }
+// Node::Condition::Condition(const Condition& rhs){
+//   this->work = rhs.work;
+// }
+Node::Condition& Node::Condition::operator =(const Condition& rhs){
+  this->work = rhs.work;
+  return *this;
+}
 
 // ----------------------------------------------------------------------------
 // Definition for Node::MultiCondition
@@ -478,6 +513,13 @@ Node::Condition::Condition(C&& c) : work {std::forward<C>(c)} {
 // Constructor
 template <typename C> 
 Node::MultiCondition::MultiCondition(C&& c) : work {std::forward<C>(c)} {
+}
+// Node::MultiCondition::MultiCondition(const MultiCondition& rhs){
+//   this->work = rhs.work;
+// }
+Node::MultiCondition& Node::MultiCondition::operator =(const MultiCondition& rhs){
+  this->work = rhs.work;
+  return *this;
 }
 
 // ----------------------------------------------------------------------------
@@ -489,6 +531,18 @@ Node::cudaFlow::cudaFlow(C&& c, G&& g) :
   work  {std::forward<C>(c)},
   graph {std::forward<G>(g)} {
 }
+// Node::cudaFlow::cudaFlow(const cudaFlow& rhs){
+//   this->work = rhs.work;
+//   //GL this won't work as assignment operator function is not defined  on cudagrapgh
+//   //this->graph = rhs.graph;
+// }
+Node::cudaFlow& Node::cudaFlow::operator =(const cudaFlow& rhs){
+  this->work = rhs.work;
+  //GL this won't work as assignment operator function is not defined  on cudagrapgh
+  //this->graph = rhs.graph;
+  return *this;
+}
+
 
 // ----------------------------------------------------------------------------
 // Definition for Node::syclFlow
@@ -499,7 +553,20 @@ Node::syclFlow::syclFlow(C&& c, G&& g) :
   work  {std::forward<C>(c)},
   graph {std::forward<G>(g)} {
 }
-    
+
+// Node::syclFlow::syclFlow(const syclFlow& rhs){
+//   this->work = rhs.work;
+//   //GL this won't work as assignment operator function is not defined  on cudagrapgh
+//   //this->graph = rhs.graph;
+// }
+
+Node::syclFlow& Node::syclFlow::operator =(const syclFlow& rhs){
+  this->work = rhs.work;
+  //GL this won't work as assignment operator function is not defined  on cudagrapgh
+  //this->graph = rhs.graph;
+  return *this;
+}
+ 
 // ----------------------------------------------------------------------------
 // Definition for Node::Module
 // ----------------------------------------------------------------------------
@@ -507,6 +574,13 @@ Node::syclFlow::syclFlow(C&& c, G&& g) :
 // Constructor
 template <typename T>
 inline Node::Module::Module(T& obj) : graph{ obj.graph() } {
+}
+// Node::Module::Module(const Module& rhs):graph(rhs.graph){
+//   //this->graph = rhs.graph;
+// }
+Node::Module& Node::Module::operator =(const Module& rhs){
+  this->graph = rhs.graph;
+  return *this;
 }
 
 // ----------------------------------------------------------------------------
@@ -519,6 +593,15 @@ Node::Async::Async(C&& c, std::shared_ptr<AsyncTopology>tpg) :
   work     {std::forward<C>(c)},
   topology {std::move(tpg)} {
 }
+// Node::Async::Async(const Async& rhs){
+//   this->work = rhs.work;
+//   this->topology = rhs.topology;
+// }
+Node::Async& Node::Async::operator =(const Async& rhs){
+  this->work = rhs.work;
+  this->topology = rhs.topology;
+  return *this;
+}
 
 // ----------------------------------------------------------------------------
 // Definition for Node::SilentAsync
@@ -528,6 +611,13 @@ Node::Async::Async(C&& c, std::shared_ptr<AsyncTopology>tpg) :
 template <typename C>
 Node::SilentAsync::SilentAsync(C&& c) :
   work {std::forward<C>(c)} {
+}
+// Node::SilentAsync::SilentAsync(const SilentAsync& rhs){
+//   this->work = rhs.work;
+// }
+Node::SilentAsync& Node::SilentAsync::operator =(const SilentAsync& rhs){
+  this->work = rhs.work;
+  return *this;
 }
 
 // ----------------------------------------------------------------------------
@@ -539,6 +629,13 @@ template <typename C>
 Node::Runtime::Runtime(C&& c) :
   work {std::forward<C>(c)} {
 }
+// Node::Runtime::Runtime(const Runtime& rhs){
+//   this->work = rhs.work;
+// }
+Node::Runtime& Node::Runtime::operator =(const Runtime& rhs){
+  this->work = rhs.work;
+  return *this;
+}
 
 // ----------------------------------------------------------------------------
 // Definition for Node
@@ -548,6 +645,13 @@ Node::Runtime::Runtime(C&& c) :
 template <typename... Args>
 Node::Node(Args&&... args): _handle{std::forward<Args>(args)...} {
 } 
+
+Node& Node::operator = (const Node& rhs){
+  this->_name = rhs._name;
+  this->_data = rhs._data;
+  this->_handle = rhs._handle;
+  return *this;
+}
 
 // Destructor
 inline Node::~Node() {
@@ -779,6 +883,38 @@ inline Node* Graph::_emplace_back() {
   _nodes.push_back(node_pool.animate());
   return _nodes.back();
 }
+
+
+
+// Move assignment GL todo
+inline Graph& Graph::operator = (const Graph& other) {
+  std::map<Node*,Node*> node_map;
+  //Create all the node of the graph
+  for(auto that_node : other._nodes) {
+    Node* this_node = node_pool.animate();
+    *this_node = *that_node; //Set the other fields of the node;
+    node_map.insert({that_node,this_node});
+  }
+  //Set the successor predecessor of each node
+  for(auto that_node : other._nodes) {
+    Node *this_node = node_map.at(that_node);
+    this_node->_parent = node_map.at(that_node->_parent);
+    for(size_t i=0; i < that_node->_successors.size(); ++i) {
+      Node* that_node_succesor = that_node->_successors[i];
+      this_node->_successors.push_back(node_map.at(that_node_succesor));
+    }
+    for(size_t i=0; i < that_node->_dependents.size(); ++i) {
+      Node* that_node_dependent = that_node->_dependents[i];
+      this_node->_dependents.push_back(node_map.at(that_node_dependent));
+    }
+  }
+  return *this;
+}
+
+// // Move assignment GL todo
+// inline Graph::Graph(const Graph& other) {
+//   *this = other;
+// }
 
 
 }  // end of namespace tf. ---------------------------------------------------

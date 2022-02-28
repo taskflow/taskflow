@@ -137,6 +137,25 @@ class Taskflow : public FlowBuilder {
     */
     Taskflow& operator = (Taskflow&& rhs);
 
+
+
+    /**
+    @brief move assignment operator
+
+    Moving a taskflow @c taskflow2 to another taskflow @c taskflow1 will destroy
+    the existing graph of @c taskflow1 and assign it the graph of @c taskflow2.
+    After the move, @c taskflow2 will become empty.
+
+    @code{.cpp}
+    taskflow1 = std::move(taskflow2);
+    assert(taskflow2.empty());
+    @endcode
+
+    Notice that both @c taskflow1 and @c taskflow2 should not be running
+    in an executor during the move operation, or the behavior is undefined.
+    */
+    Taskflow& operator = (Taskflow& rhs);
+
     /**
     @brief default destructor
 
@@ -265,6 +284,8 @@ class Taskflow : public FlowBuilder {
     */
     Graph& graph();
 
+    Taskflow* clone();
+
   private:
     
     mutable std::mutex _mutex;
@@ -318,9 +339,25 @@ inline Taskflow& Taskflow::operator = (Taskflow&& rhs) {
   return *this;
 }
 
+Taskflow& Taskflow::operator = (Taskflow& rhs){
+  if(this != &rhs)
+  {
+      this->_name = rhs._name;
+      this->_graph = rhs._graph;
+  }
+  return *this;
+}
+
 // Procedure:
 inline void Taskflow::clear() {
   _graph._clear();
+}
+
+// Procedure:
+inline Taskflow* Taskflow::clone() {
+  Taskflow* tf = new Taskflow();
+  *tf = *this;
+  return tf;
 }
 
 // Function: num_tasks

@@ -347,7 +347,7 @@ class cudaGraph : public CustomGraphBase {
     cudaGraph() = default;
     ~cudaGraph();
 
-    cudaGraph(const cudaGraph&) = delete;
+    cudaGraph(const cudaGraph&) = default
     cudaGraph(cudaGraph&&);
     
     cudaGraph& operator = (const cudaGraph&) = delete;
