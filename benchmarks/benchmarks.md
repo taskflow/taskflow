@@ -52,7 +52,7 @@ Results are illustrated in a plot and saved to `result.png`.
                    -o result.png
 ```
 
-When the program completes, you will see a combined plot of all specified benchmarsk.
+When the program completes, you will see a combined plot of all specified benchmarks.
 The x-axis represents the growth of problem size and the y-axis denotes the runtime
 in millisecond.
 
