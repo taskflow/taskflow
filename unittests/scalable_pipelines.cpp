@@ -5,6 +5,52 @@
 #include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/pipeline.hpp>
 
+// ----------------------------------------------------------------------------
+// Constructors and Assignments
+// ----------------------------------------------------------------------------
+
+TEST_CASE("ScalablePipeline.Basics" * doctest::timeout(300)) {
+
+  size_t N = 10;
+
+  std::vector< tf::Pipe<std::function<void(tf::Pipeflow&)>> > pipes;
+
+  for(size_t i=0; i<N; i++) {
+    pipes.emplace_back(tf::PipeType::SERIAL, [&](tf::Pipeflow&) {});
+  }
+  
+  using iterator_type = decltype(pipes)::iterator;
+
+  tf::ScalablePipeline<iterator_type> rhs;
+  
+  REQUIRE(rhs.num_lines()  == 0);
+  REQUIRE(rhs.num_pipes()  == 0);
+  REQUIRE(rhs.num_tokens() == 0);
+
+  rhs.reset(1, pipes.begin(), pipes.end());
+
+  REQUIRE(rhs.num_lines()  == 1);
+  REQUIRE(rhs.num_pipes()  == N);
+  REQUIRE(rhs.num_tokens() == 0);
+
+  tf::ScalablePipeline<iterator_type> lhs(std::move(rhs));
+  
+  REQUIRE(rhs.num_lines()  == 0);
+  REQUIRE(rhs.num_pipes()  == 0);
+  REQUIRE(rhs.num_tokens() == 0);
+  REQUIRE(lhs.num_lines()  == 1);
+  REQUIRE(lhs.num_pipes()  == N);
+  REQUIRE(lhs.num_tokens() == 0);
+
+  rhs = std::move(lhs);
+
+  REQUIRE(lhs.num_lines()  == 0);
+  REQUIRE(lhs.num_pipes()  == 0);
+  REQUIRE(lhs.num_tokens() == 0);
+  REQUIRE(rhs.num_lines()  == 1);
+  REQUIRE(rhs.num_pipes()  == N);
+  REQUIRE(rhs.num_tokens() == 0);
+}
 
 // ----------------------------------------------------------------------------
 // Scalable Pipeline

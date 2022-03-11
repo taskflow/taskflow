@@ -760,6 +760,8 @@ beginning and the end of the vector.
 At each pipe stage, the program propagates the result to the next pipe
 by adding one to the result stored in a custom data storage, @c buffer.
 The pipeline scheduler will generate five scheduling tokens and then stop.
+
+A scalable pipeline is move-only.
 */
 template <typename P>
 class ScalablePipeline {
@@ -805,8 +807,42 @@ class ScalablePipeline {
   <tt>[first, last)</tt> using @c num_lines parallel lines.
   The first pipe must define a serial direction (tf::PipeType::SERIAL) 
   or an exception will be thrown.
+  
+  Internally, the scalable pipeline copies the iterators 
+  from the specified range. Those pipe callables pointed to by 
+  these iterators must remain valid during the execution of the pipeline.
   */
   ScalablePipeline(size_t num_lines, P first, P last);
+
+  /**
+  @brief disabled copy constructor
+  */
+  ScalablePipeline(const ScalablePipeline&) = delete;
+
+  /**
+  @brief move constructor
+
+  Constructs a pipeline from the given @c rhs using move semantics
+  (i.e. the data in @c rhs is moved into this pipeline).
+  After the move, @c rhs is in a state as if it is just constructed.
+  The behavior is undefined if @c rhs is running during the move.
+  */
+  ScalablePipeline(ScalablePipeline&& rhs);
+
+  /**
+  @brief disabled copy assignment operator
+  */
+  ScalablePipeline& operator = (const ScalablePipeline&) = delete;
+
+  /**
+  @brief move constructor
+  
+  Replaces the contents with those of @c rhs using move semantics 
+  (i.e. the data in @c rhs is moved into this pipeline).
+  After the move, @c rhs is in a state as if it is just constructed.
+  The behavior is undefined if @c rhs is running during the move.
+  */
+  ScalablePipeline& operator = (ScalablePipeline&& rhs);
 
   /**
   @brief queries the number of parallel lines
@@ -844,6 +880,10 @@ class ScalablePipeline {
   specified in <tt>[first, last)</tt> and resets the pipeline to the 
   initial state. After resetting a pipeline, its token identifier will
   start from zero.
+  
+  Internally, the scalable pipeline copies the iterators 
+  from the specified range. Those pipe callables pointed to by 
+  these iterators must remain valid during the execution of the pipeline.
   */
   void reset(P first, P last);
   
@@ -859,6 +899,10 @@ class ScalablePipeline {
   parallel lines and a new range of pipes specified in
   <tt>[first, last)</tt>, as if the pipeline is just constructed.
   After resetting a pipeline, its token identifier will start from zero.
+  
+  Internally, the scalable pipeline copies the iterators 
+  from the specified range. Those pipe callables pointed to by 
+  these iterators must remain valid during the execution of the pipeline.
   */
   void reset(size_t num_lines, P first, P last);
   
@@ -920,6 +964,32 @@ ScalablePipeline<P>::ScalablePipeline(size_t num_lines, P first, P last) :
 
   reset(first, last);
   _build();
+}
+
+// move constructor
+template <typename P>
+ScalablePipeline<P>::ScalablePipeline(ScalablePipeline&& rhs) :
+  _graph      {std::move(rhs._graph)},
+  _num_tokens {rhs._num_tokens},
+  _pipes      {std::move(rhs._pipes)},
+  _tasks      {std::move(rhs._tasks)},
+  _pipeflows  {std::move(rhs._pipeflows)},
+  _lines      {std::move(rhs._lines)} {
+  
+  rhs._num_tokens = 0;
+}
+
+// move assignment operator
+template <typename P>
+ScalablePipeline<P>& ScalablePipeline<P>::operator = (ScalablePipeline&& rhs) {
+  _graph      = std::move(rhs._graph);
+  _num_tokens = rhs._num_tokens;
+  _pipes      = std::move(rhs._pipes);
+  _tasks      = std::move(rhs._tasks);
+  _pipeflows  = std::move(rhs._pipeflows);
+  _lines      = std::move(rhs._lines);
+  rhs._num_tokens = 0;
+  return *this;
 }
 
 // Function: num_lines
