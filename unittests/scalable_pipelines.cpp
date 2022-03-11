@@ -5,6 +5,52 @@
 #include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/pipeline.hpp>
 
+// ----------------------------------------------------------------------------
+// Constructors and Assignments
+// ----------------------------------------------------------------------------
+
+TEST_CASE("ScalablePipeline.Basics" * doctest::timeout(300)) {
+
+  size_t N = 10;
+
+  std::vector< tf::Pipe<std::function<void(tf::Pipeflow&)>> > pipes;
+
+  for(size_t i=0; i<N; i++) {
+    pipes.emplace_back(tf::PipeType::SERIAL, [&](tf::Pipeflow&) {});
+  }
+  
+  using iterator_type = decltype(pipes)::iterator;
+
+  tf::ScalablePipeline<iterator_type> rhs;
+  
+  REQUIRE(rhs.num_lines()  == 0);
+  REQUIRE(rhs.num_pipes()  == 0);
+  REQUIRE(rhs.num_tokens() == 0);
+
+  rhs.reset(1, pipes.begin(), pipes.end());
+
+  REQUIRE(rhs.num_lines()  == 1);
+  REQUIRE(rhs.num_pipes()  == N);
+  REQUIRE(rhs.num_tokens() == 0);
+
+  tf::ScalablePipeline<iterator_type> lhs(std::move(rhs));
+  
+  REQUIRE(rhs.num_lines()  == 0);
+  REQUIRE(rhs.num_pipes()  == 0);
+  REQUIRE(rhs.num_tokens() == 0);
+  REQUIRE(lhs.num_lines()  == 1);
+  REQUIRE(lhs.num_pipes()  == N);
+  REQUIRE(lhs.num_tokens() == 0);
+
+  rhs = std::move(lhs);
+
+  REQUIRE(lhs.num_lines()  == 0);
+  REQUIRE(lhs.num_pipes()  == 0);
+  REQUIRE(lhs.num_tokens() == 0);
+  REQUIRE(rhs.num_lines()  == 1);
+  REQUIRE(rhs.num_pipes()  == N);
+  REQUIRE(rhs.num_tokens() == 0);
+}
 
 // ----------------------------------------------------------------------------
 // Scalable Pipeline
@@ -428,7 +474,7 @@ TEST_CASE("ScalablePipeline.Ifelse.7L.4W" * doctest::timeout(300)) {
   ifelse_spipeline(7, 4);
 }
 
-/*
+
 // ----------------------------------------------------------------------------
 // ScalablePipeline in ScalablePipeline
 // pipeline has 4 pipes, L lines, W workers
@@ -504,7 +550,7 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
             REQUIRE(subpf.token() % subL == subpf.line());
 
             subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
-              = source[j1][subj1] + 1;
+              = source[pf.token()][subj1] + 1;
 
             ++subj1;
         });
@@ -514,11 +560,11 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
             REQUIRE(subj2++ < subN);
             REQUIRE(subpf.token() % subL == subpf.line());
             REQUIRE(
-              source[j1][subpf.token()] + 1 == 
+              source[pf.token()][subpf.token()] + 1 == 
               subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]
             );
             subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
-            = source[j1][subpf.token()] + 1;
+            = source[pf.token()][subpf.token()] + 1;
         });
 
         // subpipe 3
@@ -526,11 +572,11 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
           REQUIRE(subj3 < subN);
           REQUIRE(subpf.token() % subL == subpf.line());
           REQUIRE(
-            source[j1][subj3] + 1 == 
+            source[pf.token()][subj3] + 1 == 
             subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]
           );
           subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
-            = source[j1][subj3] + 3;
+            = source[pf.token()][subj3] + 3;
           subcollection.push_back(subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]);
           ++subj3;
         });
@@ -592,7 +638,7 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
           REQUIRE(subpf.token() % subL == subpf.line());
 
           subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] = 
-          source[j1][subj1] + 1;
+          source[pf.token()][subj1] + 1;
 
           ++subj1;
         });
@@ -602,11 +648,11 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
           REQUIRE(subj2++ < subN);
           REQUIRE(subpf.token() % subL == subpf.line());
           REQUIRE(
-            source[j1][subpf.token()] + 1 == 
+            source[pf.token()][subpf.token()] + 1 == 
             subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]
           );
           subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
-          = source[j1][subpf.token()] + 1;
+          = source[pf.token()][subpf.token()] + 1;
         });
 
         // subpipe 3
@@ -614,11 +660,11 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
           REQUIRE(subj3 < subN);
           REQUIRE(subpf.token() % subL == subpf.line());
           REQUIRE(
-            source[j1][subj3] + 1 == 
+            source[pf.token()][subj3] + 1 == 
             subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]
           );
           subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
-          = source[j1][subj3] + 13;
+          = source[pf.token()][subj3] + 13;
           subcollection.push_back(subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]);
           ++subj3;
         });
@@ -680,7 +726,7 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
           REQUIRE(subpf.token() % subL == subpf.line());
 
           subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
-            = source[j1][subj1] + 1;
+            = source[pf.token()][subj1] + 1;
 
           ++subj1;
         });
@@ -690,11 +736,11 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
           REQUIRE(subj2++ < subN);
           REQUIRE(subpf.token() % subL == subpf.line());
           REQUIRE(
-            source[j1][subpf.token()] + 1 == 
+            source[pf.token()][subpf.token()] + 1 == 
             subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]
           );
           subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] = 
-          source[j1][subpf.token()] + 1;
+          source[pf.token()][subpf.token()] + 1;
         });
 
         // subpipe 3
@@ -702,11 +748,11 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
           REQUIRE(subj3 < subN);
           REQUIRE(subpf.token() % subL == subpf.line());
           REQUIRE(
-            source[j1][subj3] + 1 == 
+            source[pf.token()][subj3] + 1 == 
             subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]
           );
           subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] = 
-          source[j1][subj3] + 7;
+          source[pf.token()][subj3] + 7;
           subcollection.push_back(subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]);
           ++subj3;
         });
@@ -833,7 +879,6 @@ TEST_CASE("ScalablePipeline.PipelineinPipeline.5L.2W.3subL" * doctest::timeout(3
 TEST_CASE("ScalablePipeline.PipelineinPipeline.5L.2W.4subL" * doctest::timeout(300)) {
   spipeline_in_spipeline(5, 2, 4);
 }
-*/
 
 // ----------------------------------------------------------------------------
 /* SNIG task graph

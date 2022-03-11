@@ -137,7 +137,7 @@ of the pipeline task.
 @section ResetAPlaceholderScalablePipeline Reset a Placeholder Scalable Pipeline 
 
 It is possible to create a scalable pipeline as a placeholder 
-using the constructor overload tf::ScalablePipeline(size_t num_lines) and reset 
+using the constructor tf::ScalablePipeline(size_t num_lines) and reset 
 it to another range later in the application.
 The following code creates a task to emplace
 a range of pipes and reset the pipeline
@@ -179,6 +179,16 @@ It is your responsibility to ensure a scalable pipeline has
 a valid structure before running it.
 A valid pipeline must have at least one parallel line and one pipe,
 where the first pipe is a serial type.
+
+Similarly, you can create an empty scalable pipeline using the default
+constructor tf::ScalablePipeline() and reset it later in your program.
+
+@code{.cpp}
+std::vector<tf::Pipe<std::function<void(tf::Pipeflow&)>>> pipes;
+tf::ScalablePipeline<typename decltype(pipes)::iterator> spl; 
+// create pipes ...
+spl.reset(num_lines, pipes.begin(), pipes.end());
+@endcode
 
 @section ScalablePipelineUseOtherIteratorTypes Use Other Iterator Types
 

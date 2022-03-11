@@ -92,7 +92,7 @@
 </para></sect1>
 <sect1 id="ParallelScalablePipeline_1ResetAPlaceholderScalablePipeline">
 <title>Reset a Placeholder Scalable Pipeline</title>
-<para>It is possible to create a scalable pipeline as a placeholder using the constructor overload <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline(size_t num_lines)</ref> and reset it to another range later in the application. The following code creates a task to emplace a range of pipes and reset the pipeline to that range, before running the pipeline task:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<para>It is possible to create a scalable pipeline as a placeholder using the constructor <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline(size_t num_lines)</ref> and reset it to another range later in the application. The following code creates a task to emplace a range of pipes and reset the pipeline to that range, before running the pipeline task:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>num_pipes<sp/>=<sp/>10;</highlight></codeline>
@@ -118,7 +118,11 @@
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();<sp/><sp/></highlight></codeline>
 </programlisting></para><para>The task graph of this program is shown below:</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/scalable_pipeline_3.dot"></dotfile>
 </para><para><simplesect kind="attention"><para>It is your responsibility to ensure a scalable pipeline has a valid structure before running it. A valid pipeline must have at least one parallel line and one pipe, where the first pipe is a serial type.</para></simplesect>
-</para></sect1>
+Similarly, you can create an empty scalable pipeline using the default constructor <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline()</ref> and reset it later in your program.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;tf::Pipe&lt;std::function&lt;void(tf::Pipeflow&amp;)&gt;</ref>&gt;&gt;<sp/>pipes;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline&lt;typename decltype(pipes)::iterator&gt;</ref><sp/>spl;<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>pipes<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">spl.<ref refid="classtf_1_1ScalablePipeline_1a940a8de7b53ac5cbd59c55091d88c88f" kindref="member">reset</ref>(num_lines,<sp/>pipes.begin(),<sp/>pipes.end());</highlight></codeline>
+</programlisting></para></sect1>
 <sect1 id="ParallelScalablePipeline_1ScalablePipelineUseOtherIteratorTypes">
 <title>Use Other Iterator Types</title>
 <para>When assigning a range to a scalable pipeline, the pipeline fetches all pipe iterators in that range to an internal vector. This organization allows invoking a pipe callable to be a random accessible operation, regardless of the pipe container type. Taskflow does not have much restriction on the iterator type, as long as these pipes can be iterated in a sequential order using the postfix increment operator, <computeroutput>++</computeroutput>.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>use<sp/>vector<sp/>to<sp/>store<sp/>pipes</highlight><highlight class="normal"></highlight></codeline>

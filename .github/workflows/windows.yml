@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: cmake
-      run: cmake -S . -B build -G "Visual Studio 16 2019" -D CMAKE_BUILD_TYPE=Debug -D CMAKE_BUILD_BENCHMARKS=ON -D CMAKE_BUILD_PROFILER=ON
+      run: cmake -S . -B build -D CMAKE_BUILD_TYPE=Debug -D CMAKE_BUILD_BENCHMARKS=ON -D CMAKE_BUILD_PROFILER=ON
     - name: build
       run: cmake --build build --parallel 10
     - name: test
