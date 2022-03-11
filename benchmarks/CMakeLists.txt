@@ -264,6 +264,20 @@ target_link_libraries(
 )
 set_target_properties(graph_pipeline PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
+## benchmark 13: comparison with simple thread pool
+add_executable(
+  threadpool
+  ${TF_BENCHMARK_DIR}/threadpool/benchmark.cpp
+)
+target_include_directories(threadpool PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  threadpool
+  ${PROJECT_NAME}
+  ${TBB_IMPORTED_TARGETS}
+  ${OpenMP_CXX_LIBRARIES}
+  tf::default_settings
+)
+set_target_properties(threadpool PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ###############################################################################
 # CUDA benchmarks
