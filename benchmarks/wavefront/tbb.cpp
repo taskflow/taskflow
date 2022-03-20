@@ -8,11 +8,11 @@ void wavefront_tbb(unsigned num_threads) {
 
   using namespace tbb;
   using namespace tbb::flow;
-  
+
   tbb::global_control c(
     tbb::global_control::max_allowed_parallelism, num_threads
   );
-    
+
   continue_node<continue_msg> ***node = new continue_node<continue_msg> **[MB];
 
   for ( int i = 0; i < MB; ++i ) {
@@ -34,10 +34,10 @@ void wavefront_tbb(unsigned num_threads) {
       if(j+1 < NB) make_edge(*node[i][j], *node[i][j+1]);
     }
   }
-  
+
   node[0][0]->try_put(continue_msg());
   g.wait_for_all();
-  
+
   for(int i=0; i<MB; ++i) {
     for(int j=0; j<NB; ++j) {
      delete node[i][j];

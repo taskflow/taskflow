@@ -9,16 +9,16 @@ int main() {
 
   tf::Executor executor;
   tf::Taskflow taskflow;
-  
+
   sycl::queue queue;
-    
+
   int* data {nullptr};
-  
+
   // create an allocate task to allocate a shared memory
   tf::Task allocate = taskflow.emplace(
     [&](){ data = sycl::malloc_shared<int>(N, queue); }
   );
-  
+
   // create a syclFlow task to add 2 to each element of the vector
   tf::Task syclFlow = taskflow.emplace_on([&](tf::syclFlow& sf){
 
@@ -31,7 +31,7 @@ int main() {
     fill.precede(plus);
 
   }, queue);
-  
+
   // create a deallocate task that checks the result and frees the memory
   tf::Task deallocate = taskflow.emplace([&](){
 
@@ -45,11 +45,11 @@ int main() {
 
     sycl::free(data, queue);
   });
-  
+
   // create dependencies
   syclFlow.succeed(allocate)
           .precede(deallocate);
-  
+
   // run the taskflow
   executor.run(taskflow).wait();
 

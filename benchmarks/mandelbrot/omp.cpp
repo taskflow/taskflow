@@ -10,7 +10,7 @@ void mandelbrot_omp(unsigned num_threads, int d = D) {
     # pragma omp for schedule(dynamic, 1)
     for(i=0; i<H ;i ++) {
       for(j=0; j<W; j++) {
-   
+
         auto xy = scale_xy(i, j);
         auto value = escape_time(xy.first, xy.second, d);
         auto k = 3*(j*W + i);

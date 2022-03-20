@@ -3,10 +3,10 @@
 
 
 int pipe_helper(
-  LevelGraph& graph, 
-  const int uid, 
-  const size_t level, 
-  const size_t index, 
+  LevelGraph& graph,
+  const int uid,
+  const size_t level,
+  const size_t index,
   const int count) {
 
   int retval = 0;
@@ -27,7 +27,7 @@ void graph_pipeline_gold_1_pipe(LevelGraph& graph) {
 
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
-      
+
       // 1st pipe
       int retval = work(graph.node_at(i, j).uid());
       //std::cout << "retval = " << retval << '\n';
@@ -78,7 +78,7 @@ void graph_pipeline_gold_3_pipes(LevelGraph& graph) {
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
       int uid = graph.node_at(i, j).uid();
-      
+
       // 1st pipe ~ 2nd pipe
       int retval = pipe_helper(graph, uid, i, j, 2);
 
@@ -97,8 +97,8 @@ void graph_pipeline_gold_3_pipes(LevelGraph& graph) {
       }
     }
   }
-  
-  
+
+
   //outputfile.close();
 }
 
@@ -110,7 +110,7 @@ void graph_pipeline_gold_4_pipes(LevelGraph& graph) {
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
       int uid = graph.node_at(i, j).uid();
-      
+
       // 1st pipe ~ 3th pipe
       int retval = pipe_helper(graph, uid, i, j, 3);
 
@@ -140,10 +140,10 @@ void graph_pipeline_gold_5_pipes(LevelGraph& graph) {
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
       int uid = graph.node_at(i, j).uid();
-      
+
       // 1st pipe ~ 4th pipe
       int retval = pipe_helper(graph, uid, i, j, 4);
-      
+
       // 5th pipe
       retval = work(uid);
 
@@ -170,10 +170,10 @@ void graph_pipeline_gold_6_pipes(LevelGraph& graph) {
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
       int uid = graph.node_at(i, j).uid();
-      
+
       // 1st pipe ~ 5th pipe
       int retval = pipe_helper(graph, uid, i, j, 5);
-      
+
       // 6th pipe
       retval = work(uid);
 
@@ -200,10 +200,10 @@ void graph_pipeline_gold_7_pipes(LevelGraph& graph) {
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
       int uid = graph.node_at(i, j).uid();
-      
+
       // 1st pipe ~ 6th pipe
       int retval = pipe_helper(graph, uid, i, j, 6);
-      
+
       // 7th pipe
       retval = work(uid);
 
@@ -230,10 +230,10 @@ void graph_pipeline_gold_8_pipes(LevelGraph& graph) {
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
       int uid = graph.node_at(i, j).uid();
-      
+
       // 1st pipe ~ 7th pipe
       int retval = pipe_helper(graph, uid, i, j, 7);
-      
+
       // 8th pipe
       retval = work(uid);
 
@@ -260,10 +260,10 @@ void graph_pipeline_gold_9_pipes(LevelGraph& graph) {
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
       int uid = graph.node_at(i, j).uid();
-      
+
       // 1st pipe ~ 8th pipe
       int retval = pipe_helper(graph, uid, i, j, 8);
-      
+
       // 9th pipe
       retval = work(uid);
 
@@ -290,10 +290,10 @@ void graph_pipeline_gold_10_pipes(LevelGraph& graph) {
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
       int uid = graph.node_at(i, j).uid();
-      
+
       // 1st pipe ~ 9th pipe
       int retval = pipe_helper(graph, uid, i, j, 9);
-      
+
       // 10th pipe
       retval = work(uid);
 
@@ -320,10 +320,10 @@ void graph_pipeline_gold_11_pipes(LevelGraph& graph) {
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
       int uid = graph.node_at(i, j).uid();
-      
+
       // 1st pipe ~ 10th pipe
       int retval = pipe_helper(graph, uid, i, j, 10);
-      
+
       // 11th pipe
       retval = work(uid);
 
@@ -350,10 +350,10 @@ void graph_pipeline_gold_12_pipes(LevelGraph& graph) {
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
       int uid = graph.node_at(i, j).uid();
-      
+
       // 1st pipe ~ 11th pipe
       int retval = pipe_helper(graph, uid, i, j, 11);
-      
+
       // 12th pipe
       retval = work(uid);
 
@@ -380,10 +380,10 @@ void graph_pipeline_gold_13_pipes(LevelGraph& graph) {
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
       int uid = graph.node_at(i, j).uid();
-      
+
       // 1st pipe ~ 12th pipe
       int retval = pipe_helper(graph, uid, i, j, 12);
-      
+
       // 13th pipe
       retval = work(uid);
 
@@ -413,7 +413,7 @@ void graph_pipeline_gold_14_pipes(LevelGraph& graph) {
 
       // 1st pipe ~ 13th pipe
       int retval = pipe_helper(graph, uid, i, j, 13);
-      
+
       // 14th pipe
       retval = work(uid);
 
@@ -443,7 +443,7 @@ void graph_pipeline_gold_15_pipes(LevelGraph& graph) {
 
       // 1st pipe ~ 14th pipe
       int retval = pipe_helper(graph, uid, i, j, 14);
-      
+
       // 15th pipe
       retval = work(uid);
 
@@ -473,7 +473,7 @@ void graph_pipeline_gold_16_pipes(LevelGraph& graph) {
 
       // 1st pipe ~ 15th pipe
       int retval = pipe_helper(graph, uid, i, j, 15);
-      
+
       // 16th pipe
       retval = work(uid);
 
@@ -498,17 +498,17 @@ void graph_pipeline_gold_16_pipes(LevelGraph& graph) {
 
 std::chrono::microseconds measure_time_gold(
   LevelGraph& graph, size_t pipes) {
-  
+
   auto beg = std::chrono::high_resolution_clock::now();
   auto end = std::chrono::high_resolution_clock::now();
-  
+
   switch(pipes) {
     case 1:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_gold_1_pipe(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     case 2:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_gold_2_pipes(graph);
@@ -520,7 +520,7 @@ std::chrono::microseconds measure_time_gold(
       graph_pipeline_gold_3_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     case 4:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_gold_4_pipes(graph);
@@ -532,13 +532,13 @@ std::chrono::microseconds measure_time_gold(
       graph_pipeline_gold_5_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     case 6:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_gold_6_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     case 7:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_gold_7_pipes(graph);
@@ -550,7 +550,7 @@ std::chrono::microseconds measure_time_gold(
       graph_pipeline_gold_8_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     case 9:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_gold_9_pipes(graph);
@@ -562,13 +562,13 @@ std::chrono::microseconds measure_time_gold(
       graph_pipeline_gold_10_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     case 11:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_gold_11_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     case 12:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_gold_12_pipes(graph);
@@ -580,7 +580,7 @@ std::chrono::microseconds measure_time_gold(
       graph_pipeline_gold_13_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     case 14:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_gold_14_pipes(graph);
@@ -592,13 +592,13 @@ std::chrono::microseconds measure_time_gold(
       graph_pipeline_gold_15_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     case 16:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_gold_16_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     default:
       throw std::runtime_error("can support only up to 16 pipes");
     break;

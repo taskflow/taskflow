@@ -8,7 +8,7 @@
 // Testcase: BubbleSort
 // --------------------------------------------------------
 TEST_CASE("BubbleSort" * doctest::timeout(300)) {
-  
+
   for(unsigned w=1; w<=9; w+=2) {
 
     tf::Executor executor(w);
@@ -16,7 +16,7 @@ TEST_CASE("BubbleSort" * doctest::timeout(300)) {
     for(int end=10; end <= 1000; end += 200) {
 
       tf::Taskflow taskflow("BubbleSort");
-      
+
       std::vector<int> data(end);
 
       for(auto& d : data) d = ::rand()%100;
@@ -81,10 +81,10 @@ TEST_CASE("SelectionSort" * doctest::timeout(300)) {
   > spawn;
 
   spawn = [&] (
-    tf::Subflow& sf, 
-    std::vector<int>& data, 
-    int beg, 
-    int end, 
+    tf::Subflow& sf,
+    std::vector<int>& data,
+    int beg,
+    int end,
     int& min
   ) mutable {
 
@@ -99,26 +99,26 @@ TEST_CASE("SelectionSort" * doctest::timeout(300)) {
     }
 
     int m = (beg + end + 1) / 2;
-    
+
     auto minl = new int(-1);
     auto minr = new int(-1);
-    
+
     auto SL = sf.emplace(
       [&spawn, &data, beg, m, l=minl] (tf::Subflow& sf) mutable {
       spawn(sf, data, beg, m, *l);
-    }).name(std::string("[") 
-          + std::to_string(beg) 
-          + ':' 
-          + std::to_string(m) 
+    }).name(std::string("[")
+          + std::to_string(beg)
+          + ':'
+          + std::to_string(m)
           + ')');
 
     auto SR = sf.emplace(
       [&spawn, &data, m, end, r=minr] (tf::Subflow& sf) mutable {
       spawn(sf, data, m, end, *r);
-    }).name(std::string("[") 
-          + std::to_string(m) 
-          + ':' 
-          + std::to_string(end) 
+    }).name(std::string("[")
+          + std::to_string(m)
+          + ':'
+          + std::to_string(end)
           + ')');
 
     auto SM = sf.emplace([&data, &min, minl, minr] () {
@@ -134,9 +134,9 @@ TEST_CASE("SelectionSort" * doctest::timeout(300)) {
       }
       delete minl;
       delete minr;
-    }).name(std::string("merge [") 
-          + std::to_string(beg) 
-          + ':' 
+    }).name(std::string("merge [")
+          + std::to_string(beg)
+          + ':'
           + std::to_string(end) + ')');
 
     SM.succeed(SL, SR);
@@ -148,24 +148,24 @@ TEST_CASE("SelectionSort" * doctest::timeout(300)) {
 
     for(int end=16; end <= 512; end <<= 1) {
       tf::Taskflow taskflow("SelectionSort");
-      
+
       std::vector<int> data(end);
 
       for(auto& d : data) d = ::rand()%100;
 
       auto gold = data;
       std::sort(gold.begin(), gold.end());
-      
+
       int beg = 0;
       int min = -1;
-      
+
       auto start = taskflow.emplace([](){});
 
       auto argmin = taskflow.emplace(
         [&spawn, &data, &beg, end, &min](tf::Subflow& sf) mutable {
         spawn(sf, data, beg, end, min);
-      }).name(std::string("[0") 
-            + ":" 
+      }).name(std::string("[0")
+            + ":"
             + std::to_string(end) + ")");
 
       auto putmin = taskflow.emplace([&](){
@@ -211,21 +211,21 @@ TEST_CASE("MergeSort" * doctest::timeout(300)) {
     }
 
     int m = (beg + end + 1) / 2;
-    
+
     auto SL = sf.emplace([&spawn, &data, beg, m] (tf::Subflow& sf) {
       spawn(sf, data, beg, m);
-    }).name(std::string("[") 
-          + std::to_string(beg) 
-          + ':' 
-          + std::to_string(m) 
+    }).name(std::string("[")
+          + std::to_string(beg)
+          + ':'
+          + std::to_string(m)
           + ')');
 
     auto SR = sf.emplace([&spawn, &data, m, end] (tf::Subflow& sf) {
       spawn(sf, data, m, end);
-    }).name(std::string("[") 
-          + std::to_string(m) 
-          + ':' 
-          + std::to_string(end) 
+    }).name(std::string("[")
+          + std::to_string(m)
+          + ':'
+          + std::to_string(end)
           + ')');
 
     auto SM = sf.emplace([&data, beg, end, m] () {
@@ -241,12 +241,12 @@ TEST_CASE("MergeSort" * doctest::timeout(300)) {
 
       // remaining SL
       for(; i<tmpl.size(); ++i) data[k++] = tmpl[i];
-      
+
       // remaining SR
       for(; j<tmpr.size(); ++j) data[k++] = tmpr[j];
-    }).name(std::string("merge [") 
-          + std::to_string(beg) 
-          + ':' 
+    }).name(std::string("merge [")
+          + std::to_string(beg)
+          + ':'
           + std::to_string(end) + ')');
 
     SM.succeed(SL, SR);
@@ -258,17 +258,17 @@ TEST_CASE("MergeSort" * doctest::timeout(300)) {
 
     for(int end=10; end <= 10000; end = end * 10) {
       tf::Taskflow taskflow("MergeSort");
-      
+
       std::vector<int> data(end);
 
       for(auto& d : data) d = ::rand()%100;
 
       auto gold = data;
-      
+
       taskflow.emplace([&spawn, &data, end](tf::Subflow& sf){
         spawn(sf, data, 0, end);
-      }).name(std::string("[0") 
-            + ":" 
+      }).name(std::string("[0")
+            + ":"
             + std::to_string(end) + ")");
 
       executor.run(taskflow).wait();
@@ -290,16 +290,16 @@ TEST_CASE("QuickSort" * doctest::timeout(300)) {
   std::function<void(tf::Subflow& sf, std::vector<int>&, itr_t, itr_t)> spawn;
 
   spawn = [&] (
-    tf::Subflow& sf, 
-    std::vector<int>& data, 
-    itr_t beg, 
+    tf::Subflow& sf,
+    std::vector<int>& data,
+    itr_t beg,
     itr_t end
   ) mutable {
 
     if(!(beg < end) || std::distance(beg, end) == 1) {
       return;
     }
-    
+
     if(std::distance(beg, end) <= 5) {
       std::sort(beg, end);
       return;
@@ -314,21 +314,21 @@ TEST_CASE("QuickSort" * doctest::timeout(300)) {
     });
 
     std::iter_swap(pvt, end-1);
-    
+
     sf.emplace([&spawn, &data, beg, pvt] (tf::Subflow& sf) {
       spawn(sf, data, beg, pvt);
-    }).name(std::string("[") 
-          + std::to_string(beg-data.begin()) 
-          + ':' 
-          + std::to_string(pvt-data.begin()) 
+    }).name(std::string("[")
+          + std::to_string(beg-data.begin())
+          + ':'
+          + std::to_string(pvt-data.begin())
           + ')');
 
     sf.emplace([&spawn, &data, pvt, end] (tf::Subflow& sf) {
       spawn(sf, data, pvt+1, end);
-    }).name(std::string("[") 
-          + std::to_string(pvt-data.begin()) 
-          + ':' 
-          + std::to_string(end-data.begin()) 
+    }).name(std::string("[")
+          + std::to_string(pvt-data.begin())
+          + ':'
+          + std::to_string(end-data.begin())
           + ')');
   };
 
@@ -339,17 +339,17 @@ TEST_CASE("QuickSort" * doctest::timeout(300)) {
     for(int end=16; end <= 16384; end <<= 1) {
 
       tf::Taskflow taskflow("QuickSort");
-      
+
       std::vector<int> data(end);
 
       for(auto& d : data) d = ::rand()%100;
 
       auto gold = data;
-      
+
       taskflow.emplace([&spawn, &data](tf::Subflow& sf){
         spawn(sf, data, data.begin(), data.end());
-      }).name(std::string("[0") 
-            + ":" 
+      }).name(std::string("[0")
+            + ":"
             + std::to_string(end) + ")");
 
       executor.run(taskflow).wait();

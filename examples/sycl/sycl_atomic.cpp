@@ -6,29 +6,29 @@
 constexpr size_t N = 10000;
 
 int main() {
-  
+
   // create a standalone scylFlow
   sycl::queue queue;
 
   tf::syclFlow syclflow(queue);
-    
+
   // allocate a shared memory and initialize the data
   auto data = sycl::malloc_shared<int>(N, queue);
 
   for(size_t i=0; i<N; i++) {
     data[i] = i;
   }
-  
+
   // reduce the summation to the first element using ONEAPI atomic_ref
   syclflow.parallel_for(
-    sycl::range<1>(N), [=](sycl::id<1> id) { 
+    sycl::range<1>(N), [=](sycl::id<1> id) {
 
       auto ref = sycl::ONEAPI::atomic_ref<
-        int, 
-        sycl::ONEAPI::memory_order_relaxed, 
+        int,
+        sycl::ONEAPI::memory_order_relaxed,
         sycl::ONEAPI::memory_scope::device,
         sycl::access::address_space::global_space
-      >{data[0]};    
+      >{data[0]};
 
       ref.fetch_add(data[id]);
     }
@@ -36,7 +36,7 @@ int main() {
 
   // run the syclflow
   syclflow.offload();
-  
+
   // create a deallocate task that checks the result and frees the memory
   if(data[0] != (N-1)*N/2) {
     std::cout << data[0] << '\n';
@@ -44,7 +44,7 @@ int main() {
   }
 
   std::cout << "correct result\n";
-  
+
   // deallocates the memory
   sycl::free(data, queue);
 

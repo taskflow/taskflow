@@ -16,7 +16,7 @@
 
 #include "seismic_video.h"
 #include "universe.h"
-#include <taskflow/taskflow.hpp> 
+#include <taskflow/taskflow.hpp>
 #include <tbb/task_scheduler_init.h>
 #include <tbb/flow_graph.h>
 #include <tbb/partitioner.h>
@@ -51,11 +51,11 @@ void SeismicVideo::on_process() {
       auto stress_tasks = taskflow.dynamic_parallel_for(1, UniverseHeight, 1, [&](int i) mutable {
         u_.UpdateStress(Universe::Rectangle(0, i, u_.UniverseWidth-1, 1));
       }, executor.num_workers());
-    
+
       auto velocity_tasks = taskflow.dynamic_parallel_for(1, UniverseHeight, 1, [&](int i) mutable {
         u_.UpdateVelocity(Universe::Rectangle(1, i, u_.UniverseWidth-1, 1));
       }, executor.num_workers());
-    
+
       std::get<1>(stress_tasks).precede(std::get<0>(velocity_tasks));
       std::get<0>(stress_tasks).work([&](){ u_.UpdatePulse(); });
 

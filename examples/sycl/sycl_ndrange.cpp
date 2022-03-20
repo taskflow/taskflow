@@ -1,5 +1,5 @@
 // This program inspects the indexing methods of SYCL kernels
-// through nd_range and nd_item. 
+// through nd_range and nd_item.
 
 #include <taskflow/taskflow.hpp>
 #include <taskflow/syclflow.hpp>
@@ -8,7 +8,7 @@ constexpr size_t R = 8;
 constexpr size_t C = 12;
 
 void print(int* data, const std::string& message) {
-  std::cout << message << '\n'; 
+  std::cout << message << '\n';
   for(size_t i=0; i<R; i++) {
     for(size_t j=0; j<C; j++) {
       std::cout << std::setw(5) << data[i*C + j];
@@ -18,7 +18,7 @@ void print(int* data, const std::string& message) {
 }
 
 int main() {
-  
+
   sycl::queue queue;
 
   auto global_id_r = sycl::malloc_shared<int>(R*C, queue);
@@ -46,14 +46,14 @@ int main() {
 
         // inspect global linear id
         global_linear_id[i] = item.get_global_linear_id();
-        
+
         // inspect local id
         local_id_r[i] = item.get_local_id(0);
         local_id_c[i] = item.get_local_id(1);
 
         // inspect local linear id
         local_linear_id[i] = item.get_local_linear_id();
-        
+
         // inspect group id
         group_id_r[i] = item.get_group(0);
         group_id_c[i] = item.get_group(1);
@@ -64,7 +64,7 @@ int main() {
       }
     );
   }).wait();
-  
+
   // print the indices
   print(global_id_r, "global_id_r");
   print(global_id_c, "global_id_c");

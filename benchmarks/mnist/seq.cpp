@@ -1,10 +1,10 @@
-#include "dnn.hpp" 
+#include "dnn.hpp"
 
 void run_sequential(MNIST& D, unsigned) {
 
   const auto iter_num = D.images.rows()/D.batch_size;
 
-  for(auto e=0u; e<D.epoch; e++) { 
+  for(auto e=0u; e<D.epoch; e++) {
     for(auto it=0u; it<iter_num; it++) {
       // Foward propagation
       for(size_t i=0; i<D.acts.size(); i++) {
@@ -16,7 +16,7 @@ void run_sequential(MNIST& D, unsigned) {
         }
       }
 
-      // Calculate loss  
+      // Calculate loss
       D.loss(D.labels);
 
       // Backward propagation
@@ -40,7 +40,7 @@ void run_sequential(MNIST& D, unsigned) {
         D.beg_row = 0;
       }
     } // End of iterations
-    // Shuffle input 
+    // Shuffle input
     D.shuffle(D.images, D.labels, D.images.rows());
   } // End of epoch
 }

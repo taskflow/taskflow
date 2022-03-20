@@ -4,30 +4,30 @@
 // Reference:
 //   https://en.wikipedia.org/wiki/Mandelbrot_set#Generalizations
 //   https://people.sc.fsu.edu/~jburkardt/cpp_src/mandelbrot_openmp/mandelbrot_openmp.html
-//   http://courses.cms.caltech.edu/cs11/material/dgc/lab4/ 
+//   http://courses.cms.caltech.edu/cs11/material/dgc/lab4/
 //   https://github.com/gasparian/mandelbrot_cpp/blob/master/mandelbrot.cpp
-//   https://csl.name/post/mandelbrot-rendering/ 
+//   https://csl.name/post/mandelbrot-rendering/
 //   http://linas.org/art-gallery/escape/smooth.html
 
-int H = 1000; 
-int W = 1000; 
+int H = 1000;
+int W = 1000;
 unsigned char* RGB = nullptr;
 
 void mandelbrot(
   const std::string& model,
-  const unsigned num_threads, 
+  const unsigned num_threads,
   const unsigned num_rounds
   ) {
 
   std::cout << std::setw(12) << "size"
             << std::setw(12) << "runtime"
             << std::endl;
- 
+
   for(int N = 100; N<=1000; N+=100) {
 
     W = N;
     H = N;
-  
+
     double runtime {0.0};
     RGB = static_cast<unsigned char *>(malloc (W * H * 3 * sizeof(unsigned char)));
 
@@ -58,10 +58,10 @@ int main(int argc, char* argv[]) {
 
   CLI::App app{"Mandelbrot set"};
 
-  unsigned num_threads {1}; 
+  unsigned num_threads {1};
   app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
 
-  unsigned num_rounds {1};  
+  unsigned num_rounds {1};
   app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
 
   std::string model = "tf";
@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
   std::cout << "model=" << model << ' '
             << "num_threads=" << num_threads << ' '
             << "num_rounds=" << num_rounds << ' '
-            << std::endl; 
+            << std::endl;
 
   mandelbrot(model, num_threads, num_rounds);
 }

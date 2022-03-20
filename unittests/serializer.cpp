@@ -18,7 +18,7 @@ inline std::default_random_engine& random_engine() {
 // Randomly generate a floating value in the given range.
 template <typename T>
 std::enable_if_t<std::is_floating_point<T>::value, T> random(
-  const T from = -1.0, 
+  const T from = -1.0,
   const T to = 1.0
 ) {
   return std::uniform_real_distribution<T>(from, to)(random_engine());
@@ -28,11 +28,11 @@ std::enable_if_t<std::is_floating_point<T>::value, T> random(
 // Randomly generate an integer value.
 template <typename T>
 std::enable_if_t<std::is_integral<T>::value, T> random(
-  const T from = std::numeric_limits<T>::lowest(), 
+  const T from = std::numeric_limits<T>::lowest(),
   const T to = std::numeric_limits<T>::max()
 ) {
   return std::uniform_int_distribution<T>(from, to)(random_engine());
-} 
+}
 
 // Function: random
 // Randomly generate a string.
@@ -55,52 +55,52 @@ std::enable_if_t<std::is_same<T, std::string>::value, T> random(
 struct PODs {
 
   unsigned      pod_uint32 = random<decltype(pod_uint32)>();
-  int           pod_int32  = random<decltype(pod_int32)>(); 
+  int           pod_int32  = random<decltype(pod_int32)>();
   unsigned long long pod_uint64 = random<decltype(pod_uint64)>();
-  long long     pod_int64  = random<decltype(pod_int64)>(); 
-  float_t       pod_float  = random<decltype(pod_float)>(); 
+  long long     pod_int64  = random<decltype(pod_int64)>();
+  float_t       pod_float  = random<decltype(pod_float)>();
   double_t      pod_double = random<decltype(pod_double)>();
 
   template <typename ArchiverT>
   auto save( ArchiverT& ar ) const {
     return ar(
       pod_uint32,
-      pod_int32, 
+      pod_int32,
       pod_uint64,
-      pod_int64, 
-      pod_float, 
+      pod_int64,
+      pod_float,
       pod_double
     );
   }
-  
+
   template <typename ArchiverT>
   auto load( ArchiverT& ar ) {
     return ar(
       pod_uint32,
-      pod_int32, 
+      pod_int32,
       pod_uint64,
-      pod_int64, 
-      pod_float, 
+      pod_int64,
+      pod_float,
       pod_double
     );
   }
 
   bool operator == (const PODs& rhs) const {
-    return pod_uint32 == rhs.pod_uint32 && 
-           pod_int32  == rhs.pod_int32  && 
-           pod_uint64 == rhs.pod_uint64 && 
-           pod_int64  == rhs.pod_int64  && 
-           pod_float  == rhs.pod_float  && 
-           pod_double == rhs.pod_double; 
+    return pod_uint32 == rhs.pod_uint32 &&
+           pod_int32  == rhs.pod_int32  &&
+           pod_uint64 == rhs.pod_uint64 &&
+           pod_int64  == rhs.pod_int64  &&
+           pod_float  == rhs.pod_float  &&
+           pod_double == rhs.pod_double;
   }
 
   bool operator != (const PODs& rhs) const {
     return !(*this == rhs);
   }
-}; 
+};
 
 // Procedure: test_pod
-// The templated procedure for testing POD. Caller must specify the output 
+// The templated procedure for testing POD. Caller must specify the output
 // and input archiver type.
 void test_pod() {
 
@@ -108,41 +108,41 @@ void test_pod() {
   std::ostringstream os;
   tf::Serializer oar(os);
 
-  const auto o_uint32 = random<unsigned>();     
-  const auto o_int32  = random<int>();      
-  const auto o_uint64 = random<unsigned long long>();     
-  const auto o_int64  = random<long long>();      
-  const auto o_float  = random<float>();        
-  const auto o_double = random<double>();       
-  
+  const auto o_uint32 = random<unsigned>();
+  const auto o_int32  = random<int>();
+  const auto o_uint64 = random<unsigned long long>();
+  const auto o_int64  = random<long long>();
+  const auto o_float  = random<float>();
+  const auto o_double = random<double>();
+
   auto o_sz = oar(
     o_uint32,
-    o_int32, 
+    o_int32,
     o_uint64,
-    o_int64, 
-    o_float, 
+    o_int64,
+    o_float,
     o_double
   );
 
   //REQUIRE(o_sz == os.out_avail());
 
   // InputStreamBuffer
-  std::istringstream is(os.str()); 
+  std::istringstream is(os.str());
   tf::Deserializer iar(is);
 
-  auto i_uint32 = random<unsigned>();     
-  auto i_int32  = random<int>();      
-  auto i_uint64 = random<unsigned long long>();     
-  auto i_int64  = random<long long>();      
-  auto i_float  = random<float>();        
-  auto i_double = random<double>();       
+  auto i_uint32 = random<unsigned>();
+  auto i_int32  = random<int>();
+  auto i_uint64 = random<unsigned long long>();
+  auto i_int64  = random<long long>();
+  auto i_float  = random<float>();
+  auto i_double = random<double>();
 
   auto i_sz = iar(
     i_uint32,
-    i_int32, 
+    i_int32,
     i_uint64,
-    i_int64, 
-    i_float, 
+    i_int64,
+    i_float,
     i_double
   );
   REQUIRE(is.rdbuf()->in_avail() == 0);
@@ -157,12 +157,12 @@ void test_pod() {
 }
 
 // Procedure: test_struct
-// The templated procedure for testing POD. Caller must specify the output 
+// The templated procedure for testing POD. Caller must specify the output
 // and input archiver type.
 void test_struct() {
 
   for(size_t i=0; i<64; ++i) {
-    
+
     // POD struct.
     PODs o_pods;
     PODs i_pods;
@@ -178,7 +178,7 @@ void test_struct() {
     tf::Deserializer iar(is);
     auto i_sz = iar(i_pods);
     REQUIRE(is.rdbuf()->in_avail() == 0);
-    
+
     REQUIRE(o_sz == i_sz);
     REQUIRE(o_pods == i_pods);
   }
@@ -202,7 +202,7 @@ void test_string() {
     // Inputstream
     std::istringstream is(os.str());
     tf::Deserializer iar(is);
-    
+
     T i_char_str;
     auto i_sz = iar(i_char_str);
     REQUIRE(is.rdbuf()->in_avail() == 0);
@@ -257,7 +257,7 @@ for(size_t i=0; i<64; i++) {                                   \
   REQUIRE(o_doubles == i_doubles); \
   REQUIRE(o_strings == i_strings); \
   REQUIRE(o_podses == i_podses);   \
-}                                                                           
+}
 
 
 #define TEST_MAP_CONT_BODY(container)                                            \
@@ -380,7 +380,7 @@ void test_array() {
     std::array<int, 512> iint;
     std::array<double, 1024> idouble;
     std::array<std::string, 2048> istring;
-    
+
     std::istringstream is(os.str());
     tf::Deserializer iar(is);
 
@@ -392,14 +392,14 @@ void test_array() {
     REQUIRE(oint == iint);
     REQUIRE(odouble == idouble);
     REQUIRE(ostring == istring);
-  } 
+  }
 }
 
 // Procedure: test_variant
 void test_variant() {
 
-  for (size_t i = 0; i < 64; i++) {            
-    
+  for (size_t i = 0; i < 64; i++) {
+
     // Single POD variant.
     std::variant<int> opod1 = random<int>();
     std::variant<int> ipod1 = random<int>();
@@ -407,11 +407,11 @@ void test_variant() {
     // Multiple POD variant
     std::variant<int, double> opod2 = random<double>();
     std::variant<int, double> ipod2 = random<int>();
-  
+
     // Multiple POD variant
     std::variant<int, double, bool> opod3 = random<int>()%2;
     std::variant<int, double, bool> ipod3 = random<double>();
-    
+
     // Mixing float and string
     std::variant<float, std::string> omix2 = random<std::string>();
     std::variant<float, std::string> imix2 = random<float>();
@@ -424,7 +424,7 @@ void test_variant() {
     std::ostringstream os;
     tf::Serializer oar(os);
     auto osz = oar(opod1, opod2, opod3, omix2, orec2);
-    
+
     // Input archiver
     std::istringstream is(os.str());
     tf::Deserializer iar(is);
@@ -452,7 +452,7 @@ void test_time_point() {
     auto o_dur1 = std::chrono::system_clock::now() - o_tpt1;
     auto o_dur2 = std::chrono::steady_clock::now() - o_tpt2;
     auto o_dur3 = std::chrono::high_resolution_clock::now() - o_tpt3;
-    
+
     // Output archiver
     std::ostringstream os;
     tf::Serializer oar(os);

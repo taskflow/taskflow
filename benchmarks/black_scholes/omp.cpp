@@ -1,4 +1,4 @@
-#include "common.hpp" 
+#include "common.hpp"
 #include <omp.h>
 
 //int bs_omp(void *tid_ptr) {
@@ -11,16 +11,16 @@
 //
 //  int start = tid * (numOptions / nThreads);
 //  int end = start + (numOptions / nThreads);
-//  
+//
 //  for (j=0; j<NUM_RUNS; j++) {
 //    #pragma omp parallel for private(i, price, priceDelta)
 //    for(i=0; i<numOptions; i++) {
 //    //for (i=start; i<end; i++) {
-//      /* Calling main function to calculate option value based on 
+//      /* Calling main function to calculate option value based on
 //       * Black & Scholes's equation.
 //       */
 //      price = BlkSchlsEqEuroNoDiv( sptprice[i], strike[i],
-//          rate[i], volatility[i], otime[i], 
+//          rate[i], volatility[i], otime[i],
 //          otype[i], 0);
 //      prices[i] = price;
 //
@@ -49,18 +49,18 @@ void bs_omp_parallel_for(unsigned num_threads) {
   for (j=0; j<NUM_RUNS; j++) {
     #pragma omp parallel for private(i, price) schedule(guided)
     for (i=0; i<numOptions; i++) {
-      /* Calling main function to calculate option value based on 
+      /* Calling main function to calculate option value based on
        * Black & Scholes's equation.
        */
       price = BlkSchlsEqEuroNoDiv( sptprice[i], strike[i],
-          rate[i], volatility[i], otime[i], 
+          rate[i], volatility[i], otime[i],
           otype[i], 0);
       prices[i] = price;
 
 #ifdef ERR_CHK
       check_error(i, price);
 #endif
-    } 
+    }
   }
 }
 

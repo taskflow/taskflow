@@ -5,7 +5,7 @@
 void linear_chain_omp(size_t length, unsigned num_threads) {
 
   size_t counter = 0;
-  size_t *D = new size_t [length]; 
+  size_t *D = new size_t [length];
 
   #pragma omp parallel num_threads(num_threads)
   {

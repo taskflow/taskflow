@@ -18,7 +18,7 @@ void for_each() {
   for(int n=1; n<=123456; n = n*2 + 1) {
 
     taskflow.clear();
-    
+
     T* cpu = nullptr;
     T* gpu = nullptr;
 
@@ -28,7 +28,7 @@ void for_each() {
     });
 
     tf::Task gputask;
-    
+
     gputask = taskflow.emplace_on([&](tf::syclFlow& cf) {
       auto d2h = cf.copy(cpu, gpu, n);
       auto h2d = cf.copy(gpu, cpu, n);
@@ -40,7 +40,7 @@ void for_each() {
     }, queue);
 
     cputask.precede(gputask);
-    
+
     executor.run(taskflow).wait();
 
     for(int i=0; i<n; i++) {
@@ -70,7 +70,7 @@ TEST_CASE("syclFlow.for_each.double" * doctest::timeout(300)) {
 
 template <typename T>
 void for_each_index() {
-    
+
   tf::Taskflow taskflow;
   tf::Executor executor;
 
@@ -79,7 +79,7 @@ void for_each_index() {
   for(int n=10; n<=123456; n = n*2 + 1) {
 
     taskflow.clear();
-    
+
     T* cpu = nullptr;
     T* gpu = nullptr;
 
@@ -92,11 +92,11 @@ void for_each_index() {
       auto d2h = cf.copy(cpu, gpu, n);
       auto h2d = cf.copy(gpu, cpu, n);
       auto kernel1 = cf.for_each_index(
-        0, n, 2, 
+        0, n, 2,
         [gpu] (int i) { gpu[i] = 17; }
       );
       auto kernel2 = cf.for_each_index(
-        1, n, 2, 
+        1, n, 2,
         [=] (int i) { gpu[i] = -17; }
       );
       h2d.precede(kernel1, kernel2);
@@ -104,7 +104,7 @@ void for_each_index() {
     }, queue);
 
     cputask.precede(gputask);
-    
+
     executor.run(taskflow).wait();
 
     for(int i=0; i<n; i++) {
@@ -139,7 +139,7 @@ TEST_CASE("syclFlow.for_each_index.double" * doctest::timeout(300)) {
 
 template <typename T>
 void reduce() {
-    
+
   sycl::queue queue;
   tf::Taskflow taskflow;
   tf::Executor executor;
@@ -157,7 +157,7 @@ void reduce() {
     }
 
     T sol;
-    
+
     T* gpu = nullptr;
     T* res = nullptr;
 
@@ -167,7 +167,7 @@ void reduce() {
     });
 
     tf::Task gputask;
-    
+
     gputask = taskflow.emplace_on([&](tf::syclFlow& cf) {
       auto d2h = cf.copy(&sol, res, 1);
       auto h2d = cf.copy(gpu, cpu.data(), N);
@@ -180,7 +180,7 @@ void reduce() {
     }, queue);
 
     cputask.precede(gputask);
-    
+
     executor.run(taskflow).wait();
 
     REQUIRE(std::fabs(sum-sol+1000) < 0.0001);
@@ -218,7 +218,7 @@ TEST_CASE("syclFlow.reduce.double" * doctest::timeout(300)) {
 
 template <typename T>
 void uninitialized_reduce() {
-    
+
   sycl::queue queue;
   tf::Taskflow taskflow;
   tf::Executor executor;
@@ -236,7 +236,7 @@ void uninitialized_reduce() {
     }
 
     T sol;
-    
+
     T* gpu = nullptr;
     T* res = nullptr;
 
@@ -246,7 +246,7 @@ void uninitialized_reduce() {
     });
 
     tf::Task gputask;
-    
+
     gputask = taskflow.emplace_on([&](tf::syclFlow& cf) {
       auto d2h = cf.copy(&sol, res, 1);
       auto h2d = cf.copy(gpu, cpu.data(), N);
@@ -259,11 +259,11 @@ void uninitialized_reduce() {
     }, queue);
 
     cputask.precede(gputask);
-    
+
     executor.run(taskflow).wait();
 
     REQUIRE(std::fabs(sum-sol) < 0.0001);
-    
+
     // ------------------------------------------------------------------------
     // standard algorithms
     // ------------------------------------------------------------------------
@@ -296,7 +296,7 @@ TEST_CASE("syclFlow.uninitialized_reduce.double" * doctest::timeout(300)) {
 // ----------------------------------------------------------------------------
 
 void transform() {
-    
+
   tf::Taskflow taskflow;
   tf::Executor executor;
 
@@ -305,7 +305,7 @@ void transform() {
   for(unsigned n=1; n<=123456; n = n*2 + 1) {
 
     taskflow.clear();
-    
+
     int* htgt = nullptr;
     int* tgt = nullptr;
     int* hsrc1 = nullptr;
@@ -332,13 +332,13 @@ void transform() {
       auto d2h2 = cf.copy(hsrc2, src2, n);
       auto d2h1 = cf.copy(hsrc1, src1, n);
       auto kernel = cf.transform(
-        tgt, tgt+n, 
+        tgt, tgt+n,
         [] (int& v1, float& v2, double& v3) -> int {
           v1 = 1;
           v2 = 3.0f;
           v3 = 5.0;
           return 17;
-        }, 
+        },
         src1, src2, src3
       );
       auto h2d = cf.copy(tgt, htgt, n);
@@ -347,7 +347,7 @@ void transform() {
     }, queue);
 
     htgttask.precede(gputask);
-    
+
     executor.run(taskflow).wait();
 
     for(unsigned i=0; i<n; ++i) {

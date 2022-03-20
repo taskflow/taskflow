@@ -4,7 +4,7 @@
 #include <tbb/blocked_range.h>
 
 void mandelbrot_tbb(unsigned num_threads, int d = D) {
-  
+
   tbb::global_control c(
     tbb::global_control::max_allowed_parallelism, num_threads
   );

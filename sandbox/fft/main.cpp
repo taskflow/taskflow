@@ -26,7 +26,7 @@
           c_im(in[i]) = 1.0;\
      }
 #define KERNEL_CALL fft(bots_arg_size, in, out1);
-#define KERNEL_FINI 
+#define KERNEL_FINI
 
 #define KERNEL_SEQ_INIT\
      out2 = (COMPLEX *)malloc(bots_arg_size * sizeof(COMPLEX));\
@@ -85,7 +85,7 @@ int main(	int argc, char *argv []) {
   }
 
   auto t1 = std::chrono::high_resolution_clock::now();
-  //fft(num_values, in, out1); 
+  //fft(num_values, in, out1);
   fft_tf(num_values, in, out1);
   auto t2 = std::chrono::high_resolution_clock::now();
   std::cout << std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count()/1e3 << " ms\n";
@@ -101,5 +101,5 @@ int main(	int argc, char *argv []) {
     test_correctness(num_values, out1, out2);
   }
 
-	return 0;																		
+	return 0;
 }

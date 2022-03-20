@@ -22,7 +22,7 @@
 //   ijjjj
 //   jiiii
 //   kkijk
-// 
+//
 // Output:
 //   a:2
 //   d:4
@@ -51,9 +51,9 @@ int main() {
 
   const size_t num_lines = 2;
 
-  // input data 
+  // input data
   std::vector<std::string> input = {
-    "abade", 
+    "abade",
     "ddddf",
     "eefge",
     "xyzzd",
@@ -82,7 +82,7 @@ int main() {
         printf("stage 1: input token = %s\n", input[pf.token()].c_str());
       }
     }},
-    
+
     // second pipe counts the frequency of each character
     tf::Pipe{tf::PipeType::PARALLEL, [&](tf::Pipeflow& pf) {
       std::unordered_map<char, size_t> map;
@@ -92,7 +92,7 @@ int main() {
       buffer[pf.line()] = map;
       printf("stage 2: map = %s\n", format_map(map).c_str());
     }},
-    
+
     // third pipe reduces the most frequent character
     tf::Pipe{tf::PipeType::SERIAL, [&buffer](tf::Pipeflow& pf) {
       auto& map = std::get<std::unordered_map<char, size_t>>(buffer[pf.line()]);
@@ -102,7 +102,7 @@ int main() {
       printf("stage 3: %c:%zu\n", sol->first, sol->second);
     }}
   );
-  
+
   // build the pipeline graph using composition
   tf::Task init = taskflow.emplace([](){ std::cout << "ready\n"; })
                           .name("starting pipeline");
@@ -114,12 +114,12 @@ int main() {
   // create task dependency
   init.precede(task);
   task.precede(stop);
-  
+
   // dump the pipeline graph structure (with composition)
   taskflow.dump(std::cout);
 
   // run the pipeline
   executor.run(taskflow).wait();
-  
+
   return 0;
 }

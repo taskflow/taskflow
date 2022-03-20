@@ -2,9 +2,9 @@
 // schedule an active task that would never be scheduled.
 
 #include <taskflow/taskflow.hpp>
-  
-int main() {  
-  
+
+int main() {
+
   tf::Taskflow taskflow("Runtime Tasking");
   tf::Executor executor;
 
@@ -13,7 +13,7 @@ int main() {
   std::tie(A, B, C, D) = taskflow.emplace(
     [] () { return 0; },
     [&C] (tf::Runtime& rt) {  // C must be captured by reference
-      std::cout << "B\n"; 
+      std::cout << "B\n";
       rt.schedule(C);
     },
     [] () { std::cout << "C\n"; },
@@ -31,7 +31,7 @@ int main() {
 
   // dump the graph structure
   taskflow.dump(std::cout);
-  
+
   // we will see both B and C in the output
   executor.run(taskflow).wait();
 

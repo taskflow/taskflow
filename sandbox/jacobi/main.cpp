@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
   double meansqr = 0.0;
   double min_ = DBL_MAX;
   double max_ = -1;
-  double* all_times = (double*)malloc(sizeof(double) * params.niter); 
+  double* all_times = (double*)malloc(sizeof(double) * params.niter);
 
   for (int i=0; i<params.niter; ++i) {
     double cur_time = run(&params, num_threads, model)/1e3;
@@ -85,7 +85,7 @@ int main(int argc, char* argv[]) {
   std::cout << "Mode : " << model << "\n";
   printf("Size : %d\n", params.matrix_size);
   printf("Blocksize : %d\n", params.blocksize);
-  printf("Threads : %d\n", num_threads); 
+  printf("Threads : %d\n", num_threads);
   printf("Repeat : %d\n", params.niter);
   printf("Iterations : %d\n", params.titer);
 

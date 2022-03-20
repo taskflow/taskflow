@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
   auto src1 = sycl::malloc_shared<int>(N, queue);
   auto src2 = sycl::malloc_shared<int>(N, queue);
   auto src3 = sycl::malloc_shared<int>(N, queue);
-  
+
   // initialize the data
   for(size_t i=0; i<N; i++) {
     data[i] = 0;
@@ -26,10 +26,10 @@ int main(int argc, char* argv[]) {
     src2[i] = 2;
     src3[i] = 3;
   }
-  
+
   // perform parallel transform
   tf::syclFlow syclflow(queue);
-  
+
   // data[i] = src1[i] + src2[i] + src3[i]
   syclflow.transform(
     data, data+N, [](int a, int b, int c) { return a+b+c; }, src1, src2, src3

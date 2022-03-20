@@ -3,7 +3,7 @@
 
 // reduce_sum_omp
 void reduce_sum_omp(unsigned nthreads) {
-  
+
   omp_set_num_threads(nthreads);
 
   double sum = 0.0;

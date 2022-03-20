@@ -28,7 +28,7 @@ void OptimizedStrassenMultiply_omp(REAL *C, REAL *A, REAL *B, unsigned MatrixSiz
   unsigned QuadrantSizeInBytes = sizeof(REAL) * QuadrantSize * QuadrantSize
                                  + 32;
   unsigned Column, Row;
-  
+
   /************************************************************************
   ** For each matrix A, B, and C, we'll want pointers to each quandrant
   ** in the matrix. These quandrants will be addressed as follows:
@@ -83,7 +83,7 @@ void OptimizedStrassenMultiply_omp(REAL *C, REAL *A, REAL *B, unsigned MatrixSiz
   /* ensure that heap is on cache boundary */
   if ( ((PTR) Heap) & 31)
      Heap = (char*) ( ((PTR) Heap) + 32 - ( ((PTR) Heap) & 31) );
-  
+
   /* Distribute the heap space over the variables */
   S1 = (REAL*) Heap; Heap += QuadrantSizeInBytes;
   S2 = (REAL*) Heap; Heap += QuadrantSizeInBytes;
@@ -96,20 +96,20 @@ void OptimizedStrassenMultiply_omp(REAL *C, REAL *A, REAL *B, unsigned MatrixSiz
   M2 = (REAL*) Heap; Heap += QuadrantSizeInBytes;
   M5 = (REAL*) Heap; Heap += QuadrantSizeInBytes;
   T1sMULT = (REAL*) Heap; Heap += QuadrantSizeInBytes;
-  
+
   /***************************************************************************
   ** Step through all columns row by row (vertically)
   ** (jumps in memory by RowWidth => bad locality)
   ** (but we want the best locality on the innermost loop)
   ***************************************************************************/
   for (Row = 0; Row < QuadrantSize; Row++) {
-    
+
     /*************************************************************************
     ** Step through each row horizontally (addressing elements in each column)
     ** (jumps linearly througn memory => good locality)
     *************************************************************************/
     for (Column = 0; Column < QuadrantSize; Column++) {
-      
+
       /***********************************************************
       ** Within this loop, the following holds for MatrixOffset:
       ** MatrixOffset = (Row * RowWidth) + Column
@@ -129,7 +129,7 @@ void OptimizedStrassenMultiply_omp(REAL *C, REAL *A, REAL *B, unsigned MatrixSiz
 
       /* S3 = A11 - A21 */
       E(S3) = EA(A11) - EA(A21);
-      
+
       /* S7 = B22 - B12 */
       E(S7) = EB(B22) - EB(B12);
 
@@ -161,7 +161,7 @@ void OptimizedStrassenMultiply_omp(REAL *C, REAL *A, REAL *B, unsigned MatrixSiz
   /* Step 1 of C11 = M2 + A12 * B21 */
   #pragma omp task untied
   OptimizedStrassenMultiply_omp(C11, A12, B21, QuadrantSize, RowWidthC, RowWidthA, RowWidthB, Depth+1);
-  
+
   /* Step 1 of C12 = S4 x B22 + T1 + M5 */
   #pragma omp task untied
   OptimizedStrassenMultiply_omp(C12, S4, B22, QuadrantSize, RowWidthC, QuadrantSize, RowWidthB, Depth+1);
@@ -239,7 +239,7 @@ void strassen_omp(unsigned num_threads, REAL *A, REAL *B, REAL *C, int n) {
   {
 	  #pragma omp single
     {
-	    #pragma omp task untied 
+	    #pragma omp task untied
       {
 	    	OptimizedStrassenMultiply_omp(C, A, B, n, n, n, n, 1);
       }

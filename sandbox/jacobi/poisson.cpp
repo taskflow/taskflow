@@ -106,14 +106,14 @@ double run(struct user_parameters* params, unsigned num_threads, std::string mod
           for (ii=i; ii<i+block_size; ++ii) {
             if (ii == 0 || ii == nx - 1 || jj == 0 || jj == ny - 1) {
               (*unew)[ii][jj] = (*f)[ii][jj];
-            } 
+            }
             else {
               (*unew)[ii][jj] = 0.0;
             }
           }
 
     auto beg = std::chrono::high_resolution_clock::now();
-    /// KERNEL INTENSIVE COMPUTATION 
+    /// KERNEL INTENSIVE COMPUTATION
     if(model == "seq") {
       sweep_seq(nx, ny, dx, dy, f_, 0, niter, u_, unew_);
     }
@@ -162,7 +162,7 @@ double run(struct user_parameters* params, unsigned num_threads, std::string mod
         for (i = 0; i < nx; i++) {
           if (i == 0 || i == nx - 1 || j == 0 || j == ny - 1) {
             (*unew)[i][j] = (*f)[i][j];
-          } 
+          }
           else {
             (*unew)[i][j] = 0.0;
           }

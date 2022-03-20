@@ -40,11 +40,11 @@ int main() {
 
   // create data storage
   std::array<int, num_lines> buffer;
-  
+
   // define the pipe callable
   auto pipe_callable = [&buffer] (tf::Pipeflow& pf) mutable {
     switch(pf.pipe()) {
-      // first stage generates only 5 scheduling tokens and saves the 
+      // first stage generates only 5 scheduling tokens and saves the
       // token number into the buffer.
       case 0: {
         if(pf.token() == 5) {
@@ -57,7 +57,7 @@ int main() {
         return;
       }
       break;
-      
+
       // other stages propagate the previous result to this pipe and
       // increment it by one
       default: {
@@ -65,7 +65,7 @@ int main() {
           "stage %zu: input buffer[%zu] = %d\n", pf.pipe(), pf.line(), buffer[pf.line()]
         );
         buffer[pf.line()] = buffer[pf.line()] + 1;
-      } 
+      }
       break;
     }
   };
@@ -76,7 +76,7 @@ int main() {
   for(size_t i=0; i<3; i++) {
     pipes.emplace_back(tf::PipeType::SERIAL, pipe_callable);
   }
-  
+
   // create a pipeline of four parallel lines using the given vector of pipes
   tf::ScalablePipeline<decltype(pipes)::iterator> pl(num_lines, pipes.begin(), pipes.end());
 
@@ -91,7 +91,7 @@ int main() {
   // create task dependency
   init.precede(task);
   task.precede(stop);
-  
+
   // dump the pipeline graph structure (with composition)
   taskflow.dump(std::cout);
 

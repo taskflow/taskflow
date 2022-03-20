@@ -28,7 +28,7 @@ TEST_CASE("Composition-1" * doctest::timeout(300)) {
     D.precede(E);
 
     tf::Taskflow f1;
-    
+
     // module 1
     std::tie(A, B, C, D, E) = f1.emplace(
       [&cnt] () { ++cnt; },
@@ -43,7 +43,7 @@ TEST_CASE("Composition-1" * doctest::timeout(300)) {
     D.precede(E);
     auto m1_1 = f1.composed_of(f0);
     E.precede(m1_1);
-    
+
     executor.run(f1).get();
     REQUIRE(cnt == 10);
 
@@ -53,7 +53,7 @@ TEST_CASE("Composition-1" * doctest::timeout(300)) {
 
     auto m1_2 = f1.composed_of(f0);
     m1_1.precede(m1_2);
-    
+
     for(int n=0; n<100; n++) {
       cnt = 0;
       executor.run_n(f1, n).get();
@@ -64,7 +64,7 @@ TEST_CASE("Composition-1" * doctest::timeout(300)) {
     for(int n=0; n<100; n++) {
       executor.run(f1);
     }
-    
+
     executor.wait_for_all();
 
     REQUIRE(cnt == 1500);
@@ -79,7 +79,7 @@ TEST_CASE("Composition-2" * doctest::timeout(300)) {
     tf::Executor executor(w);
 
     int cnt {0};
-    
+
     // level 0 (+5)
     tf::Taskflow f0;
 
@@ -107,7 +107,7 @@ TEST_CASE("Composition-2" * doctest::timeout(300)) {
     m2_1.precede(m2_2);
 
     //f2.dump(std::cout);
-    
+
     // synchronous run
     for(int n=0; n<100; n++) {
       cnt = 0;
@@ -127,13 +127,13 @@ TEST_CASE("Composition-2" * doctest::timeout(300)) {
 
 // TESTCASE: composition-3
 TEST_CASE("Composition-3" * doctest::timeout(300)) {
-  
+
   for(unsigned w=1; w<=8; ++w) {
-  
+
     tf::Executor executor(w);
 
     int cnt {0};
-    
+
     // level 0 (+2)
     tf::Taskflow f0;
 
@@ -206,7 +206,7 @@ TEST_CASE("ParallelCompositions") {
       D.precede(E);
       D.precede(F);
     }
-    taskflow.composed_of(tf); 
+    taskflow.composed_of(tf);
   }
 
   executor.run(taskflow).wait();

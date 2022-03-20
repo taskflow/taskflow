@@ -10,12 +10,12 @@ void bs_taskflow(unsigned num_threads) {
   taskflow.for_each_index(0, numOptions, 1, [&](int i) {
     auto price = BlkSchlsEqEuroNoDiv(
       sptprice[i], strike[i],
-      rate[i], volatility[i], otime[i], 
+      rate[i], volatility[i], otime[i],
       otype[i], 0
     );
 
     prices[i] = price;
-#ifdef ERR_CHK 
+#ifdef ERR_CHK
     check_error(i, price);
 #endif
   });

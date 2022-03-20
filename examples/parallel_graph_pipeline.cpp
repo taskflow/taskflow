@@ -25,7 +25,7 @@ int main() {
   tf::Executor executor;
 
   const size_t num_lines = 2;
-  
+
   // a topological order of the graph
   //    |-> B
   // A--|
@@ -45,7 +45,7 @@ int main() {
         f1(nodes[pf.token()]);
       }
     }},
-    
+
     // second pipe calls f2
     tf::Pipe{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) {
       f2(nodes[pf.token()]);

@@ -4,11 +4,11 @@
 
 // task creation
 TEST_CASE("syclFlow.task" * doctest::timeout(300)) {
-  
+
   sycl::queue queue;
   tf::syclFlow flow(queue);
-  
-  REQUIRE(flow.empty());  
+
+  REQUIRE(flow.empty());
   REQUIRE(flow.num_tasks() == 0);
 
   auto task1 = flow.single_task([](){});
@@ -18,9 +18,9 @@ TEST_CASE("syclFlow.task" * doctest::timeout(300)) {
 
   REQUIRE(task1.num_successors() == 0);
   REQUIRE(task1.num_dependents() == 0);
-  
+
   auto task2 = flow.single_task([](){});
-  
+
   REQUIRE(flow.num_tasks() == 2);
 
   task1.precede(task2);
@@ -39,7 +39,7 @@ TEST_CASE("syclFlow.task" * doctest::timeout(300)) {
   task1.for_each_successor([](tf::syclTask task){
     REQUIRE(task.name() == "task2");
   });
-  
+
   task2.for_each_dependent([](tf::syclTask task){
     REQUIRE(task.name() == "task1");
   });
@@ -47,7 +47,7 @@ TEST_CASE("syclFlow.task" * doctest::timeout(300)) {
 
 // USM shared memory
 TEST_CASE("syclFlow.USM.shared" * doctest::timeout(300)) {
-    
+
   sycl::queue queue;
   tf::syclFlow flow(queue);
 
@@ -58,7 +58,7 @@ TEST_CASE("syclFlow.USM.shared" * doctest::timeout(300)) {
     REQUIRE(flow.empty());
 
     int* ptr = sycl::malloc_shared<int>(N, queue);
-    
+
     auto plus = flow.parallel_for(sycl::range<1>(sycl::range<1>(N)),
       [=](sycl::id<1> id){
         ptr[id] += 2;
@@ -74,14 +74,14 @@ TEST_CASE("syclFlow.USM.shared" * doctest::timeout(300)) {
     for(size_t i=0; i<N; i++) {
       REQUIRE(ptr[i] == 102);
     }
-    
+
     sycl::free(ptr, queue);
   }
 }
 
 // USM device memory
 TEST_CASE("syclFlow.USM.device" * doctest::timeout(300)) {
-    
+
   sycl::queue queue;
   tf::syclFlow flow(queue);
 
@@ -110,7 +110,7 @@ TEST_CASE("syclFlow.USM.device" * doctest::timeout(300)) {
     for(size_t i=0; i<N; i++) {
       REQUIRE(data[i] == -98);
     }
-    
+
     sycl::free(dptr, queue);
   }
 }
@@ -120,9 +120,9 @@ TEST_CASE("syclFlow.parallel_fills" * doctest::timeout(300)) {
 
   sycl::queue queue;
   tf::syclFlow syclflow(queue);
-  
+
   for(size_t N=1; N<=1000000; N = (N + ::rand() % 17) << 1) {
-    
+
     syclflow.clear();
 
     REQUIRE(syclflow.empty());
@@ -152,7 +152,7 @@ TEST_CASE("syclFlow.parallel_fills" * doctest::timeout(300)) {
 
       R -= count;
     }
-    
+
     syclflow.offload();
 
     for(size_t i=0; i<N; i++) {
@@ -168,9 +168,9 @@ TEST_CASE("syclFlow.parallel_memsets" * doctest::timeout(300)) {
 
   sycl::queue queue;
   tf::syclFlow syclflow(queue);
-  
+
   for(size_t N=1; N<=1000000; N = (N + ::rand() % 17) << 1) {
-    
+
     syclflow.clear();
 
     REQUIRE(syclflow.empty());
@@ -200,7 +200,7 @@ TEST_CASE("syclFlow.parallel_memsets" * doctest::timeout(300)) {
 
       R -= count;
     }
-    
+
     syclflow.offload();
 
     for(size_t i=0; i<N; i++) {
@@ -216,9 +216,9 @@ TEST_CASE("syclFlow.parallel_copies" * doctest::timeout(300)) {
 
   sycl::queue queue;
   tf::syclFlow syclflow(queue);
-  
+
   for(size_t N=1; N<=1000000; N = (N + ::rand() % 17) << 1) {
-    
+
     syclflow.clear();
 
     REQUIRE(syclflow.empty());
@@ -242,14 +242,14 @@ TEST_CASE("syclFlow.parallel_copies" * doctest::timeout(300)) {
       auto d2hc = syclflow.copy(host.data() + N - R, dptr + N - R, count);
       auto h2dc = syclflow.copy(dptr + N - R, host.data() + N - R, count);
       auto fill = syclflow.fill(dptr + N - R, -7, count);
-      
+
       h2dc.precede(fill);
       fill.precede(plus);
       plus.precede(d2hc);
 
       R -= count;
     }
-    
+
     syclflow.offload();
 
     for(size_t i=0; i<N; i++) {
@@ -270,7 +270,7 @@ TEST_CASE("syclFlow.condition" * doctest::timeout(300)) {
 
   tf::Executor executor;
   tf::Taskflow taskflow;
-    
+
   int* dptr = sycl::malloc_shared<int>(N, queue);
 
   auto init = taskflow.emplace([&](){
@@ -287,7 +287,7 @@ TEST_CASE("syclFlow.condition" * doctest::timeout(300)) {
     );
   }, queue);
 
-  auto cond = taskflow.emplace([r=5]() mutable { 
+  auto cond = taskflow.emplace([r=5]() mutable {
     return (r-- > 0) ? 0 : 1;
   });
 
@@ -313,7 +313,7 @@ TEST_CASE("syclFlow.run_n" * doctest::timeout(300)) {
 
   tf::Executor executor;
   tf::Taskflow taskflow;
-    
+
   int* dptr = sycl::malloc_shared<int>(N, queue);
 
   for(size_t i=0; i<N; i++) {

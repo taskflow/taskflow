@@ -5,11 +5,11 @@
 #include <taskflow/taskflow.hpp>
 
 // --------------------------------------------------------
-// Graph generation 
+// Graph generation
 // --------------------------------------------------------
 
 struct Node {
-  
+
   std::string name;
   size_t idx   {0};
   size_t level {0};
@@ -25,9 +25,9 @@ struct Node {
 };
 
 std::unique_ptr<Node[]> make_dag(size_t num_nodes, size_t max_degree) {
-  
+
   std::unique_ptr<Node[]> nodes(new Node[num_nodes]);
-  
+
   // Make sure nodes are in clean state
   for(size_t i=0; i<num_nodes; i++) {
     nodes[i].idx = i;
@@ -52,9 +52,9 @@ std::unique_ptr<Node[]> make_dag(size_t num_nodes, size_t max_degree) {
 }
 
 std::unique_ptr<Node[]> make_chain(size_t num_nodes) {
-  
+
   std::unique_ptr<Node[]> nodes(new Node[num_nodes]);
-  
+
   // Make sure nodes are in clean state
   for(size_t i=0; i<num_nodes; i++) {
     nodes[i].idx = i;
@@ -76,14 +76,14 @@ std::unique_ptr<Node[]> make_chain(size_t num_nodes) {
 // Testcase: StaticTraversal
 // --------------------------------------------------------
 TEST_CASE("StaticTraversal" * doctest::timeout(300)) {
-  
+
   size_t max_degree = 4;
   size_t num_nodes = 1000;
-  
+
   for(unsigned w=1; w<=4; w++) {
 
     auto nodes = make_dag(num_nodes, max_degree);
-    
+
     tf::Taskflow tf;
     tf::Executor executor(w);
 
@@ -109,7 +109,7 @@ TEST_CASE("StaticTraversal" * doctest::timeout(300)) {
     }
 
     executor.run(tf).wait();  // block until finished
-    
+
     for(size_t i=0; i<num_nodes; i++) {
       REQUIRE(nodes[i].visited);
       REQUIRE(nodes[i].dependents == 0);
@@ -136,23 +136,23 @@ TEST_CASE("DynamicTraversal" * doctest::timeout(300)) {
     for(size_t i=0; i<S; i++) {
       if(n->successors[i]->dependents.fetch_sub(1) == 1) {
         n->successors[i]->level = ++level;
-        subflow.emplace([s=n->successors[i], &traverse](tf::Subflow &subflow){ 
-          traverse(s, subflow); 
+        subflow.emplace([s=n->successors[i], &traverse](tf::Subflow &subflow){
+          traverse(s, subflow);
         });
       }
     }
   };
-  
+
   size_t max_degree = 4;
   size_t num_nodes = 1000;
-  
+
   for(unsigned w=1; w<=4; w++) {
 
     auto nodes = make_dag(num_nodes, max_degree);
-    
+
     std::vector<Node*> src;
     for(size_t i=0; i<num_nodes; i++) {
-      if(nodes[i].dependents == 0) { 
+      if(nodes[i].dependents == 0) {
         src.emplace_back(&(nodes[i]));
       }
     }
@@ -163,13 +163,13 @@ TEST_CASE("DynamicTraversal" * doctest::timeout(300)) {
     tf::Executor executor(w);
 
     for(size_t i=0; i<src.size(); i++) {
-      tf.emplace([s=src[i], &traverse](tf::Subflow& subflow){ 
-        traverse(s, subflow); 
+      tf.emplace([s=src[i], &traverse](tf::Subflow& subflow){
+        traverse(s, subflow);
       });
     }
-    
+
     executor.run(tf).wait();  // block until finished
-    
+
     for(size_t i=0; i<num_nodes; i++) {
       REQUIRE(nodes[i].visited);
       REQUIRE(nodes[i].dependents == 0);
@@ -196,22 +196,22 @@ TEST_CASE("DynamicTraversal" * doctest::timeout(300)) {
 //    for(size_t i=0; i<S; i++) {
 //      if(n->successors[i]->dependents.fetch_sub(1) == 1) {
 //        n->successors[i]->level = ++level;
-//        subflow.emplace([s=n->successors[i], &traverse](tf::Subflow &subflow){ 
-//          traverse(s, subflow); 
+//        subflow.emplace([s=n->successors[i], &traverse](tf::Subflow &subflow){
+//          traverse(s, subflow);
 //        });
 //      }
 //    }
 //  };
-//  
+//
 //  size_t num_nodes = 1000;
-//  
+//
 //  for(unsigned w=1; w<=4; w++) {
 //
 //    auto nodes = make_chain(num_nodes);
-//    
+//
 //    std::vector<Node*> src;
 //    for(size_t i=0; i<num_nodes; i++) {
-//      if(nodes[i].dependents == 0) { 
+//      if(nodes[i].dependents == 0) {
 //        src.emplace_back(&(nodes[i]));
 //      }
 //    }
@@ -222,13 +222,13 @@ TEST_CASE("DynamicTraversal" * doctest::timeout(300)) {
 //    tf::Executor executor(w);
 //
 //    for(size_t i=0; i<src.size(); i++) {
-//      tf.emplace([s=src[i], &traverse](tf::Subflow& subflow){ 
-//        traverse(s, subflow); 
+//      tf.emplace([s=src[i], &traverse](tf::Subflow& subflow){
+//        traverse(s, subflow);
 //      });
 //    }
-//    
+//
 //    executor.run(tf).wait();  // block until finished
-//    
+//
 //    for(size_t i=0; i<num_nodes; i++) {
 //      REQUIRE(nodes[i].visited);
 //      REQUIRE(nodes[i].dependents == 0);
@@ -242,31 +242,31 @@ TEST_CASE("DynamicTraversal" * doctest::timeout(300)) {
 // --------------------------------------------------------
 // Testcase: ParallelTraversal
 // --------------------------------------------------------
-  
-void parallel_traversal(unsigned num_threads) { 
+
+void parallel_traversal(unsigned num_threads) {
 
   tf::Executor executor(num_threads);
 
   std::vector<std::thread> threads;
 
   for(unsigned t=0; t<num_threads; ++t) {
-    
+
     threads.emplace_back([&](){
 
       std::atomic<size_t> level {0};
 
       size_t max_degree = 4;
       size_t num_nodes = 1000;
-      
+
       auto nodes = make_dag(num_nodes, max_degree);
-        
+
       std::vector<Node*> src;
       for(size_t i=0; i<num_nodes; i++) {
-        if(nodes[i].dependents == 0) { 
+        if(nodes[i].dependents == 0) {
           src.emplace_back(&(nodes[i]));
         }
       }
-  
+
       std::function<void(Node*, tf::Subflow&)> traverse;
 
       traverse = [&] (Node* n, tf::Subflow& subflow) {
@@ -276,8 +276,8 @@ void parallel_traversal(unsigned num_threads) {
         for(size_t i=0; i<S; i++) {
           if(n->successors[i]->dependents.fetch_sub(1) == 1) {
             n->successors[i]->level = ++level;
-            subflow.emplace([s=n->successors[i], &traverse](tf::Subflow &subflow){ 
-              traverse(s, subflow); 
+            subflow.emplace([s=n->successors[i], &traverse](tf::Subflow &subflow){
+              traverse(s, subflow);
             });
           }
         }
@@ -286,13 +286,13 @@ void parallel_traversal(unsigned num_threads) {
       tf::Taskflow tf;
 
       for(size_t i=0; i<src.size(); i++) {
-        tf.emplace([s=src[i], &traverse](tf::Subflow& subflow){ 
-          traverse(s, subflow); 
+        tf.emplace([s=src[i], &traverse](tf::Subflow& subflow){
+          traverse(s, subflow);
         });
       }
-      
+
       executor.run(tf).wait();  // block until finished
-      
+
       for(size_t i=0; i<num_nodes; i++) {
         REQUIRE(nodes[i].visited);
         REQUIRE(nodes[i].dependents == 0);

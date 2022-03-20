@@ -1,14 +1,14 @@
 #include "linear_pipeline.hpp"
-#include <CLI11.hpp> 
+#include <CLI11.hpp>
 
 int main(int argc, char* argv[]) {
 
   CLI::App app{"Parallel Pipeline"};
 
-  unsigned num_threads {1}; 
+  unsigned num_threads {1};
   app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
 
-  unsigned num_rounds {1};  
+  unsigned num_rounds {1};
   app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
 
   std::string model = "tf";
@@ -52,13 +52,13 @@ int main(int argc, char* argv[]) {
             << '\n';
 
   size_t  log_length = 23;
-  
+
   for(size_t i = 1; i <= log_length; ++i) {
 
     size_t L = 1 << i;
-    
+
     double runtime {0.0};
-    
+
     for(unsigned j = 0; j < num_rounds; ++j) {
       if(model == "tf") {
         runtime += measure_time_taskflow(pipes, num_lines, num_threads, L).count();
@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
       }
     }
 
-    std::cout << std::setw(12) << L 
+    std::cout << std::setw(12) << L
               << std::setw(12) << runtime / num_rounds / 1e3
               << std::endl;
 

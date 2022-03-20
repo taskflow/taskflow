@@ -7,20 +7,20 @@ struct MyObserver : public tf::ObserverInterface {
   MyObserver(const std::string& name) {
     std::cout << "constructing observer " << name << '\n';
   }
-  
+
   // set_up is a constructor-like method that will be called exactly once
-  // passing the number of workers 
+  // passing the number of workers
   void set_up(size_t num_workers) override final {
     std::cout << "setting up observer with " << num_workers << " workers\n";
   }
-  
+
   // on_entry will be called before a worker runs a task
   void on_entry(tf::WorkerView wv, tf::TaskView tv) override final {
     std::ostringstream oss;
     oss << "worker " << wv.id() << " ready to run " << tv.name() << '\n';
     std::cout << oss.str();
   }
-  
+
   // on_exit will be called after a worker completes a task
   void on_exit(tf::WorkerView wv, tf::TaskView tv) override final {
     std::ostringstream oss;
@@ -31,9 +31,9 @@ struct MyObserver : public tf::ObserverInterface {
 };
 
 int main(){
-  
+
   tf::Executor executor;
-  
+
   // Create a taskflow of eight tasks
   tf::Taskflow taskflow;
 
@@ -51,7 +51,7 @@ int main(){
 
   // run the taskflow
   executor.run(taskflow).get();
-  
+
   // remove the observer (optional)
   executor.remove_observer(std::move(observer));
 

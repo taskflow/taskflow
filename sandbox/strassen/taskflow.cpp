@@ -8,7 +8,7 @@ void OptimizedStrassenMultiply_tf(
   unsigned QuadrantSize = MatrixSize >> 1; /* MatixSize / 2 */
   unsigned QuadrantSizeInBytes = sizeof(REAL) * QuadrantSize * QuadrantSize + 32;
   unsigned Column, Row;
-  
+
   /************************************************************************
   ** For each matrix A, B, and C, we'll want pointers to each quandrant
   ** in the matrix. These quandrants will be addressed as follows:
@@ -63,7 +63,7 @@ void OptimizedStrassenMultiply_tf(
   /* ensure that heap is on cache boundary */
   if ( ((PTR) Heap) & 31)
      Heap = (char*) ( ((PTR) Heap) + 32 - ( ((PTR) Heap) & 31) );
-  
+
   /* Distribute the heap space over the variables */
   S1 = (REAL*) Heap; Heap += QuadrantSizeInBytes;
   S2 = (REAL*) Heap; Heap += QuadrantSizeInBytes;
@@ -76,20 +76,20 @@ void OptimizedStrassenMultiply_tf(
   M2 = (REAL*) Heap; Heap += QuadrantSizeInBytes;
   M5 = (REAL*) Heap; Heap += QuadrantSizeInBytes;
   T1sMULT = (REAL*) Heap; Heap += QuadrantSizeInBytes;
-  
+
   /***************************************************************************
   ** Step through all columns row by row (vertically)
   ** (jumps in memory by RowWidth => bad locality)
   ** (but we want the best locality on the innermost loop)
   ***************************************************************************/
   for (Row = 0; Row < QuadrantSize; Row++) {
-    
+
     /*************************************************************************
     ** Step through each row horizontally (addressing elements in each column)
     ** (jumps linearly througn memory => good locality)
     *************************************************************************/
     for (Column = 0; Column < QuadrantSize; Column++) {
-      
+
       /***********************************************************
       ** Within this loop, the following holds for MatrixOffset:
       ** MatrixOffset = (Row * RowWidth) + Column
@@ -109,7 +109,7 @@ void OptimizedStrassenMultiply_tf(
 
       /* S3 = A11 - A21 */
       E(S3) = EA(A11) - EA(A21);
-      
+
       /* S7 = B22 - B12 */
       E(S7) = EB(B22) - EB(B12);
 
@@ -148,7 +148,7 @@ void OptimizedStrassenMultiply_tf(
   tasks.emplace_back(subflow.emplace([=](auto &subflow){
     OptimizedStrassenMultiply_tf(C11, A12, B21, QuadrantSize, RowWidthC, RowWidthA, RowWidthB, Depth+1, subflow);
   }));
-  
+
   /* Step 1 of C12 = S4 x B22 + T1 + M5 */
   tasks.emplace_back(subflow.emplace([=](auto &subflow){
     OptimizedStrassenMultiply_tf(C12, S4, B22, QuadrantSize, RowWidthC, QuadrantSize, RowWidthB, Depth+1, subflow);
@@ -167,7 +167,7 @@ void OptimizedStrassenMultiply_tf(
   ** (jumps in memory by RowWidth => bad locality)
   ** (but we want the best locality on the innermost loop)
   ***************************************************************************/
-  
+
   auto end_task = subflow.emplace([=]() mutable {
     for (auto Row = 0u; Row < QuadrantSize; Row++) {
       /*************************************************************************
