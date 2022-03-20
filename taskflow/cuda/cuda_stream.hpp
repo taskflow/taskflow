@@ -60,7 +60,7 @@ inline cudaPerThreadStreamPool& cuda_per_thread_stream_pool() {
 @brief class to create an RAII-styled guard of stream acquisition
 
 Sample usage:
-    
+
 @code{.cpp}
 {
   tf::cudaScopedPerThreadStream stream(1);  // acquires a stream on device 1
@@ -77,9 +77,9 @@ CUDA tasks (e.g., tf::cudaFlow, tf::cudaFlowCapturer).
 %cudaScopedPerThreadStream is non-copyable.
 */
 class cudaScopedPerThreadStream {
-  
+
   public:
-  
+
   /**
   @brief constructs a scoped stream under the given device
 
@@ -87,16 +87,16 @@ class cudaScopedPerThreadStream {
 
   @param device device context of the requested stream
   */
-  explicit cudaScopedPerThreadStream(int device) : 
+  explicit cudaScopedPerThreadStream(int device) :
     _ptr {cuda_per_thread_stream_pool().acquire(device)} {
   }
-  
+
   /**
   @brief constructs a scoped stream under the current device.
 
   The constructor acquires a stream from a per-thread stream pool.
   */
-  cudaScopedPerThreadStream() : 
+  cudaScopedPerThreadStream() :
     _ptr {cuda_per_thread_stream_pool().acquire(cuda_get_device())} {
   }
 
@@ -110,19 +110,19 @@ class cudaScopedPerThreadStream {
       cuda_per_thread_stream_pool().release(std::move(_ptr));
     }
   }
-  
+
   /**
   @brief implicit conversion to the native CUDA stream (cudaStream_t)
    */
   operator cudaStream_t () const {
     return _ptr->value;
   }
-  
+
   /**
   @brief disabled copy constructor
    */
   cudaScopedPerThreadStream(const cudaScopedPerThreadStream&) = delete;
-  
+
   /**
   @brief default move constructor
   */
@@ -195,7 +195,7 @@ inline cudaPerThreadEventPool& cuda_per_thread_event_pool() {
 @brief class to create an RAII-styled guard of event acquisition
 
 Sample usage:
-    
+
 @code{.cpp}
 {
   tf::cudaScopedPerThreadEvent event(1);  // acquires a event on device 1
@@ -212,9 +212,9 @@ CUDA tasks (e.g., tf::cudaFlow, tf::cudaFlowCapturer).
 %cudaScopedPerThreadEvent is non-copyable.
 */
 class cudaScopedPerThreadEvent {
-  
+
   public:
-  
+
   /**
   @brief constructs a scoped event under the given device
 
@@ -222,16 +222,16 @@ class cudaScopedPerThreadEvent {
 
   @param device device context of the requested event
   */
-  explicit cudaScopedPerThreadEvent(int device) : 
+  explicit cudaScopedPerThreadEvent(int device) :
     _ptr {cuda_per_thread_event_pool().acquire(device)} {
   }
-  
+
   /**
   @brief constructs a scoped event under the current device.
 
   The constructor acquires a event from a per-thread event pool.
   */
-  cudaScopedPerThreadEvent() : 
+  cudaScopedPerThreadEvent() :
     _ptr {cuda_per_thread_event_pool().acquire(cuda_get_device())} {
   }
 
@@ -245,19 +245,19 @@ class cudaScopedPerThreadEvent {
       cuda_per_thread_event_pool().release(std::move(_ptr));
     }
   }
-  
+
   /**
   @brief implicit conversion to the native CUDA event (cudaEvent_t)
    */
   operator cudaEvent_t () const {
     return _ptr->value;
   }
-  
+
   /**
   @brief disabled copy constructor
    */
   cudaScopedPerThreadEvent(const cudaScopedPerThreadEvent&) = delete;
-  
+
   /**
   @brief default move constructor
   */

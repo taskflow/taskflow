@@ -3,7 +3,7 @@
 #include "task.hpp"
 #include "worker.hpp"
 
-/** 
+/**
 @file observer.hpp
 @brief observer include file
 */
@@ -49,7 +49,7 @@ struct Segment {
 
   auto span() const {
     return end-beg;
-  } 
+  }
 };
 
 /**
@@ -79,7 +79,7 @@ struct Timeline {
   auto load(Archiver& ar) {
     return ar(uid, origin, segments);
   }
-};  
+};
 
 /**
 @private
@@ -95,7 +95,7 @@ struct ProfileData {
 
   ProfileData& operator = (const ProfileData& rhs) = delete;
   ProfileData& operator = (ProfileData&&) = default;
-  
+
   template <typename Archiver>
   auto save(Archiver& ar) const {
     return ar(timelines);
@@ -108,19 +108,19 @@ struct ProfileData {
 };
 
 // ----------------------------------------------------------------------------
-// observer interface 
+// observer interface
 // ----------------------------------------------------------------------------
 
 /**
 @class: ObserverInterface
 
-@brief class to derive an executor observer 
+@brief class to derive an executor observer
 
-The tf::ObserverInterface class let users define custom methods to monitor 
-the behaviors of an executor. This is particularly useful when you want to 
-inspect the performance of an executor and visualize when each thread 
+The tf::ObserverInterface class let users define custom methods to monitor
+the behaviors of an executor. This is particularly useful when you want to
+inspect the performance of an executor and visualize when each thread
 participates in the execution of a task.
-To prevent users from direct access to the internal threads and tasks, 
+To prevent users from direct access to the internal threads and tasks,
 tf::ObserverInterface provides immutable wrappers,
 tf::WorkerView and tf::TaskView, over workers and tasks.
 
@@ -152,13 +152,13 @@ struct MyObserver : public tf::ObserverInterface {
     std::cout << oss.str();
   }
 };
-  
+
 tf::Taskflow taskflow;
 tf::Executor executor;
 
 // insert tasks into taskflow
 // ...
-  
+
 // create a custom observer
 std::shared_ptr<MyObserver> observer = executor.make_observer<MyObserver>("MyObserver");
 
@@ -169,27 +169,27 @@ executor.run(taskflow).wait();
 class ObserverInterface {
 
   friend class Executor;
-  
+
   public:
 
   /**
   @brief virtual destructor
   */
   virtual ~ObserverInterface() = default;
-  
+
   /**
   @brief constructor-like method to call when the executor observer is fully created
   @param num_workers the number of the worker threads in the executor
   */
   virtual void set_up(size_t num_workers) = 0;
-  
+
   /**
-  @brief method to call before a worker thread executes a closure 
-  @param w an immutable view of this worker thread 
-  @param task_view a constant wrapper object to the task 
+  @brief method to call before a worker thread executes a closure
+  @param w an immutable view of this worker thread
+  @param task_view a constant wrapper object to the task
   */
   virtual void on_entry(WorkerView w, TaskView task_view) = 0;
-  
+
   /**
   @brief method to call after a worker thread executed a closure
   @param w an immutable view of this worker thread
@@ -217,7 +217,7 @@ tf::Executor executor;
 
 // insert tasks into taskflow
 // ...
-  
+
 // create a custom observer
 std::shared_ptr<tf::ChromeObserver> observer = executor.make_observer<tf::ChromeObserver>();
 
@@ -231,7 +231,7 @@ observer->dump(std::cout);
 class ChromeObserver : public ObserverInterface {
 
   friend class Executor;
-  
+
   // data structure to record each task execution
   struct Segment {
 
@@ -246,19 +246,19 @@ class ChromeObserver : public ObserverInterface {
       observer_stamp_t e
     );
   };
-  
+
   // data structure to store the entire execution timeline
   struct Timeline {
     observer_stamp_t origin;
     std::vector<std::vector<Segment>> segments;
     std::vector<std::stack<observer_stamp_t>> stacks;
-  };  
+  };
 
   public:
 
     /**
-    @brief dumps the timelines into a @ChromeTracing format through 
-           an output stream 
+    @brief dumps the timelines into a @ChromeTracing format through
+           an output stream
     */
     void dump(std::ostream& ostream) const;
 
@@ -278,14 +278,14 @@ class ChromeObserver : public ObserverInterface {
     inline size_t num_tasks() const;
 
   private:
-    
+
     inline void set_up(size_t num_workers) override final;
     inline void on_entry(WorkerView w, TaskView task_view) override final;
     inline void on_exit(WorkerView w, TaskView task_view) override final;
 
     Timeline _timeline;
-};  
-    
+};
+
 // constructor
 inline ChromeObserver::Segment::Segment(
   const std::string& n, observer_stamp_t b, observer_stamp_t e
@@ -301,7 +301,7 @@ inline void ChromeObserver::set_up(size_t num_workers) {
   for(size_t w=0; w<num_workers; ++w) {
     _timeline.segments[w].reserve(32);
   }
-  
+
   _timeline.origin = observer_stamp_t::clock::now();
 }
 
@@ -341,8 +341,8 @@ inline void ChromeObserver::dump(std::ostream& os) const {
   size_t first;
 
   for(first = 0; first<_timeline.segments.size(); ++first) {
-    if(_timeline.segments[first].size() > 0) { 
-      break; 
+    if(_timeline.segments[first].size() > 0) {
+      break;
     }
   }
 
@@ -368,7 +368,7 @@ inline void ChromeObserver::dump(std::ostream& os) const {
         os << _timeline.segments[w][i].name;
       }
       os << "\",";
-      
+
       // segment field
       os << "\"ph\":\"X\","
          << "\"pid\":1,"
@@ -401,9 +401,9 @@ inline std::string ChromeObserver::dump() const {
 // Function: num_tasks
 inline size_t ChromeObserver::num_tasks() const {
   return std::accumulate(
-    _timeline.segments.begin(), _timeline.segments.end(), size_t{0}, 
-    [](size_t sum, const auto& exe){ 
-      return sum + exe.size(); 
+    _timeline.segments.begin(), _timeline.segments.end(), size_t{0},
+    [](size_t sum, const auto& exe){
+      return sum + exe.size();
     }
   );
 }
@@ -427,7 +427,7 @@ tf::Executor executor;
 
 // insert tasks into taskflow
 // ...
-  
+
 // create a custom observer
 std::shared_ptr<tf::TFProfObserver> observer = executor.make_observer<tf::TFProfObserver>();
 
@@ -438,9 +438,9 @@ executor.run(taskflow).wait();
 observer->dump(std::cout);
 @endcode
 
-We recommend using our @TFProf python script to observe thread activities 
+We recommend using our @TFProf python script to observe thread activities
 instead of the raw function call.
-The script will turn on environment variables needed for observing all executors 
+The script will turn on environment variables needed for observing all executors
 in a taskflow program and dump the result to a valid, clean JSON file
 compatible with the format of @TFProf.
 */
@@ -448,11 +448,11 @@ class TFProfObserver : public ObserverInterface {
 
   friend class Executor;
   friend class TFProfManager;
-  
+
   public:
 
     /**
-    @brief dumps the timelines into a @TFProf format through 
+    @brief dumps the timelines into a @TFProf format through
            an output stream
     */
     void dump(std::ostream& ostream) const;
@@ -473,15 +473,15 @@ class TFProfObserver : public ObserverInterface {
     size_t num_tasks() const;
 
   private:
-    
+
     Timeline _timeline;
-  
+
     std::vector<std::stack<observer_stamp_t>> _stacks;
-    
+
     inline void set_up(size_t num_workers) override final;
     inline void on_entry(WorkerView, TaskView) override final;
     inline void on_exit(WorkerView, TaskView) override final;
-};  
+};
 
 // Procedure: set_up
 inline void TFProfObserver::set_up(size_t num_workers) {
@@ -502,7 +502,7 @@ inline void TFProfObserver::on_exit(WorkerView wv, TaskView tv) {
   size_t w = wv.id();
 
   assert(!_stacks[w].empty());
-  
+
   if(_stacks[w].size() > _timeline.segments[w].size()) {
     _timeline.segments[w].resize(_stacks[w].size());
   }
@@ -533,11 +533,11 @@ inline void TFProfObserver::dump(std::ostream& os) const {
   size_t first;
 
   for(first = 0; first<_timeline.segments.size(); ++first) {
-    if(_timeline.segments[first].size() > 0) { 
-      break; 
+    if(_timeline.segments[first].size() > 0) {
+      break;
     }
   }
-  
+
   // not timeline data to dump
   if(first == _timeline.segments.size()) {
     os << "{}\n";
@@ -568,18 +568,18 @@ inline void TFProfObserver::dump(std::ostream& os) const {
         const auto& s = _timeline.segments[w][l][i];
 
         if(i) os << ',';
-        
-        // span 
-        os << "{\"span\":[" 
+
+        // span
+        os << "{\"span\":["
            << std::chrono::duration_cast<std::chrono::microseconds>(
                 s.beg - _timeline.origin
               ).count() << ","
            << std::chrono::duration_cast<std::chrono::microseconds>(
                 s.end - _timeline.origin
               ).count() << "],";
-        
+
         // name
-        os << "\"name\":\""; 
+        os << "\"name\":\"";
         if(s.name.empty()) {
           os << w << '_' << i;
         }
@@ -587,7 +587,7 @@ inline void TFProfObserver::dump(std::ostream& os) const {
           os << s.name;
         }
         os << "\",";
-    
+
         // category "type": "Condition Task",
         os << "\"type\":\"" << to_string(s.type) << "\"";
 
@@ -610,9 +610,9 @@ inline std::string TFProfObserver::dump() const {
 // Function: num_tasks
 inline size_t TFProfObserver::num_tasks() const {
   return std::accumulate(
-    _timeline.segments.begin(), _timeline.segments.end(), size_t{0}, 
-    [](size_t sum, const auto& exe){ 
-      return sum + exe.size(); 
+    _timeline.segments.begin(), _timeline.segments.end(), size_t{0},
+    [](size_t sum, const auto& exe){
+      return sum + exe.size();
     }
   );
 }
@@ -629,9 +629,9 @@ class TFProfManager {
   friend class Executor;
 
   public:
-    
+
     ~TFProfManager();
-    
+
     TFProfManager(const TFProfManager&) = delete;
     TFProfManager& operator=(const TFProfManager&) = delete;
 
@@ -640,12 +640,12 @@ class TFProfManager {
     void dump(std::ostream& ostream) const;
 
   private:
-    
+
     const std::string _fpath;
 
     std::mutex _mutex;
     std::vector<std::shared_ptr<TFProfObserver>> _observers;
-    
+
     TFProfManager();
 
     void _manage(std::shared_ptr<TFProfObserver> observer);
@@ -667,7 +667,7 @@ inline void TFProfManager::_manage(std::shared_ptr<TFProfObserver> observer) {
 inline void TFProfManager::dump(std::ostream& os) const {
   for(size_t i=0; i<_observers.size(); ++i) {
     if(i) os << ',';
-    _observers[i]->dump(os); 
+    _observers[i]->dump(os);
   }
 }
 
@@ -682,7 +682,7 @@ inline TFProfManager::~TFProfManager() {
       for(size_t i=0; i<_observers.size(); ++i) {
         data.timelines.push_back(std::move(_observers[i]->_timeline));
       }
-      Serializer<std::ofstream> serializer(ofs); 
+      Serializer<std::ofstream> serializer(ofs);
       serializer(data);
     }
     // .json
@@ -696,7 +696,7 @@ inline TFProfManager::~TFProfManager() {
     }
   }
 }
-    
+
 // Function: get
 inline TFProfManager& TFProfManager::get() {
   static TFProfManager mgr;

@@ -8,7 +8,7 @@ namespace tf {
 // Procedure: ostreamize
 template <typename T>
 void ostreamize(std::ostream& os, T&& token) {
-  os << std::forward<T>(token);  
+  os << std::forward<T>(token);
 }
 
 // Procedure: ostreamize

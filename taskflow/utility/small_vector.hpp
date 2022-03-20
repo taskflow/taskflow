@@ -19,7 +19,7 @@
   #define TF_UNLIKELY(x) (x)
 #endif
 
-/** 
+/**
 @file small_vector.hpp
 @brief small vector include file
 */
@@ -54,8 +54,8 @@ template <typename T>
 struct IsPod : std::integral_constant<bool, std::is_standard_layout<T>::value &&
                                             std::is_trivial<T>::value> {};
 
-/** 
-@private 
+/**
+@private
 */
 class SmallVectorBase {
 protected:
@@ -110,8 +110,8 @@ public:
 */
 template <typename T, unsigned N> struct SmallVectorStorage;
 
-/** 
-@private 
+/**
+@private
 */
 template <typename T, typename = void>
 class SmallVectorTemplateCommon : public SmallVectorBase {
@@ -146,7 +146,7 @@ class SmallVectorTemplateCommon : public SmallVectorBase {
   }
 
   void setEnd(T *P) { this->EndX = P; }
-  
+
   public:
   typedef size_t size_type;
   typedef ptrdiff_t difference_type;
@@ -172,7 +172,7 @@ class SmallVectorTemplateCommon : public SmallVectorBase {
 
   iterator capacity_ptr() { return (iterator)this->CapacityX; }
   const_iterator capacity_ptr() const { return (const_iterator)this->CapacityX;}
-  
+
   public:
 
   // reverse iterator creation methods.
@@ -368,7 +368,7 @@ public:
   }
 };
 
-/** 
+/**
 @private
 */
 template <typename T>
@@ -905,14 +905,14 @@ template <typename T> struct SmallVectorStorage<T, 0> {};
 
 The class defines a C++ STL-styled vector (a variable-sized array)
 optimized for the case when the array is small.
-It contains some number of elements in-place, 
+It contains some number of elements in-place,
 which allows it to avoid heap allocation when the actual number of
 elements is below that threshold. This allows normal @em small cases to be
 fast without losing generality for large inputs.
 All the methods in [std::vector](https://en.cppreference.com/w/cpp/container/vector)
 can apply to this class.
 
-The class is stripped from the LLVM codebase. 
+The class is stripped from the LLVM codebase.
 */
 template <typename T, unsigned N = 2>
 class SmallVector : public SmallVectorImpl<T> {
@@ -926,7 +926,7 @@ public:
   */
   SmallVector() : SmallVectorImpl<T>(N) {
   }
-  
+
   /**
   @brief constructs a vector with @c Size copies of elements with value @c value
   */
@@ -934,9 +934,9 @@ public:
     : SmallVectorImpl<T>(N) {
     this->assign(Size, Value);
   }
-  
+
   /**
-  @brief constructs a vector with the contents of the range 
+  @brief constructs a vector with the contents of the range
          <tt>[S, E)</tt>
    */
   template<typename ItTy>
@@ -949,14 +949,14 @@ public:
   //    : SmallVectorImpl<T>(N) {
   //  this->append(R.begin(), R.end());
   //}
-  
+
   /**
   @brief constructs a vector with the contents of the initializer list @c IL
   */
   SmallVector(std::initializer_list<T> IL) : SmallVectorImpl<T>(N) {
     this->assign(IL);
   }
-  
+
   /**
   @brief constructs the vector with the copy of the contents of @c RHS
   */
@@ -964,7 +964,7 @@ public:
     if (!RHS.empty())
       SmallVectorImpl<T>::operator=(RHS);
   }
-  
+
   /**
   @brief constructs the vector with the contents of @c RHS using move semantics
   */
@@ -972,7 +972,7 @@ public:
     if (!RHS.empty())
       SmallVectorImpl<T>::operator=(::std::move(RHS));
   }
-  
+
   /**
   @brief replaces the contents with a copy of the contents of @c RHS
   */
@@ -980,7 +980,7 @@ public:
     SmallVectorImpl<T>::operator=(RHS);
     return *this;
   }
-  
+
   /**
   @brief replaces the contents with the contents of @c RHS using move semantics
   */
@@ -988,7 +988,7 @@ public:
     SmallVectorImpl<T>::operator=(::std::move(RHS));
     return *this;
   }
-  
+
   /**
   @brief constructs a vector with the contents of @c RHS using move semantics
   */
@@ -996,7 +996,7 @@ public:
     if (!RHS.empty())
       SmallVectorImpl<T>::operator=(::std::move(RHS));
   }
-  
+
   /**
   @brief replaces the contents with the contents of @c RHS using move semantics
    */
@@ -1004,7 +1004,7 @@ public:
     SmallVectorImpl<T>::operator=(::std::move(RHS));
     return *this;
   }
-  
+
   /**
   @brief replaces the contents with the copy of the contents of an initializer list @c IL
    */

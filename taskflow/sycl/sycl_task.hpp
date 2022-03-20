@@ -2,7 +2,7 @@
 
 #include "sycl_graph.hpp"
 
-/** 
+/**
 @file sycl_task.hpp
 @brief syclTask include file
 */
@@ -10,7 +10,7 @@
 namespace tf {
 
 // ----------------------------------------------------------------------------
-// syclTask 
+// syclTask
 // ----------------------------------------------------------------------------
 
 /**
@@ -25,7 +25,7 @@ class syclTask {
   friend std::ostream& operator << (std::ostream&, const syclTask&);
 
   public:
-    
+
     /**
     @brief constructs an empty syclTask
     */
@@ -52,7 +52,7 @@ class syclTask {
     */
     template <typename... Ts>
     syclTask& precede(Ts&&... tasks);
-    
+
     /**
     @brief adds precedence links from other tasks to this
 
@@ -64,7 +64,7 @@ class syclTask {
     */
     template <typename... Ts>
     syclTask& succeed(Ts&&... tasks);
-    
+
     /**
     @brief assigns a name to the task
 
@@ -73,7 +73,7 @@ class syclTask {
     @return @c *this
     */
     syclTask& name(const std::string& name);
-    
+
     /**
     @brief queries the name of the task
     */
@@ -83,7 +83,7 @@ class syclTask {
     @brief queries the number of successors
     */
     size_t num_successors() const;
-    
+
     /**
     @brief queries the number of dependents
     */
@@ -96,27 +96,27 @@ class syclTask {
 
     /**
     @brief dumps the task through an output stream
-    
+
     @tparam T output stream type with insertion operator (<<) defined
     @param ostream an output stream target
     */
     template <typename T>
     void dump(T& ostream) const;
-    
+
     /**
     @brief applies an visitor callable to each successor of the task
     */
     template <typename V>
     void for_each_successor(V&& visitor) const;
-    
+
     /**
     @brief applies an visitor callable to each dependents of the task
     */
     template <typename V>
     void for_each_dependent(V&& visitor) const;
-    
+
   private:
-    
+
     syclTask(syclNode*);
 
     syclNode* _node {nullptr};

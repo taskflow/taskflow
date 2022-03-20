@@ -19,15 +19,15 @@ Task FlowBuilder::for_each(B&& beg, E&& end, C&& c) {
   //return for_each_guided(
   //  std::forward<B>(beg), std::forward<E>(end), std::forward<C>(c), 1
   //);
-  
+
   using I = stateful_iterator_t<B, E>;
   using namespace std::string_literals;
 
   Task task = emplace(
   [b=std::forward<B>(beg),
-   e=std::forward<E>(end), 
+   e=std::forward<E>(end),
    c=std::forward<C>(c)] (Subflow& sf) mutable {
-    
+
     // fetch the stateful values
     I beg = b;
     I end = e;
@@ -35,17 +35,17 @@ Task FlowBuilder::for_each(B&& beg, E&& end, C&& c) {
     if(beg == end) {
       return;
     }
-  
+
     size_t chunk_size = 1;
     size_t W = sf._executor.num_workers();
     size_t N = std::distance(beg, end);
-    
+
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= chunk_size) {
       std::for_each(beg, end, c);
       return;
     }
-    
+
     if(N < W) {
       W = N;
     }
@@ -56,16 +56,16 @@ Task FlowBuilder::for_each(B&& beg, E&& end, C&& c) {
 
       //sf.emplace([&next, beg, N, chunk_size, W, &c] () mutable {
       sf.silent_async([&next, beg, N, chunk_size, W, &c] () mutable {
-        
+
         size_t z = 0;
         size_t p1 = 2 * W * (chunk_size + 1);
         double p2 = 0.5 / static_cast<double>(W);
         size_t s0 = next.load(std::memory_order_relaxed);
 
         while(s0 < N) {
-          
+
           size_t r = N - s0;
-          
+
           // fine-grained
           if(r < p1) {
             while(1) {
@@ -103,9 +103,9 @@ Task FlowBuilder::for_each(B&& beg, E&& end, C&& c) {
       //}).name("pfg_"s + std::to_string(w));
       });
     }
-    
+
     sf.join();
-  });  
+  });
 
   return task;
 }
@@ -114,9 +114,9 @@ Task FlowBuilder::for_each(B&& beg, E&& end, C&& c) {
 template <typename B, typename E, typename S, typename C>
 Task FlowBuilder::for_each_index(B&& beg, E&& end, S&& inc, C&& c){
   //return for_each_index_guided(
-  //  std::forward<B>(beg), 
-  //  std::forward<E>(end), 
-  //  std::forward<S>(inc), 
+  //  std::forward<B>(beg),
+  //  std::forward<E>(end),
+  //  std::forward<S>(inc),
   //  std::forward<C>(c),
   //  1
   //);
@@ -124,11 +124,11 @@ Task FlowBuilder::for_each_index(B&& beg, E&& end, S&& inc, C&& c){
   using namespace std::string_literals;
 
   Task task = emplace(
-  [b=std::forward<B>(beg), 
-   e=std::forward<E>(end), 
-   a=std::forward<S>(inc), 
+  [b=std::forward<B>(beg),
+   e=std::forward<E>(end),
+   a=std::forward<S>(inc),
    c=std::forward<C>(c)] (Subflow& sf) mutable {
-    
+
     // fetch the iterator values
     I beg = b;
     I end = e;
@@ -137,11 +137,11 @@ Task FlowBuilder::for_each_index(B&& beg, E&& end, S&& inc, C&& c){
     if(is_range_invalid(beg, end, inc)) {
       TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
     }
-    
+
     size_t chunk_size = 1;
     size_t W = sf._executor.num_workers();
     size_t N = distance(beg, end, inc);
-    
+
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= chunk_size) {
       for(size_t x=0; x<N; x++, beg+=inc) {
@@ -149,29 +149,29 @@ Task FlowBuilder::for_each_index(B&& beg, E&& end, S&& inc, C&& c){
       }
       return;
     }
-    
+
     if(N < W) {
       W = N;
     }
-    
+
     std::atomic<size_t> next(0);
 
     for(size_t w=0; w<W; w++) {
 
       //sf.emplace([&next, beg, inc, N, chunk_size, W, &c] () mutable {
       sf.silent_async([&next, beg, inc, N, chunk_size, W, &c] () mutable {
-        
+
         size_t p1 = 2 * W * (chunk_size + 1);
         double p2 = 0.5 / static_cast<double>(W);
         size_t s0 = next.load(std::memory_order_relaxed);
 
         while(s0 < N) {
-        
+
           size_t r = N - s0;
-          
+
           // find-grained
           if(r < p1) {
-            while(1) { 
+            while(1) {
               s0 = next.fetch_add(chunk_size, std::memory_order_relaxed);
               if(s0 >= N) {
                 return;
@@ -197,25 +197,25 @@ Task FlowBuilder::for_each_index(B&& beg, E&& end, S&& inc, C&& c){
               for(size_t x=s0; x<e0; x++, s+= inc) {
                 c(s);
               }
-              s0 = next.load(std::memory_order_relaxed); 
+              s0 = next.load(std::memory_order_relaxed);
             }
           }
-        } 
+        }
       //}).name("pfg_"s + std::to_string(w));
       });
     }
-    
+
     sf.join();
-  });  
+  });
 
   return task;
 }
 
 // ----------------------------------------------------------------------------
 // parallel for using the guided partition algorithm
-// - Polychronopoulos, C. D. and Kuck, D. J. 
-//   "Guided Self-Scheduling: A Practical Scheduling Scheme 
-//    for Parallel Supercomputers," 
+// - Polychronopoulos, C. D. and Kuck, D. J.
+//   "Guided Self-Scheduling: A Practical Scheduling Scheme
+//    for Parallel Supercomputers,"
 //   IEEE Transactions on Computers, C-36(12):1425–1439 (1987).
 // ----------------------------------------------------------------------------
 
@@ -223,16 +223,16 @@ Task FlowBuilder::for_each_index(B&& beg, E&& end, S&& inc, C&& c){
 // Function: for_each_guided
 template <typename B, typename E, typename C, typename H>
 Task FlowBuilder::for_each_guided(B&& beg, E&& end, C&& c, H&& chunk_size){
-  
+
   using I = stateful_iterator_t<B, E>;
   using namespace std::string_literals;
 
   Task task = emplace(
   [b=std::forward<B>(beg),
-   e=std::forward<E>(end), 
+   e=std::forward<E>(end),
    c=std::forward<C>(c),
    h=std::forward<H>(chunk_size)] (Subflow& sf) mutable {
-    
+
     // fetch the stateful values
     I beg = b;
     I end = e;
@@ -240,17 +240,17 @@ Task FlowBuilder::for_each_guided(B&& beg, E&& end, C&& c, H&& chunk_size){
     if(beg == end) {
       return;
     }
-  
+
     size_t chunk_size = (h == 0) ? 1 : h;
     size_t W = sf._executor.num_workers();
     size_t N = std::distance(beg, end);
-    
+
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= chunk_size) {
       std::for_each(beg, end, c);
       return;
     }
-    
+
     if(N < W) {
       W = N;
     }
@@ -261,16 +261,16 @@ Task FlowBuilder::for_each_guided(B&& beg, E&& end, C&& c, H&& chunk_size){
 
       //sf.emplace([&next, beg, N, chunk_size, W, &c] () mutable {
       sf.silent_async([&next, beg, N, chunk_size, W, &c] () mutable {
-        
+
         size_t z = 0;
         size_t p1 = 2 * W * (chunk_size + 1);
         double p2 = 0.5 / static_cast<double>(W);
         size_t s0 = next.load(std::memory_order_relaxed);
 
         while(s0 < N) {
-          
+
           size_t r = N - s0;
-          
+
           // fine-grained
           if(r < p1) {
             while(1) {
@@ -308,9 +308,9 @@ Task FlowBuilder::for_each_guided(B&& beg, E&& end, C&& c, H&& chunk_size){
       //}).name("pfg_"s + std::to_string(w));
       });
     }
-    
+
     sf.join();
-  });  
+  });
 
   return task;
 }
@@ -325,12 +325,12 @@ Task FlowBuilder::for_each_index_guided(
   using namespace std::string_literals;
 
   Task task = emplace(
-  [b=std::forward<B>(beg), 
-   e=std::forward<E>(end), 
-   a=std::forward<S>(inc), 
+  [b=std::forward<B>(beg),
+   e=std::forward<E>(end),
+   a=std::forward<S>(inc),
    c=std::forward<C>(c),
    h=std::forward<H>(chunk_size)] (Subflow& sf) mutable {
-    
+
     // fetch the iterator values
     I beg = b;
     I end = e;
@@ -339,11 +339,11 @@ Task FlowBuilder::for_each_index_guided(
     if(is_range_invalid(beg, end, inc)) {
       TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
     }
-    
+
     size_t chunk_size = (h == 0) ? 1 : h;
     size_t W = sf._executor.num_workers();
     size_t N = distance(beg, end, inc);
-    
+
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= chunk_size) {
       for(size_t x=0; x<N; x++, beg+=inc) {
@@ -351,29 +351,29 @@ Task FlowBuilder::for_each_index_guided(
       }
       return;
     }
-    
+
     if(N < W) {
       W = N;
     }
-    
+
     std::atomic<size_t> next(0);
 
     for(size_t w=0; w<W; w++) {
 
       //sf.emplace([&next, beg, inc, N, chunk_size, W, &c] () mutable {
       sf.silent_async([&next, beg, inc, N, chunk_size, W, &c] () mutable {
-        
+
         size_t p1 = 2 * W * (chunk_size + 1);
         double p2 = 0.5 / static_cast<double>(W);
         size_t s0 = next.load(std::memory_order_relaxed);
 
         while(s0 < N) {
-        
+
           size_t r = N - s0;
-          
+
           // find-grained
           if(r < p1) {
-            while(1) { 
+            while(1) {
               s0 = next.fetch_add(chunk_size, std::memory_order_relaxed);
               if(s0 >= N) {
                 return;
@@ -399,60 +399,60 @@ Task FlowBuilder::for_each_index_guided(
               for(size_t x=s0; x<e0; x++, s+= inc) {
                 c(s);
               }
-              s0 = next.load(std::memory_order_relaxed); 
+              s0 = next.load(std::memory_order_relaxed);
             }
           }
-        } 
+        }
       //}).name("pfg_"s + std::to_string(w));
       });
     }
-    
+
     sf.join();
-  });  
+  });
 
   return task;
 }*/
 
 // ----------------------------------------------------------------------------
 // Factoring algorithm
-// - Hummel, S. F., Schonberg, E., and Flynn, L. E., 
-//   "Factoring: a practical and robust method for scheduling parallel loops," 
+// - Hummel, S. F., Schonberg, E., and Flynn, L. E.,
+//   "Factoring: a practical and robust method for scheduling parallel loops,"
 //   IEEE/ACM SC, 1991
 // ----------------------------------------------------------------------------
 
 /*// Function: for_each_factoring
 template <typename B, typename E, typename C>
 Task FlowBuilder::for_each_factoring(B&& beg, E&& end, C&& c){
-  
+
   using I = stateful_iterator_t<B, E>;
   using namespace std::string_literals;
 
   Task task = emplace(
   [b=std::forward<B>(beg),
-   e=std::forward<E>(end), 
+   e=std::forward<E>(end),
    c=std::forward<C>(c)] (Subflow& sf) mutable {
-    
+
     // fetch the iterator values
     I beg = b;
     I end = e;
-  
+
     if(beg == end) {
       return;
     }
-  
+
     size_t W = sf._executor.num_workers();
     size_t N = std::distance(beg, end);
-    
+
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 1) {
       std::for_each(beg, end, c);
       return;
     }
-    
+
     if(N < W) {
       W = N;
     }
-    
+
     std::atomic<size_t> batch(0);
     std::atomic<size_t> next(0);
 
@@ -461,7 +461,7 @@ Task FlowBuilder::for_each_factoring(B&& beg, E&& end, C&& c){
       sf.emplace([&batch, &next, beg, N, W, &c] () mutable {
 
         size_t z = 0;
-        
+
         while(1) {
 
           size_t c0 = batch.fetch_add(1, std::memory_order_relaxed) + 1;
@@ -485,9 +485,9 @@ Task FlowBuilder::for_each_factoring(B&& beg, E&& end, C&& c){
         }
       }).name("pfg_"s + std::to_string(w));
     }
-    
+
     sf.join();
-  });  
+  });
 
   return task;
 }
@@ -502,11 +502,11 @@ Task FlowBuilder::for_each_factoring(
   using namespace std::string_literals;
 
   Task task = emplace(
-  [b=std::forward<B>(beg), 
-   e=std::forward<E>(end), 
-   i=std::forward<S>(inc), 
+  [b=std::forward<B>(beg),
+   e=std::forward<E>(end),
+   i=std::forward<S>(inc),
    c=std::forward<C>(c)] (Subflow& sf) mutable {
-    
+
     // fetch the iterator values
     I beg = b;
     I end = e;
@@ -515,10 +515,10 @@ Task FlowBuilder::for_each_factoring(
     if(is_range_invalid(beg, end, inc)) {
       TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
     }
-    
+
     size_t W = sf._executor.num_workers();
     size_t N = distance(beg, end, inc);
-    
+
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 1) {
       for(size_t x=0; x<N; x++, beg+=inc) {
@@ -526,11 +526,11 @@ Task FlowBuilder::for_each_factoring(
       }
       return;
     }
-    
+
     if(N < W) {
       W = N;
     }
-    
+
     std::atomic<size_t> batch(0);
     std::atomic<size_t> next(0);
 
@@ -561,9 +561,9 @@ Task FlowBuilder::for_each_factoring(
 
       }).name("pff_"s + std::to_string(w));
     }
-    
+
     sf.join();
-  });  
+  });
 
   return task;
 }*/
@@ -582,28 +582,28 @@ Task FlowBuilder::for_each_dynamic(
   using namespace std::string_literals;
 
   Task task = emplace(
-  [b=std::forward<B>(beg), 
-   e=std::forward<E>(end), 
+  [b=std::forward<B>(beg),
+   e=std::forward<E>(end),
    c=std::forward<C>(c),
    h=std::forward<H>(chunk_size)] (Subflow& sf) mutable {
 
     I beg = b;
     I end = e;
-  
+
     if(beg == end) {
       return;
     }
-  
+
     size_t chunk_size = (h == 0) ? 1 : h;
     size_t W = sf._executor.num_workers();
     size_t N = std::distance(beg, end);
-    
+
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= chunk_size) {
       std::for_each(beg, end, c);
       return;
     }
-    
+
     if(N < W) {
       W = N;
     }
@@ -614,17 +614,17 @@ Task FlowBuilder::for_each_dynamic(
 
       //sf.emplace([&next, beg, N, chunk_size, &c] () mutable {
       sf.silent_async([&next, beg, N, chunk_size, &c] () mutable {
-        
+
         size_t z = 0;
 
         while(1) {
 
           size_t s0 = next.fetch_add(chunk_size, std::memory_order_relaxed);
-          
+
           if(s0 >= N) {
             break;
           }
-          
+
           size_t e0 = (chunk_size <= (N - s0)) ? s0 + chunk_size : N;
           std::advance(beg, s0-z);
           for(size_t x=s0; x<e0; x++) {
@@ -635,9 +635,9 @@ Task FlowBuilder::for_each_dynamic(
       //}).name("pfd_"s + std::to_string(w));
       });
     }
-    
+
     sf.join();
-  });  
+  });
 
   return task;
 }
@@ -646,12 +646,12 @@ template <typename B, typename E, typename S, typename C, typename H>
 Task FlowBuilder::for_each_index_dynamic(
   B&& beg, E&& end, S&& inc, C&& c, H&& chunk_size
 ){
-  
+
   using I = stateful_index_t<B, E, S>;
   using namespace std::string_literals;
 
   Task task = emplace(
-  [b=std::forward<B>(beg), 
+  [b=std::forward<B>(beg),
    e=std::forward<E>(end),
    a=std::forward<S>(inc),
    c=std::forward<C>(c),
@@ -660,15 +660,15 @@ Task FlowBuilder::for_each_index_dynamic(
     I beg = b;
     I end = e;
     I inc = a;
-  
+
     if(is_range_invalid(beg, end, inc)) {
       TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
     }
-    
+
     size_t chunk_size = (h == 0) ? 1 : h;
     size_t W = sf._executor.num_workers();
     size_t N = distance(beg, end, inc);
-    
+
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= chunk_size) {
       for(size_t x=0; x<N; x++, beg+=inc) {
@@ -676,7 +676,7 @@ Task FlowBuilder::for_each_index_dynamic(
       }
       return;
     }
-    
+
     if(N < W) {
       W = N;
     }
@@ -689,13 +689,13 @@ Task FlowBuilder::for_each_index_dynamic(
       sf.silent_async([&next, beg, inc, N, chunk_size, &c] () mutable {
 
         while(1) {
-          
+
           size_t s0 = next.fetch_add(chunk_size, std::memory_order_relaxed);
 
           if(s0 >= N) {
             break;
           }
-          
+
           size_t e0 = (chunk_size <= (N - s0)) ? s0 + chunk_size : N;
           I s = static_cast<I>(s0) * inc + beg;
           for(size_t x=s0; x<e0; x++, s+=inc) {
@@ -705,10 +705,10 @@ Task FlowBuilder::for_each_index_dynamic(
       //}).name("pfd_"s + std::to_string(w));
       });
     }
-    
+
     sf.join();
-  });  
-          
+  });
+
 
   return task;
 }
@@ -723,28 +723,28 @@ template <typename B, typename E, typename C, typename H>
 Task FlowBuilder::for_each_static(
   B&& beg, E&& end, C&& c, H&& chunk_size
 ){
-  
+
   using I = stateful_iterator_t<B, E>;
   using namespace std::string_literals;
 
   Task task = emplace(
-  [b=std::forward<B>(beg), 
-   e=std::forward<E>(end), 
+  [b=std::forward<B>(beg),
+   e=std::forward<E>(end),
    c=std::forward<C>(c),
    h=std::forward<H>(chunk_size)] (Subflow& sf) mutable {
-    
+
     // fetch the iterator
     I beg = b;
     I end = e;
-  
+
     if(beg == end) {
       return;
     }
-    
+
     size_t chunk_size = h;
     const size_t W = sf._executor.num_workers();
     const size_t N = std::distance(beg, end);
-    
+
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= chunk_size) {
       std::for_each(beg, end, c);
@@ -752,10 +752,10 @@ Task FlowBuilder::for_each_static(
     }
 
     std::atomic<size_t> next(0);
-    
+
     // even partition
     if(chunk_size == 0){
-    
+
       // zero-based start and end points
       const size_t q0 = N / W;
       const size_t t0 = N % W;
@@ -767,7 +767,7 @@ Task FlowBuilder::for_each_static(
         if(items == 0) {
           break;
         }
-        
+
         //sf.emplace([&next, beg, items, &c] () mutable {
         sf.silent_async([&next, beg, items, &c] () mutable {
           size_t s0 = next.fetch_add(items, std::memory_order_relaxed);
@@ -783,7 +783,7 @@ Task FlowBuilder::for_each_static(
     // chunk-by-chunk partition
     else {
       for(size_t i=0; i<W; ++i) {
-        
+
         // initial
         if(i*chunk_size >= N) {
           break;
@@ -804,7 +804,7 @@ Task FlowBuilder::for_each_static(
             I e = beg;
 
             for(items=0; items<chunk_size && e != end; items++, e++) {
-              c(*e); 
+              c(*e);
             }
 
             s0 += trip;
@@ -821,7 +821,7 @@ Task FlowBuilder::for_each_static(
     }
 
     sf.join();
-  });  
+  });
 
   return task;
 }
@@ -837,25 +837,25 @@ Task FlowBuilder::for_each_index_static(
   using namespace std::string_literals;
 
   Task task = emplace(
-  [b=std::forward<B>(beg), 
-   e=std::forward<E>(end), 
-   a=std::forward<S>(inc), 
+  [b=std::forward<B>(beg),
+   e=std::forward<E>(end),
+   a=std::forward<S>(inc),
    c=std::forward<C>(c),
    h=std::forward<H>(chunk_size)] (Subflow& sf) mutable {
-    
+
     // fetch the indices
     I beg = b;
     I end = e;
     I inc = a;
-    
+
     if(is_range_invalid(beg, end, inc)) {
       TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
     }
-    
+
     size_t chunk_size = h;
     const size_t W = sf._executor.num_workers();
     const size_t N = distance(beg, end, inc);
-    
+
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= chunk_size) {
       for(size_t x=0; x<N; x++, beg+=inc) {
@@ -865,7 +865,7 @@ Task FlowBuilder::for_each_index_static(
     }
 
     std::atomic<size_t> next(0);
-    
+
     if(chunk_size == 0) {
       // zero-based start and end points
       const size_t q0 = N / W;
@@ -877,12 +877,12 @@ Task FlowBuilder::for_each_index_static(
         if(items == 0) {
           break;
         }
-        
+
         //sf.emplace([&next, beg, &inc, items, &c] () mutable {
         sf.silent_async([&next, beg, &inc, items, &c] () mutable {
 
           size_t s0 = next.fetch_add(items, std::memory_order_relaxed);
-        
+
           I s = static_cast<I>(s0) * inc + beg;
 
           for(size_t x=0; x<items; x++, s+=inc) {
@@ -895,7 +895,7 @@ Task FlowBuilder::for_each_index_static(
     }
     else {
       for(size_t i=0; i<W; ++i) {
-        
+
         // initial
         if(i*chunk_size >= N) {
           break;
@@ -906,7 +906,7 @@ Task FlowBuilder::for_each_index_static(
 
           size_t trip = W * chunk_size;
           size_t s0 = next.fetch_add(chunk_size, std::memory_order_relaxed);
-          
+
           while(1) {
 
             size_t e0 = s0 + chunk_size;
@@ -938,7 +938,7 @@ Task FlowBuilder::for_each_index_static(
 
     sf.join();
 
-  });  
+  });
 
   return task;
 }*/

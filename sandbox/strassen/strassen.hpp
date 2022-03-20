@@ -91,8 +91,8 @@ inline void init_matrix(int n, REAL *A, int an) {
   int i, j;
 
   for (i = 0; i < n; ++i)
-    for (j = 0; j < n; ++j) 
-      ELEM(A, an, i, j) = ((double) rand()) / (double) RAND_MAX; 
+    for (j = 0; j < n; ++j)
+      ELEM(A, an, i, j) = ((double) rand()) / (double) RAND_MAX;
 }
 
 /************************************************************************
@@ -107,7 +107,7 @@ inline int compare_matrix(int n, REAL *A, int an, REAL *B, int bn) {
     for (j = 0; j < n; ++j) {
       /* compute the relative error c */
       c = ELEM(A, an, i, j) - ELEM(B, bn, i, j);
-      if (c < 0.0) 
+      if (c < 0.0)
         c = -c;
 
       c = c / ELEM(A, an, i, j);
@@ -121,7 +121,7 @@ inline int compare_matrix(int n, REAL *A, int an, REAL *B, int bn) {
   // SUCCESS
   return 1;
 }
-  
+
 
 
 /***********************************************************************
@@ -140,7 +140,7 @@ inline void matrixmul(int n, REAL *A, int an, REAL *B, int bn, REAL *C, int cn) 
   REAL s;
 
   for (i = 0; i < n; ++i)
-  { 
+  {
     for (j = 0; j < n; ++j)
     {
       s = 0.0;
@@ -161,7 +161,7 @@ inline void OptimizedStrassenMultiply_seq(REAL *C, REAL *A, REAL *B, unsigned Ma
   unsigned QuadrantSizeInBytes = sizeof(REAL) * QuadrantSize * QuadrantSize
                                  + 32;
   unsigned Column, Row;
-  
+
   /************************************************************************
   ** For each matrix A, B, and C, we'll want pointers to each quandrant
   ** in the matrix. These quandrants will be addressed as follows:
@@ -198,8 +198,8 @@ inline void OptimizedStrassenMultiply_seq(REAL *C, REAL *A, REAL *B, unsigned Ma
   ///* Initialize quandrant matrices */
   //#define A11 A
   //#define B11 B
-  //#define C11 C 
- 
+  //#define C11 C
+
   auto A11 = A;
   auto B11 = B;
   auto C11 = C;
@@ -219,7 +219,7 @@ inline void OptimizedStrassenMultiply_seq(REAL *C, REAL *A, REAL *B, unsigned Ma
   /* ensure that heap is on cache boundary */
   if ( ((PTR) Heap) & 31)
      Heap = (char*) ( ((PTR) Heap) + 32 - ( ((PTR) Heap) & 31) );
-  
+
   /* Distribute the heap space over the variables */
   S1 = (REAL*) Heap; Heap += QuadrantSizeInBytes;
   S2 = (REAL*) Heap; Heap += QuadrantSizeInBytes;
@@ -232,20 +232,20 @@ inline void OptimizedStrassenMultiply_seq(REAL *C, REAL *A, REAL *B, unsigned Ma
   M2 = (REAL*) Heap; Heap += QuadrantSizeInBytes;
   M5 = (REAL*) Heap; Heap += QuadrantSizeInBytes;
   T1sMULT = (REAL*) Heap; Heap += QuadrantSizeInBytes;
-  
+
   /***************************************************************************
   ** Step through all columns row by row (vertically)
   ** (jumps in memory by RowWidth => bad locality)
   ** (but we want the best locality on the innermost loop)
   ***************************************************************************/
   for (Row = 0; Row < QuadrantSize; Row++) {
-    
+
     /*************************************************************************
     ** Step through each row horizontally (addressing elements in each column)
     ** (jumps linearly througn memory => good locality)
     *************************************************************************/
     for (Column = 0; Column < QuadrantSize; Column++) {
-      
+
       /***********************************************************
       ** Within this loop, the following holds for MatrixOffset:
       ** MatrixOffset = (Row * RowWidth) + Column
@@ -265,7 +265,7 @@ inline void OptimizedStrassenMultiply_seq(REAL *C, REAL *A, REAL *B, unsigned Ma
 
       /* S3 = A11 - A21 */
       E(S3) = EA(A11) - EA(A21);
-      
+
       /* S7 = B22 - B12 */
       E(S7) = EB(B22) - EB(B12);
 
@@ -292,7 +292,7 @@ inline void OptimizedStrassenMultiply_seq(REAL *C, REAL *A, REAL *B, unsigned Ma
 
   /* Step 1 of C11 = M2 + A12 * B21 */
   OptimizedStrassenMultiply_seq(C11, A12, B21, QuadrantSize, RowWidthC, RowWidthA, RowWidthB, Depth+1);
-  
+
   /* Step 1 of C12 = S4 x B22 + T1 + M5 */
   OptimizedStrassenMultiply_seq(C12, S4, B22, QuadrantSize, RowWidthC, QuadrantSize, RowWidthB, Depth+1);
 
@@ -386,7 +386,7 @@ inline void OptimizedStrassenMultiply_seq(REAL *C, REAL *A, REAL *B, unsigned Ma
 **
 *****************************************************************************/
 inline void FastNaiveMatrixMultiply(REAL *C, REAL *A, REAL *B, unsigned MatrixSize,
-    unsigned RowWidthC, unsigned RowWidthA, unsigned RowWidthB) { 
+    unsigned RowWidthC, unsigned RowWidthA, unsigned RowWidthB) {
   /* Assumes size of real is 8 bytes */
   PTR RowWidthBInBytes = RowWidthB  << 3;
   PTR RowWidthAInBytes = RowWidthA << 3;
@@ -407,7 +407,7 @@ inline void FastNaiveMatrixMultiply(REAL *C, REAL *A, REAL *B, unsigned MatrixSi
       REAL Sum4 = FirstARowValue * (*(BColumnStart+4));
       REAL Sum5 = FirstARowValue * (*(BColumnStart+5));
       REAL Sum6 = FirstARowValue * (*(BColumnStart+6));
-      REAL Sum7 = FirstARowValue * (*(BColumnStart+7)); 
+      REAL Sum7 = FirstARowValue * (*(BColumnStart+7));
 
       unsigned Products;
       for (Products = 1; Products < MatrixSize; Products++) {
@@ -420,7 +420,7 @@ inline void FastNaiveMatrixMultiply(REAL *C, REAL *A, REAL *B, unsigned MatrixSi
         Sum4 += ARowValue * (*(BColumnStart+4));
         Sum5 += ARowValue * (*(BColumnStart+5));
         Sum6 += ARowValue * (*(BColumnStart+6));
-        Sum7 += ARowValue * (*(BColumnStart+7));  
+        Sum7 += ARowValue * (*(BColumnStart+7));
       }
       ARowStart = (REAL*) ( ((PTR) ARowStart) - MatrixWidthInBytes);
 
@@ -464,7 +464,7 @@ inline void FastNaiveMatrixMultiply(REAL *C, REAL *A, REAL *B, unsigned MatrixSi
 **
 *****************************************************************************/
 inline void FastAdditiveNaiveMatrixMultiply(REAL *C, REAL *A, REAL *B, unsigned MatrixSize,
-    unsigned RowWidthC, unsigned RowWidthA, unsigned RowWidthB) { 
+    unsigned RowWidthC, unsigned RowWidthA, unsigned RowWidthB) {
   /* Assumes size of real is 8 bytes */
   PTR RowWidthBInBytes = RowWidthB  << 3;
   PTR RowWidthAInBytes = RowWidthA << 3;
@@ -484,7 +484,7 @@ inline void FastAdditiveNaiveMatrixMultiply(REAL *C, REAL *A, REAL *B, unsigned 
       REAL Sum4 = *(C+4);
       REAL Sum5 = *(C+5);
       REAL Sum6 = *(C+6);
-      REAL Sum7 = *(C+7); 
+      REAL Sum7 = *(C+7);
 
       unsigned Products;
       for (Products = 0; Products < MatrixSize; Products++) {
@@ -554,7 +554,7 @@ inline void MultiplyByDivideAndConquer(REAL *C, REAL *A, REAL *B,
 				     unsigned RowWidthA,
 				     unsigned RowWidthB,
 				     int AdditiveMode
-				    ) 
+				    )
 {
   #define A00 A
   #define B00 B
@@ -608,53 +608,53 @@ inline void MultiplyByDivideAndConquer(REAL *C, REAL *A, REAL *B,
     MultiplyByDivideAndConquer(C10, A11, B10, QuadrantSize,
 				     RowWidthC, RowWidthA, RowWidthB,
 				     1);
-    
+
   } else {
 
     if (AdditiveMode) {
       FastAdditiveNaiveMatrixMultiply(C00, A00, B00, QuadrantSize,
 			      RowWidthC, RowWidthA, RowWidthB);
-      
+
       FastAdditiveNaiveMatrixMultiply(C01, A00, B01, QuadrantSize,
 			      RowWidthC, RowWidthA, RowWidthB);
-      
+
       FastAdditiveNaiveMatrixMultiply(C11, A10, B01, QuadrantSize,
 			      RowWidthC, RowWidthA, RowWidthB);
-      
+
       FastAdditiveNaiveMatrixMultiply(C10, A10, B00, QuadrantSize,
 			      RowWidthC, RowWidthA, RowWidthB);
-      
+
     } else {
-      
+
       FastNaiveMatrixMultiply(C00, A00, B00, QuadrantSize,
 			      RowWidthC, RowWidthA, RowWidthB);
-      
+
       FastNaiveMatrixMultiply(C01, A00, B01, QuadrantSize,
 			      RowWidthC, RowWidthA, RowWidthB);
-      
+
       FastNaiveMatrixMultiply(C11, A10, B01, QuadrantSize,
 			      RowWidthC, RowWidthA, RowWidthB);
-      
+
       FastNaiveMatrixMultiply(C10, A10, B00, QuadrantSize,
 			      RowWidthC, RowWidthA, RowWidthB);
     }
 
     FastAdditiveNaiveMatrixMultiply(C00, A01, B10, QuadrantSize,
 				    RowWidthC, RowWidthA, RowWidthB);
-    
+
     FastAdditiveNaiveMatrixMultiply(C01, A01, B11, QuadrantSize,
 				    RowWidthC, RowWidthA, RowWidthB);
-    
+
     FastAdditiveNaiveMatrixMultiply(C11, A11, B11, QuadrantSize,
 				    RowWidthC, RowWidthA, RowWidthB);
-    
+
     FastAdditiveNaiveMatrixMultiply(C10, A11, B10, QuadrantSize,
 				    RowWidthC, RowWidthA, RowWidthB);
   }
 }
 
 inline void dump_matrix(double *C, const unsigned sz, std::string&& fname) {
-  std::ofstream ofs {fname}; 
+  std::ofstream ofs {fname};
 
   for(unsigned i=0; i<sz; i++) {
     ofs << C[i] << ' ';
@@ -668,7 +668,7 @@ inline void init_ABC() {
 
   ::srand(1);
   init_matrix(MATRIX_SIZE, MatrixA, MATRIX_SIZE);
-  init_matrix(MATRIX_SIZE, MatrixB, MATRIX_SIZE); 
+  init_matrix(MATRIX_SIZE, MatrixB, MATRIX_SIZE);
 }
 
 std::chrono::microseconds measure_time_omp(unsigned, REAL *, REAL *, REAL *, int);

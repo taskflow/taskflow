@@ -2,7 +2,7 @@
 
 #include "cuda_graph.hpp"
 
-/** 
+/**
 @file cuda_optimizer.hpp
 @brief %cudaFlow capturing algorithms include file
 */
@@ -28,7 +28,7 @@ class cudaCapturingBase {
 
 // Function: _toposort
 inline std::vector<cudaNode*> cudaCapturingBase::_toposort(cudaGraph& graph) {
-  
+
   std::vector<cudaNode*> res;
   std::queue<cudaNode*> bfs;
 
@@ -44,7 +44,7 @@ inline std::vector<cudaNode*> cudaCapturingBase::_toposort(cudaGraph& graph) {
       bfs.push(u.get());
     }
   }
-  
+
   // levelize the graph using bfs
   while(!bfs.empty()) {
 
@@ -52,7 +52,7 @@ inline std::vector<cudaNode*> cudaCapturingBase::_toposort(cudaGraph& graph) {
     bfs.pop();
 
     res.push_back(u);
-    
+
     for(auto v : u->_successors) {
       auto hv = std::get_if<cudaNode::Capture>(&v->_handle);
       if(--hv->level == 0) {
@@ -65,13 +65,13 @@ inline std::vector<cudaNode*> cudaCapturingBase::_toposort(cudaGraph& graph) {
 }
 
 // Function: _levelize
-inline std::vector<std::vector<cudaNode*>> 
+inline std::vector<std::vector<cudaNode*>>
 cudaCapturingBase::_levelize(cudaGraph& graph) {
 
   std::queue<cudaNode*> bfs;
 
   size_t max_level = 0;
-  
+
   // insert the first level of nodes into the queue
   for(auto& u : graph._nodes) {
 
@@ -82,13 +82,13 @@ cudaCapturingBase::_levelize(cudaGraph& graph) {
       bfs.push(u.get());
     }
   }
-  
+
   // levelize the graph using bfs
   while(!bfs.empty()) {
 
     auto u = bfs.front();
     bfs.pop();
-    
+
     auto hu = std::get_if<cudaNode::Capture>(&u->_handle);
 
     for(auto v : u->_successors) {
@@ -109,12 +109,12 @@ cudaCapturingBase::_levelize(cudaGraph& graph) {
     auto hu = std::get_if<cudaNode::Capture>(&u->_handle);
     hu->lid = level_graph[hu->level].size();
     level_graph[hu->level].emplace_back(u.get());
-    
+
     //for(auto s : u->_successors) {
     //  assert(hu.level < std::get_if<cudaNode::Capture>(&s->_handle)->level);
     //}
   }
-  
+
   return level_graph;
 }
 
@@ -127,7 +127,7 @@ cudaCapturingBase::_levelize(cudaGraph& graph) {
 
 @brief class to capture a CUDA graph using a sequential stream
 
-A sequential capturing algorithm finds a topological order of 
+A sequential capturing algorithm finds a topological order of
 the described graph and captures dependent GPU tasks using a single stream.
 All GPU tasks run sequentially without breaking inter dependencies.
 */
@@ -136,12 +136,12 @@ class cudaSequentialCapturing : public cudaCapturingBase {
   friend class cudaFlowCapturer;
 
   public:
-    
+
     /**
     @brief constructs a sequential optimizer
     */
     cudaSequentialCapturing() = default;
-  
+
   private:
 
     cudaGraph_t _optimize(cudaGraph& graph);
@@ -155,13 +155,13 @@ inline cudaGraph_t cudaSequentialCapturing::_optimize(cudaGraph& graph) {
   cudaGraph_t native_g;
 
   TF_CHECK_CUDA(
-    cudaStreamBeginCapture(stream, cudaStreamCaptureModeThreadLocal), 
+    cudaStreamBeginCapture(stream, cudaStreamCaptureModeThreadLocal),
     "failed to turn stream into per-thread capture mode"
   );
 
   auto ordered = _toposort(graph);
   for(auto node : ordered) {
-    std::get_if<cudaNode::Capture>(&node->_handle)->work(stream);  
+    std::get_if<cudaNode::Capture>(&node->_handle)->work(stream);
   }
 
   TF_CHECK_CUDA(
@@ -191,12 +191,12 @@ class cudaLinearCapturing : public cudaCapturingBase {
   friend class cudaFlowCapturer;
 
   public:
-    
+
     /**
     @brief constructs a linear optimizer
     */
     cudaLinearCapturing() = default;
-  
+
   private:
 
     cudaGraph_t _optimize(cudaGraph& graph);
@@ -211,7 +211,7 @@ inline cudaGraph_t cudaLinearCapturing::_optimize(cudaGraph& graph) {
   cudaGraph_t native_g;
 
   TF_CHECK_CUDA(
-    cudaStreamBeginCapture(stream, cudaStreamCaptureModeThreadLocal), 
+    cudaStreamBeginCapture(stream, cudaStreamCaptureModeThreadLocal),
     "failed to turn stream into per-thread capture mode"
   );
 
@@ -221,8 +221,8 @@ inline cudaGraph_t cudaLinearCapturing::_optimize(cudaGraph& graph) {
     if(u->_dependents.size() == 0) {
       src = u.get();
       while(src) {
-        std::get_if<cudaNode::Capture>(&src->_handle)->work(stream);  
-        src = src->_successors.empty() ? nullptr : src->_successors[0]; 
+        std::get_if<cudaNode::Capture>(&src->_handle)->work(stream);
+        src = src->_successors.empty() ? nullptr : src->_successors[0];
       }
       break;
     }
@@ -251,9 +251,9 @@ The algorithm is based on the following paper published in Euro-Par 2021:
   + Dian-Lun Lin and Tsung-Wei Huang, &quot;Efficient GPU Computation using %Task Graph Parallelism,&quot; <i>European Conference on Parallel and Distributed Computing (Euro-Par)</i>, 2021
 
 The round-robin optimization algorithm is best suited for large %cudaFlow graphs
-that compose hundreds of or thousands of GPU operations 
+that compose hundreds of or thousands of GPU operations
 (e.g., kernels and memory copies) with many of them being able to run in parallel.
-You can configure the number of streams to the optimizer to adjust the 
+You can configure the number of streams to the optimizer to adjust the
 maximum kernel currency in the captured CUDA graph.
 */
 class cudaRoundRobinCapturing : public cudaCapturingBase {
@@ -261,17 +261,17 @@ class cudaRoundRobinCapturing : public cudaCapturingBase {
   friend class cudaFlowCapturer;
 
   public:
-    
+
     /**
     @brief constructs a round-robin optimizer with 4 streams by default
      */
     cudaRoundRobinCapturing() = default;
-    
+
     /**
     @brief constructs a round-robin optimizer with the given number of streams
      */
     cudaRoundRobinCapturing(size_t num_streams);
-    
+
     /**
     @brief queries the number of streams used by the optimizer
      */
@@ -317,7 +317,7 @@ inline void cudaRoundRobinCapturing::num_streams(size_t n) {
 inline void cudaRoundRobinCapturing::_reset(
   std::vector<std::vector<cudaNode*>>& graph
 ) {
-  //level == global id 
+  //level == global id
   //idx == stream id we want to skip
   size_t id{0};
   for(auto& each_level: graph) {
@@ -330,12 +330,12 @@ inline void cudaRoundRobinCapturing::_reset(
   }
 }
 
-// Function: _optimize 
+// Function: _optimize
 inline cudaGraph_t cudaRoundRobinCapturing::_optimize(cudaGraph& graph) {
-  
+
   // levelize the graph
   auto levelized = _levelize(graph);
-  
+
   // initialize the data structure
   _reset(levelized);
 
@@ -343,14 +343,14 @@ inline cudaGraph_t cudaRoundRobinCapturing::_optimize(cudaGraph& graph) {
   std::vector<cudaScopedPerThreadStream> streams(_num_streams);
 
   TF_CHECK_CUDA(
-    cudaStreamBeginCapture(streams[0], cudaStreamCaptureModeThreadLocal), 
+    cudaStreamBeginCapture(streams[0], cudaStreamCaptureModeThreadLocal),
     "failed to turn stream into per-thread capture mode"
   );
-  
+
   // reserve space for scoped events
   std::vector<cudaScopedPerThreadEvent> events;
   events.reserve((_num_streams >> 1) + levelized.size());
-  
+
   // fork
   cudaEvent_t fork_event = events.emplace_back();
   TF_CHECK_CUDA(
@@ -375,28 +375,28 @@ inline cudaGraph_t cudaRoundRobinCapturing::_optimize(cudaGraph& graph) {
         auto phn = std::get_if<cudaNode::Capture>(&pn->_handle);
         size_t psid = phn->lid % _num_streams;
 
-        //level == global id 
+        //level == global id
         //idx == stream id we want to skip
         if(psid == hn->idx) {
-          if(wait_node == nullptr || 
+          if(wait_node == nullptr ||
              std::get_if<cudaNode::Capture>(&wait_node->_handle)->level < phn->level) {
             wait_node = pn;
           }
         }
         else if(psid != sid) {
           TF_CHECK_CUDA(
-            cudaStreamWaitEvent(streams[sid], phn->event, 0), 
+            cudaStreamWaitEvent(streams[sid], phn->event, 0),
             "failed to wait on node's stream"
           );
         }
       }
 
       if(wait_node != nullptr) {
-        assert(std::get_if<cudaNode::Capture>(&wait_node->_handle)->event); 
+        assert(std::get_if<cudaNode::Capture>(&wait_node->_handle)->event);
         TF_CHECK_CUDA(
           cudaStreamWaitEvent(
-            streams[sid], 
-            std::get_if<cudaNode::Capture>(&wait_node->_handle)->event, 
+            streams[sid],
+            std::get_if<cudaNode::Capture>(&wait_node->_handle)->event,
             0
           ), "failed to wait on node's stream"
         );

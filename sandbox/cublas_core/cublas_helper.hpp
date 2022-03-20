@@ -4,16 +4,16 @@
 
 namespace tf {
 
-// ---------------------------------------------------------------------------- 
+// ----------------------------------------------------------------------------
 // global utility functions
-// ---------------------------------------------------------------------------- 
+// ----------------------------------------------------------------------------
 // find the tranposed op
 template <typename T, std::enable_if<
   std::is_same_v<T, float> && std::is_same_v<T, double>, void>* = nullptr
 >
 constexpr cublasOperation_t cublas_rtran(cublasOperation_t op) {
   if(op != CUBLAS_OP_N && op != CUBLAS_OP_T) {
-    TF_THROW("invalid transposition op for floating data types"); 
+    TF_THROW("invalid transposition op for floating data types");
   }
   return (op == CUBLAS_OP_N) ? CUBLAS_OP_T : CUBLAS_OP_N;
 }
@@ -36,9 +36,9 @@ constexpr cublasSideMode_t cublas_rside(cublasSideMode_t side) {
   }
 }
 
-// ---------------------------------------------------------------------------- 
+// ----------------------------------------------------------------------------
 // cublasFlowCapturer helper functions
-// ---------------------------------------------------------------------------- 
+// ----------------------------------------------------------------------------
 
 // Function: vset
 template <typename T,
@@ -55,7 +55,7 @@ cudaTask cublasFlowCapturer::vset(
   });
 }
 
-// Function: vget 
+// Function: vget
 template <typename T,
   std::enable_if_t<!std::is_same_v<T, void>, void>*
 >

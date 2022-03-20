@@ -11,16 +11,16 @@ namespace tf {
 // Function: transform
 template <typename B, typename E, typename O, typename C>
 Task FlowBuilder::transform(B first1, E last1, O d_first, C c) {
-  
+
   using namespace std::string_literals;
-  
+
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using O_t = std::decay_t<unwrap_ref_decay_t<O>>;
 
   Task task = emplace(
   [first1, last1, d_first, c] (Subflow& sf) mutable {
-    
+
     // fetch the stateful values
     B_t beg   = first1;
     E_t end   = last1;
@@ -29,17 +29,17 @@ Task FlowBuilder::transform(B first1, E last1, O d_first, C c) {
     if(beg == end) {
       return;
     }
-  
+
     size_t chunk_size = 1;
     size_t W = sf._executor.num_workers();
     size_t N = std::distance(beg, end);
-    
+
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= chunk_size) {
       std::transform(beg, end, d_beg, c);
       return;
     }
-    
+
     if(N < W) {
       W = N;
     }
@@ -51,16 +51,16 @@ Task FlowBuilder::transform(B first1, E last1, O d_first, C c) {
       //sf.emplace([&next, beg, N, chunk_size, W, c] () mutable {
       sf._named_silent_async(
         sf._worker, "part-"s + std::to_string(w), [=, &next] () mutable {
-        
+
         size_t z = 0;
         size_t p1 = 2 * W * (chunk_size + 1);
         double p2 = 0.5 / static_cast<double>(W);
         size_t s0 = next.load(std::memory_order_relaxed);
 
         while(s0 < N) {
-          
+
           size_t r = N - s0;
-          
+
           // fine-grained
           if(r < p1) {
             while(1) {
@@ -100,9 +100,9 @@ Task FlowBuilder::transform(B first1, E last1, O d_first, C c) {
       //}).name("pfg_"s + std::to_string(w));
       });
     }
-    
+
     sf.join();
-  });  
+  });
 
   return task;
 }
@@ -110,9 +110,9 @@ Task FlowBuilder::transform(B first1, E last1, O d_first, C c) {
 // Function: transform
 template <typename B1, typename E1, typename B2, typename O, typename C>
 Task FlowBuilder::transform(B1 first1, E1 last1, B2 first2, O d_first, C c) {
-  
+
   using namespace std::string_literals;
-  
+
   using B1_t = std::decay_t<unwrap_ref_decay_t<B1>>;
   using E1_t = std::decay_t<unwrap_ref_decay_t<E1>>;
   using B2_t = std::decay_t<unwrap_ref_decay_t<B2>>;
@@ -120,7 +120,7 @@ Task FlowBuilder::transform(B1 first1, E1 last1, B2 first2, O d_first, C c) {
 
   Task task = emplace(
   [first1, last1, first2, d_first, c] (Subflow& sf) mutable {
-    
+
     // fetch the stateful values
     B1_t beg1 = first1;
     E1_t end1 = last1;
@@ -130,17 +130,17 @@ Task FlowBuilder::transform(B1 first1, E1 last1, B2 first2, O d_first, C c) {
     if(beg1 == end1) {
       return;
     }
-  
+
     size_t chunk_size = 1;
     size_t W = sf._executor.num_workers();
     size_t N = std::distance(beg1, end1);
-    
+
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= chunk_size) {
       std::transform(beg1, end1, beg2, d_beg, c);
       return;
     }
-    
+
     if(N < W) {
       W = N;
     }
@@ -151,16 +151,16 @@ Task FlowBuilder::transform(B1 first1, E1 last1, B2 first2, O d_first, C c) {
 
       sf._named_silent_async(
         sf._worker, "part-"s + std::to_string(w), [=, &next] () mutable {
-        
+
         size_t z = 0;
         size_t p1 = 2 * W * (chunk_size + 1);
         double p2 = 0.5 / static_cast<double>(W);
         size_t s0 = next.load(std::memory_order_relaxed);
 
         while(s0 < N) {
-          
+
           size_t r = N - s0;
-          
+
           // fine-grained
           if(r < p1) {
             while(1) {
@@ -202,9 +202,9 @@ Task FlowBuilder::transform(B1 first1, E1 last1, B2 first2, O d_first, C c) {
       //}).name("pfg_"s + std::to_string(w));
       });
     }
-    
+
     sf.join();
-  });  
+  });
 
   return task;
 }

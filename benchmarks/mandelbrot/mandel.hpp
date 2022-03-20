@@ -11,17 +11,17 @@ const double XL = - 2.5;
 const double XR = 1.0;
 const double YB = -1.0;
 const double YT = 1.0;
-extern int H; 
-extern int W; 
+extern int H;
+extern int W;
 extern unsigned char* RGB;
 
 
 inline void dump_tga(int w, int h, unsigned char rgb[], const char *filename) {
   FILE *file_unit;
   unsigned char header1[12] = {0,0,2,0,0,0,0,0,0,0,0,0};
-  unsigned char header2[6] = {static_cast<unsigned char>(w%256), 
-                              static_cast<unsigned char>(w/256), 
-                              static_cast<unsigned char>(h%256), 
+  unsigned char header2[6] = {static_cast<unsigned char>(w%256),
+                              static_cast<unsigned char>(w/256),
+                              static_cast<unsigned char>(h%256),
                               static_cast<unsigned char>(h/256), 24, 0};
 
   // Create the file.
@@ -50,21 +50,21 @@ inline int escape_time(double px, double py, int n) {
 
   // square both components
   double x2 = x * x;
-  double y2 = y * y; 
+  double y2 = y * y;
 
   //// Julia set
   //double cr = -0.8;
   //double ci = 0.156;
 
-  // Mandelbrot set: 
+  // Mandelbrot set:
   double cr = px;
   double ci = py;
 
   double xtmp;
-  
+
   // We need i (number of iteration) after the loop, so don't declare the variable inside the for.
   int i;
-  for (i = 0; (x2 + y2) <= 4.0 && i < MAX_ITERATION; i++) { 
+  for (i = 0; (x2 + y2) <= 4.0 && i < MAX_ITERATION; i++) {
     xtmp = pow((x*x+y*y), (n/2.0))*cos(n*atan2(y,x)) + cr;
     y = pow((x*x+y*y), (n/2.0))*sin(n*atan2(y,x)) + ci;
     x = xtmp;
@@ -82,9 +82,9 @@ inline std::pair<double, double> scale_xy(double x, double y) {
   double xx = XL + (XR - XL)/W * x;
   double yy = YB + (YT - YB)/H * y;
   return {xx, yy};
-} 
+}
 
-// Given an iteration, return a RGB color 
+// Given an iteration, return a RGB color
 // Ref: https://stackoverflow.com/questions/16500656/which-color-gradient-is-used-to-color-mandelbrot-in-wikipedia
 inline std::tuple<int, int, int> get_color(int n) {
   if(n < MAX_ITERATION && n) {

@@ -15,7 +15,7 @@ namespace tf {
 /**
 @brief gets the memcpy node parameter of a copy task
 */
-template <typename T, 
+template <typename T,
   std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
 >
 cudaMemcpy3DParms cuda_get_copy_parms(T* tgt, const T* src, size_t num) {
@@ -86,7 +86,7 @@ template <typename T, std::enable_if_t<
   is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), void>* = nullptr
 >
 cudaMemsetParams cuda_get_fill_parms(T* dst, T value, size_t count) {
-  
+
   cudaMemsetParams p;
   p.dst = dst;
 
@@ -128,10 +128,10 @@ cudaMemsetParams cuda_get_zero_parms(T* dst, size_t count) {
 inline size_t cuda_get_graph_num_root_nodes(cudaGraph_t graph) {
   size_t num_nodes;
   TF_CHECK_CUDA(
-    cudaGraphGetRootNodes(graph, nullptr, &num_nodes), 
+    cudaGraphGetRootNodes(graph, nullptr, &num_nodes),
     "failed to get native graph root nodes"
   );
-  return num_nodes; 
+  return num_nodes;
 }
 
 /**
@@ -140,10 +140,10 @@ inline size_t cuda_get_graph_num_root_nodes(cudaGraph_t graph) {
 inline size_t cuda_get_graph_num_nodes(cudaGraph_t graph) {
   size_t num_nodes;
   TF_CHECK_CUDA(
-    cudaGraphGetNodes(graph, nullptr, &num_nodes), 
+    cudaGraphGetNodes(graph, nullptr, &num_nodes),
     "failed to get native graph nodes"
   );
-  return num_nodes; 
+  return num_nodes;
 }
 
 /**
@@ -152,7 +152,7 @@ inline size_t cuda_get_graph_num_nodes(cudaGraph_t graph) {
 inline size_t cuda_get_graph_num_edges(cudaGraph_t graph) {
   size_t num_edges;
   TF_CHECK_CUDA(
-    cudaGraphGetEdges(graph, nullptr, nullptr, &num_edges), 
+    cudaGraphGetEdges(graph, nullptr, nullptr, &num_edges),
     "failed to get native graph edges"
   );
   return num_edges;
@@ -249,7 +249,7 @@ inline const char* cuda_graph_node_type_to_string(cudaGraphNodeType type) {
 */
 template <typename T>
 void cuda_dump_graph(T& os, cudaGraph_t graph) {
-  
+
   os << "digraph cudaGraph {\n";
 
   std::stack<std::tuple<cudaGraph_t, cudaGraphNode_t, int>> stack;
@@ -276,7 +276,7 @@ void cuda_dump_graph(T& os, cudaGraph_t graph) {
     for(auto& [from, to] : edges) {
       os << 'p' << from << " -> " << 'p' << to << ";\n";
     }
-  
+
     for(auto& node : nodes) {
       auto type = cuda_get_graph_node_type(node);
       if(type == cudaGraphNodeTypeGraph) {
@@ -291,8 +291,8 @@ void cuda_dump_graph(T& os, cudaGraph_t graph) {
            << "\"];\n";
       }
       else {
-        os << 'p' << node << "[label=\"" 
-           << cuda_graph_node_type_to_string(type) 
+        os << 'p' << node << "[label=\""
+           << cuda_graph_node_type_to_string(type)
            << "\"];\n";
       }
     }
@@ -309,7 +309,7 @@ void cuda_dump_graph(T& os, cudaGraph_t graph) {
         }
       }
     }
-    
+
     // set the previous level
     pl = l;
   }
@@ -337,19 +337,19 @@ class cudaGraph : public CustomGraphBase {
   friend class cudaRoundRobinCapturing;
   friend class Taskflow;
   friend class Executor;
-  
+
   constexpr static int OFFLOADED = 0x01;
   constexpr static int CHANGED   = 0x02;
   constexpr static int UPDATED   = 0x04;
 
   public:
-    
+
     cudaGraph() = default;
     ~cudaGraph();
 
     cudaGraph(const cudaGraph&) = delete;
     cudaGraph(cudaGraph&&);
-    
+
     cudaGraph& operator = (const cudaGraph&) = delete;
     cudaGraph& operator = (cudaGraph&&);
 
@@ -375,12 +375,12 @@ class cudaGraph : public CustomGraphBase {
 // cudaNode class
 // ----------------------------------------------------------------------------
 
-/** 
+/**
 @private
 @class: cudaNode
 */
 class cudaNode {
-  
+
   friend class cudaGraph;
   friend class cudaTask;
   friend class cudaFlow;
@@ -392,7 +392,7 @@ class cudaNode {
   friend class cudaRoundRobinCapturing;
   friend class Taskflow;
   friend class Executor;
-  
+
   // Empty handle
   struct Empty {
   };
@@ -404,7 +404,7 @@ class cudaNode {
     Host(C&&);
 
     std::function<void()> func;
-    
+
     static void callback(void*);
   };
 
@@ -415,13 +415,13 @@ class cudaNode {
   // Memcpy handle
   struct Memcpy {
   };
-  
+
   // Kernel handle
   struct Kernel {
-    
+
     template <typename F>
     Kernel(F&& f);
-    
+
     void* func {nullptr};
   };
 
@@ -432,7 +432,7 @@ class cudaNode {
 
   // Capture
   struct Capture {
-    
+
     template <typename C>
     Capture(C&&);
 
@@ -445,37 +445,37 @@ class cudaNode {
   };
 
   using handle_t = std::variant<
-    Empty, 
+    Empty,
     Host,
-    Memset, 
-    Memcpy, 
+    Memset,
+    Memcpy,
     Kernel,
     Subflow,
     Capture
   >;
 
   public:
-  
+
   // variant index
   constexpr static auto EMPTY   = get_index_v<Empty, handle_t>;
   constexpr static auto HOST    = get_index_v<Host, handle_t>;
   constexpr static auto MEMSET  = get_index_v<Memset, handle_t>;
-  constexpr static auto MEMCPY  = get_index_v<Memcpy, handle_t>; 
+  constexpr static auto MEMCPY  = get_index_v<Memcpy, handle_t>;
   constexpr static auto KERNEL  = get_index_v<Kernel, handle_t>;
   constexpr static auto SUBFLOW = get_index_v<Subflow, handle_t>;
   constexpr static auto CAPTURE = get_index_v<Capture, handle_t>;
 
     cudaNode() = delete;
-    
+
     template <typename... ArgsT>
     cudaNode(cudaGraph&, ArgsT&&...);
 
   private:
-    
+
     cudaGraph& _graph;
 
     std::string _name;
-    
+
     handle_t _handle;
 
     cudaGraphNode_t _native_handle {nullptr};
@@ -495,26 +495,26 @@ template <typename C>
 cudaNode::Host::Host(C&& c) : func {std::forward<C>(c)} {
 }
 
-// Host callback    
-inline void cudaNode::Host::callback(void* data) { 
-  static_cast<Host*>(data)->func(); 
+// Host callback
+inline void cudaNode::Host::callback(void* data) {
+  static_cast<Host*>(data)->func();
 };
 
 // Kernel handle constructor
 template <typename F>
-cudaNode::Kernel::Kernel(F&& f) : 
+cudaNode::Kernel::Kernel(F&& f) :
   func {std::forward<F>(f)} {
 }
 
 // Capture handle constructor
 template <typename C>
-cudaNode::Capture::Capture(C&& work) : 
+cudaNode::Capture::Capture(C&& work) :
   work {std::forward<C>(work)} {
 }
 
 // Constructor
 template <typename... ArgsT>
-cudaNode::cudaNode(cudaGraph& graph, ArgsT&&... args) : 
+cudaNode::cudaNode(cudaGraph& graph, ArgsT&&... args) :
   _graph {graph},
   _handle {std::forward<ArgsT>(args)...} {
 }
@@ -537,20 +537,20 @@ inline void cudaNode::_precede(cudaNode* v) {
     );
   }
 }
-    
+
 //// Procedure: _set_state
-//inline void cudaNode::_set_state(int flag) { 
-//  _state |= flag; 
+//inline void cudaNode::_set_state(int flag) {
+//  _state |= flag;
 //}
 //
 //// Procedure: _unset_state
-//inline void cudaNode::_unset_state(int flag) { 
-//  _state &= ~flag; 
+//inline void cudaNode::_unset_state(int flag) {
+//  _state &= ~flag;
 //}
 //
 //// Procedure: _clear_state
-//inline void cudaNode::_clear_state() { 
-//  _state = 0; 
+//inline void cudaNode::_clear_state() {
+//  _state = 0;
 //}
 //
 //// Function: _has_state
@@ -572,7 +572,7 @@ inline cudaGraph::~cudaGraph() {
 inline cudaGraph::cudaGraph(cudaGraph&& g) :
   _native_handle {g._native_handle},
   _nodes         {std::move(g._nodes)} {
-  
+
   g._native_handle = nullptr;
 
   assert(g._nodes.empty());
@@ -582,7 +582,7 @@ inline cudaGraph::cudaGraph(cudaGraph&& g) :
 inline cudaGraph& cudaGraph::operator = (cudaGraph&& rhs) {
 
   //clear();
-  
+
   // lhs
   _native_handle = rhs._native_handle;
   _nodes = std::move(rhs._nodes);
@@ -592,7 +592,7 @@ inline cudaGraph& cudaGraph::operator = (cudaGraph&& rhs) {
   // rhs
   rhs._native_handle = nullptr;
 
-  return *this; 
+  return *this;
 }
 
 // Function: empty
@@ -629,7 +629,7 @@ cudaNode* cudaGraph::emplace_back(ArgsT&&... args) {
 inline void cudaGraph::dump(
   std::ostream& os, const void* root, const std::string& root_name
 ) const {
-  
+
   // recursive dump with stack
   std::stack<std::tuple<const cudaGraph*, const cudaNode*, int>> stack;
   stack.push(std::make_tuple(this, nullptr, 1));
@@ -644,7 +644,7 @@ inline void cudaGraph::dump(
     for(int i=0; i<pl-l+1; i++) {
       os << "}\n";
     }
-  
+
     if(parent == nullptr) {
       if(root) {
         os << "subgraph cluster_p" << root << " {\nlabel=\"cudaFlow: ";
@@ -666,7 +666,7 @@ inline void cudaGraph::dump(
     for(auto& node : graph->_nodes) {
 
       auto v = node.get();
-      
+
       os << 'p' << v << "[label=\"";
       if(v->_name.empty()) {
         os << 'p' << v << "\"";
@@ -674,7 +674,7 @@ inline void cudaGraph::dump(
       else {
         os << v->_name << "\"";
       }
-          
+
       switch(v->_handle.index()) {
         case cudaNode::KERNEL:
           os << " style=\"filled\""
@@ -696,13 +696,13 @@ inline void cudaGraph::dump(
         default:
         break;
       }
-  
+
       os << "];\n";
 
       for(const auto s : v->_successors) {
         os << 'p' << v << " -> " << 'p' << s << ";\n";
       }
-      
+
       if(v->_successors.size() == 0) {
         if(parent == nullptr) {
           if(root) {
@@ -714,7 +714,7 @@ inline void cudaGraph::dump(
         }
       }
     }
-    
+
     // set the previous level
     pl = l;
   }

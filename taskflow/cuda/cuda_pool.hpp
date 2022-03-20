@@ -20,16 +20,16 @@ it is desirable to reuse them as much as possible.
 
 There exists an one-to-one relationship between CUDA devices in CUDA Runtime API
 and CUcontexts in the CUDA Driver API within a process.
-The specific context which the CUDA Runtime API uses for a device 
-is called the device's primary context. 
-From the perspective of the CUDA Runtime API, 
+The specific context which the CUDA Runtime API uses for a device
+is called the device's primary context.
+From the perspective of the CUDA Runtime API,
 a device and its primary context are synonymous.
 
 We design the device object pool in a decentralized fashion by keeping
 (1) a global pool to keep track of potentially usable objects and
 (2) a per-thread pool to footprint objects with shared ownership.
 The global pool does not own the object and therefore does not destruct any of them.
-The per-thread pool keeps the footprints of objects with shared ownership 
+The per-thread pool keeps the footprints of objects with shared ownership
 and will destruct them if the thread holds the last reference count after it joins.
 The motivation of this decentralized control is to avoid device objects
 from being destroyed while the context had been destroyed due to driver shutdown.
@@ -37,11 +37,11 @@ from being destroyed while the context had been destroyed due to driver shutdown
 */
 template <typename H, typename C, typename D>
 class cudaPerThreadDeviceObjectPool {
-  
-  public: 
-  
+
+  public:
+
   /**
-  @brief structure to store a context object 
+  @brief structure to store a context object
    */
   struct Object {
 
@@ -56,7 +56,7 @@ class cudaPerThreadDeviceObjectPool {
   };
 
   private:
-  
+
   // Master thread hold the storage to the pool.
   // Due to some ordering, cuda context may be destroyed when the master
   // program thread destroys the cuda object.
@@ -64,49 +64,49 @@ class cudaPerThreadDeviceObjectPool {
   // destroy cuda objects while the master thread only keeps a weak reference
   // to those objects for reuse.
   struct cudaGlobalDeviceObjectPool {
-  
+
     std::shared_ptr<Object> acquire(int);
     void release(int, std::weak_ptr<Object>);
-  
+
     std::mutex mutex;
     std::unordered_map<int, std::vector<std::weak_ptr<Object>>> pool;
   };
 
   public:
-    
+
     /**
     @brief default constructor
-     */ 
+     */
     cudaPerThreadDeviceObjectPool() = default;
-    
+
     /**
     @brief acquires a device object with shared ownership
      */
     std::shared_ptr<Object> acquire(int);
-    
+
     /**
     @brief releases a device object with moved ownership
     */
     void release(std::shared_ptr<Object>&&);
-    
+
     /**
     @brief queries the number of device objects with shared ownership
      */
     size_t footprint_size() const;
-    
-  private: 
+
+  private:
 
     inline static cudaGlobalDeviceObjectPool _shared_pool;
 
     std::unordered_set<std::shared_ptr<Object>> _footprint;
-}; 
+};
 
 // ----------------------------------------------------------------------------
 // cudaPerThreadDeviceObject::cudaHanale definition
 // ----------------------------------------------------------------------------
 
 template <typename H, typename C, typename D>
-cudaPerThreadDeviceObjectPool<H, C, D>::Object::Object(int d) : 
+cudaPerThreadDeviceObjectPool<H, C, D>::Object::Object(int d) :
   device {d} {
   cudaScopedDevice ctx(device);
   value = C{}();
@@ -151,7 +151,7 @@ void cudaPerThreadDeviceObjectPool<H, C, D>::cudaGlobalDeviceObjectPool::release
 // ----------------------------------------------------------------------------
 
 template <typename H, typename C, typename D>
-std::shared_ptr<typename cudaPerThreadDeviceObjectPool<H, C, D>::Object> 
+std::shared_ptr<typename cudaPerThreadDeviceObjectPool<H, C, D>::Object>
 cudaPerThreadDeviceObjectPool<H, C, D>::acquire(int d) {
 
   auto ptr = _shared_pool.acquire(d);

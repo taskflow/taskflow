@@ -3,7 +3,7 @@
 #include "for_each.hpp"
 #include "reduce.hpp"
 
-/** 
+/**
 @file taskflow/cuda/algorithm/find.hpp
 @brief cuda find algorithms include file
 */
@@ -28,17 +28,17 @@ void cuda_find_if_loop(P&& p, I input, unsigned count, unsigned* idx, U pred) {
     cuda_single_task(p, [=] __device__ () { *idx = 0; });
     return;
   }
-  
+
   using E = std::decay_t<P>;
-  
+
   auto B = (count + E::nv - 1) / E::nv;
-  
+
   // set the index to the maximum
   cuda_single_task(p, [=] __device__ () { *idx = count; });
-  
+
   // launch the kernel to atomic-find the minimum
   cuda_kernel<<<B, E::nt, 0, p.stream()>>>([=] __device__ (auto tid, auto bid) {
-    
+
     __shared__ unsigned shm_id;
 
     if(!tid) {
@@ -46,9 +46,9 @@ void cuda_find_if_loop(P&& p, I input, unsigned count, unsigned* idx, U pred) {
     }
 
     __syncthreads();
-    
+
     auto tile = cuda_get_tile(bid, E::nv, count);
-    
+
     auto x = cuda_mem_to_reg_strided<E::nt, E::vt>(
       input + tile.begin, tid, tile.count()
     );
@@ -62,24 +62,24 @@ void cuda_find_if_loop(P&& p, I input, unsigned count, unsigned* idx, U pred) {
         break;
       }
     }
-    
+
     // Note: the reduce version is not faster though
     // reduce to a scalar per block.
     //__shared__ typename cudaBlockReduce<E::nt, unsigned>::Storage shm;
 
     //id = cudaBlockReduce<E::nt, unsigned>()(
-    //  tid, 
-    //  id, 
-    //  shm, 
-    //  (tile.count() < E::nt ? tile.count() : E::nt), 
+    //  tid,
+    //  id,
+    //  shm,
+    //  (tile.count() < E::nt ? tile.count() : E::nt),
     //  cuda_minimum<unsigned>{},
     //  false
     //);
-    
+
     // only need the minimum id
     atomicMin(&shm_id, id);
     __syncthreads();
-    
+
     // reduce all to the global memory
     if(!tid) {
       atomicMin(idx, shm_id);
@@ -101,18 +101,18 @@ void cuda_min_element_loop(
 
   using T = cudaFindPair<typename std::iterator_traits<I>::value_type>;
 
-  cuda_uninitialized_reduce_loop(p, 
-    cuda_make_load_iterator<T>([=]__device__(auto i){ 
+  cuda_uninitialized_reduce_loop(p,
+    cuda_make_load_iterator<T>([=]__device__(auto i){
       return T{*(input+i), i};
-    }), 
-    count, 
-    idx, 
+    }),
+    count,
+    idx,
     [=] __device__ (const auto& a, const auto& b) {
       return op(a.key, b.key) ? a : b;
     },
     ptr
   );
-} 
+}
 
 /** @private */
 template <typename P, typename I, typename O>
@@ -127,18 +127,18 @@ void cuda_max_element_loop(
 
   using T = cudaFindPair<typename std::iterator_traits<I>::value_type>;
 
-  cuda_uninitialized_reduce_loop(p, 
-    cuda_make_load_iterator<T>([=]__device__(auto i){ 
+  cuda_uninitialized_reduce_loop(p,
+    cuda_make_load_iterator<T>([=]__device__(auto i){
       return T{*(input+i), i};
-    }), 
-    count, 
-    idx, 
+    }),
+    count,
+    idx,
     [=] __device__ (const auto& a, const auto& b) {
       return op(a.key, b.key) ? b : a;
     },
     ptr
   );
-} 
+}
 
 }  // end of namespace tf::detail ---------------------------------------------
 
@@ -163,7 +163,7 @@ namespace tf {
 @param op unary operator which returns @c true for the required element
 
 The function launches kernels asynchronously to find the index @c idx of the
-first element in the range <tt>[first, last)</tt> 
+first element in the range <tt>[first, last)</tt>
 such that <tt>op(*(first+idx))</tt> is true.
 This is equivalent to the parallel execution of the following loop:
 
@@ -264,9 +264,9 @@ unsigned cuda_min_element_buffer_size(unsigned count) {
 @param op comparison function object
 @param buf pointer to the buffer
 
-The function launches kernels asynchronously to find 
+The function launches kernels asynchronously to find
 the smallest element in the range <tt>[first, last)</tt>
-using the given comparator @c op. 
+using the given comparator @c op.
 You need to provide a buffer that holds at least
 tf::cuda_min_element_buffer_size bytes for internal use.
 The function is equivalent to a parallel execution of the following loop:
@@ -300,12 +300,12 @@ template <typename I, typename O>
 cudaTask cudaFlowCapturer::min_element(I first, I last, unsigned* idx, O op) {
 
   using T = typename std::iterator_traits<I>::value_type;
-  
+
   auto bufsz = cuda_min_element_buffer_size<cudaDefaultExecutionPolicy, T>(
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_min_element(p, first, last, idx, op, buf.get().data());
@@ -319,12 +319,12 @@ void cudaFlowCapturer::min_element(
 ) {
 
   using T = typename std::iterator_traits<I>::value_type;
-  
+
   auto bufsz = cuda_min_element_buffer_size<cudaDefaultExecutionPolicy, T>(
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_min_element(p, first, last, idx, op, buf.get().data());
@@ -389,9 +389,9 @@ unsigned cuda_max_element_buffer_size(unsigned count) {
 @param op comparison function object
 @param buf pointer to the buffer
 
-The function launches kernels asynchronously to find 
+The function launches kernels asynchronously to find
 the largest element in the range <tt>[first, last)</tt>
-using the given comparator @c op. 
+using the given comparator @c op.
 You need to provide a buffer that holds at least
 tf::cuda_max_element_buffer_size bytes for internal use.
 The function is equivalent to a parallel execution of the following loop:
@@ -425,12 +425,12 @@ template <typename I, typename O>
 cudaTask cudaFlowCapturer::max_element(I first, I last, unsigned* idx, O op) {
 
   using T = typename std::iterator_traits<I>::value_type;
-  
+
   auto bufsz = cuda_max_element_buffer_size<cudaDefaultExecutionPolicy, T>(
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_max_element(p, first, last, idx, op, buf.get().data());
@@ -444,12 +444,12 @@ void cudaFlowCapturer::max_element(
 ) {
 
   using T = typename std::iterator_traits<I>::value_type;
-  
+
   auto bufsz = cuda_max_element_buffer_size<cudaDefaultExecutionPolicy, T>(
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_max_element(p, first, last, idx, op, buf.get().data());

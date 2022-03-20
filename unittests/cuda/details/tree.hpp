@@ -7,7 +7,7 @@
 //full tree
 // child nodes' index = degree * idx ~ degree * (idx + 1) - 1
 class Tree : public Graph {
-  
+
   public:
 
     Tree(int degree, int level);
@@ -20,7 +20,7 @@ class Tree : public Graph {
 };
 
 
-Tree::Tree(int degree, int level): _degree{degree}, Graph{level} 
+Tree::Tree(int degree, int level): _degree{degree}, Graph{level}
 {
   assert(_level != 0 && _degree != 0);
   _graph.resize(_level);

@@ -14,18 +14,18 @@ class TensorExpr {
 
   template <typename U>
   friend class TensorFrame;
-  
+
   public:
 
     /**
     @brief constructs an empty tensor expression
     */
     TensorExpr() = default;
-    
+
     /**
     @brief copy constructor of the tensor expression
     */
-    TensorExpr(const TensorExpr& rhs);    
+    TensorExpr(const TensorExpr& rhs);
 
     /**
     @brief move constructor of the tensor expression
@@ -33,7 +33,7 @@ class TensorExpr {
     After the move, @c rhs becomes an empty tensor expression that is not associated
     with any tensor node.
     */
-    TensorExpr(TensorExpr&& rhs);    
+    TensorExpr(TensorExpr&& rhs);
 
     /**
     @brief copy assignment of the tensor expression
@@ -51,13 +51,13 @@ class TensorExpr {
     /**
     @brief assigns a name to the tensor expression
     */
-    TensorExpr& name(const std::string& name); 
+    TensorExpr& name(const std::string& name);
 
     /**
     @brief queries the name of the tensor expression
     */
     const std::string& name() const;
-    
+
     /**
     @brief adds precedence links from @c this to other tensor expressions
 
@@ -69,7 +69,7 @@ class TensorExpr {
     */
     template <typename... Es>
     TensorExpr& precede(Es&&... exprs);
-    
+
     /**
     @brief adds succeeding links from other tensor expressions to @c this
 
@@ -97,9 +97,9 @@ TensorExpr<T>::TensorExpr(const TensorExpr& rhs) :
 
 // move constructor
 template <typename T>
-TensorExpr<T>::TensorExpr(TensorExpr&& rhs) : 
+TensorExpr<T>::TensorExpr(TensorExpr&& rhs) :
   _tensor_node {rhs._tensor_node} {
-  rhs._tensor_node = nullptr;  
+  rhs._tensor_node = nullptr;
 }
 
 // constructor
@@ -118,7 +118,7 @@ TensorExpr<T>& TensorExpr<T>::operator = (const TensorExpr& rhs) {
 template <typename T>
 TensorExpr<T>& TensorExpr<T>::operator = (TensorExpr&& rhs) {
   _tensor_node = rhs._tensor_node;
-  rhs._tensor_node = nullptr;  
+  rhs._tensor_node = nullptr;
   return *this;
 }
 

@@ -39,7 +39,7 @@ constexpr const char* cublas_error_to_string(cublasStatus_t error) {
   }
 
   return "unknown cublas error";
-}  
+}
 
 
 

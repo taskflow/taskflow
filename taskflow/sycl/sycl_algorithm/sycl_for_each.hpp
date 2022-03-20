@@ -7,16 +7,16 @@ namespace tf {
 // command group function object of for_each
 template <typename I, typename C>
 auto syclFlow::_for_each_cgh(I first, I last, C&& op) {
-  
+
   // TODO: special case N == 0?
   size_t N = std::distance(first, last);
   size_t B = _default_group_size(N);
-  
+
   return [=, op=std::forward<C>(op)] (sycl::handler& handler) mutable {
     size_t _N = (N % B == 0) ? N : (N + B - N % B);
     handler.parallel_for(
       sycl::nd_range<1>{sycl::range<1>(_N), sycl::range<1>(B)},
-      [=] (sycl::nd_item<1> item) { 
+      [=] (sycl::nd_item<1> item) {
         size_t i = item.get_global_id(0);
         if(i < N) {
           op(*(first + i));
@@ -25,11 +25,11 @@ auto syclFlow::_for_each_cgh(I first, I last, C&& op) {
     );
   };
 }
-  
+
 // command group function object of for_each_index
-template <typename I, typename C>  
+template <typename I, typename C>
 auto syclFlow::_for_each_index_cgh(I first, I last, I step, C&& op) {
-  
+
   if(is_range_invalid(first, last, step)) {
     TF_THROW("invalid range [", first, ", ", last, ") with step size ", step);
   }
@@ -42,7 +42,7 @@ auto syclFlow::_for_each_index_cgh(I first, I last, I step, C&& op) {
     size_t _N = (N % B == 0) ? N : (N + B - N % B);
     handler.parallel_for(
       sycl::nd_range<1>{sycl::range<1>(_N), sycl::range<1>(B)},
-      [=] (sycl::nd_item<1> item) { 
+      [=] (sycl::nd_item<1> item) {
         size_t i = item.get_global_id(0);
         if(i < N) {
           op(static_cast<I>(i)*step + first);
@@ -83,6 +83,6 @@ template <typename I, typename C>
 void syclFlow::for_each_index(syclTask task, I beg, I end, I inc, C&& op) {
   on(task, _for_each_index_cgh(beg, end, inc, std::forward<C>(op)));
 }
-      
+
 
 }  // end of namespace tf -----------------------------------------------------

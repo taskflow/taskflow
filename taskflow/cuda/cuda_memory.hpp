@@ -13,8 +13,8 @@ namespace tf {
 // memory
 // ----------------------------------------------------------------------------
 
-/** 
-@brief queries the free memory (expensive call) 
+/**
+@brief queries the free memory (expensive call)
 */
 inline size_t cuda_get_free_mem(int d) {
   cudaScopedDevice ctx(d);
@@ -25,8 +25,8 @@ inline size_t cuda_get_free_mem(int d) {
   return free;
 }
 
-/** 
-@brief queries the total available memory (expensive call) 
+/**
+@brief queries the total available memory (expensive call)
 */
 inline size_t cuda_get_total_mem(int d) {
   cudaScopedDevice ctx(d);
@@ -41,7 +41,7 @@ inline size_t cuda_get_total_mem(int d) {
 @brief allocates memory on the given device for holding @c N elements of type @c T
 
 The function calls @c cudaMalloc to allocate <tt>N*sizeof(T)</tt> bytes of memory
-on the given device @c d and returns a pointer to the starting address of 
+on the given device @c d and returns a pointer to the starting address of
 the device memory.
 */
 template <typename T>
@@ -49,7 +49,7 @@ T* cuda_malloc_device(size_t N, int d) {
   cudaScopedDevice ctx(d);
   T* ptr {nullptr};
   TF_CHECK_CUDA(
-    cudaMalloc(&ptr, N*sizeof(T)), 
+    cudaMalloc(&ptr, N*sizeof(T)),
     "failed to allocate memory (", N*sizeof(T), "bytes) on device ", d
   )
   return ptr;
@@ -76,7 +76,7 @@ template <typename T>
 T* cuda_malloc_shared(size_t N) {
   T* ptr {nullptr};
   TF_CHECK_CUDA(
-    cudaMallocManaged(&ptr, N*sizeof(T)), 
+    cudaMallocManaged(&ptr, N*sizeof(T)),
     "failed to allocate shared memory (", N*sizeof(T), "bytes)"
   )
   return ptr;
@@ -121,8 +121,8 @@ void cuda_free(T* ptr) {
 @param count size in bytes to copy
 
 The method calls @c cudaMemcpyAsync with the given @c stream
-using @c cudaMemcpyDefault to infer the memory space of the source and 
-the destination pointers. The memory areas may not overlap. 
+using @c cudaMemcpyDefault to infer the memory space of the source and
+the destination pointers. The memory areas may not overlap.
 */
 inline void cuda_memcpy_async(
   cudaStream_t stream, void* dst, const void* src, size_t count
@@ -142,7 +142,7 @@ inline void cuda_memcpy_async(
 @param count size in bytes to set
 
 The method calls @c cudaMemsetAsync with the given @c stream
-to fill the first @c count bytes of the memory area pointed to by @c devPtr 
+to fill the first @c count bytes of the memory area pointed to by @c devPtr
 with the constant byte value @c value.
 */
 inline void cuda_memset_async(
@@ -373,10 +373,10 @@ struct cudaSharedMemory <double>
 
 /**
 @private
-*/ 
+*/
 template <typename T>
 class cudaScopedDeviceMemory {
-  
+
   public:
 
     cudaScopedDeviceMemory() = default;
@@ -384,13 +384,13 @@ class cudaScopedDeviceMemory {
     cudaScopedDeviceMemory(size_t N) : _N {N} {
       if(N) {
         TF_CHECK_CUDA(
-          cudaMalloc(&_data, N*sizeof(T)), 
+          cudaMalloc(&_data, N*sizeof(T)),
           "failed to allocate device memory (", N*sizeof(T), " bytes)"
         );
       }
     }
-    
-    cudaScopedDeviceMemory(cudaScopedDeviceMemory&& rhs) : 
+
+    cudaScopedDeviceMemory(cudaScopedDeviceMemory&& rhs) :
       _data{rhs._data}, _N {rhs._N} {
       rhs._data = nullptr;
       rhs._N    = 0;
@@ -417,7 +417,7 @@ class cudaScopedDeviceMemory {
 
     T* data() { return _data; }
     const T* data() const { return _data; }
-    
+
     cudaScopedDeviceMemory(const cudaScopedDeviceMemory&) = delete;
     cudaScopedDeviceMemory& operator = (const cudaScopedDeviceMemory&) = delete;
 

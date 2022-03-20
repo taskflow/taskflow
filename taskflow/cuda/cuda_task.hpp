@@ -2,7 +2,7 @@
 
 #include "cuda_graph.hpp"
 
-/** 
+/**
 @file cuda_task.hpp
 @brief cudaTask include file
 */
@@ -20,7 +20,7 @@ namespace tf {
 */
 enum class cudaTaskType : int {
   /** @brief empty task type */
-  EMPTY = 0, 
+  EMPTY = 0,
   /** @brief host task type */
   HOST,
   /** @brief memory set task type */
@@ -54,7 +54,7 @@ constexpr const char* to_string(cudaTaskType type) {
 }
 
 // ----------------------------------------------------------------------------
-// cudaTask 
+// cudaTask
 // ----------------------------------------------------------------------------
 
 /**
@@ -71,7 +71,7 @@ class cudaTask {
   friend std::ostream& operator << (std::ostream&, const cudaTask&);
 
   public:
-    
+
     /**
     @brief constructs an empty cudaTask
     */
@@ -98,7 +98,7 @@ class cudaTask {
     */
     template <typename... Ts>
     cudaTask& precede(Ts&&... tasks);
-    
+
     /**
     @brief adds precedence links from other tasks to this
 
@@ -110,7 +110,7 @@ class cudaTask {
     */
     template <typename... Ts>
     cudaTask& succeed(Ts&&... tasks);
-    
+
     /**
     @brief assigns a name to the task
 
@@ -119,7 +119,7 @@ class cudaTask {
     @return @c *this
     */
     cudaTask& name(const std::string& name);
-    
+
     /**
     @brief queries the name of the task
     */
@@ -129,7 +129,7 @@ class cudaTask {
     @brief queries the number of successors
     */
     size_t num_successors() const;
-    
+
     /**
     @brief queries the number of dependents
     */
@@ -147,19 +147,19 @@ class cudaTask {
 
     /**
     @brief dumps the task through an output stream
-    
+
     @tparam T output stream type with insertion operator (<<) defined
     @param ostream an output stream target
     */
     template <typename T>
     void dump(T& ostream) const;
-    
+
     /**
     @brief applies an visitor callable to each successor of the task
     */
     template <typename V>
     void for_each_successor(V&& visitor) const;
-    
+
     /**
     @brief applies an visitor callable to each dependents of the task
     */
@@ -167,7 +167,7 @@ class cudaTask {
     void for_each_dependent(V&& visitor) const;
 
   private:
-    
+
     cudaTask(cudaNode*);
 
     cudaNode* _node {nullptr};

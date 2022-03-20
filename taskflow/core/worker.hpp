@@ -4,7 +4,7 @@
 #include "tsq.hpp"
 #include "notifier.hpp"
 
-/** 
+/**
 @file worker.hpp
 @brief worker include file
 */
@@ -76,11 +76,11 @@ when a worker runs a task, and the view object is only accessible
 from an observer derived from tf::ObserverInterface.
 */
 class WorkerView {
-  
+
   friend class Executor;
-  
+
   public:
-    
+
     /**
     @brief queries the worker id associated with the executor
 
@@ -89,9 +89,9 @@ class WorkerView {
     time of the executor.
     */
     size_t id() const;
-    
+
     /**
-    @brief queries the size of the queue (i.e., number of pending tasks to 
+    @brief queries the size of the queue (i.e., number of pending tasks to
            run) associated with the worker
     */
     size_t queue_size() const;

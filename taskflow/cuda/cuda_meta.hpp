@@ -70,7 +70,7 @@ __device__ void cuda_strided_iterate(F f, unsigned tid, unsigned count) {
       if(j < count) f(i, j);
     });
   }
-  
+
   // TODO: seems dummy when vt0 == vt
   cuda_iterate<vt0, vt>([=](auto i) {
     auto j = nt * i + tid;
@@ -84,7 +84,7 @@ __device__ void cuda_thread_iterate(F f, unsigned tid) {
 }
 
 // ----------------------------------------------------------------------------
-// cudaRange 
+// cudaRange
 // ----------------------------------------------------------------------------
 
 // cudaRange
@@ -116,13 +116,13 @@ struct cudaArray {
   cudaArray& operator=(const cudaArray&) = default;
 
   // Fill the array with x.
-  __device__ cudaArray(T x) { 
-    cuda_iterate<size>([&](unsigned i) { data[i] = x; });  
+  __device__ cudaArray(T x) {
+    cuda_iterate<size>([&](unsigned i) { data[i] = x; });
   }
 };
 
 template<typename T>
-struct cudaArray<T, 0> { 
+struct cudaArray<T, 0> {
   __device__ T operator[](unsigned) const { return T(); }
   __device__ T& operator[](unsigned) { return *(T*)nullptr; }
 };
@@ -134,7 +134,7 @@ struct cudaKVArray {
 };
 
 // ----------------------------------------------------------------------------
-// thread reg <-> global mem 
+// thread reg <-> global mem
 // ----------------------------------------------------------------------------
 
 template<unsigned nt, unsigned vt, unsigned vt0 = vt, typename I>
@@ -194,7 +194,7 @@ __device__ auto cuda_shared_to_reg_thread(
     "reg_to_shared_thread must have at least nt * vt storage");
 
   cudaArray<T, vt> x;
-  cuda_thread_iterate<vt>([&](auto i, auto j) { 
+  cuda_thread_iterate<vt>([&](auto i, auto j) {
     x[i] = shared[j];
   }, tid);
 
@@ -234,7 +234,7 @@ __device__ auto cuda_shared_to_reg_strided(
 }
 
 template<
-  unsigned nt, unsigned vt, unsigned vt0 = vt, typename T, typename it_t, 
+  unsigned nt, unsigned vt, unsigned vt0 = vt, typename T, typename it_t,
   unsigned shared_size
 >
 __device__ auto cuda_reg_to_mem_thread(
@@ -247,7 +247,7 @@ __device__ auto cuda_reg_to_mem_thread(
 }
 
 template<
-  unsigned nt, unsigned vt, unsigned vt0 = vt, typename T, typename it_t, 
+  unsigned nt, unsigned vt, unsigned vt0 = vt, typename T, typename it_t,
   unsigned shared_size
 >
 __device__ auto cuda_mem_to_reg_thread(
@@ -318,7 +318,7 @@ struct cudaLoadStoreIterator : std::iterator_traits<const T*> {
     I index;
 
     __device__ assign_t& operator=(T rhs) {
-      static_assert(!std::is_same<S, cudaEmpty>::value, 
+      static_assert(!std::is_same<S, cudaEmpty>::value,
         "load_iterator is being stored to.");
       store(rhs, index);
       return *this;
@@ -332,7 +332,7 @@ struct cudaLoadStoreIterator : std::iterator_traits<const T*> {
 
   __device__ assign_t operator[](I index) const {
     return assign_t { load, store, base + index };
-  } 
+  }
   __device__ assign_t operator*() const {
     return assign_t { load, store, base };
   }
@@ -395,8 +395,8 @@ auto cuda_make_store_iterator(S store, I base = 0) {
 
 template<typename T>
 __device__ void cuda_swap(T& a, T& b) {
-  auto c = a; 
-  a = b; 
+  auto c = a;
+  a = b;
   b = c;
 }
 

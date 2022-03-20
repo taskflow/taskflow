@@ -12,24 +12,24 @@ namespace tf {
 
 // class: syclGraph
 class syclGraph : public CustomGraphBase {
-  
+
   friend class syclNode;
   friend class syclTask;
   friend class syclFlow;
   friend class Taskflow;
   friend class Executor;
-  
+
   constexpr static int OFFLOADED = 0x01;
   constexpr static int TOPOLOGY_CHANGED = 0x02;
 
   public:
-    
+
     syclGraph() = default;
     ~syclGraph() = default;
 
     syclGraph(const syclGraph&) = delete;
     syclGraph(syclGraph&&);
-    
+
     syclGraph& operator = (const syclGraph&) = delete;
     syclGraph& operator = (syclGraph&&);
 
@@ -54,7 +54,7 @@ class syclGraph : public CustomGraphBase {
 
 // class: syclNode
 class syclNode {
-  
+
   friend class syclGraph;
   friend class syclTask;
   friend class syclFlow;
@@ -64,47 +64,47 @@ class syclNode {
   struct CommandGroupHandler {
 
     std::function<void(sycl::handler&)> work;
-    
+
     template <typename F>
     CommandGroupHandler(F&& func) : work {std::forward<F>(func)} {}
   };
 
   struct DependentSubmit {
     std::function<sycl::event(sycl::queue&, std::vector<sycl::event>)> work;
-    
+
     template <typename F>
     DependentSubmit(F&& func) : work {std::forward<F>(func)} {}
   };
-  
+
   using handle_t = std::variant<
-    CommandGroupHandler, 
+    CommandGroupHandler,
     DependentSubmit
   >;
 
   public:
-  
+
   // variant index
-  constexpr static auto COMMAND_GROUP_HANDLER = 
+  constexpr static auto COMMAND_GROUP_HANDLER =
     get_index_v<CommandGroupHandler, handle_t>;
 
-  constexpr static auto DEPENDENT_SUBMIT = 
+  constexpr static auto DEPENDENT_SUBMIT =
     get_index_v<DependentSubmit, handle_t>;
-  
+
     syclNode() = delete;
-    
+
     template <typename... ArgsT>
     syclNode(syclGraph&, ArgsT&&...);
 
   private:
 
     syclGraph& _graph;
-    
+
     std::string _name;
-    
+
     int _level;
 
     sycl::event _event;
-    
+
     handle_t _handle;
 
     SmallVector<syclNode*> _successors;
@@ -119,7 +119,7 @@ class syclNode {
 
 // Constructor
 template <typename... ArgsT>
-syclNode::syclNode(syclGraph& g, ArgsT&&... args) : 
+syclNode::syclNode(syclGraph& g, ArgsT&&... args) :
   _graph  {g},
   _handle {std::forward<ArgsT>(args)...} {
 }
@@ -150,7 +150,7 @@ inline syclGraph& syclGraph::operator = (syclGraph&& rhs) {
 
   assert(rhs._nodes.empty());
 
-  return *this; 
+  return *this;
 }
 
 // Function: empty
@@ -185,7 +185,7 @@ syclNode* syclGraph::emplace_back(ArgsT&&... args) {
 inline void syclGraph::dump(
   std::ostream& os, const void* root, const std::string& root_name
 ) const {
-  
+
   // recursive dump with stack
   std::stack<std::tuple<const syclGraph*, const syclNode*, int>> stack;
   stack.push(std::make_tuple(this, nullptr, 1));
@@ -200,7 +200,7 @@ inline void syclGraph::dump(
     for(int i=0; i<pl-l+1; i++) {
       os << "}\n";
     }
-  
+
     if(parent == nullptr) {
       if(root) {
         os << "subgraph cluster_p" << root << " {\nlabel=\"syclFlow: ";
@@ -220,7 +220,7 @@ inline void syclGraph::dump(
     }
 
     for(auto& v : graph->_nodes) {
-      
+
       os << 'p' << v.get() << "[label=\"";
       if(v->_name.empty()) {
         os << 'p' << v.get() << "\"";
@@ -233,7 +233,7 @@ inline void syclGraph::dump(
       for(const auto s : v->_successors) {
         os << 'p' << v.get() << " -> " << 'p' << s << ";\n";
       }
-      
+
       if(v->_successors.size() == 0) {
         if(parent == nullptr) {
           if(root) {
@@ -245,7 +245,7 @@ inline void syclGraph::dump(
         }
       }
     }
-    
+
     // set the previous level
     pl = l;
   }

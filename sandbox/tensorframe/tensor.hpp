@@ -12,7 +12,7 @@ enum StorageLevel {
   MEMORY_AND_DISK = 1
 };
 
-/** 
+/**
 
 @class Tensor
 
@@ -21,13 +21,13 @@ enum StorageLevel {
 */
 template <typename T>
 class Tensor {
-  
+
   template <typename U>
   friend class TensorNode;
 
   template <typename U>
   friend class TensorExpr;
-  
+
   template <typename U>
   friend class TensorFrame;
 
@@ -55,7 +55,7 @@ class Tensor {
     StorageLevel storage_level() const;
 
     void dump(std::ostream& ostream) const;
-    
+
     template <typename... Is>
     size_t flat_chunk_index(Is... indices) const;
 
@@ -63,7 +63,7 @@ class Tensor {
     size_t flat_index(Is... indices) const;
 
   private:
-    
+
     StorageLevel _storage_level;
 
     std::vector<size_t> _shape;
@@ -72,12 +72,12 @@ class Tensor {
     std::vector<Chunk> _chunks;
 
     void _make_chunks(size_t = 65536*1024);  // 65MB per chunk
-    
+
     size_t _flat_chunk_index(size_t&, size_t) const;
 
     template <typename... Is>
     size_t _flat_chunk_index(size_t&, size_t, Is...) const;
-    
+
     size_t _flat_index(size_t&, size_t) const;
 
     template <typename... Is>
@@ -85,7 +85,7 @@ class Tensor {
 };
 
 template <typename T>
-Tensor<T>::Tensor(std::vector<size_t> shape) : 
+Tensor<T>::Tensor(std::vector<size_t> shape) :
   _shape       {std::move(shape)},
   _chunk_shape (_shape.size()),
   _chunk_grid  (_shape.size()) {
@@ -217,7 +217,7 @@ void Tensor<T>::dump(std::ostream& os) const {
 }
 
 template <typename T>
-void Tensor<T>::_make_chunks(size_t M) {  
+void Tensor<T>::_make_chunks(size_t M) {
 
   size_t P = 1;
   size_t N = 1;

@@ -42,7 +42,7 @@ template <typename T, std::enable_if_t<
   std::is_integral_v<std::decay_t<T>>, void>* = nullptr
 >
 constexpr bool is_pow2(const T& x) {
-  return x && (!(x&(x-1))); 
+  return x && (!(x&(x-1)));
 }
 
 //// finds the ceil of x divided by b
@@ -77,7 +77,7 @@ RandItr median_of_three(RandItr l, RandItr m, RandItr r, C cmp) {
 }
 
 /**
-@brief finds the pseudo median of a range of items using spreaded 
+@brief finds the pseudo median of a range of items using spreaded
        nine numbers
  */
 template <typename RandItr, typename C>

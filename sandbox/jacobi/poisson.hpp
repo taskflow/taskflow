@@ -85,10 +85,10 @@ void omp_task(int nx, int ny, double dx, double dy, double *f,
      int itold, int itnew, double *u, double *unew, int block_size);
 void omp_task_dep(int nx, int ny, double dx, double dy, double *f,
      int itold, int itnew, double *u, double *unew, int block_size);
-////////////////////////////////////////////////////////////////////////// 
+//////////////////////////////////////////////////////////////////////////
 void taskflow(int nx, int ny, double dx, double dy, double *f,
      int itold, int itnew, double *u, double *unew, int block_size, unsigned num_threads);
-////////////////////////////////////////////////////////////////////////// 
+//////////////////////////////////////////////////////////////////////////
 
 
 static inline void copy_block(int nx, int ny, int block_x, int block_y, double *u_, double *unew_, int block_size) {
@@ -148,7 +148,7 @@ inline void sweep_seq(int nx, int ny, double dx, double dy, double *f_,
       for (j = 0; j < ny; j++) {
         if (i == 0 || j == 0 || i == nx - 1 || j == ny - 1) {
           (*unew)[i][j] = (*f)[i][j];
-        } 
+        }
         else {
           (*unew)[i][j] = 0.25 * ((*u)[i-1][j] + (*u)[i][j+1]
               + (*u)[i][j-1] + (*u)[i+1][j]

@@ -67,7 +67,7 @@ class Notifier {
   friend class Executor;
 
   public:
-  
+
   struct Waiter {
     std::atomic<Waiter*> next;
     std::mutex mu;
@@ -199,7 +199,7 @@ class Notifier {
       }
     }
   }
-  
+
   // notify n workers
   void notify_n(size_t n) {
     if(n >= _waiters.size()) {

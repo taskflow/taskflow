@@ -14,7 +14,7 @@
 #define TF_OS_CNK 0
 #define TF_OS_HURD 0
 #define TF_OS_SOLARIS 0
-#define TF_OS_UNIX 0 
+#define TF_OS_UNIX 0
 
 #ifdef _WIN32
 #undef TF_OS_WINDOWS
@@ -90,9 +90,9 @@
 #endif
 
 
-//----------------------------------------------------------------------------- 
+//-----------------------------------------------------------------------------
 // Cache line alignment
-//----------------------------------------------------------------------------- 
+//-----------------------------------------------------------------------------
 #if defined(__i386__) || defined(__x86_64__)
   #define TF_CACHELINE_SIZE 64
 #elif defined(__powerpc64__)
@@ -102,8 +102,8 @@
   #define TF_CACHELINE_SIZE 128
 #elif defined(__arm__)
   // Cache line sizes for ARM: These values are not strictly correct since
-  // cache line sizes depend on implementations, not architectures.  
-  // There are even implementations with cache line sizes configurable 
+  // cache line sizes depend on implementations, not architectures.
+  // There are even implementations with cache line sizes configurable
   // at boot time.
   #if defined(__ARM_ARCH_5T__)
     #define TF_CACHELINE_SIZE 32
@@ -118,9 +118,9 @@
   #define TF_CACHELINE_SIZE 64
 #endif
 
-//----------------------------------------------------------------------------- 
+//-----------------------------------------------------------------------------
 // pause
-//----------------------------------------------------------------------------- 
+//-----------------------------------------------------------------------------
 //#if __has_include (<immintrin.h>)
 //  #define TF_HAS_MM_PAUSE 1
 //  #include <immintrin.h>
@@ -129,7 +129,7 @@
 
 
 
-    
+
 
 namespace tf {
 
@@ -138,7 +138,7 @@ inline std::string get_env(const std::string& str) {
 #ifdef _MSC_VER
   char *ptr = nullptr;
   size_t len = 0;
-  
+
   if(_dupenv_s(&ptr, &len, str.c_str()) == 0 && ptr != nullptr) {
     std::string res(ptr, len);
     std::free(ptr);
@@ -157,7 +157,7 @@ inline bool has_env(const std::string& str) {
 #ifdef _MSC_VER
   char *ptr = nullptr;
   size_t len = 0;
-  
+
   if(_dupenv_s(&ptr, &len, str.c_str()) == 0 && ptr != nullptr) {
     std::string res(ptr, len);
     std::free(ptr);
