@@ -6,27 +6,27 @@
 
 // --------------------------------------------------------
 // Testcase: JoinedSubflow
-// -------------------------------------------------------- 
+// --------------------------------------------------------
 
 void joined_subflow(unsigned W) {
 
   using namespace std::literals::chrono_literals;
-  
+
   SUBCASE("Trivial") {
     tf::Executor executor(W);
     tf::Taskflow tf;
-    
+
     // empty flow with future
     tf::Task subflow3, subflow3_;
     //std::future<int> fu3, fu3_;
     std::atomic<int> fu3v{0}, fu3v_{0};
-    
+
     // empty flow
     auto subflow1 = tf.emplace([&] (tf::Subflow& fb) {
       fu3v++;
       fb.join();
     }).name("subflow1");
-    
+
     // nested empty flow
     auto subflow2 = tf.emplace([&] (tf::Subflow& fb) {
       fu3v++;
@@ -38,14 +38,14 @@ void joined_subflow(unsigned W) {
         }).name("subflow2_1_1");
       }).name("subflow2_1");
     }).name("subflow2");
-    
+
     subflow3 = tf.emplace([&] (tf::Subflow& fb) {
 
       REQUIRE(fu3v == 4);
 
       fu3v++;
       fu3v_++;
-      
+
       subflow3_ = fb.emplace([&] (tf::Subflow& fb) {
         REQUIRE(fu3v_ == 3);
         fu3v++;
@@ -56,16 +56,16 @@ void joined_subflow(unsigned W) {
       subflow3_.name("subflow3_");
 
       // hereafter we use 100us to avoid dangling reference ...
-      auto s1 = fb.emplace([&] () { 
+      auto s1 = fb.emplace([&] () {
         fu3v_++;
         fu3v++;
       }).name("s1");
-      
+
       auto s2 = fb.emplace([&] () {
         fu3v_++;
         fu3v++;
       }).name("s2");
-      
+
       auto s3 = fb.emplace([&] () {
         fu3v++;
         REQUIRE(fu3v_ == 4);
@@ -93,7 +93,7 @@ void joined_subflow(unsigned W) {
     executor.run(tf).get();
     // End of for loop
   }
-  
+
   // Mixed intra- and inter- operations
   SUBCASE("Complex") {
     tf::Executor executor(W);
@@ -153,7 +153,7 @@ void joined_subflow(unsigned W) {
     executor.run(tf).get();
     REQUIRE(count == 32);
     REQUIRE(sum == 10);
-    
+
   }
 }
 
@@ -194,23 +194,23 @@ TEST_CASE("JoinedSubflow.8threads" * doctest::timeout(300)){
 // --------------------------------------------------------
 
 void detached_subflow(unsigned W) {
-  
+
   using namespace std::literals::chrono_literals;
 
   SUBCASE("Trivial") {
     tf::Executor executor(W);
     tf::Taskflow tf;
-    
+
     // empty flow with future
     tf::Task subflow3, subflow3_;
     std::atomic<int> fu3v{0}, fu3v_{0};
-    
+
     // empty flow
     auto subflow1 = tf.emplace([&] (tf::Subflow& fb) {
       fu3v++;
       fb.detach();
     }).name("subflow1");
-    
+
     // nested empty flow
     auto subflow2 = tf.emplace([&] (tf::Subflow& fb) {
       fu3v++;
@@ -224,14 +224,14 @@ void detached_subflow(unsigned W) {
       }).name("subflow2_1");
       fb.detach();
     }).name("subflow2");
-    
+
     subflow3 = tf.emplace([&] (tf::Subflow& fb) {
 
       REQUIRE((fu3v >= 2 && fu3v <= 4));
 
       fu3v++;
       fu3v_++;
-      
+
       subflow3_ = fb.emplace([&] (tf::Subflow& fb) {
         REQUIRE(fu3v_ == 3);
         fu3v++;
@@ -241,16 +241,16 @@ void detached_subflow(unsigned W) {
       subflow3_.name("subflow3_");
 
       // hereafter we use 100us to avoid dangling reference ...
-      auto s1 = fb.emplace([&] () { 
+      auto s1 = fb.emplace([&] () {
         fu3v_++;
         fu3v++;
       }).name("s1");
-      
+
       auto s2 = fb.emplace([&] () {
         fu3v_++;
         fu3v++;
       }).name("s2");
-      
+
       auto s3 = fb.emplace([&] () {
         fu3v++;
         REQUIRE(fu3v_ == 4);
@@ -282,7 +282,7 @@ void detached_subflow(unsigned W) {
 
     REQUIRE(fu3v  == 10);
     REQUIRE(fu3v_ == 4);
-    
+
   }
 }
 
@@ -321,14 +321,14 @@ TEST_CASE("DetachedSubflow.8threads" * doctest::timeout(300)) {
 
 // --------------------------------------------------------
 // Testcase: TreeSubflow
-// -------------------------------------------------------- 
+// --------------------------------------------------------
 void detach_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
   if(depth < max_depth) {
     counter.fetch_add(1, std::memory_order_relaxed);
-    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
+    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){
       detach_spawn(max_depth, counter, depth, subflow); }
     );
-    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
+    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){
       detach_spawn(max_depth, counter, depth, subflow); }
     );
     subflow.detach();
@@ -338,10 +338,10 @@ void detach_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf:
 void join_spawn(const int max_depth, std::atomic<int>& counter, int depth, tf::Subflow& subflow)  {
   if(depth < max_depth) {
     counter.fetch_add(1, std::memory_order_relaxed);
-    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
+    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){
       join_spawn(max_depth, counter, depth, subflow); }
     );
-    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
+    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){
       join_spawn(max_depth, counter, depth, subflow); }
     );
   }
@@ -353,10 +353,10 @@ void mix_spawn(
 
   if(depth < max_depth) {
     auto ret = counter.fetch_add(1, std::memory_order_relaxed);
-    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
+    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){
       mix_spawn(max_depth, counter, depth, subflow); }
     ).name(std::string("left") + std::to_string(ret%2));
-    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){ 
+    subflow.emplace([&, max_depth, depth=depth+1](tf::Subflow& subflow){
       mix_spawn(max_depth, counter, depth, subflow); }
     ).name(std::string("right") + std::to_string(ret%2));
     if(ret % 2) {
@@ -372,8 +372,8 @@ TEST_CASE("TreeSubflow" * doctest::timeout(300)) {
     for(int W=1; W<=4; W++) {
       std::atomic<int> counter {0};
       tf::Taskflow tf;
-      tf.emplace([&](tf::Subflow& subflow){ 
-        detach_spawn(max_depth, counter, 0, subflow); 
+      tf.emplace([&](tf::Subflow& subflow){
+        detach_spawn(max_depth, counter, 0, subflow);
       });
 
       tf::Executor executor(W);
@@ -388,8 +388,8 @@ TEST_CASE("TreeSubflow" * doctest::timeout(300)) {
     for(int W=1; W<=4; W++) {
       std::atomic<int> counter {0};
       tf::Taskflow tf;
-      tf.emplace([&](tf::Subflow& subflow){ 
-        join_spawn(max_depth, counter, 0, subflow); 
+      tf.emplace([&](tf::Subflow& subflow){
+        join_spawn(max_depth, counter, 0, subflow);
       });
       tf::Executor executor(W);
       executor.run(tf).get();
@@ -402,8 +402,8 @@ TEST_CASE("TreeSubflow" * doctest::timeout(300)) {
     for(int W=1; W<=4; W++) {
       std::atomic<int> counter {0};
       tf::Taskflow tf;
-      tf.emplace([&](tf::Subflow& subflow){ 
-        mix_spawn(max_depth, counter, 0, subflow); 
+      tf.emplace([&](tf::Subflow& subflow){
+        mix_spawn(max_depth, counter, 0, subflow);
       }).name("top task");
 
       tf::Executor executor(W);
@@ -435,8 +435,8 @@ void fibonacci(size_t W) {
   tf::Executor executor(W);
   tf::Taskflow taskflow;
 
-  taskflow.emplace([&res, N] (tf::Subflow& sbf) { 
-    res = fibonacci_spawn(N, sbf);  
+  taskflow.emplace([&res, N] (tf::Subflow& sbf) {
+    res = fibonacci_spawn(N, sbf);
   });
 
   executor.run(taskflow).wait();

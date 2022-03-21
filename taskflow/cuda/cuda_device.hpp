@@ -7,7 +7,7 @@
 @brief CUDA device utilities include file
 */
 
-namespace tf { 
+namespace tf {
 
 /**
 @brief queries the number of available devices
@@ -33,9 +33,9 @@ inline int cuda_get_device() {
 inline void cuda_set_device(int id) {
   TF_CHECK_CUDA(cudaSetDevice(id), "failed to switch to device ", id);
 }
-    
-/**    
-@brief obtains the device property 
+
+/**
+@brief obtains the device property
 */
 inline void cuda_get_device_property(int i, cudaDeviceProp& p) {
   TF_CHECK_CUDA(
@@ -43,8 +43,8 @@ inline void cuda_get_device_property(int i, cudaDeviceProp& p) {
   );
 }
 
-/**    
-@brief obtains the device property 
+/**
+@brief obtains the device property
 */
 inline cudaDeviceProp cuda_get_device_property(int i) {
   cudaDeviceProp p;
@@ -245,12 +245,12 @@ inline bool cuda_get_device_unified_addressing(int d) {
 // ----------------------------------------------------------------------------
 
 /**
-@brief queries the latest CUDA version (1000 * major + 10 * minor) supported by the driver 
+@brief queries the latest CUDA version (1000 * major + 10 * minor) supported by the driver
 */
 inline int cuda_get_driver_version() {
   int num = 0;
   TF_CHECK_CUDA(
-    cudaDriverGetVersion(&num), 
+    cudaDriverGetVersion(&num),
     "failed to query the latest cuda version supported by the driver"
   );
   return num;
@@ -276,7 +276,7 @@ inline int cuda_get_runtime_version() {
 @brief class to create an RAII-styled context switch
 
 Sample usage:
-    
+
 @code{.cpp}
 {
   tf::cudaScopedDevice device(1);  // switch to the device context 1
@@ -293,7 +293,7 @@ Sample usage:
 class cudaScopedDevice {
 
   public:
-    
+
     /**
     @brief constructs a RAII-styled device switcher
 
@@ -307,7 +307,7 @@ class cudaScopedDevice {
     ~cudaScopedDevice();
 
   private:
-    
+
     cudaScopedDevice() = delete;
     cudaScopedDevice(const cudaScopedDevice&) = delete;
     cudaScopedDevice(cudaScopedDevice&&) = delete;
@@ -316,7 +316,7 @@ class cudaScopedDevice {
 };
 
 // Constructor
-inline cudaScopedDevice::cudaScopedDevice(int dev) { 
+inline cudaScopedDevice::cudaScopedDevice(int dev) {
   TF_CHECK_CUDA(cudaGetDevice(&_p), "failed to get current device scope");
   if(_p == dev) {
     _p = -1;
@@ -327,7 +327,7 @@ inline cudaScopedDevice::cudaScopedDevice(int dev) {
 }
 
 // Destructor
-inline cudaScopedDevice::~cudaScopedDevice() { 
+inline cudaScopedDevice::~cudaScopedDevice() {
   if(_p != -1) {
     cudaSetDevice(_p);
     //TF_CHECK_CUDA(cudaSetDevice(_p), "failed to scope back to device ", _p);

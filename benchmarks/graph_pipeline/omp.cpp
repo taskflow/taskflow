@@ -72,7 +72,7 @@ void graph_pipeline_omp_2_pipes(LevelGraph& graph) {
             pipe_helper(graph, i);
           }
         }
-         
+
         // 2nd pipe
         #pragma omp task firstprivate(i)
         {
@@ -110,7 +110,7 @@ void graph_pipeline_omp_3_pipes(LevelGraph& graph) {
       size_t total_nodes = graph.level() * graph.length();
 
       for (size_t i = 0; i < total_nodes+2; ++i) {
-        
+
         // 1st pipe
         #pragma omp task firstprivate(i)
         {
@@ -123,7 +123,7 @@ void graph_pipeline_omp_3_pipes(LevelGraph& graph) {
             pipe_helper(graph, i);
           }
         }
-         
+
         // 2nd pipe
         #pragma omp task firstprivate(i)
         {
@@ -181,24 +181,24 @@ void graph_pipeline_omp_4_pipes(LevelGraph& graph) {
         {
           if (i < total_nodes) {
             pipe_helper(graph, i);
-          }  
+          }
         }
 
-        // 2nd pipe 
+        // 2nd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 1 && i < total_nodes+1) {
             pipe_helper(graph, i-1);
           }
         }
-        // 3rd pipe 
+        // 3rd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 2 && i < total_nodes+2) {
             pipe_helper(graph, i-2);
           }
         }
-        // 4th pipe 
+        // 4th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 3 && i < total_nodes+3) {
@@ -233,7 +233,7 @@ void graph_pipeline_omp_5_pipes(LevelGraph& graph) {
     #pragma omp single
     {
       size_t total_nodes = graph.level() * graph.length();
-      
+
       for (size_t i = 0; i < total_nodes+4; ++i){
         // 1st pipe
         #pragma omp task firstprivate(i)
@@ -243,28 +243,28 @@ void graph_pipeline_omp_5_pipes(LevelGraph& graph) {
           }
         }
 
-        // 2nd pipe 
+        // 2nd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 1 && i < total_nodes+1) {
             pipe_helper(graph, i-1);
           }
         }
-        // 3rd pipe 
+        // 3rd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 2 && i < total_nodes+2) {
             pipe_helper(graph, i-2);
           }
         }
-        // 4th pipe 
+        // 4th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 3 && i < total_nodes+3) {
             pipe_helper(graph, i-3);
           }
         }
-        // 5th pipe 
+        // 5th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 4 && i < total_nodes+4) {
@@ -284,7 +284,7 @@ void graph_pipeline_omp_6_pipes(LevelGraph& graph) {
     #pragma omp single
     {
       size_t total_nodes = graph.level() * graph.length();
-      
+
       for (size_t i = 0; i < total_nodes+5; ++i){
         // 1st pipe
         #pragma omp task firstprivate(i)
@@ -294,35 +294,35 @@ void graph_pipeline_omp_6_pipes(LevelGraph& graph) {
           }
         }
 
-        // 2nd pipe 
+        // 2nd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 1 && i < total_nodes+1) {
             pipe_helper(graph, i-1);
           }
         }
-        // 3rd pipe 
+        // 3rd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 2 && i < total_nodes+2) {
             pipe_helper(graph, i-2);
           }
         }
-        // 4th pipe 
+        // 4th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 3 && i < total_nodes+3) {
             pipe_helper(graph, i-3);
           }
         }
-        // 5th pipe 
+        // 5th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 4 && i < total_nodes+4) {
             pipe_helper(graph, i-4);
           }
         }
-        // 6th pipe 
+        // 6th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 5 && i < total_nodes+5) {
@@ -342,7 +342,7 @@ void graph_pipeline_omp_7_pipes(LevelGraph& graph) {
     #pragma omp single
     {
       size_t total_nodes = graph.level() * graph.length();
-      
+
       for (size_t i = 0; i < total_nodes+6; ++i){
         // 1st pipe
         #pragma omp task firstprivate(i)
@@ -352,42 +352,42 @@ void graph_pipeline_omp_7_pipes(LevelGraph& graph) {
           }
         }
 
-        // 2nd pipe 
+        // 2nd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 1 && i < total_nodes+1) {
             pipe_helper(graph, i-1);
           }
         }
-        // 3rd pipe 
+        // 3rd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 2 && i < total_nodes+2) {
             pipe_helper(graph, i-2);
           }
         }
-        // 4th pipe 
+        // 4th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 3 && i < total_nodes+3) {
             pipe_helper(graph, i-3);
           }
         }
-        // 5th pipe 
+        // 5th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 4 && i < total_nodes+4) {
             pipe_helper(graph, i-4);
           }
         }
-        // 6th pipe 
+        // 6th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 5 && i < total_nodes+5) {
             pipe_helper(graph, i-5);
           }
         }
-        // 7th pipe 
+        // 7th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 6 && i < total_nodes+6) {
@@ -407,7 +407,7 @@ void graph_pipeline_omp_8_pipes(LevelGraph& graph) {
     #pragma omp single
     {
       size_t total_nodes = graph.level() * graph.length();
-      
+
       for (size_t i = 0; i < total_nodes+7; ++i){
         // 1st pipe
         #pragma omp task firstprivate(i)
@@ -417,49 +417,49 @@ void graph_pipeline_omp_8_pipes(LevelGraph& graph) {
           }
         }
 
-        // 2nd pipe 
+        // 2nd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 1 && i < total_nodes+1) {
             pipe_helper(graph, i-1);
           }
         }
-        // 3rd pipe 
+        // 3rd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 2 && i < total_nodes+2) {
             pipe_helper(graph, i-2);
           }
         }
-        // 4th pipe 
+        // 4th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 3 && i < total_nodes+3) {
             pipe_helper(graph, i-3);
           }
         }
-        // 5th pipe 
+        // 5th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 4 && i < total_nodes+4) {
             pipe_helper(graph, i-4);
           }
         }
-        // 6th pipe 
+        // 6th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 5 && i < total_nodes+5) {
             pipe_helper(graph, i-5);
           }
         }
-        // 7th pipe 
+        // 7th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 6 && i < total_nodes+6) {
             pipe_helper(graph, i-6);
           }
         }
-        // 8th pipe 
+        // 8th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 7 && i < total_nodes+7) {
@@ -479,7 +479,7 @@ void graph_pipeline_omp_9_pipes(LevelGraph& graph) {
     #pragma omp single
     {
       size_t total_nodes = graph.level() * graph.length();
-      
+
       for (size_t i = 0; i < total_nodes+8; ++i){
         // 1st pipe
         #pragma omp task firstprivate(i)
@@ -489,56 +489,56 @@ void graph_pipeline_omp_9_pipes(LevelGraph& graph) {
           }
         }
 
-        // 2nd pipe 
+        // 2nd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 1 && i < total_nodes+1) {
             pipe_helper(graph, i-1);
           }
         }
-        // 3rd pipe 
+        // 3rd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 2 && i < total_nodes+2) {
             pipe_helper(graph, i-2);
           }
         }
-        // 4th pipe 
+        // 4th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 3 && i < total_nodes+3) {
             pipe_helper(graph, i-3);
           }
         }
-        // 5th pipe 
+        // 5th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 4 && i < total_nodes+4) {
             pipe_helper(graph, i-4);
           }
         }
-        // 6th pipe 
+        // 6th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 5 && i < total_nodes+5) {
             pipe_helper(graph, i-5);
           }
         }
-        // 7th pipe 
+        // 7th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 6 && i < total_nodes+6) {
             pipe_helper(graph, i-6);
           }
         }
-        // 8th pipe 
+        // 8th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 7 && i < total_nodes+7) {
             pipe_helper(graph, i-7);
           }
         }
-        // 9th pipe 
+        // 9th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 8 && i < total_nodes+8) {
@@ -558,7 +558,7 @@ void graph_pipeline_omp_10_pipes(LevelGraph& graph) {
     #pragma omp single
     {
       size_t total_nodes = graph.level() * graph.length();
-      
+
       for (size_t i = 0; i < total_nodes+9; ++i){
         // 1st pipe
         #pragma omp task firstprivate(i)
@@ -568,63 +568,63 @@ void graph_pipeline_omp_10_pipes(LevelGraph& graph) {
           }
         }
 
-        // 2nd pipe 
+        // 2nd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 1 && i < total_nodes+1) {
             pipe_helper(graph, i-1);
           }
         }
-        // 3rd pipe 
+        // 3rd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 2 && i < total_nodes+2) {
             pipe_helper(graph, i-2);
           }
         }
-        // 4th pipe 
+        // 4th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 3 && i < total_nodes+3) {
             pipe_helper(graph, i-3);
           }
         }
-        // 5th pipe 
+        // 5th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 4 && i < total_nodes+4) {
             pipe_helper(graph, i-4);
           }
         }
-        // 6th pipe 
+        // 6th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 5 && i < total_nodes+5) {
             pipe_helper(graph, i-5);
           }
         }
-        // 7th pipe 
+        // 7th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 6 && i < total_nodes+6) {
             pipe_helper(graph, i-6);
           }
         }
-        // 8th pipe 
+        // 8th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 7 && i < total_nodes+7) {
             pipe_helper(graph, i-7);
           }
         }
-        // 9th pipe 
+        // 9th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 8 && i < total_nodes+8) {
             pipe_helper(graph, i-8);
           }
         }
-        // 10th pipe 
+        // 10th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 9 && i < total_nodes+9) {
@@ -644,7 +644,7 @@ void graph_pipeline_omp_11_pipes(LevelGraph& graph) {
     #pragma omp single
     {
       size_t total_nodes = graph.level() * graph.length();
-      
+
       for (size_t i = 0; i < total_nodes+10; ++i){
         // 1st pipe
         #pragma omp task firstprivate(i)
@@ -654,70 +654,70 @@ void graph_pipeline_omp_11_pipes(LevelGraph& graph) {
           }
         }
 
-        // 2nd pipe 
+        // 2nd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 1 && i < total_nodes+1) {
             pipe_helper(graph, i-1);
           }
         }
-        // 3rd pipe 
+        // 3rd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 2 && i < total_nodes+2) {
             pipe_helper(graph, i-2);
           }
         }
-        // 4th pipe 
+        // 4th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 3 && i < total_nodes+3) {
             pipe_helper(graph, i-3);
           }
         }
-        // 5th pipe 
+        // 5th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 4 && i < total_nodes+4) {
             pipe_helper(graph, i-4);
           }
         }
-        // 6th pipe 
+        // 6th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 5 && i < total_nodes+5) {
             pipe_helper(graph, i-5);
           }
         }
-        // 7th pipe 
+        // 7th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 6 && i < total_nodes+6) {
             pipe_helper(graph, i-6);
           }
         }
-        // 8th pipe 
+        // 8th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 7 && i < total_nodes+7) {
             pipe_helper(graph, i-7);
           }
         }
-        // 9th pipe 
+        // 9th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 8 && i < total_nodes+8) {
             pipe_helper(graph, i-8);
           }
         }
-        // 10th pipe 
+        // 10th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 9 && i < total_nodes+9) {
             pipe_helper(graph, i-9);
           }
         }
-        // 11th pipe 
+        // 11th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 10 && i < total_nodes+10) {
@@ -737,7 +737,7 @@ void graph_pipeline_omp_12_pipes(LevelGraph& graph) {
     #pragma omp single
     {
       size_t total_nodes = graph.level() * graph.length();
-      
+
       for (size_t i = 0; i < total_nodes+11; ++i){
         // 1st pipe
         #pragma omp task firstprivate(i)
@@ -747,77 +747,77 @@ void graph_pipeline_omp_12_pipes(LevelGraph& graph) {
           }
         }
 
-        // 2nd pipe 
+        // 2nd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 1 && i < total_nodes+1) {
             pipe_helper(graph, i-1);
           }
         }
-        // 3rd pipe 
+        // 3rd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 2 && i < total_nodes+2) {
             pipe_helper(graph, i-2);
           }
         }
-        // 4th pipe 
+        // 4th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 3 && i < total_nodes+3) {
             pipe_helper(graph, i-3);
           }
         }
-        // 5th pipe 
+        // 5th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 4 && i < total_nodes+4) {
             pipe_helper(graph, i-4);
           }
         }
-        // 6th pipe 
+        // 6th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 5 && i < total_nodes+5) {
             pipe_helper(graph, i-5);
           }
         }
-        // 7th pipe 
+        // 7th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 6 && i < total_nodes+6) {
             pipe_helper(graph, i-6);
           }
         }
-        // 8th pipe 
+        // 8th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 7 && i < total_nodes+7) {
             pipe_helper(graph, i-7);
           }
         }
-        // 9th pipe 
+        // 9th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 8 && i < total_nodes+8) {
             pipe_helper(graph, i-8);
           }
         }
-        // 10th pipe 
+        // 10th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 9 && i < total_nodes+9) {
             pipe_helper(graph, i-9);
           }
         }
-        // 11th pipe 
+        // 11th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 10 && i < total_nodes+10) {
             pipe_helper(graph, i-10);
           }
         }
-        // 12th pipe 
+        // 12th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 11 && i < total_nodes+11) {
@@ -837,7 +837,7 @@ void graph_pipeline_omp_13_pipes(LevelGraph& graph) {
     #pragma omp single
     {
       size_t total_nodes = graph.level() * graph.length();
-      
+
       for (size_t i = 0; i < total_nodes+12; ++i){
         // 1st pipe
         #pragma omp task firstprivate(i)
@@ -847,84 +847,84 @@ void graph_pipeline_omp_13_pipes(LevelGraph& graph) {
           }
         }
 
-        // 2nd pipe 
+        // 2nd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 1 && i < total_nodes+1) {
             pipe_helper(graph, i-1);
           }
         }
-        // 3rd pipe 
+        // 3rd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 2 && i < total_nodes+2) {
             pipe_helper(graph, i-2);
           }
         }
-        // 4th pipe 
+        // 4th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 3 && i < total_nodes+3) {
             pipe_helper(graph, i-3);
           }
         }
-        // 5th pipe 
+        // 5th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 4 && i < total_nodes+4) {
             pipe_helper(graph, i-4);
           }
         }
-        // 6th pipe 
+        // 6th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 5 && i < total_nodes+5) {
             pipe_helper(graph, i-5);
           }
         }
-        // 7th pipe 
+        // 7th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 6 && i < total_nodes+6) {
             pipe_helper(graph, i-6);
           }
         }
-        // 8th pipe 
+        // 8th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 7 && i < total_nodes+7) {
             pipe_helper(graph, i-7);
           }
         }
-        // 9th pipe 
+        // 9th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 8 && i < total_nodes+8) {
             pipe_helper(graph, i-8);
           }
         }
-        // 10th pipe 
+        // 10th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 9 && i < total_nodes+9) {
             pipe_helper(graph, i-9);
           }
         }
-        // 11th pipe 
+        // 11th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 10 && i < total_nodes+10) {
             pipe_helper(graph, i-10);
           }
         }
-        // 12th pipe 
+        // 12th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 11 && i < total_nodes+11) {
             pipe_helper(graph, i-11);
           }
         }
-        // 13th pipe 
+        // 13th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 12 && i < total_nodes+12) {
@@ -944,7 +944,7 @@ void graph_pipeline_omp_14_pipes(LevelGraph& graph) {
     #pragma omp single
     {
       size_t total_nodes = graph.level() * graph.length();
-      
+
       for (size_t i = 0; i < total_nodes+13; ++i){
         // 1st pipe
         #pragma omp task firstprivate(i)
@@ -954,91 +954,91 @@ void graph_pipeline_omp_14_pipes(LevelGraph& graph) {
           }
         }
 
-        // 2nd pipe 
+        // 2nd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 1 && i < total_nodes+1) {
             pipe_helper(graph, i-1);
           }
         }
-        // 3rd pipe 
+        // 3rd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 2 && i < total_nodes+2) {
             pipe_helper(graph, i-2);
           }
         }
-        // 4th pipe 
+        // 4th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 3 && i < total_nodes+3) {
             pipe_helper(graph, i-3);
           }
         }
-        // 5th pipe 
+        // 5th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 4 && i < total_nodes+4) {
             pipe_helper(graph, i-4);
           }
         }
-        // 6th pipe 
+        // 6th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 5 && i < total_nodes+5) {
             pipe_helper(graph, i-5);
           }
         }
-        // 7th pipe 
+        // 7th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 6 && i < total_nodes+6) {
             pipe_helper(graph, i-6);
           }
         }
-        // 8th pipe 
+        // 8th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 7 && i < total_nodes+7) {
             pipe_helper(graph, i-7);
           }
         }
-        // 9th pipe 
+        // 9th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 8 && i < total_nodes+8) {
             pipe_helper(graph, i-8);
           }
         }
-        // 10th pipe 
+        // 10th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 9 && i < total_nodes+9) {
             pipe_helper(graph, i-9);
           }
         }
-        // 11th pipe 
+        // 11th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 10 && i < total_nodes+10) {
             pipe_helper(graph, i-10);
           }
         }
-        // 12th pipe 
+        // 12th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 11 && i < total_nodes+11) {
             pipe_helper(graph, i-11);
           }
         }
-        // 13th pipe 
+        // 13th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 12 && i < total_nodes+12) {
             pipe_helper(graph, i-12);
           }
         }
-        // 14th pipe 
+        // 14th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 13 && i < total_nodes+13) {
@@ -1058,7 +1058,7 @@ void graph_pipeline_omp_15_pipes(LevelGraph& graph) {
     #pragma omp single
     {
       size_t total_nodes = graph.level() * graph.length();
-      
+
       for (size_t i = 0; i < total_nodes+14; ++i){
         // 1st pipe
         #pragma omp task firstprivate(i)
@@ -1068,98 +1068,98 @@ void graph_pipeline_omp_15_pipes(LevelGraph& graph) {
           }
         }
 
-        // 2nd pipe 
+        // 2nd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 1 && i < total_nodes+1) {
             pipe_helper(graph, i-1);
           }
         }
-        // 3rd pipe 
+        // 3rd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 2 && i < total_nodes+2) {
             pipe_helper(graph, i-2);
           }
         }
-        // 4th pipe 
+        // 4th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 3 && i < total_nodes+3) {
             pipe_helper(graph, i-3);
           }
         }
-        // 5th pipe 
+        // 5th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 4 && i < total_nodes+4) {
             pipe_helper(graph, i-4);
           }
         }
-        // 6th pipe 
+        // 6th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 5 && i < total_nodes+5) {
             pipe_helper(graph, i-5);
           }
         }
-        // 7th pipe 
+        // 7th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 6 && i < total_nodes+6) {
             pipe_helper(graph, i-6);
           }
         }
-        // 8th pipe 
+        // 8th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 7 && i < total_nodes+7) {
             pipe_helper(graph, i-7);
           }
         }
-        // 9th pipe 
+        // 9th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 8 && i < total_nodes+8) {
             pipe_helper(graph, i-8);
           }
         }
-        // 10th pipe 
+        // 10th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 9 && i < total_nodes+9) {
             pipe_helper(graph, i-9);
           }
         }
-        // 11th pipe 
+        // 11th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 10 && i < total_nodes+10) {
             pipe_helper(graph, i-10);
           }
         }
-        // 12th pipe 
+        // 12th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 11 && i < total_nodes+11) {
             pipe_helper(graph, i-11);
           }
         }
-        // 13th pipe 
+        // 13th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 12 && i < total_nodes+12) {
             pipe_helper(graph, i-12);
           }
         }
-        // 14th pipe 
+        // 14th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 13 && i < total_nodes+13) {
             pipe_helper(graph, i-13);
           }
         }
-        // 15th pipe 
+        // 15th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 14 && i < total_nodes+14) {
@@ -1192,105 +1192,105 @@ void graph_pipeline_omp_16_pipes(LevelGraph& graph) {
           }
         }
 
-        // 2nd pipe 
+        // 2nd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 1 && i < total_nodes+1) {
             pipe_helper(graph, i-1);
           }
         }
-        // 3rd pipe 
+        // 3rd pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 2 && i < total_nodes+2) {
             pipe_helper(graph, i-2);
           }
         }
-        // 4th pipe 
+        // 4th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 3 && i < total_nodes+3) {
             pipe_helper(graph, i-3);
           }
         }
-        // 5th pipe 
+        // 5th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 4 && i < total_nodes+4) {
             pipe_helper(graph, i-4);
           }
         }
-        // 6th pipe 
+        // 6th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 5 && i < total_nodes+5) {
             pipe_helper(graph, i-5);
           }
         }
-        // 7th pipe 
+        // 7th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 6 && i < total_nodes+6) {
             pipe_helper(graph, i-6);
           }
         }
-        // 8th pipe 
+        // 8th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 7 && i < total_nodes+7) {
             pipe_helper(graph, i-7);
           }
         }
-        // 9th pipe 
+        // 9th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 8 && i < total_nodes+8) {
             pipe_helper(graph, i-8);
           }
         }
-        // 10th pipe 
+        // 10th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 9 && i < total_nodes+9) {
             pipe_helper(graph, i-9);
           }
         }
-        // 11th pipe 
+        // 11th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 10 && i < total_nodes+10) {
             pipe_helper(graph, i-10);
           }
         }
-        // 12th pipe 
+        // 12th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 11 && i < total_nodes+11) {
             pipe_helper(graph, i-11);
           }
         }
-        // 13th pipe 
+        // 13th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 12 && i < total_nodes+12) {
             pipe_helper(graph, i-12);
           }
         }
-        // 14th pipe 
+        // 14th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 13 && i < total_nodes+13) {
             pipe_helper(graph, i-13);
           }
         }
-        // 15th pipe 
+        // 15th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 14 && i < total_nodes+14) {
             pipe_helper(graph, i-14);
           }
         }
-        // 16th pipe 
+        // 16th pipe
         #pragma omp task firstprivate(i)
         {
           if (i >= 15 && i < total_nodes+15) {
@@ -1307,19 +1307,19 @@ void graph_pipeline_omp_16_pipes(LevelGraph& graph) {
 std::chrono::microseconds measure_time_omp(
   LevelGraph& graph, size_t pipes, unsigned , unsigned num_threads) {
 
-  omp_set_num_threads(num_threads); 
-   
+  omp_set_num_threads(num_threads);
+
 
   auto beg = std::chrono::high_resolution_clock::now();
   auto end = std::chrono::high_resolution_clock::now();
-  
+
   switch(pipes) {
     case 1:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_omp_1_pipe(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     case 2:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_omp_2_pipes(graph);
@@ -1331,7 +1331,7 @@ std::chrono::microseconds measure_time_omp(
       graph_pipeline_omp_3_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     case 4:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_omp_4_pipes(graph);
@@ -1343,13 +1343,13 @@ std::chrono::microseconds measure_time_omp(
       graph_pipeline_omp_5_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     case 6:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_omp_6_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     case 7:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_omp_7_pipes(graph);
@@ -1361,7 +1361,7 @@ std::chrono::microseconds measure_time_omp(
       graph_pipeline_omp_8_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     case 9:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_omp_9_pipes(graph);
@@ -1373,13 +1373,13 @@ std::chrono::microseconds measure_time_omp(
       graph_pipeline_omp_10_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     case 11:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_omp_11_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     case 12:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_omp_12_pipes(graph);
@@ -1391,7 +1391,7 @@ std::chrono::microseconds measure_time_omp(
       graph_pipeline_omp_13_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     case 14:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_omp_14_pipes(graph);
@@ -1403,13 +1403,13 @@ std::chrono::microseconds measure_time_omp(
       graph_pipeline_omp_15_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     case 16:
       beg = std::chrono::high_resolution_clock::now();
       graph_pipeline_omp_16_pipes(graph);
       end = std::chrono::high_resolution_clock::now();
     break;
-    
+
     default:
       throw std::runtime_error("can support only up to 16 pipes");
     break;

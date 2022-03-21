@@ -8,11 +8,11 @@
 // --------------------------------------------------------
 
 void critical_section(size_t W) {
-  
+
   tf::Taskflow taskflow;
   tf::Executor executor(W);
   tf::CriticalSection section(1);
-  
+
   int N = 1000;
   int counter = 0;
 
@@ -80,7 +80,7 @@ void semaphore(size_t W) {
     f.acquire(semaphore);
     t.release(semaphore);
   }
-  
+
   executor.run(taskflow).wait();
 
   REQUIRE(counter == 2*N);
@@ -124,7 +124,7 @@ void overlapped_semaphore(size_t W) {
     task.release(semaphore1);
     task.release(semaphore4);
   }
-  
+
   executor.run(taskflow).wait();
 
   REQUIRE(counter == N);
@@ -161,11 +161,11 @@ void conflict_graph(size_t W) {
 
   int counter {0};
   std::mutex mutex;
-  
+
   tf::Task A = taskflow.emplace([&](){ counter++; });
 
   // B and C can run together
-  tf::Task B = taskflow.emplace([&](){ 
+  tf::Task B = taskflow.emplace([&](){
     std::lock_guard<std::mutex> lock(mutex);
     counter++;
   });
@@ -173,19 +173,19 @@ void conflict_graph(size_t W) {
     std::lock_guard<std::mutex> lock(mutex);
     counter++;
   });
-  
+
   // describe the conflict between A and B
   A.acquire(conflict_AB).release(conflict_AB);
   B.acquire(conflict_AB).release(conflict_AB);
-  
+
   // describe the conflict between A and C
   A.acquire(conflict_AC).release(conflict_AC);
   C.acquire(conflict_AC).release(conflict_AC);
-  
+
   executor.run(taskflow).wait();
 
   REQUIRE(counter == 3);
-  
+
   for(size_t i=0; i<10; i++) {
     executor.run_n(taskflow, 10);
   }

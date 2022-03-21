@@ -49,9 +49,9 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
       executor.run(taskflow).wait();
     }
   }
-    
+
   SUBCASE("Placeholder") {
-    
+
     for(size_t i=0; i<num_tasks; ++i) {
       silent_tasks.emplace_back(taskflow.placeholder().name(std::to_string(i)));
     }
@@ -82,7 +82,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     REQUIRE(taskflow.num_tasks() == 100);
 
     counter = 0;
-    
+
     for(size_t i=0;i<num_tasks;i++){
       silent_tasks.emplace_back(taskflow.emplace([&counter]() {counter += 1;}));
     }
@@ -92,7 +92,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     REQUIRE(counter == num_tasks * 2);
     REQUIRE(taskflow.num_tasks() == 200);
   }
-  
+
   SUBCASE("BinarySequence"){
     for(size_t i=0;i<num_tasks;i++){
       if(i%2 == 0){
@@ -125,7 +125,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
   SUBCASE("LinearCounter"){
     for(size_t i=0;i<num_tasks;i++){
       tasks.emplace_back(
-        taskflow.emplace([&counter, i]() { 
+        taskflow.emplace([&counter, i]() {
           REQUIRE(counter == i); counter += 1;}
         )
       );
@@ -137,7 +137,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     REQUIRE(counter == num_tasks);
     REQUIRE(taskflow.num_tasks() == num_tasks);
   }
- 
+
   SUBCASE("Broadcast"){
     auto src = taskflow.emplace([&counter]() {counter -= 1;});
     for(size_t i=1; i<num_tasks; i++){
@@ -167,7 +167,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
   SUBCASE("MapReduce"){
 
     auto src = taskflow.emplace([&counter]() {counter = 0;});
-    
+
     auto dst = taskflow.emplace(
       [&counter, num_tasks]() { REQUIRE(counter == num_tasks);}
     );
@@ -186,7 +186,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
   SUBCASE("Linearize"){
     for(size_t i=0;i<num_tasks;i++){
       silent_tasks.emplace_back(
-        taskflow.emplace([&counter, i]() { 
+        taskflow.emplace([&counter, i]() {
           REQUIRE(counter == i); counter += 1;}
         )
       );
@@ -201,7 +201,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     auto src = taskflow.emplace([&counter]() {counter = 0;});
     for(size_t i=0;i<num_tasks;i++){
       silent_tasks.emplace_back(
-        taskflow.emplace([&counter, i]() { 
+        taskflow.emplace([&counter, i]() {
           REQUIRE(counter == i); counter += 1; }
         )
       );
@@ -250,12 +250,12 @@ TEST_CASE("Creation" * doctest::timeout(300)) {
       REQUIRE(item == -1);
     }
   }
-  
+
   SUBCASE("Four") {
-    std::thread t1(create_taskflow); 
-    std::thread t2(create_taskflow); 
-    std::thread t3(create_taskflow); 
-    std::thread t4(create_taskflow); 
+    std::thread t1(create_taskflow);
+    std::thread t2(create_taskflow);
+    std::thread t3(create_taskflow);
+    std::thread t4(create_taskflow);
     t1.join();
     t2.join();
     t3.join();
@@ -282,7 +282,7 @@ TEST_CASE("STDFunction" * doctest::timeout(300)) {
   std::function<int()>  func2  = [&] () { ++counter; return 0; };
   std::function<void()> func3  = [&] () { };
   std::function<void()> func4  = [&] () { ++counter;};
-  
+
   // scenario 1
   auto A = taskflow.emplace(func1);
   auto B = taskflow.emplace(func2);
@@ -294,7 +294,7 @@ TEST_CASE("STDFunction" * doctest::timeout(300)) {
   REQUIRE(counter == 2);
 
   return;
-  
+
   // scenario 2
   counter = 0;
   A.work(func1);
@@ -303,7 +303,7 @@ TEST_CASE("STDFunction" * doctest::timeout(300)) {
   D.work(func3);
   executor.run(taskflow).wait();
   REQUIRE(counter == 3);
-  
+
   // scenario 3
   taskflow.clear();
   std::tie(A, B, C, D) = taskflow.emplace(
@@ -369,7 +369,7 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
       }
     });
   }
-  
+
   SUBCASE("Generic") {
     tf::Taskflow taskflow;
 
@@ -386,7 +386,7 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
     });
 
     REQUIRE(std::find(tasks.begin(), tasks.end(), A) != tasks.end());
- 
+
     A.precede(B);
 
     A.for_each_successor([B](tf::Task s){ REQUIRE(s==B); });
@@ -398,7 +398,7 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
     C.precede(B);
     D.precede(B);
     E.precede(B);
-    
+
     int counter{0}, a{0}, b{0}, c{0}, d{0}, e{0};
     A.for_each_successor([&](tf::Task s) {
       counter++;
@@ -414,7 +414,7 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
     REQUIRE(c==1);
     REQUIRE(d==1);
     REQUIRE(e==1);
-    
+
     counter = a = b = c = d = e = 0;
     B.for_each_dependent([&](tf::Task s) {
       counter++;
@@ -445,7 +445,7 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
     B.for_each_dependent([](tf::Task s){
       s.name("B");
     });
-    
+
     REQUIRE(A.name() == "B");
     REQUIRE(B.name() == "A");
     REQUIRE(C.name() == "B");
@@ -461,7 +461,7 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
 TEST_CASE("Hash" * doctest::timeout(300)) {
 
   std::hash<tf::Task> hash;
-  
+
   // empty hash
   tf::Task t1, t2;
 
@@ -488,21 +488,21 @@ TEST_CASE("Hash" * doctest::timeout(300)) {
 void sequential_runs(unsigned W) {
 
   using namespace std::chrono_literals;
-  
+
   size_t num_tasks = 100;
-  
+
   tf::Executor executor(W);
   tf::Taskflow taskflow;
 
   std::atomic<int> counter {0};
   std::vector<tf::Task> silent_tasks;
-    
+
   for(size_t i=0;i<num_tasks;i++){
     silent_tasks.emplace_back(
       taskflow.emplace([&counter]() {counter += 1;})
     );
   }
-  
+
   SUBCASE("RunOnce"){
     auto fu = executor.run(taskflow);
     REQUIRE(taskflow.num_tasks() == num_tasks);
@@ -513,16 +513,16 @@ void sequential_runs(unsigned W) {
   SUBCASE("WaitForAll") {
     executor.run(taskflow);
     executor.wait_for_all();
-    REQUIRE(counter == num_tasks); 
+    REQUIRE(counter == num_tasks);
   }
-  
+
   SUBCASE("RunWithFuture") {
 
     std::atomic<size_t> count {0};
     tf::Taskflow f;
     auto A = f.emplace([&](){ count ++; });
-    auto B = f.emplace([&](tf::Subflow& subflow){ 
-      count ++; 
+    auto B = f.emplace([&](tf::Subflow& subflow){
+      count ++;
       auto B1 = subflow.emplace([&](){ count++; });
       auto B2 = subflow.emplace([&](){ count++; });
       auto B3 = subflow.emplace([&](){ count++; });
@@ -532,7 +532,7 @@ void sequential_runs(unsigned W) {
     auto D = f.emplace([&](){ count ++; });
 
     A.precede(B, C);
-    B.precede(D); 
+    B.precede(D);
     C.precede(D);
 
     std::list<tf::Future<void>> fu_list;
@@ -545,12 +545,12 @@ void sequential_runs(unsigned W) {
         fu_list.push_back(executor.run(f));
       }
       else {
-        fu_list.push_back(executor.run(f, [&, i=i](){ 
+        fu_list.push_back(executor.run(f, [&, i=i](){
           REQUIRE(count == (i+1)*7); })
         );
       }
     }
-    
+
     executor.wait_for_all();
 
     for(auto& fu: fu_list) {
@@ -559,15 +559,15 @@ void sequential_runs(unsigned W) {
     }
 
     REQUIRE(count == 7000);
-    
+
   }
 
   SUBCASE("RunWithChange") {
     std::atomic<size_t> count {0};
     tf::Taskflow f;
     auto A = f.emplace([&](){ count ++; });
-    auto B = f.emplace([&](tf::Subflow& subflow){ 
-      count ++; 
+    auto B = f.emplace([&](tf::Subflow& subflow){
+      count ++;
       auto B1 = subflow.emplace([&](){ count++; });
       auto B2 = subflow.emplace([&](){ count++; });
       auto B3 = subflow.emplace([&](){ count++; });
@@ -577,31 +577,31 @@ void sequential_runs(unsigned W) {
     auto D = f.emplace([&](){ count ++; });
 
     A.precede(B, C);
-    B.precede(D); 
+    B.precede(D);
     C.precede(D);
 
     executor.run_n(f, 10).get();
-    REQUIRE(count == 70);    
+    REQUIRE(count == 70);
 
     auto E = f.emplace([](){});
     D.precede(E);
     executor.run_n(f, 10).get();
-    REQUIRE(count == 140);    
+    REQUIRE(count == 140);
 
     auto F = f.emplace([](){});
     E.precede(F);
     executor.run_n(f, 10);
     executor.wait_for_all();
-    REQUIRE(count == 210);    
-    
+    REQUIRE(count == 210);
+
   }
 
   SUBCASE("RunWithPred") {
     std::atomic<size_t> count {0};
     tf::Taskflow f;
     auto A = f.emplace([&](){ count ++; });
-    auto B = f.emplace([&](tf::Subflow& subflow){ 
-      count ++; 
+    auto B = f.emplace([&](tf::Subflow& subflow){
+      count ++;
       auto B1 = subflow.emplace([&](){ count++; });
       auto B2 = subflow.emplace([&](){ count++; });
       auto B3 = subflow.emplace([&](){ count++; });
@@ -611,10 +611,10 @@ void sequential_runs(unsigned W) {
     auto D = f.emplace([&](){ count ++; });
 
     A.precede(B, C);
-    B.precede(D); 
+    B.precede(D);
     C.precede(D);
 
-    executor.run_until(f, [run=10]() mutable { return run-- == 0; }, 
+    executor.run_until(f, [run=10]() mutable { return run-- == 0; },
       [&](){
         REQUIRE(count == 70);
         count = 0;
@@ -622,19 +622,19 @@ void sequential_runs(unsigned W) {
     ).get();
 
 
-    executor.run_until(f, [run=10]() mutable { return run-- == 0; }, 
+    executor.run_until(f, [run=10]() mutable { return run-- == 0; },
       [&](){
         REQUIRE(count == 70);
         count = 0;
     });
 
-    executor.run_until(f, [run=10]() mutable { return run-- == 0; }, 
+    executor.run_until(f, [run=10]() mutable { return run-- == 0; },
       [&](){
         REQUIRE(count == 70);
         count = 0;
       }
     ).get();
-    
+
   }
 
   SUBCASE("MultipleRuns") {
@@ -645,19 +645,19 @@ void sequential_runs(unsigned W) {
     for(size_t n=0; n<16; ++n) {
       tf1.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
     }
-    
+
     for(size_t n=0; n<1024; ++n) {
       tf2.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
     }
-    
+
     for(size_t n=0; n<32; ++n) {
       tf3.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
     }
-    
+
     for(size_t n=0; n<128; ++n) {
       tf4.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
     }
-    
+
     for(int i=0; i<200; ++i) {
       executor.run(tf1);
       executor.run(tf2);
@@ -666,7 +666,7 @@ void sequential_runs(unsigned W) {
     }
     executor.wait_for_all();
     REQUIRE(counter == 240000);
-    
+
   }
 }
 
@@ -782,11 +782,11 @@ void parallel_runs(unsigned w) {
 
   auto make_taskflow = [&] (tf::Taskflow& tf) {
     for(int i=0; i<1024; i++) {
-      auto A = tf.emplace([&] () { 
-        counter.fetch_add(1, std::memory_order_relaxed); 
+      auto A = tf.emplace([&] () {
+        counter.fetch_add(1, std::memory_order_relaxed);
       });
       auto B = tf.emplace([&] () {
-        counter.fetch_add(1, std::memory_order_relaxed); 
+        counter.fetch_add(1, std::memory_order_relaxed);
       });
       A.precede(B);
     }
@@ -809,10 +809,10 @@ void parallel_runs(unsigned w) {
     threads.clear();
 
     REQUIRE(counter.load() == 32*1024*2);
-    
+
   }
-  
-  SUBCASE("RunAndWaitForAll") { 
+
+  SUBCASE("RunAndWaitForAll") {
     tf::Executor executor(w);
     counter = 0;
     std::vector<std::unique_ptr<tf::Taskflow>> taskflows(32);
@@ -825,11 +825,11 @@ void parallel_runs(unsigned w) {
         ++barrier;    // make sure all runs are issued
       });
     }
-    
+
     while(barrier != 32);
     executor.wait_for_all();
     REQUIRE(counter.load() == 32*1024*2);
-    
+
     for(auto& t : threads) {
       t.join();
     }
@@ -885,7 +885,7 @@ void nested_runs(unsigned w) {
     int& counter;
 
     A(unsigned w, int& c) : executor{w}, counter{c} { }
-  
+
     void run()
     {
       taskflow.clear();
@@ -896,7 +896,7 @@ void nested_runs(unsigned w) {
     }
 
   };
-  
+
   struct B {
 
     tf::Taskflow taskflow;
@@ -907,7 +907,7 @@ void nested_runs(unsigned w) {
     A a_sim;
 
     B(unsigned w, int& c) : executor{w}, counter{c}, a_sim{w, c} { }
-  
+
     void run()
     {
       taskflow.clear();
@@ -917,7 +917,7 @@ void nested_runs(unsigned w) {
       executor.run_n(taskflow, 100).wait();
     }
   };
-  
+
   struct C {
 
     tf::Taskflow taskflow;
@@ -928,7 +928,7 @@ void nested_runs(unsigned w) {
     B b_sim;
 
     C(unsigned w, int& c) : executor{w}, counter{c}, b_sim{w, c} { }
-  
+
     void run()
     {
       taskflow.clear();
@@ -974,7 +974,7 @@ TEST_CASE("NestedRuns.16threads") {
 // --------------------------------------------------------
 
 void for_each(unsigned W) {
-  
+
   using namespace std::chrono_literals;
 
   const auto mapper = [](unsigned w, size_t num_data){
@@ -1057,7 +1057,7 @@ TEST_CASE("ParallelFor.8threads" * doctest::timeout(300)) {
 // Testcase: ParallelForOnIndex
 // --------------------------------------------------------
 void for_each_index(unsigned w) {
-  
+
   using namespace std::chrono_literals;
 
   auto positive_integer_step = [] (unsigned w) {
@@ -1083,7 +1083,7 @@ void for_each_index(unsigned w) {
       }
     }
   };
-  
+
   auto negative_integer_step = [] (unsigned w) {
     tf::Executor executor(w);
     for(int beg=10; beg>=-10; --beg) {
@@ -1109,19 +1109,19 @@ void for_each_index(unsigned w) {
   };
 
   SUBCASE("PositiveIntegerStep") {
-    positive_integer_step(w);  
+    positive_integer_step(w);
   }
-  
+
   SUBCASE("NegativeIntegerStep") {
-    negative_integer_step(w);  
+    negative_integer_step(w);
   }
-  
+
   //SUBCASE("PositiveFloatingStep") {
-  //  positive_floating_step(w);  
+  //  positive_floating_step(w);
   //}
   //
   //SUBCASE("NegativeFloatingStep") {
-  //  negative_floating_step(w);  
+  //  negative_floating_step(w);
   //}
 }
 
@@ -1275,18 +1275,18 @@ TEST_CASE("ReduceMax" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
-// Testcase: Observer 
-// -------------------------------------------------------- 
+// Testcase: Observer
+// --------------------------------------------------------
 
 void observer(unsigned w) {
 
   tf::Executor executor(w);
 
-  auto observer = executor.make_observer<tf::ChromeObserver>();    
+  auto observer = executor.make_observer<tf::ChromeObserver>();
 
   tf::Taskflow taskflowA;
   std::vector<tf::Task> tasks;
-  // Static tasking 
+  // Static tasking
   for(auto i=0; i < 64; i ++) {
     tasks.emplace_back(taskflowA.emplace([](){}));
   }
@@ -1307,7 +1307,7 @@ void observer(unsigned w) {
   observer->clear();
   REQUIRE(observer->num_tasks() == 0);
   tasks.clear();
-  
+
 }
 
 TEST_CASE("Observer.1thread" * doctest::timeout(300)) {
@@ -1333,7 +1333,7 @@ TEST_CASE("RuntimeTasking" * doctest::timeout(300)) {
 
   tf::Taskflow taskflow;
   tf::Executor executor;
-   
+
   int a = 0;
   int b = 0;
 

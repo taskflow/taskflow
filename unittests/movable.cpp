@@ -15,10 +15,10 @@ struct CountOnDestruction {
 
   CountOnDestruction(std::atomic<int>& c) : counter {&c} {}
 
-  ~CountOnDestruction() { 
+  ~CountOnDestruction() {
     if(counter) {
       //std::cout << "destroying\n";
-      counter->fetch_add(1, std::memory_order_relaxed); 
+      counter->fetch_add(1, std::memory_order_relaxed);
     }
   }
 
@@ -32,24 +32,24 @@ struct CountOnDestruction {
 TEST_CASE("moved_run") {
 
   int N = 10000;
-  
+
   std::atomic<int> counter {0};
 
   tf::Taskflow taskflow;
-  
-  auto make_taskflow = [&](){  
+
+  auto make_taskflow = [&](){
     for(int i=0; i<N; i++) {
       taskflow.emplace([&, c=CountOnDestruction{counter}](){
         counter.fetch_add(1, std::memory_order_relaxed);
       });
     }
   };
-  
+
   // run the moved taskflow
   make_taskflow();
   tf::Executor().run_until(
-    std::move(taskflow), 
-    [repeat=2]() mutable { return repeat-- == 0; }, 
+    std::move(taskflow),
+    [repeat=2]() mutable { return repeat-- == 0; },
     [](){}
   ).wait();
 
@@ -85,7 +85,7 @@ TEST_CASE("moved_run") {
   REQUIRE(taskflow.num_tasks() == 0);
 
   // run the moved empty taskflow with callable
-  tf::Executor().run(std::move(taskflow), [&](){ 
+  tf::Executor().run(std::move(taskflow), [&](){
     counter.fetch_add(N, std::memory_order_relaxed);
   }).wait();
   REQUIRE(counter == 11*N);
@@ -93,12 +93,12 @@ TEST_CASE("moved_run") {
 
   // remake the taskflow and run it with moved ownership
   make_taskflow();
-  tf::Executor().run(std::move(taskflow), [&](){ 
+  tf::Executor().run(std::move(taskflow), [&](){
     counter.fetch_add(N, std::memory_order_relaxed);
   }).wait();
   REQUIRE(counter == 14*N);
   REQUIRE(taskflow.num_tasks() == 0);
-} 
+}
 
 // ----------------------------------------------------------------------------
 // test move assignment operator
@@ -107,10 +107,10 @@ TEST_CASE("moved_run") {
 TEST_CASE("moved_taskflows") {
 
   int N = 10000;
-  
+
   std::atomic<int> counter {0};
-    
-  auto make_taskflow = [&counter](tf::Taskflow& taskflow, int N){  
+
+  auto make_taskflow = [&counter](tf::Taskflow& taskflow, int N){
     for(int i=0; i<N; i++) {
       taskflow.emplace([&counter, c=CountOnDestruction{counter}](){
         counter.fetch_add(1, std::memory_order_relaxed);
@@ -121,7 +121,7 @@ TEST_CASE("moved_taskflows") {
   {
     tf::Taskflow taskflow1;
     tf::Taskflow taskflow2;
-    
+
     make_taskflow(taskflow1, N);
     make_taskflow(taskflow2, N/2);
 
@@ -129,7 +129,7 @@ TEST_CASE("moved_taskflows") {
     REQUIRE(taskflow2.num_tasks() == N/2);
 
     taskflow1 = std::move(taskflow2);
-    
+
     REQUIRE(counter == N);
     REQUIRE(taskflow1.num_tasks() == N/2);
     REQUIRE(taskflow2.num_tasks() == 0);
@@ -163,7 +163,7 @@ TEST_CASE("moved_taskflows") {
 
     make_taskflow(taskflow1, N);
     tf::Taskflow taskflow3(std::move(taskflow1));
-    
+
     REQUIRE(counter == 4*N);
     REQUIRE(taskflow1.num_tasks() == 0);
     REQUIRE(taskflow3.num_tasks() == N);
@@ -177,7 +177,7 @@ TEST_CASE("moved_taskflows") {
   }
 
   REQUIRE(counter == 5*N);
-} 
+}
 
 // ----------------------------------------------------------------------------
 // test multithreaded run
@@ -186,10 +186,10 @@ TEST_CASE("moved_taskflows") {
 TEST_CASE("parallel_moved_runs") {
 
   int N = 10000;
-  
+
   std::atomic<int> counter {0};
-    
-  auto make_taskflow = [&counter](tf::Taskflow& taskflow, int N){  
+
+  auto make_taskflow = [&counter](tf::Taskflow& taskflow, int N){
     for(int i=0; i<N; i++) {
       taskflow.emplace([&counter, c=CountOnDestruction{counter}](){
         counter.fetch_add(1, std::memory_order_relaxed);
@@ -210,14 +210,14 @@ TEST_CASE("parallel_moved_runs") {
     }
 
     for(auto& thread : threads) thread.join();
-    
-    executor.wait_for_all(); 
+
+    executor.wait_for_all();
   }
 
   REQUIRE(counter == 64*N*2);
 
   counter = 0;
-  
+
   {
     tf::Executor executor;
 
@@ -235,12 +235,12 @@ TEST_CASE("parallel_moved_runs") {
     }
 
     for(auto& thread : threads) thread.join();
-    
-    executor.wait_for_all(); 
+
+    executor.wait_for_all();
   }
 
   REQUIRE(counter == 32*(N*2 + 4));
-} 
+}
 
 
 

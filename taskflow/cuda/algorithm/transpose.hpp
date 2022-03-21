@@ -10,7 +10,7 @@ namespace tf {
 //
 template <typename T>
 __global__ void cuda_transpose(
-  const T* d_in, 
+  const T* d_in,
   T* d_out,
   size_t rows,
   size_t cols

@@ -10,9 +10,9 @@ int main() {
   sycl::queue queue;
 
   auto data = sycl::malloc_shared<int>(N, queue);
-  
+
   tf::syclFlow syclflow(queue);
-  
+
   // fill data with -1
   std::cout << "filling data with -1 ...\n";
 
@@ -34,7 +34,7 @@ int main() {
     task, data, data+N, [](int& i){ i = 100; }
   );
   syclflow.offload();
-  
+
   for(size_t i=0; i<N; i++) {
     if(data[i] != 100) {
       throw std::runtime_error("unexpected result after for_each");

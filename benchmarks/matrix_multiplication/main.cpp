@@ -6,14 +6,14 @@ double **a = nullptr, **b = nullptr, **c = nullptr;
 
 void matrix_multiplication(
   const std::string& model,
-  const unsigned num_threads, 
+  const unsigned num_threads,
   const unsigned num_rounds
   ) {
 
   std::cout << std::setw(12) << "size"
             << std::setw(12) << "runtime"
             << std::endl;
-  
+
   for(int i=128; i<=1024; i += 32) {
 
     N = i;
@@ -47,10 +47,10 @@ int main(int argc, char* argv[]) {
 
   CLI::App app{"MatrixMultiplication"};
 
-  unsigned num_threads {1}; 
+  unsigned num_threads {1};
   app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
 
-  unsigned num_rounds {1};  
+  unsigned num_rounds {1};
   app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
 
   std::string model = "tf";
@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
      });
 
   CLI11_PARSE(app, argc, argv);
-   
+
   std::cout << "model=" << model << ' '
             << "num_threads=" << num_threads << ' '
             << "num_rounds=" << num_rounds << ' '

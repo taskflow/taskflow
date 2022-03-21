@@ -45,13 +45,13 @@ int main(int argc, char *argv[]) {
 
   CLI::App app{"Seismic"};
 
-  unsigned num_threads {1}; 
+  unsigned num_threads {1};
   app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
 
-  unsigned num_rounds {1};  
+  unsigned num_rounds {1};
   app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
 
-  unsigned num_frames {1000};  
+  unsigned num_frames {1000};
   app.add_option("-f,--num_frames", num_frames, "number of frames (default=1000, 0 means unlimited)");
 
   // Serial mode: in GUI mode start with serial version of algorithm
@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
      });
 
   CLI11_PARSE(app, argc, argv);
-   
+
   std::cout << "model=" << model << ' '
             << "num_threads=" << num_threads << ' '
             << "num_rounds=" << num_rounds << ' '
@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
             // do console mode
             printf("Substituting %u for unlimited frames because not running interactively\n", num_frames);
             //for(int p = options.threads.first;  p <= options.threads.last; p = options.threads.step(p)) {
-            for(unsigned p = options.thread_range.first;  p <= options.thread_range.second; p ++) {  
+            for(unsigned p = options.thread_range.first;  p <= options.thread_range.second; p ++) {
                 tbb::tick_count xwayParallelismStartTime = tbb::tick_count::now();
                 u.InitializeUniverse(video);
                 int numberOfFrames = num_frames;
@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
 
                 #pragma offload target(mic) in(u, numberOfFrames, p, dmem), out(pMem:length(memSize))
                 {
-                    // It is necessary to update the pointer on mic 
+                    // It is necessary to update the pointer on mic
                     // since the address spaces on host and on target are different
                     dmem.set_address(pMem);
                     u.SetDrawingMemory(dmem);
@@ -116,7 +116,7 @@ int main(int argc, char *argv[]) {
                       for( int i=0; i<numberOfFrames; ++i ) {
                         u.SerialUpdateUniverse();
                       }
-                    } 
+                    }
                     else {
                       if(model == "tbb") {
                         measure_time_tbb(p, numberOfFrames, u);
@@ -127,7 +127,7 @@ int main(int argc, char *argv[]) {
                       else {
                         assert(false);
                       }
-                     
+
                       //tbb::task_scheduler_init init(p);
                       //for( int i=0; i<numberOfFrames; ++i ) {
                       //  //u.ParallelUpdateUniverse();
@@ -156,7 +156,7 @@ int main(int argc, char *argv[]) {
         video.terminate();
         auto end_time = std::chrono::high_resolution_clock::now();
 
-        std::cout << "elapsed time : " 
+        std::cout << "elapsed time : "
                   << std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count()/1e3
                   << " seconds"
                   << std::endl;

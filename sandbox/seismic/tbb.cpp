@@ -28,7 +28,7 @@ void seismic_tbb(unsigned num_threads, unsigned num_frames, Universe& u) {
 
   using namespace tbb;
   using namespace tbb::flow;
-  
+
   tbb::task_scheduler_init init(num_threads);
 
   static tbb::affinity_partitioner affinity;

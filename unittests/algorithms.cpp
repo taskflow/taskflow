@@ -20,7 +20,7 @@ void for_each(unsigned W, TYPE) {
 
   tf::Executor executor(W);
   tf::Taskflow taskflow;
-  
+
   std::vector<int> vec(1024);
   for(int n = 0; n <= 150; n++) {
 
@@ -33,12 +33,12 @@ void for_each(unsigned W, TYPE) {
       for(int c=0; c<=17; c=c*2+1) {
         taskflow.clear();
         std::atomic<int> counter {0};
-        
+
         taskflow.for_each_index(beg, end, s, [&](int i){
           counter++;
           vec[i-beg] = i;
         });
-        
+
         //switch(type) {
         //  case GUIDED:
         //    taskflow.for_each_index_guided(beg, end, s, [&](int i){
@@ -53,7 +53,7 @@ void for_each(unsigned W, TYPE) {
         //      vec[i-beg] = i;
         //    }, c);
         //  break;
-        //  
+        //
         //  case STATIC:
         //    taskflow.for_each_index_static(beg, end, s, [&](int i){
         //      counter++;
@@ -79,17 +79,17 @@ void for_each(unsigned W, TYPE) {
 
   for(size_t n = 0; n < 150; n++) {
     for(size_t c=0; c<=17; c=c*2+1) {
-    
+
       std::fill_n(vec.begin(), vec.size(), -1);
 
       taskflow.clear();
       std::atomic<int> counter {0};
-          
+
       taskflow.for_each(vec.begin(), vec.begin() + n, [&](int& i){
         counter++;
         i = 1;
       });
-      
+
       //switch(type) {
       //  case GUIDED:
       //    taskflow.for_each_guided(vec.begin(), vec.begin() + n, [&](int& i){
@@ -104,7 +104,7 @@ void for_each(unsigned W, TYPE) {
       //      i = 1;
       //    }, c);
       //  break;
-      //  
+      //
       //  case STATIC:
       //    taskflow.for_each_static(vec.begin(), vec.begin() + n, [&](int& i){
       //      counter++;
@@ -279,22 +279,22 @@ TEST_CASE("pfg.12threads" * doctest::timeout(300)) {
 // ----------------------------------------------------------------------------
 
 void stateful_for_each(unsigned W, TYPE) {
-  
+
   tf::Executor executor(W);
   tf::Taskflow taskflow;
   std::vector<int> vec;
   std::atomic<int> counter {0};
-  
+
   for(size_t n = 0; n <= 150; n++) {
     for(size_t c=0; c<=17; c++) {
-  
+
     std::vector<int>::iterator beg, end;
     size_t ibeg = 0, iend = 0;
     size_t half = n/2;
-    
+
     taskflow.clear();
-    
-    auto init = taskflow.emplace([&](){ 
+
+    auto init = taskflow.emplace([&](){
       vec.resize(n);
       std::fill_n(vec.begin(), vec.size(), -1);
 
@@ -308,7 +308,7 @@ void stateful_for_each(unsigned W, TYPE) {
     });
 
     tf::Task pf1, pf2;
-    
+
     pf1 = taskflow.for_each(
       std::ref(beg), std::ref(end), [&](int& i){
       counter++;
@@ -320,7 +320,7 @@ void stateful_for_each(unsigned W, TYPE) {
         counter++;
         vec[i] = -8;
     });
-    
+
     //switch (type) {
 
     //  case GUIDED:
@@ -350,7 +350,7 @@ void stateful_for_each(unsigned W, TYPE) {
     //        vec[i] = -8;
     //    }, c);
     //  break;
-    //  
+    //
     //  case STATIC:
     //    pf1 = taskflow.for_each_static(
     //      std::ref(beg), std::ref(end), [&](int& i){
@@ -562,7 +562,7 @@ void reduce(unsigned W, TYPE) {
       });
 
       tf::Task ptask;
-          
+
       ptask = taskflow.reduce(
         std::ref(beg), std::ref(end), pmin, [](int& l, int& r){
         return std::min(l, r);
@@ -582,7 +582,7 @@ void reduce(unsigned W, TYPE) {
       //      return std::min(l, r);
       //    }, c);
       //  break;
-      //  
+      //
       //  case STATIC:
       //    ptask = taskflow.reduce_static(
       //      std::ref(beg), std::ref(end), pmin, [](int& l, int& r){
@@ -594,7 +594,7 @@ void reduce(unsigned W, TYPE) {
       stask.precede(ptask);
 
       executor.run(taskflow).wait();
-      
+
       REQUIRE(smin != std::numeric_limits<int>::max());
       REQUIRE(pmin != std::numeric_limits<int>::max());
       REQUIRE(smin == pmin);
@@ -758,7 +758,7 @@ class Data {
   private:
 
     int _v {::rand() % 100 - 50};
-  
+
   public:
 
     int get() const { return _v; }
@@ -789,36 +789,36 @@ void transform_reduce(unsigned W, TYPE) {
       });
 
       tf::Task ptask;
-          
+
       ptask = taskflow.transform_reduce(
-        std::ref(beg), std::ref(end), pmin, 
-        [] (int l, int r)   { return std::min(l, r); }, 
+        std::ref(beg), std::ref(end), pmin,
+        [] (int l, int r)   { return std::min(l, r); },
         [] (const Data& data) { return data.get(); }
       );
 
       //switch (type) {
       //  case GUIDED:
       //    ptask = taskflow.transform_reduce_guided(
-      //      std::ref(beg), std::ref(end), pmin, 
-      //      [] (int l, int r)   { return std::min(l, r); }, 
+      //      std::ref(beg), std::ref(end), pmin,
+      //      [] (int l, int r)   { return std::min(l, r); },
       //      [] (const Data& data) { return data.get(); },
       //      c
       //    );
       //  break;
-      //  
+      //
       //  case STATIC:
       //    ptask = taskflow.transform_reduce_static(
-      //      std::ref(beg), std::ref(end), pmin, 
-      //      [] (int l, int r)   { return std::min(l, r); }, 
+      //      std::ref(beg), std::ref(end), pmin,
+      //      [] (int l, int r)   { return std::min(l, r); },
       //      [] (const Data& data) { return data.get(); },
       //      c
       //    );
       //  break;
-      //  
+      //
       //  case DYNAMIC:
       //    ptask = taskflow.transform_reduce_dynamic(
-      //      std::ref(beg), std::ref(end), pmin, 
-      //      [] (int l, int r)   { return std::min(l, r); }, 
+      //      std::ref(beg), std::ref(end), pmin,
+      //      [] (int l, int r)   { return std::min(l, r); },
       //      [] (const Data& data) { return data.get(); },
       //      c
       //    );
@@ -828,7 +828,7 @@ void transform_reduce(unsigned W, TYPE) {
       stask.precede(ptask);
 
       executor.run(taskflow).wait();
-      
+
       REQUIRE(smin != std::numeric_limits<int>::max());
       REQUIRE(pmin != std::numeric_limits<int>::max());
       REQUIRE(smin == pmin);
@@ -1000,7 +1000,7 @@ void ps_pod(size_t W, size_t N) {
 
   tf::Taskflow taskflow;
   tf::Executor executor(W);
-  
+
   taskflow.sort(data.begin(), data.end());
 
   executor.run(taskflow).wait();
@@ -1054,17 +1054,17 @@ struct Object {
 };
 
 void ps_object(size_t W, size_t N) {
-  
+
   std::srand(static_cast<unsigned int>(time(NULL)));
 
   std::vector<Object> data(N);
-  
+
   for(auto& d : data) {
     for(auto& i : d.integers) {
       i = ::rand();
     }
   }
-  
+
   tf::Taskflow taskflow;
   tf::Executor executor(W);
 
@@ -1073,8 +1073,8 @@ void ps_object(size_t W, size_t N) {
   });
 
   executor.run(taskflow).wait();
-  
-  REQUIRE(std::is_sorted(data.begin(), data.end(), 
+
+  REQUIRE(std::is_sorted(data.begin(), data.end(),
     [](const auto& l, const auto& r){ return l.sum() < r.sum(); }
   ));
 }
@@ -1310,7 +1310,7 @@ void parallel_transform3(size_t W) {
         [&] (const auto& x) -> string {
           return myFunction(x.second);
       });
-      
+
       subflow.join();
     });
 

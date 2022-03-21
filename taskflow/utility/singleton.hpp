@@ -11,7 +11,7 @@ template <typename T>
 class Singleton {
 
   public:
-  
+
   /**
   @brief get a reference to the singleton object
   */

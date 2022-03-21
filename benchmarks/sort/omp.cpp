@@ -3,7 +3,7 @@
 
 // sort_omp
 void sort_omp(unsigned nthreads) {
-  
+
   //omp_set_num_threads(nthreads);
 
   //double sum = 0.0;

@@ -1,5 +1,5 @@
 #include "linear_chain.hpp"
-#include <taskflow/taskflow.hpp> 
+#include <taskflow/taskflow.hpp>
 
 // binary_tree_taskflow
 void linear_chain_taskflow(size_t length, unsigned num_threads) {
@@ -7,7 +7,7 @@ void linear_chain_taskflow(size_t length, unsigned num_threads) {
   size_t counter {0};
 
   std::vector<tf::Task> tasks(length);
-  
+
   tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
@@ -16,7 +16,7 @@ void linear_chain_taskflow(size_t length, unsigned num_threads) {
   }
 
   taskflow.linearize(tasks);
-  
+
   executor.run(taskflow).get();
   assert(counter == tasks.size());
 }

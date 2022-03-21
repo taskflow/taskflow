@@ -4,9 +4,9 @@
 
 namespace tf {
 
-// ---------------------------------------------------------------------------- 
+// ----------------------------------------------------------------------------
 // cublasFlowCapturere level-3 functions
-// ---------------------------------------------------------------------------- 
+// ----------------------------------------------------------------------------
 
 // Function: geam
 template <typename T>
@@ -19,7 +19,7 @@ cudaTask cublasFlowCapturer::geam(
   const T *B, int ldb,
   T *C, int ldc
 ) {
-  return factory()->on([this, ta, tb, m, n, alpha, A, lda, beta, B, ldb, C, ldc] 
+  return factory()->on([this, ta, tb, m, n, alpha, A, lda, beta, B, ldb, C, ldc]
   (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;
@@ -67,7 +67,7 @@ cudaTask cublasFlowCapturer::gemm(
   const T *beta,
   T *C, int ldc
 ) {
-  return factory()->on([this, ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc] 
+  return factory()->on([this, ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc]
   (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;
@@ -87,7 +87,7 @@ cudaTask cublasFlowCapturer::gemm(
     TF_CHECK_CUBLAS(stat, "failed to run gemm");
   });
 }
-    
+
 template <typename T>
 cudaTask cublasFlowCapturer::c_gemm(
   cublasOperation_t ta, cublasOperation_t tb,
@@ -102,7 +102,7 @@ cudaTask cublasFlowCapturer::c_gemm(
     tb, ta, n, m, k, alpha, B, ldb, A, lda, beta, C, ldc
   );
 }
-    
+
 // Function: gemm_batched
 template <typename T>
 cudaTask cublasFlowCapturer::gemm_batched(
@@ -115,7 +115,7 @@ cudaTask cublasFlowCapturer::gemm_batched(
   T *C[], int ldc,
   int bc
 ) {
-  return factory()->on([this, ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc, bc] 
+  return factory()->on([this, ta, tb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc, bc]
   (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;
@@ -151,7 +151,7 @@ cudaTask cublasFlowCapturer::c_gemm_batched(
   );
 }
 
-// Function: gemm_sbatched (strided)    
+// Function: gemm_sbatched (strided)
 template <typename T>
 cudaTask cublasFlowCapturer::gemm_sbatched(
   cublasOperation_t ta, cublasOperation_t tb,
@@ -163,7 +163,7 @@ cudaTask cublasFlowCapturer::gemm_sbatched(
   T *C, int ldc, long long int sC,
   int bc
 ) {
-  return factory()->on([this, ta, tb, m, n, k, alpha, A, lda, sA, B, ldb, sB, beta, C, ldc, sC, bc] 
+  return factory()->on([this, ta, tb, m, n, k, alpha, A, lda, sA, B, ldb, sB, beta, C, ldc, sC, bc]
   (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;
@@ -182,7 +182,7 @@ cudaTask cublasFlowCapturer::gemm_sbatched(
   });
 }
 
-// Function: c_gemm_sbatched (strided)    
+// Function: c_gemm_sbatched (strided)
 template <typename T>
 cudaTask cublasFlowCapturer::c_gemm_sbatched(
   cublasOperation_t ta, cublasOperation_t tb,
@@ -199,7 +199,7 @@ cudaTask cublasFlowCapturer::c_gemm_sbatched(
   );
 }
 
-// symm    
+// symm
 template <typename T>
 cudaTask cublasFlowCapturer::symm(
   cublasSideMode_t side, cublasFillMode_t uplo,
@@ -211,7 +211,7 @@ cudaTask cublasFlowCapturer::symm(
   T *C, int ldc
 ) {
   return factory()->on(
-  [this, side, uplo, m, n, alpha, A, lda, B, ldb, beta, C, ldc] 
+  [this, side, uplo, m, n, alpha, A, lda, B, ldb, beta, C, ldc]
   (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;
@@ -230,7 +230,7 @@ cudaTask cublasFlowCapturer::symm(
   });
 }
 
-// c_symm    
+// c_symm
 template <typename T>
 cudaTask cublasFlowCapturer::c_symm(
   cublasSideMode_t side, cublasFillMode_t uplo,
@@ -246,7 +246,7 @@ cudaTask cublasFlowCapturer::c_symm(
     n, m, alpha, A, lda, B, ldb, beta, C, ldc
   );
 }
-    
+
 // syrk
 template <typename T>
 cudaTask cublasFlowCapturer::syrk(
@@ -258,7 +258,7 @@ cudaTask cublasFlowCapturer::syrk(
   T *C, int ldc
 ) {
   return factory()->on(
-  [this, uplo, tran, n, k, alpha, A, lda, beta, C, ldc] 
+  [this, uplo, tran, n, k, alpha, A, lda, beta, C, ldc]
   (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;
@@ -288,7 +288,7 @@ cudaTask cublasFlowCapturer::c_syrk(
   T *C, int ldc
 ) {
   return syrk(
-    cublas_rfill(uplo), cublas_rtran<T>(tran), 
+    cublas_rfill(uplo), cublas_rtran<T>(tran),
     n, k, alpha, A, lda, beta, C, ldc
   );
 }
@@ -305,7 +305,7 @@ cudaTask cublasFlowCapturer::syr2k(
   T *C, int ldc
 ) {
   return factory()->on(
-  [this, uplo, tran, n, k, alpha, A, lda, B, ldb, beta, C, ldc] 
+  [this, uplo, tran, n, k, alpha, A, lda, B, ldb, beta, C, ldc]
   (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;
@@ -353,7 +353,7 @@ cudaTask cublasFlowCapturer::syrkx(
   T *C, int ldc
 ) {
   return factory()->on(
-  [this, uplo, tran, n, k, alpha, A, lda, B, ldb, beta, C, ldc] 
+  [this, uplo, tran, n, k, alpha, A, lda, B, ldb, beta, C, ldc]
   (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;
@@ -400,9 +400,9 @@ cudaTask cublasFlowCapturer::trmm(
   const T *B, int ldb,
   T *C, int ldc
 ) {
-  
+
   return factory()->on(
-  [this, side, uplo, tran, diag, m, n, alpha, A, lda, B, ldb, C, ldc] 
+  [this, side, uplo, tran, diag, m, n, alpha, A, lda, B, ldb, C, ldc]
   (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;
@@ -437,7 +437,7 @@ cudaTask cublasFlowCapturer::c_trmm(
     n, m, alpha, A, lda, B, ldb, C, ldc
   );
 }
-    
+
 // trsm
 template <typename T>
 cudaTask cublasFlowCapturer::trsm(
@@ -450,7 +450,7 @@ cudaTask cublasFlowCapturer::trsm(
 ) {
 
   return factory()->on(
-  [this, side, uplo, tran, diag, m, n, alpha, A, lda, B, ldb] 
+  [this, side, uplo, tran, diag, m, n, alpha, A, lda, B, ldb]
   (cudaStream_t stream) mutable {
     _stream(stream);
     cublasStatus_t stat;

@@ -47,7 +47,7 @@ int main() {
 
   const size_t num_lines = 2;
   const size_t num_pipes = 3;
-  
+
   // define the taskflow storage
   // we use the pipe dimension because we create three 'serial' pipes
   std::array<tf::Taskflow, num_pipes> taskflows;
@@ -70,7 +70,7 @@ int main() {
       printf("begin token %zu\n", pf.token());
       executor.run(taskflows[pf.pipe()]).wait();
     }},
-    
+
     // second pipe runs taskflow2
     tf::Pipe{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) {
       executor.run(taskflows[pf.pipe()]).wait();

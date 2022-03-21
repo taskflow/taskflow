@@ -4,14 +4,14 @@
 void linear_chain(
   const std::string& model,
   const size_t log_length,
-  const unsigned num_threads, 
+  const unsigned num_threads,
   const unsigned num_rounds
   ) {
 
   std::cout << std::setw(12) << "length"
             << std::setw(12) << "runtime"
             << std::endl;
-  
+
   for(size_t i=1; i<=log_length; ++i) {
 
     size_t L = 1 << i;
@@ -41,13 +41,13 @@ int main(int argc, char* argv[]) {
 
   CLI::App app{"LinearChain"};
 
-  unsigned num_threads {1}; 
+  unsigned num_threads {1};
   app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
 
-  unsigned num_rounds {1};  
+  unsigned num_rounds {1};
   app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
-  
-  size_t log_length {25};  
+
+  size_t log_length {25};
   app.add_option("-l,--log_length", log_length, "length in log scale (default=25)");
 
   std::string model = "tf";
@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
      });
 
   CLI11_PARSE(app, argc, argv);
-   
+
   std::cout << "model=" << model << ' '
             << "num_threads=" << num_threads << ' '
             << "num_rounds=" << num_rounds << ' '

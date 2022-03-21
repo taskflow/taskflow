@@ -44,10 +44,10 @@ void mnist(
   const std::string& model,
   const unsigned min_epochs,
   const unsigned max_epochs,
-  const unsigned num_threads, 
+  const unsigned num_threads,
   const unsigned num_rounds
 ) {
-  
+
   std::cout << std::setw(12) << "epochs"
             << std::setw(12) << "runtime"
             << std::endl;
@@ -57,7 +57,7 @@ void mnist(
     double runtime  {0.0};
 
     for(unsigned i=0; i<num_rounds; i++) {
-    
+
       if(model == "tf") {
         runtime += measure_time_taskflow(epochs, num_threads).count();
       }
@@ -82,16 +82,16 @@ int main(int argc, char *argv[]){
 
   CLI::App app{"DNN Training on MNIST Dataset"};
 
-  unsigned num_threads {1}; 
+  unsigned num_threads {1};
   app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
 
-  unsigned max_epochs {100}; 
+  unsigned max_epochs {100};
   app.add_option("-E,--max_epochs", max_epochs, "max number of epochs (default=100)");
-  
-  unsigned min_epochs {10}; 
+
+  unsigned min_epochs {10};
   app.add_option("-e,--min_epochs", min_epochs, "min number of epochs (default=10)");
 
-  unsigned num_rounds {1};  
+  unsigned num_rounds {1};
   app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
 
   std::string model = "tf";
@@ -104,7 +104,7 @@ int main(int argc, char *argv[]){
      });
 
   CLI11_PARSE(app, argc, argv);
-    
+
   std::cout << "model=" << model << ' '
             << "num_threads=" << num_threads << ' '
             << "num_rounds=" << num_rounds << ' '
@@ -113,7 +113,7 @@ int main(int argc, char *argv[]){
             << std::endl;
 
   mnist(model, min_epochs, max_epochs, num_threads, num_rounds);
-  
+
   return EXIT_SUCCESS;
 }
 

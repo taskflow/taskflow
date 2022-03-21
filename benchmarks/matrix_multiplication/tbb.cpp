@@ -8,11 +8,11 @@ void matrix_multiplication_tbb(unsigned num_threads) {
 
   using namespace tbb;
   using namespace tbb::flow;
-  
+
   tbb::global_control control(
     tbb::global_control::max_allowed_parallelism, num_threads
   );
- 
+
   //tbb::flow::graph G;
 
   //std::vector<std::unique_ptr<continue_node<continue_msg>>> tasks;
@@ -22,7 +22,7 @@ void matrix_multiplication_tbb(unsigned num_threads) {
 
   //auto sync = std::make_unique<continue_node<continue_msg>>(G, [](const continue_msg&){});
   //for(; i<N ; i++) {
-  //  tasks[i] = std::make_unique<continue_node<continue_msg>>(G, 
+  //  tasks[i] = std::make_unique<continue_node<continue_msg>>(G,
   //    [=, i=i](const continue_msg&){
   //      for(int j=0; j<N; ++j) {
   //        a[i][j] = i + j;
@@ -33,7 +33,7 @@ void matrix_multiplication_tbb(unsigned num_threads) {
   //}
 
   //for(; i<2*N ; i++) {
-  //  tasks[i] = std::make_unique<continue_node<continue_msg>>(G, 
+  //  tasks[i] = std::make_unique<continue_node<continue_msg>>(G,
   //    [=, i=i-N](const continue_msg&){
   //      for(int j=0; j<N; ++j) {
   //        b[i][j] = i * j;
@@ -44,7 +44,7 @@ void matrix_multiplication_tbb(unsigned num_threads) {
   //}
 
   //for(; i<3*N ; i++) {
-  //  tasks[i] = std::make_unique<continue_node<continue_msg>>(G, 
+  //  tasks[i] = std::make_unique<continue_node<continue_msg>>(G,
   //    [=, i=i-2*N](const continue_msg&){
   //      for(int j=0; j<N; ++j) {
   //        c[i][j] = 0;
@@ -55,8 +55,8 @@ void matrix_multiplication_tbb(unsigned num_threads) {
   //}
 
   //for(; i<4*N ; i++) {
-  //  tasks[i] = std::make_unique<continue_node<continue_msg>>(G, 
-  //    [=, i=i-3*N](const continue_msg&){ 
+  //  tasks[i] = std::make_unique<continue_node<continue_msg>>(G,
+  //    [=, i=i-3*N](const continue_msg&){
   //      for(int j=0; j<N; ++j) {
   //        for(int k=0; k<N; ++k) {
   //          c[i][j] += a[i][k] * b[k][j];
@@ -77,19 +77,19 @@ void matrix_multiplication_tbb(unsigned num_threads) {
       a[i][j] = i + j;
     }
   });
-  
+
   tbb::parallel_for(0, N, 1, [=](int i){
     for(int j=0; j<N; ++j) {
       b[i][j] = i * j;
     }
   });
-  
+
   tbb::parallel_for(0, N, 1, [=](int i){
     for(int j=0; j<N; ++j) {
       c[i][j] = 0;
     }
   });
-  
+
   tbb::parallel_for(0, N, 1, [=](int i){
     for(int j=0; j<N; ++j) {
       for(int k=0; k<N; k++) {

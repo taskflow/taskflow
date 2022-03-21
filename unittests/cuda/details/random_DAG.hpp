@@ -30,7 +30,7 @@ class RandomDAG: public Graph {
     //inline bool traversed();
 
   private:
-    
+
     size_t _max_nodes_per_level;
     size_t _max_edges_per_node;
 

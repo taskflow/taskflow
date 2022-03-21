@@ -1,13 +1,13 @@
 // A simple example to capture the following task dependencies.
 //
-//           +---+                 
-//     +---->| B |-----+           
-//     |     +---+     |           
-//   +---+           +-v-+         
-//   | A |           | D |         
-//   +---+           +-^-+         
-//     |     +---+     |           
-//     +---->| C |-----+           
+//           +---+
+//     +---->| B |-----+
+//     |     +---+     |
+//   +---+           +-v-+
+//   | A |           | D |
+//   +---+           +-^-+
+//     |     +---+     |
+//     +---->| C |-----+
 //           +---+
 //
 #include <taskflow/taskflow.hpp>  // the only include you need

@@ -25,7 +25,7 @@ struct Node {
   size_t idx;
   bool* visited{nullptr}; //allocated by cudaMallocManaged
 
-  std::vector<size_t> out_nodes; 
+  std::vector<size_t> out_nodes;
 };
 
 Node::Node(
@@ -62,7 +62,7 @@ class Graph {
 
     void print_graph(std::ostream& os);
 
-    Node& at(int level, int idx) { return _graph[level][idx]; } 
+    Node& at(int level, int idx) { return _graph[level][idx]; }
 
     const std::vector<std::vector<Node>>& get_graph() { return _graph; };
 
@@ -77,7 +77,7 @@ class Graph {
     std::vector<std::vector<Node>> _graph;
 
     bool* _visited_start{nullptr};
-    
+
     int _level;
 
     size_t _num_nodes{0};

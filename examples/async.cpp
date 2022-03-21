@@ -3,9 +3,9 @@
 #include <taskflow/taskflow.hpp>
 
 int main() {
-  
+
   tf::Executor executor;
-  
+
   // create asynchronous tasks from the executor
   // (using executor as a thread pool)
   tf::Future<std::optional<int>> future1 = executor.async([](){

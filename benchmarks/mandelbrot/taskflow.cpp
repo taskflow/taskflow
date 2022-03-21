@@ -1,5 +1,5 @@
 #include "mandel.hpp"
-#include <taskflow/taskflow.hpp> 
+#include <taskflow/taskflow.hpp>
 
 void mandelbrot_taskflow(unsigned num_threads, int d = D) {
 
@@ -16,7 +16,7 @@ void mandelbrot_taskflow(unsigned num_threads, int d = D) {
   });
 
   executor.run(taskflow).wait();
-} 
+}
 
 std::chrono::microseconds measure_time_taskflow(unsigned num_threads) {
   auto beg = std::chrono::high_resolution_clock::now();

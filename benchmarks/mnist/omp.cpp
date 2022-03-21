@@ -34,7 +34,7 @@ void run_omp(MNIST& D, unsigned num_threads) {
            #pragma omp task depend (out: dep_s[e]) firstprivate(e, num_par_shf) shared(D, mats, vecs)
            {
              if(e != 0) {
-               D.shuffle(mats[e%num_par_shf], vecs[e%num_par_shf], D.images.rows()); 
+               D.shuffle(mats[e%num_par_shf], vecs[e%num_par_shf], D.images.rows());
              }
            }
          }
@@ -59,7 +59,7 @@ void run_omp(MNIST& D, unsigned num_threads) {
              else {
                // use openmp array sections syntax [lower_bound: length]
                //#pragma omp task depend (in: dep_u[(i-1)*num_layers: num_layers]) depend (out: dep_f[i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
-               
+
                switch(num_layers) {
                  case 2:
                    #pragma omp task depend (in: dep_u[(i-1)*num_layers], dep_u[(i-1)*num_layers+1]) depend (out: dep_f[i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
@@ -92,25 +92,25 @@ void run_omp(MNIST& D, unsigned num_threads) {
            else {
              if(i == 0) {
                switch(num_layers) {
-                 case 2: 
+                 case 2:
                    #pragma omp task depend (in: dep_s[e], dep_u[e*prop_per_e - num_layers], dep_u[e*prop_per_e - num_layers+1]) depend (out: dep_f[e*iter_num+i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
                    {
                      forward_task(D, i, e%num_par_shf, mats, vecs);
                    }
                  break;
-                 case 3: 
+                 case 3:
                    #pragma omp task depend (in: dep_s[e], dep_u[e*prop_per_e - num_layers], dep_u[e*prop_per_e - num_layers+1], dep_u[e*prop_per_e - num_layers+2]) depend (out: dep_f[e*iter_num+i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
                    {
                      forward_task(D, i, e%num_par_shf, mats, vecs);
                    }
                  break;
-                 case 4: 
+                 case 4:
                    #pragma omp task depend (in: dep_s[e], dep_u[e*prop_per_e - num_layers], dep_u[e*prop_per_e - num_layers+1], dep_u[e*prop_per_e - num_layers+2], dep_u[e*prop_per_e - num_layers+3]) depend (out: dep_f[e*iter_num+i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
                    {
                      forward_task(D, i, e%num_par_shf, mats, vecs);
                    }
                  break;
-                 case 5: 
+                 case 5:
                    #pragma omp task depend (in: dep_s[e], dep_u[e*prop_per_e - num_layers], dep_u[e*prop_per_e - num_layers+1], dep_u[e*prop_per_e - num_layers+2], dep_u[e*prop_per_e - num_layers+3], dep_u[e*prop_per_e - num_layers+4]) depend (out: dep_f[e*iter_num+i]) firstprivate(i, e, num_par_shf) shared(D, mats, vecs)
                    {
                      forward_task(D, i, e%num_par_shf, mats, vecs);
@@ -153,7 +153,7 @@ void run_omp(MNIST& D, unsigned num_threads) {
              }
            }
 
-           // Backward tasks   
+           // Backward tasks
            for(int j=num_layers-1; j>=0; j--) {
              if(j == num_layers-1) {
                #pragma omp task depend (in: dep_f[e*iter_num + i]) depend (out: dep_b[e*prop_per_e + i*num_layers + j]) firstprivate(j, e, num_par_shf) shared(D, mats)
@@ -169,7 +169,7 @@ void run_omp(MNIST& D, unsigned num_threads) {
              }
            }
 
-           // Update tasks   
+           // Update tasks
            for(int j=num_layers-1; j>=0; j--) {
              #pragma omp task depend (in: dep_b[e*prop_per_e + i*num_layers + j]) depend (out: dep_u[e*prop_per_e + i*num_layers + j]) firstprivate(j) shared(D)
              {
@@ -177,11 +177,11 @@ void run_omp(MNIST& D, unsigned num_threads) {
              }
            }
 
-         } // End of one iteration 
-       } // End of one epoch 
+         } // End of one iteration
+       } // End of one epoch
 
     #pragma omp taskwait
-    } // End of omp single 
+    } // End of omp single
   } // End of omp parallel
 
   delete [] dep_s;

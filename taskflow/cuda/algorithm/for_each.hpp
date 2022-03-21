@@ -2,7 +2,7 @@
 
 #include "../cudaflow.hpp"
 
-/** 
+/**
 @file taskflow/cuda/algorithm/for_each.hpp
 @brief cuda parallel-iteration algorithms include file
 */
@@ -84,7 +84,7 @@ void cuda_single_task(P&& p, C c) {
 @param last iterator to the end of the range
 @param c unary operator to apply to each dereferenced iterator
 
-This function is equivalent to a parallel execution of the following loop 
+This function is equivalent to a parallel execution of the following loop
 on a GPU:
 
 @code{.cpp}
@@ -95,9 +95,9 @@ for(auto itr = first; itr != last; itr++) {
 */
 template <typename P, typename I, typename C>
 void cuda_for_each(P&& p, I first, I last, C c) {
-  
+
   unsigned count = std::distance(first, last);
-  
+
   if(count == 0) {
     return;
   }
@@ -106,7 +106,7 @@ void cuda_for_each(P&& p, I first, I last, C c) {
 }
 
 /**
-@brief performs asynchronous parallel iterations over 
+@brief performs asynchronous parallel iterations over
        an index-based range of items
 
 @tparam P execution policy type
@@ -119,7 +119,7 @@ void cuda_for_each(P&& p, I first, I last, C c) {
 @param inc step size between successive iterations
 @param c unary operator to apply to each index
 
-This function is equivalent to a parallel execution of 
+This function is equivalent to a parallel execution of
 the following loop on a GPU:
 
 @code{.cpp}
@@ -136,13 +136,13 @@ for(auto i=first; i>last; i+=step) {
 */
 template <typename P, typename I, typename C>
 void cuda_for_each_index(P&& p, I first, I last, I inc, C c) {
-  
+
   if(is_range_invalid(first, last, inc)) {
     TF_THROW("invalid range [", first, ", ", last, ") with inc size ", inc);
   }
-  
+
   unsigned count = distance(first, last, inc);
-  
+
   if(count == 0) {
     return;
   }

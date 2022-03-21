@@ -1,10 +1,10 @@
 #include "reduce_sum.hpp"
-#include <taskflow/taskflow.hpp> 
+#include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/reduce.hpp>
 
 void reduce_sum_taskflow(unsigned num_threads) {
 
-  tf::Executor executor(num_threads); 
+  tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
   double result;
@@ -13,7 +13,7 @@ void reduce_sum_taskflow(unsigned num_threads) {
     return l + r;
   });
 
-  executor.run(taskflow).get(); 
+  executor.run(taskflow).get();
 }
 
 std::chrono::microseconds measure_time_taskflow(unsigned num_threads) {

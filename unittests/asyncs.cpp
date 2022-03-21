@@ -14,7 +14,7 @@ void async(unsigned W) {
   std::vector<tf::Future<std::optional<int>>> fus;
 
   std::atomic<int> counter(0);
-  
+
   int N = 100000;
 
   for(int i=0; i<N; ++i) {
@@ -23,12 +23,12 @@ void async(unsigned W) {
       return -2;
     }));
   }
-  
+
   executor.wait_for_all();
 
   REQUIRE(counter == N);
-  
-  int c = 0; 
+
+  int c = 0;
   for(auto& fu : fus) {
     c += fu.get().value();
   }
@@ -37,23 +37,23 @@ void async(unsigned W) {
 }
 
 TEST_CASE("Async.1thread" * doctest::timeout(300)) {
-  async(1);  
+  async(1);
 }
 
 TEST_CASE("Async.2threads" * doctest::timeout(300)) {
-  async(2);  
+  async(2);
 }
 
 TEST_CASE("Async.4threads" * doctest::timeout(300)) {
-  async(4);  
+  async(4);
 }
 
 TEST_CASE("Async.8threads" * doctest::timeout(300)) {
-  async(8);  
+  async(8);
 }
 
 TEST_CASE("Async.16threads" * doctest::timeout(300)) {
-  async(16);  
+  async(16);
 }
 
 // --------------------------------------------------------
@@ -67,7 +67,7 @@ void nested_async(unsigned W) {
   std::vector<tf::Future<std::optional<int>>> fus;
 
   std::atomic<int> counter(0);
-  
+
   int N = 100000;
 
   for(int i=0; i<N; ++i) {
@@ -85,12 +85,12 @@ void nested_async(unsigned W) {
       return -2;
     }));
   }
-  
+
   executor.wait_for_all();
 
   REQUIRE(counter == 4*N);
-  
-  int c = 0; 
+
+  int c = 0;
   for(auto& fu : fus) {
     c += fu.get().value();
   }
@@ -99,23 +99,23 @@ void nested_async(unsigned W) {
 }
 
 TEST_CASE("NestedAsync.1thread" * doctest::timeout(300)) {
-  nested_async(1);  
+  nested_async(1);
 }
 
 TEST_CASE("NestedAsync.2threads" * doctest::timeout(300)) {
-  nested_async(2);  
+  nested_async(2);
 }
 
 TEST_CASE("NestedAsync.4threads" * doctest::timeout(300)) {
-  nested_async(4);  
+  nested_async(4);
 }
 
 TEST_CASE("NestedAsync.8threads" * doctest::timeout(300)) {
-  nested_async(8);  
+  nested_async(8);
 }
 
 TEST_CASE("NestedAsync.16threads" * doctest::timeout(300)) {
-  nested_async(16);  
+  nested_async(16);
 }
 
 // --------------------------------------------------------
@@ -123,14 +123,14 @@ TEST_CASE("NestedAsync.16threads" * doctest::timeout(300)) {
 // --------------------------------------------------------
 
 void mixed_async(unsigned W) {
-  
+
   tf::Taskflow taskflow;
   tf::Executor executor(W);
 
   std::atomic<int> counter(0);
 
   int N = 1000;
-  
+
   for(int i=0; i<N; i=i+1) {
     tf::Task A, B, C, D;
     std::tie(A, B, C, D) = taskflow.emplace(
@@ -159,7 +159,7 @@ void mixed_async(unsigned W) {
     A.precede(B, C);
     D.succeed(B, C);
   }
-  
+
   executor.run(taskflow);
   executor.wait_for_all();
 
@@ -168,23 +168,23 @@ void mixed_async(unsigned W) {
 }
 
 TEST_CASE("MixedAsync.1thread" * doctest::timeout(300)) {
-  mixed_async(1);  
+  mixed_async(1);
 }
 
 TEST_CASE("MixedAsync.2threads" * doctest::timeout(300)) {
-  mixed_async(2);  
+  mixed_async(2);
 }
 
 TEST_CASE("MixedAsync.4threads" * doctest::timeout(300)) {
-  mixed_async(4);  
+  mixed_async(4);
 }
 
 TEST_CASE("MixedAsync.8threads" * doctest::timeout(300)) {
-  mixed_async(8);  
+  mixed_async(8);
 }
 
 TEST_CASE("MixedAsync.16threads" * doctest::timeout(300)) {
-  mixed_async(16);  
+  mixed_async(16);
 }
 
 // --------------------------------------------------------
@@ -192,7 +192,7 @@ TEST_CASE("MixedAsync.16threads" * doctest::timeout(300)) {
 // --------------------------------------------------------
 
 void subflow_async(size_t W) {
-  
+
   tf::Taskflow taskflow;
   tf::Executor executor(W);
 
@@ -204,7 +204,7 @@ void subflow_async(size_t W) {
   auto B = taskflow.emplace(
     [&](){ counter.fetch_add(1, std::memory_order_relaxed); }
   );
-  
+
   taskflow.emplace(
     [&](){ counter.fetch_add(1, std::memory_order_relaxed); }
   );
@@ -214,14 +214,14 @@ void subflow_async(size_t W) {
       sf.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
     }
   });
-  
+
   auto S2 = taskflow.emplace([&] (tf::Subflow& sf){
     sf.emplace([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
     for(int i=0; i<100; i++) {
       sf.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
     }
   });
-  
+
   taskflow.emplace([&] (tf::Subflow& sf){
     sf.emplace([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
     for(int i=0; i<100; i++) {
@@ -229,7 +229,7 @@ void subflow_async(size_t W) {
     }
     sf.join();
   });
-  
+
   taskflow.emplace([&] (tf::Subflow& sf){
     for(int i=0; i<100; i++) {
       sf.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
@@ -262,13 +262,13 @@ TEST_CASE("SubflowAsync.11threads") {
 // --------------------------------------------------------
 
 void nested_subflow_async(size_t W) {
-  
+
   tf::Taskflow taskflow;
   tf::Executor executor(W);
 
   std::atomic<int> counter{0};
 
-  taskflow.emplace([&](tf::Subflow& sf1){ 
+  taskflow.emplace([&](tf::Subflow& sf1){
 
     for(int i=0; i<100; i++) {
       sf1.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });

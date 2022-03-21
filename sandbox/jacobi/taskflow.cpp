@@ -1,5 +1,5 @@
 #include "poisson.hpp"
-#include <taskflow/taskflow.hpp>  
+#include <taskflow/taskflow.hpp>
 #include <vector>
 
 /* #pragma omp task depend version of SWEEP. */
@@ -30,9 +30,9 @@ void taskflow(int nx, int ny, double dx, double dy, double *f_,
           for (int j = 0; j < ny; j++) {
             if(i == 0 || j == 0 || i == nx - 1 || j == ny - 1) {
               unew[i*ny + j] = f[i*ny + j];
-            } 
+            }
             else {
-              unew[i*ny + j] = 0.25 * (u[(i-1)*ny + j] + u[i* ny + j + 1] + 
+              unew[i*ny + j] = 0.25 * (u[(i-1)*ny + j] + u[i* ny + j + 1] +
                                        u[(i)*ny + j-1] + u[(i+1)* ny + j] +
                                        f[i*ny + j] * dx * dy);
             }

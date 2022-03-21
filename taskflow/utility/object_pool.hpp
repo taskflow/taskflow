@@ -3,7 +3,7 @@
 //
 // 2020/02/02 - modified by Tsung-Wei Huang
 //  - new implementation motivated by Hoard
-// 
+//
 // 2019/07/10 - modified by Tsung-Wei Huang
 //  - replace raw pointer with smart pointer
 //
@@ -28,7 +28,7 @@ namespace tf {
 // Class: ObjectPool
 //
 // The class implements an efficient thread-safe object pool motivated
-// by the Hoard memory allocator algorithm. 
+// by the Hoard memory allocator algorithm.
 // Different from the normal memory allocator, object pool allocates
 // only one object at a time.
 //
@@ -44,13 +44,13 @@ namespace tf {
 // M = 30
 // F = 4
 // W = (30+4-1)/4 = 8
-// 
+//
 // b0: 0, 1, 2, 3, 4, 5, 6, 7
 // b1: 8, 9, 10, 11, 12, 13, 14, 15
 // b2: 16, 17, 18, 19, 20, 21, 22, 23
 // b3: 24, 25, 26, 27, 28, 29
 // b4: 30 (anything equal to M)
-// 
+//
 // Example scenario 2:
 // M = 32
 // F = 4
@@ -62,14 +62,14 @@ namespace tf {
 // b4: 32 (anything equal to M)
 //
 template <typename T, size_t S = 65536>
-class ObjectPool { 
-  
-  // the data column must be sufficient to hold the pointer in freelist  
+class ObjectPool {
+
+  // the data column must be sufficient to hold the pointer in freelist
   constexpr static size_t X = (std::max)(sizeof(T*), sizeof(T));
   //constexpr static size_t X = sizeof(long double) + std::max(sizeof(T*), sizeof(T));
   //constexpr static size_t M = (S - offsetof(Block, data)) / X;
   constexpr static size_t M = S / X;
-  constexpr static size_t F = 4;   
+  constexpr static size_t F = 4;
   constexpr static size_t B = F + 1;
   constexpr static size_t W = (M + F - 1) / F;
   constexpr static size_t K = 4;
@@ -81,7 +81,7 @@ class ObjectPool {
   static_assert(
     M >= 128, "block size S must be larger enough to pool at least 128 objects"
   );
-  
+
   struct Blocklist {
     Blocklist* prev;
     Blocklist* next;
@@ -110,7 +110,7 @@ class ObjectPool {
   };
 
   public:
-    
+
     /**
     @brief constructs an object pool from a number of anticipated threads
     */
@@ -120,18 +120,18 @@ class ObjectPool {
     @brief destructs the object pool
     */
     ~ObjectPool();
-    
+
     /**
     @brief acquires a pointer to a object constructed from a given argument list
     */
     template <typename... ArgsT>
     T* animate(ArgsT&&... args);
-    
+
     /**
     @brief recycles a object pointed by @c ptr and destroys it
     */
     void recycle(T* ptr);
-    
+
     size_t num_bins_per_local_heap() const;
     size_t num_objects_per_bin() const;
     size_t num_objects_per_block() const;
@@ -141,7 +141,7 @@ class ObjectPool {
     size_t num_local_heaps() const;
     size_t num_global_heaps() const;
     size_t num_heaps() const;
-    
+
     float emptiness_threshold() const;
 
   private:
@@ -158,7 +158,7 @@ class ObjectPool {
 
     template <class P, class Q>
     constexpr size_t _offset_in_class(const Q P::*member) const;
-    
+
     template <class P, class Q>
     constexpr P* _parent_class_of(Q*, const Q P::*member);
 
@@ -194,7 +194,7 @@ class ObjectPool {
     void _for_each_block(Blocklist*, C&&);
 
 };
-    
+
 // ----------------------------------------------------------------------------
 // ObjectPool definition
 // ----------------------------------------------------------------------------
@@ -224,20 +224,20 @@ ObjectPool<T, S>::~ObjectPool() {
   // clear local heaps
   for(auto& h : _lheaps) {
     for(size_t i=0; i<B; ++i) {
-      _for_each_block_safe(&h.lists[i], [] (Block* b) { 
-        //std::free(b); 
+      _for_each_block_safe(&h.lists[i], [] (Block* b) {
+        //std::free(b);
         delete b;
       });
     }
   }
-  
+
   // clear global heap
-  _for_each_block_safe(&_gheap.list, [] (Block* b) { 
+  _for_each_block_safe(&_gheap.list, [] (Block* b) {
     //std::free(b);
     delete b;
   });
 }
-    
+
 // Function: num_bins_per_local_heap
 template <typename T, size_t S>
 size_t ObjectPool<T, S>::num_bins_per_local_heap() const {
@@ -283,11 +283,11 @@ size_t ObjectPool<T, S>::num_heaps() const {
 // Function: capacity
 template <typename T, size_t S>
 size_t ObjectPool<T, S>::capacity() const {
-  
+
   size_t n = 0;
-  
+
   // global heap
-  for(auto p=_gheap.list.next; p!=&_gheap.list; p=p->next) {  
+  for(auto p=_gheap.list.next; p!=&_gheap.list; p=p->next) {
     n += M;
   };
 
@@ -304,9 +304,9 @@ template <typename T, size_t S>
 size_t ObjectPool<T, S>::num_available_objects() const {
 
   size_t n = 0;
-  
+
   // global heap
-  for(auto p=_gheap.list.next; p!=&_gheap.list; p=p->next) {  
+  for(auto p=_gheap.list.next; p!=&_gheap.list; p=p->next) {
     n += (M - _block_of(p)->u);
   };
 
@@ -320,11 +320,11 @@ size_t ObjectPool<T, S>::num_available_objects() const {
 // Function: num_allocated_objects
 template <typename T, size_t S>
 size_t ObjectPool<T, S>::num_allocated_objects() const {
-  
+
   size_t n = 0;
-  
+
   // global heap
-  for(auto p=_gheap.list.next; p!=&_gheap.list; p=p->next) {  
+  for(auto p=_gheap.list.next; p!=&_gheap.list; p=p->next) {
     n += _block_of(p)->u;
   };
 
@@ -370,14 +370,14 @@ constexpr P* ObjectPool<T, S>::_parent_class_of(
 
 // Function: _block_of
 template <typename T, size_t S>
-constexpr typename ObjectPool<T, S>::Block* 
+constexpr typename ObjectPool<T, S>::Block*
 ObjectPool<T, S>::_block_of(Blocklist* list) {
   return _parent_class_of(list, &Block::list_node);
 }
 
 // Function: _block_of
 template <typename T, size_t S>
-constexpr typename ObjectPool<T, S>::Block* 
+constexpr typename ObjectPool<T, S>::Block*
 ObjectPool<T, S>::_block_of(const Blocklist* list) const {
   return _parent_class_of(list, &Block::list_node);
 }
@@ -391,7 +391,7 @@ void ObjectPool<T, S>::_blocklist_init_head(Blocklist *list) {
 
 // Procedure: _blocklist_add_impl
 // Insert a new entry between two known consecutive entries.
-// 
+//
 // This is only for internal list manipulation where we know
 // the prev/next entries already!
 template <typename T, size_t S>
@@ -407,10 +407,10 @@ void ObjectPool<T, S>::_blocklist_add_impl(
 // list_push_front - add a new entry
 // @curr: curr entry to be added
 // @head: list head to add it after
-// 
+//
 // Insert a new entry after the specified head.
 // This is good for implementing stacks.
-// 
+//
 template <typename T, size_t S>
 void ObjectPool<T, S>::_blocklist_push_front(
   Blocklist *curr, Blocklist *head
@@ -421,10 +421,10 @@ void ObjectPool<T, S>::_blocklist_push_front(
 // list_add_tail - add a new entry
 // @curr: curr entry to be added
 // @head: list head to add it before
-// 
+//
 // Insert a new entry before the specified head.
 // This is useful for implementing queues.
-// 
+//
 template <typename T, size_t S>
 void ObjectPool<T, S>::_blocklist_push_back(
   Blocklist *curr, Blocklist *head
@@ -434,10 +434,10 @@ void ObjectPool<T, S>::_blocklist_push_back(
 
 // Delete a list entry by making the prev/next entries
 // point to each other.
-// 
+//
 // This is only for internal list manipulation where we know
 // the prev/next entries already!
-// 
+//
 template <typename T, size_t S>
 void ObjectPool<T, S>::_blocklist_del_impl(
   Blocklist * prev, Blocklist * next
@@ -460,7 +460,7 @@ void ObjectPool<T, S>::_blocklist_del(Blocklist *entry) {
 // list_replace - replace old entry by new one
 // @old : the element to be replaced
 // @curr : the new element to insert
-// 
+//
 // If @old was empty, it will be overwritten.
 template <typename T, size_t S>
 void ObjectPool<T, S>::_blocklist_replace(
@@ -539,7 +539,7 @@ void ObjectPool<T, S>::_for_each_block(Blocklist* head, C&& c) {
     c(_block_of(p));
   }
 }
-      
+
 // Procedure: _for_each_block_safe
 // Iterate each item of a list - safe to free
 template <typename T, size_t S>
@@ -579,14 +579,14 @@ template <typename... ArgsT>
 T* ObjectPool<T, S>::animate(ArgsT&&... args) {
 
   //std::cout << "construct a new item\n";
-  
+
   // my logically mapped heap
-  LocalHeap& h = _this_heap(); 
-  
+  LocalHeap& h = _this_heap();
+
   Block* s {nullptr};
 
   h.mutex.lock();
-  
+
   // scan the list of superblocks from most full to least
   int f = static_cast<int>(F-1);
   for(; f>=0; f--) {
@@ -595,16 +595,16 @@ T* ObjectPool<T, S>::animate(ArgsT&&... args) {
       break;
     }
   }
-  
+
   // no superblock found
   if(f == -1) {
 
     // check heap 0 for a superblock
     _gheap.mutex.lock();
     if(!_blocklist_is_empty(&_gheap.list)) {
-      
+
       s = _block_of(_gheap.list.next);
-      
+
       //printf("get a superblock from global heap %lu\n", s->u);
       assert(s->u < M && s->heap == nullptr);
       f = static_cast<int>(_bin(s->u + 1));
@@ -639,7 +639,7 @@ T* ObjectPool<T, S>::animate(ArgsT&&... args) {
       h.a = h.a + M;
     }
   }
-  
+
   // the superblock must have at least one space
   //assert(s->u < M);
   //printf("%lu %lu %lu\n", h.u, h.a, s->u);
@@ -650,9 +650,9 @@ T* ObjectPool<T, S>::animate(ArgsT&&... args) {
 
   // take one item from the superblock
   T* mem = _allocate(s);
-  
+
   int b = static_cast<int>(_bin(s->u));
-  
+
   if(b != f) {
     //printf("move superblock from list[%d] to list[%d]\n", f, b);
     _blocklist_move_front(&s->list_node, &h.lists[b]);
@@ -673,7 +673,7 @@ T* ObjectPool<T, S>::animate(ArgsT&&... args) {
 
   return mem;
 }
-  
+
 // Function: destruct
 template <typename T, size_t S>
 void ObjectPool<T, S>::recycle(T* mem) {
@@ -687,7 +687,7 @@ void ObjectPool<T, S>::recycle(T* mem) {
   Block* s = static_cast<Block*>(mem->_object_pool_block);
 
   mem->~T();
-  
+
   //printf("deallocate %p (s=%p) M=%lu W=%lu X=%lu\n", mem, s, M, W, X);
 
   // here we need a loop because when we lock the heap,
@@ -696,7 +696,7 @@ void ObjectPool<T, S>::recycle(T* mem) {
 
   do {
     LocalHeap* h = s->heap.load(std::memory_order_relaxed);
-    
+
     // the block is in global heap
     if(h == nullptr) {
       std::lock_guard<std::mutex> glock(_gheap.mutex);
@@ -742,14 +742,14 @@ void ObjectPool<T, S>::recycle(T* mem) {
       }
     }
   } while(!sync);
-  
+
   //std::cout << "s.i " << s->i << '\n'
   //          << "s.u " << s->u << '\n';
 }
-    
+
 // Function: _this_heap
 template <typename T, size_t S>
-typename ObjectPool<T, S>::LocalHeap& 
+typename ObjectPool<T, S>::LocalHeap&
 ObjectPool<T, S>::_this_heap() {
   // here we don't use thread local since object pool might be
   // created and destroyed multiple times
@@ -763,16 +763,16 @@ ObjectPool<T, S>::_this_heap() {
 
 // Function: _next_pow2
 template <typename T, size_t S>
-constexpr unsigned ObjectPool<T, S>::_next_pow2(unsigned n) const { 
+constexpr unsigned ObjectPool<T, S>::_next_pow2(unsigned n) const {
   if(n == 0) return 1;
-  n--; 
-  n |= n >> 1; 
-  n |= n >> 2; 
-  n |= n >> 4; 
-  n |= n >> 8; 
-  n |= n >> 16; 
-  n++; 
-  return n; 
-}  
+  n--;
+  n |= n >> 1;
+  n |= n >> 2;
+  n |= n >> 4;
+  n |= n >> 8;
+  n |= n >> 16;
+  n++;
+  return n;
+}
 
 }  // end namespace tf --------------------------------------------------------

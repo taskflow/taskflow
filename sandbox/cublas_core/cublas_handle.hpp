@@ -2,7 +2,7 @@
 
 #include "cublas_error.hpp"
 
-/** 
+/**
 @file cublas_handle.hpp
 */
 
@@ -58,7 +58,7 @@ inline cublasPerThreadHandlePool& cublas_per_thread_handle_pool() {
 @brief class to provide RAII-styled guard of cublas handle acquisition
 
 Sample usage:
-    
+
 @code{.cpp}
 {
   tf::cublasScopedPerThreadHandle handle(1);  // acquires a cublas handle on device 1
@@ -77,7 +77,7 @@ The scoped per-thread cublas handle is primarily used by tf::cublasFlowCapturer.
 %cublasScopedPerThreadHandle is non-copyable.
  */
 class cublasScopedPerThreadHandle {
-  
+
   public:
 
   /**
@@ -85,16 +85,16 @@ class cublasScopedPerThreadHandle {
 
   The constructor acquires a handle from a per-thread handle pool.
   */
-  explicit cublasScopedPerThreadHandle(int d) : 
+  explicit cublasScopedPerThreadHandle(int d) :
     _ptr {cublas_per_thread_handle_pool().acquire(d)} {
   }
-  
+
   /**
   @brief constructs a scoped handle under caller's device context
 
   The constructor acquires a handle from a per-thread handle pool.
   */
-  cublasScopedPerThreadHandle() : 
+  cublasScopedPerThreadHandle() :
     _ptr {cublas_per_thread_handle_pool().acquire(cuda_get_device())} {
   }
 
@@ -122,12 +122,12 @@ class cublasScopedPerThreadHandle {
   long use_count() const {
     return _ptr.use_count();
   }
-  
+
   /**
   @brief disabled copy constructor
    */
   cublasScopedPerThreadHandle(const cublasScopedPerThreadHandle&) = delete;
-  
+
   /**
   @brief default move constructor
   */

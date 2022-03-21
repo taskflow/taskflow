@@ -11,11 +11,11 @@ int main() {
 
     std::cout << "Platform   : "
 	            << platform.get_info<sycl::info::platform::name>() << '\n'
-              << "is_host    : " 
+              << "is_host    : "
               << platform.is_host() << '\n'
-              << "version    : " 
+              << "version    : "
               << platform.get_info<sycl::info::platform::version>() << '\n'
-              << "vendor     : " 
+              << "vendor     : "
               << platform.get_info<sycl::info::platform::vendor>() << '\n'
               << "profile    : "
               << platform.get_info<sycl::info::platform::profile>() << '\n';
@@ -38,11 +38,11 @@ int main() {
                 << "  is_cpu             : " << device.is_cpu() << '\n'
                 << "  is_gpu             : " << device.is_gpu() << '\n'
                 << "  is_accelerator     : " << device.is_accelerator() << '\n'
-                << "  max_work_group_size: " 
+                << "  max_work_group_size: "
                 << device.get_info<sycl::info::device::max_work_group_size>() << '\n'
-                << "  local_mem_size     : " 
+                << "  local_mem_size     : "
                 << device.get_info<sycl::info::device::local_mem_size>() << '\n';
-      
+
       // submitting a kernel to the sycl device
       auto queue = sycl::queue(device);
       queue.submit([](sycl::handler& handler){

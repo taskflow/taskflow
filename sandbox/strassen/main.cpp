@@ -26,13 +26,13 @@
 
 void strassen_alg(
   const std::string& model,
-  const unsigned num_threads, 
+  const unsigned num_threads,
   const unsigned num_rounds
   ) {
 
   std::cout << std::setw(12) << "runtime"
             << std::endl;
-  
+
   double runtime {0.0};
 
   for(unsigned j=0; j<num_rounds; ++j) {
@@ -56,17 +56,17 @@ void strassen_alg(
 
 
 /***********************************************************************
- * main: 
+ * main:
  **********************************************************************/
 int main(int argc, char* argv[]) {
   CLI::App app{"Strassen algorithm for matrix multiplication"};
 
-  unsigned num_threads {1}; 
+  unsigned num_threads {1};
   app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
 
-  unsigned num_rounds {1};  
+  unsigned num_rounds {1};
   app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
-  
+
   bool check_result {false};
   app.add_option("-c,--check", check_result, "compare result with sequential mode (default=false)");
 
@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
      });
 
   CLI11_PARSE(app, argc, argv);
-   
+
   std::cout << "model=" << model << ' '
             << "num_threads=" << num_threads << ' '
             << "num_rounds=" << num_rounds << ' '
@@ -97,7 +97,7 @@ int main(int argc, char* argv[]) {
     double *D;
     D = alloc_matrix(MATRIX_SIZE);
     auto beg = std::chrono::high_resolution_clock::now();
-    //OptimizedStrassenMultiply_seq(D, MatrixA, MatrixB, MATRIX_SIZE, MATRIX_SIZE, MATRIX_SIZE, MATRIX_SIZE, 1);    
+    //OptimizedStrassenMultiply_seq(D, MatrixA, MatrixB, MATRIX_SIZE, MATRIX_SIZE, MATRIX_SIZE, MATRIX_SIZE, 1);
     auto end = std::chrono::high_resolution_clock::now();
     std::cout << "Seq: " << std::chrono::duration_cast<std::chrono::microseconds>(end - beg).count()/1e3 << std::endl;
     matrixmul(MATRIX_SIZE, MatrixA, MATRIX_SIZE, MatrixB, MATRIX_SIZE, D, MATRIX_SIZE);

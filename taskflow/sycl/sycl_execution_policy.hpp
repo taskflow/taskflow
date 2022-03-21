@@ -29,21 +29,21 @@ class syclExecutionPolicy {
   static_assert(is_pow2(NT), "max # threads per block must be a power of two");
 
   public:
-  
+
   /** @brief static constant for getting the number of threads per block */
-  const static unsigned nt = NT;     
-  
+  const static unsigned nt = NT;
+
   /** @brief static constant for getting the number of work units per thread */
   const static unsigned vt = VT;
-  
+
   /** @brief static constant for getting the number of elements to process per block */
   const static unsigned nv = NT*VT;
-  
+
   /**
   @brief constructs an execution policy object with the given queue
    */
   syclExecutionPolicy(sycl::queue& queue) : _queue{queue} {}
-  
+
   /**
   @brief returns an mutable reference to the associated queue
    */
@@ -53,7 +53,7 @@ class syclExecutionPolicy {
   @brief returns an immutable reference to the associated queue
    */
   const sycl::queue& queue() const noexcept { return _queue; }
-  
+
   private:
 
   sycl::queue& _queue;

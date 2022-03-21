@@ -2,7 +2,7 @@
 
 #include "../core/task.hpp"
 
-/** 
+/**
 @file critical.hpp
 @brief critical include file
 */
@@ -32,7 +32,7 @@ tf::Executor executor(8);   // create an executor of 8 workers
 tf::Taskflow taskflow;
 
 // create a critical section of 1 worker
-tf::CriticalSection critical_section(1); 
+tf::CriticalSection critical_section(1);
 
 tf::Task A = taskflow.emplace([](){ std::cout << "A" << std::endl; });
 tf::Task B = taskflow.emplace([](){ std::cout << "B" << std::endl; });
@@ -49,12 +49,12 @@ executor.run(taskflow).wait();
 class CriticalSection : public Semaphore {
 
   public:
-    
+
     /**
     @brief constructs a critical region of a limited number of workers
     */
     explicit CriticalSection(size_t max_workers = 1);
-    
+
     /**
     @brief adds a task into the critical region
     */
@@ -62,7 +62,7 @@ class CriticalSection : public Semaphore {
     void add(Tasks...tasks);
 };
 
-inline CriticalSection::CriticalSection(size_t max_workers) : 
+inline CriticalSection::CriticalSection(size_t max_workers) :
   Semaphore {max_workers} {
 }
 

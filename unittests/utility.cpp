@@ -14,7 +14,7 @@
 // --------------------------------------------------------
 TEST_CASE("SmallVector" * doctest::timeout(300)) {
 
-  //SUBCASE("constructor") 
+  //SUBCASE("constructor")
   {
     tf::SmallVector<int> vec1;
     REQUIRE(vec1.size() == 0);
@@ -27,7 +27,7 @@ TEST_CASE("SmallVector" * doctest::timeout(300)) {
     REQUIRE(vec2.capacity() == 4);
   }
 
-  //SUBCASE("constructor_n") 
+  //SUBCASE("constructor_n")
   {
     for(int N=0; N<=65536; N = (N ? N << 1 : 1)) {
       tf::SmallVector<int> vec(N);
@@ -38,14 +38,14 @@ TEST_CASE("SmallVector" * doctest::timeout(300)) {
     }
   }
 
-  //SUBCASE("copy_constructor") 
+  //SUBCASE("copy_constructor")
   {
     for(int N=0; N<=65536; N = (N ? N << 1 : 1)) {
       tf::SmallVector<int> vec1(N);
       for(auto& item : vec1) {
         item = N;
       }
-      
+
       tf::SmallVector<int> vec2(vec1);
       REQUIRE(vec1.size() == N);
       REQUIRE(vec2.size() == N);
@@ -55,15 +55,15 @@ TEST_CASE("SmallVector" * doctest::timeout(300)) {
       }
     }
   }
-  
-  //SUBCASE("move_constructor") 
+
+  //SUBCASE("move_constructor")
   {
     for(int N=0; N<=65536; N = (N ? N << 1 : 1)) {
       tf::SmallVector<int> vec1(N);
       for(auto& item : vec1) {
         item = N;
       }
-      
+
       tf::SmallVector<int> vec2(std::move(vec1));
       REQUIRE(vec1.size() == 0);
       REQUIRE(vec1.empty() == true);
@@ -75,7 +75,7 @@ TEST_CASE("SmallVector" * doctest::timeout(300)) {
     }
   }
 
-  //SUBCASE("push_back") 
+  //SUBCASE("push_back")
   {
     for(int N=0; N<=65536; N = (N ? N << 1 : 1)) {
       tf::SmallVector<int> vec;
@@ -95,7 +95,7 @@ TEST_CASE("SmallVector" * doctest::timeout(300)) {
     }
   }
 
-  //SUBCASE("pop_back") 
+  //SUBCASE("pop_back")
   {
     size_t size {0};
     size_t pcap {0};
@@ -120,7 +120,7 @@ TEST_CASE("SmallVector" * doctest::timeout(300)) {
     }
   }
 
-  //SUBCASE("iterator") 
+  //SUBCASE("iterator")
   {
     for(int N=0; N<=65536; N = (N ? N << 1 : 1)) {
       tf::SmallVector<int> vec;
@@ -128,7 +128,7 @@ TEST_CASE("SmallVector" * doctest::timeout(300)) {
         vec.push_back(n);
         REQUIRE(vec.size() == n+1);
       }
-      
+
       // non-constant iterator
       {
         int val {0};
@@ -137,7 +137,7 @@ TEST_CASE("SmallVector" * doctest::timeout(300)) {
           ++val;
         }
       }
-      
+
       // constant iterator
       {
         int val {0};
@@ -159,7 +159,7 @@ TEST_CASE("SmallVector" * doctest::timeout(300)) {
     }
   }
 
-  //SUBCASE("clear") 
+  //SUBCASE("clear")
   {
     for(int N=0; N<=65536; N = (N ? N << 1 : 1)) {
       tf::SmallVector<int> vec(N);
@@ -171,7 +171,7 @@ TEST_CASE("SmallVector" * doctest::timeout(300)) {
     }
   }
 
-  //SUBCASE("comparison") 
+  //SUBCASE("comparison")
   {
     for(int N=0; N<=65536; N = (N ? N << 1 : 1)) {
       tf::SmallVector<int> vec1;
@@ -201,12 +201,12 @@ TEST_CASE("distance.integral" * doctest::timeout(300)) {
     for(int end=-50; end<=50; ++end) {
       if(beg < end) {   // positive step
         for(int s=1; s<=50; s++) {
-          REQUIRE((tf::distance(beg, end, s) == count(beg, end, s))); 
+          REQUIRE((tf::distance(beg, end, s) == count(beg, end, s)));
         }
       }
       else {            // negative step
         for(int s=-1; s>=-50; s--) {
-          REQUIRE((tf::distance(beg, end, s) == count(beg, end, s))); 
+          REQUIRE((tf::distance(beg, end, s) == count(beg, end, s)));
         }
       }
     }
@@ -218,7 +218,7 @@ TEST_CASE("distance.integral" * doctest::timeout(300)) {
 // Testcase: ObjectPool.Sequential
 // --------------------------------------------------------
 void test_threaded_uuid(size_t N) {
-  
+
   std::vector<tf::UUID> uuids(65536);
 
   // threaded
@@ -237,7 +237,7 @@ void test_threaded_uuid(size_t N) {
   for(auto& t : threads) {
     t.join();
   }
-  
+
   auto size = uuids.size();
   std::sort(uuids.begin(), uuids.end());
   std::unique(uuids.begin(), uuids.end());
@@ -309,7 +309,7 @@ TEST_CASE("ObjectPool.Sequential" * doctest::timeout(300)) {
     REQUIRE(pool.num_objects_per_bin() > 0);
     REQUIRE(pool.num_objects_per_block() > 0);
     REQUIRE(pool.emptiness_threshold() > 0);
-    
+
     // fill out all objects
     size_t N = 100*pool.num_objects_per_block();
 
@@ -330,7 +330,7 @@ TEST_CASE("ObjectPool.Sequential" * doctest::timeout(300)) {
     REQUIRE(N == pool.capacity());
     REQUIRE(N == pool.num_available_objects());
     REQUIRE(0 == pool.num_allocated_objects());
-    
+
     for(size_t i=0; i<N; ++i) {
       auto item = pool.animate();
       REQUIRE(set.find(item) != set.end());
@@ -347,7 +347,7 @@ TEST_CASE("ObjectPool.Sequential" * doctest::timeout(300)) {
 
 template <typename T>
 void threaded_objectpool(unsigned W) {
-  
+
   tf::ObjectPool<T> pool;
 
   std::vector<std::thread> threads;
@@ -435,7 +435,7 @@ TEST_CASE("ObjectPool.15threads" * doctest::timeout(300)) {
 
 TEST_CASE("ObjectPool.16threads" * doctest::timeout(300)) {
   threaded_objectpool<Poolable>(16);
-} 
+}
 
 // --------------------------------------------------------
 // Testcase: Reference Wrapper
@@ -446,32 +446,32 @@ TEST_CASE("RefWrapper" * doctest::timeout(300)) {
   static_assert(std::is_same<
     tf::unwrap_reference_t<int>, int
   >::value, "");
-  
+
   static_assert(std::is_same<
     tf::unwrap_reference_t<int&>, int&
   >::value, "");
-  
+
   static_assert(std::is_same<
     tf::unwrap_reference_t<int&&>, int&&
   >::value, "");
-  
+
   static_assert(std::is_same<
     tf::unwrap_reference_t<std::reference_wrapper<int>>, int&
   >::value, "");
-  
+
   static_assert(std::is_same<
-    tf::unwrap_reference_t<std::reference_wrapper<std::reference_wrapper<int>>>, 
+    tf::unwrap_reference_t<std::reference_wrapper<std::reference_wrapper<int>>>,
     std::reference_wrapper<int>&
   >::value, "");
 
   static_assert(std::is_same<
     tf::unwrap_ref_decay_t<int>, int
   >::value, "");
-  
+
   static_assert(std::is_same<
     tf::unwrap_ref_decay_t<int&>, int
   >::value, "");
-  
+
   static_assert(std::is_same<
     tf::unwrap_ref_decay_t<int&&>, int
   >::value, "");
@@ -479,9 +479,9 @@ TEST_CASE("RefWrapper" * doctest::timeout(300)) {
   static_assert(std::is_same<
     tf::unwrap_ref_decay_t<std::reference_wrapper<int>>, int&
   >::value, "");
-  
+
   static_assert(std::is_same<
-    tf::unwrap_ref_decay_t<std::reference_wrapper<std::reference_wrapper<int>>>, 
+    tf::unwrap_ref_decay_t<std::reference_wrapper<std::reference_wrapper<int>>>,
     std::reference_wrapper<int>&
   >::value, "");
 
@@ -498,13 +498,13 @@ TEST_CASE("RefWrapper" * doctest::timeout(300)) {
 //}
 //
 //TEST_CASE("FunctionTraits" * doctest::timeout(300)) {
-//  
+//
 //  SUBCASE("func1") {
 //    using func1_traits = tf::function_traits<decltype(func1)>;
 //    static_assert(std::is_same<func1_traits::return_type, void>::value, "");
 //    static_assert(func1_traits::arity == 0, "");
 //  }
-//  
+//
 //  SUBCASE("func2") {
 //    using func2_traits = tf::function_traits<decltype(func2)>;
 //    static_assert(std::is_same<func2_traits::return_type, int>::value, "");
@@ -556,7 +556,7 @@ TEST_CASE("RefWrapper" * doctest::timeout(300)) {
 //    static_assert(ft2::arity == 2, "");
 //    static_assert(std::is_same<ft2::argument_t<0>, int&>::value, "");
 //    static_assert(std::is_same<ft2::argument_t<1>, double&&>::value, "");
-//    
+//
 //    using ft3 = tf::function_traits<std::function<int(int&, double&&)>&&>;
 //    static_assert(std::is_same<ft3::return_type, int>::value, "");
 //    static_assert(ft3::arity == 2, "");
@@ -590,7 +590,7 @@ TEST_CASE("NextPow2") {
   REQUIRE(tf::next_pow2(211u) == 256u);
   REQUIRE(tf::next_pow2(23u) == 32u);
   REQUIRE(tf::next_pow2(54u) == 64u);
-  
+
   uint64_t z = 0;
   uint64_t a = 1;
   REQUIRE(tf::next_pow2(z) == 1);
@@ -601,15 +601,15 @@ TEST_CASE("NextPow2") {
   REQUIRE(tf::next_pow2((a<<32) + 1) == (a<<33));
   REQUIRE(tf::next_pow2((a<<41) + 0) == (a<<41));
   REQUIRE(tf::next_pow2((a<<41) + 1) == (a<<42));
-  
-  REQUIRE(tf::is_pow2(0) == false);  
-  REQUIRE(tf::is_pow2(1) == true);  
-  REQUIRE(tf::is_pow2(2) == true);  
-  REQUIRE(tf::is_pow2(3) == false);  
+
+  REQUIRE(tf::is_pow2(0) == false);
+  REQUIRE(tf::is_pow2(1) == true);
+  REQUIRE(tf::is_pow2(2) == true);
+  REQUIRE(tf::is_pow2(3) == false);
   REQUIRE(tf::is_pow2(0u) == false);
   REQUIRE(tf::is_pow2(1u) == true);
-  REQUIRE(tf::is_pow2(54u) == false);  
-  REQUIRE(tf::is_pow2(64u) == true);  
+  REQUIRE(tf::is_pow2(54u) == false);
+  REQUIRE(tf::is_pow2(64u) == true);
 }
 
 

@@ -7,15 +7,15 @@ void binary_tree_tbb(size_t num_layers, unsigned num_threads) {
 
   using namespace tbb;
   using namespace tbb::flow;
-  
+
   tbb::global_control c(
     tbb::global_control::max_allowed_parallelism, num_threads
   );
 
   std::atomic<size_t> counter {0};
-   
+
   graph g;
-    
+
   std::vector<continue_node<continue_msg>*> tasks(1 << num_layers);
 
   for(unsigned i=1; i<tasks.size(); i++) {
@@ -25,7 +25,7 @@ void binary_tree_tbb(size_t num_layers, unsigned num_threads) {
       }
     );
   }
-  
+
   for(unsigned i=1; i<tasks.size(); i++) {
     unsigned l = i << 1;
     unsigned r = l + 1;
@@ -34,14 +34,14 @@ void binary_tree_tbb(size_t num_layers, unsigned num_threads) {
       make_edge(*tasks[i], *tasks[r]);
     }
   }
-  
+
   tasks[1]->try_put(continue_msg());
   g.wait_for_all();
 
   for(auto& task : tasks) {
     delete task;
   }
-  
+
   assert(counter + 1 == tasks.size());
 }
 

@@ -4,7 +4,7 @@
 // matrix_multiplication_omp
 // reference: https://computing.llnl.gov/tutorials/openMP/samples/C/omp_mm.c
 void matrix_multiplication_omp(unsigned nthreads) {
-  
+
   omp_set_num_threads(nthreads);
 
   int i, j, k;
@@ -15,21 +15,21 @@ void matrix_multiplication_omp(unsigned nthreads) {
       a[i][j] = i + j;
     }
   }
-  
+
   #pragma omp parallel for private(i, j)
   for(i=0; i<N; ++i) {
     for(j=0; j<N; j++) {
       b[i][j] = i * j;
     }
   }
-  
+
   #pragma omp parallel for private(i, j)
   for(i=0; i<N; ++i) {
     for(j=0; j<N; j++) {
       c[i][j] = 0;
     }
   }
-  
+
   #pragma omp parallel for private(i, j, k)
   for(i=0; i<N; ++i) {
     for(j=0; j<N; j++) {
@@ -38,7 +38,7 @@ void matrix_multiplication_omp(unsigned nthreads) {
       }
     }
   }
-  
+
   //int edge;
 
   //#pragma omp parallel shared(a, b, c, nthreads) private(i, j, k)
@@ -74,7 +74,7 @@ void matrix_multiplication_omp(unsigned nthreads) {
   //    }
   //  }
   //}
-  
+
   //std::cout << reduce_sum() << std::endl;
 }
 

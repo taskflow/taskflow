@@ -4,22 +4,22 @@
 
 class StrassenTBB: public tbb::task {
 
-  REAL *C; 
-  REAL *A; 
-  REAL *B; 
+  REAL *C;
+  REAL *A;
+  REAL *B;
   unsigned MatrixSize;
-  unsigned RowWidthC; 
-  unsigned RowWidthA; 
-  unsigned RowWidthB; 
+  unsigned RowWidthC;
+  unsigned RowWidthA;
+  unsigned RowWidthB;
   int Depth;
 
   public:
     StrassenTBB(REAL *C, REAL *A, REAL *B, unsigned MatrixSize,
-                unsigned RowWidthC, unsigned RowWidthA, unsigned RowWidthB, int Depth): 
-    C(C), A(A), B(B), 
-    MatrixSize(MatrixSize), 
+                unsigned RowWidthC, unsigned RowWidthA, unsigned RowWidthB, int Depth):
+    C(C), A(A), B(B),
+    MatrixSize(MatrixSize),
     RowWidthC(RowWidthC), RowWidthA(RowWidthA), RowWidthB(RowWidthB), Depth(Depth) {}
-  
+
     task* execute() {
       unsigned QuadrantSize = MatrixSize >> 1; /* MatixSize / 2 */
       unsigned QuadrantSizeInBytes = sizeof(REAL) * QuadrantSize * QuadrantSize
@@ -151,7 +151,7 @@ class StrassenTBB: public tbb::task {
         *new(allocate_child()) StrassenTBB(M5, S1, S5, QuadrantSize, QuadrantSize, QuadrantSize, QuadrantSize, Depth+1)
       );
 
-      /* Step 1 of T1 = S2 x S6 + M2 */ 
+      /* Step 1 of T1 = S2 x S6 + M2 */
       list.push_back(
         *new(allocate_child()) StrassenTBB(T1sMULT, S2, S6,  QuadrantSize, QuadrantSize, QuadrantSize, QuadrantSize, Depth+1)
       );
@@ -165,7 +165,7 @@ class StrassenTBB: public tbb::task {
       list.push_back(
         *new(allocate_child()) StrassenTBB(C11, A12, B21, QuadrantSize, RowWidthC, RowWidthA, RowWidthB, Depth+1)
       );
-      
+
       /* Step 1 of C12 = S4 x B22 + T1 + M5 */
       list.push_back(
         *new(allocate_child()) StrassenTBB(C12, S4, B22, QuadrantSize, RowWidthC, QuadrantSize, RowWidthB, Depth+1)

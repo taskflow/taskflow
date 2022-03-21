@@ -24,7 +24,7 @@ __global__ void cuda_matmul(
   size_t y = blockIdx.y * blockDim.y + threadIdx.y;
 
   T res = 0;
-    
+
   for(size_t k = 0; k < K; k += 32) {
     if((threadIdx.x + k) < K && y < M) {
       A_tile[threadIdx.y][threadIdx.x] = A[y * K + threadIdx.x + k];
@@ -32,7 +32,7 @@ __global__ void cuda_matmul(
     else{
       A_tile[threadIdx.y][threadIdx.x] = 0;
     }
-    
+
     if((threadIdx.y + k) < K && x < N) {
       B_tile[threadIdx.y][threadIdx.x] = B[(threadIdx.y + k) * N + x];
     }

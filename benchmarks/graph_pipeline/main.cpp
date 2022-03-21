@@ -1,14 +1,14 @@
 #include "levelgraph.hpp"
-#include <CLI11.hpp> 
+#include <CLI11.hpp>
 
 int main(int argc, char* argv[]) {
 
   CLI::App app{"Graph Pipeline"};
 
-  unsigned num_threads {1}; 
+  unsigned num_threads {1};
   app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
 
-  unsigned num_rounds {1};  
+  unsigned num_rounds {1};
   app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
 
   std::string model = "tf";
@@ -27,8 +27,8 @@ int main(int argc, char* argv[]) {
   app.add_option("-p,--pipes", pipes, "the number of pipes (default=8)");
 
   CLI11_PARSE(app, argc, argv);
-    
-  if(pipes == 0 || pipes > 16) {    
+
+  if(pipes == 0 || pipes > 16) {
     throw std::runtime_error("can only support 1-16 pipes");
   }
 
@@ -46,9 +46,9 @@ int main(int argc, char* argv[]) {
   for(int i = 1; i <= 451; i += 15) {
 
     double runtime {0.0};
-    
+
     LevelGraph graph(i, i);
-  
+
     for(unsigned j = 0; j < num_rounds; ++j) {
       if(model == "tf") {
         runtime += measure_time_taskflow(graph, pipes, num_lines, num_threads).count();
@@ -65,10 +65,10 @@ int main(int argc, char* argv[]) {
       graph.clear_graph();
     }
 
-    std::cout << std::setw(12) << graph.graph_size() 
+    std::cout << std::setw(12) << graph.graph_size()
               << std::setw(12) << runtime / num_rounds / 1e3
               << std::endl;
-    
+
     //if (model == "tf") {
     //  std::ofstream outputfile;
     //  outputfile.open("./tf_time.csv", std::ofstream::app);

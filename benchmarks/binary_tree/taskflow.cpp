@@ -1,5 +1,5 @@
 #include "binary_tree.hpp"
-#include <taskflow/taskflow.hpp> 
+#include <taskflow/taskflow.hpp>
 
 // binary_tree_taskflow
 void binary_tree_taskflow(size_t num_layers, unsigned num_threads) {
@@ -7,7 +7,7 @@ void binary_tree_taskflow(size_t num_layers, unsigned num_threads) {
   std::atomic<size_t> counter {0};
 
   std::vector<tf::Task> tasks(1 << num_layers);
-  
+
   tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
@@ -24,7 +24,7 @@ void binary_tree_taskflow(size_t num_layers, unsigned num_threads) {
       tasks[i].precede(tasks[l], tasks[r]);
     }
   }
-  
+
   executor.run(taskflow).get();
   assert(counter + 1 == tasks.size());
 }

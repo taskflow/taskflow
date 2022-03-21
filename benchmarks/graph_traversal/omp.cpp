@@ -7,21 +7,21 @@
 void traverse_regular_graph_omp(LevelGraph& graph, unsigned num_threads){
 
   omp_set_num_threads(num_threads);
-  
+
   #pragma omp parallel
   {
     #pragma omp single
     {
-      for(size_t l=0; l<graph.level(); l++){ 
+      for(size_t l=0; l<graph.level(); l++){
         for(size_t i=0; i<graph.length(); i++){
           Node& n = graph.node_at(l, i);
           size_t out_edge_num = n._out_edges.size();
           size_t in_edge_num = n._in_edges.size();
 
           switch(in_edge_num){
-            
+
             case(0):{
-              
+
               switch(out_edge_num){
 
                 case(1):{
@@ -47,7 +47,7 @@ void traverse_regular_graph_omp(LevelGraph& graph, unsigned num_threads){
                   { n.mark(); }
                   break;
                 }
-  
+
                 case(4):{
                   int* out0 = n.edge_ptr(0);
                   int* out1 = n.edge_ptr(1);
@@ -57,7 +57,7 @@ void traverse_regular_graph_omp(LevelGraph& graph, unsigned num_threads){
                   { n.mark(); }
                   break;
                 }
-              
+
               }
               break;
             }
@@ -92,7 +92,7 @@ void traverse_regular_graph_omp(LevelGraph& graph, unsigned num_threads){
                   { n.mark(); }
                   break;
                 }
-  
+
                 case(4):{
 
                   int* out0 = n.edge_ptr(0);
@@ -140,7 +140,7 @@ void traverse_regular_graph_omp(LevelGraph& graph, unsigned num_threads){
                   break;
 
                 }
-  
+
                 case(4):{
 
                   int* out0 = n.edge_ptr(0);
@@ -189,7 +189,7 @@ void traverse_regular_graph_omp(LevelGraph& graph, unsigned num_threads){
                   { n.mark(); }
                   break;
                 }
-  
+
                 case(4):{
 
                   int* out0 = n.edge_ptr(0);
@@ -241,7 +241,7 @@ void traverse_regular_graph_omp(LevelGraph& graph, unsigned num_threads){
                   break;
 
                 }
-  
+
                 case(4):{
 
                   int* out0 = n.edge_ptr(0);
@@ -259,7 +259,7 @@ void traverse_regular_graph_omp(LevelGraph& graph, unsigned num_threads){
         }
       }
     }
-  }  
+  }
 }
 
 std::chrono::microseconds measure_time_omp(LevelGraph& graph, unsigned num_threads){

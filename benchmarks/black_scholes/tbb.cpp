@@ -1,4 +1,4 @@
-#include "common.hpp" 
+#include "common.hpp"
 #include <tbb/global_control.h>
 #include <tbb/blocked_range.h>
 #include <tbb/parallel_for.h>
@@ -13,12 +13,12 @@ void bs_tbb(unsigned num_threads) {
     tbb::parallel_for(0, numOptions, 1, [&](int i){
       auto price = BlkSchlsEqEuroNoDiv(
         sptprice[i], strike[i],
-        rate[i], volatility[i], otime[i], 
+        rate[i], volatility[i], otime[i],
         otype[i], 0
       );
 
       prices[i] = price;
-#ifdef ERR_CHK 
+#ifdef ERR_CHK
       check_error(i, price);
 #endif
     });

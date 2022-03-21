@@ -13,10 +13,10 @@ void tensor_add (Tensor<T>& res, Tensor<T>& lhs, Tensor<T>& rhs) {
   }
 
   // case 1: all tensors have data in memory
-  if(res._storage_level == MEMORY && 
-     lhs._storage_level == MEMORY && 
+  if(res._storage_level == MEMORY &&
+     lhs._storage_level == MEMORY &&
      rhs._storage_level == MEMORY) {
-     
+
     return;
   }
 

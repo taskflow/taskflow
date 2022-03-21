@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
     std::cerr << "usage: ./parallel_sort s|p" << std::endl;
     std::exit(EXIT_FAILURE);
   }
-  
+
   // sequential sort
   if(argv[1][0] == 's') {
     auto strings = random_strings();
@@ -72,7 +72,7 @@ int main(int argc, char* argv[]) {
     std::cerr << "uncognized method character '" << argv[1][0] << "'\n";
     std::exit(EXIT_FAILURE);
   }
-  
+
   return 0;
 }
 

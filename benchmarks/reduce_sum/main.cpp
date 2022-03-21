@@ -3,14 +3,14 @@
 
 void reduce_sum(
   const std::string& model,
-  const unsigned num_threads, 
+  const unsigned num_threads,
   const unsigned num_rounds
   ) {
 
   std::cout << std::setw(12) << "size"
             << std::setw(12) << "runtime"
             << std::endl;
-  
+
   for(size_t N=10; N<=1000000000; N = N*10) {
 
     vec.resize(N);
@@ -40,10 +40,10 @@ int main(int argc, char* argv[]) {
 
   CLI::App app{"MatrixMultiplication"};
 
-  unsigned num_threads {1}; 
+  unsigned num_threads {1};
   app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
 
-  unsigned num_rounds {1};  
+  unsigned num_rounds {1};
   app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
 
   std::string model = "tf";
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
      });
 
   CLI11_PARSE(app, argc, argv);
-   
+
   std::cout << "model=" << model << ' '
             << "num_threads=" << num_threads << ' '
             << "num_rounds=" << num_rounds << ' '

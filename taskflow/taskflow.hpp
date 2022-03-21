@@ -4,22 +4,22 @@
 #include "algorithm/critical.hpp"
 #include "algorithm/for_each.hpp"
 
-/** 
+/**
 @dir taskflow
 @brief root taskflow include dir
 */
 
-/** 
+/**
 @dir taskflow/core
 @brief taskflow core include dir
 */
 
-/** 
+/**
 @dir taskflow/algorithm
 @brief taskflow algorithms include dir
 */
 
-/** 
+/**
 @dir taskflow/cuda
 @brief taskflow CUDA include dir
 */

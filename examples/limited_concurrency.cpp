@@ -11,9 +11,9 @@ int main() {
 
   tf::Executor executor(4);
   tf::Taskflow taskflow;
-  
+
   // define a critical region of 1 worker
-  tf::Semaphore semaphore(1); 
+  tf::Semaphore semaphore(1);
 
   // create give tasks in taskflow
   std::vector<tf::Task> tasks {
@@ -28,7 +28,7 @@ int main() {
     task.acquire(semaphore);
     task.release(semaphore);
   }
-  
+
   executor.run(taskflow);
   executor.wait_for_all();
 

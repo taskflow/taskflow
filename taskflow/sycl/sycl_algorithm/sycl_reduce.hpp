@@ -18,14 +18,14 @@ struct syclBlockReduce {
   static const unsigned num_items  = nt / group_size;
 
   static_assert(
-    nt && (0 == nt % SYCL_WARP_SIZE), 
+    nt && (0 == nt % SYCL_WARP_SIZE),
     "syclBlockReduce requires num threads to be a multiple of warp_size (32)"
   );
-  
+
   using shm_t = sycl::accessor<
     T, 1, sycl::access::mode::read_write, sycl::access::target::local
   >;
-  
+
   template<typename op_t>
   T operator()(
     sycl::nd_item<1>&, T, const shm_t&, unsigned, op_t, bool = true
@@ -36,11 +36,11 @@ struct syclBlockReduce {
 template<unsigned nt, typename T>
 template<typename op_t>
 T syclBlockReduce<nt, T>::operator ()(
-  sycl::nd_item<1>& item, 
-  T x, 
-  const shm_t& shm, 
-  unsigned count, 
-  op_t op, 
+  sycl::nd_item<1>& item,
+  T x,
+  const shm_t& shm,
+  unsigned count,
+  op_t op,
   bool ret
 ) const {
 
@@ -61,7 +61,7 @@ T syclBlockReduce<nt, T>::operator ()(
   }
   item.barrier(sycl::access::fence_space::local_space);
 
-  auto count2 = count < group_size ? count : group_size; 
+  auto count2 = count < group_size ? count : group_size;
   auto first = (1 & num_passes) ? group_size : 0;
   if(tid < group_size) {
     shm[first + tid] = x;
@@ -89,19 +89,19 @@ T syclBlockReduce<nt, T>::operator ()(
 /** @private */
 template <typename P, typename I, typename T, typename O>
 sycl::event sycl_reduce_loop(
-  P&& p, 
-  I input, 
-  unsigned count, 
-  T* res, 
-  O op, 
-  bool incl, 
-  void* ptr, 
+  P&& p,
+  I input,
+  unsigned count,
+  T* res,
+  O op,
+  bool incl,
+  void* ptr,
   std::vector<sycl::event> evs
 ) {
 
   using E = std::decay_t<P>;
   using R = syclBlockReduce<E::nt, T>;
-  
+
   auto buf = static_cast<T*>(ptr);
   auto B   = (count + E::nv - 1) / E::nv;
 
@@ -141,7 +141,7 @@ sycl::event sycl_reduce_loop(
       }
     );
   });
-  
+
   if(B > 1) {
     return sycl_reduce_loop(p, buf, B, res, op, incl, buf+B, {e});
   }
@@ -177,23 +177,23 @@ unsigned sycl_reduce_buffer_size(unsigned count) {
 //// sycl reduction
 //template <typename I, typename T, typename C, bool uninitialized>
 //auto syclFlow::_reduce_cgh(I first, I last, T* res, C&& op) {
-//  
+//
 //  // TODO: special case N == 0?
 //  size_t N = std::distance(first, last);
 //  size_t B = _default_group_size(N);
 //
 //  return [=, op=std::forward<C>(op)](sycl::handler& handler) mutable {
-//      
+//
 //    // create a shared memory
 //    sycl::accessor<
 //      T, 1, sycl::access::mode::read_write, sycl::access::target::local
 //    > shm(sycl::range<1>(B), handler);
-//    
+//
 //    // perform parallel reduction
 //    handler.parallel_for(
 //      sycl::nd_range<1>{sycl::range<1>(B), sycl::range<1>(B)},
-//      [=] (sycl::nd_item<1> item) { 
-//  
+//      [=] (sycl::nd_item<1> item) {
+//
 //      size_t tid = item.get_global_id(0);
 //
 //      if(tid >= N) {
@@ -201,13 +201,13 @@ unsigned sycl_reduce_buffer_size(unsigned count) {
 //      }
 //
 //      shm[tid] = *(first+tid);
-//      
+//
 //      for(size_t i=tid+B; i<N; i+=B) {
 //        shm[tid] = op(shm[tid], *(first+i));
 //      }
 //
 //      item.barrier(sycl::access::fence_space::local_space);
-//  
+//
 //      for(size_t s = B / 2; s > 0; s >>= 1) {
 //        if(tid < s && tid + s < N) {
 //          shm[tid] = op(shm[tid], shm[tid+s]);
@@ -245,7 +245,7 @@ unsigned sycl_reduce_buffer_size(unsigned count) {
 @param res pointer to the result
 @param op binary operator to apply to reduce elements
 
-This method is equivalent to the parallel execution of the following loop 
+This method is equivalent to the parallel execution of the following loop
 on a SYCL device:
 
 @code{.cpp}
@@ -270,7 +270,7 @@ void sycl_reduce(P&& p, I first, I last, T* res, O op) {
 
   // reduction loop
   detail::sycl_reduce_loop(p, first, count, res, op, true, tmp, {}).wait();
-  
+
   // deallocate the temporary buffer
   sycl::free(tmp, p.queue());
 }
@@ -304,7 +304,7 @@ sycl::event sycl_reduce_async(
   if(count == 0) {
     return {};
   }
-  
+
   // reduction loop
   return detail::sycl_reduce_loop(
     p, first, count, res, op, true, buf, std::move(dep)
@@ -312,7 +312,7 @@ sycl::event sycl_reduce_async(
 }
 
 /**
-@brief performs parallel reduction over a range of items 
+@brief performs parallel reduction over a range of items
        without an initial value
 
 @tparam P execution policy type
@@ -326,7 +326,7 @@ sycl::event sycl_reduce_async(
 @param res pointer to the result
 @param op binary operator to apply to reduce elements
 
-This method is equivalent to the parallel execution of the following loop 
+This method is equivalent to the parallel execution of the following loop
 on a SYCL device:
 
 @code{.cpp}
@@ -344,7 +344,7 @@ void sycl_uninitialized_reduce(P&& p, I first, I last, T* res, O op) {
   if(count == 0) {
     return;
   }
-  
+
   // allocate temporary buffer
   auto tmp = sycl::malloc_device(
     sycl_reduce_buffer_size<P, T>(count), p.queue()
@@ -352,7 +352,7 @@ void sycl_uninitialized_reduce(P&& p, I first, I last, T* res, O op) {
 
   // reduction loop
   detail::sycl_reduce_loop(p, first, count, res, op, false, tmp, {}).wait();
-  
+
   // deallocate the temporary buffer
   sycl::free(tmp, p.queue());
 }
@@ -387,7 +387,7 @@ sycl::event sycl_uninitialized_reduce_async(
   if(count == 0) {
     return {};
   }
-  
+
   // reduction loop
   return detail::sycl_reduce_loop(
     p, first, count, res, op, false, buf, std::move(dep)
@@ -403,12 +403,12 @@ template <typename I, typename T, typename C>
 syclTask syclFlow::reduce(I first, I last, T* res, C&& op) {
 
   //return on(_reduce_cgh<I, T, C, false>(first, last, res, std::forward<C>(op)));
-  
+
   auto bufsz = sycl_reduce_buffer_size<syclDefaultExecutionPolicy, T>(
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{syclScopedDeviceMemory<std::byte>(bufsz, _queue)}] 
+  return on([=, buf=MoC{syclScopedDeviceMemory<std::byte>(bufsz, _queue)}]
   (sycl::queue& queue, std::vector<sycl::event> events) mutable {
     syclDefaultExecutionPolicy p(queue);
     return sycl_reduce_async(
@@ -426,7 +426,7 @@ syclTask syclFlow::uninitialized_reduce(I first, I last, T* res, C&& op) {
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{syclScopedDeviceMemory<std::byte>(bufsz, _queue)}] 
+  return on([=, buf=MoC{syclScopedDeviceMemory<std::byte>(bufsz, _queue)}]
   (sycl::queue& queue, std::vector<sycl::event> events) mutable {
     syclDefaultExecutionPolicy p(queue);
     return sycl_uninitialized_reduce_async(
@@ -446,12 +446,12 @@ void syclFlow::reduce(syclTask task, I first, I last, T* res, C&& op) {
   //on(task, _reduce_cgh<I, T, C, false>(
   //  first, last, res, std::forward<C>(op)
   //));
-  
+
   auto bufsz = sycl_reduce_buffer_size<syclDefaultExecutionPolicy, T>(
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{syclScopedDeviceMemory<std::byte>(bufsz, _queue)}] 
+  on(task, [=, buf=MoC{syclScopedDeviceMemory<std::byte>(bufsz, _queue)}]
   (sycl::queue& queue, std::vector<sycl::event> events) mutable {
     syclDefaultExecutionPolicy p(queue);
     return sycl_reduce_async(
@@ -472,7 +472,7 @@ void syclFlow::uninitialized_reduce(
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{syclScopedDeviceMemory<std::byte>(bufsz, _queue)}] 
+  on(task, [=, buf=MoC{syclScopedDeviceMemory<std::byte>(bufsz, _queue)}]
   (sycl::queue& queue, std::vector<sycl::event> events) mutable {
     syclDefaultExecutionPolicy p(queue);
     return sycl_uninitialized_reduce_async(

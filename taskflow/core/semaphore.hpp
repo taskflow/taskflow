@@ -5,7 +5,7 @@
 
 #include "declarations.hpp"
 
-/** 
+/**
 @file semaphore.hpp
 @brief semaphore include file
 */
@@ -23,16 +23,16 @@ namespace tf {
 
 A semaphore creates a constraint that limits the maximum concurrency,
 i.e., the number of workers, in a set of tasks.
-You can let a task acquire/release one or multiple semaphores before/after 
+You can let a task acquire/release one or multiple semaphores before/after
 executing its work.
-A task can acquire and release a semaphore, 
-or just acquire or just release it. 
+A task can acquire and release a semaphore,
+or just acquire or just release it.
 A tf::Semaphore object starts with an initial count.
 As long as that count is above 0, tasks can acquire the semaphore and do
 their work.
 If the count is 0 or less, a task trying to acquire the semaphore will not run
 but goes to a waiting list of that semaphore.
-When the semaphore is released by another task, 
+When the semaphore is released by another task,
 it reschedules all tasks on that waiting list.
 
 @code{.cpp}
@@ -70,7 +70,7 @@ class Semaphore {
   friend class Node;
 
   public:
-    
+
     /**
     @brief constructs a semaphore with the given counter
 
@@ -82,12 +82,12 @@ class Semaphore {
     @endcode
     */
     explicit Semaphore(size_t max_workers);
-    
+
     /**
     @brief queries the counter value (not thread-safe during the run)
     */
     size_t count() const;
-    
+
   private:
 
     std::mutex _mtx;
@@ -95,16 +95,16 @@ class Semaphore {
     size_t _counter;
 
     std::vector<Node*> _waiters;
-    
+
     bool _try_acquire_or_wait(Node*);
 
     std::vector<Node*> _release();
 };
 
-inline Semaphore::Semaphore(size_t max_workers) : 
+inline Semaphore::Semaphore(size_t max_workers) :
   _counter(max_workers) {
 }
-    
+
 inline bool Semaphore::_try_acquire_or_wait(Node* me) {
   std::lock_guard<std::mutex> lock(_mtx);
   if(_counter > 0) {

@@ -1,14 +1,14 @@
 #include "levelgraph.hpp"
-#include <CLI11.hpp> 
+#include <CLI11.hpp>
 
 int main(int argc, char* argv[]) {
 
   CLI::App app{"Graph Traversal"};
 
-  unsigned num_threads {1}; 
+  unsigned num_threads {1};
   app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
 
-  unsigned num_rounds {1};  
+  unsigned num_rounds {1};
   app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
 
   std::string model = "tf";
@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
     double runtime {0.0};
 
     LevelGraph graph(i, i);
-    
+
     for(unsigned j=0; j<num_rounds; ++j) {
       if(model == "tf") {
         runtime += measure_time_taskflow(graph, num_threads).count();
@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
       graph.clear_graph();
     }
 
-    std::cout << std::setw(12) << graph.graph_size() 
+    std::cout << std::setw(12) << graph.graph_size()
               << std::setw(12) << runtime / num_rounds / 1e3
               << std::endl;
 

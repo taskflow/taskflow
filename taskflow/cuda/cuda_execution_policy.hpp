@@ -31,16 +31,16 @@ class cudaExecutionPolicy {
   static_assert(is_pow2(NT), "max # threads per block must be a power of two");
 
   public:
-  
+
   /** @brief static constant for getting the number of threads per block */
-  const static unsigned nt = NT;     
-  
+  const static unsigned nt = NT;
+
   /** @brief static constant for getting the number of work units per thread */
   const static unsigned vt = VT;
-  
+
   /** @brief static constant for getting the number of elements to process per block */
   const static unsigned nv = NT*VT;
-  
+
   /**
   @brief constructs an execution poliby object with default stream
    */
@@ -50,17 +50,17 @@ class cudaExecutionPolicy {
   @brief constructs an execution policy object with the given stream
    */
   cudaExecutionPolicy(cudaStream_t s) : _stream{s} {}
-  
+
   /**
   @brief queries the associated stream
    */
   cudaStream_t stream() noexcept { return _stream; };
-  
+
   /**
   @brief assigns a stream
    */
   void stream(cudaStream_t stream) noexcept { _stream = stream; }
-  
+
   /**
   @brief synchronizes the stream
    */

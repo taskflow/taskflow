@@ -3,12 +3,12 @@
 #include <taskflow/taskflow.hpp>
 
 int main() {
-  
+
   tf::Executor executor;
   tf::Taskflow taskflow;
 
   int i;
-  
+
   auto [init, cond, body, back, done] = taskflow.emplace(
     [&](){ std::cout << "i=0\n"; i=0; },
     [&](){ std::cout << "while i<5\n"; return i < 5 ? 0 : 1; },
@@ -27,7 +27,7 @@ int main() {
   cond.precede(body, done);
   body.precede(back);
   back.precede(cond);
-  
+
   taskflow.dump(std::cout);
 
   executor.run(taskflow).wait();

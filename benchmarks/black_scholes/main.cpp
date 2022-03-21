@@ -2,11 +2,11 @@
 
 // Black-Scholes
 // Analytical method for calculating European Options
-// 
-// Reference Source: Options, Futures, and Other Derivatives, 3rd Edition, Prentice 
+//
+// Reference Source: Options, Futures, and Other Derivatives, 3rd Edition, Prentice
 // Hall, John C. Hull,
 //
-// Modified from 
+// Modified from
 //   https://parsec.cs.princeton.edu/
 
 #include "common.hpp"
@@ -32,7 +32,7 @@ void black_scholes(
   const unsigned num_threads,
   const unsigned num_rounds
 ) {
-  
+
   std::cout << std::setw(12) << "size"
             << std::setw(12) << "runtime"
             << std::endl;
@@ -55,7 +55,7 @@ void black_scholes(
       }
       else assert(false);
     }
-    
+
     destroy_options();
 
     std::cout << std::setw(12) << N
@@ -69,12 +69,12 @@ int main (int argc, char *argv[]) {
 
   CLI::App app{"Option pricing with Black-Scholes Partial Differential Equation"};
 
-  unsigned num_threads {1}; 
+  unsigned num_threads {1};
   app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
 
-  unsigned num_rounds {1};  
+  unsigned num_rounds {1};
   app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
-  
+
   bool cmp_seq {false};
   app.add_option("-s,--seq", cmp_seq, "compare with sequential (default=false)");
 
@@ -88,7 +88,7 @@ int main (int argc, char *argv[]) {
      });
 
   CLI11_PARSE(app, argc, argv);
-   
+
   std::cout << "model=" << model << ' '
             << "num_threads=" << num_threads << ' '
             << "num_rounds=" << num_rounds << ' '
@@ -96,7 +96,7 @@ int main (int argc, char *argv[]) {
 
   black_scholes(model, num_threads, num_rounds);
 
-  // Compare with sequential version to check correctness 
+  // Compare with sequential version to check correctness
   //if(cmp_seq) {
   //  auto seq_prices = static_cast<FPTYPE*>(malloc(numOptions*sizeof(FPTYPE)));
   //  bs_seq(seq_prices);

@@ -14,21 +14,21 @@
 //std::vector<double> result;
 size_t i = 0;
 
-// Filter for one filter only 
+// Filter for one filter only
 class MyFunc {
 public:
   MyFunc(size_t size) : s(size) {}
-    
+
   ~MyFunc(){}
 
   size_t s;
-  
+
   void operator()(tbb::flow_control& fc) const {
 
     work();
 
     int retval = 0;
-      
+
     if (i++ == s) {
       fc.stop();
     }
@@ -42,15 +42,15 @@ public:
 class MyInputFunc {
 public:
   MyInputFunc(size_t size) : s(size) {}
-    
+
   ~MyInputFunc(){}
 
   size_t s;
-  
+
   int operator()(tbb::flow_control& fc) const {
     work();
     int retval = 0;
-          
+
     if (i++ == s) {
       fc.stop();
       return -1;
@@ -61,14 +61,14 @@ public:
   }
 };
 
-// Filter 2 
+// Filter 2
 class MyTransformFunc1 {
 public:
   int operator()(int input) const {
     work();
     int retval = 0;
     retval = input << 1;
-    return retval;  
+    return retval;
   }
 };
 
@@ -83,7 +83,7 @@ public:
   }
 };
 
-// Filter 4 
+// Filter 4
 class MyTransformFunc3 {
 public:
   int operator()(int input) const {
@@ -94,7 +94,7 @@ public:
   }
 };
 
-// Filter 5 
+// Filter 5
 class MyTransformFunc4 {
 public:
   int operator()(int input) const {
@@ -116,7 +116,7 @@ public:
   }
 };
 
-// Filter 7 
+// Filter 7
 class MyTransformFunc6 {
 public:
   int operator()(int input) const {
@@ -138,7 +138,7 @@ public:
   }
 };
 
-// Filter 9 
+// Filter 9
 class MyTransformFunc8 {
 public:
   int operator()(int input) const {
@@ -149,7 +149,7 @@ public:
   }
 };
 
-// Filter 10 
+// Filter 10
 class MyTransformFunc9 {
 public:
   int operator()(int input) const {
@@ -160,7 +160,7 @@ public:
   }
 };
 
-// Filter 11 
+// Filter 11
 class MyTransformFunc10 {
 public:
   int operator()(int input) const {
@@ -171,7 +171,7 @@ public:
   }
 };
 
-// Filter 12 
+// Filter 12
 class MyTransformFunc11 {
 public:
   int operator()(int input) const {
@@ -215,7 +215,7 @@ public:
   }
 };
 
-// Filter last 
+// Filter last
 class MyOutputFunc {
 public:
   MyOutputFunc(){}
@@ -223,7 +223,7 @@ public:
     work();
     //int retval = 0;
     //retval = input + 99999;
-    //result.emplace_back(retval); 
+    //result.emplace_back(retval);
     //printf("%d\n", retval);
   }
 };
@@ -234,7 +234,7 @@ void parallel_pipeline_tbb_1_pipe(unsigned num_lines, size_t size) {
   tbb::parallel_pipeline(
     num_lines,
     tbb::make_filter<void, void>(
-      tbb::filter::serial_in_order, MyFunc(size))  
+      tbb::filter::serial_in_order, MyFunc(size))
   );
 }
 
@@ -616,19 +616,19 @@ void parallel_pipeline_tbb_16_pipes(std::string pipes, unsigned num_lines, size_
 std::chrono::microseconds measure_time_tbb(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
   //result.clear();
-  //utility::thread_number_range threads( utility::get_default_num_threads, 0);                                
+  //utility::thread_number_range threads( utility::get_default_num_threads, 0);
   tbb::global_control c(tbb::global_control::max_allowed_parallelism, num_threads);
-  
+
   auto beg = std::chrono::high_resolution_clock::now();
   auto end = std::chrono::high_resolution_clock::now();
-  i = 0; 
+  i = 0;
   switch(pipes.size()) {
     case 1:
       beg = std::chrono::high_resolution_clock::now();
       parallel_pipeline_tbb_1_pipe(num_lines, size);
       end = std::chrono::high_resolution_clock::now();
       break;
-    
+
     case 2:
       beg = std::chrono::high_resolution_clock::now();
       parallel_pipeline_tbb_2_pipes(pipes, num_lines, size);
@@ -640,7 +640,7 @@ std::chrono::microseconds measure_time_tbb(
       parallel_pipeline_tbb_3_pipes(pipes, num_lines, size);
       end = std::chrono::high_resolution_clock::now();
       break;
-    
+
     case 4:
       beg = std::chrono::high_resolution_clock::now();
       parallel_pipeline_tbb_4_pipes(pipes, num_lines, size);
@@ -652,13 +652,13 @@ std::chrono::microseconds measure_time_tbb(
       parallel_pipeline_tbb_5_pipes(pipes, num_lines, size);
       end = std::chrono::high_resolution_clock::now();
       break;
-    
+
     case 6:
       beg = std::chrono::high_resolution_clock::now();
       parallel_pipeline_tbb_6_pipes(pipes, num_lines, size);
       end = std::chrono::high_resolution_clock::now();
       break;
-    
+
     case 7:
       beg = std::chrono::high_resolution_clock::now();
       parallel_pipeline_tbb_7_pipes(pipes, num_lines, size);
@@ -670,7 +670,7 @@ std::chrono::microseconds measure_time_tbb(
       parallel_pipeline_tbb_8_pipes(pipes, num_lines, size);
       end = std::chrono::high_resolution_clock::now();
       break;
-    
+
     case 9:
       beg = std::chrono::high_resolution_clock::now();
       parallel_pipeline_tbb_9_pipes(pipes, num_lines, size);
@@ -687,7 +687,7 @@ std::chrono::microseconds measure_time_tbb(
       parallel_pipeline_tbb_11_pipes(pipes, num_lines, size);
       end = std::chrono::high_resolution_clock::now();
       break;
-    
+
     case 12:
       beg = std::chrono::high_resolution_clock::now();
       parallel_pipeline_tbb_12_pipes(pipes, num_lines, size);
@@ -699,7 +699,7 @@ std::chrono::microseconds measure_time_tbb(
       parallel_pipeline_tbb_13_pipes(pipes, num_lines, size);
       end = std::chrono::high_resolution_clock::now();
       break;
-    
+
     case 14:
       beg = std::chrono::high_resolution_clock::now();
       parallel_pipeline_tbb_14_pipes(pipes, num_lines, size);
@@ -711,7 +711,7 @@ std::chrono::microseconds measure_time_tbb(
       parallel_pipeline_tbb_15_pipes(pipes, num_lines, size);
       end = std::chrono::high_resolution_clock::now();
       break;
-    
+
     case 16:
       beg = std::chrono::high_resolution_clock::now();
       parallel_pipeline_tbb_16_pipes(pipes, num_lines, size);
@@ -728,7 +728,7 @@ std::chrono::microseconds measure_time_tbb(
   //for (auto r:result) {
   //  outputfile << r << '\n';
   //}
-  
+
   //std::ofstream outputfile;
   //outputfile.open("./build/benchmarks/tbb_time.csv", std::ofstream::app);
   //outputfile << num_threads << ','

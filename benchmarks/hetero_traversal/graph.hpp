@@ -34,7 +34,7 @@ struct Graph {
     std::ifstream ifs(path);
 
     if(!ifs) throw std::runtime_error("failed to open the file");
-    
+
     ifs >> num_nodes >> num_edges;
 
     nodes.resize(num_nodes);
@@ -50,8 +50,8 @@ struct Graph {
     }
   }
 
-  Graph(int V, int E, int cuda_ratio) : 
-    num_nodes {V}, 
+  Graph(int V, int E, int cuda_ratio) :
+    num_nodes {V},
     num_edges {E},
     num_gpus  {static_cast<int>(tf::cuda_get_num_devices())} {
 

@@ -1,10 +1,10 @@
 #include "matrix_multiplication.hpp"
-#include <taskflow/taskflow.hpp> 
+#include <taskflow/taskflow.hpp>
 
 // matrix_multiplication_taskflow
 void matrix_multiplication_taskflow(unsigned num_threads) {
 
-  tf::Executor executor(num_threads); 
+  tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
   auto init_a = taskflow.for_each_index(0, N, 1, [&] (int i) {
@@ -12,7 +12,7 @@ void matrix_multiplication_taskflow(unsigned num_threads) {
       a[i][j] = i + j;
     }
   });
-  
+
   auto init_b = taskflow.for_each_index(0, N, 1, [&] (int i) {
     for(int j=0; j<N; ++j) {
       b[i][j] = i * j;
@@ -73,8 +73,8 @@ void matrix_multiplication_taskflow(unsigned num_threads) {
     sync.precede(t);
   }*/
 
-  executor.run(taskflow).get(); 
-  
+  executor.run(taskflow).get();
+
   //std::cout << reduce_sum() << std::endl;
   //taskflow.dump(std::cout);
 }

@@ -46,20 +46,20 @@ void insertion_sort(RandItr begin, RandItr end, Compare comp) {
     RandItr shift = cur;
     RandItr shift_1 = cur - 1;
 
-    // Compare first to avoid 2 moves for an element 
+    // Compare first to avoid 2 moves for an element
     // already positioned correctly.
     if (comp(*shift, *shift_1)) {
       T tmp = std::move(*shift);
-      do { 
-        *shift-- = std::move(*shift_1); 
+      do {
+        *shift-- = std::move(*shift_1);
       }while (shift != begin && comp(tmp, *--shift_1));
       *shift = std::move(tmp);
     }
   }
 }
 
-// Sorts [begin, end) using insertion sort with the given comparison function. 
-// Assumes *(begin - 1) is an element smaller than or equal to any element 
+// Sorts [begin, end) using insertion sort with the given comparison function.
+// Assumes *(begin - 1) is an element smaller than or equal to any element
 // in [begin, end).
 template<typename RandItr, typename Compare>
 void unguarded_insertion_sort(RandItr begin, RandItr end, Compare comp) {
@@ -74,13 +74,13 @@ void unguarded_insertion_sort(RandItr begin, RandItr end, Compare comp) {
     RandItr shift = cur;
     RandItr shift_1 = cur - 1;
 
-    // Compare first so we can avoid 2 moves 
+    // Compare first so we can avoid 2 moves
     // for an element already positioned correctly.
     if (comp(*shift, *shift_1)) {
       T tmp = std::move(*shift);
 
-      do { 
-        *shift-- = std::move(*shift_1); 
+      do {
+        *shift-- = std::move(*shift_1);
       }while (comp(tmp, *--shift_1));
 
       *shift = std::move(tmp);
@@ -88,17 +88,17 @@ void unguarded_insertion_sort(RandItr begin, RandItr end, Compare comp) {
   }
 }
 
-// Attempts to use insertion sort on [begin, end). 
+// Attempts to use insertion sort on [begin, end).
 // Will return false if more than
-// partial_insertion_sort_limit elements were moved, 
+// partial_insertion_sort_limit elements were moved,
 // and abort sorting. Otherwise it will successfully sort and return true.
 template<typename RandItr, typename Compare>
 bool partial_insertion_sort(RandItr begin, RandItr end, Compare comp) {
-  
+
   using T = typename std::iterator_traits<RandItr>::value_type;
   using D = typename std::iterator_traits<RandItr>::difference_type;
 
-  // When we detect an already sorted partition, attempt an insertion sort 
+  // When we detect an already sorted partition, attempt an insertion sort
   // that allows this amount of element moves before giving up.
   constexpr auto partial_insertion_sort_limit = D{8};
 
@@ -115,13 +115,13 @@ bool partial_insertion_sort(RandItr begin, RandItr end, Compare comp) {
     RandItr shift = cur;
     RandItr shift_1 = cur - 1;
 
-    // Compare first so we can avoid 2 moves 
+    // Compare first so we can avoid 2 moves
     // for an element already positioned correctly.
     if (comp(*shift, *shift_1)) {
       T tmp = std::move(*shift);
 
-      do { 
-        *shift-- = std::move(*shift_1); 
+      do {
+        *shift-- = std::move(*shift_1);
       }while (shift != begin && comp(tmp, *--shift_1));
 
       *shift = std::move(tmp);
@@ -133,10 +133,10 @@ bool partial_insertion_sort(RandItr begin, RandItr end, Compare comp) {
 }
 
 // Partitions [begin, end) around pivot *begin using comparison function comp.
-// Elements equal to the pivot are put in the right-hand partition. 
-// Returns the position of the pivot after partitioning and whether the passed 
-// sequence already was correctly partitioned. 
-// Assumes the pivot is a median of at least 3 elements and that [begin, end) 
+// Elements equal to the pivot are put in the right-hand partition.
+// Returns the position of the pivot after partitioning and whether the passed
+// sequence already was correctly partitioned.
+// Assumes the pivot is a median of at least 3 elements and that [begin, end)
 // is at least insertion_sort_threshold long.
 template<typename Iter, typename Compare>
 std::pair<Iter, bool> partition_right(Iter begin, Iter end, Compare comp) {
@@ -149,22 +149,22 @@ std::pair<Iter, bool> partition_right(Iter begin, Iter end, Compare comp) {
   Iter first = begin;
   Iter last = end;
 
-  // Find the first element greater than or equal than the pivot 
+  // Find the first element greater than or equal than the pivot
   // (the median of 3 guarantees/ this exists).
   while (comp(*++first, pivot));
 
-  // Find the first element strictly smaller than the pivot. 
+  // Find the first element strictly smaller than the pivot.
   // We have to guard this search if there was no element before *first.
   if (first - 1 == begin) while (first < last && !comp(*--last, pivot));
   else while (!comp(*--last, pivot));
 
-  // If the first pair of elements that should be swapped to partition 
-  // are the same element, the passed in sequence already was correctly 
+  // If the first pair of elements that should be swapped to partition
+  // are the same element, the passed in sequence already was correctly
   // partitioned.
   bool already_partitioned = first >= last;
 
-  // Keep swapping pairs of elements that are on the wrong side of the pivot. 
-  // Previously swapped pairs guard the searches, 
+  // Keep swapping pairs of elements that are on the wrong side of the pivot.
+  // Previously swapped pairs guard the searches,
   // which is why the first iteration is special-cased above.
   while (first < last) {
     std::iter_swap(first, last);
@@ -180,11 +180,11 @@ std::pair<Iter, bool> partition_right(Iter begin, Iter end, Compare comp) {
   return std::make_pair(pivot_pos, already_partitioned);
 }
 
-// Similar function to the one above, except elements equal to the pivot 
-// are put to the left of the pivot and it doesn't check or return 
+// Similar function to the one above, except elements equal to the pivot
+// are put to the left of the pivot and it doesn't check or return
 // if the passed sequence already was partitioned.
-// Since this is rarely used (the many equal case), 
-// and in that case pdqsort already has O(n) performance, 
+// Since this is rarely used (the many equal case),
+// and in that case pdqsort already has O(n) performance,
 // no block quicksort is applied here for simplicity.
 template<typename RandItr, typename Compare>
 RandItr partition_left(RandItr begin, RandItr end, Compare comp) {
@@ -221,13 +221,13 @@ RandItr partition_left(RandItr begin, RandItr end, Compare comp) {
 template<typename Iter, typename Compare>
 void parallel_pdqsort(
   tf::Subflow& sf,
-  Iter begin, Iter end, Compare comp, 
+  Iter begin, Iter end, Compare comp,
   int bad_allowed, bool leftmost = true
 ) {
-  
+
   // Partitions below this size are sorted sequentially
   constexpr auto cutoff = parallel_sort_cutoff<Iter>();
-  
+
   // Partitions below this size are sorted using insertion sort
   constexpr auto insertion_sort_threshold = 24;
 
@@ -252,7 +252,7 @@ void parallel_pdqsort(
       }
       return;
     }
-    
+
     if(size <= cutoff) {
       std::sort(begin, end, comp);
       return;
@@ -267,18 +267,18 @@ void parallel_pdqsort(
       sort3(begin + 2, begin + (s2 + 1), end - 3, comp);
       sort3(begin + (s2 - 1), begin + s2, begin + (s2 + 1), comp);
       std::iter_swap(begin, begin + s2);
-    } 
+    }
     else {
       sort3(begin + s2, begin, end - 1, comp);
     }
 
-    // If *(begin - 1) is the end of the right partition 
-    // of a previous partition operation, there is no element in [begin, end) 
-    // that is smaller than *(begin - 1). 
-    // Then if our pivot compares equal to *(begin - 1) we change strategy, 
-    // putting equal elements in the left partition, 
-    // greater elements in the right partition. 
-    // We do not have to recurse on the left partition, 
+    // If *(begin - 1) is the end of the right partition
+    // of a previous partition operation, there is no element in [begin, end)
+    // that is smaller than *(begin - 1).
+    // Then if our pivot compares equal to *(begin - 1) we change strategy,
+    // putting equal elements in the left partition,
+    // greater elements in the right partition.
+    // We do not have to recurse on the left partition,
     // since it's sorted (all equal).
     if (!leftmost && !comp(*(begin - 1), *begin)) {
       begin = partition_left(begin, end, comp) + 1;
@@ -297,10 +297,10 @@ void parallel_pdqsort(
     size_t r_size = end - (pivot_pos + 1);
     bool highly_unbalanced = l_size < size / 8 || r_size < size / 8;
 
-    // If we got a highly unbalanced partition we shuffle elements 
+    // If we got a highly unbalanced partition we shuffle elements
     // to break many patterns.
     if (highly_unbalanced) {
-      // If we had too many bad partitions, switch to heapsort 
+      // If we had too many bad partitions, switch to heapsort
       // to guarantee O(n log n).
       if (--bad_allowed == 0) {
         std::make_heap(begin, end, comp);
@@ -329,19 +329,19 @@ void parallel_pdqsort(
           std::iter_swap(end - 3,             end - (2 + r_size / 4));
         }
       }
-    } 
+    }
     // decently balanced
     else {
       // sequence try to use insertion sort.
-      if (already_partitioned && 
-          partial_insertion_sort(begin, pivot_pos, comp) && 
+      if (already_partitioned &&
+          partial_insertion_sort(begin, pivot_pos, comp) &&
           partial_insertion_sort(pivot_pos + 1, end, comp)
       ) {
         return;
       }
     }
-    
-    // Sort the left partition first using recursion and 
+
+    // Sort the left partition first using recursion and
     // do tail recursion elimination for the right-hand partition.
     sf.silent_async(
       [&sf, begin, pivot_pos, comp, bad_allowed, leftmost] () mutable {
@@ -360,9 +360,9 @@ void parallel_pdqsort(
 // 3-way quick sort
 template <typename RandItr, typename C>
 void parallel_3wqsort(tf::Subflow& sf, RandItr first, RandItr last, C compare) {
-  
+
   using namespace std::string_literals;
-    
+
   constexpr auto cutoff = parallel_sort_cutoff<RandItr>();
 
   sort_partition:
@@ -400,7 +400,7 @@ void parallel_3wqsort(tf::Subflow& sf, RandItr first, RandItr last, C compare) {
       f++;
     }
   }
-  
+
   if(l - first > 1 && is_swapped_l) {
     //sf.emplace([&](tf::Subflow& sfl) mutable {
     //  parallel_3wqsort(sfl, first, l-1, compare);
@@ -431,16 +431,16 @@ void parallel_3wqsort(tf::Subflow& sf, RandItr first, RandItr last, C compare) {
 // Function: sort
 template <typename B, typename E, typename C>
 Task FlowBuilder::sort(B beg, E end, C cmp) {
-  
+
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
 
   Task task = emplace([b=beg, e=end, cmp] (Subflow& sf) mutable {
-    
+
     // fetch the iterator values
     B_t beg = b;
     E_t end = e;
-  
+
     if(beg == end) {
       return;
     }
@@ -458,7 +458,7 @@ Task FlowBuilder::sort(B beg, E end, C cmp) {
     parallel_pdqsort(sf, beg, end, cmp, log2(end - beg));
 
     sf.join();
-  });  
+  });
 
   return task;
 }

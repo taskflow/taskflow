@@ -1,8 +1,8 @@
 #include "universe.h"
-#include <taskflow/taskflow.hpp> 
+#include <taskflow/taskflow.hpp>
 
 
-void seismic_taskflow(unsigned num_threads, unsigned num_frames, Universe& u) { 
+void seismic_taskflow(unsigned num_threads, unsigned num_frames, Universe& u) {
 
   tf::Executor executor(num_threads);
   tf::Taskflow taskflow;

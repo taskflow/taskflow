@@ -11,16 +11,16 @@ namespace tf {
 
 // Class: UUID
 //
-// A universally unique identifier (UUID) is an identifier standard used in software 
-// construction. A UUID is simply a 128-bit value. The meaning of each bit is defined 
+// A universally unique identifier (UUID) is an identifier standard used in software
+// construction. A UUID is simply a 128-bit value. The meaning of each bit is defined
 // by any of several variants.
-// For human-readable display, many systems use a canonical format using hexadecimal 
+// For human-readable display, many systems use a canonical format using hexadecimal
 // text with inserted hyphen characters.
-// 
+//
 // For example: 123e4567-e89b-12d3-a456-426655440000
 //
-// The intent of UUIDs is to enable distributed systems to uniquely identify information 
-// without significant central coordination. 
+// The intent of UUIDs is to enable distributed systems to uniquely identify information
+// without significant central coordination.
 //
 //   Copyright 2006 Andy Tompkins.
 //   Distributed under the Boost Software License, Version 1.0. (See
@@ -44,12 +44,12 @@ struct UUID {
 
   UUID& operator = (const UUID&) = default;
   UUID& operator = (UUID&&) = default;
-    
-  inline static size_type size(); 
-  inline iterator begin(); 
-  inline const_iterator begin() const; 
-  inline iterator end(); 
-  inline const_iterator end() const; 
+
+  inline static size_type size();
+  inline iterator begin();
+  inline const_iterator begin() const;
+  inline iterator end();
+  inline const_iterator end() const;
 
   inline bool is_nil() const;
   inline void swap(UUID& rhs);
@@ -60,7 +60,7 @@ struct UUID {
   inline bool operator >  (const UUID&) const;
   inline bool operator != (const UUID&) const;
   inline bool operator >= (const UUID&) const;
-  inline bool operator <= (const UUID&) const; 
+  inline bool operator <= (const UUID&) const;
 
   uint8_t data[16] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
@@ -78,7 +78,7 @@ inline UUID::UUID() {
     (std::numeric_limits<unsigned long>::min)(),
     (std::numeric_limits<unsigned long>::max)()
   );
-  
+
   int i = 0;
   auto random_value = distribution(engine);
   for (auto it=begin(); it!=end(); ++it, ++i) {
@@ -88,39 +88,39 @@ inline UUID::UUID() {
     }
     *it = static_cast<UUID::value_type>((random_value >> (i*8)) & 0xFF);
   }
-  
+
   // set variant: must be 0b10xxxxxx
   *(begin()+8) &= 0xBF;
   *(begin()+8) |= 0x80;
 
   // set version: must be 0b0100xxxx
   *(begin()+6) &= 0x4F; //0b01001111
-  *(begin()+6) |= 0x40; //0b01000000 
+  *(begin()+6) |= 0x40; //0b01000000
 }
-  
+
 // Function: size
-inline typename UUID::size_type UUID::size() { 
-  return 16;          
+inline typename UUID::size_type UUID::size() {
+  return 16;
 }
 
 // Function: begin
-inline typename UUID::iterator UUID::begin() { 
-  return data;        
+inline typename UUID::iterator UUID::begin() {
+  return data;
 }
 
 // Function: begin
-inline typename UUID::const_iterator UUID::begin() const { 
-  return data;        
+inline typename UUID::const_iterator UUID::begin() const {
+  return data;
 }
 
 // Function: end
-inline typename UUID::iterator UUID::end() { 
-  return data+size(); 
+inline typename UUID::iterator UUID::end() {
+  return data+size();
 }
 
 // Function: end
-inline typename UUID::const_iterator UUID::end() const { 
-  return data+size(); 
+inline typename UUID::const_iterator UUID::end() const {
+  return data+size();
 }
 
 // Function: is_nil

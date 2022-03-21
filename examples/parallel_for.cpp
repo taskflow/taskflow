@@ -9,11 +9,11 @@ void for_each(int N) {
 
   tf::Executor executor;
   tf::Taskflow taskflow;
-  
+
   std::vector<int> range(N);
   std::iota(range.begin(), range.end(), 0);
 
-  taskflow.for_each(range.begin(), range.end(), [&] (int i) { 
+  taskflow.for_each(range.begin(), range.end(), [&] (int i) {
     printf("for_each on container item: %d\n", i);
   });
 
@@ -22,7 +22,7 @@ void for_each(int N) {
 
 // Procedure: for_each_index
 void for_each_index(int N) {
-  
+
   tf::Executor executor;
   tf::Taskflow taskflow;
 
@@ -38,9 +38,9 @@ void for_each_index(int N) {
 
 // Function: main
 int main(int argc, char* argv[]) {
- 
+
   if(argc != 2) {
-    std::cerr << "Usage: ./parallel_for num_iterations" << std::endl; 
+    std::cerr << "Usage: ./parallel_for num_iterations" << std::endl;
     std::exit(EXIT_FAILURE);
   }
 

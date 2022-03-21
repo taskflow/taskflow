@@ -1,8 +1,8 @@
 #include "dnn.hpp"
-#include <taskflow/taskflow.hpp>  
+#include <taskflow/taskflow.hpp>
 
 void run_taskflow(MNIST& D, unsigned num_threads) {
-  
+
   tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
@@ -11,7 +11,7 @@ void run_taskflow(MNIST& D, unsigned num_threads) {
   std::vector<tf::Task> update_tasks;
   std::vector<tf::Task> shuffle_tasks;
 
-  // Number of parallel shuffle 
+  // Number of parallel shuffle
   const auto num_storage = num_threads;
   const auto num_par_shf = std::min(num_storage, D.epoch);
 
@@ -32,7 +32,7 @@ void run_taskflow(MNIST& D, unsigned num_threads) {
         auto sz = update_tasks.size();
         for(auto j=1u; j<=D.acts.size() ;j++) {
           update_tasks[sz-j].precede(f_task);
-        }         
+        }
       }
 
       for(int j=D.acts.size()-1; j>=0; j--) {
@@ -42,7 +42,7 @@ void run_taskflow(MNIST& D, unsigned num_threads) {
         ));
         auto& b_task = backward_tasks.back();
 
-        // update weight 
+        // update weight
         update_tasks.emplace_back(
           taskflow.emplace([&, i=j] () {D.update(i);})
         );
@@ -55,14 +55,14 @@ void run_taskflow(MNIST& D, unsigned num_threads) {
           backward_tasks[backward_tasks.size()-2].precede(b_task);
         }
         b_task.precede(u_task);
-      } // End of backward propagation 
+      } // End of backward propagation
     } // End of all iterations (task flow graph creation)
 
 
     if(e == 0) {
       // No need to shuffle in first epoch
       shuffle_tasks.emplace_back(taskflow.emplace([](){}));
-      shuffle_tasks.back().precede(forward_tasks[forward_tasks.size()-iter_num]);           
+      shuffle_tasks.back().precede(forward_tasks[forward_tasks.size()-iter_num]);
     }
     else {
       shuffle_tasks.emplace_back(taskflow.emplace(
@@ -73,7 +73,7 @@ void run_taskflow(MNIST& D, unsigned num_threads) {
 
       // This shuffle task starts after belows finish
       //   1. previous shuffle on the same storage
-      //   2. the last backward task of previous epoch on the same storage 
+      //   2. the last backward task of previous epoch on the same storage
       if(e >= num_par_shf) {
         auto prev_e = e - num_par_shf;
         shuffle_tasks[prev_e].precede(t);

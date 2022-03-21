@@ -42,7 +42,7 @@ constexpr int cuda_find_log2(int x, bool round_up = false) {
 template<typename T, unsigned vt, typename C>
 __device__ auto cuda_odd_even_sort(
   cudaArray<T, vt> x, C comp, int flags = 0
-) { 
+) {
   cuda_iterate<vt>([&](auto I) {
     #pragma unroll
     for(auto i = 1 & I; i < vt - 1; i += 2) {
@@ -57,7 +57,7 @@ __device__ auto cuda_odd_even_sort(
 template<typename K, typename V, unsigned vt, typename C>
 __device__ auto cuda_odd_even_sort(
   cudaKVArray<K, V, vt> x, C comp, int flags = 0
-) { 
+) {
   cuda_iterate<vt>([&](auto I) {
     #pragma unroll
     for(auto i = 1 & I; i < vt - 1; i += 2) {
@@ -120,7 +120,7 @@ __device__ inline auto cuda_compute_merge_sort_range(
 
 /** @private */
 __device__ inline auto cuda_compute_merge_sort_range(
-  unsigned count, unsigned partition, unsigned coop, unsigned spacing, 
+  unsigned count, unsigned partition, unsigned coop, unsigned spacing,
   unsigned mp0, unsigned mp1
 ) {
 
@@ -162,8 +162,8 @@ struct cudaBlockSort {
 
   template<typename C>
   __device__ auto merge_pass(
-    cudaKVArray<K, V, vt> x, 
-    unsigned tid, unsigned count, unsigned pass, 
+    cudaKVArray<K, V, vt> x,
+    unsigned tid, unsigned count, unsigned pass,
     C comp, Storage& storage
   ) const {
 
@@ -174,7 +174,7 @@ struct cudaBlockSort {
 
     // Store the keys into shared memory for searching.
     cuda_reg_to_shared_thread<nt, vt>(x.keys, tid, storage.keys);
-    
+
     // Search for the merge path for this thread within its list.
     auto mp = cuda_merge_path<cudaMergeBoundType::LOWER>(
       storage.keys, range, diag, comp
@@ -196,7 +196,7 @@ struct cudaBlockSort {
   }
 
   template<typename C>
-  __device__ auto block_sort(cudaKVArray<K, V, vt> x, 
+  __device__ auto block_sort(cudaKVArray<K, V, vt> x,
     unsigned tid, unsigned count, C comp, Storage& storage
   ) const {
 
@@ -214,7 +214,7 @@ struct cudaBlockSort {
     for(unsigned pass = 0; pass < num_passes; ++pass) {
       x = merge_pass(x, tid, count, pass, comp, storage);
     }
-    
+
     return x;
   }
 };
@@ -222,19 +222,19 @@ struct cudaBlockSort {
 /** @private */
 template<typename P, typename K, typename C>
 void cuda_merge_sort_partitions(
-  P&& p, K keys, unsigned count, 
+  P&& p, K keys, unsigned count,
   unsigned coop, unsigned spacing, C comp, unsigned* buf
 ) {
-  
+
   // bufer size is num_partitions + 1
   unsigned num_partitions = (count + spacing - 1) / spacing + 1;
-  
+
   const unsigned nt = 128;
   const unsigned vt = 1;
   const unsigned nv = nt * vt;
 
   unsigned B = (num_partitions + nv - 1) / nv;  // nt = 128, vt = 1
-  
+
   cuda_kernel<<<B, nt, 0, p.stream()>>>([=] __device__ (auto tid, auto bid) {
     auto range = cuda_get_tile(bid, nt * vt, num_partitions);
     cuda_strided_iterate<nt, vt>([=](auto, auto j) {
@@ -242,11 +242,11 @@ void cuda_merge_sort_partitions(
       auto range = cuda_compute_merge_sort_range(count, index, coop, spacing);
       auto diag = min(spacing * index, count) - range.a_begin;
       buf[index] = cuda_merge_path<cudaMergeBoundType::LOWER>(
-        keys + range.a_begin, range.a_count(), 
-        keys + range.b_begin, range.b_count(), 
+        keys + range.a_begin, range.a_count(),
+        keys + range.b_begin, range.b_count(),
         diag, comp
       );
-    }, tid, range.count());  
+    }, tid, range.count());
   });
 }
 
@@ -255,7 +255,7 @@ template<typename P, typename K_it, typename V_it, typename C>
 void merge_sort_loop(
   P&& p, K_it keys_input, V_it vals_input, unsigned count, C comp, void* buf
 ) {
-  
+
   using K = typename std::iterator_traits<K_it>::value_type;
   using V = typename std::iterator_traits<V_it>::value_type;
   using E = std::decay_t<P>;
@@ -268,7 +268,7 @@ void merge_sort_loop(
   K* keys_output    {nullptr};
   V* vals_output    {nullptr};
   unsigned *mp_data {nullptr};
-  
+
   if(R) {
     keys_output = (K*)(buf);
     if(has_values) {
@@ -294,7 +294,7 @@ void merge_sort_loop(
   //printf("B=%u, R=%u\n", B, R);
 
   cuda_kernel<<<B, E::nt, 0, p.stream()>>>([=] __device__ (auto tid, auto bid) {
-    
+
     using sort_t = cudaBlockSort<E::nt, E::vt, K, V>;
 
     __shared__ union {
@@ -342,13 +342,13 @@ void merge_sort_loop(
     std::swap(keys_input, keys_output);
     std::swap(vals_input, vals_output);
   }
-  
+
   // number of partitions
   //unsigned num_partitions = B + 1;
   //cudaScopedDeviceMemory<unsigned> mem(num_partitions);
   //auto mp_data = mem.data();
   //std::cout << "num_partitions = " << (B+1)*sizeof(unsigned) << std::endl;
-  
+
   for(unsigned pass = 0; pass < R; ++pass) {
 
     unsigned coop = 2 << pass;
@@ -356,7 +356,7 @@ void merge_sort_loop(
     cuda_merge_sort_partitions(
       p, keys_input, count, coop, E::nv, comp, mp_data
     );
-    
+
     cuda_kernel<<<B, E::nt, 0, p.stream()>>>([=]__device__(auto tid, auto bid) {
 
       __shared__ union {
@@ -388,7 +388,7 @@ void merge_sort_loop(
 
         // Gather the input values and merge into the output values.
         cuda_transfer_two_streams_strided<E::nt>(
-          vals_input + range.a_begin, range.a_count(), 
+          vals_input + range.a_begin, range.a_count(),
           vals_input + range.b_begin, range.b_count(),
           indices, tid, vals_output + tile.begin
         );
@@ -404,8 +404,8 @@ void merge_sort_loop(
 
 namespace tf {
 
-/** 
-@brief queries the buffer size in bytes needed to call sort kernels 
+/**
+@brief queries the buffer size in bytes needed to call sort kernels
        for the given number of elements
 
 @tparam P execution policy type
@@ -443,19 +443,19 @@ unsigned cuda_sort_buffer_size(unsigned count) {
 @tparam V_it value iterator type
 @tparam C comparator type
 
-@param p execution policy 
+@param p execution policy
 @param k_first iterator to the beginning of the key range
 @param k_last iterator to the end of the key range
 @param v_first iterator to the beginning of the value range
 @param comp binary comparator
 @param buf pointer to the temporary buffer
 
-Sorts key-value elements in <tt>[k_first, k_last)</tt> and 
+Sorts key-value elements in <tt>[k_first, k_last)</tt> and
 <tt>[v_first, v_first + (k_last - k_first))</tt> into ascending key order
 using the given comparator @c comp.
-If @c i and @c j are any two valid iterators in <tt>[k_first, k_last)</tt> 
-such that @c i precedes @c j, and @c p and @c q are iterators in 
-<tt>[v_first, v_first + (k_last - k_first))</tt> corresponding to 
+If @c i and @c j are any two valid iterators in <tt>[k_first, k_last)</tt>
+such that @c i precedes @c j, and @c p and @c q are iterators in
+<tt>[v_first, v_first + (k_last - k_first))</tt> corresponding to
 @c i and @c j respectively, then <tt>comp(*j, *i)</tt> evaluates to @c false.
 
 For example, assume:
@@ -492,7 +492,7 @@ void cuda_sort_by_key(
 @tparam K_it key iterator type
 @tparam C comparator type
 
-@param p execution policy 
+@param p execution policy
 @param k_first iterator to the beginning of the key range
 @param k_last iterator to the end of the key range
 @param comp binary comparator
@@ -562,7 +562,7 @@ cudaTask cudaFlowCapturer::sort(I first, I last, C comp) {
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
   (cudaStream_t stream) mutable {
     cuda_sort(
       cudaDefaultExecutionPolicy{stream}, first, last, comp, buf.get().data()
@@ -573,14 +573,14 @@ cudaTask cudaFlowCapturer::sort(I first, I last, C comp) {
 // Function: sort
 template <typename I, typename C>
 void cudaFlowCapturer::sort(cudaTask task, I first, I last, C comp) {
-  
+
   using K = typename std::iterator_traits<I>::value_type;
 
   auto bufsz = cuda_sort_buffer_size<cudaDefaultExecutionPolicy, K>(
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
   (cudaStream_t stream) mutable {
     cuda_sort(
       cudaDefaultExecutionPolicy{stream}, first, last, comp, buf.get().data()
@@ -601,9 +601,9 @@ cudaTask cudaFlowCapturer::sort_by_key(
     std::distance(k_first, k_last)
   );
 
-  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
   (cudaStream_t stream) mutable {
-    cuda_sort_by_key(cudaDefaultExecutionPolicy{stream}, 
+    cuda_sort_by_key(cudaDefaultExecutionPolicy{stream},
       k_first, k_last, v_first, comp, buf.get().data()
     );
   });
@@ -622,9 +622,9 @@ void cudaFlowCapturer::sort_by_key(
     std::distance(k_first, k_last)
   );
 
-  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
   (cudaStream_t stream) mutable {
-    cuda_sort_by_key(cudaDefaultExecutionPolicy{stream}, 
+    cuda_sort_by_key(cudaDefaultExecutionPolicy{stream},
       k_first, k_last, v_first, comp, buf.get().data()
     );
   });

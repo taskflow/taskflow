@@ -20,14 +20,14 @@
 class LevelGraph;
 
 class Node{
-  
+
   public:
 
     Node(LevelGraph& graph, bool chosen, size_t level, int index, int length, std::vector<int>& next_level_nodes)
       : _graph(graph), _chosen(chosen), _level(level), _idx(index), _length(length) {
       _out_edges = std::move(next_level_nodes);
     }
-   
+
     //void mark(){
     //  _visited = true;
     //}
@@ -37,20 +37,20 @@ class Node{
     void unmark(){
       _visited = false;
     }
- 
-    bool check_status() { 
-      return _visited; 
+
+    bool check_status() {
+      return _visited;
     }
 
     void print_node(){
-  
+
       std::cout << "Node: " << _idx << " out_edges: ";
       for(const auto& out_edge: _out_edges){
         std::cout << out_edge << "\t";
       }
 
-      std::cout << "\n" << "in_edges";  
-  
+      std::cout << "\n" << "in_edges";
+
       for(const auto& in_edge: _in_edges){
         std::cout << "(" << in_edge.first << "," << in_edge.second << ")\t";
       }
@@ -67,8 +67,8 @@ class Node{
     int get_value() const {
       //std::cout << "in graph get value " << this->_value << '\n';
       //std::cout << "in graph get index " << _idx << ", level = " << _level << '\n';
-      
-      return _value; 
+
+      return _value;
     }
     void set_value(const int val)  {
       //std::cout << "in graph set value with val = " << val << '\n';
@@ -81,7 +81,7 @@ class Node{
 
     std::vector<std::pair<int, int>> _in_edges;
     std::vector<int> _out_edges;
-    
+
   private:
 
     LevelGraph& _graph;
@@ -108,25 +108,25 @@ class LevelGraph {
       std::srand(0);
 
       for(size_t l = 0; l < level; ++l){
-        
+
         std::vector<Node> cur_nodes;
         std::vector<int> next_level_nodes;
 
         for(size_t i = 0; i < length; i++){
           next_level_nodes.push_back(i);
         }
-     
+
         //shuffle nodes in the next level
         std::shuffle(next_level_nodes.begin(), next_level_nodes.end(), g);
 
         size_t edge_num = 1;
         size_t start = 0, end = 0;
-        bool re_shuffle = false;  
-    
+        bool re_shuffle = false;
+
         for(size_t i = 0; i < length; i++){
           edge_num = 1 + (std::rand() % _edge_max);
-          
-  
+
+
           if(start + edge_num >= length){
             end = length;
             re_shuffle = true;
@@ -134,17 +134,17 @@ class LevelGraph {
           else{
             end = start + edge_num;
           }
-          
+
           //std::cout << "Level\t" << l << "\tidx\t" << i << "\tedge_num\t" << edge_num << "\tstart\t" << start << "\tend\t" << end << std::endl;
-          
-          std::vector<int> edges(next_level_nodes.begin()+start, next_level_nodes.begin()+end);          
-          
+
+          std::vector<int> edges(next_level_nodes.begin()+start, next_level_nodes.begin()+end);
+
           //choose a node to do some work
           float rv = std::rand()/(RAND_MAX + 1u);
           bool chosen = false;
           if(rv < threshold){
             chosen = true;
-          }          
+          }
 
           cur_nodes.emplace_back(*this, chosen, l, i, length, edges); //create nodes
 
@@ -156,7 +156,7 @@ class LevelGraph {
           else{
             start = end;
           }
-        } 
+        }
 
         _graph.push_back(std::move(cur_nodes));
 
@@ -169,15 +169,15 @@ class LevelGraph {
             int dest_idx = _graph[l][i]._out_edges[j];
             _graph[l+1][dest_idx]._in_edges.push_back(std::make_pair(src_idx, j));
           }
-        } 
+        }
       }
-     
-      //print_graph(); 
+
+      //print_graph();
 
     }
 
     void print_graph(){
-  
+
       for(size_t l = 0; l < _graph.size(); l++){
         std::cout << "-----------Level " << l <<"----------" << std::endl;
         for(size_t i = 0; i < _graph[l].size(); i++){
@@ -187,7 +187,7 @@ class LevelGraph {
     }
 
     bool validate_result(){
-    
+
       for(size_t l = 0; l < _level_num; l++){
         for(size_t i = 0; i < _length_num; i++){
           if(_graph[l][i].check_status() == false){
@@ -209,13 +209,13 @@ class LevelGraph {
     }
 
 
-    Node& node_at(size_t level, size_t index){ 
-      //std::cout << "node at = " << &_graph[level][index] << '\n'; 
-      return _graph[level][index]; 
+    Node& node_at(size_t level, size_t index){
+      //std::cout << "node at = " << &_graph[level][index] << '\n';
+      return _graph[level][index];
     }
 
     std::vector<std::vector<Node>>& graph() { return _graph; };
-    
+
     size_t level(){ return _level_num; }
     size_t length() { return _length_num;  }
 
@@ -245,8 +245,8 @@ class LevelGraph {
         int child_level = child / _length_num;
         int child_index = child % _length_num;
         //std::cout << "Node level: " << child_level << " idx: " << child_index << std::endl;
-  
-        idx_queue.pop(); 
+
+        idx_queue.pop();
         const Node& n = _graph[child_level][child_index];
 
         for(size_t i = 0; child_level > 0 && i < n._in_edges.size(); i++){
@@ -258,15 +258,15 @@ class LevelGraph {
             idx_queue.push(parent);
             idx_list.insert(parent);
           }
-        }        
+        }
 
       }
-    
+
     }
 
 
   private:
-    
+
     const size_t _edge_max = 4;
     size_t _level_num;
     size_t _length_num;
@@ -298,7 +298,7 @@ inline int work(const int seed) {
   std::vector<std::vector<int>> array2(matrix_size);
   std::vector<std::vector<int>> result(matrix_size);
 
-  
+
   for (int i = 0; i < matrix_size; ++i){
     array1[i].resize(matrix_size);
     array2[i].resize(matrix_size);
@@ -309,7 +309,7 @@ inline int work(const int seed) {
       result[i][j] = 0;
     }
   }
-  
+
   for (int i = 0; i < matrix_size; ++i) {
     for (int j = 0; j < matrix_size; ++j) {
       for (int k = 0; k < matrix_size; ++k) {
@@ -317,16 +317,16 @@ inline int work(const int seed) {
       }
     }
   }
-  
+
   int retval = 0;
   for (int i = 0; i < matrix_size; ++i) {
     for (int j = 0; j < matrix_size; ++j) {
-      retval += result[i][j];  
+      retval += result[i][j];
     }
   }
- 
-  //std::cout << "retval = " << retval << '\n'; 
-  return ((retval%999)+999)%999; 
+
+  //std::cout << "retval = " << retval << '\n';
+  return ((retval%999)+999)%999;
 }
 
 inline void work() {
@@ -338,7 +338,7 @@ inline void work() {
   std::vector<std::vector<int>> array2(matrix_size);
   std::vector<std::vector<int>> result(matrix_size);
 
-  
+
   for (int i = 0; i < matrix_size; ++i){
     array1[i].resize(matrix_size);
     array2[i].resize(matrix_size);

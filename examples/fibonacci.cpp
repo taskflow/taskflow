@@ -28,14 +28,14 @@ int main(int argc, char* argv[]) {
   if(N < 0) {
     throw std::runtime_error("N must be non-negative");
   }
-  
+
   int res;  // result
 
   tf::Executor executor;
   tf::Taskflow taskflow("fibonacci");
 
-  taskflow.emplace([&res, N] (tf::Subflow& sbf) { 
-    res = spawn(N, sbf);  
+  taskflow.emplace([&res, N] (tf::Subflow& sbf) {
+    res = spawn(N, sbf);
   }).name(std::to_string(N));
 
   executor.run(taskflow).wait();

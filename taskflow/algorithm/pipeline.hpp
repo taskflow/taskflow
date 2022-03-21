@@ -2,7 +2,7 @@
 
 #include "../taskflow.hpp"
 
-/** 
+/**
 @file pipeline.hpp
 @brief pipeline include file
 */
@@ -18,18 +18,18 @@ namespace tf {
 
 @brief class to create a pipeflow object used by the pipe callable
 
-Pipeflow represents a <i>scheduling token</i> in the pipeline scheduling 
+Pipeflow represents a <i>scheduling token</i> in the pipeline scheduling
 framework. A pipeflow is created by the pipeline scheduler at runtime to
 pass to the pipe callable. Users can query the present statistics
-of that scheduling token, including the line identifier, pipe identifier, 
+of that scheduling token, including the line identifier, pipe identifier,
 and token identifier, and build their application algorithms based on
-these statistics. 
-At the first stage, users can explicitly call the stop method 
+these statistics.
+At the first stage, users can explicitly call the stop method
 to stop the pipeline scheduler.
 
 @code{.cpp}
 tf::Pipe{tf::PipeType::SERIAL, [](tf::Pipeflow& pf){
-  std::cout << "token id=" << pf.token() 
+  std::cout << "token id=" << pf.token()
             << " at line=" << pf.line()
             << " at pipe=" << pf.pipe()
             << '\n';
@@ -43,7 +43,7 @@ class Pipeflow {
 
   template <typename... Ps>
   friend class Pipeline;
-  
+
   template <typename P>
   friend class ScalablePipeline;
 
@@ -53,21 +53,21 @@ class Pipeflow {
   @brief default constructor
   */
   Pipeflow() = default;
-  
+
   /**
   @brief queries the line identifier of the present token
   */
   size_t line() const {
     return _line;
   }
-  
+
   /**
   @brief queries the pipe identifier of the present token
   */
   size_t pipe() const {
     return _pipe;
   }
-  
+
   /**
   @brief queries the token identifier
   */
@@ -76,7 +76,7 @@ class Pipeflow {
   }
 
   /**
-  @brief stops the pipeline scheduling 
+  @brief stops the pipeline scheduling
 
   Only the first pipe can call this method to stop the pipeline.
   Others have no effect.
@@ -84,7 +84,7 @@ class Pipeflow {
   void stop() {
     _stop = true;
   }
-  
+
   private:
 
   size_t _line;
@@ -104,7 +104,7 @@ class Pipeflow {
 */
 enum class PipeType : int {
   /** @brief parallel type */
-  PARALLEL = 1,  
+  PARALLEL = 1,
   /** @brief serial type */
   SERIAL   = 2
 };
@@ -137,12 +137,12 @@ class Pipe {
 
   template <typename... Ps>
   friend class Pipeline;
-  
+
   template <typename P>
   friend class ScalablePipeline;
-  
+
   public:
-  
+
   /**
   @brief alias of the callable type
   */
@@ -167,13 +167,13 @@ class Pipe {
   Pipe{PipeType::SERIAL, [](tf::Pipeflow&){}}
   @endcode
 
-  When creating a pipeline, the direction of the first pipe must be serial 
+  When creating a pipeline, the direction of the first pipe must be serial
   (tf::PipeType::SERIAL).
   */
   Pipe(PipeType d, C&& callable) :
     _type{d}, _callable{std::forward<C>(callable)} {
   }
-  
+
   /**
   @brief queries the type of the pipe
 
@@ -223,14 +223,14 @@ class Pipe {
 
 @tparam Ps pipe types
 
-A pipeline is a composable graph object for users to create a 
+A pipeline is a composable graph object for users to create a
 <i>pipeline scheduling framework</i> using a module task in a taskflow.
 Unlike the conventional pipeline programming frameworks (e.g., Intel TBB),
 %Taskflow's pipeline algorithm does not provide any data abstraction,
 which often restricts users from optimizing data layouts in their applications,
-but a flexible framework for users to customize their application data 
+but a flexible framework for users to customize their application data
 atop our pipeline scheduling.
-The following code creates a pipeline of four parallel lines to schedule 
+The following code creates a pipeline of four parallel lines to schedule
 tokens through three serial pipes:
 
 @code{.cpp}
@@ -295,7 +295,7 @@ v    v    v
 o -> o -> o
 |    |    |
 v    v    v
-o -> o -> o 
+o -> o -> o
 @endcode
 
 At each pipe stage, the program propagates the result to the next pipe
@@ -303,16 +303,16 @@ by adding one to the result stored in a custom data storage, @c buffer.
 The pipeline scheduler will generate five scheduling tokens and then stop.
 
 Internally, tf::Pipeline uses std::tuple to store the given sequence of pipes.
-The definition of each pipe can be different, completely decided by the compiler 
+The definition of each pipe can be different, completely decided by the compiler
 to optimize the object layout.
 After a pipeline is constructed, it is not possible to change its pipes.
 If applications need to change these pipes, please use tf::ScalablePipeline.
 */
 template <typename... Ps>
 class Pipeline {
-  
+
   static_assert(sizeof...(Ps)>0, "must have at least one pipe");
-  
+
   /**
   @private
   */
@@ -337,7 +337,7 @@ class Pipeline {
 
   Constructs a pipeline of up to @c num_lines parallel lines to schedule
   tokens through the given linear chain of pipes.
-  The first pipe must define a serial direction (tf::PipeType::SERIAL) 
+  The first pipe must define a serial direction (tf::PipeType::SERIAL)
   or an exception will be thrown.
   */
   Pipeline(size_t num_lines, Ps&&... ps);
@@ -350,7 +350,7 @@ class Pipeline {
 
   Constructs a pipeline of up to @c num_lines parallel lines to schedule
   tokens through the given linear chain of pipes.
-  The first pipe must define a serial direction (tf::PipeType::SERIAL) 
+  The first pipe must define a serial direction (tf::PipeType::SERIAL)
   or an exception will be thrown.
   */
   Pipeline(size_t num_lines, std::tuple<Ps...>&& ps);
@@ -372,16 +372,16 @@ class Pipeline {
   upon the construction of the pipeline.
   */
   constexpr size_t num_pipes() const noexcept;
-  
+
   /**
   @brief resets the pipeline
 
   Resetting the pipeline to the initial state. After resetting a pipeline,
-  its token identifier will start from zero as if the pipeline was just 
+  its token identifier will start from zero as if the pipeline was just
   constructed.
   */
   void reset();
-  
+
   /**
   @brief queries the number of generated tokens in the pipeline
 
@@ -393,26 +393,26 @@ class Pipeline {
   /**
   @brief obtains the graph object associated with the pipeline construct
 
-  This method is primarily used as an opaque data structure for creating 
-  a module task of the this pipeline. 
+  This method is primarily used as an opaque data structure for creating
+  a module task of the this pipeline.
   */
   Graph& graph();
 
   private:
-  
+
   Graph _graph;
 
   size_t _num_tokens;
 
   std::tuple<Ps...> _pipes;
   std::array<PipeMeta, sizeof...(Ps)> _meta;
-  std::vector<std::array<Line, sizeof...(Ps)>> _lines; 
+  std::vector<std::array<Line, sizeof...(Ps)>> _lines;
   std::vector<Task> _tasks;
   std::vector<Pipeflow> _pipeflows;
-  
+
   template <size_t... I>
   auto _gen_meta(std::tuple<Ps...>&&, std::index_sequence<I...>);
-    
+
   void _on_pipe(Pipeflow&, Runtime&);
   void _build();
 };
@@ -425,7 +425,7 @@ Pipeline<Ps...>::Pipeline(size_t num_lines, Ps&&... ps) :
   _lines     (num_lines),
   _tasks     (num_lines + 1),
   _pipeflows (num_lines) {
-  
+
   if(num_lines == 0) {
     TF_THROW("must have at least one line");
   }
@@ -448,7 +448,7 @@ Pipeline<Ps...>::Pipeline(size_t num_lines, std::tuple<Ps...>&& ps) :
   _lines     (num_lines),
   _tasks     (num_lines + 1),
   _pipeflows (num_lines) {
-  
+
   if(num_lines == 0) {
     TF_THROW("must have at least one line");
   }
@@ -460,7 +460,7 @@ Pipeline<Ps...>::Pipeline(size_t num_lines, std::tuple<Ps...>&& ps) :
   reset();
   _build();
 }
-  
+
 // Function: _get_meta
 template <typename... Ps>
 template <size_t... I>
@@ -523,11 +523,11 @@ void Pipeline<Ps...>::reset() {
     );
   }
 }
-  
+
 // Procedure: _on_pipe
 template <typename... Ps>
 void Pipeline<Ps...>::_on_pipe(Pipeflow& pf, Runtime&) {
-  visit_tuple([&](auto&& pipe){ 
+  visit_tuple([&](auto&& pipe){
     pipe._callable(pf);
   }, _pipes, pf._pipe);
 }
@@ -535,10 +535,10 @@ void Pipeline<Ps...>::_on_pipe(Pipeflow& pf, Runtime&) {
 // Procedure: _build
 template <typename... Ps>
 void Pipeline<Ps...>::_build() {
-  
+
   using namespace std::literals::string_literals;
- 
-  FlowBuilder fb(_graph); 
+
+  FlowBuilder fb(_graph);
 
   // init task
   _tasks[0] = fb.emplace([this]() {
@@ -576,10 +576,10 @@ void Pipeline<Ps...>::_build() {
       size_t n_l = (pf->_line + 1) % num_lines();
 
       pf->_pipe = n_f;
-      
+
       // ---- scheduling starts here ----
       // Notice that the shared variable f must not be changed after this
-      // point because it can result in data race due to the following 
+      // point because it can result in data race due to the following
       // condition:
       //
       // a -> b
@@ -589,25 +589,25 @@ void Pipeline<Ps...>::_build() {
       //
       // d will be spawned by either c or b, so if c changes f but b spawns d
       // then data race on f will happen
-      
+
       std::array<int, 2> retval;
       size_t n = 0;
 
       // downward dependency
-      if(_meta[c_f].type == PipeType::SERIAL && 
+      if(_meta[c_f].type == PipeType::SERIAL &&
          _lines[n_l][c_f].join_counter.fetch_sub(
            1, std::memory_order_acq_rel) == 1
         ) {
         retval[n++] = 1;
       }
-      
+
       // forward dependency
       if(_lines[pf->_line][n_f].join_counter.fetch_sub(
           1, std::memory_order_acq_rel) == 1
         ) {
         retval[n++] = 0;
       }
-      
+
       // notice that the task index starts from 1
       switch(n) {
         case 2: {
@@ -618,7 +618,7 @@ void Pipeline<Ps...>::_build() {
           if (retval[0] == 1) {
             pf = &_pipeflows[n_l];
           }
-          goto pipeline; 
+          goto pipeline;
         }
       }
     }).name("rt-"s + std::to_string(l));
@@ -638,11 +638,11 @@ void Pipeline<Ps...>::_build() {
 
 @tparam P type of the iterator to a range of pipes
 
-A scalable pipeline is a composable graph object for users to create a 
+A scalable pipeline is a composable graph object for users to create a
 <i>pipeline scheduling framework</i> using a module task in a taskflow.
 Unlike tf::Pipeline that instantiates all pipes upon the construction time,
 tf::ScalablePipeline allows variable assignments of pipes using range iterators.
-Users can also reset a scalable pipeline to a different range of pipes 
+Users can also reset a scalable pipeline to a different range of pipes
 between runs. The following code creates a scalable pipeline of four
 parallel lines to schedule tokens through three serial pipes in a custom storage,
 then resetting the pipeline to a new range of five serial pipes:
@@ -659,7 +659,7 @@ std::array<int, num_lines> buffer;
 // define the pipe callable
 auto pipe_callable = [&buffer] (tf::Pipeflow& pf) mutable {
   switch(pf.pipe()) {
-    // first stage generates only 5 scheduling tokens and saves the 
+    // first stage generates only 5 scheduling tokens and saves the
     // token number into the buffer.
     case 0: {
       if(pf.token() == 5) {
@@ -672,7 +672,7 @@ auto pipe_callable = [&buffer] (tf::Pipeflow& pf) mutable {
       return;
     }
     break;
-    
+
     // other stages propagate the previous result to this pipe and
     // increment it by one
     default: {
@@ -680,7 +680,7 @@ auto pipe_callable = [&buffer] (tf::Pipeflow& pf) mutable {
         "stage %zu: input buffer[%zu] = %d\n", pf.pipe(), pf.line(), buffer[pf.line()]
       );
       buffer[pf.line()] = buffer[pf.line()] + 1;
-    } 
+    }
     break;
   }
 };
@@ -724,7 +724,7 @@ executor.run(taskflow).wait();
 @endcode
 
 The above example creates a pipeline graph that schedules five tokens over
-four parallel lines in a circular fashion, first going through three serial pipes 
+four parallel lines in a circular fashion, first going through three serial pipes
 and then five serial pipes:
 
 @code{.shell-session}
@@ -738,7 +738,7 @@ v    v    v
 o -> o -> o
 |    |    |
 v    v    v
-o -> o -> o 
+o -> o -> o
 
 # resetting to a new range of five serial pipes
 o -> o -> o -> o -> o
@@ -753,7 +753,7 @@ v    v    v    v    v
 o -> o -> o -> o -> o
 @endcode
 
-Each pipe has the same type of `%tf::Pipe<%std::function<void(%tf::Pipeflow&)>>` 
+Each pipe has the same type of `%tf::Pipe<%std::function<void(%tf::Pipeflow&)>>`
 and is kept in a vector that is amenable to change.
 We construct the scalable pipeline using two range iterators pointing to the
 beginning and the end of the vector.
@@ -765,7 +765,7 @@ A scalable pipeline is move-only.
 */
 template <typename P>
 class ScalablePipeline {
-  
+
   /**
   @private
   */
@@ -774,17 +774,17 @@ class ScalablePipeline {
   };
 
   public:
-  
+
   /**
   @brief pipe type
   */
   using pipe_type = typename std::iterator_traits<P>::value_type;
-  
+
   /**
-  @brief default constructor  
+  @brief default constructor
   */
   ScalablePipeline() = default;
-  
+
   /**
   @brief constructs an empty scalable pipeline object
 
@@ -801,15 +801,15 @@ class ScalablePipeline {
 
   @param num_lines the number of parallel lines
   @param first iterator to the beginning of the range
-  @param last iterator to the end of the range 
+  @param last iterator to the end of the range
 
-  Constructs a pipeline from the given range of pipes specified in 
+  Constructs a pipeline from the given range of pipes specified in
   <tt>[first, last)</tt> using @c num_lines parallel lines.
-  The first pipe must define a serial direction (tf::PipeType::SERIAL) 
+  The first pipe must define a serial direction (tf::PipeType::SERIAL)
   or an exception will be thrown.
-  
-  Internally, the scalable pipeline copies the iterators 
-  from the specified range. Those pipe callables pointed to by 
+
+  Internally, the scalable pipeline copies the iterators
+  from the specified range. Those pipe callables pointed to by
   these iterators must remain valid during the execution of the pipeline.
   */
   ScalablePipeline(size_t num_lines, P first, P last);
@@ -836,8 +836,8 @@ class ScalablePipeline {
 
   /**
   @brief move constructor
-  
-  Replaces the contents with those of @c rhs using move semantics 
+
+  Replaces the contents with those of @c rhs using move semantics
   (i.e. the data in @c rhs is moved into this pipeline).
   After the move, @c rhs is in a state as if it is just constructed.
   The behavior is undefined if @c rhs is running during the move.
@@ -861,7 +861,7 @@ class ScalablePipeline {
   upon the construction of the pipeline.
   */
   size_t num_pipes() const noexcept;
-  
+
   /**
   @brief resets the pipeline
 
@@ -869,43 +869,43 @@ class ScalablePipeline {
   its token identifier will start from zero.
   */
   void reset();
-  
+
   /**
   @brief resets the pipeline with a new range of pipes
 
   @param first iterator to the beginning of the range
-  @param last iterator to the end of the range 
+  @param last iterator to the end of the range
 
-  The member function assigns the pipeline to a new range of pipes 
-  specified in <tt>[first, last)</tt> and resets the pipeline to the 
+  The member function assigns the pipeline to a new range of pipes
+  specified in <tt>[first, last)</tt> and resets the pipeline to the
   initial state. After resetting a pipeline, its token identifier will
   start from zero.
-  
-  Internally, the scalable pipeline copies the iterators 
-  from the specified range. Those pipe callables pointed to by 
+
+  Internally, the scalable pipeline copies the iterators
+  from the specified range. Those pipe callables pointed to by
   these iterators must remain valid during the execution of the pipeline.
   */
   void reset(P first, P last);
-  
+
   /**
-  @brief resets the pipeline to a new line number and a 
+  @brief resets the pipeline to a new line number and a
          new range of pipes
-  
+
   @param num_lines number of parallel lines
   @param first iterator to the beginning of the range
   @param last iterator to the end of the range
-  
-  The member function resets the pipeline to a new number of 
+
+  The member function resets the pipeline to a new number of
   parallel lines and a new range of pipes specified in
   <tt>[first, last)</tt>, as if the pipeline is just constructed.
   After resetting a pipeline, its token identifier will start from zero.
-  
-  Internally, the scalable pipeline copies the iterators 
-  from the specified range. Those pipe callables pointed to by 
+
+  Internally, the scalable pipeline copies the iterators
+  from the specified range. Those pipe callables pointed to by
   these iterators must remain valid during the execution of the pipeline.
   */
   void reset(size_t num_lines, P first, P last);
-  
+
   /**
   @brief queries the number of generated tokens in the pipeline
 
@@ -917,13 +917,13 @@ class ScalablePipeline {
   /**
   @brief obtains the graph object associated with the pipeline construct
 
-  This method is primarily used as an opaque data structure for creating 
-  a module task of the this pipeline. 
+  This method is primarily used as an opaque data structure for creating
+  a module task of the this pipeline.
   */
   Graph& graph();
 
   private:
-  
+
   Graph _graph;
 
   size_t _num_tokens{0};
@@ -931,8 +931,8 @@ class ScalablePipeline {
   std::vector<P> _pipes;
   std::vector<Task> _tasks;
   std::vector<Pipeflow> _pipeflows;
-  std::unique_ptr<Line[]> _lines; 
-  
+  std::unique_ptr<Line[]> _lines;
+
   void _on_pipe(Pipeflow&, Runtime&);
   void _build();
 
@@ -957,7 +957,7 @@ template <typename P>
 ScalablePipeline<P>::ScalablePipeline(size_t num_lines, P first, P last) :
   _tasks     (num_lines + 1),
   _pipeflows (num_lines) {
-  
+
   if(num_lines == 0) {
     TF_THROW("must have at least one line");
   }
@@ -975,7 +975,7 @@ ScalablePipeline<P>::ScalablePipeline(ScalablePipeline&& rhs) :
   _tasks      {std::move(rhs._tasks)},
   _pipeflows  {std::move(rhs._pipeflows)},
   _lines      {std::move(rhs._lines)} {
-  
+
   rhs._num_tokens = 0;
 }
 
@@ -1030,7 +1030,7 @@ void ScalablePipeline<P>::reset(size_t num_lines, P first, P last) {
   }
 
   _graph.clear();
-  _tasks.resize(num_lines + 1);     
+  _tasks.resize(num_lines + 1);
   _pipeflows.resize(num_lines);
 
   reset(first, last);
@@ -1051,14 +1051,14 @@ void ScalablePipeline<P>::reset(P first, P last) {
   if(first->type() != PipeType::SERIAL) {
     TF_THROW("first pipe must be serial");
   }
-  
+
   _pipes.resize(num_pipes);
 
   size_t i=0;
   for(auto itr = first; itr != last; itr++) {
     _pipes[i++] = itr;
   }
-  
+
   _lines = std::make_unique<Line[]>(num_lines() * _pipes.size());
 
   reset();
@@ -1074,7 +1074,7 @@ void ScalablePipeline<P>::reset() {
     _pipeflows[l]._pipe = 0;
     _pipeflows[l]._line = l;
   }
-  
+
   _line(0, 0).join_counter.store(0, std::memory_order_relaxed);
 
   for(size_t l=1; l<num_lines(); l++) {
@@ -1105,10 +1105,10 @@ void ScalablePipeline<P>::_on_pipe(Pipeflow& pf, Runtime&) {
 // Procedure: _build
 template <typename P>
 void ScalablePipeline<P>::_build() {
-  
+
   using namespace std::literals::string_literals;
- 
-  FlowBuilder fb(_graph); 
+
+  FlowBuilder fb(_graph);
 
   // init task
   _tasks[0] = fb.emplace([this]() {
@@ -1146,10 +1146,10 @@ void ScalablePipeline<P>::_build() {
       size_t n_l = (pf->_line + 1) % num_lines();
 
       pf->_pipe = n_f;
-      
+
       // ---- scheduling starts here ----
       // Notice that the shared variable f must not be changed after this
-      // point because it can result in data race due to the following 
+      // point because it can result in data race due to the following
       // condition:
       //
       // a -> b
@@ -1159,25 +1159,25 @@ void ScalablePipeline<P>::_build() {
       //
       // d will be spawned by either c or b, so if c changes f but b spawns d
       // then data race on f will happen
-      
+
       std::array<int, 2> retval;
       size_t n = 0;
 
       // downward dependency
-      if(_pipes[c_f]->type() == PipeType::SERIAL && 
+      if(_pipes[c_f]->type() == PipeType::SERIAL &&
          _line(n_l, c_f).join_counter.fetch_sub(
            1, std::memory_order_acq_rel) == 1
         ) {
         retval[n++] = 1;
       }
-      
+
       // forward dependency
       if(_line(pf->_line, n_f).join_counter.fetch_sub(
           1, std::memory_order_acq_rel) == 1
         ) {
         retval[n++] = 0;
       }
-      
+
       // notice that the task index starts from 1
       switch(n) {
         case 2: {
@@ -1188,7 +1188,7 @@ void ScalablePipeline<P>::_build() {
           if (retval[0] == 1) {
             pf = &_pipeflows[n_l];
           }
-          goto pipeline; 
+          goto pipeline;
         }
       }
     }).name("rt-"s + std::to_string(l));

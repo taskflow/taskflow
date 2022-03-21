@@ -6,7 +6,7 @@ namespace tf {
 
 template <typename T>
 class TensorNode {
-  
+
   template <typename U>
   friend class TensorExpr;
 
@@ -15,7 +15,7 @@ class TensorNode {
 
   //using tensor_t = std::variant<
   //  std::monostate,    // not yet assigned - placeholder
-  //  std::shared_ptr<Tensor<int>>, 
+  //  std::shared_ptr<Tensor<int>>,
   //  std::shared_ptr<Tensor<float>>
   //>;
 
@@ -37,13 +37,13 @@ class TensorNode {
   };
 
   using handle_t = std::variant<
-    Input, 
-    Output, 
+    Input,
+    Output,
     Add
   >;
 
   public:
-    
+
     template <typename... Args>
     TensorNode(Args&&... args);
 
@@ -52,7 +52,7 @@ class TensorNode {
     std::string _name;
 
     handle_t _handle;
-    
+
     std::vector<TensorNode*> _successors;
     std::vector<TensorNode*> _dependents;
 
@@ -94,7 +94,7 @@ TensorNode<T>::Add::Add(TensorNode* l, TensorNode* r) :
 template <typename T>
 template <typename... Args>
 TensorNode<T>::TensorNode(Args&&... args) : _handle{std::forward<Args>(args)...} {
-} 
+}
 
 // Procedure: _precede
 template <typename T>

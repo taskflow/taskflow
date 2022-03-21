@@ -70,7 +70,7 @@ void sycl_strided_iterate(F f, unsigned tid, unsigned count) {
       if(j < count) f(i, j);
     });
   }
-  
+
   // TODO: seems dummy when vt0 == vt
   sycl_iterate<vt0, vt>([=](auto i) {
     auto j = nt * i + tid;
@@ -84,7 +84,7 @@ void sycl_thread_iterate(F f, unsigned tid) {
 }
 
 // ----------------------------------------------------------------------------
-// syclRange 
+// syclRange
 // ----------------------------------------------------------------------------
 
 // syclRange
@@ -116,13 +116,13 @@ struct syclArray {
   syclArray& operator=(const syclArray&) = default;
 
   // Fill the array with x.
-  syclArray(T x) { 
-    sycl_iterate<size>([&](unsigned i) { data[i] = x; });  
+  syclArray(T x) {
+    sycl_iterate<size>([&](unsigned i) { data[i] = x; });
   }
 };
 
 template<typename T>
-struct syclArray<T, 0> { 
+struct syclArray<T, 0> {
   T operator[](unsigned) const { return T(); }
   T& operator[](unsigned) { return *(T*)nullptr; }
 };
@@ -134,7 +134,7 @@ struct syclKVArray {
 };
 
 // ----------------------------------------------------------------------------
-// thread reg <-> global mem 
+// thread reg <-> global mem
 // ----------------------------------------------------------------------------
 
 template<unsigned nt, unsigned vt, unsigned vt0 = vt, typename I>
@@ -194,7 +194,7 @@ auto sycl_transform_mem_to_reg_strided(
 //    "reg_to_shared_thread must have at least nt * vt storage");
 //
 //  syclArray<T, vt> x;
-//  sycl_thread_iterate<vt>([&](auto i, auto j) { 
+//  sycl_thread_iterate<vt>([&](auto i, auto j) {
 //    x[i] = shared[j];
 //  }, tid);
 //
@@ -234,7 +234,7 @@ auto sycl_transform_mem_to_reg_strided(
 //}
 //
 //template<
-//  unsigned nt, unsigned vt, unsigned vt0 = vt, typename T, typename it_t, 
+//  unsigned nt, unsigned vt, unsigned vt0 = vt, typename T, typename it_t,
 //  unsigned shared_size
 //>
 //auto sycl_reg_to_mem_thread(
@@ -247,7 +247,7 @@ auto sycl_transform_mem_to_reg_strided(
 //}
 //
 //template<
-//  unsigned nt, unsigned vt, unsigned vt0 = vt, typename T, typename it_t, 
+//  unsigned nt, unsigned vt, unsigned vt0 = vt, typename T, typename it_t,
 //  unsigned shared_size
 //>
 //auto sycl_mem_to_reg_thread(
@@ -318,7 +318,7 @@ struct syclLoadStoreIterator : std::iterator_traits<const T*> {
     I index;
 
     assign_t& operator=(T rhs) {
-      static_assert(!std::is_same<S, syclEmpty>::value, 
+      static_assert(!std::is_same<S, syclEmpty>::value,
         "load_iterator is being stored to.");
       store(rhs, index);
       return *this;
@@ -332,7 +332,7 @@ struct syclLoadStoreIterator : std::iterator_traits<const T*> {
 
   assign_t operator[](I index) const {
     return assign_t { load, store, base + index };
-  } 
+  }
   assign_t operator*() const {
     return assign_t { load, store, base };
   }
@@ -395,8 +395,8 @@ auto sycl_make_store_iterator(S store, I base = 0) {
 
 template<typename T>
 void sycl_swap(T& a, T& b) {
-  auto c = a; 
-  a = b; 
+  auto c = a;
+  a = b;
   b = c;
 }
 
@@ -454,23 +454,23 @@ struct sycl_greater : public std::binary_function<T, T, T> {
 
 /**
 @private
-*/ 
+*/
 template <typename T>
 class syclScopedDeviceMemory {
-  
+
   public:
 
     syclScopedDeviceMemory() = delete;
 
-    syclScopedDeviceMemory(size_t N, sycl::queue queue) : 
+    syclScopedDeviceMemory(size_t N, sycl::queue queue) :
       _queue {std::move(queue)},
       _N {N} {
       if(N) {
         _data = sycl::malloc_device<T>(N, _queue);
       }
     }
-    
-    syclScopedDeviceMemory(syclScopedDeviceMemory&& rhs) : 
+
+    syclScopedDeviceMemory(syclScopedDeviceMemory&& rhs) :
       _queue{std::move(rhs._queue)}, _data{rhs._data}, _N {rhs._N} {
       rhs._data = nullptr;
       rhs._N    = 0;
@@ -498,7 +498,7 @@ class syclScopedDeviceMemory {
 
     T* data() { return _data; }
     const T* data() const { return _data; }
-    
+
     syclScopedDeviceMemory(const syclScopedDeviceMemory&) = delete;
     syclScopedDeviceMemory& operator = (const syclScopedDeviceMemory&) = delete;
 
@@ -509,7 +509,7 @@ class syclScopedDeviceMemory {
     T* _data  {nullptr};
     size_t _N {0};
 };
-  
+
 
 }  // end of namespace tf -----------------------------------------------------
 

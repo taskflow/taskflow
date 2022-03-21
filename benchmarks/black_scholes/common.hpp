@@ -18,8 +18,8 @@ typedef struct OptionData_ {
   float r;          // risk-free interest rate
   float divq;       // dividend rate
   float v;          // volatility
-  float t;          // time to maturity or option expiration in years 
-                     //     (1yr = 1.0, 6mos = 0.5, 3mos = 0.25, ..., etc)  
+  float t;          // time to maturity or option expiration in years
+                     //     (1yr = 1.0, 6mos = 0.5, 3mos = 0.25, ..., etc)
   char OptionType;   // Option type.  "P"=PUT, "C"=CALL
   float divs;       // dividend vals (not used in this test)
   float DGrefval;   // DerivaGem Reference Value
@@ -41,7 +41,7 @@ extern int* BUFFER2;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Cumulative Normal Distribution Function
-// See Hull, Section 11.8, P.243-244 
+// See Hull, Section 11.8, P.243-244
 ////////////////////////////////////////////////////////////////////////////////
 #define inv_sqrt_2xPI 0.39894228040143270286
 
@@ -62,13 +62,13 @@ inline float CNDF( float InputX ) {
     if (InputX < 0.0) {
       InputX = -InputX;
       sign = 1;
-    } 
+    }
     else {
       sign = 0;
     }
 
     xInput = InputX;
- 
+
     // Compute NPrimeX term common to both four & six decimal accuracy calcs
     expValues = std::exp(-0.5f * InputX * InputX);
     xNPrimeofX = expValues;
@@ -81,7 +81,7 @@ inline float CNDF( float InputX ) {
     xK2_3 = xK2_2 * xK2;
     xK2_4 = xK2_3 * xK2;
     xK2_5 = xK2_4 * xK2;
-    
+
     xLocal_1 = xK2 * 0.319381530;
     xLocal_2 = xK2_2 * (-0.356563782);
     xLocal_3 = xK2_3 * 1.781477937;
@@ -96,24 +96,24 @@ inline float CNDF( float InputX ) {
     xLocal   = 1.0 - xLocal;
 
     OutputX  = xLocal;
-    
+
     if (sign) {
         OutputX = 1.0 - OutputX;
     }
-    
+
     return OutputX;
-} 
+}
 
 
 
-inline float BlkSchlsEqEuroNoDiv( 
+inline float BlkSchlsEqEuroNoDiv(
   float sptprice, float strike, float rate,
   float volatility, float time, int otype, float) {
 
   float OptionPrice;
 
   // local private working variables for the calculation
-  //float xStockPrice;  // These two variables are not used 
+  //float xStockPrice;  // These two variables are not used
   //float xStrikePrice;
   float xRiskFreeRate;
   float xVolatility;
@@ -122,7 +122,7 @@ inline float BlkSchlsEqEuroNoDiv(
 
   float logValues;
   float xLogTerm;
-  float xD1; 
+  float xD1;
   float xD2;
   float xPowerTerm;
   float xDen;
@@ -132,7 +132,7 @@ inline float BlkSchlsEqEuroNoDiv(
   float NofXd1;
   float NofXd2;
   float NegNofXd1;
-  float NegNofXd2;    
+  float NegNofXd2;
 
   //xStockPrice = sptprice;
   //xStrikePrice = strike;
@@ -163,11 +163,11 @@ inline float BlkSchlsEqEuroNoDiv(
   NofXd1 = CNDF( d1 );
   NofXd2 = CNDF( d2 );
 
-  FutureValueX = strike * ( std::exp( -(rate)*(time) ) );        
-  if (otype == 0) {            
+  FutureValueX = strike * ( std::exp( -(rate)*(time) ) );
+  if (otype == 0) {
     OptionPrice = (sptprice * NofXd1) - (FutureValueX * NofXd2);
-  } 
-  else { 
+  }
+  else {
     NegNofXd1 = (1.0 - NofXd1);
     NegNofXd2 = (1.0 - NofXd2);
     OptionPrice = (FutureValueX * NegNofXd2) - (sptprice * NegNofXd1);
@@ -195,15 +195,15 @@ inline void bs_seq(float *seq_prices) {
 
   for (j=0; j<NUM_RUNS; j++) {
     for (i=0; i<numOptions; i++) {
-      /* Calling main function to calculate option value based on 
+      /* Calling main function to calculate option value based on
        * Black & Scholes's equation.
        */
       price = BlkSchlsEqEuroNoDiv( sptprice[i], strike[i],
-          rate[i], volatility[i], otime[i], 
+          rate[i], volatility[i], otime[i],
           otype[i], 0);
       seq_prices[i] = price;
 
-#ifdef ERR_CHK 
+#ifdef ERR_CHK
       check_error(i, seq_prices[i]);
 #endif
     }
@@ -258,7 +258,7 @@ inline void generate_options(size_t num_options) {
     sptprice[i]   = optdata[i].s;
     strike[i]     = optdata[i].strike;
     rate[i]       = optdata[i].r;
-    volatility[i] = optdata[i].v;    
+    volatility[i] = optdata[i].v;
     otime[i]      = optdata[i].t;
   }
 }

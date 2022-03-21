@@ -14,7 +14,7 @@
 void pipeline_1P(size_t L, unsigned w, tf::PipeType type) {
 
   tf::Executor executor(w);
-    
+
   const size_t maxN = 100;
 
   std::vector<int> source(maxN);
@@ -22,7 +22,7 @@ void pipeline_1P(size_t L, unsigned w, tf::PipeType type) {
 
   // iterate different data amount (1, 2, 3, 4, 5, ... 1000000)
   for (size_t N = 0; N <= maxN; N++) {
-    
+
     // serial direction
     if (type == tf::PipeType::SERIAL) {
       tf::Taskflow taskflow;
@@ -42,26 +42,26 @@ void pipeline_1P(size_t L, unsigned w, tf::PipeType type) {
 
       auto test = taskflow.emplace([&](){
         REQUIRE(j == N);
-        REQUIRE(pl.num_tokens() == N);    
+        REQUIRE(pl.num_tokens() == N);
       }).name("test");
 
       pipeline.precede(test);
 
       executor.run_until(taskflow, [counter=3, j]() mutable{
         j = 0;
-        return counter --== 0;  
+        return counter --== 0;
       }).get();
     }
     // parallel pipe
     //else if(type == tf::PipeType::PARALLEL) {
-    //  
+    //
     //  tf::Taskflow taskflow;
 
     //  std::atomic<size_t> j = 0;
     //  std::mutex mutex;
     //  std::vector<int> collection;
 
-    //  tf::Pipeline pl(L, tf::Pipe{type, 
+    //  tf::Pipeline pl(L, tf::Pipe{type,
     //  [N, &j, &mutex, &collection](auto& pf) mutable {
 
     //    auto ticket = j.fetch_add(1);
@@ -179,7 +179,7 @@ void pipeline_2P_SS(size_t L, unsigned w) {
   for(size_t N = 0; N <= maxN; N++) {
 
     tf::Taskflow taskflow;
-      
+
     size_t j1 = 0, j2 = 0;
     size_t cnt = 1;
 
@@ -205,16 +205,16 @@ void pipeline_2P_SS(size_t L, unsigned w) {
         j2++;
       }}
     );
-    
+
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
     auto test = taskflow.emplace([&](){
       REQUIRE(j1 == N);
       REQUIRE(j2 == N);
       REQUIRE(pl.num_tokens() == cnt * N);
     }).name("test");
-    
+
     pipeline.precede(test);
-     
+
     executor.run_n(taskflow, 3, [&]() mutable {
       j1 = 0;
       j2 = 0;
@@ -224,7 +224,7 @@ void pipeline_2P_SS(size_t L, unsigned w) {
         }
       }
       cnt++;
-    }).get();    
+    }).get();
   }
 }
 
@@ -309,7 +309,7 @@ void pipeline_2P_SP(size_t L, unsigned w) {
   for(size_t N = 0; N <= maxN; N++) {
 
     tf::Taskflow taskflow;
-      
+
     size_t j1 = 0;
     std::atomic<size_t> j2 = 0;
     std::mutex mutex;
@@ -329,7 +329,7 @@ void pipeline_2P_SP(size_t L, unsigned w) {
         j1++;
       }},
 
-      tf::Pipe{tf::PipeType::PARALLEL, 
+      tf::Pipe{tf::PipeType::PARALLEL,
       [N, &collection, &mutex, &j2, &mybuffer, L](auto& pf) mutable {
         REQUIRE(j2++ < N);
         {
@@ -339,21 +339,21 @@ void pipeline_2P_SP(size_t L, unsigned w) {
         }
       }}
     );
-    
+
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
     auto test = taskflow.emplace([&](){
       REQUIRE(j1 == N);
       REQUIRE(j2 == N);
-      
+
       std::sort(collection.begin(), collection.end());
       for(size_t i = 0; i < N; i++) {
         REQUIRE(collection[i] == i + 1);
       }
       REQUIRE(pl.num_tokens() == cnt * N);
     }).name("test");
-    
+
     pipeline.precede(test);
-    
+
     executor.run_n(taskflow, 3, [&]() mutable {
       j1 = j2 = 0;
       collection.clear();
@@ -448,11 +448,11 @@ void pipeline_3P_SSS(size_t L, unsigned w) {
   for(size_t N = 0; N <= maxN; N++) {
 
     tf::Taskflow taskflow;
-      
+
     size_t j1 = 0, j2 = 0, j3 = 0;
     size_t cnt = 1;
 
-    tf::Pipeline pl(L, 
+    tf::Pipeline pl(L,
       tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1, &mybuffer, L](auto& pf) mutable {
         if(j1 == N) {
           pf.stop();
@@ -482,7 +482,7 @@ void pipeline_3P_SSS(size_t L, unsigned w) {
         j3++;
       }}
     );
-    
+
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
     auto test = taskflow.emplace([&](){
       REQUIRE(j1 == N);
@@ -588,14 +588,14 @@ void pipeline_3P_SSP(size_t L, unsigned w) {
   for(size_t N = 0; N <= maxN; N++) {
 
     tf::Taskflow taskflow;
-      
+
     size_t j1 = 0, j2 = 0;
     std::atomic<size_t> j3 = 0;
     std::mutex mutex;
     std::vector<int> collection;
     size_t cnt = 1;
 
-    tf::Pipeline pl(L, 
+    tf::Pipeline pl(L,
       tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1, &mybuffer, L](auto& pf) mutable {
         if(j1 == N) {
           pf.stop();
@@ -621,19 +621,19 @@ void pipeline_3P_SSP(size_t L, unsigned w) {
         REQUIRE(j3++ < N);
         {
           std::scoped_lock<std::mutex> lock(mutex);
-          REQUIRE(pf.token() % L == pf.line());  
+          REQUIRE(pf.token() % L == pf.line());
           collection.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
         }
       }}
     );
-    
+
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
     auto test = taskflow.emplace([&](){
       REQUIRE(j1 == N);
       REQUIRE(j2 == N);
       REQUIRE(j3 == N);
       REQUIRE(collection.size() == N);
-      
+
       std::sort(collection.begin(), collection.end());
       for (size_t i = 0; i < N; ++i) {
         REQUIRE(collection[i] == i + 1);
@@ -740,14 +740,14 @@ void pipeline_3P_SPS(size_t L, unsigned w) {
   for(size_t N = 0; N <= maxN; N++) {
 
     tf::Taskflow taskflow;
-      
+
     size_t j1 = 0, j3 = 0;
     std::atomic<size_t> j2 = 0;
     std::mutex mutex;
     std::vector<int> collection;
     size_t cnt = 1;
 
-    tf::Pipeline pl(L, 
+    tf::Pipeline pl(L,
       tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1, &mybuffer, L](auto& pf) mutable {
         if(j1 == N) {
           pf.stop();
@@ -778,24 +778,24 @@ void pipeline_3P_SPS(size_t L, unsigned w) {
         j3++;
       }}
     );
-    
+
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
     auto test = taskflow.emplace([&](){
       REQUIRE(j1 == N);
       REQUIRE(j2 == N);
       REQUIRE(j3 == N);
       REQUIRE(collection.size() == N);
-      
+
       std::sort(collection.begin(), collection.end());
       for (size_t i = 0; i < N; ++i) {
         REQUIRE(collection[i] == i + 1);
       }
       REQUIRE(pl.num_tokens() == cnt * N);
-      
+
     }).name("test");
-   
+
     pipeline.precede(test);
-    
+
     executor.run_n(taskflow, 3, [&]() mutable {
       j1 = j2 = j3 = 0;
       collection.clear();
@@ -894,7 +894,7 @@ void pipeline_3P_SPP(size_t L, unsigned w) {
   for(size_t N = 0; N <= maxN; N++) {
 
     tf::Taskflow taskflow;
-      
+
     size_t j1 = 0;
     std::atomic<size_t> j2 = 0;
     std::atomic<size_t> j3 = 0;
@@ -904,7 +904,7 @@ void pipeline_3P_SPP(size_t L, unsigned w) {
     std::vector<int> collection3;
     size_t cnt = 1;
 
-    tf::Pipeline pl(L, 
+    tf::Pipeline pl(L,
       tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1, &mybuffer, L](auto& pf) mutable {
         if(j1 == N) {
           pf.stop();
@@ -937,7 +937,7 @@ void pipeline_3P_SPP(size_t L, unsigned w) {
         }
       }}
     );
-    
+
     auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
     auto test = taskflow.emplace([&](){
       REQUIRE(j1 == N);
@@ -945,7 +945,7 @@ void pipeline_3P_SPP(size_t L, unsigned w) {
       REQUIRE(j3 == N);
       REQUIRE(collection2.size() == N);
       REQUIRE(collection3.size() == N);
-      
+
       std::sort(collection2.begin(), collection2.end());
       std::sort(collection3.begin(), collection3.end());
       for (size_t i = 0; i < N; ++i) {
@@ -1065,12 +1065,12 @@ void three_parallel_pipelines(size_t L, unsigned w) {
   for(size_t N = 0; N <= maxN; N++) {
 
     tf::Taskflow taskflow;
-      
+
     size_t j1_1 = 0, j1_2 = 0, j1_3 = 0, j1_4 = 0;
     size_t cnt1 = 1;
 
-    // pipeline 1 is SSSS    
-    tf::Pipeline pl1(L, 
+    // pipeline 1 is SSSS
+    tf::Pipeline pl1(L,
       tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1_1, &mybuffer1, L](auto& pf) mutable {
         if(j1_1 == N) {
           pf.stop();
@@ -1105,7 +1105,7 @@ void three_parallel_pipelines(size_t L, unsigned w) {
         j1_4++;
       }}
     );
-    
+
     auto pipeline1 = taskflow.composed_of(pl1).name("module_of_pipeline1");
     auto test1 = taskflow.emplace([&](){
       REQUIRE(j1_1 == N);
@@ -1114,12 +1114,12 @@ void three_parallel_pipelines(size_t L, unsigned w) {
       REQUIRE(j1_4 == N);
       REQUIRE(pl1.num_tokens() == cnt1 * N);
     }).name("test1");
-    
+
     pipeline1.precede(test1);
 
 
 
-    // the followings are definitions for pipeline 2    
+    // the followings are definitions for pipeline 2
     size_t j2_1 = 0, j2_2 = 0;
     std::atomic<size_t> j2_3 = 0;
     std::mutex mutex2_3;
@@ -1127,7 +1127,7 @@ void three_parallel_pipelines(size_t L, unsigned w) {
     size_t cnt2 = 1;
 
     // pipeline 2 is SSP
-    tf::Pipeline pl2(L, 
+    tf::Pipeline pl2(L,
       tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j2_1, &mybuffer2, L](auto& pf) mutable {
         if(j2_1 == N) {
           pf.stop();
@@ -1151,7 +1151,7 @@ void three_parallel_pipelines(size_t L, unsigned w) {
         REQUIRE(j2_3++ < N);
         {
           std::scoped_lock<std::mutex> lock(mutex2_3);
-          REQUIRE(pf.token() % L == pf.line());  
+          REQUIRE(pf.token() % L == pf.line());
           collection2_3.push_back(mybuffer2[pf.line()][pf.pipe() - 1]);
         }
       }}
@@ -1163,7 +1163,7 @@ void three_parallel_pipelines(size_t L, unsigned w) {
       REQUIRE(j2_2 == N);
       REQUIRE(j2_3 == N);
       REQUIRE(collection2_3.size() == N);
-      
+
       std::sort(collection2_3.begin(), collection2_3.end());
       for (size_t i = 0; i < N; ++i) {
         REQUIRE(collection2_3[i] == i + 1);
@@ -1195,7 +1195,7 @@ void three_parallel_pipelines(size_t L, unsigned w) {
         j3_1++;
       }},
 
-      tf::Pipe{tf::PipeType::PARALLEL, 
+      tf::Pipe{tf::PipeType::PARALLEL,
       [N, &collection3_2, &mutex3_2, &j3_2, &mybuffer3, L](auto& pf) mutable {
         REQUIRE(j3_2++ < N);
         {
@@ -1205,19 +1205,19 @@ void three_parallel_pipelines(size_t L, unsigned w) {
         }
       }}
     );
-    
+
     auto pipeline3 = taskflow.composed_of(pl3).name("module_of_pipeline3");
     auto test3 = taskflow.emplace([&](){
       REQUIRE(j3_1 == N);
       REQUIRE(j3_2 == N);
-      
+
       std::sort(collection3_2.begin(), collection3_2.end());
       for(size_t i = 0; i < N; i++) {
         REQUIRE(collection3_2[i] == i + 1);
       }
       REQUIRE(pl3.num_tokens() == cnt3 * N);
     }).name("test3");
-    
+
     pipeline3.precede(test3);
 
 
@@ -1259,8 +1259,8 @@ void three_parallel_pipelines(size_t L, unsigned w) {
       }
       cnt3++;
     }).get();
-    
-    
+
+
   }
 }
 
@@ -1545,12 +1545,12 @@ void three_concatenated_pipelines(size_t L, unsigned w) {
   for(size_t N = 0; N <= maxN; N++) {
 
     tf::Taskflow taskflow;
-      
+
     size_t j1_1 = 0, j1_2 = 0, j1_3 = 0, j1_4 = 0;
     size_t cnt1 = 1;
 
-    // pipeline 1 is SSSS    
-    tf::Pipeline pl1(L, 
+    // pipeline 1 is SSSS
+    tf::Pipeline pl1(L,
       tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j1_1, &mybuffer1, L](auto& pf) mutable {
         if(j1_1 == N) {
           pf.stop();
@@ -1585,7 +1585,7 @@ void three_concatenated_pipelines(size_t L, unsigned w) {
         j1_4++;
       }}
     );
-    
+
     auto pipeline1 = taskflow.composed_of(pl1).name("module_of_pipeline1");
     auto test1 = taskflow.emplace([&](){
       REQUIRE(j1_1 == N);
@@ -1594,10 +1594,10 @@ void three_concatenated_pipelines(size_t L, unsigned w) {
       REQUIRE(j1_4 == N);
       REQUIRE(pl1.num_tokens() == cnt1 * N);
     }).name("test1");
-    
 
 
-    // the followings are definitions for pipeline 2    
+
+    // the followings are definitions for pipeline 2
     size_t j2_1 = 0, j2_2 = 0;
     std::atomic<size_t> j2_3 = 0;
     std::mutex mutex2_3;
@@ -1605,7 +1605,7 @@ void three_concatenated_pipelines(size_t L, unsigned w) {
     size_t cnt2 = 1;
 
     // pipeline 2 is SSP
-    tf::Pipeline pl2(L, 
+    tf::Pipeline pl2(L,
       tf::Pipe{tf::PipeType::SERIAL, [N, &source, &j2_1, &mybuffer2, L](auto& pf) mutable {
         if(j2_1 == N) {
           pf.stop();
@@ -1629,7 +1629,7 @@ void three_concatenated_pipelines(size_t L, unsigned w) {
         REQUIRE(j2_3++ < N);
         {
           std::scoped_lock<std::mutex> lock(mutex2_3);
-          REQUIRE(pf.token() % L == pf.line());  
+          REQUIRE(pf.token() % L == pf.line());
           collection2_3.push_back(mybuffer2[pf.line()][pf.pipe() - 1]);
         }
       }}
@@ -1641,7 +1641,7 @@ void three_concatenated_pipelines(size_t L, unsigned w) {
       REQUIRE(j2_2 == N);
       REQUIRE(j2_3 == N);
       REQUIRE(collection2_3.size() == N);
-      
+
       std::sort(collection2_3.begin(), collection2_3.end());
       for (size_t i = 0; i < N; ++i) {
         REQUIRE(collection2_3[i] == i + 1);
@@ -1671,7 +1671,7 @@ void three_concatenated_pipelines(size_t L, unsigned w) {
         j3_1++;
       }},
 
-      tf::Pipe{tf::PipeType::PARALLEL, 
+      tf::Pipe{tf::PipeType::PARALLEL,
       [N, &collection3_2, &mutex3_2, &j3_2, &mybuffer3, L](auto& pf) mutable {
         REQUIRE(j3_2++ < N);
         {
@@ -1681,19 +1681,19 @@ void three_concatenated_pipelines(size_t L, unsigned w) {
         }
       }}
     );
-    
+
     auto pipeline3 = taskflow.composed_of(pl3).name("module_of_pipeline3");
     auto test3 = taskflow.emplace([&](){
       REQUIRE(j3_1 == N);
       REQUIRE(j3_2 == N);
-      
+
       std::sort(collection3_2.begin(), collection3_2.end());
       for(size_t i = 0; i < N; i++) {
         REQUIRE(collection3_2[i] == i + 1);
       }
       REQUIRE(pl3.num_tokens() == cnt3 * N);
     }).name("test3");
-    
+
 
     auto initial  = taskflow.emplace([](){}).name("initial");
     auto terminal = taskflow.emplace([](){}).name("terminal");
@@ -1738,8 +1738,8 @@ void three_concatenated_pipelines(size_t L, unsigned w) {
       }
       cnt3++;
     }).get();
-    
-    
+
+
   }
 }
 
@@ -2019,7 +2019,7 @@ void looping_pipelines(size_t L, unsigned w) {
   std::vector<std::array<int, 4>> mybuffer(L);
 
   tf::Taskflow taskflow;
-    
+
   size_t j1 = 0, j3 = 0;
   std::atomic<size_t> j2 = 0;
   std::atomic<size_t> j4 = 0;
@@ -2031,7 +2031,7 @@ void looping_pipelines(size_t L, unsigned w) {
 
   size_t N = 0;
 
-  tf::Pipeline pl(L, 
+  tf::Pipeline pl(L,
     tf::Pipe{tf::PipeType::SERIAL, [&N, &source, &j1, &mybuffer, L](auto& pf) mutable {
       if(j1 == N) {
         pf.stop();
@@ -2070,7 +2070,7 @@ void looping_pipelines(size_t L, unsigned w) {
       }
     }}
   );
-  
+
   auto pipeline = taskflow.composed_of(pl).name("module_of_pipeline");
   auto initial = taskflow.emplace([](){}).name("initial");
 
@@ -2088,8 +2088,8 @@ void looping_pipelines(size_t L, unsigned w) {
       REQUIRE(collection4[i] == i + 3);
     }
     REQUIRE(pl.num_tokens() == cnt);
-    
-    // reset variables 
+
+    // reset variables
     j1 = j2 = j3 = j4 = 0;
     for(size_t i = 0; i < mybuffer.size(); ++i){
       for(size_t j = 0; j < mybuffer[0].size(); ++j){
@@ -2100,7 +2100,7 @@ void looping_pipelines(size_t L, unsigned w) {
     collection4.clear();
     ++N;
     cnt+=N;
-    
+
     return N < maxN ? 0 : 1;
   }).name("conditional");
 
@@ -2446,7 +2446,7 @@ void ifelse_pipeline(size_t L, unsigned w) {
         }
 
       }),
-      
+
       // pipe 3
       tf::Pipe(tf::PipeType::SERIAL, [&, N](auto& pf){
 
@@ -2588,8 +2588,8 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
       std::atomic<size_t> j3 = 0;
 
       // begin of pipeline ---------------------------
-      tf::Pipeline pl(L, 
-        
+      tf::Pipeline pl(L,
+
         // begin of pipe 1 -----------------------------
         tf::Pipe{tf::PipeType::SERIAL, [&, w, L, N, subN, subL](auto& pf) mutable {
           if(j1 == N) {
@@ -2614,7 +2614,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
 
               REQUIRE(subpf.token() % subL == subpf.line());
 
-              subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
+              subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]
                 = source[pf.token()][subj1] + 1;
 
               ++subj1;
@@ -2625,7 +2625,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
               REQUIRE(subj2++ < subN);
               REQUIRE(subpf.token() % subL == subpf.line());
               REQUIRE(source[pf.token()][subpf.token()] + 1 == subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]);
-              subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
+              subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]
                 = source[pf.token()][subpf.token()] + 1;
             }},
 
@@ -2635,7 +2635,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
               REQUIRE(subj3 < subN);
               REQUIRE(subpf.token() % subL == subpf.line());
               REQUIRE(source[pf.token()][subj3] + 1 == subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]);
-              subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
+              subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]
                 = source[pf.token()][subj3] + 3;
               subcollection.push_back(subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]);
               ++subj3;
@@ -2675,8 +2675,8 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
 
           REQUIRE(j2++ < N);
           int res = std::accumulate(
-            source[pf.token()].begin(), 
-            source[pf.token()].begin() + subN, 
+            source[pf.token()].begin(),
+            source[pf.token()].begin() + subN,
             0
           );
           REQUIRE(buffer[pf.line()][pf.pipe() - 1] == res + 3 * subN);
@@ -2698,7 +2698,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
 
               REQUIRE(subpf.token() % subL == subpf.line());
 
-              subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
+              subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]
                 = source[pf.token()][subj1] + 1;
 
               ++subj1;
@@ -2709,7 +2709,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
               REQUIRE(subj2++ < subN);
               REQUIRE(subpf.token() % subL == subpf.line());
               REQUIRE(source[j2][subpf.token()] + 1 == subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]);
-              subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
+              subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]
                 = source[pf.token()][subpf.token()] + 1;
             }},
 
@@ -2719,7 +2719,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
               REQUIRE(subj3 < subN);
               REQUIRE(subpf.token() % subL == subpf.line());
               REQUIRE(source[pf.token()][subj3] + 1 == subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]);
-              subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
+              subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]
                 = source[pf.token()][subj3] + 13;
               subcollection.push_back(subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]);
               ++subj3;
@@ -2752,14 +2752,14 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
 
         }},
         // end of pipe 2 -----------------------------
-      
+
         // begin of pipe 3 ---------------------------
         tf::Pipe{tf::PipeType::SERIAL, [&, w, L, N, subN, subL](auto& pf) mutable {
 
           REQUIRE(j3++ < N);
           int res = std::accumulate(
-            source[pf.token()].begin(), 
-            source[pf.token()].begin() + subN, 
+            source[pf.token()].begin(),
+            source[pf.token()].begin() + subN,
             0
           );
 
@@ -2782,7 +2782,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
 
               REQUIRE(subpf.token() % subL == subpf.line());
 
-              subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
+              subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]
                 = source[pf.token()][subj1] + 1;
 
               ++subj1;
@@ -2793,7 +2793,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
               REQUIRE(subj2++ < subN);
               REQUIRE(subpf.token() % subL == subpf.line());
               REQUIRE(source[pf.token()][subpf.token()] + 1 == subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]);
-              subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
+              subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]
                 = source[pf.token()][subpf.token()] + 1;
             }},
 
@@ -2803,7 +2803,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
               REQUIRE(subj3 < subN);
               REQUIRE(subpf.token() % subL == subpf.line());
               REQUIRE(source[pf.token()][subj3] + 1 == subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe() - 1]);
-              subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()] 
+              subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]
                 = source[pf.token()][subj3] + 7;
               subcollection.push_back(subbuffers[pf.line()][pf.pipe()][subpf.line()][subpf.pipe()]);
               ++subj3;
@@ -2836,13 +2836,13 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
 
         }},
         // end of pipe 3 -----------------------------
-      
+
         // begin of pipe 4 ---------------------------
         tf::Pipe{tf::PipeType::SERIAL, [&, w, L, N, subN, subL](auto& pf) mutable {
 
           int res = std::accumulate(
-            source[j4].begin(), 
-            source[j4].begin() + subN, 
+            source[j4].begin(),
+            source[j4].begin() + subN,
             0
           );
           REQUIRE(buffer[pf.line()][pf.pipe() - 1] == res + 7 * subN);
@@ -2850,7 +2850,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
         }}
         // end of pipe 4 -----------------------------
       );
-      
+
       tf::Taskflow taskflow;
       taskflow.composed_of(pl).name("module_of_pipeline");
       executor.run(taskflow).wait();

@@ -12,10 +12,10 @@ void omp_block_for(int nx, int ny, double dx, double dy, double *f_,
 
     int max_blocks_x = (nx / block_size);
     int max_blocks_y = (ny / block_size);
-    
+
 #pragma omp parallel                                                    \
     shared(u_, unew_, f_, max_blocks_x, max_blocks_y, nx, ny, dx, dy, itold, itnew, block_size) \
-    private(it, block_x, block_y)    
+    private(it, block_x, block_y)
     for (it = itold + 1; it <= itnew; it++)
     {
         // Save the current estimate.

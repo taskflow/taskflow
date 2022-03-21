@@ -6,10 +6,10 @@ namespace tf {
 
 // class: TopologyBase
 class TopologyBase {
-  
+
   friend class Executor;
   friend class Node;
-  
+
   template <typename T>
   friend class Future;
 
@@ -25,10 +25,10 @@ class AsyncTopology : public TopologyBase {
 };
 
 // ----------------------------------------------------------------------------
-  
+
 // class: Topology
 class Topology : public TopologyBase {
-  
+
   friend class Executor;
   friend class Runtime;
 
@@ -53,7 +53,7 @@ class Topology : public TopologyBase {
 
 // Constructor
 template <typename P, typename C>
-Topology::Topology(Taskflow& tf, P&& p, C&& c): 
+Topology::Topology(Taskflow& tf, P&& p, C&& c):
   _taskflow(tf),
   _pred {std::forward<P>(p)},
   _call {std::forward<C>(c)} {

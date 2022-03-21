@@ -1,9 +1,9 @@
 #include "matrix.hpp"
-#include <taskflow/taskflow.hpp> 
+#include <taskflow/taskflow.hpp>
 
 // wavefront computing
 void wavefront_taskflow(unsigned num_threads) {
-  
+
   tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
@@ -14,7 +14,7 @@ void wavefront_taskflow(unsigned num_threads) {
       n.emplace_back(taskflow.placeholder());
     }
   }
-  
+
   matrix[M-1][N-1] = 0;
   for( int i=MB; --i>=0; ) {
     for( int j=NB; --j>=0; ) {

@@ -47,7 +47,7 @@ int main() {
       printf(
         "stage 2: input buffer[%zu] = %d\n", pf.line(), buffer[pf.line()]
       );
-      // propagate the previous result to this pipe and increment 
+      // propagate the previous result to this pipe and increment
       // it by one
       buffer[pf.line()] = buffer[pf.line()] + 1;
     }},
@@ -61,7 +61,7 @@ int main() {
       buffer[pf.line()] = buffer[pf.line()] + 1;
     }}
   );
-  
+
   // build the pipeline graph using composition
   tf::Task init = taskflow.emplace([](){ std::cout << "ready\n"; })
                           .name("starting pipeline");
@@ -73,12 +73,12 @@ int main() {
   // create task dependency
   init.precede(task);
   task.precede(stop);
-  
+
   // dump the pipeline graph structure (with composition)
   taskflow.dump(std::cout);
 
   // run the pipeline
   executor.run(taskflow).wait();
-  
+
   return 0;
 }
