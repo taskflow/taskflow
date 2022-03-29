@@ -283,7 +283,7 @@ tf::Executor executor;
 tf::Taskflow taskflow;
 
 // create asynchronous tasks directly from an executor
-tf::future<std::optional<int>> future = executor.async([](){ 
+tf::Future<std::optional<int>> future = executor.async([](){ 
   std::cout << "async task returns 1\n";
   return 1;
 }); 
