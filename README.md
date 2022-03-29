@@ -301,7 +301,7 @@ executor.run(taskflow).wait();
 
 The executor provides several *thread-safe* methods to run a taskflow. 
 You can run a taskflow once, multiple times, or until a stopping criteria is met. 
-These methods are non-blocking with a `tf::future<void>` return 
+These methods are non-blocking with a `tf::Future<void>` return 
 to let you query the execution status. 
 
 ```cpp
