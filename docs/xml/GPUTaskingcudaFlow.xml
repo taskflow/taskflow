@@ -76,7 +76,7 @@
 </para></listitem>
 <listitem><para>Lines 49-53 define the task dependency between host tasks and the cudaFlow tasks and execute the taskflow</para></listitem>
 </itemizedlist>
-<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> is a lightweight abstraction over CUDA <ref refid="classtf_1_1Graph" kindref="compound">Graph</ref>. We do not expend yet another effort on simplifying kernel programming but focus on tasking CUDA operations and their dependencies. This organization lets users fully take advantage of CUDA featuress that are commensurate with their domain knowledge, while leaving difficult task parallelism details to Taskflow.</para></sect1>
+<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> is a lightweight abstraction over CUDA Graph. We do not expend yet another effort on simplifying kernel programming but focus on tasking CUDA operations and their dependencies. This organization lets users fully take advantage of CUDA featuress that are commensurate with their domain knowledge, while leaving difficult task parallelism details to Taskflow.</para></sect1>
 <sect1 id="GPUTaskingcudaFlow_1Compile_a_cudaFlow_program">
 <title>Compile a cudaFlow Program</title>
 <para>Use <ulink url="https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html">nvcc</ulink> to compile a cudaFlow program:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>-std=c++17<sp/>my_cudaflow.cu<sp/>-I<sp/>path/to/include/taskflow<sp/>-O2<sp/>-o<sp/>my_cudaflow</highlight></codeline>

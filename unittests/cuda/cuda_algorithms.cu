@@ -727,7 +727,7 @@ void scan() {
     }
 
     // allocate temporary buffer
-    tf::cudaScopedDeviceMemory<std::byte> temp(
+    tf::cudaDeviceVector<std::byte> temp(
       tf::cuda_scan_buffer_size<tf::cudaDefaultExecutionPolicy, T>(N)
     );
       
@@ -826,7 +826,7 @@ void transform_scan() {
     }
     
     // allocate temporary buffer
-    tf::cudaScopedDeviceMemory<std::byte> temp(
+    tf::cudaDeviceVector<std::byte> temp(
       tf::cuda_scan_buffer_size<tf::cudaDefaultExecutionPolicy, T>(N)
     );
       
@@ -885,6 +885,8 @@ void merge_keys() {
   tf::Executor executor;
   tf::Taskflow taskflow;
 
+
+
   for(int N=0; N<=1234567; N = N*2 + 1) {
 
     taskflow.clear();
@@ -892,8 +894,9 @@ void merge_keys() {
     auto a = tf::cuda_malloc_shared<T>(N);
     auto b = tf::cuda_malloc_shared<T>(N);
     auto c = tf::cuda_malloc_shared<T>(2*N);
-
-    auto p = tf::cudaDefaultExecutionPolicy{};
+  
+    tf::cudaStream s;
+    auto p = tf::cudaDefaultExecutionPolicy{s};
 
     // ----------------- standalone algorithms
 
@@ -907,10 +910,10 @@ void merge_keys() {
     std::sort(b, b+N);
     
     auto bufsz = tf::cuda_merge_buffer_size<decltype(p)>(N, N);
-    tf::cudaScopedDeviceMemory<std::byte> buf(bufsz);
+    tf::cudaDeviceVector<std::byte> buf(bufsz);
 
     tf::cuda_merge(p, a, a+N, b, b+N, c, tf::cuda_less<T>{}, buf.data());
-    p.synchronize();
+    s.synchronize();
 
     REQUIRE(std::is_sorted(c, c+2*N));
     
@@ -970,7 +973,8 @@ void merge_keys_values() {
     auto b_v = tf::cuda_malloc_shared<int>(N);
     auto c_v = tf::cuda_malloc_shared<int>(2*N);
 
-    auto p = tf::cudaDefaultExecutionPolicy{};
+    tf::cudaStream s;
+    auto p = tf::cudaDefaultExecutionPolicy{s};
 
     // ----------------- standalone algorithms
 
@@ -984,7 +988,7 @@ void merge_keys_values() {
     }
 
     auto bufsz = tf::cuda_merge_buffer_size<decltype(p)>(N, N);
-    tf::cudaScopedDeviceMemory<std::byte> buf(bufsz);
+    tf::cudaDeviceVector<std::byte> buf(bufsz);
 
     tf::cuda_merge_by_key(
       p, 
@@ -994,7 +998,7 @@ void merge_keys_values() {
       tf::cuda_less<T>{}, 
       buf.data()
     );
-    p.synchronize();
+    s.synchronize();
 
     for(int i=0; i<2*N; i++) {
       REQUIRE(c_k[i] == (i+1));
@@ -1064,7 +1068,8 @@ void sort_keys() {
     taskflow.clear();
 
     auto a = tf::cuda_malloc_shared<T>(N);
-    auto p = tf::cudaDefaultExecutionPolicy{};
+    tf::cudaStream s;
+    auto p = tf::cudaDefaultExecutionPolicy{s};
 
     // ----------------- standalone asynchronous algorithms
 
@@ -1074,9 +1079,9 @@ void sort_keys() {
     }
 
     auto bufsz = tf::cuda_sort_buffer_size<decltype(p), T>(N);
-    tf::cudaScopedDeviceMemory<std::byte> buf(bufsz);
+    tf::cudaDeviceVector<std::byte> buf(bufsz);
     tf::cuda_sort(p, a, a+N, tf::cuda_less<T>{}, buf.data());
-    p.synchronize();
+    s.synchronize();
     REQUIRE(std::is_sorted(a, a+N));
 
     // ----------------- cudaflow capturer
@@ -1131,7 +1136,9 @@ void sort_keys_values() {
 
     auto a = tf::cuda_malloc_shared<T>(N);
     auto b = tf::cuda_malloc_shared<int>(N);
-    auto p = tf::cudaDefaultExecutionPolicy{};
+
+    tf::cudaStream s;
+    auto p = tf::cudaDefaultExecutionPolicy{s};
 
     std::vector<int> indices(N);
 
@@ -1151,9 +1158,9 @@ void sort_keys_values() {
     });
 
     auto bufsz = tf::cuda_sort_buffer_size<decltype(p), T, int>(N);
-    tf::cudaScopedDeviceMemory<std::byte> buf(bufsz);
+    tf::cudaDeviceVector<std::byte> buf(bufsz);
     tf::cuda_sort_by_key(p, a, a+N, b, tf::cuda_less<T>{}, buf.data());
-    p.synchronize();
+    s.synchronize();
 
     REQUIRE(std::is_sorted(a, a+N));
     for(int i=0; i<N; i++) {
@@ -1221,7 +1228,9 @@ void find_if() {
 
     auto a = tf::cuda_malloc_shared<T>(N);
     auto r = tf::cuda_malloc_shared<unsigned>(1);
-    auto p = tf::cudaDefaultExecutionPolicy{};
+
+    tf::cudaStream s;
+    auto p = tf::cudaDefaultExecutionPolicy{s};
     
     // initialize the data
     for(int i=0; i<N; i++) {
@@ -1232,7 +1241,7 @@ void find_if() {
     // ----------------- standalone asynchronous algorithms
 
     tf::cuda_find_if(p, a, a+N, r, []__device__(int v){ return v == 5000; });
-    p.synchronize();
+    s.synchronize();
 
     if(N <= 5000) {
       REQUIRE(*r == N);
@@ -1294,8 +1303,10 @@ void min_element() {
 
     auto a = tf::cuda_malloc_shared<T>(N);
     auto r = tf::cuda_malloc_shared<unsigned>(1);
-    auto p = tf::cudaDefaultExecutionPolicy{};
     auto min = std::numeric_limits<T>::max();
+    
+    tf::cudaStream s;
+    auto p = tf::cudaDefaultExecutionPolicy{s};
 
     // initialize the data
     for(int i=0; i<N; i++) {
@@ -1306,14 +1317,14 @@ void min_element() {
 
     // ----------------- standalone asynchronous algorithms
 
-    tf::cudaScopedDeviceMemory<std::byte> buf(
+    tf::cudaDeviceVector<std::byte> buf(
       tf::cuda_min_element_buffer_size<decltype(p), T>(N)
     );
 
     tf::cuda_min_element(
       p, a, a+N, r, tf::cuda_less<T>{}, buf.data()
     );
-    p.synchronize();
+    s.synchronize();
 
     if(min != std::numeric_limits<T>::max()) {
       REQUIRE(a[*r] == min);
@@ -1375,8 +1386,10 @@ void max_element() {
 
     auto a = tf::cuda_malloc_shared<T>(N);
     auto r = tf::cuda_malloc_shared<unsigned>(1);
-    auto p = tf::cudaDefaultExecutionPolicy{};
     auto max = std::numeric_limits<T>::lowest();
+    
+    tf::cudaStream s;
+    auto p = tf::cudaDefaultExecutionPolicy{s};
 
     // initialize the data
     for(int i=0; i<N; i++) {
@@ -1387,12 +1400,12 @@ void max_element() {
 
     // ----------------- standalone asynchronous algorithms
 
-    tf::cudaScopedDeviceMemory<std::byte> buf(
+    tf::cudaDeviceVector<std::byte> buf(
       tf::cuda_max_element_buffer_size<decltype(p), T>(N)
     );
 
     tf::cuda_max_element(p, a, a+N, r, tf::cuda_less<T>{}, buf.data());
-    p.synchronize();
+    s.synchronize();
 
     if(max != std::numeric_limits<T>::lowest()) {
       REQUIRE(a[*r] == max);

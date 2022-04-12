@@ -1,7 +1,7 @@
 // This program demonstrates how to create a simple vector-add
 // application using syclFlow and unified shared memory (USM).
 
-#include <taskflow/syclflow.hpp>
+#include <taskflow/sycl/syclflow.hpp>
 
 constexpr size_t N = 10000000;
 

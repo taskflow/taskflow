@@ -1283,7 +1283,7 @@ void parallel_transform3(size_t W) {
       tgt_beg = tgt.begin();
     });
 
-    auto to_ref = taskflow.emplace([&, N]() {
+    auto to_ref = taskflow.emplace([&]() {
 
       // Find entries matching key = 0.
       // This can return empty results.
@@ -1299,7 +1299,7 @@ void parallel_transform3(size_t W) {
     });
 
     /** Dynamic scheduling with Subflow::transform */
-    auto to_tgt = taskflow.emplace([&, N](tf::Subflow& subflow) {
+    auto to_tgt = taskflow.emplace([&](tf::Subflow& subflow) {
 
       // Find entries matching key = 0
       const auto [src_beg, src_end] = src.equal_range(0);

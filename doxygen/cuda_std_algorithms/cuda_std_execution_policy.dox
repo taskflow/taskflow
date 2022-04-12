@@ -35,16 +35,15 @@ to avoid bank conflicts.
 tf::cudaExecutionPolicy<512, 11> policy;
 @endcode
 
-@note
-To use CUDA standard algorithms, you need to include the header 
-taskflow/cudaflow.hpp.
-
 By default, the execution policy object is associated with the CUDA 
 <i>default stream</i> (i.e., 0).
 Default stream can incur significant overhead due to the global synchronization.
 You can associate an execution policy with another stream as shown below:
 
 @code{.cpp}
+cudaStream_t my_stream;
+cudaStreamCreate(&my_stream);
+
 // assign a stream to a policy at construction time
 tf::cudaExecutionPolicy<512, 11> policy(my_stream);
 
@@ -56,10 +55,11 @@ All the CUDA standard algorithms in %Taskflow are asynchronous
 with respect to the stream assigned to the execution policy.
 This enables high execution efficiency for large GPU workloads
 that call for many different algorithms.
-You can synchronize the execution at your own wish by calling @c synchronize.
+You can synchronize the stream the block until all tasks in the stream
+finish:
 
 @code{.cpp}
-policy.synchronize();  // synchronize the associated stream
+cudaStreamSynchronize(policy.stream()); 
 @endcode
 
 The best-performing configurations for each algorithm, each GPU architecture,

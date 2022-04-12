@@ -305,7 +305,7 @@ cudaTask cudaFlowCapturer::min_element(I first, I last, unsigned* idx, O op) {
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
+  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_min_element(p, first, last, idx, op, buf.get().data());
@@ -324,7 +324,7 @@ void cudaFlowCapturer::min_element(
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
+  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_min_element(p, first, last, idx, op, buf.get().data());
@@ -430,7 +430,7 @@ cudaTask cudaFlowCapturer::max_element(I first, I last, unsigned* idx, O op) {
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
+  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_max_element(p, first, last, idx, op, buf.get().data());
@@ -449,7 +449,7 @@ void cudaFlowCapturer::max_element(
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
+  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_max_element(p, first, last, idx, op, buf.get().data());

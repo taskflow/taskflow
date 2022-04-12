@@ -22,7 +22,6 @@ option(TF_BUILD_CUDA "Enables builds of cuda code" OFF)
 option(TF_BUILD_SYCL "Enables builds of sycl code" OFF)
 option(TF_BUILD_TESTS "Enables builds of tests" ON)
 option(TF_BUILD_EXAMPLES "Enables builds of examples" ON)
-option(TF_BUILD_PROFILER "Enables builds of profiler" OFF)
 
 # project-specific variables
 set(TF_UTEST_DIR ${PROJECT_SOURCE_DIR}/unittests)
@@ -188,7 +187,7 @@ if(TF_BUILD_SYCL)
   list(APPEND TF_SYCL_OPTIONS -fsycl -fsycl-unnamed-lambda)
   if(TF_BUILD_SYCL_BITCODE STREQUAL "ptx64")
     message(STATUS "Configuring SYCL compiler options to CUDA ptx64 ...")
-    list(APPEND TF_SYCL_OPTIONS -fsycl-targets=nvptx64-nvidia-cuda-sycldevice)
+    list(APPEND TF_SYCL_OPTIONS -fsycl-targets=nvptx64-nvidia-cuda)
   endif()
 endif()
 
@@ -268,7 +267,6 @@ message(STATUS "TF_BUILD_SYCL: " ${TF_BUILD_SYCL})
 message(STATUS "TF_BUILD_SYCL_BITCODE: " ${TF_BUILD_SYCL_BITCODE})
 message(STATUS "TF_BUILD_TESTS: " ${TF_BUILD_TESTS})
 message(STATUS "TF_BUILD_EXAMPLES: " ${TF_BUILD_EXAMPLES})
-message(STATUS "TF_BUILD_PROFILER: " ${TF_BUILD_PROFILER})
 message(STATUS "TF_UTEST_DIR: " ${TF_UTEST_DIR})
 message(STATUS "TF_EXAMPLE_DIR: " ${TF_EXAMPLE_DIR})
 message(STATUS "TF_BENCHMARK_DIR: " ${TF_BENCHMARK_DIR})
@@ -298,13 +296,6 @@ target_include_directories(${PROJECT_NAME} INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<INSTALL_INTERFACE:include/> 
 )
-
-# -----------------------------------------------------------------------------
-# profiler program 
-# -----------------------------------------------------------------------------
-if(TF_BUILD_PROFILER)
-  add_subdirectory(tfprof/server)
-endif(TF_BUILD_PROFILER)
 
 # -----------------------------------------------------------------------------
 # Example program 

@@ -2436,7 +2436,7 @@ void ifelse_pipeline(size_t L, unsigned w) {
       }),
 
       // pipe 2
-      tf::Pipe(tf::PipeType::PARALLEL, [&, N](auto& pf){
+      tf::Pipe(tf::PipeType::PARALLEL, [&](auto& pf){
 
         if(buffer[pf.line()][pf.pipe() - 1] > 4897) {
           buffer[pf.line()][pf.pipe()] =  buffer[pf.line()][pf.pipe() - 1] - 1834;
@@ -2448,7 +2448,7 @@ void ifelse_pipeline(size_t L, unsigned w) {
       }),
 
       // pipe 3
-      tf::Pipe(tf::PipeType::SERIAL, [&, N](auto& pf){
+      tf::Pipe(tf::PipeType::SERIAL, [&](auto& pf){
 
         if((buffer[pf.line()][pf.pipe() - 1] + 9) / 4 < 50) {
           buffer[pf.line()][pf.pipe()] = buffer[pf.line()][pf.pipe() - 1] + 1;
@@ -2591,7 +2591,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
       tf::Pipeline pl(L,
 
         // begin of pipe 1 -----------------------------
-        tf::Pipe{tf::PipeType::SERIAL, [&, w, L, N, subN, subL](auto& pf) mutable {
+        tf::Pipe{tf::PipeType::SERIAL, [&, w, N, subN, subL](auto& pf) mutable {
           if(j1 == N) {
             pf.stop();
             return;
@@ -2671,7 +2671,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
         // end of pipe 1 -----------------------------
 
          //begin of pipe 2 ---------------------------
-        tf::Pipe{tf::PipeType::PARALLEL, [&, w, L, N, subN, subL](auto& pf) mutable {
+        tf::Pipe{tf::PipeType::PARALLEL, [&, w, N, subN, subL](auto& pf) mutable {
 
           REQUIRE(j2++ < N);
           int res = std::accumulate(
@@ -2754,7 +2754,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
         // end of pipe 2 -----------------------------
 
         // begin of pipe 3 ---------------------------
-        tf::Pipe{tf::PipeType::SERIAL, [&, w, L, N, subN, subL](auto& pf) mutable {
+        tf::Pipe{tf::PipeType::SERIAL, [&, w, N, subN, subL](auto& pf) mutable {
 
           REQUIRE(j3++ < N);
           int res = std::accumulate(
@@ -2838,7 +2838,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
         // end of pipe 3 -----------------------------
 
         // begin of pipe 4 ---------------------------
-        tf::Pipe{tf::PipeType::SERIAL, [&, w, L, N, subN, subL](auto& pf) mutable {
+        tf::Pipe{tf::PipeType::SERIAL, [&, subN](auto& pf) mutable {
 
           int res = std::accumulate(
             source[j4].begin(),

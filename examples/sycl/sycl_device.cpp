@@ -1,6 +1,6 @@
 // This program pulls out all platforms and devices using SYCL.
 
-#include <taskflow/syclflow.hpp>
+#include <taskflow/sycl/syclflow.hpp>
 
 int main() {
 

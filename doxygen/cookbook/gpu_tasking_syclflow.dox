@@ -9,6 +9,11 @@ based on @sycl20_spec.
 
 @tableofcontents
 
+@section GPUTaskingsyclFlowIncludeTheHeader Include the Header
+
+You need to include the header file, `%taskflow/sycl/syclflow.hpp`, 
+for using tf::syclFlow.
+
 @section Create_a_syclFlow Create a syclFlow
 
 %Taskflow introduces a task graph-based programming model, 
@@ -79,16 +84,13 @@ This organization lets users fully take advantage of SYCL features
 that are commensurate with their domain knowledge, 
 while leaving difficult task parallelism details to %Taskflow.
 
-@attention
-You need to include @c taskflow/syclflow.hpp in order to use tf::syclFlow.
-
 @section Compile_a_syclFlow_program Compile a syclFlow Program
 
 Use DPC++ clang to compile a %syclFlow program: 
 
 @code{.shell-session}
 ~$ clang++ -fsycl -fsycl-unnamed-lambda \
-           -fsycl-targets=nvptx64-nvidia-cuda-sycldevice \  # for CUDA target
+           -fsycl-targets=nvptx64-nvidia-cuda \  # for CUDA target
            -I path/to/taskflow -pthread -std=c++17 saxpy.cpp -o saxpy
 ~$ ./saxpy
 @endcode

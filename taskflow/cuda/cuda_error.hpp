@@ -16,10 +16,10 @@
 #define TF_CHECK_CUDA(...)                                       \
 if(TF_CUDA_GET_FIRST(__VA_ARGS__) != cudaSuccess) {              \
   std::ostringstream oss;                                        \
-  auto ev = TF_CUDA_GET_FIRST(__VA_ARGS__);                      \
+  auto __ev__ = TF_CUDA_GET_FIRST(__VA_ARGS__);                  \
   oss << "[" << __FILE__ << ":" << __LINE__ << "] "              \
-      << (cudaGetErrorString(ev)) << " ("                        \
-      << (cudaGetErrorName(ev)) << ") - ";                       \
+      << (cudaGetErrorString(__ev__)) << " ("                    \
+      << (cudaGetErrorName(__ev__)) << ") - ";                   \
   tf::ostreamize(oss, TF_CUDA_REMOVE_FIRST(__VA_ARGS__));        \
   throw std::runtime_error(oss.str());                           \
 }

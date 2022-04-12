@@ -14,13 +14,10 @@
 #include <thread>
 #include <future>
 #include <functional>
-#include <map>
-#include <set>
 #include <unordered_map>
 #include <unordered_set>
 #include <sstream>
 #include <list>
-#include <forward_list>
 #include <numeric>
 #include <random>
 #include <iomanip>
@@ -47,6 +44,39 @@ namespace tf {
 //constexpr auto dependent_false_v = dependent_false<T...>::value;
 
 template<typename> inline constexpr bool dependent_false_v = false;
+
+// ----------------------------------------------------------------------------
+// is_pod
+//-----------------------------------------------------------------------------
+template <typename T>
+struct is_pod {
+  static const bool value = std::is_trivial_v<T> && 
+                            std::is_standard_layout_v<T>;
+};
+
+template <typename T>
+constexpr bool is_pod_v = is_pod<T>::value;
+
+//-----------------------------------------------------------------------------
+// NoInit
+//-----------------------------------------------------------------------------
+
+template <typename T>
+struct NoInit {
+
+  //static_assert(is_pod_v<T>, "NoInit only supports POD type");
+
+  // constructor without initialization
+  NoInit () noexcept {}
+
+  // implicit conversion T -> NoInit<T>
+  constexpr  NoInit (T value) noexcept : v{value} {}
+
+  // implicit conversion NoInit<T> -> T
+  constexpr  operator T () const noexcept { return v; }
+
+  T v;
+};
 
 //-----------------------------------------------------------------------------
 // Move-On-Copy
@@ -102,18 +132,6 @@ struct get_index<T, std::variant<Ts...>> : get_index_impl<0, T, Ts...>{};
 
 template <typename T, typename... Ts>
 constexpr auto get_index_v = get_index<T, Ts...>::value;
-
-// ----------------------------------------------------------------------------
-// is_pod
-//-----------------------------------------------------------------------------
-template <typename T>
-struct is_pod {
-  static const bool value = std::is_trivial_v<T> &&
-                            std::is_standard_layout_v<T>;
-};
-
-template <typename T>
-constexpr bool is_pod_v = is_pod<T>::value;
 
 // ----------------------------------------------------------------------------
 // unwrap_reference

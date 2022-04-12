@@ -31,7 +31,7 @@
 <codeline><highlight class="normal"><ref refid="namespacetf_1a5f9dabd7c5d0fa5166cf76d9fa5a038e" kindref="member">tf::cuda_find_if</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>policy,<sp/>vec,<sp/>vec+N,<sp/>idx,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>v)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>v%17<sp/>==<sp/>0;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a33596174fe764d85356ed9b8c0934bb7" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(*idx<sp/>!=<sp/>N)<sp/>{</highlight></codeline>
@@ -70,7 +70,7 @@
 <codeline><highlight class="normal"><ref refid="namespacetf_1a572c13198191c46765264f8afabe2e9f" kindref="member">tf::cuda_min_element</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>policy,<sp/>vec,<sp/>vec+N,<sp/>idx,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a&lt;b;<sp/>},<sp/>buffer</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a33596174fe764d85356ed9b8c0934bb7" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(vec[*idx]<sp/>==<sp/>*std::min_element(vec,<sp/>vec+N,<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>{}));</highlight></codeline>
@@ -109,7 +109,7 @@
 <codeline><highlight class="normal"><ref refid="namespacetf_1a3fc577fd0a8f127770bcf68bc56c073e" kindref="member">tf::cuda_max_element</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>policy,<sp/>vec,<sp/>vec+N,<sp/>idx,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a&lt;b;<sp/>},<sp/>buffer</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a33596174fe764d85356ed9b8c0934bb7" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(vec[*idx]<sp/>==<sp/>*std::max_element(vec,<sp/>vec+N,<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>{}));</highlight></codeline>

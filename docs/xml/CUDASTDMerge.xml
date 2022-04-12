@@ -38,7 +38,7 @@
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronizes<sp/>the<sp/>execution<sp/>and<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a33596174fe764d85356ed9b8c0934bb7" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
 <codeline><highlight class="normal">assert(std::is_sorted(output,<sp/>output<sp/>+<sp/>2*N));</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
@@ -75,7 +75,7 @@
 <codeline><highlight class="normal"><sp/><sp/>[]__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>&lt;<sp/>b;<sp/>},<sp/><sp/></highlight><highlight class="comment">//<sp/>comparator</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>buffer</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a33596174fe764d85356ed9b8c0934bb7" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now,<sp/>c_keys<sp/>=<sp/>{1,<sp/>3,<sp/>7,<sp/>8}</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now,<sp/>c_vals<sp/>=<sp/>{2,<sp/>3,<sp/>4,<sp/>1}</highlight><highlight class="normal"></highlight></codeline>

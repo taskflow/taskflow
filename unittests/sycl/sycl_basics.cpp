@@ -1,6 +1,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest.h>
-#include <taskflow/syclflow.hpp>
+#include <taskflow/sycl/syclflow.hpp>
 
 // task creation
 TEST_CASE("syclFlow.task" * doctest::timeout(300)) {

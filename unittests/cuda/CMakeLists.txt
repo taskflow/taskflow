@@ -1,6 +1,7 @@
 
 list(APPEND TF_CUDA_UNITTESTS 
   cuda_device
+  cuda_memory
   cuda_basics 
   cuda_matrix 
   cuda_kmeans 

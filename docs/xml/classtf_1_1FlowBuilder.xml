@@ -523,7 +523,7 @@ The following example creates a cudaFlow of two kernel tasks, <computeroutput>ta
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="335" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1665" bodyend="1675"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="335" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1666" bodyend="1676"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -646,7 +646,7 @@ The following example creates a syclFlow on the given queue to submit two kernel
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="391" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="780" bodyend="790"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="391" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="639" bodyend="649"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1582,32 +1582,32 @@ The task spawns a subflow to parallelly sort elements in the range <computeroutp
     <detaileddescription>
 <para>The class provides essential methods to construct a task dependency graph from which <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> and <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> are derived. </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="118">
+      <node id="124">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
       </node>
-      <node id="119">
+      <node id="125">
         <label>tf::Subflow</label>
         <link refid="classtf_1_1Subflow"/>
-        <childnode refid="118" relation="public-inheritance">
+        <childnode refid="124" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="120">
+      <node id="126">
         <label>tf::Taskflow</label>
         <link refid="classtf_1_1Taskflow"/>
-        <childnode refid="118" relation="public-inheritance">
+        <childnode refid="124" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="121">
+      <node id="127">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
-        <childnode refid="122" relation="usage">
+        <childnode refid="128" relation="usage">
           <edgelabel>_graph</edgelabel>
         </childnode>
       </node>
-      <node id="122">
+      <node id="128">
         <label>tf::Graph</label>
         <link refid="classtf_1_1Graph"/>
       </node>

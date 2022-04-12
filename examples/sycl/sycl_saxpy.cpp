@@ -2,7 +2,7 @@
 // ("single-precision AX+Y") task graph using syclFlow.
 
 #include <taskflow/taskflow.hpp>
-#include <taskflow/syclflow.hpp>
+#include <taskflow/sycl/syclflow.hpp>
 
 constexpr size_t N = 1000000;
 
@@ -34,8 +34,8 @@ int main() {
   }, queue).name("syclFlow");
 
   // dump the graph without detailed syclFlow connections
-  // taskflow.dump(std::cout);
-
+  taskflow.dump(std::cout);
+  
   // run the taskflow
   executor.run(taskflow).wait();
 

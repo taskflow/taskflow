@@ -76,6 +76,15 @@
             </dt>
             <dd>class to create a critical region of limited workers to run tasks</dd>
             <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              class <a href="classtf_1_1cudaDeviceAllocator.html" class="m-doc">cudaDeviceAllocator</a>
+            </dt>
+            <dd>class to create a CUDA device allocator</dd>
+            <dt>
+              class <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a>
+            </dt>
+            <dd>alias of per-thread event pool type</dd>
+            <dt>
               <div class="m-doc-template">template&lt;unsigned NT, unsigned VT&gt;</div>
               class <a href="classtf_1_1cudaExecutionPolicy.html" class="m-doc">cudaExecutionPolicy</a>
             </dt>
@@ -101,21 +110,22 @@
             </dt>
             <dd>class to create an RAII-styled context switch</dd>
             <dt>
-              class <a href="classtf_1_1cudaScopedPerThreadEvent.html" class="m-doc">cudaScopedPerThreadEvent</a>
-            </dt>
-            <dd>class to create an RAII-styled guard of event acquisition</dd>
-            <dt>
-              class <a href="classtf_1_1cudaScopedPerThreadStream.html" class="m-doc">cudaScopedPerThreadStream</a>
-            </dt>
-            <dd>class to create an RAII-styled guard of stream acquisition</dd>
-            <dt>
               class <a href="classtf_1_1cudaSequentialCapturing.html" class="m-doc">cudaSequentialCapturing</a>
             </dt>
             <dd>class to capture a CUDA graph using a sequential stream</dd>
             <dt>
+              class <a href="classtf_1_1cudaStream.html" class="m-doc">cudaStream</a>
+            </dt>
+            <dd>alias of per-thread stream pool type</dd>
+            <dt>
               class <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a>
             </dt>
             <dd>class to create a task handle over an internal node of a cudaFlow graph</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              class <a href="classtf_1_1cudaUSMAllocator.html" class="m-doc">cudaUSMAllocator</a>
+            </dt>
+            <dd>class to create a unified shared memory (USM) allocator</dd>
             <dt>
               class <a href="classtf_1_1Executor.html" class="m-doc">Executor</a>
             </dt>
@@ -251,14 +261,6 @@
               using <a href="#a8cff4bbd797dde4dfab096c3cc657833" class="m-doc-self">observer_stamp_t</a> = <a href="http://en.cppreference.com/w/cpp/chrono/time_point.html" class="m-doc-external">std::<wbr />chrono::<wbr />time_point</a>&lt;<a href="http://en.cppreference.com/w/cpp/chrono/steady_clock.html" class="m-doc-external">std::<wbr />chrono::<wbr />steady_clock</a>&gt;
             </dt>
             <dd>default time point type of observers</dd>
-            <dt id="a632bb71dc4ddedbf2c26f6f25a2d6a49">
-              using <a href="#a632bb71dc4ddedbf2c26f6f25a2d6a49" class="m-doc-self">cudaPerThreadStreamPool</a> = cudaPerThreadDeviceObjectPool&lt;cudaStream_t, cudaStreamCreator, cudaStreamDeleter&gt;
-            </dt>
-            <dd>alias of per-thread stream pool type</dd>
-            <dt id="a7356453a9963094ac069f6597bee50cd">
-              using <a href="#a7356453a9963094ac069f6597bee50cd" class="m-doc-self">cudaPerThreadEventPool</a> = cudaPerThreadDeviceObjectPool&lt;cudaEvent_t, cudaEventCreator, cudaEventDeleter&gt;
-            </dt>
-            <dd>alias of per-thread event pool type</dd>
             <dt id="aa18f102977c3257b75e21fde05efdb68">
               using <a href="#aa18f102977c3257b75e21fde05efdb68" class="m-doc-self">cudaDefaultExecutionPolicy</a> = <a href="classtf_1_1cudaExecutionPolicy.html" class="m-doc">cudaExecutionPolicy</a>&lt;512, 9&gt;
             </dt>
@@ -412,14 +414,6 @@
               size_t count)</span>
             </dt>
             <dd>initializes or sets GPU memory to the given value byte by byte</dd>
-            <dt id="a96ea342b1ceb44b100474304e68887b9">
-              <span class="m-doc-wrap-bumper">auto <a href="#a96ea342b1ceb44b100474304e68887b9" class="m-doc-self">cuda_per_thread_stream_pool</a>(</span><span class="m-doc-wrap">) -&gt; <a href="namespacetf.html#a632bb71dc4ddedbf2c26f6f25a2d6a49" class="m-doc">cudaPerThreadStreamPool</a>&amp;</span>
-            </dt>
-            <dd>acquires the per-thread cuda stream pool</dd>
-            <dt id="a3f758baaa29221219bcbd10937dd5fd2">
-              <span class="m-doc-wrap-bumper">auto <a href="#a3f758baaa29221219bcbd10937dd5fd2" class="m-doc-self">cuda_per_thread_event_pool</a>(</span><span class="m-doc-wrap">) -&gt; <a href="namespacetf.html#a7356453a9963094ac069f6597bee50cd" class="m-doc">cudaPerThreadEventPool</a>&amp;</span>
-            </dt>
-            <dd>per-thread cuda event pool</dd>
             <dt id="af21fe1eaf680dbddc0503ef5d1a9a664">
               <span class="m-doc-wrap-bumper">auto <a href="#af21fe1eaf680dbddc0503ef5d1a9a664" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#afebc56ae6d5765010d0dd13a5f04132e" class="m-doc">cudaTaskType</a> type) -&gt; const char* <span class="m-label m-flat m-primary">constexpr</span></span>
             </dt>

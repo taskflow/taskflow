@@ -61,34 +61,27 @@ class syclNode {
   friend class Taskflow;
   friend class Executor;
 
-  struct CommandGroupHandler {
+  struct Empty {
+  };
+
+  struct CGH {
 
     std::function<void(sycl::handler&)> work;
 
     template <typename F>
-    CommandGroupHandler(F&& func) : work {std::forward<F>(func)} {}
-  };
-
-  struct DependentSubmit {
-    std::function<sycl::event(sycl::queue&, std::vector<sycl::event>)> work;
-
-    template <typename F>
-    DependentSubmit(F&& func) : work {std::forward<F>(func)} {}
+    CGH(F&& func) : work {std::forward<F>(func)} {}
   };
 
   using handle_t = std::variant<
-    CommandGroupHandler,
-    DependentSubmit
+    Empty,
+    CGH
   >;
 
   public:
 
   // variant index
-  constexpr static auto COMMAND_GROUP_HANDLER =
-    get_index_v<CommandGroupHandler, handle_t>;
-
-  constexpr static auto DEPENDENT_SUBMIT =
-    get_index_v<DependentSubmit, handle_t>;
+  constexpr static auto EMPTY = get_index_v<Empty, handle_t>;
+  constexpr static auto COMMAND_GROUP_HANDLER = get_index_v<CGH, handle_t>;
 
     syclNode() = delete;
 

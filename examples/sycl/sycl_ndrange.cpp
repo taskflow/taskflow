@@ -2,7 +2,7 @@
 // through nd_range and nd_item.
 
 #include <taskflow/taskflow.hpp>
-#include <taskflow/syclflow.hpp>
+#include <taskflow/sycl/syclflow.hpp>
 
 constexpr size_t R = 8;
 constexpr size_t C = 12;

@@ -45,11 +45,19 @@ To use %Taskflow v3.4.0, you need a compiler that supports C++17:
 
 @subsection release-3-4-0_cudaflow cudaFlow
 
++ Added tf::cudaStream as a move-only, RAII-styled wrapper over a native CUDA stream
++ Added tf::cudaEvent as a move-only, RAII-styled wrapper over a native CUDA event
+
 @subsection release-3-4-0_syclflow syclFlow
 
 @subsection release-3-4-0_utilities Utilities
 
++ removed serializer to improve compilation speed
+
 @subsection release-3-4-0_profiler Taskflow Profiler (TFProf)
+
++ Disabled local TFProf support due to non-portable serialization
+
 
 @section release-3-4-0_bug_fixes Bug Fixes 
 
@@ -62,8 +70,10 @@ If you encounter any potential bugs, please submit an issue at @IssueTracker.
 
 @section release-3-4-0_deprecated_items Deprecated and Removed Items 
 
+
 @section release-3-4-0_documentation Documentation
 
++ Revised @ref CUDASTDExecutionPolicy
 + Revised @ref ParallelPipeline
   + Added @ref ParallelPipelineLearnMore
 + Revised @ref Examples

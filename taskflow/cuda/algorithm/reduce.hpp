@@ -431,7 +431,7 @@ cudaTask cudaFlowCapturer::reduce(I first, I last, T* result, C c) {
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
+  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_reduce(p, first, last, result, c, buf.get().data());
@@ -447,7 +447,7 @@ cudaTask cudaFlowCapturer::uninitialized_reduce(I first, I last, T* result, C c)
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
+  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_uninitialized_reduce(p, first, last, result, c, buf.get().data());
@@ -465,7 +465,7 @@ cudaTask cudaFlowCapturer::transform_reduce(
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
+  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_transform_reduce(
@@ -484,7 +484,7 @@ cudaTask cudaFlowCapturer::transform_uninitialized_reduce(
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
+  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_transform_uninitialized_reduce(
@@ -504,7 +504,7 @@ void cudaFlowCapturer::reduce(
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
+  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_reduce(p, first, last, result, c, buf.get().data());
@@ -521,7 +521,7 @@ void cudaFlowCapturer::uninitialized_reduce(
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
+  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_uninitialized_reduce(p, first, last, result, c, buf.get().data());
@@ -539,7 +539,7 @@ void cudaFlowCapturer::transform_reduce(
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
+  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_transform_reduce(
@@ -559,7 +559,7 @@ void cudaFlowCapturer::transform_uninitialized_reduce(
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}]
+  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_transform_uninitialized_reduce(
