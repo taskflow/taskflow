@@ -1,7 +1,7 @@
 list(APPEND TF_SYCL_TESTS 
   sycl_basics
-  sycl_algorithms
-  sycl_rebinds
+  #sycl_algorithms
+  #sycl_rebinds
 )
 
 foreach(sycl_test IN LISTS TF_SYCL_TESTS)

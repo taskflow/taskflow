@@ -2,7 +2,7 @@
 // ("single-precision AX+Y") task graph using syclFlow.
 
 #include <taskflow/taskflow.hpp>
-#include <taskflow/syclflow.hpp>
+#include <taskflow/sycl/syclflow.hpp>
 
 constexpr size_t N = 1000000;
 
@@ -16,7 +16,7 @@ int main() {
   // allocate shared memory
   auto X = sycl::malloc_shared<float>(N, queue);
   auto Y = sycl::malloc_shared<float>(N, queue);
-  
+
   // create a syclFlow to perform the saxpy operation
   taskflow.emplace_on([&](tf::syclFlow& sf){
 
@@ -34,7 +34,7 @@ int main() {
   }, queue).name("syclFlow");
   
   // dump the graph without detailed syclFlow connections
-  // taskflow.dump(std::cout);
+  taskflow.dump(std::cout);
   
   // run the taskflow
   executor.run(taskflow).wait();

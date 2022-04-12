@@ -248,7 +248,7 @@ void cuda_scan_loop(
 
   if(B > cudaScanRecursionThreshold) {
 
-    //cudaScopedDeviceMemory<T> partials(B);
+    //cudaDeviceVector<T> partials(B);
     //auto buffer = partials.data();
 
     // upsweep phase
@@ -363,7 +363,7 @@ unsigned cuda_scan_buffer_size(unsigned count) {
 //  using T = typename std::iterator_traits<O>::value_type;
 //  
 //  // allocate temporary buffer
-//  cudaScopedDeviceMemory<std::byte> temp(cuda_scan_buffer_size<P, T>(count));
+//  cudaDeviceVector<std::byte> temp(cuda_scan_buffer_size<P, T>(count));
 //  
 //  // launch the scan loop
 //  detail::cuda_scan_loop(
@@ -425,7 +425,7 @@ void cuda_inclusive_scan(
 //  using T = typename std::iterator_traits<O>::value_type;
 //  
 //  // allocate temporary buffer
-//  cudaScopedDeviceMemory<std::byte> temp(cuda_scan_buffer_size<P, T>(count));
+//  cudaDeviceVector<std::byte> temp(cuda_scan_buffer_size<P, T>(count));
 //  auto buf = temp.data();
 //  
 //  // launch the scan loop
@@ -494,7 +494,7 @@ void cuda_transform_inclusive_scan(
 //  using T = typename std::iterator_traits<O>::value_type;
 //  
 //  // allocate temporary buffer
-//  cudaScopedDeviceMemory<std::byte> temp(cuda_scan_buffer_size<P, T>(count));
+//  cudaDeviceVector<std::byte> temp(cuda_scan_buffer_size<P, T>(count));
 //  auto buf = temp.data();
 //  
 //  // launch the scan loop
@@ -557,7 +557,7 @@ void cuda_exclusive_scan(
 //  using T = typename std::iterator_traits<O>::value_type;
 //  
 //  // allocate temporary buffer
-//  cudaScopedDeviceMemory<std::byte> temp(cuda_scan_buffer_size<P, T>(count));
+//  cudaDeviceVector<std::byte> temp(cuda_scan_buffer_size<P, T>(count));
 //  auto buf = temp.data();
 //  
 //  // launch the scan loop
@@ -708,7 +708,7 @@ cudaTask cudaFlowCapturer::inclusive_scan(I first, I last, O output, C op) {
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_inclusive_scan(p, first, last, output, op, buf.get().data());
@@ -727,7 +727,7 @@ void cudaFlowCapturer::inclusive_scan(
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_inclusive_scan(p, first, last, output, op, buf.get().data());
@@ -744,7 +744,7 @@ cudaTask cudaFlowCapturer::exclusive_scan(I first, I last, O output, C op) {
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_exclusive_scan(p, first, last, output, op, buf.get().data());
@@ -763,7 +763,7 @@ void cudaFlowCapturer::exclusive_scan(
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_exclusive_scan(p, first, last, output, op, buf.get().data());
@@ -782,7 +782,7 @@ cudaTask cudaFlowCapturer::transform_inclusive_scan(
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_transform_inclusive_scan(
@@ -803,7 +803,7 @@ void cudaFlowCapturer::transform_inclusive_scan(
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_transform_inclusive_scan(
@@ -824,7 +824,7 @@ cudaTask cudaFlowCapturer::transform_exclusive_scan(
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_transform_exclusive_scan(
@@ -845,7 +845,7 @@ void cudaFlowCapturer::transform_exclusive_scan(
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cudaDefaultExecutionPolicy p(stream);
     cuda_transform_exclusive_scan(

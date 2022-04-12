@@ -31,11 +31,11 @@ int main(int argc, char* argv[]) {
   auto p = tf::cudaDefaultExecutionPolicy{};
   
   auto beg = std::chrono::steady_clock::now();
-
+  tf::cudaStream s;
   auto bufsz = tf::cuda_sort_buffer_size<decltype(p), int>(N);
-  tf::cudaScopedDeviceMemory<std::byte> buf(bufsz);
+  tf::cudaDeviceVector<std::byte> buf(bufsz);
   tf::cuda_sort(p, d_keys, d_keys+N, tf::cuda_less<int>{}, buf.data());
-  p.synchronize();
+  s.synchronize();
   auto end = std::chrono::steady_clock::now();
 
   std::cout << "GPU sort: " 

@@ -462,8 +462,8 @@ class syclScopedDeviceMemory {
 
     syclScopedDeviceMemory() = delete;
 
-    syclScopedDeviceMemory(size_t N, sycl::queue queue) : 
-      _queue {std::move(queue)},
+    syclScopedDeviceMemory(size_t N, sycl::queue& queue) : 
+      _queue {queue},
       _N {N} {
       if(N) {
         _data = sycl::malloc_device<T>(N, _queue);
@@ -504,7 +504,7 @@ class syclScopedDeviceMemory {
 
   private:
 
-    sycl::queue _queue;
+    sycl::queue& _queue;
 
     T* _data  {nullptr};
     size_t _N {0};

@@ -5,6 +5,9 @@
     <innerclass refid="classtf_1_1ChromeObserver" prot="public">tf::ChromeObserver</innerclass>
     <innerclass refid="classtf_1_1CriticalSection" prot="public">tf::CriticalSection</innerclass>
     <innerclass refid="classtf_1_1cudaCapturingBase" prot="private">tf::cudaCapturingBase</innerclass>
+    <innerclass refid="classtf_1_1cudaDeviceAllocator" prot="public">tf::cudaDeviceAllocator</innerclass>
+    <innerclass refid="classtf_1_1cudaDeviceVector" prot="private">tf::cudaDeviceVector</innerclass>
+    <innerclass refid="classtf_1_1cudaEvent" prot="public">tf::cudaEvent</innerclass>
     <innerclass refid="structtf_1_1cudaEventCreator" prot="private">tf::cudaEventCreator</innerclass>
     <innerclass refid="structtf_1_1cudaEventDeleter" prot="private">tf::cudaEventDeleter</innerclass>
     <innerclass refid="classtf_1_1cudaExecutionPolicy" prot="public">tf::cudaExecutionPolicy</innerclass>
@@ -13,9 +16,6 @@
     <innerclass refid="classtf_1_1cudaLinearCapturing" prot="public">tf::cudaLinearCapturing</innerclass>
     <innerclass refid="classtf_1_1cudaRoundRobinCapturing" prot="public">tf::cudaRoundRobinCapturing</innerclass>
     <innerclass refid="classtf_1_1cudaScopedDevice" prot="public">tf::cudaScopedDevice</innerclass>
-    <innerclass refid="classtf_1_1cudaScopedDeviceMemory" prot="private">tf::cudaScopedDeviceMemory</innerclass>
-    <innerclass refid="classtf_1_1cudaScopedPerThreadEvent" prot="public">tf::cudaScopedPerThreadEvent</innerclass>
-    <innerclass refid="classtf_1_1cudaScopedPerThreadStream" prot="public">tf::cudaScopedPerThreadStream</innerclass>
     <innerclass refid="classtf_1_1cudaSequentialCapturing" prot="public">tf::cudaSequentialCapturing</innerclass>
     <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory</innerclass>
     <innerclass refid="structtf_1_1cudaSharedMemory_3_01bool_01_4" prot="private">tf::cudaSharedMemory&lt; bool &gt;</innerclass>
@@ -29,9 +29,12 @@
     <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01int_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned int &gt;</innerclass>
     <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01long_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned long &gt;</innerclass>
     <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01short_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned short &gt;</innerclass>
+    <innerclass refid="classtf_1_1cudaStream" prot="public">tf::cudaStream</innerclass>
     <innerclass refid="structtf_1_1cudaStreamCreator" prot="private">tf::cudaStreamCreator</innerclass>
     <innerclass refid="structtf_1_1cudaStreamDeleter" prot="private">tf::cudaStreamDeleter</innerclass>
+    <innerclass refid="structtf_1_1cudaStreamSynchronizer" prot="private">tf::cudaStreamSynchronizer</innerclass>
     <innerclass refid="classtf_1_1cudaTask" prot="public">tf::cudaTask</innerclass>
+    <innerclass refid="classtf_1_1cudaUSMAllocator" prot="public">tf::cudaUSMAllocator</innerclass>
     <innerclass refid="classtf_1_1CustomGraphBase" prot="private">tf::CustomGraphBase</innerclass>
     <innerclass refid="classtf_1_1Executor" prot="public">tf::Executor</innerclass>
     <innerclass refid="classtf_1_1FlowBuilder" prot="public">tf::FlowBuilder</innerclass>
@@ -190,7 +193,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="715" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="715" bodyend="719"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="722" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="722" bodyend="726"/>
       </memberdef>
       <memberdef kind="enum" id="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" prot="public" static="no" strong="yes">
         <type>int</type>
@@ -302,32 +305,6 @@
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="20" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="20" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="typedef" id="namespacetf_1a632bb71dc4ddedbf2c26f6f25a2d6a49" prot="public" static="no">
-        <type>cudaPerThreadDeviceObjectPool&lt; cudaStream_t, cudaStreamCreator, cudaStreamDeleter &gt;</type>
-        <definition>using tf::cudaPerThreadStreamPool = typedef cudaPerThreadDeviceObjectPool&lt; cudaStream_t, cudaStreamCreator, cudaStreamDeleter &gt;</definition>
-        <argsstring></argsstring>
-        <name>cudaPerThreadStreamPool</name>
-        <briefdescription>
-<para>alias of per-thread stream pool type </para>        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="43" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="45" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="typedef" id="namespacetf_1a7356453a9963094ac069f6597bee50cd" prot="public" static="no">
-        <type>cudaPerThreadDeviceObjectPool&lt; cudaEvent_t, cudaEventCreator, cudaEventDeleter &gt;</type>
-        <definition>using tf::cudaPerThreadEventPool = typedef cudaPerThreadDeviceObjectPool&lt; cudaEvent_t, cudaEventCreator, cudaEventDeleter &gt;</definition>
-        <argsstring></argsstring>
-        <name>cudaPerThreadEventPool</name>
-        <briefdescription>
-<para>alias of per-thread event pool type </para>        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="178" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="180" bodyend="-1"/>
-      </memberdef>
       <memberdef kind="typedef" id="namespacetf_1aa18f102977c3257b75e21fde05efdb68" prot="public" static="no">
         <type><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">cudaExecutionPolicy</ref>&lt; 512, 9 &gt;</type>
         <definition>using tf::cudaDefaultExecutionPolicy = typedef cudaExecutionPolicy&lt;512, 9&gt;</definition>
@@ -339,7 +316,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="81" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="81" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="72" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="72" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="var">
@@ -354,7 +331,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="445" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="445" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="444" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="444" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1ab74c19e0e6c9a4e3456dbae54ab9eed9" prot="private" static="no" mutable="no">
         <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 10 &gt;</type>
@@ -611,7 +588,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="724" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="724" bodyend="730"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="731" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="731" bodyend="737"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1abffa70155a5f160b7ceb86ee52ab2136" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -1025,7 +1002,7 @@
 <para>The function calls malloc_device from the current device associated with the caller. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="65" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="65" bodyend="67"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="65" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="65" bodyend="72"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a8eed05685b030fc44703213a4ef86f11" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1047,7 +1024,7 @@
 <para>The function calls <computeroutput>cudaMallocManaged</computeroutput> to allocate <computeroutput>N*sizeof(T)</computeroutput> bytes of memory and returns a pointer to the starting address of the shared memory. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="76" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="76" bodyend="83"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="81" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="81" bodyend="88"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1096,7 +1073,7 @@
 This methods call <computeroutput>cudaFree</computeroutput> to free the memory space pointed to by <computeroutput>ptr</computeroutput> using the given device context. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="96" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="96" bodyend="99"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="101" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="101" bodyend="104"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ae174a3a49b91ef21554dac16806f0d72" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1134,7 +1111,7 @@ This methods call <computeroutput>cudaFree</computeroutput> to free the memory s
 This methods call <computeroutput>cudaFree</computeroutput> to free the memory space pointed to by <computeroutput>ptr</computeroutput> using the current device context of the caller. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="111" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="111" bodyend="113"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="116" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="116" bodyend="118"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aa4266474b921f8ed7d9ec8071fded2a4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1192,7 +1169,7 @@ This methods call <computeroutput>cudaFree</computeroutput> to free the memory s
 The method calls <computeroutput>cudaMemcpyAsync</computeroutput> with the given <computeroutput>stream</computeroutput> using <computeroutput>cudaMemcpyDefault</computeroutput> to infer the memory space of the source and the destination pointers. The memory areas may not overlap. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="127" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="127" bodyend="134"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="132" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="132" bodyend="139"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a6615554d2954e895755411ee444d9760" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1250,33 +1227,7 @@ The method calls <computeroutput>cudaMemcpyAsync</computeroutput> with the given
 The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given <computeroutput>stream</computeroutput> to fill the first <computeroutput>count</computeroutput> bytes of the memory area pointed to by <computeroutput>devPtr</computeroutput> with the constant byte value <computeroutput>value</computeroutput>. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="148" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="148" bodyend="155"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a96ea342b1ceb44b100474304e68887b9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="namespacetf_1a632bb71dc4ddedbf2c26f6f25a2d6a49" kindref="member">cudaPerThreadStreamPool</ref> &amp;</type>
-        <definition>cudaPerThreadStreamPool&amp; tf::cuda_per_thread_stream_pool</definition>
-        <argsstring>()</argsstring>
-        <name>cuda_per_thread_stream_pool</name>
-        <briefdescription>
-<para>acquires the per-thread cuda stream pool </para>        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="50" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="50" bodyend="53"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a3f758baaa29221219bcbd10937dd5fd2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="namespacetf_1a7356453a9963094ac069f6597bee50cd" kindref="member">cudaPerThreadEventPool</ref> &amp;</type>
-        <definition>cudaPerThreadEventPool&amp; tf::cuda_per_thread_event_pool</definition>
-        <argsstring>()</argsstring>
-        <name>cuda_per_thread_event_pool</name>
-        <briefdescription>
-<para>per-thread cuda event pool </para>        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="185" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="185" bodyend="188"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="153" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="153" bodyend="160"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1af21fe1eaf680dbddc0503ef5d1a9a664" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>constexpr const char *</type>

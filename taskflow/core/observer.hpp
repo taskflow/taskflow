@@ -30,15 +30,15 @@ struct Segment {
   observer_stamp_t beg;
   observer_stamp_t end;
 
-  template <typename Archiver>
-  auto save(Archiver& ar) const {
-    return ar(name, type, beg, end);
-  }
+  //template <typename Archiver>
+  //auto save(Archiver& ar) const {
+  //  return ar(name, type, beg, end);
+  //}
 
-  template <typename Archiver>
-  auto load(Archiver& ar) {
-    return ar(name, type, beg, end);
-  }
+  //template <typename Archiver>
+  //auto load(Archiver& ar) {
+  //  return ar(name, type, beg, end);
+  //}
 
   Segment() = default;
 
@@ -70,15 +70,15 @@ struct Timeline {
   Timeline& operator = (const Timeline& rhs) = delete;
   Timeline& operator = (Timeline&& rhs) = default;
 
-  template <typename Archiver>
-  auto save(Archiver& ar) const {
-    return ar(uid, origin, segments);
-  }
+  //template <typename Archiver>
+  //auto save(Archiver& ar) const {
+  //  return ar(uid, origin, segments);
+  //}
 
-  template <typename Archiver>
-  auto load(Archiver& ar) {
-    return ar(uid, origin, segments);
-  }
+  //template <typename Archiver>
+  //auto load(Archiver& ar) {
+  //  return ar(uid, origin, segments);
+  //}
 };  
 
 /**
@@ -96,15 +96,15 @@ struct ProfileData {
   ProfileData& operator = (const ProfileData& rhs) = delete;
   ProfileData& operator = (ProfileData&&) = default;
   
-  template <typename Archiver>
-  auto save(Archiver& ar) const {
-    return ar(timelines);
-  }
+  //template <typename Archiver>
+  //auto save(Archiver& ar) const {
+  //  return ar(timelines);
+  //}
 
-  template <typename Archiver>
-  auto load(Archiver& ar) {
-    return ar(timelines);
-  }
+  //template <typename Archiver>
+  //auto load(Archiver& ar) {
+  //  return ar(timelines);
+  //}
 };
 
 // ----------------------------------------------------------------------------
@@ -675,25 +675,32 @@ inline void TFProfManager::dump(std::ostream& os) const {
 inline TFProfManager::~TFProfManager() {
   std::ofstream ofs(_fpath);
   if(ofs) {
-    // .tfp
-    if(_fpath.rfind(".tfp") != std::string::npos) {
-      ProfileData data;
-      data.timelines.reserve(_observers.size());
-      for(size_t i=0; i<_observers.size(); ++i) {
-        data.timelines.push_back(std::move(_observers[i]->_timeline));
-      }
-      Serializer<std::ofstream> serializer(ofs); 
-      serializer(data);
+    //// .tfp
+    //if(_fpath.rfind(".tfp") != std::string::npos) {
+    //  ProfileData data;
+    //  data.timelines.reserve(_observers.size());
+    //  for(size_t i=0; i<_observers.size(); ++i) {
+    //    data.timelines.push_back(std::move(_observers[i]->_timeline));
+    //  }
+    //  Serializer<std::ofstream> serializer(ofs); 
+    //  serializer(data);
+    //}
+    //// .json
+    //else {
+    //  ofs << "[\n";
+    //  for(size_t i=0; i<_observers.size(); ++i) {
+    //    if(i) ofs << ',';
+    //    _observers[i]->dump(ofs);
+    //  }
+    //  ofs << "]\n";
+    //}
+
+    ofs << "[\n";
+    for(size_t i=0; i<_observers.size(); ++i) {
+      if(i) ofs << ',';
+      _observers[i]->dump(ofs);
     }
-    // .json
-    else {
-      ofs << "[\n";
-      for(size_t i=0; i<_observers.size(); ++i) {
-        if(i) ofs << ',';
-        _observers[i]->dump(ofs);
-      }
-      ofs << "]\n";
-    }
+    ofs << "]\n";
   }
 }
     

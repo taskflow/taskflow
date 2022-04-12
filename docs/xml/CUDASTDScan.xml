@@ -30,7 +30,7 @@
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronizes<sp/>and<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a33596174fe764d85356ed9b8c0934bb7" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=1;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(output[i]<sp/>==<sp/>output[i-1]<sp/>+<sp/>input[i]);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -44,7 +44,7 @@ On the other hand, <ref refid="namespacetf_1aeb391c40120844318fd715b8c3a716bb" k
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronizes<sp/>the<sp/>execution<sp/>and<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a33596174fe764d85356ed9b8c0934bb7" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=1;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(output[i]<sp/>==<sp/>output[i-1]<sp/>+<sp/>input[i-1]);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -70,7 +70,7 @@ On the other hand, <ref refid="namespacetf_1aeb391c40120844318fd715b8c3a716bb" k
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a*10;<sp/>},<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>unary<sp/>transform<sp/>operator</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>buffer</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a33596174fe764d85356ed9b8c0934bb7" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=1;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>
@@ -95,7 +95,7 @@ On the other hand, <ref refid="namespacetf_1aeb391c40120844318fd715b8c3a716bb" k
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a*10;<sp/>},<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>unary<sp/>transform<sp/>operator</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>buffer</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a33596174fe764d85356ed9b8c0934bb7" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=1;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>

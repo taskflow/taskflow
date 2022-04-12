@@ -1,7 +1,7 @@
 // The example shows how to use syclFlow to multiply two 2D matrices.
 
 #include <taskflow/taskflow.hpp>
-#include <taskflow/syclflow.hpp>
+#include <taskflow/sycl/syclflow.hpp>
 
 // Matrix multiplication using GPU
 auto gpu(int M, int N, int K) {

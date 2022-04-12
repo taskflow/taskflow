@@ -1,5 +1,4 @@
 #include <taskflow/taskflow.hpp>
-#include <chrono>
 #include "ThreadPool.hpp"
 
 ThreadPool* ThreadPool::singleton = nullptr;
@@ -79,5 +78,4 @@ int main() {
 		bench(10);
 	for (uint32_t i = 0; i < 5; ++i)
 		bench(5);
-
 }

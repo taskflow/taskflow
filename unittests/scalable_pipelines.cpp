@@ -367,7 +367,7 @@ void ifelse_spipeline(size_t L, unsigned w) {
     });
 
       // pipe 2
-    pipes.emplace_back(tf::PipeType::PARALLEL, [&, N](auto& pf){
+    pipes.emplace_back(tf::PipeType::PARALLEL, [&](auto& pf){
 
         if(buffer[pf.line()][pf.pipe() - 1] > 4897) {
           buffer[pf.line()][pf.pipe()] =  buffer[pf.line()][pf.pipe() - 1] - 1834;
@@ -379,7 +379,7 @@ void ifelse_spipeline(size_t L, unsigned w) {
     });
       
     // pipe 3
-    pipes.emplace_back(tf::PipeType::SERIAL, [&, N](auto& pf){
+    pipes.emplace_back(tf::PipeType::SERIAL, [&](auto& pf){
 
         if((buffer[pf.line()][pf.pipe() - 1] + 9) / 4 < 50) {
           buffer[pf.line()][pf.pipe()] = buffer[pf.line()][pf.pipe() - 1] + 1;
@@ -527,7 +527,7 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
       // begin of pipeline ---------------------------
         
       // begin of pipe 1 -----------------------------
-      pipes.emplace_back(tf::PipeType::SERIAL, [&, w, L, N, subN, subL](auto& pf) mutable {
+      pipes.emplace_back(tf::PipeType::SERIAL, [&, w, N, subN, subL](auto& pf) mutable {
         if(j1 == N) {
           pf.stop();
           return;
@@ -611,7 +611,7 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
       // end of pipe 1 -----------------------------
 
       //begin of pipe 2 ---------------------------
-      pipes.emplace_back(tf::PipeType::PARALLEL, [&, w, L, N, subN, subL](auto& pf) mutable {
+      pipes.emplace_back(tf::PipeType::PARALLEL, [&, w, subN, subL](auto& pf) mutable {
 
         REQUIRE(j2++ < N);
         int res = std::accumulate(
@@ -698,7 +698,7 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
       // end of pipe 2 -----------------------------
     
       // begin of pipe 3 ---------------------------
-      pipes.emplace_back(tf::PipeType::SERIAL, [&, w, L, N, subN, subL](auto& pf) mutable {
+      pipes.emplace_back(tf::PipeType::SERIAL, [&, w, N, subN, subL](auto& pf) mutable {
 
         REQUIRE(j3++ < N);
         int res = std::accumulate(
@@ -786,7 +786,7 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
       // end of pipe 3 -----------------------------
     
       // begin of pipe 4 ---------------------------
-      pipes.emplace_back(tf::PipeType::SERIAL, [&, w, L, N, subN, subL](auto& pf) mutable {
+      pipes.emplace_back(tf::PipeType::SERIAL, [&, subN](auto& pf) mutable {
         int res = std::accumulate(
           source[j4].begin(), 
           source[j4].begin() + subN, 
@@ -971,7 +971,7 @@ void snig_spipeline(size_t L, unsigned w) {
       // pipe 1
       pipes[dev].emplace_back(
         tf::PipeType::SERIAL, 
-        [&, dev, NUM_SOURCE, BATCH_SIZE](auto& pf) mutable {
+        [&, dev, BATCH_SIZE](auto& pf) mutable {
           if(j1s[dev] == BATCH_SIZE) {
             pf.stop();
             return;

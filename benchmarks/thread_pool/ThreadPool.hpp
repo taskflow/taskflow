@@ -16,17 +16,22 @@
 class ThreadPool
 {
   public:
+
 	ThreadPool(size_t);
+
 	template<class F, class... Args>
 	auto enqueue(F&& f, Args&&... args)
 		-> std::future<typename std::invoke_result<F, Args...>::type>;
+
 	~ThreadPool();
+
 	int thread_number(std::thread::id id)
 	{
 		if(id_map.find(id) != id_map.end())
 			return (int)id_map[id];
 		return -1;
 	}
+
 	size_t num_threads()
 	{
 		return num_threads_;
@@ -36,25 +41,30 @@ class ThreadPool
 	{
 		return instance(0);
 	}
+
 	static ThreadPool* instance(uint32_t numthreads)
 	{
 		std::unique_lock<std::mutex> lock(singleton_mutex);
-		if(!singleton)
+		if(!singleton) {
 			singleton = new ThreadPool(numthreads ? numthreads : hardware_concurrency());
+    }
 		return singleton;
 	}
+
 	static void release()
 	{
 		std::unique_lock<std::mutex> lock(singleton_mutex);
 		delete singleton;
 		singleton = nullptr;
 	}
+
 	static uint32_t hardware_concurrency()
 	{
 		return std::thread::hardware_concurrency();
 	}
 
   private:
+
 	std::vector<std::thread> workers;
 	std::queue<std::function<void()>> tasks;
 	std::mutex queue_mutex;
@@ -65,6 +75,7 @@ class ThreadPool
 	static ThreadPool* singleton;
 	static std::mutex singleton_mutex;
 };
+
 inline ThreadPool::ThreadPool(size_t threads) : stop(false), num_threads_(threads)
 {
 	if(threads == 1)
@@ -117,6 +128,7 @@ auto ThreadPool::enqueue(F&& f, Args&&... args)
 	condition.notify_one();
 	return res;
 }
+
 inline ThreadPool::~ThreadPool()
 {
 	{

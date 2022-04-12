@@ -1217,14 +1217,17 @@ void cudaFlowCapturer::offload_until(P&& predicate) {
   // offload the executable
   if(_executable) {
      
-    cudaScopedPerThreadStream s;
+    //cudaScopedPerThreadStream s;
+    cudaStream s;
 
     while(!predicate()) {
       TF_CHECK_CUDA(
         cudaGraphLaunch(_executable, s), "failed to launch the exec graph"
       );
 
-      TF_CHECK_CUDA(cudaStreamSynchronize(s), "failed to synchronize stream");
+      s.synchronize();
+
+      //TF_CHECK_CUDA(cudaStreamSynchronize(s), "failed to synchronize stream");
     }
   }
 

@@ -489,7 +489,7 @@ unsigned cuda_merge_buffer_size(unsigned a_count, unsigned b_count) {
 //  }
 //  
 //  // allocate temporary buffer
-//  cudaScopedDeviceMemory<std::byte> temp(cuda_merge_buffer_size<P>(a_count, b_count));
+//  cudaDeviceVector<std::byte> temp(cuda_merge_buffer_size<P>(a_count, b_count));
 //
 //  detail::cuda_merge_loop(
 //    p, 
@@ -730,7 +730,7 @@ cudaTask cudaFlowCapturer::merge(
     std::distance(a_first, a_last), std::distance(b_first, b_last)
   );
 
-  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cuda_merge(cudaDefaultExecutionPolicy{stream}, 
       a_first, a_last, b_first, b_last, c_first, comp, buf.get().data()
@@ -748,7 +748,7 @@ void cudaFlowCapturer::merge(
     std::distance(a_first, a_last), std::distance(b_first, b_last)
   );
 
-  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cuda_merge(cudaDefaultExecutionPolicy{stream}, 
       a_first, a_last, b_first, b_last, c_first, comp, buf.get().data()
@@ -774,7 +774,7 @@ cudaTask cudaFlowCapturer::merge_by_key(
     std::distance(b_keys_first, b_keys_last)
   );
 
-  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cuda_merge_by_key(cudaDefaultExecutionPolicy{stream}, 
       a_keys_first, a_keys_last, a_vals_first,
@@ -805,7 +805,7 @@ void cudaFlowCapturer::merge_by_key(
     std::distance(b_keys_first, b_keys_last)
   );
 
-  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cuda_merge_by_key(cudaDefaultExecutionPolicy{stream}, 
       a_keys_first, a_keys_last, a_vals_first,

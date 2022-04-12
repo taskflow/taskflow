@@ -31,7 +31,7 @@
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronizes<sp/>the<sp/>execution<sp/>and<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a33596174fe764d85356ed9b8c0934bb7" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
 <codeline><highlight class="normal">assert(std::is_sorted(vec,<sp/>vec+N));</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>deletes<sp/>the<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
@@ -60,7 +60,7 @@
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronizes<sp/>the<sp/>execution<sp/>and<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a33596174fe764d85356ed9b8c0934bb7" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>vec<sp/>=<sp/>{-5,<sp/>1,<sp/>2,<sp/>4}</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>idx<sp/>=<sp/>{<sp/>2,<sp/>0,<sp/>3,<sp/>1}</highlight><highlight class="normal"></highlight></codeline>

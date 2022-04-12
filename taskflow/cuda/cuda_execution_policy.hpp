@@ -42,14 +42,14 @@ class cudaExecutionPolicy {
   const static unsigned nv = NT*VT;
   
   /**
-  @brief constructs an execution poliby object with default stream
+  @brief constructs an execution policy object with default stream
    */
   cudaExecutionPolicy() = default;
 
   /**
   @brief constructs an execution policy object with the given stream
    */
-  cudaExecutionPolicy(cudaStream_t s) : _stream{s} {}
+  explicit cudaExecutionPolicy(cudaStream_t s) : _stream{s} {}
   
   /**
   @brief queries the associated stream
@@ -61,15 +61,6 @@ class cudaExecutionPolicy {
    */
   void stream(cudaStream_t stream) noexcept { _stream = stream; }
   
-  /**
-  @brief synchronizes the stream
-   */
-  void synchronize() const {
-    TF_CHECK_CUDA(
-      cudaStreamSynchronize(_stream), "failed to sync stream ", _stream
-    );
-  }
-
   private:
 
   cudaStream_t _stream {0};

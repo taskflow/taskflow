@@ -1,7 +1,7 @@
 // This program demonstrates how to create a simple vector-add
 // application using syclFlow and unified shared memory (USM).
 
-#include <taskflow/syclflow.hpp>
+#include <taskflow/sycl/syclflow.hpp>
 
 constexpr size_t N = 10000;
 
@@ -23,10 +23,10 @@ int main() {
   syclflow.parallel_for(
     sycl::range<1>(N), [=](sycl::id<1> id) { 
 
-      auto ref = sycl::ONEAPI::atomic_ref<
+      auto ref = sycl::atomic_ref<
         int, 
-        sycl::ONEAPI::memory_order_relaxed, 
-        sycl::ONEAPI::memory_scope::device,
+        sycl::memory_order_relaxed, 
+        sycl::memory_scope::device,
         sycl::access::address_space::global_space
       >{data[0]};    
 

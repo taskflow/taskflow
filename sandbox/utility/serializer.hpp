@@ -1,6 +1,30 @@
 #pragma once
 
-#include "traits.hpp"
+#include <type_traits>
+#include <iterator>
+#include <iostream>
+#include <fstream>
+#include <stack>
+#include <queue>
+#include <vector>
+#include <algorithm>
+#include <memory>
+#include <functional>
+#include <map>
+#include <set>
+#include <unordered_map>
+#include <unordered_set>
+#include <sstream>
+#include <list>
+#include <forward_list>
+#include <numeric>
+#include <iomanip>
+#include <cassert>
+#include <cmath>
+#include <array>
+#include <string>
+#include <variant>
+#include <optional>
 
 namespace tf {
 

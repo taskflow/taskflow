@@ -1,10 +1,11 @@
 #pragma once
 
+#include "../taskflow.hpp"
 #include "sycl_task.hpp"
 
-/** 
-@file sycl_flow.hpp
-@brief syclFlow include file
+/**
+@file syclflow.hpp
+@brief main syclFlow include file
 */
 
 namespace tf {
@@ -37,22 +38,13 @@ class syclFlow {
   public:
    
     /**
-    @brief constructs a standalone %syclFlow from the default queue
-
-    A standalone %syclFlow does not go through any taskflow and
-    can be run by the caller thread using explicit offload methods 
-    (e.g., tf::syclFlow::offload).
-    */
-    syclFlow();
-
-    /**
     @brief constructs a standalone %syclFlow from the given queue
 
     A standalone %syclFlow does not go through any taskflow and
     can be run by the caller thread using explicit offload methods 
     (e.g., tf::syclFlow::offload).
     */
-    syclFlow(sycl::queue queue);
+    syclFlow(sycl::queue& queue);
     
     /**
     @brief destroys the %syclFlow 
@@ -110,23 +102,6 @@ class syclFlow {
       std::is_invocable_r_v<void, F, sycl::handler&>, void>* = nullptr
     >
     void on(syclTask task, F&& func);
-    
-    // TODO
-    template <typename F, std::enable_if_t<
-      std::is_invocable_r_v<
-        sycl::event, F, sycl::queue&, std::vector<sycl::event>>, void
-      >* = nullptr
-    >
-    syclTask on(F&& func);
-    
-    // TODO
-    template <typename F, std::enable_if_t<
-      std::is_invocable_r_v<
-        sycl::event, F, sycl::queue&, std::vector<sycl::event>>, void
-      >* = nullptr
-    >
-    void on(syclTask task, F&& func);
-
     
     /**
     @brief creates a memcpy task that copies untyped data in bytes
@@ -377,7 +352,7 @@ class syclFlow {
     void offload();
     
     // ------------------------------------------------------------------------
-    // rebind methods
+    // update methods
     // ------------------------------------------------------------------------
     
 
@@ -429,99 +404,23 @@ class syclFlow {
     template <typename F>
     void single_task(syclTask task, F&& func);
     
-    /**
-    @brief rebinds the task to a for-each task
-
-    Similar to tf::syclFlow::for_each but operates on an existing task.
-    */
-    template <typename I, typename C>
-    void for_each(syclTask task, I first, I last, C&& callable);
-    
-    /**
-    @brief rebinds the task to a for-each-index task
-
-    Similar to tf::syclFlow::for_each_index but operates on an existing task.
-     */
-    template <typename I, typename C>
-    void for_each_index(
-      syclTask task, I first, I last, I step, C&& callable
-    );
-    
-    /**
-    @brief rebinds the task to a transform task
-    
-    Similar to tf::syclFlow::transform but operates on an existing task.
-     */
-    template <typename I, typename C, typename... S>
-    void transform(
-      syclTask task, I first, I last, C&& callable, S... srcs
-    );
-    
-    /**
-    @brief rebinds the task to a reduce task
-
-    Similar to tf::syclFlow::reduce but operates on an existing task.
-    */
-    template <typename I, typename T, typename C>
-    void reduce(
-      syclTask task, I first, I last, T* result, C&& op
-    );
-    
-    /**
-    @brief rebinds the task to an unitialized reduce task
-
-    Similar to tf::syclFlow::uninitialized_reduce but operates on an existing task.
-    */
-    template <typename I, typename T, typename C>
-    void uninitialized_reduce(
-      syclTask task, I first, I last, T* result, C&& op
-    );
-
   private:
 
     syclFlow(Executor&, syclGraph&, sycl::queue&);
     
-    sycl::queue _queue;
+    sycl::queue& _queue;
     
-    const size_t _MAX_WORK_GROUP_SIZE;
-
     handle_t _handle;
     
     syclGraph& _graph;
   
     std::vector<syclNode*> _tpg;
     std::queue<syclNode*> _bfs;
-
-    size_t _default_group_size(size_t N) const;
-
-    template <typename I, typename C>
-    auto _for_each_cgh(I, I, C&&);
-
-    template <typename I, typename C>
-    auto _for_each_index_cgh(I, I, I, C&&);
-
-    template <typename I, typename T, typename C, bool>
-    auto _reduce_cgh(I, I, T*, C&&);
-
-    template <typename I, typename C, typename... S>
-    auto _transform_cgh(I, I, C&&, S...);
 };
 
 // constructor
-inline syclFlow::syclFlow() :
-  _MAX_WORK_GROUP_SIZE {
-    _queue.get_device().get_info<sycl::info::device::max_work_group_size>()
-  },
-  _handle {std::in_place_type_t<External>{}},
-  _graph  {std::get_if<External>(&_handle)->graph} {
-}
-
-// constructor
-inline syclFlow::syclFlow(sycl::queue queue) :
-  _queue  {std::move(queue)}, 
-  _MAX_WORK_GROUP_SIZE {
-    _queue.get_device().get_info<sycl::info::device::max_work_group_size>()
-  },
+inline syclFlow::syclFlow(sycl::queue& queue) :
+  _queue  {queue}, 
   _handle {std::in_place_type_t<External>{}},
   _graph  {std::get_if<External>(&_handle)->graph} {
 }
@@ -529,16 +428,8 @@ inline syclFlow::syclFlow(sycl::queue queue) :
 // Construct the syclFlow from executor (internal graph)
 inline syclFlow::syclFlow(Executor& e, syclGraph& g, sycl::queue& queue) :
   _queue  {queue},
-  _MAX_WORK_GROUP_SIZE {
-    _queue.get_device().get_info<sycl::info::device::max_work_group_size>()
-  } ,
   _handle {std::in_place_type_t<Internal>{}, e},
   _graph  {g} {
-}
-
-// Function: _default_group_size
-inline size_t syclFlow::_default_group_size(size_t N) const {
-  return N <= 32u ? 32u : std::min(_MAX_WORK_GROUP_SIZE, next_pow2(N));
 }
 
 // Function: empty
@@ -591,18 +482,7 @@ template <typename F, std::enable_if_t<
 >
 syclTask syclFlow::on(F&& f) {
   auto node = _graph.emplace_back(_graph, 
-    std::in_place_type_t<syclNode::CommandGroupHandler>{}, std::forward<F>(f)
-  );
-  return syclTask(node);
-}
-
-// Function: on
-template <typename F, std::enable_if_t<std::is_invocable_r_v<
-  sycl::event, F, sycl::queue&, std::vector<sycl::event>>, void
->*>
-syclTask syclFlow::on(F&& f) {
-  auto node = _graph.emplace_back(_graph, 
-    std::in_place_type_t<syclNode::DependentSubmit>{}, std::forward<F>(f)
+    std::in_place_type_t<syclNode::CGH>{}, std::forward<F>(f)
   );
   return syclTask(node);
 }
@@ -672,22 +552,8 @@ void syclFlow::offload_until(P&& predicate) {
                 h.depends_on(p->_event);
               }
             }
-            std::get_if<syclNode::CommandGroupHandler>(&u->_handle)->work(h);
+            std::get_if<syclNode::CGH>(&u->_handle)->work(h);
           });
-        break;
-        
-        // task type 2: dependent submit
-        case syclNode::DEPENDENT_SUBMIT:
-          std::vector<sycl::event> events;
-          if(!in_order) {
-            events.reserve(u->_dependents.size());
-            for(auto p : u->_dependents) {
-              events.push_back(p->_event);
-            }
-          }
-          u->_event = std::get_if<syclNode::DependentSubmit>(&u->_handle)->work(
-            _queue, std::move(events)
-          );
         break;
       }
     }
@@ -714,19 +580,10 @@ template <typename F, std::enable_if_t<
   std::is_invocable_r_v<void, F, sycl::handler&>, void>*
 >
 void syclFlow::on(syclTask task, F&& f) {
-  std::get_if<syclNode::CommandGroupHandler>(&task._node->_handle)->work = 
+  std::get_if<syclNode::CGH>(&task._node->_handle)->work = 
     std::forward<F>(f);
 }
 
-// Function: on
-template <typename F, std::enable_if_t<std::is_invocable_r_v<
-  sycl::event, F, sycl::queue&, std::vector<sycl::event>>, void
->*>
-void syclFlow::on(syclTask task, F&& f) {
-  std::get_if<syclNode::DependentSubmit>(&task._node->_handle)->work =
-    std::forward<F>(f);
-}
-    
 // Function: memcpy
 inline void syclFlow::memcpy(
   syclTask task, void* tgt, const void* src, size_t bytes
@@ -756,7 +613,9 @@ template <typename T,
 void syclFlow::copy(
   syclTask task, T* target, const T* source, size_t count
 ) {
-  on(task, [=](sycl::handler& h){h.memcpy(target, source, count*sizeof(T));});
+  on(task, [=](sycl::handler& h){ 
+    h.memcpy(target, source, count*sizeof(T));}
+  );
 }
 
 // Function: parallel_for

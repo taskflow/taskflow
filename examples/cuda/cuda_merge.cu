@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
 
   // allocate the buffer
   auto bufsz = tf::cuda_merge_buffer_size<tf::cudaDefaultExecutionPolicy>(N, N);
-  tf::cudaScopedDeviceMemory<std::byte> buf(bufsz);
+  tf::cudaDeviceVector<std::byte> buf(bufsz);
 
   tf::cuda_merge(tf::cudaDefaultExecutionPolicy{}, 
     da, da+N, db, db+N, dc, tf::cuda_less<int>{}, buf.data()

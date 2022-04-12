@@ -2,7 +2,7 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="classtf_1_1syclFlow" kind="class" language="C++" prot="public">
     <compoundname>tf::syclFlow</compoundname>
-    <includes refid="sycl__flow_8hpp" local="no">sycl_flow.hpp</includes>
+    <includes refid="syclflow_8hpp" local="no">syclflow.hpp</includes>
     <innerclass refid="structtf_1_1syclFlow_1_1External" prot="private">tf::syclFlow::External</innerclass>
     <innerclass refid="structtf_1_1syclFlow_1_1Internal" prot="private">tf::syclFlow::Internal</innerclass>
       <sectiondef kind="private-type">
@@ -17,7 +17,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="35" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="35" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="36" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="36" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="friend">
@@ -32,13 +32,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="24" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="24" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="25" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="25" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
-      <memberdef kind="variable" id="classtf_1_1syclFlow_1a42b4bbe694e845972ece8af45c9b696a" prot="private" static="no" mutable="no">
-        <type>sycl::queue</type>
-        <definition>sycl::queue tf::syclFlow::_queue</definition>
+      <memberdef kind="variable" id="classtf_1_1syclFlow_1a5728aaf61105ae3ee37eaddb24c1008d" prot="private" static="no" mutable="no">
+        <type>sycl::queue &amp;</type>
+        <definition>sycl::queue&amp; tf::syclFlow::_queue</definition>
         <argsstring></argsstring>
         <name>_queue</name>
         <briefdescription>
@@ -47,20 +47,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="484" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="484" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="variable" id="classtf_1_1syclFlow_1a0b6c3b76ec2ff2ba31ef51a17239f5aa" prot="private" static="no" mutable="no">
-        <type>const size_t</type>
-        <definition>const size_t tf::syclFlow::_MAX_WORK_GROUP_SIZE</definition>
-        <argsstring></argsstring>
-        <name>_MAX_WORK_GROUP_SIZE</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="486" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="486" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="411" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="411" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1syclFlow_1ae1d0a6dc43a4a28080db9577599fa3fa" prot="private" static="no" mutable="no">
         <type>handle_t</type>
@@ -73,7 +60,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="488" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="488" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="413" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="413" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1syclFlow_1ad686b504d6ea0edbef8e2be9d57e63c8" prot="private" static="no" mutable="no">
         <type>syclGraph &amp;</type>
@@ -86,7 +73,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="490" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="490" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="415" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="415" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1syclFlow_1ab16047aa143c6ed5bbfbff91488251ab" prot="private" static="no" mutable="no">
         <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; syclNode * &gt;</type>
@@ -99,7 +86,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="492" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="492" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="417" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="417" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1syclFlow_1ab67081d930e69106d1c2b69994a9ebd8" prot="private" static="no" mutable="no">
         <type><ref refid="cpp/container/queue" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::queue</ref>&lt; syclNode * &gt;</type>
@@ -112,30 +99,17 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="493" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="493" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="418" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="418" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
-      <memberdef kind="function" id="classtf_1_1syclFlow_1a12cc3ce79dbc82f2d24d7a20024b5e53" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1syclFlow_1aca4297c5bcf7f6e3c59e43415afb0ebd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::syclFlow::syclFlow</definition>
-        <argsstring>()</argsstring>
-        <name>syclFlow</name>
-        <briefdescription>
-<para>constructs a standalone syclFlow from the default queue </para>        </briefdescription>
-        <detaileddescription>
-<para>A standalone syclFlow does not go through any taskflow and can be run by the caller thread using explicit offload methods (e.g., <ref refid="classtf_1_1syclFlow_1a2928c2edc466dd625741080c147de4ef" kindref="member">tf::syclFlow::offload</ref>). </para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="46" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="511" bodyend="517"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1syclFlow_1a7ead0115f51d3cb0d3c8bae582a8ff03" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>tf::syclFlow::syclFlow</definition>
-        <argsstring>(sycl::queue queue)</argsstring>
+        <argsstring>(sycl::queue &amp;queue)</argsstring>
         <name>syclFlow</name>
         <param>
-          <type>sycl::queue</type>
+          <type>sycl::queue &amp;</type>
           <declname>queue</declname>
         </param>
         <briefdescription>
@@ -144,7 +118,7 @@
 <para>A standalone syclFlow does not go through any taskflow and can be run by the caller thread using explicit offload methods (e.g., <ref refid="classtf_1_1syclFlow_1a2928c2edc466dd625741080c147de4ef" kindref="member">tf::syclFlow::offload</ref>). </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="55" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="520" bodyend="527"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="47" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="422" bodyend="426"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1a2dec29bec12f5270893f5d44b2fd79bd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -157,7 +131,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="60" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="52" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1a0e33d2d4f26e52a55690d17f77d467b0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -170,7 +144,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="65" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="545" bodyend="547"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="57" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="436" bodyend="438"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1aedcc6b3363f98c68762e7fb32ea45406" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -183,7 +157,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="70" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="550" bodyend="552"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="62" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="441" bodyend="443"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1a6284f266b5d603fbecd148304c107dc6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -200,7 +174,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="76" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="555" bodyend="557"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="68" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="446" bodyend="448"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1a4d07f698f4defa3f8c0600c5c2f64c1c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -213,7 +187,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="81" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="560" bodyend="562"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="73" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="451" bodyend="453"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1a20b79581d27eaed2812ffb14dc821a64" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -255,7 +229,7 @@
 Creates a task that is associated from the given command group. In SYCL, each command group function object is given a unique command group handler object to perform all the necessary work required to correctly process data on a device using a kernel. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="102" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="592" bodyend="597"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="94" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="483" bodyend="488"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1a24827902c99771ecff1cfeb88d639af0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -285,63 +259,7 @@ Creates a task that is associated from the given command group. In SYCL, each co
 <para>Similar to <ref refid="classtf_1_1syclFlow_1a20b79581d27eaed2812ffb14dc821a64" kindref="member">tf::syclFlow::on</ref> but operates on an existing task. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="112" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="716" bodyend="719"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1syclFlow_1a20b79581d27eaed2812ffb14dc821a64" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename F</type>
-          </param>
-          <param>
-            <type>std::enable_if_t&lt; std::is_invocable_r_v&lt; sycl::event, F, sycl::queue &amp;, <ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; sycl::event &gt;&gt;, void &gt; *</type>
-            <defval>nullptr</defval>
-          </param>
-        </templateparamlist>
-        <type><ref refid="classtf_1_1syclTask" kindref="compound">syclTask</ref></type>
-        <definition>syclTask tf::syclFlow::on</definition>
-        <argsstring>(F &amp;&amp;func)</argsstring>
-        <name>on</name>
-        <param>
-          <type>F &amp;&amp;</type>
-          <declname>func</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="120" column="1"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1syclFlow_1a24827902c99771ecff1cfeb88d639af0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename F</type>
-          </param>
-          <param>
-            <type>std::enable_if_t&lt; std::is_invocable_r_v&lt; sycl::event, F, sycl::queue &amp;, <ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; sycl::event &gt;&gt;, void &gt; *</type>
-            <defval>nullptr</defval>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::syclFlow::on</definition>
-        <argsstring>(syclTask task, F &amp;&amp;func)</argsstring>
-        <name>on</name>
-        <param>
-          <type><ref refid="classtf_1_1syclTask" kindref="compound">syclTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>F &amp;&amp;</type>
-          <declname>func</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="128" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="104" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="582" bodyend="585"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1ac1e1eb858d9271ed61ff4fe00f135e92" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1syclTask" kindref="compound">syclTask</ref></type>
@@ -389,7 +307,7 @@ Creates a task that is associated from the given command group. In SYCL, each co
 A memcpy task transfers <computeroutput>bytes</computeroutput> of data from a source locationA <computeroutput>src</computeroutput> to a target location <computeroutput>tgt</computeroutput>. Both <computeroutput>src</computeroutput> and <computeroutput>tgt</computeroutput> may be either host or USM pointers. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="144" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="565" bodyend="567"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="119" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="456" bodyend="458"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1a54b7497c0f4763bb4f8604f6c5654a5f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1syclTask" kindref="compound">syclTask</ref></type>
@@ -437,7 +355,7 @@ A memcpy task transfers <computeroutput>bytes</computeroutput> of data from a so
 Fills <computeroutput>bytes</computeroutput> of memory beginning at address <computeroutput>ptr</computeroutput> with <computeroutput>value</computeroutput>. <computeroutput>ptr</computeroutput> must be a USM allocation. <computeroutput>value</computeroutput> is interpreted as an unsigned char. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="159" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="570" bodyend="572"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="134" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="461" bodyend="463"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1a628843c986d60bea61eca8c48028159e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -497,7 +415,7 @@ Fills <computeroutput>bytes</computeroutput> of memory beginning at address <com
 Creates a task that fills the specified memory with the specified value. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="174" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="576" bodyend="578"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="149" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="467" bodyend="469"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1ac433456f3960028fb12a53018b263aee" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -561,7 +479,7 @@ Creates a task that fills the specified memory with the specified value. </para>
 Creates a task that copies <computeroutput>count</computeroutput> items of type <computeroutput>T</computeroutput> from a source memory location to a target memory location. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="192" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="584" bodyend="586"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="167" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="475" bodyend="477"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -601,7 +519,7 @@ Creates a task that copies <computeroutput>count</computeroutput> items of type 
 Creates a kernel task from a parallel_for method through the handler object associated with a command group. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="206" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="620" bodyend="622"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="181" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="500" bodyend="502"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -639,7 +557,7 @@ Creates a kernel task from a parallel_for method through the handler object asso
 Creates a task that launches the given function object using only one kernel thread. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="222" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="612" bodyend="616"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="197" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="492" bodyend="496"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1a30c3f7a279d1f88b6052f7ded1ee381a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -713,7 +631,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="245" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="220" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1a25e8aa7d7efbd05ef11353317174574a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -804,7 +722,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="275" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="250" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1ae278939334a90b6d58d8771e87b2e793" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -901,7 +819,7 @@ This method is equivalent to the parallel execution of the following loop on a S
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="301" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="276" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1acddd05832e53597ae9d30dc913d422ca" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -996,7 +914,7 @@ This method is equivalent to the parallel execution of the following loop on a S
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="327" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="302" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1a7a3af92f105114b1095a2cec2ccdffbf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1040,7 +958,7 @@ This method is equivalent to the parallel execution of the following loop on a S
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="344" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="319" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1a1b033143bcfd857b45a2c2bad213b769" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1078,7 +996,7 @@ This method is equivalent to the parallel execution of the following loop on a S
 Repetitively executes the present syclFlow through the given queue object until the predicate returns <computeroutput>true</computeroutput>.</para><para>By default, if users do not offload the syclFlow, the executor will offload it once. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="365" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="626" bodyend="700"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="340" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="506" bodyend="566"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1a23fc8f965e05fb8788dcc9fa02473529" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1103,7 +1021,7 @@ Repetitively executes the present syclFlow through the given queue object until 
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="372" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="703" bodyend="705"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="347" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="569" bodyend="571"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1a2928c2edc466dd625741080c147de4ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1116,7 +1034,7 @@ Repetitively executes the present syclFlow through the given queue object until 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="377" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="708" bodyend="710"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="352" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="574" bodyend="576"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1a81baff4f1d0408a5b0e45abcc0a64ca0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1145,7 +1063,7 @@ Repetitively executes the present syclFlow through the given queue object until 
 <para>Similar to <ref refid="classtf_1_1syclFlow_1ac1e1eb858d9271ed61ff4fe00f135e92" kindref="member">tf::syclFlow::memcpy</ref> but operates on an existing task. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="389" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="731" bodyend="735"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="364" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="588" bodyend="592"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1a8dd81cb78380804fa117797ce412601b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1174,7 +1092,7 @@ Repetitively executes the present syclFlow through the given queue object until 
 <para>Similar to <ref refid="classtf_1_1syclFlow_1a54b7497c0f4763bb4f8604f6c5654a5f" kindref="member">tf::syclFlow::memset</ref> but operates on an existing task. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="396" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="738" bodyend="742"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="371" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="595" bodyend="599"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1ab44c2d34d333910d4c6d0823346a444d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1208,7 +1126,7 @@ Repetitively executes the present syclFlow through the given queue object until 
 <para>Similar to <ref refid="classtf_1_1syclFlow_1a628843c986d60bea61eca8c48028159e" kindref="member">tf::syclFlow::fill</ref> but operates on an existing task. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="404" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="746" bodyend="750"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="379" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="603" bodyend="607"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1a4c4f4ddaac36346e0b9663aea45abe16" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1246,7 +1164,7 @@ Repetitively executes the present syclFlow through the given queue object until 
 <para>Similar to <ref refid="classtf_1_1syclFlow_1ac433456f3960028fb12a53018b263aee" kindref="member">tf::syclFlow::copy</ref> but operates on an existing task. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="414" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="756" bodyend="760"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="389" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="613" bodyend="619"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1a90c1559f1db6644ce0f06c76659cc735" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1274,7 +1192,7 @@ Repetitively executes the present syclFlow through the given queue object until 
 <para>Similar to <ref refid="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" kindref="member">tf::syclFlow::parallel_for</ref> but operates on an existing task. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="422" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="764" bodyend="766"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="397" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="623" bodyend="625"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1syclFlow_1ad0d9d75c49a0d0efe4e026d8c874b598" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1300,219 +1218,7 @@ Repetitively executes the present syclFlow through the given queue object until 
 <para>Similar to <ref refid="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" kindref="member">tf::syclFlow::single_task</ref> but operates on an existing task. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="430" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="770" bodyend="772"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1syclFlow_1a4457c996fbef67aafa08cbba793972a8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::syclFlow::for_each</definition>
-        <argsstring>(syclTask task, I first, I last, C &amp;&amp;callable)</argsstring>
-        <name>for_each</name>
-        <param>
-          <type><ref refid="classtf_1_1syclTask" kindref="compound">syclTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>C &amp;&amp;</type>
-          <declname>callable</declname>
-        </param>
-        <briefdescription>
-<para>rebinds the task to a for-each task </para>        </briefdescription>
-        <detaileddescription>
-<para>Similar to <ref refid="classtf_1_1syclFlow_1a30c3f7a279d1f88b6052f7ded1ee381a" kindref="member">tf::syclFlow::for_each</ref> but operates on an existing task. </para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="438" column="1"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1syclFlow_1a7684c814fd7cad919da247bb869026d6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::syclFlow::for_each_index</definition>
-        <argsstring>(syclTask task, I first, I last, I step, C &amp;&amp;callable)</argsstring>
-        <name>for_each_index</name>
-        <param>
-          <type><ref refid="classtf_1_1syclTask" kindref="compound">syclTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>step</declname>
-        </param>
-        <param>
-          <type>C &amp;&amp;</type>
-          <declname>callable</declname>
-        </param>
-        <briefdescription>
-<para>rebinds the task to a for-each-index task </para>        </briefdescription>
-        <detaileddescription>
-<para>Similar to <ref refid="classtf_1_1syclFlow_1a25e8aa7d7efbd05ef11353317174574a" kindref="member">tf::syclFlow::for_each_index</ref> but operates on an existing task. </para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="446" column="1"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1syclFlow_1af380ee7edc66fa9053f8af540ac8f44d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-          <param>
-            <type>typename...</type>
-            <declname>S</declname>
-            <defname>S</defname>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::syclFlow::transform</definition>
-        <argsstring>(syclTask task, I first, I last, C &amp;&amp;callable, S... srcs)</argsstring>
-        <name>transform</name>
-        <param>
-          <type><ref refid="classtf_1_1syclTask" kindref="compound">syclTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>C &amp;&amp;</type>
-          <declname>callable</declname>
-        </param>
-        <param>
-          <type>S...</type>
-          <declname>srcs</declname>
-        </param>
-        <briefdescription>
-<para>rebinds the task to a transform task </para>        </briefdescription>
-        <detaileddescription>
-<para>Similar to <ref refid="classtf_1_1syclFlow_1ae278939334a90b6d58d8771e87b2e793" kindref="member">tf::syclFlow::transform</ref> but operates on an existing task. </para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="456" column="1"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1syclFlow_1a631ec010df3c9266a953b890a4eb0480" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::syclFlow::reduce</definition>
-        <argsstring>(syclTask task, I first, I last, T *result, C &amp;&amp;op)</argsstring>
-        <name>reduce</name>
-        <param>
-          <type><ref refid="classtf_1_1syclTask" kindref="compound">syclTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>T *</type>
-          <declname>result</declname>
-        </param>
-        <param>
-          <type>C &amp;&amp;</type>
-          <declname>op</declname>
-        </param>
-        <briefdescription>
-<para>rebinds the task to a reduce task </para>        </briefdescription>
-        <detaileddescription>
-<para>Similar to <ref refid="classtf_1_1syclFlow_1acddd05832e53597ae9d30dc913d422ca" kindref="member">tf::syclFlow::reduce</ref> but operates on an existing task. </para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="466" column="1"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1syclFlow_1a6c78e40a7729dad5978a93524a1af354" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::syclFlow::uninitialized_reduce</definition>
-        <argsstring>(syclTask task, I first, I last, T *result, C &amp;&amp;op)</argsstring>
-        <name>uninitialized_reduce</name>
-        <param>
-          <type><ref refid="classtf_1_1syclTask" kindref="compound">syclTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>T *</type>
-          <declname>result</declname>
-        </param>
-        <param>
-          <type>C &amp;&amp;</type>
-          <declname>op</declname>
-        </param>
-        <briefdescription>
-<para>rebinds the task to an unitialized reduce task </para>        </briefdescription>
-        <detaileddescription>
-<para>Similar to <ref refid="classtf_1_1syclFlow_1a7a3af92f105114b1095a2cec2ccdffbf" kindref="member">tf::syclFlow::uninitialized_reduce</ref> but operates on an existing task. </para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="476" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="405" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="629" bodyend="631"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -1539,183 +1245,20 @@ Repetitively executes the present syclFlow through the given queue object until 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="482" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="530" bodyend="537"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1syclFlow_1adfd6553aca0604f6d4fab4bab9758c25" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type>size_t</type>
-        <definition>size_t tf::syclFlow::_default_group_size</definition>
-        <argsstring>(size_t N) const</argsstring>
-        <name>_default_group_size</name>
-        <param>
-          <type>size_t</type>
-          <declname>N</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="495" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="540" bodyend="542"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1syclFlow_1a95054a4507cb3e7eaafb3168b88a1eb4" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>auto</type>
-        <definition>auto tf::syclFlow::_for_each_cgh</definition>
-        <argsstring>(I, I, C &amp;&amp;)</argsstring>
-        <name>_for_each_cgh</name>
-        <param>
-          <type>I</type>
-        </param>
-        <param>
-          <type>I</type>
-        </param>
-        <param>
-          <type>C &amp;&amp;</type>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="498" column="1"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1syclFlow_1a4a843b197a75b845e7ebc0b0a7296c72" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>auto</type>
-        <definition>auto tf::syclFlow::_for_each_index_cgh</definition>
-        <argsstring>(I, I, I, C &amp;&amp;)</argsstring>
-        <name>_for_each_index_cgh</name>
-        <param>
-          <type>I</type>
-        </param>
-        <param>
-          <type>I</type>
-        </param>
-        <param>
-          <type>I</type>
-        </param>
-        <param>
-          <type>C &amp;&amp;</type>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="501" column="1"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1syclFlow_1a0290f8ed28b8b7d9889d76fd3e1b98c5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-          <param>
-            <type>bool</type>
-          </param>
-        </templateparamlist>
-        <type>auto</type>
-        <definition>auto tf::syclFlow::_reduce_cgh</definition>
-        <argsstring>(I, I, T *, C &amp;&amp;)</argsstring>
-        <name>_reduce_cgh</name>
-        <param>
-          <type>I</type>
-        </param>
-        <param>
-          <type>I</type>
-        </param>
-        <param>
-          <type>T *</type>
-        </param>
-        <param>
-          <type>C &amp;&amp;</type>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="504" column="1"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1syclFlow_1a41dc4a42e9a3ef67dffa96824152fdd7" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-          <param>
-            <type>typename...</type>
-            <declname>S</declname>
-            <defname>S</defname>
-          </param>
-        </templateparamlist>
-        <type>auto</type>
-        <definition>auto tf::syclFlow::_transform_cgh</definition>
-        <argsstring>(I, I, C &amp;&amp;, S...)</argsstring>
-        <name>_transform_cgh</name>
-        <param>
-          <type>I</type>
-        </param>
-        <param>
-          <type>I</type>
-        </param>
-        <param>
-          <type>C &amp;&amp;</type>
-        </param>
-        <param>
-          <type>S...</type>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="507" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="409" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="429" bodyend="433"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
 <para>class for building a SYCL task dependency graph </para>    </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" line="22" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/sycl_flow.hpp" bodystart="22" bodyend="508"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" line="23" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/sycl/syclflow.hpp" bodystart="23" bodyend="419"/>
     <listofallmembers>
       <member refid="classtf_1_1syclFlow_1ab67081d930e69106d1c2b69994a9ebd8" prot="private" virt="non-virtual"><scope>tf::syclFlow</scope><name>_bfs</name></member>
-      <member refid="classtf_1_1syclFlow_1adfd6553aca0604f6d4fab4bab9758c25" prot="private" virt="non-virtual"><scope>tf::syclFlow</scope><name>_default_group_size</name></member>
-      <member refid="classtf_1_1syclFlow_1a95054a4507cb3e7eaafb3168b88a1eb4" prot="private" virt="non-virtual"><scope>tf::syclFlow</scope><name>_for_each_cgh</name></member>
-      <member refid="classtf_1_1syclFlow_1a4a843b197a75b845e7ebc0b0a7296c72" prot="private" virt="non-virtual"><scope>tf::syclFlow</scope><name>_for_each_index_cgh</name></member>
       <member refid="classtf_1_1syclFlow_1ad686b504d6ea0edbef8e2be9d57e63c8" prot="private" virt="non-virtual"><scope>tf::syclFlow</scope><name>_graph</name></member>
       <member refid="classtf_1_1syclFlow_1ae1d0a6dc43a4a28080db9577599fa3fa" prot="private" virt="non-virtual"><scope>tf::syclFlow</scope><name>_handle</name></member>
-      <member refid="classtf_1_1syclFlow_1a0b6c3b76ec2ff2ba31ef51a17239f5aa" prot="private" virt="non-virtual"><scope>tf::syclFlow</scope><name>_MAX_WORK_GROUP_SIZE</name></member>
-      <member refid="classtf_1_1syclFlow_1a42b4bbe694e845972ece8af45c9b696a" prot="private" virt="non-virtual"><scope>tf::syclFlow</scope><name>_queue</name></member>
-      <member refid="classtf_1_1syclFlow_1a0290f8ed28b8b7d9889d76fd3e1b98c5" prot="private" virt="non-virtual"><scope>tf::syclFlow</scope><name>_reduce_cgh</name></member>
+      <member refid="classtf_1_1syclFlow_1a5728aaf61105ae3ee37eaddb24c1008d" prot="private" virt="non-virtual"><scope>tf::syclFlow</scope><name>_queue</name></member>
       <member refid="classtf_1_1syclFlow_1ab16047aa143c6ed5bbfbff91488251ab" prot="private" virt="non-virtual"><scope>tf::syclFlow</scope><name>_tpg</name></member>
-      <member refid="classtf_1_1syclFlow_1a41dc4a42e9a3ef67dffa96824152fdd7" prot="private" virt="non-virtual"><scope>tf::syclFlow</scope><name>_transform_cgh</name></member>
       <member refid="classtf_1_1syclFlow_1a4d07f698f4defa3f8c0600c5c2f64c1c" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>clear</name></member>
       <member refid="classtf_1_1syclFlow_1ac433456f3960028fb12a53018b263aee" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>copy</name></member>
       <member refid="classtf_1_1syclFlow_1a4c4f4ddaac36346e0b9663aea45abe16" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>copy</name></member>
@@ -1725,9 +1268,7 @@ Repetitively executes the present syclFlow through the given queue object until 
       <member refid="classtf_1_1syclFlow_1a628843c986d60bea61eca8c48028159e" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>fill</name></member>
       <member refid="classtf_1_1syclFlow_1ab44c2d34d333910d4c6d0823346a444d" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>fill</name></member>
       <member refid="classtf_1_1syclFlow_1a30c3f7a279d1f88b6052f7ded1ee381a" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>for_each</name></member>
-      <member refid="classtf_1_1syclFlow_1a4457c996fbef67aafa08cbba793972a8" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>for_each</name></member>
       <member refid="classtf_1_1syclFlow_1a25e8aa7d7efbd05ef11353317174574a" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>for_each_index</name></member>
-      <member refid="classtf_1_1syclFlow_1a7684c814fd7cad919da247bb869026d6" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>for_each_index</name></member>
       <member refid="classtf_1_1syclFlow_1a946b048dd1f13121d8998d8d943e216e" prot="private" virt="non-virtual"><scope>tf::syclFlow</scope><name>handle_t</name></member>
       <member refid="classtf_1_1syclFlow_1ac1e1eb858d9271ed61ff4fe00f135e92" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>memcpy</name></member>
       <member refid="classtf_1_1syclFlow_1a81baff4f1d0408a5b0e45abcc0a64ca0" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>memcpy</name></member>
@@ -1739,21 +1280,15 @@ Repetitively executes the present syclFlow through the given queue object until 
       <member refid="classtf_1_1syclFlow_1a1b033143bcfd857b45a2c2bad213b769" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>offload_until</name></member>
       <member refid="classtf_1_1syclFlow_1a20b79581d27eaed2812ffb14dc821a64" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>on</name></member>
       <member refid="classtf_1_1syclFlow_1a24827902c99771ecff1cfeb88d639af0" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>on</name></member>
-      <member refid="classtf_1_1syclFlow_1a20b79581d27eaed2812ffb14dc821a64" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>on</name></member>
-      <member refid="classtf_1_1syclFlow_1a24827902c99771ecff1cfeb88d639af0" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>on</name></member>
       <member refid="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>parallel_for</name></member>
       <member refid="classtf_1_1syclFlow_1a90c1559f1db6644ce0f06c76659cc735" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>parallel_for</name></member>
       <member refid="classtf_1_1syclFlow_1acddd05832e53597ae9d30dc913d422ca" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>reduce</name></member>
-      <member refid="classtf_1_1syclFlow_1a631ec010df3c9266a953b890a4eb0480" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>reduce</name></member>
       <member refid="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>single_task</name></member>
       <member refid="classtf_1_1syclFlow_1ad0d9d75c49a0d0efe4e026d8c874b598" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>single_task</name></member>
-      <member refid="classtf_1_1syclFlow_1a12cc3ce79dbc82f2d24d7a20024b5e53" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>syclFlow</name></member>
-      <member refid="classtf_1_1syclFlow_1a7ead0115f51d3cb0d3c8bae582a8ff03" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>syclFlow</name></member>
+      <member refid="classtf_1_1syclFlow_1aca4297c5bcf7f6e3c59e43415afb0ebd" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>syclFlow</name></member>
       <member refid="classtf_1_1syclFlow_1a90ff935d7a98daadf3e4f9f4aa663b95" prot="private" virt="non-virtual"><scope>tf::syclFlow</scope><name>syclFlow</name></member>
       <member refid="classtf_1_1syclFlow_1ae278939334a90b6d58d8771e87b2e793" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>transform</name></member>
-      <member refid="classtf_1_1syclFlow_1af380ee7edc66fa9053f8af540ac8f44d" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>transform</name></member>
       <member refid="classtf_1_1syclFlow_1a7a3af92f105114b1095a2cec2ccdffbf" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>uninitialized_reduce</name></member>
-      <member refid="classtf_1_1syclFlow_1a6c78e40a7729dad5978a93524a1af354" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>uninitialized_reduce</name></member>
       <member refid="classtf_1_1syclFlow_1a2dec29bec12f5270893f5d44b2fd79bd" prot="public" virt="non-virtual"><scope>tf::syclFlow</scope><name>~syclFlow</name></member>
     </listofallmembers>
   </compounddef>

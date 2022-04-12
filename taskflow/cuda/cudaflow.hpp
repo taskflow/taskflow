@@ -1629,16 +1629,17 @@ void cudaFlow::offload_until(P&& predicate) {
     //cuda_dump_graph(std::cout, cf._graph._native_handle);
   }
 
-  cudaScopedPerThreadStream s;
+  //cudaScopedPerThreadStream s;
+  cudaStream s;
 
   while(!predicate()) {
     TF_CHECK_CUDA(
       cudaGraphLaunch(_executable, s), "failed to execute cudaFlow"
     );
-
-    TF_CHECK_CUDA(
-      cudaStreamSynchronize(s), "failed to synchronize cudaFlow execution"
-    );
+    s.synchronize();
+    //TF_CHECK_CUDA(
+    //  cudaStreamSynchronize(s), "failed to synchronize cudaFlow execution"
+    //);
   }
 
   _graph._state = cudaGraph::OFFLOADED;

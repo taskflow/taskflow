@@ -5,7 +5,7 @@ include(${TF_3RD_PARTY_DIR}/doctest/doctest.cmake)
 list(APPEND TF_UNITTESTS 
   utility 
   tsq 
-  serializer 
+  #serializer 
   basics 
   asyncs
   subflows

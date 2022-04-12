@@ -280,11 +280,11 @@ void merge_sort_loop(
     }
   }
 
-  //cudaScopedDeviceMemory<K> keys_temp(R ? count : 0);
+  //cudaDeviceVector<K> keys_temp(R ? count : 0);
   //auto keys_output = keys_temp.data();
   ////std::cout << "keys_output = " << keys_temp.size()*sizeof(K) << std::endl;
 
-  //cudaScopedDeviceMemory<V> vals_temp((has_values && R) ? count : 0);
+  //cudaDeviceVector<V> vals_temp((has_values && R) ? count : 0);
   //auto vals_output = vals_temp.data();
   //std::cout << "vals_output = " << vals_temp.size()*sizeof(V) << std::endl;
 
@@ -345,7 +345,7 @@ void merge_sort_loop(
   
   // number of partitions
   //unsigned num_partitions = B + 1;
-  //cudaScopedDeviceMemory<unsigned> mem(num_partitions);
+  //cudaDeviceVector<unsigned> mem(num_partitions);
   //auto mp_data = mem.data();
   //std::cout << "num_partitions = " << (B+1)*sizeof(unsigned) << std::endl;
   
@@ -562,7 +562,7 @@ cudaTask cudaFlowCapturer::sort(I first, I last, C comp) {
     std::distance(first, last)
   );
 
-  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cuda_sort(
       cudaDefaultExecutionPolicy{stream}, first, last, comp, buf.get().data()
@@ -580,7 +580,7 @@ void cudaFlowCapturer::sort(cudaTask task, I first, I last, C comp) {
     std::distance(first, last)
   );
 
-  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cuda_sort(
       cudaDefaultExecutionPolicy{stream}, first, last, comp, buf.get().data()
@@ -601,7 +601,7 @@ cudaTask cudaFlowCapturer::sort_by_key(
     std::distance(k_first, k_last)
   );
 
-  return on([=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cuda_sort_by_key(cudaDefaultExecutionPolicy{stream}, 
       k_first, k_last, v_first, comp, buf.get().data()
@@ -622,7 +622,7 @@ void cudaFlowCapturer::sort_by_key(
     std::distance(k_first, k_last)
   );
 
-  on(task, [=, buf=MoC{cudaScopedDeviceMemory<std::byte>(bufsz)}] 
+  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
   (cudaStream_t stream) mutable {
     cuda_sort_by_key(cudaDefaultExecutionPolicy{stream}, 
       k_first, k_last, v_first, comp, buf.get().data()

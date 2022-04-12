@@ -36,11 +36,12 @@ int main(int argc, char* argv[]) {
     // GPU find
     // --------------------------------------------------------------------------
     auto beg = std::chrono::steady_clock::now();
-    auto p = tf::cudaDefaultExecutionPolicy{};
+    tf::cudaStream s;
+    auto p = tf::cudaDefaultExecutionPolicy{s};
     tf::cuda_find_if(
       p, gdata, gdata+N, gfind, []__device__(int v) { return v == 100; }
     );
-    p.synchronize();
+    s.synchronize();
     auto end = std::chrono::steady_clock::now();
     tgpu += std::chrono::duration_cast<std::chrono::microseconds>(end-beg).count();
     
