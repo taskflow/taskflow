@@ -5,6 +5,7 @@ list(APPEND TF_SYCL_EXAMPLES
   sycl_vector_add
   sycl_atomic
   sycl_matmul
+  sycl_reduce
 )
 
 foreach(sycl_example IN LISTS TF_SYCL_EXAMPLES)

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../sycl_flow.hpp"
+#include "../syclflow.hpp"
 
 namespace tf::detail {
 
@@ -440,46 +440,46 @@ syclTask syclFlow::uninitialized_reduce(I first, I last, T* res, C&& op) {
 // rebind methods
 // ----------------------------------------------------------------------------
 
-// Function: reduce
-template <typename I, typename T, typename C>
-void syclFlow::reduce(syclTask task, I first, I last, T* res, C&& op) {
-  //on(task, _reduce_cgh<I, T, C, false>(
-  //  first, last, res, std::forward<C>(op)
-  //));
-
-  auto bufsz = sycl_reduce_buffer_size<syclDefaultExecutionPolicy, T>(
-    std::distance(first, last)
-  );
-
-  on(task, [=, buf=MoC{syclScopedDeviceMemory<std::byte>(bufsz, _queue)}]
-  (sycl::queue& queue, std::vector<sycl::event> events) mutable {
-    syclDefaultExecutionPolicy p(queue);
-    return sycl_reduce_async(
-      p, first, last, res, op, buf.get().data(), std::move(events)
-    );
-  });
-}
-
-// Function: uninitialized_reduce
-template <typename I, typename T, typename C>
-void syclFlow::uninitialized_reduce(
-  syclTask task, I first, I last, T* res, C&& op
-) {
-  //on(task, _reduce_cgh<I, T, C, true>(
-  //  first, last, res, std::forward<C>(op)
-  //));
-  auto bufsz = sycl_reduce_buffer_size<syclDefaultExecutionPolicy, T>(
-    std::distance(first, last)
-  );
-
-  on(task, [=, buf=MoC{syclScopedDeviceMemory<std::byte>(bufsz, _queue)}]
-  (sycl::queue& queue, std::vector<sycl::event> events) mutable {
-    syclDefaultExecutionPolicy p(queue);
-    return sycl_uninitialized_reduce_async(
-      p, first, last, res, op, buf.get().data(), std::move(events)
-    );
-  });
-}
+//// Function: reduce
+//template <typename I, typename T, typename C>
+//void syclFlow::reduce(syclTask task, I first, I last, T* res, C&& op) {
+//  //on(task, _reduce_cgh<I, T, C, false>(
+//  //  first, last, res, std::forward<C>(op)
+//  //));
+//
+//  auto bufsz = sycl_reduce_buffer_size<syclDefaultExecutionPolicy, T>(
+//    std::distance(first, last)
+//  );
+//
+//  on(task, [=, buf=MoC{syclScopedDeviceMemory<std::byte>(bufsz, _queue)}]
+//  (sycl::queue& queue, std::vector<sycl::event> events) mutable {
+//    syclDefaultExecutionPolicy p(queue);
+//    return sycl_reduce_async(
+//      p, first, last, res, op, buf.get().data(), std::move(events)
+//    );
+//  });
+//}
+//
+//// Function: uninitialized_reduce
+//template <typename I, typename T, typename C>
+//void syclFlow::uninitialized_reduce(
+//  syclTask task, I first, I last, T* res, C&& op
+//) {
+//  //on(task, _reduce_cgh<I, T, C, true>(
+//  //  first, last, res, std::forward<C>(op)
+//  //));
+//  auto bufsz = sycl_reduce_buffer_size<syclDefaultExecutionPolicy, T>(
+//    std::distance(first, last)
+//  );
+//
+//  on(task, [=, buf=MoC{syclScopedDeviceMemory<std::byte>(bufsz, _queue)}]
+//  (sycl::queue& queue, std::vector<sycl::event> events) mutable {
+//    syclDefaultExecutionPolicy p(queue);
+//    return sycl_uninitialized_reduce_async(
+//      p, first, last, res, op, buf.get().data(), std::move(events)
+//    );
+//  });
+//}
 
 
 }  // end of namespace tf -----------------------------------------------------

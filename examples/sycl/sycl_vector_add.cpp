@@ -5,7 +5,7 @@
 
 constexpr size_t N = 10000000;
 
-int main() {
+/*int main() {
 
   tf::Executor executor;
   tf::Taskflow taskflow;
@@ -54,6 +54,71 @@ int main() {
   executor.run(taskflow).wait();
 
   return 0;
+} */
+
+int main() {
+  constexpr int size = 16;
+
+  std::array<int, size> data;
+
+  sycl::queue Q{}; // Select any device for this queue
+
+  std::cout << "Selected device is: " <<
+
+  Q.get_device().get_info<sycl::info::device::name>() << "\n";
+  
+  sycl::buffer<float, 1> A{ sycl::range<1>(size) };
+  sycl::buffer<float, 1> B{ sycl::range<1>(size) };
+  sycl::buffer C{ data };
+
+  Q.submit([&](sycl::handler& h) {
+    auto acc = A.get_access<sycl::access::mode::write>(h);
+    h.parallel_for(size, [=](auto& idx) {
+      acc[idx] = 1000;
+    });
+  });
+  
+  Q.submit([&](sycl::handler& h) {
+    auto acc = B.get_access<sycl::access::mode::write>(h);
+    h.parallel_for(size, [=](auto& idx) {
+      acc[idx] = 4000;
+    });
+  });
+
+  Q.submit([&](sycl::handler& h) {
+    auto Aacc = A.get_access<sycl::access::mode::read>(h);
+    auto Bacc = B.get_access<sycl::access::mode::read>(h);
+    auto Cacc = C.get_access<sycl::access::mode::write>(h);
+    h.parallel_for(size , [=](auto&idx){
+      Cacc[idx] = Aacc[idx] + Bacc[idx];
+    });
+  });
+    
+  sycl::accessor acc = B.get_access<sycl::access::mode::read>();
+
+  for(int i=0; i<size; i++) {
+    std::cout << acc[i] << '\n';
+  }
+
+  return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

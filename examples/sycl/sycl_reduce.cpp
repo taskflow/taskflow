@@ -1,7 +1,8 @@
 // This program demonstrates how to performs a parallel reduction
 // using syclFlow.
 
-#include <taskflow/syclflow.hpp>
+#include <taskflow/sycl/syclflow.hpp>
+#include <taskflow/sycl/algorithm/reduce.hpp>
 
 int main(int argc, char* argv[]) {
 
