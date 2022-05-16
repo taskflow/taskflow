@@ -4,24 +4,28 @@
 #include <taskflow/taskflow.hpp>
 
 // --------------------------------------------------------
-// Testcase: ParallelSubflow
+// Testcase: Runtime.Subflow
 // --------------------------------------------------------
 
-void parallel_subflow(size_t w) {
+void runtime_subflow(size_t w) {
   
   size_t runtime_tasks_per_line = 20;
   size_t lines = 4;
-  size_t subtasks = 1000;
+  size_t subtasks = 4096;
   size_t subtask = 0;
 
-  for (subtask = 0; subtask < subtasks; ++subtask) {
-    tf::Executor executor(w);
-    tf::Taskflow taskflow;
+  tf::Executor executor(w);
+  tf::Taskflow parent;
+  tf::Taskflow taskflow;
 
-    auto& init = taskflow.emplace([](){}).name("init");
+  for (subtask = 0; subtask <= subtasks; subtask = subtask == 0 ? subtask + 1 : subtask*2) {
+    
+    parent.clear();
+    taskflow.clear();
 
-    auto& end = taskflow.emplace([](){}).name("end");
-      
+    auto init = taskflow.emplace([](){}).name("init");
+    auto end  = taskflow.emplace([](){}).name("end");
+
     std::vector<tf::Task> rts;
     std::atomic<size_t> sums = 0;
     
@@ -54,41 +58,43 @@ void parallel_subflow(size_t w) {
       end.succeed(rts[runtime_tasks_per_line*l-1]);
     }
 
-    executor.run(taskflow).wait();
+    parent.composed_of(taskflow);
+
+    executor.run(parent).wait();
     //taskflow.dump(std::cout);
     REQUIRE(sums == runtime_tasks_per_line*lines*subtask);
   }
 }
 
-TEST_CASE("ParallelSubflow.1thread" * doctest::timeout(300)){
-  parallel_subflow(1);
+TEST_CASE("Runtime.Subflow.1thread" * doctest::timeout(300)){
+  runtime_subflow(1);
 }
 
-TEST_CASE("ParallelSubflow.2threads" * doctest::timeout(300)){
-  parallel_subflow(2);
+TEST_CASE("Runtime.Subflow.2threads" * doctest::timeout(300)){
+  runtime_subflow(2);
 }
 
-TEST_CASE("ParallelSubflow.3threads" * doctest::timeout(300)){
-  parallel_subflow(3);
+TEST_CASE("Runtime.Subflow.3threads" * doctest::timeout(300)){
+  runtime_subflow(3);
 }
 
-TEST_CASE("ParallelSubflow.4threads" * doctest::timeout(300)){
-  parallel_subflow(4);
+TEST_CASE("Runtime.Subflow.4threads" * doctest::timeout(300)){
+  runtime_subflow(4);
 }
 
-TEST_CASE("ParallelSubflow.5threads" * doctest::timeout(300)){
-  parallel_subflow(5);
+TEST_CASE("Runtime.Subflow.5threads" * doctest::timeout(300)){
+  runtime_subflow(5);
 }
 
-TEST_CASE("ParallelSubflow.6threads" * doctest::timeout(300)){
-  parallel_subflow(6);
+TEST_CASE("Runtime.Subflow.6threads" * doctest::timeout(300)){
+  runtime_subflow(6);
 }
 
-TEST_CASE("ParallelSubflow.7threads" * doctest::timeout(300)){
-  parallel_subflow(7);
+TEST_CASE("Runtime.Subflow.7threads" * doctest::timeout(300)){
+  runtime_subflow(7);
 }
 
-TEST_CASE("ParallelSubflow.8threads" * doctest::timeout(300)){
-  parallel_subflow(8);
+TEST_CASE("Runtime.Subflow.8threads" * doctest::timeout(300)){
+  runtime_subflow(8);
 }
 

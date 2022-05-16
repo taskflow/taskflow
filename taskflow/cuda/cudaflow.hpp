@@ -1122,7 +1122,7 @@ class cudaFlow {
       my_kernel.precede(my_subflow);
     });
     @endcode
-     */
+    */
     template <typename C>
     cudaTask capture(C&& callable);
 

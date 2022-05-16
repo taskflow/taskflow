@@ -160,10 +160,6 @@ __global__ void cuda_single_task(C callable) {
   callable();
 }
 
-// ----------------------------------------------------------------------------
-// cudaFlow
-// ----------------------------------------------------------------------------
-
 // Function: single_task
 template <typename C>
 cudaTask cudaFlow::single_task(C c) {
@@ -175,6 +171,10 @@ template <typename C>
 void cudaFlow::single_task(cudaTask task, C c) {
   return kernel(task, 1, 1, 0, cuda_single_task<C>, c);
 }
+
+// ----------------------------------------------------------------------------
+// cudaFlow
+// ----------------------------------------------------------------------------
 
 // Function: for_each
 template <typename I, typename C>
