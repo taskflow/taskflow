@@ -1269,10 +1269,13 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // This must be done before scheduling the successors, otherwise this might cause
   // race condition on the _dependents
   if((node->_state.load(std::memory_order_relaxed) & Node::CONDITIONED)) {
-    node->_join_counter = node->num_strong_dependents();
+    //node->_join_counter = node->num_strong_dependents();
+    node->_join_counter.fetch_add(node->num_strong_dependents());
   }
   else {
-    node->_join_counter = node->num_dependents();
+    // TODO:
+    //node->_join_counter = node->num_dependents();
+    node->_join_counter.fetch_add(node->num_dependents());
   }
 
   // acquire the parent flow counter

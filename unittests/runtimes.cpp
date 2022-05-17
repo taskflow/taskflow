@@ -10,8 +10,8 @@
 
 void runtime_subflow(size_t w) {
   
-  size_t runtime_tasks_per_line = 200;
-  size_t lines = 400;
+  size_t runtime_tasks_per_line = 20;
+  size_t lines = 4;
   size_t subtasks = 4096;
   size_t subtask = 0;
 
@@ -106,21 +106,22 @@ TEST_CASE("Runtime.Subflow.8threads" * doctest::timeout(300)){
 
 void pipeline_runtime_subflow(size_t w) {
   
-  size_t num_lines = 10;
-  size_t subtasks = 4096;
-  size_t subtask = 0;
+  size_t num_lines = 2;
+  size_t subtasks = 2;
+  size_t subtask = 2;
   size_t max_tokens = 10000000;
 
   tf::Executor executor(w);
   tf::Taskflow taskflow;
  
-  for (subtask = 0; subtask <= subtasks; subtask = subtask == 0 ? subtask + 1 : subtask*2) {
+  //for (subtask = 0; subtask <= subtasks; subtask = subtask == 0 ? subtask + 1 : subtask*2) {
    
     std::atomic<size_t> sums = 0;
     tf::Pipeline pl(
       num_lines, 
       tf::Pipe{
         tf::PipeType::SERIAL, [max_tokens](tf::Pipeflow& pf){
+          //std::cout << tf::stringify(pf.token(), '\n');
           if (pf.token() == max_tokens) {
             pf.stop();
           }
@@ -128,7 +129,7 @@ void pipeline_runtime_subflow(size_t w) {
       },
 
       tf::Pipe{
-        tf::PipeType::PARALLEL, [subtask, &sums](tf::Pipeflow& pf, tf::Runtime& rt) mutable {
+        tf::PipeType::PARALLEL, [subtask, &sums](tf::Pipeflow&, tf::Runtime& rt) mutable {
           rt.run([subtask, &sums](tf::Subflow& sf) mutable {
             for (size_t i = 0; i < subtask; ++i) {
               sf.emplace([&sums](){
@@ -143,7 +144,7 @@ void pipeline_runtime_subflow(size_t w) {
     taskflow.composed_of(pl).name("pipeline");
     executor.run(taskflow).wait();
     REQUIRE(sums == subtask*max_tokens);
-  }
+  //}
 }
 
 
