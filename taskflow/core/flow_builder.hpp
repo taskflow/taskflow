@@ -929,12 +929,15 @@ class Subflow : public FlowBuilder {
     void detach();
 
     /**
-    @brief resets the subflow to a clean graph of joinable state
+    @brief resets the subflow to a joinable state
 
-    Resetting a subflow will first clear the underlying task dependency
-    graphs and then change the subflow to a joinable state.
+    @param clear_graph specifies whether to clear the associated graph (default @c true)
+
+    Clears the underlying task graph depending on the 
+    given variable @c clear_graph (default @c true) and then
+    updates the subflow to a joinable state.
     */
-    void reset();
+    void reset(bool clear_graph = true);
 
     /**
     @brief queries if the subflow is joinable
@@ -1119,8 +1122,10 @@ inline Executor& Subflow::executor() {
 }
 
 // Procedure: reset
-inline void Subflow::reset() {
-  _graph._clear();
+inline void Subflow::reset(bool clear_graph) {
+  if(clear_graph) {
+    _graph._clear();
+  }
   _joinable = true;
 }
 
