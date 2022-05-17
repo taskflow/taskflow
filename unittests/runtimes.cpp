@@ -2,15 +2,16 @@
 
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
+#include <taskflow/algorithm/pipeline.hpp>
 
 // --------------------------------------------------------
-// Testcase: Runtime.Subflow
+// Testcase 1: Runtime.Subflow
 // --------------------------------------------------------
 
 void runtime_subflow(size_t w) {
   
-  size_t runtime_tasks_per_line = 20;
-  size_t lines = 4;
+  size_t runtime_tasks_per_line = 200;
+  size_t lines = 400;
   size_t subtasks = 4096;
   size_t subtask = 0;
 
@@ -97,4 +98,172 @@ TEST_CASE("Runtime.Subflow.7threads" * doctest::timeout(300)){
 TEST_CASE("Runtime.Subflow.8threads" * doctest::timeout(300)){
   runtime_subflow(8);
 }
+
+
+// --------------------------------------------------------
+// Testcase 2: Pipeline.Runtime.Subflow
+// --------------------------------------------------------
+
+void pipeline_runtime_subflow(size_t w) {
+  
+  size_t num_lines = 10;
+  size_t subtasks = 4096;
+  size_t subtask = 0;
+  size_t max_tokens = 10000000;
+
+  tf::Executor executor(w);
+  tf::Taskflow taskflow;
+ 
+  for (subtask = 0; subtask <= subtasks; subtask = subtask == 0 ? subtask + 1 : subtask*2) {
+   
+    std::atomic<size_t> sums = 0;
+    tf::Pipeline pl(
+      num_lines, 
+      tf::Pipe{
+        tf::PipeType::SERIAL, [max_tokens](tf::Pipeflow& pf){
+          if (pf.token() == max_tokens) {
+            pf.stop();
+          }
+        }
+      },
+
+      tf::Pipe{
+        tf::PipeType::PARALLEL, [subtask, &sums](tf::Pipeflow& pf, tf::Runtime& rt) mutable {
+          rt.run([subtask, &sums](tf::Subflow& sf) mutable {
+            for (size_t i = 0; i < subtask; ++i) {
+              sf.emplace([&sums](){
+                ++sums;  
+              });
+            }
+          });
+        }
+      }
+    );
+
+    taskflow.composed_of(pl).name("pipeline");
+    executor.run(taskflow).wait();
+    REQUIRE(sums == subtask*max_tokens);
+  }
+}
+
+
+TEST_CASE("Pipeline.Runtime.Subflow.1thread" * doctest::timeout(300)){
+  pipeline_runtime_subflow(1);
+}
+
+TEST_CASE("Pipeline.Runtime.Subflow.2threads" * doctest::timeout(300)){
+  pipeline_runtime_subflow(2);
+}
+
+TEST_CASE("Pipeline.Runtime.Subflow.3threads" * doctest::timeout(300)){
+  pipeline_runtime_subflow(3);
+}
+
+TEST_CASE("Pipeline.Runtime.Subflow.4threads" * doctest::timeout(300)){
+  pipeline_runtime_subflow(4);
+}
+
+TEST_CASE("Pipeline.Runtime.Subflow.5threads" * doctest::timeout(300)){
+  pipeline_runtime_subflow(5);
+}
+
+TEST_CASE("Pipeline.Runtime.Subflow.6threads" * doctest::timeout(300)){
+  pipeline_runtime_subflow(6);
+}
+
+TEST_CASE("Pipeline.Runtime.Subflow.7threads" * doctest::timeout(300)){
+  pipeline_runtime_subflow(7);
+}
+
+TEST_CASE("Pipeline.Runtime.Subflow.8threads" * doctest::timeout(300)){
+  pipeline_runtime_subflow(8);
+}
+
+
+// --------------------------------------------------------
+// Testcase 3: Pipeline.Runtime.Subflow
+// --------------------------------------------------------
+/*
+void pipeline_runtime_subflow(size_t w) {
+ 
+  tf::Executor executor(w);
+  
+  size_t num_taskflows = 4; 
+  std::vector<tf::Taskflow> tfs;
+
+  for (size_t i = 0; i < num_taskflows; ++i) {
+    tfs.emplace_back(tf::Taskflow);
+  }
+
+
+  tfs[0].emplace([](tf::Runtime& rt){ rt.run() });
+
+
+  tf::Taskflow taskflow;
+ 
+  for (subtask = 0; subtask <= subtasks; subtask = subtask == 0 ? subtask + 1 : subtask*2) {
+   
+    std::atomic<size_t> sums = 0;
+    tf::Pipeline pl(
+      num_lines, 
+      tf::Pipe{
+        tf::PipeType::SERIAL, [max_tokens](tf::Pipeflow& pf){
+          if (pf.token() == max_tokens) {
+            pf.stop();
+          }
+        }
+      },
+
+      tf::Pipe{
+        tf::PipeType::PARALLEL, [subtask, &sums](tf::Pipeflow& pf, tf::Runtime& rt) mutable {
+          rt.run([subtask, &sums](tf::Subflow& sf) mutable {
+            for (size_t i = 0; i < subtask; ++i) {
+              sf.emplace([&sums](){
+                ++sums;  
+              });
+            }
+          });
+        }
+      }
+    );
+
+    taskflow.composed_of(pl).name("pipeline");
+    executor.run(taskflow).wait();
+    REQUIRE(sums == subtask*max_tokens);
+  }
+}
+
+
+TEST_CASE("Pipeline.Runtime.Subflow.1thread" * doctest::timeout(300)){
+  pipeline_runtime_subflow(1);
+}
+
+TEST_CASE("Pipeline.Runtime.Subflow.2threads" * doctest::timeout(300)){
+  pipeline_runtime_subflow(2);
+}
+
+TEST_CASE("Pipeline.Runtime.Subflow.3threads" * doctest::timeout(300)){
+  pipeline_runtime_subflow(3);
+}
+
+TEST_CASE("Pipeline.Runtime.Subflow.4threads" * doctest::timeout(300)){
+  pipeline_runtime_subflow(4);
+}
+
+TEST_CASE("Pipeline.Runtime.Subflow.5threads" * doctest::timeout(300)){
+  pipeline_runtime_subflow(5);
+}
+
+TEST_CASE("Pipeline.Runtime.Subflow.6threads" * doctest::timeout(300)){
+  pipeline_runtime_subflow(6);
+}
+
+TEST_CASE("Pipeline.Runtime.Subflow.7threads" * doctest::timeout(300)){
+  pipeline_runtime_subflow(7);
+}
+
+TEST_CASE("Pipeline.Runtime.Subflow.8threads" * doctest::timeout(300)){
+  pipeline_runtime_subflow(8);
+}
+*/
 

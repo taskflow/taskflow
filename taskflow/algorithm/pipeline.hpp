@@ -526,9 +526,18 @@ void Pipeline<Ps...>::reset() {
 
 // Procedure: _on_pipe
 template <typename... Ps>
-void Pipeline<Ps...>::_on_pipe(Pipeflow& pf, Runtime&) {
+void Pipeline<Ps...>::_on_pipe(Pipeflow& pf, Runtime& rt) {
+
+
   visit_tuple([&](auto&& pipe){
-    pipe._callable(pf);
+    using callable_t = std::decay_t<decltype(pipe._callable)>;
+    if constexpr (std::is_invocable_v<callable_t, Pipeflow&>) {
+      pipe._callable(pf);
+    }
+    else if constexpr(std::is_invocable_v<callable_t, Pipeflow&, Runtime&>) {
+      pipe._callable(pf, rt);
+    }
+    else static_assert(dependent_false_v<callable_t>, "");
   }, _pipes, pf._pipe);
 }
 
@@ -1198,6 +1207,7 @@ void ScalablePipeline<P>::_build() {
 }
 
 }  // end of namespace tf -----------------------------------------------------
+
 
 
 
