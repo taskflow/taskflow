@@ -109,7 +109,7 @@ void pipeline_sp_runtime_subflow(size_t w) {
   size_t num_lines = 2;
   size_t subtasks = 2;
   size_t subtask = 2;
-  size_t max_tokens = 10000000;
+  size_t max_tokens = 2000000;
 
   tf::Executor executor(w);
   tf::Taskflow taskflow;
@@ -188,7 +188,7 @@ TEST_CASE("Pipeline(SP).Runtime.Subflow.8threads" * doctest::timeout(300)){
 void pipeline_spspspsp_runtime_subflow(size_t w) {
   
   size_t num_lines = 4;
-  size_t subtasks = 128;
+  size_t subtasks = 8;
   size_t subtask = 2;
   size_t max_tokens = 100000;
 
@@ -301,7 +301,7 @@ void pipeline_spspspsp_runtime_subflow(size_t w) {
   }
 }
 
-/*
+
 TEST_CASE("Pipeline(SPSPSPSP).Runtime.Subflow.1thread" * doctest::timeout(300)){
   pipeline_spspspsp_runtime_subflow(1);
 }
@@ -333,7 +333,7 @@ TEST_CASE("Pipeline(SPSPSPSP).Runtime.Subflow.7threads" * doctest::timeout(300))
 TEST_CASE("Pipeline(SPSPSPSP).Runtime.Subflow.8threads" * doctest::timeout(300)){
   pipeline_spspspsp_runtime_subflow(8);
 }
-*/
+
 
 // --------------------------------------------------------
 // Testcase 4: Pipeline(SPSPSPSP).Runtime.IrregularSubflow
@@ -342,7 +342,7 @@ TEST_CASE("Pipeline(SPSPSPSP).Runtime.Subflow.8threads" * doctest::timeout(300))
 void pipeline_spspspsp_runtime_irregular_subflow(size_t w) {
   
   size_t num_lines = 4;
-  size_t max_tokens = 10000000;
+  size_t max_tokens = 100000;
 
   tf::Executor executor(w);
   tf::Taskflow taskflow;
@@ -523,7 +523,7 @@ void pipeline_spspspsp_runtime_irregular_subflow(size_t w) {
   REQUIRE(sums == 31*max_tokens);
 }
 
-/*
+
 TEST_CASE("Pipeline(SPSPSPSP).Runtime.Irregular.Subflow.1thread" * doctest::timeout(300)){
   pipeline_spspspsp_runtime_irregular_subflow(1);
 }
@@ -555,4 +555,4 @@ TEST_CASE("Pipeline(SPSPSPSP).Runtime.Irregular.Subflow.7threads" * doctest::tim
 TEST_CASE("Pipeline(SPSPSPSP).Runtime.Irregular.Subflow.8threads" * doctest::timeout(300)){
   pipeline_spspspsp_runtime_irregular_subflow(8);
 }
-*/
+
