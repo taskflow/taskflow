@@ -1,21 +1,47 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="CUDASTDReduce" kind="page">
     <compoundname>CUDASTDReduce</compoundname>
     <title>Parallel Reduction</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Include the Header</name>
+        <reference>CUDASTDReduce_1CUDASTDParallelReductionIncludeTheHeader</reference>
+    </tocsect>
+      <tocsect>
+        <name>Reduce a Range of Items with an Initial Value</name>
+        <reference>CUDASTDReduce_1CUDASTDReduceItemsWithAnInitialValue</reference>
+    </tocsect>
+      <tocsect>
+        <name>Reduce a Range of Items without an Initial Value</name>
+        <reference>CUDASTDReduce_1CUDASTDReduceItemsWithoutAnInitialValue</reference>
+    </tocsect>
+      <tocsect>
+        <name>Reduce a Range of Transformed Items with an Initial Value</name>
+        <reference>CUDASTDReduce_1CUDASTDReduceTransformedItemsWithAnInitialValue</reference>
+    </tocsect>
+      <tocsect>
+        <name>Reduce a Range of Transformed Items without an Initial Value</name>
+        <reference>CUDASTDReduce_1CUDASTDReduceTransformedItemsWithoutAnInitialValue</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow provides standard template methods for reducing a range of items on a CUDA GPU.</para><sect1 id="CUDASTDReduce_1CUDASTDParallelReductionIncludeTheHeader">
+<para>Taskflow provides standard template methods for reducing a range of items on a CUDA GPU.</para>
+<sect1 id="CUDASTDReduce_1CUDASTDParallelReductionIncludeTheHeader">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/reduce.hpp</computeroutput>, for using the parallel-reduction algorithm.</para></sect1>
+<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/reduce.hpp</computeroutput>, for using the parallel-reduction algorithm.</para>
+</sect1>
 <sect1 id="CUDASTDReduce_1CUDASTDReduceItemsWithAnInitialValue">
 <title>Reduce a Range of Items with an Initial Value</title>
-<para><ref refid="namespacetf_1a8a872d2a0ac73a676713cb5be5aa688c" kindref="member">tf::cuda_reduce</ref> performs a parallel reduction over a range of elements specified by <computeroutput>[first, last)</computeroutput> using the binary operator <computeroutput>bop</computeroutput> and stores the reduced result in <computeroutput>result</computeroutput>. It represents the parallel execution of the following reduction loop on a GPU:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
+<para><ref refid="namespacetf_1a8a872d2a0ac73a676713cb5be5aa688c" kindref="member">tf::cuda_reduce</ref> performs a parallel reduction over a range of elements specified by <computeroutput>[first, last)</computeroutput> using the binary operator <computeroutput>bop</computeroutput> and stores the reduced result in <computeroutput>result</computeroutput>. It represents the parallel execution of the following reduction loop on a GPU:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>bop(*result,<sp/>*first++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>The variable <computeroutput>result</computeroutput> participates in the reduction loop and must be initialized with an initial value. The following code performs a parallel reduction to sum all the numbers in the given range with an initial value <computeroutput>1000</computeroutput>:</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+</programlisting></para>
+<para>The variable <computeroutput>result</computeroutput> participates in the reduction loop and must be initialized with an initial value. The following code performs a parallel reduction to sum all the numbers in the given range with an initial value <computeroutput>1000</computeroutput>:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>res<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(1);<sp/><sp/></highlight><highlight class="comment">//<sp/>result</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>vec<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -42,15 +68,22 @@
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(buffer);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(res);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(vec);</highlight></codeline>
-</programlisting></para><para>The reduce algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results. Since the GPU reduction algorithm may require extra buffer to store the temporary results, you must provide a buffer of size at least bytes returned from <ref refid="namespacetf_1a1ca0bd68df882048e4b9b4d92efc3168" kindref="member">tf::cuda_reduce_buffer_size</ref>.</para><para><simplesect kind="attention"><para>You must keep the buffer alive before the reduction call completes.</para></simplesect>
-</para></sect1>
+</programlisting></para>
+<para>The reduce algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results. Since the GPU reduction algorithm may require extra buffer to store the temporary results, you must provide a buffer of size at least bytes returned from <ref refid="namespacetf_1a1ca0bd68df882048e4b9b4d92efc3168" kindref="member">tf::cuda_reduce_buffer_size</ref>.</para>
+<para><simplesect kind="attention"><para>You must keep the buffer alive before the reduction call completes.</para>
+</simplesect>
+</para>
+</sect1>
 <sect1 id="CUDASTDReduce_1CUDASTDReduceItemsWithoutAnInitialValue">
 <title>Reduce a Range of Items without an Initial Value</title>
-<para><ref refid="namespacetf_1a492e8410db032a0273a99dd905486161" kindref="member">tf::cuda_uninitialized_reduce</ref> performs a parallel reduction over a range of items without an initial value. This method represents a parallel execution of the following reduction loop on a GPU:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">*result<sp/>=<sp/>*first++;<sp/><sp/></highlight><highlight class="comment">//<sp/>no<sp/>initial<sp/>values<sp/>to<sp/>participate<sp/>in<sp/>the<sp/>reduction<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
+<para><ref refid="namespacetf_1a492e8410db032a0273a99dd905486161" kindref="member">tf::cuda_uninitialized_reduce</ref> performs a parallel reduction over a range of items without an initial value. This method represents a parallel execution of the following reduction loop on a GPU:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">*result<sp/>=<sp/>*first++;<sp/><sp/></highlight><highlight class="comment">//<sp/>no<sp/>initial<sp/>values<sp/>to<sp/>participate<sp/>in<sp/>the<sp/>reduction<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>bop(*result,<sp/>*first++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>The variable <computeroutput>result</computeroutput> is directly assigned the reduced value without any initial value participating in the reduction loop. The following code performs a parallel reduction to sum all the numbers in the given range without any initial value:</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+</programlisting></para>
+<para>The variable <computeroutput>result</computeroutput> is directly assigned the reduced value without any initial value participating in the reduction loop. The following code performs a parallel reduction to sum all the numbers in the given range without any initial value:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>res<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(1);<sp/><sp/></highlight><highlight class="comment">//<sp/>result</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>vec<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -74,13 +107,17 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(buffer);</highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+</sect1>
 <sect1 id="CUDASTDReduce_1CUDASTDReduceTransformedItemsWithAnInitialValue">
 <title>Reduce a Range of Transformed Items with an Initial Value</title>
-<para><ref refid="namespacetf_1a4463d06240d608bc31d8b3546a851e4e" kindref="member">tf::cuda_transform_reduce</ref> performs a parallel reduction over a range of <emphasis>transformed</emphasis> elements specified by <computeroutput>[first, last)</computeroutput> using a binary reduce operator <computeroutput>bop</computeroutput> and a unary transform operator <computeroutput>uop</computeroutput>. It represents the parallel execution of the following reduction loop on a GPU:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
+<para><ref refid="namespacetf_1a4463d06240d608bc31d8b3546a851e4e" kindref="member">tf::cuda_transform_reduce</ref> performs a parallel reduction over a range of <emphasis>transformed</emphasis> elements specified by <computeroutput>[first, last)</computeroutput> using a binary reduce operator <computeroutput>bop</computeroutput> and a unary transform operator <computeroutput>uop</computeroutput>. It represents the parallel execution of the following reduction loop on a GPU:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>bop(*result,<sp/>uop(*first++));</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>The variable <computeroutput>result</computeroutput> participates in the reduction loop and must be initialized with an initial value. The following code performs a parallel reduction to sum all the transformed numbers multiplied by <computeroutput>10</computeroutput> in the given range with an initial value <computeroutput>1000</computeroutput>:</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+</programlisting></para>
+<para>The variable <computeroutput>result</computeroutput> participates in the reduction loop and must be initialized with an initial value. The following code performs a parallel reduction to sum all the transformed numbers multiplied by <computeroutput>10</computeroutput> in the given range with an initial value <computeroutput>1000</computeroutput>:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>res<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(1);<sp/><sp/></highlight><highlight class="comment">//<sp/>result</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>vec<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -108,14 +145,18 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(buffer);</highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+</sect1>
 <sect1 id="CUDASTDReduce_1CUDASTDReduceTransformedItemsWithoutAnInitialValue">
 <title>Reduce a Range of Transformed Items without an Initial Value</title>
-<para><ref refid="namespacetf_1a747a41c0474fd34da370839b60ddc4ca" kindref="member">tf::cuda_transform_uninitialized_reduce</ref> performs a parallel reduction over a range of transformed items without an initial value. This method represents a parallel execution of the following reduction loop on a GPU:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">*result<sp/>=<sp/>*first++;<sp/><sp/></highlight><highlight class="comment">//<sp/>no<sp/>initial<sp/>values<sp/>to<sp/>participate<sp/>in<sp/>the<sp/>reduction<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
+<para><ref refid="namespacetf_1a747a41c0474fd34da370839b60ddc4ca" kindref="member">tf::cuda_transform_uninitialized_reduce</ref> performs a parallel reduction over a range of transformed items without an initial value. This method represents a parallel execution of the following reduction loop on a GPU:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">*result<sp/>=<sp/>*first++;<sp/><sp/></highlight><highlight class="comment">//<sp/>no<sp/>initial<sp/>values<sp/>to<sp/>participate<sp/>in<sp/>the<sp/>reduction<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>bop(*result,<sp/>uop(*first++));</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>The variable <computeroutput>result</computeroutput> is directly assigned the reduced value without any initial value participating in the reduction loop. The following code performs a parallel reduction to sum all the transformed numbers multiplied by <computeroutput>10</computeroutput> in the given range without any initial value:</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+</programlisting></para>
+<para>The variable <computeroutput>result</computeroutput> is directly assigned the reduced value without any initial value participating in the reduction loop. The following code performs a parallel reduction to sum all the transformed numbers multiplied by <computeroutput>10</computeroutput> in the given range without any initial value:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>res<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(1);<sp/><sp/></highlight><highlight class="comment">//<sp/>result</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>vec<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -144,7 +185,8 @@
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(buffer);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(res);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(vec);</highlight></codeline>
-</programlisting> </para></sect1>
+</programlisting> </para>
+</sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

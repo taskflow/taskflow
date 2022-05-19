@@ -72,6 +72,25 @@ taskflow.emplace([&](tf::Runtime& rt){
 executor.run(taskflow).wait();
 @endcode
 
+@section RuntimeTaskingSpawnASubflow Spawn a Subflow
+
+You can spawn a subflow by emplacing a callable that takes a tf::Subflow reference
+in its argument to launch a task graph from the execution conext of the runtime task.
+
+@code{.cpp}
+taskflow.emplace([](tf::Runtime& rt){
+  rt.emplace([](tf::Subflow& sf){
+    sf.emplace([](){ std::cout << "independent task 1\n"; });
+    sf.emplace([](){ std::cout << "independent task 2\n"; });
+  });
+  // subflow joins upon emplace returns
+});
+@endcode
+
+The spawned subflow will join right upon the return of the emplace method.
+This feature is primarily used in programming %Taskflow pipeline where you can spawn
+a task graph from a stage task.
+
 */
 
 }

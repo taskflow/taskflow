@@ -5,7 +5,7 @@
   <title>tf::Executor class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>Executor <span class="m-thin">class</span>
         </h1>
         <p>class to create an executor for running a taskflow graph</p>
-        <nav class="m-block m-default">
+        <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
@@ -60,7 +60,7 @@
               </ul>
             </li>
           </ul>
-        </nav>
+        </div>
 <p>An executor manages a set of worker threads to run one or multiple taskflows using an efficient work-stealing scheduling algorithm.</p><pre class="m-code"><span class="c1">// Declare an executor and a taskflow</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
@@ -71,7 +71,7 @@
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;This is TaskC</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
 
 <span class="c1">// Build precedence between tasks</span>
-<span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">);</span><span class="w"> </span>
+<span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">);</span><span class="w"></span>
 
 <span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">fu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span><span class="w"></span>
 <span class="n">fu</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w">                </span><span class="c1">// block until the execution completes</span>
@@ -510,7 +510,7 @@
             </table>
 <p>This member function executes a moved taskflow <code>N</code> times and invokes the given callable when the execution completes. This member function returns a <a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> object that eventually holds the result of the execution.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="w"></span>
 <span class="w">  </span><span class="c1">// run the moved taskflow 2 times and invoke the lambda to print &quot;done&quot;</span>
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">taskflow</span><span class="p">),</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;done&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">  </span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">taskflow</span><span class="p">),</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;done&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 <span class="p">);</span><span class="w"></span>
 <span class="c1">// do something else</span>
 <span class="n">future</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>This member function is thread-safe.</p>
@@ -546,7 +546,7 @@
               </tfoot>
             </table>
 <p>This member function executes the given taskflow multiple times until the predicate returns <code>true</code>. This member function returns a <a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> object that eventually holds the result of the execution.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="w"></span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">10</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">}</span><span class="w">  </span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">10</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 <span class="p">);</span><span class="w"></span>
 <span class="c1">// do something else</span>
 <span class="n">future</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>This member function is thread-safe.</p><aside class="m-note m-warning"><h4>Attention</h4><p>The executor does not own the given taskflow. It is your responsibility to ensure the taskflow remains alive during its execution.</p></aside>
@@ -582,7 +582,7 @@
               </tfoot>
             </table>
 <p>This member function executes a moved taskflow multiple times until the predicate returns <code>true</code>. This member function returns a <a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> object that eventually holds the result of the execution. The executor will take care of the lifetime of the moved taskflow.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="w"></span>
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">taskflow</span><span class="p">),</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">10</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">}</span><span class="w">  </span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">taskflow</span><span class="p">),</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">10</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 <span class="p">);</span><span class="w"></span>
 <span class="c1">// do something else</span>
 <span class="n">future</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>This member function is thread-safe.</p>
@@ -623,7 +623,7 @@
               </tfoot>
             </table>
 <p>This member function executes the given taskflow multiple times until the predicate returns <code>true</code> and then invokes the given callable when the execution completes. This member function returns a <a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> object that eventually holds the result of the execution.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="w"></span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">10</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;done&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">10</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;done&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 <span class="p">);</span><span class="w"></span>
 <span class="c1">// do something else</span>
 <span class="n">future</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>This member function is thread-safe.</p><aside class="m-note m-warning"><h4>Attention</h4><p>The executor does not own the given taskflow. It is your responsibility to ensure the taskflow remains alive during its execution.</p></aside>
@@ -664,10 +664,10 @@
               </tfoot>
             </table>
 <p>This member function executes a moved taskflow multiple times until the predicate returns <code>true</code> and then invokes the given callable when the execution completes. This member function returns a <a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> object that eventually holds the result of the execution. The executor will take care of the lifetime of the moved taskflow.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="w"></span>
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">taskflow</span><span class="p">),</span><span class="w"> </span>
-<span class="w">  </span><span class="p">[](){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">10</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;done&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">taskflow</span><span class="p">),</span><span class="w"></span>
+<span class="w">  </span><span class="p">[](){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">10</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;done&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 <span class="p">);</span><span class="w"></span>
-<span class="c1">// do something else </span>
+<span class="c1">// do something else</span>
 <span class="n">future</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>This member function is thread-safe.</p>
           </div></section>
           <section class="m-doc-details" id="ab9aa252f70e9a40020a1e5a89d485b85"><div>
@@ -934,13 +934,13 @@
     </div>
   </div>
 </div>
-<script src="search-v2.js"></script>
-<script src="searchdata-v2.js" async="async"></script>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

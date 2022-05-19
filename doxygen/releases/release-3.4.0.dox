@@ -32,12 +32,18 @@ To use %Taskflow v3.4.0, you need a compiler that supports C++17:
 
 @section release-3-4-0_summary Release Summary
 
+This release enhances our task-parallel pipeline programming models with
+1) a new tf::ScalablePipeline interface that allows variable structures
+and
+2) a new support for emplacing a subflow in each stage task (pipe).
+
 @section release-3-4-0_new_features New Features
 
 @subsection release-3-4-0_taskflow_core Taskflow Core
 
 + Improved the pipeline performance using vertical stack optimization
 + Added tf::ScalablePipeline to allow programming variable lengths of pipes
++ Added tf::Runtime::emplace to allow spawning a subflow
 + Added an example of attaching data to a task (examples/attach_data.cpp)
 + Added an example of text processing pipeline (examples/parallel_text_pipeline.cpp)
 + Added an example of graph processing pipeline (examples/parallel_graph_pipeline.cpp)
@@ -52,7 +58,7 @@ To use %Taskflow v3.4.0, you need a compiler that supports C++17:
 
 @subsection release-3-4-0_utilities Utilities
 
-+ removed serializer to improve compilation speed
++ Removed serializer to improve compilation speed
 
 @subsection release-3-4-0_profiler Taskflow Profiler (TFProf)
 
@@ -68,6 +74,8 @@ To use %Taskflow v3.4.0, you need a compiler that supports C++17:
 If you encounter any potential bugs, please submit an issue at @IssueTracker.
 
 @section release-3-4-0_breaking_changes Breaking Changes
+
++ Renamed tf::Runtime::run to tf::Runtime::emplace to be consistent with tf::Subflow
 
 @section release-3-4-0_deprecated_items Deprecated and Removed Items 
 
@@ -86,7 +94,9 @@ If you encounter any potential bugs, please submit an issue at @IssueTracker.
 @section release-3-4-0_miscellaneous_items Miscellaneous Items
 
 We have published %Taskflow in the following venues:
-  1. Dian-Lun Lin and Tsung-Wei Huang, &quot;[Accelerating Large Sparse Neural Network Inference using GPU Task Graph Parallelism](https://ieeexplore.ieee.org/document/9664223),&quot; <em>IEEE Transactions on Parallel and Distributed Systems (TPDS)</em>, accepted, 2022
+  + Dian-Lun Lin and Tsung-Wei Huang, &quot;[Accelerating Large Sparse Neural Network Inference using GPU Task Graph Parallelism](https://ieeexplore.ieee.org/document/9664223),&quot; <em>IEEE Transactions on Parallel and Distributed Systems (TPDS)</em>, 2022
+  + Cheng-Hsiang Chiu and Tsung-Wei Huang, &quot;[Composing %Pipeline Parallelism using Control %Taskflow %Graph](https://doi.org/10.1145/3502181.3533714),&quot; <em>ACM International Symposium on High-Performance Parallel and Distributed Computing (HPDC)</em>, Minneapolis, Minnesota, 2022
+  + Cheng-Hsiang Chiu and Tsung-Wei Huang, &quot;[Efficient Timing Propagation with Simultaneous Structural and Pipeline Parallelisms](https://tsung-wei-huang.github.io/papers/dac2022.pdf),&quot; <em>ACM/IEEE Design Automation Conference (DAC)</em>, San Francisco, CA, 2022
 
 Please do not hesitate to contact @twhuang if you intend to collaborate with us 
 on using %Taskflow in your scientific computing projects.
@@ -94,3 +104,5 @@ on using %Taskflow in your scientific computing projects.
 */
 
 }
+
+

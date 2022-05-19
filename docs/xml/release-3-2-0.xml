@@ -1,121 +1,267 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="release-3-2-0" kind="page">
     <compoundname>release-3-2-0</compoundname>
     <title>Release 3.2.0 (2021/07/29)</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Download</name>
+        <reference>release-3-2-0_1release-3-2-0_download</reference>
+    </tocsect>
+      <tocsect>
+        <name>System Requirements</name>
+        <reference>release-3-2-0_1release-3-2-0_system_requirements</reference>
+    </tocsect>
+      <tocsect>
+        <name>Working Items</name>
+        <reference>release-3-2-0_1release-3-2-0_working_items</reference>
+    </tocsect>
+      <tocsect>
+        <name>New Features</name>
+        <reference>release-3-2-0_1release-3-2-0_new_features</reference>
+    <tableofcontents>
+      <tocsect>
+        <name>Taskflow Core</name>
+        <reference>release-3-2-0_1release-3-2-0_taskflow_core</reference>
+    </tocsect>
+      <tocsect>
+        <name>cudaFlow</name>
+        <reference>release-3-2-0_1release-3-2-0_cudaflow</reference>
+    </tocsect>
+      <tocsect>
+        <name>syclFlow</name>
+        <reference>release-3-2-0_1release-3-2-0_syclflow</reference>
+    </tocsect>
+      <tocsect>
+        <name>CUDA Standard Parallel Algorithms</name>
+        <reference>release-3-2-0_1release-3-2-0_cuda_std_algorithms</reference>
+    </tocsect>
+      <tocsect>
+        <name>Utilities</name>
+        <reference>release-3-2-0_1release-3-2-0_utilities</reference>
+    </tocsect>
+      <tocsect>
+        <name>Taskflow Profiler (TFProf)</name>
+        <reference>release-3-2-0_1release-3-2-0_profiler</reference>
+    </tocsect>
+    </tableofcontents>
+    </tocsect>
+      <tocsect>
+        <name>Bug Fixes</name>
+        <reference>release-3-2-0_1release-3-2-0_bug_fixes</reference>
+    </tocsect>
+      <tocsect>
+        <name>Breaking Changes</name>
+        <reference>release-3-2-0_1release-3-2-0_breaking_changes</reference>
+    </tocsect>
+      <tocsect>
+        <name>Deprecated and Removed Items</name>
+        <reference>release-3-2-0_1release-3-2-0_deprecated_items</reference>
+    </tocsect>
+      <tocsect>
+        <name>Documentation</name>
+        <reference>release-3-2-0_1release-3-2-0_documentation</reference>
+    </tocsect>
+      <tocsect>
+        <name>Miscellaneous Items</name>
+        <reference>release-3-2-0_1release-3-2-0_miscellaneous_items</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow 3.2.0 is the 3rd release in the 3.x line! This release includes several new changes such as CPU-GPU tasking, algorithm collection, enhanced web-based profiler, documentation, and unit tests.</para><sect1 id="release-3-2-0_1release-3-2-0_download">
+<para>Taskflow 3.2.0 is the 3rd release in the 3.x line! This release includes several new changes such as CPU-GPU tasking, algorithm collection, enhanced web-based profiler, documentation, and unit tests.</para>
+<sect1 id="release-3-2-0_1release-3-2-0_download">
 <title>Download</title>
-<para>Taskflow 3.2.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.2.0">here</ulink>.</para></sect1>
+<para>Taskflow 3.2.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.2.0">here</ulink>.</para>
+</sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_system_requirements">
 <title>System Requirements</title>
-<para>To use Taskflow v3.2.0, you need a compiler that supports C++17:</para><para><itemizedlist>
-<listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para></listitem>
-<listitem><para>Clang C++ Compiler at least v6.0 with -std=c++17 </para></listitem>
-<listitem><para>Microsoft Visual Studio at least v19.27 with /std:c++17 </para></listitem>
-<listitem><para>AppleClang Xode Version at least v12.0 with -std=c++17 </para></listitem>
-<listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17 </para></listitem>
-<listitem><para>Intel C++ Compiler at least v19.0.1 with -std=c++17 </para></listitem>
-<listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</para></listitem>
+<para>To use Taskflow v3.2.0, you need a compiler that supports C++17:</para>
+<para><itemizedlist>
+<listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para>
+</listitem>
+<listitem><para>Clang C++ Compiler at least v6.0 with -std=c++17 </para>
+</listitem>
+<listitem><para>Microsoft Visual Studio at least v19.27 with /std:c++17 </para>
+</listitem>
+<listitem><para>AppleClang Xode Version at least v12.0 with -std=c++17 </para>
+</listitem>
+<listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17 </para>
+</listitem>
+<listitem><para>Intel C++ Compiler at least v19.0.1 with -std=c++17 </para>
+</listitem>
+<listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</para>
+</listitem>
 </itemizedlist>
-Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
+Taskflow works on Linux, Windows, and Mac OS X.</para>
+</sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_working_items">
 <title>Working Items</title>
 <para><itemizedlist>
-<listitem><para>enhancing support for SYCL with Intel DPC++ </para></listitem>
-<listitem><para>enhancing parallel CPU and GPU algorithms </para></listitem>
-<listitem><para>designing pipeline interface and its scheduling algorithms</para></listitem>
+<listitem><para>enhancing support for SYCL with Intel DPC++ </para>
+</listitem>
+<listitem><para>enhancing parallel CPU and GPU algorithms </para>
+</listitem>
+<listitem><para>designing pipeline interface and its scheduling algorithms</para>
+</listitem>
 </itemizedlist>
-</para></sect1>
+</para>
+</sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_new_features">
 <title>New Features</title>
 <sect2 id="release-3-2-0_1release-3-2-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>added <ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector</ref> optimization for optimizing the dependency storage in a graph </para></listitem>
+<listitem><para>added <ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector</ref> optimization for optimizing the dependency storage in a graph </para>
+</listitem>
 <listitem><para>added move constructor and move assignment operator for <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><itemizedlist>
-<listitem><para><ref refid="classtf_1_1Taskflow_1afd790de6db6d16ddf4729967c1edebb5" kindref="member">tf::Taskflow::Taskflow(Taskflow&amp;&amp;)</ref></para></listitem><listitem><para><ref refid="classtf_1_1Taskflow_1aa4957a41e63e1d1a6f77c540d70d04fa" kindref="member">tf::Taskflow::operator=(Taskflow&amp;&amp;)</ref> </para></listitem></itemizedlist>
-</para></listitem>
+<listitem><para><ref refid="classtf_1_1Taskflow_1afd790de6db6d16ddf4729967c1edebb5" kindref="member">tf::Taskflow::Taskflow(Taskflow&amp;&amp;)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Taskflow_1aa4957a41e63e1d1a6f77c540d70d04fa" kindref="member">tf::Taskflow::operator=(Taskflow&amp;&amp;)</ref> </para>
+</listitem></itemizedlist>
+</para>
+</listitem>
 <listitem><para>added moved run in <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> for automatically managing taskflow&apos;s lifetimes<itemizedlist>
-<listitem><para><ref refid="classtf_1_1Executor_1a4bbef53618db1852003a0cd1e1e40c50" kindref="member">tf::Executor::run(Taskflow&amp;&amp;)</ref></para></listitem><listitem><para><ref refid="classtf_1_1Executor_1a52c27df2fb7372277f4926f4ab0a0937" kindref="member">tf::Executor::run(Taskflow&amp;&amp;, C&amp;&amp;)</ref></para></listitem><listitem><para><ref refid="classtf_1_1Executor_1ad10a12c9e14c8132e414c9a48443d938" kindref="member">tf::Executor::run_n(Taskflow&amp;&amp;, size_t)</ref></para></listitem><listitem><para><ref refid="classtf_1_1Executor_1ad14430ac62f0e64e9e21712ba35c22ea" kindref="member">tf::Executor::run_n(Taskflow&amp;&amp;, size_t, C&amp;&amp;)</ref></para></listitem><listitem><para><ref refid="classtf_1_1Executor_1ab10fac2869d80049e5a75d2084a78eda" kindref="member">tf::Executor::run_until(Taskflow&amp;&amp;, P&amp;&amp;)</ref></para></listitem><listitem><para><ref refid="classtf_1_1Executor_1af30c6947f060e4bdf344e90b6b44fc70" kindref="member">tf::Executor::run_until(Taskflow&amp;&amp;, P&amp;&amp;, C&amp;&amp;)</ref></para></listitem></itemizedlist>
-</para></listitem>
+<listitem><para><ref refid="classtf_1_1Executor_1a4bbef53618db1852003a0cd1e1e40c50" kindref="member">tf::Executor::run(Taskflow&amp;&amp;)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1a52c27df2fb7372277f4926f4ab0a0937" kindref="member">tf::Executor::run(Taskflow&amp;&amp;, C&amp;&amp;)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1ad10a12c9e14c8132e414c9a48443d938" kindref="member">tf::Executor::run_n(Taskflow&amp;&amp;, size_t)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1ad14430ac62f0e64e9e21712ba35c22ea" kindref="member">tf::Executor::run_n(Taskflow&amp;&amp;, size_t, C&amp;&amp;)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1ab10fac2869d80049e5a75d2084a78eda" kindref="member">tf::Executor::run_until(Taskflow&amp;&amp;, P&amp;&amp;)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1af30c6947f060e4bdf344e90b6b44fc70" kindref="member">tf::Executor::run_until(Taskflow&amp;&amp;, P&amp;&amp;, C&amp;&amp;)</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem>
 </itemizedlist>
-</para></sect2>
+</para>
+</sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_cudaflow">
 <title>cudaFlow</title>
 <para><itemizedlist>
-<listitem><para>improved the execution flow of <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> when updates involve</para></listitem>
+<listitem><para>improved the execution flow of <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> when updates involve</para>
+</listitem>
 </itemizedlist>
-New algorithms in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> and <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>:</para><para><itemizedlist>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a931a0f99034bccf377aea35e221f50bc" kindref="member">tf::cudaFlow::reduce</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a1af5d4e8a3820f9b9d8abbe4f4f6c4a4" kindref="member">tf::cudaFlow::transform_reduce</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a3a5189b9c9494d2a63a983c32cf234f6" kindref="member">tf::cudaFlow::uninitialized_reduce</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a9716ae4016ac058b32becef119faaddd" kindref="member">tf::cudaFlow::transform_uninitialized_reduce</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a062cc98a0b2d2199b50c3cbad16f5fb8" kindref="member">tf::cudaFlow::inclusive_scan</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a8d59da7369a8634fea307219c7eb17c4" kindref="member">tf::cudaFlow::exclusive_scan</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a5028579479a2393ce57ad37a7a809588" kindref="member">tf::cudaFlow::transform_inclusive_scan</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1ae80df494109b0dc6db77111917207e6b" kindref="member">tf::cudaFlow::transform_exclusive_scan</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1af8fa5d69a57d010d7a3ee2756d85859c" kindref="member">tf::cudaFlow::merge</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a9cdfde0bafee035c0075619d386a9a43" kindref="member">tf::cudaFlow::merge_by_key</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1ae462d455fed06dfcdbd1e25a2c9c5da6" kindref="member">tf::cudaFlow::sort</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a979739fcf70fbd760ad1a7682a8dfea8" kindref="member">tf::cudaFlow::sort_by_key</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a4812f4eccece9217da13dbc09992670c" kindref="member">tf::cudaFlow::find_if</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a63d18c5a42bb351fda43305258f51262" kindref="member">tf::cudaFlow::min_element</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a7c99f8f1a961a225e2ea708afaa34905" kindref="member">tf::cudaFlow::max_element</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a326516e69ca7a1b15aad237428990791" kindref="member">tf::cudaFlowCapturer::reduce</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a02045cacdcff36864243aa9ca0c1d2ef" kindref="member">tf::cudaFlowCapturer::transform_reduce</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a99044cf477b1bd23c120eb8beea28eea" kindref="member">tf::cudaFlowCapturer::uninitialized_reduce</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a4247db18b90679eccb5a1f64743f8577" kindref="member">tf::cudaFlowCapturer::transform_uninitialized_reduce</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a67c25aef3adbbc8eca69f8857161509c" kindref="member">tf::cudaFlowCapturer::inclusive_scan</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a2c9e4fc3b08a74dce4adb0f10c75eaf3" kindref="member">tf::cudaFlowCapturer::exclusive_scan</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a5a36ae28d5844cf281b1d351c359b1af" kindref="member">tf::cudaFlowCapturer::transform_inclusive_scan</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a91bc91e5f13fda5f119d9b9f5f679782" kindref="member">tf::cudaFlowCapturer::transform_exclusive_scan</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1ac2eec500f313481926197ff0b3aed343" kindref="member">tf::cudaFlowCapturer::merge</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a2abf795a03b5431c105a70cee4cf5051" kindref="member">tf::cudaFlowCapturer::merge_by_key</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a3bcb91eb1579451ece602206f20845f4" kindref="member">tf::cudaFlowCapturer::sort</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1ac1d2e6ba2eca8ad35a5257e7aedc568f" kindref="member">tf::cudaFlowCapturer::sort_by_key</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a861e098e939c07c592c00e75583a68c0" kindref="member">tf::cudaFlowCapturer::find_if</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a8b846063445cd2314c24d03f478d0540" kindref="member">tf::cudaFlowCapturer::min_element</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1acf68a3c66c67d6dc6870dd38513aa786" kindref="member">tf::cudaFlowCapturer::max_element</ref> </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaLinearCapturing" kindref="compound">tf::cudaLinearCapturing</ref></para></listitem>
+New algorithms in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> and <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>:</para>
+<para><itemizedlist>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a931a0f99034bccf377aea35e221f50bc" kindref="member">tf::cudaFlow::reduce</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a1af5d4e8a3820f9b9d8abbe4f4f6c4a4" kindref="member">tf::cudaFlow::transform_reduce</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a3a5189b9c9494d2a63a983c32cf234f6" kindref="member">tf::cudaFlow::uninitialized_reduce</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a9716ae4016ac058b32becef119faaddd" kindref="member">tf::cudaFlow::transform_uninitialized_reduce</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a062cc98a0b2d2199b50c3cbad16f5fb8" kindref="member">tf::cudaFlow::inclusive_scan</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a8d59da7369a8634fea307219c7eb17c4" kindref="member">tf::cudaFlow::exclusive_scan</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a5028579479a2393ce57ad37a7a809588" kindref="member">tf::cudaFlow::transform_inclusive_scan</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1ae80df494109b0dc6db77111917207e6b" kindref="member">tf::cudaFlow::transform_exclusive_scan</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1af8fa5d69a57d010d7a3ee2756d85859c" kindref="member">tf::cudaFlow::merge</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a9cdfde0bafee035c0075619d386a9a43" kindref="member">tf::cudaFlow::merge_by_key</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1ae462d455fed06dfcdbd1e25a2c9c5da6" kindref="member">tf::cudaFlow::sort</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a979739fcf70fbd760ad1a7682a8dfea8" kindref="member">tf::cudaFlow::sort_by_key</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a4812f4eccece9217da13dbc09992670c" kindref="member">tf::cudaFlow::find_if</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a63d18c5a42bb351fda43305258f51262" kindref="member">tf::cudaFlow::min_element</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a7c99f8f1a961a225e2ea708afaa34905" kindref="member">tf::cudaFlow::max_element</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a326516e69ca7a1b15aad237428990791" kindref="member">tf::cudaFlowCapturer::reduce</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a02045cacdcff36864243aa9ca0c1d2ef" kindref="member">tf::cudaFlowCapturer::transform_reduce</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a99044cf477b1bd23c120eb8beea28eea" kindref="member">tf::cudaFlowCapturer::uninitialized_reduce</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a4247db18b90679eccb5a1f64743f8577" kindref="member">tf::cudaFlowCapturer::transform_uninitialized_reduce</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a67c25aef3adbbc8eca69f8857161509c" kindref="member">tf::cudaFlowCapturer::inclusive_scan</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a2c9e4fc3b08a74dce4adb0f10c75eaf3" kindref="member">tf::cudaFlowCapturer::exclusive_scan</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a5a36ae28d5844cf281b1d351c359b1af" kindref="member">tf::cudaFlowCapturer::transform_inclusive_scan</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a91bc91e5f13fda5f119d9b9f5f679782" kindref="member">tf::cudaFlowCapturer::transform_exclusive_scan</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1ac2eec500f313481926197ff0b3aed343" kindref="member">tf::cudaFlowCapturer::merge</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a2abf795a03b5431c105a70cee4cf5051" kindref="member">tf::cudaFlowCapturer::merge_by_key</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a3bcb91eb1579451ece602206f20845f4" kindref="member">tf::cudaFlowCapturer::sort</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1ac1d2e6ba2eca8ad35a5257e7aedc568f" kindref="member">tf::cudaFlowCapturer::sort_by_key</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a861e098e939c07c592c00e75583a68c0" kindref="member">tf::cudaFlowCapturer::find_if</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a8b846063445cd2314c24d03f478d0540" kindref="member">tf::cudaFlowCapturer::min_element</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1acf68a3c66c67d6dc6870dd38513aa786" kindref="member">tf::cudaFlowCapturer::max_element</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaLinearCapturing" kindref="compound">tf::cudaLinearCapturing</ref></para>
+</listitem>
 </itemizedlist>
-</para></sect2>
+</para>
+</sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_syclflow">
 <title>syclFlow</title>
 </sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_cuda_std_algorithms">
 <title>CUDA Standard Parallel Algorithms</title>
 <para><itemizedlist>
-<listitem><para>added <ref refid="namespacetf_1a7c449cec0b93503b8280d05add35e9f4" kindref="member">tf::cuda_for_each</ref> </para></listitem>
-<listitem><para>added <ref refid="namespacetf_1a01ad7ce62fa6f42f2f2fbff3659b7884" kindref="member">tf::cuda_for_each_index</ref> </para></listitem>
-<listitem><para>added <ref refid="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" kindref="member">tf::cuda_transform</ref> </para></listitem>
-<listitem><para>added <ref refid="namespacetf_1a8a872d2a0ac73a676713cb5be5aa688c" kindref="member">tf::cuda_reduce</ref> </para></listitem>
-<listitem><para>added <ref refid="namespacetf_1a492e8410db032a0273a99dd905486161" kindref="member">tf::cuda_uninitialized_reduce</ref> </para></listitem>
-<listitem><para>added <ref refid="namespacetf_1a4463d06240d608bc31d8b3546a851e4e" kindref="member">tf::cuda_transform_reduce</ref> </para></listitem>
-<listitem><para>added <ref refid="namespacetf_1a747a41c0474fd34da370839b60ddc4ca" kindref="member">tf::cuda_transform_uninitialized_reduce</ref> </para></listitem>
-<listitem><para>added <ref refid="namespacetf_1a2e1b44c84a09e0a8495a611cb9a7ea40" kindref="member">tf::cuda_inclusive_scan</ref> </para></listitem>
-<listitem><para>added <ref refid="namespacetf_1aeb391c40120844318fd715b8c3a716bb" kindref="member">tf::cuda_exclusive_scan</ref> </para></listitem>
-<listitem><para>added <ref refid="namespacetf_1afa4aa760ddb6efbda1b9bab505ad5baf" kindref="member">tf::cuda_transform_inclusive_scan</ref> </para></listitem>
-<listitem><para>added <ref refid="namespacetf_1a2e739895c1c73538967af060ca714366" kindref="member">tf::cuda_transform_exclusive_scan</ref> </para></listitem>
-<listitem><para>added <ref refid="namespacetf_1a37ec481149c2f01669353033d75ed72a" kindref="member">tf::cuda_merge</ref> </para></listitem>
-<listitem><para>added <ref refid="namespacetf_1aa84d4c68d2cbe9f6efc4a1eb1a115458" kindref="member">tf::cuda_merge_by_key</ref> </para></listitem>
-<listitem><para>added <ref refid="namespacetf_1a06804cb1598e965febc7bd35fc0fbbb0" kindref="member">tf::cuda_sort</ref> </para></listitem>
-<listitem><para>added <ref refid="namespacetf_1a3461b9179221dd7230ce2a0e45156c7f" kindref="member">tf::cuda_sort_by_key</ref> </para></listitem>
-<listitem><para>added <ref refid="namespacetf_1a5f9dabd7c5d0fa5166cf76d9fa5a038e" kindref="member">tf::cuda_find_if</ref> </para></listitem>
-<listitem><para>added <ref refid="namespacetf_1a572c13198191c46765264f8afabe2e9f" kindref="member">tf::cuda_min_element</ref> </para></listitem>
-<listitem><para>added <ref refid="namespacetf_1a3fc577fd0a8f127770bcf68bc56c073e" kindref="member">tf::cuda_max_element</ref></para></listitem>
+<listitem><para>added <ref refid="namespacetf_1a7c449cec0b93503b8280d05add35e9f4" kindref="member">tf::cuda_for_each</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="namespacetf_1a01ad7ce62fa6f42f2f2fbff3659b7884" kindref="member">tf::cuda_for_each_index</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" kindref="member">tf::cuda_transform</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="namespacetf_1a8a872d2a0ac73a676713cb5be5aa688c" kindref="member">tf::cuda_reduce</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="namespacetf_1a492e8410db032a0273a99dd905486161" kindref="member">tf::cuda_uninitialized_reduce</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="namespacetf_1a4463d06240d608bc31d8b3546a851e4e" kindref="member">tf::cuda_transform_reduce</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="namespacetf_1a747a41c0474fd34da370839b60ddc4ca" kindref="member">tf::cuda_transform_uninitialized_reduce</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="namespacetf_1a2e1b44c84a09e0a8495a611cb9a7ea40" kindref="member">tf::cuda_inclusive_scan</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="namespacetf_1aeb391c40120844318fd715b8c3a716bb" kindref="member">tf::cuda_exclusive_scan</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="namespacetf_1afa4aa760ddb6efbda1b9bab505ad5baf" kindref="member">tf::cuda_transform_inclusive_scan</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="namespacetf_1a2e739895c1c73538967af060ca714366" kindref="member">tf::cuda_transform_exclusive_scan</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="namespacetf_1a37ec481149c2f01669353033d75ed72a" kindref="member">tf::cuda_merge</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="namespacetf_1aa84d4c68d2cbe9f6efc4a1eb1a115458" kindref="member">tf::cuda_merge_by_key</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="namespacetf_1a06804cb1598e965febc7bd35fc0fbbb0" kindref="member">tf::cuda_sort</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="namespacetf_1a3461b9179221dd7230ce2a0e45156c7f" kindref="member">tf::cuda_sort_by_key</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="namespacetf_1a5f9dabd7c5d0fa5166cf76d9fa5a038e" kindref="member">tf::cuda_find_if</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="namespacetf_1a572c13198191c46765264f8afabe2e9f" kindref="member">tf::cuda_min_element</ref> </para>
+</listitem>
+<listitem><para>added <ref refid="namespacetf_1a3fc577fd0a8f127770bcf68bc56c073e" kindref="member">tf::cuda_max_element</ref></para>
+</listitem>
 </itemizedlist>
-</para></sect2>
+</para>
+</sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_utilities">
 <title>Utilities</title>
 <para><itemizedlist>
-<listitem><para>added CUDA meta programming </para></listitem>
-<listitem><para>added SYCL meta programming</para></listitem>
+<listitem><para>added CUDA meta programming </para>
+</listitem>
+<listitem><para>added SYCL meta programming</para>
+</listitem>
 </itemizedlist>
-</para></sect2>
+</para>
+</sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_profiler">
 <title>Taskflow Profiler (TFProf)</title>
 </sect2>
@@ -123,50 +269,84 @@ New algorithms in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFl
 <sect1 id="release-3-2-0_1release-3-2-0_bug_fixes">
 <title>Bug Fixes</title>
 <para><itemizedlist>
-<listitem><para>fixed compilation errors in constructing <ref refid="classtf_1_1cudaRoundRobinCapturing" kindref="compound">tf::cudaRoundRobinCapturing</ref> </para></listitem>
-<listitem><para>fixed compilation errors of TLS worker pointer in <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> </para></listitem>
+<listitem><para>fixed compilation errors in constructing <ref refid="classtf_1_1cudaRoundRobinCapturing" kindref="compound">tf::cudaRoundRobinCapturing</ref> </para>
+</listitem>
+<listitem><para>fixed compilation errors of TLS worker pointer in <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> </para>
+</listitem>
 <listitem><para>fixed compilation errors of nvcc v11.3 in auto template deduction<itemizedlist>
-<listitem><para>std::scoped_lock</para></listitem><listitem><para>tf::Serializer and tf::Deserializer </para></listitem></itemizedlist>
-</para></listitem>
-<listitem><para>fixed memory leak when moving a <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref></para></listitem>
+<listitem><para>std::scoped_lock</para>
+</listitem><listitem><para>tf::Serializer and tf::Deserializer </para>
+</listitem></itemizedlist>
+</para>
+</listitem>
+<listitem><para>fixed memory leak when moving a <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref></para>
+</listitem>
 </itemizedlist>
-</para></sect1>
+</para>
+</sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_breaking_changes">
 <title>Breaking Changes</title>
-<para>There are no breaking changes in this release.</para></sect1>
+<para>There are no breaking changes in this release.</para>
+</sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_deprecated_items">
 <title>Deprecated and Removed Items</title>
 <para><itemizedlist>
-<listitem><para>removed tf::cudaFlow::kernel_on method </para></listitem>
-<listitem><para>removed explicit partitions in parallel iterations and reductions </para></listitem>
-<listitem><para>removed tf::cudaFlowCapturerBase </para></listitem>
-<listitem><para>removed tf::cublasFlowCapturer </para></listitem>
-<listitem><para>renamed update and rebind methods in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> and <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> to overloads</para></listitem>
+<listitem><para>removed tf::cudaFlow::kernel_on method </para>
+</listitem>
+<listitem><para>removed explicit partitions in parallel iterations and reductions </para>
+</listitem>
+<listitem><para>removed tf::cudaFlowCapturerBase </para>
+</listitem>
+<listitem><para>removed tf::cublasFlowCapturer </para>
+</listitem>
+<listitem><para>renamed update and rebind methods in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> and <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> to overloads</para>
+</listitem>
 </itemizedlist>
-</para></sect1>
+</para>
+</sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_documentation">
 <title>Documentation</title>
 <para><itemizedlist>
 <listitem><para>revised <ref refid="StaticTasking" kindref="compound">Static Tasking</ref><itemizedlist>
-<listitem><para><ref refid="StaticTasking_1MoveATaskflow" kindref="member">Move a Taskflow</ref> </para></listitem></itemizedlist>
-</para></listitem>
+<listitem><para><ref refid="StaticTasking_1MoveATaskflow" kindref="member">Move a Taskflow</ref> </para>
+</listitem></itemizedlist>
+</para>
+</listitem>
 <listitem><para>revised <ref refid="ExecuteTaskflow" kindref="compound">Executor</ref><itemizedlist>
-<listitem><para><ref refid="ExecuteTaskflow_1ExecuteATaskflowWithTransferredOwnership" kindref="member">Execute a Taskflow with Transferred Ownership</ref> </para></listitem></itemizedlist>
-</para></listitem>
-<listitem><para>revised <ref refid="cudaFlowReduce" kindref="compound">Parallel Reduction</ref> </para></listitem>
+<listitem><para><ref refid="ExecuteTaskflow_1ExecuteATaskflowWithTransferredOwnership" kindref="member">Execute a Taskflow with Transferred Ownership</ref> </para>
+</listitem></itemizedlist>
+</para>
+</listitem>
+<listitem><para>revised <ref refid="cudaFlowReduce" kindref="compound">Parallel Reduction</ref> </para>
+</listitem>
 <listitem><para>added <ref refid="cudaFlowAlgorithms" kindref="compound">cudaFlow Algorithms</ref><itemizedlist>
-<listitem><para><ref refid="cudaFlowReduce" kindref="compound">Parallel Reduction</ref></para></listitem><listitem><para><ref refid="cudaFlowScan" kindref="compound">Parallel Scan</ref></para></listitem><listitem><para><ref refid="cudaFlowMerge" kindref="compound">Parallel Merge</ref></para></listitem><listitem><para><ref refid="cudaFlowSort" kindref="compound">Parallel Sort</ref> </para></listitem></itemizedlist>
-</para></listitem>
+<listitem><para><ref refid="cudaFlowReduce" kindref="compound">Parallel Reduction</ref></para>
+</listitem><listitem><para><ref refid="cudaFlowScan" kindref="compound">Parallel Scan</ref></para>
+</listitem><listitem><para><ref refid="cudaFlowMerge" kindref="compound">Parallel Merge</ref></para>
+</listitem><listitem><para><ref refid="cudaFlowSort" kindref="compound">Parallel Sort</ref> </para>
+</listitem></itemizedlist>
+</para>
+</listitem>
 <listitem><para>added <ref refid="cudaStandardAlgorithms" kindref="compound">CUDA Standard Algorithms</ref><itemizedlist>
-<listitem><para><ref refid="CUDASTDExecutionPolicy" kindref="compound">Execution Policy</ref></para></listitem><listitem><para><ref refid="CUDASTDReduce" kindref="compound">Parallel Reduction</ref></para></listitem><listitem><para><ref refid="CUDASTDScan" kindref="compound">Parallel Scan</ref></para></listitem><listitem><para><ref refid="CUDASTDMerge" kindref="compound">Parallel Merge</ref></para></listitem><listitem><para><ref refid="CUDASTDSort" kindref="compound">Parallel Sort</ref></para></listitem><listitem><para><ref refid="CUDASTDFind" kindref="compound">Parallel Find</ref></para></listitem></itemizedlist>
-</para></listitem>
+<listitem><para><ref refid="CUDASTDExecutionPolicy" kindref="compound">Execution Policy</ref></para>
+</listitem><listitem><para><ref refid="CUDASTDReduce" kindref="compound">Parallel Reduction</ref></para>
+</listitem><listitem><para><ref refid="CUDASTDScan" kindref="compound">Parallel Scan</ref></para>
+</listitem><listitem><para><ref refid="CUDASTDMerge" kindref="compound">Parallel Merge</ref></para>
+</listitem><listitem><para><ref refid="CUDASTDSort" kindref="compound">Parallel Sort</ref></para>
+</listitem><listitem><para><ref refid="CUDASTDFind" kindref="compound">Parallel Find</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem>
 </itemizedlist>
-</para></sect1>
+</para>
+</sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_miscellaneous_items">
 <title>Miscellaneous Items</title>
 <para>We have published <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> in the following conference:<itemizedlist>
-<listitem><para>Dian-Lun Lin and Tsung-Wei Huang, "Efficient GPU Computation using Task <ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> Parallelism," <emphasis>European Conference on Parallel and Distributed Computing (EuroPar)</emphasis>, 2021 </para></listitem></itemizedlist>
-</para></sect1>
+<listitem><para>Dian-Lun Lin and Tsung-Wei Huang, "Efficient GPU Computation using Task <ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> Parallelism," <emphasis>European Conference on Parallel and Distributed Computing (EuroPar)</emphasis>, 2021 </para>
+</listitem></itemizedlist>
+</para>
+</sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

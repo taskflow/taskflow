@@ -5,7 +5,7 @@
   <title>tf::Pipeline class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -61,7 +61,7 @@
             </tr>
           </tbody>
         </table>
-        <nav class="m-block m-default">
+        <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
@@ -72,7 +72,7 @@
               </ul>
             </li>
           </ul>
-        </nav>
+        </div>
 <p>A pipeline is a composable graph object for users to create a <em>pipeline scheduling framework</em> using a module task in a taskflow. Unlike the conventional pipeline programming frameworks (e.g., Intel TBB), Taskflow&#x27;s pipeline algorithm does not provide any data abstraction, which often restricts users from optimizing data layouts in their applications, but a flexible framework for users to customize their application data atop our pipeline scheduling. The following code creates a pipeline of four parallel lines to schedule tokens through three serial pipes:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
 
@@ -127,7 +127,7 @@
 <span class="go">o -&gt; o -&gt; o</span>
 <span class="go">|    |    |</span>
 <span class="go">v    v    v</span>
-<span class="go">o -&gt; o -&gt; o </span></pre><p>At each pipe stage, the program propagates the result to the next pipe by adding one to the result stored in a custom data storage, <code>buffer</code>. The pipeline scheduler will generate five scheduling tokens and then stop.</p><p>Internally, <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> uses <a href="http://en.cppreference.com/w/cpp/utility/tuple.html" class="m-doc-external">std::<wbr />tuple</a> to store the given sequence of pipes. The definition of each pipe can be different, completely decided by the compiler to optimize the object layout. After a pipeline is constructed, it is not possible to change its pipes. If applications need to change these pipes, please use <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a>.</p>
+<span class="go">o -&gt; o -&gt; o</span></pre><p>At each pipe stage, the program propagates the result to the next pipe by adding one to the result stored in a custom data storage, <code>buffer</code>. The pipeline scheduler will generate five scheduling tokens and then stop.</p><p>Internally, <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> uses <a href="http://en.cppreference.com/w/cpp/utility/tuple.html" class="m-doc-external">std::<wbr />tuple</a> to store the given sequence of pipes. The definition of each pipe can be different, completely decided by the compiler to optimize the object layout. After a pipeline is constructed, it is not possible to change its pipes. If applications need to change these pipes, please use <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a>.</p>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
@@ -194,7 +194,7 @@
                 </tr>
               </tbody>
             </table>
-<p>Constructs a pipeline of up to <code>num_lines</code> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>) or an exception will be thrown.</p>
+<p>Constructs a pipeline of up to <code>num_lines</code> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>) or an exception will be thrown.</p>
           </div></section>
           <section class="m-doc-details" id="a879a54b37af5db33e5768e5b3c135ba6"><div>
             <h3>
@@ -220,7 +220,7 @@
                 </tr>
               </tbody>
             </table>
-<p>Constructs a pipeline of up to <code>num_lines</code> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>) or an exception will be thrown.</p>
+<p>Constructs a pipeline of up to <code>num_lines</code> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>) or an exception will be thrown.</p>
           </div></section>
           <section class="m-doc-details" id="a79f066bacd6c1abd28c26d8196955e95"><div>
             <h3>
@@ -311,13 +311,13 @@
     </div>
   </div>
 </div>
-<script src="search-v2.js"></script>
-<script src="searchdata-v2.js" async="async"></script>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>
