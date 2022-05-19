@@ -208,10 +208,20 @@ class Runtime {
   void schedule(Task task);
 
   /**
-  @brief runs a task callable synchronously
+  @brief emplace a subflow to run immediately
+
+  @code{.cpp}
+  taskflow.emplace([](tf::Runtime& rt){
+    rt.emplace([](tf::Runtime& sf){
+      tf::Task A = sf.emplace([](){});
+      tf::Task B = sf.emplace([](){});
+    }); 
+    // subflow sf joins upon return of the emplace
+  });
+  @endcode
   */
   template <typename C>
-  void run(C&&);
+  void emplace(C&&);
 
   private:
 

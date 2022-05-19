@@ -82,6 +82,9 @@ class Pipeflow {
   Others have no effect.
   */
   void stop() {
+    if(_pipe != 0) {
+      TF_THROW("only the first pipe can stop the token");
+    }
     _stop = true;
   }
 
@@ -123,7 +126,7 @@ enum class PipeType : int {
 A pipe represents a stage of a pipeline. A pipe can be either
 @em parallel direction or @em serial direction (specified by tf::PipeType)
 and is coupled with a callable to invoke by the pipeline scheduler.
-The callable must take a tf::Pipeflow object in reference:
+The callable must take a referenced tf::Pipeflow object in the first argument:
 
 @code{.cpp}
 Pipe{PipeType::SERIAL, [](tf::Pipeflow&){}}
@@ -160,8 +163,8 @@ class Pipe {
   @param callable callable type
 
   The constructor constructs a pipe with the given direction
-  (either tf::PipeType::SERIAL or tf::PipeType::PARALLEL) and the
-  given callable. The callable must take a tf::Pipeflow object in reference:
+  (tf::PipeType::SERIAL or tf::PipeType::PARALLEL) and the given callable. 
+  The callable must take a referenced tf::Pipeflow object in the first argument.
 
   @code{.cpp}
   Pipe{PipeType::SERIAL, [](tf::Pipeflow&){}}
@@ -528,7 +531,7 @@ void Pipeline<Ps...>::reset() {
 template <typename... Ps>
 void Pipeline<Ps...>::_on_pipe(Pipeflow& pf, Runtime& rt) {
   visit_tuple([&](auto&& pipe){
-    using callable_t = std::decay_t<decltype(pipe._callable)>;
+    using callable_t = typename std::decay_t<decltype(pipe)>::callable_t;
     if constexpr (std::is_invocable_v<callable_t, Pipeflow&>) {
       pipe._callable(pf);
     }
@@ -787,7 +790,7 @@ class ScalablePipeline {
   /**
   @brief pipe type
   */
-  using pipe_type = typename std::iterator_traits<P>::value_type;
+  using pipe_t = typename std::iterator_traits<P>::value_type;
 
   /**
   @brief default constructor
@@ -1107,8 +1110,19 @@ void ScalablePipeline<P>::reset() {
 
 // Procedure: _on_pipe
 template <typename P>
-void ScalablePipeline<P>::_on_pipe(Pipeflow& pf, Runtime&) {
-  _pipes[pf._pipe]->_callable(pf);
+void ScalablePipeline<P>::_on_pipe(Pipeflow& pf, Runtime& rt) {
+    
+  using callable_t = typename pipe_t::callable_t;
+
+  if constexpr (std::is_invocable_v<callable_t, Pipeflow&>) {
+    _pipes[pf._pipe]->_callable(pf);
+  }
+  else if constexpr(std::is_invocable_v<callable_t, Pipeflow&, Runtime&>) {
+    _pipes[pf._pipe]->_callable(pf, rt);
+  }
+  else {
+    static_assert(dependent_false_v<callable_t>, "un-supported pipe callable type");
+  }
 }
 
 // Procedure: _build

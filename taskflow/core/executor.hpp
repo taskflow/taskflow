@@ -1264,17 +1264,19 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   if(node->_semaphores && !node->_semaphores->to_release.empty()) {
     _schedule(worker, node->_release_all());
   }
-
-  // We MUST recover the dependency since the graph may have cycles.
-  // This must be done before scheduling the successors, otherwise this might cause
-  // race condition on the _dependents
+  
+  // Reset the join counter to support the cyclic control flow.
+  //
+  // + We must do this before scheduling the successors to avoid race
+  //   condition on _dependents.
+  // + We must use fetch_add instead of direct assigning
+  //   because the user-space call on "invoke" may explicitly schedule 
+  //   this task again (e.g., pipeline) which can access the join_counter.
+  // 
   if((node->_state.load(std::memory_order_relaxed) & Node::CONDITIONED)) {
-    //node->_join_counter = node->num_strong_dependents();
     node->_join_counter.fetch_add(node->num_strong_dependents());
   }
   else {
-    // TODO:
-    //node->_join_counter = node->num_dependents();
     node->_join_counter.fetch_add(node->num_dependents());
   }
 
@@ -1961,9 +1963,9 @@ inline void Runtime::schedule(Task task) {
   _executor._schedule(_worker, node);
 }
 
-// Procedure: run
+// Procedure: emplace
 template <typename C>
-void Runtime::run(C&& callable) {
+void Runtime::emplace(C&& callable) {
 
   // dynamic task (subflow)
   if constexpr(is_dynamic_task_v<C>) {

@@ -61,8 +61,9 @@ To use %Taskflow v3.4.0, you need a compiler that supports C++17:
 
 @section release-3-4-0_bug_fixes Bug Fixes 
 
-+ Fixed compilation error by non-portable include of `immintrin.h` ([#371](https://github.com/taskflow/taskflow/issues/371))
-+ Fixed compilation error by old version of doctest ([#372](https://github.com/taskflow/taskflow/issues/372))
++ Fixed the compilation error due to non-portable include of `immintrin.h` ([#371](https://github.com/taskflow/taskflow/issues/371))
++ Fixed the compilation error due to using old version of doctest ([#372](https://github.com/taskflow/taskflow/issues/372))
++ Fixed the infinite loop bug due to unexpected share states in pipeline ([#402](https://github.com/taskflow/taskflow/issues/402))
 
 If you encounter any potential bugs, please submit an issue at @IssueTracker.
 
