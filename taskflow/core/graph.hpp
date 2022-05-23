@@ -208,20 +208,31 @@ class Runtime {
   void schedule(Task task);
 
   /**
-  @brief emplace a subflow to run immediately
+  @brief runs the given target and waits until it completes
+  
+  A target can be 
+  (1) a callable to spawn a subflow or
+  (2) a composable target with `tf::Graph& T::graph()` defined
 
   @code{.cpp}
+  // complete a subflow synchronously
   taskflow.emplace([](tf::Runtime& rt){
-    rt.emplace([](tf::Runtime& sf){
+    rt.run_and_wait([](tf::Runtime& sf){
       tf::Task A = sf.emplace([](){});
       tf::Task B = sf.emplace([](){});
     }); 
-    // subflow sf joins upon return of the emplace
+  });
+  
+  // complete a custom graph synchronously
+  tf::Taskflow taskflow;
+  taskflow.emplace([](){});
+  taskflow.emplace([&](tf::Runtime& rt){
+    rt.run_and_wait(taskflow);
   });
   @endcode
   */
-  template <typename C>
-  void emplace(C&&);
+  template <typename T>
+  void run_and_wait(T&& target);
 
   private:
 

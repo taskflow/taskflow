@@ -293,8 +293,6 @@ TEST_CASE("STDFunction" * doctest::timeout(300)) {
   executor.run(taskflow).wait();
   REQUIRE(counter == 2);
 
-  return;
-
   // scenario 2
   counter = 0;
   A.work(func1);
@@ -701,6 +699,71 @@ TEST_CASE("SerialRuns.7threads" * doctest::timeout(300)) {
 
 TEST_CASE("SerialRuns.8threads" * doctest::timeout(300)) {
   sequential_runs(8);
+}
+
+// --------------------------------------------------------
+// Testcase:: RunAndWait
+// --------------------------------------------------------
+
+TEST_CASE("RunAndWait.Simple") {
+  
+  // create an executor and a taskflow
+  tf::Executor executor(2);
+  tf::Taskflow taskflow("Demo");
+
+  int counter{0};
+  
+  // taskflow to run by the main taskflow
+  tf::Taskflow others;
+  tf::Task A = others.emplace([&](){ counter++; });
+  tf::Task B = others.emplace([&](){ counter++; });
+  A.precede(B);
+
+  // main taskflow
+  tf::Task C = taskflow.emplace([&](){
+    executor.run_and_wait(others);
+    REQUIRE(counter == 2);
+  });
+  tf::Task D = taskflow.emplace([&](){
+    executor.run_and_wait(others);
+    REQUIRE(counter == 4);
+  });
+  C.precede(D);
+
+  executor.run(taskflow).wait();
+
+  // run others again
+  executor.run(others).wait();
+
+  REQUIRE(counter == 6);
+}
+
+TEST_CASE("RunAndWait.Complex") {
+
+  const size_t N = 100;
+  const size_t T = 1000;
+  
+  // create an executor and a taskflow
+  tf::Executor executor(2);
+  tf::Taskflow taskflow;
+
+  std::array<tf::Taskflow, N> taskflows;
+
+  std::atomic<size_t> counter{0};
+  
+  for(size_t n=0; n<N; n++) {
+    for(size_t i=0; i<T; i++) {
+      taskflows[n].emplace([&](){ counter++; });
+    }
+    taskflow.emplace([&executor, &tf=taskflows[n]](){
+      executor.run_and_wait(tf);
+      //executor.run(tf).wait();
+    });
+  }
+
+  executor.run(taskflow).wait();
+
+  REQUIRE(counter == T*N);
 }
 
 // --------------------------------------------------------

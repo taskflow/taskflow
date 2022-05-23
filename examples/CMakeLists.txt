@@ -23,6 +23,7 @@ list(APPEND TF_EXAMPLES
   parallel_graph_pipeline
   parallel_taskflow_pipeline
   run 
+  run_and_wait
   runtime
   composition
   limited_concurrency

@@ -72,24 +72,52 @@ taskflow.emplace([&](tf::Runtime& rt){
 executor.run(taskflow).wait();
 @endcode
 
-@section RuntimeTaskingSpawnASubflow Spawn a Subflow
+@section RuntimeTaskingRunATaskGraphSynchronously Run a Task Graph Synchronously
 
-You can spawn a subflow by emplacing a callable that takes a tf::Subflow reference
-in its argument to launch a task graph from the execution conext of the runtime task.
+A runtime task can spawn and run a task graph synchronously using tf::Runtime::run_and_wait.
+This model allows you to leverage dynamic tasking to execute a parallel workload within
+a runtime task.
+The following code creates a subflow of two independent tasks and executes it synchronously
+via the given runtime task:
 
 @code{.cpp}
 taskflow.emplace([](tf::Runtime& rt){
-  rt.emplace([](tf::Subflow& sf){
+  rt.run_and_wait([](tf::Subflow& sf){
     sf.emplace([](){ std::cout << "independent task 1\n"; });
     sf.emplace([](){ std::cout << "independent task 2\n"; });
   });
-  // subflow joins upon emplace returns
+  // subflow joins upon run_and_wait returns
 });
 @endcode
 
-The spawned subflow will join right upon the return of the emplace method.
-This feature is primarily used in programming %Taskflow pipeline where you can spawn
-a task graph from a stage task.
+You can also create a task graph yourself and execute it through a runtime task.
+This organization avoids repetitive creation of a subflow with the same topology,
+such as running a runtime task repetitively.
+The following code performs the same execution logic as the above example
+but using the given task graph to avoid repetitive creations of a subflow:
+
+@code{.cpp}
+// create a custom graph
+tf::Taskflow graph;
+graph.emplace([](){ std::cout << "independent task 1\n"; });
+graph.emplace([](){ std::cout << "independent task 2\n"; });
+
+taskflow.emplace([&](tf::Runtime& rt){ 
+  rt.run_and_wait(graph);  // this worker thread continues the work-stealing loop
+});
+executor.run_n(taskflow, 10000);
+@endcode
+
+Although tf::Runtime::run_and_wait blocks until the operation completes,
+the caller thread (worker) is not blocked (e.g., sleep or holding any lock).
+Instead, the caller thread joins the work-stealing loop of the executor
+and returns whenever the spawned task graph completes.
+This is different from waiting for a submitted taskflow to finish 
+(`executor.run(taskflow).wait()`)
+which blocks the caller thread until the submitted taskflow completes.
+When multiple submitted taskflows are being waited,
+their executions can potentially lead to deadlock.
+Using tf::Runtime::run_and_wait avoids the deadlock problem.
 
 */
 

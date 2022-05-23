@@ -1,44 +1,18 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="BenchmarkTaskflow" kind="page">
     <compoundname>BenchmarkTaskflow</compoundname>
     <title>Benchmark Taskflow</title>
-    <tableofcontents>
-      <tocsect>
-        <name>Compile and Run Benchmarks</name>
-        <reference>BenchmarkTaskflow_1CompileAndRunBenchmarks</reference>
-    </tocsect>
-      <tocsect>
-        <name>Configure Run Options</name>
-        <reference>BenchmarkTaskflow_1ConfigureRunOptions</reference>
-    <tableofcontents>
-      <tocsect>
-        <name>Specify the Run Model</name>
-        <reference>BenchmarkTaskflow_1SpecifyTheRunModel</reference>
-    </tocsect>
-      <tocsect>
-        <name>Specify the Number of Threads</name>
-        <reference>BenchmarkTaskflow_1SpecifyTheNumberOfThreads</reference>
-    </tocsect>
-      <tocsect>
-        <name>Specify the Number of Rounds</name>
-        <reference>BenchmarkTaskflow_1SpecifyTheNumberOfRounds</reference>
-    </tocsect>
-    </tableofcontents>
-    </tocsect>
-    </tableofcontents>
+    <tableofcontents/>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <sect1 id="BenchmarkTaskflow_1CompileAndRunBenchmarks">
 <title>Compile and Run Benchmarks</title>
-<para>To build the benchmark code, enable the CMake option <computeroutput>TF_BUILD_BENCHMARKS</computeroutput> to <computeroutput>ON</computeroutput> as follows:</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>under<sp/>/taskflow/build</highlight></codeline>
+<para>To build the benchmark code, enable the CMake option <computeroutput>TF_BUILD_BENCHMARKS</computeroutput> to <computeroutput>ON</computeroutput> as follows:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>under<sp/>/taskflow/build</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_BENCHMARKS=ON</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>make</highlight></codeline>
-</programlisting></para>
-<para>After you successfully build the benchmark code, you can find all benchmark instances in the <computeroutput>benchmarks/</computeroutput> folder. You can run the executable of each instance in the corresponding folder.</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cd<sp/>benchmarks<sp/>&amp;<sp/>ls</highlight></codeline>
+</programlisting></para><para>After you successfully build the benchmark code, you can find all benchmark instances in the <computeroutput>benchmarks/</computeroutput> folder. You can run the executable of each instance in the corresponding folder.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cd<sp/>benchmarks<sp/>&amp;<sp/>ls</highlight></codeline>
 <codeline><highlight class="normal">black_scholes<sp/>binary_tree<sp/>graph_traversal<sp/>...</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>cd<sp/>graph_traversal<sp/>&amp;<sp/>./graph_traversal</highlight></codeline>
 <codeline><highlight class="normal">|V|+|E|<sp/><sp/><sp/><sp/><sp/>Runtime</highlight></codeline>
@@ -51,9 +25,7 @@
 <codeline><highlight class="normal"><sp/>619802<sp/><sp/><sp/><sp/><sp/><sp/>75.135</highlight></codeline>
 <codeline><highlight class="normal"><sp/>664771<sp/><sp/><sp/><sp/><sp/><sp/>77.436</highlight></codeline>
 <codeline><highlight class="normal"><sp/>711200<sp/><sp/><sp/><sp/><sp/><sp/>83.957</highlight></codeline>
-</programlisting></para>
-<para>You can display the help message by giving the option <computeroutput><ndash/>help</computeroutput>.</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>./graph_traversal<sp/>--help</highlight></codeline>
+</programlisting></para><para>You can display the help message by giving the option <computeroutput><ndash/>help</computeroutput>.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>./graph_traversal<sp/>--help</highlight></codeline>
 <codeline><highlight class="normal">Graph<sp/>Traversal</highlight></codeline>
 <codeline><highlight class="normal">Usage:<sp/>./graph_traversal<sp/>[OPTIONS]</highlight></codeline>
 <codeline></codeline>
@@ -62,117 +34,63 @@
 <codeline><highlight class="normal"><sp/><sp/>-t,--num_threads<sp/>UINT<sp/><sp/><sp/><sp/><sp/><sp/><sp/>number<sp/>of<sp/>threads<sp/>(default=1)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>-r,--num_rounds<sp/>UINT<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>number<sp/>of<sp/>rounds<sp/>(default=1)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>-m,--model<sp/>TEXT<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>model<sp/>name<sp/>tbb|omp|tf<sp/>(default=tf)</highlight></codeline>
-</programlisting></para>
-<para>We currently implement the following instances that are commonly used by the parallel computing community to evaluate the system performance.</para>
-<para><table rows="13" cols="2"><row>
-<entry thead="yes" align='center'><para>Instance  </para>
-</entry><entry thead="yes" align='center'><para>Description   </para>
-</entry></row>
+</programlisting></para><para>We currently implement the following instances that are commonly used by the parallel computing community to evaluate the system performance.</para><para><table rows="13" cols="2"><row>
+<entry thead="yes"><para>Instance  </para></entry><entry thead="yes"><para>Description   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>binary_tree  </para>
-</entry><entry thead="no" align='center'><para>traverses a complete binary tree   </para>
-</entry></row>
+<entry thead="no"><para>binary_tree  </para></entry><entry thead="no"><para>traverses a complete binary tree   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>black_scholes  </para>
-</entry><entry thead="no" align='center'><para>computes option pricing with Black-Shcoles Models   </para>
-</entry></row>
+<entry thead="no"><para>black_scholes  </para></entry><entry thead="no"><para>computes option pricing with Black-Shcoles Models   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>graph_traversal  </para>
-</entry><entry thead="no" align='center'><para>traverses a randomly generated direct acyclic graph   </para>
-</entry></row>
+<entry thead="no"><para>graph_traversal  </para></entry><entry thead="no"><para>traverses a randomly generated direct acyclic graph   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>linear_chain  </para>
-</entry><entry thead="no" align='center'><para>traverses a linear chain of tasks   </para>
-</entry></row>
+<entry thead="no"><para>linear_chain  </para></entry><entry thead="no"><para>traverses a linear chain of tasks   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>mandelbrot  </para>
-</entry><entry thead="no" align='center'><para>exploits imbalanced workloads in a Mandelbrot set   </para>
-</entry></row>
+<entry thead="no"><para>mandelbrot  </para></entry><entry thead="no"><para>exploits imbalanced workloads in a Mandelbrot set   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>matrix_multiplication  </para>
-</entry><entry thead="no" align='center'><para>multiplies two 2D matrices   </para>
-</entry></row>
+<entry thead="no"><para>matrix_multiplication  </para></entry><entry thead="no"><para>multiplies two 2D matrices   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>mnist  </para>
-</entry><entry thead="no" align='center'><para>trains a neural network-based image classifier on the MNIST dataset   </para>
-</entry></row>
+<entry thead="no"><para>mnist  </para></entry><entry thead="no"><para>trains a neural network-based image classifier on the MNIST dataset   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>parallel_sort  </para>
-</entry><entry thead="no" align='center'><para>sorts a range of items   </para>
-</entry></row>
+<entry thead="no"><para>parallel_sort  </para></entry><entry thead="no"><para>sorts a range of items   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>reduce_sum  </para>
-</entry><entry thead="no" align='center'><para>sums a range of items using reduction   </para>
-</entry></row>
+<entry thead="no"><para>reduce_sum  </para></entry><entry thead="no"><para>sums a range of items using reduction   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>wavefront  </para>
-</entry><entry thead="no" align='center'><para>propagates computations in a 2D grid   </para>
-</entry></row>
+<entry thead="no"><para>wavefront  </para></entry><entry thead="no"><para>propagates computations in a 2D grid   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>linear_pipeline  </para>
-</entry><entry thead="no" align='center'><para>pipeline scheduling on a linear chain of pipes   </para>
-</entry></row>
+<entry thead="no"><para>linear_pipeline  </para></entry><entry thead="no"><para>pipeline scheduling on a linear chain of pipes   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>graph_pipeline  </para>
-</entry><entry thead="no" align='center'><para>pipeline scheduling on a graph of pipes   </para>
-</entry></row>
+<entry thead="no"><para>graph_pipeline  </para></entry><entry thead="no"><para>pipeline scheduling on a graph of pipes   </para></entry></row>
 </table>
-</para>
-</sect1>
+</para></sect1>
 <sect1 id="BenchmarkTaskflow_1ConfigureRunOptions">
 <title>Configure Run Options</title>
-<para>We implement consistent options for each benchmark instance. Common options are:</para>
-<para><table rows="5" cols="3"><row>
-<entry thead="yes" align='center'><para>option  </para>
-</entry><entry thead="yes" align='center'><para>value  </para>
-</entry><entry thead="yes" align='center'><para>function   </para>
-</entry></row>
+<para>We implement consistent options for each benchmark instance. Common options are:</para><para><table rows="5" cols="3"><row>
+<entry thead="yes"><para>option  </para></entry><entry thead="yes"><para>value  </para></entry><entry thead="yes"><para>function   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para><computeroutput>-h</computeroutput>  </para>
-</entry><entry thead="no" align='center'><para>none  </para>
-</entry><entry thead="no" align='center'><para>display the help message   </para>
-</entry></row>
+<entry thead="no"><para><computeroutput>-h</computeroutput>  </para></entry><entry thead="no"><para>none  </para></entry><entry thead="no"><para>display the help message   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para><computeroutput>-t</computeroutput>  </para>
-</entry><entry thead="no" align='center'><para>integer  </para>
-</entry><entry thead="no" align='center'><para>configure the number of threads to run   </para>
-</entry></row>
+<entry thead="no"><para><computeroutput>-t</computeroutput>  </para></entry><entry thead="no"><para>integer  </para></entry><entry thead="no"><para>configure the number of threads to run   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para><computeroutput>-r</computeroutput>  </para>
-</entry><entry thead="no" align='center'><para>integer  </para>
-</entry><entry thead="no" align='center'><para>configure the number of rounds to run   </para>
-</entry></row>
+<entry thead="no"><para><computeroutput>-r</computeroutput>  </para></entry><entry thead="no"><para>integer  </para></entry><entry thead="no"><para>configure the number of rounds to run   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para><computeroutput>-m</computeroutput>  </para>
-</entry><entry thead="no" align='center'><para>string  </para>
-</entry><entry thead="no" align='center'><para>configure the baseline models to run, tbb, omp, or tf   </para>
-</entry></row>
+<entry thead="no"><para><computeroutput>-m</computeroutput>  </para></entry><entry thead="no"><para>string  </para></entry><entry thead="no"><para>configure the baseline models to run, tbb, omp, or tf   </para></entry></row>
 </table>
-</para>
-<para>You can configure the benchmarking environment by giving different options.</para>
-<sect2 id="BenchmarkTaskflow_1SpecifyTheRunModel">
+</para><para>You can configure the benchmarking environment by giving different options.</para><sect2 id="BenchmarkTaskflow_1SpecifyTheRunModel">
 <title>Specify the Run Model</title>
-<para>In addition to a Taskflow-based implementation for each benchmark instance, we have implemented two baseline models using the state-of-the-art parallel programming libraries, <ulink url="https://www.openmp.org/">OpenMP</ulink> and <ulink url="https://github.com/oneapi-src/oneTBB">Intel TBB</ulink>, to measure and evaluate the performance of Taskflow. You can select different implementations by passing the option <computeroutput>-m</computeroutput>.</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>./graph_traversal<sp/>-m<sp/>tf<sp/><sp/><sp/>#<sp/>run<sp/>the<sp/>Taskflow<sp/>implementation<sp/>(default)</highlight></codeline>
+<para>In addition to a Taskflow-based implementation for each benchmark instance, we have implemented two baseline models using the state-of-the-art parallel programming libraries, <ulink url="https://www.openmp.org/">OpenMP</ulink> and <ulink url="https://github.com/oneapi-src/oneTBB">Intel TBB</ulink>, to measure and evaluate the performance of Taskflow. You can select different implementations by passing the option <computeroutput>-m</computeroutput>.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>./graph_traversal<sp/>-m<sp/>tf<sp/><sp/><sp/>#<sp/>run<sp/>the<sp/>Taskflow<sp/>implementation<sp/>(default)</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./graph_traversal<sp/>-m<sp/>tbb<sp/><sp/>#<sp/>run<sp/>the<sp/>TBB<sp/>implementation</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./graph_traversal<sp/>-m<sp/>omp<sp/><sp/>#<sp/>run<sp/>the<sp/>OpenMP<sp/>implementation</highlight></codeline>
-</programlisting></para>
-</sect2>
+</programlisting></para></sect2>
 <sect2 id="BenchmarkTaskflow_1SpecifyTheNumberOfThreads">
 <title>Specify the Number of Threads</title>
-<para>You can configure the number of threads to run a benchmark instance by passing the option <computeroutput>-t</computeroutput>. The default value is one.</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>run<sp/>the<sp/>Taskflow<sp/>implementation<sp/>using<sp/>4<sp/>threads</highlight></codeline>
+<para>You can configure the number of threads to run a benchmark instance by passing the option <computeroutput>-t</computeroutput>. The default value is one.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>run<sp/>the<sp/>Taskflow<sp/>implementation<sp/>using<sp/>4<sp/>threads</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./graph_traversal<sp/>-m<sp/>tf<sp/>-t<sp/>4</highlight></codeline>
-</programlisting></para>
-<para>Depending on your environment, you may need to use <computeroutput>taskset</computeroutput> to set the CPU affinity of the running process. This allows the OS scheduler to keep process on the same CPU(s) as long as practical for performance reason.</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>affine<sp/>the<sp/>process<sp/>to<sp/>4<sp/>CPUs,<sp/>CPU<sp/>0,<sp/>CPU<sp/>1,<sp/>CPU<sp/>2,<sp/>and<sp/>CPU<sp/>3</highlight></codeline>
+</programlisting></para><para>Depending on your environment, you may need to use <computeroutput>taskset</computeroutput> to set the CPU affinity of the running process. This allows the OS scheduler to keep process on the same CPU(s) as long as practical for performance reason.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>affine<sp/>the<sp/>process<sp/>to<sp/>4<sp/>CPUs,<sp/>CPU<sp/>0,<sp/>CPU<sp/>1,<sp/>CPU<sp/>2,<sp/>and<sp/>CPU<sp/>3</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>taskset<sp/>-c<sp/>0-3<sp/>graph_traversal<sp/>-t<sp/>4<sp/><sp/></highlight></codeline>
-</programlisting></para>
-</sect2>
+</programlisting></para></sect2>
 <sect2 id="BenchmarkTaskflow_1SpecifyTheNumberOfRounds">
 <title>Specify the Number of Rounds</title>
-<para>Each benchmark instance evaluates the runtime of the implementation at different problem sizes. Each problem size corresponds to one iteration. You can configure the number of rounds per iteration to average the runtime.</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>measure<sp/>the<sp/>runtime<sp/>in<sp/>an<sp/>average<sp/>of<sp/>10<sp/>runs</highlight></codeline>
+<para>Each benchmark instance evaluates the runtime of the implementation at different problem sizes. Each problem size corresponds to one iteration. You can configure the number of rounds per iteration to average the runtime.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>measure<sp/>the<sp/>runtime<sp/>in<sp/>an<sp/>average<sp/>of<sp/>10<sp/>runs</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./graph_traversal<sp/>-r<sp/>10</highlight></codeline>
 <codeline><highlight class="normal">|V|+|E|<sp/><sp/><sp/><sp/><sp/>Runtime</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>2<sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.109<sp/><sp/><sp/>#<sp/>the<sp/>runtime<sp/>value<sp/>0.109<sp/>is<sp/>an<sp/>average<sp/>of<sp/>10<sp/>runs</highlight></codeline>
@@ -180,8 +98,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>...<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>...</highlight></codeline>
 <codeline><highlight class="normal"><sp/>619802<sp/><sp/><sp/><sp/><sp/><sp/>73.135</highlight></codeline>
 <codeline><highlight class="normal"><sp/>664771<sp/><sp/><sp/><sp/><sp/><sp/>74.436</highlight></codeline>
-</programlisting> </para>
-</sect2>
+</programlisting> </para></sect2>
 </sect1>
     </detaileddescription>
   </compounddef>

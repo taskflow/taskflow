@@ -9,7 +9,7 @@
 // Testcase: RuntimeTasking
 // --------------------------------------------------------
 
-TEST_CASE("RuntimeTasking" * doctest::timeout(300)) {
+TEST_CASE("Runtime.Basics" * doctest::timeout(300)) {
 
   tf::Taskflow taskflow;
   tf::Executor executor;
@@ -18,7 +18,7 @@ TEST_CASE("RuntimeTasking" * doctest::timeout(300)) {
   int b = 0;
 
   taskflow.emplace([&](tf::Runtime& rt){
-    rt.emplace([&](tf::Subflow& sf){
+    rt.run_and_wait([&](tf::Subflow& sf){
       REQUIRE(&rt.executor() == &executor);
       auto task1 = sf.emplace([&](){a++;});
       auto task2 = sf.emplace([&](){a++;});
@@ -35,7 +35,7 @@ TEST_CASE("RuntimeTasking" * doctest::timeout(300)) {
   taskflow.emplace([&](tf::Subflow& sf){
     sf.emplace([&](tf::Runtime& rt){
       REQUIRE(&rt.executor() == &executor);
-      rt.emplace([&](tf::Subflow& sf){
+      rt.run_and_wait([&](tf::Subflow& sf){
         auto task1 = sf.emplace([&](){b++;});
         auto task2 = sf.emplace([&](){b++;});
         auto task3 = sf.emplace([&](){b++;});
@@ -56,16 +56,48 @@ TEST_CASE("RuntimeTasking" * doctest::timeout(300)) {
   REQUIRE(b == 5);
 }
 
+// --------------------------------------------------------
+// Testcase: Runtime.ExternalGraph.Simple
+// --------------------------------------------------------
 
+TEST_CASE("Runtime.ExternalGraph.Simple" * doctest::timeout(300)) {
 
+  const size_t N = 100;
 
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+  
+  std::vector<int> results(N, 0);
+  std::vector<tf::Taskflow> graphs(N);
 
+  for(size_t i=0; i<N; i++) {
 
+    auto& fb = graphs[i];
 
+    auto A = fb.emplace([&res=results[i]]()mutable{ ++res; });
+    auto B = fb.emplace([&res=results[i]]()mutable{ ++res; });
+    auto C = fb.emplace([&res=results[i]]()mutable{ ++res; });
+    auto D = fb.emplace([&res=results[i]]()mutable{ ++res; });
 
+    A.precede(B);
+    B.precede(C);
+    C.precede(D);
+
+    taskflow.emplace([&res=results[i], &graph=graphs[i]](tf::Runtime& rt)mutable{
+      rt.run_and_wait(graph);
+    });
+  }
+  
+  executor.run_n(taskflow, 100).wait();
+
+  for(size_t i=0; i<N; i++) {
+    REQUIRE(results[i] == 400);
+  }
+
+}
 
 // --------------------------------------------------------
-// Testcase 1: Runtime.Subflow
+// Testcase: Runtime.Subflow
 // --------------------------------------------------------
 
 void runtime_subflow(size_t w) {
@@ -93,7 +125,7 @@ void runtime_subflow(size_t w) {
       std::string rt_name = "rt-" + std::to_string(i);
       
       rts.emplace_back(taskflow.emplace([&sums, &subtask](tf::Runtime& rt) {
-        rt.emplace([&sums, &subtask](tf::Subflow& sf) {
+        rt.run_and_wait([&sums, &subtask](tf::Subflow& sf) {
           for (size_t j = 0; j < subtask; ++j) {
             sf.emplace([&sums]() {
               sums.fetch_add(1, std::memory_order_relaxed);
@@ -160,7 +192,7 @@ TEST_CASE("Runtime.Subflow.8threads" * doctest::timeout(300)){
 
 
 // --------------------------------------------------------
-// Testcase 2: Pipeline(SP).Runtime.Subflow
+// Testcase: Pipeline(SP).Runtime.Subflow
 // --------------------------------------------------------
 
 void pipeline_sp_runtime_subflow(size_t w) {
@@ -188,7 +220,7 @@ void pipeline_sp_runtime_subflow(size_t w) {
 
       tf::Pipe{
         tf::PipeType::PARALLEL, [subtask, &sums](tf::Pipeflow&, tf::Runtime& rt) {
-          rt.emplace([subtask, &sums](tf::Subflow& sf) {
+          rt.run_and_wait([subtask, &sums](tf::Subflow& sf) {
             for (size_t i = 0; i < subtask; ++i) {
               sf.emplace([&sums](){
                 sums.fetch_add(1, std::memory_order_relaxed);  
@@ -240,7 +272,7 @@ TEST_CASE("Pipeline(SP).Runtime.Subflow.8threads" * doctest::timeout(300)){
 
 
 // --------------------------------------------------------
-// Testcase 3: Pipeline(SPSPSPSP).Runtime.Subflow
+// Testcase: Pipeline(SPSPSPSP).Runtime.Subflow
 // --------------------------------------------------------
 
 void pipeline_spspspsp_runtime_subflow(size_t w) {
@@ -269,7 +301,7 @@ void pipeline_spspspsp_runtime_subflow(size_t w) {
 
       tf::Pipe{
         tf::PipeType::PARALLEL, [subtask, &sums](tf::Pipeflow&, tf::Runtime& rt) {
-          rt.emplace([subtask, &sums](tf::Subflow& sf) {
+          rt.run_and_wait([subtask, &sums](tf::Subflow& sf) {
             for (size_t i = 0; i < subtask; ++i) {
               sf.emplace([&sums](){
                 sums.fetch_add(1, std::memory_order_relaxed);  
@@ -281,7 +313,7 @@ void pipeline_spspspsp_runtime_subflow(size_t w) {
 
       tf::Pipe{
         tf::PipeType::SERIAL, [subtask, &sums](tf::Pipeflow&, tf::Runtime& rt) {
-          rt.emplace([subtask, &sums](tf::Subflow& sf) {
+          rt.run_and_wait([subtask, &sums](tf::Subflow& sf) {
             for (size_t i = 0; i < subtask; ++i) {
               sf.emplace([&sums](){
                 sums.fetch_add(1, std::memory_order_relaxed);  
@@ -293,7 +325,7 @@ void pipeline_spspspsp_runtime_subflow(size_t w) {
 
       tf::Pipe{
         tf::PipeType::PARALLEL, [subtask, &sums](tf::Pipeflow&, tf::Runtime& rt) {
-          rt.emplace([subtask, &sums](tf::Subflow& sf) {
+          rt.run_and_wait([subtask, &sums](tf::Subflow& sf) {
             for (size_t i = 0; i < subtask; ++i) {
               sf.emplace([&sums](){
                 sums.fetch_add(1, std::memory_order_relaxed);  
@@ -305,7 +337,7 @@ void pipeline_spspspsp_runtime_subflow(size_t w) {
 
       tf::Pipe{
         tf::PipeType::SERIAL, [subtask, &sums](tf::Pipeflow&, tf::Runtime& rt) {
-          rt.emplace([subtask, &sums](tf::Subflow& sf) {
+          rt.run_and_wait([subtask, &sums](tf::Subflow& sf) {
             for (size_t i = 0; i < subtask; ++i) {
               sf.emplace([&sums](){
                 sums.fetch_add(1, std::memory_order_relaxed);  
@@ -317,7 +349,7 @@ void pipeline_spspspsp_runtime_subflow(size_t w) {
 
       tf::Pipe{
         tf::PipeType::PARALLEL, [subtask, &sums](tf::Pipeflow&, tf::Runtime& rt) {
-          rt.emplace([subtask, &sums](tf::Subflow& sf) {
+          rt.run_and_wait([subtask, &sums](tf::Subflow& sf) {
             for (size_t i = 0; i < subtask; ++i) {
               sf.emplace([&sums](){
                 sums.fetch_add(1, std::memory_order_relaxed);  
@@ -329,7 +361,7 @@ void pipeline_spspspsp_runtime_subflow(size_t w) {
 
       tf::Pipe{
         tf::PipeType::SERIAL, [subtask, &sums](tf::Pipeflow&, tf::Runtime& rt) {
-          rt.emplace([subtask, &sums](tf::Subflow& sf) {
+          rt.run_and_wait([subtask, &sums](tf::Subflow& sf) {
             for (size_t i = 0; i < subtask; ++i) {
               sf.emplace([&sums](){
                 sums.fetch_add(1, std::memory_order_relaxed);  
@@ -341,7 +373,7 @@ void pipeline_spspspsp_runtime_subflow(size_t w) {
 
       tf::Pipe{
         tf::PipeType::PARALLEL, [subtask, &sums](tf::Pipeflow&, tf::Runtime& rt) {
-          rt.emplace([subtask, &sums](tf::Subflow& sf) {
+          rt.run_and_wait([subtask, &sums](tf::Subflow& sf) {
             for (size_t i = 0; i < subtask; ++i) {
               sf.emplace([&sums](){
                 sums.fetch_add(1, std::memory_order_relaxed);  
@@ -393,7 +425,7 @@ TEST_CASE("Pipeline(SPSPSPSP).Runtime.Subflow.8threads" * doctest::timeout(300))
 
 
 // --------------------------------------------------------
-// Testcase 4: Pipeline(SPSPSPSP).Runtime.IrregularSubflow
+// Testcase: Pipeline(SPSPSPSP).Runtime.IrregularSubflow
 // --------------------------------------------------------
 
 void pipeline_spspspsp_runtime_irregular_subflow(size_t w) {
@@ -424,7 +456,7 @@ void pipeline_spspspsp_runtime_irregular_subflow(size_t w) {
      */
     tf::Pipe{
       tf::PipeType::PARALLEL, [&sums](tf::Pipeflow&, tf::Runtime& rt) {
-        rt.emplace([&sums](tf::Subflow& sf) {
+        rt.run_and_wait([&sums](tf::Subflow& sf) {
           auto A = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
           auto B = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
           auto C = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
@@ -444,7 +476,7 @@ void pipeline_spspspsp_runtime_irregular_subflow(size_t w) {
      */
     tf::Pipe{
       tf::PipeType::SERIAL, [&sums](tf::Pipeflow&, tf::Runtime& rt) {
-        rt.emplace([&sums](tf::Subflow& sf) {
+        rt.run_and_wait([&sums](tf::Subflow& sf) {
           auto A = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
           auto B = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
           auto C = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
@@ -466,7 +498,7 @@ void pipeline_spspspsp_runtime_irregular_subflow(size_t w) {
      */
     tf::Pipe{
       tf::PipeType::PARALLEL, [&sums](tf::Pipeflow&, tf::Runtime& rt) {
-        rt.emplace([&sums](tf::Subflow& sf) {
+        rt.run_and_wait([&sums](tf::Subflow& sf) {
           auto A = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
           auto B = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
           auto C = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
@@ -488,7 +520,7 @@ void pipeline_spspspsp_runtime_irregular_subflow(size_t w) {
      */
     tf::Pipe{
       tf::PipeType::SERIAL, [&sums](tf::Pipeflow&, tf::Runtime& rt) {
-        rt.emplace([&sums](tf::Subflow& sf) {
+        rt.run_and_wait([&sums](tf::Subflow& sf) {
           auto A = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
           auto B = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
           auto C = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
@@ -509,7 +541,7 @@ void pipeline_spspspsp_runtime_irregular_subflow(size_t w) {
      */
     tf::Pipe{
       tf::PipeType::PARALLEL, [&sums](tf::Pipeflow&, tf::Runtime& rt) {
-        rt.emplace([&sums](tf::Subflow& sf) {
+        rt.run_and_wait([&sums](tf::Subflow& sf) {
           auto A = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
           auto B = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
           auto C = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
@@ -534,7 +566,7 @@ void pipeline_spspspsp_runtime_irregular_subflow(size_t w) {
      */
     tf::Pipe{
       tf::PipeType::SERIAL, [&sums](tf::Pipeflow&, tf::Runtime& rt) {
-        rt.emplace([&sums](tf::Subflow& sf) {
+        rt.run_and_wait([&sums](tf::Subflow& sf) {
           auto A = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
           auto B = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
           auto C = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
@@ -559,7 +591,7 @@ void pipeline_spspspsp_runtime_irregular_subflow(size_t w) {
      */
     tf::Pipe{
       tf::PipeType::PARALLEL, [&sums](tf::Pipeflow&, tf::Runtime& rt) {
-        rt.emplace([&sums](tf::Subflow& sf) {
+        rt.run_and_wait([&sums](tf::Subflow& sf) {
           auto A = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
           auto B = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
           auto C = sf.emplace([&sums]() { sums.fetch_add(1, std::memory_order_relaxed); });
@@ -614,7 +646,7 @@ TEST_CASE("Pipeline(SPSPSPSP).Runtime.Irregular.Subflow.8threads" * doctest::tim
 }
 
 // --------------------------------------------------------
-// Testcase 5: ScalablePipeline(SPSPSPSP).Runtime.Subflow
+// Testcase: ScalablePipeline(SPSPSPSP).Runtime.Subflow
 // --------------------------------------------------------
 
 void scalable_pipeline_spspspsp_runtime_subflow(size_t w) {
@@ -646,7 +678,7 @@ void scalable_pipeline_spspspsp_runtime_subflow(size_t w) {
 
 
     pipes.emplace_back(tf::PipeType::PARALLEL, [subtask, &sums](tf::Pipeflow&, tf::Runtime& rt) {
-      rt.emplace([subtask, &sums](tf::Subflow& sf) {
+      rt.run_and_wait([subtask, &sums](tf::Subflow& sf) {
         for (size_t i = 0; i < subtask; ++i) {
           sf.emplace([&sums](){
             sums.fetch_add(1, std::memory_order_relaxed);  
@@ -656,7 +688,7 @@ void scalable_pipeline_spspspsp_runtime_subflow(size_t w) {
     });
 
     pipes.emplace_back(tf::PipeType::SERIAL, [subtask, &sums](tf::Pipeflow&, tf::Runtime& rt) {
-      rt.emplace([subtask, &sums](tf::Subflow& sf) {
+      rt.run_and_wait([subtask, &sums](tf::Subflow& sf) {
         for (size_t i = 0; i < subtask; ++i) {
           sf.emplace([&sums](){
             sums.fetch_add(1, std::memory_order_relaxed);  
@@ -666,7 +698,7 @@ void scalable_pipeline_spspspsp_runtime_subflow(size_t w) {
     });
     
     pipes.emplace_back(tf::PipeType::PARALLEL, [subtask, &sums](tf::Pipeflow&, tf::Runtime& rt) {
-      rt.emplace([subtask, &sums](tf::Subflow& sf) {
+      rt.run_and_wait([subtask, &sums](tf::Subflow& sf) {
         for (size_t i = 0; i < subtask; ++i) {
           sf.emplace([&sums](){
             sums.fetch_add(1, std::memory_order_relaxed);  
@@ -676,7 +708,7 @@ void scalable_pipeline_spspspsp_runtime_subflow(size_t w) {
     });
     
     pipes.emplace_back(tf::PipeType::SERIAL, [subtask, &sums](tf::Pipeflow&, tf::Runtime& rt) {
-      rt.emplace([subtask, &sums](tf::Subflow& sf) {
+      rt.run_and_wait([subtask, &sums](tf::Subflow& sf) {
         for (size_t i = 0; i < subtask; ++i) {
           sf.emplace([&sums](){
             sums.fetch_add(1, std::memory_order_relaxed);  
@@ -686,7 +718,7 @@ void scalable_pipeline_spspspsp_runtime_subflow(size_t w) {
     });
 
     pipes.emplace_back(tf::PipeType::PARALLEL, [subtask, &sums](tf::Pipeflow&, tf::Runtime& rt) {
-      rt.emplace([subtask, &sums](tf::Subflow& sf) {
+      rt.run_and_wait([subtask, &sums](tf::Subflow& sf) {
         for (size_t i = 0; i < subtask; ++i) {
           sf.emplace([&sums](){
             sums.fetch_add(1, std::memory_order_relaxed);  
@@ -697,7 +729,7 @@ void scalable_pipeline_spspspsp_runtime_subflow(size_t w) {
     
 
     pipes.emplace_back(tf::PipeType::SERIAL, [subtask, &sums](tf::Pipeflow&, tf::Runtime& rt) {
-      rt.emplace([subtask, &sums](tf::Subflow& sf) {
+      rt.run_and_wait([subtask, &sums](tf::Subflow& sf) {
         for (size_t i = 0; i < subtask; ++i) {
           sf.emplace([&sums](){
             sums.fetch_add(1, std::memory_order_relaxed);  
@@ -707,7 +739,7 @@ void scalable_pipeline_spspspsp_runtime_subflow(size_t w) {
     });
 
     pipes.emplace_back(tf::PipeType::PARALLEL, [subtask, &sums](tf::Pipeflow&, tf::Runtime& rt) {
-      rt.emplace([subtask, &sums](tf::Subflow& sf) {
+      rt.run_and_wait([subtask, &sums](tf::Subflow& sf) {
         for (size_t i = 0; i < subtask; ++i) {
           sf.emplace([&sums](){
             sums.fetch_add(1, std::memory_order_relaxed);  

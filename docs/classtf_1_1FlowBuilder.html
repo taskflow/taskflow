@@ -5,7 +5,7 @@
   <title>tf::FlowBuilder class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>FlowBuilder <span class="m-thin">class</span>
         </h1>
         <p>class to build a task dependency graph</p>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
@@ -62,7 +62,7 @@
               </ul>
             </li>
           </ul>
-        </div>
+        </nav>
 <p>The class provides essential methods to construct a task dependency graph from which <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> and <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> are derived.</p>
         <section id="derived-classes">
           <h2><a href="#derived-classes">Derived classes</a></h2>
@@ -110,7 +110,7 @@
             </dt>
             <dd>creates a multi-condition task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt;1), void&gt;* = nullptr&gt;</div>
+              <div class="m-doc-template">template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a1f6118326ad434f6c839007a1a79fe1b" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C &amp;&amp; ... callables) -&gt; auto</span>
             </dt>
             <dd>creates multiple tasks from a list of callable objects</dd>
@@ -410,7 +410,7 @@
           <section class="m-doc-details" id="a1f6118326ad434f6c839007a1a79fe1b"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt;1), void&gt;* = nullptr&gt;
+                template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt;
               </div>
               <span class="m-doc-wrap-bumper">auto tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1f6118326ad434f6c839007a1a79fe1b" class="m-doc-self">emplace</a>(</span><span class="m-doc-wrap">C &amp;&amp; ... callables)</span></span>
             </h3>
@@ -423,6 +423,10 @@
                 <tr>
                   <td style="width: 1%">C</td>
                   <td>callable types</td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td></td>
                 </tr>
               </tbody>
               <thead>
@@ -514,7 +518,7 @@
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">comp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t2</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">t1</span><span class="p">);</span><span class="w"></span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t2</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;t2&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
 <span class="n">init</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">comp</span><span class="p">);</span><span class="w"></span></pre><p>The taskflow object <code>t2</code> is composed of another taskflow object <code>t1</code>, preceded by another static task <code>init</code>. When taskflow <code>t2</code> is submitted to an executor, <code>init</code> will run first and then <code>comp</code> which spwans its definition in taskflow <code>t1</code>.</p><p>The target <code>object</code> being composed must define the method <code>T::graph()</code> that returns a reference to a graph object of type <a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a> such that it can interact with the executor. For example:</p><pre class="m-code"><span class="c1">// custom struct</span>
-<span class="k">struct</span> <span class="nc">MyObj</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">MyObj</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Graph</span><span class="w"> </span><span class="n">graph</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="n">MyObj</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">FlowBuilder</span><span class="w"> </span><span class="nf">builder</span><span class="p">(</span><span class="n">graph</span><span class="p">);</span><span class="w"></span>
@@ -1336,13 +1340,13 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

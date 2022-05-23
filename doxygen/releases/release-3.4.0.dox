@@ -44,10 +44,12 @@ and
 + Improved the pipeline performance using vertical stack optimization
 + Added tf::ScalablePipeline to allow programming variable lengths of pipes
 + Added tf::Runtime::emplace to allow spawning a subflow
++ Added tf::Executor::run_and_wait to void deadlock while running task graphs
 + Added an example of attaching data to a task (examples/attach_data.cpp)
 + Added an example of text processing pipeline (examples/parallel_text_pipeline.cpp)
 + Added an example of graph processing pipeline (examples/parallel_graph_pipeline.cpp)
 + Added an example of taskflow processing pipeline (examples/parallel_taskflow_pipeline.cpp)
++ Added an example of running a task graph from a worker (examples/run_and_wait.cpp)
 
 @subsection release-3-4-0_cudaflow cudaFlow
 
@@ -82,6 +84,7 @@ If you encounter any potential bugs, please submit an issue at @IssueTracker.
 
 @section release-3-4-0_documentation Documentation
 
++ Revised @ref ExecuteTaskflow
 + Revised @ref CUDASTDExecutionPolicy
 + Revised @ref ParallelPipeline
   + Added @ref ParallelPipelineLearnMore
