@@ -1,33 +1,55 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="ParallelReduction" kind="page">
     <compoundname>ParallelReduction</compoundname>
     <title>Parallel Reduction</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Include the Header</name>
+        <reference>ParallelReduction_1ParallelReductionInclude</reference>
+    </tocsect>
+      <tocsect>
+        <name>Create a Parallel-Reduction Task</name>
+        <reference>ParallelReduction_1A2ParallelReduction</reference>
+    </tocsect>
+      <tocsect>
+        <name>Create a Parallel-Transform-Reduction Task</name>
+        <reference>ParallelReduction_1A2ParallelTransformationReduction</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow provides template function that constructs a task to perform parallel reduction over a range of items.</para><sect1 id="ParallelReduction_1ParallelReductionInclude">
+<para>Taskflow provides template function that constructs a task to perform parallel reduction over a range of items.</para>
+<sect1 id="ParallelReduction_1ParallelReductionInclude">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/algorithm/reduce.hpp</computeroutput>, for creating a parallel-reduction task.</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;taskflow/algorithm/reduce.hpp&gt;</highlight></codeline>
-</programlisting></para></sect1>
+<para>You need to include the header file, <computeroutput>taskflow/algorithm/reduce.hpp</computeroutput>, for creating a parallel-reduction task.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;taskflow/algorithm/reduce.hpp&gt;</highlight></codeline>
+</programlisting></para>
+</sect1>
 <sect1 id="ParallelReduction_1A2ParallelReduction">
 <title>Create a Parallel-Reduction Task</title>
-<para>The reduction task created by <ref refid="classtf_1_1FlowBuilder_1aa9494fe7b862fc832884ce318e8a37f5" kindref="member">tf::Taskflow::reduce(B first, E last, T&amp; result, O bop)</ref> performs parallel reduction over a range of elements specified by <computeroutput>[first, last)</computeroutput> using the binary operator <computeroutput>bop</computeroutput> and stores the reduced result in <computeroutput>result</computeroutput>. It represents the parallel execution of the following reduction loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr&lt;last;<sp/>itr++)<sp/>{</highlight></codeline>
+<para>The reduction task created by <ref refid="classtf_1_1FlowBuilder_1aa9494fe7b862fc832884ce318e8a37f5" kindref="member">tf::Taskflow::reduce(B first, E last, T&amp; result, O bop)</ref> performs parallel reduction over a range of elements specified by <computeroutput>[first, last)</computeroutput> using the binary operator <computeroutput>bop</computeroutput> and stores the reduced result in <computeroutput>result</computeroutput>. It represents the parallel execution of the following reduction loop:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr&lt;last;<sp/>itr++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>result<sp/>=<sp/>bop(result,<sp/>*itr);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>At runtime, the reduction task spawns a subflow to perform parallel reduction. The reduced result is stored in <computeroutput>result</computeroutput> that will be captured by reference in the reduction task. It is your responsibility to ensure <computeroutput>result</computeroutput> remains alive during the parallel execution.</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>sum<sp/>=<sp/>100;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>vec<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5,<sp/>6,<sp/>7,<sp/>8,<sp/>9,<sp/>10};</highlight></codeline>
+</programlisting></para>
+<para>At runtime, the reduction task spawns a subflow to perform parallel reduction. The reduced result is stored in <computeroutput>result</computeroutput> that will be captured by reference in the reduction task. It is your responsibility to ensure <computeroutput>result</computeroutput> remains alive during the parallel execution.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>sum<sp/>=<sp/>100;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>vec<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5,<sp/>6,<sp/>7,<sp/>8,<sp/>9,<sp/>10};</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1aa9494fe7b862fc832884ce318e8a37f5" kindref="member">reduce</ref>(vec.begin(),<sp/>vec.end(),<sp/>sum,<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>l,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>r)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>l<sp/>+<sp/>r;<sp/>}<sp/><sp/></highlight><highlight class="comment">//<sp/>binary<sp/>reducer<sp/>operator</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>l,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>r)<sp/>{<sp/>return<sp/>l<sp/>+<sp/>r;<sp/>}<sp/><sp/></highlight><highlight class="comment">//<sp/>binary<sp/>reducer<sp/>operator</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(sum<sp/>==<sp/>100<sp/>+<sp/>55);</highlight></codeline>
-</programlisting></para><para>The order in which the binary operator is applied to pairs of elements is <emphasis>unspecified</emphasis>. In other words, the elements of the range may be grouped and rearranged in arbitrary order. The result and the argument types of the binary operator must be consistent with the input data type .</para><para>Similar to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref>, you can use <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref> to enable stateful parameter passing between the reduction task and others.</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>sum<sp/>=<sp/>100;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>vec;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>first,<sp/>last;</highlight></codeline>
+</programlisting></para>
+<para>The order in which the binary operator is applied to pairs of elements is <emphasis>unspecified</emphasis>. In other words, the elements of the range may be grouped and rearranged in arbitrary order. The result and the argument types of the binary operator must be consistent with the input data type .</para>
+<para>Similar to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref>, you can use <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref> to enable stateful parameter passing between the reduction task and others.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>sum<sp/>=<sp/>100;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>vec;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>first,<sp/>last;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>vec<sp/><sp/><sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5,<sp/>6,<sp/>7,<sp/>8,<sp/>9,<sp/>10};</highlight></codeline>
@@ -49,25 +71,32 @@
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(sum<sp/>==<sp/>100<sp/>+<sp/>55);</highlight></codeline>
-</programlisting></para><para>In the above example, when <computeroutput>init</computeroutput> finishes, <computeroutput>vec</computeroutput> has been initialized to 10 elements with <computeroutput>first</computeroutput> pointing to the first element and <computeroutput>last</computeroutput> pointing to the next of the last element (i.e., end of the range). These changes are visible to the execution context of the reduction task.</para></sect1>
+</programlisting></para>
+<para>In the above example, when <computeroutput>init</computeroutput> finishes, <computeroutput>vec</computeroutput> has been initialized to 10 elements with <computeroutput>first</computeroutput> pointing to the first element and <computeroutput>last</computeroutput> pointing to the next of the last element (i.e., end of the range). These changes are visible to the execution context of the reduction task.</para>
+</sect1>
 <sect1 id="ParallelReduction_1A2ParallelTransformationReduction">
 <title>Create a Parallel-Transform-Reduction Task</title>
-<para>It is common to transform each element into a new data type and then perform reduction on the transformed elements. Taskflow provides a method, <ref refid="classtf_1_1FlowBuilder_1a024a1e5b4f138b6caebb427411fb0a2d" kindref="member">tf::Taskflow::transform_reduce(B first, E last, T&amp; result, BOP bop, UOP uop)</ref>, that applies <computeroutput>uop</computeroutput> to transform each element in the specified range and then perform parallel reduction over <computeroutput>result</computeroutput> and transformed elements. It represents the parallel execution of the following reduction loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr&lt;last;<sp/>itr++)<sp/>{</highlight></codeline>
+<para>It is common to transform each element into a new data type and then perform reduction on the transformed elements. Taskflow provides a method, <ref refid="classtf_1_1FlowBuilder_1a024a1e5b4f138b6caebb427411fb0a2d" kindref="member">tf::Taskflow::transform_reduce(B first, E last, T&amp; result, BOP bop, UOP uop)</ref>, that applies <computeroutput>uop</computeroutput> to transform each element in the specified range and then perform parallel reduction over <computeroutput>result</computeroutput> and transformed elements. It represents the parallel execution of the following reduction loop:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr=first;<sp/>itr&lt;last;<sp/>itr++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>result<sp/>=<sp/>bop(result,<sp/>uop(*itr));</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>The example below transforms each digit in a string to an integer number and then sums up all integers in parallel.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/string/basic_string" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref><sp/>str<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;12345678&quot;</highlight><highlight class="normal">;</highlight></codeline>
+</programlisting></para>
+<para>The example below transforms each digit in a string to an integer number and then sums up all integers in parallel.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref><sp/>str<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;12345678&quot;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>sum<sp/>{0};</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a024a1e5b4f138b6caebb427411fb0a2d" kindref="member">transform_reduce</ref>(str.begin(),<sp/>str.end(),<sp/>sum,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>binary<sp/>reduction<sp/>operator</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>+<sp/>b;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>return<sp/>a<sp/>+<sp/>b;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>(</highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>c)<sp/>-&gt;<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>{<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>unary<sp/>transformation<sp/>operator</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>c<sp/>-<sp/></highlight><highlight class="charliteral">&apos;0&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>return<sp/>c<sp/>-<sp/></highlight><highlight class="stringliteral">&apos;0&apos;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}<sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal">);<sp/></highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();<sp/></highlight></codeline>
 <codeline><highlight class="normal">assert(sum<sp/>==<sp/>1<sp/>+<sp/>2<sp/>+<sp/>3<sp/>+<sp/>4<sp/>+<sp/>5<sp/>+<sp/>6<sp/>+<sp/>7<sp/>+<sp/>8);<sp/><sp/></highlight><highlight class="comment">//<sp/>sum<sp/>will<sp/>be<sp/>36<sp/></highlight></codeline>
-</programlisting></para><para>The order in which we apply the binary operator on the transformed elements is <emphasis>unspecified</emphasis>. It is possible that the binary operator will take <emphasis>r-value</emphasis> in both arguments, for example, <computeroutput>bop(uop(*itr1), uop(*itr2))</computeroutput>, due to the transformed temporaries. When data passing is expensive, you may define the result type <computeroutput>T</computeroutput> to be move-constructible. </para></sect1>
+</programlisting></para>
+<para>The order in which we apply the binary operator on the transformed elements is <emphasis>unspecified</emphasis>. It is possible that the binary operator will take <emphasis>r-value</emphasis> in both arguments, for example, <computeroutput>bop(uop(*itr1), uop(*itr2))</computeroutput>, due to the transformed temporaries. When data passing is expensive, you may define the result type <computeroutput>T</computeroutput> to be move-constructible. </para>
+</sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

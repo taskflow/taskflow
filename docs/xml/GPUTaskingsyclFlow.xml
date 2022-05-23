@@ -1,18 +1,58 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="GPUTaskingsyclFlow" kind="page">
     <compoundname>GPUTaskingsyclFlow</compoundname>
     <title>GPU Tasking (syclFlow)</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Include the Header</name>
+        <reference>GPUTaskingsyclFlow_1GPUTaskingsyclFlowIncludeTheHeader</reference>
+    </tocsect>
+      <tocsect>
+        <name>Create a syclFlow</name>
+        <reference>GPUTaskingsyclFlow_1Create_a_syclFlow</reference>
+    </tocsect>
+      <tocsect>
+        <name>Compile a syclFlow Program</name>
+        <reference>GPUTaskingsyclFlow_1Compile_a_syclFlow_program</reference>
+    </tocsect>
+      <tocsect>
+        <name>Create Memory Operation Tasks</name>
+        <reference>GPUTaskingsyclFlow_1CreateMemoryOperationTasks</reference>
+    </tocsect>
+      <tocsect>
+        <name>Create Kernel Tasks</name>
+        <reference>GPUTaskingsyclFlow_1CreateKernelTasks</reference>
+    </tocsect>
+      <tocsect>
+        <name>Create Command Group Function Object Tasks</name>
+        <reference>GPUTaskingsyclFlow_1CreateCommandGroupFunctionObjectTasks</reference>
+    </tocsect>
+      <tocsect>
+        <name>Offload a syclFlow</name>
+        <reference>GPUTaskingsyclFlow_1OffloadAsyclFlow</reference>
+    </tocsect>
+      <tocsect>
+        <name>Update a syclFlow</name>
+        <reference>GPUTaskingsyclFlow_1UpdateAsyclFlow</reference>
+    </tocsect>
+      <tocsect>
+        <name>Use syclFlow in a Standalone Environment</name>
+        <reference>GPUTaskingsyclFlow_1UsesyclFlowInAStandaloneEnvironment</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow supports SYCL, a general-purpose heterogeneous programming model, to program heterogeneous tasks in a single-source C++ environment. This chapter discusses how to write SYCL C++ kernel code with Taskflow based on <ulink url="https://www.khronos.org/registry/SYCL/specs/sycl-2020/html/sycl-2020.html">SYCL 2020 Specification</ulink>.</para><sect1 id="GPUTaskingsyclFlow_1GPUTaskingsyclFlowIncludeTheHeader">
+<para>Taskflow supports SYCL, a general-purpose heterogeneous programming model, to program heterogeneous tasks in a single-source C++ environment. This chapter discusses how to write SYCL C++ kernel code with Taskflow based on <ulink url="https://www.khronos.org/registry/SYCL/specs/sycl-2020/html/sycl-2020.html">SYCL 2020 Specification</ulink>.</para>
+<sect1 id="GPUTaskingsyclFlow_1GPUTaskingsyclFlowIncludeTheHeader">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/sycl/syclflow.hpp</computeroutput>, for using <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>.</para></sect1>
+<para>You need to include the header file, <computeroutput>taskflow/sycl/syclflow.hpp</computeroutput>, for using <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>.</para>
+</sect1>
 <sect1 id="GPUTaskingsyclFlow_1Create_a_syclFlow">
 <title>Create a syclFlow</title>
-<para>Taskflow introduces a task graph-based programming model, <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>, to program SYCL tasks and their dependencies. A syclFlow is a task in a taskflow and is associated with a SYCL queue to execute kernels on a SYCL device. To create a syclFlow task, emplace a callable with an argument of type <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> and associate it with a SYCL queue. The following example (<computeroutput>saxpy.cpp</computeroutput>) implements the canonical saxpy (A·X Plus Y) task graph using <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/>#include<sp/>&lt;taskflow/syclflow.hpp&gt;</highlight></codeline>
+<para>Taskflow introduces a task graph-based programming model, <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>, to program SYCL tasks and their dependencies. A syclFlow is a task in a taskflow and is associated with a SYCL queue to execute kernels on a SYCL device. To create a syclFlow task, emplace a callable with an argument of type <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> and associate it with a SYCL queue. The following example (<computeroutput>saxpy.cpp</computeroutput>) implements the canonical saxpy (A·X Plus Y) task graph using <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/>#include<sp/>&lt;taskflow/syclflow.hpp&gt;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>2:<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/>3:<sp/>constexpr<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>4:<sp/></highlight></codeline>
@@ -29,8 +69,8 @@
 <codeline><highlight class="normal">15:<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal">16:<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>syclFlow<sp/>to<sp/>perform<sp/>the<sp/>saxpy<sp/>operation</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">17:<sp/><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([&amp;](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>sf){</highlight></codeline>
-<codeline><highlight class="normal">18:<sp/><sp/><sp/><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>fillX<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1a628843c986d60bea61eca8c48028159e" kindref="member">fill</ref>(X,<sp/>1.0f,<sp/>N).<ref refid="classtf_1_1syclTask_1a738dfa209da08d8783127a5c5654558e" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;fillX&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">19:<sp/><sp/><sp/><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>fillY<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1a628843c986d60bea61eca8c48028159e" kindref="member">fill</ref>(Y,<sp/>2.0f,<sp/>N).<ref refid="classtf_1_1syclTask_1a738dfa209da08d8783127a5c5654558e" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;fillY&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">18:<sp/><sp/><sp/><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>fillX<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1a628843c986d60bea61eca8c48028159e" kindref="member">fill</ref>(X,<sp/>1.0f,<sp/>N).name(</highlight><highlight class="stringliteral">&quot;fillX&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">19:<sp/><sp/><sp/><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>fillY<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1a628843c986d60bea61eca8c48028159e" kindref="member">fill</ref>(Y,<sp/>2.0f,<sp/>N).name(</highlight><highlight class="stringliteral">&quot;fillY&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">20:<sp/><sp/><sp/><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>saxpy<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" kindref="member">parallel_for</ref>(sycl::range&lt;1&gt;(N),<sp/></highlight></codeline>
 <codeline><highlight class="normal">21:<sp/><sp/><sp/><sp/><sp/><sp/><sp/>[=]<sp/>(sycl::id&lt;1&gt;<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal">22:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>X[id]<sp/>=<sp/>3.0f<sp/>*<sp/>X[id]<sp/>+<sp/>Y[id];</highlight></codeline>
@@ -40,34 +80,51 @@
 <codeline><highlight class="normal">26:<sp/><sp/><sp/>},<sp/>queue).name(</highlight><highlight class="stringliteral">&quot;syclFlow&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">27:<sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal">28:<sp/><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();<sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">29:<sp/><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">29:<sp/><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">30:<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal">31:<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>free<sp/>the<sp/>shared<sp/>memory<sp/>to<sp/>avoid<sp/>memory<sp/>leak</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">32:<sp/><sp/><sp/>sycl::free(X,<sp/>queue);<sp/></highlight></codeline>
 <codeline><highlight class="normal">33:<sp/><sp/><sp/>sycl::free(Y,<sp/>queue);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal">34:<sp/>}</highlight></codeline>
-</programlisting></para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/syclflow_saxpy.dot"></dotfile>
-</para><para>Debrief:</para><para><itemizedlist>
-<listitem><para>Lines 7-8 create a taskflow and an executor </para></listitem>
-<listitem><para>Lines 10 creates a SYCL queue on a default-selected GPU device </para></listitem>
-<listitem><para>Lines 13-14 allocate shared memory that is accessible on both host and device </para></listitem>
+</programlisting></para>
+<para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/syclflow_saxpy.dot"></dotfile>
+</para>
+<para>Debrief:</para>
+<para><itemizedlist>
+<listitem><para>Lines 7-8 create a taskflow and an executor </para>
+</listitem>
+<listitem><para>Lines 10 creates a SYCL queue on a default-selected GPU device </para>
+</listitem>
+<listitem><para>Lines 13-14 allocate shared memory that is accessible on both host and device </para>
+</listitem>
 <listitem><para>Lines 17-26 creates a syclFlow to define the saxpy task graph that contains:<itemizedlist>
-<listitem><para>one fill task to fill the memory area <computeroutput>X</computeroutput> with <computeroutput>1.0f</computeroutput> </para></listitem><listitem><para>one fill task to fill the memory area <computeroutput>Y</computeroutput> with <computeroutput>2.0f</computeroutput> </para></listitem><listitem><para>one kernel task to perform the saxpy operation on the GPU </para></listitem></itemizedlist>
-</para></listitem>
-<listitem><para>Lines 28-29 executes the taskflow and dumps its graph to a DOT format </para></listitem>
-<listitem><para>Lines 32-33 deallocates the shared memory to avoid memory leak</para></listitem>
+<listitem><para>one fill task to fill the memory area <computeroutput>X</computeroutput> with <computeroutput>1.0f</computeroutput> </para>
+</listitem><listitem><para>one fill task to fill the memory area <computeroutput>Y</computeroutput> with <computeroutput>2.0f</computeroutput> </para>
+</listitem><listitem><para>one kernel task to perform the saxpy operation on the GPU </para>
+</listitem></itemizedlist>
+</para>
+</listitem>
+<listitem><para>Lines 28-29 executes the taskflow and dumps its graph to a DOT format </para>
+</listitem>
+<listitem><para>Lines 32-33 deallocates the shared memory to avoid memory leak</para>
+</listitem>
 </itemizedlist>
-<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> is a lightweight task graph-based programming layer atop SYCL. We do not expend yet another effort on simplifying kernel programming but focus on tasking SYCL operations and their dependencies. This organization lets users fully take advantage of SYCL features that are commensurate with their domain knowledge, while leaving difficult task parallelism details to Taskflow.</para></sect1>
+<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> is a lightweight task graph-based programming layer atop SYCL. We do not expend yet another effort on simplifying kernel programming but focus on tasking SYCL operations and their dependencies. This organization lets users fully take advantage of SYCL features that are commensurate with their domain knowledge, while leaving difficult task parallelism details to Taskflow.</para>
+</sect1>
 <sect1 id="GPUTaskingsyclFlow_1Compile_a_syclFlow_program">
 <title>Compile a syclFlow Program</title>
-<para>Use DPC++ clang to compile a syclFlow program:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>clang++<sp/>-fsycl<sp/>-fsycl-unnamed-lambda<sp/>\</highlight></codeline>
+<para>Use DPC++ clang to compile a syclFlow program:</para>
+<para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>clang++<sp/>-fsycl<sp/>-fsycl-unnamed-lambda<sp/>\</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-fsycl-targets=nvptx64-nvidia-cuda<sp/>\<sp/><sp/>#<sp/>for<sp/>CUDA<sp/>target</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-I<sp/>path/to/taskflow<sp/>-pthread<sp/>-std=c++17<sp/>saxpy.cpp<sp/>-o<sp/>saxpy</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./saxpy</highlight></codeline>
-</programlisting></para><para>Please visit the page <ref refid="CompileTaskflowWithSYCL" kindref="compound">Compile Taskflow with SYCL</ref> for more details.</para></sect1>
+</programlisting></para>
+<para>Please visit the page <ref refid="CompileTaskflowWithSYCL" kindref="compound">Compile Taskflow with SYCL</ref> for more details.</para>
+</sect1>
 <sect1 id="GPUTaskingsyclFlow_1CreateMemoryOperationTasks">
 <title>Create Memory Operation Tasks</title>
-<para><ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> provides a set of methods for creating tasks to perform common memory operations, such as copy, set, and fill, on memory area pointed to by <emphasis>unified shared memory</emphasis> (USM) pointers. The following example creates a syclFlow task of two copy operations and one fill operation that set the first <computeroutput>N/2</computeroutput> elements in the vector to <computeroutput>-1</computeroutput>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">sycl::queue<sp/>queue;</highlight></codeline>
+<para><ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> provides a set of methods for creating tasks to perform common memory operations, such as copy, set, and fill, on memory area pointed to by <emphasis>unified shared memory</emphasis> (USM) pointers. The following example creates a syclFlow task of two copy operations and one fill operation that set the first <computeroutput>N/2</computeroutput> elements in the vector to <computeroutput>-1</computeroutput>.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">sycl::queue<sp/>queue;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/><sp/>=<sp/>1000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>hvec<sp/>=<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">[N]<sp/>(100);</highlight></codeline>
@@ -76,9 +133,9 @@
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>syclflow<sp/>task<sp/>to<sp/>set<sp/>the<sp/>first<sp/>N/2<sp/>elements<sp/>to<sp/>-1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([&amp;](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>syclflow){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>ch2d<sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1ac433456f3960028fb12a53018b263aee" kindref="member">copy</ref>(dvec,<sp/>hvec,<sp/>N);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/><ref refid="cpp/algorithm/fill" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">fill</ref><sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1a628843c986d60bea61eca8c48028159e" kindref="member">fill</ref>(dvec,<sp/>-1,<sp/>N/2);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/><ref refid="cpp/algorithm/fill" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">fill</ref><sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1a628843c986d60bea61eca8c48028159e" kindref="member">fill</ref>(dvec,<sp/>-1,<sp/>N/2);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>cd2h<sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1ac433456f3960028fb12a53018b263aee" kindref="member">copy</ref>(hvec,<sp/>dvec,<sp/>N);<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/fill" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">fill</ref>.precede(cd2h)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/fill" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">fill</ref>.precede(cd2h)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>.succeed(ch2d);</highlight></codeline>
 <codeline><highlight class="normal">},<sp/>queue);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -88,20 +145,26 @@
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N/2;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>(i<sp/>&lt;<sp/>N<sp/>/<sp/>2)<sp/>?<sp/>assert(hvec[i]<sp/>==<sp/>-1)<sp/>:<sp/>assert(hvec[i]<sp/>==<sp/>100);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>Both <ref refid="classtf_1_1syclFlow_1ac433456f3960028fb12a53018b263aee" kindref="member">tf::syclFlow::copy</ref> and <ref refid="classtf_1_1syclFlow_1a628843c986d60bea61eca8c48028159e" kindref="member">tf::syclFlow::fill</ref> operate on <computeroutput>typed</computeroutput> data. You can use <ref refid="classtf_1_1syclFlow_1ac1e1eb858d9271ed61ff4fe00f135e92" kindref="member">tf::syclFlow::memcpy</ref> and <ref refid="classtf_1_1syclFlow_1a54b7497c0f4763bb4f8604f6c5654a5f" kindref="member">tf::syclFlow::memset</ref> to operate on <computeroutput>untyped</computeroutput> data (i.e., array of bytes).</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([&amp;](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>syclflow){</highlight></codeline>
+</programlisting></para>
+<para>Both <ref refid="classtf_1_1syclFlow_1ac433456f3960028fb12a53018b263aee" kindref="member">tf::syclFlow::copy</ref> and <ref refid="classtf_1_1syclFlow_1a628843c986d60bea61eca8c48028159e" kindref="member">tf::syclFlow::fill</ref> operate on <computeroutput>typed</computeroutput> data. You can use <ref refid="classtf_1_1syclFlow_1ac1e1eb858d9271ed61ff4fe00f135e92" kindref="member">tf::syclFlow::memcpy</ref> and <ref refid="classtf_1_1syclFlow_1a54b7497c0f4763bb4f8604f6c5654a5f" kindref="member">tf::syclFlow::memset</ref> to operate on <computeroutput>untyped</computeroutput> data (i.e., array of bytes).</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([&amp;](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>syclflow){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>ch2d<sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1ac1e1eb858d9271ed61ff4fe00f135e92" kindref="member">memcpy</ref>(dvec,<sp/>hvec,<sp/>N*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>mset<sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1a54b7497c0f4763bb4f8604f6c5654a5f" kindref="member">memset</ref>(dvec,<sp/>-1,<sp/>N/2*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>cd2h<sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1ac1e1eb858d9271ed61ff4fe00f135e92" kindref="member">memcpy</ref>(hvec,<sp/>dvec,<sp/>N*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">));<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/fill" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">fill</ref>.precede(cd2h)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/fill" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">fill</ref>.precede(cd2h)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>.succeed(ch2d);</highlight></codeline>
 <codeline><highlight class="normal">},<sp/>queue);</highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+</sect1>
 <sect1 id="GPUTaskingsyclFlow_1CreateKernelTasks">
 <title>Create Kernel Tasks</title>
-<para>SYCL allows a simple execution model in which a kernel is invoked over an N-dimensional index space defined by <computeroutput>sycl::range&lt;N&gt;</computeroutput>, where <computeroutput>N</computeroutput> is one, two or three. Each work item in such a kernel executes independently across a set of partitioned work groups. <ref refid="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" kindref="member">tf::syclFlow::parallel_for</ref> defines several variants to create a kernel task. The following variant pairs up a <computeroutput>sycl::range</computeroutput> and a <computeroutput>sycl::id</computeroutput> to set each element in <computeroutput>data</computeroutput> to <computeroutput>1.0f</computeroutput> when it is not necessary to query the global range of the index space being executed across.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>task<sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" kindref="member">parallel_for</ref>(</highlight></codeline>
+<para>SYCL allows a simple execution model in which a kernel is invoked over an N-dimensional index space defined by <computeroutput>sycl::range&lt;N&gt;</computeroutput>, where <computeroutput>N</computeroutput> is one, two or three. Each work item in such a kernel executes independently across a set of partitioned work groups. <ref refid="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" kindref="member">tf::syclFlow::parallel_for</ref> defines several variants to create a kernel task. The following variant pairs up a <computeroutput>sycl::range</computeroutput> and a <computeroutput>sycl::id</computeroutput> to set each element in <computeroutput>data</computeroutput> to <computeroutput>1.0f</computeroutput> when it is not necessary to query the global range of the index space being executed across.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>task<sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" kindref="member">parallel_for</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>sycl::range&lt;1&gt;(N),<sp/>[data](sycl::id&lt;1&gt;<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">){<sp/>data[id]<sp/>=<sp/>1.0f;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-</programlisting></para><para>As the same example, the following variant enables low-level functionality of work items and work groups using <computeroutput>sycl::nd_range</computeroutput> and <computeroutput>sycl::nd_item</computeroutput>. This becomes valuable when an execution requires groups of work items that communicate and synchronize.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>partition<sp/>the<sp/>N-element<sp/>range<sp/>to<sp/>N/M<sp/>work<sp/>groups<sp/>each<sp/>of<sp/>M<sp/>work<sp/>items</highlight><highlight class="normal"></highlight></codeline>
+</programlisting></para>
+<para>As the same example, the following variant enables low-level functionality of work items and work groups using <computeroutput>sycl::nd_range</computeroutput> and <computeroutput>sycl::nd_item</computeroutput>. This becomes valuable when an execution requires groups of work items that communicate and synchronize.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>partition<sp/>the<sp/>N-element<sp/>range<sp/>to<sp/>N/M<sp/>work<sp/>groups<sp/>each<sp/>of<sp/>M<sp/>work<sp/>items</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>task<sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" kindref="member">parallel_for</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>sycl::nd_range&lt;1&gt;{sycl::range&lt;1&gt;(N),<sp/>sycl::range&lt;1&gt;(M)},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[data](sycl::nd_item&lt;1&gt;<sp/>item){</highlight></codeline>
@@ -114,10 +177,13 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-</programlisting></para><para>All the kernel methods defined in the SYCL queue are applicable for <ref refid="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" kindref="member">tf::syclFlow::parallel_for</ref>.</para></sect1>
+</programlisting></para>
+<para>All the kernel methods defined in the SYCL queue are applicable for <ref refid="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" kindref="member">tf::syclFlow::parallel_for</ref>.</para>
+</sect1>
 <sect1 id="GPUTaskingsyclFlow_1CreateCommandGroupFunctionObjectTasks">
 <title>Create Command Group Function Object Tasks</title>
-<para>SYCL provides a way to encapsulate a device-side operation and all its data and event dependencies in a single <emphasis>command group function object</emphasis>. The function object accepts an argument of command group <emphasis>handler</emphasis> constructed by the SYCL runtime. Command group handler is the heart of SYCL programming as it defines pretty much all kernel-related methods, including submission, execution, and synchronization. You can directly create a SYCL task from a command group function object using <ref refid="classtf_1_1syclFlow_1a20b79581d27eaed2812ffb14dc821a64" kindref="member">tf::syclFlow::on</ref>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>task<sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1a20b79581d27eaed2812ffb14dc821a64" kindref="member">on</ref>(</highlight></codeline>
+<para>SYCL provides a way to encapsulate a device-side operation and all its data and event dependencies in a single <emphasis>command group function object</emphasis>. The function object accepts an argument of command group <emphasis>handler</emphasis> constructed by the SYCL runtime. Command group handler is the heart of SYCL programming as it defines pretty much all kernel-related methods, including submission, execution, and synchronization. You can directly create a SYCL task from a command group function object using <ref refid="classtf_1_1syclFlow_1a20b79581d27eaed2812ffb14dc821a64" kindref="member">tf::syclFlow::on</ref>.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>task<sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1a20b79581d27eaed2812ffb14dc821a64" kindref="member">on</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[=]<sp/>(sycl::handler&amp;<sp/>handler)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>handler.require(accessor);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>handler.single_task([=](){<sp/><sp/></highlight><highlight class="comment">//<sp/>place<sp/>a<sp/>single-threaded<sp/>kernel<sp/>function</highlight><highlight class="normal"></highlight></codeline>
@@ -125,16 +191,20 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+</sect1>
 <sect1 id="GPUTaskingsyclFlow_1OffloadAsyclFlow">
 <title>Offload a syclFlow</title>
-<para>By default, the executor offloads and executes the syclFlow once. When a syclFlow is being executed, its task graph will be materialized by the Taskflow runtime and submitted to its associated SYCL queue in a topological order of task dependencies defined in that graph. You can explicitly execute a syclFlow using different offload methods:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>sf)<sp/>{</highlight></codeline>
+<para>By default, the executor offloads and executes the syclFlow once. When a syclFlow is being executed, its task graph will be materialized by the Taskflow runtime and submitted to its associated SYCL queue in a topological order of task dependencies defined in that graph. You can explicitly execute a syclFlow using different offload methods:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>sf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...<sp/>create<sp/>SYCL<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>sf.<ref refid="classtf_1_1syclFlow_1a2928c2edc466dd625741080c147de4ef" kindref="member">offload</ref>();<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>offload<sp/>the<sp/>syclFlow<sp/>and<sp/>run<sp/>it<sp/>once</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>sf.<ref refid="classtf_1_1syclFlow_1a23fc8f965e05fb8788dcc9fa02473529" kindref="member">offload_n</ref>(10);<sp/><sp/></highlight><highlight class="comment">//<sp/>offload<sp/>the<sp/>syclFlow<sp/>and<sp/>run<sp/>it<sp/>10<sp/>times</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>sf.<ref refid="classtf_1_1syclFlow_1a1b033143bcfd857b45a2c2bad213b769" kindref="member">offload_until</ref>([repeat=5]<sp/>()<sp/></highlight><highlight class="keyword">mutable</highlight><highlight class="normal"><sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>repeat--<sp/>==<sp/>0;<sp/>})<sp/><sp/></highlight><highlight class="comment">//<sp/>five<sp/>times</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">},<sp/>queue);</highlight></codeline>
-</programlisting></para><para>After you offload a syclFlow, it is considered executed, and the executor will <emphasis>not</emphasis> run an offloaded syclFlow after leaving the syclFlow task callable. On the other hand, if a syclFlow is not offloaded, the executor runs it once. For example, the following two versions represent the same execution logic.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>version<sp/>1:<sp/>explicitly<sp/>offload<sp/>a<sp/>syclFlow<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+</programlisting></para>
+<para>After you offload a syclFlow, it is considered executed, and the executor will <emphasis>not</emphasis> run an offloaded syclFlow after leaving the syclFlow task callable. On the other hand, if a syclFlow is not offloaded, the executor runs it once. For example, the following two versions represent the same execution logic.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>version<sp/>1:<sp/>explicitly<sp/>offload<sp/>a<sp/>syclFlow<sp/>once</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>sf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>sf.<ref refid="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" kindref="member">single_task</ref>([](){});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>sf.<ref refid="classtf_1_1syclFlow_1a2928c2edc466dd625741080c147de4ef" kindref="member">offload</ref>();</highlight></codeline>
@@ -144,10 +214,12 @@
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>sf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>sf.<ref refid="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" kindref="member">single_task</ref>([](){});</highlight></codeline>
 <codeline><highlight class="normal">},<sp/>queue);</highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+</sect1>
 <sect1 id="GPUTaskingsyclFlow_1UpdateAsyclFlow">
 <title>Update a syclFlow</title>
-<para>You can update a SYCL task from an offloaded syclFlow and <emphasis>rebind</emphasis> it to another task type. For example, you can rebind a memory operation task to a parallel-for kernel task from an offloaded syclFlow and vice versa.</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>10000;</highlight></codeline>
+<para>You can update a SYCL task from an offloaded syclFlow and <emphasis>rebind</emphasis> it to another task type. For example, you can rebind a memory operation task to a parallel-for kernel task from an offloaded syclFlow and vice versa.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>10000;</highlight></codeline>
 <codeline><highlight class="normal">sycl::queue<sp/>queue;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>data<sp/>=<sp/>sycl::malloc_shared&lt;int&gt;(N,<sp/>queue);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -157,28 +229,31 @@
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>task<sp/>=<sp/>syclflow.<ref refid="classtf_1_1syclFlow_1a628843c986d60bea61eca8c48028159e" kindref="member">fill</ref>(data,<sp/>-1,<sp/>N);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>syclflow.<ref refid="classtf_1_1syclFlow_1a2928c2edc466dd625741080c147de4ef" kindref="member">offload</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/for_each" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::for_each</ref>(data,<sp/>data+N,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>assert(data[i]<sp/>==<sp/>-1);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/for_each" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::for_each</ref>(data,<sp/>data+N,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>assert(data[i]<sp/>==<sp/>-1);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>rebind<sp/>the<sp/>task<sp/>to<sp/>a<sp/>parallel-for<sp/>kernel<sp/>task<sp/>setting<sp/>each<sp/>element<sp/>to<sp/>100</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>syclflow.rebind_parallel_for(task,<sp/>sycl::range&lt;1&gt;(N),<sp/>[](sycl::id&lt;1&gt;<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>syclflow.rebind_parallel_for(task,<sp/>sycl::range&lt;1&gt;(N),<sp/>[](sycl::id&lt;1&gt;<sp/>id){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>data[id]<sp/>=<sp/>100;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>syclflow.<ref refid="classtf_1_1syclFlow_1a2928c2edc466dd625741080c147de4ef" kindref="member">offload</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/for_each" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::for_each</ref>(data,<sp/>data+N,<sp/>[data](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>assert(data[i]<sp/>==<sp/>100);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/for_each" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::for_each</ref>(data,<sp/>data+N,<sp/>[data](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>assert(data[i]<sp/>==<sp/>100);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">},<sp/>queue);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
-</programlisting></para><para>Each method of task creation in <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> has a corresponding method of rebinding a task to that task type (e.g., <ref refid="classtf_1_1syclFlow_1a20b79581d27eaed2812ffb14dc821a64" kindref="member">tf::syclFlow::on</ref> and tf::syclFlow::rebind_on, <ref refid="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" kindref="member">tf::syclFlow::parallel_for</ref> and <ref refid="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" kindref="member">tf::syclFlow::parallel_for</ref>).</para></sect1>
+</programlisting></para>
+<para>Each method of task creation in <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> has a corresponding method of rebinding a task to that task type (e.g., <ref refid="classtf_1_1syclFlow_1a20b79581d27eaed2812ffb14dc821a64" kindref="member">tf::syclFlow::on</ref> and tf::syclFlow::rebind_on, <ref refid="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" kindref="member">tf::syclFlow::parallel_for</ref> and <ref refid="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" kindref="member">tf::syclFlow::parallel_for</ref>).</para>
+</sect1>
 <sect1 id="GPUTaskingsyclFlow_1UsesyclFlowInAStandaloneEnvironment">
 <title>Use syclFlow in a Standalone Environment</title>
-<para>You can use <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> in a standalone environment without going through <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> and offloads it to a SYCL device from the caller thread. All the tasking methods we have discussed so far apply to the standalone use.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">sycl::queue<sp/>queue;<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<para>You can use <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> in a standalone environment without going through <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> and offloads it to a SYCL device from the caller thread. All the tasking methods we have discussed so far apply to the standalone use.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">sycl::queue<sp/>queue;<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref><sp/>sf(queue);<sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>standalone<sp/>syclFlow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>h2d_x<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1ac433456f3960028fb12a53018b263aee" kindref="member">copy</ref>(dx,<sp/>hx.data(),<sp/>N).name(</highlight><highlight class="stringliteral">&quot;h2d_x&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>h2d_y<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1ac433456f3960028fb12a53018b263aee" kindref="member">copy</ref>(dy,<sp/>hy.data(),<sp/>N).name(</highlight><highlight class="stringliteral">&quot;h2d_y&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>d2h_x<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1ac433456f3960028fb12a53018b263aee" kindref="member">copy</ref>(hx.data(),<sp/>dx,<sp/>N).name(</highlight><highlight class="stringliteral">&quot;d2h_x&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>d2h_y<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1ac433456f3960028fb12a53018b263aee" kindref="member">copy</ref>(hy.data(),<sp/>dy,<sp/>N).name(</highlight><highlight class="stringliteral">&quot;d2h_y&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>h2d_x<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1ac433456f3960028fb12a53018b263aee" kindref="member">copy</ref>(dx,<sp/>hx.data(),<sp/>N).<ref refid="classtf_1_1syclTask_1a738dfa209da08d8783127a5c5654558e" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;h2d_x&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>h2d_y<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1ac433456f3960028fb12a53018b263aee" kindref="member">copy</ref>(dy,<sp/>hy.data(),<sp/>N).<ref refid="classtf_1_1syclTask_1a738dfa209da08d8783127a5c5654558e" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;h2d_y&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>d2h_x<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1ac433456f3960028fb12a53018b263aee" kindref="member">copy</ref>(hx.data(),<sp/>dx,<sp/>N).<ref refid="classtf_1_1syclTask_1a738dfa209da08d8783127a5c5654558e" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;d2h_x&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>d2h_y<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1ac433456f3960028fb12a53018b263aee" kindref="member">copy</ref>(hy.data(),<sp/>dy,<sp/>N).<ref refid="classtf_1_1syclTask_1a738dfa209da08d8783127a5c5654558e" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;d2h_y&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>saxpy<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" kindref="member">parallel_for</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>sycl::range&lt;1&gt;(N),<sp/>[=]<sp/>(sycl::id&lt;1&gt;<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>dx[id]<sp/>=<sp/>2.0f<sp/>*<sp/>dx[id]<sp/>+<sp/>dy[id];</highlight></codeline>
@@ -189,8 +264,11 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1syclTask_1a92d0dd0929b9ac4e46baf4d546497389" kindref="member">precede</ref>(d2h_x,<sp/>d2h_y);<sp/><sp/></highlight><highlight class="comment">//<sp/>kernel<sp/>runs<sp/>before<sp/>device-to-host<sp/>copy</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">sf.<ref refid="classtf_1_1syclFlow_1a2928c2edc466dd625741080c147de4ef" kindref="member">offload</ref>();<sp/><sp/></highlight><highlight class="comment">//<sp/>offload<sp/>and<sp/>run<sp/>the<sp/>standalone<sp/>syclFlow<sp/>once</highlight></codeline>
-</programlisting></para><para><simplesect kind="note"><para>In the standalone mode, a written syclFlow will not be executed untile you explicitly call an offload method, as there is neither a taskflow nor an executor. </para></simplesect>
-</para></sect1>
+</programlisting></para>
+<para><simplesect kind="note"><para>In the standalone mode, a written syclFlow will not be executed untile you explicitly call an offload method, as there is neither a taskflow nor an executor. </para>
+</simplesect>
+</para>
+</sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

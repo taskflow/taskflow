@@ -5,7 +5,7 @@
   <title>Learning from Examples &raquo; Flip Coins | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -49,61 +49,61 @@
           <span class="m-breadcrumb"><a href="Examples.html">Learning from Examples</a> &raquo;</span>
           Flip Coins
         </h1>
-        <nav class="m-block m-default">
+        <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#FlipCoinsProblemFormulation">Problem Formulation</a></li>
             <li><a href="#FlipCoinsProbabilistic">Probabilistic Conditions</a></li>
             <li><a href="#FlipCoinsTernaryCoins">Ternary Coins</a></li>
           </ul>
-        </nav>
-<p>We study dynamic control flow of non-determinism using conditional tasking. Non-deterministic control flow is a fundamental building block in many optimization and simulation algorithms that rely on stochastic convergence rules or probabilistic pruning.</p><section id="FlipCoinsProblemFormulation"><h2><a href="#FlipCoinsProblemFormulation">Problem Formulation</a></h2><p>We have a fair binary coin and want to simulate its tosses. We flip the coin for five times. Apparently, the probability for the result to be all heads is 1/32. It is equivalently to say the expected number we need to toss for obtaining five heads is 32.</p><div class="m-graph"><svg style="width: 53.062rem; height: 2.812rem;" viewBox="0.00 0.00 849.21 44.77">
-<g transform="scale(1 1) rotate(0) translate(4 40.7696)">
+        </div>
+<p>We study dynamic control flow of non-determinism using conditional tasking. Non-deterministic control flow is a fundamental building block in many optimization and simulation algorithms that rely on stochastic convergence rules or probabilistic pruning.</p><section id="FlipCoinsProblemFormulation"><h2><a href="#FlipCoinsProblemFormulation">Problem Formulation</a></h2><p>We have a fair binary coin and want to simulate its tosses. We flip the coin for five times. Apparently, the probability for the result to be all heads is 1/32. It is equivalently to say the expected number we need to toss for obtaining five heads is 32.</p><div class="m-graph"><svg style="width: 50.250rem; height: 2.812rem;" viewBox="0.00 0.00 803.95 44.77">
+<g transform="scale(1 1) rotate(0) translate(4 40.77)">
 <title>G</title>
 <g class="m-node m-flat">
 <title>a</title>
-<ellipse cx="50.2046" cy="-18.3848" rx="50.41" ry="18.2703"/>
-<text text-anchor="middle" x="50.2046" y="-14.5848">1/2 (H)</text>
+<ellipse cx="45.96" cy="-18.38" rx="45.92" ry="18.27"/>
+<text text-anchor="middle" x="45.96" y="-14.58">1/2 (H)</text>
 </g>
 <g class="m-node m-flat">
 <title>b</title>
-<ellipse cx="195.099" cy="-18.3848" rx="58.8803" ry="18.2703"/>
-<text text-anchor="middle" x="195.099" y="-14.5848">1/4 (HH)</text>
+<ellipse cx="182.37" cy="-18.38" rx="54.39" ry="18.27"/>
+<text text-anchor="middle" x="182.37" y="-14.58">1/4 (HH)</text>
 </g>
 <g class="m-edge">
 <title>a&#45;&gt;b</title>
-<path d="M100.475,-18.3848C108.7584,-18.3848 117.47,-18.3848 126.1156,-18.3848"/>
-<polygon points="126.2049,-21.8849 136.2049,-18.3848 126.2049,-14.8849 126.2049,-21.8849"/>
+<path d="M92.09,-18.38C100.31,-18.38 109.03,-18.38 117.67,-18.38"/>
+<polygon points="117.75,-21.88 127.75,-18.38 117.75,-14.88 117.75,-21.88"/>
 </g>
 <g class="m-node m-flat">
 <title>c</title>
-<ellipse cx="356.964" cy="-18.3848" rx="67.3507" ry="18.2703"/>
-<text text-anchor="middle" x="356.964" y="-14.5848">1/8 (HHH)</text>
+<ellipse cx="335.75" cy="-18.38" rx="62.87" ry="18.27"/>
+<text text-anchor="middle" x="335.75" y="-14.58">1/8 (HHH)</text>
 </g>
 <g class="m-edge">
 <title>b&#45;&gt;c</title>
-<path d="M253.9939,-18.3848C262.31,-18.3848 270.9622,-18.3848 279.5612,-18.3848"/>
-<polygon points="279.6079,-21.8849 289.6079,-18.3848 279.6078,-14.8849 279.6079,-21.8849"/>
+<path d="M237.17,-18.38C245.32,-18.38 253.85,-18.38 262.32,-18.38"/>
+<polygon points="262.6,-21.88 272.6,-18.38 262.6,-14.88 262.6,-21.88"/>
 </g>
 <g class="m-node m-flat">
 <title>d</title>
-<ellipse cx="542.1636" cy="-18.3848" rx="82.0488" ry="18.2703"/>
-<text text-anchor="middle" x="542.1636" y="-14.5848">1/16 (HHHH)</text>
+<ellipse cx="511.76" cy="-18.38" rx="77.15" ry="18.27"/>
+<text text-anchor="middle" x="511.76" y="-14.58">1/16 (HHHH)</text>
 </g>
 <g class="m-edge">
 <title>c&#45;&gt;d</title>
-<path d="M424.3492,-18.3848C432.6748,-18.3848 441.2949,-18.3848 449.9109,-18.3848"/>
-<polygon points="450.0056,-21.8849 460.0056,-18.3848 450.0055,-14.8849 450.0056,-21.8849"/>
+<path d="M399.08,-18.38C407.35,-18.38 415.95,-18.38 424.53,-18.38"/>
+<polygon points="424.58,-21.88 434.58,-18.38 424.58,-14.88 424.58,-21.88"/>
 </g>
 <g class="m-node m-flat">
 <title>e</title>
-<ellipse cx="750.6976" cy="-18.3848" rx="90.5193" ry="18.2703"/>
-<text text-anchor="middle" x="750.6976" y="-14.5848">1/32 (HHHHH)</text>
+<ellipse cx="710.39" cy="-18.38" rx="85.62" ry="18.27"/>
+<text text-anchor="middle" x="710.39" y="-14.58">1/32 (HHHHH)</text>
 </g>
 <g class="m-edge">
 <title>d&#45;&gt;e</title>
-<path d="M624.2824,-18.3848C632.7202,-18.3848 641.3608,-18.3848 649.9693,-18.3848"/>
-<polygon points="650.0461,-21.8849 660.046,-18.3848 650.046,-14.8849 650.0461,-21.8849"/>
+<path d="M589.06,-18.38C597.44,-18.38 606.05,-18.38 614.62,-18.38"/>
+<polygon points="614.64,-21.88 624.64,-18.38 614.64,-14.88 614.64,-21.88"/>
 </g>
 </g>
 </svg>
@@ -155,108 +155,108 @@
 <span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">fabs</span><span class="p">(</span><span class="n">average_tosses</span><span class="mf">-32.0</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1.0</span><span class="p">);</span><span class="w"></span>
 <span class="w">  </span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre><p>Running the taskflow by a fair number of times, the average tosses we have is close to 32. The taskflow diagram is depicted below.</p><div class="m-graph"><svg style="width: 84.625rem; height: 12.375rem;" viewBox="0.00 0.00 1353.69 198.00">
+<span class="p">}</span><span class="w"></span></pre><p>Running the taskflow by a fair number of times, the average tosses we have is close to 32. The taskflow diagram is depicted below.</p><div class="m-graph"><svg style="width: 78.125rem; height: 12.375rem;" viewBox="0.00 0.00 1250.47 198.00">
 <g transform="scale(1 1) rotate(0) translate(4 194)">
 <title>Taskflow</title>
 <g class="m-node m-flat">
 <title>p0x7fa9a4803e30</title>
-<ellipse cx="28.9914" cy="-102" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="28.9914" y="-98.2">init</text>
+<ellipse cx="27" cy="-102" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="27" y="-98.2">init</text>
 </g>
 <g class="m-node">
 <title>p0x7fa9a4803f50</title>
-<polygon points="189.9828,-128 94.9828,-102 189.9828,-76 284.9828,-102 189.9828,-128"/>
-<text text-anchor="middle" x="189.9828" y="-98.2">flip&#45;coin&#45;1</text>
+<polygon points="177,-128 91,-102 177,-76 263,-102 177,-128"/>
+<text text-anchor="middle" x="177" y="-98.2">flip&#45;coin&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p0x7fa9a4803e30&#45;&gt;p0x7fa9a4803f50</title>
-<path d="M58.1457,-102C66.0813,-102 75.1595,-102 84.7572,-102"/>
-<polygon points="84.9209,-105.5001 94.9209,-102 84.9209,-98.5001 84.9209,-105.5001"/>
+<path d="M54.12,-102C61.94,-102 71.01,-102 80.61,-102"/>
+<polygon points="80.77,-105.5 90.77,-102 80.77,-98.5 80.77,-105.5"/>
 </g>
 <g class="m-edge">
 <title>p0x7fa9a4803f50&#45;&gt;p0x7fa9a4803f50</title>
-<path stroke-dasharray="5,2" d="M170.1363,-122.8234C166.086,-134.8263 172.7015,-146 189.9828,-146 202.1336,-146 209.0115,-140.4759 210.6164,-133.0236"/>
-<polygon points="214.0884,-132.5244 209.8292,-122.8234 207.1091,-133.0631 214.0884,-132.5244"/>
-<text text-anchor="middle" x="189.9828" y="-151.2">1</text>
+<path stroke-dasharray="5,2" d="M158.57,-122.82C154.81,-134.83 160.95,-146 177,-146 188.28,-146 194.67,-140.48 196.16,-133.02"/>
+<polygon points="199.63,-132.55 195.43,-122.82 192.65,-133.05 199.63,-132.55"/>
+<text text-anchor="middle" x="177" y="-151.2">1</text>
 </g>
 <g class="m-node">
 <title>p0x7fa9a4804070</title>
-<polygon points="425.9828,-190 330.9828,-164 425.9828,-138 520.9828,-164 425.9828,-190"/>
-<text text-anchor="middle" x="425.9828" y="-160.2">flip&#45;coin&#45;2</text>
+<polygon points="394,-190 308,-164 394,-138 480,-164 394,-190"/>
+<text text-anchor="middle" x="394" y="-160.2">flip&#45;coin&#45;2</text>
 </g>
 <g class="m-edge">
 <title>p0x7fa9a4803f50&#45;&gt;p0x7fa9a4804070</title>
-<path stroke-dasharray="5,2" d="M221.0213,-119.89C243.1261,-131.7165 273.9447,-146.3932 302.9828,-154 312.1351,-156.3975 321.7899,-158.2655 331.5015,-159.7152"/>
-<polygon points="331.246,-163.2124 341.6239,-161.0793 332.1809,-156.2751 331.246,-163.2124"/>
-<text text-anchor="middle" x="307.9828" y="-161.2">0</text>
+<path stroke-dasharray="5,2" d="M205.67,-119.61C225.76,-131.47 254.03,-146.3 281,-154 289.39,-156.4 298.26,-158.26 307.19,-159.71"/>
+<polygon points="306.88,-163.2 317.28,-161.17 307.88,-156.27 306.88,-163.2"/>
+<text text-anchor="middle" x="285.5" y="-161.2">0</text>
 </g>
 <g class="m-edge">
 <title>p0x7fa9a4804070&#45;&gt;p0x7fa9a4803f50</title>
-<path stroke-dasharray="5,2" d="M379.9056,-150.5379C359.4548,-144.6699 335.0655,-137.8177 312.9828,-132 292.8906,-126.7067 270.8658,-121.2321 251.0751,-116.4318"/>
-<polygon points="251.7978,-113.0058 241.2556,-114.0607 250.1546,-119.8102 251.7978,-113.0058"/>
-<text text-anchor="middle" x="307.9828" y="-137.2">1</text>
+<path stroke-dasharray="5,2" d="M351.52,-150.7C332.78,-144.8 310.33,-137.88 290,-132 271.73,-126.72 251.68,-121.25 233.66,-116.45"/>
+<polygon points="234.45,-113.03 223.89,-113.85 232.66,-119.8 234.45,-113.03"/>
+<text text-anchor="middle" x="285.5" y="-137.2">1</text>
 </g>
 <g class="m-node">
 <title>p0x7fa9a4804190</title>
-<polygon points="661.9828,-136 566.9828,-110 661.9828,-84 756.9828,-110 661.9828,-136"/>
-<text text-anchor="middle" x="661.9828" y="-106.2">flip&#45;coin&#45;3</text>
+<polygon points="611,-136 525,-110 611,-84 697,-110 611,-136"/>
+<text text-anchor="middle" x="611" y="-106.2">flip&#45;coin&#45;3</text>
 </g>
 <g class="m-edge">
 <title>p0x7fa9a4804070&#45;&gt;p0x7fa9a4804190</title>
-<path stroke-dasharray="5,2" d="M477.774,-152.1495C513.7701,-143.9131 561.9198,-132.8958 599.964,-124.1907"/>
-<polygon points="600.9377,-127.5585 609.9051,-121.9161 599.3763,-120.7348 600.9377,-127.5585"/>
-<text text-anchor="middle" x="543.9828" y="-142.2">0</text>
+<path stroke-dasharray="5,2" d="M441.65,-152.28C474.47,-144.04 518.58,-132.96 553.41,-124.21"/>
+<polygon points="554.59,-127.52 563.44,-121.69 552.89,-120.74 554.59,-127.52"/>
+<text text-anchor="middle" x="502.5" y="-142.2">0</text>
 </g>
 <g class="m-edge">
 <title>p0x7fa9a4804190&#45;&gt;p0x7fa9a4803f50</title>
-<path stroke-dasharray="5,2" d="M572.3193,-108.4803C491.6293,-107.1127 373.2364,-105.106 289.6156,-103.6887"/>
-<polygon points="289.6531,-100.1889 279.5951,-103.5189 289.5344,-107.1879 289.6531,-100.1889"/>
-<text text-anchor="middle" x="425.9828" y="-112.2">1</text>
+<path stroke-dasharray="5,2" d="M529.82,-108.52C455.7,-107.14 345.67,-105.1 268.44,-103.67"/>
+<polygon points="268.31,-100.17 258.24,-103.49 268.18,-107.17 268.31,-100.17"/>
+<text text-anchor="middle" x="394" y="-112.2">1</text>
 </g>
 <g class="m-node">
 <title>p0x7fa9a48042b0</title>
-<polygon points="897.9828,-90 802.9828,-64 897.9828,-38 992.9828,-64 897.9828,-90"/>
-<text text-anchor="middle" x="897.9828" y="-60.2">flip&#45;coin&#45;4</text>
+<polygon points="828,-90 742,-64 828,-38 914,-64 828,-90"/>
+<text text-anchor="middle" x="828" y="-60.2">flip&#45;coin&#45;4</text>
 </g>
 <g class="m-edge">
 <title>p0x7fa9a4804190&#45;&gt;p0x7fa9a48042b0</title>
-<path stroke-dasharray="5,2" d="M717.6126,-99.1569C751.9918,-92.4559 796.2832,-83.8228 832.3717,-76.7886"/>
-<polygon points="833.1722,-80.1985 842.3179,-74.8499 831.833,-73.3278 833.1722,-80.1985"/>
-<text text-anchor="middle" x="779.9828" y="-92.2">0</text>
+<path stroke-dasharray="5,2" d="M661.87,-99.33C693.23,-92.62 733.89,-83.92 767.01,-76.83"/>
+<polygon points="767.99,-80.21 777.03,-74.69 766.52,-73.36 767.99,-80.21"/>
+<text text-anchor="middle" x="719.5" y="-92.2">0</text>
 </g>
 <g class="m-edge">
 <title>p0x7fa9a48042b0&#45;&gt;p0x7fa9a4803f50</title>
-<path stroke-dasharray="5,2" d="M810.1335,-66.0042C743.4048,-67.7485 649.3779,-70.682 566.9828,-75 465.7006,-80.3078 349.2943,-89.0484 272.9454,-95.1418"/>
-<polygon points="272.5973,-91.6584 262.9089,-95.946 273.1565,-98.636 272.5973,-91.6584"/>
-<text text-anchor="middle" x="543.9828" y="-81.2">1</text>
+<path stroke-dasharray="5,2" d="M748.43,-65.97C687.45,-67.72 600.82,-70.67 525,-75 431.42,-80.34 323.84,-89.12 253.59,-95.22"/>
+<polygon points="253.16,-91.74 243.5,-96.09 253.77,-98.71 253.16,-91.74"/>
+<text text-anchor="middle" x="502.5" y="-81.2">1</text>
 </g>
 <g class="m-node">
 <title>p0x7fa9a48043d0</title>
-<polygon points="1133.9828,-52 1038.9828,-26 1133.9828,0 1228.9828,-26 1133.9828,-52"/>
-<text text-anchor="middle" x="1133.9828" y="-22.2">flip&#45;coin&#45;5</text>
+<polygon points="1045,-52 959,-26 1045,0 1131,-26 1045,-52"/>
+<text text-anchor="middle" x="1045" y="-22.2">flip&#45;coin&#45;5</text>
 </g>
 <g class="m-edge">
 <title>p0x7fa9a48042b0&#45;&gt;p0x7fa9a48043d0</title>
-<path stroke-dasharray="5,2" d="M957.8406,-54.3619C990.017,-49.1809 1029.8828,-42.7619 1063.546,-37.3415"/>
-<polygon points="1064.4623,-40.7391 1073.7787,-35.6939 1063.3495,-33.8281 1064.4623,-40.7391"/>
-<text text-anchor="middle" x="1015.9828" y="-50.2">0</text>
+<path stroke-dasharray="5,2" d="M882.7,-54.51C912.33,-49.27 949.3,-42.74 980.38,-37.25"/>
+<polygon points="981,-40.69 990.24,-35.5 979.78,-33.8 981,-40.69"/>
+<text text-anchor="middle" x="936.5" y="-50.2">0</text>
 </g>
 <g class="m-edge">
 <title>p0x7fa9a48043d0&#45;&gt;p0x7fa9a4803f50</title>
-<path stroke-dasharray="5,2" d="M1064.878,-18.8424C1017.8763,-14.5823 954.2436,-10 897.9828,-10 425.9828,-10 425.9828,-10 425.9828,-10 351.1061,-10 271.4313,-50.6988 226.4649,-77.9576"/>
-<polygon points="224.3486,-75.1509 217.6783,-83.3824 228.026,-81.1071 224.3486,-75.1509"/>
-<text text-anchor="middle" x="661.9828" y="-15.2">1</text>
+<path stroke-dasharray="5,2" d="M982,-18.94C939.09,-14.65 880.65,-10 829,-10 393,-10 393,-10 393,-10 323.97,-10 251.8,-50.58 211.1,-77.84"/>
+<polygon points="208.95,-75.07 202.67,-83.6 212.9,-80.85 208.95,-75.07"/>
+<text text-anchor="middle" x="611" y="-15.2">1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fa9a48044f0</title>
-<ellipse cx="1310.3381" cy="-26" rx="35.2113" ry="18.2703"/>
-<text text-anchor="middle" x="1310.3381" y="-22.2">stop</text>
+<ellipse cx="1209.23" cy="-26" rx="33.47" ry="18.27"/>
+<text text-anchor="middle" x="1209.23" y="-22.2">stop</text>
 </g>
 <g class="m-edge">
 <title>p0x7fa9a48043d0&#45;&gt;p0x7fa9a48044f0</title>
-<path stroke-dasharray="5,2" d="M1229.129,-26C1241.4575,-26 1253.6033,-26 1264.5941,-26"/>
-<polygon points="1264.7462,-29.5001 1274.7461,-26 1264.7461,-22.5001 1264.7462,-29.5001"/>
-<text text-anchor="middle" x="1251.9828" y="-31.2">0</text>
+<path stroke-dasharray="5,2" d="M1131.39,-26C1143.3,-26 1155.09,-26 1165.72,-26"/>
+<polygon points="1165.93,-29.5 1175.93,-26 1165.93,-22.5 1165.93,-29.5"/>
+<text text-anchor="middle" x="1153.5" y="-31.2">0</text>
 </g>
 </g>
 </svg>
@@ -294,138 +294,138 @@
 <span class="c1">// calculate the expected number of tosses</span>
 <span class="n">average_tosses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">total_tosses</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">rounds</span><span class="p">;</span><span class="w"></span>
 
-<span class="n">assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">fabs</span><span class="p">(</span><span class="n">average_tosses</span><span class="mf">-243.0</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1.0</span><span class="p">);</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 84.625rem; height: 21.688rem;" viewBox="0.00 0.00 1353.69 347.00">
+<span class="n">assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">fabs</span><span class="p">(</span><span class="n">average_tosses</span><span class="mf">-243.0</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1.0</span><span class="p">);</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 78.125rem; height: 21.688rem;" viewBox="0.00 0.00 1250.47 347.00">
 <g transform="scale(1 1) rotate(0) translate(4 343)">
 <title>Taskflow</title>
 <g class="m-node m-flat">
 <title>p0x7fca00803e30</title>
-<ellipse cx="28.9914" cy="-183" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="28.9914" y="-179.2">init</text>
+<ellipse cx="27" cy="-183" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="27" y="-179.2">init</text>
 </g>
 <g class="m-node">
 <title>p0x7fca00803f50</title>
-<polygon points="189.9828,-209 94.9828,-183 189.9828,-157 284.9828,-183 189.9828,-209"/>
-<text text-anchor="middle" x="189.9828" y="-179.2">flip&#45;coin&#45;1</text>
+<polygon points="177,-209 91,-183 177,-157 263,-183 177,-209"/>
+<text text-anchor="middle" x="177" y="-179.2">flip&#45;coin&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p0x7fca00803e30&#45;&gt;p0x7fca00803f50</title>
-<path d="M58.1457,-183C66.0813,-183 75.1595,-183 84.7572,-183"/>
-<polygon points="84.9209,-186.5001 94.9209,-183 84.9209,-179.5001 84.9209,-186.5001"/>
+<path d="M54.12,-183C61.94,-183 71.01,-183 80.61,-183"/>
+<polygon points="80.77,-186.5 90.77,-183 80.77,-179.5 80.77,-186.5"/>
 </g>
 <g class="m-edge">
 <title>p0x7fca00803f50&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M179.6904,-206.5393C178.5676,-217.4591 181.9984,-227 189.9828,-227 195.3473,-227 198.6562,-222.6931 199.9096,-216.5548"/>
-<polygon points="203.408,-216.6604 200.2751,-206.5393 196.4126,-216.405 203.408,-216.6604"/>
-<text text-anchor="middle" x="189.9828" y="-232.2">1</text>
+<path stroke-dasharray="5,2" d="M167.44,-206.54C166.4,-217.46 169.59,-227 177,-227 181.98,-227 185.05,-222.69 186.22,-216.55"/>
+<polygon points="189.72,-216.65 186.56,-206.54 182.72,-216.42 189.72,-216.65"/>
+<text text-anchor="middle" x="177" y="-232.2">1</text>
 </g>
 <g class="m-edge">
 <title>p0x7fca00803f50&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M172.7203,-204.6049C164.3224,-224.1088 170.0765,-245 189.9828,-245 206.6231,-245 213.3742,-230.4014 210.2358,-214.2181"/>
-<polygon points="213.5578,-213.1138 207.2452,-204.6049 206.8738,-215.1932 213.5578,-213.1138"/>
-<text text-anchor="middle" x="189.9828" y="-250.2">2</text>
+<path stroke-dasharray="5,2" d="M161.1,-204.28C153.11,-223.88 158.41,-245 177,-245 192.54,-245 198.79,-230.24 195.76,-213.95"/>
+<polygon points="199.09,-212.88 192.9,-204.28 192.38,-214.87 199.09,-212.88"/>
+<text text-anchor="middle" x="177" y="-250.2">2</text>
 </g>
 <g class="m-node">
 <title>p0x7fca00804070</title>
-<polygon points="425.9828,-325 330.9828,-299 425.9828,-273 520.9828,-299 425.9828,-325"/>
-<text text-anchor="middle" x="425.9828" y="-295.2">flip&#45;coin&#45;2</text>
+<polygon points="394,-325 308,-299 394,-273 480,-299 394,-325"/>
+<text text-anchor="middle" x="394" y="-295.2">flip&#45;coin&#45;2</text>
 </g>
 <g class="m-edge">
 <title>p0x7fca00803f50&#45;&gt;p0x7fca00804070</title>
-<path stroke-dasharray="5,2" d="M201.0483,-206.0095C217.9166,-238.0704 253.4124,-294.8484 302.9828,-318 326.9862,-329.2107 356.211,-325.3248 380.15,-318.2314"/>
-<polygon points="381.2723,-321.547 389.7163,-315.1479 379.1247,-314.8846 381.2723,-321.547"/>
-<text text-anchor="middle" x="307.9828" y="-326.2">0</text>
+<path stroke-dasharray="5,2" d="M187.51,-205.94C202.19,-237.92 233.7,-294.6 281,-318 302.38,-328.58 328.57,-324.92 350.24,-318.11"/>
+<polygon points="351.53,-321.37 359.85,-314.8 349.25,-314.75 351.53,-321.37"/>
+<text text-anchor="middle" x="285.5" y="-326.2">0</text>
 </g>
 <g class="m-edge">
 <title>p0x7fca00804070&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M354.1447,-292.5433C336.8542,-289.2746 318.8162,-284.3658 302.9828,-277 269.2465,-261.3056 237.2826,-232.9952 216.0162,-211.5314"/>
-<polygon points="218.4314,-208.9944 208.9548,-204.2568 213.4086,-213.87 218.4314,-208.9944"/>
-<text text-anchor="middle" x="307.9828" y="-285.2">1</text>
+<path stroke-dasharray="5,2" d="M328.81,-292.58C312.62,-289.32 295.69,-284.4 281,-277 249.42,-261.08 220.35,-232.73 201.2,-211.31"/>
+<polygon points="203.83,-209 194.61,-203.77 198.56,-213.6 203.83,-209"/>
+<text text-anchor="middle" x="285.5" y="-285.2">1</text>
 </g>
 <g class="m-edge">
 <title>p0x7fca00804070&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M386.7833,-283.4838C369.5046,-276.3917 349.0612,-267.6537 330.9828,-259 296.1652,-242.3337 257.6508,-221.3968 229.685,-205.7204"/>
-<polygon points="231.0568,-202.4762 220.6259,-200.6195 227.6223,-208.5757 231.0568,-202.4762"/>
-<text text-anchor="middle" x="307.9828" y="-254.2">2</text>
+<path stroke-dasharray="5,2" d="M358.33,-283.53C342.78,-276.38 324.31,-267.58 308,-259 275.92,-242.12 240.46,-221.23 214.68,-205.63"/>
+<polygon points="216.36,-202.55 205.99,-200.34 212.72,-208.53 216.36,-202.55"/>
+<text text-anchor="middle" x="285.5" y="-254.2">2</text>
 </g>
 <g class="m-node">
 <title>p0x7fca00804190</title>
-<polygon points="661.9828,-247 566.9828,-221 661.9828,-195 756.9828,-221 661.9828,-247"/>
-<text text-anchor="middle" x="661.9828" y="-217.2">flip&#45;coin&#45;3</text>
+<polygon points="611,-247 525,-221 611,-195 697,-221 611,-247"/>
+<text text-anchor="middle" x="611" y="-217.2">flip&#45;coin&#45;3</text>
 </g>
 <g class="m-edge">
 <title>p0x7fca00804070&#45;&gt;p0x7fca00804190</title>
-<path stroke-dasharray="5,2" d="M469.2688,-284.6936C508.6501,-271.6777 566.8925,-252.4281 609.034,-238.5"/>
-<polygon points="610.1757,-241.809 618.5722,-235.3476 607.9789,-235.1626 610.1757,-241.809"/>
-<text text-anchor="middle" x="543.9828" y="-265.2">0</text>
+<path stroke-dasharray="5,2" d="M433.93,-284.87C469.86,-271.84 523.31,-252.45 561.89,-238.46"/>
+<polygon points="563.15,-241.72 571.35,-235.02 560.76,-235.14 563.15,-241.72"/>
+<text text-anchor="middle" x="502.5" y="-265.2">0</text>
 </g>
 <g class="m-edge">
 <title>p0x7fca00804190&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M573.2828,-219.2744C506.5197,-217.3547 412.8303,-213.3395 330.9828,-205 306.9358,-202.5498 280.7388,-198.7719 257.5231,-195.0341"/>
-<polygon points="257.8631,-191.5433 247.429,-193.3818 256.7323,-198.4514 257.8631,-191.5433"/>
-<text text-anchor="middle" x="425.9828" y="-222.2">1</text>
+<path stroke-dasharray="5,2" d="M530.63,-219.28C469.61,-217.36 383.28,-213.34 308,-205 285.61,-202.52 261.22,-198.7 239.68,-194.93"/>
+<polygon points="240.14,-191.45 229.68,-193.15 238.91,-198.35 240.14,-191.45"/>
+<text text-anchor="middle" x="394" y="-222.2">1</text>
 </g>
 <g class="m-edge">
 <title>p0x7fca00804190&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M619.6919,-206.4703C591.9914,-197.7374 554.787,-187.4753 520.9828,-183 437.9419,-172.0062 342.1518,-173.5322 275.0548,-176.8848"/>
-<polygon points="274.7571,-173.3955 264.954,-177.4141 275.1235,-180.3859 274.7571,-173.3955"/>
-<text text-anchor="middle" x="425.9828" y="-188.2">2</text>
+<path stroke-dasharray="5,2" d="M571.95,-206.77C546.37,-197.97 511.66,-187.53 480,-183 404.32,-172.17 316.88,-173.67 255.62,-176.98"/>
+<polygon points="255.04,-173.51 245.26,-177.57 255.44,-180.49 255.04,-173.51"/>
+<text text-anchor="middle" x="394" y="-188.2">2</text>
 </g>
 <g class="m-node">
 <title>p0x7fca008042b0</title>
-<polygon points="897.9828,-152 802.9828,-126 897.9828,-100 992.9828,-126 897.9828,-152"/>
-<text text-anchor="middle" x="897.9828" y="-122.2">flip&#45;coin&#45;4</text>
+<polygon points="828,-152 742,-126 828,-100 914,-126 828,-152"/>
+<text text-anchor="middle" x="828" y="-122.2">flip&#45;coin&#45;4</text>
 </g>
 <g class="m-edge">
 <title>p0x7fca00804190&#45;&gt;p0x7fca008042b0</title>
-<path stroke-dasharray="5,2" d="M700.6891,-205.4191C741.5013,-188.9904 805.8672,-163.0804 849.9067,-145.3527"/>
-<polygon points="851.2857,-148.5706 859.2553,-141.5894 848.6717,-142.0769 851.2857,-148.5706"/>
-<text text-anchor="middle" x="779.9828" y="-178.2">0</text>
+<path stroke-dasharray="5,2" d="M646.54,-205.74C683.58,-189.37 742.48,-163.34 782.85,-145.51"/>
+<polygon points="784.45,-148.63 792.19,-141.38 781.62,-142.22 784.45,-148.63"/>
+<text text-anchor="middle" x="719.5" y="-178.2">0</text>
 </g>
 <g class="m-edge">
 <title>p0x7fca008042b0&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M821.3715,-131.0487C708.0105,-138.6881 488.9437,-154.0977 302.9828,-171 291.6617,-172.029 279.7122,-173.2027 267.9907,-174.4039"/>
-<polygon points="267.3558,-170.9508 257.7701,-175.4636 268.0778,-177.9135 267.3558,-170.9508"/>
-<text text-anchor="middle" x="543.9828" y="-156.2">1</text>
+<path stroke-dasharray="5,2" d="M757.98,-130.94C654.32,-138.52 452.31,-153.97 281,-171 270.61,-172.03 259.65,-173.21 248.9,-174.42"/>
+<polygon points="248.23,-170.98 238.69,-175.58 249.02,-177.93 248.23,-170.98"/>
+<text text-anchor="middle" x="502.5" y="-156.2">1</text>
 </g>
 <g class="m-edge">
 <title>p0x7fca008042b0&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M814.6579,-122.7608C703.4962,-119.9425 500.9449,-120.0664 330.9828,-149 303.1512,-153.7379 272.6529,-160.8473 247.1621,-167.3421"/>
-<polygon points="246.1015,-164.001 237.2935,-169.8891 247.8509,-170.7789 246.1015,-164.001"/>
-<text text-anchor="middle" x="543.9828" y="-131.2">2</text>
+<path stroke-dasharray="5,2" d="M751.92,-122.86C650.33,-120.08 463.87,-120.16 308,-149 282.21,-153.77 253.99,-160.91 230.46,-167.42"/>
+<polygon points="229.37,-164.09 220.68,-170.16 231.26,-170.83 229.37,-164.09"/>
+<text text-anchor="middle" x="502.5" y="-131.2">2</text>
 </g>
 <g class="m-node">
 <title>p0x7fca008043d0</title>
-<polygon points="1133.9828,-80 1038.9828,-54 1133.9828,-28 1228.9828,-54 1133.9828,-80"/>
-<text text-anchor="middle" x="1133.9828" y="-50.2">flip&#45;coin&#45;5</text>
+<polygon points="1045,-80 959,-54 1045,-28 1131,-54 1045,-80"/>
+<text text-anchor="middle" x="1045" y="-50.2">flip&#45;coin&#45;5</text>
 </g>
 <g class="m-edge">
 <title>p0x7fca008042b0&#45;&gt;p0x7fca008043d0</title>
-<path stroke-dasharray="5,2" d="M942.928,-112.2879C981.6809,-100.465 1037.765,-83.3546 1079.15,-70.7286"/>
-<polygon points="1080.2601,-74.0493 1088.8035,-67.7835 1078.2174,-67.354 1080.2601,-74.0493"/>
-<text text-anchor="middle" x="1015.9828" y="-95.2">0</text>
+<path stroke-dasharray="5,2" d="M869.44,-112.46C904.61,-100.68 955.74,-83.56 993.57,-70.89"/>
+<polygon points="995.01,-74.1 1003.38,-67.6 992.78,-67.46 995.01,-74.1"/>
+<text text-anchor="middle" x="936.5" y="-95.2">0</text>
 </g>
 <g class="m-edge">
 <title>p0x7fca008043d0&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M1038.9599,-54C995.9166,-54 944.3838,-54 897.9828,-54 425.9828,-54 425.9828,-54 425.9828,-54 341.9784,-54 259.491,-117.7085 217.8752,-155.5826"/>
-<polygon points="215.3031,-153.1944 210.3487,-162.5596 220.0619,-158.3281 215.3031,-153.1944"/>
-<text text-anchor="middle" x="661.9828" y="-59.2">1</text>
+<path stroke-dasharray="5,2" d="M958.99,-54C919.46,-54 871.83,-54 829,-54 393,-54 393,-54 393,-54 314.85,-54 240.57,-117.44 203.17,-155.35"/>
+<polygon points="200.63,-152.94 196.19,-162.56 205.66,-157.81 200.63,-152.94"/>
+<text text-anchor="middle" x="611" y="-59.2">1</text>
 </g>
 <g class="m-edge">
 <title>p0x7fca008043d0&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M1093.6948,-38.958C1047.2184,-22.9798 968.1747,0 897.9828,0 425.9828,0 425.9828,0 425.9828,0 327.9596,0 246.0025,-99.8118 209.8449,-152.0083"/>
-<polygon points="206.7593,-150.3219 204.0352,-160.5606 212.5497,-154.2554 206.7593,-150.3219"/>
-<text text-anchor="middle" x="661.9828" y="-5.2">2</text>
+<path stroke-dasharray="5,2" d="M1007.79,-39.1C965.61,-23.12 893.46,0 829,0 393,0 393,0 393,0 300.29,0 227.21,-99.9 195.36,-152.08"/>
+<polygon points="192.2,-150.55 190.08,-160.93 198.21,-154.14 192.2,-150.55"/>
+<text text-anchor="middle" x="611" y="-5.2">2</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fca008044f0</title>
-<ellipse cx="1310.3381" cy="-54" rx="35.2113" ry="18.2703"/>
-<text text-anchor="middle" x="1310.3381" y="-50.2">stop</text>
+<ellipse cx="1209.23" cy="-54" rx="33.47" ry="18.27"/>
+<text text-anchor="middle" x="1209.23" y="-50.2">stop</text>
 </g>
 <g class="m-edge">
 <title>p0x7fca008043d0&#45;&gt;p0x7fca008044f0</title>
-<path stroke-dasharray="5,2" d="M1229.129,-54C1241.4575,-54 1253.6033,-54 1264.5941,-54"/>
-<polygon points="1264.7462,-57.5001 1274.7461,-54 1264.7461,-50.5001 1264.7462,-57.5001"/>
-<text text-anchor="middle" x="1251.9828" y="-59.2">0</text>
+<path stroke-dasharray="5,2" d="M1131.39,-54C1143.3,-54 1155.09,-54 1165.72,-54"/>
+<polygon points="1165.93,-57.5 1175.93,-54 1165.93,-50.5 1165.93,-57.5"/>
+<text text-anchor="middle" x="1153.5" y="-59.2">0</text>
 </g>
 </g>
 </svg>
@@ -468,13 +468,13 @@
     </div>
   </div>
 </div>
-<script src="search-v2.js"></script>
-<script src="searchdata-v2.js" async="async"></script>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

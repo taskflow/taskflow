@@ -409,6 +409,9 @@ class Executor {
     /**
     @brief runs a target graph and waits until it completes using 
            an internal worker of this executor
+    
+    @tparam T target type which has `tf::Graph& T::graph()` defined
+    @param target the target task graph object
 
     The method runs a target graph which has `tf::Graph& T::graph()` defined 
     and waits until the execution completes.
@@ -419,31 +422,31 @@ class Executor {
     deadlock caused by blocked waiting.
     
     @code{.cpp}
-    // create an executor and a taskflow
     tf::Executor executor(2);
-    tf::Taskflow taskflow("Demo");
-
-    int counter{0};
+    tf::Taskflow taskflow;
+    std::array<tf::Taskflow, 1000> others;
     
-    // taskflow to run by the main taskflow
-    tf::Taskflow others;
-    tf::Task A = others.emplace([&](){ counter++; });
-    tf::Task B = others.emplace([&](){ counter++; });
-    A.precede(B);
-
-    // main taskflow
-    tf::Task C = taskflow.emplace([&](){
-      executor.run_and_wait(others);
-    });
-    tf::Task D = taskflow.emplace([&](){
-      executor.run_and_wait(others);
-    });
-    C.precede(D);
+    std::atomic<size_t> counter{0};
+    
+    for(size_t n=0; n<1000; n++) {
+      for(size_t i=0; i<1000; i++) {
+        others[n].emplace([&](){ counter++; });
+      }
+      taskflow.emplace([&executor, &tf=others[n]](){
+        executor.run_and_wait(tf);
+        //executor.run(tf).wait();  <- blocking the worker without doing anything
+        //                             will introduce deadlock
+      });
+    }
     executor.run(taskflow).wait();
     @endcode 
 
     The method is thread-safe as long as the target is not concurrently
     ran by two or more threads.
+
+    @attention
+    You must call tf::Executor::run_and_wait from a worker of the calling executor
+    or an exception will be thrown.
     */
     template<typename T>
     void run_and_wait(T& target);

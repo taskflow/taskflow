@@ -32,10 +32,8 @@ To use %Taskflow v3.4.0, you need a compiler that supports C++17:
 
 @section release-3-4-0_summary Release Summary
 
-This release enhances our task-parallel pipeline programming models with
-1) a new tf::ScalablePipeline interface that allows variable structures
-and
-2) a new support for emplacing a subflow in each stage task (pipe).
+This release enhances our task-parallel pipeline programming model
+and executor methods, supplied with several new examples and unit tests.
 
 @section release-3-4-0_new_features New Features
 
@@ -43,8 +41,8 @@ and
 
 + Improved the pipeline performance using vertical stack optimization
 + Added tf::ScalablePipeline to allow programming variable lengths of pipes
-+ Added tf::Runtime::emplace to allow spawning a subflow
-+ Added tf::Executor::run_and_wait to void deadlock while running task graphs
++ Added tf::Runtime::run_and_wait to allow spawning a subflow
++ Added tf::Executor::run_and_wait to allow running taskflows from a worker
 + Added an example of attaching data to a task (examples/attach_data.cpp)
 + Added an example of text processing pipeline (examples/parallel_text_pipeline.cpp)
 + Added an example of graph processing pipeline (examples/parallel_graph_pipeline.cpp)
@@ -57,6 +55,8 @@ and
 + Added tf::cudaEvent as a move-only, RAII-styled wrapper over a native CUDA event
 
 @subsection release-3-4-0_syclflow syclFlow
+
+There is no update on %syclFlow in this release.
 
 @subsection release-3-4-0_utilities Utilities
 
@@ -77,14 +77,16 @@ If you encounter any potential bugs, please submit an issue at @IssueTracker.
 
 @section release-3-4-0_breaking_changes Breaking Changes
 
-+ Renamed tf::Runtime::run to tf::Runtime::emplace to be consistent with tf::Subflow
++ Replaced tf::Runtime::run with tf::Runtime::run_and_wait to comply with tf::Executor::run_and_wait
 
 @section release-3-4-0_deprecated_items Deprecated and Removed Items 
 
+There are no deprecated items in this release.
 
 @section release-3-4-0_documentation Documentation
 
 + Revised @ref ExecuteTaskflow
+  + Added @ref ExecuteATaskflowFromAnInternalWorker
 + Revised @ref CUDASTDExecutionPolicy
 + Revised @ref ParallelPipeline
   + Added @ref ParallelPipelineLearnMore
