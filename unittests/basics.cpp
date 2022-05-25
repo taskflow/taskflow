@@ -711,6 +711,8 @@ TEST_CASE("RunAndWait.Simple") {
   tf::Executor executor(2);
   tf::Taskflow taskflow("Demo");
 
+  REQUIRE_THROWS(executor.run_and_wait(taskflow));
+
   int counter{0};
   
   // taskflow to run by the main taskflow

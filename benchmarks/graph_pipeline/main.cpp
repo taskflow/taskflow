@@ -68,42 +68,5 @@ int main(int argc, char* argv[]) {
     std::cout << std::setw(12) << graph.graph_size()
               << std::setw(12) << runtime / num_rounds / 1e3
               << std::endl;
-<<<<<<< HEAD
-
-    //if (model == "tf") {
-    //  std::ofstream outputfile;
-    //  outputfile.open("./tf_time.csv", std::ofstream::app);
-    //  outputfile << num_threads                  << ','
-    //             << num_lines                    << ','
-    //             << pipes                        << ','
-    //             << graph.graph_size()           << ','
-    //             << runtime / num_rounds / 1e3   << '\n';
-
-    //  outputfile.close();
-    //}
-    //else if (model == "tbb") {
-    //  std::ofstream outputfile;
-    //  outputfile.open("./tbb_time.csv", std::ofstream::app);
-    //  outputfile << num_threads                  << ','
-    //             << num_lines                    << ','
-    //             << pipes                        << ','
-    //             << graph.graph_size()           << ','
-    //             << runtime / num_rounds / 1e3   << '\n';
-
-    //  outputfile.close();
-    //}
-    //else if (model == "omp") {
-    //  std::ofstream outputfile;
-    //  outputfile.open("./omp_time.csv", std::ofstream::app);
-    //  outputfile << num_threads                  << ','
-    //             << num_lines                    << ','
-    //             << pipes                        << ','
-    //             << graph.graph_size()           << ','
-    //             << runtime / num_rounds / 1e3   << '\n';
-
-    //  outputfile.close();
-    //}
-=======
->>>>>>> dev
   }
 }

@@ -3,34 +3,29 @@
 #include <taskflow/taskflow.hpp>
 
 int main(){
-
+  
+  const size_t N = 100;
+  const size_t T = 1000;
+  
   // create an executor and a taskflow
   tf::Executor executor(2);
-  tf::Taskflow taskflow("Demo");
+  tf::Taskflow taskflow;
 
-  int counter{0};
+  std::array<tf::Taskflow, N> taskflows;
+
+  std::atomic<size_t> counter{0};
   
-  // taskflow to run by the main taskflow
-  tf::Taskflow others;
-  tf::Task A = others.emplace([&](){ counter++; });
-  tf::Task B = others.emplace([&](){ counter++; });
-  A.precede(B);
-
-  // main taskflow
-  tf::Task C = taskflow.emplace([&](){
-    executor.run_and_wait(others);
-  });
-  tf::Task D = taskflow.emplace([&](){
-    executor.run_and_wait(others);
-  });
-  C.precede(D);
+  for(size_t n=0; n<N; n++) {
+    for(size_t i=0; i<T; i++) {
+      taskflows[n].emplace([&](){ counter++; });
+    }
+    taskflow.emplace([&executor, &tf=taskflows[n]](){
+      executor.run_and_wait(tf);
+      //executor.run(tf).wait();  <-- can result in deadlock
+    });
+  }
 
   executor.run(taskflow).wait();
-
-  // run others again
-  executor.run(others).wait();
-
-  std::cout << "counter is: " << counter << std::endl;
 
   return 0;
 }

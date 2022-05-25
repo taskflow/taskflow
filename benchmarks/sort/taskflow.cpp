@@ -2,7 +2,7 @@
 #include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/sort.hpp>
 
-void sort_taskflow(unsigned num_threads) {
+void sort_taskflow(size_t num_threads) {
 
   tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
@@ -12,7 +12,7 @@ void sort_taskflow(unsigned num_threads) {
   executor.run(taskflow).get();
 }
 
-std::chrono::microseconds measure_time_taskflow(unsigned num_threads) {
+std::chrono::microseconds measure_time_taskflow(size_t num_threads) {
   auto beg = std::chrono::high_resolution_clock::now();
   sort_taskflow(num_threads);
   auto end = std::chrono::high_resolution_clock::now();

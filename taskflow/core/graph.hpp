@@ -217,7 +217,7 @@ class Runtime {
   @code{.cpp}
   // complete a subflow synchronously
   taskflow.emplace([](tf::Runtime& rt){
-    rt.run_and_wait([](tf::Runtime& sf){
+    rt.run_and_wait([](tf::Subflow& sf){
       tf::Task A = sf.emplace([](){});
       tf::Task B = sf.emplace([](){});
     }); 
