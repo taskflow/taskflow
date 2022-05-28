@@ -69,9 +69,6 @@ TEST_CASE("cudaStream" * doctest::timeout(300)) {
   REQUIRE(s1 == s2_source);
   REQUIRE(cudaStreamQuery(s1) == cudaSuccess);
 
-  // reset the stream
-  s1.reset();
-  REQUIRE(s1 == nullptr);
 }
 
 // ----------------------------------------------------------------------------
@@ -103,9 +100,5 @@ TEST_CASE("cudaEvent" * doctest::timeout(300)) {
   REQUIRE(e1 == e2_source);
   REQUIRE(cudaEventQuery(e1) == cudaSuccess);
   REQUIRE(cudaEventQuery(e2) != cudaSuccess);
-  
-  // reset the stream
-  e1.reset();
-  REQUIRE(e1 == nullptr);
 }
 

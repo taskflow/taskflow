@@ -1220,6 +1220,24 @@ void ScalablePipeline<P>::_build() {
   }
 }
 
+// ----------------------------------------------------------------------------
+// Goal: make examples/data_parallel_pipeline.cpp work!
+// ----------------------------------------------------------------------------
+
+// TODO: Zhicheng (5/27)
+// 1. come up with the interface of DataPipeline
+
+//class DataPipeline : public Pipeline {
+//
+//};
+
+// 2. come up with the interface of DataPipe
+// template <typename From, typename To, typename C>
+// class DataPipe : public Pipe <C> {
+//
+// }
+
+
 }  // end of namespace tf -----------------------------------------------------
 
 

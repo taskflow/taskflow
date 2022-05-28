@@ -59,14 +59,22 @@ class cudaFlowCapturer {
   friend class cudaFlow;
   friend class Executor;
 
+  // created by user
   struct External {
     cudaGraph graph;
   };
-
+  
+  // created from executor
   struct Internal {
+    Internal(Executor& e) : executor{e} {}
+    Executor& executor;
+  };
+  
+  // created from cudaFlow
+  struct Proxy {
   };
 
-  using handle_t = std::variant<External, Internal>;
+  using handle_t = std::variant<External, Internal, Proxy>;
 
   using Optimizer = std::variant<
     cudaRoundRobinCapturing,
@@ -1038,19 +1046,23 @@ class cudaFlowCapturer {
 
     Optimizer _optimizer;
 
-    cudaGraphExec_t _executable {nullptr};
+    cudaGraphExec _exec {nullptr};
 
+    cudaFlowCapturer(cudaGraph&, Executor& executor);
     cudaFlowCapturer(cudaGraph&);
 
     cudaGraph_t _capture();
-
-    void _destroy_executable();
-
 };
 
 // constructs a cudaFlow capturer from a taskflow
 inline cudaFlowCapturer::cudaFlowCapturer(cudaGraph& g) :
-  _handle {std::in_place_type_t<Internal>{}},
+  _handle {std::in_place_type_t<Proxy>{}},
+  _graph  {g} {
+}
+
+// constructs a cudaFlow capturer from a taskflow
+inline cudaFlowCapturer::cudaFlowCapturer(cudaGraph& g, Executor& e) :
+  _handle {std::in_place_type_t<Internal>{}, e},
   _graph  {g} {
 }
 
@@ -1061,10 +1073,6 @@ inline cudaFlowCapturer::cudaFlowCapturer() :
 }
 
 inline cudaFlowCapturer::~cudaFlowCapturer() {
-
-  if(_executable != nullptr) {
-    cudaGraphExecDestroy(_executable);
-  }
 }
 
 // Function: empty
@@ -1079,23 +1087,13 @@ inline size_t cudaFlowCapturer::num_tasks() const {
 
 // Procedure: clear
 inline void cudaFlowCapturer::clear() {
-  _destroy_executable();
+  _exec.clear();
   _graph._nodes.clear();
 }
 
 // Procedure: dump
 inline void cudaFlowCapturer::dump(std::ostream& os) const {
   _graph.dump(os, nullptr, "");
-}
-
-// Procedure: _destroy_executable
-inline void cudaFlowCapturer::_destroy_executable() {
-  if(_executable != nullptr) {
-    TF_CHECK_CUDA(
-      cudaGraphExecDestroy(_executable), "failed to destroy executable graph"
-    );
-    _executable = nullptr;
-  }
 }
 
 // Function: capture
@@ -1175,58 +1173,28 @@ void cudaFlowCapturer::offload_until(P&& predicate) {
   // If the topology got changed, we need to destroy the executable
   // and create a new one
   if(_graph._state & cudaGraph::CHANGED) {
-
-    _destroy_executable();
-
-    auto g = _capture();
-    TF_CHECK_CUDA(
-      cudaGraphInstantiate(&_executable, g, nullptr, nullptr, 0),
-      "failed to create an executable graph"
-    );
-
-    //cuda_dump_graph(std::cout, g);
-
     // TODO: store the native graph?
-    TF_CHECK_CUDA(cudaGraphDestroy(g), "failed to destroy captured graph");
+    cudaGraphNative g(_capture());
+    _exec.instantiate(g);
   }
   // if the graph is just updated (i.e., topology does not change),
   // we can skip part of the optimization and just update the executable
   // with the new captured graph
   else if(_graph._state & cudaGraph::UPDATED) {
-
     // TODO: skip part of the optimization (e.g., levelization)
-    auto g = _capture();
-
-    assert(_executable != nullptr);
-
-    cudaGraphNode_t error_node;
-    cudaGraphExecUpdateResult error_result;
-    cudaGraphExecUpdate(_executable, g, &error_node, &error_result);
-
-    if(error_result != cudaGraphExecUpdateSuccess) {
-      _destroy_executable();
-      TF_CHECK_CUDA(
-        cudaGraphInstantiate(&_executable, g, nullptr, nullptr, 0),
-        "failed to re-create an executable graph after updates fail"
-      );
+    cudaGraphNative g(_capture());
+    if(_exec.update(g) != cudaGraphExecUpdateSuccess) {
+      _exec.instantiate(g);
     }
     // TODO: store the native graph?
-    TF_CHECK_CUDA(cudaGraphDestroy(g), "failed to destroy captured graph");
   }
 
   // offload the executable
-  if(_executable) {
-    //cudaScopedPerThreadStream s;
+  if(_exec) {
     cudaStream s;
-
     while(!predicate()) {
-      TF_CHECK_CUDA(
-        cudaGraphLaunch(_executable, s), "failed to launch the exec graph"
-      );
-
+      _exec.launch(s);
       s.synchronize();
-
-      //TF_CHECK_CUDA(cudaStreamSynchronize(s), "failed to synchronize stream");
     }
   }
 

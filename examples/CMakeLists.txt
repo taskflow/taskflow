@@ -22,6 +22,7 @@ list(APPEND TF_EXAMPLES
   parallel_text_pipeline
   parallel_graph_pipeline
   parallel_taskflow_pipeline
+  #data_parallel_pipeline
   run 
   run_and_wait
   runtime

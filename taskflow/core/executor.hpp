@@ -52,6 +52,7 @@ class Executor {
   friend class FlowBuilder;
   friend class Subflow;
   friend class Runtime;
+  friend class cudaFlow;
 
   public:
 
@@ -448,7 +449,10 @@ class Executor {
     You must call tf::Executor::run_and_wait from a worker of the calling executor
     or an exception will be thrown.
     */
-    template<typename T>
+    template <typename T>
+    void run_and_wait(T& target);
+
+    template <typename T, std::enable_if_t<std::is_same_v<T, cudaFlow>, void>* = nullptr>
     void run_and_wait(T& target);
 
     /**
@@ -684,10 +688,8 @@ class Executor {
     void _observer_prologue(Worker&, Node*);
     void _observer_epilogue(Worker&, Node*);
     void _spawn(size_t);
-    void _worker_loop(Worker&);
     void _exploit_task(Worker&, Node*&);
     void _explore_task(Worker&, Node*&);
-    void _consume_task(Worker&, Node*);
     void _schedule(Worker&, Node*);
     void _schedule(Node*);
     void _schedule(Worker&, const SmallVector<Node*>&);
@@ -703,7 +705,7 @@ class Executor {
     void _invoke(Worker&, Node*);
     void _invoke_static_task(Worker&, Node*);
     void _invoke_dynamic_task(Worker&, Node*);
-    void _join_graph(Worker&, Node*, Graph&);
+    void _consume_graph(Worker&, Node*, Graph&);
     void _detach_dynamic_task(Worker&, Node*, Graph&);
     void _invoke_condition_task(Worker&, Node*, SmallVector<int>&);
     void _invoke_multi_condition_task(Worker&, Node*, SmallVector<int>&);
@@ -713,10 +715,11 @@ class Executor {
     void _invoke_cudaflow_task(Worker&, Node*);
     void _invoke_syclflow_task(Worker&, Node*);
     void _invoke_runtime_task(Worker&, Node*);
+    
+    template <typename P>
+    void _consume_until(Worker&, P);
 
-    template <typename C,
-      std::enable_if_t<is_cudaflow_task_v<C>, void>* = nullptr
-    >
+    template <typename C, std::enable_if_t<is_cudaflow_task_v<C>, void>* = nullptr>
     void _invoke_cudaflow_task_entry(Node*, C&&);
 
     template <typename C, typename Q,
@@ -893,8 +896,6 @@ inline void Executor::_spawn(size_t N) {
         }
       }
 
-      //this_worker().worker = &w;
-
       Node* t = nullptr;
 
       // must use 1 as condition instead of !done
@@ -916,12 +917,14 @@ inline void Executor::_spawn(size_t N) {
   cond.wait(lock, [&](){ return n==N; });
 }
 
-// Function: _consume_task
-inline void Executor::_consume_task(Worker& w, Node* p) {
+// Function: _consume_until
+template <typename P>
+inline void Executor::_consume_until(Worker& w, P stop_predicate) {
 
   std::uniform_int_distribution<size_t> rdvtm(0, _workers.size()-1);
 
-  while(p->_join_counter != 0) {
+  //while(p->_join_counter != 0) {
+  while(!stop_predicate()) {
 
     exploit:
 
@@ -940,7 +943,8 @@ inline void Executor::_consume_task(Worker& w, Node* p) {
         _invoke(w, t);
         goto exploit;
       }
-      else if(p->_join_counter != 0){
+      //else if(p->_join_counter != 0){
+      else if(!stop_predicate()) {
         if(num_steals++ > max_steals) {
           std::this_thread::yield();
         }
@@ -1455,7 +1459,7 @@ inline void Executor::_invoke_dynamic_task(Worker& w, Node* node) {
   handle->work(sf);
 
   if(sf._joinable) {
-    _join_graph(w, node, handle->subgraph);
+    _consume_graph(w, node, handle->subgraph);
   }
 
   _observer_epilogue(w, node);
@@ -1494,8 +1498,8 @@ inline void Executor::_detach_dynamic_task(
   _schedule(w, src);
 }
 
-// Procedure: _join_graph
-inline void Executor::_join_graph(Worker& w, Node* p, Graph& g) {
+// Procedure: _consume_graph
+inline void Executor::_consume_graph(Worker& w, Node* p, Graph& g) {
 
   // graph is empty and has no async tasks
   if(g.empty() && p->_join_counter == 0) {
@@ -1515,7 +1519,8 @@ inline void Executor::_join_graph(Worker& w, Node* p, Graph& g) {
   }
   p->_join_counter.fetch_add(src.size());
   _schedule(w, src);
-  _consume_task(w, p);
+  //_consume_until(w, p);
+  _consume_until(w, [p] () -> bool { return p->_join_counter == 0; });
 }
 
 // Procedure: _invoke_condition_task
@@ -1553,7 +1558,7 @@ inline void Executor::_invoke_syclflow_task(Worker& worker, Node* node) {
 // Procedure: _invoke_module_task
 inline void Executor::_invoke_module_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
-  _join_graph(
+  _consume_graph(
     w, node, std::get_if<Node::Module>(&node->_handle)->graph
   );
   _observer_epilogue(w, node);
@@ -1708,7 +1713,7 @@ void Executor::run_and_wait(T& target) {
   }
 
   Node parent;  // dummy parent
-  _join_graph(*w, &parent, target.graph());
+  _consume_graph(*w, &parent, target.graph());
 }
 
 // Procedure: _increment_topology
@@ -1859,7 +1864,7 @@ inline void Subflow::join() {
   }
 
   // only the parent worker can join the subflow
-  _executor._join_graph(_worker, _parent, _graph);
+  _executor._consume_graph(_worker, _parent, _graph);
   _joinable = false;
 }
 
@@ -1995,20 +2000,13 @@ void Runtime::run_and_wait(T&& target) {
     Subflow sf(_executor, _worker, _parent, graph);
     target(sf);
     if(sf._joinable) {
-      _executor._join_graph(_worker, _parent, graph);
+      _executor._consume_graph(_worker, _parent, graph);
     }
   }
   // graph object
   else {
-    _executor._join_graph(_worker, _parent, target.graph());
+    _executor._consume_graph(_worker, _parent, target.graph());
   }
-  //// external graph target
-  //else if constexpr(std::is_same_v<T, Graph&>) {
-  //  _executor._join_graph_internal(_worker, _parent, target);
-  //}
-  //else {
-  //  static_assert(dependent_false_v<T>, "unsupported targetect to emplace");
-  //}
 }
 
 }  // end of namespace tf -----------------------------------------------------
