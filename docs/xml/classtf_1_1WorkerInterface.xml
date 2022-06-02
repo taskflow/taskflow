@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+  <compounddef id="classtf_1_1WorkerInterface" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>tf::WorkerInterface</compoundname>
+    <includes refid="worker_8hpp" local="no">worker.hpp</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1WorkerInterface_1a4f086cadaabff4094cf07fd387b2e185" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual tf::WorkerInterface::~WorkerInterface</definition>
+        <argsstring>()=default</argsstring>
+        <name>~WorkerInterface</name>
+        <briefdescription>
+<para>default destructor </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="185" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1WorkerInterface_1aba28fbefa342757f304088bc93e9b3b1" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void tf::WorkerInterface::scheduler_prologue</definition>
+        <argsstring>(WorkerView wv)=0</argsstring>
+        <name>scheduler_prologue</name>
+        <param>
+          <type><ref refid="classtf_1_1WorkerView" kindref="compound">WorkerView</ref></type>
+          <declname>wv</declname>
+        </param>
+        <briefdescription>
+<para>method to call before a worker enters the scheduling loop </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>wv</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>an immutable view of the invoking worker thread </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="191" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1WorkerInterface_1aa22b8fb3e80a37f16b8b7fb1ee6257f0" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void tf::WorkerInterface::scheduler_epilogue</definition>
+        <argsstring>(WorkerView wv, std::exception_ptr ptr)=0</argsstring>
+        <name>scheduler_epilogue</name>
+        <param>
+          <type><ref refid="classtf_1_1WorkerView" kindref="compound">WorkerView</ref></type>
+          <declname>wv</declname>
+        </param>
+        <param>
+          <type><ref refid="cpp/error/exception_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::exception_ptr</ref></type>
+          <declname>ptr</declname>
+        </param>
+        <briefdescription>
+<para>method to call after a worker leaves the scheduling loop </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>wv</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>an immutable view of the invoking worker thread </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ptr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>an pointer to the exception thrown by the scheduling loop </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="198" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>class <ref refid="classtf_1_1WorkerInterface" kindref="compound">WorkerInterface</ref> </para>    </briefdescription>
+    <detaileddescription>
+<para>The <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> class lets users to interact with the executor to customize the thread behavior, such as calling custom methods before and after a worker enters and leaves the loop.</para><para>When you create an executor, it spawns a set of workers to run tasks. The interaction between the executor and its spawned workers looks like the following:</para><para>for(size_t n=0; n&lt;num_workers; n++) { create_thread([](Worker&amp; worker)</para><para>pre-processing executor-specific worker information ...</para><para>enter the scheduling loop Here, <ref refid="classtf_1_1WorkerInterface_1aba28fbefa342757f304088bc93e9b3b1" kindref="member">WorkerInterface::scheduler_prologue</ref> is invoked, if any <verbatim>while(1) {
+  perform_work_stealing_algorithm();
+  if(stop) {
+    break; 
+  }
+}
+</verbatim></para><para>leaves the scheduling loop and joins this worker thread Here, <ref refid="classtf_1_1WorkerInterface_1aa22b8fb3e80a37f16b8b7fb1ee6257f0" kindref="member">WorkerInterface::scheduler_epilogue</ref> is invoked, if any ); }</para><para><simplesect kind="note"><para>Methods defined in <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> are not thread-safe and may be be invoked by multiple workers concurrently. </para></simplesect>
+</para>    </detaileddescription>
+    <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="178" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="178" bodyend="201"/>
+    <listofallmembers>
+      <member refid="classtf_1_1WorkerInterface_1aa22b8fb3e80a37f16b8b7fb1ee6257f0" prot="public" virt="pure-virtual"><scope>tf::WorkerInterface</scope><name>scheduler_epilogue</name></member>
+      <member refid="classtf_1_1WorkerInterface_1aba28fbefa342757f304088bc93e9b3b1" prot="public" virt="pure-virtual"><scope>tf::WorkerInterface</scope><name>scheduler_prologue</name></member>
+      <member refid="classtf_1_1WorkerInterface_1a4f086cadaabff4094cf07fd387b2e185" prot="public" virt="virtual"><scope>tf::WorkerInterface</scope><name>~WorkerInterface</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -8,8 +8,6 @@
     <innerclass refid="classtf_1_1cudaDeviceAllocator" prot="public">tf::cudaDeviceAllocator</innerclass>
     <innerclass refid="classtf_1_1cudaDeviceVector" prot="private">tf::cudaDeviceVector</innerclass>
     <innerclass refid="classtf_1_1cudaEvent" prot="public">tf::cudaEvent</innerclass>
-    <innerclass refid="structtf_1_1cudaEventCreator" prot="private">tf::cudaEventCreator</innerclass>
-    <innerclass refid="structtf_1_1cudaEventDeleter" prot="private">tf::cudaEventDeleter</innerclass>
     <innerclass refid="classtf_1_1cudaExecutionPolicy" prot="public">tf::cudaExecutionPolicy</innerclass>
     <innerclass refid="classtf_1_1cudaFlow" prot="public">tf::cudaFlow</innerclass>
     <innerclass refid="classtf_1_1cudaFlowCapturer" prot="public">tf::cudaFlowCapturer</innerclass>
@@ -30,9 +28,6 @@
     <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01long_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned long &gt;</innerclass>
     <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01short_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned short &gt;</innerclass>
     <innerclass refid="classtf_1_1cudaStream" prot="public">tf::cudaStream</innerclass>
-    <innerclass refid="structtf_1_1cudaStreamCreator" prot="private">tf::cudaStreamCreator</innerclass>
-    <innerclass refid="structtf_1_1cudaStreamDeleter" prot="private">tf::cudaStreamDeleter</innerclass>
-    <innerclass refid="structtf_1_1cudaStreamSynchronizer" prot="private">tf::cudaStreamSynchronizer</innerclass>
     <innerclass refid="classtf_1_1cudaTask" prot="public">tf::cudaTask</innerclass>
     <innerclass refid="classtf_1_1cudaUSMAllocator" prot="public">tf::cudaUSMAllocator</innerclass>
     <innerclass refid="classtf_1_1CustomGraphBase" prot="private">tf::CustomGraphBase</innerclass>
@@ -70,6 +65,7 @@
     <innerclass refid="classtf_1_1TFProfObserver" prot="public">tf::TFProfObserver</innerclass>
     <innerclass refid="structtf_1_1Timeline" prot="private">tf::Timeline</innerclass>
     <innerclass refid="classtf_1_1Worker" prot="private">tf::Worker</innerclass>
+    <innerclass refid="classtf_1_1WorkerInterface" prot="public">tf::WorkerInterface</innerclass>
     <innerclass refid="classtf_1_1WorkerView" prot="public">tf::WorkerView</innerclass>
     <innernamespace refid="namespacetf_1_1detail">tf::detail</innernamespace>
       <sectiondef kind="enum">
@@ -193,7 +189,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="722" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="722" bodyend="726"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="720" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="720" bodyend="724"/>
       </memberdef>
       <memberdef kind="enum" id="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" prot="public" static="no" strong="yes">
         <type>int</type>
@@ -588,7 +584,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="731" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="731" bodyend="737"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="729" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="729" bodyend="735"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1abffa70155a5f160b7ceb86ee52ab2136" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>

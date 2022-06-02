@@ -88,19 +88,20 @@
     <member refid="classtf_1_1cudaEvent_1a3d6f0d82703a9083452e5c140fa24aff" kind="variable"><name>_event</name></member>
     <member refid="classtf_1_1cudaEvent_1ad0b23cb864f0c7acee306f7fe49a3c23" kind="function"><name>cudaEvent</name></member>
     <member refid="classtf_1_1cudaEvent_1a2865fd7388ef1725e1b59dd3a201f503" kind="function"><name>cudaEvent</name></member>
+    <member refid="classtf_1_1cudaEvent_1af6d6a9c4f98ae85927985a1f89cdeee1" kind="function"><name>cudaEvent</name></member>
     <member refid="classtf_1_1cudaEvent_1ad76f10855d56f2706a3d9ed93e47a2e9" kind="function"><name>cudaEvent</name></member>
     <member refid="classtf_1_1cudaEvent_1aa63d15089884744a802554352c50d2b9" kind="function"><name>cudaEvent</name></member>
     <member refid="classtf_1_1cudaEvent_1ac1510f29e6a9cf57933c33feda99735a" kind="function"><name>~cudaEvent</name></member>
     <member refid="classtf_1_1cudaEvent_1adfcc20681dd240a017a2fafe6cb4d4dd" kind="function"><name>operator=</name></member>
     <member refid="classtf_1_1cudaEvent_1a15672eb08ad6647b84d69e399a9f7677" kind="function"><name>operator=</name></member>
     <member refid="classtf_1_1cudaEvent_1a123fe336965738c7bd8027512c052de6" kind="function"><name>operator cudaEvent_t</name></member>
-    <member refid="classtf_1_1cudaEvent_1a827ae06b6e7ef937740772c7ee55f8fa" kind="function"><name>reset</name></member>
   </compound>
-  <compound refid="structtf_1_1cudaEventCreator" kind="struct"><name>tf::cudaEventCreator</name>
-    <member refid="structtf_1_1cudaEventCreator_1aa479fabea27a173213d94062c07f3599" kind="function"><name>operator()</name></member>
+  <compound refid="structtf_1_1cudaEvent_1_1cudaEventCreator" kind="struct"><name>tf::cudaEvent::cudaEventCreator</name>
+    <member refid="structtf_1_1cudaEvent_1_1cudaEventCreator_1a0323f5f61fb4cce9c261547deef14689" kind="function"><name>operator()</name></member>
+    <member refid="structtf_1_1cudaEvent_1_1cudaEventCreator_1a5203a7c91bcaa9a845068dc39c95a44d" kind="function"><name>operator()</name></member>
   </compound>
-  <compound refid="structtf_1_1cudaEventDeleter" kind="struct"><name>tf::cudaEventDeleter</name>
-    <member refid="structtf_1_1cudaEventDeleter_1afe6ff663a2e030397316c12e690d2b82" kind="function"><name>operator()</name></member>
+  <compound refid="structtf_1_1cudaEvent_1_1cudaEventDeleter" kind="struct"><name>tf::cudaEvent::cudaEventDeleter</name>
+    <member refid="structtf_1_1cudaEvent_1_1cudaEventDeleter_1a3580a46de25fd0592842526c7c663adb" kind="function"><name>operator()</name></member>
   </compound>
   <compound refid="classtf_1_1cudaExecutionPolicy" kind="class"><name>tf::cudaExecutionPolicy</name>
     <member refid="classtf_1_1cudaExecutionPolicy_1abb1050526f45873c967976a99e9a370d" kind="variable"><name>nt</name></member>
@@ -125,9 +126,11 @@
   <compound refid="classtf_1_1cudaFlow" kind="class"><name>tf::cudaFlow</name>
     <member refid="classtf_1_1cudaFlow_1a424926b9d6ce538c8e6aa576cdb1583c" kind="typedef"><name>handle_t</name></member>
     <member refid="classtf_1_1cudaFlow_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
+    <member refid="classtf_1_1cudaFlow_1ae93bb876859c5ebd71f36c272c55c7cf" kind="variable"><name>EXTERNAL</name></member>
+    <member refid="classtf_1_1cudaFlow_1a429b844b930edde440d256e82b5315eb" kind="variable"><name>INTERNAL</name></member>
     <member refid="classtf_1_1cudaFlow_1a3301611d9ecd3795ec58b045ea7327f6" kind="variable"><name>_handle</name></member>
     <member refid="classtf_1_1cudaFlow_1aa8b4d0cddb73fec80fd7ac2fd58cfefc" kind="variable"><name>_graph</name></member>
-    <member refid="classtf_1_1cudaFlow_1aa9f806b778db070e544686487bc88faf" kind="variable"><name>_executable</name></member>
+    <member refid="classtf_1_1cudaFlow_1a94245f76023eca97d6713073f0e614a4" kind="variable"><name>_exec</name></member>
     <member refid="classtf_1_1cudaFlow_1ad4c3e001db151486c8479151a2108d37" kind="function"><name>cudaFlow</name></member>
     <member refid="classtf_1_1cudaFlow_1a19eda378f8c0ef4495e08996f63f5144" kind="function"><name>~cudaFlow</name></member>
     <member refid="classtf_1_1cudaFlow_1a1926f45a038d8faa9c1b1ee43fd29a93" kind="function"><name>empty</name></member>
@@ -195,17 +198,19 @@
     <member refid="classtf_1_1cudaFlow_1a05593150085596723ee87f9ed1c4bc3e" kind="function"><name>max_element</name></member>
     <member refid="classtf_1_1cudaFlow_1a89c389fff64a16e5dd8c60875d3b514d" kind="function"><name>capture</name></member>
     <member refid="classtf_1_1cudaFlow_1aa0f182dc0fa99bcc9118311925fddca5" kind="function"><name>capture</name></member>
-    <member refid="classtf_1_1cudaFlow_1a40554a27542772c13c51e0815d883d8b" kind="function"><name>cudaFlow</name></member>
+    <member refid="classtf_1_1cudaFlow_1a649094e2835001d1516b2503a1aca959" kind="function"><name>cudaFlow</name></member>
+    <member refid="classtf_1_1cudaFlow_1a98f480aa800ecbc830c5e7debd2a3aee" kind="function"><name>_offload_until_external</name></member>
+    <member refid="classtf_1_1cudaFlow_1ab1d4e5079d1b5cff8bc83c0fc63f7e0d" kind="function"><name>_offload_until_internal</name></member>
   </compound>
   <compound refid="classtf_1_1cudaFlowCapturer" kind="class"><name>tf::cudaFlowCapturer</name>
-    <member refid="classtf_1_1cudaFlowCapturer_1a5f92f6ccad52aed18441d80bc186049f" kind="typedef"><name>handle_t</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a1a893823cd97e39d2ee35df2326eb79e" kind="typedef"><name>handle_t</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1aa80f44371694ed6c88a0d0bcf1572163" kind="typedef"><name>Optimizer</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a9f64f729511a922781a59663ff1c6250" kind="friend"><name>cudaFlow</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1acaf4f328d032558eb6ed4010f416f62a" kind="variable"><name>_handle</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1ad39f4248c8b66340b88a018b70483161" kind="variable"><name>_graph</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1acdc0ba0a1d25ca9f3c0780a62b68508a" kind="variable"><name>_optimizer</name></member>
-    <member refid="classtf_1_1cudaFlowCapturer_1ae1bb9c3841bf9ce8784dae4bddcda437" kind="variable"><name>_executable</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a22c9148627a800aefe2b1ed5b47a3564" kind="variable"><name>_exec</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1aab413b88bf73368f1e6dd98d19016bbc" kind="function"><name>cudaFlowCapturer</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1ab2f3765cd2cd7368522011d37a294359" kind="function"><name>~cudaFlowCapturer</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a3413a20a7c8229365e1ee9fb5af4af1e" kind="function"><name>empty</name></member>
@@ -268,9 +273,9 @@
     <member refid="classtf_1_1cudaFlowCapturer_1a8678573f19e01f441a6b4108e62781f3" kind="function"><name>offload_until</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a0bc6231cc6b1dbf5171b0bc421dc6577" kind="function"><name>offload_n</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a5959002af1cf1a1ada3d86a073682232" kind="function"><name>offload</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a8c220165f77d859a8a4ee8388321d6f6" kind="function"><name>cudaFlowCapturer</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a0ff3e4948c4861e62dd4ad52b88ba4ab" kind="function"><name>cudaFlowCapturer</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a2fde4fe15f2e1471e0c6b1eb9bf22b12" kind="function"><name>_capture</name></member>
-    <member refid="classtf_1_1cudaFlowCapturer_1a18aba23ae23ce8dbe47ef3022162a7bc" kind="function"><name>_destroy_executable</name></member>
   </compound>
   <compound refid="classtf_1_1cudaLinearCapturing" kind="class"><name>tf::cudaLinearCapturing</name>
     <member refid="classtf_1_1cudaLinearCapturing_1a672b45d300c57d726c203c62f950efbd" kind="friend"><name>cudaFlowCapturer</name></member>
@@ -373,7 +378,6 @@
     <member refid="classtf_1_1cudaStream_1ac4b105d27894573adb41ff8b691499d9" kind="function"><name>~cudaStream</name></member>
     <member refid="classtf_1_1cudaStream_1a0b9304ac4f5e088dfb4a77a08233c9d0" kind="function"><name>operator=</name></member>
     <member refid="classtf_1_1cudaStream_1a4c3f85b9fe0e9a1504721b35a929650e" kind="function"><name>operator=</name></member>
-    <member refid="classtf_1_1cudaStream_1a50a05778f158882fc3e677ab665e0686" kind="function"><name>reset</name></member>
     <member refid="classtf_1_1cudaStream_1ae8b74e156e740ab2d1b3ba305a9eef45" kind="function"><name>operator cudaStream_t</name></member>
     <member refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kind="function"><name>synchronize</name></member>
     <member refid="classtf_1_1cudaStream_1ad98a025ff4306aa799e664a1e2aefd2e" kind="function"><name>begin_capture</name></member>
@@ -381,14 +385,11 @@
     <member refid="classtf_1_1cudaStream_1a8343c234b4a3040b59626dc70e81d767" kind="function"><name>record</name></member>
     <member refid="classtf_1_1cudaStream_1a6bb195945f7a580bec6105691c53c699" kind="function"><name>wait</name></member>
   </compound>
-  <compound refid="structtf_1_1cudaStreamCreator" kind="struct"><name>tf::cudaStreamCreator</name>
-    <member refid="structtf_1_1cudaStreamCreator_1a45240b5459cef8b2d5c8d48d57cc3910" kind="function"><name>operator()</name></member>
+  <compound refid="structtf_1_1cudaStream_1_1cudaStreamCreator" kind="struct"><name>tf::cudaStream::cudaStreamCreator</name>
+    <member refid="structtf_1_1cudaStream_1_1cudaStreamCreator_1a68bc06ba881f7ed38a91a1cd307f65db" kind="function"><name>operator()</name></member>
   </compound>
-  <compound refid="structtf_1_1cudaStreamDeleter" kind="struct"><name>tf::cudaStreamDeleter</name>
-    <member refid="structtf_1_1cudaStreamDeleter_1a626619c00a871c7be86071fe262ce63e" kind="function"><name>operator()</name></member>
-  </compound>
-  <compound refid="structtf_1_1cudaStreamSynchronizer" kind="struct"><name>tf::cudaStreamSynchronizer</name>
-    <member refid="structtf_1_1cudaStreamSynchronizer_1a919f951530bcc914aae7debfe239827f" kind="function"><name>operator()</name></member>
+  <compound refid="structtf_1_1cudaStream_1_1cudaStreamDeleter" kind="struct"><name>tf::cudaStream::cudaStreamDeleter</name>
+    <member refid="structtf_1_1cudaStream_1_1cudaStreamDeleter_1a489a67f17d5d41bd3a0c6664eb9e2ba2" kind="function"><name>operator()</name></member>
   </compound>
   <compound refid="classtf_1_1cudaTask" kind="class"><name>tf::cudaTask</name>
     <member refid="classtf_1_1cudaTask_1a9f64f729511a922781a59663ff1c6250" kind="friend"><name>cudaFlow</name></member>
@@ -452,6 +453,7 @@
     <member refid="classtf_1_1Executor_1a61184f9bd9c801d0a5eccecfdbddc641" kind="friend"><name>FlowBuilder</name></member>
     <member refid="classtf_1_1Executor_1aa48945297ede77a161defc88033ce8a6" kind="friend"><name>Subflow</name></member>
     <member refid="classtf_1_1Executor_1af3d14e26ba8af9e6cc5a32aad8446de7" kind="friend"><name>Runtime</name></member>
+    <member refid="classtf_1_1Executor_1ac4a4632561a52d00a02d91296b20cb5a" kind="variable"><name>_MAX_STEALS</name></member>
     <member refid="classtf_1_1Executor_1a94357ea08db1859178f855b0b926b3de" kind="variable"><name>_topology_cv</name></member>
     <member refid="classtf_1_1Executor_1a9707dbbe643016ac2e515aada9ebfcf3" kind="variable"><name>_taskflow_mutex</name></member>
     <member refid="classtf_1_1Executor_1a8be5571fa0df99784aacb26b01d0f4b4" kind="variable"><name>_topology_mutex</name></member>
@@ -466,8 +468,9 @@
     <member refid="classtf_1_1Executor_1aa987e2bddb791a78ece4e5693f018afb" kind="variable"><name>_num_actives</name></member>
     <member refid="classtf_1_1Executor_1a904e5d4f22bf5a72bc0af2a4c5f32a3e" kind="variable"><name>_num_thieves</name></member>
     <member refid="classtf_1_1Executor_1a500d540a170f1da6e5247168bc6efa87" kind="variable"><name>_done</name></member>
+    <member refid="classtf_1_1Executor_1a9b123d06eb807bf275ba761938624afc" kind="variable"><name>_worker_interface</name></member>
     <member refid="classtf_1_1Executor_1ad7f083460df992b1186f83ac99481a57" kind="variable"><name>_observers</name></member>
-    <member refid="classtf_1_1Executor_1a4910e89d89146b6d563d598b795eb4a9" kind="function"><name>Executor</name></member>
+    <member refid="classtf_1_1Executor_1a23b4c858279616d79612dccd9a715365" kind="function"><name>Executor</name></member>
     <member refid="classtf_1_1Executor_1a5a511b0cc23b264826373d3dabcef670" kind="function"><name>~Executor</name></member>
     <member refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kind="function"><name>run</name></member>
     <member refid="classtf_1_1Executor_1a4bbef53618db1852003a0cd1e1e40c50" kind="function"><name>run</name></member>
@@ -482,6 +485,7 @@
     <member refid="classtf_1_1Executor_1af84856e5c4c605fcb3cbfbcad069a6a8" kind="function"><name>run_until</name></member>
     <member refid="classtf_1_1Executor_1af30c6947f060e4bdf344e90b6b44fc70" kind="function"><name>run_until</name></member>
     <member refid="classtf_1_1Executor_1ab05ad34c59cf11a7c4de82cf58bba91e" kind="function"><name>run_and_wait</name></member>
+    <member refid="classtf_1_1Executor_1afbff30c324c5887aace09e7fe9a0d607" kind="function"><name>loop_until</name></member>
     <member refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kind="function"><name>wait_for_all</name></member>
     <member refid="classtf_1_1Executor_1a9d2d464ab2a84ecb3b3ea7747e8e276b" kind="function"><name>num_workers</name></member>
     <member refid="classtf_1_1Executor_1a6d6c28ed58211e4c27a99571e5bf0b6c" kind="function"><name>num_topologies</name></member>
@@ -494,15 +498,14 @@
     <member refid="classtf_1_1Executor_1aff77def96ae740d648dd84e571237c83" kind="function"><name>make_observer</name></member>
     <member refid="classtf_1_1Executor_1a31081f492c376f7b798de0e430534531" kind="function"><name>remove_observer</name></member>
     <member refid="classtf_1_1Executor_1affec621aae59d73fc188ef454008fda2" kind="function"><name>num_observers</name></member>
+    <member refid="classtf_1_1Executor_1ad83b1bbb987709e797ba3f627493c37c" kind="function"><name>max_steals</name></member>
     <member refid="classtf_1_1Executor_1a941f6e5e9e6141a81c750648c4802b63" kind="function"><name>_this_worker</name></member>
     <member refid="classtf_1_1Executor_1a57f5105dc812d83f259ec8cab7c96228" kind="function"><name>_wait_for_task</name></member>
     <member refid="classtf_1_1Executor_1ae023614977a19def9e04cf7212eab65b" kind="function"><name>_observer_prologue</name></member>
     <member refid="classtf_1_1Executor_1a9cd8c1a72af4477bc0f9575b68ffb16a" kind="function"><name>_observer_epilogue</name></member>
     <member refid="classtf_1_1Executor_1a8aee6c0ec55b4bfb3909601203e98514" kind="function"><name>_spawn</name></member>
-    <member refid="classtf_1_1Executor_1a8615d8b666bc94e2007f2a1561767895" kind="function"><name>_worker_loop</name></member>
     <member refid="classtf_1_1Executor_1a0b4f231e11016194980b14e76262c8a7" kind="function"><name>_exploit_task</name></member>
     <member refid="classtf_1_1Executor_1aab7cc2e53d75fcc87fcc919f29bf9ca9" kind="function"><name>_explore_task</name></member>
-    <member refid="classtf_1_1Executor_1a2e81517a3d0a9d0c7fc706e181e03bc2" kind="function"><name>_consume_task</name></member>
     <member refid="classtf_1_1Executor_1ab8d98f12a62d10ad6cf1a4011a4d0034" kind="function"><name>_schedule</name></member>
     <member refid="classtf_1_1Executor_1a685c08b62a494359e34c6de2a700fdab" kind="function"><name>_schedule</name></member>
     <member refid="classtf_1_1Executor_1a9cf973d7c5310d058fee003fda9098c4" kind="function"><name>_schedule</name></member>
@@ -518,7 +521,7 @@
     <member refid="classtf_1_1Executor_1ad16165142908aca9444ea88e65040219" kind="function"><name>_invoke</name></member>
     <member refid="classtf_1_1Executor_1ac243d2a08b5a4a75dd440dc063b886ce" kind="function"><name>_invoke_static_task</name></member>
     <member refid="classtf_1_1Executor_1a4a000baf70b108201e3787787309c272" kind="function"><name>_invoke_dynamic_task</name></member>
-    <member refid="classtf_1_1Executor_1a0570b8b576a2d6f1a5082691d4a8006a" kind="function"><name>_join_graph</name></member>
+    <member refid="classtf_1_1Executor_1a417896b64fa0cdec764623d337b5f455" kind="function"><name>_consume_graph</name></member>
     <member refid="classtf_1_1Executor_1a4b36b0a386f0eb5ba9cd3984c589a5c1" kind="function"><name>_detach_dynamic_task</name></member>
     <member refid="classtf_1_1Executor_1afa6be6aab23ff4b2a293a2245818916d" kind="function"><name>_invoke_condition_task</name></member>
     <member refid="classtf_1_1Executor_1a19b3f10d4eab40143d3f76b946ded252" kind="function"><name>_invoke_multi_condition_task</name></member>
@@ -528,17 +531,18 @@
     <member refid="classtf_1_1Executor_1ae4be3b787a3c6eaaf18589a25e9c844f" kind="function"><name>_invoke_cudaflow_task</name></member>
     <member refid="classtf_1_1Executor_1ae7254966d36c26cdf59a11bc7bd4d43f" kind="function"><name>_invoke_syclflow_task</name></member>
     <member refid="classtf_1_1Executor_1a97db97d741c5ed6f0a454aa89bd457d7" kind="function"><name>_invoke_runtime_task</name></member>
+    <member refid="classtf_1_1Executor_1a7c70d9c49d9a86756c3a2d445a68633a" kind="function"><name>_loop_until</name></member>
     <member refid="classtf_1_1Executor_1aeeecfcac09ba22db0aeaf2f5b534b802" kind="function"><name>_invoke_cudaflow_task_entry</name></member>
     <member refid="classtf_1_1Executor_1a42a995c2a5299761cf3c2e2d17cfca34" kind="function"><name>_invoke_syclflow_task_entry</name></member>
+  </compound>
+  <compound refid="structtf_1_1cudaFlow_1_1External" kind="struct"><name>tf::cudaFlow::External</name>
+    <member refid="structtf_1_1cudaFlow_1_1External_1add55ef590408418dee0c8b79db7a747b" kind="variable"><name>graph</name></member>
   </compound>
   <compound refid="structtf_1_1cudaFlowCapturer_1_1External" kind="struct"><name>tf::cudaFlowCapturer::External</name>
     <member refid="structtf_1_1cudaFlowCapturer_1_1External_1acb0595d884b28d21f661595e718c3cc2" kind="variable"><name>graph</name></member>
   </compound>
   <compound refid="structtf_1_1syclFlow_1_1External" kind="struct"><name>tf::syclFlow::External</name>
     <member refid="structtf_1_1syclFlow_1_1External_1ace2afbeee949bd808c7e374bdceb0467" kind="variable"><name>graph</name></member>
-  </compound>
-  <compound refid="structtf_1_1cudaFlow_1_1External" kind="struct"><name>tf::cudaFlow::External</name>
-    <member refid="structtf_1_1cudaFlow_1_1External_1add55ef590408418dee0c8b79db7a747b" kind="variable"><name>graph</name></member>
   </compound>
   <compound refid="classtf_1_1FlowBuilder" kind="class"><name>tf::FlowBuilder</name>
     <member refid="classtf_1_1FlowBuilder_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -607,9 +611,13 @@
     <member refid="classtf_1_1Graph_1ab804f1d7061f031df585a1b0ae15128d" kind="function"><name>_emplace_back</name></member>
     <member refid="classtf_1_1Graph_1aed34729a3fbafdc2f328cab4ed0fcabb" kind="function"><name>_emplace_back</name></member>
   </compound>
-  <compound refid="structtf_1_1cudaFlow_1_1Internal" kind="struct"><name>tf::cudaFlow::Internal</name>
-  </compound>
   <compound refid="structtf_1_1cudaFlowCapturer_1_1Internal" kind="struct"><name>tf::cudaFlowCapturer::Internal</name>
+    <member refid="structtf_1_1cudaFlowCapturer_1_1Internal_1a308a6dfd7a2fd2d6cd3d391fa9377493" kind="variable"><name>executor</name></member>
+    <member refid="structtf_1_1cudaFlowCapturer_1_1Internal_1a3c1426585bbb7e10549f24aaa7b93be3" kind="function"><name>Internal</name></member>
+  </compound>
+  <compound refid="structtf_1_1cudaFlow_1_1Internal" kind="struct"><name>tf::cudaFlow::Internal</name>
+    <member refid="structtf_1_1cudaFlow_1_1Internal_1a699f86e6abe3d2aa41432898feb5f281" kind="variable"><name>executor</name></member>
+    <member refid="structtf_1_1cudaFlow_1_1Internal_1a885341edb70e164ef4010de5346ec8f0" kind="function"><name>Internal</name></member>
   </compound>
   <compound refid="structtf_1_1syclFlow_1_1Internal" kind="struct"><name>tf::syclFlow::Internal</name>
     <member refid="structtf_1_1syclFlow_1_1Internal_1a9bbc7eb920ae573d5360cae1cd7fb03d" kind="variable"><name>executor</name></member>
@@ -617,11 +625,11 @@
   </compound>
   <compound refid="structtf_1_1IsPod" kind="struct"><name>tf::IsPod</name>
   </compound>
-  <compound refid="structtf_1_1Pipeline_1_1Line" kind="struct"><name>tf::Pipeline::Line</name>
-    <member refid="structtf_1_1Pipeline_1_1Line_1ae1ac04cb91bb360639e4e384e201011f" kind="variable"><name>join_counter</name></member>
-  </compound>
   <compound refid="structtf_1_1ScalablePipeline_1_1Line" kind="struct"><name>tf::ScalablePipeline::Line</name>
     <member refid="structtf_1_1ScalablePipeline_1_1Line_1a777bd19b4440c77f9abc5e63debe1874" kind="variable"><name>join_counter</name></member>
+  </compound>
+  <compound refid="structtf_1_1Pipeline_1_1Line" kind="struct"><name>tf::Pipeline::Line</name>
+    <member refid="structtf_1_1Pipeline_1_1Line_1ae1ac04cb91bb360639e4e384e201011f" kind="variable"><name>join_counter</name></member>
   </compound>
   <compound refid="structtf_1_1Node_1_1Module" kind="struct"><name>tf::Node::Module</name>
     <member refid="structtf_1_1Node_1_1Module_1a36d452a503c51f5166ff2fe7927f6ee1" kind="variable"><name>graph</name></member>
@@ -683,11 +691,10 @@
     <member refid="classtf_1_1Node_1a69f967fa92024d7b31cc30d010ccf207" kind="function"><name>_release_all</name></member>
   </compound>
   <compound refid="classtf_1_1ObserverInterface" kind="class"><name>tf::ObserverInterface</name>
-    <member refid="classtf_1_1ObserverInterface_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
     <member refid="classtf_1_1ObserverInterface_1adfd71c3af3ae2ea4f41eed26c1b6f604" kind="function"><name>~ObserverInterface</name></member>
     <member refid="classtf_1_1ObserverInterface_1a41e6e62f12bf9d9dc4fa74632f6825d9" kind="function"><name>set_up</name></member>
-    <member refid="classtf_1_1ObserverInterface_1a3e3a9f7f1d43691794e487b8787b01a0" kind="function"><name>on_entry</name></member>
-    <member refid="classtf_1_1ObserverInterface_1aa59a59a59eadd4eb6ba20ecdfcae882b" kind="function"><name>on_exit</name></member>
+    <member refid="classtf_1_1ObserverInterface_1a8225fcacb03089677a1efc4b16b734cc" kind="function"><name>on_entry</name></member>
+    <member refid="classtf_1_1ObserverInterface_1aa22f5378154653f08d9a58326bda4754" kind="function"><name>on_exit</name></member>
   </compound>
   <compound refid="classtf_1_1Pipe" kind="class"><name>tf::Pipe</name>
     <member refid="classtf_1_1Pipe_1aa3d034d90bc01d42d9dd55f82de1da2a" kind="typedef"><name>callable_t</name></member>
@@ -744,11 +751,17 @@
     <member refid="structtf_1_1ProfileData_1a78c6fcf63302872220bd75ef82cd1a55" kind="function"><name>operator=</name></member>
     <member refid="structtf_1_1ProfileData_1a12535e834bc6e429f3815c90162e1c57" kind="function"><name>operator=</name></member>
   </compound>
+  <compound refid="structtf_1_1cudaFlowCapturer_1_1Proxy" kind="struct"><name>tf::cudaFlowCapturer::Proxy</name>
+  </compound>
   <compound refid="structtf_1_1cudaUSMAllocator_1_1rebind" kind="struct"><name>tf::cudaUSMAllocator::rebind</name>
     <member refid="structtf_1_1cudaUSMAllocator_1_1rebind_1ad110a928d2b4e991f1dacd473a6ba00c" kind="typedef"><name>other</name></member>
   </compound>
   <compound refid="structtf_1_1cudaDeviceAllocator_1_1rebind" kind="struct"><name>tf::cudaDeviceAllocator::rebind</name>
     <member refid="structtf_1_1cudaDeviceAllocator_1_1rebind_1a6d0799b927ce743f4fa174c6a9806282" kind="typedef"><name>other</name></member>
+  </compound>
+  <compound refid="structtf_1_1Node_1_1Runtime" kind="struct"><name>tf::Node::Runtime</name>
+    <member refid="structtf_1_1Node_1_1Runtime_1a9a4a9b752d58da42469cf5a7a09da400" kind="variable"><name>work</name></member>
+    <member refid="structtf_1_1Node_1_1Runtime_1a2522de6d8c0a35ff28b3fe31068cf475" kind="function"><name>Runtime</name></member>
   </compound>
   <compound refid="classtf_1_1Runtime" kind="class"><name>tf::Runtime</name>
     <member refid="classtf_1_1Runtime_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -759,10 +772,6 @@
     <member refid="classtf_1_1Runtime_1aa7e72cc0f298475195b252c8f1793343" kind="function"><name>schedule</name></member>
     <member refid="classtf_1_1Runtime_1a479dc5dbf2b988bd166a2b6da089bb17" kind="function"><name>run_and_wait</name></member>
     <member refid="classtf_1_1Runtime_1abe76e072e64f5d1b1fe09c7e7c22777e" kind="function"><name>Runtime</name></member>
-  </compound>
-  <compound refid="structtf_1_1Node_1_1Runtime" kind="struct"><name>tf::Node::Runtime</name>
-    <member refid="structtf_1_1Node_1_1Runtime_1a9a4a9b752d58da42469cf5a7a09da400" kind="variable"><name>work</name></member>
-    <member refid="structtf_1_1Node_1_1Runtime_1a2522de6d8c0a35ff28b3fe31068cf475" kind="function"><name>Runtime</name></member>
   </compound>
   <compound refid="classtf_1_1ScalablePipeline" kind="class"><name>tf::ScalablePipeline</name>
     <member refid="classtf_1_1ScalablePipeline_1af06cc645f8a7c4797ca53e274b0c7547" kind="typedef"><name>pipe_t</name></member>
@@ -790,12 +799,6 @@
     <member refid="classtf_1_1ScalablePipeline_1ae695c9b1bbe3a5f65a5bb4217087c356" kind="function"><name>_build</name></member>
     <member refid="classtf_1_1ScalablePipeline_1a81b18c25db2cba4c530d85c5ab413a6c" kind="function"><name>_line</name></member>
   </compound>
-  <compound refid="structtf_1_1ChromeObserver_1_1Segment" kind="struct"><name>tf::ChromeObserver::Segment</name>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a8e3739d8a5b9be34851a6404f5916d95" kind="variable"><name>name</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a197cf797abb156e1f17dd276acd2cd74" kind="variable"><name>beg</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1abe331473cff75d9f11c7fb69e481f2f7" kind="variable"><name>end</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a069ca8806de9e01a0ae2b3f5263a20c2" kind="function"><name>Segment</name></member>
-  </compound>
   <compound refid="structtf_1_1Segment" kind="struct"><name>tf::Segment</name>
     <member refid="structtf_1_1Segment_1a3e259f6da83dcf714ec785aa1a3d14bd" kind="variable"><name>name</name></member>
     <member refid="structtf_1_1Segment_1a8f567dbac067898e2e5c4d4947b04fb4" kind="variable"><name>type</name></member>
@@ -804,6 +807,12 @@
     <member refid="structtf_1_1Segment_1ad6393c5cf90f07b0eda6bf0c0321322d" kind="function"><name>Segment</name></member>
     <member refid="structtf_1_1Segment_1aab1d1ddd792d5b7b312ad14532034054" kind="function"><name>Segment</name></member>
     <member refid="structtf_1_1Segment_1a336d5825032b4b9085f1e78a1fa26341" kind="function"><name>span</name></member>
+  </compound>
+  <compound refid="structtf_1_1ChromeObserver_1_1Segment" kind="struct"><name>tf::ChromeObserver::Segment</name>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a8e3739d8a5b9be34851a6404f5916d95" kind="variable"><name>name</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a197cf797abb156e1f17dd276acd2cd74" kind="variable"><name>beg</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1abe331473cff75d9f11c7fb69e481f2f7" kind="variable"><name>end</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a069ca8806de9e01a0ae2b3f5263a20c2" kind="function"><name>Segment</name></member>
   </compound>
   <compound refid="classtf_1_1Semaphore" kind="class"><name>tf::Semaphore</name>
     <member refid="classtf_1_1Semaphore_1a6db9d28bd448a131448276ee03de1e6d" kind="friend"><name>Node</name></member>
@@ -954,12 +963,12 @@
     <member refid="structtf_1_1Node_1_1Static_1a30c34caf3aa9406c70dbab295c082468" kind="variable"><name>work</name></member>
     <member refid="structtf_1_1Node_1_1Static_1a91ebe904215e44a81df97586f15b4e07" kind="function"><name>Static</name></member>
   </compound>
-  <compound refid="structtf_1_1detail_1_1cudaBlockReduce_1_1Storage" kind="struct"><name>tf::detail::cudaBlockReduce::Storage</name>
-    <member refid="structtf_1_1detail_1_1cudaBlockReduce_1_1Storage_1ae96b4912d9ac0413c68bfce227a15d04" kind="variable"><name>data</name></member>
-  </compound>
   <compound refid="uniontf_1_1detail_1_1cudaBlockSort_1_1Storage" kind="union"><name>tf::detail::cudaBlockSort::Storage</name>
     <member refid="uniontf_1_1detail_1_1cudaBlockSort_1_1Storage_1a08bff3542e11e199012d1ca64b14881c" kind="variable"><name>keys</name></member>
     <member refid="uniontf_1_1detail_1_1cudaBlockSort_1_1Storage_1a45d6a1f7e31ddb9905bc4c802f7e3e7a" kind="variable"><name>vals</name></member>
+  </compound>
+  <compound refid="structtf_1_1detail_1_1cudaBlockReduce_1_1Storage" kind="struct"><name>tf::detail::cudaBlockReduce::Storage</name>
+    <member refid="structtf_1_1detail_1_1cudaBlockReduce_1_1Storage_1ae96b4912d9ac0413c68bfce227a15d04" kind="variable"><name>data</name></member>
   </compound>
   <compound refid="uniontf_1_1detail_1_1cudaBlockScan_1_1storage__t" kind="union"><name>tf::detail::cudaBlockScan::storage_t</name>
     <member refid="uniontf_1_1detail_1_1cudaBlockScan_1_1storage__t_1a9cc602c1e7c8358505637a42b958f398" kind="variable"><name>data</name></member>
@@ -1180,6 +1189,11 @@
     <member refid="classtf_1_1Worker_1ac08ba8b8d845b8278a501f836e0cf176" kind="variable"><name>_waiter</name></member>
     <member refid="classtf_1_1Worker_1a753b13866ccf3badaebf5e92af0bf63f" kind="variable"><name>_rdgen</name></member>
     <member refid="classtf_1_1Worker_1a48d8af5d9ce1227254d202548c9b5f13" kind="variable"><name>_wsq</name></member>
+  </compound>
+  <compound refid="classtf_1_1WorkerInterface" kind="class"><name>tf::WorkerInterface</name>
+    <member refid="classtf_1_1WorkerInterface_1a4f086cadaabff4094cf07fd387b2e185" kind="function"><name>~WorkerInterface</name></member>
+    <member refid="classtf_1_1WorkerInterface_1aba28fbefa342757f304088bc93e9b3b1" kind="function"><name>scheduler_prologue</name></member>
+    <member refid="classtf_1_1WorkerInterface_1aa22b8fb3e80a37f16b8b7fb1ee6257f0" kind="function"><name>scheduler_epilogue</name></member>
   </compound>
   <compound refid="classtf_1_1WorkerView" kind="class"><name>tf::WorkerView</name>
     <member refid="classtf_1_1WorkerView_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>

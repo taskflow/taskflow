@@ -14,6 +14,8 @@ int main(int argc, char* argv[]) {
   unsigned num_rounds {1};  
   app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
 
+  app.add_option("-n,--num_elements", N, "number of elements in GPU vector (default=1024)");
+
   unsigned cuda_ratio {2};
   app.add_option(
     "-c,--cuda_ratio", 

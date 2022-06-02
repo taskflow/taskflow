@@ -10,7 +10,7 @@ int main() {
   const size_t num_lines = 4;
 
   // custom data storage
-  std::array<int, num_lines> buffer;
+  //std::variant<int, std::string, float> mydata[num_lines];
 
   tf::DataPipeline pl(num_lines,
     tf::DataPipe<void, int>{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) -> int{
@@ -23,6 +23,7 @@ int main() {
     }},
 
     tf::DataPipe<int, std::string>{tf::PipeType::SERIAL, [](int input) -> std::string {
+      // ??? which line is this???
       return std::to_string(input + 100);
     }},
 

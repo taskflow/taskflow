@@ -2,8 +2,6 @@
 
 void taskflow(const Graph& g, unsigned num_cpus, unsigned num_gpus) {
 
-  const int N = 1000;
-
   std::atomic<int> counter{0};
 
   int* cx = new int[N];

@@ -36,6 +36,10 @@ To use %Taskflow v3.5.0, you need a compiler that supports C++17:
 
 @subsection release-3-5-0_taskflow_core Taskflow Core
 
++ Added tf::WorkerInterface to allow changing properties of workers upon their creations
++ Added tf::Executor::loop_until to allow looping a worker with a custom stop predicate
++ Extended tf::Executor to take tf::WorkerInterface
+
 @subsection release-3-5-0_cudaflow cudaFlow
 
 @subsection release-3-5-0_syclflow syclFlow
@@ -55,6 +59,9 @@ If you encounter any potential bugs, please submit an issue at @IssueTracker.
 @section release-3-5-0_deprecated_items Deprecated and Removed Items 
 
 @section release-3-5-0_documentation Documentation
+
++ Revised @ref ExecuteTaskflow
+  + Added @ref ChangeWorkerProperty
 
 @section release-3-5-0_miscellaneous_items Miscellaneous Items
 

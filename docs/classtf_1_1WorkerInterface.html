@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>tf::cudaEvent class | Taskflow QuickStart</title>
+  <title>tf::WorkerInterface class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
@@ -46,9 +46,9 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>cudaEvent <span class="m-thin">class</span>
+          <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>WorkerInterface <span class="m-thin">class</span>
         </h1>
-        <p>class to create an RAII-styled wrapper over a native CUDA event</p>
+        <p>class <a href="classtf_1_1WorkerInterface.html" class="m-doc">WorkerInterface</a></p>
         <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -61,61 +61,76 @@
             </li>
           </ul>
         </nav>
-<p>A <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a> object is an RAII-styled wrapper over a native CUDA event (<code>cudaEvent_t</code>). A <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a> object is move-only.</p>
+<p>The <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a> class lets users to interact with the executor to customize the thread behavior, such as calling custom methods before and after a worker enters and leaves the loop.</p><p>When you create an executor, it spawns a set of workers to run tasks. The interaction between the executor and its spawned workers looks like the following:</p><p>for(size_t n=0; n&lt;num_workers; n++) { create_thread([](Worker&amp; worker)</p><p>pre-processing executor-specific worker information ...</p><p>enter the scheduling loop Here, <a href="classtf_1_1WorkerInterface.html#aba28fbefa342757f304088bc93e9b3b1" class="m-doc">WorkerInterface::<wbr />scheduler_prologue</a> is invoked, if any</p><pre>while(1) {
+  perform_work_stealing_algorithm();
+  if(stop) {
+    break; 
+  }
+}
+</pre><p>leaves the scheduling loop and joins this worker thread Here, <a href="classtf_1_1WorkerInterface.html#aa22b8fb3e80a37f16b8b7fb1ee6257f0" class="m-doc">WorkerInterface::<wbr />scheduler_epilogue</a> is invoked, if any ); }</p><aside class="m-note m-info"><h4>Note</h4><p>Methods defined in <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a> are not thread-safe and may be be invoked by multiple workers concurrently.</p></aside>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
-            <dt id="ad0b23cb864f0c7acee306f7fe49a3c23">
-              <span class="m-doc-wrap-bumper"><a href="#ad0b23cb864f0c7acee306f7fe49a3c23" class="m-doc-self">cudaEvent</a>(</span><span class="m-doc-wrap">cudaEvent_t event) <span class="m-label m-flat m-info">explicit</span> </span>
+            <dt id="a4f086cadaabff4094cf07fd387b2e185">
+              <span class="m-doc-wrap-bumper"><a href="#a4f086cadaabff4094cf07fd387b2e185" class="m-doc-self">~WorkerInterface</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span> <span class="m-label m-flat m-warning">virtual</span></span>
             </dt>
-            <dd>constructs an RAII-styled CUDA event object from the given CUDA event</dd>
-            <dt id="a2865fd7388ef1725e1b59dd3a201f503">
-              <span class="m-doc-wrap-bumper"><a href="#a2865fd7388ef1725e1b59dd3a201f503" class="m-doc-self">cudaEvent</a>(</span><span class="m-doc-wrap">)</span>
-            </dt>
-            <dd>constructs an RAII-styled CUDA event object</dd>
-            <dt id="af6d6a9c4f98ae85927985a1f89cdeee1">
-              <span class="m-doc-wrap-bumper"><a href="#af6d6a9c4f98ae85927985a1f89cdeee1" class="m-doc-self">cudaEvent</a>(</span><span class="m-doc-wrap">unsigned int flag) <span class="m-label m-flat m-info">explicit</span> </span>
-            </dt>
-            <dd>constructs an RAII-styled CUDA event object with the given flag</dd>
-            <dt id="ad76f10855d56f2706a3d9ed93e47a2e9">
-              <span class="m-doc-wrap-bumper"><a href="#ad76f10855d56f2706a3d9ed93e47a2e9" class="m-doc-self">cudaEvent</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a>&amp;) <span class="m-label m-flat m-danger">deleted</span></span>
-            </dt>
-            <dd>disabled copy constructor</dd>
-            <dt id="aa63d15089884744a802554352c50d2b9">
-              <span class="m-doc-wrap-bumper"><a href="#aa63d15089884744a802554352c50d2b9" class="m-doc-self">cudaEvent</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a>&amp;&amp; rhs)</span>
-            </dt>
-            <dd>move constructor</dd>
-            <dt id="ac1510f29e6a9cf57933c33feda99735a">
-              <span class="m-doc-wrap-bumper"><a href="#ac1510f29e6a9cf57933c33feda99735a" class="m-doc-self">~cudaEvent</a>(</span><span class="m-doc-wrap">)</span>
-            </dt>
-            <dd>destructs the CUDA event</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper"><a href="#a123fe336965738c7bd8027512c052de6" class="m-doc">operator cudaEvent_t</a>(</span><span class="m-doc-wrap">) const</span>
-            </dt>
-            <dd>implicit conversion to the native CUDA event (cudaEvent_t)</dd>
+            <dd>default destructor</dd>
           </dl>
         </section>
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="adfcc20681dd240a017a2fafe6cb4d4dd">
-              <span class="m-doc-wrap-bumper">auto <a href="#adfcc20681dd240a017a2fafe6cb4d4dd" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a>&amp;) -&gt; <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a>&amp; <span class="m-label m-flat m-danger">deleted</span></span>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#aba28fbefa342757f304088bc93e9b3b1" class="m-doc">scheduler_prologue</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv) <span class="m-label m-flat m-warning">pure virtual</span></span>
             </dt>
-            <dd>disabled copy assignment</dd>
-            <dt id="a15672eb08ad6647b84d69e399a9f7677">
-              <span class="m-doc-wrap-bumper">auto <a href="#a15672eb08ad6647b84d69e399a9f7677" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a>&amp;&amp; rhs) -&gt; <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a>&amp;</span>
+            <dd>method to call before a worker enters the scheduling loop</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#aa22b8fb3e80a37f16b8b7fb1ee6257f0" class="m-doc">scheduler_epilogue</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
+              <a href="http://en.cppreference.com/w/cpp/error/exception_ptr.html" class="m-doc-external">std::<wbr />exception_ptr</a> ptr) <span class="m-label m-flat m-warning">pure virtual</span></span>
             </dt>
-            <dd>move assignment</dd>
+            <dd>method to call after a worker leaves the scheduling loop</dd>
           </dl>
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="a123fe336965738c7bd8027512c052de6"><div>
+          <section class="m-doc-details" id="aba28fbefa342757f304088bc93e9b3b1"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"> tf::<wbr />cudaEvent::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a123fe336965738c7bd8027512c052de6" class="m-doc-self">operator cudaEvent_t</a>(</span><span class="m-doc-wrap">) const</span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />WorkerInterface::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aba28fbefa342757f304088bc93e9b3b1" class="m-doc-self">scheduler_prologue</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv) <span class="m-label m-warning">pure virtual</span></span></span>
             </h3>
-            <p>implicit conversion to the native CUDA event (cudaEvent_t)</p>
-<p>Returns the underlying event of type <code>cudaEvent_t</code>.</p>
+            <p>method to call before a worker enters the scheduling loop</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">wv</td>
+                  <td>an immutable view of the invoking worker thread</td>
+                </tr>
+              </tbody>
+            </table>
+          </div></section>
+          <section class="m-doc-details" id="aa22b8fb3e80a37f16b8b7fb1ee6257f0"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />WorkerInterface::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa22b8fb3e80a37f16b8b7fb1ee6257f0" class="m-doc-self">scheduler_epilogue</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
+              <a href="http://en.cppreference.com/w/cpp/error/exception_ptr.html" class="m-doc-external">std::<wbr />exception_ptr</a> ptr) <span class="m-label m-warning">pure virtual</span></span></span>
+            </h3>
+            <p>method to call after a worker leaves the scheduling loop</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">wv</td>
+                  <td>an immutable view of the invoking worker thread</td>
+                </tr>
+                <tr>
+                  <td>ptr</td>
+                  <td>an pointer to the exception thrown by the scheduling loop</td>
+                </tr>
+              </tbody>
+            </table>
           </div></section>
         </section>
       </div>

@@ -1604,23 +1604,23 @@ cudaTask cudaFlow::capture(C&& c) {
 // Procedure: offload_until
 template <typename P>
 void cudaFlow::offload_until(P&& predicate) {
-  switch(_handle.index()) {
 
+  _offload_until_external(std::forward<P>(predicate));
+  
+  /*
+  // turns out the optimized version runs slower...
+  switch(_handle.index()) {
     case EXTERNAL: {
       _offload_until_external(std::forward<P>(predicate));
     }
     break;
-
     case INTERNAL: {
       _offload_until_internal(std::forward<P>(predicate));
-      // TODO: turns out to be slower ...
-      //_offload_until_external(std::forward<P>(predicate));
     }
     break;
-
     default:
     break;
-  }
+  }*/
 }
 
 template <typename P>
@@ -1640,7 +1640,6 @@ template <typename P>
 void cudaFlow::_offload_until_internal(P&& predicate) {
   
   auto& executor = std::get<Internal>(_handle).executor;
-  auto& w = *(executor._this_worker());
 
   if(!_exec) {
     _exec.instantiate(_graph._native_handle);
@@ -1652,7 +1651,7 @@ void cudaFlow::_offload_until_internal(P&& predicate) {
   while(!predicate()) {
     _exec.launch(stream);
     stream.record(event);
-    executor._consume_until(w, [&event] () -> bool { 
+    executor.loop_until([&event] () -> bool { 
       return cudaEventQuery(event) == cudaSuccess;
     });
   }
