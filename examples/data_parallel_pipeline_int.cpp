@@ -7,30 +7,30 @@ int main() {
   tf::Taskflow taskflow("pipeline");
   tf::Executor executor;
 
-  const size_t num_lines = 4;
+  // const size_t num_lines = 4;
 
   // custom data storage
   // std::array<int, num_lines> buffer;
 
-  tf::DataPipeline pl(num_lines,
-    tf::DataPipe<void, int>{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) -> int{
+  tf::DataPipeline pl(4,
+    tf::DataPipe<tf::Pipeflow&, int>{tf::PipeType::SERIAL, [](tf::Pipeflow& pf) -> int{
       if(pf.token() == 5) {
         pf.stop();
       }
       else {
-        return rand();
+        return pf.token();
       }
     }},
 
-    tf::DataPipe<int, std::string>{tf::PipeType::SERIAL, [](int input) -> std::string {
-      return std::to_string(input + 100);
+    tf::DataPipe<int, int>{tf::PipeType::SERIAL, [](int input) -> int {
+      return input + 100;
     }},
 
-    tf::DataPipe<std::string, float>{tf::PipeType::SERIAL, [](std::string input) {
-      return std::stoi(input) + rand()*0.5f;
+    tf::DataPipe<int, int>{tf::PipeType::SERIAL, [](int input) -> int {
+      return input + 100;
     }},
 
-    tf::DataPipe<float, void>{tf::PipeType::SERIAL, [](float input) {
+    tf::DataPipe<int, void>{tf::PipeType::SERIAL, [](int input) -> void {
       std::cout << "done with " << input << std::endl;
     }}
   );
