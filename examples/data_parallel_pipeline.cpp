@@ -13,7 +13,7 @@ int main() {
   // std::array<int, num_lines> buffer;
 
   tf::DataPipeline pl(num_lines,
-    tf::DataPipe<void, int>{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) -> int{
+    tf::DataPipe<tf::Pipeflow&, int>{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) -> int{
       if(pf.token() == 5) {
         pf.stop();
       }

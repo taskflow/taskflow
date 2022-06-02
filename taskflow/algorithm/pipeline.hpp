@@ -835,7 +835,7 @@ class DataPipeline {
   std::vector<Task> _tasks;
   std::vector<Pipeflow> _pipeflows;
   //to modify
-  std::vector<int> _buffer;
+  std::vector<std::variant<int, std::string, float> > _buffer;
 
   template <size_t... I>
   auto _gen_meta(std::tuple<Ps...>&&, std::index_sequence<I...>);
@@ -963,11 +963,11 @@ void DataPipeline<Ps...>::_on_pipe(Pipeflow& pf, Runtime& rt) {
     if constexpr (std::is_invocable_v<callable_t, Pipeflow&>) {
       _buffer[pf._line] = pipe._callable(pf);
     }
-    else if constexpr (std::is_invocable_v<callable_t, int>) {
+    else if constexpr (std::is_invocable_v<callable_t, input_t>) {
       if constexpr (std::is_void_v<output_t>) {
-        pipe._callable(_buffer[pf._line]);
+        pipe._callable(std::get<input_t>(_buffer[pf._line]));
       } else {
-        _buffer[pf._line] = pipe._callable(_buffer[pf._line]);
+        _buffer[pf._line] = pipe._callable(std::get<input_t>(_buffer[pf._line]));
       }
     }
     else if constexpr(std::is_invocable_v<callable_t, Pipeflow&, Runtime&>) {
