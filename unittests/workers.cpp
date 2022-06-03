@@ -12,14 +12,14 @@ class CustomWorkerBehavior : public tf::WorkerInterface {
     _ids     {ids} {
   }
   
-  void scheduler_prologue(tf::WorkerView wv) override {
+  void scheduler_prologue(tf::Worker& wv) override {
     _counter++;
 
     std::scoped_lock lock(_mutex);
     _ids.push_back(wv.id());
   }
 
-  void scheduler_epilogue(tf::WorkerView, std::exception_ptr) override {
+  void scheduler_epilogue(tf::Worker&, std::exception_ptr) override {
     _counter++;
   }
 

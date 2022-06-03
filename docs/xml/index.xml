@@ -460,8 +460,8 @@
     <member refid="classtf_1_1Executor_1ad031630f03103157f807d85a174d08cb" kind="variable"><name>_wsq_mutex</name></member>
     <member refid="classtf_1_1Executor_1a9e38edfbc967dd3f5ca6f7a115f95ed7" kind="variable"><name>_num_topologies</name></member>
     <member refid="classtf_1_1Executor_1a6704efd89fdcf46bd388b2e83c5def9f" kind="variable"><name>_wids</name></member>
-    <member refid="classtf_1_1Executor_1ad93162f032d463cc845fbca4fc0d960e" kind="variable"><name>_workers</name></member>
     <member refid="classtf_1_1Executor_1a3b5e7cf6749feded228a46e9fbfdef5f" kind="variable"><name>_threads</name></member>
+    <member refid="classtf_1_1Executor_1ad93162f032d463cc845fbca4fc0d960e" kind="variable"><name>_workers</name></member>
     <member refid="classtf_1_1Executor_1a63090414fbad15f5934838d21aa0a28f" kind="variable"><name>_taskflows</name></member>
     <member refid="classtf_1_1Executor_1ab92c39c4b59577cf4163c21ef2edb2f3" kind="variable"><name>_notifier</name></member>
     <member refid="classtf_1_1Executor_1a21685ee0442fbbd635e7134d6a0afe1c" kind="variable"><name>_wsq</name></member>
@@ -1186,14 +1186,17 @@
     <member refid="classtf_1_1Worker_1ab21837ab13c416c19d133fc2a73f031c" kind="variable"><name>_id</name></member>
     <member refid="classtf_1_1Worker_1a59a04a39db3d147221eed60da75a9744" kind="variable"><name>_vtm</name></member>
     <member refid="classtf_1_1Worker_1a0884258c54f630a3b31e4d1e208852bb" kind="variable"><name>_executor</name></member>
+    <member refid="classtf_1_1Worker_1a843309d64f4013e49c4bf36684bd1aae" kind="variable"><name>_thread</name></member>
     <member refid="classtf_1_1Worker_1ac08ba8b8d845b8278a501f836e0cf176" kind="variable"><name>_waiter</name></member>
     <member refid="classtf_1_1Worker_1a753b13866ccf3badaebf5e92af0bf63f" kind="variable"><name>_rdgen</name></member>
     <member refid="classtf_1_1Worker_1a48d8af5d9ce1227254d202548c9b5f13" kind="variable"><name>_wsq</name></member>
+    <member refid="classtf_1_1Worker_1a0180ea51cc46551157eaae451b50c7d8" kind="function"><name>id</name></member>
+    <member refid="classtf_1_1Worker_1a55cead41a8cf1a1c1fd72cd8790be65f" kind="function"><name>thread</name></member>
   </compound>
   <compound refid="classtf_1_1WorkerInterface" kind="class"><name>tf::WorkerInterface</name>
     <member refid="classtf_1_1WorkerInterface_1a4f086cadaabff4094cf07fd387b2e185" kind="function"><name>~WorkerInterface</name></member>
-    <member refid="classtf_1_1WorkerInterface_1aba28fbefa342757f304088bc93e9b3b1" kind="function"><name>scheduler_prologue</name></member>
-    <member refid="classtf_1_1WorkerInterface_1aa22b8fb3e80a37f16b8b7fb1ee6257f0" kind="function"><name>scheduler_epilogue</name></member>
+    <member refid="classtf_1_1WorkerInterface_1a41c3b931a36bde8eff4aa8d375e8888a" kind="function"><name>scheduler_prologue</name></member>
+    <member refid="classtf_1_1WorkerInterface_1a3e6d68fd4041f433d1b7ca9e5786b57c" kind="function"><name>scheduler_epilogue</name></member>
   </compound>
   <compound refid="classtf_1_1WorkerView" kind="class"><name>tf::WorkerView</name>
     <member refid="classtf_1_1WorkerView_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>

@@ -689,8 +689,8 @@ class Executor {
     size_t _num_topologies {0};
     
     std::unordered_map<std::thread::id, size_t> _wids;
-    std::vector<Worker> _workers;
     std::vector<std::thread> _threads;
+    std::vector<Worker> _workers;
     std::list<Taskflow> _taskflows;
 
     Notifier _notifier;
@@ -754,6 +754,7 @@ class Executor {
 // Constructor
 inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix) :
   _MAX_STEALS {((N+1) << 1)},
+  _threads    {N},
   _workers    {N},
   _notifier   {N},
   _worker_interface {std::move(wix)} {
@@ -913,9 +914,12 @@ inline void Executor::_spawn(size_t N) {
     _workers[id]._executor = this;
     _workers[id]._waiter = &_notifier._waiters[id];
 
-    _threads.emplace_back([this] (
+    _threads[id] = std::thread([this] (
       Worker& w, std::mutex& mutex, std::condition_variable& cond, size_t& n
     ) -> void {
+      
+      // assign the thread
+      w._thread = &_threads[w._id];
 
       // enables the mapping
       {
@@ -931,7 +935,7 @@ inline void Executor::_spawn(size_t N) {
       // before entering the scheduler (work-stealing loop), 
       // call the user-specified prologue function
       if(_worker_interface) {
-        _worker_interface->scheduler_prologue(WorkerView(w));
+        _worker_interface->scheduler_prologue(w);
       }
 
       // must use 1 as condition instead of !done because
@@ -956,7 +960,7 @@ inline void Executor::_spawn(size_t N) {
       
       // call the user-specified epilogue function
       if(_worker_interface) {
-        _worker_interface->scheduler_epilogue(WorkerView(w), ptr);
+        _worker_interface->scheduler_epilogue(w, ptr);
       }
 
     }, std::ref(_workers[id]), std::ref(mutex), std::ref(cond), std::ref(n));

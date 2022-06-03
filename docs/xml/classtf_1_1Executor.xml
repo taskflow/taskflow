@@ -137,11 +137,11 @@
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="691" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="691" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classtf_1_1Executor_1ad93162f032d463cc845fbca4fc0d960e" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Worker &gt;</type>
-        <definition>std::vector&lt;Worker&gt; tf::Executor::_workers</definition>
+      <memberdef kind="variable" id="classtf_1_1Executor_1a3b5e7cf6749feded228a46e9fbfdef5f" prot="private" static="no" mutable="no">
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/thread/thread" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::thread</ref> &gt;</type>
+        <definition>std::vector&lt;std::thread&gt; tf::Executor::_threads</definition>
         <argsstring></argsstring>
-        <name>_workers</name>
+        <name>_threads</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -150,11 +150,11 @@
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="692" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="692" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classtf_1_1Executor_1a3b5e7cf6749feded228a46e9fbfdef5f" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/thread/thread" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::thread</ref> &gt;</type>
-        <definition>std::vector&lt;std::thread&gt; tf::Executor::_threads</definition>
+      <memberdef kind="variable" id="classtf_1_1Executor_1ad93162f032d463cc845fbca4fc0d960e" prot="private" static="no" mutable="no">
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &gt;</type>
+        <definition>std::vector&lt;Worker&gt; tf::Executor::_workers</definition>
         <argsstring></argsstring>
-        <name>_threads</name>
+        <name>_workers</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -293,7 +293,7 @@
 <para>The constructor spawns <computeroutput>N</computeroutput> worker threads to run tasks in a work-stealing loop. The number of workers must be greater than zero or an exception will be thrown. By default, the number of worker threads is equal to the maximum hardware concurrency returned by <ref refid="cpp/thread/thread/hardware_concurrency" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::thread::hardware_concurrency</ref>. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="67" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="755" bodyend="771"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="67" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="755" bodyend="772"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a5a511b0cc23b264826373d3dabcef670" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -306,7 +306,7 @@
 <para>The destructor calls <ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">Executor::wait_for_all</ref> to wait for all submitted taskflows to complete and then notifies all worker threads to stop and join these threads. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="79" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="774" bodyend="787"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="79" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="775" bodyend="788"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref>&lt; void &gt;</type>
@@ -336,7 +336,7 @@ This member function executes the given taskflow once and returns a <ref refid="
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="103" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1638" bodyend="1640"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="103" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1642" bodyend="1644"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a4bbef53618db1852003a0cd1e1e40c50" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref>&lt; void &gt;</type>
@@ -365,7 +365,7 @@ This member function executes a moved taskflow once and returns a <ref refid="cl
 </programlisting></para><para>This member function is thread-safe. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="124" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1643" bodyend="1645"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="124" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1647" bodyend="1649"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1ac01c2f31dd3ed3b4dfa1a6c933a58b2f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -411,7 +411,7 @@ This member function executes the given taskflow once and invokes the given call
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="152" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1649" bodyend="1651"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="152" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1653" bodyend="1655"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a52c27df2fb7372277f4926f4ab0a0937" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -458,7 +458,7 @@ This member function executes a moved taskflow once and invokes the given callab
 </programlisting></para><para>This member function is thread-safe. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="179" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1655" bodyend="1657"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="179" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1659" bodyend="1661"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a6d0617eebc9421f1ba1f82ce6dd02c00" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref>&lt; void &gt;</type>
@@ -499,7 +499,7 @@ This member function executes the given taskflow <computeroutput>N</computeroutp
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="204" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1660" bodyend="1662"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="204" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1664" bodyend="1666"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1ad10a12c9e14c8132e414c9a48443d938" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref>&lt; void &gt;</type>
@@ -541,7 +541,7 @@ This member function executes a moved taskflow <computeroutput>N</computeroutput
 </programlisting></para><para>This member function is thread-safe. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="228" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1665" bodyend="1667"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="228" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1669" bodyend="1671"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1abd99b189457d1a00a33cd22339694fcd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -601,7 +601,7 @@ This member function executes the given taskflow <computeroutput>N</computeroutp
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="260" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1671" bodyend="1675"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="260" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1675" bodyend="1679"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1ad14430ac62f0e64e9e21712ba35c22ea" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -660,7 +660,7 @@ This member function executes a moved taskflow <computeroutput>N</computeroutput
 </programlisting></para><para>This member function is thread-safe. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="288" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1679" bodyend="1683"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="288" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1683" bodyend="1687"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a0f52e9dd64b65aba32ca0e13c1ed300a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -708,7 +708,7 @@ This member function executes the given taskflow multiple times until the predic
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="318" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1687" bodyend="1689"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="318" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1691" bodyend="1693"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1ab10fac2869d80049e5a75d2084a78eda" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -755,7 +755,7 @@ This member function executes a moved taskflow multiple times until the predicat
 </programlisting></para><para>This member function is thread-safe. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="346" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1693" bodyend="1695"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="346" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1697" bodyend="1699"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1af84856e5c4c605fcb3cbfbcad069a6a8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -817,7 +817,7 @@ This member function executes the given taskflow multiple times until the predic
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="379" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1699" bodyend="1736"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="379" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1703" bodyend="1740"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1af30c6947f060e4bdf344e90b6b44fc70" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -879,7 +879,7 @@ This member function executes a moved taskflow multiple times until the predicat
 </programlisting></para><para>This member function is thread-safe. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="410" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1740" bodyend="1751"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="410" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1744" bodyend="1755"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1ab05ad34c59cf11a7c4de82cf58bba91e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -935,7 +935,7 @@ The method runs a target graph which has <computeroutput><ref refid="classtf_1_1
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="455" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1755" bodyend="1765"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="455" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1759" bodyend="1769"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1afbff30c324c5887aace09e7fe9a0d607" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -974,7 +974,7 @@ The method keeps running the caller worker in the work-stealing loop until the s
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="471" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1769" bodyend="1778"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="471" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1773" bodyend="1782"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -991,7 +991,7 @@ The method keeps running the caller worker in the work-stealing loop until the s
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="486" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1801" bodyend="1804"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="486" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1805" bodyend="1808"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a9d2d464ab2a84ecb3b3ea7747e8e276b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -1006,7 +1006,7 @@ The method keeps running the caller worker in the work-stealing loop until the s
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="499" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="790" bodyend="792"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="499" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="791" bodyend="793"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a6d6c28ed58211e4c27a99571e5bf0b6c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -1021,7 +1021,7 @@ The method keeps running the caller worker in the work-stealing loop until the s
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="514" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="800" bodyend="802"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="514" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="801" bodyend="803"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a5fb438dc0f7b9e1ae2fe3f240c82f174" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -1036,7 +1036,7 @@ The method keeps running the caller worker in the work-stealing loop until the s
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="524" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="805" bodyend="807"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="524" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="806" bodyend="808"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a6487d589cb1f6b078b69fd3bb1082345" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>int</type>
@@ -1056,7 +1056,7 @@ The method keeps running the caller worker in the work-stealing loop until the s
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="543" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="897" bodyend="900"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="543" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="898" bodyend="901"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1122,7 +1122,7 @@ The method creates an asynchronous task to launch the given function on the give
 </programlisting></para><para>This member function is thread-safe. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="573" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="861" bodyend="863"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="573" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="862" bodyend="864"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a51acee1670e9f246c7ccd7f6a63f1524" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1199,7 +1199,7 @@ The method creates a named asynchronous task to launch the given function on the
 </programlisting></para><para>This member function is thread-safe. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="606" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="817" bodyend="857"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="606" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="818" bodyend="858"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1abf71e7ec0026ddfce79c912264369bc9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1233,7 +1233,7 @@ The method creates a named asynchronous task to launch the given function on the
 </programlisting></para><para>This member function is thread-safe. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="623" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="892" bodyend="894"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="623" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="893" bodyend="895"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a1febfaa7a99cac8466263c58fd2a7c06" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1271,7 +1271,7 @@ The method creates a named asynchronous task to launch the given function on the
 </programlisting></para><para>This member function is thread-safe. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="640" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="867" bodyend="888"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="640" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="868" bodyend="889"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1aff77def96ae740d648dd84e571237c83" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1322,7 +1322,7 @@ The method creates a named asynchronous task to launch the given function on the
 Each executor manages a list of observers with shared ownership with callers. For each of these observers, the two member functions, <ref refid="classtf_1_1ObserverInterface_1a8225fcacb03089677a1efc4b16b734cc" kindref="member">tf::ObserverInterface::on_entry</ref> and <ref refid="classtf_1_1ObserverInterface_1aa22f5378154653f08d9a58326bda4754" kindref="member">tf::ObserverInterface::on_exit</ref> will be called before and after the execution of a task.</para><para>This member function is not thread-safe. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="660" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1130" bodyend="1145"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="660" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1134" bodyend="1149"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a31081f492c376f7b798de0e430534531" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1344,7 +1344,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
 <para>This member function is not thread-safe. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="668" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1149" bodyend="1157"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="668" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1153" bodyend="1161"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1affec621aae59d73fc188ef454008fda2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -1357,7 +1357,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="673" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1160" bodyend="1162"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="673" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1164" bodyend="1166"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1ad83b1bbb987709e797ba3f627493c37c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -1370,12 +1370,12 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="678" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="795" bodyend="797"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="678" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="796" bodyend="798"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
       <memberdef kind="function" id="classtf_1_1Executor_1a941f6e5e9e6141a81c750648c4802b63" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>Worker *</type>
+        <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> *</type>
         <definition>Worker * tf::Executor::_this_worker</definition>
         <argsstring>()</argsstring>
         <name>_this_worker</name>
@@ -1385,7 +1385,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="707" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="810" bodyend="813"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="707" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="811" bodyend="814"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a57f5105dc812d83f259ec8cab7c96228" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -1393,7 +1393,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *&amp;)</argsstring>
         <name>_wait_for_task</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>worker</defname>
         </param>
         <param>
@@ -1406,7 +1406,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="709" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1060" bodyend="1126"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="709" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1064" bodyend="1130"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1ae023614977a19def9e04cf7212eab65b" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1414,7 +1414,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *)</argsstring>
         <name>_observer_prologue</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>worker</defname>
         </param>
         <param>
@@ -1427,7 +1427,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="711" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1477" bodyend="1481"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="711" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1481" bodyend="1485"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a9cd8c1a72af4477bc0f9575b68ffb16a" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1435,7 +1435,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *)</argsstring>
         <name>_observer_epilogue</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>worker</defname>
         </param>
         <param>
@@ -1448,7 +1448,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="712" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1484" bodyend="1488"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="712" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1488" bodyend="1492"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a8aee6c0ec55b4bfb3909601203e98514" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1465,7 +1465,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="713" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="903" bodyend="967"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="713" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="904" bodyend="971"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a0b4f231e11016194980b14e76262c8a7" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1473,7 +1473,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *&amp;)</argsstring>
         <name>_exploit_task</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>w</defname>
         </param>
         <param>
@@ -1486,7 +1486,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="714" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1042" bodyend="1057"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="714" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1046" bodyend="1061"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1aab7cc2e53d75fcc87fcc919f29bf9ca9" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1494,7 +1494,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *&amp;)</argsstring>
         <name>_explore_task</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>w</defname>
         </param>
         <param>
@@ -1507,7 +1507,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="715" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1012" bodyend="1039"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="715" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1016" bodyend="1043"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1ab8d98f12a62d10ad6cf1a4011a4d0034" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1515,7 +1515,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *)</argsstring>
         <name>_schedule</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>worker</defname>
         </param>
         <param>
@@ -1528,7 +1528,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="716" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1165" bodyend="1181"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="716" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1169" bodyend="1185"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a685c08b62a494359e34c6de2a700fdab" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1545,7 +1545,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="717" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1184" bodyend="1194"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="717" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1188" bodyend="1198"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a9cf973d7c5310d058fee003fda9098c4" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1553,7 +1553,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, const SmallVector&lt; Node *&gt; &amp;)</argsstring>
         <name>_schedule</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>worker</defname>
         </param>
         <param>
@@ -1566,7 +1566,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="718" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1197" bodyend="1229"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="718" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1201" bodyend="1233"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a8f8202cfea57480f304d1652358386d3" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1583,7 +1583,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="719" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1232" bodyend="1254"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="719" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1236" bodyend="1258"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a723daf897c5d3d3517583cb4c62654ee" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1591,7 +1591,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker *, Topology *)</argsstring>
         <name>_set_up_topology</name>
         <param>
-          <type>Worker *</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> *</type>
           <defname>worker</defname>
         </param>
         <param>
@@ -1604,7 +1604,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="720" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1807" bodyend="1836"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="720" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1811" bodyend="1840"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a76be884d38d1bb8f9b8bba488c901b4b" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1612,7 +1612,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Topology *)</argsstring>
         <name>_tear_down_topology</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>worker</defname>
         </param>
         <param>
@@ -1625,7 +1625,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="721" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1839" bodyend="1913"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="721" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1843" bodyend="1917"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a42e7db3fc43e1c5479e30e8d83da9e74" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1642,7 +1642,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="722" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1429" bodyend="1437"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="722" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1433" bodyend="1441"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a17fe8e0f32892cf2848611bca7566378" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1650,7 +1650,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *)</argsstring>
         <name>_tear_down_invoke</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>worker</defname>
         </param>
         <param>
@@ -1663,7 +1663,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="723" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1440" bodyend="1451"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="723" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1444" bodyend="1455"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a3a7524f412f7c7c328774135077f0498" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1671,7 +1671,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *)</argsstring>
         <name>_cancel_invoke</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>worker</defname>
         </param>
         <param>
@@ -1684,7 +1684,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="724" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1454" bodyend="1474"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="724" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1458" bodyend="1478"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1ab85dc42b3e9b18e4b975bd5e9a8c5e72" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1697,7 +1697,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="725" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1781" bodyend="1784"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="725" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1785" bodyend="1788"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a8728f22f6d177fad84ce667e02a7a3b9" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1710,7 +1710,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="726" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1795" bodyend="1798"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="726" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1799" bodyend="1802"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a08945917285cd57d33efc99530fbd384" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1723,7 +1723,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="727" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1787" bodyend="1792"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="727" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1791" bodyend="1796"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1ad16165142908aca9444ea88e65040219" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1731,7 +1731,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *)</argsstring>
         <name>_invoke</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>worker</defname>
         </param>
         <param>
@@ -1744,7 +1744,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="728" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1257" bodyend="1426"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="728" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1261" bodyend="1430"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1ac243d2a08b5a4a75dd440dc063b886ce" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1752,7 +1752,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *)</argsstring>
         <name>_invoke_static_task</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>worker</defname>
         </param>
         <param>
@@ -1765,7 +1765,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="729" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1491" bodyend="1495"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="729" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1495" bodyend="1499"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a4a000baf70b108201e3787787309c272" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1773,7 +1773,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *)</argsstring>
         <name>_invoke_dynamic_task</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>w</defname>
         </param>
         <param>
@@ -1786,7 +1786,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="730" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1498" bodyend="1515"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="730" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1502" bodyend="1519"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a417896b64fa0cdec764623d337b5f455" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1794,7 +1794,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *, Graph &amp;)</argsstring>
         <name>_consume_graph</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>w</defname>
         </param>
         <param>
@@ -1811,7 +1811,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="731" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1551" bodyend="1572"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="731" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1555" bodyend="1576"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a4b36b0a386f0eb5ba9cd3984c589a5c1" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1819,7 +1819,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *, Graph &amp;)</argsstring>
         <name>_detach_dynamic_task</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>w</defname>
         </param>
         <param>
@@ -1836,7 +1836,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="732" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1518" bodyend="1548"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="732" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1522" bodyend="1552"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1afa6be6aab23ff4b2a293a2245818916d" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1844,7 +1844,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *, SmallVector&lt; int &gt; &amp;)</argsstring>
         <name>_invoke_condition_task</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>worker</defname>
         </param>
         <param>
@@ -1861,7 +1861,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="733" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1575" bodyend="1581"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="733" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1579" bodyend="1585"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a19b3f10d4eab40143d3f76b946ded252" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1869,7 +1869,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *, SmallVector&lt; int &gt; &amp;)</argsstring>
         <name>_invoke_multi_condition_task</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>worker</defname>
         </param>
         <param>
@@ -1886,7 +1886,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="734" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1584" bodyend="1590"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="734" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1588" bodyend="1594"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a4c5324657bf02bc2da0294192ab80233" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1894,7 +1894,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *)</argsstring>
         <name>_invoke_module_task</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>w</defname>
         </param>
         <param>
@@ -1907,7 +1907,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="735" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1607" bodyend="1613"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="735" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1611" bodyend="1617"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a505ccafa7ab1855c200d5590499adf5a" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1915,7 +1915,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *)</argsstring>
         <name>_invoke_async_task</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>w</defname>
         </param>
         <param>
@@ -1928,7 +1928,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="736" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1616" bodyend="1620"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="736" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1620" bodyend="1624"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1ae2bb8ef1456ec6414e46d7ed77628bd9" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1936,7 +1936,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *)</argsstring>
         <name>_invoke_silent_async_task</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>w</defname>
         </param>
         <param>
@@ -1949,7 +1949,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="737" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1623" bodyend="1627"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="737" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1627" bodyend="1631"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1ae4be3b787a3c6eaaf18589a25e9c844f" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1957,7 +1957,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *)</argsstring>
         <name>_invoke_cudaflow_task</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>worker</defname>
         </param>
         <param>
@@ -1970,7 +1970,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="738" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1593" bodyend="1597"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="738" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1597" bodyend="1601"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1ae7254966d36c26cdf59a11bc7bd4d43f" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1978,7 +1978,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *)</argsstring>
         <name>_invoke_syclflow_task</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>worker</defname>
         </param>
         <param>
@@ -1991,7 +1991,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="739" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1600" bodyend="1604"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="739" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1604" bodyend="1608"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a97db97d741c5ed6f0a454aa89bd457d7" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1999,7 +1999,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, Node *)</argsstring>
         <name>_invoke_runtime_task</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>w</defname>
         </param>
         <param>
@@ -2012,7 +2012,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="740" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1630" bodyend="1635"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="740" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="1634" bodyend="1639"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a7c70d9c49d9a86756c3a2d445a68633a" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -2025,7 +2025,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         <argsstring>(Worker &amp;, P &amp;&amp;)</argsstring>
         <name>_loop_until</name>
         <param>
-          <type>Worker &amp;</type>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>w</defname>
         </param>
         <param>
@@ -2038,7 +2038,7 @@ Each executor manages a list of observers with shared ownership with callers. Fo
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="743" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="971" bodyend="1009"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" line="743" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="975" bodyend="1013"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1aeeecfcac09ba22db0aeaf2f5b534b802" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
