@@ -13,6 +13,13 @@
 cmake_minimum_required (VERSION 3.12)
 MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 
+# detect if Taskflow is being bundled,
+if(NOT DEFINED PROJECT_NAME)
+  set(NOT_SUBPROJECT ON)
+else()
+  set(NOT_SUBPROJECT OFF)
+endif()
+
 # Project name
 project(Taskflow VERSION 3.5.0 LANGUAGES CXX)
 
@@ -323,44 +330,47 @@ endif(TF_BUILD_BENCHMARKS)
 # create find_package(Taskflow CONFIG)
 # -----------------------------------------------------------------------------
 
-# install header
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/taskflow DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+# Only perform the installation steps when TASKFLOW is not being used as
+# a subproject via `add_subdirectory`
+if (NOT_SUBPROJECT)
+  # install header
+  install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/taskflow DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-# export target
-set_target_properties(${PROJECT_NAME} PROPERTIES EXPORT_NAME ${PROJECT_NAME})
+  # export target
+  set_target_properties(${PROJECT_NAME} PROPERTIES EXPORT_NAME ${PROJECT_NAME})
 
-export(
-  TARGETS ${PROJECT_NAME} 
-  NAMESPACE ${PROJECT_NAME}:: 
-  FILE ${PROJECT_NAME}Targets.cmake
-)
-export(PACKAGE ${PROJECT_NAME})
+  export(
+    TARGETS ${PROJECT_NAME} 
+    NAMESPACE ${PROJECT_NAME}:: 
+    FILE ${PROJECT_NAME}Targets.cmake
+  )
+  export(PACKAGE ${PROJECT_NAME})
 
-install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets)
-install(
-  EXPORT ${PROJECT_NAME}Targets 
-  NAMESPACE ${PROJECT_NAME}:: 
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
-)
+  install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets)
+  install(
+    EXPORT ${PROJECT_NAME}Targets 
+    NAMESPACE ${PROJECT_NAME}:: 
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+  )
 
-# set up config
-include(CMakePackageConfigHelpers)
+  # set up config
+  include(CMakePackageConfigHelpers)
 
-configure_package_config_file(
-  ${PROJECT_NAME}Config.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
-  PATH_VARS CMAKE_INSTALL_FULL_INCLUDEDIR
-)
+  configure_package_config_file(
+    ${PROJECT_NAME}Config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+    PATH_VARS CMAKE_INSTALL_FULL_INCLUDEDIR
+  )
 
-write_basic_package_version_file(
-  ${PROJECT_NAME}ConfigVersion.cmake 
-  COMPATIBILITY SameMajorVersion
-)
+  write_basic_package_version_file(
+    ${PROJECT_NAME}ConfigVersion.cmake 
+    COMPATIBILITY SameMajorVersion
+  )
 
-install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
-)
-
+  install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+          ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+  )
+endif(NOT_SUBPROJECT)
