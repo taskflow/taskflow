@@ -729,6 +729,7 @@ class DataPipe {
   callable_t _callable;
 };
 
+
 // ----------------------------------------------------------------------------
 // Class Definition: DataPipeline
 // ----------------------------------------------------------------------------
@@ -751,6 +752,7 @@ class DataPipeline {
   struct PipeMeta {
     PipeType type;
   };
+
 
   public:
 
@@ -835,7 +837,8 @@ class DataPipeline {
   std::vector<Task> _tasks;
   std::vector<Pipeflow> _pipeflows;
   //to modify
-  std::vector<std::variant<int, std::string, float> > _buffer;
+  using variant_t = std::variant<std::conditional_t<std::is_void_v<typename Ps::output_t>, std::monostate, typename Ps::output_t>...>;
+  std::vector<variant_t> _buffer;
 
   template <size_t... I>
   auto _gen_meta(std::tuple<Ps...>&&, std::index_sequence<I...>);
