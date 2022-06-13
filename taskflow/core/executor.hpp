@@ -677,9 +677,15 @@ class Executor {
     */
     size_t max_steals() const noexcept;
 
+    /**
+    @brief queries the maximum number of yields before sleeping the thread
+    */
+    size_t max_yields() const noexcept;
+
   private:
     
     const size_t _MAX_STEALS;
+    const size_t _MAX_YIELDS;
 
     std::condition_variable _topology_cv;
     std::mutex _taskflow_mutex;
@@ -754,6 +760,7 @@ class Executor {
 // Constructor
 inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix) :
   _MAX_STEALS {((N+1) << 1)},
+  _MAX_YIELDS {100},
   _threads    {N},
   _workers    {N},
   _notifier   {N},
@@ -795,6 +802,11 @@ inline size_t Executor::num_workers() const noexcept {
 // Function: max_steals
 inline size_t Executor::max_steals() const noexcept {
   return _MAX_STEALS;
+}
+
+// Function: max_yields
+inline size_t Executor::max_yields() const noexcept {
+  return _MAX_YIELDS;
 }
 
 // Function: num_topologies
@@ -1032,7 +1044,7 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
 
     if(num_steals++ > _MAX_STEALS) {
       std::this_thread::yield();
-      if(num_yields++ > 100) {
+      if(num_yields++ > _MAX_YIELDS) {
         break;
       }
     }
