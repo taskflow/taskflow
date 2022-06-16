@@ -22,11 +22,11 @@ int main() {
       }
     }},
 
-    tf::DataPipe<int, std::string>{tf::PipeType::SERIAL, [](int input) -> std::string {
-      return std::to_string(input + 100);
+    tf::DataPipe<int, int>{tf::PipeType::SERIAL, [](int input) {
+      return input + 100;
     }},
 
-    tf::DataPipe<std::string, void>{tf::PipeType::SERIAL, [](std::string input) {
+    tf::DataPipe<int, void>{tf::PipeType::SERIAL, [](int input) {
       std::cout << input << std::endl;
       // return std::stoi(input) + rand()*0.5f;
     }}

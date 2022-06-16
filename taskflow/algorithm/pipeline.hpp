@@ -2,6 +2,25 @@
 
 #include "../taskflow.hpp"
 
+
+template <typename T, typename... Ts>
+struct filter_duplicates { using type = T; };
+
+template <template <typename...> class C, typename... Ts, typename U, typename... Us>
+struct filter_duplicates<C<Ts...>, U, Us...>
+    : std::conditional_t<(std::is_same_v<U, Ts> || ...)
+                       , filter_duplicates<C<Ts...>, Us...>
+                       , filter_duplicates<C<Ts..., U>, Us...>> {};
+
+template <typename T>
+struct unique_variant;
+
+template <typename... Ts>
+struct unique_variant<std::variant<Ts...>> : filter_duplicates<std::variant<>, Ts...> {};
+
+template <typename T>
+using unique_variant_t = typename unique_variant<T>::type;
+
 /**
 @file pipeline.hpp
 @brief pipeline include file
@@ -836,8 +855,7 @@ class DataPipeline {
   std::vector<std::array<Line, sizeof...(Ps)>> _lines;
   std::vector<Task> _tasks;
   std::vector<Pipeflow> _pipeflows;
-  //to modify
-  using variant_t = std::variant<std::conditional_t<std::is_void_v<typename Ps::output_t>, std::monostate, typename Ps::output_t>...>;
+  using variant_t = unique_variant_t<std::variant<std::conditional_t<std::is_void_v<typename Ps::output_t>, std::monostate, std::decay_t<typename Ps::output_t>>...>>;
   std::vector<variant_t> _buffer;
 
   template <size_t... I>
@@ -964,7 +982,11 @@ void DataPipeline<Ps...>::_on_pipe(Pipeflow& pf, Runtime& rt) {
     using input_t = typename std::decay_t<decltype(pipe)>::input_t;
     using output_t = typename std::decay_t<decltype(pipe)>::output_t;
     if constexpr (std::is_invocable_v<callable_t, Pipeflow&>) {
-      _buffer[pf._line] = pipe._callable(pf);
+      if constexpr (std::is_void_v<output_t>) {
+        pipe._callable(pf);
+      } else {
+        _buffer[pf._line] = pipe._callable(pf);
+      }
     }
     else if constexpr (std::is_invocable_v<callable_t, input_t>) {
       if constexpr (std::is_void_v<output_t>) {
