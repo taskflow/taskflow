@@ -65,12 +65,14 @@ class Executor {
     hardware concurrency returned by std::thread::hardware_concurrency.
     @param max_steals Sets _MAX_STEALS. Defaults to ((std::thread::hardware_concurrency() + 1) << 1)
     @param max_yields Sets _MAX_YIELDS. Defaults to 100
+    @param max_yields_sleep_time Sets _MAX_YIELDS_SLEEP_TIME. Defaults to 0us
     */
     explicit Executor(
       size_t N = std::thread::hardware_concurrency(),
       std::shared_ptr<WorkerInterface> wix = nullptr,
       size_t max_steals = ((std::thread::hardware_concurrency() + 1) << 1),
-      size_t max_yields = 100
+      size_t max_yields = 100,
+      std::chrono::microseconds max_yields_sleep_time = std::chrono::microseconds(0)
     );
 
     /**
@@ -686,10 +688,16 @@ class Executor {
     */
     size_t max_yields() const noexcept;
 
+    /**
+    @brief queries the amount of time to sleep the thread after max yields is reached
+    */
+    std::chrono::microseconds max_yields_sleep_time() const noexcept;
+
   private:
     
     const size_t _MAX_STEALS;
     const size_t _MAX_YIELDS;
+    const std::chrono::microseconds _MAX_YIELDS_SLEEP_TIME;
 
     std::condition_variable _topology_cv;
     std::mutex _taskflow_mutex;
@@ -762,9 +770,10 @@ class Executor {
 };
 
 // Constructor
-inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix, size_t max_steals, size_t max_yields) :
+inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix, size_t max_steals, size_t max_yields, std::chrono::microseconds max_yields_sleep_time) :
   _MAX_STEALS {max_steals},
   _MAX_YIELDS {max_yields},
+  _MAX_YIELDS_SLEEP_TIME {max_yields_sleep_time},
   _threads    {N},
   _workers    {N},
   _notifier   {N},
@@ -811,6 +820,10 @@ inline size_t Executor::max_steals() const noexcept {
 // Function: max_yields
 inline size_t Executor::max_yields() const noexcept {
   return _MAX_YIELDS;
+}
+
+inline std::chrono::microseconds Executor::max_yields_sleep_time() const noexcept {
+  return _MAX_YIELDS_SLEEP_TIME;
 }
 
 // Function: num_topologies
@@ -1047,10 +1060,11 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
     }
 
     if(num_steals++ > _MAX_STEALS) {
-      std::this_thread::yield();
       if(num_yields++ > _MAX_YIELDS) {
+        std::this_thread::sleep_for(_MAX_YIELDS_SLEEP_TIME);
         break;
       }
+      std::this_thread::yield();
     }
 
     w._vtm = rdvtm(w._rdgen);
