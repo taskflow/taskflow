@@ -489,7 +489,7 @@ Node::Dynamic::Dynamic(C&& c) : work {std::forward<C>(c)} {
 // Constructor
 template <typename C>
 Node::Condition::Condition(C&& c) : work {std::forward<C>(c)} {
-}
+}                                        
 
 // ----------------------------------------------------------------------------
 // Definition for Node::MultiCondition

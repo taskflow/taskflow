@@ -51,9 +51,6 @@ int main()
 
     std::vector<pipeline_t::variant_type> buffer(3);
     std::get<int>(buffer[0]);
-
+    
     return 0;
 }
-
-//Hello! I wanna ask a small question, which I didn't find a useful solution on the internet. The question is stated as comments in the code block below.
-//Can you give me any suggestions? Many thanks!

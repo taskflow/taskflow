@@ -666,7 +666,7 @@ void Pipeline<Ps...>::_build() {
 // Class Definition: DataPipe
 // ----------------------------------------------------------------------------
 
-template <typename Input, typename Output>
+template <typename Input, typename Output, bool enable_pf = false>
 class DataPipe {
 
   template <typename... Ps>
@@ -680,7 +680,8 @@ class DataPipe {
   /**
   @brief alias of the type
   */
-  using callable_t = std::function<Output(Input)>;
+  using callable_t = std::conditional_t<enable_pf, std::function<Output(Input, Pipeflow&)>, std::function<Output(Input)>>;
+  // using callable_pf_t = std::function<Output(Input, Pipeflow&)>;
   using input_t = Input;
   using output_t = Output;
 
@@ -981,6 +982,7 @@ void DataPipeline<Ps...>::_on_pipe(Pipeflow& pf, Runtime& rt) {
     using callable_t = typename std::decay_t<decltype(pipe)>::callable_t;
     using input_t = typename std::decay_t<decltype(pipe)>::input_t;
     using output_t = typename std::decay_t<decltype(pipe)>::output_t;
+    
     if constexpr (std::is_invocable_v<callable_t, Pipeflow&>) {
       if constexpr (std::is_void_v<output_t>) {
         pipe._callable(pf);
@@ -990,9 +992,16 @@ void DataPipeline<Ps...>::_on_pipe(Pipeflow& pf, Runtime& rt) {
     }
     else if constexpr (std::is_invocable_v<callable_t, input_t>) {
       if constexpr (std::is_void_v<output_t>) {
-        pipe._callable(std::get<input_t>(_buffer[pf._line]));
+        pipe._callable(std::get<std::decay_t<input_t>>(_buffer[pf._line]));
       } else {
-        _buffer[pf._line] = pipe._callable(std::get<input_t>(_buffer[pf._line]));
+        _buffer[pf._line] = pipe._callable(std::get<std::decay_t<input_t>>(_buffer[pf._line]));
+      }
+    }
+    else if constexpr (std::is_invocable_v<callable_t, input_t, Pipeflow&>) {
+      if constexpr (std::is_void_v<output_t>) {
+        pipe._callable(std::get<std::decay_t<input_t>>(_buffer[pf._line]), pf);
+      } else {
+        _buffer[pf._line] = pipe._callable(std::get<std::decay_t<input_t>>(_buffer[pf._line]), pf);
       }
     }
     else if constexpr(std::is_invocable_v<callable_t, Pipeflow&, Runtime&>) {

@@ -7,7 +7,7 @@ int main() {
   tf::Taskflow taskflow("pipeline");
   tf::Executor executor;
 
-  const size_t num_lines = 3;
+  const size_t num_lines = 5;
 
   // custom data storage
   // std::array<int, num_lines> buffer;
@@ -22,11 +22,12 @@ int main() {
       }
     }},
 
-    tf::DataPipe<int, int>{tf::PipeType::SERIAL, [](int input) {
-      return input + 100;
+    tf::DataPipe<int&, std::string, true>{tf::PipeType::SERIAL, [](int& input, tf::Pipeflow& pf) {
+      printf("%d, %d\n", pf.line(), pf.pipe());
+      return std::to_string(input + 100);
     }},
 
-    tf::DataPipe<int, void>{tf::PipeType::SERIAL, [](int input) {
+    tf::DataPipe<std::string&, void>{tf::PipeType::SERIAL, [](std::string& input) {
       std::cout << input << std::endl;
       // return std::stoi(input) + rand()*0.5f;
     }}
