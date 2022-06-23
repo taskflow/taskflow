@@ -666,7 +666,7 @@ void Pipeline<Ps...>::_build() {
 // Class Definition: DataPipe
 // ----------------------------------------------------------------------------
 
-template <typename Input, typename Output, bool enable_pf = false>
+template <typename Input, typename Output, typename C>
 class DataPipe {
 
   template <typename... Ps>
@@ -680,8 +680,8 @@ class DataPipe {
   /**
   @brief alias of the type
   */
-  using callable_t = std::conditional_t<enable_pf, std::function<Output(Input, Pipeflow&)>, std::function<Output(Input)>>;
-  // using callable_pf_t = std::function<Output(Input, Pipeflow&)>;
+  // using callable_t = std::conditional_t<enable_pf, std::function<Output(Input, Pipeflow&)>, std::function<Output(Input)>>;
+  using callable_t = C;
   using input_t = Input;
   using output_t = Output;
 
@@ -748,6 +748,11 @@ class DataPipe {
 
   callable_t _callable;
 };
+
+template <typename Input, typename Output, typename C>
+auto make_datapipe(PipeType d, C&& callable) {
+  return DataPipe<Input, Output, C>(d, std::forward<C>(callable));
+}
 
 
 // ----------------------------------------------------------------------------

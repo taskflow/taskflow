@@ -37,7 +37,7 @@ public:
     //Because if there is a `void` type in the variant, it will lead to error.
     //pseudocode of my goal: using variant_type = std::variant<typename DPs::output_type[:-1]>;
     // using variant_type = std::variant<std::conditional_t<std::is_void_v<typename DPs::output_type>, std::monostate, typename DPs::output_type>...>;
-    using variant_type = unique_variant_t<std::variant<int, float, int>>;
+    using variant_type = unique_variant_t<std::variant<int, float>>;
 };
 
 int main()
