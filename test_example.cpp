@@ -1,27 +1,28 @@
 #include <string>
+#include <type_traits>
 #include <variant>
 #include <vector>
-#include <type_traits>
+#include <iostream>
 
 template <typename T, typename... Ts>
-struct filter_duplicates { using type = T; };
+struct filter_duplicates {
+    using type = T;
+};
 
 template <template <typename...> class C, typename... Ts, typename U, typename... Us>
 struct filter_duplicates<C<Ts...>, U, Us...>
-    : std::conditional_t<(std::is_same_v<U, Ts> || ...)
-                       , filter_duplicates<C<Ts...>, Us...>
-                       , filter_duplicates<C<Ts..., U>, Us...>> {};
+    : std::conditional_t<(std::is_same_v<U, Ts> || ...), filter_duplicates<C<Ts...>, Us...>, filter_duplicates<C<Ts..., U>, Us...>> {
+};
 
 template <typename T>
 struct unique_variant;
 
 template <typename... Ts>
-struct unique_variant<std::variant<Ts...>> : filter_duplicates<std::variant<>, Ts...> {};
+struct unique_variant<std::variant<Ts...>> : filter_duplicates<std::variant<>, Ts...> {
+};
 
 template <typename T>
 using unique_variant_t = typename unique_variant<T>::type;
-
-
 
 template <typename Input, typename Output>
 class DataPipe {
@@ -42,15 +43,20 @@ public:
 
 int main()
 {
-    using dp1 = DataPipe<void, int>;
-    using dp2 = DataPipe<int, std::string>;
-    using dp3 = DataPipe<std::string, int>;
-    using dp4 = DataPipe<int, void>;
+    // using dp1 = DataPipe<void, int>;
+    // using dp2 = DataPipe<int, std::string>;
+    // using dp3 = DataPipe<std::string, int>;
+    // using dp4 = DataPipe<int, void>;
 
-    using pipeline_t = DataPipeline<dp1, dp2, dp3, dp4>;
+    // using pipeline_t = DataPipeline<dp1, dp2, dp3, dp4>;
 
-    std::vector<pipeline_t::variant_type> buffer(3);
-    std::get<int>(buffer[0]);
-    
+    // std::vector<pipeline_t::variant_type> buffer(3);
+    // std::get<int>(buffer[0]);
+    auto int2vector = [](int input) -> std::vector<int> {
+        return std::vector { input };
+    };
+    std::vector v = int2vector(3);
+    std::cout << v[1] << std::endl;
+
     return 0;
 }
