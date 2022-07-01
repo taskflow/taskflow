@@ -9,7 +9,7 @@ auto int2string = [](int input) -> std::string {
   return std::to_string(input);
 };
 
-auto string2int = [](std::string& input) -> int {
+auto string2int = [](std::string input) -> int {
   work();
   return std::stoi(input);
 };
@@ -29,7 +29,7 @@ auto int2vector = [](int input) -> std::vector<int> {
   return std::vector{input};
 };
 
-auto vector2int = [](std::vector<int>& input) -> int {
+auto vector2int = [](std::vector<int> input) -> int {
   work();
   return input[0];
 };
@@ -203,7 +203,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_6_pipes(
     tf::make_datapipe<int, float>(to_pipe_type(pipes[1]), int2float),
     tf::make_datapipe<float, int>(to_pipe_type(pipes[2]), float2int),
     tf::make_datapipe<int, std::string>(to_pipe_type(pipes[3]), int2string),
-    tf::make_datapipe<std::string&, int>(to_pipe_type(pipes[4]), string2int),
+    tf::make_datapipe<std::string, int>(to_pipe_type(pipes[4]), string2int),
     tf::make_datapipe<int, void>(to_pipe_type(pipes[5]), int2void)
   );
 
@@ -234,7 +234,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_7_pipes(
     tf::make_datapipe<int, float>(to_pipe_type(pipes[1]), int2float),
     tf::make_datapipe<float, int>(to_pipe_type(pipes[2]), float2int),
     tf::make_datapipe<int, std::string>(to_pipe_type(pipes[3]), int2string),
-    tf::make_datapipe<std::string&, int>(to_pipe_type(pipes[4]), string2int),
+    tf::make_datapipe<std::string, int>(to_pipe_type(pipes[4]), string2int),
     tf::make_datapipe<int, int>(to_pipe_type(pipes[5]), int2int),
     tf::make_datapipe<int, void>(to_pipe_type(pipes[6]), int2void)
   );
@@ -266,9 +266,9 @@ std::chrono::microseconds parallel_pipeline_taskflow_8_pipes(
     tf::make_datapipe<int, float>(to_pipe_type(pipes[1]), int2float),
     tf::make_datapipe<float, int>(to_pipe_type(pipes[2]), float2int),
     tf::make_datapipe<int, std::string>(to_pipe_type(pipes[3]), int2string),
-    tf::make_datapipe<std::string&, int>(to_pipe_type(pipes[4]), string2int),
+    tf::make_datapipe<std::string, int>(to_pipe_type(pipes[4]), string2int),
     tf::make_datapipe<int, std::vector<int> >(to_pipe_type(pipes[5]), int2vector),
-    tf::make_datapipe<std::vector<int>&, int>(to_pipe_type(pipes[6]), vector2int),
+    tf::make_datapipe<std::vector<int>, int>(to_pipe_type(pipes[6]), vector2int),
     tf::make_datapipe<int, void>(to_pipe_type(pipes[7]), int2void)
   );
 
@@ -299,9 +299,9 @@ std::chrono::microseconds parallel_pipeline_taskflow_9_pipes(
     tf::make_datapipe<int, float>(to_pipe_type(pipes[1]), int2float),
     tf::make_datapipe<float, int>(to_pipe_type(pipes[2]), float2int),
     tf::make_datapipe<int, std::string>(to_pipe_type(pipes[3]), int2string),
-    tf::make_datapipe<std::string&, int>(to_pipe_type(pipes[4]), string2int),
+    tf::make_datapipe<std::string, int>(to_pipe_type(pipes[4]), string2int),
     tf::make_datapipe<int, std::vector<int> >(to_pipe_type(pipes[5]), int2vector),
-    tf::make_datapipe<std::vector<int>&, int>(to_pipe_type(pipes[6]), vector2int),
+    tf::make_datapipe<std::vector<int>, int>(to_pipe_type(pipes[6]), vector2int),
     tf::make_datapipe<int, int>(to_pipe_type(pipes[7]), int2int),
     tf::make_datapipe<int, void>(to_pipe_type(pipes[8]), int2void)
   );
@@ -333,9 +333,9 @@ std::chrono::microseconds parallel_pipeline_taskflow_10_pipes(
     tf::make_datapipe<int, float>(to_pipe_type(pipes[1]), int2float),
     tf::make_datapipe<float, int>(to_pipe_type(pipes[2]), float2int),
     tf::make_datapipe<int, std::string>(to_pipe_type(pipes[3]), int2string),
-    tf::make_datapipe<std::string&, int>(to_pipe_type(pipes[4]), string2int),
+    tf::make_datapipe<std::string, int>(to_pipe_type(pipes[4]), string2int),
     tf::make_datapipe<int, std::vector<int> >(to_pipe_type(pipes[5]), int2vector),
-    tf::make_datapipe<std::vector<int>&, int>(to_pipe_type(pipes[6]), vector2int),
+    tf::make_datapipe<std::vector<int>, int>(to_pipe_type(pipes[6]), vector2int),
     tf::make_datapipe<int, float>(to_pipe_type(pipes[7]), int2float),
     tf::make_datapipe<float, int>(to_pipe_type(pipes[8]), float2int),
     tf::make_datapipe<int, void>(to_pipe_type(pipes[9]), int2void)
@@ -369,9 +369,9 @@ std::chrono::microseconds parallel_pipeline_taskflow_11_pipes(
     tf::make_datapipe<int, float>(to_pipe_type(pipes[1]), int2float),
     tf::make_datapipe<float, int>(to_pipe_type(pipes[2]), float2int),
     tf::make_datapipe<int, std::string>(to_pipe_type(pipes[3]), int2string),
-    tf::make_datapipe<std::string&, int>(to_pipe_type(pipes[4]), string2int),
+    tf::make_datapipe<std::string, int>(to_pipe_type(pipes[4]), string2int),
     tf::make_datapipe<int, std::vector<int> >(to_pipe_type(pipes[5]), int2vector),
-    tf::make_datapipe<std::vector<int>&, int>(to_pipe_type(pipes[6]), vector2int),
+    tf::make_datapipe<std::vector<int>, int>(to_pipe_type(pipes[6]), vector2int),
     tf::make_datapipe<int, float>(to_pipe_type(pipes[7]), int2float),
     tf::make_datapipe<float, int>(to_pipe_type(pipes[8]), float2int),
     tf::make_datapipe<int, int>(to_pipe_type(pipes[9]), int2int),
@@ -405,13 +405,13 @@ std::chrono::microseconds parallel_pipeline_taskflow_12_pipes(
     tf::make_datapipe<int, float>(to_pipe_type(pipes[1]), int2float),
     tf::make_datapipe<float, int>(to_pipe_type(pipes[2]), float2int),
     tf::make_datapipe<int, std::string>(to_pipe_type(pipes[3]), int2string),
-    tf::make_datapipe<std::string&, int>(to_pipe_type(pipes[4]), string2int),
+    tf::make_datapipe<std::string, int>(to_pipe_type(pipes[4]), string2int),
     tf::make_datapipe<int, std::vector<int> >(to_pipe_type(pipes[5]), int2vector),
-    tf::make_datapipe<std::vector<int>&, int>(to_pipe_type(pipes[6]), vector2int),
+    tf::make_datapipe<std::vector<int>, int>(to_pipe_type(pipes[6]), vector2int),
     tf::make_datapipe<int, float>(to_pipe_type(pipes[7]), int2float),
     tf::make_datapipe<float, int>(to_pipe_type(pipes[8]), float2int),
     tf::make_datapipe<int, std::string>(to_pipe_type(pipes[9]), int2string),
-    tf::make_datapipe<std::string&, int>(to_pipe_type(pipes[10]), string2int),
+    tf::make_datapipe<std::string, int>(to_pipe_type(pipes[10]), string2int),
     tf::make_datapipe<int, void>(to_pipe_type(pipes[11]), int2void)
   );
 
@@ -442,13 +442,13 @@ std::chrono::microseconds parallel_pipeline_taskflow_13_pipes(
     tf::make_datapipe<int, float>(to_pipe_type(pipes[1]), int2float),
     tf::make_datapipe<float, int>(to_pipe_type(pipes[2]), float2int),
     tf::make_datapipe<int, std::string>(to_pipe_type(pipes[3]), int2string),
-    tf::make_datapipe<std::string&, int>(to_pipe_type(pipes[4]), string2int),
+    tf::make_datapipe<std::string, int>(to_pipe_type(pipes[4]), string2int),
     tf::make_datapipe<int, std::vector<int> >(to_pipe_type(pipes[5]), int2vector),
-    tf::make_datapipe<std::vector<int>&, int>(to_pipe_type(pipes[6]), vector2int),
+    tf::make_datapipe<std::vector<int>, int>(to_pipe_type(pipes[6]), vector2int),
     tf::make_datapipe<int, float>(to_pipe_type(pipes[7]), int2float),
     tf::make_datapipe<float, int>(to_pipe_type(pipes[8]), float2int),
     tf::make_datapipe<int, std::string>(to_pipe_type(pipes[9]), int2string),
-    tf::make_datapipe<std::string&, int>(to_pipe_type(pipes[10]), string2int),
+    tf::make_datapipe<std::string, int>(to_pipe_type(pipes[10]), string2int),
     tf::make_datapipe<int, int>(to_pipe_type(pipes[11]), int2int),
     tf::make_datapipe<int, void>(to_pipe_type(pipes[12]), int2void)
   );
@@ -480,15 +480,15 @@ std::chrono::microseconds parallel_pipeline_taskflow_14_pipes(
     tf::make_datapipe<int, float>(to_pipe_type(pipes[1]), int2float),
     tf::make_datapipe<float, int>(to_pipe_type(pipes[2]), float2int),
     tf::make_datapipe<int, std::string>(to_pipe_type(pipes[3]), int2string),
-    tf::make_datapipe<std::string&, int>(to_pipe_type(pipes[4]), string2int),
+    tf::make_datapipe<std::string, int>(to_pipe_type(pipes[4]), string2int),
     tf::make_datapipe<int, std::vector<int> >(to_pipe_type(pipes[5]), int2vector),
-    tf::make_datapipe<std::vector<int>&, int>(to_pipe_type(pipes[6]), vector2int),
+    tf::make_datapipe<std::vector<int>, int>(to_pipe_type(pipes[6]), vector2int),
     tf::make_datapipe<int, float>(to_pipe_type(pipes[7]), int2float),
     tf::make_datapipe<float, int>(to_pipe_type(pipes[8]), float2int),
     tf::make_datapipe<int, std::string>(to_pipe_type(pipes[9]), int2string),
-    tf::make_datapipe<std::string&, int>(to_pipe_type(pipes[10]), string2int),
+    tf::make_datapipe<std::string, int>(to_pipe_type(pipes[10]), string2int),
     tf::make_datapipe<int, std::vector<int> >(to_pipe_type(pipes[11]), int2vector),
-    tf::make_datapipe<std::vector<int>&, int>(to_pipe_type(pipes[12]), vector2int),
+    tf::make_datapipe<std::vector<int>, int>(to_pipe_type(pipes[12]), vector2int),
     tf::make_datapipe<int, void>(to_pipe_type(pipes[13]), int2void)
   );
 
@@ -519,15 +519,15 @@ std::chrono::microseconds parallel_pipeline_taskflow_15_pipes(
     tf::make_datapipe<int, float>(to_pipe_type(pipes[1]), int2float),
     tf::make_datapipe<float, int>(to_pipe_type(pipes[2]), float2int),
     tf::make_datapipe<int, std::string>(to_pipe_type(pipes[3]), int2string),
-    tf::make_datapipe<std::string&, int>(to_pipe_type(pipes[4]), string2int),
+    tf::make_datapipe<std::string, int>(to_pipe_type(pipes[4]), string2int),
     tf::make_datapipe<int, std::vector<int> >(to_pipe_type(pipes[5]), int2vector),
-    tf::make_datapipe<std::vector<int>&, int>(to_pipe_type(pipes[6]), vector2int),
+    tf::make_datapipe<std::vector<int>, int>(to_pipe_type(pipes[6]), vector2int),
     tf::make_datapipe<int, float>(to_pipe_type(pipes[7]), int2float),
     tf::make_datapipe<float, int>(to_pipe_type(pipes[8]), float2int),
     tf::make_datapipe<int, std::string>(to_pipe_type(pipes[9]), int2string),
-    tf::make_datapipe<std::string&, int>(to_pipe_type(pipes[10]), string2int),
+    tf::make_datapipe<std::string, int>(to_pipe_type(pipes[10]), string2int),
     tf::make_datapipe<int, std::vector<int> >(to_pipe_type(pipes[11]), int2vector),
-    tf::make_datapipe<std::vector<int>&, int>(to_pipe_type(pipes[12]), vector2int),
+    tf::make_datapipe<std::vector<int>, int>(to_pipe_type(pipes[12]), vector2int),
     tf::make_datapipe<int, int>(to_pipe_type(pipes[13]), int2int),
     tf::make_datapipe<int, void>(to_pipe_type(pipes[14]), int2void)
   );
@@ -559,15 +559,15 @@ std::chrono::microseconds parallel_pipeline_taskflow_16_pipes(
     tf::make_datapipe<int, float>(to_pipe_type(pipes[1]), int2float),
     tf::make_datapipe<float, int>(to_pipe_type(pipes[2]), float2int),
     tf::make_datapipe<int, std::string>(to_pipe_type(pipes[3]), int2string),
-    tf::make_datapipe<std::string&, int>(to_pipe_type(pipes[4]), string2int),
+    tf::make_datapipe<std::string, int>(to_pipe_type(pipes[4]), string2int),
     tf::make_datapipe<int, std::vector<int> >(to_pipe_type(pipes[5]), int2vector),
-    tf::make_datapipe<std::vector<int>&, int>(to_pipe_type(pipes[6]), vector2int),
+    tf::make_datapipe<std::vector<int>, int>(to_pipe_type(pipes[6]), vector2int),
     tf::make_datapipe<int, float>(to_pipe_type(pipes[7]), int2float),
     tf::make_datapipe<float, int>(to_pipe_type(pipes[8]), float2int),
     tf::make_datapipe<int, std::string>(to_pipe_type(pipes[9]), int2string),
-    tf::make_datapipe<std::string&, int>(to_pipe_type(pipes[10]), string2int),
+    tf::make_datapipe<std::string, int>(to_pipe_type(pipes[10]), string2int),
     tf::make_datapipe<int, std::vector<int> >(to_pipe_type(pipes[11]), int2vector),
-    tf::make_datapipe<std::vector<int>&, int>(to_pipe_type(pipes[12]), vector2int),
+    tf::make_datapipe<std::vector<int>, int>(to_pipe_type(pipes[12]), vector2int),
     tf::make_datapipe<int, float>(to_pipe_type(pipes[13]), int2float),
     tf::make_datapipe<float, int>(to_pipe_type(pipes[14]), float2int),
     tf::make_datapipe<int, void>(to_pipe_type(pipes[15]), int2void)
