@@ -56,15 +56,12 @@ int main() {
         return input + 1;
     };
 
-  // create a vector of three pipes
-  using variant_t = std::variant<int, float>;
-
   //2. Is this ok when the type in vector definition is different from the exact types of emplaced elements?
-  std::vector< tf::DataPipe<variant_t, variant_t, std::function<variant_t(variant_t, tf::Pipeflow&)>> > pipes;
+  std::vector< ScalableDataPipeBase* > pipes;
 
-  pipes.emplace_back(tf::make_datapipe<void, int>(tf::PipeType::SERIAL, pipe_callable1));
-  pipes.emplace_back(tf::make_datapipe<int, float>(tf::PipeType::SERIAL, pipe_callable2));
-  pipes.emplace_back(tf::make_datapipe<float, int>(tf::PipeType::SERIAL, pipe_callable3));
+  pipes.emplace_back(tf::make_scalable_datapipe<void, int>(tf::PipeType::SERIAL, pipe_callable1));
+  pipes.emplace_back(tf::make_scalable_datapipe<int, float>(tf::PipeType::SERIAL, pipe_callable2));
+  pipes.emplace_back(tf::make_scalable_datapipe<float, int>(tf::PipeType::SERIAL, pipe_callable3));
 
   // create a pipeline of four parallel lines using the given vector of pipes
   tf::ScalablePipeline<decltype(pipes)::iterator> pl(num_lines, pipes.begin(), pipes.end());
@@ -89,8 +86,8 @@ int main() {
 
   // reset the pipeline to a new range of five pipes and starts from
   // the initial state (i.e., token counts from zero)
-  pipes.emplace_back(tf::PipeType::SERIAL, std::make_pair<int, float>, pipe_callable2);
-  pipes.emplace_back(tf::PipeType::SERIAL, std::make_pair<float, int>, pipe_callable3);
+  pipes.emplace_back(tf::make_scalable_datapipe<int, float>(tf::PipeType::SERIAL, pipe_callable1));
+  pipes.emplace_back(tf::make_scalable_datapipe<float, int>(tf::PipeType::SERIAL, pipe_callable1));
   pl.reset(pipes.begin(), pipes.end());
 
   executor.run(taskflow).wait();

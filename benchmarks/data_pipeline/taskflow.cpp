@@ -4,42 +4,42 @@
 #include <vector>
 
 //my convert function
-auto int2string = [](int input) -> std::string {
+auto int2string = [](int& input) -> std::string {
   work();
   return std::to_string(input);
 };
 
-auto string2int = [](std::string input) -> int {
+auto string2int = [](std::string& input) -> int {
   work();
   return std::stoi(input);
 };
 
-auto int2float = [](int input) -> float {
+auto int2float = [](int& input) -> float {
   work();
   return input * 1.0;
 };
 
-auto float2int = [](float input) -> int {
+auto float2int = [](float& input) -> int {
   work();
   return (int)input;
 };
 
-auto int2vector = [](int input) -> std::vector<int> {
+auto int2vector = [](int& input) -> std::vector<int> {
   work();
   return std::vector{input};
 };
 
-auto vector2int = [](std::vector<int> input) -> int {
+auto vector2int = [](std::vector<int>& input) -> int {
   work();
   return input[0];
 };
 
-auto int2int = [](int input) {
+auto int2int = [](int& input) {
   work();
   return input;
 };
 
-auto int2void = [](int input) {  work(); };
+auto int2void = [](int& input) {  work(); };
 
 tf::PipeType to_pipe_type(char t) {
   return t == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL;

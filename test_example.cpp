@@ -1,62 +1,15 @@
-#include <string>
-#include <type_traits>
-#include <variant>
-#include <vector>
 #include <iostream>
+#include <functional>
 
-template <typename T, typename... Ts>
-struct filter_duplicates {
-    using type = T;
-};
+int main() {
 
-template <template <typename...> class C, typename... Ts, typename U, typename... Us>
-struct filter_duplicates<C<Ts...>, U, Us...>
-    : std::conditional_t<(std::is_same_v<U, Ts> || ...), filter_duplicates<C<Ts...>, Us...>, filter_duplicates<C<Ts..., U>, Us...>> {
-};
+  // user's perspective
+  auto lambda = [] ( const int& )  {  };
+  
+  // your perspective - DataPipeline
+  using C = decltype(lambda);
+  using T = int;
 
-template <typename T>
-struct unique_variant;
-
-template <typename... Ts>
-struct unique_variant<std::variant<Ts...>> : filter_duplicates<std::variant<>, Ts...> {
-};
-
-template <typename T>
-using unique_variant_t = typename unique_variant<T>::type;
-
-template <typename Input, typename Output>
-class DataPipe {
-public:
-    using input_type = Input;
-    using output_type = Output;
-};
-
-template <typename... DPs>
-class DataPipeline {
-public:
-    //I want to exclude the last element in DPs.
-    //Because if there is a `void` type in the variant, it will lead to error.
-    //pseudocode of my goal: using variant_type = std::variant<typename DPs::output_type[:-1]>;
-    // using variant_type = std::variant<std::conditional_t<std::is_void_v<typename DPs::output_type>, std::monostate, typename DPs::output_type>...>;
-    using variant_type = unique_variant_t<std::variant<int, float>>;
-};
-
-int main()
-{
-    // using dp1 = DataPipe<void, int>;
-    // using dp2 = DataPipe<int, std::string>;
-    // using dp3 = DataPipe<std::string, int>;
-    // using dp4 = DataPipe<int, void>;
-
-    // using pipeline_t = DataPipeline<dp1, dp2, dp3, dp4>;
-
-    // std::vector<pipeline_t::variant_type> buffer(3);
-    // std::get<int>(buffer[0]);
-    auto int2vector = [](int input) -> std::vector<int> {
-        return std::vector { input };
-    };
-    std::vector v = int2vector(3);
-    std::cout << v[1] << std::endl;
-
-    return 0;
+  //make_datapipe<int&, std::string&> ==> make_datapipe<int, std::string>, here we always decay for storing the data
+  static_assert(std::is_invocable_v<C, T&>, "");  // here, we always call user's callable passing the data by reference
 }

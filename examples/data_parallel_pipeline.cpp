@@ -13,7 +13,7 @@ int main() {
   // std::array<int, num_lines> buffer;
 
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) -> int{
+    tf::make_datapipe<void, int>(tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) -> int{
       if(pf.token() == 5) {
         pf.stop();
       }
@@ -22,12 +22,12 @@ int main() {
       }
     }),
 
-    tf::make_datapipe<int&, std::string>(tf::PipeType::SERIAL, [](int& input, tf::Pipeflow& pf) {
+    tf::make_datapipe<int, std::string>(tf::PipeType::SERIAL, [](int& input, tf::Pipeflow& pf) {
       // printf("%d, %d\n", pf.line(), pf.pipe());
       return std::to_string(input + 100);
     }),
 
-    tf::make_datapipe<std::string&, void>(tf::PipeType::SERIAL, [](std::string& input) {
+    tf::make_datapipe<std::string, void>(tf::PipeType::SERIAL, [](std::string& input) {
       std::cout << input << std::endl;
       // return std::stoi(input) + rand()*0.5f;
     })

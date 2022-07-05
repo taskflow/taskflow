@@ -985,8 +985,8 @@ template <typename... Ps>
 void DataPipeline<Ps...>::_on_pipe(Pipeflow& pf, Runtime& rt) {
   visit_tuple([&](auto&& pipe){
     using callable_t = typename std::decay_t<decltype(pipe)>::callable_t;
-    using input_t = typename std::decay_t<decltype(pipe)>::input_t;
-    using output_t = typename std::decay_t<decltype(pipe)>::output_t;
+    using input_t = std::decay_t<typename std::decay_t<decltype(pipe)>::input_t>;
+    using output_t = std::decay_t<typename std::decay_t<decltype(pipe)>::output_t>;
     
     if constexpr (std::is_invocable_v<callable_t, Pipeflow&>) {
       if constexpr (std::is_void_v<output_t>) {
@@ -995,18 +995,18 @@ void DataPipeline<Ps...>::_on_pipe(Pipeflow& pf, Runtime& rt) {
         _buffer[pf._line] = pipe._callable(pf);
       }
     }
-    else if constexpr (std::is_invocable_v<callable_t, input_t>) {
+    else if constexpr (std::is_invocable_v<callable_t, input_t&>) {
       if constexpr (std::is_void_v<output_t>) {
-        pipe._callable(std::get<std::decay_t<input_t>>(_buffer[pf._line]));
+        pipe._callable(std::get<input_t>(_buffer[pf._line]));
       } else {
-        _buffer[pf._line] = pipe._callable(std::get<std::decay_t<input_t>>(_buffer[pf._line]));
+        _buffer[pf._line] = pipe._callable(std::get<input_t>(_buffer[pf._line]));
       }
     }
-    else if constexpr (std::is_invocable_v<callable_t, input_t, Pipeflow&>) {
+    else if constexpr (std::is_invocable_v<callable_t, input_t&, Pipeflow&>) {
       if constexpr (std::is_void_v<output_t>) {
-        pipe._callable(std::get<std::decay_t<input_t>>(_buffer[pf._line]), pf);
+        pipe._callable(std::get<input_t>(_buffer[pf._line]), pf);
       } else {
-        _buffer[pf._line] = pipe._callable(std::get<std::decay_t<input_t>>(_buffer[pf._line]), pf);
+        _buffer[pf._line] = pipe._callable(std::get<input_t>(_buffer[pf._line]), pf);
       }
     }
     else if constexpr(std::is_invocable_v<callable_t, Pipeflow&, Runtime&>) {
