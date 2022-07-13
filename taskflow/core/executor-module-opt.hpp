@@ -497,7 +497,7 @@ class Executor {
     a @c std::nullopt, or the value returned by the callable.
 
     @code{.cpp}
-    tf::Fugure<std::optional<int>> future = executor.async([](){
+    tf::Future<std::optional<int>> future = executor.async([](){
       std::cout << "create an asynchronous task and returns 1\n";
       return 1;
     });
@@ -530,7 +530,7 @@ class Executor {
     a @c std::nullopt, or the value returned by the callable.
 
     @code{.cpp}
-    tf::Fugure<std::optional<int>> future = executor.named_async("name", [](){
+    tf::Future<std::optional<int>> future = executor.named_async("name", [](){
       std::cout << "create an asynchronous task with a name and returns 1\n";
       return 1;
     });
