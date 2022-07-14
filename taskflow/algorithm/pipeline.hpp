@@ -2,25 +2,6 @@
 
 #include "../taskflow.hpp"
 
-
-template <typename T, typename... Ts>
-struct filter_duplicates { using type = T; };
-
-template <template <typename...> class C, typename... Ts, typename U, typename... Us>
-struct filter_duplicates<C<Ts...>, U, Us...>
-    : std::conditional_t<(std::is_same_v<U, Ts> || ...)
-                       , filter_duplicates<C<Ts...>, Us...>
-                       , filter_duplicates<C<Ts..., U>, Us...>> {};
-
-template <typename T>
-struct unique_variant;
-
-template <typename... Ts>
-struct unique_variant<std::variant<Ts...>> : filter_duplicates<std::variant<>, Ts...> {};
-
-template <typename T>
-using unique_variant_t = typename unique_variant<T>::type;
-
 /**
 @file pipeline.hpp
 @brief pipeline include file
@@ -62,9 +43,6 @@ class Pipeflow {
 
   template <typename... Ps>
   friend class Pipeline;
-
-  template <typename... Ps>
-  friend class DataPipeline;
 
   template <typename P>
   friend class ScalablePipeline;
