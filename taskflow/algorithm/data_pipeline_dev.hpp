@@ -21,6 +21,34 @@ struct unique_variant<std::variant<Ts...>> : filter_duplicates<std::variant<>, T
 template <typename T>
 using unique_variant_t = typename unique_variant<T>::type;
 
+constexpr size_t CLPAD(size_t _objSize) {
+  return ((_objSize / TF_CACHELINE_SIZE) * TF_CACHELINE_SIZE) +
+      (((_objSize % TF_CACHELINE_SIZE) > 0) * TF_CACHELINE_SIZE) -
+      _objSize;
+}
+
+template<class T, bool = false>
+struct padded
+{
+    using type = struct
+    {
+        alignas(TF_CACHELINE_SIZE)T v;
+        char padding[CLPAD(sizeof(T))];
+    };
+};
+
+template<class T>
+struct padded<T, true>
+{
+    using type = struct
+    {
+        alignas(TF_CACHELINE_SIZE)T v;
+    };
+};
+
+template<class T>
+using padded_t = typename padded<T, (sizeof(T) % TF_CACHELINE_SIZE == 0)>::type;
+
 
 namespace tf {
 
@@ -327,8 +355,8 @@ class DataPipeline {
   std::vector<std::array<Line, sizeof...(Ps)>> _lines;
   std::vector<Task> _tasks;
   std::vector<Pipeflow> _pipeflows;
-  // using variant_t = unique_variant_t<std::variant<std::conditional_t<std::is_void_v<typename Ps::output_t>, std::monostate, std::decay_t<typename Ps::output_t>>...>>;
-  using variant_t = std::variant<int>;
+  using variant_t = unique_variant_t<std::variant<std::conditional_t<std::is_void_v<typename Ps::output_t>, std::monostate, std::decay_t<typename Ps::output_t>>...>>;
+  // using variant_t = std::variant<int>;
   std::vector<variant_t> _buffer;
 
   template <size_t... I>
@@ -585,7 +613,7 @@ void DataPipeline<Ps...>::_build() {
   }
 }
 
-struct alignas(64) padding {};
+// struct alignas(64) padding {};
 
 template <typename... Ps>
 class DataPipeline_aligned {
@@ -689,9 +717,9 @@ class DataPipeline_aligned {
   std::vector<std::array<Line, sizeof...(Ps)>> _lines;
   std::vector<Task> _tasks;
   std::vector<Pipeflow> _pipeflows;
-  // using variant_t = unique_variant_t<std::variant<std::conditional_t<std::is_void_v<typename Ps::output_t>, std::monostate, std::decay_t<typename Ps::output_t>>...>>;
-  using variant_t = std::variant<int, padding>;
-  alignas (2*TF_CACHELINE_SIZE) std::vector<variant_t> _buffer;
+  using variant_t = unique_variant_t<std::variant<std::conditional_t<std::is_void_v<typename Ps::output_t>, std::monostate, std::decay_t<typename Ps::output_t>>...>>;
+  // using variant_t = std::variant<int, padding>;
+  alignas (TF_CACHELINE_SIZE) std::vector<padded_t<variant_t> > _buffer;
 
   template <size_t... I>
   auto _gen_meta(std::tuple<Ps...>&&, std::index_sequence<I...>);
@@ -721,7 +749,10 @@ DataPipeline_aligned<Ps...>::DataPipeline_aligned(size_t num_lines, Ps&&... ps) 
   // std::cout << "addr0=" << static_cast<void*>(&_buffer[0]) << std::endl;
   // std::cout << "addr1=" << static_cast<void*>(&_buffer[1]) << std::endl;
   // std::cout << "sizeof(variant_t)=" << sizeof(variant_t) << std::endl;
-  // std::cout << "alignof(variant_t)=" << alignof(_buffer) << std::endl;
+  // std::cout << "alignof(variant_t)=" << alignof(variant_t) << std::endl;
+  // std::cout << "sizeof(padded_t<variant_t>)=" << sizeof(padded_t<variant_t>) << std::endl;
+  // std::cout << "alignof(padded_t<variant_t>)=" << alignof(padded_t<variant_t>) << std::endl;
+  // std::cout << "alignof(_buffer)=" << alignof(_buffer) << std::endl;
 
   reset();
   _build();
@@ -826,21 +857,21 @@ void DataPipeline_aligned<Ps...>::_on_pipe(Pipeflow& pf, Runtime& rt) {
       if constexpr (std::is_void_v<output_t>) {
         pipe._callable(pf);
       } else {
-        _buffer[pf._line] = pipe._callable(pf);
+        _buffer[pf._line].v = pipe._callable(pf);
       }
     }
     else if constexpr (std::is_invocable_v<callable_t, input_t&>) {
       if constexpr (std::is_void_v<output_t>) {
-        pipe._callable(std::get<input_t>(_buffer[pf._line]));
+        pipe._callable(std::get<input_t>(_buffer[pf._line].v));
       } else {
-        _buffer[pf._line] = pipe._callable(std::get<input_t>(_buffer[pf._line]));
+        _buffer[pf._line].v = pipe._callable(std::get<input_t>(_buffer[pf._line].v));
       }
     }
     else if constexpr (std::is_invocable_v<callable_t, input_t&, Pipeflow&>) {
       if constexpr (std::is_void_v<output_t>) {
-        pipe._callable(std::get<input_t>(_buffer[pf._line]), pf);
+        pipe._callable(std::get<input_t>(_buffer[pf._line].v), pf);
       } else {
-        _buffer[pf._line] = pipe._callable(std::get<input_t>(_buffer[pf._line]), pf);
+        _buffer[pf._line].v = pipe._callable(std::get<input_t>(_buffer[pf._line].v), pf);
       }
     }
     else if constexpr(std::is_invocable_v<callable_t, Pipeflow&, Runtime&>) {

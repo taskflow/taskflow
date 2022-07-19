@@ -1,3 +1,6 @@
+#!/bin/bash -l
+#SBATCH -w gorgon1
+
 WORK_DIR=/home/xiongzc/taskflow/scripts
 EXEC=/home/xiongzc/taskflow/build/benchmarks/data_pipeline_dev
 

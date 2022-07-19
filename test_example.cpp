@@ -1,30 +1,54 @@
 #include <iostream>
 #include <functional>
 #include <stdio.h>
+#include <variant>
+
+#define CACHELINE_SIZE 64
 
 
-struct alignas(64) aligned_int
+constexpr size_t CLPAD(size_t _objSize) {
+  return ((_objSize / CACHELINE_SIZE) * CACHELINE_SIZE) +
+      (((_objSize % CACHELINE_SIZE) > 0) * CACHELINE_SIZE) -
+      _objSize;
+}
+
+template<class T, bool = false>
+struct padded
 {
-  int val;
-  aligned_int() {val = 0;}
+    using type = struct
+    {
+        alignas(CACHELINE_SIZE)T myObj;
+        char padding[CLPAD(sizeof(T))];
+    };
+};
+
+template<class T>
+struct padded<T, true>
+{
+    using type = struct
+    {
+        alignas(CACHELINE_SIZE)T myObj;
+    };
+};
+
+template<class T>
+using padded_t = typename padded<T, (sizeof(T) % CACHELINE_SIZE == 0)>::type;
+
+struct myStruct {
+  double a[10];
 };
 
 int main() {
-
-  // // user's perspective
-  // auto lambda = [] ( const int& )  {  };
-  
-  // // your perspective - DataPipeline
-  // using C = decltype(lambda);
-  // using T = int;
-
-  // //make_datapipe<int&, std::string&> ==> make_datapipe<int, std::string>, here we always decay for storing the data
-  // static_assert(std::is_invocable_v<C, T&>, "");  // here, we always call user's callable passing the data by reference
-  
-
-  aligned_int a[4];
-  for (int i = 0; i < 4; i++) {
-    printf("%p\n", &a[i]);
+  using variant_t = std::variant<int, float, double, myStruct>;
+  alignas (CACHELINE_SIZE) std::vector<padded_t<variant_t> > _buffer(10);
+  for (int i = 0; i < 5; i++) {
+    std::cout << "addr" << i << "=" << static_cast<void*>(&_buffer[i]) << std::endl;
   }
-
+  std::cout << "sizeof(myStruct)=" << sizeof(myStruct) << std::endl;
+  std::cout << "sizeof(variant_t)=" << sizeof(variant_t) << std::endl;
+  std::cout << "alignof(variant_t)=" << alignof(variant_t) << std::endl;
+  std::cout << "sizeof(padded_t<variant_t>)=" << sizeof(padded_t<variant_t>) << std::endl;
+  std::cout << "alignof(padded_t<variant_t>)=" << alignof(padded_t<variant_t>) << std::endl;
+  // std::cout << "sizeof(_buffer)=" << sizeof(_buffer) << std::endl;
+  // std::cout << "alignof(_buffer)=" << alignof(_buffer) << std::endl;
 }

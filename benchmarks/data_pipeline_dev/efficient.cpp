@@ -6,11 +6,11 @@
 namespace efficient{
 //my convert function
 auto int2int = [](int& input) {
-  work();
+  work(input);
   return input + 1;
 };
 
-auto int2void = [](int& input) {  work(); };
+auto int2void = [](int& input) {  work(input); };
 
 tf::PipeType to_pipe_type(char t) {
   return t == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL;
