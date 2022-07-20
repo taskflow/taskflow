@@ -2,22 +2,30 @@
 #include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/data_pipeline_dev.hpp>
 #include <vector>
+#include <string>
 
 namespace normal{
 //my convert function
 auto int2int = [](int& input) {
-  work(input);
+  work_int(input);
   return input + 1;
 };
 
-auto int2void = [](int& input) {  work(input); };
+auto string2string = [](std::string& input) {
+  work_string(input);
+  return input;
+};
+
+auto string2void = [](std::string& input) {  work_string(input); };
+
+auto int2void = [](int& input) {  work_int(input); };
 
 tf::PipeType to_pipe_type(char t) {
   return t == 's' ? tf::PipeType::SERIAL : tf::PipeType::PARALLEL;
 }
 
 // normal::parallel_pipeline_taskflow_1_pipe
-std::chrono::microseconds parallel_pipeline_taskflow_1_pipe(
+std::chrono::microseconds parallel_pipeline_taskflow_1_pipe_int(
   unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
@@ -39,8 +47,8 @@ std::chrono::microseconds parallel_pipeline_taskflow_1_pipe(
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
-// normal::parallel_pipeline_taskflow_2_pipes
-std::chrono::microseconds parallel_pipeline_taskflow_2_pipes(
+// normal::parallel_pipeline_taskflow_2_pipes_int
+std::chrono::microseconds parallel_pipeline_taskflow_2_pipes_int(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
@@ -66,8 +74,8 @@ std::chrono::microseconds parallel_pipeline_taskflow_2_pipes(
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
-// normal::parallel_pipeline_taskflow_3_pipes
-std::chrono::microseconds parallel_pipeline_taskflow_3_pipes(
+// normal::parallel_pipeline_taskflow_3_pipes_int
+std::chrono::microseconds parallel_pipeline_taskflow_3_pipes_int(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
@@ -94,8 +102,8 @@ std::chrono::microseconds parallel_pipeline_taskflow_3_pipes(
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
-// normal::parallel_pipeline_taskflow_4_pipes
-std::chrono::microseconds parallel_pipeline_taskflow_4_pipes(
+// normal::parallel_pipeline_taskflow_4_pipes_int
+std::chrono::microseconds parallel_pipeline_taskflow_4_pipes_int(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
@@ -123,8 +131,8 @@ std::chrono::microseconds parallel_pipeline_taskflow_4_pipes(
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
-// normal::parallel_pipeline_taskflow_5_pipes
-std::chrono::microseconds parallel_pipeline_taskflow_5_pipes(
+// normal::parallel_pipeline_taskflow_5_pipes_int
+std::chrono::microseconds parallel_pipeline_taskflow_5_pipes_int(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
@@ -153,8 +161,8 @@ std::chrono::microseconds parallel_pipeline_taskflow_5_pipes(
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
-// normal::parallel_pipeline_taskflow_6_pipes
-std::chrono::microseconds parallel_pipeline_taskflow_6_pipes(
+// normal::parallel_pipeline_taskflow_6_pipes_int
+std::chrono::microseconds parallel_pipeline_taskflow_6_pipes_int(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
@@ -184,8 +192,8 @@ std::chrono::microseconds parallel_pipeline_taskflow_6_pipes(
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
-// normal::parallel_pipeline_taskflow_7_pipes
-std::chrono::microseconds parallel_pipeline_taskflow_7_pipes(
+// normal::parallel_pipeline_taskflow_7_pipes_int
+std::chrono::microseconds parallel_pipeline_taskflow_7_pipes_int(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
@@ -216,8 +224,8 @@ std::chrono::microseconds parallel_pipeline_taskflow_7_pipes(
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
-// normal::parallel_pipeline_taskflow_8_pipes
-std::chrono::microseconds parallel_pipeline_taskflow_8_pipes(
+// normal::parallel_pipeline_taskflow_8_pipes_int
+std::chrono::microseconds parallel_pipeline_taskflow_8_pipes_int(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
@@ -249,8 +257,8 @@ std::chrono::microseconds parallel_pipeline_taskflow_8_pipes(
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
-// normal::parallel_pipeline_taskflow_9_pipes
-std::chrono::microseconds parallel_pipeline_taskflow_9_pipes(
+// normal::parallel_pipeline_taskflow_9_pipes_int
+std::chrono::microseconds parallel_pipeline_taskflow_9_pipes_int(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
@@ -283,8 +291,8 @@ std::chrono::microseconds parallel_pipeline_taskflow_9_pipes(
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
-// normal::parallel_pipeline_taskflow_10_pipes
-std::chrono::microseconds parallel_pipeline_taskflow_10_pipes(
+// normal::parallel_pipeline_taskflow_10_pipes_int
+std::chrono::microseconds parallel_pipeline_taskflow_10_pipes_int(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
@@ -319,8 +327,8 @@ std::chrono::microseconds parallel_pipeline_taskflow_10_pipes(
 }
 
 
-// normal::parallel_pipeline_taskflow_11_pipes
-std::chrono::microseconds parallel_pipeline_taskflow_11_pipes(
+// normal::parallel_pipeline_taskflow_11_pipes_int
+std::chrono::microseconds parallel_pipeline_taskflow_11_pipes_int(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
@@ -355,8 +363,8 @@ std::chrono::microseconds parallel_pipeline_taskflow_11_pipes(
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
-// normal::parallel_pipeline_taskflow_12_pipes
-std::chrono::microseconds parallel_pipeline_taskflow_12_pipes(
+// normal::parallel_pipeline_taskflow_12_pipes_int
+std::chrono::microseconds parallel_pipeline_taskflow_12_pipes_int(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
@@ -392,8 +400,8 @@ std::chrono::microseconds parallel_pipeline_taskflow_12_pipes(
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
-// normal::parallel_pipeline_taskflow_13_pipes
-std::chrono::microseconds parallel_pipeline_taskflow_13_pipes(
+// normal::parallel_pipeline_taskflow_13_pipes_int
+std::chrono::microseconds parallel_pipeline_taskflow_13_pipes_int(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
@@ -430,8 +438,8 @@ std::chrono::microseconds parallel_pipeline_taskflow_13_pipes(
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
-// normal::parallel_pipeline_taskflow_14_pipes
-std::chrono::microseconds parallel_pipeline_taskflow_14_pipes(
+// normal::parallel_pipeline_taskflow_14_pipes_int
+std::chrono::microseconds parallel_pipeline_taskflow_14_pipes_int(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
@@ -469,8 +477,8 @@ std::chrono::microseconds parallel_pipeline_taskflow_14_pipes(
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
-// normal::parallel_pipeline_taskflow_15_pipes
-std::chrono::microseconds parallel_pipeline_taskflow_15_pipes(
+// normal::parallel_pipeline_taskflow_15_pipes_int
+std::chrono::microseconds parallel_pipeline_taskflow_15_pipes_int(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
@@ -509,8 +517,8 @@ std::chrono::microseconds parallel_pipeline_taskflow_15_pipes(
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
-// normal::parallel_pipeline_taskflow_16_pipes
-std::chrono::microseconds parallel_pipeline_taskflow_16_pipes(
+// normal::parallel_pipeline_taskflow_16_pipes_int
+std::chrono::microseconds parallel_pipeline_taskflow_16_pipes_int(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
@@ -549,81 +557,688 @@ std::chrono::microseconds parallel_pipeline_taskflow_16_pipes(
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
+
+
+// normal::parallel_pipeline_taskflow_1_pipe
+std::chrono::microseconds parallel_pipeline_taskflow_1_pipe_string(
+  unsigned num_lines, unsigned num_threads, size_t size) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(num_threads);
+
+  auto beg = std::chrono::high_resolution_clock::now();
+  tf::DataPipeline pl(num_lines,
+    tf::make_datapipe<void, void>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> void{
+      if(pf.token() == size) {
+        pf.stop();
+      }
+    })
+  );
+
+  taskflow.composed_of(pl);
+  executor.run(taskflow).wait();
+
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
+}
+
+// normal::parallel_pipeline_taskflow_2_pipes_string
+std::chrono::microseconds parallel_pipeline_taskflow_2_pipes_string(
+  std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(num_threads);
+
+  auto beg = std::chrono::high_resolution_clock::now();
+  tf::DataPipeline pl(num_lines,
+    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+      if(pf.token() == size) {
+        pf.stop();
+        return "";
+      }
+      else {
+        return std::to_string(pf.token());
+      }
+    }),
+    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[1]), string2void)
+  );
+
+  taskflow.composed_of(pl);
+  executor.run(taskflow).wait();
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
+}
+
+// normal::parallel_pipeline_taskflow_3_pipes_string
+std::chrono::microseconds parallel_pipeline_taskflow_3_pipes_string(
+  std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(num_threads);
+
+  auto beg = std::chrono::high_resolution_clock::now();
+  tf::DataPipeline pl(num_lines,
+    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+      if(pf.token() == size) {
+        pf.stop();
+        return "";
+      }
+      else {
+        return std::to_string(pf.token());
+      }
+    }),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[2]), string2void)
+  );
+
+  taskflow.composed_of(pl);
+  executor.run(taskflow).wait();
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
+}
+
+// normal::parallel_pipeline_taskflow_4_pipes_string
+std::chrono::microseconds parallel_pipeline_taskflow_4_pipes_string(
+  std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(num_threads);
+
+  auto beg = std::chrono::high_resolution_clock::now();
+  tf::DataPipeline pl(num_lines,
+    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+      if(pf.token() == size) {
+        pf.stop();
+        return "";
+      }
+      else {
+        return std::to_string(pf.token());
+      }
+    }),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[3]), string2void)
+  );
+
+  taskflow.composed_of(pl);
+  executor.run(taskflow).wait();
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
+}
+
+// normal::parallel_pipeline_taskflow_5_pipes_string
+std::chrono::microseconds parallel_pipeline_taskflow_5_pipes_string(
+  std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(num_threads);
+
+  auto beg = std::chrono::high_resolution_clock::now();
+  tf::DataPipeline pl(num_lines,
+    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+      if(pf.token() == size) {
+        pf.stop();
+        return "";
+      }
+      else {
+        return std::to_string(pf.token());
+      }
+    }),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[4]), string2void)
+  );
+
+  taskflow.composed_of(pl);
+  executor.run(taskflow).wait();
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
+}
+
+// normal::parallel_pipeline_taskflow_6_pipes_string
+std::chrono::microseconds parallel_pipeline_taskflow_6_pipes_string(
+  std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(num_threads);
+
+  auto beg = std::chrono::high_resolution_clock::now();
+  tf::DataPipeline pl(num_lines,
+    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+      if(pf.token() == size) {
+        pf.stop();
+        return "";
+      }
+      else {
+        return std::to_string(pf.token());
+      }
+    }),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[5]), string2void)
+  );
+
+  taskflow.composed_of(pl);
+  executor.run(taskflow).wait();
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
+}
+
+// normal::parallel_pipeline_taskflow_7_pipes_string
+std::chrono::microseconds parallel_pipeline_taskflow_7_pipes_string(
+  std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(num_threads);
+
+  auto beg = std::chrono::high_resolution_clock::now();
+  tf::DataPipeline pl(num_lines,
+    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+      if(pf.token() == size) {
+        pf.stop();
+        return "";
+      }
+      else {
+        return std::to_string(pf.token());
+      }
+    }),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[6]), string2void)
+  );
+
+  taskflow.composed_of(pl);
+  executor.run(taskflow).wait();
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
+}
+
+// normal::parallel_pipeline_taskflow_8_pipes_string
+std::chrono::microseconds parallel_pipeline_taskflow_8_pipes_string(
+  std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(num_threads);
+
+  auto beg = std::chrono::high_resolution_clock::now();
+  tf::DataPipeline pl(num_lines,
+    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+      if(pf.token() == size) {
+        pf.stop();
+        return "";
+      }
+      else {
+        return std::to_string(pf.token());
+      }
+    }),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
+    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[7]), string2void)
+  );
+
+  taskflow.composed_of(pl);
+  executor.run(taskflow).wait();
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
+}
+
+// normal::parallel_pipeline_taskflow_9_pipes_string
+std::chrono::microseconds parallel_pipeline_taskflow_9_pipes_string(
+  std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(num_threads);
+
+  auto beg = std::chrono::high_resolution_clock::now();
+  tf::DataPipeline pl(num_lines,
+    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+      if(pf.token() == size) {
+        pf.stop();
+        return "";
+      }
+      else {
+        return std::to_string(pf.token());
+      }
+    }),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
+    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[8]), string2void)
+  );
+
+  taskflow.composed_of(pl);
+  executor.run(taskflow).wait();
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
+}
+
+// normal::parallel_pipeline_taskflow_10_pipes_string
+std::chrono::microseconds parallel_pipeline_taskflow_10_pipes_string(
+  std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(num_threads);
+
+  auto beg = std::chrono::high_resolution_clock::now();
+  tf::DataPipeline pl(num_lines,
+    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+      if(pf.token() == size) {
+        pf.stop();
+        return "";
+      }
+      else {
+        return std::to_string(pf.token());
+      }
+    }),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
+    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[9]), string2void)
+  );
+
+  taskflow.composed_of(pl);
+  executor.run(taskflow).wait();
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
+}
+
+
+// normal::parallel_pipeline_taskflow_11_pipes_string
+std::chrono::microseconds parallel_pipeline_taskflow_11_pipes_string(
+  std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(num_threads);
+
+  auto beg = std::chrono::high_resolution_clock::now();
+  tf::DataPipeline pl(num_lines,
+    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+      if(pf.token() == size) {
+        pf.stop();
+        return "";
+      }
+      else {
+        return std::to_string(pf.token());
+      }
+    }),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[9]), string2string),
+    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[10]), string2void)
+  );
+
+  taskflow.composed_of(pl);
+  executor.run(taskflow).wait();
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
+}
+
+// normal::parallel_pipeline_taskflow_12_pipes_string
+std::chrono::microseconds parallel_pipeline_taskflow_12_pipes_string(
+  std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(num_threads);
+
+  auto beg = std::chrono::high_resolution_clock::now();
+  tf::DataPipeline pl(num_lines,
+    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+      if(pf.token() == size) {
+        pf.stop();
+        return "";
+      }
+      else {
+        return std::to_string(pf.token());
+      }
+    }),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[9]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[10]), string2string),
+    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[11]), string2void)
+  );
+
+  taskflow.composed_of(pl);
+  executor.run(taskflow).wait();
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
+}
+
+// normal::parallel_pipeline_taskflow_13_pipes_string
+std::chrono::microseconds parallel_pipeline_taskflow_13_pipes_string(
+  std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(num_threads);
+
+  auto beg = std::chrono::high_resolution_clock::now();
+  tf::DataPipeline pl(num_lines,
+    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+      if(pf.token() == size) {
+        pf.stop();
+        return "";
+      }
+      else {
+        return std::to_string(pf.token());
+      }
+    }),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[9]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[10]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[11]), string2string),
+    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[12]), string2void)
+  );
+
+  taskflow.composed_of(pl);
+  executor.run(taskflow).wait();
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
+}
+
+// normal::parallel_pipeline_taskflow_14_pipes_string
+std::chrono::microseconds parallel_pipeline_taskflow_14_pipes_string(
+  std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(num_threads);
+
+  auto beg = std::chrono::high_resolution_clock::now();
+  tf::DataPipeline pl(num_lines,
+    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+      if(pf.token() == size) {
+        pf.stop();
+        return "";
+      }
+      else {
+        return std::to_string(pf.token());
+      }
+    }),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[9]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[10]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[11]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[12]), string2string),
+    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[13]), string2void)
+  );
+
+  taskflow.composed_of(pl);
+  executor.run(taskflow).wait();
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
+}
+
+// normal::parallel_pipeline_taskflow_15_pipes_string
+std::chrono::microseconds parallel_pipeline_taskflow_15_pipes_string(
+  std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(num_threads);
+
+  auto beg = std::chrono::high_resolution_clock::now();
+  tf::DataPipeline pl(num_lines,
+    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+      if(pf.token() == size) {
+        pf.stop();
+        return "";
+      }
+      else {
+        return std::to_string(pf.token());
+      }
+    }),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[9]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[10]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[11]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[12]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[13]), string2string),
+    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[14]), string2void)
+  );
+
+  taskflow.composed_of(pl);
+  executor.run(taskflow).wait();
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
+}
+
+// normal::parallel_pipeline_taskflow_16_pipes_string
+std::chrono::microseconds parallel_pipeline_taskflow_16_pipes_string(
+  std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(num_threads);
+
+  auto beg = std::chrono::high_resolution_clock::now();
+  tf::DataPipeline pl(num_lines,
+    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+      if(pf.token() == size) {
+        pf.stop();
+        return "";
+      }
+      else {
+        return std::to_string(pf.token());
+      }
+    }),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[9]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[10]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[11]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[12]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[13]), string2string),
+    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[14]), string2string),
+    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[15]), string2void)
+  );
+
+  taskflow.composed_of(pl);
+  executor.run(taskflow).wait();
+  auto end = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
+}
 }
 
 std::chrono::microseconds measure_time_normal(
-  std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
+  std::string pipes, unsigned num_lines, unsigned num_threads, size_t size, std::string datatype) {
 
   std::chrono::microseconds elapsed;
 
-  switch(pipes.size()) {
-    case 1:
-      elapsed = normal::parallel_pipeline_taskflow_1_pipe(num_lines, num_threads, size);
-      break;
+  if (datatype == "int") {
+    switch(pipes.size()) {
+      case 1:
+        elapsed = normal::parallel_pipeline_taskflow_1_pipe_int(num_lines, num_threads, size);
+        break;
 
-    case 2:
-      elapsed = normal::parallel_pipeline_taskflow_2_pipes(pipes, num_lines, num_threads, size);
-      break;
+      case 2:
+        elapsed = normal::parallel_pipeline_taskflow_2_pipes_int(pipes, num_lines, num_threads, size);
+        break;
 
-    case 3:
-      elapsed = normal::parallel_pipeline_taskflow_3_pipes(pipes, num_lines, num_threads, size);
-      break;
+      case 3:
+        elapsed = normal::parallel_pipeline_taskflow_3_pipes_int(pipes, num_lines, num_threads, size);
+        break;
 
-    case 4:
-      elapsed = normal::parallel_pipeline_taskflow_4_pipes(pipes, num_lines, num_threads, size);
-      break;
+      case 4:
+        elapsed = normal::parallel_pipeline_taskflow_4_pipes_int(pipes, num_lines, num_threads, size);
+        break;
 
-    case 5:
-      elapsed = normal::parallel_pipeline_taskflow_5_pipes(pipes, num_lines, num_threads, size);
-      break;
+      case 5:
+        elapsed = normal::parallel_pipeline_taskflow_5_pipes_int(pipes, num_lines, num_threads, size);
+        break;
 
-    case 6:
-      elapsed = normal::parallel_pipeline_taskflow_6_pipes(pipes, num_lines, num_threads, size);
-      break;
+      case 6:
+        elapsed = normal::parallel_pipeline_taskflow_6_pipes_int(pipes, num_lines, num_threads, size);
+        break;
 
-    case 7:
-      elapsed = normal::parallel_pipeline_taskflow_7_pipes(pipes, num_lines, num_threads, size);
-      break;
+      case 7:
+        elapsed = normal::parallel_pipeline_taskflow_7_pipes_int(pipes, num_lines, num_threads, size);
+        break;
 
-    case 8:
-      elapsed = normal::parallel_pipeline_taskflow_8_pipes(pipes, num_lines, num_threads, size);
-      break;
+      case 8:
+        elapsed = normal::parallel_pipeline_taskflow_8_pipes_int(pipes, num_lines, num_threads, size);
+        break;
 
-    case 9:
-      elapsed = normal::parallel_pipeline_taskflow_9_pipes(pipes, num_lines, num_threads, size);
-      break;
+      case 9:
+        elapsed = normal::parallel_pipeline_taskflow_9_pipes_int(pipes, num_lines, num_threads, size);
+        break;
 
-    case 10:
-      elapsed = normal::parallel_pipeline_taskflow_10_pipes(pipes, num_lines, num_threads, size);
-      break;
+      case 10:
+        elapsed = normal::parallel_pipeline_taskflow_10_pipes_int(pipes, num_lines, num_threads, size);
+        break;
 
-    case 11:
-      elapsed = normal::parallel_pipeline_taskflow_11_pipes(pipes, num_lines, num_threads, size);
-      break;
+      case 11:
+        elapsed = normal::parallel_pipeline_taskflow_11_pipes_int(pipes, num_lines, num_threads, size);
+        break;
 
-    case 12:
-      elapsed = normal::parallel_pipeline_taskflow_12_pipes(pipes, num_lines, num_threads, size);
-      break;
+      case 12:
+        elapsed = normal::parallel_pipeline_taskflow_12_pipes_int(pipes, num_lines, num_threads, size);
+        break;
 
-    case 13:
-      elapsed = normal::parallel_pipeline_taskflow_13_pipes(pipes, num_lines, num_threads, size);
-      break;
+      case 13:
+        elapsed = normal::parallel_pipeline_taskflow_13_pipes_int(pipes, num_lines, num_threads, size);
+        break;
 
-    case 14:
-      elapsed = normal::parallel_pipeline_taskflow_14_pipes(pipes, num_lines, num_threads, size);
-      break;
+      case 14:
+        elapsed = normal::parallel_pipeline_taskflow_14_pipes_int(pipes, num_lines, num_threads, size);
+        break;
 
-    case 15:
-      elapsed = normal::parallel_pipeline_taskflow_15_pipes(pipes, num_lines, num_threads, size);
-      break;
+      case 15:
+        elapsed = normal::parallel_pipeline_taskflow_15_pipes_int(pipes, num_lines, num_threads, size);
+        break;
 
-    case 16:
-      elapsed = normal::parallel_pipeline_taskflow_16_pipes(pipes, num_lines, num_threads, size);
-      break;
+      case 16:
+        elapsed = normal::parallel_pipeline_taskflow_16_pipes_int(pipes, num_lines, num_threads, size);
+        break;
 
-    default:
-      throw std::runtime_error("can support only up to 16 pipes");
-    break;
+      default:
+        throw std::runtime_error("can support only up to 16 pipes");
+      break;
+    }
+  } else if (datatype =="string") {
+     switch(pipes.size()) {
+      case 1:
+        elapsed = normal::parallel_pipeline_taskflow_1_pipe_string(num_lines, num_threads, size);
+        break;
+
+      case 2:
+        elapsed = normal::parallel_pipeline_taskflow_2_pipes_string(pipes, num_lines, num_threads, size);
+        break;
+
+      case 3:
+        elapsed = normal::parallel_pipeline_taskflow_3_pipes_string(pipes, num_lines, num_threads, size);
+        break;
+
+      case 4:
+        elapsed = normal::parallel_pipeline_taskflow_4_pipes_string(pipes, num_lines, num_threads, size);
+        break;
+
+      case 5:
+        elapsed = normal::parallel_pipeline_taskflow_5_pipes_string(pipes, num_lines, num_threads, size);
+        break;
+
+      case 6:
+        elapsed = normal::parallel_pipeline_taskflow_6_pipes_string(pipes, num_lines, num_threads, size);
+        break;
+
+      case 7:
+        elapsed = normal::parallel_pipeline_taskflow_7_pipes_string(pipes, num_lines, num_threads, size);
+        break;
+
+      case 8:
+        elapsed = normal::parallel_pipeline_taskflow_8_pipes_string(pipes, num_lines, num_threads, size);
+        break;
+
+      case 9:
+        elapsed = normal::parallel_pipeline_taskflow_9_pipes_string(pipes, num_lines, num_threads, size);
+        break;
+
+      case 10:
+        elapsed = normal::parallel_pipeline_taskflow_10_pipes_string(pipes, num_lines, num_threads, size);
+        break;
+
+      case 11:
+        elapsed = normal::parallel_pipeline_taskflow_11_pipes_string(pipes, num_lines, num_threads, size);
+        break;
+
+      case 12:
+        elapsed = normal::parallel_pipeline_taskflow_12_pipes_string(pipes, num_lines, num_threads, size);
+        break;
+
+      case 13:
+        elapsed = normal::parallel_pipeline_taskflow_13_pipes_string(pipes, num_lines, num_threads, size);
+        break;
+
+      case 14:
+        elapsed = normal::parallel_pipeline_taskflow_14_pipes_string(pipes, num_lines, num_threads, size);
+        break;
+
+      case 15:
+        elapsed = normal::parallel_pipeline_taskflow_15_pipes_string(pipes, num_lines, num_threads, size);
+        break;
+
+      case 16:
+        elapsed = normal::parallel_pipeline_taskflow_16_pipes_string(pipes, num_lines, num_threads, size);
+        break;
+
+      default:
+        throw std::runtime_error("can support only up to 16 pipes");
+      break;   
+    }
   }
 
   //std::ofstream outputfile;

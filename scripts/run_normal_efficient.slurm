@@ -9,7 +9,7 @@ if [ ! -d "$WORK_DIR/normal_vs_efficient" ]; then
 fi
 
 cd $WORK_DIR
-PLIST="ssss sppp ssssssss sppppppp ssssssssssssssss sppppppppppppppp"
+PLIST="spsp spspspsp spspspspspspspsp"
 NLIST="4 8 16 24"
 for p in $PLIST; do
   if [ -e "normal_vs_efficient/$p.txt" ]; then

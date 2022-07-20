@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
   app.add_option("-m,--model", model, "model name normal|efficient (default=normal)")
      ->check([] (const std::string& m) {
         if(m != "normal" && m != "efficient") {
-          return "model name should be \"mormal\" or \"efficient\"";
+          return "model name should be \"normal\" or \"efficient\"";
         }
         return "";
      });
@@ -38,6 +38,15 @@ int main(int argc, char* argv[]) {
         return "";
       });
 
+  std::string datatype = "int";
+  app.add_option("-d,--datatype", datatype, "datatype name int|string (default=int)")
+     ->check([] (const std::string& d) {
+        if(d != "int" && d != "string") {
+          return "model name should be \"int\" or \"string\"";
+        }
+        return "";
+     });
+
   CLI11_PARSE(app, argc, argv);
 
   std::cout << "model="       << model       << ' '
@@ -45,6 +54,7 @@ int main(int argc, char* argv[]) {
             << "num_rounds="  << num_rounds  << ' '
             << "num_lines="   << num_lines   << ' '
             << "pipes="       << pipes       << ' '
+            << "datatype="    << datatype    << ' '
             << std::endl;
 
   std::cout << std::setw(12) << "size"
@@ -61,9 +71,9 @@ int main(int argc, char* argv[]) {
 
     for(unsigned j = 0; j < num_rounds; ++j) {
       if(model == "normal") {
-        runtime += measure_time_normal(pipes, num_lines, num_threads, L).count();
+        runtime += measure_time_normal(pipes, num_lines, num_threads, L, datatype).count();
       } else if (model == "efficient") {
-        runtime += measure_time_efficient(pipes, num_lines, num_threads, L).count();
+        runtime += measure_time_efficient(pipes, num_lines, num_threads, L, datatype).count();
       }
     }
 

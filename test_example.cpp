@@ -44,7 +44,7 @@ int main() {
   for (int i = 0; i < 5; i++) {
     std::cout << "addr" << i << "=" << static_cast<void*>(&_buffer[i]) << std::endl;
   }
-  std::cout << "sizeof(myStruct)=" << sizeof(myStruct) << std::endl;
+  std::cout << "sizeof(string)=" << sizeof(std::string) << std::endl;
   std::cout << "sizeof(variant_t)=" << sizeof(variant_t) << std::endl;
   std::cout << "alignof(variant_t)=" << alignof(variant_t) << std::endl;
   std::cout << "sizeof(padded_t<variant_t>)=" << sizeof(padded_t<variant_t>) << std::endl;

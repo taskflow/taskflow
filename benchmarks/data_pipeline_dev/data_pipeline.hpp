@@ -4,25 +4,21 @@
 #include <thread>
 #include <cmath>
 #include <time.h>
+#include <algorithm>
 
-inline void work(int& input) {
-  // srand(time(NULL));
-  for (int i = 0; i < 10; i++) {
-
+inline void work_int(int& input) {
+  for (int i = 0; i < 100; i++) {
     input = cos(input) * input + 1;
     input = (int)std::pow(input, 5) % 2147483647;
-
-    // if (rand() % 2 == 0) {
-    //   input = cos(input) * input + 1;
-    //   input = std::pow(input, 5);
-    // } else {
-    //   input = sin(input) * input + 1;
-    //   input = std::pow(input, 3);
-    // }
   }
-  
 }
 
-std::chrono::microseconds measure_time_normal(std::string, unsigned, unsigned, size_t);
-std::chrono::microseconds measure_time_efficient(std::string, unsigned, unsigned, size_t);
+inline void work_string(std::string& input) {
+  for (int i = 0; i < 50; i++) {
+    input = std::to_string(std::stoi(input) + 1);
+  }
+}
+
+std::chrono::microseconds measure_time_normal(std::string, unsigned, unsigned, size_t, std::string);
+std::chrono::microseconds measure_time_efficient(std::string, unsigned, unsigned, size_t, std::string);
 
