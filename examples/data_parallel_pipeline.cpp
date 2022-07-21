@@ -16,6 +16,7 @@ int main() {
     tf::make_datapipe<void, int>(tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) -> int{
       if(pf.token() == 5) {
         pf.stop();
+        return 0;
       }
       else {
         return pf.token();
