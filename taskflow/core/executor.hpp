@@ -1198,9 +1198,7 @@ inline void Executor::_schedule(Node* node) {
 }
 
 // Procedure: _schedule
-inline void Executor::_schedule(
-  Worker& worker, const SmallVector<Node*>& nodes
-) {
+inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes) {
 
   // We need to cacth the node count to avoid accessing the nodes
   // vector while the parent topology is removed!
@@ -1449,7 +1447,8 @@ inline void Executor::_tear_down_invoke(Worker& worker, Node* node) {
       _tear_down_topology(worker, node->_topology);
     }
   }
-  else {  // joined subflow
+  // joined subflow
+  else {  
     node->_parent->_join_counter.fetch_sub(1);
   }
 }
