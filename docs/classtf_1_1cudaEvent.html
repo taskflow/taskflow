@@ -48,7 +48,7 @@
         <h1>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>cudaEvent <span class="m-thin">class</span>
         </h1>
-        <p>class to create a CUDA event in an RAII-styled wrapper</p>
+        <p>class to create an RAII-styled wrapper over a native CUDA event</p>
         <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -61,18 +61,22 @@
             </li>
           </ul>
         </nav>
-<p>A <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a> object is an RAII-styled wrapper over a native CUDA stream (<code>cudaEvent_t</code>). A <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a> object is move-only.</p>
+<p>A <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a> object is an RAII-styled wrapper over a native CUDA event (<code>cudaEvent_t</code>). A <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a> object is move-only.</p>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
             <dt id="ad0b23cb864f0c7acee306f7fe49a3c23">
               <span class="m-doc-wrap-bumper"><a href="#ad0b23cb864f0c7acee306f7fe49a3c23" class="m-doc-self">cudaEvent</a>(</span><span class="m-doc-wrap">cudaEvent_t event) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
-            <dd>constructs an RAII-styled object from the given CUDA event</dd>
+            <dd>constructs an RAII-styled CUDA event object from the given CUDA event</dd>
             <dt id="a2865fd7388ef1725e1b59dd3a201f503">
               <span class="m-doc-wrap-bumper"><a href="#a2865fd7388ef1725e1b59dd3a201f503" class="m-doc-self">cudaEvent</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
-            <dd>constructs an RAII-styled object for a new CUDA event</dd>
+            <dd>constructs an RAII-styled CUDA event object</dd>
+            <dt id="af6d6a9c4f98ae85927985a1f89cdeee1">
+              <span class="m-doc-wrap-bumper"><a href="#af6d6a9c4f98ae85927985a1f89cdeee1" class="m-doc-self">cudaEvent</a>(</span><span class="m-doc-wrap">unsigned int flag) <span class="m-label m-flat m-info">explicit</span> </span>
+            </dt>
+            <dd>constructs an RAII-styled CUDA event object with the given flag</dd>
             <dt id="ad76f10855d56f2706a3d9ed93e47a2e9">
               <span class="m-doc-wrap-bumper"><a href="#ad76f10855d56f2706a3d9ed93e47a2e9" class="m-doc-self">cudaEvent</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a>&amp;) <span class="m-label m-flat m-danger">deleted</span></span>
             </dt>
@@ -102,10 +106,6 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a15672eb08ad6647b84d69e399a9f7677" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a>&amp;&amp; rhs) -&gt; <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a>&amp;</span>
             </dt>
             <dd>move assignment</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a827ae06b6e7ef937740772c7ee55f8fa" class="m-doc">reset</a>(</span><span class="m-doc-wrap">cudaEvent_t event = nullptr)</span>
-            </dt>
-            <dd>replaces the managed event</dd>
           </dl>
         </section>
         <section>
@@ -116,13 +116,6 @@
             </h3>
             <p>implicit conversion to the native CUDA event (cudaEvent_t)</p>
 <p>Returns the underlying event of type <code>cudaEvent_t</code>.</p>
-          </div></section>
-          <section class="m-doc-details" id="a827ae06b6e7ef937740772c7ee55f8fa"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaEvent::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a827ae06b6e7ef937740772c7ee55f8fa" class="m-doc-self">reset</a>(</span><span class="m-doc-wrap">cudaEvent_t event = nullptr)</span></span>
-            </h3>
-            <p>replaces the managed event</p>
-<p>Destructs the managed event and resets it to the given event.</p>
           </div></section>
         </section>
       </div>

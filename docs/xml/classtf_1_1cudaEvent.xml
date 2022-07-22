@@ -3,6 +3,8 @@
   <compounddef id="classtf_1_1cudaEvent" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaEvent</compoundname>
     <includes refid="cuda__stream_8hpp" local="no">cuda_stream.hpp</includes>
+    <innerclass refid="structtf_1_1cudaEvent_1_1cudaEventCreator" prot="private">tf::cudaEvent::cudaEventCreator</innerclass>
+    <innerclass refid="structtf_1_1cudaEvent_1_1cudaEventDeleter" prot="private">tf::cudaEvent::cudaEventDeleter</innerclass>
       <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1cudaEvent_1a3d6f0d82703a9083452e5c140fa24aff" prot="private" static="no" mutable="no">
         <type>cudaEvent_t</type>
@@ -16,7 +18,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="346" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="346" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="299" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="299" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -30,12 +32,12 @@
           <declname>event</declname>
         </param>
         <briefdescription>
-<para>constructs an RAII-styled object from the given CUDA event </para>        </briefdescription>
+<para>constructs an RAII-styled CUDA event object from the given CUDA event </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="282" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="282" bodyend="283"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="242" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="242" bodyend="242"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaEvent_1a2865fd7388ef1725e1b59dd3a201f503" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -43,12 +45,29 @@
         <argsstring>()</argsstring>
         <name>cudaEvent</name>
         <briefdescription>
-<para>constructs an RAII-styled object for a new CUDA event </para>        </briefdescription>
+<para>constructs an RAII-styled CUDA event object </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="288" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="288" bodyend="289"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="247" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="247" bodyend="247"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaEvent_1af6d6a9c4f98ae85927985a1f89cdeee1" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>tf::cudaEvent::cudaEvent</definition>
+        <argsstring>(unsigned int flag)</argsstring>
+        <name>cudaEvent</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>flag</declname>
+        </param>
+        <briefdescription>
+<para>constructs an RAII-styled CUDA event object with the given flag </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="252" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="252" bodyend="252"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaEvent_1ad76f10855d56f2706a3d9ed93e47a2e9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -64,7 +83,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="294" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="257" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaEvent_1aa63d15089884744a802554352c50d2b9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -81,7 +100,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="299" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="299" bodyend="301"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="262" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="262" bodyend="264"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaEvent_1ac1510f29e6a9cf57933c33feda99735a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -94,7 +113,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="306" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="306" bodyend="308"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="269" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="269" bodyend="271"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaEvent_1adfcc20681dd240a017a2fafe6cb4d4dd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaEvent" kindref="compound">cudaEvent</ref> &amp;</type>
@@ -110,7 +129,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="313" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="276" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaEvent_1a15672eb08ad6647b84d69e399a9f7677" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaEvent" kindref="compound">cudaEvent</ref> &amp;</type>
@@ -127,7 +146,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="318" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="318" bodyend="323"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="281" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="281" bodyend="286"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaEvent_1a123fe336965738c7bd8027512c052de6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -140,42 +159,24 @@
 <para>Returns the underlying event of type <computeroutput>cudaEvent_t</computeroutput>. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="330" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="330" bodyend="332"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaEvent_1a827ae06b6e7ef937740772c7ee55f8fa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>void</type>
-        <definition>void tf::cudaEvent::reset</definition>
-        <argsstring>(cudaEvent_t event=nullptr)</argsstring>
-        <name>reset</name>
-        <param>
-          <type>cudaEvent_t</type>
-          <declname>event</declname>
-          <defval>nullptr</defval>
-        </param>
-        <briefdescription>
-<para>replaces the managed event </para>        </briefdescription>
-        <detaileddescription>
-<para>Destructs the managed event and resets it to the given event. </para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="339" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="339" bodyend="342"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="293" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="293" bodyend="295"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class to create a CUDA event in an RAII-styled wrapper </para>    </briefdescription>
+<para>class to create an RAII-styled wrapper over a native CUDA event </para>    </briefdescription>
     <detaileddescription>
-<para>A <ref refid="classtf_1_1cudaEvent" kindref="compound">cudaEvent</ref> object is an RAII-styled wrapper over a native CUDA stream (<computeroutput>cudaEvent_t</computeroutput>). A <ref refid="classtf_1_1cudaEvent" kindref="compound">cudaEvent</ref> object is move-only. </para>    </detaileddescription>
-    <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="275" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="275" bodyend="347"/>
+<para>A <ref refid="classtf_1_1cudaEvent" kindref="compound">cudaEvent</ref> object is an RAII-styled wrapper over a native CUDA event (<computeroutput>cudaEvent_t</computeroutput>). A <ref refid="classtf_1_1cudaEvent" kindref="compound">cudaEvent</ref> object is move-only. </para>    </detaileddescription>
+    <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="211" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="211" bodyend="300"/>
     <listofallmembers>
       <member refid="classtf_1_1cudaEvent_1a3d6f0d82703a9083452e5c140fa24aff" prot="private" virt="non-virtual"><scope>tf::cudaEvent</scope><name>_event</name></member>
       <member refid="classtf_1_1cudaEvent_1ad0b23cb864f0c7acee306f7fe49a3c23" prot="public" virt="non-virtual"><scope>tf::cudaEvent</scope><name>cudaEvent</name></member>
       <member refid="classtf_1_1cudaEvent_1a2865fd7388ef1725e1b59dd3a201f503" prot="public" virt="non-virtual"><scope>tf::cudaEvent</scope><name>cudaEvent</name></member>
+      <member refid="classtf_1_1cudaEvent_1af6d6a9c4f98ae85927985a1f89cdeee1" prot="public" virt="non-virtual"><scope>tf::cudaEvent</scope><name>cudaEvent</name></member>
       <member refid="classtf_1_1cudaEvent_1ad76f10855d56f2706a3d9ed93e47a2e9" prot="public" virt="non-virtual"><scope>tf::cudaEvent</scope><name>cudaEvent</name></member>
       <member refid="classtf_1_1cudaEvent_1aa63d15089884744a802554352c50d2b9" prot="public" virt="non-virtual"><scope>tf::cudaEvent</scope><name>cudaEvent</name></member>
       <member refid="classtf_1_1cudaEvent_1a123fe336965738c7bd8027512c052de6" prot="public" virt="non-virtual"><scope>tf::cudaEvent</scope><name>operator cudaEvent_t</name></member>
       <member refid="classtf_1_1cudaEvent_1adfcc20681dd240a017a2fafe6cb4d4dd" prot="public" virt="non-virtual"><scope>tf::cudaEvent</scope><name>operator=</name></member>
       <member refid="classtf_1_1cudaEvent_1a15672eb08ad6647b84d69e399a9f7677" prot="public" virt="non-virtual"><scope>tf::cudaEvent</scope><name>operator=</name></member>
-      <member refid="classtf_1_1cudaEvent_1a827ae06b6e7ef937740772c7ee55f8fa" prot="public" virt="non-virtual"><scope>tf::cudaEvent</scope><name>reset</name></member>
       <member refid="classtf_1_1cudaEvent_1ac1510f29e6a9cf57933c33feda99735a" prot="public" virt="non-virtual"><scope>tf::cudaEvent</scope><name>~cudaEvent</name></member>
     </listofallmembers>
   </compounddef>

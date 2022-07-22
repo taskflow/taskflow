@@ -53,6 +53,8 @@ namespace detail { }
 
 /**
 @brief queries the version information in a string format @c major.minor.patch
+
+Release notes are available here: https://taskflow.github.io/taskflow/Releases.html
 */
 constexpr const char* version() {
   return "3.5.0";

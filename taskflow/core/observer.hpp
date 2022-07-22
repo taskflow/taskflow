@@ -116,7 +116,7 @@ struct ProfileData {
 
 @brief class to derive an executor observer 
 
-The tf::ObserverInterface class let users define custom methods to monitor 
+The tf::ObserverInterface class allows users to define custom methods to monitor 
 the behaviors of an executor. This is particularly useful when you want to 
 inspect the performance of an executor and visualize when each thread 
 participates in the execution of a task.
@@ -168,8 +168,6 @@ executor.run(taskflow).wait();
 */
 class ObserverInterface {
 
-  friend class Executor;
-  
   public:
 
   /**
@@ -185,17 +183,17 @@ class ObserverInterface {
   
   /**
   @brief method to call before a worker thread executes a closure 
-  @param w an immutable view of this worker thread 
+  @param wv an immutable view of this worker thread 
   @param task_view a constant wrapper object to the task 
   */
-  virtual void on_entry(WorkerView w, TaskView task_view) = 0;
+  virtual void on_entry(WorkerView wv, TaskView task_view) = 0;
   
   /**
   @brief method to call after a worker thread executed a closure
-  @param w an immutable view of this worker thread
+  @param wv an immutable view of this worker thread
   @param task_view a constant wrapper object to the task
   */
-  virtual void on_exit(WorkerView w, TaskView task_view) = 0;
+  virtual void on_exit(WorkerView wv, TaskView task_view) = 0;
 };
 
 // ----------------------------------------------------------------------------

@@ -21,6 +21,7 @@ list(APPEND TF_UNITTESTS
   scalable_pipelines
   runtimes
   data_pipelines
+  workers
 )
 
 foreach(unittest IN LISTS TF_UNITTESTS)

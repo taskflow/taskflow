@@ -114,12 +114,12 @@
             </dt>
             <dd>constructor-like method to call when the executor observer is fully created</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a5debfce27f7e012d22872c134b261c63" class="m-doc">on_entry</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> w,
+              <span class="m-doc-wrap-bumper">void <a href="#a5debfce27f7e012d22872c134b261c63" class="m-doc">on_entry</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
               <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) <span class="m-label m-flat m-warning">final</span></span>
             </dt>
             <dd>method to call before a worker thread executes a closure</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#af3a1630b5b1db5341a239a5d4c12c891" class="m-doc">on_exit</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> w,
+              <span class="m-doc-wrap-bumper">void <a href="#af3a1630b5b1db5341a239a5d4c12c891" class="m-doc">on_exit</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
               <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) <span class="m-label m-flat m-warning">final</span></span>
             </dt>
             <dd>method to call after a worker thread executed a closure</dd>
@@ -146,7 +146,7 @@
           </div></section>
           <section class="m-doc-details" id="a5debfce27f7e012d22872c134b261c63"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />TFProfObserver::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a5debfce27f7e012d22872c134b261c63" class="m-doc-self">on_entry</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> w,
+              <span class="m-doc-wrap-bumper">void tf::<wbr />TFProfObserver::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a5debfce27f7e012d22872c134b261c63" class="m-doc-self">on_entry</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
               <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) <span class="m-label m-warning">final</span> <span class="m-label m-danger">private</span></span></span>
             </h3>
             <p>method to call before a worker thread executes a closure</p>
@@ -156,7 +156,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td style="width: 1%">w</td>
+                  <td style="width: 1%">wv</td>
                   <td>an immutable view of this worker thread</td>
                 </tr>
                 <tr>
@@ -168,7 +168,7 @@
           </div></section>
           <section class="m-doc-details" id="af3a1630b5b1db5341a239a5d4c12c891"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />TFProfObserver::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af3a1630b5b1db5341a239a5d4c12c891" class="m-doc-self">on_exit</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> w,
+              <span class="m-doc-wrap-bumper">void tf::<wbr />TFProfObserver::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af3a1630b5b1db5341a239a5d4c12c891" class="m-doc-self">on_exit</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
               <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) <span class="m-label m-warning">final</span> <span class="m-label m-danger">private</span></span></span>
             </h3>
             <p>method to call after a worker thread executed a closure</p>
@@ -178,7 +178,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td style="width: 1%">w</td>
+                  <td style="width: 1%">wv</td>
                   <td>an immutable view of this worker thread</td>
                 </tr>
                 <tr>

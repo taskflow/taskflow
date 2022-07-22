@@ -48,7 +48,7 @@
         <h1>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>cudaStream <span class="m-thin">class</span>
         </h1>
-        <p>class to create a CUDA stream in an RAII-styled wrapper</p>
+        <p>class to create an RAII-styled wrapper over a native CUDA stream</p>
         <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -103,10 +103,6 @@
             </dt>
             <dd>move assignment</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a50a05778f158882fc3e677ab665e0686" class="m-doc">reset</a>(</span><span class="m-doc-wrap">cudaStream_t stream = nullptr)</span>
-            </dt>
-            <dd>replaces the managed stream</dd>
-            <dt>
               <span class="m-doc-wrap-bumper">void <a href="#a1a81d6005e8d60ad082dba2303a8aa30" class="m-doc">synchronize</a>(</span><span class="m-doc-wrap">) const</span>
             </dt>
             <dd>synchronizes the associated stream</dd>
@@ -150,13 +146,6 @@
             </h3>
             <p>implicit conversion to the native CUDA stream (cudaStream_t)</p>
 <p>Returns the underlying stream of type <code>cudaStream_t</code>.</p>
-          </div></section>
-          <section class="m-doc-details" id="a50a05778f158882fc3e677ab665e0686"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaStream::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a50a05778f158882fc3e677ab665e0686" class="m-doc-self">reset</a>(</span><span class="m-doc-wrap">cudaStream_t stream = nullptr)</span></span>
-            </h3>
-            <p>replaces the managed stream</p>
-<p>Destructs the managed stream and resets it to the given stream.</p>
           </div></section>
           <section class="m-doc-details" id="a1a81d6005e8d60ad082dba2303a8aa30"><div>
             <h3>

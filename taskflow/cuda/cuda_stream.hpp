@@ -40,14 +40,6 @@ class cudaStream {
     }
   };
   
-  struct cudaStreamSynchronizer {
-    void operator () (cudaStream_t stream) const {
-      TF_CHECK_CUDA(
-        cudaStreamSynchronize(stream), "failed to synchronize a CUDA stream"
-      );
-    }
-  };
-
   public:
 
     /**
@@ -257,7 +249,7 @@ class cudaEvent {
     /**
     @brief constructs an RAII-styled CUDA event object with the given flag
     */
-    cudaEvent(unsigned int flag) : _event{ cudaEventCreator{}(flag) } { }
+    explicit cudaEvent(unsigned int flag) : _event{ cudaEventCreator{}(flag) } { }
     
     /**
     @brief disabled copy constructor

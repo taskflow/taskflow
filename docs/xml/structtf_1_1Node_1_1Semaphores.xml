@@ -35,35 +35,35 @@
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
-      <node id="197">
+      <node id="199">
         <label>tf::Node::Semaphores</label>
-        <childnode refid="198" relation="usage">
+        <childnode refid="200" relation="usage">
           <edgelabel>to_release</edgelabel>
           <edgelabel>to_acquire</edgelabel>
         </childnode>
       </node>
-      <node id="201">
+      <node id="203">
         <label>tf::SmallVectorTemplateCommon&lt; T &gt;</label>
+        <childnode refid="204" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="202">
+        <label>tf::SmallVectorTemplateBase&lt; T, IsPod&lt; T &gt;::value &gt;</label>
+        <childnode refid="203" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="204">
+        <label>tf::SmallVectorBase</label>
+      </node>
+      <node id="201">
+        <label>tf::SmallVectorImpl&lt; tf::Semaphore * &gt;</label>
         <childnode refid="202" relation="public-inheritance">
         </childnode>
       </node>
       <node id="200">
-        <label>tf::SmallVectorTemplateBase&lt; T, IsPod&lt; T &gt;::value &gt;</label>
-        <childnode refid="201" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="202">
-        <label>tf::SmallVectorBase</label>
-      </node>
-      <node id="199">
-        <label>tf::SmallVectorImpl&lt; tf::Semaphore * &gt;</label>
-        <childnode refid="200" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="198">
         <label>tf::SmallVector&lt; tf::Semaphore *&gt;</label>
         <link refid="classtf_1_1SmallVector"/>
-        <childnode refid="199" relation="public-inheritance">
+        <childnode refid="201" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>

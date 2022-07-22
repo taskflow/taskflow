@@ -85,7 +85,8 @@
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper"><a href="#a4910e89d89146b6d563d598b795eb4a9" class="m-doc">Executor</a>(</span><span class="m-doc-wrap">size_t N = <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>()) <span class="m-label m-flat m-info">explicit</span> </span>
+              <span class="m-doc-wrap-bumper"><a href="#a23b4c858279616d79612dccd9a715365" class="m-doc">Executor</a>(</span><span class="m-doc-wrap">size_t N = <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>(),
+              <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a>&lt;<a href="classtf_1_1WorkerInterface.html" class="m-doc">WorkerInterface</a>&gt; wix = nullptr) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
             <dd>constructs the executor with <code>N</code> worker threads</dd>
             <dt>
@@ -173,9 +174,14 @@
             </dt>
             <dd>runs a target graph and waits until it completes using an internal worker of this executor</dd>
             <dt>
+              <div class="m-doc-template">template&lt;typename P&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#afbff30c324c5887aace09e7fe9a0d607" class="m-doc">loop_until</a>(</span><span class="m-doc-wrap">P&amp;&amp; predicate)</span>
+            </dt>
+            <dd>keeps running the work-stealing loop until the predicate becomes true</dd>
+            <dt>
               <span class="m-doc-wrap-bumper">void <a href="#ab9aa252f70e9a40020a1e5a89d485b85" class="m-doc">wait_for_all</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
-            <dd>wait for all tasks to complete</dd>
+            <dd>waits for all tasks to complete</dd>
             <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#a9d2d464ab2a84ecb3b3ea7747e8e276b" class="m-doc">num_workers</a>(</span><span class="m-doc-wrap">) const -&gt; size_t <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
@@ -232,13 +238,18 @@
               <span class="m-doc-wrap-bumper">auto <a href="#affec621aae59d73fc188ef454008fda2" class="m-doc-self">num_observers</a>(</span><span class="m-doc-wrap">) const -&gt; size_t <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
             <dd>queries the number of observers</dd>
+            <dt id="ad83b1bbb987709e797ba3f627493c37c">
+              <span class="m-doc-wrap-bumper">auto <a href="#ad83b1bbb987709e797ba3f627493c37c" class="m-doc-self">max_steals</a>(</span><span class="m-doc-wrap">) const -&gt; size_t <span class="m-label m-flat m-success">noexcept</span></span>
+            </dt>
+            <dd>queries the maximum number of steals before yielding</dd>
           </dl>
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="a4910e89d89146b6d563d598b795eb4a9"><div>
+          <section class="m-doc-details" id="a23b4c858279616d79612dccd9a715365"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"> tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4910e89d89146b6d563d598b795eb4a9" class="m-doc-self">Executor</a>(</span><span class="m-doc-wrap">size_t N = <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>()) <span class="m-label m-info">explicit</span> </span></span>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a23b4c858279616d79612dccd9a715365" class="m-doc-self">Executor</a>(</span><span class="m-doc-wrap">size_t N = <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>(),
+              <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a>&lt;<a href="classtf_1_1WorkerInterface.html" class="m-doc">WorkerInterface</a>&gt; wix = nullptr) <span class="m-label m-info">explicit</span> </span></span>
             </h3>
             <p>constructs the executor with <code>N</code> worker threads</p>
 <p>The constructor spawns <code>N</code> worker threads to run tasks in a work-stealing loop. The number of workers must be greater than zero or an exception will be thrown. By default, the number of worker threads is equal to the maximum hardware concurrency returned by <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>.</p>
@@ -721,11 +732,41 @@
 <span class="p">}</span><span class="w"></span>
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>The method is thread-safe as long as the target is not concurrently ran by two or more threads.</p><aside class="m-note m-warning"><h4>Attention</h4><p>You must call <a href="classtf_1_1Executor.html#ab05ad34c59cf11a7c4de82cf58bba91e" class="m-doc">tf::<wbr />Executor::<wbr />run_and_wait</a> from a worker of the calling executor or an exception will be thrown.</p></aside>
           </div></section>
+          <section class="m-doc-details" id="afbff30c324c5887aace09e7fe9a0d607"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename P&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#afbff30c324c5887aace09e7fe9a0d607" class="m-doc-self">loop_until</a>(</span><span class="m-doc-wrap">P&amp;&amp; predicate)</span></span>
+            </h3>
+            <p>keeps running the work-stealing loop until the predicate becomes true</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">P</td>
+                  <td>predicate type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>predicate</td>
+                  <td>a boolean predicate to indicate when to stop the loop</td>
+                </tr>
+              </tbody>
+            </table>
+<p>The method keeps running the caller worker in the work-stealing loop until the stop predicate becomes true.</p><aside class="m-note m-warning"><h4>Attention</h4><p>You must call <a href="classtf_1_1Executor.html#ab05ad34c59cf11a7c4de82cf58bba91e" class="m-doc">tf::<wbr />Executor::<wbr />run_and_wait</a> from a worker of the calling executor or an exception will be thrown.</p></aside>
+          </div></section>
           <section class="m-doc-details" id="ab9aa252f70e9a40020a1e5a89d485b85"><div>
             <h3>
               <span class="m-doc-wrap-bumper">void tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab9aa252f70e9a40020a1e5a89d485b85" class="m-doc-self">wait_for_all</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
-            <p>wait for all tasks to complete</p>
+            <p>waits for all tasks to complete</p>
 <p>This member function waits until all submitted tasks (e.g., taskflows, asynchronous tasks) to finish.</p><pre class="m-code"><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow1</span><span class="p">);</span><span class="w"></span>
 <span class="n">executor</span><span class="p">.</span><span class="n">run_n</span><span class="p">(</span><span class="n">taskflow2</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">);</span><span class="w"></span>
 <span class="n">executor</span><span class="p">.</span><span class="n">run_n</span><span class="p">(</span><span class="n">taskflow3</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
@@ -934,7 +975,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>Each executor manages a list of observers with shared ownership with callers. For each of these observers, the two member functions, <a href="classtf_1_1ObserverInterface.html#a3e3a9f7f1d43691794e487b8787b01a0" class="m-doc">tf::<wbr />ObserverInterface::<wbr />on_entry</a> and <a href="classtf_1_1ObserverInterface.html#aa59a59a59eadd4eb6ba20ecdfcae882b" class="m-doc">tf::<wbr />ObserverInterface::<wbr />on_exit</a> will be called before and after the execution of a task.</p><p>This member function is not thread-safe.</p>
+<p>Each executor manages a list of observers with shared ownership with callers. For each of these observers, the two member functions, <a href="classtf_1_1ObserverInterface.html#a8225fcacb03089677a1efc4b16b734cc" class="m-doc">tf::<wbr />ObserverInterface::<wbr />on_entry</a> and <a href="classtf_1_1ObserverInterface.html#aa22f5378154653f08d9a58326bda4754" class="m-doc">tf::<wbr />ObserverInterface::<wbr />on_exit</a> will be called before and after the execution of a task.</p><p>This member function is not thread-safe.</p>
           </div></section>
           <section class="m-doc-details" id="a31081f492c376f7b798de0e430534531"><div>
             <h3>

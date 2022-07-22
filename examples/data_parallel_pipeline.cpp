@@ -9,9 +9,6 @@ int main() {
 
   const size_t num_lines = 3;
 
-  // custom data storage
-  // std::array<int, num_lines> buffer;
-
   tf::DataPipeline pl(num_lines,
     tf::make_datapipe<void, int>(tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) -> int{
       if(pf.token() == 5) {
@@ -24,18 +21,12 @@ int main() {
     }),
 
     tf::make_datapipe<int, std::string>(tf::PipeType::SERIAL, [](int& input, tf::Pipeflow& pf) {
-      // printf("%d, %d\n", pf.line(), pf.pipe());
       return std::to_string(input + 100);
     }),
 
     tf::make_datapipe<std::string, void>(tf::PipeType::SERIAL, [](std::string& input) {
       std::cout << input << std::endl;
-      // return std::stoi(input) + rand()*0.5f;
     })
-
-    // tf::DataPipe<float, void>{tf::PipeType::SERIAL, [](float input) {
-    //   std::cout << "done with " << input << std::endl;
-    // }}
   );
 
   // build the pipeline graph using composition

@@ -81,8 +81,6 @@ void omp(const Graph& g, unsigned num_cpus, unsigned num_gpus) {
   
   std::atomic<int> counter {0};
   
-  const int N = 1000;
-  
   int* cx = new int[N];
   int* cy = new int[N];
   int* cz = new int[N];

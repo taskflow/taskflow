@@ -26,6 +26,7 @@ list(APPEND TF_EXAMPLES
   run 
   run_and_wait
   runtime
+  worker_interface
   composition
   limited_concurrency
   cancel

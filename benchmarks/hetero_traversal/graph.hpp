@@ -116,6 +116,8 @@ __global__ void add(T* x, T* y, T* z, int n) {
   }
 }
 
+inline int N = 1024; 
+
 std::chrono::microseconds measure_time_taskflow(const Graph&, unsigned, unsigned);
 std::chrono::microseconds measure_time_tbb(const Graph&, unsigned, unsigned);
 std::chrono::microseconds measure_time_omp(const Graph&, unsigned, unsigned);

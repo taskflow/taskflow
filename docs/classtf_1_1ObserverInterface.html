@@ -62,7 +62,7 @@
             </li>
           </ul>
         </nav>
-<p>The <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> class let users define custom methods to monitor the behaviors of an executor. This is particularly useful when you want to inspect the performance of an executor and visualize when each thread participates in the execution of a task. To prevent users from direct access to the internal threads and tasks, <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> provides immutable wrappers, <a href="classtf_1_1WorkerView.html" class="m-doc">tf::<wbr />WorkerView</a> and <a href="classtf_1_1TaskView.html" class="m-doc">tf::<wbr />TaskView</a>, over workers and tasks.</p><p>Please refer to <a href="classtf_1_1WorkerView.html" class="m-doc">tf::<wbr />WorkerView</a> and <a href="classtf_1_1TaskView.html" class="m-doc">tf::<wbr />TaskView</a> for details.</p><p>Example usage:</p><pre class="m-code"><span class="k">struct</span><span class="w"> </span><span class="nc">MyObserver</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">ObserverInterface</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<p>The <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> class allows users to define custom methods to monitor the behaviors of an executor. This is particularly useful when you want to inspect the performance of an executor and visualize when each thread participates in the execution of a task. To prevent users from direct access to the internal threads and tasks, <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> provides immutable wrappers, <a href="classtf_1_1WorkerView.html" class="m-doc">tf::<wbr />WorkerView</a> and <a href="classtf_1_1TaskView.html" class="m-doc">tf::<wbr />TaskView</a>, over workers and tasks.</p><p>Please refer to <a href="classtf_1_1WorkerView.html" class="m-doc">tf::<wbr />WorkerView</a> and <a href="classtf_1_1TaskView.html" class="m-doc">tf::<wbr />TaskView</a> for details.</p><p>Example usage:</p><pre class="m-code"><span class="k">struct</span><span class="w"> </span><span class="nc">MyObserver</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">ObserverInterface</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
 <span class="w">  </span><span class="n">MyObserver</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;constructing observer &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w"></span>
@@ -126,12 +126,12 @@
             </dt>
             <dd>constructor-like method to call when the executor observer is fully created</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a3e3a9f7f1d43691794e487b8787b01a0" class="m-doc">on_entry</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> w,
+              <span class="m-doc-wrap-bumper">void <a href="#a8225fcacb03089677a1efc4b16b734cc" class="m-doc">on_entry</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
               <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) <span class="m-label m-flat m-warning">pure virtual</span></span>
             </dt>
             <dd>method to call before a worker thread executes a closure</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#aa59a59a59eadd4eb6ba20ecdfcae882b" class="m-doc">on_exit</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> w,
+              <span class="m-doc-wrap-bumper">void <a href="#aa22f5378154653f08d9a58326bda4754" class="m-doc">on_exit</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
               <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) <span class="m-label m-flat m-warning">pure virtual</span></span>
             </dt>
             <dd>method to call after a worker thread executed a closure</dd>
@@ -156,9 +156,9 @@
               </tbody>
             </table>
           </div></section>
-          <section class="m-doc-details" id="a3e3a9f7f1d43691794e487b8787b01a0"><div>
+          <section class="m-doc-details" id="a8225fcacb03089677a1efc4b16b734cc"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />ObserverInterface::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3e3a9f7f1d43691794e487b8787b01a0" class="m-doc-self">on_entry</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> w,
+              <span class="m-doc-wrap-bumper">void tf::<wbr />ObserverInterface::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8225fcacb03089677a1efc4b16b734cc" class="m-doc-self">on_entry</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
               <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) <span class="m-label m-warning">pure virtual</span></span></span>
             </h3>
             <p>method to call before a worker thread executes a closure</p>
@@ -168,7 +168,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td style="width: 1%">w</td>
+                  <td style="width: 1%">wv</td>
                   <td>an immutable view of this worker thread</td>
                 </tr>
                 <tr>
@@ -178,9 +178,9 @@
               </tbody>
             </table>
           </div></section>
-          <section class="m-doc-details" id="aa59a59a59eadd4eb6ba20ecdfcae882b"><div>
+          <section class="m-doc-details" id="aa22f5378154653f08d9a58326bda4754"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />ObserverInterface::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa59a59a59eadd4eb6ba20ecdfcae882b" class="m-doc-self">on_exit</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> w,
+              <span class="m-doc-wrap-bumper">void tf::<wbr />ObserverInterface::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa22f5378154653f08d9a58326bda4754" class="m-doc-self">on_exit</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
               <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) <span class="m-label m-warning">pure virtual</span></span></span>
             </h3>
             <p>method to call after a worker thread executed a closure</p>
@@ -190,7 +190,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td style="width: 1%">w</td>
+                  <td style="width: 1%">wv</td>
                   <td>an immutable view of this worker thread</td>
                 </tr>
                 <tr>

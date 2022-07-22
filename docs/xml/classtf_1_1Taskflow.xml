@@ -447,33 +447,33 @@
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para><para>The taskflow object itself is NOT thread-safe. You should not modifying the graph while it is running, such as adding new tasks, adding new dependencies, and moving the taskflow to another. To minimize the overhead of task creation, our runtime leverages a global object pool to recycle tasks in a thread-safe manner.</para><para>Please refer to <ref refid="Cookbook" kindref="compound">Cookbook</ref> to learn more about each task type and how to submit a taskflow to an executor. </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="286">
-        <label>tf::FlowBuilder</label>
-        <link refid="classtf_1_1FlowBuilder"/>
-      </node>
-      <node id="285">
-        <label>tf::Taskflow</label>
-        <link refid="classtf_1_1Taskflow"/>
-        <childnode refid="286" relation="public-inheritance">
-        </childnode>
-      </node>
-    </inheritancegraph>
-    <collaborationgraph>
       <node id="288">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
-        <childnode refid="289" relation="usage">
-          <edgelabel>_graph</edgelabel>
-        </childnode>
-      </node>
-      <node id="289">
-        <label>tf::Graph</label>
-        <link refid="classtf_1_1Graph"/>
       </node>
       <node id="287">
         <label>tf::Taskflow</label>
         <link refid="classtf_1_1Taskflow"/>
         <childnode refid="288" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="290">
+        <label>tf::FlowBuilder</label>
+        <link refid="classtf_1_1FlowBuilder"/>
+        <childnode refid="291" relation="usage">
+          <edgelabel>_graph</edgelabel>
+        </childnode>
+      </node>
+      <node id="291">
+        <label>tf::Graph</label>
+        <link refid="classtf_1_1Graph"/>
+      </node>
+      <node id="289">
+        <label>tf::Taskflow</label>
+        <link refid="classtf_1_1Taskflow"/>
+        <childnode refid="290" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>

@@ -52,7 +52,6 @@ class Executor {
   friend class FlowBuilder;
   friend class Subflow;
   friend class Runtime;
-  friend class cudaFlow;
 
   public:
 
@@ -65,7 +64,10 @@ class Executor {
     By default, the number of worker threads is equal to the maximum
     hardware concurrency returned by std::thread::hardware_concurrency.
     */
-    explicit Executor(size_t N = std::thread::hardware_concurrency());
+    explicit Executor(
+      size_t N = std::thread::hardware_concurrency(),
+      std::shared_ptr<WorkerInterface> wix = nullptr 
+    );
 
     /**
     @brief destructs the executor
@@ -452,11 +454,24 @@ class Executor {
     template <typename T>
     void run_and_wait(T& target);
 
-    template <typename T, std::enable_if_t<std::is_same_v<T, cudaFlow>, void>* = nullptr>
-    void run_and_wait(T& target);
+    /**
+    @brief keeps running the work-stealing loop until the predicate becomes true
+    
+    @tparam P predicate type
+    @param predicate a boolean predicate to indicate when to stop the loop
+
+    The method keeps running the caller worker in the work-stealing loop
+    until the stop predicate becomes true.
+
+    @attention
+    You must call tf::Executor::run_and_wait from a worker of the calling executor
+    or an exception will be thrown.
+    */
+    template <typename P>
+    void loop_until(P&& predicate);
 
     /**
-    @brief wait for all tasks to complete
+    @brief waits for all tasks to complete
 
     This member function waits until all submitted tasks
     (e.g., taskflows, asynchronous tasks) to finish.
@@ -657,7 +672,14 @@ class Executor {
     */
     size_t num_observers() const noexcept;
 
+    /**
+    @brief queries the maximum number of steals before yielding
+    */
+    size_t max_steals() const noexcept;
+
   private:
+    
+    const size_t _MAX_STEALS;
 
     std::condition_variable _topology_cv;
     std::mutex _taskflow_mutex;
@@ -665,10 +687,10 @@ class Executor {
     std::mutex _wsq_mutex;
 
     size_t _num_topologies {0};
-
+    
     std::unordered_map<std::thread::id, size_t> _wids;
-    std::vector<Worker> _workers;
     std::vector<std::thread> _threads;
+    std::vector<Worker> _workers;
     std::list<Taskflow> _taskflows;
 
     Notifier _notifier;
@@ -679,6 +701,7 @@ class Executor {
     std::atomic<size_t> _num_thieves {0};
     std::atomic<bool>   _done {0};
 
+    std::shared_ptr<WorkerInterface> _worker_interface;
     std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
 
     Worker* _this_worker();
@@ -717,7 +740,7 @@ class Executor {
     void _invoke_runtime_task(Worker&, Node*);
     
     template <typename P>
-    void _consume_until(Worker&, P);
+    void _loop_until(Worker&, P&&);
 
     template <typename C, std::enable_if_t<is_cudaflow_task_v<C>, void>* = nullptr>
     void _invoke_cudaflow_task_entry(Node*, C&&);
@@ -729,9 +752,12 @@ class Executor {
 };
 
 // Constructor
-inline Executor::Executor(size_t N) :
+inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix) :
+  _MAX_STEALS {((N+1) << 1)},
+  _threads    {N},
   _workers    {N},
-  _notifier   {N} {
+  _notifier   {N},
+  _worker_interface {std::move(wix)} {
 
   if(N == 0) {
     TF_THROW("no cpu workers to execute taskflows");
@@ -764,6 +790,11 @@ inline Executor::~Executor() {
 // Function: num_workers
 inline size_t Executor::num_workers() const noexcept {
   return _workers.size();
+}
+
+// Function: max_steals
+inline size_t Executor::max_steals() const noexcept {
+  return _MAX_STEALS;
 }
 
 // Function: num_topologies
@@ -883,9 +914,12 @@ inline void Executor::_spawn(size_t N) {
     _workers[id]._executor = this;
     _workers[id]._waiter = &_notifier._waiters[id];
 
-    _threads.emplace_back([this] (
+    _threads[id] = std::thread([this] (
       Worker& w, std::mutex& mutex, std::condition_variable& cond, size_t& n
     ) -> void {
+      
+      // assign the thread
+      w._thread = &_threads[w._id];
 
       // enables the mapping
       {
@@ -897,17 +931,36 @@ inline void Executor::_spawn(size_t N) {
       }
 
       Node* t = nullptr;
+      
+      // before entering the scheduler (work-stealing loop), 
+      // call the user-specified prologue function
+      if(_worker_interface) {
+        _worker_interface->scheduler_prologue(w);
+      }
 
-      // must use 1 as condition instead of !done
-      while(1) {
+      // must use 1 as condition instead of !done because
+      // the previous worker may stop while the following workers
+      // are still preparing for entering the scheduling loop
+      std::exception_ptr ptr{nullptr};
+      try {
+        while(1) {
 
-        // execute the tasks.
-        _exploit_task(w, t);
+          // execute the tasks.
+          _exploit_task(w, t);
 
-        // wait for tasks
-        if(_wait_for_task(w, t) == false) {
-          break;
+          // wait for tasks
+          if(_wait_for_task(w, t) == false) {
+            break;
+          }
         }
+      } 
+      catch(...) {
+        ptr = std::current_exception();
+      }
+      
+      // call the user-specified epilogue function
+      if(_worker_interface) {
+        _worker_interface->scheduler_epilogue(w, ptr);
       }
 
     }, std::ref(_workers[id]), std::ref(mutex), std::ref(cond), std::ref(n));
@@ -917,23 +970,24 @@ inline void Executor::_spawn(size_t N) {
   cond.wait(lock, [&](){ return n==N; });
 }
 
-// Function: _consume_until
+// Function: _loop_until
 template <typename P>
-inline void Executor::_consume_until(Worker& w, P stop_predicate) {
+inline void Executor::_loop_until(Worker& w, P&& stop_predicate) {
 
   std::uniform_int_distribution<size_t> rdvtm(0, _workers.size()-1);
 
   //while(p->_join_counter != 0) {
+  exploit:
+
   while(!stop_predicate()) {
 
-    exploit:
+    //exploit:
 
     if(auto t = w._wsq.pop(); t) {
       _invoke(w, t);
     }
     else {
       size_t num_steals = 0;
-      size_t max_steals = ((_workers.size() + 1) << 1);
 
       explore:
 
@@ -945,7 +999,7 @@ inline void Executor::_consume_until(Worker& w, P stop_predicate) {
       }
       //else if(p->_join_counter != 0){
       else if(!stop_predicate()) {
-        if(num_steals++ > max_steals) {
+        if(num_steals++ > _MAX_STEALS) {
           std::this_thread::yield();
         }
         w._vtm = rdvtm(w._rdgen);
@@ -966,7 +1020,6 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
 
   size_t num_steals = 0;
   size_t num_yields = 0;
-  size_t max_steals = ((_workers.size() + 1) << 1);
 
   std::uniform_int_distribution<size_t> rdvtm(0, _workers.size()-1);
 
@@ -977,7 +1030,7 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
       break;
     }
 
-    if(num_steals++ > max_steals) {
+    if(num_steals++ > _MAX_STEALS) {
       std::this_thread::yield();
       if(num_yields++ > 100) {
         break;
@@ -1145,9 +1198,7 @@ inline void Executor::_schedule(Node* node) {
 }
 
 // Procedure: _schedule
-inline void Executor::_schedule(
-  Worker& worker, const SmallVector<Node*>& nodes
-) {
+inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes) {
 
   // We need to cacth the node count to avoid accessing the nodes
   // vector while the parent topology is removed!
@@ -1396,7 +1447,8 @@ inline void Executor::_tear_down_invoke(Worker& worker, Node* node) {
       _tear_down_topology(worker, node->_topology);
     }
   }
-  else {  // joined subflow
+  // joined subflow
+  else {  
     node->_parent->_join_counter.fetch_sub(1);
   }
 }
@@ -1519,8 +1571,7 @@ inline void Executor::_consume_graph(Worker& w, Node* p, Graph& g) {
   }
   p->_join_counter.fetch_add(src.size());
   _schedule(w, src);
-  //_consume_until(w, p);
-  _consume_until(w, [p] () -> bool { return p->_join_counter == 0; });
+  _loop_until(w, [p] () -> bool { return p->_join_counter == 0; });
 }
 
 // Procedure: _invoke_condition_task
@@ -1714,6 +1765,19 @@ void Executor::run_and_wait(T& target) {
 
   Node parent;  // dummy parent
   _consume_graph(*w, &parent, target.graph());
+}
+
+// Function: loop_until
+template <typename P>
+void Executor::loop_until(P&& predicate) {
+  
+  auto w = _this_worker();
+
+  if(w == nullptr) {
+    TF_THROW("loop_until must be called by a worker of the executor");
+  }
+
+  _loop_until(*w, std::forward<P>(predicate));
 }
 
 // Procedure: _increment_topology
