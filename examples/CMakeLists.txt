@@ -38,6 +38,11 @@ foreach(example IN LISTS TF_EXAMPLES)
   target_link_libraries(
     ${example} ${PROJECT_NAME} tf::default_settings
     )
+  # set emcc options
+  if (CMAKE_SYSTEM_NAME STREQUAL Emscripten)
+    target_link_options(${example} PUBLIC -sASSERTIONS=1 -sPROXY_TO_PTHREAD -sTOTAL_MEMORY=1536MB -sEXIT_RUNTIME=1 -sUSE_PTHREADS=1)
+    target_compile_options(${example} PUBLIC -matomics)
+  endif()
 endforeach()
 
 # -----------------------------------------------------------------------------
