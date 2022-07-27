@@ -13,16 +13,17 @@ list(APPEND TF_EXAMPLES
   while_loop
   if_else
   nested_if_else
+  priority
   visualization 
   reduce 
   parallel_for 
   parallel_sort
-  parallel_pipeline
-  parallel_scalable_pipeline
-  parallel_text_pipeline
+  pipeline
+  scalable_pipeline
+  text_pipeline
+  taskflow_pipeline
   parallel_graph_pipeline
-  parallel_taskflow_pipeline
-  #data_parallel_pipeline
+  data_parallel_pipeline
   run 
   run_and_wait
   runtime

@@ -53,11 +53,11 @@
 #include <taskflow/taskflow.hpp>
 
 // ============================================================================
-// WorkStealingQueue tests
+// Test without Priority
 // ============================================================================
 
-// Procedure: tsq_test_owner
-void tsq_test_owner() {
+// Procedure: tsq_owner
+void tsq_owner() {
 
   for(size_t N=1; N<=777777; N=N*2+1) {
     tf::TaskQueue<void*> queue;
@@ -90,8 +90,8 @@ void tsq_test_owner() {
   }
 }
 
-// Procedure: tsq_test_n_thieves
-void tsq_test_n_thieves(size_t M) {
+// Procedure: tsq_n_thieves
+void tsq_n_thieves(size_t M) {
 
   for(size_t N=1; N<=777777; N=N*2+1) {
     tf::TaskQueue<void*> queue;
@@ -158,63 +158,130 @@ void tsq_test_n_thieves(size_t M) {
 // Testcase: TSQTest.Owner
 // ----------------------------------------------------------------------------
 TEST_CASE("TSQ.Owner" * doctest::timeout(300)) {
-  tsq_test_owner();
+  tsq_owner();
 }
 
 // ----------------------------------------------------------------------------
 // Testcase: TSQTest.1Thief
 // ----------------------------------------------------------------------------
 TEST_CASE("TSQ.1Thief" * doctest::timeout(300)) {
-  tsq_test_n_thieves(1);
+  tsq_n_thieves(1);
 }
 
 // ----------------------------------------------------------------------------
 // Testcase: TSQTest.2Thieves
 // ----------------------------------------------------------------------------
 TEST_CASE("TSQ.2Thieves" * doctest::timeout(300)) {
-  tsq_test_n_thieves(2);
+  tsq_n_thieves(2);
 }
 
 // ----------------------------------------------------------------------------
 // Testcase: TSQTest.3Thieves
 // ----------------------------------------------------------------------------
 TEST_CASE("TSQ.3Thieves" * doctest::timeout(300)) {
-  tsq_test_n_thieves(3);
+  tsq_n_thieves(3);
 }
 
 // ----------------------------------------------------------------------------
 // Testcase: TSQTest.4Thieves
 // ----------------------------------------------------------------------------
 TEST_CASE("TSQ.4Thieves" * doctest::timeout(300)) {
-  tsq_test_n_thieves(4);
+  tsq_n_thieves(4);
 }
 
 // ----------------------------------------------------------------------------
 // Testcase: TSQTest.5Thieves
 // ----------------------------------------------------------------------------
 TEST_CASE("TSQ.5Thieves" * doctest::timeout(300)) {
-  tsq_test_n_thieves(5);
+  tsq_n_thieves(5);
 }
 
 // ----------------------------------------------------------------------------
 // Testcase: TSQTest.6Thieves
 // ----------------------------------------------------------------------------
 TEST_CASE("TSQ.6Thieves" * doctest::timeout(300)) {
-  tsq_test_n_thieves(6);
+  tsq_n_thieves(6);
 }
 
 // ----------------------------------------------------------------------------
 // Testcase: TSQTest.7Thieves
 // ----------------------------------------------------------------------------
 TEST_CASE("TSQ.7Thieves" * doctest::timeout(300)) {
-  tsq_test_n_thieves(7);
+  tsq_n_thieves(7);
 }
 
 // ----------------------------------------------------------------------------
 // Testcase: TSQTest.8Thieves
 // ----------------------------------------------------------------------------
 TEST_CASE("TSQ.8Thieves" * doctest::timeout(300)) {
-  tsq_test_n_thieves(8);
+  tsq_n_thieves(8);
+}
+
+// ============================================================================
+// Test with Priority
+// ============================================================================
+
+// Procedure: priority_tsq_owner
+void priority_tsq_owner() {
+
+  const unsigned P = 5;
+
+  tf::TaskQueue<void*, P> queue;
+
+  for(size_t N=1; N<=777777; N=N*2+1) {
+
+    std::vector<std::pair<void*, unsigned>> gold(N);
+
+    REQUIRE(queue.empty());
+    REQUIRE(queue.pop() == nullptr);
+
+    for(unsigned p=0; p<P; p++) {
+      REQUIRE(queue.empty(p));
+      REQUIRE(queue.pop(p) == nullptr);
+      REQUIRE(queue.steal(p) == nullptr);
+    }
+    REQUIRE(queue.empty());
+
+    // push 
+    for(size_t i=0; i<N; ++i) {
+      auto p = rand() % P;
+      gold[i] = {&i, p};
+      queue.push(&i, p);
+    }
+
+    // pop
+    for(size_t i=0; i<N; ++i) {
+      auto [g_ptr, g_pri]= gold[N-i-1];
+      auto ptr = queue.pop(g_pri);
+      REQUIRE(ptr != nullptr);
+      REQUIRE(ptr == g_ptr);
+    }
+    REQUIRE(queue.pop() == nullptr);
+
+    // push and steal
+    for(size_t i=0; i<N; ++i) {
+      queue.push(gold[i].first, gold[i].second);
+    }
+
+    // i starts from 1 to avoid cache effect
+    for(size_t i=0; i<N; ++i) {
+      auto [g_ptr, g_pri] = gold[i];
+      auto ptr = queue.steal(g_pri);
+      REQUIRE(ptr != nullptr);
+      REQUIRE(g_ptr == ptr);
+    }
+    
+    for(unsigned p=0; p<P; p++) {
+      REQUIRE(queue.empty(p));
+      REQUIRE(queue.pop(p) == nullptr);
+      REQUIRE(queue.steal(p) == nullptr);
+    }
+    REQUIRE(queue.empty());
+  }
+}
+
+TEST_CASE("PriorityTSQ.Owner" * doctest::timeout(300)) {
+  priority_tsq_owner();
 }
 
 

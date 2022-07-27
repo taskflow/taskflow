@@ -217,6 +217,32 @@ void visit_tuple(Func func, Tuple& tup, size_t idx) {
   }
 }
 
+// ----------------------------------------------------------------------------
+// unroll loop
+// ----------------------------------------------------------------------------
+
+// Template unrolled looping construct.
+template<auto beg, auto end, auto step, bool valid = (beg < end)>
+struct Unroll {
+  template<typename F>
+  static void eval(F f) {
+    f(beg);
+    Unroll<beg + step, end, step>::eval(f);
+  }
+};
+
+template<auto beg, auto end, auto step>
+struct Unroll<beg, end, step, false> {
+  template<typename F>
+  static void eval(F) { }
+};
+
+template<auto beg, auto end, auto step, typename F>
+void unroll(F f) {
+  Unroll<beg, end, step>::eval(f);
+}
+
+
 
 }  // end of namespace tf. ----------------------------------------------------
 

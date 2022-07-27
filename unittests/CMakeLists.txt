@@ -6,6 +6,7 @@ list(APPEND TF_UNITTESTS
   utility 
   tsq 
   #serializer 
+  priorities
   basics 
   asyncs
   subflows
@@ -20,6 +21,7 @@ list(APPEND TF_UNITTESTS
   pipelines
   scalable_pipelines
   runtimes
+  data_pipelines
   workers
 )
 

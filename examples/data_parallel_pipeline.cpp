@@ -1,5 +1,5 @@
 #include <taskflow/taskflow.hpp>
-#include <taskflow/algorithm/pipeline.hpp>
+#include <taskflow/algorithm/data_pipeline.hpp>
 
 int main() {
 
@@ -7,33 +7,26 @@ int main() {
   tf::Taskflow taskflow("pipeline");
   tf::Executor executor;
 
-  const size_t num_lines = 4;
-
-  // custom data storage
-  //std::variant<int, std::string, float> mydata[num_lines];
+  const size_t num_lines = 3;
 
   tf::DataPipeline pl(num_lines,
-    tf::DataPipe<void, int>{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) -> int{
+    tf::make_datapipe<void, int>(tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) -> int{
       if(pf.token() == 5) {
         pf.stop();
+        return 0;
       }
       else {
-        return rand();
+        return pf.token();
       }
-    }},
+    }),
 
-    tf::DataPipe<int, std::string>{tf::PipeType::SERIAL, [](int input) -> std::string {
-      // ??? which line is this???
+    tf::make_datapipe<int, std::string>(tf::PipeType::SERIAL, [](int& input, tf::Pipeflow& pf) {
       return std::to_string(input + 100);
-    }},
+    }),
 
-    tf::DataPipe<std::string, float>{tf::PipeType::SERIAL, [](std::string input) {
-      return std::stoi(input) + rand()*0.5f;
-    }},
-
-    tf::DataPipe<float, void>{tf::PipeType::SERIAL, [](float input) {
-      std::cout << "done with " << input << std::endl;
-    }}
+    tf::make_datapipe<std::string, void>(tf::PipeType::SERIAL, [](std::string& input) {
+      std::cout << input << std::endl;
+    })
   );
 
   // build the pipeline graph using composition

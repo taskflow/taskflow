@@ -1,18 +1,47 @@
 #pragma once
 
-#include <atomic>
-#include <vector>
-#include <cassert>
-#include <cstdint>
-#include <cstddef>
-#include <cstdlib>
+#include "../utility/traits.hpp"
 
 namespace tf {
+
+
+// ----------------------------------------------------------------------------
+// Task Types
+// ----------------------------------------------------------------------------
+
+/**
+@enum TaskPriority
+
+@brief enumeration of all task priority values
+
+Currently, %Taskflow defines three priority levels, 
+@c HIGH, @c NORMAL, and @c LOW, starting from 0, 1, to 2.
+That is, the lower the value, the higher the priority.
+
+*/
+enum class TaskPriority : unsigned {
+  /** @brief value of the highest priority  */
+  HIGH = 0,
+  /** @brief value of the normal priority  */
+  NORMAL = 1,
+  /** @brief value of the lowest priority  */
+  LOW = 2,
+  /** @brief conventional value for iterating priority values */
+  MAX = 3
+};
+
+
+
+// ----------------------------------------------------------------------------
+// Task Queue
+// ----------------------------------------------------------------------------
+
 
 /**
 @class: TaskQueue
 
 @tparam T data type (must be a pointer type)
+@tparam MAX_PRIORITY maximum level of the priority 
 
 @brief Lock-free unbounded single-producer multiple-consumer queue.
 
@@ -23,9 +52,10 @@ available at https://www.di.ens.fr/~zappa/readings/ppopp13.pdf.
 Only the queue owner can perform pop and push operations,
 while others can steal data from the queue.
 */
-template <typename T>
+template <typename T, unsigned MAX_PRIORITY = static_cast<unsigned>(TaskPriority::MAX)>
 class TaskQueue {
-
+  
+  static_assert(MAX_PRIORITY > 0, "MAX_PRIORITY must be at least one");
   static_assert(std::is_pointer_v<T>, "T must be a pointer type");
 
   struct Array {
@@ -68,10 +98,10 @@ class TaskQueue {
 
   // Doubling the alignment by 2 seems to generate the most
   // decent performance.
-  alignas(2*TF_CACHELINE_SIZE) std::atomic<int64_t> _top;
-  alignas(2*TF_CACHELINE_SIZE) std::atomic<int64_t> _bottom;
-  std::atomic<Array*> _array;
-  std::vector<Array*> _garbage;
+  CachelineAligned<std::atomic<int64_t>> _top[MAX_PRIORITY];
+  CachelineAligned<std::atomic<int64_t>> _bottom[MAX_PRIORITY];
+  std::atomic<Array*> _array[MAX_PRIORITY];
+  std::vector<Array*> _garbage[MAX_PRIORITY];
 
   //std::atomic<T> _cache {nullptr};
 
@@ -82,7 +112,7 @@ class TaskQueue {
 
     @param capacity the capacity of the queue (must be power of 2)
     */
-    explicit TaskQueue(int64_t capacity = 1024);
+    explicit TaskQueue(int64_t capacity = 512);
 
     /**
     @brief destructs the queue
@@ -95,123 +125,181 @@ class TaskQueue {
     bool empty() const noexcept;
 
     /**
+    @brief queries if the queue is empty at a specific priority value
+    */
+    bool empty(unsigned priority) const noexcept;
+
+    /**
     @brief queries the number of items at the time of this call
     */
     size_t size() const noexcept;
 
     /**
+    @brief queries the number of items with the given priority
+           at the time of this call
+    */
+    size_t size(unsigned priority) const noexcept;
+
+    /**
     @brief queries the capacity of the queue
     */
     int64_t capacity() const noexcept;
+    
+    /**
+    @brief queries the capacity of the queue at a specific priority value
+    */
+    int64_t capacity(unsigned priority) const noexcept;
 
     /**
     @brief inserts an item to the queue
 
+    @param item the item to push to the queue
+    @param priority priority value of the item to push (default = 0)
+    
     Only the owner thread can insert an item to the queue.
     The operation can trigger the queue to resize its capacity
     if more space is required.
-
-    @tparam O data type
-
-    @param item the item to push to the queue
     */
-    void push(T item);
+    void push(T item, unsigned priority = 0);
 
     /**
     @brief pops out an item from the queue
 
     Only the owner thread can pop out an item from the queue.
-    The return can be a nullptr if this operation failed (empty queue).
+    The return can be a @c nullptr if this operation failed (empty queue).
     */
     T pop();
+
+    /**
+    @brief pops out an item with a specific priority value from the queue
+
+    @param priority priority of the item to pop
+
+    Only the owner thread can pop out an item from the queue.
+    The return can be a @c nullptr if this operation failed (empty queue).
+    */
+    T pop(unsigned priority);
 
     /**
     @brief steals an item from the queue
 
     Any threads can try to steal an item from the queue.
-    The return can be a nullptr if this operation failed (not necessary empty).
+    The return can be a @c nullptr if this operation failed (not necessary empty).
     */
     T steal();
+
+    /**
+    @brief steals an item with a specific priority value from the queue
+
+    @param priority priority of the item to steal
+
+    Any threads can try to steal an item from the queue.
+    The return can be a @c nullptr if this operation failed (not necessary empty).
+    */
+    T steal(unsigned priority);
 };
 
 // Constructor
-template <typename T>
-TaskQueue<T>::TaskQueue(int64_t c) {
+template <typename T, unsigned MAX_PRIORITY>
+TaskQueue<T, MAX_PRIORITY>::TaskQueue(int64_t c) {
   assert(c && (!(c & (c-1))));
-  _top.store(0, std::memory_order_relaxed);
-  _bottom.store(0, std::memory_order_relaxed);
-  _array.store(new Array{c}, std::memory_order_relaxed);
-  _garbage.reserve(32);
+  unroll<0, MAX_PRIORITY, 1>([&](auto p){
+    _top[p].data.store(0, std::memory_order_relaxed);
+    _bottom[p].data.store(0, std::memory_order_relaxed);
+    _array[p].store(new Array{c}, std::memory_order_relaxed);
+    _garbage[p].reserve(32);
+  });
 }
 
 // Destructor
-template <typename T>
-TaskQueue<T>::~TaskQueue() {
-  for(auto a : _garbage) {
-    delete a;
-  }
-  delete _array.load();
+template <typename T, unsigned MAX_PRIORITY>
+TaskQueue<T, MAX_PRIORITY>::~TaskQueue() {
+  unroll<0, MAX_PRIORITY, 1>([&](auto p){
+    for(auto a : _garbage[p]) {
+      delete a;
+    }
+    delete _array[p].load();
+  });
 }
 
 // Function: empty
-template <typename T>
-bool TaskQueue<T>::empty() const noexcept {
-  int64_t b = _bottom.load(std::memory_order_relaxed);
-  int64_t t = _top.load(std::memory_order_relaxed);
+template <typename T, unsigned MAX_PRIORITY>
+bool TaskQueue<T, MAX_PRIORITY>::empty() const noexcept {
+  for(unsigned i=0; i<MAX_PRIORITY; i++) {
+    if(!empty(i)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// Function: empty
+template <typename T, unsigned MAX_PRIORITY>
+bool TaskQueue<T, MAX_PRIORITY>::empty(unsigned p) const noexcept {
+  int64_t b = _bottom[p].data.load(std::memory_order_relaxed);
+  int64_t t = _top[p].data.load(std::memory_order_relaxed);
   return (b <= t);
-  // && (_cache.load(std::memory_order_relaxed) == nullptr);
 }
 
 // Function: size
-template <typename T>
-size_t TaskQueue<T>::size() const noexcept {
-  int64_t b = _bottom.load(std::memory_order_relaxed);
-  int64_t t = _top.load(std::memory_order_relaxed);
+template <typename T, unsigned MAX_PRIORITY>
+size_t TaskQueue<T, MAX_PRIORITY>::size() const noexcept {
+  size_t s;
+  unroll<0, MAX_PRIORITY, 1>([&](auto i) { s = i ? size(i) + s : size(i); });
+  return s;
+}
+
+// Function: size
+template <typename T, unsigned MAX_PRIORITY>
+size_t TaskQueue<T, MAX_PRIORITY>::size(unsigned p) const noexcept {
+  int64_t b = _bottom[p].data.load(std::memory_order_relaxed);
+  int64_t t = _top[p].data.load(std::memory_order_relaxed);
   return static_cast<size_t>(b >= t ? b - t : 0);
-         //+ (_cache.load(std::memory_order_relaxed) == nullptr ? 0: 1);
 }
 
 // Function: push
-template <typename T>
-void TaskQueue<T>::push(T o) {
-  //if(auto tmp = _cache.load(std::memory_order_relaxed); tmp) {
-  //  uncached_push(tmp);
-  //}
-  //_cache.store(o, std::memory_order_relaxed);
+template <typename T, unsigned MAX_PRIORITY>
+void TaskQueue<T, MAX_PRIORITY>::push(T o, unsigned p) {
 
-  int64_t b = _bottom.load(std::memory_order_relaxed);
-  int64_t t = _top.load(std::memory_order_acquire);
-  Array* a = _array.load(std::memory_order_relaxed);
+  int64_t b = _bottom[p].data.load(std::memory_order_relaxed);
+  int64_t t = _top[p].data.load(std::memory_order_acquire);
+  Array* a = _array[p].load(std::memory_order_relaxed);
 
   // queue is full
   if(a->capacity() - 1 < (b - t)) {
     Array* tmp = a->resize(b, t);
-    _garbage.push_back(a);
+    _garbage[p].push_back(a);
     std::swap(a, tmp);
-    _array.store(a, std::memory_order_release);
+    _array[p].store(a, std::memory_order_release);
     // Note: the original paper using relaxed causes t-san to complain
     //_array.store(a, std::memory_order_relaxed);
   }
 
   a->push(b, o);
   std::atomic_thread_fence(std::memory_order_release);
-  _bottom.store(b + 1, std::memory_order_relaxed);
+  _bottom[p].data.store(b + 1, std::memory_order_relaxed);
 }
 
 // Function: pop
-template <typename T>
-T TaskQueue<T>::pop() {
+template <typename T, unsigned MAX_PRIORITY>
+T TaskQueue<T, MAX_PRIORITY>::pop() {
+  for(unsigned i=0; i<MAX_PRIORITY; i++) {
+    if(auto t = pop(i); t) {
+      return t;
+    }
+  }
+  return nullptr;
+}
 
-  //if(auto tmp = _cache.load(std::memory_order_relaxed); tmp) {
-  //  _cache.store(nullptr, std::memory_order_relaxed);
-  //  return tmp;
-  //}
+// Function: pop
+template <typename T, unsigned MAX_PRIORITY>
+T TaskQueue<T, MAX_PRIORITY>::pop(unsigned p) {
 
-  int64_t b = _bottom.load(std::memory_order_relaxed) - 1;
-  Array* a = _array.load(std::memory_order_relaxed);
-  _bottom.store(b, std::memory_order_relaxed);
+  int64_t b = _bottom[p].data.load(std::memory_order_relaxed) - 1;
+  Array* a = _array[p].load(std::memory_order_relaxed);
+  _bottom[p].data.store(b, std::memory_order_relaxed);
   std::atomic_thread_fence(std::memory_order_seq_cst);
-  int64_t t = _top.load(std::memory_order_relaxed);
+  int64_t t = _top[p].data.load(std::memory_order_relaxed);
 
   T item {nullptr};
 
@@ -219,36 +307,48 @@ T TaskQueue<T>::pop() {
     item = a->pop(b);
     if(t == b) {
       // the last item just got stolen
-      if(!_top.compare_exchange_strong(t, t+1,
-                                       std::memory_order_seq_cst,
-                                       std::memory_order_relaxed)) {
+      if(!_top[p].data.compare_exchange_strong(t, t+1,
+                                               std::memory_order_seq_cst,
+                                               std::memory_order_relaxed)) {
         item = nullptr;
       }
-      _bottom.store(b + 1, std::memory_order_relaxed);
+      _bottom[p].data.store(b + 1, std::memory_order_relaxed);
     }
   }
   else {
-    _bottom.store(b + 1, std::memory_order_relaxed);
+    _bottom[p].data.store(b + 1, std::memory_order_relaxed);
   }
 
   return item;
 }
 
 // Function: steal
-template <typename T>
-T TaskQueue<T>::steal() {
-  int64_t t = _top.load(std::memory_order_acquire);
+template <typename T, unsigned MAX_PRIORITY>
+T TaskQueue<T, MAX_PRIORITY>::steal() {
+  for(unsigned i=0; i<MAX_PRIORITY; i++) {
+    if(auto t = steal(i); t) {
+      return t;
+    }
+  }
+  return nullptr;
+}
+
+// Function: steal
+template <typename T, unsigned MAX_PRIORITY>
+T TaskQueue<T, MAX_PRIORITY>::steal(unsigned p) {
+  
+  int64_t t = _top[p].data.load(std::memory_order_acquire);
   std::atomic_thread_fence(std::memory_order_seq_cst);
-  int64_t b = _bottom.load(std::memory_order_acquire);
+  int64_t b = _bottom[p].data.load(std::memory_order_acquire);
 
   T item {nullptr};
 
   if(t < b) {
-    Array* a = _array.load(std::memory_order_consume);
+    Array* a = _array[p].load(std::memory_order_consume);
     item = a->pop(t);
-    if(!_top.compare_exchange_strong(t, t+1,
-                                     std::memory_order_seq_cst,
-                                     std::memory_order_relaxed)) {
+    if(!_top[p].data.compare_exchange_strong(t, t+1,
+                                             std::memory_order_seq_cst,
+                                             std::memory_order_relaxed)) {
       return nullptr;
     }
   }
@@ -257,9 +357,19 @@ T TaskQueue<T>::steal() {
 }
 
 // Function: capacity
-template <typename T>
-int64_t TaskQueue<T>::capacity() const noexcept {
-  return _array.load(std::memory_order_relaxed)->capacity();
+template <typename T, unsigned MAX_PRIORITY>
+int64_t TaskQueue<T, MAX_PRIORITY>::capacity() const noexcept {
+  size_t s;
+  unroll<0, MAX_PRIORITY, 1>([&](auto i) { 
+    s = i ? capacity(i) + s : capacity(i); 
+  });
+  return s;
+}
+
+// Function: capacity
+template <typename T, unsigned MAX_PRIORITY>
+int64_t TaskQueue<T, MAX_PRIORITY>::capacity(unsigned p) const noexcept {
+  return _array[p].load(std::memory_order_relaxed)->capacity();
 }
 
 }  // end of namespace tf -----------------------------------------------------
