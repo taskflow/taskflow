@@ -118,6 +118,8 @@
   #define TF_CACHELINE_SIZE 64
 #endif
 
+
+
 //-----------------------------------------------------------------------------
 // pause
 //-----------------------------------------------------------------------------
@@ -126,12 +128,13 @@
 //  #include <immintrin.h>
 //#endif
 
-
-
-
-
-
 namespace tf {
+
+// Struct: CachelineAligned
+template <typename T>
+struct CachelineAligned {
+  alignas (2*TF_CACHELINE_SIZE) T data;
+};
 
 // Function: get_env
 inline std::string get_env(const std::string& str) {

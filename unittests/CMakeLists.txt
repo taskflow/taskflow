@@ -6,6 +6,7 @@ list(APPEND TF_UNITTESTS
   utility 
   tsq 
   #serializer 
+  priorities
   basics 
   asyncs
   subflows

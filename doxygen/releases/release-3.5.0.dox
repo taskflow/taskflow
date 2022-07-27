@@ -38,13 +38,17 @@ To use %Taskflow v3.5.0, you need a compiler that supports C++17:
 
 + Added tf::WorkerInterface to allow changing properties of workers upon their creations
 + Added tf::Executor::loop_until to allow looping a worker with a custom stop predicate
-+ Extended tf::Executor to take tf::WorkerInterface
++ Extended tf::TaskQueue to include priority (tf::TaskPriority)
++ Extended tf::Executor to include tf::WorkerInterface
 
 @subsection release-3-5-0_cudaflow cudaFlow
 
 @subsection release-3-5-0_syclflow syclFlow
 
 @subsection release-3-5-0_utilities Utilities
+
++ Added tf::unroll to unroll loops using template techniques
++ Added tf::CachelineAligned to create a cacheline-aligned struct
 
 @subsection release-3-5-0_profiler Taskflow Profiler (TFProf)
 

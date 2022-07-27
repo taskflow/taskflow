@@ -11,6 +11,7 @@
 #include "semaphore.hpp"
 #include "environment.hpp"
 #include "topology.hpp"
+#include "tsq.hpp"
 
 /**
 @file graph.hpp
@@ -428,6 +429,8 @@ class Node {
   private:
 
   std::string _name;
+  
+  TaskPriority _priority {TaskPriority::HIGH};
 
   void* _data {nullptr};
 

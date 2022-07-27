@@ -58,11 +58,18 @@ class Executor {
     /**
     @brief constructs the executor with @c N worker threads
 
+
+    @param N number of workers (default std::thread::hardware_concurrency)
+    @param wix worker interface class to alter worker (thread) behaviors
+    
     The constructor spawns @c N worker threads to run tasks in a
     work-stealing loop. The number of workers must be greater than zero
     or an exception will be thrown.
     By default, the number of worker threads is equal to the maximum
     hardware concurrency returned by std::thread::hardware_concurrency.
+
+    Users can alter the worker behavior, such as changing thread affinity,
+    via deriving an instance from tf::WorkerInterface.
     */
     explicit Executor(
       size_t N = std::thread::hardware_concurrency(),
@@ -1167,18 +1174,23 @@ inline size_t Executor::num_observers() const noexcept {
 
 // Procedure: _schedule
 inline void Executor::_schedule(Worker& worker, Node* node) {
+  
+  // We need to fetch p before the release such that the read 
+  // operation is synchronized properly with other thread to
+  // void data race.
+  auto p = static_cast<unsigned>(node->_priority);
 
   node->_state.fetch_or(Node::READY, std::memory_order_release);
 
   // caller is a worker to this pool
   if(worker._executor == this) {
-    worker._wsq.push(node);
+    worker._wsq.push(node, p);
     return;
   }
 
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
-    _wsq.push(node);
+    _wsq.push(node, p);
   }
 
   _notifier.notify(false);
@@ -1186,12 +1198,17 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
 
 // Procedure: _schedule
 inline void Executor::_schedule(Node* node) {
+  
+  // We need to fetch p before the release such that the read 
+  // operation is synchronized properly with other thread to
+  // void data race.
+  auto p = static_cast<unsigned>(node->_priority);
 
   node->_state.fetch_or(Node::READY, std::memory_order_release);
 
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
-    _wsq.push(node);
+    _wsq.push(node, p);
   }
 
   _notifier.notify(false);
@@ -1208,14 +1225,14 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
     return;
   }
 
-  // make the node ready
-  for(size_t i=0; i<num_nodes; ++i) {
-    nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
-  }
-
+  // We need to fetch p before the release such that the read 
+  // operation is synchronized properly with other thread to
+  // void data race.
   if(worker._executor == this) {
     for(size_t i=0; i<num_nodes; ++i) {
-      worker._wsq.push(nodes[i]);
+      auto p = static_cast<unsigned>(nodes[i]->_priority);
+      nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
+      worker._wsq.push(nodes[i], p);
     }
     return;
   }
@@ -1223,7 +1240,9 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     for(size_t k=0; k<num_nodes; ++k) {
-      _wsq.push(nodes[k]);
+      auto p = static_cast<unsigned>(nodes[k]->_priority);
+      nodes[k]->_state.fetch_or(Node::READY, std::memory_order_release);
+      _wsq.push(nodes[k], p);
     }
   }
 
@@ -1240,15 +1259,15 @@ inline void Executor::_schedule(const SmallVector<Node*>& nodes) {
     return;
   }
 
-  // make the node ready
-  for(size_t i=0; i<num_nodes; ++i) {
-    nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
-  }
-
+  // We need to fetch p before the release such that the read 
+  // operation is synchronized properly with other thread to
+  // void data race.
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     for(size_t k=0; k<num_nodes; ++k) {
-      _wsq.push(nodes[k]);
+      auto p = static_cast<unsigned>(nodes[k]->_priority);
+      nodes[k]->_state.fetch_or(Node::READY, std::memory_order_release);
+      _wsq.push(nodes[k], p);
     }
   }
 
@@ -1376,7 +1395,9 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   auto& j = (node->_parent) ? node->_parent->_join_counter :
                               node->_topology->_join_counter;
 
+  // Here, we want to cache the latest successor with the highest priority
   Node* cache {nullptr};
+  TaskPriority max_p {TaskPriority::MAX};
 
   // At this point, the node storage might be destructed (to be verified)
   // case 1: non-condition task
@@ -1391,10 +1412,16 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
           // zeroing the join counter for invariant
           s->_join_counter.store(0, std::memory_order_relaxed);
           j.fetch_add(1);
-          if(cache) {
-            _schedule(worker, cache);
+          if(s->_priority <= max_p) {
+            if(cache) {
+              _schedule(worker, cache);
+            }
+            cache = s;
+            max_p = s->_priority;
           }
-          cache = s;
+          else {
+            _schedule(worker, s);
+          }
         }
       }
     }
@@ -1403,12 +1430,18 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     // non-condition task
     default: {
       for(size_t i=0; i<node->_successors.size(); ++i) {
-        if(--(node->_successors[i]->_join_counter) == 0) {
+        if(auto s = node->_successors[i]; --(s->_join_counter) == 0) {
           j.fetch_add(1);
-          if(cache) {
-            _schedule(worker, cache);
+          if(s->_priority <= max_p) {
+            if(cache) {
+              _schedule(worker, cache);
+            }
+            cache = s;
+            max_p = s->_priority;
           }
-          cache = node->_successors[i];
+          else {
+            _schedule(worker, s);
+          }
         }
       }
     }

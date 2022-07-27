@@ -346,6 +346,22 @@ class Task {
     @return @c *this
     */
     Task& data(void* data);
+      
+    /**
+    @brief assigns a priority value to the task
+
+    A priority value can be one of the following three levels, 
+    tf::TaskPriority::HIGH (numerically equivalent to 0),
+    tf::TaskPriority::NORMAL (numerically equivalent to 1), and
+    tf::TaskPriority::LOW (numerically equivalent to 2).
+    The smaller the priority value, the higher the priority.
+    */
+    Task& priority(TaskPriority p);
+    
+    /**
+    @brief queries the priority value of the task
+    */
+    TaskPriority priority() const;
 
     /**
     @brief resets the task handle to null
@@ -605,15 +621,26 @@ Task& Task::work(C&& c) {
   return *this;
 }
 
-// Function: name
+// Function: data
 inline void* Task::data() const {
   return _node->_data;
 }
 
-// Function: name
+// Function: data
 inline Task& Task::data(void* data) {
   _node->_data = data;
   return *this;
+}
+
+// Function: priority
+inline Task& Task::priority(TaskPriority p) {
+  _node->_priority = p;
+  return *this;
+}
+
+// Function: priority
+inline TaskPriority Task::priority() const {
+  return _node->_priority;
 }
 
 // ----------------------------------------------------------------------------
