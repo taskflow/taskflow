@@ -1,86 +1,47 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="release-2-3-0" kind="page">
     <compoundname>release-2-3-0</compoundname>
     <title>Release 2.3.0 (2020/02/27)</title>
-    <tableofcontents>
-      <tocsect>
-        <name>Download</name>
-        <reference>release-2-3-0_1release-2-3-0_download</reference>
-    </tocsect>
-      <tocsect>
-        <name>New Features</name>
-        <reference>release-2-3-0_1release-2-3-0_new_features</reference>
-    </tocsect>
-      <tocsect>
-        <name>Bug Fixes</name>
-        <reference>release-2-3-0_1release-2-3-0_bug_fixes</reference>
-    </tocsect>
-      <tocsect>
-        <name>Deprecated Items</name>
-        <reference>release-2-3-0_1release-2-3-0_deprecated_items</reference>
-    </tocsect>
-    </tableofcontents>
+    <tableofcontents/>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Cpp-Taskflow 2.3.0 is the 4th release in the 2.x line! This release includes several new changes such as conditional tasking, modified scheduling flows, benchmarks, documentation, and so forth.</para>
-<sect1 id="release-2-3-0_1release-2-3-0_download">
+<para>Cpp-Taskflow 2.3.0 is the 4th release in the 2.x line! This release includes several new changes such as conditional tasking, modified scheduling flows, benchmarks, documentation, and so forth.</para><sect1 id="release-2-3-0_1release-2-3-0_download">
 <title>Download</title>
-<para>Cpp-Taskflow 2.3.0 can be downloaded from <ulink url="https://github.com/cpp-taskflow/cpp-taskflow/releases/tag/v2.3.0">here</ulink>.</para>
-</sect1>
+<para>Cpp-Taskflow 2.3.0 can be downloaded from <ulink url="https://github.com/cpp-taskflow/cpp-taskflow/releases/tag/v2.3.0">here</ulink>.</para></sect1>
 <sect1 id="release-2-3-0_1release-2-3-0_new_features">
 <title>New Features</title>
 <para><itemizedlist>
-<listitem><para>Added full C++14/17/20 support </para>
-</listitem>
-<listitem><para>Added a thread-safe object pool motivated by Hoard memory allocator </para>
-</listitem>
-<listitem><para>Added condition tasks in support for conditional tasking (see <ref refid="ConditionalTasking" kindref="compound">Conditional Tasking</ref>) </para>
-</listitem>
-<listitem><para>Added <ref refid="classtf_1_1Task_1afc4ecb89dd4e4645b3ec3fb7c1bb0ec5" kindref="member">tf::Task::has_work</ref> to detect if a task is a placeholder </para>
-</listitem>
-<listitem><para>Added <ref refid="classtf_1_1Task_1aff13a503d4a3c994eb08cb6f22e1b427" kindref="member">tf::Task::for_each_successor</ref>, <ref refid="classtf_1_1Task_1a3bf68937662bf291637e4a763476b2e4" kindref="member">tf::Task::for_each_dependent</ref>, and <ref refid="classtf_1_1Taskflow_1a6350d0d6653ae9ae7b94c35e42fffe07" kindref="member">tf::Taskflow::for_each_task</ref>, <ref refid="classtf_1_1TaskView_1a3cb647dc0064b5d11e0c87226c47f8f8" kindref="member">tf::TaskView::for_each_successor</ref>, <ref refid="classtf_1_1TaskView_1a55651e26436bfc2499cadaca4a24e48d" kindref="member">tf::TaskView::for_each_dependent</ref> to support graph traversal </para>
-</listitem>
-<listitem><para>Modified the task scheduling flow </para>
-</listitem>
-<listitem><para>Modified tf::Taskflow::parallel_for to take a chunk size instead of a partition number </para>
-</listitem>
-<listitem><para>Modified <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> to be thread-safe (see <ref refid="ExecuteTaskflow" kindref="compound">Executor</ref>) </para>
-</listitem>
-<listitem><para>Enhanced the performance of work stealing </para>
-</listitem>
-<listitem><para>Enhanced unit tests</para>
-</listitem>
+<listitem><para>Added full C++14/17/20 support </para></listitem>
+<listitem><para>Added a thread-safe object pool motivated by Hoard memory allocator </para></listitem>
+<listitem><para>Added condition tasks in support for conditional tasking (see <ref refid="ConditionalTasking" kindref="compound">Conditional Tasking</ref>) </para></listitem>
+<listitem><para>Added <ref refid="classtf_1_1Task_1afc4ecb89dd4e4645b3ec3fb7c1bb0ec5" kindref="member">tf::Task::has_work</ref> to detect if a task is a placeholder </para></listitem>
+<listitem><para>Added <ref refid="classtf_1_1Task_1aff13a503d4a3c994eb08cb6f22e1b427" kindref="member">tf::Task::for_each_successor</ref>, <ref refid="classtf_1_1Task_1a3bf68937662bf291637e4a763476b2e4" kindref="member">tf::Task::for_each_dependent</ref>, and <ref refid="classtf_1_1Taskflow_1a6350d0d6653ae9ae7b94c35e42fffe07" kindref="member">tf::Taskflow::for_each_task</ref>, <ref refid="classtf_1_1TaskView_1a3cb647dc0064b5d11e0c87226c47f8f8" kindref="member">tf::TaskView::for_each_successor</ref>, <ref refid="classtf_1_1TaskView_1a55651e26436bfc2499cadaca4a24e48d" kindref="member">tf::TaskView::for_each_dependent</ref> to support graph traversal </para></listitem>
+<listitem><para>Modified the task scheduling flow </para></listitem>
+<listitem><para>Modified tf::Taskflow::parallel_for to take a chunk size instead of a partition number </para></listitem>
+<listitem><para>Modified <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> to be thread-safe (see <ref refid="ExecuteTaskflow" kindref="compound">Executor</ref>) </para></listitem>
+<listitem><para>Enhanced the performance of work stealing </para></listitem>
+<listitem><para>Enhanced unit tests</para></listitem>
 </itemizedlist>
-</para>
-</sect1>
+</para></sect1>
 <sect1 id="release-2-3-0_1release-2-3-0_bug_fixes">
 <title>Bug Fixes</title>
 <para><itemizedlist>
-<listitem><para>Fixed the stack overflow problem in zero worker execution </para>
-</listitem>
-<listitem><para>Fixed the missing comma in output execution timelines from an executor </para>
-</listitem>
-<listitem><para>Fixed the bug in empty taskflow</para>
-</listitem>
+<listitem><para>Fixed the stack overflow problem in zero worker execution </para></listitem>
+<listitem><para>Fixed the missing comma in output execution timelines from an executor </para></listitem>
+<listitem><para>Fixed the bug in empty taskflow</para></listitem>
 </itemizedlist>
-</para>
-</sect1>
+</para></sect1>
 <sect1 id="release-2-3-0_1release-2-3-0_deprecated_items">
 <title>Deprecated Items</title>
 <para><itemizedlist>
-<listitem><para>Removed zero worker thread support in execution </para>
-</listitem>
-<listitem><para>Removed gather method in task handle </para>
-</listitem>
-<listitem><para>Removed <ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref> and <ref refid="cpp/utility/initializer_list" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::initializer_list</ref> support in task&apos;s preceed/succeed methods </para>
-</listitem>
-<listitem><para>Removed taskflow::silent_emplace method </para>
-</listitem>
+<listitem><para>Removed zero worker thread support in execution </para></listitem>
+<listitem><para>Removed gather method in task handle </para></listitem>
+<listitem><para>Removed <ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref> and <ref refid="cpp/utility/initializer_list" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::initializer_list</ref> support in task&apos;s preceed/succeed methods </para></listitem>
+<listitem><para>Removed taskflow::silent_emplace method </para></listitem>
 </itemizedlist>
-</para>
-</sect1>
+</para></sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

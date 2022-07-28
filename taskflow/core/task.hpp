@@ -634,13 +634,13 @@ inline Task& Task::data(void* data) {
 
 // Function: priority
 inline Task& Task::priority(TaskPriority p) {
-  _node->_priority = p;
+  _node->_priority = static_cast<unsigned>(p);
   return *this;
 }
 
 // Function: priority
 inline TaskPriority Task::priority() const {
-  return _node->_priority;
+  return static_cast<TaskPriority>(_node->_priority);
 }
 
 // ----------------------------------------------------------------------------

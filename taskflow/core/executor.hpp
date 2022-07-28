@@ -1178,7 +1178,7 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
   // We need to fetch p before the release such that the read 
   // operation is synchronized properly with other thread to
   // void data race.
-  auto p = static_cast<unsigned>(node->_priority);
+  auto p = node->_priority;
 
   node->_state.fetch_or(Node::READY, std::memory_order_release);
 
@@ -1202,7 +1202,7 @@ inline void Executor::_schedule(Node* node) {
   // We need to fetch p before the release such that the read 
   // operation is synchronized properly with other thread to
   // void data race.
-  auto p = static_cast<unsigned>(node->_priority);
+  auto p = node->_priority;
 
   node->_state.fetch_or(Node::READY, std::memory_order_release);
 
@@ -1230,7 +1230,7 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
   // void data race.
   if(worker._executor == this) {
     for(size_t i=0; i<num_nodes; ++i) {
-      auto p = static_cast<unsigned>(nodes[i]->_priority);
+      auto p = nodes[i]->_priority;
       nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
       worker._wsq.push(nodes[i], p);
     }
@@ -1240,7 +1240,7 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     for(size_t k=0; k<num_nodes; ++k) {
-      auto p = static_cast<unsigned>(nodes[k]->_priority);
+      auto p = nodes[k]->_priority;
       nodes[k]->_state.fetch_or(Node::READY, std::memory_order_release);
       _wsq.push(nodes[k], p);
     }
@@ -1265,7 +1265,7 @@ inline void Executor::_schedule(const SmallVector<Node*>& nodes) {
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     for(size_t k=0; k<num_nodes; ++k) {
-      auto p = static_cast<unsigned>(nodes[k]->_priority);
+      auto p = nodes[k]->_priority;
       nodes[k]->_state.fetch_or(Node::READY, std::memory_order_release);
       _wsq.push(nodes[k], p);
     }
@@ -1397,7 +1397,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
   // Here, we want to cache the latest successor with the highest priority
   Node* cache {nullptr};
-  TaskPriority max_p {TaskPriority::MAX};
+  auto max_p = static_cast<unsigned>(TaskPriority::MAX);
 
   // At this point, the node storage might be destructed (to be verified)
   // case 1: non-condition task

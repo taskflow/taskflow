@@ -1,0 +1,379 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+  <compounddef id="classtf_1_1TaskQueue" kind="class" language="C++" prot="public">
+    <compoundname>tf::TaskQueue</compoundname>
+    <includes refid="tsq_8hpp" local="no">tsq.hpp</includes>
+    <innerclass refid="structtf_1_1TaskQueue_1_1Array" prot="private">tf::TaskQueue::Array</innerclass>
+    <templateparamlist>
+      <param>
+        <type>typename</type>
+        <declname>T</declname>
+        <defname>T</defname>
+      </param>
+      <param>
+        <type>unsigned</type>
+        <declname>MAX_PRIORITY</declname>
+        <defname>MAX_PRIORITY</defname>
+        <defval>static_cast&lt;unsigned&gt;(<ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fa26a4b44a837bf97b972628509912b4a5" kindref="member">TaskPriority::MAX</ref>)</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classtf_1_1TaskQueue_1ac9451a8aca1c36003aae4724ba810563" prot="private" static="no" mutable="no">
+        <type>CachelineAligned&lt; <ref refid="cpp/atomic/atomic" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; int64_t &gt; &gt;</type>
+        <definition>CachelineAligned&lt;std::atomic&lt;int64_t&gt; &gt; tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::_top[MAX_PRIORITY]</definition>
+        <argsstring>[MAX_PRIORITY]</argsstring>
+        <name>_top</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="144" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="144" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1TaskQueue_1ab417e4955deaa2cfdbc1bd69bc08d257" prot="private" static="no" mutable="no">
+        <type>CachelineAligned&lt; <ref refid="cpp/atomic/atomic" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; int64_t &gt; &gt;</type>
+        <definition>CachelineAligned&lt;std::atomic&lt;int64_t&gt; &gt; tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::_bottom[MAX_PRIORITY]</definition>
+        <argsstring>[MAX_PRIORITY]</argsstring>
+        <name>_bottom</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="145" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="145" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1TaskQueue_1a7fc5a2de43a45fbfea6a320e3d41ae20" prot="private" static="no" mutable="no">
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; Array * &gt;</type>
+        <definition>std::atomic&lt;Array*&gt; tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::_array[MAX_PRIORITY]</definition>
+        <argsstring>[MAX_PRIORITY]</argsstring>
+        <name>_array</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="146" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="146" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1TaskQueue_1abfa4cc455cfb52510e76010b1f1083f9" prot="private" static="no" mutable="no">
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Array * &gt;</type>
+        <definition>std::vector&lt;Array*&gt; tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::_garbage[MAX_PRIORITY]</definition>
+        <argsstring>[MAX_PRIORITY]</argsstring>
+        <name>_garbage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="147" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="147" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1TaskQueue_1ae50476ad6d4b7e809de78c784ac7f60d" prot="public" static="no" const="no" explicit="yes" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::TaskQueue</definition>
+        <argsstring>(int64_t capacity=512)</argsstring>
+        <name>TaskQueue</name>
+        <param>
+          <type>int64_t</type>
+          <declname>capacity</declname>
+          <defval>512</defval>
+        </param>
+        <briefdescription>
+<para>constructs the queue with a given capacity </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>capacity</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the capacity of the queue (must be power of 2) </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="158" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="247" bodyend="255"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1TaskQueue_1aee064c65b7bd4002fc6e1de3e138869f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::~TaskQueue</definition>
+        <argsstring>()</argsstring>
+        <name>~TaskQueue</name>
+        <briefdescription>
+<para>destructs the queue </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="163" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="259" bodyend="266"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1TaskQueue_1a0a88aa1d735d40abc62ec9fca5014702" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::empty</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>empty</name>
+        <briefdescription>
+<para>queries if the queue is empty at the time of this call </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="168" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="270" bodyend="277"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1TaskQueue_1ae90dab77a74edd8a32a3e2c02926c762" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::empty</definition>
+        <argsstring>(unsigned priority) const noexcept</argsstring>
+        <name>empty</name>
+        <param>
+          <type>unsigned</type>
+          <declname>priority</declname>
+        </param>
+        <briefdescription>
+<para>queries if the queue is empty at a specific priority value </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="173" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="281" bodyend="285"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1TaskQueue_1aa22f59a8f86640e6fd2768710bfb8e51" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::size</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>size</name>
+        <briefdescription>
+<para>queries the number of items at the time of this call </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="178" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="289" bodyend="293"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1TaskQueue_1ab7b645c2b47e212d91634811f62a1c2e" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::size</definition>
+        <argsstring>(unsigned priority) const noexcept</argsstring>
+        <name>size</name>
+        <param>
+          <type>unsigned</type>
+          <declname>priority</declname>
+        </param>
+        <briefdescription>
+<para>queries the number of items with the given priority at the time of this call </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="184" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="297" bodyend="301"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1TaskQueue_1afe86fe65ceb7ee6261489f1f6173d2cf" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int64_t</type>
+        <definition>int64_t tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::capacity</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>capacity</name>
+        <briefdescription>
+<para>queries the capacity of the queue </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="189" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="404" bodyend="410"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1TaskQueue_1a1459ea94eb778334b8d596faead95bb1" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>int64_t</type>
+        <definition>int64_t tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::capacity</definition>
+        <argsstring>(unsigned priority) const noexcept</argsstring>
+        <name>capacity</name>
+        <param>
+          <type>unsigned</type>
+          <declname>priority</declname>
+        </param>
+        <briefdescription>
+<para>queries the capacity of the queue at a specific priority value </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="194" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="414" bodyend="416"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1TaskQueue_1a78177eb2d11f29d44307c4761dc23b45" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::push</definition>
+        <argsstring>(T item, unsigned priority=0)</argsstring>
+        <name>push</name>
+        <param>
+          <type>T</type>
+          <declname>item</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>priority</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>inserts an item to the queue </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>item</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the item to push to the queue </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>priority</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>priority value of the item to push (default = 0)</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+Only the owner thread can insert an item to the queue. The operation can trigger the queue to resize its capacity if more space is required. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="206" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="305" bodyend="324"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1TaskQueue_1ab8a38274f9a056b81c18d9bf030b5025" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>T</type>
+        <definition>T tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::pop</definition>
+        <argsstring>()</argsstring>
+        <name>pop</name>
+        <briefdescription>
+<para>pops out an item from the queue </para>        </briefdescription>
+        <detaileddescription>
+<para>Only the owner thread can pop out an item from the queue. The return can be a <computeroutput>nullptr</computeroutput> if this operation failed (empty queue). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="214" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="328" bodyend="335"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1TaskQueue_1a229e43dd86bad47bf9d165946a062d5f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>T</type>
+        <definition>T tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::pop</definition>
+        <argsstring>(unsigned priority)</argsstring>
+        <name>pop</name>
+        <param>
+          <type>unsigned</type>
+          <declname>priority</declname>
+        </param>
+        <briefdescription>
+<para>pops out an item with a specific priority value from the queue </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>priority</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>priority of the item to pop</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+Only the owner thread can pop out an item from the queue. The return can be a <computeroutput>nullptr</computeroutput> if this operation failed (empty queue). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="224" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="339" bodyend="366"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1TaskQueue_1ab606d0aae898033208d10c7ef44fbcb2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>T</type>
+        <definition>T tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::steal</definition>
+        <argsstring>()</argsstring>
+        <name>steal</name>
+        <briefdescription>
+<para>steals an item from the queue </para>        </briefdescription>
+        <detaileddescription>
+<para>Any threads can try to steal an item from the queue. The return can be a <computeroutput>nullptr</computeroutput> if this operation failed (not necessary empty). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="232" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="370" bodyend="377"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1TaskQueue_1a3529facba0cc44f75cb4a12c440ae073" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>T</type>
+        <definition>T tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::steal</definition>
+        <argsstring>(unsigned priority)</argsstring>
+        <name>steal</name>
+        <param>
+          <type>unsigned</type>
+          <declname>priority</declname>
+        </param>
+        <briefdescription>
+<para>steals an item with a specific priority value from the queue </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>priority</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>priority of the item to steal</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+Any threads can try to steal an item from the queue. The return can be a <computeroutput>nullptr</computeroutput> if this operation failed (not necessary empty). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="242" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="381" bodyend="400"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Lock-free unbounded single-producer multiple-consumer queue. </para>    </briefdescription>
+    <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>data type (must be a pointer type) </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>MAX_PRIORITY</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>maximum level of the priority</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+This class implements the work-stealing queue described in the paper, <ulink url="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</ulink>, and extends it to include priority.</para><para>Only the queue owner can perform pop and push operations, while others can steal data from the queue simultaneously. Priority starts from zero (highest priority) to the template value <computeroutput>MAX_PRIORITY-1</computeroutput> (lowest priority). All operations are associated with priority values to indicate the corresponding queues to which an operation is applied.</para><para>The default template value, <computeroutput>MAX_PRIORITY</computeroutput>, is 3 or <computeroutput><ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fa26a4b44a837bf97b972628509912b4a5" kindref="member">TaskPriority::MAX</ref></computeroutput>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(1);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>counter<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[A,<sp/>B,<sp/>C,<sp/>D,<sp/>E]<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[&amp;]<sp/>()<sp/>{<sp/>counter<sp/>=<sp/>0;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[&amp;]<sp/>()<sp/>{<sp/>REQUIRE(counter<sp/>==<sp/>0);<sp/>counter++;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[&amp;]<sp/>()<sp/>{<sp/>REQUIRE(counter<sp/>==<sp/>2);<sp/>counter++;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[&amp;]<sp/>()<sp/>{<sp/>REQUIRE(counter<sp/>==<sp/>1);<sp/>counter++;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[&amp;]<sp/>()<sp/>{<sp/>}</highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B,<sp/>C,<sp/>D);<sp/></highlight></codeline>
+<codeline><highlight class="normal">E.<ref refid="classtf_1_1Task_1a331b1b726555072e7c7d10941257f664" kindref="member">succeed</ref>(B,<sp/>C,<sp/>D);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">B.<ref refid="classtf_1_1Task_1a65ba160c1464b4084f85bd9d3dd41291" kindref="member">priority</ref>(<ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" kindref="member">tf::TaskPriority::HIGH</ref>);</highlight></codeline>
+<codeline><highlight class="normal">C.<ref refid="classtf_1_1Task_1a65ba160c1464b4084f85bd9d3dd41291" kindref="member">priority</ref>(<ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fa41bc94cbd8eebea13ce0491b2ac11b88" kindref="member">tf::TaskPriority::LOW</ref>);</highlight></codeline>
+<codeline><highlight class="normal">D.<ref refid="classtf_1_1Task_1a65ba160c1464b4084f85bd9d3dd41291" kindref="member">priority</ref>(<ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fa1e23852820b9154316c7c06e2b7ba051" kindref="member">tf::TaskPriority::NORMAL</ref>);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+</programlisting></para><para>In the above example, we have a task graph of five tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, <computeroutput>C</computeroutput>, <computeroutput>D</computeroutput>, and <computeroutput>E</computeroutput>, in which <computeroutput>B</computeroutput>, <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput> can run in simultaneously when <computeroutput>A</computeroutput> finishes. Since we only uses one worker thread in the executor, we can deterministically run <computeroutput>B</computeroutput> first, then <computeroutput>D</computeroutput>, and <computeroutput>C</computeroutput> in order of their priority values. </para>    </detaileddescription>
+    <location file="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="99" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="99" bodyend="243"/>
+    <listofallmembers>
+      <member refid="classtf_1_1TaskQueue_1a7fc5a2de43a45fbfea6a320e3d41ae20" prot="private" virt="non-virtual"><scope>tf::TaskQueue</scope><name>_array</name></member>
+      <member refid="classtf_1_1TaskQueue_1ab417e4955deaa2cfdbc1bd69bc08d257" prot="private" virt="non-virtual"><scope>tf::TaskQueue</scope><name>_bottom</name></member>
+      <member refid="classtf_1_1TaskQueue_1abfa4cc455cfb52510e76010b1f1083f9" prot="private" virt="non-virtual"><scope>tf::TaskQueue</scope><name>_garbage</name></member>
+      <member refid="classtf_1_1TaskQueue_1ac9451a8aca1c36003aae4724ba810563" prot="private" virt="non-virtual"><scope>tf::TaskQueue</scope><name>_top</name></member>
+      <member refid="classtf_1_1TaskQueue_1afe86fe65ceb7ee6261489f1f6173d2cf" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>capacity</name></member>
+      <member refid="classtf_1_1TaskQueue_1a1459ea94eb778334b8d596faead95bb1" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>capacity</name></member>
+      <member refid="classtf_1_1TaskQueue_1a0a88aa1d735d40abc62ec9fca5014702" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>empty</name></member>
+      <member refid="classtf_1_1TaskQueue_1ae90dab77a74edd8a32a3e2c02926c762" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>empty</name></member>
+      <member refid="classtf_1_1TaskQueue_1ab8a38274f9a056b81c18d9bf030b5025" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>pop</name></member>
+      <member refid="classtf_1_1TaskQueue_1a229e43dd86bad47bf9d165946a062d5f" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>pop</name></member>
+      <member refid="classtf_1_1TaskQueue_1a78177eb2d11f29d44307c4761dc23b45" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>push</name></member>
+      <member refid="classtf_1_1TaskQueue_1aa22f59a8f86640e6fd2768710bfb8e51" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>size</name></member>
+      <member refid="classtf_1_1TaskQueue_1ab7b645c2b47e212d91634811f62a1c2e" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>size</name></member>
+      <member refid="classtf_1_1TaskQueue_1ab606d0aae898033208d10c7ef44fbcb2" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>steal</name></member>
+      <member refid="classtf_1_1TaskQueue_1a3529facba0cc44f75cb4a12c440ae073" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>steal</name></member>
+      <member refid="classtf_1_1TaskQueue_1ae50476ad6d4b7e809de78c784ac7f60d" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>TaskQueue</name></member>
+      <member refid="classtf_1_1TaskQueue_1aee064c65b7bd4002fc6e1de3e138869f" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>~TaskQueue</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

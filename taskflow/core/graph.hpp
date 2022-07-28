@@ -430,7 +430,7 @@ class Node {
 
   std::string _name;
   
-  TaskPriority _priority {TaskPriority::HIGH};
+  unsigned _priority {0};
 
   void* _data {nullptr};
 
