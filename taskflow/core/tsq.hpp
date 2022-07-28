@@ -19,6 +19,7 @@ namespace tf {
 
 @brief enumeration of all task priority values
 
+A priority is an enumerated value of type @c unsigned.
 Currently, %Taskflow defines three priority levels, 
 @c HIGH, @c NORMAL, and @c LOW, starting from 0, 1, to 2.
 That is, the lower the value, the higher the priority.
@@ -61,29 +62,31 @@ Priority starts from zero (highest priority) to the template value
 All operations are associated with priority values to indicate
 the corresponding queues to which an operation is applied.
 
-The default template value, `MAX_PRIORITY`, is 3 or `TaskPriority::MAX`.
+The default template value, `MAX_PRIORITY`, is `TaskPriority::MAX` 
+which applies only three priority levels to the task queue.
 
 @code{.cpp}
-tf::Executor executor(1);
-tf::Taskflow taskflow;
-
-int counter = 0;
-
 auto [A, B, C, D, E] = taskflow.emplace(
-  [&] () { counter = 0; },
-  [&] () { REQUIRE(counter == 0); counter++; },
-  [&] () { REQUIRE(counter == 2); counter++; },
-  [&] () { REQUIRE(counter == 1); counter++; },
-  [&] () { }
+  [] () { },
+  [&] () { 
+    std::cout << "Task B: " << counter++ << '\n';  // 0
+  },
+  [&] () { 
+    std::cout << "Task C: " << counter++ << '\n';  // 2
+  },
+  [&] () { 
+    std::cout << "Task D: " << counter++ << '\n';  // 1
+  },
+  [] () { }
 );
 
 A.precede(B, C, D); 
 E.succeed(B, C, D);
-
+  
 B.priority(tf::TaskPriority::HIGH);
 C.priority(tf::TaskPriority::LOW);
 D.priority(tf::TaskPriority::NORMAL);
-
+  
 executor.run(taskflow).wait();
 @endcode
 
@@ -93,6 +96,13 @@ can run in simultaneously when @c A finishes.
 Since we only uses one worker thread in the executor, 
 we can deterministically run @c B first, then @c D, and @c C
 in order of their priority values.
+The output is as follows:
+
+@code{.shell-session}
+Task B: 0
+Task D: 1
+Task C: 2
+@endcode
 
 */
 template <typename T, unsigned MAX_PRIORITY = static_cast<unsigned>(TaskPriority::MAX)>

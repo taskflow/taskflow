@@ -3,7 +3,7 @@ namespace tf {
 /** @page PrioritizedTasking Prioritized Tasking
 
 This chapter demonstrates how to assigns a task a priority 
-to hint the scheduler about one task of a higher priority
+to @em hint the scheduler about one task of a higher priority
 should start earlier than another task of a lower priority.
 %Task priorities are useful in many cases. For instance,
 we may prioritize some tasks over others
@@ -14,8 +14,8 @@ to improve responsiveness or data locality of parallel tasks.
 @section AssignAPriorityToATask Assign a Priority to a Task
 
 %Taskflow supports three different priority levels, 
-@c TaskPriority::HIGH,
-@c TaskPriority::NORMAL, and
+tf::TaskPriority::HIGH,
+tf::TaskPriority::NORMAL, and
 tf::TaskPriority::LOW,
 as defined in tf::TaskPriority.
 When there are parallel tasks (i.e., no dependencies),
