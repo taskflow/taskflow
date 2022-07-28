@@ -2,6 +2,11 @@
 
 #include "../utility/traits.hpp"
 
+/**
+@file tsq.hpp
+@brief task queue include file
+*/
+
 namespace tf {
 
 
@@ -20,11 +25,11 @@ That is, the lower the value, the higher the priority.
 
 */
 enum class TaskPriority : unsigned {
-  /** @brief value of the highest priority  */
+  /** @brief value of the highest priority (i.e., 0)  */
   HIGH = 0,
-  /** @brief value of the normal priority  */
+  /** @brief value of the normal priority (i.e., 1)  */
   NORMAL = 1,
-  /** @brief value of the lowest priority  */
+  /** @brief value of the lowest priority (i.e., 2) */
   LOW = 2,
   /** @brief conventional value for iterating priority values */
   MAX = 3
@@ -45,12 +50,50 @@ enum class TaskPriority : unsigned {
 
 @brief Lock-free unbounded single-producer multiple-consumer queue.
 
-This class implements the work stealing queue described in the paper,
-"Correct and Efficient Work-Stealing for Weak Memory Models,"
-available at https://www.di.ens.fr/~zappa/readings/ppopp13.pdf.
+This class implements the work-stealing queue described in the paper,
+<a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</a>,
+and extends it to include priority.
 
 Only the queue owner can perform pop and push operations,
-while others can steal data from the queue.
+while others can steal data from the queue simultaneously.
+Priority starts from zero (highest priority) to the template value 
+`MAX_PRIORITY-1` (lowest priority).
+All operations are associated with priority values to indicate
+the corresponding queues to which an operation is applied.
+
+The default template value, `MAX_PRIORITY`, is 3 or `TaskPriority::MAX`.
+
+@code{.cpp}
+tf::Executor executor(1);
+tf::Taskflow taskflow;
+
+int counter = 0;
+
+auto [A, B, C, D, E] = taskflow.emplace(
+  [&] () { counter = 0; },
+  [&] () { REQUIRE(counter == 0); counter++; },
+  [&] () { REQUIRE(counter == 2); counter++; },
+  [&] () { REQUIRE(counter == 1); counter++; },
+  [&] () { }
+);
+
+A.precede(B, C, D); 
+E.succeed(B, C, D);
+
+B.priority(tf::TaskPriority::HIGH);
+C.priority(tf::TaskPriority::LOW);
+D.priority(tf::TaskPriority::NORMAL);
+
+executor.run(taskflow).wait();
+@endcode
+
+In the above example, we have a task graph of five tasks,
+@c A, @c B, @c C, @c D, and @c E, in which @c B, @c C, and @c D
+can run in simultaneously when @c A finishes.
+Since we only uses one worker thread in the executor, 
+we can deterministically run @c B first, then @c D, and @c C
+in order of their priority values.
+
 */
 template <typename T, unsigned MAX_PRIORITY = static_cast<unsigned>(TaskPriority::MAX)>
 class TaskQueue {

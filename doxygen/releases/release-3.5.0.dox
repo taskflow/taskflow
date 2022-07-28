@@ -39,6 +39,7 @@ To use %Taskflow v3.5.0, you need a compiler that supports C++17:
 + Added tf::WorkerInterface to allow changing properties of workers upon their creations
 + Added tf::Executor::loop_until to allow looping a worker with a custom stop predicate
 + Extended tf::TaskQueue to include priority (tf::TaskPriority)
+  + See @ref PrioritizedTasking
 + Extended tf::Executor to include tf::WorkerInterface
 
 @subsection release-3-5-0_cudaflow cudaFlow
@@ -67,8 +68,12 @@ If you encounter any potential bugs, please submit an issue at @IssueTracker.
 
 + Revised @ref ExecuteTaskflow
   + Added @ref ChangeWorkerProperty
++ Added @ref PrioritizedTasking 
 
 @section release-3-5-0_miscellaneous_items Miscellaneous Items
+
+We have published %Taskflow in the following venues:
+  + Dian-Lun Lin, Haoxing Ren, Yanqing Zhang, and Tsung-Wei Huang, &quot;[From RTL to CUDA: A GPU Acceleration Flow for RTL Simulation with Batch Stimulus](https://doi.org/10.1145/3545008.3545091),&quot; <em>ACM International Conference on Parallel Processing (ICPP)</em>, Bordeaux, France, 2022
 
 Please do not hesitate to contact @twhuang if you intend to collaborate with us 
 on using %Taskflow in your scientific computing projects.

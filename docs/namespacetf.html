@@ -5,7 +5,7 @@
   <title>tf namespace | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -49,7 +49,7 @@
           tf <span class="m-thin">namespace</span>
         </h1>
         <p>taskflow namespace</p>
-        <nav class="m-block m-default">
+        <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
@@ -63,7 +63,7 @@
               </ul>
             </li>
           </ul>
-        </nav>
+        </div>
         <section id="nested-classes">
           <h2><a href="#nested-classes">Classes</a></h2>
           <dl class="m-doc">
@@ -200,6 +200,11 @@
             </dt>
             <dd>class to create a taskflow object</dd>
             <dt>
+              <div class="m-doc-template">template&lt;typename T, unsigned MAX_PRIORITY = static_cast&lt;unsigned&gt;(<a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" class="m-doc">TaskPriority::<wbr />MAX</a>)&gt;</div>
+              class <a href="classtf_1_1TaskQueue.html" class="m-doc">TaskQueue</a>
+            </dt>
+            <dd>Lock-free unbounded single-producer multiple-consumer queue.</dd>
+            <dt>
               class <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a>
             </dt>
             <dd>class to access task information from the observer interface</dd>
@@ -224,6 +229,13 @@
         <section id="enum-members">
           <h2><a href="#enum-members">Enums</a></h2>
           <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">enum class <a href="#ac9f4add8f716ed323b0bdbbc1d89346f" class="m-doc">TaskPriority</a>: unsigned { </span><span class="m-doc-wrap"><a href="#ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" class="m-doc">HIGH</a> = 0,
+              <a href="#ac9f4add8f716ed323b0bdbbc1d89346fa1e23852820b9154316c7c06e2b7ba051" class="m-doc">NORMAL</a> = 1,
+              <a href="#ac9f4add8f716ed323b0bdbbc1d89346fa41bc94cbd8eebea13ce0491b2ac11b88" class="m-doc">LOW</a> = 2,
+              <a href="#ac9f4add8f716ed323b0bdbbc1d89346fa26a4b44a837bf97b972628509912b4a5" class="m-doc">MAX</a> = 3 }</span>
+            </dt>
+            <dd>enumeration of all task priority values</dd>
             <dt>
               <span class="m-doc-wrap-bumper">enum class <a href="#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>: int { </span><span class="m-doc-wrap"><a href="#a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" class="m-doc">PLACEHOLDER</a> = 0,
               <a href="#a1355048578785a80414707ff308b395aa1fbe66e2b3b8907e5b1e605191a1c225" class="m-doc">CUDAFLOW</a>,
@@ -720,6 +732,42 @@
         </section>
         <section>
           <h2>Enum documentation</h2>
+          <section class="m-doc-details" id="ac9f4add8f716ed323b0bdbbc1d89346f"><div>
+            <h3>
+              enum class tf::<wbr /><a href="#ac9f4add8f716ed323b0bdbbc1d89346f" class="m-doc-self">TaskPriority</a>: unsigned
+            </h3>
+            <p>enumeration of all task priority values</p>
+<p>Currently, Taskflow defines three priority levels, <code>HIGH</code>, <code>NORMAL</code>, and <code>LOW</code>, starting from 0, 1, to 2. That is, the lower the value, the higher the priority.</p>
+            <table class="m-table m-fullwidth m-flat m-doc">
+              <thead><tr><th style="width: 1%">Enumerators</th><th></th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><a href="#ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" class="m-doc-self" id="ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c">HIGH</a></td>
+                  <td>
+                  <p>value of the highest priority (i.e., 0)<br /></p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#ac9f4add8f716ed323b0bdbbc1d89346fa1e23852820b9154316c7c06e2b7ba051" class="m-doc-self" id="ac9f4add8f716ed323b0bdbbc1d89346fa1e23852820b9154316c7c06e2b7ba051">NORMAL</a></td>
+                  <td>
+                  <p>value of the normal priority (i.e., 1)<br /></p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#ac9f4add8f716ed323b0bdbbc1d89346fa41bc94cbd8eebea13ce0491b2ac11b88" class="m-doc-self" id="ac9f4add8f716ed323b0bdbbc1d89346fa41bc94cbd8eebea13ce0491b2ac11b88">LOW</a></td>
+                  <td>
+                  <p>value of the lowest priority (i.e., 2)</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#ac9f4add8f716ed323b0bdbbc1d89346fa26a4b44a837bf97b972628509912b4a5" class="m-doc-self" id="ac9f4add8f716ed323b0bdbbc1d89346fa26a4b44a837bf97b972628509912b4a5">MAX</a></td>
+                  <td>
+                  <p>conventional value for iterating priority values</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div></section>
           <section class="m-doc-details" id="a1355048578785a80414707ff308b395a"><div>
             <h3>
               enum class tf::<wbr /><a href="#a1355048578785a80414707ff308b395a" class="m-doc-self">TaskType</a>: int
@@ -2785,13 +2833,13 @@
     </div>
   </div>
 </div>
-<script src="search-v2.js"></script>
-<script src="searchdata-v2.js" async="async"></script>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>
