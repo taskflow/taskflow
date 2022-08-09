@@ -1,0 +1,206 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+  <compounddef id="classtf_1_1Runtime" kind="class" language="C++" prot="public">
+    <compoundname>tf::Runtime</compoundname>
+    <includes refid="graph_8hpp" local="no">graph.hpp</includes>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classtf_1_1Runtime_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class Executor</definition>
+        <argsstring></argsstring>
+        <name>Executor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/graph.hpp" line="153" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/graph.hpp" bodystart="153" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classtf_1_1Runtime_1a8074028372bb09946927b1b6ec01c6e1" prot="private" static="no" mutable="no">
+        <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> &amp;</type>
+        <definition>Executor&amp; tf::Runtime::_executor</definition>
+        <argsstring></argsstring>
+        <name>_executor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/graph.hpp" line="242" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/graph.hpp" bodystart="242" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1Runtime_1ae9bd2bcb1e004b078f627472fb9e0371" prot="private" static="no" mutable="no">
+        <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
+        <definition>Worker&amp; tf::Runtime::_worker</definition>
+        <argsstring></argsstring>
+        <name>_worker</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/graph.hpp" line="243" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/graph.hpp" bodystart="243" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1Runtime_1ac040d7410fbb82703ac39ac3b1baf8fd" prot="private" static="no" mutable="no">
+        <type>Node *</type>
+        <definition>Node* tf::Runtime::_parent</definition>
+        <argsstring></argsstring>
+        <name>_parent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/graph.hpp" line="244" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/graph.hpp" bodystart="244" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> &amp;</type>
+        <definition>Executor &amp; tf::Runtime::executor</definition>
+        <argsstring>()</argsstring>
+        <name>executor</name>
+        <briefdescription>
+<para>obtains the running executor </para>        </briefdescription>
+        <detaileddescription>
+<para>The running executor of a runtime task is the executor that runs the parent taskflow of that runtime task.</para><para><programlisting><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>assert(&amp;(rt.<ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>())<sp/>==<sp/>&amp;executor);</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/graph.hpp" line="172" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/graph.hpp" bodystart="255" bodyend="257"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1Runtime_1aa7e72cc0f298475195b252c8f1793343" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void tf::Runtime::schedule</definition>
+        <argsstring>(Task task)</argsstring>
+        <name>schedule</name>
+        <param>
+          <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref></type>
+          <declname>task</declname>
+        </param>
+        <briefdescription>
+<para>schedules an active task immediately to the worker&apos;s queue </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>task</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the given active task to schedule immediately</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+This member function immediately schedules an active task to the task queue of the associated worker in the runtime task. An active task is a task in a running taskflow. The task may or may not be running, and scheduling that task will immediately put the task into the task queue of the worker that is running the runtime task. Consider the following example:</para><para><programlisting><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A,<sp/>B,<sp/>C,<sp/>D;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/utility/tuple/tie" kindref="compound" external="/home/xiongzc/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::tie</ref>(A,<sp/>B,<sp/>C,<sp/>D)<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[&amp;C]<sp/>(<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt)<sp/>{<sp/><sp/></highlight><highlight class="comment">//<sp/>C<sp/>must<sp/>be<sp/>captured<sp/>by<sp/>reference</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/xiongzc/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1aa7e72cc0f298475195b252c8f1793343" kindref="member">schedule</ref>(C);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/xiongzc/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/xiongzc/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a97c6b53bb0192b98527aab4ea9144191" kindref="member">precede</ref>(B,<sp/>C,<sp/>D);</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+</programlisting></para><para>The executor will first run the condition task <computeroutput>A</computeroutput> which returns <computeroutput>0</computeroutput> to inform the scheduler to go to the runtime task <computeroutput>B</computeroutput>. During the execution of <computeroutput>B</computeroutput>, it directly schedules task <computeroutput>C</computeroutput> without going through the normal taskflow graph scheduling process. At this moment, task <computeroutput>C</computeroutput> is active because its parent taskflow is running. When the taskflow finishes, we will see both <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> in the output. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/graph.hpp" line="209" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/executor.hpp" bodystart="2082" bodyend="2088"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1Runtime_1a479dc5dbf2b988bd166a2b6da089bb17" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::Runtime::run_and_wait</definition>
+        <argsstring>(T &amp;&amp;target)</argsstring>
+        <name>run_and_wait</name>
+        <param>
+          <type>T &amp;&amp;</type>
+          <declname>target</declname>
+        </param>
+        <briefdescription>
+<para>runs the given target and waits until it completes </para>        </briefdescription>
+        <detaileddescription>
+<para>A target can be (1) a callable to spawn a subflow or (2) a composable target with <computeroutput><ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref>&amp; T::graph()</computeroutput> defined</para><para><programlisting><codeline><highlight class="comment">//<sp/>complete<sp/>a<sp/>subflow<sp/>synchronously</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a479dc5dbf2b988bd166a2b6da089bb17" kindref="member">run_and_wait</ref>([](<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>sf){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>complete<sp/>a<sp/>custom<sp/>graph<sp/>synchronously</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){});</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a479dc5dbf2b988bd166a2b6da089bb17" kindref="member">run_and_wait</ref>(taskflow);</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+</programlisting> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/graph.hpp" line="236" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/executor.hpp" bodystart="2092" bodyend="2107"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classtf_1_1Runtime_1abe76e072e64f5d1b1fe09c7e7c22777e" prot="private" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>tf::Runtime::Runtime</definition>
+        <argsstring>(Executor &amp;, Worker &amp;, Node *)</argsstring>
+        <name>Runtime</name>
+        <param>
+          <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> &amp;</type>
+          <defname>e</defname>
+        </param>
+        <param>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
+          <defname>w</defname>
+        </param>
+        <param>
+          <type>Node *</type>
+          <defname>p</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/graph.hpp" line="240" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/graph.hpp" bodystart="248" bodyend="252"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>class to create a runtime object used by a runtime task </para>    </briefdescription>
+    <detaileddescription>
+<para>A runtime object is used by a runtime task for users to interact with the scheduling runtime, such as scheduling an active task and spawning a subflow.</para><para><programlisting><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>rt.run([](<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>sf){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>A.<ref refid="classtf_1_1Task_1a97c6b53bb0192b98527aab4ea9144191" kindref="member">precede</ref>(B);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+</programlisting></para><para>A runtime task is associated with an executor and a worker that runs the runtime task. </para>    </detaileddescription>
+    <location file="/home/xiongzc/taskflow/taskflow/core/graph.hpp" line="151" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/graph.hpp" bodystart="151" bodyend="245"/>
+    <listofallmembers>
+      <member refid="classtf_1_1Runtime_1a8074028372bb09946927b1b6ec01c6e1" prot="private" virt="non-virtual"><scope>tf::Runtime</scope><name>_executor</name></member>
+      <member refid="classtf_1_1Runtime_1ac040d7410fbb82703ac39ac3b1baf8fd" prot="private" virt="non-virtual"><scope>tf::Runtime</scope><name>_parent</name></member>
+      <member refid="classtf_1_1Runtime_1ae9bd2bcb1e004b078f627472fb9e0371" prot="private" virt="non-virtual"><scope>tf::Runtime</scope><name>_worker</name></member>
+      <member refid="classtf_1_1Runtime_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::Runtime</scope><name>Executor</name></member>
+      <member refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" prot="public" virt="non-virtual"><scope>tf::Runtime</scope><name>executor</name></member>
+      <member refid="classtf_1_1Runtime_1a479dc5dbf2b988bd166a2b6da089bb17" prot="public" virt="non-virtual"><scope>tf::Runtime</scope><name>run_and_wait</name></member>
+      <member refid="classtf_1_1Runtime_1abe76e072e64f5d1b1fe09c7e7c22777e" prot="private" virt="non-virtual"><scope>tf::Runtime</scope><name>Runtime</name></member>
+      <member refid="classtf_1_1Runtime_1aa7e72cc0f298475195b252c8f1793343" prot="public" virt="non-virtual"><scope>tf::Runtime</scope><name>schedule</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,44 @@
+namespace tf {
+
+/** @page release-2-1-0 Release 2.1.0 (2019/02/15)
+
+Cpp-Taskflow 2.1.0 is the second release in the 2.x line! 
+This release includes several new changes such as tf::Framework, 
+tf::WorkStealingThreadpool, tf::SpeculativeThreadpool, allocators, benchmarks, and so forth.
+In addition, this release improved usability, 
+stability, and performance.
+
+@tableofcontents
+
+@section release-2-1-0_download Download
+
+Cpp-Taskflow 2.1.0 can be downloaded from <a href="https://github.com/cpp-taskflow/cpp-taskflow/releases/tag/v2.1.0">here</a>.
+
+@section release-2-1-0_new_features New Features
+
+@li A new reuseable task dependency graph tf::Framework. 
+@li New API (tf::Taskflow::run, tf::Taskflow::run_n, tf::Taskflow::run_until) to execute a framework
+
+@section release-2-1-0_improvements_enhancements Improvements and Enhancements
+
+@li Improved the performance of tf::WorkStealingThreadpool (non-blocking notifier, work stealing strategy, etc.)
+@li Changed the data structure to store nodes and topologies to std::list.
+@li Added memory pool and allocator to manage the memory allocation of nodes and topologies.
+@li Added a customized vector (PassiveVector) to hold POD data.
+@li Added a dependents vector to keep track of the predecessors, in addition to successors, of a node.
+@li Added more examples to demonstrate the usage of Cpp-Taskflow.
+@li Added a benchmarking environment with comparison to OpenMP and Intel TBB libraries (micro-benchmarks and machine learning)
+@li Removed the target node from a topology.
+
+
+@section release-2-1-0_breaks_and_deprecated_features Breaks and Deprecated Features
+
+@li tf::Taskflow::emplace is now merged with tf::Taskflow::silent_emplace (both are the same) and no longer returns std::future in order to support tf::Framework
+
+@section release-2-1-0_bug_fixes Bug Fixes
+
+There are no major bug fixes in this release.
+
+*/
+
+}

@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Learning from Examples &raquo; k-means Clustering (cudaFlow) | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="Examples.html">Learning from Examples</a> &raquo;</span>
+          k-means Clustering (cudaFlow)
+        </h1>
+<p>Following up on <a href="kmeans.html" class="m-doc">k-means Clustering</a>, this page studies how to accelerate a k-means workload on a GPU using <a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a>.</p><section id="DefineTheKMeansKernels"><h2><a href="#DefineTheKMeansKernels">Define the k-means Kernels</a></h2><p>Recall that the k-means algorithm has the following steps:</p><ul><li>Step 1: initialize k random centroids</li><li>Step 2: for every data point, find the nearest centroid (L2 distance or other measurements) and assign the point to it</li><li>Step 3: for every centroid, move the centroid to the average of the points assigned to that centroid</li><li>Step 4: go to Step 2 until converged (no more changes in the last few iterations) or maximum iterations reached</li></ul><p>We observe Step 2 and Step 3 of the algorithm are parallelizable across individual points for use to harness the power of GPU:</p><ol><li>for every data point, find the nearest centroid (L2 distance or other measurements) and assign the point to it</li><li>for every centroid, move the centroid to the average of the points assigned to that centroid.</li></ol><p>At a fine-grained level, we request one GPU thread to work on one point for Step 2 and one GPU thread to work on one centroid for Step 3.</p><pre class="m-code"><span class="c1">// px/py: 2D points</span>
+<span class="c1">// N: number of points</span>
+<span class="c1">// mx/my: centroids</span>
+<span class="c1">// K: number of clusters</span>
+<span class="c1">// sx/sy/c: storage to compute the average</span>
+<span class="n">__global__</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">assign_clusters</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">px</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">py</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">mx</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">my</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">sx</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">sy</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">c</span><span class="w"></span>
+<span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">blockDim</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">index</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="c1">// Make global loads once.</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">px</span><span class="p">[</span><span class="n">index</span><span class="p">];</span><span class="w"></span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">py</span><span class="p">[</span><span class="n">index</span><span class="p">];</span><span class="w"></span>
+
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">best_dance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FLT_MAX</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">best_k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">K</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">L2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">],</span><span class="w"> </span><span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">d</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">best_d</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">best_d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">best_k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w">   </span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">atomicAdd</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sx</span><span class="p">[</span><span class="n">best_k</span><span class="p">],</span><span class="w"> </span><span class="n">x</span><span class="p">);</span><span class="w"> </span>
+<span class="w">  </span><span class="n">atomicAdd</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sy</span><span class="p">[</span><span class="n">best_k</span><span class="p">],</span><span class="w"> </span><span class="n">y</span><span class="p">);</span><span class="w"> </span>
+<span class="w">  </span><span class="n">atomicAdd</span><span class="p">(</span><span class="o">&amp;</span><span class="n">c</span><span class="w"> </span><span class="p">[</span><span class="n">best_k</span><span class="p">],</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"> </span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="c1">// mx/my: centroids, sx/sy/c: storage to compute the average</span>
+<span class="n">__global__</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">compute_new_means</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">mx</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">my</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">sx</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">sy</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">c</span><span class="w"></span>
+<span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span><span class="w">  </span><span class="c1">// turn 0/0 to 0/1</span>
+<span class="w">  </span><span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre><p>When we recompute the cluster centroids to be the mean of all points assigned to a particular centroid, multiple GPU threads may access the sum arrays, <code>sx</code> and <code>sy</code>, and the count array, <code>c</code>. To avoid data race, we use a simple <code>atomicAdd</code> method.</p></section><section id="DefineTheKMeanscudaFlow"><h2><a href="#DefineTheKMeanscudaFlow">Define the k-means cudaFlow</a></h2><p>Based on the two kernels, we can define the cudaFlow for the k-means workload below:</p><pre class="m-code"><span class="c1">// N: number of points</span>
+<span class="c1">// K: number of clusters</span>
+<span class="c1">// M: number of iterations</span>
+<span class="c1">// px/py: 2D point vector </span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">kmeans_gpu</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">cconst</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">px</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">py</span><span class="w"></span>
+<span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">h_mx</span><span class="p">,</span><span class="w"> </span><span class="n">h_my</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">d_px</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_py</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_sx</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_sy</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_c</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">K</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">h_mx</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">h_px</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span><span class="w"></span>
+<span class="w">    </span><span class="n">h_my</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">h_py</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="c1">// create a taskflow graph</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;K-Means&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// allocate GPU memory</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">allocate_px</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span>
+<span class="w">    </span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_px</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span><span class="w"> </span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_px&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">allocate_py</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span>
+<span class="w">    </span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_py</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span><span class="w"> </span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_py&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">allocate_mx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span>
+<span class="w">    </span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_mx&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">allocate_my</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span>
+<span class="w">    </span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span><span class="w"> </span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_my&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">allocate_sy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span>
+<span class="w">    </span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_sy</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span><span class="w"> </span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_sy&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">allocate_c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span>
+<span class="w">    </span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_c</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span><span class="w"> </span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_c&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// transfer data from the host to the GPU</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">h2d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">cf</span><span class="p">){</span><span class="w"></span>
+<span class="w">    </span><span class="n">cf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">d_px</span><span class="p">,</span><span class="w"> </span><span class="n">h_px</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">N</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;h2d_px&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">d_py</span><span class="p">,</span><span class="w"> </span><span class="n">h_py</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">N</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;h2d_py&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="n">h_mx</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;h2d_mx&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="n">h_my</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;h2d_my&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;h2d&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// GPU task graph of the main k-means body</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">kmeans</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">cf</span><span class="p">){</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">zero_c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">zero</span><span class="p">(</span><span class="n">d_c</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;zero_c&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">zero_sx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">zero</span><span class="p">(</span><span class="n">d_sx</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;zero_sx&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">zero_sy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">zero</span><span class="p">(</span><span class="n">d_sy</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;zero_sy&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">cluster</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1024-1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="n">assign_clusters</span><span class="p">,</span><span class="w"> </span><span class="n">d_px</span><span class="p">,</span><span class="w"> </span><span class="n">d_py</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="n">d_sx</span><span class="p">,</span><span class="w"> </span><span class="n">d_sy</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="n">d_c</span><span class="w"></span>
+<span class="w">    </span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;cluster&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">new_centroid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">compute_new_means</span><span class="p">,</span><span class="w"> </span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="n">d_sx</span><span class="p">,</span><span class="w"> </span><span class="n">d_sy</span><span class="p">,</span><span class="w"> </span><span class="n">d_c</span><span class="w"></span>
+<span class="w">    </span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;new_centroid&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">cluster</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">new_centroid</span><span class="p">)</span><span class="w"></span>
+<span class="w">           </span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">zero_c</span><span class="p">,</span><span class="w"> </span><span class="n">zero_sx</span><span class="p">,</span><span class="w"> </span><span class="n">zero_sy</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;update_means&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// condition task to check convergence</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">condition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="k">mutable</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">M</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;converged?&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// transfer the result of clusters from GPU to host</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">stop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">cf</span><span class="p">){</span><span class="w"></span>
+<span class="w">    </span><span class="n">cf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">h_mx</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;d2h_mx&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">h_my</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;d2h_my&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;d2h&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// deallocated GPU memory</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">free</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_px</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_py</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_mx</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_my</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_sx</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_sy</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_c</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;free&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="c1">// build up the dependency</span>
+<span class="w">  </span><span class="n">h2d</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">allocate_px</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_py</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_mx</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_my</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">kmeans</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">allocate_sx</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_sy</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_c</span><span class="p">,</span><span class="w"> </span><span class="n">h2d</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">condition</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">condition</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">kmeans</span><span class="p">,</span><span class="w"> </span><span class="n">stop</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">stop</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">free</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// dump the taskflow without expanding GPU task graphs</span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="c1">// run the taskflow</span>
+<span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// dump the entire taskflow</span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre><p>The first dump before executing the taskflow produces the following diagram. The condition tasks introduces a cycle between itself and <code>update_means</code>. Each time it goes back to <code>update_means</code>, the cudaFlow is reconstructed with captured parameters in the closure and offloaded to the GPU.</p><div class="m-graph"><svg style="width: 60.000rem; height: 18.188rem;" viewBox="0.00 0.00 960.04 290.77">
+<g transform="scale(1 1) rotate(0) translate(4 286.77)">
+<title>Taskflow</title>
+<g id="node1" class="node"><title>p0x562f9807bcc0</title>
+<ellipse cx="77.0746" cy="-264.385" rx="73.5782" ry="18.2703"/>
+<text text-anchor="middle" x="77.0746" y="-260.585">allocate_px</text>
+</g>
+<g id="node2" class="node"><title>p0x562f9807b550</title>
+<polygon points="289.567,-200.385 286.567,-204.385 265.567,-204.385 262.567,-200.385 235.567,-200.385 235.567,-164.385 289.567,-164.385 289.567,-200.385"/>
+<text text-anchor="middle" x="262.567" y="-178.585">h2d</text>
+</g>
+<g id="edge1" class="edge"><title>p0x562f9807bcc0&#45;&gt;p0x562f9807b550</title>
+<path fill="none" stroke="black" d="M121.06,-249.527C131.952,-245.5 143.562,-240.977 154.149,-236.385 178.726,-225.725 205.659,-212.181 226.408,-201.324"/>
+<polygon points="228.261,-204.304 235.476,-196.545 224.997,-198.111 228.261,-204.304"/>
+</g>
+<g id="node7" class="node"><title>p0x562f9807b440</title>
+<polygon points="499.985,-118.385 496.985,-122.385 475.985,-122.385 472.985,-118.385 370.985,-118.385 370.985,-82.3848 499.985,-82.3848 499.985,-118.385"/>
+<text text-anchor="middle" x="435.485" y="-96.5848">update_means</text>
+</g>
+<g id="edge8" class="edge"><title>p0x562f9807b550&#45;&gt;p0x562f9807b440</title>
+<path fill="none" stroke="black" d="M289.666,-173.33C303.089,-168.434 319.607,-162.039 333.985,-155.385 354.522,-145.88 376.656,-133.96 394.91,-123.649"/>
+<polygon points="396.849,-126.572 403.804,-118.58 393.383,-120.491 396.849,-126.572"/>
+</g>
+<g id="node3" class="node"><title>p0x562f9807bbb0</title>
+<ellipse cx="77.0746" cy="-209.385" rx="73.5782" ry="18.2703"/>
+<text text-anchor="middle" x="77.0746" y="-205.585">allocate_py</text>
+</g>
+<g id="edge2" class="edge"><title>p0x562f9807bbb0&#45;&gt;p0x562f9807b550</title>
+<path fill="none" stroke="black" d="M140.709,-200.168C168.926,-196.016 201.241,-191.261 225.352,-187.714"/>
+<polygon points="226.094,-191.142 235.478,-186.224 225.075,-184.217 226.094,-191.142"/>
+</g>
+<g id="node4" class="node"><title>p0x562f9807baa0</title>
+<ellipse cx="77.0746" cy="-154.385" rx="77.1494" ry="18.2703"/>
+<text text-anchor="middle" x="77.0746" y="-150.585">allocate_mx</text>
+</g>
+<g id="edge3" class="edge"><title>p0x562f9807baa0&#45;&gt;p0x562f9807b550</title>
+<path fill="none" stroke="black" d="M142.509,-164.217C170.395,-168.472 201.984,-173.293 225.613,-176.898"/>
+<polygon points="225.129,-180.365 235.543,-178.414 226.185,-173.445 225.129,-180.365"/>
+</g>
+<g id="node5" class="node"><title>p0x562f9807b990</title>
+<ellipse cx="77.0746" cy="-99.3848" rx="77.1494" ry="18.2703"/>
+<text text-anchor="middle" x="77.0746" y="-95.5848">allocate_my</text>
+</g>
+<g id="edge4" class="edge"><title>p0x562f9807b990&#45;&gt;p0x562f9807b550</title>
+<path fill="none" stroke="black" d="M124.497,-113.991C134.523,-117.823 144.887,-122.322 154.149,-127.385 172.245,-137.276 173.121,-145.372 191.149,-155.385 201.95,-161.383 214.355,-166.628 225.715,-170.86"/>
+<polygon points="224.768,-174.238 235.363,-174.311 227.126,-167.647 224.768,-174.238"/>
+</g>
+<g id="node6" class="node"><title>p0x562f9807b880</title>
+<ellipse cx="262.567" cy="-128.385" rx="71.3357" ry="18.2703"/>
+<text text-anchor="middle" x="262.567" y="-124.585">allocate_sx</text>
+</g>
+<g id="edge5" class="edge"><title>p0x562f9807b880&#45;&gt;p0x562f9807b440</title>
+<path fill="none" stroke="black" d="M323.346,-118.592C335.499,-116.601 348.417,-114.485 360.982,-112.426"/>
+<polygon points="361.66,-115.862 370.963,-110.791 360.529,-108.954 361.66,-115.862"/>
+</g>
+<g id="node10" class="node"><title>p0x562f9807b330</title>
+<polygon points="647.985,-126.385 545.985,-100.385 647.985,-74.3848 749.985,-100.385 647.985,-126.385"/>
+<text text-anchor="middle" x="647.985" y="-96.5848">converged?</text>
+</g>
+<g id="edge9" class="edge"><title>p0x562f9807b440&#45;&gt;p0x562f9807b330</title>
+<path fill="none" stroke="black" d="M500.101,-102.953C506.145,-103.128 512.181,-103.278 517.985,-103.385 527.644,-103.562 537.71,-103.595 547.771,-103.527"/>
+<polygon points="547.85,-107.026 557.815,-103.426 547.78,-100.027 547.85,-107.026"/>
+</g>
+<g id="node8" class="node"><title>p0x562f9807b770</title>
+<ellipse cx="262.567" cy="-73.3848" rx="71.3357" ry="18.2703"/>
+<text text-anchor="middle" x="262.567" y="-69.5848">allocate_sy</text>
+</g>
+<g id="edge6" class="edge"><title>p0x562f9807b770&#45;&gt;p0x562f9807b440</title>
+<path fill="none" stroke="black" d="M323.826,-82.904C335.69,-84.7781 348.265,-86.7646 360.519,-88.7003"/>
+<polygon points="360.291,-92.2076 370.714,-90.3109 361.383,-85.2933 360.291,-92.2076"/>
+</g>
+<g id="node9" class="node"><title>p0x562f9807b660</title>
+<ellipse cx="262.567" cy="-18.3848" rx="66.4361" ry="18.2703"/>
+<text text-anchor="middle" x="262.567" y="-14.5848">allocate_c</text>
+</g>
+<g id="edge7" class="edge"><title>p0x562f9807b660&#45;&gt;p0x562f9807b440</title>
+<path fill="none" stroke="black" d="M303.016,-33.1487C313.203,-37.2119 324.086,-41.7756 333.985,-46.3848 354.016,-55.7113 375.673,-67.1634 393.736,-77.1177"/>
+<polygon points="392.384,-80.3709 402.826,-82.1675 395.784,-74.2517 392.384,-80.3709"/>
+</g>
+<g id="edge10" class="edge"><title>p0x562f9807b330&#45;&gt;p0x562f9807b440</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M597.77,-87.0495C573.753,-82.0987 544.41,-78.3453 517.985,-81.3848 515.459,-81.6753 512.898,-82.0149 510.317,-82.3955"/>
+<polygon points="509.602,-78.9661 500.307,-84.0497 510.744,-85.8724 509.602,-78.9661"/>
+<text text-anchor="middle" x="522.985" y="-86.5848">0</text>
+</g>
+<g id="node11" class="node"><title>p0x562f9807b220</title>
+<polygon points="849.985,-118.385 846.985,-122.385 825.985,-122.385 822.985,-118.385 795.985,-118.385 795.985,-82.3848 849.985,-82.3848 849.985,-118.385"/>
+<text text-anchor="middle" x="822.985" y="-96.5848">d2h</text>
+</g>
+<g id="edge11" class="edge"><title>p0x562f9807b330&#45;&gt;p0x562f9807b220</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M750.12,-100.385C762.764,-100.385 774.979,-100.385 785.64,-100.385"/>
+<polygon points="785.742,-103.885 795.742,-100.385 785.742,-96.8849 785.742,-103.885"/>
+<text text-anchor="middle" x="772.985" y="-105.585">1</text>
+</g>
+<g id="node12" class="node"><title>p0x562f9807b110</title>
+<ellipse cx="919.512" cy="-100.385" rx="32.5538" ry="18.2703"/>
+<text text-anchor="middle" x="919.512" y="-96.5848">free</text>
+</g>
+<g id="edge12" class="edge"><title>p0x562f9807b220&#45;&gt;p0x562f9807b110</title>
+<path fill="none" stroke="black" d="M850.065,-100.385C858.324,-100.385 867.67,-100.385 876.743,-100.385"/>
+<polygon points="876.797,-103.885 886.797,-100.385 876.797,-96.8849 876.797,-103.885"/>
+</g>
+</g>
+</svg>
+</div><p>The second dump after executing the taskflow produces the following diagram, with all cudaFlows expanded:</p><div class="m-graph"><svg style="width: 69.875rem; height: 50.188rem;" viewBox="0.00 0.00 1117.69 802.77">
+<g transform="scale(1 1) rotate(0) translate(4 798.77)">
+<title>Taskflow</title>
+<g id="clust1" class="cluster"><title>cluster_p0x562f9807b550</title>
+<polygon points="172.279,-452.385 172.279,-695.385 455.219,-695.385 455.219,-452.385 172.279,-452.385"/>
+<text text-anchor="middle" x="313.749" y="-678.585">cudaFlow: h2d</text>
+</g>
+<g id="clust2" class="cluster"><title>cluster_p0x562f9807b440</title>
+<polygon points="8,-154.385 8,-342.385 665.637,-342.385 665.637,-154.385 8,-154.385"/>
+<text text-anchor="middle" x="336.818" y="-325.585">cudaFlow: update_means</text>
+</g>
+<g id="clust3" class="cluster"><title>cluster_p0x562f9807b220</title>
+<polygon points="743.189,-14.3848 743.189,-147.385 1015.64,-147.385 1015.64,-14.3848 743.189,-14.3848"/>
+<text text-anchor="middle" x="879.413" y="-130.585">cudaFlow: h2d</text>
+</g>
+<g id="node1" class="node"><title>p0x562f9807bcc0</title>
+<ellipse cx="234.726" cy="-721.385" rx="73.5782" ry="18.2703"/>
+<text text-anchor="middle" x="234.726" y="-717.585">allocate_px</text>
+</g>
+<g id="node2" class="node"><title>p0x562f9807b550</title>
+<polygon points="447.219,-551.385 444.219,-555.385 423.219,-555.385 420.219,-551.385 393.219,-551.385 393.219,-515.385 447.219,-515.385 447.219,-551.385"/>
+<text text-anchor="middle" x="420.219" y="-529.585">h2d</text>
+</g>
+<g id="edge1" class="edge"><title>p0x562f9807bcc0&#45;&gt;p0x562f9807b550</title>
+<path fill="none" stroke="black" d="M292.727,-709.862C299.516,-707.088 306.062,-703.648 311.801,-699.385 360.411,-663.269 393.036,-598.099 408.623,-561.069"/>
+<polygon points="412.024,-561.999 412.566,-551.418 405.544,-559.351 412.024,-561.999"/>
+</g>
+<g id="node7" class="node"><title>p0x562f9807b440</title>
+<polygon points="657.637,-198.385 654.637,-202.385 633.637,-202.385 630.637,-198.385 528.637,-198.385 528.637,-162.385 657.637,-162.385 657.637,-198.385"/>
+<text text-anchor="middle" x="593.137" y="-176.585">update_means</text>
+</g>
+<g id="edge8" class="edge"><title>p0x562f9807b550&#45;&gt;p0x562f9807b440</title>
+<path fill="none" stroke="black" d="M430.168,-514.903C458.318,-456.762 545.185,-277.356 578.728,-208.078"/>
+<polygon points="582.069,-209.209 583.277,-198.684 575.768,-206.159 582.069,-209.209"/>
+</g>
+<g id="node3" class="node"><title>p0x562f9807bbb0</title>
+<ellipse cx="234.726" cy="-423.385" rx="73.5782" ry="18.2703"/>
+<text text-anchor="middle" x="234.726" y="-419.585">allocate_py</text>
+</g>
+<g id="edge2" class="edge"><title>p0x562f9807bbb0&#45;&gt;p0x562f9807b550</title>
+<path fill="none" stroke="black" d="M285.08,-436.785C294.205,-440.044 303.475,-443.907 311.801,-448.385 342.073,-464.666 372.403,-489.658 393.076,-508.334"/>
+<polygon points="390.772,-510.97 400.506,-515.152 395.504,-505.812 390.772,-510.97"/>
+</g>
+<g id="node4" class="node"><title>p0x562f9807baa0</title>
+<ellipse cx="234.726" cy="-368.385" rx="77.1494" ry="18.2703"/>
+<text text-anchor="middle" x="234.726" y="-364.585">allocate_mx</text>
+</g>
+<g id="edge3" class="edge"><title>p0x562f9807baa0&#45;&gt;p0x562f9807b550</title>
+<path fill="none" stroke="black" d="M285.633,-382.23C294.805,-386.001 303.95,-390.67 311.801,-396.385 352.768,-426.208 386.148,-475.728 404.307,-506.355"/>
+<polygon points="401.4,-508.317 409.446,-515.21 407.454,-504.804 401.4,-508.317"/>
+</g>
+<g id="node5" class="node"><title>p0x562f9807b990</title>
+<ellipse cx="234.726" cy="-776.385" rx="77.1494" ry="18.2703"/>
+<text text-anchor="middle" x="234.726" y="-772.585">allocate_my</text>
+</g>
+<g id="edge4" class="edge"><title>p0x562f9807b990&#45;&gt;p0x562f9807b550</title>
+<path fill="none" stroke="black" d="M288.195,-763.072C296.725,-759.293 304.985,-754.486 311.801,-748.385 369.634,-696.622 400.135,-606.571 412.49,-561.201"/>
+<polygon points="415.896,-562.013 415.052,-551.452 409.126,-560.234 415.896,-562.013"/>
+</g>
+<g id="node6" class="node"><title>p0x562f9807b880</title>
+<ellipse cx="420.219" cy="-128.385" rx="71.3357" ry="18.2703"/>
+<text text-anchor="middle" x="420.219" y="-124.585">allocate_sx</text>
+</g>
+<g id="edge5" class="edge"><title>p0x562f9807b880&#45;&gt;p0x562f9807b440</title>
+<path fill="none" stroke="black" d="M467.022,-142.32C484.199,-147.546 504.124,-153.608 522.954,-159.337"/>
+<polygon points="522.094,-162.733 532.68,-162.296 524.132,-156.037 522.094,-162.733"/>
+</g>
+<g id="node14" class="node"><title>p0x562f9807b330</title>
+<polygon points="805.637,-207.385 703.637,-181.385 805.637,-155.385 907.637,-181.385 805.637,-207.385"/>
+<text text-anchor="middle" x="805.637" y="-177.585">converged?</text>
+</g>
+<g id="edge13" class="edge"><title>p0x562f9807b440&#45;&gt;p0x562f9807b330</title>
+<path fill="none" stroke="black" d="M657.753,-182.953C663.797,-183.128 669.832,-183.278 675.637,-183.385 684.179,-183.542 693.04,-183.608 701.934,-183.606"/>
+<polygon points="701.986,-187.106 711.976,-183.577 701.966,-180.106 701.986,-187.106"/>
+</g>
+<g id="node8" class="node"><title>p0x562f9807b770</title>
+<ellipse cx="420.219" cy="-73.3848" rx="71.3357" ry="18.2703"/>
+<text text-anchor="middle" x="420.219" y="-69.5848">allocate_sy</text>
+</g>
+<g id="edge6" class="edge"><title>p0x562f9807b770&#45;&gt;p0x562f9807b440</title>
+<path fill="none" stroke="black" d="M463.85,-88.0482C473.244,-91.9021 482.971,-96.3964 491.637,-101.385 518.346,-116.76 545.651,-138.701 565.046,-155.56"/>
+<polygon points="562.773,-158.222 572.59,-162.208 567.402,-152.971 562.773,-158.222"/>
+</g>
+<g id="node9" class="node"><title>p0x562f9807b660</title>
+<ellipse cx="420.219" cy="-18.3848" rx="66.4361" ry="18.2703"/>
+<text text-anchor="middle" x="420.219" y="-14.5848">allocate_c</text>
+</g>
+<g id="edge7" class="edge"><title>p0x562f9807b660&#45;&gt;p0x562f9807b440</title>
+<path fill="none" stroke="black" d="M466.029,-31.9089C475.004,-35.7668 484.008,-40.5505 491.637,-46.3848 529.989,-75.7146 560.867,-123.365 577.834,-153.234"/>
+<polygon points="574.931,-155.217 582.845,-162.262 581.052,-151.82 574.931,-155.217"/>
+</g>
+<g id="node10" class="node"><title>p0x7fbc54000b20</title>
+<ellipse cx="234.726" cy="-643.385" rx="50.8235" ry="18.2703"/>
+<text text-anchor="middle" x="234.726" y="-639.585">h2d_px</text>
+</g>
+<g id="edge9" class="edge"><title>p0x7fbc54000b20&#45;&gt;p0x562f9807b550</title>
+<path fill="none" stroke="black" d="M274.243,-631.729C286.586,-627.338 300.083,-621.822 311.801,-615.385 340.847,-599.429 370.542,-576.117 391.327,-558.424"/>
+<polygon points="393.828,-560.889 399.111,-551.705 389.254,-555.59 393.828,-560.889"/>
+</g>
+<g id="node11" class="node"><title>p0x7fbc54000c00</title>
+<ellipse cx="234.726" cy="-588.385" rx="50.8235" ry="18.2703"/>
+<text text-anchor="middle" x="234.726" y="-584.585">h2d_py</text>
+</g>
+<g id="edge10" class="edge"><title>p0x7fbc54000c00&#45;&gt;p0x562f9807b550</title>
+<path fill="none" stroke="black" d="M274.64,-576.721C306.821,-567.075 352.156,-553.486 383.44,-544.109"/>
+<polygon points="384.495,-547.447 393.069,-541.223 382.485,-540.742 384.495,-547.447"/>
+</g>
+<g id="node12" class="node"><title>p0x7fbc54000ce0</title>
+<ellipse cx="234.726" cy="-533.385" rx="54.3945" ry="18.2703"/>
+<text text-anchor="middle" x="234.726" y="-529.585">h2d_mx</text>
+</g>
+<g id="edge11" class="edge"><title>p0x7fbc54000ce0&#45;&gt;p0x562f9807b550</title>
+<path fill="none" stroke="black" d="M289.293,-533.385C319.457,-533.385 356.322,-533.385 383.067,-533.385"/>
+<polygon points="383.144,-536.885 393.144,-533.385 383.144,-529.885 383.144,-536.885"/>
+</g>
+<g id="node13" class="node"><title>p0x7fbc54000db0</title>
+<ellipse cx="234.726" cy="-478.385" rx="54.3945" ry="18.2703"/>
+<text text-anchor="middle" x="234.726" y="-474.585">h2d_my</text>
+</g>
+<g id="edge12" class="edge"><title>p0x7fbc54000db0&#45;&gt;p0x562f9807b550</title>
+<path fill="none" stroke="black" d="M275.995,-490.455C308.031,-500.057 352.448,-513.371 383.291,-522.616"/>
+<polygon points="382.608,-526.065 393.192,-525.584 384.618,-519.36 382.608,-526.065"/>
+</g>
+<g id="edge19" class="edge"><title>p0x562f9807b330&#45;&gt;p0x562f9807b440</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M756.669,-167.751C732.438,-162.443 702.542,-158.29 675.637,-161.385 673.111,-161.675 670.549,-162.015 667.969,-162.396"/>
+<polygon points="667.254,-158.966 657.959,-164.05 668.396,-165.872 667.254,-158.966"/>
+<text text-anchor="middle" x="680.637" y="-166.585">0</text>
+</g>
+<g id="node20" class="node"><title>p0x562f9807b220</title>
+<polygon points="1007.64,-113.385 1004.64,-117.385 983.637,-117.385 980.637,-113.385 953.637,-113.385 953.637,-77.3848 1007.64,-77.3848 1007.64,-113.385"/>
+<text text-anchor="middle" x="980.637" y="-91.5848">h2d</text>
+</g>
+<g id="edge20" class="edge"><title>p0x562f9807b330&#45;&gt;p0x562f9807b220</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M860.757,-169.321C876.353,-164.789 893.077,-158.87 907.637,-151.385 923.848,-143.05 940.038,-130.889 952.948,-120.027"/>
+<polygon points="955.251,-122.662 960.533,-113.477 950.676,-117.364 955.251,-122.662"/>
+<text text-anchor="middle" x="930.637" y="-145.585">1</text>
+</g>
+<g id="node15" class="node"><title>p0x7fbc540051d0</title>
+<ellipse cx="68.3259" cy="-290.385" rx="46.8387" ry="18.2703"/>
+<text text-anchor="middle" x="68.3259" y="-286.585">zero_c</text>
+</g>
+<g id="node16" class="node"><title>p0x7fbc540053d0</title>
+<polygon points="268.726,-226.385 204.726,-226.385 200.726,-222.385 200.726,-190.385 264.726,-190.385 268.726,-194.385 268.726,-226.385"/>
+<polyline points="264.726,-222.385 200.726,-222.385 "/>
+<polyline points="264.726,-222.385 264.726,-190.385 "/>
+<polyline points="264.726,-222.385 268.726,-226.385 "/>
+<text text-anchor="middle" x="234.726" y="-204.585">cluster</text>
+</g>
+<g id="edge14" class="edge"><title>p0x7fbc540051d0&#45;&gt;p0x7fbc540053d0</title>
+<path fill="none" stroke="black" d="M97.9623,-276.101C123.779,-263.225 162.081,-244.12 191.426,-229.483"/>
+<polygon points="193.226,-232.497 200.612,-224.902 190.101,-226.233 193.226,-232.497"/>
+</g>
+<g id="node19" class="node"><title>p0x7fbc54005470</title>
+<polygon points="479.719,-204.385 364.719,-204.385 360.719,-200.385 360.719,-168.385 475.719,-168.385 479.719,-172.385 479.719,-204.385"/>
+<polyline points="475.719,-200.385 360.719,-200.385 "/>
+<polyline points="475.719,-200.385 475.719,-168.385 "/>
+<polyline points="475.719,-200.385 479.719,-204.385 "/>
+<text text-anchor="middle" x="420.219" y="-182.585">new_centroid</text>
+</g>
+<g id="edge17" class="edge"><title>p0x7fbc540053d0&#45;&gt;p0x7fbc54005470</title>
+<path fill="none" stroke="black" d="M268.956,-204.401C291.675,-201.677 322.61,-197.968 350.508,-194.623"/>
+<polygon points="351.115,-198.075 360.628,-193.41 350.282,-191.125 351.115,-198.075"/>
+</g>
+<g id="node17" class="node"><title>p0x7fbc54005270</title>
+<ellipse cx="68.3259" cy="-235.385" rx="52.1524" ry="18.2703"/>
+<text text-anchor="middle" x="68.3259" y="-231.585">zero_sx</text>
+</g>
+<g id="edge15" class="edge"><title>p0x7fbc54005270&#45;&gt;p0x7fbc540053d0</title>
+<path fill="none" stroke="black" d="M115.997,-227.72C139.376,-223.88 167.504,-219.261 190.402,-215.5"/>
+<polygon points="191.219,-218.913 200.519,-213.838 190.084,-212.005 191.219,-218.913"/>
+</g>
+<g id="node18" class="node"><title>p0x7fbc54005330</title>
+<ellipse cx="68.3259" cy="-180.385" rx="52.1524" ry="18.2703"/>
+<text text-anchor="middle" x="68.3259" y="-176.585">zero_sy</text>
+</g>
+<g id="edge16" class="edge"><title>p0x7fbc54005330&#45;&gt;p0x7fbc540053d0</title>
+<path fill="none" stroke="black" d="M115.997,-188.334C139.376,-192.315 167.504,-197.106 190.402,-201.006"/>
+<polygon points="190.074,-204.5 200.519,-202.729 191.249,-197.6 190.074,-204.5"/>
+</g>
+<g id="edge18" class="edge"><title>p0x7fbc54005470&#45;&gt;p0x562f9807b440</title>
+<path fill="none" stroke="black" d="M480.039,-184.32C492.383,-183.887 505.55,-183.424 518.36,-182.975"/>
+<polygon points="518.664,-186.466 528.535,-182.617 518.418,-179.471 518.664,-186.466"/>
+</g>
+<g id="node21" class="node"><title>p0x562f9807b110</title>
+<ellipse cx="1077.16" cy="-95.3848" rx="32.5538" ry="18.2703"/>
+<text text-anchor="middle" x="1077.16" y="-91.5848">free</text>
+</g>
+<g id="edge21" class="edge"><title>p0x562f9807b220&#45;&gt;p0x562f9807b110</title>
+<path fill="none" stroke="black" d="M1007.72,-95.3848C1015.98,-95.3848 1025.32,-95.3848 1034.39,-95.3848"/>
+<polygon points="1034.45,-98.8849 1044.45,-95.3848 1034.45,-91.8849 1034.45,-98.8849"/>
+</g>
+<g id="node22" class="node"><title>p0x7fbc5400bf40</title>
+<ellipse cx="805.637" cy="-95.3848" rx="54.3945" ry="18.2703"/>
+<text text-anchor="middle" x="805.637" y="-91.5848">d2h_mx</text>
+</g>
+<g id="edge22" class="edge"><title>p0x7fbc5400bf40&#45;&gt;p0x562f9807b220</title>
+<path fill="none" stroke="black" d="M860.427,-95.3848C887.384,-95.3848 919.313,-95.3848 943.339,-95.3848"/>
+<polygon points="943.444,-98.8849 953.444,-95.3848 943.444,-91.8849 943.444,-98.8849"/>
+</g>
+<g id="node23" class="node"><title>p0x7fbc54008020</title>
+<ellipse cx="805.637" cy="-40.3848" rx="54.3945" ry="18.2703"/>
+<text text-anchor="middle" x="805.637" y="-36.5848">d2h_my</text>
+</g>
+<g id="edge23" class="edge"><title>p0x7fbc54008020&#45;&gt;p0x562f9807b220</title>
+<path fill="none" stroke="black" d="M849.642,-51.4081C867.667,-56.2603 888.776,-62.2474 907.637,-68.3848 919.637,-72.2899 932.593,-76.9925 944.161,-81.3713"/>
+<polygon points="942.911,-84.6403 953.501,-84.9486 945.415,-78.1034 942.911,-84.6403"/>
+</g>
+</g>
+</svg>
+</div><p>The main cudaFlow task, <code>update_means</code>, must not run before all required data has settled down. It precedes a condition task that circles back to itself until we reach <code>M</code> iterations. When iteration completes, the condition task directs the execution path to the cudaFlow, <code>h2d</code>, to copy the results of clusters to <code>h_mx</code> and <code>h_my</code> and then deallocate all GPU memory.</p></section><section id="RepeatTheExecutionofTheKMeanscudaFlow"><h2><a href="#RepeatTheExecutionofTheKMeanscudaFlow">Repeat the Execution of the k-means cudaFlow</a></h2><p>We observe the GPU task graph parameters remain <em>unchanged</em> across all k-means iterations. In this case, we can leverage <a href="classtf_1_1cudaFlow.html#a99358da15e3bdfa1faabb3e326130e1f" class="m-doc">tf::<wbr />cudaFlow::<wbr />offload_until</a> or <a href="classtf_1_1cudaFlow.html#ac2269fd7dc8ca04a294a718204703dad" class="m-doc">tf::<wbr />cudaFlow::<wbr />offload_n</a> to run it repeatedly without conditional tasking.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">kmeans</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">cf</span><span class="p">){</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">zero_c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">zero</span><span class="p">(</span><span class="n">d_c</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;zero_c&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">zero_sx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">zero</span><span class="p">(</span><span class="n">d_sx</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;zero_sx&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">zero_sy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">zero</span><span class="p">(</span><span class="n">d_sy</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;zero_sy&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">cluster</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1024-1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">assign_clusters</span><span class="p">,</span><span class="w"> </span><span class="n">d_px</span><span class="p">,</span><span class="w"> </span><span class="n">d_py</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="n">d_sx</span><span class="p">,</span><span class="w"> </span><span class="n">d_sy</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="n">d_c</span><span class="w"></span>
+<span class="w">  </span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;cluster&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">new_centroid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">compute_new_means</span><span class="p">,</span><span class="w"> </span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="n">d_sx</span><span class="p">,</span><span class="w"> </span><span class="n">d_sy</span><span class="p">,</span><span class="w"> </span><span class="n">d_c</span><span class="w"></span>
+<span class="w">  </span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;new_centroid&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">cluster</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">new_centroid</span><span class="p">)</span><span class="w"></span>
+<span class="w">         </span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">zero_c</span><span class="p">,</span><span class="w"> </span><span class="n">zero_sx</span><span class="p">,</span><span class="w"> </span><span class="n">zero_sy</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// we ask the executor to launch the cudaFlow by M times</span>
+<span class="w">  </span><span class="n">cf</span><span class="p">.</span><span class="n">offload_n</span><span class="p">(</span><span class="n">M</span><span class="p">);</span><span class="w"></span>
+<span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;update_means&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="c1">// ...</span>
+
+<span class="c1">// build up the dependency</span>
+<span class="n">h2d</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">allocate_px</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_py</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_mx</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_my</span><span class="p">);</span><span class="w"></span>
+
+<span class="n">kmeans</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">allocate_sx</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_sy</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_c</span><span class="p">,</span><span class="w"> </span><span class="n">h2d</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">stop</span><span class="p">);</span><span class="w"></span>
+
+<span class="n">stop</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">free</span><span class="p">);</span><span class="w"></span></pre><p>At the last line of the cudaFlow closure, we call <code>cf.offload_n(M)</code> to ask the executor to repeatedly run the cudaFlow by <code>M</code> times. Compared with the version using conditional tasking, the cudaFlow here is created only one time and thus the overhead is reduced.</p><div class="m-graph"><svg style="width: 123.938rem; height: 29.312rem;" viewBox="0.00 0.00 1983.01 469.46">
+<g transform="scale(1 1) rotate(0) translate(4 465.463)">
+<title>Taskflow</title>
+<g id="clust1" class="cluster"><title>cluster_p0x55764dbce0d0</title>
+<polygon points="157.539,-223.539 157.539,-374.693 648.539,-374.693 648.539,-223.539 157.539,-223.539"/>
+<text text-anchor="middle" x="403.039" y="-357.893">cudaFlow: h2d</text>
+</g>
+<g id="clust2" class="cluster"><title>cluster_p0x55764dbce1e0</title>
+<polygon points="1157.54,-137.154 1157.54,-453.463 1512.54,-453.463 1512.54,-137.154 1157.54,-137.154"/>
+<text text-anchor="middle" x="1335.04" y="-436.663">cudaFlow: update_means</text>
+</g>
+<g id="clust3" class="cluster"><title>cluster_p0x55764dbce2f0</title>
+<polygon points="1520.54,-64.7696 1520.54,-215.539 1771.54,-215.539 1771.54,-64.7696 1520.54,-64.7696"/>
+<text text-anchor="middle" x="1646.04" y="-198.739">cudaFlow: d2h</text>
+</g>
+<g id="node1" class="node"><title>p0x55764dbcd960</title>
+<ellipse cx="73.5391" cy="-322.309" rx="73.5782" ry="18.2703"/>
+<text text-anchor="middle" x="73.5391" y="-318.509">allocate_px</text>
+</g>
+<g id="node2" class="node"><title>p0x55764dbce0d0</title>
+<polygon points="616.539,-267.539 613.539,-271.539 592.539,-271.539 589.539,-267.539 562.539,-267.539 562.539,-231.539 616.539,-231.539 616.539,-267.539"/>
+<text text-anchor="middle" x="589.539" y="-245.739">h2d</text>
+</g>
+<g id="edge1" class="edge"><title>p0x55764dbcd960&#45;&gt;p0x55764dbce0d0</title>
+<path fill="none" stroke="black" d="M125.905,-309.206C135.086,-307.291 144.571,-305.444 153.539,-303.924 300.39,-279.032 476.951,-261.048 552.409,-253.92"/>
+<polygon points="552.741,-257.405 562.371,-252.987 552.088,-250.435 552.741,-257.405"/>
+</g>
+<g id="node7" class="node"><title>p0x55764dbce1e0</title>
+<polygon points="1504.04,-181.154 1501.04,-185.154 1480.04,-185.154 1477.04,-181.154 1375.04,-181.154 1375.04,-145.154 1504.04,-145.154 1504.04,-181.154"/>
+<text text-anchor="middle" x="1439.54" y="-159.354">update_means</text>
+</g>
+<g id="edge8" class="edge"><title>p0x55764dbce0d0&#45;&gt;p0x55764dbce1e0</title>
+<path fill="none" stroke="black" d="M616.857,-245.827C732.538,-234.343 1184.36,-189.487 1364.65,-171.589"/>
+<polygon points="1365.24,-175.048 1374.84,-170.577 1364.54,-168.082 1365.24,-175.048"/>
+</g>
+<g id="node3" class="node"><title>p0x55764dbcda70</title>
+<ellipse cx="731.539" cy="-322.309" rx="73.5782" ry="18.2703"/>
+<text text-anchor="middle" x="731.539" y="-318.509">allocate_py</text>
+</g>
+<g id="edge2" class="edge"><title>p0x55764dbcda70&#45;&gt;p0x55764dbce0d0</title>
+<path fill="none" stroke="black" d="M700.025,-305.603C678.05,-294.651 648.675,-280.011 625.739,-268.58"/>
+<polygon points="627.172,-265.384 616.661,-264.056 624.05,-271.649 627.172,-265.384"/>
+</g>
+<g id="node4" class="node"><title>p0x55764dbcdb80</title>
+<ellipse cx="900.539" cy="-322.309" rx="77.1494" ry="18.2703"/>
+<text text-anchor="middle" x="900.539" y="-318.509">allocate_mx</text>
+</g>
+<g id="edge3" class="edge"><title>p0x55764dbcdb80&#45;&gt;p0x55764dbce0d0</title>
+<path fill="none" stroke="black" d="M846.722,-309.062C783.842,-294.754 681.458,-271.456 626.763,-259.01"/>
+<polygon points="627.333,-255.55 616.806,-256.744 625.78,-262.375 627.333,-255.55"/>
+</g>
+<g id="node5" class="node"><title>p0x55764dbcdc90</title>
+<ellipse cx="1072.54" cy="-322.309" rx="77.1494" ry="18.2703"/>
+<text text-anchor="middle" x="1072.54" y="-318.509">allocate_my</text>
+</g>
+<g id="edge4" class="edge"><title>p0x55764dbcdc90&#45;&gt;p0x55764dbce0d0</title>
+<path fill="none" stroke="black" d="M1016.66,-309.458C1006.65,-307.494 996.303,-305.565 986.539,-303.924 854.769,-281.77 697.164,-262.799 626.731,-254.712"/>
+<polygon points="626.92,-251.211 616.588,-253.554 626.126,-258.166 626.92,-251.211"/>
+</g>
+<g id="node6" class="node"><title>p0x55764dbcdda0</title>
+<ellipse cx="1591.54" cy="-249.539" rx="71.3357" ry="18.2703"/>
+<text text-anchor="middle" x="1591.54" y="-245.739">allocate_sx</text>
+</g>
+<g id="edge5" class="edge"><title>p0x55764dbcdda0&#45;&gt;p0x55764dbce1e0</title>
+<path fill="none" stroke="black" d="M1554.3,-233.674C1542.05,-228.386 1528.51,-222.104 1516.54,-215.539 1501.16,-207.11 1484.91,-196.533 1471.32,-187.169"/>
+<polygon points="1473.01,-184.081 1462.8,-181.226 1469,-189.82 1473.01,-184.081"/>
+</g>
+<g id="node14" class="node"><title>p0x55764dbce2f0</title>
+<polygon points="1609.54,-108.77 1606.54,-112.77 1585.54,-112.77 1582.54,-108.77 1555.54,-108.77 1555.54,-72.7696 1609.54,-72.7696 1609.54,-108.77"/>
+<text text-anchor="middle" x="1582.54" y="-86.9696">d2h</text>
+</g>
+<g id="edge13" class="edge"><title>p0x55764dbce1e0&#45;&gt;p0x55764dbce2f0</title>
+<path fill="none" stroke="black" d="M1474.16,-145.116C1496,-134.365 1524.16,-120.502 1546.31,-109.602"/>
+<polygon points="1547.97,-112.686 1555.39,-105.13 1544.88,-106.406 1547.97,-112.686"/>
+</g>
+<g id="node8" class="node"><title>p0x55764dbcdeb0</title>
+<ellipse cx="1752.54" cy="-249.539" rx="71.3357" ry="18.2703"/>
+<text text-anchor="middle" x="1752.54" y="-245.739">allocate_sy</text>
+</g>
+<g id="edge6" class="edge"><title>p0x55764dbcdeb0&#45;&gt;p0x55764dbce1e0</title>
+<path fill="none" stroke="black" d="M1713.06,-234.208C1700.01,-230.052 1685.31,-225.98 1671.54,-223.539 1637.58,-217.518 1549.28,-226.389 1516.54,-215.539 1498.6,-209.594 1480.89,-198.268 1466.99,-187.76"/>
+<polygon points="1468.89,-184.798 1458.86,-181.377 1464.57,-190.305 1468.89,-184.798"/>
+</g>
+<g id="node9" class="node"><title>p0x55764dbcdfc0</title>
+<ellipse cx="1908.54" cy="-249.539" rx="66.4361" ry="18.2703"/>
+<text text-anchor="middle" x="1908.54" y="-245.739">allocate_c</text>
+</g>
+<g id="edge7" class="edge"><title>p0x55764dbcdfc0&#45;&gt;p0x55764dbce1e0</title>
+<path fill="none" stroke="black" d="M1871.98,-234.117C1859.65,-229.9 1845.68,-225.815 1832.54,-223.539 1797.93,-217.543 1550.02,-226.149 1516.54,-215.539 1498.4,-209.79 1480.56,-198.364 1466.63,-187.744"/>
+<polygon points="1468.51,-184.763 1458.5,-181.293 1464.16,-190.248 1468.51,-184.763"/>
+</g>
+<g id="node10" class="node"><title>p0x7fc258000ba0</title>
+<ellipse cx="589.539" cy="-322.309" rx="50.8235" ry="18.2703"/>
+<text text-anchor="middle" x="589.539" y="-318.509">h2d_px</text>
+</g>
+<g id="edge9" class="edge"><title>p0x7fc258000ba0&#45;&gt;p0x55764dbce0d0</title>
+<path fill="none" stroke="black" d="M589.539,-303.815C589.539,-296.016 589.539,-286.644 589.539,-277.95"/>
+<polygon points="593.039,-277.831 589.539,-267.831 586.039,-277.832 593.039,-277.831"/>
+</g>
+<g id="node11" class="node"><title>p0x7fc258000c40</title>
+<ellipse cx="469.539" cy="-322.309" rx="50.8235" ry="18.2703"/>
+<text text-anchor="middle" x="469.539" y="-318.509">h2d_py</text>
+</g>
+<g id="edge10" class="edge"><title>p0x7fc258000c40&#45;&gt;p0x55764dbce0d0</title>
+<path fill="none" stroke="black" d="M494.988,-306.3C512.093,-296.213 534.881,-282.773 553.8,-271.616"/>
+<polygon points="555.623,-274.604 562.459,-266.509 552.068,-268.575 555.623,-274.604"/>
+</g>
+<g id="node12" class="node"><title>p0x7fc258000dd0</title>
+<ellipse cx="346.539" cy="-322.309" rx="54.3945" ry="18.2703"/>
+<text text-anchor="middle" x="346.539" y="-318.509">h2d_mx</text>
+</g>
+<g id="edge11" class="edge"><title>p0x7fc258000dd0&#45;&gt;p0x55764dbce0d0</title>
+<path fill="none" stroke="black" d="M386.394,-309.702C432.584,-296.249 508.077,-274.264 552.868,-261.219"/>
+<polygon points="553.855,-264.577 562.478,-258.42 551.898,-257.856 553.855,-264.577"/>
+</g>
+<g id="node13" class="node"><title>p0x7fc258000ea0</title>
+<ellipse cx="219.539" cy="-322.309" rx="54.3945" ry="18.2703"/>
+<text text-anchor="middle" x="219.539" y="-318.509">h2d_my</text>
+</g>
+<g id="edge12" class="edge"><title>p0x7fc258000ea0&#45;&gt;p0x55764dbce0d0</title>
+<path fill="none" stroke="black" d="M259.684,-309.795C267.56,-307.708 275.784,-305.65 283.539,-303.924 379.676,-282.529 494.383,-264.49 552.234,-255.908"/>
+<polygon points="552.974,-259.337 562.357,-254.417 551.954,-252.412 552.974,-259.337"/>
+</g>
+<g id="node20" class="node"><title>p0x55764dbce400</title>
+<ellipse cx="1582.54" cy="-18.3848" rx="32.5538" ry="18.2703"/>
+<text text-anchor="middle" x="1582.54" y="-14.5848">free</text>
+</g>
+<g id="edge19" class="edge"><title>p0x55764dbce2f0&#45;&gt;p0x55764dbce400</title>
+<path fill="none" stroke="black" d="M1582.54,-72.7314C1582.54,-65.0954 1582.54,-55.8891 1582.54,-47.2899"/>
+<polygon points="1586.04,-47.2482 1582.54,-37.2482 1579.04,-47.2482 1586.04,-47.2482"/>
+</g>
+<g id="node15" class="node"><title>p0x7fc2580032e0</title>
+<ellipse cx="1457.54" cy="-401.078" rx="46.8387" ry="18.2703"/>
+<text text-anchor="middle" x="1457.54" y="-397.278">zero_c</text>
+</g>
+<g id="node16" class="node"><title>p0x7fc2580034e0</title>
+<polygon points="1423.54,-340.309 1359.54,-340.309 1355.54,-336.309 1355.54,-304.309 1419.54,-304.309 1423.54,-308.309 1423.54,-340.309"/>
+<polyline points="1419.54,-336.309 1355.54,-336.309 "/>
+<polyline points="1419.54,-336.309 1419.54,-304.309 "/>
+<polyline points="1419.54,-336.309 1423.54,-340.309 "/>
+<text text-anchor="middle" x="1389.54" y="-318.509">cluster</text>
+</g>
+<g id="edge14" class="edge"><title>p0x7fc2580032e0&#45;&gt;p0x7fc2580034e0</title>
+<path fill="none" stroke="black" d="M1442.78,-383.42C1433.64,-373.101 1421.74,-359.658 1411.5,-348.103"/>
+<polygon points="1413.99,-345.631 1404.74,-340.466 1408.75,-350.272 1413.99,-345.631"/>
+</g>
+<g id="node19" class="node"><title>p0x7fc258003580</title>
+<polygon points="1474.04,-267.539 1359.04,-267.539 1355.04,-263.539 1355.04,-231.539 1470.04,-231.539 1474.04,-235.539 1474.04,-267.539"/>
+<polyline points="1470.04,-263.539 1355.04,-263.539 "/>
+<polyline points="1470.04,-263.539 1470.04,-231.539 "/>
+<polyline points="1470.04,-263.539 1474.04,-267.539 "/>
+<text text-anchor="middle" x="1414.54" y="-245.739">new_centroid</text>
+</g>
+<g id="edge17" class="edge"><title>p0x7fc2580034e0&#45;&gt;p0x7fc258003580</title>
+<path fill="none" stroke="black" d="M1395.59,-304.177C1398.4,-296.212 1401.82,-286.547 1404.97,-277.628"/>
+<polygon points="1408.34,-278.599 1408.37,-268.004 1401.74,-276.267 1408.34,-278.599"/>
+</g>
+<g id="node17" class="node"><title>p0x7fc258003380</title>
+<ellipse cx="1340.54" cy="-401.078" rx="52.1524" ry="18.2703"/>
+<text text-anchor="middle" x="1340.54" y="-397.278">zero_sx</text>
+</g>
+<g id="edge15" class="edge"><title>p0x7fc258003380&#45;&gt;p0x7fc2580034e0</title>
+<path fill="none" stroke="black" d="M1351.41,-383.041C1357.78,-373.072 1365.94,-360.286 1373.07,-349.104"/>
+<polygon points="1376.1,-350.877 1378.53,-340.564 1370.19,-347.11 1376.1,-350.877"/>
+</g>
+<g id="node18" class="node"><title>p0x7fc258003440</title>
+<ellipse cx="1217.54" cy="-401.078" rx="52.1524" ry="18.2703"/>
+<text text-anchor="middle" x="1217.54" y="-397.278">zero_sy</text>
+</g>
+<g id="edge16" class="edge"><title>p0x7fc258003440&#45;&gt;p0x7fc2580034e0</title>
+<path fill="none" stroke="black" d="M1248.69,-386.176C1275.85,-374.05 1315.55,-356.33 1345.89,-342.792"/>
+<polygon points="1347.67,-345.827 1355.38,-338.555 1344.82,-339.435 1347.67,-345.827"/>
+</g>
+<g id="edge18" class="edge"><title>p0x7fc258003580&#45;&gt;p0x55764dbce1e0</title>
+<path fill="none" stroke="black" d="M1419.6,-231.463C1423.05,-219.796 1427.7,-204.101 1431.64,-190.802"/>
+<polygon points="1435,-191.788 1434.49,-181.205 1428.29,-189.799 1435,-191.788"/>
+</g>
+<g id="node21" class="node"><title>p0x7fc258005800</title>
+<ellipse cx="1709.54" cy="-163.154" rx="54.3945" ry="18.2703"/>
+<text text-anchor="middle" x="1709.54" y="-159.354">d2h_mx</text>
+</g>
+<g id="edge20" class="edge"><title>p0x7fc258005800&#45;&gt;p0x55764dbce2f0</title>
+<path fill="none" stroke="black" d="M1682.29,-147.055C1663.71,-136.757 1638.9,-123.006 1618.67,-111.795"/>
+<polygon points="1620.18,-108.63 1609.74,-106.844 1616.79,-114.753 1620.18,-108.63"/>
+</g>
+<g id="node22" class="node"><title>p0x7fc2580058a0</title>
+<ellipse cx="1582.54" cy="-163.154" rx="54.3945" ry="18.2703"/>
+<text text-anchor="middle" x="1582.54" y="-159.354">d2h_my</text>
+</g>
+<g id="edge21" class="edge"><title>p0x7fc2580058a0&#45;&gt;p0x55764dbce2f0</title>
+<path fill="none" stroke="black" d="M1582.54,-144.756C1582.54,-137 1582.54,-127.678 1582.54,-119.031"/>
+<polygon points="1586.04,-118.968 1582.54,-108.968 1579.04,-118.968 1586.04,-118.968"/>
+</g>
+</g>
+</svg>
+</div><p>We can see from the above taskflow the condition task is removed.</p></section><section id="KMeanscudaFlowBenchmarking"><h2><a href="#KMeanscudaFlowBenchmarking">Benchmarking</a></h2><p>We run three versions of k-means, sequential CPU, parallel CPUs, and one GPU, on a machine of 12 Intel i7-8700 CPUs at 3.20 GHz and a Nvidia RTX 2080 GPU using various numbers of 2D point counts and iterations.</p><table class="m-table"><thead><tr><th>N</th><th>K</th><th>M</th><th>CPU Sequential</th><th>CPU Parallel</th><th>GPU (conditional taksing)</th><th>GPU (using offload_n)</th></tr></thead><tbody><tr><td>10</td><td>5</td><td>10</td><td>0.14 ms</td><td>77 ms</td><td>1 ms</td><td>1 ms</td></tr><tr><td>100</td><td>10</td><td>100</td><td>0.56 ms</td><td>86 ms</td><td>7 ms</td><td>1 ms</td></tr><tr><td>1000</td><td>10</td><td>1000</td><td>10 ms</td><td>98 ms</td><td>55 ms</td><td>13 ms</td></tr><tr><td>10000</td><td>10</td><td>10000</td><td>1006 ms</td><td>713 ms</td><td>458 ms</td><td>183 ms</td></tr><tr><td>100000</td><td>10</td><td>100000</td><td>102483 ms</td><td>49966 ms</td><td>7952 ms</td><td>4725 ms</td></tr></tbody></table><p>When the number of points is larger than 10K, both parallel CPU and GPU implementations start to pick up the speed over than the sequential version. We can see that using the built-in predicate, <a href="classtf_1_1cudaFlow.html#ac2269fd7dc8ca04a294a718204703dad" class="m-doc">tf::<wbr />cudaFlow::<wbr />offload_n</a>, can avoid repetitively creating the graph over and over, resulting in two times faster than conditional tasking.</p></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+  <compounddef id="classtf_1_1WorkerView" kind="class" language="C++" prot="public">
+    <compoundname>tf::WorkerView</compoundname>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classtf_1_1WorkerView_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class Executor</definition>
+        <argsstring></argsstring>
+        <name>Executor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="116" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="116" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classtf_1_1WorkerView_1ad4df9bf3972a4fe4253fd27477f51808" prot="private" static="no" mutable="no">
+        <type>const <ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
+        <definition>const Worker&amp; tf::WorkerView::_worker</definition>
+        <argsstring></argsstring>
+        <name>_worker</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="145" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="145" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1WorkerView_1ae437a48630d4011d24d5591b291851c1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::WorkerView::id</definition>
+        <argsstring>() const </argsstring>
+        <name>id</name>
+        <briefdescription>
+<para>queries the worker id associated with its parent executor </para>        </briefdescription>
+        <detaileddescription>
+<para>A worker id is a unsigned integer in the range <computeroutput>[0, N)</computeroutput>, where <computeroutput>N</computeroutput> is the number of workers spawned at the construction time of the executor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="127" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="154" bodyend="156"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1WorkerView_1abfa0eb2049aafa43b73a3e38ff234377" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::WorkerView::queue_size</definition>
+        <argsstring>() const </argsstring>
+        <name>queue_size</name>
+        <briefdescription>
+<para>queries the size of the queue (i.e., number of pending tasks to run) associated with the worker </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="133" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="159" bodyend="161"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1WorkerView_1adaa9b569a2c8e49afe24d8cd74b54287" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::WorkerView::queue_capacity</definition>
+        <argsstring>() const </argsstring>
+        <name>queue_capacity</name>
+        <briefdescription>
+<para>queries the current capacity of the queue </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="138" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="164" bodyend="166"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classtf_1_1WorkerView_1af5023cb4d6b24fab8992310741952bea" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>tf::WorkerView::WorkerView</definition>
+        <argsstring>(const Worker &amp;)</argsstring>
+        <name>WorkerView</name>
+        <param>
+          <type>const <ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
+          <defname>w</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="142" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="150" bodyend="151"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1WorkerView_1a4b39c214f3cd23c241faa56f4c94042f" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tf::WorkerView::WorkerView</definition>
+        <argsstring>(const WorkerView &amp;)=default</argsstring>
+        <name>WorkerView</name>
+        <param>
+          <type>const <ref refid="classtf_1_1WorkerView" kindref="compound">WorkerView</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="143" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>class to create an immutable view of a worker in an executor </para>    </briefdescription>
+    <detaileddescription>
+<para>An executor keeps a set of internal worker threads to run tasks. A worker view provides users an immutable interface to observe when a worker runs a task, and the view object is only accessible from an observer derived from <ref refid="classtf_1_1ObserverInterface" kindref="compound">tf::ObserverInterface</ref>. </para>    </detaileddescription>
+    <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="114" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="114" bodyend="147"/>
+    <listofallmembers>
+      <member refid="classtf_1_1WorkerView_1ad4df9bf3972a4fe4253fd27477f51808" prot="private" virt="non-virtual"><scope>tf::WorkerView</scope><name>_worker</name></member>
+      <member refid="classtf_1_1WorkerView_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::WorkerView</scope><name>Executor</name></member>
+      <member refid="classtf_1_1WorkerView_1ae437a48630d4011d24d5591b291851c1" prot="public" virt="non-virtual"><scope>tf::WorkerView</scope><name>id</name></member>
+      <member refid="classtf_1_1WorkerView_1adaa9b569a2c8e49afe24d8cd74b54287" prot="public" virt="non-virtual"><scope>tf::WorkerView</scope><name>queue_capacity</name></member>
+      <member refid="classtf_1_1WorkerView_1abfa0eb2049aafa43b73a3e38ff234377" prot="public" virt="non-virtual"><scope>tf::WorkerView</scope><name>queue_size</name></member>
+      <member refid="classtf_1_1WorkerView_1af5023cb4d6b24fab8992310741952bea" prot="private" virt="non-virtual"><scope>tf::WorkerView</scope><name>WorkerView</name></member>
+      <member refid="classtf_1_1WorkerView_1a4b39c214f3cd23c241faa56f4c94042f" prot="private" virt="non-virtual"><scope>tf::WorkerView</scope><name>WorkerView</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

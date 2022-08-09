@@ -1,0 +1,152 @@
+namespace tf {
+
+/** @page AsyncTasking Asynchronous Tasking
+
+This chapters discusses how to launch tasks asynchronously 
+so that you can incorporate independent, dynamic parallelism in your taskflows.
+
+@tableofcontents
+
+@section LaunchAsynchronousTasksFromAnExecutor Launch Asynchronous Tasks from an Executor
+
+%Taskflow executor provides a STL-styled method, 
+tf::Executor::async,
+for you to run a callable object asynchronously.
+The method returns a tf::Future object derived from @std_future 
+that will eventually hold the result
+of that function call.
+The result may be optional due to tf::Future::cancel 
+(see @ref RequestCancellation for details).
+
+@code{.cpp}
+tf::Future<std::optional<int>> future = executor.async([](){ return 1; });
+executor.wait_for_all();
+assert(future.get() == 1);
+
+tf::Future<void> future_of_void_return = executor.async([](){});
+future_of_void_return.get();
+@endcode
+
+@note
+The future object returned from tf::Executor::async does not block on destruction.
+
+If you do not need the return value or the future,
+you can use tf::Executor::silent_async which has less overhead of creating
+an asynchronous task compared to tf::Executor::async.
+
+@code{.cpp}
+executor.silent_async([](){
+  // just do some stuff in the background ...
+});
+@endcode
+
+Launching asynchronous tasks from an executor is 
+@em thread-safe and can be called from multiple threads
+or from the execution of a task.
+Our scheduler autonomously detects whether an asynchronous task is submitted 
+from an external thread or a worker thread and schedules its execution
+in an efficient work-stealing loop.
+
+@code{.cpp}
+tf::Task my_task = taskflow.emplace([&](){
+  // do some stuff
+  // ...
+  // launch an asynchronous task from my_task
+  executor.async([&](){
+    // do another asynchronous work
+    // ...
+    // launch another asynchronous task
+    executor.async([&](){});
+  })
+});
+executor.run(taskflow);
+executor.wait_for_all();   // wait for all tasks to finish
+@endcode
+
+@note
+Asynchronous tasks created from an executor does not belong to any taskflows.
+
+You can name an asynchronous task to facilitate profiling by
+using the methods tf::Executor::named_async and tf::Executor::named_silent_async.
+
+@code{.cpp}
+tf::Future<void> future = executor.named_async("name of the task", [](){});
+executor.silent_named_async("another name of the task", [](){});
+@endcode
+
+@section LaunchAsynchronousTasksFromAnSubflow Launch Asynchronous Tasks from a Subflow
+
+You can launch asynchronous tasks from a subflow (tf::Subflow) using
+tf::Subflow::async.
+Asynchronous tasks created from a subflow are, and @em only, used
+with @em join (tf::Subflow::join) to describe independent tasks 
+that are dynamically spawned during the execution of that subflow.
+When the subflow joins, all asynchronous tasks are guaranteed to finish.
+The following code creates 100 asynchronous tasks from a subflow,
+and these asynchronous tasks will complete by the time the subflow joins.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+tf::Executor executor;
+
+std::atomic<int> counter{0};
+
+taskflow.emplace([&] (tf::Subflow& sf){
+  std::vector<tf::Future<void>> futures;
+  for(int i=0; i<100; i++) {
+    futures.emplace_back(sf.async([&](){ ++counter; }));
+  }
+  sf.join();  // all of the 100 asynchronous tasks will finish by this join
+  assert(counter == 100);
+});
+
+executor.run(taskflow).wait();
+@endcode
+
+If you do not need the return value or the future, 
+you can use tf::Subflow::silent_async which has less overhead 
+of creating an asynchronous task compared to tf::Subflow::async.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+tf::Executor executor;
+
+std::atomic<int> counter{0};
+
+taskflow.emplace([&] (tf::Subflow& sf){
+  for(int i=0; i<100; i++) {
+    sf.silent_async([&](){ ++counter; });
+  }
+  sf.join();  // all of the 100 asynchronous tasks will finish by this join
+  assert(counter == 100);
+});
+
+executor.run(taskflow).wait();
+@endcode
+
+Creating asynchronous tasks from a subflow allows users to describe,
+for example, recursive algorithms that define only division 
+without conquering or merging (e.g., parallel quick sort).
+
+@attention
+You should only create asynchronous tasks from a joined subflow.
+Launching asynchronous tasks from a detached subflow results in
+undefined behavior.
+
+Similar to tf::Executor::named_async and tf::Executor::named_silent_async,
+you can name an asynchronous task in tf::Subflow to facilitate profiling by
+using the methods tf::Subflow::named_async and tf::Subflow::named_silent_async.
+
+@code{.cpp}
+taskflow.emplace([](tf::Subflow& sf){
+  tf::Future<void> future = sf.named_async("name of the task", [](){});
+  sf.silent_named_async("another name of the task", [](){});
+  sf.join();
+});
+@endcode
+
+*/
+
+}
+
+

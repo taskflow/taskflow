@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Taskflow Algorithms &raquo; Parallel Iterations | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="Algorithms.html">Taskflow Algorithms</a> &raquo;</span>
+          Parallel Iterations
+        </h1>
+<p>Taskflow provides template functions for constructing tasks to perform parallel iterations over ranges of items.</p><section id="A1IndexBasedParallelFor"><h2><a href="#A1IndexBasedParallelFor">Create an Index-based Parallel-Iteration Task</a></h2><p>Index-based parallel-for performs parallel iterations over a range <code>[first, last)</code> with the given <code>step</code> size. The task created by <a href="classtf_1_1FlowBuilder.html#a38ffe176bc3ae1827b9964322e3769d4" class="m-doc">tf::<wbr />Taskflow::<wbr />for_each_index(B first, E last, S step, C callable)</a> represents parallel execution of the following loop:</p><pre class="m-code"><span class="c1">// positive step</span>
+<span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="c1">// negative step</span>
+<span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&gt;</span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre><p>We support only integer-based range. The range can go positive or negative direction.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">for_each_index</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">  </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="p">[](</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">});</span><span class="w">  </span><span class="c1">// 50 loops with a + step</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">for_each_index</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">-2</span><span class="p">,</span><span class="w"> </span><span class="p">[](</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">});</span><span class="w">  </span><span class="c1">// 50 loops with a - step</span></pre><p>Notice that either positive or negative direction is defined in terms of the range, <code>[first, last)</code>, where <code>end</code> is excluded. In the positive case, the 50 items are 0, 2, 4, 6, 8, ..., 96, 98. In the negative case, the 50 items are 100, 98, 96, 04, ... 4, 2. An example of the Taskflow graph for the positive case under 12 workers is depicted below:</p><div class="m-graph"><svg style="width: 76.812rem; height: 7.375rem;" viewBox="0.00 0.00 1228.80 117.54">
+<g transform="scale(1 1) rotate(0) translate(4 113.539)">
+<title>Taskflow</title>
+<g id="node1" class="node"><title>p0xce2720</title>
+<ellipse cx="596.719" cy="-18.3848" rx="166.754" ry="18.2703"/>
+<text text-anchor="middle" x="596.719" y="-14.5848">[0, 100) with the step size of 2</text>
+</g>
+<g id="node2" class="node"><title>p0x7f322c000b50</title>
+<ellipse cx="41.7193" cy="-91.1543" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="41.7193" y="-87.3543">pfg_0</text>
+</g>
+<g id="edge1" class="edge"><title>p0x7f322c000b50&#45;&gt;p0xce2720</title>
+<path fill="none" stroke="black" d="M72.0708,-78.3592C78.4815,-76.2202 85.2617,-74.2134 91.7193,-72.7696 205.157,-47.4061 335.701,-34.0079 435.64,-26.9778"/>
+<polygon points="436.091,-30.4551 445.827,-26.2758 435.61,-23.4717 436.091,-30.4551"/>
+</g>
+<g id="node3" class="node"><title>p0x7f322c000c58</title>
+<ellipse cx="142.719" cy="-91.1543" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="142.719" y="-87.3543">pfg_1</text>
+</g>
+<g id="edge2" class="edge"><title>p0x7f322c000c58&#45;&gt;p0xce2720</title>
+<path fill="none" stroke="black" d="M173.101,-78.4894C179.509,-76.341 186.281,-74.2974 192.719,-72.7696 278.856,-52.3284 377.311,-39.1156 455.461,-30.9486"/>
+<polygon points="456.272,-34.3837 465.862,-29.8789 455.556,-27.4204 456.272,-34.3837"/>
+</g>
+<g id="node4" class="node"><title>p0x7f322c000d60</title>
+<ellipse cx="243.719" cy="-91.1543" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="243.719" y="-87.3543">pfg_2</text>
+</g>
+<g id="edge3" class="edge"><title>p0x7f322c000d60&#45;&gt;p0xce2720</title>
+<path fill="none" stroke="black" d="M274.421,-78.6133C280.746,-76.4812 287.404,-74.4124 293.719,-72.7696 356.383,-56.4675 427.641,-43.6341 485.304,-34.6397"/>
+<polygon points="486.189,-38.0447 495.538,-33.0612 485.122,-31.1265 486.189,-38.0447"/>
+</g>
+<g id="node5" class="node"><title>p0x7f322c000e68</title>
+<ellipse cx="344.719" cy="-91.1543" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="344.719" y="-87.3543">pfg_3</text>
+</g>
+<g id="edge4" class="edge"><title>p0x7f322c000e68&#45;&gt;p0xce2720</title>
+<path fill="none" stroke="black" d="M376.072,-78.8434C382.227,-76.7393 388.655,-74.6223 394.719,-72.7696 436.277,-60.0736 483.174,-47.5697 521.313,-37.8583"/>
+<polygon points="522.484,-41.1724 531.318,-35.3236 520.765,-34.3868 522.484,-41.1724"/>
+</g>
+<g id="node6" class="node"><title>p0x7f322c000f70</title>
+<ellipse cx="445.719" cy="-91.1543" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="445.719" y="-87.3543">pfg_4</text>
+</g>
+<g id="edge5" class="edge"><title>p0x7f322c000f70&#45;&gt;p0xce2720</title>
+<path fill="none" stroke="black" d="M473.415,-77.1741C495.178,-66.9744 525.943,-52.5556 551.298,-40.6724"/>
+<polygon points="552.798,-43.8347 560.368,-36.4217 549.828,-37.4963 552.798,-43.8347"/>
+</g>
+<g id="node7" class="node"><title>p0x7f322c001078</title>
+<ellipse cx="546.719" cy="-91.1543" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="546.719" y="-87.3543">pfg_5</text>
+</g>
+<g id="edge6" class="edge"><title>p0x7f322c001078&#45;&gt;p0xce2720</title>
+<path fill="none" stroke="black" d="M558.569,-73.3829C564.538,-64.9335 571.907,-54.5046 578.571,-45.072"/>
+<polygon points="581.521,-46.9617 584.433,-36.7748 575.804,-42.9225 581.521,-46.9617"/>
+</g>
+<g id="node8" class="node"><title>p0x7f322c001180</title>
+<ellipse cx="647.719" cy="-91.1543" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="647.719" y="-87.3543">pfg_6</text>
+</g>
+<g id="edge7" class="edge"><title>p0x7f322c001180&#45;&gt;p0xce2720</title>
+<path fill="none" stroke="black" d="M635.633,-73.3829C629.544,-64.9335 622.028,-54.5046 615.231,-45.072"/>
+<polygon points="617.937,-42.8414 609.251,-36.7748 612.258,-46.934 617.937,-42.8414"/>
+</g>
+<g id="node9" class="node"><title>p0x7f322c001288</title>
+<ellipse cx="748.719" cy="-91.1543" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="748.719" y="-87.3543">pfg_7</text>
+</g>
+<g id="edge8" class="edge"><title>p0x7f322c001288&#45;&gt;p0xce2720</title>
+<path fill="none" stroke="black" d="M721.193,-77.3385C699.249,-67.1217 668.052,-52.5965 642.38,-40.644"/>
+<polygon points="643.742,-37.4175 633.2,-36.3696 640.788,-43.7634 643.742,-37.4175"/>
+</g>
+<g id="node10" class="node"><title>p0x7f322c001390</title>
+<ellipse cx="849.719" cy="-91.1543" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="849.719" y="-87.3543">pfg_8</text>
+</g>
+<g id="edge9" class="edge"><title>p0x7f322c001390&#45;&gt;p0xce2720</title>
+<path fill="none" stroke="black" d="M818.368,-78.8375C812.213,-76.7339 805.785,-74.6186 799.719,-72.7696 757.961,-60.0402 710.833,-47.5343 672.503,-37.83"/>
+<polygon points="673.001,-34.3461 662.449,-35.2974 671.291,-41.134 673.001,-34.3461"/>
+</g>
+<g id="node11" class="node"><title>p0x7f322c001498</title>
+<ellipse cx="950.719" cy="-91.1543" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="950.719" y="-87.3543">pfg_9</text>
+</g>
+<g id="edge10" class="edge"><title>p0x7f322c001498&#45;&gt;p0xce2720</title>
+<path fill="none" stroke="black" d="M920.018,-78.6105C913.693,-76.4786 907.035,-74.4106 900.719,-72.7696 837.72,-56.3991 766.061,-43.5446 708.145,-34.5552"/>
+<polygon points="708.651,-31.092 698.235,-33.0339 707.588,-38.0109 708.651,-31.092"/>
+</g>
+<g id="node12" class="node"><title>p0x7f322c0015a0</title>
+<ellipse cx="1058.72" cy="-91.1543" rx="48.1667" ry="18.2703"/>
+<text text-anchor="middle" x="1058.72" y="-87.3543">pfg_10</text>
+</g>
+<g id="edge11" class="edge"><title>p0x7f322c0015a0&#45;&gt;p0xce2720</title>
+<path fill="none" stroke="black" d="M1023.69,-78.4784C1016.48,-76.3567 1008.9,-74.3263 1001.72,-72.7696 912.82,-53.4914 811.335,-40.1299 732.193,-31.5956"/>
+<polygon points="732.478,-28.1062 722.163,-30.5269 731.736,-35.0668 732.478,-28.1062"/>
+</g>
+<g id="node13" class="node"><title>p0x7f322c0016a8</title>
+<ellipse cx="1172.72" cy="-91.1543" rx="48.1667" ry="18.2703"/>
+<text text-anchor="middle" x="1172.72" y="-87.3543">pfg_11</text>
+</g>
+<g id="edge12" class="edge"><title>p0x7f322c0016a8&#45;&gt;p0xce2720</title>
+<path fill="none" stroke="black" d="M1138.03,-78.4068C1130.72,-76.2644 1123.02,-74.2441 1115.72,-72.7696 995.853,-48.5628 858.073,-35.0406 754.61,-27.6659"/>
+<polygon points="754.61,-24.1574 744.39,-26.9495 754.121,-31.1403 754.61,-24.1574"/>
+</g>
+</g>
+</svg>
+</div><p>The index types, <code>B</code>, <code>E</code>, and <code>S</code>, are templates to preserve the variable types and their underlying types must be of the same <em>integral</em> type (e.g., <code>int</code>, <code>size_t</code>, <code>unsigned</code>). By default, <a href="classtf_1_1FlowBuilder.html#a38ffe176bc3ae1827b9964322e3769d4" class="m-doc">tf::<wbr />Taskflow::<wbr />for_each_index</a> creates a task that spawns a subflow (see <a href="DynamicTasking.html" class="m-doc">Dynamic Tasking</a>) to run iterations in parallel. The subflow closure captures all input arguments through perfect forwarding to form a stateful closure such that any changes on the arguments will be visible to the execution context of the subflow. For example:</p><pre class="m-code"><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">vec</span><span class="p">;</span><span class="w"></span>
+<span class="kt">int</span><span class="w"> </span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">last</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">auto</span><span class="w"> </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
+<span class="w">  </span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">last</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">vec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">int</span><span class="p">[</span><span class="mi">1000</span><span class="p">];</span><span class="w">  </span>
+<span class="p">});</span><span class="w"></span>
+
+<span class="k">auto</span><span class="w"> </span><span class="n">pf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">for_each_index</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">ref</span><span class="p">(</span><span class="n">first</span><span class="p">),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">ref</span><span class="p">(</span><span class="n">last</span><span class="p">),</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="p">[</span><span class="o">&amp;</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;parallel iteration on index &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">vec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+
+<span class="c1">// wrong! must use std::ref, or first and last are captured by copy</span>
+<span class="c1">// auto pf = taskflow.for_each_index(first, last, 1, [&amp;](int i) {</span>
+<span class="c1">//   std::cout &lt;&lt; &quot;parallel iteration on index &quot; &lt;&lt; vec[i] &lt;&lt; &#39;\n&#39;;</span>
+<span class="c1">// });</span>
+
+<span class="n">init</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">pf</span><span class="p">);</span><span class="w"></span></pre><p>When <code>init</code> finishes, the parallel-for task <code>pf</code> will see <code>first</code> as 0 and <code>last</code> as 1000 and performs parallel iterations over the 1000 items. This property is especially important for task graph parallelism, because users can define end-to-end parallelism through stateful closures that marshal parameter exchange between dependent tasks.</p></section><section id="A1IteratorBasedParallelFor"><h2><a href="#A1IteratorBasedParallelFor">Create an Iterator-based Parallel-Iteration Task</a></h2><p>Iterator-based parallel-for performs parallel iterations over a range specified by two <a href="https://en.cppreference.com/w/cpp/iterator/iterator">STL-styled iterators</a>, <code>first</code> and <code>last</code>. The task created by <a href="classtf_1_1FlowBuilder.html#ab405d7b10040530d8b04c11767b4960d" class="m-doc">tf::<wbr />Taskflow::<wbr />for_each(B first, E last, C callable)</a> represents a parallel execution of the following loop:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">i</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre><p>By default, <a href="classtf_1_1FlowBuilder.html#ab405d7b10040530d8b04c11767b4960d" class="m-doc">tf::<wbr />Taskflow::<wbr />for_each(B first, E last, C callable)</a> creates a task that spawns a subflow (see <a href="DynamicTasking.html" class="m-doc">Dynamic Tasking</a>) that applies the callable to the object obtained by dereferencing every iterator in the range <code>[first, last)</code>. It is user&#x27;s responsibility for ensuring the range is valid within the execution of the parallel-for task. Iterators must have the post-increment operator ++ defined. This version of parallel-for applies to all iterable STL containers.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">for_each</span><span class="p">(</span><span class="n">vec</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">vec</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="p">[](</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">){</span><span class="w"> </span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;parallel for on item &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">  </span>
+<span class="p">});</span><span class="w"></span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;hi&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;from&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;t&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;a&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;s&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;k&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;f&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;low&quot;</span><span class="p">};</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">for_each</span><span class="p">(</span><span class="n">list</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">list</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="p">[](</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">str</span><span class="p">){</span><span class="w"> </span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;parallel for on item &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">str</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">  </span>
+<span class="p">});</span><span class="w"></span></pre><p>Similar to index-based parallel-for, the iterator types are templates to enable users to leverage the property of stateful closure. For example:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vec</span><span class="p">;</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">iterator</span><span class="w"> </span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">last</span><span class="p">;;</span><span class="w"></span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
+<span class="w">  </span><span class="n">vec</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span><span class="n">last</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">vec</span><span class="p">.</span><span class="n">end</span><span class="p">();</span><span class="w"></span>
+<span class="p">});</span><span class="w"></span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">pf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">for_each</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">ref</span><span class="p">(</span><span class="n">first</span><span class="p">),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">ref</span><span class="p">(</span><span class="n">last</span><span class="p">),</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;parallel iteration on item &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w"></span>
+<span class="p">});</span><span class="w"></span>
+
+<span class="c1">// wrong! must use std::ref, or first and last are captured by copy</span>
+<span class="c1">// tf::Task pf = taskflow.for_each(first, last, [&amp;](int i) {</span>
+<span class="c1">//   std::cout &lt;&lt; &quot;parallel iteration on item &quot; &lt;&lt; i &lt;&lt; &#39;\n&#39;;</span>
+<span class="c1">// });</span>
+
+<span class="n">init</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">pf</span><span class="p">);</span><span class="w"></span></pre><p>When <code>init</code> finishes, the parallel-for task <code>pf</code> will see <code>first</code> pointing to the beginning of <code>vec</code> and <code>last</code> pointing to the end of <code>vec</code> and performs parallel iterations over the 1000 items. The two tasks form an end-to-end task graph where the parameters of parallel-for are computed on the fly.</p></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

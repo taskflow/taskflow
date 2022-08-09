@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cookbook &raquo; Project Motivation | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="Cookbook.html">Cookbook</a> &raquo;</span>
+          Project Motivation
+        </h1>
+<p>Taskflow addresses a long-standing problem, <em>how can we make it easier for C++ developers to quickly write parallel and heterogeneous programs with high performance scalability and simultaneous high productivity?</em></p><section id="TheEraOfMulticore"><h2><a href="#TheEraOfMulticore">The Era of Multicore</a></h2><p>In the past, we embrace <em>free</em> performance scaling on our software thanks to advances in manufacturing technologies and micro-architectural innovations. Approximately for every 1.5 year we can speed up our programs by simply switching to new hardware and compiler vendors that brings 2x more transistors, faster clock rates, and higher instruction-level parallelism. However, this paradigm was challenged by the power wall and increasing difficulties in exploiting instruction-level parallelism. The boost to computing performance has stemmed from changes to multicore chip designs.</p><img class="m-image" src="era_multicore.jpg" alt="Image" style="width: 60%;" /><p>The above sweeping visualization (thanks to Prof. Mark Horowitz and his group) shows the evolution of computer architectures is moving toward multicore designs. Today, multicore processors and multiprocessor systems are common in many electronic products such as mobiles, laptops, desktops, and servers. In order to keep up with the performance scaling, it is becoming necessary for software developers to write parallel programs that utilize the number of available cores.</p></section><section id="C0HeterogeneousComputing"><h2><a href="#C0HeterogeneousComputing">Heterogeneous Computing</a></h2><p>With the influence of artificial intelligence (AI) through new and merged workloads, heterogeneous computing becomes demanding and will continue to be heard for years to come. We have not just CPUs but GPUs, TPUs, FPGAs, and ASICs to accelerator a wide variety of scientific computing problems.</p><img class="m-image" src="CPU-vs-TPU-vs-GPU.png" alt="Image" style="width: 60%;" /><p>The question is: <em>How are we going to program these beasts?</em> Writing a high-performance sequential program is hard. Parallel programming is harder. Parallel programming of heterogeneous devices is extremely challenging if we care about performance and power efficiency. Programming models need to deal with productivity versus performance.</p></section><section id="LoopLevelParallelism"><h2><a href="#LoopLevelParallelism">Loop-level Parallelism</a></h2><p>The most basic and simplest concept of parallel programming is <em>loop-level parallelism</em>, exploiting parallelism that exists among the iterations of a loop. The program typically partitions a loop of iterations into a set of of blocks, either fixed or dynamic, and run each block in parallel. Below the figure illustrates this pattern.</p><img class="m-image" src="loop-level-parallelism.jpeg" alt="Image" style="width: 50%;" /><p>The main advantage of the loop-based approach is its simplicity in speeding up a regular workload in line with Amdahl&#x27;s Law. Programmers only need to discover independence of each iteration within a loop and, once possible, the parallel decomposition strategy can be easily implemented. Many existing libraries have built-in support to write a parallel-for loop.</p></section><section id="TaskBasedParallelism"><h2><a href="#TaskBasedParallelism">Task-based Parallelism</a></h2><p>The traditional loop-level parallelism is simple but hardly allows users to exploit parallelism in more irregular applications such as graph algorithms, incremental flows, recursion, and dynamically-allocated data structures. To address these challenges, parallel programming and libraries are evolving from the tradition loop-based parallelism to the <em>task-based</em> model.</p><div class="m-graph"><svg style="width: 16.375rem; height: 16.438rem;" viewBox="0.00 0.00 262.44 263.08">
+<g transform="scale(1 1) rotate(0) translate(4 259.078)">
+<title>Taskflow</title>
+<g id="node1" class="node"><title>Task1</title>
+<ellipse cx="142.719" cy="-236.693" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="142.719" y="-232.893">Task1</text>
+</g>
+<g id="node2" class="node"><title>Task2</title>
+<ellipse cx="41.7193" cy="-163.924" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="41.7193" y="-160.124">Task2</text>
+</g>
+<g id="edge1" class="edge"><title>Task1&#45;&gt;Task2</title>
+<path fill="none" stroke="black" d="M121.3,-220.685C106.838,-210.552 87.5493,-197.036 71.5839,-185.85"/>
+<polygon points="73.3061,-182.783 63.1079,-179.911 69.2892,-188.515 73.3061,-182.783"/>
+</g>
+<g id="node3" class="node"><title>Task3</title>
+<ellipse cx="142.719" cy="-163.924" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="142.719" y="-160.124">Task3</text>
+</g>
+<g id="edge2" class="edge"><title>Task1&#45;&gt;Task3</title>
+<path fill="none" stroke="black" d="M142.719,-218.2C142.719,-210.518 142.719,-201.308 142.719,-192.724"/>
+<polygon points="146.219,-192.708 142.719,-182.708 139.219,-192.708 146.219,-192.708"/>
+</g>
+<g id="node4" class="node"><title>Task4</title>
+<ellipse cx="212.719" cy="-91.1543" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="212.719" y="-87.3543">Task4</text>
+</g>
+<g id="edge3" class="edge"><title>Task1&#45;&gt;Task4</title>
+<path fill="none" stroke="black" d="M161.975,-220.339C172.919,-210.585 185.949,-197.049 193.719,-182.309 203.945,-162.91 208.668,-138.433 210.848,-119.881"/>
+<polygon points="214.352,-120.023 211.861,-109.725 207.386,-119.328 214.352,-120.023"/>
+</g>
+<g id="node5" class="node"><title>Task5</title>
+<ellipse cx="111.719" cy="-91.1543" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="111.719" y="-87.3543">Task5</text>
+</g>
+<g id="edge4" class="edge"><title>Task2&#45;&gt;Task5</title>
+<path fill="none" stroke="black" d="M57.6034,-146.865C66.692,-137.677 78.2613,-125.98 88.368,-115.762"/>
+<polygon points="90.8683,-118.212 95.4123,-108.641 85.8916,-113.289 90.8683,-118.212"/>
+</g>
+<g id="edge5" class="edge"><title>Task3&#45;&gt;Task5</title>
+<path fill="none" stroke="black" d="M135.215,-145.793C131.688,-137.742 127.401,-127.954 123.459,-118.955"/>
+<polygon points="126.588,-117.375 119.37,-109.62 120.176,-120.184 126.588,-117.375"/>
+</g>
+<g id="node6" class="node"><title>Task6</title>
+<ellipse cx="161.719" cy="-18.3848" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="161.719" y="-14.5848">Task6</text>
+</g>
+<g id="edge6" class="edge"><title>Task4&#45;&gt;Task6</title>
+<path fill="none" stroke="black" d="M200.633,-73.3829C194.345,-64.6576 186.536,-53.8214 179.567,-44.1513"/>
+<polygon points="182.405,-42.1024 173.719,-36.0358 176.726,-46.1949 182.405,-42.1024"/>
+</g>
+<g id="edge7" class="edge"><title>Task5&#45;&gt;Task6</title>
+<path fill="none" stroke="black" d="M123.569,-73.3829C129.671,-64.7457 137.235,-54.0401 144.014,-44.4446"/>
+<polygon points="147.043,-46.2227 149.955,-36.0358 141.326,-42.1834 147.043,-46.2227"/>
+</g>
+</g>
+</svg>
+</div><p>The above figure shows an example <em>task dependency graph</em>. Each node in the graph represents a task unit at function level and each edge indicates the task dependency between a pair of tasks. Task-based model offers a powerful means to express both regular and irregular parallelism in a top-down manner, and provides transparent scaling to large number of cores. In fact, it has been proven, both by the research community and the evolution of parallel programming standards, task-based approach scales the best with future processor generations and architectures.</p></section><section id="TheProjectMantra"><h2><a href="#TheProjectMantra">The Project Mantra</a></h2><p>The goal of Taskflow is simple - <em>We help developers quickly write parallel programs with high performance scalability and simultaneous high productivity</em>. We want developers to write simple and effective parallel code, specifically with the following objectives:</p><ul><li>Expressiveness</li><li>Readability</li><li>Transparency</li></ul><p>In a nutshell, code written with Taskflow explains itself. The transparency allows developers to focus on the development of application algorithms and parallel decomposition strategies, rather than low-level, system-specific details.</p></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

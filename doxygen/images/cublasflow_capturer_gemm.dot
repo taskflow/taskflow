@@ -1,0 +1,33 @@
+digraph Taskflow {
+rankdir="LR";
+subgraph cluster_p0x7fff9680d710 {
+label="Taskflow: Matrix Multiplication";
+p0xe0e200[label="malloc_dA" ];
+p0xe0e200 -> p0xe0e598;
+p0xe0e2b8[label="malloc_dB" ];
+p0xe0e2b8 -> p0xe0e598;
+p0xe0e370[label="malloc_dC" ];
+p0xe0e370 -> p0xe0e598;
+p0xe0e428[label="malloc_dAlpha" ];
+p0xe0e428 -> p0xe0e598;
+p0xe0e4e0[label="malloc_dBeta" ];
+p0xe0e4e0 -> p0xe0e598;
+p0xe0e598[label="cublasFlow"  style="filled" color="black" fillcolor="purple" fontcolor="white" shape="folder"];
+subgraph cluster_p0xe0e598 {
+label="cudaFlow: cublasFlow";
+color="purple"
+p0x7f4711d8d260[label="alpha=1"];
+p0x7f4711d8d260 -> p0x7f4711d8d510;
+p0x7f4711d8d310[label="beta=0"];
+p0x7f4711d8d310 -> p0x7f4711d8d510;
+p0x7f4711d8d3c0[label="copyA"];
+p0x7f4711d8d3c0 -> p0x7f4711d8d510;
+p0x7f4711d8d480[label="copyB"];
+p0x7f4711d8d480 -> p0x7f4711d8d510;
+p0x7f4711d8d510[label="C = alpha * A * B + beta * C"];
+p0x7f4711d8d510 -> p0x7f4711d8d620;
+p0x7f4711d8d620[label="copyC"];
+p0x7f4711d8d620 -> p0xe0e598;
+}
+}
+}

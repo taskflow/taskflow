@@ -1,0 +1,98 @@
+namespace tf {
+
+/** @page CUDASTDForEach Parallel Iterations 
+
+%Taskflow provides standard template methods for performing 
+parallel iterations over a range of items a CUDA GPU.
+
+@tableofcontents
+
+@section CUDASTDParallelIterationIncludeTheHeader Include the Header
+
+You need to include the header file, `%taskflow/cuda/algorithm/for_each.hpp`, 
+for using the parallel-iteration algorithm.
+
+@section CUDASTDIndexBasedParallelFor Index-based Parallel Iterations
+
+Index-based parallel-for performs parallel iterations over a range 
+<tt>[first, last)</tt> with the given @c step size.
+The task created by tf::cuda_for_each_index
+represents a kernel of parallel execution
+for the following loop:
+
+@code{.cpp}
+// positive step: first, first+step, first+2*step, ...
+for(auto i=first; i<last; i+=step) {
+  callable(i);
+}
+// negative step: first, first-step, first-2*step, ...
+for(auto i=first; i>last; i+=step) {
+  callable(i);
+}
+@endcode
+
+Each iteration @c i is independent of each other and is assigned one kernel thread 
+to run the callable.
+The following example creates a kernel that assigns each entry of @c data 
+to 1 over the range @c [0, 100) with step size 1.
+
+@code{.cpp}
+tf::cudaDefaultExecutionPolicy policy;
+auto data = tf::cuda_malloc_shared<int>(100);
+
+// assigns each element in data to 1 over the range [0, 100) with step size 1
+tf::cuda_for_each_index(
+  policy, 0, 100, 1, [data] __device__ (int idx) { data[idx] = 1; }
+);
+
+// synchronize the execution
+policy.synchronize();
+@endcode
+
+The parallel-iteration algorithm runs @em asynchronously through the stream specified
+in the execution policy. You need to synchronize the stream to
+obtain correct results.
+
+@section CUDASTDIteratorBasedParallelFor Iterator-based Parallel Iterations
+
+Iterator-based parallel-for performs parallel iterations over a range specified 
+by two STL-styled iterators, @c first and @c last.
+The task created by tf::cuda_for_each represents 
+a parallel execution of the following loop:
+
+@code{.cpp}
+for(auto i=first; i<last; i++) {
+  callable(*i);
+}
+@endcode
+
+The two iterators, @c first and @c last, are typically two raw pointers to the 
+first element and the next to the last element in the range in GPU memory space.
+The following example creates a @c for_each kernel that assigns each element in
+@c gpu_data to 1 over the range <tt>[data, data + 1000)</tt>.
+
+@code{.cpp}
+tf::cudaDefaultExecutionPolicy policy;
+auto data = tf::cuda_malloc_shared<int>(1000);
+
+// assigns each element in data to 1 over the range [0, 1000) with step size 1
+tf::cuda_for_each(
+  policy, data, data + 1000, [] __device__ (int& item) { item = 1; }
+);
+
+// synchronize the execution
+policy.synchronize();
+@endcode
+
+Each iteration is independent of each other and is assigned one kernel thread 
+to run the callable.
+Since the callable runs on GPU, it must be declared with a <tt>%__device__</tt> specifier.
+
+*/
+}
+
+
+
+
+
+

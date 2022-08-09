@@ -1,0 +1,205 @@
+namespace tf {
+
+/** @page graphtraversal Graph Traversal
+
+We study the graph traversal problem by visiting each vertex in parallel following their
+edge dependencies. Traversing a graph is a fundamental building block of many
+graph applications especially for large-scale graph analytics.
+
+@tableofcontents
+
+@section GraphTraversalProblemFormulation Problem Formulation
+
+Given a directed acyclic graph (DAG), i.e., a graph that has no cycles, 
+we would like to traverse each vertex in order without breaking dependency constraints defined by edges.
+The following figure shows a graph of six vertices and seven edges.
+Each vertex represents a particular task and each edge represents a task dependency between two tasks.
+
+@dotfile images/task-level-parallelism.dot
+
+Traversing the above graph in parallel, the maximum parallelism we can acquire is three.
+When Task1 finishes, we can run Task2, Task3, and Task4 in parallel.
+
+@section GraphTraversalGraphRepresentation Graph Representation
+
+We define the data structure of our graph. The graph is represented by an array of nodes of the following structure:
+
+@code{.cpp}
+struct Node {
+  std::string name;
+  size_t idx;                          // index of the node in a array
+  bool visited {false};
+
+  std::atomic<size_t> dependents {0};  // number of incoming edges
+  std::vector<Node*> successors;       // number of outgoing edges
+
+  void precede(Node& n) {
+    successors.emplace_back(&n);
+    n.dependents ++;
+  }
+};
+@endcode
+
+Based on the data structure, we randomly generate a DAG using ordered edges.
+
+@code{.cpp}
+std::unique_ptr<Node[]> make_dag(size_t num_nodes, size_t max_degree) {
+  
+  std::unique_ptr<Node[]> nodes(new Node[num_nodes]);
+  
+  // Make sure nodes are in clean state
+  for(size_t i=0; i<num_nodes; i++) {
+    nodes[i].idx = i;
+    nodes[i].name = std::to_string(i);
+  }
+
+  // Create a DAG by randomly insert ordered edges
+  for(size_t i=0; i<num_nodes; i++) {
+    size_t degree {0};
+    for(size_t j=i+1; j<num_nodes && degree < max_degree; j++) {
+      if(std::rand() % 2 == 1) {
+        nodes[i].precede(nodes[j]);
+        degree ++;
+      }
+    }
+  }
+
+  return nodes;
+}
+@endcode
+
+The function, @c make_dag, accepts two arguments, @c num_nodes and @c max_degree, to 
+restrict the number of nodes in the graph and the maximum number of outgoing edges of every node.
+
+@section GraphTraversalStaticTraversal Static Traversal
+
+We create a taskflow to traverse the graph using static tasks (see @ref StaticTasking).
+Each task does nothing but marks @c visited to @c true 
+and subtracts @c dependents from one, both of which are used for validation after the graph is traversed.
+In practice, this computation may be replaced with a heavy function.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+tf::Executor executor;
+
+std::unique_ptr<Node[]> nodes = make_dag(100000, 4);
+std::vector<tf::Task> tasks;
+
+// create the traversal task for each node
+for(size_t i=0; i<num_nodes; ++i) {
+  tf::Task task = taskflow.emplace([v=&(nodes[i])](){
+    v->visited = true;
+    for(size_t j=0; j<v->successors.size(); ++j) {
+      v->successors[j]->dependents.fetch_sub(1);
+    }
+  }).name(nodes[i].name);
+
+  tasks.push_back(task);
+}
+
+// create the dependency between nodes on top of the graph structure
+for(size_t i=0; i<num_nodes; ++i) {
+  for(size_t j=0; j<nodes[i].successors.size(); ++j) {
+    tasks[i].precede(tasks[nodes[i].successors[j]->idx]);
+  }
+}
+
+executor.run(taskflow).wait();
+
+// after the graph is traversed, all nodes must be visited with no dependents
+for(size_t i=0; i<num_nodes; i++) {
+  assert(nodes[i].visited);
+  assert(nodes[i].dependents == 0);
+}
+@endcode
+
+The code above has two parts to construct the parallel graph traversal.
+First, it iterates each node and constructs a traversal task for that node.
+Second, it iterates each outgoing edge of a node and creates a dependency between the node and the other end
+(successor) of that edge.
+The resulting taskflow structure is topologically equivalent to the given graph.
+
+<!-- @image html images/graph_traversal_2.svg width=100% -->
+
+@dotfile images/graph_traversal_2.dot
+
+With task parallelism, we flow computation naturally with the graph structure.
+The runtime autonomously distributes tasks across processor cores to obtain maximum task parallelism.
+You do not need to worry about details of scheduling.
+
+@section GraphTraversalDynamicTraversal Dynamic Traversal 
+
+We can traverse the graph dynamically using tf::Subflow (see @ref DynamicTasking).
+We start from the source nodes of zero incoming edges and recursively spawn subflows 
+whenever the dependency of a node is meet.
+Since we are creating tasks from the execution context of another task,
+we need to store the task callable in advance.
+  
+@code{.cpp}
+tf::Taskflow taskflow;
+tf::Executor executor;
+
+// task callable of traversing a node using subflow
+std::function<void(Node*, tf::Subflow&)> traverse;
+
+traverse = [&] (Node* n, tf::Subflow& subflow) {
+  assert(!n->visited);
+  n->visited = true;
+  for(size_t i=0; i<n->successors.size(); i++) {
+    if(n->successors[i]->dependents.fetch_sub(1) == 1) {
+      subflow.emplace([s=n->successors[i], &traverse](tf::Subflow &subflow){ 
+        traverse(s, subflow); 
+      }).name(n->name);
+    }
+  }
+};
+
+// create a graph
+std::unique_ptr<Node[]> nodes = make_dag(100000, 4);
+
+// find the source nodes (no incoming edges)
+std::vector<Node*> src;
+for(size_t i=0; i<num_nodes; i++) {
+  if(nodes[i].dependents == 0) { 
+    src.emplace_back(&(nodes[i]));
+  }
+}
+
+// create only tasks for source nodes
+for(size_t i=0; i<src.size(); i++) {
+  taskflow.emplace([s=src[i], &traverse](tf::Subflow& subflow){ 
+    traverse(s, subflow); 
+  }).name(nodes[i].name);
+}
+
+executor.run(taskflow).wait();
+
+// after the graph is traversed, all nodes must be visited with no dependents
+for(size_t i=0; i<num_nodes; i++) {
+  assert(nodes[i].visited);
+  assert(nodes[i].dependents == 0);
+}
+@endcode
+
+A partial graph is shown as follows:
+
+<!-- @image html images/graph_traversal_1.svg width=90% -->
+@dotfile images/graph_traversal_1.dot
+
+In general, the dynamic version of graph traversal is slower than the static version due to the
+overhead incurred by spawning subflows.
+However, it may be useful for the situation where the graph structure is unknown at once but
+being partially explored during the traversal.
+
+
+*/
+
+}
+
+
+
+
+
+
+
+

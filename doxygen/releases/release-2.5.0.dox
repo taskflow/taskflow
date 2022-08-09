@@ -1,0 +1,47 @@
+namespace tf {
+
+/** @page release-2-5-0 Release 2.5.0 (2020/06/01)
+
+Starting from v2.5.0, we have renamed Cpp-Taskflow to @em %Taskflow to broaden its impact and support.
+%Taskflow will explore multiple scopes of applications and language bindings, rather than just C++.
+This also made %Taskflow naming more succinct and concise.
+
+%Taskflow 2.5.0 is the 7th release in the 2.x line! 
+This release includes several new changes such as CPU-GPU tasking,
+web-based profiler, documentation, and unit tests.
+
+@tableofcontents
+
+@section release-2-5-0_download Download
+
+%Taskflow 2.5.0 can be downloaded from <a href="https://github.com/taskflow/taskflow/releases/tag/v2.5.0">here</a>.
+
+To download the newest version of %Taskflow, please clone from <a href="https://github.com/taskflow/taskflow">%Taskflow's GitHub</a>.
+
+@section release-2-5-0_new_features New Features
+
+@li enhanced the performance of the work-stealing algorithm
+@li enhanced the interface of concurrent CPU-GPU tasking (added tf::cudaFlow::zero, tf::cudaFlow::memset, tf::cudaFlow::memcpy, tf::cudaFlow::fill)
+@li enhanced unittests for tf::cudaFlow
+@li added per-thread stream to avoid synchronizing with the default stream in running a %cudaFlow
+@li added tf::cudaFlow::repeat and tf::cudaFlow::predicate for iterative execution of a %cudaFlow
+@li added @ref Examples pages
+@li made observer a std::shared_ptr object
+@li enabled multiple observers to coexit in an executor
+@li created the <a href="https://github.com/taskflow/tfprof">TFProf project</a> (image below) to provide visualization and tooling needed for %Taskflow programs
+
+@image html images/tfprof.png width=100%
+
+@section release-2-5-0_bug_fixes Bug Fixes 
+
+@li fixed the bug in assigning the block pointer before constructor of an object in object pool 
+@li fixed the namespace conflicting in using MPark.Variant from upstream code
+
+@section release-2-5-0_miscellaneous_items Miscellaneous Items
+
+@li fixed the warning between unsigned and size_t conversion in tf::Executor
+@li submitted the technical paper to arXiv
+
+*/
+
+}

@@ -1,0 +1,137 @@
+namespace tf {
+
+/** @page ParallelIterations Parallel Iterations
+
+%Taskflow provides template functions for constructing
+tasks to perform parallel iterations over ranges of items.
+
+@tableofcontents
+
+@section A1IndexBasedParallelFor Create an Index-based Parallel-Iteration Task
+
+Index-based parallel-for performs parallel iterations over a range <tt>[first, last)</tt> with the given @c step size.
+The task created by tf::Taskflow::for_each_index(B first, E last, S step, C callable) represents parallel execution of the following loop:
+
+@code{.cpp}
+// positive step
+for(auto i=first; i<last; i+=step) {
+  callable(i);
+}
+
+// negative step
+for(auto i=first; i>last; i+=step) {
+  callable(i);
+}
+@endcode
+
+We support only integer-based range. The range can go positive or negative direction. 
+
+@code{.cpp}
+taskflow.for_each_index(0, 100,  2, [](int i) { });  // 50 loops with a + step
+taskflow.for_each_index(100, 0, -2, [](int i) { });  // 50 loops with a - step
+@endcode
+
+Notice that either positive or negative direction is defined in terms of the range,
+<tt>[first, last)</tt>, where @c end is excluded.
+In the positive case, the 50 items are 0, 2, 4, 6, 8, ..., 96, 98.
+In the negative case, the 50 items are 100, 98, 96, 04, ... 4, 2.
+An example of the %Taskflow graph for the positive case under 12 workers is depicted below:
+
+<!-- @image html images/parallel_for_1.svg width=100% -->
+@dotfile images/parallel_for_1.dot
+
+The index types, @c B, @c E, and @c S, are templates to preserve the variable types and their underlying types must be of the same @em integral type (e.g., @c int, @c size_t, @c unsigned).
+By default, tf::Taskflow::for_each_index creates a task that spawns a subflow (see @ref DynamicTasking) to run iterations in parallel. The subflow closure captures all input arguments through perfect forwarding to form a stateful closure such that any changes on the arguments will be visible to the execution context of the subflow. For example:
+
+@code{.cpp}
+int* vec;
+int first, last;
+
+auto init = taskflow.emplace([&](){
+  first = 0;
+  last  = 1000;
+  vec = new int[1000];  
+});
+
+auto pf = taskflow.for_each_index(std::ref(first), std::ref(last), 1, 
+  [&] (int i) {
+    std::cout << "parallel iteration on index " << vec[i] << '\n';
+  }
+);
+
+// wrong! must use std::ref, or first and last are captured by copy
+// auto pf = taskflow.for_each_index(first, last, 1, [&](int i) {
+//   std::cout << "parallel iteration on index " << vec[i] << '\n';
+// });
+
+init.precede(pf);
+@endcode
+
+When @c init finishes, the parallel-for task @c pf will see @c first as 0 and @c last as 1000 and performs parallel iterations over the 1000 items.
+This property is especially important for task graph parallelism, because users can define end-to-end parallelism through stateful closures that marshal parameter exchange between dependent tasks.
+
+
+@section A1IteratorBasedParallelFor Create an Iterator-based Parallel-Iteration Task
+
+Iterator-based parallel-for performs parallel iterations over a range specified by two <a href="https://en.cppreference.com/w/cpp/iterator/iterator">STL-styled iterators</a>, @c first and @c last. 
+The task created by tf::Taskflow::for_each(B first, E last, C callable) represents 
+a parallel execution of the following loop:
+
+@code{.cpp}
+for(auto i=first; i<last; i++) {
+  callable(*i);
+}
+@endcode
+
+By default, tf::Taskflow::for_each(B first, E last, C callable) creates a task that spawns a subflow (see @ref DynamicTasking) that applies the callable to the object obtained by dereferencing every iterator in the range <tt>[first, last)</tt>.
+It is user's responsibility for ensuring the range is valid within the execution of the parallel-for task. Iterators must have the post-increment operator @++ defined. This version of parallel-for applies to all iterable STL containers.
+
+@code{.cpp}
+std::vector<int> vec = {1, 2, 3, 4, 5};
+taskflow.for_each(vec.begin(), vec.end(), [](int i){ 
+  std::cout << "parallel for on item " << i << '\n';  
+});
+
+std::list<std::string> list = {"hi", "from", "t", "a", "s", "k", "f", "low"};
+taskflow.for_each(list.begin(), list.end(), [](const std::string& str){ 
+  std::cout << "parallel for on item " << str << '\n';  
+});
+@endcode
+
+
+Similar to index-based parallel-for, the iterator types are templates to enable users to leverage the property of stateful closure. For example:
+
+@code{.cpp}
+std::vector<int> vec;
+std::vector<int>::iterator first, last;;
+
+tf::Task init = taskflow.emplace([&](){
+  vec.resize(1000);
+  first = vec.begin();
+  last  = vec.end();
+});
+
+tf::Task pf = taskflow.for_each(std::ref(first), std::ref(last), [&](int i) {
+  std::cout << "parallel iteration on item " << i << '\n';
+});
+
+// wrong! must use std::ref, or first and last are captured by copy
+// tf::Task pf = taskflow.for_each(first, last, [&](int i) {
+//   std::cout << "parallel iteration on item " << i << '\n';
+// });
+
+init.precede(pf);
+@endcode
+
+When @c init finishes, the parallel-for task @c pf will see @c first pointing to the beginning of @c vec and @c last pointing to the end of @c vec and performs parallel iterations over the 1000 items. The two tasks form an end-to-end task graph where the parameters of parallel-for are computed on the fly.
+
+
+*/
+
+}
+
+
+
+
+
+

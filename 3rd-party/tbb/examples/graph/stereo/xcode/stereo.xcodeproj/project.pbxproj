@@ -1,0 +1,324 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8415B6821CFC8B7F00A875B5 /* stereo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8415B6801CFC8B7F00A875B5 /* stereo.cpp */; };
+		8415B6881CFC8B9200A875B5 /* lodepng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8415B6851CFC8B9200A875B5 /* lodepng.cpp */; };
+		8415B68A1CFC96D900A875B5 /* OpenCL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8415B6891CFC96D900A875B5 /* OpenCL.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		C3C58958218B657900DAC94C /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.intel.compilers.icc.latest;
+			fileType = sourcecode.cpp;
+			isEditable = 1;
+			outputFiles = (
+			);
+			script = "# Type a script or drag a script file from your workspace to insert its path.\n";
+		};
+/* End PBXBuildRule section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8DD76F690486A84900D96B5E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		8415B6801CFC8B7F00A875B5 /* stereo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = stereo.cpp; path = ../stereo.cpp; sourceTree = "<group>"; };
+		8415B6831CFC8B9200A875B5 /* imageEffects.cl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.opencl; name = imageEffects.cl; path = ../imageEffects.cl; sourceTree = "<group>"; };
+		8415B6851CFC8B9200A875B5 /* lodepng.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lodepng.cpp; path = ../lodepng.cpp; sourceTree = "<group>"; };
+		8415B6861CFC8B9200A875B5 /* lodepng.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lodepng.h; path = ../lodepng.h; sourceTree = "<group>"; };
+		8415B6891CFC96D900A875B5 /* OpenCL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenCL.framework; path = System/Library/Frameworks/OpenCL.framework; sourceTree = SDKROOT; };
+		8DD76F6C0486A84900D96B5E /* Stereo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Stereo; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DD76F660486A84900D96B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8415B68A1CFC96D900A875B5 /* OpenCL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* Stereo */ = {
+			isa = PBXGroup;
+			children = (
+				8415B6891CFC96D900A875B5 /* OpenCL.framework */,
+				08FB7795FE84155DC02AAC07 /* Source */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = Stereo;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				8415B6831CFC8B9200A875B5 /* imageEffects.cl */,
+				8415B6851CFC8B9200A875B5 /* lodepng.cpp */,
+				8415B6861CFC8B9200A875B5 /* lodepng.h */,
+				8415B6801CFC8B7F00A875B5 /* stereo.cpp */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DD76F6C0486A84900D96B5E /* Stereo */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8DD76F620486A84900D96B5E /* Stereo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "Stereo" */;
+			buildPhases = (
+				8DD76F640486A84900D96B5E /* Sources */,
+				8DD76F660486A84900D96B5E /* Frameworks */,
+				8DD76F690486A84900D96B5E /* CopyFiles */,
+			);
+			buildRules = (
+				C3C58958218B657900DAC94C /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = Stereo;
+			productInstallPath = "$(HOME)/bin";
+			productName = Stereo;
+			productReference = 8DD76F6C0486A84900D96B5E /* Stereo */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1000;
+			};
+			buildConfigurationList = 1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "stereo" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 08FB7794FE84155DC02AAC07 /* Stereo */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8DD76F620486A84900D96B5E /* Stereo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DD76F640486A84900D96B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8415B6881CFC8B9200A875B5 /* lodepng.cpp in Sources */,
+				8415B6821CFC8B7F00A875B5 /* stereo.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A1F593C60B8F0E6E00073279 /* Debug64 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_VERSION = "";
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				ICC_CXX_LANG_DIALECT = "c++11";
+				INSTALL_PATH = "$(HOME)/bin";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				PRODUCT_NAME = Stereo;
+				ZERO_LINK = NO;
+			};
+			name = Debug64;
+		};
+		A1F593C70B8F0E6E00073279 /* Release64 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_VERSION = "";
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				ICC_CXX_LANG_DIALECT = "c++11";
+				INSTALL_PATH = "$(HOME)/bin";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				PRODUCT_NAME = Stereo;
+				ZERO_LINK = NO;
+			};
+			name = Release64;
+		};
+		A1F593C80B8F0E6E00073279 /* Debug64 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_MODEL_TUNING = "";
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_VERSION = "";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(TBBROOT)/include",
+					/opt/intel/tbb/include,
+				);
+				ICC_CXX_LANG_DIALECT = "c++11";
+				LD_RUNPATH_SEARCH_PATHS = "$(TBBROOT)/lib /opt/intel/tbb/lib";
+				LIBRARY_SEARCH_PATHS = (
+					"$(TBBROOT)/lib",
+					/opt/intel/tbb/lib,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-m64",
+				);
+				OTHER_LDFLAGS = (
+					"-m64",
+					"-ltbb_debug",
+					"-framework",
+					OpenCL,
+				);
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				SYMROOT = "/tmp/tbb-$(USER)";
+				VALID_ARCHS = x86_64;
+			};
+			name = Debug64;
+		};
+		A1F593C90B8F0E6E00073279 /* Release64 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_MODEL_TUNING = "";
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_VERSION = "";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(TBBROOT)/include",
+					/opt/intel/tbb/include,
+				);
+				ICC_CXX_LANG_DIALECT = "c++11";
+				LD_RUNPATH_SEARCH_PATHS = "$(TBBROOT)/lib /opt/intel/tbb/lib";
+				LIBRARY_SEARCH_PATHS = (
+					"$(TBBROOT)/lib",
+					/opt/intel/tbb/lib,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-m64",
+				);
+				OTHER_LDFLAGS = (
+					"-m64",
+					"-ltbb",
+					"-framework",
+					OpenCL,
+				);
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				SYMROOT = "/tmp/tbb-$(USER)";
+				VALID_ARCHS = x86_64;
+			};
+			name = Release64;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "Stereo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1F593C60B8F0E6E00073279 /* Debug64 */,
+				A1F593C70B8F0E6E00073279 /* Release64 */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release64;
+		};
+		1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "stereo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1F593C80B8F0E6E00073279 /* Debug64 */,
+				A1F593C90B8F0E6E00073279 /* Release64 */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release64;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

@@ -1,0 +1,168 @@
+namespace tf {
+
+/** @page release-3-2-0 Release 3.2.0 (2021/07/29)
+
+%Taskflow 3.2.0 is the 3rd release in the 3.x line! 
+This release includes several new changes such as CPU-GPU tasking, algorithm collection,
+enhanced web-based profiler, documentation, and unit tests.
+
+@tableofcontents
+
+@section release-3-2-0_download Download
+
+%Taskflow 3.2.0 can be downloaded from <a href="https://github.com/taskflow/taskflow/releases/tag/v3.2.0">here</a>.
+
+@section release-3-2-0_system_requirements System Requirements
+
+To use %Taskflow v3.2.0, you need a compiler that supports C++17:
+
+@li GNU C++ Compiler at least v8.4 with -std=c++17
+@li Clang C++ Compiler at least v6.0 with -std=c++17
+@li Microsoft Visual Studio at least v19.27 with /std:c++17
+@li AppleClang Xode Version at least v12.0 with -std=c++17
+@li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
+@li Intel C++ Compiler at least v19.0.1 with -std=c++17
+@li Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20
+
+%Taskflow works on Linux, Windows, and Mac OS X.
+
+@section release-3-2-0_working_items Working Items
+
+@li enhancing support for SYCL with Intel DPC++
+@li enhancing parallel CPU and GPU algorithms
+@li designing pipeline interface and its scheduling algorithms
+
+@section release-3-2-0_new_features New Features
+
+@subsection release-3-2-0_taskflow_core Taskflow Core
+
+@li added tf::SmallVector optimization for optimizing the dependency storage in a graph
+@li added move constructor and move assignment operator for tf::Taskflow
+  + tf::Taskflow::Taskflow(Taskflow&&)
+  + tf::Taskflow::operator=(Taskflow&&)
+@li added moved run in tf::Executor for automatically managing taskflow's lifetimes
+  + tf::Executor::run(Taskflow&&)
+  + tf::Executor::run(Taskflow&&, C&&)
+  + tf::Executor::run_n(Taskflow&&, size_t)
+  + tf::Executor::run_n(Taskflow&&, size_t, C&&)
+  + tf::Executor::run_until(Taskflow&&, P&&)
+  + tf::Executor::run_until(Taskflow&&, P&&, C&&)
+
+@subsection release-3-2-0_cudaflow cudaFlow
+
+@li improved the execution flow of tf::cudaFlowCapturer when updates involve
+
+New algorithms in tf::cudaFlow and tf::cudaFlowCapturer:
+
+@li added tf::cudaFlow::reduce
+@li added tf::cudaFlow::transform_reduce
+@li added tf::cudaFlow::uninitialized_reduce
+@li added tf::cudaFlow::transform_uninitialized_reduce
+@li added tf::cudaFlow::inclusive_scan
+@li added tf::cudaFlow::exclusive_scan
+@li added tf::cudaFlow::transform_inclusive_scan
+@li added tf::cudaFlow::transform_exclusive_scan
+@li added tf::cudaFlow::merge 
+@li added tf::cudaFlow::merge_by_key
+@li added tf::cudaFlow::sort
+@li added tf::cudaFlow::sort_by_key
+@li added tf::cudaFlow::find_if
+@li added tf::cudaFlow::min_element
+@li added tf::cudaFlow::max_element
+@li added tf::cudaFlowCapturer::reduce
+@li added tf::cudaFlowCapturer::transform_reduce
+@li added tf::cudaFlowCapturer::uninitialized_reduce
+@li added tf::cudaFlowCapturer::transform_uninitialized_reduce
+@li added tf::cudaFlowCapturer::inclusive_scan
+@li added tf::cudaFlowCapturer::exclusive_scan
+@li added tf::cudaFlowCapturer::transform_inclusive_scan
+@li added tf::cudaFlowCapturer::transform_exclusive_scan
+@li added tf::cudaFlowCapturer::merge 
+@li added tf::cudaFlowCapturer::merge_by_key
+@li added tf::cudaFlowCapturer::sort
+@li added tf::cudaFlowCapturer::sort_by_key
+@li added tf::cudaFlowCapturer::find_if
+@li added tf::cudaFlowCapturer::min_element
+@li added tf::cudaFlowCapturer::max_element
+@li added tf::cudaLinearCapturing
+
+@subsection release-3-2-0_syclflow syclFlow
+
+@subsection release-3-2-0_cuda_std_algorithms CUDA Standard Parallel Algorithms
+
+@li added tf::cuda_for_each
+@li added tf::cuda_for_each_index
+@li added tf::cuda_transform
+@li added tf::cuda_reduce
+@li added tf::cuda_uninitialized_reduce
+@li added tf::cuda_transform_reduce
+@li added tf::cuda_transform_uninitialized_reduce
+@li added tf::cuda_inclusive_scan
+@li added tf::cuda_exclusive_scan
+@li added tf::cuda_transform_inclusive_scan
+@li added tf::cuda_transform_exclusive_scan
+@li added tf::cuda_merge
+@li added tf::cuda_merge_by_key
+@li added tf::cuda_sort
+@li added tf::cuda_sort_by_key
+@li added tf::cuda_find_if
+@li added tf::cuda_min_element
+@li added tf::cuda_max_element
+
+@subsection release-3-2-0_utilities Utilities
+
+@li added CUDA meta programming
+@li added SYCL meta programming
+
+@subsection release-3-2-0_profiler Taskflow Profiler (TFProf)
+
+@section release-3-2-0_bug_fixes Bug Fixes 
+
+@li fixed compilation errors in constructing tf::cudaRoundRobinCapturing
+@li fixed compilation errors of TLS worker pointer in tf::Executor
+@li fixed compilation errors of nvcc v11.3 in auto template deduction
+  + std::scoped_lock
+  + tf::Serializer and tf::Deserializer
+@li fixed memory leak when moving a tf::Taskflow
+
+@section release-3-2-0_breaking_changes Breaking Changes
+
+There are no breaking changes in this release.
+
+@section release-3-2-0_deprecated_items Deprecated and Removed Items 
+
+@li removed tf::cudaFlow::kernel_on method
+@li removed explicit partitions in parallel iterations and reductions
+@li removed tf::cudaFlowCapturerBase
+@li removed tf::cublasFlowCapturer
+@li renamed update and rebind methods in tf::cudaFlow and tf::cudaFlowCapturer
+            to overloads
+
+@section release-3-2-0_documentation Documentation
+
+@li revised @ref StaticTasking 
+  + @ref MoveATaskflow
+@li revised @ref ExecuteTaskflow 
+  + @ref ExecuteATaskflowWithTransferredOwnership
+@li revised @ref cudaFlowReduce
+@li added @ref cudaFlowAlgorithms
+  + @ref cudaFlowReduce
+  + @ref cudaFlowScan
+  + @ref cudaFlowMerge
+  + @ref cudaFlowSort
+@li added @ref cudaStandardAlgorithms
+  + @ref CUDASTDExecutionPolicy
+  + @ref CUDASTDReduce 
+  + @ref CUDASTDScan
+  + @ref CUDASTDMerge
+  + @ref CUDASTDSort
+  + @ref CUDASTDFind
+
+@section release-3-2-0_miscellaneous_items Miscellaneous Items
+
+We have published tf::cudaFlow in the following conference:
+  + Dian-Lun Lin and Tsung-Wei Huang, &quot;Efficient GPU Computation using %Task Graph Parallelism,&quot; <i>European Conference on Parallel and Distributed Computing (EuroPar)</i>, 2021
+
+*/
+
+}

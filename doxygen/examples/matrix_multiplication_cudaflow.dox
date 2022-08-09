@@ -1,0 +1,157 @@
+namespace tf {
+
+/** @page matrix_multiplication_cudaflow Matrix Multiplication (cudaFlow)
+
+Following up on @ref matrix_multiplication, this page studies how to accelerate
+a matrix multiplication workload on a GPU using tf::cudaFlow.
+
+@tableofcontents
+
+@section GPUAcceleratedMatrixMultiplication Define a Matrix Multiplication Kernel
+
+GPU can perform a lot of parallel computations more than CPUs.
+It is especially useful for data-intensive computing such as matrix multiplication.
+With GPU, we express the parallel patterns at a fine-grained level.
+The kernel, written in CUDA, is described as follows:
+
+@code{.cpp}
+// CUDA kernel to perform matrix multiplication
+__global__ void matmul(int *A, int *B, int *C, int M, int K, int N) {
+  int row = blockIdx.y * blockDim.y + threadIdx.y;
+  int col = blockIdx.x * blockDim.x + threadIdx.x;
+  int sum = 0;
+  if(col < N && row < M) {
+    for(int i = 0; i < K; i++) {
+      sum += a[row * K + i] * b[i * N + col];
+    }
+    c[row * N + col] = sum;
+  }
+}
+@endcode
+
+Each CUDA thread corresponds to an element of @c C and compute its result.
+Instead of storing each matrix in a 2D array, 
+we use 1D layout to ease the data transfer between CPU and GPU.
+In a row-major layout, an element <tt>(x, y)</tt> in the 2D matrix 
+can be addressed at <tt>x * width + y</tt> in the transformed 1D layout.
+
+@image html images/matrix_multiplication_4.png width=70%
+
+@section DefineAcudaFlowForMatrixMultiplication Define a cudaFlow for Matrix Multiplication
+
+The next step is to allocate memory for @c A, @c B, and @c C at a GPU.
+We create three tasks each calling @c cudaMalloc to allocate space for one matrix.
+Then, we create a %cudaFlow to offload matrix multiplication to a GPU.
+The entire code is described as follows:
+
+@code{.cpp}
+void matrix_multiplication(int* A, int* B, int* C, int M, int K, int N) {
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+
+  // allocate the host and gpu storage for A
+  tf::Task allocate_a = taskflow.emplace([&](){
+    cudaMalloc(&da, M*K*sizeof(int));
+  }).name("allocate_a");
+  
+  // allocate the host and gpu storage for B
+  tf::Task allocate_b = taskflow.emplace([&](){
+    cudaMalloc(&db, K*N*sizeof(int));
+  }).name("allocate_b");
+  
+  // allocate the host and gpu storage for C
+  tf::Task allocate_c = taskflow.emplace([&](){
+    cudaMalloc(&dc, M*N*sizeof(int));
+  }).name("allocate_c");
+  
+  // create a cudaFlow to run the matrix multiplication
+  tf::Task cudaFlow = taskflow.emplace([&](tf::cudaFlow& cf){
+  
+    // copy data to da, db, and dc
+    tf::cudaTask copy_da = cf.copy(da, A, M*K).name("H2D_A");
+    tf::cudaTask copy_db = cf.copy(db, B, K*N).name("H2D_B");
+    tf::cudaTask copy_hc = cf.copy(C, dc, M*N).name("D2H_C");
+  
+    dim3 grid  ((K+16-1)/16, (M+16-1)/16);
+    dim3 block (16, 16);
+  
+    tf::cudaTask kmatmul = cf.kernel(grid, block, 0, matmul, da, db, dc, M, K, N)
+                             .name("matmul");
+  
+    kmatmul.succeed(copy_da, copy_db)
+           .precede(copy_hc);
+  
+  }).name("cudaFlow");
+  
+  // free the gpu storage
+  auto free = taskflow.emplace([&](){
+    cudaFree(da);
+    cudaFree(db);
+    cudaFree(dc);
+  }).name("free");
+  
+  // create dependency
+  cudaFlow.succeed(allocate_a, allocate_b, allocate_c)
+          .precede(free);
+  
+  // dump the graph without unfolding the cudaFlow
+  taskflow.dump(std::cout);
+
+  // run the taskflow
+  executor.run(taskflow).wait();
+
+  // dump the entire execution graph including unfolded cudaFlow
+  taskflow.dump(std::cout);
+}
+@endcode
+
+Within the %cudaFlow, we create two host-to-device (H2D) tasks that copy data from @c A and @c B
+to @c da and @c db,
+one device-to-host (D2H) task that copies the result from @c dc to @c C,
+and one kernel task that launches @c matmul on the GPU
+(by default, GPU 0).
+H2D tasks precede the kernel and the kernel precedes the D2H task.
+These GPU operations form a GPU task graph managed by a %cudaFlow.
+The first dump of the taskflow gives the following graph:
+
+<!-- @image html images/matrix_multiplication_5.svg width=40% -->
+@dotfile images/matrix_multiplication_5.dot
+
+A %cudaFlow encapsulates a GPU task dependency graph similar to a tf::Subflow 
+(see @ref DynamicTasking). 
+In order to visualize it, we need to execute 
+the graph first and then dump the taskflow.
+
+<!-- @image html images/matrix_multiplication_6.svg width=50% -->
+@dotfile images/matrix_multiplication_6.dot
+
+@section MatrixMultiplicationcudaFlowBenchmarking Benchmarking
+
+We run three versions of matrix multiplication,
+sequential CPU, parallel CPUs, and one GPU,
+on a machine of 12 Intel i7-8700 CPUs at 3.20 GHz and a Nvidia RTX 2080 GPU using
+various matrix sizes of @c A, @c B, and @c C.
+
+<div align="center">
+| A         | B         | C         | CPU Sequential | CPU Parallel | GPU Parallel |
+| :-:       | :-:       | :-:       | :-:            | :-:          | :-:          |
+| 10x10     | 10x10     | 10x10     | 0.142 ms       | 0.414 ms     | 82 ms        |
+| 100x100   | 100x100   | 100x100   | 1.641 ms       | 0.733 ms     | 83 ms        |
+| 1000x1000 | 1000x1000 | 1000x1000 | 1532  ms       | 504 ms       | 85 ms        |
+| 2000x2000 | 2000x2000 | 2000x2000 | 25688 ms       | 4387 ms      | 133 ms       |
+| 3000x3000 | 3000x3000 | 3000x3000 | 104838 ms      | 16170 ms     | 214 ms       |
+| 4000x4000 | 4000x4000 | 4000x4000 | 250133 ms      | 39646 ms     | 427 ms       |
+</div>
+
+As the matrix size increases,
+the speed-up of GPU over CPUs becomes prominent.
+For example, at @c 4000x4000, the GPU runtime is 585.8 times faster
+than the sequential CPU runtime and is 92.8 times faster than
+the parallel CPU solutions.
+
+*/
+
+}
+
+

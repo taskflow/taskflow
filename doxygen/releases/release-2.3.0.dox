@@ -1,0 +1,45 @@
+namespace tf {
+
+/** @page release-2-3-0 Release 2.3.0 (2020/02/27)
+
+Cpp-Taskflow 2.3.0 is the 4th release in the 2.x line! 
+This release includes several new changes such as conditional tasking,
+modified scheduling flows, benchmarks, documentation, and so forth.
+
+@tableofcontents
+
+@section release-2-3-0_download Download
+
+Cpp-Taskflow 2.3.0 can be downloaded from <a href="https://github.com/cpp-taskflow/cpp-taskflow/releases/tag/v2.3.0">here</a>.
+
+@section release-2-3-0_new_features New Features
+
+@li Added full C++14/17/20 support
+@li Added a thread-safe object pool motivated by Hoard memory allocator
+@li Added condition tasks in support for conditional tasking (see @ref ConditionalTasking)
+@li Added tf::Task::has_work to detect if a task is a placeholder
+@li Added tf::Task::for_each_successor, tf::Task::for_each_dependent, and tf::Taskflow::for_each_task, tf::TaskView::for_each_successor, tf::TaskView::for_each_dependent to support graph traversal
+@li Modified the task scheduling flow
+@li Modified tf::Taskflow::parallel_for to take a chunk size instead of a partition number
+@li Modified tf::Executor to be thread-safe (see @ref ExecuteTaskflow)
+@li Enhanced the performance of work stealing
+@li Enhanced unit tests
+
+@section release-2-3-0_bug_fixes Bug Fixes 
+
+@li Fixed the stack overflow problem in zero worker execution
+@li Fixed the missing comma in output execution timelines from an executor
+@li Fixed the bug in empty taskflow
+
+@section release-2-3-0_deprecated_items Deprecated Items 
+
+@li Removed zero worker thread support in execution
+@li Removed gather method in task handle
+@li Removed std::vector and std::initializer_list support in task's preceed/succeed methods
+@li Removed taskflow::silent_emplace method
+
+
+*/
+
+}
+

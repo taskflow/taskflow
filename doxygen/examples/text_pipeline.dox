@@ -1,0 +1,291 @@
+namespace tf {
+
+/** @page TextProcessingPipeline Text Processing Pipeline
+
+We study a text processing pipeline that finds the most frequent character of each string 
+from an input source.
+Parallelism exhibits in the form of a three-stage pipeline that transforms the input
+string to a final pair type.
+
+@tableofcontents
+
+@section FormulateTheTextProcessingPipelineProblem Formulate the Text Processing Pipeline Problem
+
+Given an input vector of strings, we want to compute the most frequent character
+for each string using a series of transform operations. For example:
+
+@code{.shell-session}
+# input strings
+abade
+ddddf
+eefge
+xyzzd
+ijjjj
+jiiii
+kkijk
+
+# output
+a:2
+d:4
+e:3
+z:2
+j:4
+i:4
+k:3
+@endcode
+
+We decompose the algorithm into three stages:
+
+1. read a `%std::string` from the input vector
+2. generate a `%std::unorder_map<char, size_t>` frequency map from the string 
+3. reduce the most frequent character to a `%std::pair<char, size_t>` from the map
+
+The first and the third stages process inputs and generate results in serial, 
+and the second stage can run in parallel.
+The algorithm is a perfect fit to pipeline parallelism, as different stages
+can overlap with each other in time across parallel lines.
+
+@section CreateAParallelTextPipeline Create a Text Processing Pipeline
+
+We create a pipeline of three pipes (stages) and two parallel lines to solve the problem.
+The number of parallel lines is a tunable parameter. In most cases,
+we can just use `std::thread::hardware_concurrency` as the line count.
+The first pipe reads an input string from the vector in order, 
+the second pipe transforms the input string from the first pipe to a frequency map in parallel,
+and
+the third pipe reduces the frequency map to find the most frequent character.
+The overall implementation is shown below:
+
+@code{.cpp}
+#include <taskflow/taskflow.hpp>
+#include <taskflow/algorithm/pipeline.hpp>
+
+// Function: format the map
+std::string format_map(const std::unordered_map<char, size_t>& map) {
+  std::ostringstream oss;
+  for(const auto& [i, j] : map) {
+    oss << i << ':' << j << ' ';
+  }
+  return oss.str();
+}
+
+int main() {
+
+  tf::Taskflow taskflow("text-filter pipeline");
+  tf::Executor executor;
+
+  const size_t num_lines = 2;
+
+  // input data 
+  std::vector<std::string> input = {
+    "abade", 
+    "ddddf",
+    "eefge",
+    "xyzzd",
+    "ijjjj",
+    "jiiii",
+    "kkijk"
+  };
+
+  // custom data storage
+  using data_type = std::variant<
+    std::string, std::unordered_map<char, size_t>, std::pair<char, size_t>
+  >;
+  std::array<data_type, num_lines> mybuffer;
+
+  // the pipeline consists of three pipes (serial-parallel-serial)
+  // and up to four concurrent scheduling tokens
+  tf::Pipeline pl(num_lines,
+
+    // first pipe processes the input data
+    tf::Pipe{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) {
+      if(pf.token() == input.size()) {
+        pf.stop();
+      }
+      else {
+        printf("stage 1: input token = %s\n", input[pf.token()].c_str());
+        mybuffer[pf.line()] = input[pf.token()];
+      }
+    }},
+    
+    // second pipe counts the frequency of each character
+    tf::Pipe{tf::PipeType::PARALLEL, [&](tf::Pipeflow& pf) {
+      std::unordered_map<char, size_t> map;
+      for(auto c : std::get<std::string>(mybuffer[pf.line()])) {
+        map[c]++;
+      }
+      printf("stage 2: map = %s\n", format_map(map).c_str());
+      mybuffer[pf.line()] = map;
+    }},
+    
+    // third pipe reduces the most frequent character
+    tf::Pipe{tf::PipeType::SERIAL, [&mybuffer](tf::Pipeflow& pf) {
+      auto& map = std::get<std::unordered_map<char, size_t>>(mybuffer[pf.line()]);
+      auto sol = std::max_element(map.begin(), map.end(), [](auto& a, auto& b){
+        return a.second < b.second;
+      });
+      printf("stage 3: %c:%zu\n", sol->first, sol->second);
+      // not necessary to store the last-stage data, just for demo purpose
+      mybuffer[pf.line()] = *sol;  
+    }}
+  );
+  
+  // build the pipeline graph using composition
+  tf::Task init = taskflow.emplace([](){ std::cout << "ready\n"; })
+                          .name("starting pipeline");
+  tf::Task task = taskflow.composed_of(pl)
+                          .name("pipeline");
+  tf::Task stop = taskflow.emplace([](){ std::cout << "stopped\n"; })
+                          .name("pipeline stopped");
+
+  // create task dependency
+  init.precede(task);
+  task.precede(stop);
+  
+  // dump the pipeline graph structure (with composition)
+  taskflow.dump(std::cout);
+
+  // run the pipeline
+  executor.run(taskflow).wait();
+  
+  return 0;
+}
+@endcode
+
+@subsection TextPipelineDefineTheDataBuffer Define the Data Buffer
+
+%Taskflow does not provide any data abstraction to perform pipeline scheduling, but
+give users full control over data management in their applications.
+In this example, we create an one-dimensional buffer of a @std_variant data type to store the output
+of each pipe in a uniform storage:
+
+@code{.cpp}
+using data_type = std::variant<
+  std::string, std::unordered_map<char, size_t>, std::pair<char, size_t>
+>;
+std::array<std::array<data_type, num_pipes>, num_lines> mybuffer;
+@endcode
+
+@note
+One-dimensional buffer is sufficient because %Taskflow enables only one scheduling token
+per line at a time.
+
+@subsection TextPipelineDefineThePipes Define the Pipes
+
+The first pipe reads one string and puts it in the corresponding entry at the buffer,
+`mybuffer[pf.line()]`.
+Since we read in each string in order,
+we declare the pipe as a serial type:
+
+@code{.cpp}
+tf::Pipe{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) {
+  if(pf.token() == input.size()) {
+    pf.stop();
+  }
+  else {
+    mybuffer[pf.line()] = input[pf.token()];
+    printf("stage 1: input token = %s\n", input[pf.token()].c_str());
+  }
+}},
+@endcode
+
+The second pipe needs to get the input string from the previous pipe and then
+transforms that input string into a frequency map that records the 
+occurrence of each character in the string.
+As multiple transforms can operate simultaneously, 
+we declare the pipe as a parallel type:
+
+@code{.cpp}
+tf::Pipe{tf::PipeType::PARALLEL, [&](tf::Pipeflow& pf) {
+  std::unordered_map<char, size_t> map;
+  for(auto c : std::get<std::string>(mybuffer[pf.line()])) {
+    map[c]++;
+  }
+  mybuffer[pf.line()] = map;
+  printf("stage 2: map = %s\n", format_map(map).c_str());
+}}
+@endcode
+
+Similarly, the third pipe needs to get the input frequency map from the previous
+pipe and then reduces the result to find the most frequent character.
+We may not need to store the result in the buffer but other places defined
+by the application (e.g., an output file).
+As we want to output the result in the same order as the input,
+we declare the pipe as a serial type:
+
+@code{.cpp}
+tf::Pipe{tf::PipeType::SERIAL, [&mybuffer](tf::Pipeflow& pf) {
+  auto& map = std::get<std::unordered_map<char, size_t>>(mybuffer[pf.line()]);
+  auto sol = std::max_element(map.begin(), map.end(), [](auto& a, auto& b){
+    return a.second < b.second;
+  });
+  printf("stage 3: %c:%zu\n", sol->first, sol->second);
+}}
+@endcode
+
+@subsection TextPipelineDefineTheTaskGraph Define the Task Graph
+
+To build up the taskflow graph for the pipeline,
+we create a module task out of the pipeline structure and connect it with
+two tasks that outputs messages before and after the pipeline:
+
+@code{.cpp}
+tf::Task init = taskflow.emplace([](){ std::cout << "ready\n"; })
+                        .name("starting pipeline");
+tf::Task task = taskflow.composed_of(pl)
+                        .name("pipeline");
+tf::Task stop = taskflow.emplace([](){ std::cout << "stopped\n"; })
+                        .name("pipeline stopped");
+init.precede(task);
+task.precede(stop);
+@endcode
+
+@subsection TextPipelineSubmitTheTaskGraph Submit the Task Graph
+
+Finally, we submit the taskflow to the execution and run it once:
+
+@code{.cpp}
+executor.run(taskflow).wait();
+@endcode
+
+As the second stage is a parallel pipe, the output may interleave.
+One possible result is shown below:
+
+@code{.shell-session}
+ready
+stage 1: input token = abade
+stage 1: input token = ddddf
+stage 2: map = f:1 d:4 
+stage 2: map = e:1 d:1 a:2 b:1 
+stage 3: a:2
+stage 1: input token = eefge
+stage 2: map = g:1 e:3 f:1 
+stage 3: d:4
+stage 1: input token = xyzzd
+stage 3: e:3
+stage 1: input token = ijjjj
+stage 2: map = z:2 x:1 d:1 y:1 
+stage 3: z:2
+stage 1: input token = jiiii
+stage 2: map = j:4 i:1 
+stage 3: j:4
+stage 2: map = i:4 j:1 
+stage 1: input token = kkijk
+stage 3: i:4
+stage 2: map = j:1 k:3 i:1 
+stage 3: k:3
+stopped
+@endcode
+
+We can see seven outputs at the third stage that show the most frequent character
+for each of the seven strings in order (`a:2`, `d:4`, `e:3`, `z:2`, `j:4`, `i:4`, `k:3`).
+The taskflow graph of this pipeline workload is shown below:
+
+@dotfile images/text_processing_pipeline.dot
+
+*/
+
+}
+
+
+

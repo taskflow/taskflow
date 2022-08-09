@@ -1,0 +1,143 @@
+namespace tf {
+
+/** @page BenchmarkTaskflow Benchmark Taskflow
+
+@tableofcontents
+
+@section CompileAndRunBenchmarks Compile and Run Benchmarks
+
+To build the benchmark code,
+enable the CMake option @c TF_BUILD_BENCHMARKS to @c ON as follows:
+
+@code{.shell-session}
+# under /taskflow/build
+~$ cmake ../ -DTF_BUILD_BENCHMARKS=ON
+~$ make
+@endcode
+
+After you successfully build the benchmark code, you can find all benchmark
+instances in the @c benchmarks/ folder.
+You can run the executable of each instance in the corresponding folder.
+
+@code{.shell-session}
+~$ cd benchmarks & ls
+black_scholes binary_tree graph_traversal ...
+~$ cd graph_traversal & ./graph_traversal
+|V|+|E|     Runtime
+      2       0.197
+    842       0.198
+   3284       0.488
+   7288       0.774
+    ...         ...
+    ...         ...
+ 619802      75.135
+ 664771      77.436
+ 711200      83.957
+@endcode
+
+You can display the help message by giving the option @c --help.
+
+@code{.shell-session}
+~$ ./graph_traversal --help
+Graph Traversal
+Usage: ./graph_traversal [OPTIONS]
+
+Options:
+  -h,--help                   Print this help message and exit
+  -t,--num_threads UINT       number of threads (default=1)
+  -r,--num_rounds UINT        number of rounds (default=1)
+  -m,--model TEXT             model name tbb|omp|tf (default=tf)
+@endcode
+
+We currently implement the following instances that are commonly used by
+the parallel computing community to evaluate the system performance.
+
+| Instance | Description |
+| :-:      | :-:         |
+| binary_tree | traverses a complete binary tree |
+| black_scholes | computes option pricing with Black-Shcoles Models |
+| graph_traversal | traverses a randomly generated direct acyclic graph |
+| linear_chain    | traverses a linear chain of tasks |
+| mandelbrot      | exploits imbalanced workloads in a Mandelbrot set |
+| matrix_multiplication | multiplies two 2D matrices |
+| mnist | trains a neural network-based image classifier on the MNIST dataset |
+| parallel_sort | sorts a range of items |
+| reduce_sum | sums a range of items using reduction |
+| wavefront | propagates computations in a 2D grid |
+| linear_pipeline | pipeline scheduling on a linear chain of pipes |
+| graph_pipeline | pipeline scheduling on a graph of pipes |
+
+
+@section ConfigureRunOptions Configure Run Options
+
+We implement consistent options for each benchmark instance. 
+Common options are:
+
+| option | value | function |
+| :-:    | :-:   | :-:      |
+| @c -h  | none  | display the help message |
+| @c -t  | integer | configure the number of threads to run |
+| @c -r  | integer | configure the number of rounds to run |
+| @c -m  | string | configure the baseline models to run, tbb, omp, or tf |
+
+You can configure the benchmarking environment by giving different options.
+
+@subsection SpecifyTheRunModel Specify the Run Model
+
+In addition to a %Taskflow-based implementation for each benchmark instance,
+we have implemented two baseline models using the state-of-the-art parallel
+programming libraries, @OpenMP and @TBB,
+to measure and evaluate the performance of %Taskflow.
+You can select different implementations by passing the option @c -m.
+
+@code{.shell-session}
+~$ ./graph_traversal -m tf   # run the Taskflow implementation (default)
+~$ ./graph_traversal -m tbb  # run the TBB implementation
+~$ ./graph_traversal -m omp  # run the OpenMP implementation
+@endcode
+
+@subsection SpecifyTheNumberOfThreads Specify the Number of Threads
+
+You can configure the number of threads to run a benchmark instance
+by passing the option @c -t. 
+The default value is one.
+
+@code{.shell-session}
+# run the Taskflow implementation using 4 threads
+~$ ./graph_traversal -m tf -t 4
+@endcode
+
+Depending on your environment, you may need to use @c taskset to set the CPU
+affinity of the running process.
+This allows the OS scheduler to keep process on the same CPU(s) as long as
+practical for performance reason.
+
+@code{.shell-session}
+# affine the process to 4 CPUs, CPU 0, CPU 1, CPU 2, and CPU 3
+~$ taskset -c 0-3 graph_traversal -t 4  
+@endcode
+
+@subsection SpecifyTheNumberOfRounds Specify the Number of Rounds
+
+Each benchmark instance evaluates the runtime of the implementation 
+at different problem sizes.
+Each problem size corresponds to one iteration.
+You can configure the number of rounds per iteration to average the runtime.
+
+@code{.shell-session}
+# measure the runtime in an average of 10 runs
+~$ ./graph_traversal -r 10
+|V|+|E|     Runtime
+      2       0.109   # the runtime value 0.109 is an average of 10 runs
+    842       0.298
+    ...         ...
+ 619802      73.135
+ 664771      74.436
+@endcode
+
+*/
+
+
+}
+
+

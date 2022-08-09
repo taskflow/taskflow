@@ -1,0 +1,197 @@
+namespace tf {
+
+/** @page CompileTaskflowWithCUDA Compile Taskflow with CUDA
+
+@tableofcontents
+
+@section InstallCUDACompiler Install CUDA Compiler
+
+To compile %Taskflow with CUDA code, you need a @c nvcc compiler.
+Please visit the official page of 
+<a href="https://developer.nvidia.com/cuda-downloads">Downloading CUDA Toolkit</a>.
+
+@section CompileTaskflowWithCUDADirectly Compile Source Code Directly
+
+%Taskflow's GPU programming interface for CUDA is tf::cudaFlow.
+Consider the following `simple.cu` program that launches a single kernel
+function to output a message:
+
+@code{.cpp}
+#include <taskflow/taskflow.hpp>  // core taskflow routines
+#include <taskflow/cudaflow.hpp>  // core cudaflow routines
+
+int main(int argc, const char** argv) {
+
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+
+  tf::Task task1 = taskflow.emplace([](){}).name("cpu task");
+  tf::Task task2 = taskflow.emplace([](tf::cudaFlow& cf){
+    tf::cudaTask cudaTask = cf.single_task(
+      [] __device__ () { printf("hello cudaFlow!\n"); }
+    );
+  }).name("gpu task");
+
+  task1.precede(task2);
+
+  executor.run(taskflow).wait();
+  return 0;
+}
+@endcode
+
+The easiest way to compile %Taskflow with CUDA code (e.g., %cudaFlow, kernels)
+is to use @nvcc:
+
+@code{.shell-session}
+~$ nvcc -std=c++17 -I path/to/taskflow/ --extended-lambda simple.cu -o simple
+~$ ./simple
+hello cudaFlow!
+@endcode
+
+@attention
+You need to include @c taskflow/cudaflow.hpp in order to use tf::cudaFlow.
+
+
+@section CompileTaskflowWithCUDASeparately Compile Source Code Separately
+
+Large GPU applications often compile a program into separate objects
+and link them together to form an executable or a library.
+You can compile your CPU code and GPU code separately with %Taskflow
+using @c nvcc and other compilers (such as @c g++ and @c clang++).
+Consider the following example that defines two tasks
+on two different pieces (@c main.cpp and @c cudaflow.cpp) of source code:
+
+@code{.cpp}
+// main.cpp
+#include <taskflow/taskflow.hpp>
+
+tf::Task make_cudaflow(tf::Taskflow& taskflow);  // create a cudaFlow task
+
+int main() {
+
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+
+  tf::Task task1 = taskflow.emplace([](){ std::cout << "main.cpp!\n"; })
+                           .name("cpu task");
+  tf::Task task2 = make_cudaflow(taskflow);
+
+  task1.precede(task2);
+
+  executor.run(taskflow).wait();
+
+  return 0;
+}
+@endcode
+
+@code{.cpp}
+// cudaflow.cpp
+#include <taskflow/taskflow.hpp>
+#include <taskflow/cudaflow.hpp>
+
+tf::Task make_cudaflow(tf::Taskflow& taskflow) {
+  return taskflow.emplace([](tf::cudaFlow& cf){
+    cf.single_task([] __device__ () { printf("cudaflow.cpp!\n"); })
+      .name("kernel");
+  }).name("gpu task");
+}
+@endcode
+
+Compile each source to an object (@c g++ as an example):
+
+@code{.shell-session}
+~$ g++ -std=c++17 -I path/to/taskflow -c main.cpp -o main.o
+~$ nvcc -std=c++17 --extended-lambda -x cu -I path/to/taskflow \
+        -dc cudaflow.cpp -o cudaflow.o
+~$ ls
+# now we have the two compiled .o objects, main.o and cudaflow.o
+main.o cudaflow.o 
+@endcode
+
+The @c --extended-lambda option tells @c nvcc to generate GPU code
+for the lambda defined with <tt>__device__</tt>.
+The <tt>-x cu</tt> tells @c nvcc to treat the input files as @c .cu files 
+containing both CPU and GPU code. 
+By default, @c nvcc treats @c .cpp files as CPU-only code. 
+This option is required to have @c nvcc generate device code here, 
+but it is also a handy way to avoid renaming source files in larger projects.
+The @c –dc option tells @c nvcc to generate device code for later linking.
+
+You may also need to specify the target architecture to tell @c nvcc to target
+on a compatible SM architecture using the option @-arch.
+For instance, the following command requires 
+device code linking to have compute capability 7.5 or later:
+
+@code{.shell-session}
+~$ nvcc -std=c++17 --extended-lambda -x cu -arch=sm_75 -I path/to/taskflow \
+        -dc cudaflow.cpp -o cudaflow.o
+@endcode
+
+@subsection CompileTaskflowWithCUDANaiveLinking Link Objects Using nvcc
+
+Using @c nvcc to link compiled object code is nothing special but
+replacing the normal compiler with @c nvcc and it takes care of all the 
+necessary steps:
+
+@code{.shell-session}
+~$ nvcc main.o cudaflow.o -o main
+
+# run the main program 
+~$ ./main
+main.cpp!
+cudaflow.cpp!
+@endcode
+
+@subsection CompileTaskflowWithCUDADifferentLinkers Link Objects Using Different Linkers
+
+You can choose to use a compiler other than @c nvcc for the final link step.
+Since your CPU compiler does not know how to link CUDA device code, 
+you have to add a step in your build to have @c nvcc link the CUDA device code,
+using the option @c -dlink:
+
+@code{.shell-session}
+~$ nvcc -o gpuCode.o -dlink main.o cudaflow.o
+@endcode
+
+This step links all the <i>device object code</i> and places it into @c gpuCode.o.
+
+@note
+Note that this step does not link the CPU object code
+and discards the CPU object code in @c main.o and @c cudaflow.o.
+
+
+To complete the link to an executable, you can use, for example, @c ld or @c g++.
+
+@code{.shell-session}
+# replace /usr/local/cuda/lib64 with your own CUDA library installation path
+~$ g++ -pthread -L /usr/local/cuda/lib64/ -lcudart \
+   gpuCode.o main.o cudaflow.o -o main
+
+# run the main program
+~$ ./main
+main.cpp!
+cudaflow.cpp!
+@endcode
+
+We give @c g++ all of the objects again because it needs the CPU object code, 
+which is not in @c gpuCode.o. 
+The device code stored in the original objects, @c main.o and @c cudaflow.o,
+does not conflict with the code in @c gpuCode.o. 
+@c g++ ignores device code because it does not know how to link it, 
+and the device code in @c gpuCode.o is already linked and ready to go. 
+
+@note
+This intentional ignorance is extremely useful in large builds 
+where intermediate objects may have both CPU and GPU code. 
+In this case, we just let the GPU and CPU linkers each do its own job, 
+noting that the CPU linker is always the last one we run. 
+The CUDA Runtime API library is automatically linked when we use @c nvcc for linking, 
+but we must explicitly link it (@c -lcudart) when using another linker.
+
+
+*/
+
+
+}
+
+

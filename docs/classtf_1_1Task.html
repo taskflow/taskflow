@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>tf::Task class | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>Task <span class="m-thin">class</span>
+        </h1>
+        <p>class to create a task handle over a node in a taskflow graph</p>
+        <nav class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li>
+              Reference
+              <ul>
+                <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
+                <li><a href="#pub-methods">Public functions</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+<p>A task is a wrapper over a node in a taskflow graph. It provides a set of methods for users to access and modify the attributes of the associated node in the taskflow graph. A task is very lightweight object (i.e., only storing a node pointer) that can be trivially copied around, and it does not own the lifetime of the associated node.</p>
+        <section id="typeless-methods">
+          <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
+          <dl class="m-doc">
+            <dt id="a5ed7ba63e8eeaa0f21fe08c80aa474ba">
+              <span class="m-doc-wrap-bumper"><a href="#a5ed7ba63e8eeaa0f21fe08c80aa474ba" class="m-doc-self">Task</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
+            </dt>
+            <dd>constructs an empty task</dd>
+            <dt id="a53deffe60d7c758df4265aeb81063928">
+              <span class="m-doc-wrap-bumper"><a href="#a53deffe60d7c758df4265aeb81063928" class="m-doc-self">Task</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; other)</span>
+            </dt>
+            <dd>constructs the task with the copy of the other task</dd>
+          </dl>
+        </section>
+        <section id="pub-methods">
+          <h2><a href="#pub-methods">Public functions</a></h2>
+          <dl class="m-doc">
+            <dt id="aebdcc47e47a119f261daab673a971458">
+              <span class="m-doc-wrap-bumper">auto <a href="#aebdcc47e47a119f261daab673a971458" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
+            </dt>
+            <dd>replaces the contents with a copy of the other task</dd>
+            <dt id="a4b0e3d6a1985a353626c15970c51c820">
+              <span class="m-doc-wrap-bumper">auto <a href="#a4b0e3d6a1985a353626c15970c51c820" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/types/nullptr_t.html" class="m-doc-external">std::<wbr />nullptr_t</a>) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
+            </dt>
+            <dd>replaces the contents with a null pointer</dd>
+            <dt id="af703a2c583ae617623c50a9aa3f2a0da">
+              <span class="m-doc-wrap-bumper">auto <a href="#af703a2c583ae617623c50a9aa3f2a0da" class="m-doc-self">operator==</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; rhs) const -&gt; bool</span>
+            </dt>
+            <dd>compares if two tasks are associated with the same graph node</dd>
+            <dt id="a62af946782b31771a6ed049075f42ad4">
+              <span class="m-doc-wrap-bumper">auto <a href="#a62af946782b31771a6ed049075f42ad4" class="m-doc-self">operator!=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; rhs) const -&gt; bool</span>
+            </dt>
+            <dd>compares if two tasks are not associated with the same graph node</dd>
+            <dt id="a2e9c4175bd592c81ab26a36d22c4d5e0">
+              <span class="m-doc-wrap-bumper">auto <a href="#a2e9c4175bd592c81ab26a36d22c4d5e0" class="m-doc-self">name</a>(</span><span class="m-doc-wrap">) const -&gt; const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp;</span>
+            </dt>
+            <dd>queries the name of the task</dd>
+            <dt id="a38c7d403ef38f7f03cde4152537ac1bd">
+              <span class="m-doc-wrap-bumper">auto <a href="#a38c7d403ef38f7f03cde4152537ac1bd" class="m-doc-self">num_successors</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            </dt>
+            <dd>queries the number of successors of the task</dd>
+            <dt id="a721e7f0d493182c5efeb193e42b2467a">
+              <span class="m-doc-wrap-bumper">auto <a href="#a721e7f0d493182c5efeb193e42b2467a" class="m-doc-self">num_dependents</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            </dt>
+            <dd>queries the number of predecessors of the task</dd>
+            <dt id="af289d65771fd44fcd8030606301cddd4">
+              <span class="m-doc-wrap-bumper">auto <a href="#af289d65771fd44fcd8030606301cddd4" class="m-doc-self">num_strong_dependents</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            </dt>
+            <dd>queries the number of strong dependents of the task</dd>
+            <dt id="a8f9f5a6de657295d7a57c3997d6321db">
+              <span class="m-doc-wrap-bumper">auto <a href="#a8f9f5a6de657295d7a57c3997d6321db" class="m-doc-self">num_weak_dependents</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            </dt>
+            <dd>queries the number of weak dependents of the task</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a9057ecd0f3833b717480e914f8568f02" class="m-doc">name</a>(</span><span class="m-doc-wrap">const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp; name) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
+            </dt>
+            <dd>assigns a name to the task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a2f6f4cec42d016e5eb89390f362ffe99" class="m-doc">work</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
+            </dt>
+            <dd>assigns a callable</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ab38be520fe700cb4ca1f312308a95585" class="m-doc">composed_of</a>(</span><span class="m-doc-wrap">T&amp; object) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
+            </dt>
+            <dd>creates a module task from a taskflow</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename... Ts&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a97c6b53bb0192b98527aab4ea9144191" class="m-doc">precede</a>(</span><span class="m-doc-wrap">Ts &amp;&amp; ... tasks) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
+            </dt>
+            <dd>adds precedence links from this to other tasks</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename... Ts&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#add61b87569300ec73e0391476e8c0d3f" class="m-doc">succeed</a>(</span><span class="m-doc-wrap">Ts &amp;&amp; ... tasks) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
+            </dt>
+            <dd>adds precedence links from other tasks to this</dd>
+            <dt id="a26709523eb112f2d024f4c0e9d2f0019">
+              <span class="m-doc-wrap-bumper">auto <a href="#a26709523eb112f2d024f4c0e9d2f0019" class="m-doc-self">release</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Semaphore.html" class="m-doc">Semaphore</a>&amp; semaphore) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
+            </dt>
+            <dd>makes the task release this semaphore</dd>
+            <dt id="a076ab9c6f3a0346e16cfb5fee7dc4ce8">
+              <span class="m-doc-wrap-bumper">auto <a href="#a076ab9c6f3a0346e16cfb5fee7dc4ce8" class="m-doc-self">acquire</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Semaphore.html" class="m-doc">Semaphore</a>&amp; semaphore) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
+            </dt>
+            <dd>makes the task acquire this semaphore</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#afd82ab6d6518d1142a72c4d2c97ff114" class="m-doc">data</a>(</span><span class="m-doc-wrap">void* data) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
+            </dt>
+            <dd>assigns pointer to user data</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a65ba160c1464b4084f85bd9d3dd41291" class="m-doc">priority</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346f" class="m-doc">TaskPriority</a> p) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
+            </dt>
+            <dd>assigns a priority value to the task</dd>
+            <dt id="a18536d5f55349e144fc9f986ec3253b8">
+              <span class="m-doc-wrap-bumper">auto <a href="#a18536d5f55349e144fc9f986ec3253b8" class="m-doc-self">priority</a>(</span><span class="m-doc-wrap">) const -&gt; <a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346f" class="m-doc">TaskPriority</a></span>
+            </dt>
+            <dd>queries the priority value of the task</dd>
+            <dt id="a302f51ed717d0a4e99edc50f92a571f3">
+              <span class="m-doc-wrap-bumper">void <a href="#a302f51ed717d0a4e99edc50f92a571f3" class="m-doc-self">reset</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd>resets the task handle to null</dd>
+            <dt id="aec3ab712e12137542b7e4bc311ee9f20">
+              <span class="m-doc-wrap-bumper">void <a href="#aec3ab712e12137542b7e4bc311ee9f20" class="m-doc-self">reset_work</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd>resets the associated work to a placeholder</dd>
+            <dt id="a70a4b96af05218c49b85c65eef38b7e5">
+              <span class="m-doc-wrap-bumper">auto <a href="#a70a4b96af05218c49b85c65eef38b7e5" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
+            </dt>
+            <dd>queries if the task handle points to a task node</dd>
+            <dt id="a2ab55fd89348c5fba2034b9364e4e5c4">
+              <span class="m-doc-wrap-bumper">auto <a href="#a2ab55fd89348c5fba2034b9364e4e5c4" class="m-doc-self">has_work</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
+            </dt>
+            <dd>queries if the task has a work assigned</dd>
+            <dt id="a10c47d14b1885368cf8b34641ceda4e2">
+              <div class="m-doc-template">template&lt;typename V&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a10c47d14b1885368cf8b34641ceda4e2" class="m-doc-self">for_each_successor</a>(</span><span class="m-doc-wrap">V&amp;&amp; visitor) const</span>
+            </dt>
+            <dd>applies an visitor callable to each successor of the task</dd>
+            <dt id="abd27817994e89ad8c38d59999bbe42db">
+              <div class="m-doc-template">template&lt;typename V&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#abd27817994e89ad8c38d59999bbe42db" class="m-doc-self">for_each_dependent</a>(</span><span class="m-doc-wrap">V&amp;&amp; visitor) const</span>
+            </dt>
+            <dd>applies an visitor callable to each dependents of the task</dd>
+            <dt id="aa812a0c67351709db2cfb33f520d9180">
+              <span class="m-doc-wrap-bumper">auto <a href="#aa812a0c67351709db2cfb33f520d9180" class="m-doc-self">hash_value</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            </dt>
+            <dd>obtains a hash value of the underlying node</dd>
+            <dt id="a9607e7b2ef0a2f49f0818a88bfde1a9a">
+              <span class="m-doc-wrap-bumper">auto <a href="#a9607e7b2ef0a2f49f0818a88bfde1a9a" class="m-doc-self">type</a>(</span><span class="m-doc-wrap">) const -&gt; <a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a></span>
+            </dt>
+            <dd>returns the task type</dd>
+            <dt id="abf5580d4b671ad32b5194e6557090e6f">
+              <span class="m-doc-wrap-bumper">void <a href="#abf5580d4b671ad32b5194e6557090e6f" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; ostream) const</span>
+            </dt>
+            <dd>dumps the task through an output stream</dd>
+            <dt id="a213554d056cba9130edc4230f20445ae">
+              <span class="m-doc-wrap-bumper">auto <a href="#a213554d056cba9130edc4230f20445ae" class="m-doc-self">data</a>(</span><span class="m-doc-wrap">) const -&gt; void*</span>
+            </dt>
+            <dd>queries pointer to user data</dd>
+          </dl>
+        </section>
+        <section>
+          <h2>Function documentation</h2>
+          <section class="m-doc-details" id="a9057ecd0f3833b717480e914f8568f02"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a9057ecd0f3833b717480e914f8568f02" class="m-doc-self">name</a>(</span><span class="m-doc-wrap">const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp; name)</span></span>
+            </h3>
+            <p>assigns a name to the task</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">name</td>
+                  <td>a <a href="https://en.cppreference.com/w/cpp/string/basic_string">std::<wbr />string</a> acceptable string</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><code>*this</code></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div></section>
+          <section class="m-doc-details" id="a2f6f4cec42d016e5eb89390f362ffe99"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a2f6f4cec42d016e5eb89390f362ffe99" class="m-doc-self">work</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable)</span></span>
+            </h3>
+            <p>assigns a callable</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">C</td>
+                  <td>callable type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>callable</td>
+                  <td>callable to construct one of the static, dynamic, condition, and <a href="classtf_1_1cudaFlow.html" class="m-doc">cudaFlow</a> tasks</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><code>*this</code></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div></section>
+          <section class="m-doc-details" id="ab38be520fe700cb4ca1f312308a95585"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab38be520fe700cb4ca1f312308a95585" class="m-doc-self">composed_of</a>(</span><span class="m-doc-wrap">T&amp; object)</span></span>
+            </h3>
+            <p>creates a module task from a taskflow</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">T</td>
+                  <td>object type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>object</td>
+                  <td>a custom object that defines <code>T::graph()</code> method</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><code>*this</code></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div></section>
+          <section class="m-doc-details" id="a97c6b53bb0192b98527aab4ea9144191"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename... Ts&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a97c6b53bb0192b98527aab4ea9144191" class="m-doc-self">precede</a>(</span><span class="m-doc-wrap">Ts &amp;&amp; ... tasks)</span></span>
+            </h3>
+            <p>adds precedence links from this to other tasks</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">Ts</td>
+                  <td>parameter pack</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>tasks</td>
+                  <td>one or multiple tasks</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><code>*this</code></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div></section>
+          <section class="m-doc-details" id="add61b87569300ec73e0391476e8c0d3f"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename... Ts&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#add61b87569300ec73e0391476e8c0d3f" class="m-doc-self">succeed</a>(</span><span class="m-doc-wrap">Ts &amp;&amp; ... tasks)</span></span>
+            </h3>
+            <p>adds precedence links from other tasks to this</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">Ts</td>
+                  <td>parameter pack</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>tasks</td>
+                  <td>one or multiple tasks</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><code>*this</code></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div></section>
+          <section class="m-doc-details" id="afd82ab6d6518d1142a72c4d2c97ff114"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#afd82ab6d6518d1142a72c4d2c97ff114" class="m-doc-self">data</a>(</span><span class="m-doc-wrap">void* data)</span></span>
+            </h3>
+            <p>assigns pointer to user data</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">data</td>
+                  <td>pointer to user data</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><code>*this</code></td>
+                </tr>
+              </tfoot>
+            </table>
+<p>The following example shows how to attach user data to a task and run the task iteratively while changing the data value:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="nf">taskflow</span><span class="p">(</span><span class="s">&quot;attach data to a task&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">data</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">// create a task and attach it the data</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">placeholder</span><span class="p">();</span><span class="w"></span>
+<span class="n">A</span><span class="p">.</span><span class="n">data</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="p">).</span><span class="n">work</span><span class="p">([</span><span class="n">A</span><span class="p">](){</span><span class="w"></span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">A</span><span class="p">.</span><span class="n">data</span><span class="p">());</span><span class="w"></span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;data is &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"></span>
+<span class="p">});</span><span class="w"></span>
+
+<span class="c1">// run the taskflow iteratively with changing data</span>
+<span class="k">for</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">data</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">;</span><span class="w"> </span><span class="n">data</span><span class="o">++</span><span class="p">){</span><span class="w"></span>
+<span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a65ba160c1464b4084f85bd9d3dd41291"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a65ba160c1464b4084f85bd9d3dd41291" class="m-doc-self">priority</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346f" class="m-doc">TaskPriority</a> p)</span></span>
+            </h3>
+            <p>assigns a priority value to the task</p>
+<p>A priority value can be one of the following three levels, <a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" class="m-doc">tf::<wbr />TaskPriority::<wbr />HIGH</a> (numerically equivalent to 0), <a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fa1e23852820b9154316c7c06e2b7ba051" class="m-doc">tf::<wbr />TaskPriority::<wbr />NORMAL</a> (numerically equivalent to 1), and <a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fa41bc94cbd8eebea13ce0491b2ac11b88" class="m-doc">tf::<wbr />TaskPriority::<wbr />LOW</a> (numerically equivalent to 2). The smaller the priority value, the higher the priority.</p>
+          </div></section>
+        </section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

@@ -1,0 +1,90 @@
+namespace tf {
+
+/** @page release-2-2-0 Release 2.2.0 (2019/06/15)
+
+Cpp-Taskflow 2.2.0 is the 3rd release in the 2.x line! 
+This release includes several new changes such as tf::ExecutorObserverInterface,
+tf::Executor, isolation of taskflow graph and executor, benchmarks, and so forth.
+In particular, this release improve the performance of the work stealing scheduler.
+
+@tableofcontents
+
+@section release-2-2-0_download Download
+
+Cpp-Taskflow 2.2.0 can be downloaded from <a href="https://github.com/cpp-taskflow/cpp-taskflow/releases/tag/v2.2.0">here</a>.
+
+@section release-2-2-0_new_features New Features
+
+@li A new executor class to isolate the execution module from a taskflow
+@li A new observer interface to inspect the activities of an executor
+@li A decomposable taskflow construction interface
+@li A new work-stealing algorithm to improve the performance
+
+@section release-2-2-0_breaks_and_deprecated_features Breaks and Deprecated Features
+
+In this release, we isolated the executor interface from tf::Taskflow, 
+and merge tf::Framework with tf::Taskflow.
+This change largely improved the modularity and composability of Cpp-Taskflow
+in creating clean task dependency graphs and execution flows.
+Performance is also better.
+While this introduced some breaks in tf::Taskflow,
+we have managed to make it as less painful as possible for users to adapt to the new change.
+
+Previously, tf::Taskflow is a hero class that manages 
+both a task dependency graph and the execution of all graphs including frameworks.
+For example:
+
+@code{.cpp}
+// before v2.2.0, tf::Taskflow manages both graph and execution
+tf::Taskflow taskflow(4);  // create a taskflow object with 4 threads
+taskflow.emplace([] () { std::cout << "task A\n"; });
+taskflow.wait_for_all();   // dispatch the present graph
+
+tf::Framework framework;   // create a framework object
+framework.emplace([] () { std::cout << "task B\n"; });
+taskflow.run(framework);   // run the framework once
+taskflow.wait_for_all();   // wait until the framework finishes
+@endcode
+
+However, this design is awkward in many aspects.
+For instance, calling @c wait_for_all dispatches the present graph
+and the graph vanishes when the execution completes.
+To reuse a graph, users have to create another special graph called framework
+and mix its execution with the one in a taskflow object.
+Given the user feedback and lessons we have learned so far, 
+we decided to isolate the executor interface out of tf::Taskflow and 
+merge tf::Framework with tf::Taskflow.
+All execution methods such as @c dispatch and @c wait_for_all 
+have been moved from tf::Taskflow to tf::Executor.
+
+@code{.cpp}
+// starting from v2.2.0, tf::Executor manages the execution of graphs
+tf::Taskflow taskflow;      // create a taskflow to build dependent tasks
+tf::Task A = taskflow.emplace([] () { std::cout << "task A\n"; });
+tf::Task B = taskflow.emplace([] () { std::cout << "task B\n"; });
+A.precede(B);
+
+tf::Executor executor(4);   // create an executor of 4 threads
+executor.run(taskflow);     // run the taskflow once
+executor.run(taskflow, 2);  // run the taskflow twice
+executor.wait_for_all();    // wait for the three runs to finish
+@endcode
+
+The new design has a clean separation between
+a task dependency graph builder tf::Taskflow and
+the execution of graphs tf::Executor.
+Users are fully responsible for the lifetime of a taskflow, 
+and need to ensure a taskflow is alive during its execution.
+Besides, all task constructs remain unchanged in tf::Taskflow.
+In most situations, you will just need to add an executor to your program
+to run your taskflow graphs.
+
+Again, we apologize this breaking change! 
+I hope you can understand what we did is to make Cpp-Taskflow provide good performance scaling
+and user experience.
+
+*/
+
+}
+
+

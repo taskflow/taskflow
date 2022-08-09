@@ -1,0 +1,145 @@
+namespace tf {
+
+/** @page CompileTaskflowWithSYCL Compile Taskflow with SYCL
+
+@tableofcontents
+
+@section InstallSYCLCompiler Install SYCL Compiler
+
+To compile %Taskflow with SYCL code, you need the DPC++ clang compiler,
+which can be acquired from
+<a href="https://intel.github.io/llvm-docs/GetStartedGuide.html">Getting 
+Started with oneAPI DPC++</a>.
+
+@section CompileTaskflowWithSYCLDirectly Compile Source Code Directly
+
+%Taskflow's GPU programming interface for SYCL is tf::syclFlow.
+Consider the following `simple.cpp` program that performs the canonical
+saxpy (single-precision AX + Y) operation on a GPU:
+
+@code{.cpp}
+#include <taskflow/taskflow.hpp>  // core taskflow routines
+#include <taskflow/syclflow.hpp>  // core syclflow routines
+
+int main() {
+  
+  tf::Executor executor;
+  tf::Taskflow taskflow("saxpy example");
+  
+  sycl::queue queue;
+  
+  auto X = sycl::malloc_shared<float>(N, queue);
+  auto Y = sycl::malloc_shared<float>(N, queue);
+  
+  taskflow.emplace_on([&](tf::syclFlow& sf){
+    tf::syclTask fillX = sf.fill(X, 1.0f, N).name("fillX");
+    tf::syclTask fillY = sf.fill(Y, 2.0f, N).name("fillY");
+    tf::syclTask saxpy = sf.parallel_for(sycl::range<1>(N), 
+      [=] (sycl::id<1> id) {
+        X[id] = 3.0f * X[id] + Y[id];
+      }
+    ).name("saxpy");
+    saxpy.succeed(fillX, fillY);
+  }, queue).name("syclFlow");
+  
+  executor.run(taskflow).wait();
+}
+@endcode
+
+Use DPC++ clang to compile the program with the following options:
+
+@li @c -fsycl: enable SYCL compilation mode
+@li @c -fsycl-targets=nvptx64-nvidia-cuda-sycldevice: enable CUDA target
+@li @c -fsycl-unnamed-lambda: enable unnamed SYCL lambda kernel
+
+@code{.shell-session}
+~$ clang++ -fsycl -fsycl-unnamed-lambda \
+           -fsycl-targets=nvptx64-nvidia-cuda-sycldevice \  # for CUDA target
+           -I path/to/taskflow -pthread -std=c++17 simple.cpp -o simple
+~$ ./simple
+@endcode
+
+
+@attention
+You need to include @c taskflow/syclflow.hpp in order to use tf::syclFlow.
+
+
+@section CompileTaskflowWithSYCLSeparately Compile Source Code Separately
+
+Large GPU applications often compile a program into separate objects
+and link them together to form an executable or a library.
+You can compile your SYCL code into separate object files and link them
+to form the final executable.
+Consider the following example that defines two tasks
+on two different pieces (@c main.cpp and @c syclflow.cpp) of source code:
+
+@code{.cpp}
+// main.cpp
+#include <taskflow/taskflow.hpp>
+
+tf::Task make_syclflow(tf::Taskflow& taskflow);  // create a syclFlow task
+
+int main() {
+
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+
+  tf::Task task1 = taskflow.emplace([](){ std::cout << "main.cpp!\n"; })
+                           .name("cpu task");
+  tf::Task task2 = make_syclflow(taskflow);
+
+  task1.precede(task2);
+
+  executor.run(taskflow).wait();
+
+  return 0;
+}
+@endcode
+
+@code{.cpp}
+// syclflow.cpp
+#include <taskflow/taskflow.hpp>
+#include <taskflow/syclflow.hpp>
+
+inline sycl::queue queue;    // create a global sycl queue
+
+tf::Task make_syclflow(tf::Taskflow& taskflow) {
+  return taskflow.emplace_on([](tf::syclFlow& cf){
+    printf("syclflow.cpp!\n");
+    cf.single_task([](){}).name("kernel");
+  }, queue).name("gpu task");
+}
+@endcode
+
+Compile each source to an object using DPC++ clang:
+
+@code{.shell-session}
+~$ clang++ -I path/to/taskflow/ -pthread -std=c++17 -c main.cpp -o main.o
+~$ clang++ -fsycl -fsycl-unnamed-lambda \
+           -fsycl-targets=nvptx64-nvidia-cuda-sycldevice \
+           -I path/to/taskflow/ -pthread -std=c++17 -c syclflow.cpp -o syclflow.o
+
+# now we have the two compiled .o objects, main.o and syclflow.o
+~$ ls
+main.o syclflow.o 
+@endcode
+
+Next, link the two object files to the final executable:
+
+@code{.shell-session}
+~$ clang++ -fsycl -fsycl-unnamed-lambda \
+           -fsycl-targets=nvptx64-nvidia-cuda-sycldevice \  # for CUDA target
+           main.o syclflow.o -pthread -std=c++17 -o main
+
+# run the main program 
+~$ ./main
+main.cpp!
+syclflow.cpp!
+@endcode
+
+*/
+
+
+}
+
+

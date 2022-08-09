@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Building and Installing &raquo; Compile Taskflow with CUDA | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="install.html">Building and Installing</a> &raquo;</span>
+          Compile Taskflow with CUDA
+        </h1>
+<section id="InstallCUDACompiler"><h2><a href="#InstallCUDACompiler">Install CUDA Compiler</a></h2><p>To compile Taskflow with CUDA code, you need a <code>nvcc</code> compiler. Please visit the official page of <a href="https://developer.nvidia.com/cuda-downloads">Downloading CUDA Toolkit</a>.</p></section><section id="CompileTaskflowWithCUDADirectly"><h2><a href="#CompileTaskflowWithCUDADirectly">Compile Source Code Directly</a></h2><p>Taskflow&#x27;s GPU programming interface for CUDA is <a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a>. Consider the following <code>simple.cu</code> program that launches a single kernel function to output a message:</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span><span class="c1">  // core taskflow routines</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/cudaflow.hpp&gt;</span><span class="c1">  // core cudaflow routines</span><span class="cp"></span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">**</span><span class="w"> </span><span class="n">argv</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;cpu task&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">cf</span><span class="p">){</span><span class="w"></span>
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">cudaTask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">single_task</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="p">[]</span><span class="w"> </span><span class="n">__device__</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;hello cudaFlow!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;gpu task&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">task1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre><p>The easiest way to compile Taskflow with CUDA code (e.g., cudaFlow, kernels) is to use <a href="https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html">nvcc</a>:</p><pre class="m-code"><span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">nvcc</span><span class="w"> </span><span class="o">-</span><span class="n">std</span><span class="o">=</span><span class="n">c</span><span class="o">++</span><span class="mi">17</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">taskflow</span><span class="o">/</span><span class="w"> </span><span class="o">--</span><span class="n">extended</span><span class="o">-</span><span class="n">lambda</span><span class="w"> </span><span class="n">simple</span><span class="p">.</span><span class="n">cu</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">simple</span><span class="w"></span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="n">simple</span><span class="w"></span>
+<span class="n">hello</span><span class="w"> </span><span class="n">cudaFlow</span><span class="o">!</span><span class="w"></span></pre><aside class="m-note m-warning"><h4>Attention</h4><p>You need to include <code>taskflow/cudaflow.hpp</code> in order to use <a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a>.</p></aside></section><section id="CompileTaskflowWithCUDASeparately"><h2><a href="#CompileTaskflowWithCUDASeparately">Compile Source Code Separately</a></h2><p>Large GPU applications often compile a program into separate objects and link them together to form an executable or a library. You can compile your CPU code and GPU code separately with Taskflow using <code>nvcc</code> and other compilers (such as <code>g++</code> and <code>clang++</code>). Consider the following example that defines two tasks on two different pieces (<code>main.cpp</code> and <code>cudaflow.cpp</code>) of source code:</p><pre class="m-code"><span class="c1">// main.cpp</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span><span class="cp"></span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="nf">make_cudaflow</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">taskflow</span><span class="p">);</span><span class="w">  </span><span class="c1">// create a cudaFlow task</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;main.cpp!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">})</span><span class="w"></span>
+<span class="w">                           </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;cpu task&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">make_cudaflow</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">task1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre><pre class="m-code"><span class="c1">// cudaflow.cpp</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/cudaflow.hpp&gt;</span><span class="cp"></span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="nf">make_cudaflow</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">taskflow</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">cf</span><span class="p">){</span><span class="w"></span>
+<span class="w">    </span><span class="n">cf</span><span class="p">.</span><span class="n">single_task</span><span class="p">([]</span><span class="w"> </span><span class="n">__device__</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;cudaflow.cpp!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">})</span><span class="w"></span>
+<span class="w">      </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;kernel&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;gpu task&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre><p>Compile each source to an object (<code>g++</code> as an example):</p><pre class="m-code"><span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">g</span><span class="o">++</span><span class="w"> </span><span class="o">-</span><span class="n">std</span><span class="o">=</span><span class="n">c</span><span class="o">++</span><span class="mi">17</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">taskflow</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="n">main</span><span class="p">.</span><span class="n">cpp</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">main</span><span class="p">.</span><span class="n">o</span><span class="w"></span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">nvcc</span><span class="w"> </span><span class="o">-</span><span class="n">std</span><span class="o">=</span><span class="n">c</span><span class="o">++</span><span class="mi">17</span><span class="w"> </span><span class="o">--</span><span class="n">extended</span><span class="o">-</span><span class="n">lambda</span><span class="w"> </span><span class="o">-</span><span class="n">x</span><span class="w"> </span><span class="n">cu</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">taskflow</span><span class="w"> </span>\
+<span class="w">        </span><span class="o">-</span><span class="n">dc</span><span class="w"> </span><span class="n">cudaflow</span><span class="p">.</span><span class="n">cpp</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">cudaflow</span><span class="p">.</span><span class="n">o</span><span class="w"></span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">ls</span><span class="w"></span>
+<span class="cp"># now we have the two compiled .o objects, main.o and cudaflow.o</span>
+<span class="n">main</span><span class="p">.</span><span class="n">o</span><span class="w"> </span><span class="n">cudaflow</span><span class="p">.</span><span class="n">o</span><span class="w"> </span></pre><p>The <code>&ndash;extended-lambda</code> option tells <code>nvcc</code> to generate GPU code for the lambda defined with <code>__device__</code>. The <code>-x cu</code> tells <code>nvcc</code> to treat the input files as .cu files containing both CPU and GPU code. By default, <code>nvcc</code> treats .cpp files as CPU-only code. This option is required to have <code>nvcc</code> generate device code here, but it is also a handy way to avoid renaming source files in larger projects. The <code>–dc</code> option tells <code>nvcc</code> to generate device code for later linking.</p><p>You may also need to specify the target architecture to tell <code>nvcc</code> to target on a compatible SM architecture using the option -arch. For instance, the following command requires device code linking to have compute capability 7.5 or later:</p><pre class="m-code"><span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">nvcc</span><span class="w"> </span><span class="o">-</span><span class="n">std</span><span class="o">=</span><span class="n">c</span><span class="o">++</span><span class="mi">17</span><span class="w"> </span><span class="o">--</span><span class="n">extended</span><span class="o">-</span><span class="n">lambda</span><span class="w"> </span><span class="o">-</span><span class="n">x</span><span class="w"> </span><span class="n">cu</span><span class="w"> </span><span class="o">-</span><span class="n">arch</span><span class="o">=</span><span class="n">sm_75</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">taskflow</span><span class="w"> </span>\
+<span class="w">        </span><span class="o">-</span><span class="n">dc</span><span class="w"> </span><span class="n">cudaflow</span><span class="p">.</span><span class="n">cpp</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">cudaflow</span><span class="p">.</span><span class="n">o</span><span class="w"></span></pre><section id="CompileTaskflowWithCUDANaiveLinking"><h3><a href="#CompileTaskflowWithCUDANaiveLinking">Link Objects Using nvcc</a></h3><p>Using <code>nvcc</code> to link compiled object code is nothing special but replacing the normal compiler with <code>nvcc</code> and it takes care of all the necessary steps:</p><pre class="m-code"><span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">nvcc</span><span class="w"> </span><span class="n">main</span><span class="p">.</span><span class="n">o</span><span class="w"> </span><span class="n">cudaflow</span><span class="p">.</span><span class="n">o</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">main</span><span class="w"></span>
+
+<span class="cp"># run the main program </span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="n">main</span><span class="w"></span>
+<span class="n">main</span><span class="p">.</span><span class="n">cpp</span><span class="o">!</span><span class="w"></span>
+<span class="n">cudaflow</span><span class="p">.</span><span class="n">cpp</span><span class="o">!</span><span class="w"></span></pre></section><section id="CompileTaskflowWithCUDADifferentLinkers"><h3><a href="#CompileTaskflowWithCUDADifferentLinkers">Link Objects Using Different Linkers</a></h3><p>You can choose to use a compiler other than <code>nvcc</code> for the final link step. Since your CPU compiler does not know how to link CUDA device code, you have to add a step in your build to have <code>nvcc</code> link the CUDA device code, using the option <code>-dlink</code>:</p><pre class="m-code"><span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">nvcc</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">gpuCode</span><span class="p">.</span><span class="n">o</span><span class="w"> </span><span class="o">-</span><span class="n">dlink</span><span class="w"> </span><span class="n">main</span><span class="p">.</span><span class="n">o</span><span class="w"> </span><span class="n">cudaflow</span><span class="p">.</span><span class="n">o</span><span class="w"></span></pre><p>This step links all the <em>device object code</em> and places it into <code>gpuCode.o</code>.</p><aside class="m-note m-info"><h4>Note</h4><p>Note that this step does not link the CPU object code and discards the CPU object code in <code>main.o</code> and <code>cudaflow.o</code>.</p></aside><p>To complete the link to an executable, you can use, for example, <code>ld</code> or <code>g++</code>.</p><pre class="m-code"><span class="cp"># replace /usr/local/cuda/lib64 with your own CUDA library installation path</span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">g</span><span class="o">++</span><span class="w"> </span><span class="o">-</span><span class="n">pthread</span><span class="w"> </span><span class="o">-</span><span class="n">L</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">cuda</span><span class="o">/</span><span class="n">lib64</span><span class="o">/</span><span class="w"> </span><span class="o">-</span><span class="n">lcudart</span><span class="w"> </span>\
+<span class="w">   </span><span class="n">gpuCode</span><span class="p">.</span><span class="n">o</span><span class="w"> </span><span class="n">main</span><span class="p">.</span><span class="n">o</span><span class="w"> </span><span class="n">cudaflow</span><span class="p">.</span><span class="n">o</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">main</span><span class="w"></span>
+
+<span class="cp"># run the main program</span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="n">main</span><span class="w"></span>
+<span class="n">main</span><span class="p">.</span><span class="n">cpp</span><span class="o">!</span><span class="w"></span>
+<span class="n">cudaflow</span><span class="p">.</span><span class="n">cpp</span><span class="o">!</span><span class="w"></span></pre><p>We give <code>g++</code> all of the objects again because it needs the CPU object code, which is not in <code>gpuCode.o</code>. The device code stored in the original objects, <code>main.o</code> and <code>cudaflow.o</code>, does not conflict with the code in <code>gpuCode.o</code>. <code>g++</code> ignores device code because it does not know how to link it, and the device code in <code>gpuCode.o</code> is already linked and ready to go.</p><aside class="m-note m-info"><h4>Note</h4><p>This intentional ignorance is extremely useful in large builds where intermediate objects may have both CPU and GPU code. In this case, we just let the GPU and CPU linkers each do its own job, noting that the CPU linker is always the last one we run. The CUDA <a href="classtf_1_1Runtime.html" class="m-doc">Runtime</a> API library is automatically linked when we use <code>nvcc</code> for linking, but we must explicitly link it (<code>-lcudart</code>) when using another linker.</p></aside></section></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

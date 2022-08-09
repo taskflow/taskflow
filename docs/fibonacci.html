@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Learning from Examples &raquo; Fibonacci Number | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="Examples.html">Learning from Examples</a> &raquo;</span>
+          Fibonacci Number
+        </h1>
+<p>We study the classic problem, <em>Fibonacci Number</em>, to demonstrate the use of recursive task parallelism.</p><section id="FibonacciNumberProblem"><h2><a href="#FibonacciNumberProblem">Problem Formulation</a></h2><p>In mathematics, the Fibonacci numbers, commonly denoted <code>F(n)</code>, form a sequence such that each number is the sum of the two preceding ones, starting from 0 and 1.</p><p><code>0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...</code></p><p>A common solution for computing fibonacci numbers is <em>recursion</em>.</p><pre class="m-code"><span class="kt">int</span><span class="w"> </span><span class="nf">fib</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="mi">-2</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></section><section id="RecursiveFibonacciParallelism"><h2><a href="#RecursiveFibonacciParallelism">Recursive Fibonacci Parallelism</a></h2><p>We use <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> to recursively compute fibonacci numbers in parallel.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">spawn</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">res1</span><span class="p">,</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">sbf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">res1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spawn</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">sbf</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+<span class="w">     </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">n</span><span class="mi">-1</span><span class="p">));</span><span class="w">  </span>
+<span class="w">  </span><span class="n">sbf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">res2</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">res2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spawn</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">sbf</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+<span class="w">     </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">n</span><span class="mi">-2</span><span class="p">));</span><span class="w"></span>
+<span class="w">  </span><span class="n">sbf</span><span class="p">.</span><span class="n">join</span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">argv</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">res</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;fibonacci&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spawn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">sbf</span><span class="p">);</span><span class="w"> </span><span class="p">})</span><span class="w"></span>
+<span class="w">          </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">N</span><span class="p">));</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Fib[&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;]: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre><p>The spawned taskflow graph for computing up to the fifth fibonacci number is shown below:</p><div class="m-graph"><svg style="width: 41.875rem; height: 36.125rem;" viewBox="0.00 0.00 670.00 577.85">
+<g transform="scale(1 1) rotate(0) translate(4 573.848)">
+<title>Taskflow</title>
+<g id="clust1" class="cluster"><title>cluster_p0x7ffd972c0cd0</title>
+<polygon points="8,-8 8,-561.848 654,-561.848 654,-8 8,-8"/>
+<text text-anchor="middle" x="331" y="-545.048">Taskflow: fibonacci</text>
+</g>
+<g id="clust2" class="cluster"><title>cluster_p0xa445c0</title>
+<polygon points="16,-16 16,-527.848 646,-527.848 646,-16 16,-16"/>
+<text text-anchor="middle" x="331" y="-511.048">Subflow: 5</text>
+</g>
+<g id="clust3" class="cluster"><title>cluster_p0x7fe918000b90</title>
+<polygon points="252,-88.7696 252,-493.848 638,-493.848 638,-88.7696 252,-88.7696"/>
+<text text-anchor="middle" x="445" y="-477.048">Subflow: 4</text>
+</g>
+<g id="clust4" class="cluster"><title>cluster_p0x7fe910000b90</title>
+<polygon points="410,-161.539 410,-459.848 630,-459.848 630,-161.539 410,-161.539"/>
+<text text-anchor="middle" x="520" y="-443.048">Subflow: 3</text>
+</g>
+<g id="clust5" class="cluster"><title>cluster_p0x7fe918000fe0</title>
+<polygon points="480,-234.309 480,-425.848 622,-425.848 622,-234.309 480,-234.309"/>
+<text text-anchor="middle" x="551" y="-409.048">Subflow: 2</text>
+</g>
+<g id="clust6" class="cluster"><title>cluster_p0x7fe910000c48</title>
+<polygon points="260,-161.539 260,-313.078 402,-313.078 402,-161.539 260,-161.539"/>
+<text text-anchor="middle" x="331" y="-296.278">Subflow: 2</text>
+</g>
+<g id="clust7" class="cluster"><title>cluster_p0x7fe918000c48</title>
+<polygon points="24,-88.7696 24,-347.078 244,-347.078 244,-88.7696 24,-88.7696"/>
+<text text-anchor="middle" x="134" y="-330.278">Subflow: 3</text>
+</g>
+<g id="clust8" class="cluster"><title>cluster_p0x7fe918000d00</title>
+<polygon points="94,-161.539 94,-313.078 236,-313.078 236,-161.539 94,-161.539"/>
+<text text-anchor="middle" x="165" y="-296.278">Subflow: 2</text>
+</g>
+<g id="node1" class="node"><title>p0xa445c0</title>
+<ellipse cx="248" cy="-42.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="248" y="-38.5848">5</text>
+</g>
+<g id="node2" class="node"><title>p0x7fe918000b90</title>
+<ellipse cx="331" cy="-115.154" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="331" y="-111.354">4</text>
+</g>
+<g id="edge1" class="edge"><title>p0x7fe918000b90&#45;&gt;p0xa445c0</title>
+<path fill="none" stroke="black" d="M314.602,-100.173C302.438,-89.8012 285.666,-75.5004 271.996,-63.8448"/>
+<polygon points="274.244,-61.1624 264.364,-57.3375 269.703,-66.489 274.244,-61.1624"/>
+</g>
+<g id="node3" class="node"><title>p0x7fe910000b90</title>
+<ellipse cx="445" cy="-187.924" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="445" y="-184.124">3</text>
+</g>
+<g id="edge2" class="edge"><title>p0x7fe910000b90&#45;&gt;p0x7fe918000b90</title>
+<path fill="none" stroke="black" d="M426.037,-174.403C419.695,-170.263 412.569,-165.663 406,-161.539 390.774,-151.981 373.631,-141.58 359.581,-133.15"/>
+<polygon points="361.225,-130.055 350.847,-127.923 357.631,-136.061 361.225,-130.055"/>
+</g>
+<g id="node4" class="node"><title>p0x7fe918000fe0</title>
+<ellipse cx="517" cy="-260.693" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="517" y="-256.893">2</text>
+</g>
+<g id="edge3" class="edge"><title>p0x7fe918000fe0&#45;&gt;p0x7fe910000b90</title>
+<path fill="none" stroke="black" d="M502.082,-245.03C492.042,-235.161 478.624,-221.973 467.32,-210.862"/>
+<polygon points="469.485,-208.082 459.899,-203.569 464.578,-213.075 469.485,-208.082"/>
+</g>
+<g id="node5" class="node"><title>p0x7fe918001150</title>
+<ellipse cx="587" cy="-373.463" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="587" y="-369.663">1</text>
+</g>
+<g id="edge4" class="edge"><title>p0x7fe918001150&#45;&gt;p0x7fe918000fe0</title>
+<path fill="none" stroke="black" d="M576.671,-356.119C565.024,-337.688 545.962,-307.523 532.521,-286.255"/>
+<polygon points="535.444,-284.329 527.144,-277.745 529.527,-288.068 535.444,-284.329"/>
+</g>
+<g id="node6" class="node"><title>p0x7fe918001208</title>
+<ellipse cx="515" cy="-373.463" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="515" y="-369.663">0</text>
+</g>
+<g id="edge5" class="edge"><title>p0x7fe918001208&#45;&gt;p0x7fe918000fe0</title>
+<path fill="none" stroke="black" d="M515.321,-354.666C515.64,-337.041 516.131,-309.799 516.501,-289.352"/>
+<polygon points="520.005,-289.143 516.686,-279.081 513.006,-289.016 520.005,-289.143"/>
+</g>
+<g id="node7" class="node"><title>p0x7fe918001098</title>
+<ellipse cx="445" cy="-260.693" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="445" y="-256.893">1</text>
+</g>
+<g id="edge6" class="edge"><title>p0x7fe918001098&#45;&gt;p0x7fe910000b90</title>
+<path fill="none" stroke="black" d="M445,-242.2C445,-234.518 445,-225.308 445,-216.724"/>
+<polygon points="448.5,-216.708 445,-206.708 441.5,-216.708 448.5,-216.708"/>
+</g>
+<g id="node8" class="node"><title>p0x7fe910000c48</title>
+<ellipse cx="331" cy="-187.924" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="331" y="-184.124">2</text>
+</g>
+<g id="edge7" class="edge"><title>p0x7fe910000c48&#45;&gt;p0x7fe918000b90</title>
+<path fill="none" stroke="black" d="M331,-169.43C331,-161.748 331,-152.539 331,-143.955"/>
+<polygon points="334.5,-143.938 331,-133.938 327.5,-143.938 334.5,-143.938"/>
+</g>
+<g id="node9" class="node"><title>p0x7fe910000d00</title>
+<ellipse cx="367" cy="-260.693" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="367" y="-256.893">1</text>
+</g>
+<g id="edge8" class="edge"><title>p0x7fe910000d00&#45;&gt;p0x7fe910000c48</title>
+<path fill="none" stroke="black" d="M358.469,-242.922C354.164,-234.461 348.851,-224.015 344.047,-214.573"/>
+<polygon points="347.124,-212.901 339.47,-205.575 340.885,-216.075 347.124,-212.901"/>
+</g>
+<g id="node10" class="node"><title>p0x7fe910000db8</title>
+<ellipse cx="295" cy="-260.693" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="295" y="-256.893">0</text>
+</g>
+<g id="edge9" class="edge"><title>p0x7fe910000db8&#45;&gt;p0x7fe910000c48</title>
+<path fill="none" stroke="black" d="M303.531,-242.922C307.836,-234.461 313.149,-224.015 317.953,-214.573"/>
+<polygon points="321.115,-216.075 322.53,-205.575 314.876,-212.901 321.115,-216.075"/>
+</g>
+<g id="node11" class="node"><title>p0x7fe918000c48</title>
+<ellipse cx="166" cy="-115.154" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="166" y="-111.354">3</text>
+</g>
+<g id="edge10" class="edge"><title>p0x7fe918000c48&#45;&gt;p0xa445c0</title>
+<path fill="none" stroke="black" d="M182.201,-100.173C194.105,-89.8981 210.479,-75.7673 223.914,-64.1723"/>
+<polygon points="226.549,-66.5208 231.833,-57.3375 221.976,-61.2215 226.549,-66.5208"/>
+</g>
+<g id="node12" class="node"><title>p0x7fe918000d00</title>
+<ellipse cx="166" cy="-187.924" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="166" y="-184.124">2</text>
+</g>
+<g id="edge11" class="edge"><title>p0x7fe918000d00&#45;&gt;p0x7fe918000c48</title>
+<path fill="none" stroke="black" d="M166,-169.43C166,-161.748 166,-152.539 166,-143.955"/>
+<polygon points="169.5,-143.938 166,-133.938 162.5,-143.938 169.5,-143.938"/>
+</g>
+<g id="node13" class="node"><title>p0x7fe918000e70</title>
+<ellipse cx="201" cy="-260.693" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="201" y="-256.893">1</text>
+</g>
+<g id="edge12" class="edge"><title>p0x7fe918000e70&#45;&gt;p0x7fe918000d00</title>
+<path fill="none" stroke="black" d="M192.705,-242.922C188.521,-234.461 183.355,-224.015 178.685,-214.573"/>
+<polygon points="181.805,-212.987 174.235,-205.575 175.531,-216.09 181.805,-212.987"/>
+</g>
+<g id="node14" class="node"><title>p0x7fe918000f28</title>
+<ellipse cx="129" cy="-260.693" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="129" y="-256.893">0</text>
+</g>
+<g id="edge13" class="edge"><title>p0x7fe918000f28&#45;&gt;p0x7fe918000d00</title>
+<path fill="none" stroke="black" d="M137.768,-242.922C142.192,-234.461 147.653,-224.015 152.59,-214.573"/>
+<polygon points="155.763,-216.058 157.294,-205.575 149.56,-212.815 155.763,-216.058"/>
+</g>
+<g id="node15" class="node"><title>p0x7fe918000db8</title>
+<ellipse cx="59" cy="-187.924" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="59" y="-184.124">1</text>
+</g>
+<g id="edge14" class="edge"><title>p0x7fe918000db8&#45;&gt;p0x7fe918000c48</title>
+<path fill="none" stroke="black" d="M75.0568,-173.021C79.7619,-169.156 84.9905,-165.057 90,-161.539 104.856,-151.106 122.184,-140.638 136.539,-132.389"/>
+<polygon points="138.517,-135.291 145.487,-127.311 135.063,-129.203 138.517,-135.291"/>
+</g>
+</g>
+</svg>
+</div><p>Even if recursive dynamic tasking or subflows are possible, the recursion depth may not be too deep or it can cause stack overflow.</p></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

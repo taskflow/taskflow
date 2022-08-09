@@ -1,0 +1,13 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+find_dependency(Threads)
+
+include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
+
+get_filename_component(@PROJECT_NAME@_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+get_target_property(@PROJECT_NAME@_INCLUDE_DIR @PROJECT_NAME@::@PROJECT_NAME@ INTERFACE_INCLUDE_DIRECTORIES)
+
+message(STATUS "@PROJECT_NAME@ found. Headers: ${@PROJECT_NAME@_INCLUDE_DIR}")
+
+check_required_components(@PROJECT_NAME@) 

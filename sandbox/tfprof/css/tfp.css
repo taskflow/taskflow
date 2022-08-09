@@ -1,0 +1,182 @@
+.tfp-tl-brush .selection {
+  stroke: blue;
+  stroke-opacity: 0.6;
+  fill: blue;
+  fill-opacity: 0.3;
+  shape-rendering: crispEdges;
+}
+
+/* new */
+.tfp-tooltip {
+  color: white;
+  background: black;
+  padding: 6px;
+  border-radius: 8px;
+  font: 14px sans-serif;
+  z-index: 4000;
+  font-size: 1rem;
+  text-align: center;
+  pointer-events: none;
+}
+
+.tfp-tooltip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25B2";
+  position: absolute;
+  text-align: center;
+}
+
+.tfp-tooltip.s:after {
+  margin: 0 0 0 0;
+  bottom: 97%;
+  left: 0;
+}
+
+.tfp-tl-legend text {
+  font-family: sans-serif;
+  text-anchor: middle;
+  dominant-baseline: central;
+  fill: #FFFFFF;
+}
+
+.tfp-tl-legend rect {
+  rx: 1;
+  ry: 1;
+  stroke-width: 0;
+}
+
+.tfp-tl-w-axis line, path {
+  stroke: #808080;
+  stroke-opacity: 0.5;
+}
+
+.tfp-tl-w-axis text {
+}
+
+.tfp-tl-e-axis line, path {
+  stroke: #808080;
+  stroke-opacity: 0.5;
+}
+
+.tfp-tl-e-rect rect {
+  fill-opacity: 0.5;
+  stroke: #808080;
+  stroke-opacity: 0.2;
+  fill: none;
+}
+
+.tfp-tl-e-axis text {
+  cursor: pointer;
+}
+
+.tfp-tl-x-axis line, path {
+  stroke: #808080;
+  stroke-opacity: 0.2;
+}
+
+.tfp-tl-graph rect {
+  stroke: none;
+  cursor: pointer;
+}
+
+/* ov field */
+.tfp-ov-x-axis line, path {
+  stroke: #808080;
+  stroke-opacity: 0.5;
+}
+
+/* load field */
+
+.tfp-load-x-axis line, path {
+  stroke: #808080;
+  stroke-opacity: 0.5;
+}
+
+.tfp-load-e-rect rect {
+  fill-opacity: 0.5;
+  stroke: #808080;
+  stroke-opacity: 0.2;
+  fill: none;
+}
+
+.tfp-load-graph rect {
+  stroke: none;
+}
+
+.tfp-ov-brush .selection {
+  stroke: blue;
+  stroke-opacity: 0.6;
+  fill: blue;
+  fill-opacity: 0.3;
+  shape-rendering: crispEdges;
+}
+
+.tfp-ov-bg {
+  fill: lightgrey;
+}
+
+.tfp-ov-info {
+  font-family: sans-serif;
+  text-anchor: left;
+  dominant-baseline: central;
+}
+
+.tfp-rank-y-axis line, path {
+  stroke: #808080;
+  stroke-opacity: 0.5;
+}
+
+.tfp-rank-label {
+  text-anchor: middle;
+  font-family: sans-serif;
+  dominant-baseline: hanging;
+}
+
+.tfp-rank-graph rect {
+  stroke: none;
+}
+
+.tfp-tb-workers label, input {
+  cursor: pointer;
+}
+  
+.dropdown-menu {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.tfp-tb-view label, input, a {
+  cursor: pointer;
+}
+
+.tfp-tb-rank a, label, input {
+  cursor: pointer;
+}
+  
+.loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 150px;
+  height: 150px;
+  margin: -75px 0 0 -75px;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+

@@ -1,0 +1,41 @@
+namespace tf {
+
+/** @page release-roadmap Release Roadmap
+
+This page describes the upcoming milestones of the %Taskflow project.
+
+@tableofcontents
+
+@image html images/roadmap.png 
+
+@section MilestoneSummary Milestone Summary
+
+The table below summarizes the milestones of %Taskflow we plan to achieve 
+by the end of 2021.
+Each milestone releases technical items that significantly 
+enhances the capability of %Taskflow.
+
+<div align="center">
+| Milestone | Release | Time of Arrival   |
+| :-:       | :-:     | :-:               |
+| Migrate the codebase to C++20 | v4.x | (under progress) | 
+| Design a custom thread-creation interface | TBD | (under progress) |
+| Design a distributed tasking interface with scheduling | TBD | (under progress) |
+| Design a pipeline scheduling framework with token dependency | v3.x | (under progress) |
+| Design a pipeline scheduling framework | v3.3 | 2022/01/03 (done) |
+| Integrate thread sanitizer into the CI | v3.3 | 2022/01/03 (done) |
+| Integrate OpenCL and SYCL to tf::syclFlow | v3.1 | 2021/04/14 (done) |
+| Integrate @cuBLAS into tf::cudaFlow | v3.0 | 2020/01/01 (done) |
+| Support building %cudaFlow through stream capture | v3.0 | 2021/01/01 (done) |
+| Support profiling large data in tfprof  | v3.0 | 2021/01/01 (done) |
+| Support cancelling %Taskflow  | v3.0 | 2021/01/01 (done) |
+| Support limiting maximum concurrency  | v3.0 | 2021/01/01 (done) |
+| Migrate the codebase to C++17 | v3.0 | 2021/01/01 (done) |
+</div>
+
+Along with the project development, we expect to have multiple releases
+for feature requests, bug fixes, and technical improvement.
+
+*/
+
+}

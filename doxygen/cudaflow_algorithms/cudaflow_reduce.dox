@@ -1,0 +1,189 @@
+namespace tf {
+
+/** @page cudaFlowReduce Parallel Reduction 
+
+%cudaFlow provides template methods to create parallel reduction tasks 
+on a CUDA GPU.
+
+@tableofcontents
+
+@section CUDAParallelReductionIncludeTheHeader Include the Header
+
+You need to include the header file, `%taskflow/cuda/algorithm/reduce.hpp`, 
+for creating a parallel-reduction task.
+
+@section CUDAReduceItemsWithAnInitialValue Reduce Items with an Initial Value
+
+The reduction task created by 
+tf::cudaFlow::reduce(I first, I last, T* result, C&& bop) performs
+parallel reduction over a range of elements specified by <tt>[first, last)</tt> 
+using the binary operator @c bop and stores the reduced result in @c result.
+It represents the parallel execution of the following reduction loop on a GPU:
+    
+@code{.cpp}
+while (first != last) {
+  *result = bop(*result, *first++);
+}
+@endcode
+
+The variable @c result participates in the reduction loop and must be initialized
+with an initial value.
+The following code performs a parallel reduction to sum all the numbers in 
+the given range with an initial value @c 1000:
+
+@code{.cpp}
+const size_t N = 1000000;
+std::vector<int> cpu(N, -1);
+
+int  sol;                                   // solution on CPU
+int* res = tf::cuda_malloc_device<int>(1);  // solution on GPU
+int* gpu = tf::cuda_malloc_device<int>(N);  // data on GPU
+
+tf::cudaFlow cf;
+
+tf::cudaTask d2h = cf.copy(&sol, res, 1);
+tf::cudaTask h2d = cf.copy(gpu, cpu.data(), N);
+tf::cudaTask set = cf.single_task([res] __device__ () mutable { *res = 1000; });
+tf::cudaTask kernel = cf.reduce(
+  gpu, gpu+N, res, [] __device__ (int a, int b) { return a + b; }
+);
+
+kernel.succeed(h2d, set)
+      .precede(d2h);
+
+cf.offload();
+
+assert(sol == N + 1000);
+@endcode
+
+@section CUDAReduceItemsWithoutAnInitialValue Reduce Items without an Initial Value
+
+You can use tf::cudaFlow::uninitialized_reduce to perform parallel reduction
+without an initial value.
+This method represents a parallel execution of the following reduction loop
+on a GPU, thus in no need of tf::cudaFlow::single_task to initialize the variable:
+    
+@code{.cpp}
+*result = *first++;  // no initial values to participate in the reduction loop
+while (first != last) {
+  *result = bop(*result, *first++);
+}
+@endcode
+
+The variable @c result is directly assigned the reduced value without any initial value
+to participate in the reduction loop.
+The following code performs a parallel reduction to sum all the numbers in 
+the given range without any initial value:
+
+@code{.cpp}
+const size_t N = 1000000;
+
+std::vector<int> cpu(N, -1);
+
+int  sol;                                   // solution on CPU
+int* res = tf::cuda_malloc_device<int>(1);  // solution on GPU
+int* gpu = tf::cuda_malloc_device<int>(N);  // data on GPU
+
+tf::cudaFlow cf;
+tf::cudaTask d2h = cf.copy(&sol, res, 1);
+tf::cudaTask h2d = cf.copy(gpu, cpu.data(), N);
+tf::cudaTask kernel = cf.uninitialized_reduce(
+  gpu, gpu+N, res, [] __device__ (int a, int b) { return a + b; }
+);
+kernel.succeed(h2d)
+      .precede(d2h);
+
+cf.offload();
+
+assert(sol == N);
+@endcode
+
+@section cudaFlowReduceTransformedItemsWithAnInitialValue Reduce a Range of Transformed Items with an Initial Value
+
+tf::cudaFlow::transform_reduce performs
+a parallel reduction over a range of @em transformed elements 
+specified by <tt>[first, last)</tt>
+using a binary reduce operator @c bop and a unary transform operator @c uop.
+It represents the parallel execution of the following reduction loop on a GPU:
+    
+@code{.cpp}
+while (first != last) {
+  *result = bop(*result, uop(*first++));
+}
+@endcode
+
+The variable @c result participates in the reduction loop and must be initialized
+with an initial value.
+The following code performs a parallel reduction to sum all the transformed numbers 
+multiplied by @c 10 in the given range with an initial value @c 1000:
+
+@code{.cpp}
+const size_t N = 1000000;
+int* res = tf::cuda_malloc_shared<int>(1);  // result
+int* vec = tf::cuda_malloc_shared<int>(N);  // vector
+
+// initializes the data
+*res = 1000;
+std::iota(vec, vec + N, 0);
+
+tf::cudaFlow cf;
+cf.transform_reduce(
+  vec, vec + N, res, 
+  [] __device__ (int a, int b) { return a + b; },
+  [] __device__ (int a) { return a*10; }
+);
+cf.offload();
+// *res = 1000 + (0*10 + 1*10 + 2*10 + 3*10 + 4*10 + ... + (N-1)*10)
+@endcode
+
+@section cudaFlowReduceTransformedItemsWithoutAnInitialValue Reduce a Range of Transformed Items without an Initial Value
+
+tf::cuda_transform_uninitialized_reduce performs a parallel reduction 
+over a range of transformed items without an initial value.
+This method represents a parallel execution of the following reduction loop
+on a GPU:
+    
+@code{.cpp}
+*result = *first++;  // no initial values to participate in the reduction loop
+while (first != last) {
+  *result = bop(*result, uop(*first++));
+}
+@endcode
+
+The variable @c result is directly assigned the reduced value without any initial value
+participating in the reduction loop.
+The following code performs a parallel reduction to sum all the transformed numbers 
+multiplied by @c 10 in the given range without any initial value:
+
+@code{.cpp}
+const size_t N = 1000000;
+int* res = tf::cuda_malloc_shared<int>(1);  // result
+int* vec = tf::cuda_malloc_shared<int>(N);  // vector
+
+// initializes the data
+*res = 1000;
+std::iota(vec, vec + N, 0);
+
+tf::cudaFlow cf;
+cf.transform_reduce(
+  vec, vec + N, res, 
+  [] __device__ (int a, int b) { return a + b; },
+  [] __device__ (int a) { return a*10; }
+);
+cf.offload();
+// *res = 0*10 + 1*10 + 2*10 + 3*10 + 4*10 + ... + (N-1)*10
+@endcode
+
+@section CUDAReduceMiscellaneousItems Miscellaneous Items
+
+Parallel-reduction algorithms are also available in tf::cudaFlowCapturer
+with the same API.
+
+*/
+}
+
+
+
+
+
+

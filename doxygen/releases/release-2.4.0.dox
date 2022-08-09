@@ -1,0 +1,35 @@
+namespace tf {
+
+/** @page release-2-4-0 Release 2.4.0 (2020/03/25)
+
+Cpp-Taskflow 2.4.0 is the 6th release in the 2.x line! 
+This release includes several new changes such as CPU-GPU tasking,
+improved scheduling flow, documentation, and unit tests.
+
+@tableofcontents
+
+@section release-2-4-0_download Download
+
+Cpp-Taskflow 2.4.0 can be downloaded from <a href="https://github.com/cpp-taskflow/cpp-taskflow/releases/tag/v2.4.0">here</a>.
+
+@section release-2-4-0_new_features New Features
+
+@li added tf::cudaFlow for concurrent CPU-GPU tasking (see @ref GPUTaskingcudaFlow)
+@li added a new method tf::Executor::num_topologies to query the number of running taskflows in an executor
+@li added std::hash support for tf::Task
+@li added a new work-stealing algorithm capable of general heterogeneous domains
+@li added unittests for CUDA work (enable by @c -DTF_ENABLE_CUDA during cmake)
+
+@section release-2-4-0_bug_fixes Bug Fixes 
+
+@li fixed the bug in nested execution (<a href="https://github.com/cpp-taskflow/cpp-taskflow/issues/152">#152</a>)
+@li fixed the nameless union/struct extension warning in MS environment (<a href="https://github.com/cpp-taskflow/cpp-taskflow/issues/153">#153</a>)
+@li fixed the warning/error by changing the type of join counter to std::size (<a href="https://github.com/cpp-taskflow/cpp-taskflow/pull/137">#137</a>)
+
+@section release-2-4-0_miscellaneous_items Miscellaneous Items
+
+@li reflected the <a href="https://cpp-taskflow.github.io/#/">showcase presentation</a> on CPU-GPU tasking
+
+*/
+
+}

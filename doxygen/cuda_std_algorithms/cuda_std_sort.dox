@@ -1,0 +1,127 @@
+namespace tf {
+
+/** @page CUDASTDSort Parallel Sort
+
+%Taskflow provides standalone template methods for sorting ranges of items
+on a CUDA GPU.
+
+@tableofcontents
+
+@section CUDASTDParallelSortIncludeTheHeader Include the Header
+
+You need to include the header file, `%taskflow/cuda/algorithm/sort.hpp`, 
+for using the parallel-sort algorithm.
+
+@section CUDASTDSortItems Sort a Range of Items
+
+tf::cuda_sort performs an in-place parallel sort over a range of elements specified 
+by <tt>[first, last)</tt> using the given comparator.
+The following code sorts one million random integers in an increasing order on a GPU.
+
+@code{.cpp}
+const size_t N = 1000000;
+int* vec = tf::cuda_malloc_shared<int>(N);  // vector
+
+// initializes the data
+for(size_t i=0; i<N; i++) {
+  vec[i] = rand();
+} 
+
+// queries the required buffer size to sort a vector
+tf::cudaDefaultExecutionPolicy policy;
+auto bytes  = tf::cuda_sort_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
+
+// sorts the vector
+tf::cuda_sort(
+  policy, vec, vec+N, [] __device__ (int a, int b) { return a < b; }, buffer
+);
+
+// synchronizes the execution and verifies the result
+policy.synchronize();
+assert(std::is_sorted(vec, vec+N));
+
+// deletes the memory
+tf::cuda_free(buffer);
+tf::cuda_free(vec);
+@endcode
+
+The sort algorithm runs @em asynchronously through the stream specified
+in the execution policy. You need to synchronize the stream to
+obtain correct results.
+Since the GPU sort algorithm may require extra buffer to store the 
+temporary results, you need provide a buffer of size at least bytes
+returned from tf::cuda_sort_buffer_size.
+
+@attention
+You must keep the buffer alive before the merge call completes.
+
+@section CUDASTDSortKeyValueItems Sort a Range of Key-Value Items
+
+tf::cuda_sort_by_key
+sorts a range of key-value items into ascending key order.
+If @c i and @c j are any two valid iterators in <tt>[k_first, k_last)</tt> 
+such that @c i precedes @c j, and @c p and @c q are iterators in 
+<tt>[v_first, v_first + (k_last - k_first))</tt> corresponding to 
+@c i and @c j respectively, then <tt>comp(*i, *j)</tt> is @c true.
+The following example sorts a range of items into ascending key order
+and swaps their corresponding values:
+
+@code{.cpp}
+const size_t N = 4;
+auto vec = tf::cuda_malloc_shared<int>(N);  // keys
+auto idx = tf::cuda_malloc_shared<int>(N);  // values
+
+// initializes the data
+vec[0] = 1, vec[1] = 4, vec[2] = -5, vec[3] = 2;
+idx[0] = 0, idx[1] = 1, idx[2] = 2,  idx[3] = 3;
+
+// queries the required buffer size to sort a key-value range
+tf::cudaDefaultExecutionPolicy policy;
+auto bytes  = tf::cuda_sort_buffer_size<decltype(policy), int, int>(N);
+auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
+
+// sorts keys (vec) and swaps their corresponding values (idx)
+tf::cuda_sort_by_key(
+  policy, vec, vec+N, idx, [] __device__ (int a, int b) { return a<b; }, buffer
+);
+
+// synchronizes the execution and verifies the result
+policy.synchronize();
+
+// now vec = {-5, 1, 2, 4}
+// now idx = { 2, 0, 3, 1}
+
+// deletes the memory
+tf::cuda_free(buffer);
+tf::cuda_free(vec);
+tf::cuda_free(idx);
+@endcode
+
+The buffer size required by tf::cuda_sort_by_key is the same as tf::cuda_sort
+and must be at least equal to or larger than the value returned 
+by tf::cuda_sort_buffer_size.
+While you can capture the values into the lambda and sort them indirectly
+using plain tf::cuda_sort,
+this organization will result in frequent and costly access to the global memory.
+For example, we can sort @c idx indirectly using the captured keys in @c vec:
+
+@code{.cpp}
+tf::cuda_sort(policy, 
+  idx, idx+N, [vec] __device__ (int a, int b) { return vec[a] < vec[b]; }, buffer
+);
+@endcode
+
+The comparator here will frequently access the global memory of @c vec,
+resulting in high memory latency.
+Instead, you should use tf::cuda_sort_by_key that has been
+optimized for this purpose.
+
+*/
+}
+
+
+
+
+
+

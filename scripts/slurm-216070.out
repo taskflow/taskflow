@@ -1,0 +1,960 @@
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 1 -r 3 -m tf -l 1 -p ssss':
+
+     589049.535739      task-clock (msec)         #    1.000 CPUs utilized          
+               512      context-switches          #    0.001 K/sec                  
+               145      cpu-migrations            #    0.000 K/sec                  
+              2412      page-faults               #    0.004 K/sec                  
+     1816784089069      cycles                    #    3.084 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+     4287715237437      instructions              #    2.36  insns per cycle        
+      705370062311      branches                  # 1197.472 M/sec                  
+         342771878      branch-misses             #    0.05% of all branches        
+      832615690136      L1-dcache-loads           # 1413.490 M/sec                  
+         105424628      L1-dcache-load-misses     #    0.01% of all L1-dcache hits  
+           1009011      LLC-loads                 #    0.002 M/sec                  
+            228934      LLC-load-misses           #   22.69% of all LL-cache hits   
+
+     589.085024746 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 1 -r 3 -m tbb -l 1 -p ssss':
+
+    1665656.060360      task-clock (msec)         #    1.000 CPUs utilized          
+               558      context-switches          #    0.000 K/sec                  
+                 4      cpu-migrations            #    0.000 K/sec                  
+              1352      page-faults               #    0.001 K/sec                  
+     5158767708893      cycles                    #    3.097 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+     4270906033598      instructions              #    0.83  insns per cycle        
+      708590697427      branches                  #  425.412 M/sec                  
+         236343671      branch-misses             #    0.03% of all branches        
+      835332276494      L1-dcache-loads           #  501.503 M/sec                  
+          10835507      L1-dcache-load-misses     #    0.00% of all L1-dcache hits  
+           1003380      LLC-loads                 #    0.602 K/sec                  
+            199650      LLC-load-misses           #   19.90% of all LL-cache hits   
+
+    1665.738837392 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 2 -r 3 -m tf -l 2 -p ssss':
+
+     617913.456057      task-clock (msec)         #    1.999 CPUs utilized          
+              2155      context-switches          #    0.003 K/sec                  
+               306      cpu-migrations            #    0.000 K/sec                  
+              1981      page-faults               #    0.003 K/sec                  
+     1899838615801      cycles                    #    3.075 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+     4293982625063      instructions              #    2.26  insns per cycle        
+      706599130706      branches                  # 1143.524 M/sec                  
+         351793049      branch-misses             #    0.05% of all branches        
+      834584592955      L1-dcache-loads           # 1350.650 M/sec                  
+         533539823      L1-dcache-load-misses     #    0.06% of all L1-dcache hits  
+         252440913      LLC-loads                 #    0.409 M/sec                  
+         239549595      LLC-load-misses           #   94.89% of all LL-cache hits   
+
+     309.042944459 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 2 -r 3 -m tbb -l 2 -p ssss':
+
+     652100.980182      task-clock (msec)         #    2.000 CPUs utilized          
+               755      context-switches          #    0.001 K/sec                  
+                29      cpu-migrations            #    0.000 K/sec                  
+              1057      page-faults               #    0.002 K/sec                  
+     2019557893019      cycles                    #    3.097 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+     4323043535228      instructions              #    2.14  insns per cycle        
+      719109710262      branches                  # 1102.758 M/sec                  
+         347073120      branch-misses             #    0.05% of all branches        
+      842014907556      L1-dcache-loads           # 1291.234 M/sec                  
+        1297059451      L1-dcache-load-misses     #    0.15% of all L1-dcache hits  
+         823182060      LLC-loads                 #    1.262 M/sec                  
+         692389075      LLC-load-misses           #   84.11% of all LL-cache hits   
+
+     326.073418045 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 4 -r 3 -m tf -l 4 -p ssss':
+
+    1399429.582596      task-clock (msec)         #    3.965 CPUs utilized          
+            618066      context-switches          #    0.442 K/sec                  
+               662      cpu-migrations            #    0.000 K/sec                  
+              3301      page-faults               #    0.002 K/sec                  
+     4079095563506      cycles                    #    2.915 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+     5446904019713      instructions              #    1.34  insns per cycle        
+      935251357213      branches                  #  668.309 M/sec                  
+        4343849387      branch-misses             #    0.46% of all branches        
+     1198062964391      L1-dcache-loads           #  856.108 M/sec                  
+        7395288675      L1-dcache-load-misses     #    0.62% of all L1-dcache hits  
+        4706146447      LLC-loads                 #    3.363 M/sec                  
+        2031790272      LLC-load-misses           #   43.17% of all LL-cache hits   
+
+     352.989357804 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 4 -r 3 -m tbb -l 4 -p ssss':
+
+    1960768.866334      task-clock (msec)         #    3.966 CPUs utilized          
+           1444492      context-switches          #    0.737 K/sec                  
+                84      cpu-migrations            #    0.000 K/sec                  
+              1492      page-faults               #    0.001 K/sec                  
+     5749513499172      cycles                    #    2.932 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+     5726187096536      instructions              #    1.00  insns per cycle        
+     1001982485425      branches                  #  511.015 M/sec                  
+        3700922982      branch-misses             #    0.37% of all branches        
+     1095080908710      L1-dcache-loads           #  558.496 M/sec                  
+        4076740424      L1-dcache-load-misses     #    0.37% of all L1-dcache hits  
+        2199724675      LLC-loads                 #    1.122 M/sec                  
+         893251116      LLC-load-misses           #   40.61% of all LL-cache hits   
+
+     494.432032248 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 24 -r 3 -m tf -l 24 -p ssss':
+
+    2202794.117797      task-clock (msec)         #    4.297 CPUs utilized          
+           3371312      context-switches          #    0.002 M/sec                  
+              5192      cpu-migrations            #    0.002 K/sec                  
+             12656      page-faults               #    0.006 K/sec                  
+     4452896620044      cycles                    #    2.021 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+     5744382062362      instructions              #    1.29  insns per cycle        
+      990686601499      branches                  #  449.741 M/sec                  
+        5694500544      branch-misses             #    0.57% of all branches        
+     1285969449214      L1-dcache-loads           #  583.790 M/sec                  
+       10959174056      L1-dcache-load-misses     #    0.85% of all L1-dcache hits  
+        5688647562      LLC-loads                 #    2.582 M/sec                  
+        2034645067      LLC-load-misses           #   35.77% of all LL-cache hits   
+
+     512.619707933 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 24 -r 3 -m tbb -l 24 -p ssss':
+
+    8994979.337491      task-clock (msec)         #   21.827 CPUs utilized          
+          34017769      context-switches          #    0.004 M/sec                  
+             35133      cpu-migrations            #    0.004 K/sec                  
+              4973      page-faults               #    0.001 K/sec                  
+    23226317703239      cycles                    #    2.582 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    14200614359445      instructions              #    0.61  insns per cycle        
+     2700593640868      branches                  #  300.233 M/sec                  
+       23709591237      branch-misses             #    0.88% of all branches        
+     2709100077797      L1-dcache-loads           #  301.179 M/sec                  
+       30525990431      L1-dcache-load-misses     #    1.13% of all L1-dcache hits  
+       19800450720      LLC-loads                 #    2.201 M/sec                  
+        5065399117      LLC-load-misses           #   25.58% of all LL-cache hits   
+
+     412.097878621 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 1 -r 3 -m tf -l 1 -p sppp':
+
+     587548.815307      task-clock (msec)         #    1.000 CPUs utilized          
+               486      context-switches          #    0.001 K/sec                  
+               157      cpu-migrations            #    0.000 K/sec                  
+              1824      page-faults               #    0.003 K/sec                  
+     1811414725573      cycles                    #    3.083 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+     4285290505047      instructions              #    2.37  insns per cycle        
+      705066566613      branches                  # 1200.014 M/sec                  
+         340561138      branch-misses             #    0.05% of all branches        
+      832009865413      L1-dcache-loads           # 1416.069 M/sec                  
+         104725108      L1-dcache-load-misses     #    0.01% of all L1-dcache hits  
+            868745      LLC-loads                 #    0.001 M/sec                  
+            176902      LLC-load-misses           #   20.36% of all LL-cache hits   
+
+     587.582354595 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 1 -r 3 -m tbb -l 1 -p sppp':
+
+    1663532.955811      task-clock (msec)         #    1.000 CPUs utilized          
+               751      context-switches          #    0.000 K/sec                  
+                 3      cpu-migrations            #    0.000 K/sec                  
+              1340      page-faults               #    0.001 K/sec                  
+     5151573061579      cycles                    #    3.097 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+     4260946162816      instructions              #    0.83  insns per cycle        
+      706779730368      branches                  #  424.867 M/sec                  
+         350276285      branch-misses             #    0.05% of all branches        
+      831862127326      L1-dcache-loads           #  500.057 M/sec                  
+          12452614      L1-dcache-load-misses     #    0.00% of all L1-dcache hits  
+           1106778      LLC-loads                 #    0.665 K/sec                  
+            185554      LLC-load-misses           #   16.77% of all LL-cache hits   
+
+    1663.620242365 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 2 -r 3 -m tf -l 2 -p sppp':
+
+     618181.463133      task-clock (msec)         #    1.999 CPUs utilized          
+              2463      context-switches          #    0.004 K/sec                  
+               299      cpu-migrations            #    0.000 K/sec                  
+              2370      page-faults               #    0.004 K/sec                  
+     1904309777096      cycles                    #    3.081 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+     4293615834809      instructions              #    2.25  insns per cycle        
+      706660826430      branches                  # 1143.128 M/sec                  
+         376051947      branch-misses             #    0.05% of all branches        
+      834594108306      L1-dcache-loads           # 1350.079 M/sec                  
+         545495367      L1-dcache-load-misses     #    0.07% of all L1-dcache hits  
+         258038113      LLC-loads                 #    0.417 M/sec                  
+         249273021      LLC-load-misses           #   96.60% of all LL-cache hits   
+
+     309.189085855 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 2 -r 3 -m tbb -l 2 -p sppp':
+
+     648842.618858      task-clock (msec)         #    2.000 CPUs utilized          
+               445      context-switches          #    0.001 K/sec                  
+                68      cpu-migrations            #    0.000 K/sec                  
+              1315      page-faults               #    0.002 K/sec                  
+     2007251683010      cycles                    #    3.094 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+     4260400316837      instructions              #    2.12  insns per cycle        
+      706698469804      branches                  # 1089.168 M/sec                  
+         248995996      branch-misses             #    0.04% of all branches        
+      831552220562      L1-dcache-loads           # 1281.593 M/sec                  
+          96959101      L1-dcache-load-misses     #    0.01% of all L1-dcache hits  
+          66779854      LLC-loads                 #    0.103 M/sec                  
+          65960157      LLC-load-misses           #   98.77% of all LL-cache hits   
+
+     324.443151650 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 4 -r 3 -m tf -l 4 -p sppp':
+
+     675402.137185      task-clock (msec)         #    3.997 CPUs utilized          
+              6229      context-switches          #    0.009 K/sec                  
+               735      cpu-migrations            #    0.001 K/sec                  
+              2682      page-faults               #    0.004 K/sec                  
+     2010024721888      cycles                    #    2.976 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+     4344633886032      instructions              #    2.16  insns per cycle        
+      716671362607      branches                  # 1061.103 M/sec                  
+         552706271      branch-misses             #    0.08% of all branches        
+      850473734354      L1-dcache-loads           # 1259.211 M/sec                  
+        1228109503      L1-dcache-load-misses     #    0.14% of all L1-dcache hits  
+         600861282      LLC-loads                 #    0.890 M/sec                  
+         314437602      LLC-load-misses           #   52.33% of all LL-cache hits   
+
+     168.996270927 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 4 -r 3 -m tbb -l 4 -p sppp':
+
+     736440.548094      task-clock (msec)         #    3.999 CPUs utilized          
+              2460      context-switches          #    0.003 K/sec                  
+               261      cpu-migrations            #    0.000 K/sec                  
+              2050      page-faults               #    0.003 K/sec                  
+     2224880687557      cycles                    #    3.021 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+     4292254722075      instructions              #    1.93  insns per cycle        
+      713076793457      branches                  #  968.275 M/sec                  
+         325795245      branch-misses             #    0.05% of all branches        
+      834882860140      L1-dcache-loads           # 1133.673 M/sec                  
+         236481352      L1-dcache-load-misses     #    0.03% of all L1-dcache hits  
+         154665612      LLC-loads                 #    0.210 M/sec                  
+          93749468      LLC-load-misses           #   60.61% of all LL-cache hits   
+
+     184.141500776 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 24 -r 3 -m tf -l 24 -p sppp':
+
+    1418283.842561      task-clock (msec)         #   11.177 CPUs utilized          
+            650343      context-switches          #    0.459 K/sec                  
+              4327      cpu-migrations            #    0.003 K/sec                  
+             10172      page-faults               #    0.007 K/sec                  
+     3378865567433      cycles                    #    2.382 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+     4725306002584      instructions              #    1.40  insns per cycle        
+      787403163751      branches                  #  555.180 M/sec                  
+        1815049837      branch-misses             #    0.23% of all branches        
+      959905749364      L1-dcache-loads           #  676.808 M/sec                  
+       13149131005      L1-dcache-load-misses     #    1.37% of all L1-dcache hits  
+        8784022423      LLC-loads                 #    6.193 M/sec                  
+        3219967397      LLC-load-misses           #   36.66% of all LL-cache hits   
+
+     126.892975341 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 24 -r 3 -m tbb -l 24 -p sppp':
+
+    2378777.410241      task-clock (msec)         #   23.869 CPUs utilized          
+            673575      context-switches          #    0.283 K/sec                  
+               751      cpu-migrations            #    0.000 K/sec                  
+              3006      page-faults               #    0.001 K/sec                  
+     6178260063633      cycles                    #    2.597 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+     5837500598881      instructions              #    0.94  insns per cycle        
+     1021583583657      branches                  #  429.457 M/sec                  
+        4979075676      branch-misses             #    0.49% of all branches        
+     1076301148691      L1-dcache-loads           #  452.460 M/sec                  
+        9319910022      L1-dcache-load-misses     #    0.87% of all L1-dcache hits  
+        6895394727      LLC-loads                 #    2.899 M/sec                  
+        2428170510      LLC-load-misses           #   35.21% of all LL-cache hits   
+
+      99.659962620 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 1 -r 3 -m tf -l 1 -p ssssssss':
+
+    1595210.750315      task-clock (msec)         #    1.000 CPUs utilized          
+               805      context-switches          #    0.001 K/sec                  
+               152      cpu-migrations            #    0.000 K/sec                  
+              4043      page-faults               #    0.003 K/sec                  
+     4933131824409      cycles                    #    3.092 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    12087350014849      instructions              #    2.45  insns per cycle        
+     1999591238482      branches                  # 1253.497 M/sec                  
+        1814668159      branch-misses             #    0.09% of all branches        
+     2373014227701      L1-dcache-loads           # 1487.587 M/sec                  
+         204930058      L1-dcache-load-misses     #    0.01% of all L1-dcache hits  
+           2402419      LLC-loads                 #    0.002 M/sec                  
+            492142      LLC-load-misses           #   20.49% of all LL-cache hits   
+
+    1595.290885242 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 1 -r 3 -m tbb -l 1 -p ssssssss':
+
+    3882679.208083      task-clock (msec)         #    1.000 CPUs utilized          
+              1223      context-switches          #    0.000 K/sec                  
+                24      cpu-migrations            #    0.000 K/sec                  
+              3557      page-faults               #    0.001 K/sec                  
+    12024061360659      cycles                    #    3.097 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    11941347358567      instructions              #    0.99  insns per cycle        
+     1983264846319      branches                  #  510.798 M/sec                  
+        1781355050      branch-misses             #    0.09% of all branches        
+     2349525207465      L1-dcache-loads           #  605.130 M/sec                  
+          81741652      L1-dcache-load-misses     #    0.00% of all L1-dcache hits  
+           3032272      LLC-loads                 #    0.781 K/sec                  
+            926906      LLC-load-misses           #   30.57% of all LL-cache hits   
+
+    3882.862810268 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 2 -r 3 -m tf -l 2 -p ssssssss':
+
+    1677543.218128      task-clock (msec)         #    2.000 CPUs utilized          
+              3025      context-switches          #    0.002 K/sec                  
+               331      cpu-migrations            #    0.000 K/sec                  
+              4501      page-faults               #    0.003 K/sec                  
+     5181997677633      cycles                    #    3.089 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    12097892952727      instructions              #    2.33  insns per cycle        
+     2001607518476      branches                  # 1193.178 M/sec                  
+        1905461989      branch-misses             #    0.10% of all branches        
+     2376300353859      L1-dcache-loads           # 1416.536 M/sec                  
+        1554895289      L1-dcache-load-misses     #    0.07% of all L1-dcache hits  
+         492396556      LLC-loads                 #    0.294 M/sec                  
+         474324695      LLC-load-misses           #   96.33% of all LL-cache hits   
+
+     838.883814193 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 2 -r 3 -m tbb -l 2 -p ssssssss':
+
+    1649629.030198      task-clock (msec)         #    2.000 CPUs utilized          
+               797      context-switches          #    0.000 K/sec                  
+                82      cpu-migrations            #    0.000 K/sec                  
+              2078      page-faults               #    0.001 K/sec                  
+     5106096905081      cycles                    #    3.095 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    11954137344857      instructions              #    2.34  insns per cycle        
+     1985905405678      branches                  # 1203.850 M/sec                  
+        1775937655      branch-misses             #    0.09% of all branches        
+     2350498998130      L1-dcache-loads           # 1424.865 M/sec                  
+        2607721945      L1-dcache-load-misses     #    0.11% of all L1-dcache hits  
+        1487975521      LLC-loads                 #    0.902 M/sec                  
+        1278914024      LLC-load-misses           #   85.95% of all LL-cache hits   
+
+     824.858228928 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 4 -r 3 -m tf -l 4 -p ssssssss':
+
+    1740054.803124      task-clock (msec)         #    3.998 CPUs utilized          
+             13861      context-switches          #    0.008 K/sec                  
+               733      cpu-migrations            #    0.000 K/sec                  
+              6282      page-faults               #    0.004 K/sec                  
+     5298882552194      cycles                    #    3.045 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    12141209746476      instructions              #    2.29  insns per cycle        
+     2009855669755      branches                  # 1155.053 M/sec                  
+        2022815165      branch-misses             #    0.10% of all branches        
+     2389952416561      L1-dcache-loads           # 1373.493 M/sec                  
+        2768599667      L1-dcache-load-misses     #    0.12% of all L1-dcache hits  
+         985869862      LLC-loads                 #    0.567 M/sec                  
+         491920906      LLC-load-misses           #   49.90% of all LL-cache hits   
+
+     435.209910955 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 4 -r 3 -m tbb -l 4 -p ssssssss':
+
+    4099585.700555      task-clock (msec)         #    3.992 CPUs utilized          
+            678174      context-switches          #    0.165 K/sec                  
+              1420      cpu-migrations            #    0.000 K/sec                  
+              4576      page-faults               #    0.001 K/sec                  
+    11922209214843      cycles                    #    2.908 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    14354490875151      instructions              #    1.20  insns per cycle        
+     2468848957619      branches                  #  602.219 M/sec                  
+        7510271801      branch-misses             #    0.30% of all branches        
+     2744032446550      L1-dcache-loads           #  669.344 M/sec                  
+        9088281299      L1-dcache-load-misses     #    0.33% of all L1-dcache hits  
+        5055776298      LLC-loads                 #    1.233 M/sec                  
+        2236789486      LLC-load-misses           #   44.24% of all LL-cache hits   
+
+    1026.873105758 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 24 -r 3 -m tf -l 24 -p ssssssss':
+
+    4201550.988259      task-clock (msec)         #    7.966 CPUs utilized          
+           3788734      context-switches          #    0.902 K/sec                  
+             15667      cpu-migrations            #    0.004 K/sec                  
+             19804      page-faults               #    0.005 K/sec                  
+     8458139223041      cycles                    #    2.013 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    13666065268271      instructions              #    1.62  insns per cycle        
+     2304123474003      branches                  #  548.398 M/sec                  
+        8146792440      branch-misses             #    0.35% of all branches        
+     2850728200148      L1-dcache-loads           #  678.494 M/sec                  
+       23483321494      L1-dcache-load-misses     #    0.82% of all L1-dcache hits  
+       12323293325      LLC-loads                 #    2.933 M/sec                  
+        3677987644      LLC-load-misses           #   29.85% of all LL-cache hits   
+
+     527.416956688 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 24 -r 3 -m tbb -l 24 -p ssssssss':
+
+    9521472.929744      task-clock (msec)         #   22.647 CPUs utilized          
+          23233161      context-switches          #    0.002 M/sec                  
+             18805      cpu-migrations            #    0.002 K/sec                  
+             12751      page-faults               #    0.001 K/sec                  
+    24642520798303      cycles                    #    2.588 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    20155130443865      instructions              #    0.82  insns per cycle        
+     3625698572270      branches                  #  380.792 M/sec                  
+       22415225537      branch-misses             #    0.62% of all branches        
+     3759938175283      L1-dcache-loads           #  394.890 M/sec                  
+       39125916268      L1-dcache-load-misses     #    1.04% of all L1-dcache hits  
+       25215689924      LLC-loads                 #    2.648 M/sec                  
+        7767142735      LLC-load-misses           #   30.80% of all LL-cache hits   
+
+     420.433690753 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 1 -r 3 -m tf -l 1 -p sppppppp':
+
+    1590388.416285      task-clock (msec)         #    1.000 CPUs utilized          
+               783      context-switches          #    0.000 K/sec                  
+               155      cpu-migrations            #    0.000 K/sec                  
+              3950      page-faults               #    0.002 K/sec                  
+     4919772835985      cycles                    #    3.093 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    12081699933960      instructions              #    2.46  insns per cycle        
+     1998884415113      branches                  # 1256.853 M/sec                  
+        1816291917      branch-misses             #    0.09% of all branches        
+     2371601150158      L1-dcache-loads           # 1491.209 M/sec                  
+         197393143      L1-dcache-load-misses     #    0.01% of all L1-dcache hits  
+           2450631      LLC-loads                 #    0.002 M/sec                  
+            495037      LLC-load-misses           #   20.20% of all LL-cache hits   
+
+    1590.468098814 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 1 -r 3 -m tbb -l 1 -p sppppppp':
+
+    3879481.621410      task-clock (msec)         #    1.000 CPUs utilized          
+              1207      context-switches          #    0.000 K/sec                  
+                 4      cpu-migrations            #    0.000 K/sec                  
+              2685      page-faults               #    0.001 K/sec                  
+    12015480256584      cycles                    #    3.097 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    11918086387693      instructions              #    0.99  insns per cycle        
+     1979035560275      branches                  #  510.129 M/sec                  
+        1861943696      branch-misses             #    0.09% of all branches        
+     2341420824072      L1-dcache-loads           #  603.540 M/sec                  
+          76882630      L1-dcache-load-misses     #    0.00% of all L1-dcache hits  
+           4778546      LLC-loads                 #    0.001 M/sec                  
+            442466      LLC-load-misses           #    9.26% of all LL-cache hits   
+
+    3879.661847281 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 2 -r 3 -m tf -l 2 -p sppppppp':
+
+    1674439.840358      task-clock (msec)         #    2.000 CPUs utilized          
+              3246      context-switches          #    0.002 K/sec                  
+               322      cpu-migrations            #    0.000 K/sec                  
+              4457      page-faults               #    0.003 K/sec                  
+     5174046654223      cycles                    #    3.090 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    12093620252287      instructions              #    2.34  insns per cycle        
+     2001193483968      branches                  # 1195.142 M/sec                  
+        1861622747      branch-misses             #    0.09% of all branches        
+     2375357424272      L1-dcache-loads           # 1418.598 M/sec                  
+        1360703517      L1-dcache-load-misses     #    0.06% of all L1-dcache hits  
+         543608951      LLC-loads                 #    0.325 M/sec                  
+         527197549      LLC-load-misses           #   96.98% of all LL-cache hits   
+
+     837.334178931 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 2 -r 3 -m tbb -l 2 -p sppppppp':
+
+    2229810.924052      task-clock (msec)         #    2.000 CPUs utilized          
+               856      context-switches          #    0.000 K/sec                  
+                29      cpu-migrations            #    0.000 K/sec                  
+              1779      page-faults               #    0.001 K/sec                  
+     6907348394388      cycles                    #    3.098 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    11917794698590      instructions              #    1.73  insns per cycle        
+     1979156211748      branches                  #  887.589 M/sec                  
+        1712601703      branch-misses             #    0.09% of all branches        
+     2340802605623      L1-dcache-loads           # 1049.776 M/sec                  
+         121787360      L1-dcache-load-misses     #    0.01% of all L1-dcache hits  
+          57187884      LLC-loads                 #    0.026 M/sec                  
+          54866349      LLC-load-misses           #   95.94% of all LL-cache hits   
+
+    1114.964169266 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 4 -r 3 -m tf -l 4 -p sppppppp':
+
+    1757961.039191      task-clock (msec)         #    3.998 CPUs utilized          
+             16832      context-switches          #    0.010 K/sec                  
+               785      cpu-migrations            #    0.000 K/sec                  
+              5849      page-faults               #    0.003 K/sec                  
+     5345073425375      cycles                    #    3.040 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    12157233416989      instructions              #    2.27  insns per cycle        
+     2013720830353      branches                  # 1145.487 M/sec                  
+        2067547817      branch-misses             #    0.10% of all branches        
+     2395228399285      L1-dcache-loads           # 1362.504 M/sec                  
+        2300095725      L1-dcache-load-misses     #    0.10% of all L1-dcache hits  
+         889206840      LLC-loads                 #    0.506 M/sec                  
+         473465716      LLC-load-misses           #   53.25% of all LL-cache hits   
+
+     439.676611484 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 4 -r 3 -m tbb -l 4 -p sppppppp':
+
+    2267365.617984      task-clock (msec)         #    4.000 CPUs utilized          
+              1603      context-switches          #    0.001 K/sec                  
+               225      cpu-migrations            #    0.000 K/sec                  
+              2405      page-faults               #    0.001 K/sec                  
+     6938636036489      cycles                    #    3.060 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    11919329974318      instructions              #    1.72  insns per cycle        
+     1979494468099      branches                  #  873.037 M/sec                  
+        1754678556      branch-misses             #    0.09% of all branches        
+     2340933471545      L1-dcache-loads           # 1032.446 M/sec                  
+         219933925      L1-dcache-load-misses     #    0.01% of all L1-dcache hits  
+         105445358      LLC-loads                 #    0.047 M/sec                  
+          65874817      LLC-load-misses           #   62.47% of all LL-cache hits   
+
+     566.880702688 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 24 -r 3 -m tf -l 24 -p sppppppp':
+
+    2948140.255964      task-clock (msec)         #   22.134 CPUs utilized          
+            894093      context-switches          #    0.303 K/sec                  
+              4553      cpu-migrations            #    0.002 K/sec                  
+             14916      page-faults               #    0.005 K/sec                  
+     7616667536106      cycles                    #    2.584 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    12623369557323      instructions              #    1.66  insns per cycle        
+     2101267639687      branches                  #  712.743 M/sec                  
+        3710353223      branch-misses             #    0.18% of all branches        
+     2528622704607      L1-dcache-loads           #  857.701 M/sec                  
+       20825652017      L1-dcache-load-misses     #    0.82% of all L1-dcache hits  
+       11763414383      LLC-loads                 #    3.990 M/sec                  
+        4034043207      LLC-load-misses           #   34.29% of all LL-cache hits   
+
+     133.195463917 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 24 -r 3 -m tbb -l 24 -p sppppppp':
+
+    3230482.717347      task-clock (msec)         #   23.885 CPUs utilized          
+            209269      context-switches          #    0.065 K/sec                  
+               290      cpu-migrations            #    0.000 K/sec                  
+              3018      page-faults               #    0.001 K/sec                  
+     8396811335651      cycles                    #    2.599 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    13056846010821      instructions              #    1.55  insns per cycle        
+     2205655814865      branches                  #  682.764 M/sec                  
+        4412427773      branch-misses             #    0.20% of all branches        
+     2495359727181      L1-dcache-loads           #  772.442 M/sec                  
+        7918451025      L1-dcache-load-misses     #    0.32% of all L1-dcache hits  
+        5196364992      LLC-loads                 #    1.609 M/sec                  
+        2231819530      LLC-load-misses           #   42.95% of all LL-cache hits   
+
+     135.251336841 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 1 -r 3 -m tf -l 1 -p ssssssssssssssss':
+
+    3268079.456142      task-clock (msec)         #    1.000 CPUs utilized          
+              1317      context-switches          #    0.000 K/sec                  
+               142      cpu-migrations            #    0.000 K/sec                  
+              5253      page-faults               #    0.002 K/sec                  
+    10114232364149      cycles                    #    3.095 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    24795444274573      instructions              #    2.45  insns per cycle        
+     4150534661046      branches                  # 1270.023 M/sec                  
+        4076100824      branch-misses             #    0.10% of all branches        
+     4873971183992      L1-dcache-loads           # 1491.387 M/sec                  
+         279409716      L1-dcache-load-misses     #    0.01% of all L1-dcache hits  
+           3635863      LLC-loads                 #    0.001 M/sec                  
+            694794      LLC-load-misses           #   19.11% of all LL-cache hits   
+
+    3268.236610279 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 1 -r 3 -m tbb -l 1 -p ssssssssssssssss':
+
+    8112768.702670      task-clock (msec)         #    1.000 CPUs utilized          
+              2478      context-switches          #    0.000 K/sec                  
+                22      cpu-migrations            #    0.000 K/sec                  
+              5337      page-faults               #    0.001 K/sec                  
+    25144736399509      cycles                    #    3.099 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    24470078239798      instructions              #    0.97  insns per cycle        
+     4115274601532      branches                  #  507.259 M/sec                  
+        3678894209      branch-misses             #    0.09% of all branches        
+     4828065147067      L1-dcache-loads           #  595.119 M/sec                  
+         443056310      L1-dcache-load-misses     #    0.01% of all L1-dcache hits  
+           8876641      LLC-loads                 #    0.001 M/sec                  
+           3008063      LLC-load-misses           #   33.89% of all LL-cache hits   
+
+    8113.140841510 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 2 -r 3 -m tf -l 2 -p ssssssssssssssss':
+
+    3445568.189897      task-clock (msec)         #    2.000 CPUs utilized          
+              4065      context-switches          #    0.001 K/sec                  
+               351      cpu-migrations            #    0.000 K/sec                  
+              5650      page-faults               #    0.002 K/sec                  
+    10657979244242      cycles                    #    3.093 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    24821772225265      instructions              #    2.33  insns per cycle        
+     4155562835107      branches                  # 1206.060 M/sec                  
+        4097029948      branch-misses             #    0.10% of all branches        
+     4882101243325      L1-dcache-loads           # 1416.922 M/sec                  
+        3231021816      L1-dcache-load-misses     #    0.07% of all L1-dcache hits  
+        1077641785      LLC-loads                 #    0.313 M/sec                  
+        1039110880      LLC-load-misses           #   96.42% of all LL-cache hits   
+
+    1722.942139963 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 2 -r 3 -m tbb -l 2 -p ssssssssssssssss':
+
+    8346789.131571      task-clock (msec)         #    2.000 CPUs utilized          
+              2672      context-switches          #    0.000 K/sec                  
+                62      cpu-migrations            #    0.000 K/sec                  
+              4603      page-faults               #    0.001 K/sec                  
+    25862010591917      cycles                    #    3.098 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    25769544439656      instructions              #    1.00  insns per cycle        
+     4376931365376      branches                  #  524.385 M/sec                  
+        5993269927      branch-misses             #    0.14% of all branches        
+     4994031968199      L1-dcache-loads           #  598.318 M/sec                  
+        7660099495      L1-dcache-load-misses     #    0.15% of all L1-dcache hits  
+        4470601376      LLC-loads                 #    0.536 M/sec                  
+        3888950823      LLC-load-misses           #   86.99% of all LL-cache hits   
+
+    4173.594703709 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 4 -r 3 -m tf -l 4 -p ssssssssssssssss':
+
+    3575848.970112      task-clock (msec)         #    3.999 CPUs utilized          
+             18303      context-switches          #    0.005 K/sec                  
+               791      cpu-migrations            #    0.000 K/sec                  
+              7336      page-faults               #    0.002 K/sec                  
+    10960277759464      cycles                    #    3.065 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    24892131696904      instructions              #    2.27  insns per cycle        
+     4168765799390      branches                  # 1165.811 M/sec                  
+        4457429542      branch-misses             #    0.11% of all branches        
+     4904184726358      L1-dcache-loads           # 1371.474 M/sec                  
+        5943231492      L1-dcache-load-misses     #    0.12% of all L1-dcache hits  
+        2243294554      LLC-loads                 #    0.627 M/sec                  
+        1148624402      LLC-load-misses           #   51.20% of all LL-cache hits   
+
+     894.213829987 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 4 -r 3 -m tbb -l 4 -p ssssssssssssssss':
+
+    5886139.290105      task-clock (msec)         #    3.998 CPUs utilized          
+            304709      context-switches          #    0.052 K/sec                  
+              1188      cpu-migrations            #    0.000 K/sec                  
+              4413      page-faults               #    0.001 K/sec                  
+    17652714317108      cycles                    #    2.999 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    27051553602496      instructions              #    1.53  insns per cycle        
+     4635008348618      branches                  #  787.445 M/sec                  
+        9858231031      branch-misses             #    0.21% of all branches        
+     5269670981923      L1-dcache-loads           #  895.268 M/sec                  
+       12655885545      L1-dcache-load-misses     #    0.24% of all L1-dcache hits  
+        7409343899      LLC-loads                 #    1.259 M/sec                  
+        4162688279      LLC-load-misses           #   56.18% of all LL-cache hits   
+
+    1472.451444224 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 24 -r 3 -m tf -l 24 -p ssssssssssssssss':
+
+    7179419.856040      task-clock (msec)         #   14.509 CPUs utilized          
+           1971396      context-switches          #    0.275 K/sec                  
+              7275      cpu-migrations            #    0.001 K/sec                  
+             25460      page-faults               #    0.004 K/sec                  
+    16436275940287      cycles                    #    2.289 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    26402275359518      instructions              #    1.61  insns per cycle        
+     4449659480150      branches                  #  619.780 M/sec                  
+       10367835312      branch-misses             #    0.23% of all branches        
+     5338489530190      L1-dcache-loads           #  743.582 M/sec                  
+       57037646570      L1-dcache-load-misses     #    1.07% of all L1-dcache hits  
+       34440937026      LLC-loads                 #    4.797 M/sec                  
+       12504247523      LLC-load-misses           #   36.31% of all LL-cache hits   
+
+     494.831427776 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 24 -r 3 -m tbb -l 24 -p ssssssssssssssss':
+
+   10641230.284798      task-clock (msec)         #   23.704 CPUs utilized          
+           6329300      context-switches          #    0.595 K/sec                  
+              7555      cpu-migrations            #    0.001 K/sec                  
+             20369      page-faults               #    0.002 K/sec                  
+    27632203038932      cycles                    #    2.597 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    30680666030624      instructions              #    1.11  insns per cycle        
+     5351130189619      branches                  #  502.868 M/sec                  
+       19710497957      branch-misses             #    0.37% of all branches        
+     5685893005179      L1-dcache-loads           #  534.327 M/sec                  
+       44148872144      L1-dcache-load-misses     #    0.78% of all L1-dcache hits  
+       29252846749      LLC-loads                 #    2.749 M/sec                  
+       10873188404      LLC-load-misses           #   37.17% of all LL-cache hits   
+
+     448.920931538 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 1 -r 3 -m tf -l 1 -p sppppppppppppppp':
+
+    3258801.673978      task-clock (msec)         #    1.000 CPUs utilized          
+              1294      context-switches          #    0.000 K/sec                  
+               136      cpu-migrations            #    0.000 K/sec                  
+              5159      page-faults               #    0.002 K/sec                  
+    10084089427097      cycles                    #    3.094 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    24784107798510      instructions              #    2.46  insns per cycle        
+     4149023208996      branches                  # 1273.175 M/sec                  
+        3815603454      branch-misses             #    0.09% of all branches        
+     4870946826035      L1-dcache-loads           # 1494.705 M/sec                  
+         290997040      L1-dcache-load-misses     #    0.01% of all L1-dcache hits  
+           3870518      LLC-loads                 #    0.001 M/sec                  
+            646571      LLC-load-misses           #   16.71% of all LL-cache hits   
+
+    3258.958303669 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 1 -r 3 -m tbb -l 1 -p sppppppppppppppp':
+
+    8107707.483587      task-clock (msec)         #    1.000 CPUs utilized          
+              2500      context-switches          #    0.000 K/sec                  
+                12      cpu-migrations            #    0.000 K/sec                  
+              4839      page-faults               #    0.001 K/sec                  
+    25111965755075      cycles                    #    3.097 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    24420226473812      instructions              #    0.97  insns per cycle        
+     4106210580702      branches                  #  506.458 M/sec                  
+        3691803583      branch-misses             #    0.09% of all branches        
+     4810697703622      L1-dcache-loads           #  593.349 M/sec                  
+         143370575      L1-dcache-load-misses     #    0.00% of all L1-dcache hits  
+           9130791      LLC-loads                 #    0.001 M/sec                  
+           1099452      LLC-load-misses           #   12.04% of all LL-cache hits   
+
+    8108.080555578 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 2 -r 3 -m tf -l 2 -p sppppppppppppppp':
+
+    3390612.264921      task-clock (msec)         #    2.000 CPUs utilized          
+              3941      context-switches          #    0.001 K/sec                  
+               346      cpu-migrations            #    0.000 K/sec                  
+              5180      page-faults               #    0.002 K/sec                  
+    10488155038181      cycles                    #    3.093 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    24803835042799      instructions              #    2.36  insns per cycle        
+     4152961719031      branches                  # 1224.841 M/sec                  
+        4197151982      branch-misses             #    0.10% of all branches        
+     4877219693737      L1-dcache-loads           # 1438.448 M/sec                  
+        1924980046      L1-dcache-load-misses     #    0.04% of all L1-dcache hits  
+        1067240933      LLC-loads                 #    0.315 M/sec                  
+        1035996997      LLC-load-misses           #   97.07% of all LL-cache hits   
+
+    1695.463506084 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 2 -r 3 -m tbb -l 2 -p sppppppppppppppp':
+
+    4610943.985407      task-clock (msec)         #    2.000 CPUs utilized          
+              1600      context-switches          #    0.000 K/sec                  
+                74      cpu-migrations            #    0.000 K/sec                  
+              3160      page-faults               #    0.001 K/sec                  
+    14278540185873      cycles                    #    3.097 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    24419335579180      instructions              #    1.71  insns per cycle        
+     4106396725623      branches                  #  890.576 M/sec                  
+        3913547619      branch-misses             #    0.10% of all branches        
+     4809379863535      L1-dcache-loads           # 1043.036 M/sec                  
+         380898695      L1-dcache-load-misses     #    0.01% of all L1-dcache hits  
+          85938957      LLC-loads                 #    0.019 M/sec                  
+          71189830      LLC-load-misses           #   82.84% of all LL-cache hits   
+
+    2305.587767102 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 4 -r 3 -m tf -l 4 -p sppppppppppppppp':
+
+    3546166.153176      task-clock (msec)         #    3.995 CPUs utilized          
+            118919      context-switches          #    0.034 K/sec                  
+               818      cpu-migrations            #    0.000 K/sec                  
+              7469      page-faults               #    0.002 K/sec                  
+    10835251213096      cycles                    #    3.055 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    24897927088381      instructions              #    2.30  insns per cycle        
+     4171409720994      branches                  # 1176.315 M/sec                  
+        4428677356      branch-misses             #    0.11% of all branches        
+     4906637091157      L1-dcache-loads           # 1383.646 M/sec                  
+        3640591161      L1-dcache-load-misses     #    0.07% of all L1-dcache hits  
+        1618197205      LLC-loads                 #    0.456 M/sec                  
+         833294775      LLC-load-misses           #   51.50% of all LL-cache hits   
+
+     887.688884267 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 4 -r 3 -m tbb -l 4 -p sppppppppppppppp':
+
+    4576176.393519      task-clock (msec)         #    4.000 CPUs utilized          
+              2410      context-switches          #    0.001 K/sec                  
+               470      cpu-migrations            #    0.000 K/sec                  
+              3048      page-faults               #    0.001 K/sec                  
+    14002256487166      cycles                    #    3.060 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    24419491300487      instructions              #    1.74  insns per cycle        
+     4106419879099      branches                  #  897.347 M/sec                  
+        3740928034      branch-misses             #    0.09% of all branches        
+     4809396250677      L1-dcache-loads           # 1050.964 M/sec                  
+         301856914      L1-dcache-load-misses     #    0.01% of all L1-dcache hits  
+         118061520      LLC-loads                 #    0.026 M/sec                  
+          57990513      LLC-load-misses           #   49.12% of all LL-cache hits   
+
+    1144.114496110 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 24 -r 3 -m tf -l 24 -p sppppppppppppppp':
+
+    6051942.668057      task-clock (msec)         #   22.286 CPUs utilized          
+           3742435      context-switches          #    0.618 K/sec                  
+              6415      cpu-migrations            #    0.001 K/sec                  
+             19635      page-faults               #    0.003 K/sec                  
+    15545609074670      cycles                    #    2.569 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    26452324672968      instructions              #    1.70  insns per cycle        
+     4474429787452      branches                  #  739.338 M/sec                  
+        9868102012      branch-misses             #    0.22% of all branches        
+     5370456512593      L1-dcache-loads           #  887.394 M/sec                  
+       32957864382      L1-dcache-load-misses     #    0.61% of all L1-dcache hits  
+       18899857882      LLC-loads                 #    3.123 M/sec                  
+        5842396484      LLC-load-misses           #   30.91% of all LL-cache hits   
+
+     271.556417393 seconds time elapsed
+
+
+ Performance counter stats for '/home/xiongzc/taskflow/build/benchmarks/data_pipeline -t 24 -r 3 -m tbb -l 24 -p sppppppppppppppp':
+
+    4617467.234563      task-clock (msec)         #   23.952 CPUs utilized          
+             82322      context-switches          #    0.018 K/sec                  
+               210      cpu-migrations            #    0.000 K/sec                  
+              3787      page-faults               #    0.001 K/sec                  
+    12003034733967      cycles                    #    2.599 GHz                    
+   <not supported>      stalled-cycles-frontend  
+   <not supported>      stalled-cycles-backend   
+    25010512078934      instructions              #    2.08  insns per cycle        
+     4223614785397      branches                  #  914.704 M/sec                  
+        5088144150      branch-misses             #    0.12% of all branches        
+     4885257420260      L1-dcache-loads           # 1057.995 M/sec                  
+        4430602332      L1-dcache-load-misses     #    0.09% of all L1-dcache hits  
+        2594376218      LLC-loads                 #    0.562 M/sec                  
+        1167940038      LLC-load-misses           #   45.02% of all LL-cache hits   
+
+     192.780767149 seconds time elapsed
+

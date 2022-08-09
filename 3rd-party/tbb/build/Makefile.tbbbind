@@ -1,0 +1,69 @@
+# Copyright (c) 2005-2020 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#------------------------------------------------------------------------------
+# Define rules for making the tbbbind shared library.
+#------------------------------------------------------------------------------
+
+tbb_root ?= "$(TBBROOT)"
+BUILDING_PHASE=1
+include $(tbb_root)/build/common.inc
+CPLUS_FLAGS += $(SDL_FLAGS)
+DEBUG_SUFFIX=$(findstring _debug,_$(cfg))
+
+#------------------------------------------------------------
+# Define static pattern rules dealing with .cpp source files
+#------------------------------------------------------------
+$(warning CONFIG: cfg=$(cfg) arch=$(arch) compiler=$(compiler) target=$(target) runtime=$(runtime))
+
+.PHONY: tbbbind
+.PRECIOUS: %.$(OBJ)
+
+VPATH = $(tbb_root)/src/tbb/$(ASSEMBLY_SOURCE) $(tbb_root)/src/tbb $(tbb_root)/src/old $(tbb_root)/src/rml/client
+
+CPLUS_FLAGS += $(PIC_KEY) $(DSE_KEY) $(DEFINE_KEY)__TBBBIND_BUILD=1
+
+# Suppress superfluous warnings for tbbbind compilation
+WARNING_KEY += $(WARNING_SUPPRESS)
+
+include $(tbb_root)/build/common_rules.inc
+
+TBBBIND.OBJ = tbb_bind.$(OBJ)
+
+ifneq (,$(TBBBIND.DEF))
+tbbbind.def: $(TBBBIND.DEF)
+	$(CPLUS) $(PREPROC_ONLY) $< $(CPLUS_FLAGS) $(INCLUDES) > $@
+
+LIB_LINK_FLAGS += $(EXPORT_KEY)tbbbind.def
+$(TBBBIND.DLL): tbbbind.def
+endif
+
+ifneq (,$(TBBBIND.DLL))
+$(TBBBIND.DLL): BUILDING_LIBRARY = $(TBBBIND.DLL)
+$(TBBBIND.DLL): $(TBBBIND.OBJ) $(TBBBIND_NO_VERSION.DLL)
+	$(LIB_LINK_CMD) $(LIB_OUTPUT_KEY)$(TBBBIND.DLL) $(TBBBIND.OBJ) $(HWLOC.LIB) $(LIB_LINK_FLAGS)
+endif
+
+ifneq (,$(TBBBIND_NO_VERSION.DLL))
+$(TBBBIND_NO_VERSION.DLL):
+	echo "INPUT ($(TBBBIND.DLL))" > $(TBBBIND_NO_VERSION.DLL)
+endif
+
+tbbbind: $(TBBBIND.DLL)
+
+#clean:
+#	$(RM) *.$(OBJ) *.$(DLL) *.res *.map *.ilk *.pdb *.exp *.manifest *.tmp *.d core core.*[0-9][0-9] *.ver
+
+# Include automatically generated dependencies
+-include *.d

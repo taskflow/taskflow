@@ -1,0 +1,96 @@
+namespace tf {
+
+/** @page CUDASTDExecutionPolicy Execution Policy
+
+%Taskflow provides standalone template methods for expressing common parallel
+algorithms on a GPU. 
+Each of these methods is governed by an <i>execution policy object</i> to configure the kernel
+execution parameters.
+
+@tableofcontents
+
+@section CUDASTDExecutionPolicyIncludeTheHeader Include the Header
+
+You need to include the header file, `%taskflow/cuda/cudaflow.hpp`, 
+for creating a CUDA execution policy object.
+
+@section CUDASTDParameterizePerformance Parameterize Performance
+
+%Taskflow parameterizes most CUDA algorithms in terms of <i>the number of threads per block</i>
+and <i>units of work per thread</i>, which can be specified in
+the execution policy template type, tf::cudaExecutionPolicy.
+The design is inspired by [Modern GPU Programming](https://moderngpu.github.io/)
+authored by Sean Baxter to achieve high-performance GPU computing.
+
+@section CUDASTDDefineAnExecutionPolicy Define an Execution Policy
+
+The following example defines an execution policy object, @c policy,
+which configures (1) each block to invoke 512 threads and 
+(2) each of these @c 512 threads to perform @c 11 units of work.
+Block size must be a power of two.
+It is always a good idea to specify an odd number in the second parameter
+to avoid bank conflicts.
+
+@code{.cpp}
+tf::cudaExecutionPolicy<512, 11> policy;
+@endcode
+
+By default, the execution policy object is associated with the CUDA 
+<i>default stream</i> (i.e., 0).
+Default stream can incur significant overhead due to the global synchronization.
+You can associate an execution policy with another stream as shown below:
+
+@code{.cpp}
+cudaStream_t my_stream;
+cudaStreamCreate(&my_stream);
+
+// assign a stream to a policy at construction time
+tf::cudaExecutionPolicy<512, 11> policy(my_stream);
+
+// assign another stream to the policy
+policy.stream(another_stream);
+@endcode
+
+All the CUDA standard algorithms in %Taskflow are asynchronous
+with respect to the stream assigned to the execution policy.
+This enables high execution efficiency for large GPU workloads
+that call for many different algorithms.
+You can synchronize the stream the block until all tasks in the stream
+finish:
+
+@code{.cpp}
+cudaStreamSynchronize(policy.stream()); 
+@endcode
+
+The best-performing configurations for each algorithm, each GPU architecture,
+and each data type can vary significantly.
+You should experiment different configurations and find
+the optimal tuning parameters for your applications.
+A default policy is given in tf::cudaDefaultExecutionPolicy.
+
+@code{.cpp}
+tf::cudaDefaultExecutionPolicy default_policy;
+@endcode
+
+@section CUDASTDAllocateMemoryBufferForAlgorithms Allocate Memory Buffer for Algorithms
+
+A key difference between our CUDA standard algorithms and others (e.g., Thrust) 
+is the <i>memory management</i>.
+Unlike CPU-parallel algorithms, many GPU-parallel algorithms require
+extra buffer to store the temporary results during the multi-phase computation,
+for instance, tf::cuda_reduce and tf::cuda_sort.
+We <i>DO NOT</i> allocate any memory during these algorithms call but ask you
+to provide the memory buffer required for each of such algorithms.
+This decision seems to complicate the code a little bit, but it gives
+applications freedom to optimize the memory;
+also, it makes all algorithm calls capturable to a CUDA graph
+to improve the execution efficiency.
+
+*/
+}
+
+
+
+
+
+

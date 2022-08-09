@@ -1,0 +1,241 @@
+namespace tf {
+
+/** @page install Building and Installing
+
+This page describes how to set up %Taskflow in your project. 
+We will also go through the building process of unit tests and examples.
+
+@tableofcontents
+
+@section BAISupportedCompilers Supported Compilers
+
+To use %Taskflow, you only need a compiler that supports C++17:
+
+@li GNU C++ Compiler at least v8.4 with -std=c++17
+@li Clang C++ Compiler at least v6.0 with -std=c++17
+@li Microsoft Visual Studio at least v15.7 (MSVC++ 19.14)
+@li AppleClang Xode Version at least v12.0 with -std=c++17
+@li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
+@li Intel C++ Compiler (nvcc) at least v19.0.1 with -std=c++17
+@li Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20
+
+%Taskflow works on Linux, Windows, and Mac OS X.
+
+@section BAIIntegrateTaskflowToYourProject Integrate Taskflow to Your Project
+
+%Taskflow is *header-only* and there is no need for installation.
+Simply download the source and copy the headers under the directory @c taskflow/
+to your project.
+
+@code{.shell-session}
+~$ git clone https://github.com/taskflow/taskflow.git
+~$ cd taskflow/
+~$ cp -r taskflow myproject/include/
+@endcode
+
+%Taskflow is written in C++17 and is built on top of 
+C++ standardized threading libraries to improve portability.
+To compile a %Taskflow program, say <tt>simple.cpp</tt>, you need to tell the compiler
+where to find the %Taskflow header files and link it through the system thread library
+(usually [POSIX threads](http://man7.org/linux/man-pages/man7/pthreads.7.html) in Linux-like systems).
+Take gcc for an example:
+
+@code{.shell-session}
+~$ g++ simple.cpp -std=c++17 -I myproject/include/ -O2 -pthread -o simple
+@endcode
+
+
+@section BAIBuildExamplesAndUnitTests Build Examples and Unit Tests
+
+%Taskflow uses CMake to build examples and unit tests. 
+We recommend using out-of-source build.
+
+@code{.shell-session}
+~$ cd path/to/taskflow
+~$ mkdir build
+~$ cd build
+~$ cmake ../
+~$ make                         # compile all examples and unittests
+~$ make test
+
+Running tests...
+/usr/bin/ctest --force-new-ctest-process
+Test project /home/tsung-wei/Code/taskflow/build
+        Start   1: passive_vector
+  1/254 Test   #1: passive_vector ...................   Passed    0.04 sec
+        Start   2: function_traits
+  2/254 Test   #2: function_traits ..................   Passed    0.00 sec
+        Start   3: object_pool.sequential
+  3/254 Test   #3: object_pool.sequential ...........   Passed    0.10 sec
+...
+
+100% tests passed, 0 tests failed out of 254
+
+Total Test time (real) =  29.67 sec
+@endcode
+
+When the building completes, you can find the executables for examples and tests
+under the two folders, @c examples/ and @c unittests/.
+You can list a set of available options in the cmake.
+
+@code{.shell-session}
+~$ cmake -LA
+...
+TF_BUILD_EXAMPLES:BOOL=ON       # by default, we compile examples
+TF_BUILD_TESTS:BOOL=ON          # by default, we compile tests
+TF_BUILD_BENCHMARKS:BOOL=OFF    # by default, we don't compile benchmarks 
+TF_BUILD_CUDA:BOOL=OFF          # by default, we don't compile CUDA code
+...
+... more options
+@endcode
+
+Currently, our CMake script supports the following options:
+
+<div align="center">
+| CMake Option        | Default   | Usage   |
+| :-:                 | :-:       | :-:     |
+| TF_BUILD_EXAMPLES   | ON        | enable/disable building examples   |
+| TF_BUILD_TESTS      | ON        | enable/disable building unit tests |
+| TF_BUILD_BENCHMARKS | OFF       | enable/disable building benchmarks |
+| TF_BUILD_CUDA       | OFF       | enable/disable building CUDA code  |
+| TF_BUILD_SYCL       | OFF       | enable/disable building SYCL code  |
+</div>
+
+To enable or disable a specific option, use @c -D in the CMake build. 
+For example:
+
+@code{.shell-session}
+~$ cmake ../ -DTF_BUILD_EXAMPLES=OFF
+@endcode
+
+The above command turns off building %Taskflow examples.
+
+@section BAIBuildCUDACode Build CUDA Examples and Unit Tests
+
+To build CUDA code, including unit tests and examples, 
+enable the CMake option @c TF_BUILD_CUDA to @c ON. 
+Cmake will automatically detect the existence of @c nvcc 
+and use it to compile and link @c .cu code.
+
+@code{.shell-session}
+~$ cmake ../ -DTF_BUILD_CUDA=ON
+~$ make
+@endcode
+
+Please visit the page @subpage CompileTaskflowWithCUDA for details.
+
+
+@section BAIBuildSYCLCode Build SYCL Code Examples and Unit Tests
+
+To build SYCL code, including unit tests and examples, 
+enable the CMake option @c TF_BUILD_SYCL to @c ON and
+direct the CMake compiler @c CMAKE_CXX_COMPILER to the location of 
+DPC++ clang compiler.
+You can acquire the DPC++ clang compiler at the official page of 
+<a href="https://intel.github.io/llvm-docs/GetStartedGuide.html">Getting Started with oneAPI DPC++</a>.
+
+@code{.shell-session}
+# after succesfully build Intel DPCPP clang: https://intel.github.io/llvm-docs/
+~$ export DPCPP_HOME=/path/to/your/dpcpp/workspace
+~$ export PATH=$DPCPP_HOME/llvm/build/bin:$PATH
+~$ export LD_LIBRARY_PATH=$DPCPP_HOME/llvm/build/lib:$LD_LIBRARY_PATH
+
+# build Taskflow SYCL code using Intel oneAPI dpc++ clang compiler
+~$ cmake ../ -DTF_BUILD_SYCL=ON -DCMAKE_CXX_COMPILER=clang++
+~$ make
+@endcode
+
+Please visit the page @subpage CompileTaskflowWithSYCL for details.
+
+@section BAIBuildSanitizers Build Sanitizers
+
+You can build %Taskflow with @em sanitizers to detect a variety of errors,
+such as data race, memory leak, undefined behavior, and others.
+To enable a sanitizer, add the sanitizer flag to the CMake variable
+`CMAKE_CXX_FLAGS`.
+The following example enables thread sanitizer in building %Taskflow code
+to detect data race:
+
+@code{.shell-session}
+# build Taskflow code with thread sanitizer to detect data race
+~$ cmake ../ -DCMAKE_CXX_FLAGS="-fsanitize=thread -g"
+
+# build Taskflow code with address sanitizer to detect illegal memory access
+~$ cmake ../ -DCMAKE_CXX_FLAGS="-fsanitize=address -g"
+
+# build Taskflow code with ub sanitizer to detect undefined behavior
+~$ cmake ../ -DCMAKE_CXX_FLAGS="-fsanitize=undefined -g"
+@endcode
+
+Our @CI incorporates 
+thread sanitizer ([-fsanitize=thread](https://clang.llvm.org/docs/ThreadSanitizer.html)),
+address sanitizer ([-fsanitize=address](https://clang.llvm.org/docs/AddressSanitizer.html)), and
+leak sanitizer ([-fsanitize=leak](https://clang.llvm.org/docs/LeakSanitizer.html))
+to detect data race, illegal memory address, and memory leak.
+To our best knowledge,
+%Taskflow is one of the very few parallel programming libraries
+that are free from data race.
+
+@note
+Some sanitizers are supported by certain computing architectures.
+You can find the information about architecture support of each sanitizer at 
+[Clang Documentation](https://clang.llvm.org/docs/index.html) and
+[GCC Instrumentation Options](https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html).
+
+@section BAIBuildBenchmarks Build Benchmarks
+
+The %Taskflow project contains a set of benchmarks to evaluate and compare 
+the performance of Taskflow with existing parallel programming libraries.
+To build the benchmark code,
+enable the CMake option @c TF_BUILD_BENCHMARKS to @c ON as follows:
+
+@code{.shell-session}
+~$ cmake ../ -DTF_BUILD_BENCHMARKS=ON
+~$ make
+@endcode
+
+Please visit the page @subpage BenchmarkTaskflow for details.
+
+@section BAIBuildDocumentation Build Documentation
+
+%Taskflow uses @Doxygen and @MCSS to generate this documentation.
+The source of documentation is located in the folder @c taskflow/doxygen
+and the generated html is output to the folder @c taskflow/docs.
+To generate the documentation, clone the m.css project and enter
+the @c m.css/documentation directory:
+
+@code{.shell-session}
+~$ git clone git://github.com/mosra/m.css
+~$ cd m.css/documentation
+@endcode
+
+The script @c doxygen.py requires Python 3.6, depends on 
+<a href="http://jinja.pocoo.org/">Jinja2</a> for templating and 
+<a href="http://pygments.org/">Pygments</a> for code block highlighting. 
+You can install the dependencies via @c pip or your distribution package manager:
+
+@code{.shell-session}
+# You may need sudo here
+# More details are available at https://mcss.mosra.cz/documentation/doxygen/
+~$ pip3 install jinja2 Pygments
+@endcode
+
+Next, invoke @c doxygen.py and point it to the @c taskflow/doxygen/conf.py:
+
+@code{.shell-session}
+~$ ./doxygen.py path/to/taskflow/doxygen/conf.py
+@endcode
+
+You can find the documentation output in @c taskflow/docs.
+
+*/
+
+}
+
+
+
+
+
+
+
+

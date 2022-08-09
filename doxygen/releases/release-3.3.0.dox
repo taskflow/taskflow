@@ -1,0 +1,149 @@
+namespace tf {
+
+/** @page release-3-3-0 Release 3.3.0 (2022/01/03)
+
+%Taskflow 3.3.0 is the 4th release in the 3.x line! 
+This release includes several new changes, such as
+sanitized data race, pipeline parallelism, documentation, and unit tests.
+
+@note
+We highly recommend that adopting %Taskflow v3.3 in your projects if possible. This release
+has resolved pretty much all the potential data-race issues induced by incorrect memory order.
+
+@tableofcontents
+
+@section release-3-3-0_download Download
+
+%Taskflow 3.3.0 can be downloaded from <a href="https://github.com/taskflow/taskflow/releases/tag/v3.3.0">here</a>.
+
+@section release-3-3-0_system_requirements System Requirements
+
+To use %Taskflow v3.3.0, you need a compiler that supports C++17:
+
+@li GNU C++ Compiler at least v8.4 with -std=c++17
+@li Clang C++ Compiler at least v6.0 with -std=c++17
+@li Microsoft Visual Studio at least v19.27 with /std:c++17
+@li AppleClang Xode Version at least v12.0 with -std=c++17
+@li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
+@li Intel C++ Compiler at least v19.0.1 with -std=c++17
+@li Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20
+
+%Taskflow works on Linux, Windows, and Mac OS X.
+
+@section release-3-3-0_summary Release Summary
+
+1. This release has resolved data race issues reported by 
+[tsan](https://github.com/google/sanitizers) and has incorporated essential
+sanitizers into the @CI for detecting data race, illegal memory access,
+and memory leak of the %Taskflow codebase.
+2. This release has introduced a new pipeline interface (tf::Pipeline) that allow users to
+create a pipeline scheduling framework for implementing pipeline algorithms.
+3. This release has introduced a new thread-id mapping algorithm to resolve unexpected 
+thread-local storage (TLS) errors when building %Taskflow projects in a shared library environment.
+
+@section release-3-3-0_new_features New Features
+
+@subsection release-3-3-0_taskflow_core Taskflow Core
+
++ Changed all lambda operators in parallel algorithms to copy by default
++ Cleaned up data race errors in [tsan](https://github.com/google/sanitizers) caused by incorrect memory order
++ Enhanced scheduling performance by caching tasks in the invoke loop
++ Added tf::Task::data to allow associating a task with user-level data
++ Added tf::Executor::named_async to allow associating an asynchronous task a name
++ Added tf::Executor::named_silent_async to allow associating a silent asynchronous task a name
++ Added tf::Subflow::named_async to allow associating an asynchronous task a name
++ Added tf::Subflow::named_silent_async to allow associating a silent asynchronous task a name
++ Added multi-conditional tasking to allow a task to jump to multiple successors
++ Added tf::Runtime tasking interface to enable in-task scheduling control
++ Added tf::Taskflow::transform to perform parallel-transform algorithms
++ Added tf::Graph interface to allow users to create custom module tasks
++ Added tf::FlowBuilder::erase to remove a task from the associated graph
+
+@subsection release-3-3-0_cudaflow cudaFlow
+
+Starting from v3.3, using tf::cudaFlow needs to include the header,
+`%taskflow/cuda/cudaflow.hpp`.
+See @ref release-3-3-0_breaking_changes.
+
+@subsection release-3-3-0_syclflow syclFlow
+
+This release does not have any upcate on %syclFlow.
+
+@subsection release-3-3-0_utilities Utilities
+
++ Added tf::SmallVector to the documentation
++ Added relax_cpu call to optimize the work-stealing loop
+
+@subsection release-3-3-0_profiler Taskflow Profiler (TFProf)
+
+This release does not have any upcate on the profiler.
+
+@section release-3-3-0_bug_fixes Bug Fixes 
+
++ Fixed incorrect static TLS access when building %Taskflow in a shared lib
++ Fixed memory leak in updating tf::cudaFlowCapturer of undestroyed graph
++ Fixed data race in the object-pool when accessing the heap pointer 
++ Fixed invalid lambda capture by reference in tf::Taskflow::sort
++ Fixed invalid lambda capture by reference in tf::Taskflow::reduce
++ Fixed invalid lambda capture by reference in tf::Taskflow::transform_reduce
++ Fixed invalid lambda capture by reference in tf::Taskflow::for_each
++ Fixed invalid lambda capture by reference in tf::Taskflow::for_each_index
+  
+If you encounter any potential bugs, please submit an issue at @IssueTracker.
+
+@section release-3-3-0_breaking_changes Breaking Changes
+
+For the purpose of compilation speed, you will need to separately include the follwoing
+files for using specific features and algorithms:
++ `%taskflow/algorithm/reduce.hpp` for creating a parallel-reduction task
++ `%taskflow/algorithm/sort.hpp` for creating a parallel-sort task
++ `%taskflow/algorithm/transform.hpp` for creating a parallel-transform task
++ `%taskflow/algorithm/pipeline.hpp` for creating a parallel-pipeline task
++ `%taskflow/cuda/cudaflow.hpp` for creating a tf::cudaFlow and a tf::cudaFlowCapturer tasks
++ `%taskflow/cuda/algorithm/for_each.hpp` for creating a single-threaded task on a CUDA GPU
++ `%taskflow/cuda/algorithm/for_each.hpp` for creating a parallel-iteration task on a CUDA GPU
++ `%taskflow/cuda/algorithm/transform.hpp` for creating a parallel-transform task on a CUDA GPU
++ `%taskflow/cuda/algorithm/reduce.hpp` for creating a parallel-reduce task on a CUDA GPU
++ `%taskflow/cuda/algorithm/scan.hpp` for creating a parallel-scan task on a CUDA GPU
++ `%taskflow/cuda/algorithm/merge.hpp` for creating a parallel-merge task on a CUDA GPU
++ `%taskflow/cuda/algorithm/sort.hpp` for creating a parallel-sort task on a CUDA GPU
++ `%taskflow/cuda/algorithm/find.hpp` for creating a parallel-find task on a CUDA GPU
+
+@section release-3-3-0_deprecated_items Deprecated and Removed Items 
+
+This release does not have any deprecated and removed items.
+
+@section release-3-3-0_documentation Documentation
+
++ Revised @ref install
+  + @ref BAIBuildSanitizers
++ Revised @ref StaticTasking 
+  + @ref AttachUserDataToATask
++ Revised @ref ComposableTasking
+  + @ref CreateACustomComposableGraph
++ Revised @ref ConditionalTasking
+  + @ref CreateAMultiConditionTask
++ Revised @ref GPUTaskingcudaFlow
++ Revised @ref GPUTaskingcudaFlowCapturer
++ Revised @ref LimitTheMaximumConcurrency 
+  + @ref DefineAConflictGraph
++ Revised @ref ParallelSort to add header-include information
++ Revised @ref ParallelReduction to add header-include information
++ Revised @ref cudaFlowAlgorithms to add header-include information
++ Revised @ref cudaStandardAlgorithms to add header-include information
++ Added @ref RuntimeTasking
++ Added @ref ParallelTransforms
++ Added @ref ParallelPipeline
+
+@section release-3-3-0_miscellaneous_items Miscellaneous Items
+
+We have published %Taskflow in the following venues:
+  1. Tsung-Wei Huang, Dian-Lun Lin, Chun-Xun Lin, and Yibo Lin, &quot;[Taskflow: A Lightweight Parallel and Heterogeneous Task Graph Computing System](https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf),&quot; <em>IEEE Transactions on Parallel and Distributed Systems (TPDS)</em>, vol. 33, no. 6, pp. 1303-1320, June 2022
+  2. Tsung-Wei Huang, &quot;[TFProf: Profiling Large Taskflow Programs with Modern D3 and C++](https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf),&quot; <em>IEEE International Workshop on Programming and Performance Visualization Tools (ProTools)</em>, St. Louis, Missouri, 2021
+
+Please do not hesitate to contact @twhuang if you intend to collaborate with us 
+on using %Taskflow in your scientific computing projects.
+
+*/
+
+}

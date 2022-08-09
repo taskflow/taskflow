@@ -1,0 +1,212 @@
+namespace tf {
+
+/** @page DynamicTasking Dynamic Tasking
+
+It is very common for a parallel program to 
+spawn task dependency graphs at runtime.
+In %Taskflow, we call this <em>dynamic tasking</em>.
+
+@tableofcontents
+
+@section CreateASubflow Create a Subflow
+
+Dynamic tasks are those created during the execution of a graph.
+These tasks are spawned from a parent task and are grouped together to a 
+@em subflow dependency graph.
+%Taskflow has an unified interface for static and dynamic tasking.
+To create a subflow, emplace a callable 
+that takes an argument of type tf::Subflow.
+A tf::Subflow object will be created and forwarded to
+the execution context of the task.
+All methods you find in tf::Taskflow are applicable for tf::Subflow.
+
+@code{.cpp}
+ 1: tf::Taskflow taskflow;
+ 2: tf::Executor executor;
+ 3:
+ 4: tf::Task A = taskflow.emplace([] () {}).name("A");  // static task A
+ 5: tf::Task C = taskflow.emplace([] () {}).name("C");  // static task C
+ 6: tf::Task D = taskflow.emplace([] () {}).name("D");  // static task D
+ 7:
+ 8: tf::Task B = taskflow.emplace([] (tf::Subflow& subflow) { 
+ 9:   tf::Task B1 = subflow.emplace([] () {}).name("B1");  // dynamic task B1
+10:   tf::Task B2 = subflow.emplace([] () {}).name("B2");  // dynamic task B2
+11:   tf::Task B3 = subflow.emplace([] () {}).name("B3");  // dynamic task B3
+12:   B1.precede(B3);  // B1 runs bofore B3
+13:   B2.precede(B3);  // B2 runs before B3
+14: }).name("B");
+15:
+16: A.precede(B);  // B runs after A
+17: A.precede(C);  // C runs after A
+18: B.precede(D);  // D runs after B
+19: C.precede(D);  // D runs after C
+20:
+21: executor.run(taskflow).get();  // execute the graph to spawn the subflow
+22: taskflow.dump(std::cout);      // dump the taskflow to a DOT format
+@endcode
+
+<!--@image html images/subflow_join.svg width=35%-->
+
+@parblock
+@dotfile images/subflow-join.dot
+@endparblock
+
+Debrief:
+@li Lines 1-2 create a taskflow and an executor
+@li Lines 4-6 create three tasks, A, C, and D
+@li Lines 8-14 create a task B that spawns a task dependency graph of three tasks B1, B2, and B3
+@li Lines 16-19 add dependencies among A, B, C, and D
+@li Line 21 submits the graph to an executor and waits until it finishes
+@li Line 22 dumps the entire task dependency graph
+
+Lines 8-14 are the main block to enable dynamic tasking.
+%Taskflow uses a @std_variant date type to 
+unify the interface of static tasking and dynamic tasking.
+The runtime will create a tf::Subflow passing it to task B,
+and spawn a dependency graph as described by the associated callable.
+This new subflow graph will be added to the topology of its parent task B.
+Due to the property of dynamic tasking,
+we cannot dump its structure before execution.
+We will need to run the graph first to spawn the graph and then
+call tf::Taskflow::dump.
+
+@section JoinASubflow Join a Subflow
+
+By default, a subflow joins its parent task when the program leaves its execution context.
+All nodes of zero outgoing edges in the subflow precede its parent task.
+You can explicitly join a subflow within its execution context to
+carry out recursive patterns.
+A famous implementation is fibonacci recursion.
+
+@code{.cpp}
+int spawn(int n, tf::Subflow& sbf) {
+  if (n < 2) return n;
+  int res1, res2;
+  sbf.emplace([&res1, n] (tf::Subflow& sbf) { res1 = spawn(n - 1, sbf); } );
+  sbf.emplace([&res2, n] (tf::Subflow& sbf) { res2 = spawn(n - 2, sbf); } );
+  sbf.join();    // join to materialize the subflow immediately
+  return res1 + res2;
+}
+  
+taskflow.emplace([&res] (tf::Subflow& sbf) { 
+  res = spawn(5, sbf);  
+});
+
+executor.run(taskflow).wait();
+@endcode
+
+The code above computes the fifth fibonacci number using recursive subflow.
+Calling tf::Subflow::join @em immediately materializes the subflow by executing all associated
+tasks to recursively compute fibonacci numbers.
+The taskflow graph is shown below:
+
+<!-- @image html images/fibonacci_10.svg width=100% -->
+@dotfile images/fibonacci_7.dot
+
+Our implementation to join subflows is @em recursive in order to
+preserve the thread context in each subflow task.
+Having a deep recursion of subflows may cause stack overflow.
+
+@section DetachASubflow Detach a Subflow
+
+In contract to joined subflow, 
+you can detach a subflow from its parent task, allowing its execution to flow independently.
+
+@code{.cpp}
+ 1: tf::Taskflow taskflow;
+ 2:
+ 3: tf::Task A = taskflow.emplace([] () {}).name("A");  // static task A
+ 4: tf::Task C = taskflow.emplace([] () {}).name("C");  // static task C
+ 5: tf::Task D = taskflow.emplace([] () {}).name("D");  // static task D
+ 6:
+ 7: tf::Task B = taskflow.emplace([] (tf::Subflow& subflow) { 
+ 8:   tf::Task B1 = subflow.emplace([] () {}).name("B1");  // dynamic task B1
+ 9:   tf::Task B2 = subflow.emplace([] () {}).name("B2");  // dynamic task B2
+10:   tf::Task B3 = subflow.emplace([] () {}).name("B3");  // dynamic task B3
+11:   B1.precede(B3);    // B1 runs bofore B3
+12:   B2.precede(B3);    // B2 runs before B3
+13:   subflow.detach();  // detach this subflow
+14: }).name("B");
+15:
+16: A.precede(B);  // B runs after A
+17: A.precede(C);  // C runs after A
+18: B.precede(D);  // D runs after B
+19: C.precede(D);  // D runs after C
+20:
+21: tf::Executor executor;
+22: executor.run(taskflow).wait();       // execute the graph to spawn the subflow
+22: taskflow.dump(std::cout);            // dump the taskflow to DOT format
+@endcode
+
+The figure below demonstrates a detached subflow based on the previous example.
+A detached subflow will eventually join the topology of its parent task.
+
+<!-- @image html images/subflow_detach.svg width=45% -->
+@dotfile images/subflow-detach.dot
+
+Detached subflow becomes an independent graph attached to the top-most taskflow.
+Running a taskflow multiple times will accumulate all detached tasks
+in the graph.
+For example, running the above taskflow 5 times results in a total of 19 tasks.
+
+@code{.cpp}
+executor.run_n(taskflow, 5).wait();
+assert(taskflow.num_tasks() == 19);
+taskflow.dump(std::cout);
+@endcode
+
+The dumped graph is shown as follows:
+
+<!-- @image html images/subflow_detach_10.svg width=100% -->
+@dotfile images/subflow_detach_5.dot
+
+@section CreateANestedSubflow Create a Nested Subflow
+
+A subflow can be nested or recursive.
+You can create another subflow from the execution of a subflow and so on.
+
+@code{.cpp}
+ 1: tf::Taskflow taskflow;
+ 2:
+ 3: tf::Task A = taskflow.emplace([] (tf::Subflow& sbf){
+ 4:   std::cout << "A spawns A1 & subflow A2\n";
+ 5:   tf::Task A1 = sbf.emplace([] () {
+ 6:     std::cout << "subtask A1\n";
+ 7:   }).name("A1");
+ 8:
+ 9:   tf::Task A2 = sbf.emplace([] (tf::Subflow& sbf2){
+10:     std::cout << "A2 spawns A2_1 & A2_2\n";
+11:     tf::Task A2_1 = sbf2.emplace([] () {
+12:       std::cout << "subtask A2_1\n";
+13:     }).name("A2_1");
+14:     tf::Task A2_2 = sbf2.emplace([] () {
+15:       std::cout << "subtask A2_2\n";
+16:     }).name("A2_2");
+17:     A2_1.precede(A2_2);
+18:   }).name("A2");
+19:   A1.precede(A2);
+20: }).name("A");
+21:
+22: // execute the graph to spawn the subflow
+23: tf::Executor().run(taskflow).get();
+24: taskflow.dump(std::cout);
+@endcode
+
+<!-- @image html images/nested_subflow.svg  -->
+@dotfile images/nested_subflow.dot
+
+Debrief:
+@li Line 1 creates a taskflow object
+@li Lines 3-20 create a task to spawn a subflow of two tasks A1 and A2
+@li Lines 9-18 spawn another subflow of two tasks A2_1 and A2_2 out of its parent task A2
+@li Lines 23-24 runs the graph asynchronously and dump its structure when it finishes
+
+Similarly, you can detach a nested subflow from its parent subflow.
+A detached subflow will run independently and eventually join the topology
+of its parent subflow.
+
+
+*/
+
+}
+

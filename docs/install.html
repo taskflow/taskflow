@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Building and Installing | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          Building and Installing
+        </h1>
+<p>This page describes how to set up Taskflow in your project. We will also go through the building process of unit tests and examples.</p><section id="BAISupportedCompilers"><h2><a href="#BAISupportedCompilers">Supported Compilers</a></h2><p>To use Taskflow, you only need a compiler that supports C++17:</p><ul><li>GNU C++ Compiler at least v8.4 with -std=c++17</li><li>Clang C++ Compiler at least v6.0 with -std=c++17</li><li>Microsoft Visual Studio at least v15.7 (MSVC++ 19.14)</li><li>AppleClang Xode Version at least v12.0 with -std=c++17</li><li>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17</li><li>Intel C++ Compiler (nvcc) at least v19.0.1 with -std=c++17</li><li>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</li></ul><p>Taskflow works on Linux, Windows, and Mac OS X.</p></section><section id="BAIIntegrateTaskflowToYourProject"><h2><a href="#BAIIntegrateTaskflowToYourProject">Integrate Taskflow to Your Project</a></h2><p>Taskflow is <em>header-only</em> and there is no need for installation. Simply download the source and copy the headers under the directory <code>taskflow/</code> to your project.</p><pre class="m-code"><span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">clone</span><span class="w"> </span><span class="n">https</span><span class="o">:</span><span class="c1">//github.com/taskflow/taskflow.git</span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">cd</span><span class="w"> </span><span class="n">taskflow</span><span class="o">/</span><span class="w"></span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">cp</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="n">taskflow</span><span class="w"> </span><span class="n">myproject</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="w"></span></pre><p>Taskflow is written in C++17 and is built on top of C++ standardized threading libraries to improve portability. To compile a Taskflow program, say <code>simple.cpp</code>, you need to tell the compiler where to find the Taskflow header files and link it through the system thread library (usually <a href="http://man7.org/linux/man-pages/man7/pthreads.7.html">POSIX threads</a> in Linux-like systems). Take gcc for an example:</p><pre class="m-code"><span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">g</span><span class="o">++</span><span class="w"> </span><span class="n">simple</span><span class="p">.</span><span class="n">cpp</span><span class="w"> </span><span class="o">-</span><span class="n">std</span><span class="o">=</span><span class="n">c</span><span class="o">++</span><span class="mi">17</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="w"> </span><span class="n">myproject</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="w"> </span><span class="o">-</span><span class="n">O2</span><span class="w"> </span><span class="o">-</span><span class="n">pthread</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">simple</span><span class="w"></span></pre></section><section id="BAIBuildExamplesAndUnitTests"><h2><a href="#BAIBuildExamplesAndUnitTests">Build Examples and Unit Tests</a></h2><p>Taskflow uses CMake to build examples and unit tests. We recommend using out-of-source build.</p><pre class="m-code"><span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">cd</span><span class="w"> </span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">taskflow</span><span class="w"></span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">mkdir</span><span class="w"> </span><span class="n">build</span><span class="w"></span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">cd</span><span class="w"> </span><span class="n">build</span><span class="w"></span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">cmake</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="w"></span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">make</span><span class="w">                         </span><span class="err">#</span><span class="w"> </span><span class="n">compile</span><span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="n">examples</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">unittests</span><span class="w"></span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">make</span><span class="w"> </span><span class="n">test</span><span class="w"></span>
+
+<span class="n">Running</span><span class="w"> </span><span class="n">tests</span><span class="p">...</span><span class="w"></span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">ctest</span><span class="w"> </span><span class="o">--</span><span class="n">force</span><span class="o">-</span><span class="k">new</span><span class="o">-</span><span class="n">ctest</span><span class="o">-</span><span class="n">process</span><span class="w"></span>
+<span class="n">Test</span><span class="w"> </span><span class="n">project</span><span class="w"> </span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">tsung</span><span class="o">-</span><span class="n">wei</span><span class="o">/</span><span class="n">Code</span><span class="o">/</span><span class="n">taskflow</span><span class="o">/</span><span class="n">build</span><span class="w"></span>
+<span class="w">        </span><span class="n">Start</span><span class="w">   </span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="n">passive_vector</span><span class="w"></span>
+<span class="w">  </span><span class="mi">1</span><span class="o">/</span><span class="mi">254</span><span class="w"> </span><span class="n">Test</span><span class="w">   </span><span class="err">#</span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="n">passive_vector</span><span class="w"> </span><span class="p">...................</span><span class="w">   </span><span class="n">Passed</span><span class="w">    </span><span class="mf">0.04</span><span class="w"> </span><span class="n">sec</span><span class="w"></span>
+<span class="w">        </span><span class="n">Start</span><span class="w">   </span><span class="mi">2</span><span class="o">:</span><span class="w"> </span><span class="n">function_traits</span><span class="w"></span>
+<span class="w">  </span><span class="mi">2</span><span class="o">/</span><span class="mi">254</span><span class="w"> </span><span class="n">Test</span><span class="w">   </span><span class="err">#</span><span class="mi">2</span><span class="o">:</span><span class="w"> </span><span class="n">function_traits</span><span class="w"> </span><span class="p">..................</span><span class="w">   </span><span class="n">Passed</span><span class="w">    </span><span class="mf">0.00</span><span class="w"> </span><span class="n">sec</span><span class="w"></span>
+<span class="w">        </span><span class="n">Start</span><span class="w">   </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="n">object_pool</span><span class="p">.</span><span class="n">sequential</span><span class="w"></span>
+<span class="w">  </span><span class="mi">3</span><span class="o">/</span><span class="mi">254</span><span class="w"> </span><span class="n">Test</span><span class="w">   </span><span class="err">#</span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="n">object_pool</span><span class="p">.</span><span class="n">sequential</span><span class="w"> </span><span class="p">...........</span><span class="w">   </span><span class="n">Passed</span><span class="w">    </span><span class="mf">0.10</span><span class="w"> </span><span class="n">sec</span><span class="w"></span>
+<span class="p">...</span><span class="w"></span>
+
+<span class="mi">100</span><span class="o">%</span><span class="w"> </span><span class="n">tests</span><span class="w"> </span><span class="n">passed</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="n">tests</span><span class="w"> </span><span class="n">failed</span><span class="w"> </span><span class="n">out</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">254</span><span class="w"></span>
+
+<span class="n">Total</span><span class="w"> </span><span class="n">Test</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="p">(</span><span class="n">real</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="mf">29.67</span><span class="w"> </span><span class="n">sec</span><span class="w"></span></pre><p>When the building completes, you can find the executables for examples and tests under the two folders, <code>examples/</code> and <code>unittests/</code>. You can list a set of available options in the cmake.</p><pre class="m-code"><span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">cmake</span><span class="w"> </span><span class="o">-</span><span class="n">LA</span><span class="w"></span>
+<span class="p">...</span><span class="w"></span>
+<span class="nl">TF_BUILD_EXAMPLES</span><span class="p">:</span><span class="n">BOOL</span><span class="o">=</span><span class="n">ON</span><span class="w">       </span><span class="err">#</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="k">default</span><span class="p">,</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">compile</span><span class="w"> </span><span class="n">examples</span><span class="w"></span>
+<span class="nl">TF_BUILD_TESTS</span><span class="p">:</span><span class="n">BOOL</span><span class="o">=</span><span class="n">ON</span><span class="w">          </span><span class="err">#</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="k">default</span><span class="p">,</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">compile</span><span class="w"> </span><span class="n">tests</span><span class="w"></span>
+<span class="nl">TF_BUILD_BENCHMARKS</span><span class="p">:</span><span class="n">BOOL</span><span class="o">=</span><span class="n">OFF</span><span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="k">default</span><span class="p">,</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">don</span><span class="err">&#39;</span><span class="n">t</span><span class="w"> </span><span class="n">compile</span><span class="w"> </span><span class="n">benchmarks</span><span class="w"> </span>
+<span class="nl">TF_BUILD_CUDA</span><span class="p">:</span><span class="n">BOOL</span><span class="o">=</span><span class="n">OFF</span><span class="w">          </span><span class="err">#</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="k">default</span><span class="p">,</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">don</span><span class="err">&#39;</span><span class="n">t</span><span class="w"> </span><span class="n">compile</span><span class="w"> </span><span class="n">CUDA</span><span class="w"> </span><span class="n">code</span><span class="w"></span>
+<span class="p">...</span><span class="w"></span>
+<span class="p">...</span><span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">options</span><span class="w"></span></pre><p>Currently, our CMake script supports the following options:</p><table class="m-table"><thead><tr><th>CMake Option</th><th>Default</th><th>Usage</th></tr></thead><tbody><tr><td>TF_BUILD_EXAMPLES</td><td>ON</td><td>enable/disable building examples</td></tr><tr><td>TF_BUILD_TESTS</td><td>ON</td><td>enable/disable building unit tests</td></tr><tr><td>TF_BUILD_BENCHMARKS</td><td>OFF</td><td>enable/disable building benchmarks</td></tr><tr><td>TF_BUILD_CUDA</td><td>OFF</td><td>enable/disable building CUDA code</td></tr><tr><td>TF_BUILD_SYCL</td><td>OFF</td><td>enable/disable building SYCL code</td></tr></tbody></table><p>To enable or disable a specific option, use <code>-D</code> in the CMake build. For example:</p><pre class="m-code"><span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">cmake</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="w"> </span><span class="o">-</span><span class="n">DTF_BUILD_EXAMPLES</span><span class="o">=</span><span class="n">OFF</span><span class="w"></span></pre><p>The above command turns off building Taskflow examples.</p></section><section id="BAIBuildCUDACode"><h2><a href="#BAIBuildCUDACode">Build CUDA Examples and Unit Tests</a></h2><p>To build CUDA code, including unit tests and examples, enable the CMake option <code>TF_BUILD_CUDA</code> to <code>ON</code>. Cmake will automatically detect the existence of <code>nvcc</code> and use it to compile and link .cu code.</p><pre class="m-code"><span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">cmake</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="w"> </span><span class="o">-</span><span class="n">DTF_BUILD_CUDA</span><span class="o">=</span><span class="n">ON</span><span class="w"></span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">make</span><span class="w"></span></pre><p>Please visit the page <a href="CompileTaskflowWithCUDA.html" class="m-doc">Compile Taskflow with CUDA</a> for details.</p></section><section id="BAIBuildSYCLCode"><h2><a href="#BAIBuildSYCLCode">Build SYCL Code Examples and Unit Tests</a></h2><p>To build SYCL code, including unit tests and examples, enable the CMake option <code>TF_BUILD_SYCL</code> to <code>ON</code> and direct the CMake compiler <code>CMAKE_CXX_COMPILER</code> to the location of DPC++ clang compiler. You can acquire the DPC++ clang compiler at the official page of <a href="https://intel.github.io/llvm-docs/GetStartedGuide.html">Getting Started with oneAPI DPC++</a>.</p><pre class="m-code"><span class="cp"># after succesfully build Intel DPCPP clang: https:</span><span class="c1">//intel.github.io/llvm-docs/</span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="k">export</span><span class="w"> </span><span class="n">DPCPP_HOME</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">your</span><span class="o">/</span><span class="n">dpcpp</span><span class="o">/</span><span class="n">workspace</span><span class="w"></span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="k">export</span><span class="w"> </span><span class="n">PATH</span><span class="o">=</span><span class="n">$DPCPP_HOME</span><span class="o">/</span><span class="n">llvm</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">bin</span><span class="o">:</span><span class="n">$PATH</span><span class="w"></span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="k">export</span><span class="w"> </span><span class="n">LD_LIBRARY_PATH</span><span class="o">=</span><span class="n">$DPCPP_HOME</span><span class="o">/</span><span class="n">llvm</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">lib</span><span class="o">:</span><span class="n">$LD_LIBRARY_PATH</span><span class="w"></span>
+
+<span class="cp"># build Taskflow SYCL code using Intel oneAPI dpc++ clang compiler</span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">cmake</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="w"> </span><span class="o">-</span><span class="n">DTF_BUILD_SYCL</span><span class="o">=</span><span class="n">ON</span><span class="w"> </span><span class="o">-</span><span class="n">DCMAKE_CXX_COMPILER</span><span class="o">=</span><span class="n">clang</span><span class="o">++</span><span class="w"></span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">make</span><span class="w"></span></pre><p>Please visit the page <a href="CompileTaskflowWithSYCL.html" class="m-doc">Compile Taskflow with SYCL</a> for details.</p></section><section id="BAIBuildSanitizers"><h2><a href="#BAIBuildSanitizers">Build Sanitizers</a></h2><p>You can build Taskflow with <em>sanitizers</em> to detect a variety of errors, such as data race, memory leak, undefined behavior, and others. To enable a sanitizer, add the sanitizer flag to the CMake variable <code>CMAKE_CXX_FLAGS</code>. The following example enables thread sanitizer in building Taskflow code to detect data race:</p><pre class="m-code"><span class="cp"># build Taskflow code with thread sanitizer to detect data race</span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">cmake</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="w"> </span><span class="o">-</span><span class="n">DCMAKE_CXX_FLAGS</span><span class="o">=</span><span class="s">&quot;-fsanitize=thread -g&quot;</span><span class="w"></span>
+
+<span class="cp"># build Taskflow code with address sanitizer to detect illegal memory access</span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">cmake</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="w"> </span><span class="o">-</span><span class="n">DCMAKE_CXX_FLAGS</span><span class="o">=</span><span class="s">&quot;-fsanitize=address -g&quot;</span><span class="w"></span>
+
+<span class="cp"># build Taskflow code with ub sanitizer to detect undefined behavior</span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">cmake</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="w"> </span><span class="o">-</span><span class="n">DCMAKE_CXX_FLAGS</span><span class="o">=</span><span class="s">&quot;-fsanitize=undefined -g&quot;</span><span class="w"></span></pre><p>Our <a href="https://github.com/taskflow/taskflow/actions">continuous integration workflows</a> incorporates thread sanitizer (<a href="https://clang.llvm.org/docs/ThreadSanitizer.html">-fsanitize=thread</a>), address sanitizer (<a href="https://clang.llvm.org/docs/AddressSanitizer.html">-fsanitize=address</a>), and leak sanitizer (<a href="https://clang.llvm.org/docs/LeakSanitizer.html">-fsanitize=leak</a>) to detect data race, illegal memory address, and memory leak. To our best knowledge, Taskflow is one of the very few parallel programming libraries that are free from data race.</p><aside class="m-note m-info"><h4>Note</h4><p>Some sanitizers are supported by certain computing architectures. You can find the information about architecture support of each sanitizer at <a href="https://clang.llvm.org/docs/index.html">Clang Documentation</a> and <a href="https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html">GCC Instrumentation Options</a>.</p></aside></section><section id="BAIBuildBenchmarks"><h2><a href="#BAIBuildBenchmarks">Build Benchmarks</a></h2><p>The Taskflow project contains a set of benchmarks to evaluate and compare the performance of <a href="classtf_1_1Taskflow.html" class="m-doc">Taskflow</a> with existing parallel programming libraries. To build the benchmark code, enable the CMake option <code>TF_BUILD_BENCHMARKS</code> to <code>ON</code> as follows:</p><pre class="m-code"><span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">cmake</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="w"> </span><span class="o">-</span><span class="n">DTF_BUILD_BENCHMARKS</span><span class="o">=</span><span class="n">ON</span><span class="w"></span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">make</span><span class="w"></span></pre><p>Please visit the page <a href="BenchmarkTaskflow.html" class="m-doc">Benchmark Taskflow</a> for details.</p></section><section id="BAIBuildDocumentation"><h2><a href="#BAIBuildDocumentation">Build Documentation</a></h2><p>Taskflow uses <a href="https://www.doxygen.nl/index.html">Doxygen</a> and <a href="https://mcss.mosra.cz/documentation/doxygen/">m.css</a> to generate this documentation. The source of documentation is located in the folder <code>taskflow/doxygen</code> and the generated html is output to the folder <code>taskflow/docs</code>. To generate the documentation, clone the m.css project and enter the <code>m.css/documentation</code> directory:</p><pre class="m-code"><span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">clone</span><span class="w"> </span><span class="n">git</span><span class="o">:</span><span class="c1">//github.com/mosra/m.css</span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">cd</span><span class="w"> </span><span class="n">m</span><span class="p">.</span><span class="n">css</span><span class="o">/</span><span class="n">documentation</span><span class="w"></span></pre><p>The script <code>doxygen.py</code> requires Python 3.6, depends on <a href="http://jinja.pocoo.org/">Jinja2</a> for templating and <a href="http://pygments.org/">Pygments</a> for code block highlighting. You can install the dependencies via <code>pip</code> or your distribution package manager:</p><pre class="m-code"><span class="cp"># You may need sudo here</span>
+<span class="cp"># More details are available at https:</span><span class="c1">//mcss.mosra.cz/documentation/doxygen/</span>
+<span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="n">pip3</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">jinja2</span><span class="w"> </span><span class="n">Pygments</span><span class="w"></span></pre><p>Next, invoke <code>doxygen.py</code> and point it to the <code>taskflow/doxygen/conf.py</code>:</p><pre class="m-code"><span class="o">~</span><span class="n">$</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="n">doxygen</span><span class="p">.</span><span class="n">py</span><span class="w"> </span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">taskflow</span><span class="o">/</span><span class="n">doxygen</span><span class="o">/</span><span class="n">conf</span><span class="p">.</span><span class="n">py</span><span class="w"></span></pre><p>You can find the documentation output in <code>taskflow/docs</code>.</p></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

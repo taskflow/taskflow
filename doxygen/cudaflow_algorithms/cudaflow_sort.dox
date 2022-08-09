@@ -1,0 +1,119 @@
+namespace tf {
+
+/** @page cudaFlowSort Parallel Sort
+
+%cudaFlow provides template methods to create parallel sort tasks 
+on a CUDA GPU.
+
+@tableofcontents
+
+@section CUDAParallelSortIncludeTheHeader Include the Header
+
+You need to include the header file, `%taskflow/cuda/algorithm/sort.hpp`, 
+for creating a parallel-sort task.
+
+@section cudaFlowSortARangeofItems Sort a Range of Items
+
+tf::cudaFlow::sort performs an in-place parallel sort over a range of elements specified 
+by <tt>[first, last)</tt> using the given comparator.
+The following code sorts one million random integers in an increasing order on a GPU.
+
+@code{.cpp}
+const size_t N = 1000000;
+int* vec = tf::cuda_malloc_shared<int>(N);  // vector
+
+// initializes the data
+for(size_t i=0; i<N; vec[i++]=rand());
+
+// create a cudaFlow of one task to perform parallel sort
+tf::cudaFlow cf;
+tf::cudaTask task = cf.sort(
+  vec, vec + N, []__device__(int a, int b) { return a < b; }
+);
+cf.offload();
+
+assert(std::is_sorted(vec, vec+N));
+@endcode
+
+You can specify a different comparator to tf::cudaFlow::sort to alter the sorting order.
+For example, the following code sorts one million random integers
+in an decreasing order on a GPU.
+
+@code{.cpp}
+const size_t N = 1000000;
+int* vec = tf::cuda_malloc_shared<int>(N);  // vector
+
+// initializes the data
+for(size_t i=0; i<N; vec[i++]=rand());
+
+// create a cudaFlow of one task to perform parallel sort
+tf::cudaFlow cf;
+tf::cudaTask task = cf.sort(
+  vec, vec + N, [] __device__ (int a, int b) { return a > b; }
+);
+cf.offload();
+
+assert(std::is_sorted(vec, vec+N, [](int a, int b){ return a > b; }));
+@endcode
+
+@section cudaFlowSortKeyValueItems Sort a Range of Key-Value Items
+
+tf::cudaFlow::sort_by_key 
+sorts a range of key-value items into ascending key order.
+If @c i and @c j are any two valid iterators in <tt>[k_first, k_last)</tt> 
+such that @c i precedes @c j, and @c p and @c q are iterators in 
+<tt>[v_first, v_first + (k_last - k_first))</tt> corresponding to 
+@c i and @c j respectively, then <tt>comp(*j, *i)</tt> evaluates to @c false.
+The following example sorts a range of items into ascending key order
+and swaps their corresponding values:
+
+@code{.cpp}
+const size_t N = 4;
+auto vec = tf::cuda_malloc_shared<int>(N);  // keys
+auto idx = tf::cuda_malloc_shared<int>(N);  // values
+
+// initializes the data
+vec[0] = 1, vec[1] = 4, vec[2] = -5, vec[3] = 2;
+idx[0] = 0, idx[1] = 1, idx[2] = 2,  idx[3] = 3;
+
+// sort keys (vec) and swap their corresponding values (idx)
+tf::cudaFlow cf;
+cf.sort_by_key(vec, vec+N, idx, [] __device__ (int a, int b) { return a < b; });
+cf.offload();
+
+// now vec = {-5, 1, 2, 4}
+// now idx = { 2, 0, 3, 1}
+
+// deletes the memory
+tf::cuda_free(buffer);
+tf::cuda_free(vec);
+tf::cuda_free(idx);
+@endcode
+
+While you can capture the values into the lambda and sort them indirectly
+using plain tf::cudaFlow::sort,
+this organization will result in frequent and costly access to the global memory.
+For example, we can sort @c idx indirectly using the captured keys in @c vec:
+
+@code{.cpp}
+cf.sort(idx, idx+N, [vec] __device__ (int a, int b) { return vec[a] < vec[b]; });
+@endcode
+
+The comparator here will frequently access the global memory of @c vec,
+resulting in high memory latency.
+Instead, you should use tf::cudaFlow::sort_by_key that has been
+optimized for this purpose.
+
+@section cudaFlowSortMiscellaneousItems Miscellaneous Items
+
+Parallel sort algorithms are also available in tf::cudaFlowCapturer
+with the same API.
+
+*/
+}
+
+
+
+
+
+

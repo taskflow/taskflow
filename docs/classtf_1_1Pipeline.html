@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>tf::Pipeline class | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <div class="m-doc-template">template&lt;typename... Ps&gt;</div>
+          <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>Pipeline <span class="m-thin">class</span>
+        </h1>
+        <p>class to create a pipeline scheduling framework</p>
+        <table class="m-table m-fullwidth m-flat">
+          <thead>
+            <tr><th colspan="2">Template parameters</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="width: 1%">Ps</td>
+              <td>pipe types</td>
+            </tr>
+          </tbody>
+        </table>
+        <nav class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li>
+              Reference
+              <ul>
+                <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
+                <li><a href="#pub-methods">Public functions</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+<p>A pipeline is a composable graph object for users to create a <em>pipeline scheduling framework</em> using a module task in a taskflow. Unlike the conventional pipeline programming frameworks (e.g., Intel TBB), Taskflow&#x27;s pipeline algorithm does not provide any data abstraction, which often restricts users from optimizing data layouts in their applications, but a flexible framework for users to customize their application data atop our pipeline scheduling. The following code creates a pipeline of four parallel lines to schedule tokens through three serial pipes:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">const</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">num_lines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"></span>
+<span class="k">const</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">num_pipes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">// create a custom data buffer</span>
+<span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">num_pipes</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">num_lines</span><span class="o">&gt;</span><span class="w"> </span><span class="n">buffer</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">// create a pipeline graph of four concurrent lines and three serial pipes</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Pipeline</span><span class="w"> </span><span class="nf">pipeline</span><span class="p">(</span><span class="n">num_lines</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="c1">// first pipe must define a serial direction</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// generate only 5 scheduling tokens</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">pf</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// save the token id into the buffer</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()][</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">}},</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// propagate the previous result to this pipe by adding one</span>
+<span class="w">    </span><span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()][</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()][</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()</span><span class="mi">-1</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}},</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pf</span><span class="p">){</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// propagate the previous result to this pipe by adding one</span>
+<span class="w">    </span><span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()][</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()][</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()</span><span class="mi">-1</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}}</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+
+<span class="c1">// build the pipeline graph using composition</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;ready</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">})</span><span class="w"></span>
+<span class="w">                        </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;starting pipeline&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">pipeline</span><span class="p">)</span><span class="w"></span>
+<span class="w">                        </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">stop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;stopped</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">})</span><span class="w"></span>
+<span class="w">                        </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;pipeline stopped&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="c1">// create task dependency</span>
+<span class="n">init</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task</span><span class="p">);</span><span class="w"></span>
+<span class="n">task</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">stop</span><span class="p">);</span><span class="w"></span>
+
+<span class="c1">// run the pipeline</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>The above example creates a pipeline graph that schedules five tokens over four parallel lines in a circular fashion, as depicted below:</p><pre class="m-code"><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">o</span><span class="w"></span>
+<span class="o">|</span><span class="w">    </span><span class="o">|</span><span class="w">    </span><span class="o">|</span><span class="w"></span>
+<span class="n">v</span><span class="w">    </span><span class="n">v</span><span class="w">    </span><span class="n">v</span><span class="w"></span>
+<span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">o</span><span class="w"></span>
+<span class="o">|</span><span class="w">    </span><span class="o">|</span><span class="w">    </span><span class="o">|</span><span class="w"></span>
+<span class="n">v</span><span class="w">    </span><span class="n">v</span><span class="w">    </span><span class="n">v</span><span class="w"></span>
+<span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">o</span><span class="w"></span>
+<span class="o">|</span><span class="w">    </span><span class="o">|</span><span class="w">    </span><span class="o">|</span><span class="w"></span>
+<span class="n">v</span><span class="w">    </span><span class="n">v</span><span class="w">    </span><span class="n">v</span><span class="w"></span>
+<span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">o</span><span class="w"></span></pre><p>At each pipe stage, the program propagates the result to the next pipe by adding one to the result stored in a custom data storage, <code>buffer</code>. The pipeline scheduler will generate five scheduling tokens and then stop.</p><p>Internally, <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> uses <a href="http://en.cppreference.com/w/cpp/utility/tuple.html" class="m-doc-external">std::<wbr />tuple</a> to store the given sequence of pipes. The definition of each pipe can be different, completely decided by the compiler to optimize the object layout. After a pipeline is constructed, it is not possible to change its pipes. If applications need to change these pipes, please use <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a>.</p>
+        <section id="typeless-methods">
+          <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper"><a href="#a1965e45ca7d20dc42067dda970590813" class="m-doc">Pipeline</a>(</span><span class="m-doc-wrap">size_t num_lines,
+              Ps &amp;&amp; ... ps)</span>
+            </dt>
+            <dd>constructs a pipeline object</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper"><a href="#a879a54b37af5db33e5768e5b3c135ba6" class="m-doc">Pipeline</a>(</span><span class="m-doc-wrap">size_t num_lines,
+              <a href="http://en.cppreference.com/w/cpp/utility/tuple.html" class="m-doc-external">std::<wbr />tuple</a>&lt;Ps...&gt;&amp;&amp; ps)</span>
+            </dt>
+            <dd>constructs a pipeline object</dd>
+          </dl>
+        </section>
+        <section id="pub-methods">
+          <h2><a href="#pub-methods">Public functions</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a79f066bacd6c1abd28c26d8196955e95" class="m-doc">num_lines</a>(</span><span class="m-doc-wrap">) const -&gt; size_t <span class="m-label m-flat m-success">noexcept</span></span>
+            </dt>
+            <dd>queries the number of parallel lines</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#adfef0c60f8f8ace267d7cd8548457ff3" class="m-doc">num_pipes</a>(</span><span class="m-doc-wrap">) const -&gt; size_t <span class="m-label m-flat m-primary">constexpr</span> <span class="m-label m-flat m-success">noexcept</span></span>
+            </dt>
+            <dd>queries the number of pipes</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#a311d874b98de6f0def8a7d869e8d15bd" class="m-doc">reset</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd>resets the pipeline</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a89af6714b661ded59970cac4c73b3ef9" class="m-doc">num_tokens</a>(</span><span class="m-doc-wrap">) const -&gt; size_t <span class="m-label m-flat m-success">noexcept</span></span>
+            </dt>
+            <dd>queries the number of generated tokens in the pipeline</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a4320bdd8b8cf05c9aac1b9fa000e4a35" class="m-doc">graph</a>(</span><span class="m-doc-wrap">) -&gt; <a href="classtf_1_1Graph.html" class="m-doc">Graph</a>&amp;</span>
+            </dt>
+            <dd>obtains the graph object associated with the pipeline construct</dd>
+          </dl>
+        </section>
+        <section>
+          <h2>Function documentation</h2>
+          <section class="m-doc-details" id="a1965e45ca7d20dc42067dda970590813"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename... Ps&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />Pipeline&lt;Ps&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1965e45ca7d20dc42067dda970590813" class="m-doc-self">Pipeline</a>(</span><span class="m-doc-wrap">size_t num_lines,
+              Ps &amp;&amp; ... ps)</span></span>
+            </h3>
+            <p>constructs a pipeline object</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">num_lines</td>
+                  <td>the number of parallel lines</td>
+                </tr>
+                <tr>
+                  <td>ps</td>
+                  <td>a list of pipes</td>
+                </tr>
+              </tbody>
+            </table>
+<p>Constructs a pipeline of up to <code>num_lines</code> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>) or an exception will be thrown.</p>
+          </div></section>
+          <section class="m-doc-details" id="a879a54b37af5db33e5768e5b3c135ba6"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename... Ps&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />Pipeline&lt;Ps&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a879a54b37af5db33e5768e5b3c135ba6" class="m-doc-self">Pipeline</a>(</span><span class="m-doc-wrap">size_t num_lines,
+              <a href="http://en.cppreference.com/w/cpp/utility/tuple.html" class="m-doc-external">std::<wbr />tuple</a>&lt;Ps...&gt;&amp;&amp; ps)</span></span>
+            </h3>
+            <p>constructs a pipeline object</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">num_lines</td>
+                  <td>the number of parallel lines</td>
+                </tr>
+                <tr>
+                  <td>ps</td>
+                  <td>a tuple of pipes</td>
+                </tr>
+              </tbody>
+            </table>
+<p>Constructs a pipeline of up to <code>num_lines</code> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>) or an exception will be thrown.</p>
+          </div></section>
+          <section class="m-doc-details" id="a79f066bacd6c1abd28c26d8196955e95"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename... Ps&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">size_t tf::<wbr />Pipeline&lt;Ps&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a79f066bacd6c1abd28c26d8196955e95" class="m-doc-self">num_lines</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-success">noexcept</span></span></span>
+            </h3>
+            <p>queries the number of parallel lines</p>
+<p>The function returns the number of parallel lines given by the user upon the construction of the pipeline. The number of lines represents the maximum parallelism this pipeline can achieve.</p>
+          </div></section>
+          <section class="m-doc-details" id="adfef0c60f8f8ace267d7cd8548457ff3"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename... Ps&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">size_t tf::<wbr />Pipeline&lt;Ps&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#adfef0c60f8f8ace267d7cd8548457ff3" class="m-doc-self">num_pipes</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-primary">constexpr</span> <span class="m-label m-success">noexcept</span></span></span>
+            </h3>
+            <p>queries the number of pipes</p>
+<p>The Function returns the number of pipes given by the user upon the construction of the pipeline.</p>
+          </div></section>
+          <section class="m-doc-details" id="a311d874b98de6f0def8a7d869e8d15bd"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename... Ps&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Pipeline&lt;Ps&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a311d874b98de6f0def8a7d869e8d15bd" class="m-doc-self">reset</a>(</span><span class="m-doc-wrap">)</span></span>
+            </h3>
+            <p>resets the pipeline</p>
+<p>Resetting the pipeline to the initial state. After resetting a pipeline, its token identifier will start from zero as if the pipeline was just constructed.</p>
+          </div></section>
+          <section class="m-doc-details" id="a89af6714b661ded59970cac4c73b3ef9"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename... Ps&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">size_t tf::<wbr />Pipeline&lt;Ps&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a89af6714b661ded59970cac4c73b3ef9" class="m-doc-self">num_tokens</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-success">noexcept</span></span></span>
+            </h3>
+            <p>queries the number of generated tokens in the pipeline</p>
+<p>The number represents the total scheduling tokens that has been generated by the pipeline so far.</p>
+          </div></section>
+          <section class="m-doc-details" id="a4320bdd8b8cf05c9aac1b9fa000e4a35"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename... Ps&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Graph.html" class="m-doc">Graph</a>&amp; tf::<wbr />Pipeline&lt;Ps&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4320bdd8b8cf05c9aac1b9fa000e4a35" class="m-doc-self">graph</a>(</span><span class="m-doc-wrap">)</span></span>
+            </h3>
+            <p>obtains the graph object associated with the pipeline construct</p>
+<p>This method is primarily used as an opaque data structure for creating a module task of the this pipeline.</p>
+          </div></section>
+        </section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

@@ -1,0 +1,62 @@
+digraph Taskflow {
+rankdir="LR";
+p0x562f9807bcc0[label="allocate_px" ];
+p0x562f9807bcc0 -> p0x562f9807b550;
+p0x562f9807bbb0[label="allocate_py" ];
+p0x562f9807bbb0 -> p0x562f9807b550;
+p0x562f9807baa0[label="allocate_mx" ];
+p0x562f9807baa0 -> p0x562f9807b550;
+p0x562f9807b990[label="allocate_my" ];
+p0x562f9807b990 -> p0x562f9807b550;
+p0x562f9807b880[label="allocate_sx" ];
+p0x562f9807b880 -> p0x562f9807b440;
+p0x562f9807b770[label="allocate_sy" ];
+p0x562f9807b770 -> p0x562f9807b440;
+p0x562f9807b660[label="allocate_c" ];
+p0x562f9807b660 -> p0x562f9807b440;
+p0x562f9807b550[label="h2d" shape=folder fillcolor=cyan style=filled];
+p0x562f9807b550 -> p0x562f9807b440;
+subgraph cluster_p0x562f9807b550 {
+label="cudaFlow: h2d";
+color="purple"
+p0x7fbc54000b20[label="h2d_px"];
+p0x7fbc54000b20 -> p0x562f9807b550;
+p0x7fbc54000c00[label="h2d_py"];
+p0x7fbc54000c00 -> p0x562f9807b550;
+p0x7fbc54000ce0[label="h2d_mx"];
+p0x7fbc54000ce0 -> p0x562f9807b550;
+p0x7fbc54000db0[label="h2d_my"];
+p0x7fbc54000db0 -> p0x562f9807b550;
+}
+p0x562f9807b440[label="update_means" shape=folder fillcolor=cyan style=filled];
+p0x562f9807b440 -> p0x562f9807b330;
+subgraph cluster_p0x562f9807b440 {
+label="cudaFlow: update_means";
+color="purple"
+p0x7fbc540051d0[label="zero_c"];
+p0x7fbc540051d0 -> p0x7fbc540053d0;
+p0x7fbc54005270[label="zero_sx"];
+p0x7fbc54005270 -> p0x7fbc540053d0;
+p0x7fbc54005330[label="zero_sy"];
+p0x7fbc54005330 -> p0x7fbc540053d0;
+p0x7fbc540053d0[label="cluster" style="filled" color="white" fillcolor="black" fontcolor="white" shape="box3d"];
+p0x7fbc540053d0 -> p0x7fbc54005470;
+p0x7fbc54005470[label="new_centroid" style="filled" color="white" fillcolor="black" fontcolor="white" shape="box3d"];
+p0x7fbc54005470 -> p0x562f9807b440;
+}
+p0x562f9807b330[label="converged?" shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x562f9807b330 -> p0x562f9807b440 [style=dashed label="0"];
+p0x562f9807b330 -> p0x562f9807b220 [style=dashed label="1"];
+p0x562f9807b220[label="h2d" shape=folder fillcolor=cyan style=filled];
+p0x562f9807b220 -> p0x562f9807b110;
+subgraph cluster_p0x562f9807b220 {
+label="cudaFlow: h2d";
+color="purple"
+p0x7fbc5400bf40[label="d2h_mx"];
+p0x7fbc5400bf40 -> p0x562f9807b220;
+p0x7fbc54008020[label="d2h_my"];
+p0x7fbc54008020 -> p0x562f9807b220;
+}
+p0x562f9807b110[label="free" ];
+}
+

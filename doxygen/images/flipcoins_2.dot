@@ -1,0 +1,22 @@
+digraph Taskflow {
+p0x7fa9a4803e30[label="init" ];
+p0x7fa9a4803e30 -> p0x7fa9a4803f50;
+p0x7fa9a4803f50[label="flip-coin-1" shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x7fa9a4803f50 -> p0x7fa9a4804070 [style=dashed label="0"];
+p0x7fa9a4803f50 -> p0x7fa9a4803f50 [style=dashed label="1"];
+p0x7fa9a4804070[label="flip-coin-2" shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x7fa9a4804070 -> p0x7fa9a4804190 [style=dashed label="0"];
+p0x7fa9a4804070 -> p0x7fa9a4803f50 [style=dashed label="1"];
+p0x7fa9a4804190[label="flip-coin-3" shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x7fa9a4804190 -> p0x7fa9a48042b0 [style=dashed label="0"];
+p0x7fa9a4804190 -> p0x7fa9a4803f50 [style=dashed label="1"];
+p0x7fa9a48042b0[label="flip-coin-4" shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x7fa9a48042b0 -> p0x7fa9a48043d0 [style=dashed label="0"];
+p0x7fa9a48042b0 -> p0x7fa9a4803f50 [style=dashed label="1"];
+p0x7fa9a48043d0[label="flip-coin-5" shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x7fa9a48043d0 -> p0x7fa9a48044f0 [style=dashed label="0"];
+p0x7fa9a48043d0 -> p0x7fa9a4803f50 [style=dashed label="1"];
+p0x7fa9a48044f0[label="stop" ];
+rankdir="LR"
+}
+

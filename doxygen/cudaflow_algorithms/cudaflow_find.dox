@@ -1,0 +1,161 @@
+namespace tf {
+
+/** @page cudaFlowFind Parallel Find
+
+%Taskflow provides standalone template methods for finding elements in 
+the given ranges using CUDA.
+
+@tableofcontents
+
+@section CUDAParallelFindIncludeTheHeader Include the Header
+
+You need to include the header file, `%taskflow/cuda/algorithm/find.hpp`, 
+for creating a parallel-find task.
+
+@section cudaFlowFindItems Find an Element in a Range
+
+tf::cudaFlow::find_if finds the index of the first element 
+in the range <tt>[first, last)</tt> that satisfies the given criteria.
+This is equivalent to the parallel execution of the following loop:
+
+@code{.cpp}
+unsigned idx = 0;
+for(; first != last; ++first, ++idx) {
+  if (p(*first)) {
+    return idx;
+  }
+}
+return idx;
+@endcode
+
+If no such an element is found, the size of the range is returned.
+The following code finds the index of the first element that is dividable
+by @c 17 over a range of one million elements.
+
+@code{.cpp}
+const size_t N = 1000000;
+auto vec = tf::cuda_malloc_shared<int>(N);       // vector
+auto idx = tf::cuda_malloc_shared<unsigned>(1);  // index
+
+// initializes the data
+for(size_t i=0; i<N; vec[i++] = rand());
+
+// finds the index of the first element that is a multiple of 17
+tf::cudaFlow cudaflow;
+tf::cudaTask task = cudaflow.find_if(
+  vec, vec+N, idx, [] __device__ (auto v) { return v%17 == 0; }
+);
+cudaflow.offload();
+
+// verifies the result
+if(*idx != N) {
+  assert(vec[*idx] %17 == 0);
+}
+
+// deletes the memory
+tf::cuda_free(vec);
+tf::cuda_free(idx);
+@endcode
+
+@section cudaFlowFindMinItems Find the Minimum Element in a Range
+
+tf::cudaFlow::min_element finds the index of the minimum element
+in the given range <tt>[first, last)</tt> using the given comparison 
+function object.
+This is equivalent to a parallel execution of the following loop:
+
+@code{.cpp}
+if(first == last) {
+  return 0;
+}
+auto smallest = first;
+for (++first; first != last; ++first) {
+  if (op(*first, *smallest)) {
+    smallest = first;
+  }
+}
+return std::distance(first, smallest);
+@endcode
+
+The following code finds the index of the minimum element in a range
+of one millions elements.
+
+@code{.cpp}
+const size_t N = 1000000;
+auto vec = tf::cuda_malloc_shared<int>(N);       // vector
+auto idx = tf::cuda_malloc_shared<unsigned>(1);  // index
+
+// initializes the data
+for(size_t i=0; i<N; vec[i++] = rand());
+
+// finds the minimum element using the less comparator
+tf::cudaFlow cudaflow;
+tf::cudaTask task = cudaflow.min_element(
+  vec, vec+N, idx, [] __device__ (auto a, auto b) { return a<b; }
+);
+cudaflow.offload();
+
+// verifies the result
+assert(vec[*idx] == *std::min_element(vec, vec+N, std::less<int>{}));
+
+// deletes the memory
+tf::cuda_free(vec);
+tf::cuda_free(idx);
+@endcode
+
+@section cudaFlowFindMaxItems Find the Maximum Element in a Range
+
+Similar to tf::cudaFlow::min_element, 
+tf::cudaFlow::max_element finds the index of the maximum element
+in the given range <tt>[first, last)</tt> using the given comparison 
+function object.
+This is equivalent to a parallel execution of the following loop:
+
+@code{.cpp}
+if(first == last) {
+  return 0;
+}
+auto largest = first;
+for (++first; first != last; ++first) {
+  if (op(*largest, *first)) {
+    largest = first;
+  }
+}
+return std::distance(first, largest);
+@endcode
+
+The following code finds the index of the maximum element in a range
+of one millions elements.
+
+@code{.cpp}
+const size_t N = 1000000;
+auto vec = tf::cuda_malloc_shared<int>(N);       // vector
+auto idx = tf::cuda_malloc_shared<unsigned>(1);  // index
+
+// initializes the data
+for(size_t i=0; i<N; vec[i++] = rand());
+
+// finds the maximum element using the less comparator
+tf::cudaFlow cudaflow;
+tf::cudaTask task = cudaflow.max_element(
+  vec, vec+N, idx, [] __device__ (auto a, auto b) { return a<b; }
+);
+cudaflow.offload();
+
+// verifies the result
+assert(vec[*idx] == *std::max_element(vec, vec+N, std::less<int>{}));
+
+// deletes the memory
+tf::cuda_free(vec);
+tf::cuda_free(idx);
+@endcode
+
+@section cudaFlowFindMiscellaneousItems Miscellaneous Items
+
+Parallel find algorithms are also available in tf::cudaFlowCapturer
+with the same API.
+
+*/
+}
+
+

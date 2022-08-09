@@ -1,0 +1,439 @@
+namespace tf {
+
+/** @page LinearAlgebracublasFlowCapturer Linear Algebra with cuBLAS
+
+%Taskflow provides a library tf::cublasFlowCapturer to program and accelerate 
+<i>basic linear algebra subprograms</i>
+(BLAS) on top of @cuBLAS.
+
+@tableofcontents
+
+@image html images/LinearAlgebra.png width=50%
+
+@section WhatIsBLAS What is BLAS?
+
+The BLAS (Basic Linear Algebra Subprograms) are routines that provide standard 
+building blocks for performing basic vector and matrix operations. 
+There are three levels:
+
+  1. Level 1: performs scalar, vector, and vector-vector operations
+  2. Level 2: performs matrix-vector operations
+  3. Level 3: performs matrix-matrix operations
+
+BLAS is commonly used by linear algebra software. 
+The @cuBLAS library is an implementation of BLAS (Basic Linear Algebra Subprograms) 
+on top of the Nvidia CUDA runtime
+and it allows users to access the computational resources of Nvidia GPUs.
+
+@section HowToUsecublasFlowCapturer What is a cublasFlow Capturer? Why?
+
+tf::cublasFlowCapturer provides an interface over native cuBLAS functions
+and allows users to express linear algebra algorithms using a <i>task graph model</i>.
+We transform the task graph into a CUDA graph using a stream capture algorithm
+optimized for maximum concurrency.
+When a cuBLAS program is transformed into a CUDA graph,
+we can launch the entire graph using a single kernel call.
+This organization minimizes kernels launch overhead and 
+allows the CUDA runtime to optimize the whole workflow.
+The following example (@c cublasflow.cu) use tf::cublasFlowCapturer to perform a 2-norm operation
+on a vector.
+
+@code{.cpp}
+#include <taskflow/cublasflow.hpp>
+
+int main() {
+
+  const int N = 1024;
+  
+  tf::Executor executor;
+  tf::Taskflow taskflow("cublas 2-norm");  // initialize an unit vector
+  
+  std::vector<float> hvec(N, 1); 
+  float  hres;                                     // cpu vector
+  float* gvec = tf::cuda_malloc_device<float>(N);  // gpu vector
+  float* gres = tf::cuda_malloc_device<float>(1);  // gpu result
+  
+  taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
+    // create a cuBLAS flow capturer
+    auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
+    
+    tf::cudaTask h2d = capturer.copy(gvec, hvec.data(), N).name("h2d");
+    tf::cudaTask nrm = blas->nrm2(N, gvec, 1, gres).name("2-norm");
+    tf::cudaTask d2h = capturer.copy(&hres, gres, 1).name("d2h");
+  
+    nrm.precede(d2h)
+       .succeed(h2d);
+  }).name("capturer");
+  
+  executor.run(taskflow).wait();
+  
+  taskflow.dump(std::cout);
+  
+  assert(hres == 32);
+}
+@endcode
+
+@dotfile images/cublas_flow_capturer_norm2.dot
+
+You need to link the @c cublas library when compiling a cublasFlow capturer program:
+
+@code{.shell-session}
+~$ nvcc cublasflow.cpp -I path/to/taskflow/include -lcublas
+@endcode
+
+Please refer to the page @ref CompileTaskflowWithCUDA for more details
+about compiling %Taskflow with CUDA.
+
+@section DataModelOscublasFlowCapturer Understand the Data Model
+
+The data pointers used within tf::cublasFlowCapturer must sit
+in GPU memory space, including scalar pointers (@c alpha and @c beta),
+input pointers (e.g., vectors, matrices), and output pointers (e.g., result).
+By default, we set the pointer mode to @c CUBLAS_POINTER_MODE_DEVICE.
+You must allocate required matrices and vectors in the GPU memory space,
+fill them with data, call the methods defined in tf::cublasFlowCapturer,
+and then upload the results from GPU memory space back to the host.
+
+@note tf::cublasFlowCapturer currently supports only @c float 
+and @c double data types.
+
+The cuBLAS library uses <i>column-major storage</i> and 1-based indexing.
+Since C/C++ adopts row-major layout, we cannot use the native array semantics
+when matrix-matrix or matrix-vector operations are involved.
+We often need extra transposition on input matrices before these operations
+can take place correctly.
+In terms of storage, 
+a row-major matrix is equivalent to a transposed column-major matrix,
+as shown below:
+
+@f[
+A_{RowMajor} \iff A^T_{ColumnMajor}
+@f]
+
+@subsection cublasFlowCapturerDataModelExample Example: Transform Data Layout in Matrix Multiplication
+
+Suppose we have a method <tt>matmul(A, B, C)</tt> that multiplies two matrices
+@c A and @c B and stores the result in @c C,
+using column-major storage.
+In C/C++, data layout is mostly row-major.
+Since we know a row-major matrix is equivalent in storage 
+to a transposed column-major matrix,
+we can take a transposed view of this multiplication:
+
+@f[
+C^T = B^T \times A^T
+@f]
+
+If the given matrices @c A, @c B, and @c C are on row-major layout,
+calling <tt>matmul(A, B, C)</tt> is equivalent to the above transposed version.
+The function stores the result of transposed @c C in column-major storage
+which in turns translates to row-major layout of @c C -- 
+<i>our desired solution</i>.
+
+@section cublasFlowCapturerLevel-1 Use Level-1 Methods
+
+We currently support the following level-1 methods:
+
+  + tf::cublasFlowCapturer::amax finds the min element index of 
+  the max absolute magnitude in a vector
+  + tf::cublasFlowCapturer::amin finds the min element index of
+  the min magnitude in a vector 
+  + tf::cublasFlowCapturer::asum computes the sum of absolute values of 
+  elements over a vector
+  + tf::cublasFlowCapturer::axpy multiplies a vector by a scalar and adds
+  it to another vector
+  + tf::cublasFlowCapturer::copy copies a vector into another vector
+  + tf::cublasFlowCapturer::dot computes the dot product of two vectors
+  + tf::cublasFlowCapturer::nrm2 computes the Euclidean norm of a vector
+  + tf::cublasFlowCapturer::scal multiples a vector by a scalar
+  + tf::cublasFlowCapturer::swap interchanges the elements of two vectors
+
+Our level-1 methods capture the native <a href="https://docs.nvidia.com/cuda/cublas/index.html#cublas-level-1-function-reference">cublas level-1 calls</a>
+with internal stream(s) optimized for maximum concurrency.
+The two scalars, @c alpha and @c beta, and input and output matrices 
+must sit in GPU memory space.
+
+
+
+@section cublasFlowCapturerLeve2-1 Use Level-2 Methods
+
+We currently support the following level-2 methods:
+  
+  + tf::cublasFlowCapturer::gemv performs general matrix-vector multiplication
+  + tf::cublasFlowCapturer::c_gemv performs general matrix-vector multiplication
+    on row-major layout
+  + tf::cublasFlowCapturer::symv performs symmetric matrix-vector multiplication
+  + tf::cublasFlowCapturer::c_symv performs symmetric matrix-vector multiplication on row-major layout
+  + tf::cublasFlowCapturer::syr performs symmetric rank-1 update
+  + tf::cublasFlowCapturer::c_syr performs symmetric rank-1 update on row-major layout
+  + tf::cublasFlowCapturer::syr2 performs symmetric rank-2 update
+  + tf::cublasFlowCapturer::c_syr2 performs symmetric rank-2 update on row-major layout
+  + tf::cublasFlowCapturer::trmv performs triangular matrix-vector multiplication
+  + tf::cublasFlowCapturer::c_trmv performs triangular matrix-vector multiplication on row-major layout
+  + tf::cublasFlowCapturer::trsv solves triangular linear system with a single right-hand-side
+  + tf::cublasFlowCapturer::c_trsv solves triangular linear system with a single right-hand-side on row-major layout
+
+Our level-2 methods capture the native <a href="https://docs.nvidia.com/cuda/cublas/index.html#cublas-level-2-function-reference">cublas level-2 calls</a>
+with internal stream(s) optimized for maximum concurrency.
+The two scalars, @c alpha and @c beta, and input and output matrices 
+must sit in GPU memory space.
+
+@subsection cublasFlowCapturerLevel2Example Example: Solve a Triangular Linear System
+
+The following program solves a triangular linear system
+on row-major layout using tf::cublasFlowCapturer::c_trsv:
+
+@code{.cpp}
+#include <taskflow/cublasflow.hpp>
+
+int main() {
+
+  int N = 3;
+
+  const std::vector<float> hA = {
+    1, 0, 0,  // x1
+    1, 1, 0,  // x1 + x2
+    1, 1, 1   // x1 + x2 + x3
+  };
+
+  const std::vector<float> hB = {
+    5,        // x1           = 5
+    4,        // x1 + x2      = 4
+    7         // x1 + x2 + x3 = 7
+  };
+
+  std::vector<float> r(N, 0);
+
+  tf::Taskflow taskflow("Ax = b");
+  tf::Executor executor;
+
+  float* dA = tf::cuda_malloc_device<float>(hA.size());
+  float* dB = tf::cuda_malloc_device<float>(hB.size());
+
+  taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
+    tf::cudaTask blas = capturer.make_capturer<tf::cublasFlowCapturer>();
+    tf::cudaTask h2dA = blas->copy(dA, hA.data(), hA.size()).name("copy A");
+    tf::cudaTask h2dB = blas->copy(dB, hB.data(), hB.size()).name("copy B");
+    tf::cudaTask trsv = blas->c_trsv(
+      CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, CUBLAS_DIAG_UNIT, 
+      N, dA, N, dB, 1
+    ).name("trsv");
+    tf::cudaTask d2h = blas->copy(r.data(), dB, r.size()).name("copy result");
+
+    trsv.succeed(h2dA, h2dB)
+        .precede(d2h);
+  }).name("cublasFlow");
+
+  executor.run(taskflow).wait();
+  
+  std::cout << "solution of the linear system: \n";
+  for(size_t i=0; i<r.size(); ++i) {
+    std::cout << "x" << i << ": " << r[i] << '\n';
+  }
+
+  return 0;
+}
+@endcode
+
+The program uses one %cudaFlow task that spawns a capturer of
+(1) two copy tasks, @c h2dA and @c h2dB, to copy the triangular matrix @c A
+and the solution vector @c b,
+(2) one kernel task @c trsv to solve the triangular linear system storing
+the result in @c dB, and 
+(3) one copy task @c d2h to copy the solution in @c dB to @c r.
+
+@dotfile images/cublasflow_capturer_trsv.dot
+
+@section cublasFlowCapturerLevel-3 Use Level-3 Methods
+
+We currently support the following level-3 methods:
+  
+  + tf::cublasFlowCapturer::geam performs matrix-matrix addition/transposition
+  + tf::cublasFlowCapturer::c_geam performs matrix-matrix addition/transposition 
+    on row-major layout
+  + tf::cublasFlowCapturer::gemm performs general matrix-matrix multiplication
+  + tf::cublasFlowCapturer::c_gemm performs general matrix-matrix multiplication 
+    on row-major layout
+  + tf::cublasFlowCapturer::gemm_batched performs batched general 
+    matrix-matrix multiplication 
+  + tf::cublasFlowCapturer::c_gemm_batched performs batched general 
+    matrix-matrix multiplication on row-major layout
+  + tf::cublasFlowCapturer::gemm_sbatched performs batched general 
+    matrix-matrix multiplication with strided memory access
+  + tf::cublasFlowCapturer::c_gemm_sbatched performs batched general 
+    matrix-matrix multiplication with strided memory access on row-major layout
+  + tf::cublasFlowCapturer::symm performs symmetric matrix-matrix multiplication
+  + tf::cublasFlowCapturer::c_symm performs symmetric matrix-matrix multiplicaiton on row-major layout
+  + tf::cublasFlowCapturer::syrk performs symmetric rank-k update
+  + tf::cublasFlowCapturer::c_syrk performs symmetric rank-k update on row-major layout
+  + tf::cublasFlowCapturer::syr2k performs symmetric rank-2k update
+  + tf::cublasFlowCapturer::c_syr2k performs symmetric rank-2k update on row-major layout
+  + tf::cublasFlowCapturer::syrkx performs a variantion of symmetric rank-k update
+  + tf::cublasFlowCapturer::c_syrkx performs a variantion of symmetric rank-k update on row-major layout
+  + tf::cublasFlowCapturer::trmm performs triangular matrix-matrix multiplication
+  + tf::cublasFlowCapturer::c_trmm performs triangular matrix-matrix multiplication on row-major layout
+  + tf::cublasFlowCapturer::trsm solves a triangular linear system with multiple right-hand-sides
+  + tf::cublasFlowCapturer::c_trsm solves a triangular linear system with multiple right-hand-sides on row-major layout
+
+Our level-3 methods capture the native <a href="https://docs.nvidia.com/cuda/cublas/index.html#cublas-level-2-function-reference">cublas level-3 calls</a> and
+<a href="https://docs.nvidia.com/cuda/cublas/index.html#blas-like-extension">cublas-extension calls</a>
+with internal stream(s) optimized for maximum concurrency.
+The two scalars, @c alpha and @c beta, and input and output matrices 
+must sit in GPU memory space.
+
+@subsection cublasFlowCapturerLevel3Example Example: Perform General Matrix-Matrix Multiplication
+
+The following program performs general matrix multiplication 
+on row-major layout using tf::cublasFlowCapturer::c_gemm:
+
+@code{.cpp}
+#include <taskflow/cublasflow.hpp>
+
+int main() {
+
+  const int M = 2, N = 4, K = 3;
+
+  const std::vector<float> hA = {      // M x K matrix
+    11, 12, 13, 
+    14, 15, 16
+  };
+
+  const std::vector<float> hB = {      // K x N matrix
+    11, 12, 13, 14,
+    15, 16, 17, 18,
+    19, 20, 21, 22
+  };
+
+  const std::vector<float> golden = {  // M x N matrix
+    548, 584, 620, 656,
+    683, 728, 773, 818 
+  };
+
+  std::vector<float> hC(M*N);
+    
+  float *dA, *dB, *dC, *dAlpha, *dBeta;
+
+  tf::Taskflow taskflow("Matrix Multiplication");
+  tf::Executor executor;
+
+  tf::Task malloc_dA = taskflow.emplace(
+    [&](){ dA = tf::cuda_malloc_device<float>(hA.size()); }
+  ).name("malloc_dA");      // allocate GPU memory for dA
+  
+  tf::Task malloc_dB = taskflow.emplace(
+    [&](){ dB = tf::cuda_malloc_device<float>(hB.size()); }
+  ).name("malloc_dB");      // allocate GPU memory for dB
+  
+  tf::Task malloc_dC = taskflow.emplace(
+    [&](){ dC = tf::cuda_malloc_device<float>(hC.size()); }
+  ).name("malloc_dC");      // allocate GPU memory for dC
+  
+  tf::Task malloc_dAlpha = taskflow.emplace(
+    [&](){ dAlpha = tf::cuda_malloc_device<float>(1); }
+  ).name("malloc_dAlpha");  // allocate GPU memory for scalar alpha
+  
+  tf::Task malloc_dBeta = taskflow.emplace(
+    [&](){ dBeta = tf::cuda_malloc_device<float>(1); }
+  ).name("malloc_dBeta");   // allocate GPU memory for scalar beta
+
+  tf::Task cublasFlow = taskflow.emplace([&](tf::cudaFlowCapturer& capturer) {
+    tf::cudaTask blas  = capturer.make_capturer<tf::cublasFlowCapturer>();
+    tf::cudaTask alpha = blas->single_task([=] __device__ () { *dAlpha = 1; })
+                              .name("alpha=1");
+    tf::cudaTask beta  = blas->single_task([=] __device__ () { *dBeta  = 0; })
+                              .name("beta=0");
+    tf::cudaTask copyA = blas->copy(dA, hA.data(), hA.size()).name("copyA"); 
+    tf::cudaTask copyB = blas->copy(dB, hB.data(), hB.size()).name("copyB");
+    tf::cudaTask gemm  = blas->c_gemm(CUBLAS_OP_N, CUBLAS_OP_N,
+      M, N, K, dAlpha, dA, K, dB, N, dBeta, dC, N
+    ).name("C = alpha * A * B + beta * C");
+    tf::cudaTask copyC = blas->copy(hC.data(), dC, hC.size()).name("copyC");
+
+    gemm.succeed(alpha, beta, copyA, copyB)
+        .precede(copyC);
+  }).name("cublasFlow");
+
+  cublasFlow.succeed(  // cublasFlow runs after GPU memory operations
+    malloc_dA, malloc_dB, malloc_dC, malloc_dAlpha, malloc_dBeta
+  );
+
+  executor.run(taskflow).wait();
+  
+  std::cout << "Matrix C:\n";
+  for(int m=0; m<M; m++) {
+    for(int n=0; n<N; n++) {
+      std::cout << hC[m*N+n] << ' ';
+    }
+    std::cout << '\n';
+  }
+
+  return 0;
+}
+@endcode
+
+The program uses five static tasks to allocate GPU memory for @c dA, @c dB,
+@c dC, @c dAlpha, and @c dBeta, in parallel such that the expensive
+GPU memory operations can overlap with each other as much as possible.
+The @c cublasFlow task spawns a cublasFlow capturer of
+(1) one single kernel task @c alpha to set @c dAlpha to 1,
+(2) one single kernel task @c beta to set @c dBeta to 0,
+(3) two copy tasks, @c copyA and @c copyB, to copy data from CPU to GPU,
+(4) one kernel task @c gemm to perform <tt>dC = dA * dB</tt>, and
+(5) one copy task @c copyC to copy the result from GPU to CPU.
+
+@dotfile images/cublasflow_capturer_gemm.dot
+
+@section cublasFlowCapturerExtension Include Other cuBLAS Methods
+
+We do not include all the cuBLAS functions but users can easily
+make extension.
+tf::cublasFlowCapturer is derived from tf::cudaFlowCapturerBase
+and is created from a factory interface tf::cudaFlowCapturer::make_capturer.
+Each tf::cudaFlowCapturerBase object has a pointer accessible by
+tf::cudaFlowCapturerBase::factory in which you can
+use tf::cudaFlowCapturer::on together with tf::cublasFlowCapturer::native_handle 
+to capture other cuBLAS functions that are currently not available in tf::cudaFlowCapturer.
+The following example captures the Hermitian rank-k update using
+@c cublasCherkx.
+
+@code{.cpp}
+taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
+  // create a cublasFlow capturer
+  auto blas = capturer.make_capturer<tf::cublasFlowCapturer>();
+
+  // use the base method tf::cudaFlowCapturer::on to capture other functions
+  blas->factory()->on([&](cudaStream_t stream){
+    cublasSetStream(blas->native_handle(), stream);
+    cublasCherkx(blas->native_handle(), your_args...);
+  }).name("Hermitian rank-k update");
+
+}).name("capturer");
+@endcode
+
+@warning
+While tf::cublasFlowCapturer::native_handle returns the native cublas handle,
+you must not change its properties.
+
+By default, we associate the native cublas handler 
+with @c CUBLAS_POINTER_MODE_DEVICE.
+The two scalars, @c alpha and/or @c beta, 
+and input/output matrices must be accessible in GPU memory space.
+
+@section cublasFlowCapturerKnowMore Know More About cublasFlow Capturer
+
+We summarize below resources for you to know more about 
+tf::cublasFlowCapturer:
+  + Study the reference of tf::cublasFlowCapturer and tf::cudaFlowCapturer
+  + Contribute to cublas_flow.hpp by adding more BLAS methods
+  + See the complete list of BLAS functions offered by @cuBLAS
+
+
+
+*/
+}
+
+
+
+
+
+

@@ -1,0 +1,58 @@
+digraph Taskflow {
+p0x55764dbcd960[label="allocate_px" ];
+p0x55764dbcd960 -> p0x55764dbce0d0;
+p0x55764dbcda70[label="allocate_py" ];
+p0x55764dbcda70 -> p0x55764dbce0d0;
+p0x55764dbcdb80[label="allocate_mx" ];
+p0x55764dbcdb80 -> p0x55764dbce0d0;
+p0x55764dbcdc90[label="allocate_my" ];
+p0x55764dbcdc90 -> p0x55764dbce0d0;
+p0x55764dbcdda0[label="allocate_sx" ];
+p0x55764dbcdda0 -> p0x55764dbce1e0;
+p0x55764dbcdeb0[label="allocate_sy" ];
+p0x55764dbcdeb0 -> p0x55764dbce1e0;
+p0x55764dbcdfc0[label="allocate_c" ];
+p0x55764dbcdfc0 -> p0x55764dbce1e0;
+p0x55764dbce0d0[label="h2d" shape=folder fillcolor=cyan style=filled];
+p0x55764dbce0d0 -> p0x55764dbce1e0;
+subgraph cluster_p0x55764dbce0d0 {
+label="cudaFlow: h2d";
+color="purple"
+p0x7fc258000ba0[label="h2d_px"];
+p0x7fc258000ba0 -> p0x55764dbce0d0;
+p0x7fc258000c40[label="h2d_py"];
+p0x7fc258000c40 -> p0x55764dbce0d0;
+p0x7fc258000dd0[label="h2d_mx"];
+p0x7fc258000dd0 -> p0x55764dbce0d0;
+p0x7fc258000ea0[label="h2d_my"];
+p0x7fc258000ea0 -> p0x55764dbce0d0;
+}
+p0x55764dbce1e0[label="update_means" shape=folder fillcolor=cyan style=filled];
+p0x55764dbce1e0 -> p0x55764dbce2f0;
+subgraph cluster_p0x55764dbce1e0 {
+label="cudaFlow: update_means";
+color="purple"
+p0x7fc2580032e0[label="zero_c"];
+p0x7fc2580032e0 -> p0x7fc2580034e0;
+p0x7fc258003380[label="zero_sx"];
+p0x7fc258003380 -> p0x7fc2580034e0;
+p0x7fc258003440[label="zero_sy"];
+p0x7fc258003440 -> p0x7fc2580034e0;
+p0x7fc2580034e0[label="cluster" style="filled" color="white" fillcolor="black" fontcolor="white" shape="box3d"];
+p0x7fc2580034e0 -> p0x7fc258003580;
+p0x7fc258003580[label="new_centroid" style="filled" color="white" fillcolor="black" fontcolor="white" shape="box3d"];
+p0x7fc258003580 -> p0x55764dbce1e0;
+}
+p0x55764dbce2f0[label="d2h" shape=folder fillcolor=cyan style=filled];
+p0x55764dbce2f0 -> p0x55764dbce400;
+subgraph cluster_p0x55764dbce2f0 {
+label="cudaFlow: d2h";
+color="purple"
+p0x7fc258005800[label="d2h_mx"];
+p0x7fc258005800 -> p0x55764dbce2f0;
+p0x7fc2580058a0[label="d2h_my"];
+p0x7fc2580058a0 -> p0x55764dbce2f0;
+}
+p0x55764dbce400[label="free" ];
+}
+

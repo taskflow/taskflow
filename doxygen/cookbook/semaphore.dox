@@ -1,0 +1,289 @@
+namespace tf {
+
+/** @page LimitTheMaximumConcurrency Limit the Maximum Concurrency
+
+This chapters discusses how to limit the concurrency or the maximum
+number of workers in subgraphs of a taskflow.
+
+@tableofcontents
+
+@section DefineASemaphore Define a Semaphore
+
+%Taskflow provides a mechanism, tf::Semaphore, for you to limit 
+the maximum concurrency in a section of tasks.
+You can let a task acquire/release one or multiple semaphores before/after 
+executing its work.
+A task can acquire and release a semaphore, 
+or just acquire or just release it. 
+A tf::Semaphore object starts with an initial count.
+As long as that count is above 0, tasks can acquire the semaphore and do
+their work.
+If the count is 0 or less, a task trying to acquire the semaphore will not run
+but goes to a waiting list of that semaphore.
+When the semaphore is released by another task, 
+it reschedules all tasks on that waiting list.
+
+@code{.cpp}
+tf::Executor executor(8);   // create an executor of 8 workers
+tf::Taskflow taskflow;
+
+tf::Semaphore semaphore(1); // create a semaphore with initial count 1
+
+std::vector<tf::Task> tasks {
+  taskflow.emplace([](){ std::cout << "A" << std::endl; }),
+  taskflow.emplace([](){ std::cout << "B" << std::endl; }),
+  taskflow.emplace([](){ std::cout << "C" << std::endl; }),
+  taskflow.emplace([](){ std::cout << "D" << std::endl; }),
+  taskflow.emplace([](){ std::cout << "E" << std::endl; })
+};
+
+for(auto & task : tasks) {  // each task acquires and release the semaphore
+  task.acquire(semaphore);
+  task.release(semaphore);
+}
+
+executor.run(taskflow).wait();
+@endcode
+
+@dotfile images/semaphore1.dot
+
+The above example creates five tasks with no dependencies between them.
+Under normal circumstances, the five tasks would be executed concurrently.
+However, this example has a semaphore with initial count 1,
+and all tasks need to acquire that semaphore before running and release that
+semaphore after they are done.
+This organization limits the number of concurrently running tasks to only one.
+One possible output is shown below:
+
+@code{.shell-session}
+# the output is a sequential chain of five tasks
+A
+B
+E
+D
+C
+@endcode
+
+@attention
+It is your responsibility to ensure the semaphore stays alive during the 
+execution of tasks that acquire and release it. 
+The executor and taskflow do not manage lifetime of any semaphores.
+
+For the same example above, we can limit the semaphore concurrency to 
+another value different from 1, say 3, 
+which will limit only three workers to run the five tasks,
+@c A, @c B, @c C, @c D, and @c E.
+
+@code{.cpp}
+tf::Executor executor(8);   // create an executor of 8 workers
+tf::Taskflow taskflow;
+
+tf::Semaphore semaphore(3); // create a semaphore with initial count 3
+
+std::vector<tf::Task> tasks {
+  taskflow.emplace([](){ std::cout << "A" << std::endl; }),
+  taskflow.emplace([](){ std::cout << "B" << std::endl; }),
+  taskflow.emplace([](){ std::cout << "C" << std::endl; }),
+  taskflow.emplace([](){ std::cout << "D" << std::endl; }),
+  taskflow.emplace([](){ std::cout << "E" << std::endl; })
+};
+
+for(auto & task : tasks) {  // each task acquires and release the semaphore
+  task.acquire(semaphore);
+  task.release(semaphore);
+}
+
+executor.run(taskflow).wait();
+@endcode
+
+@code{.shell-session}
+# One possible output: A, B, and C run concurrently, D and E run concurrently
+ABC
+ED
+@endcode
+
+
+
+<!-- You can use semaphores to limit the concurrency across different sections 
+of taskflow graphs.
+When you submit multiple taskflows to an executor, the executor view them 
+as a bag of dependent tasks.
+It does not matter which task in which taskflow graph acquires or releases 
+a semaphore.
+
+@code{.cpp}
+tf::Executor executor(8);   // create an executor of 8 workers
+tf::Taskflow taskflow1;
+tf::Taskflow taskflow2;
+
+tf::Semaphore semaphore(1); // create a semaphore with initial count 1
+
+taskflow1.emplace([](){std::cout << "task in taskflow1"; })
+         .acquire(semaphore)
+         .release(semaphore);
+
+taskflow2.emplace([](){std::cout << "task in taskflow2"; })
+         .acquire(semaphore)
+         .release(semaphore);
+
+executor.run(taskflow1);
+executor.run(taskflow2);
+executor.wait_for_all();
+@endcode
+
+The above examples creates one task from each taskflow and submits
+the two taskflows to the executor. 
+Again, under normal circumstances, the two tasks can run concurrently, 
+but the semaphore restricts one worker to run the two task sequentially 
+in arbitrary order.
+-->
+
+Semaphores are powerful for limiting the maximum concurrency of not only 
+a section of tasks but also different sections of tasks.
+Specifically, you can have one task acquire a semaphore and have another
+task release that semaphore to impose concurrency on subgraphs of tasks.
+The following example serializes the execution of five pairs of tasks
+using a semaphore rather than explicit dependencies.
+
+@code{.cpp}
+tf::Executor executor(4);  // creates an executor of 4 workers
+tf::Taskflow taskflow;
+tf::Semaphore semaphore(1);
+
+int N = 5;
+int counter = 0;  // non-atomic integer counter
+
+for(int i=0; i<N; i++) {
+  tf::Task f = taskflow.emplace([&](){ counter++; })
+                       .name("from-"s + std::to_string(i));
+  tf::Task t = taskflow.emplace([&](){ counter++; })
+                       .name("to-"s + std::to_string(i));
+  f.precede(t);
+  f.acquire(semaphore);
+  t.release(semaphore);
+}
+
+executor.run(taskflow).wait();
+
+assert(counter == 2*N);
+@endcode
+
+@dotfile images/semaphore2.dot
+
+Without semaphores, each pair of tasks, e.g., <tt>from-0 -> to-0</tt>,
+will run independently and concurrently.
+However, the program forces each @c from task to acquire the semaphore 
+before running its work and not to release it until its paired @c to task 
+is done.
+This constraint forces each pair of tasks to run sequentially,
+while the order of which pair runs first is up to the scheduler.
+
+@section DefineACriticalRegion Define a Critical Section
+
+tf::CriticalSection is a wrapper over tf::Semaphore specialized for
+limiting the maximum concurrency over a section of tasks.
+A critical section starts with an initial count representing that limit.
+When a task is added to the critical section,
+the task acquires and releases the semaphore internal to the critical section.
+This method tf::CriticalSection::add
+automatically calls tf::Task::acquire and tf::Task::release
+for each task added to the critical section.
+The following example creates a critical section of two workers to run
+five tasks in the critical section.
+
+@code{.cpp}
+tf::Executor executor(8);   // create an executor of 8 workers
+tf::Taskflow taskflow;
+
+// create a critical section of two workers
+tf::CriticalSection critical_section(2); 
+
+tf::Task A = taskflow.emplace([](){ std::cout << "A" << std::endl; });
+tf::Task B = taskflow.emplace([](){ std::cout << "B" << std::endl; });
+tf::Task C = taskflow.emplace([](){ std::cout << "C" << std::endl; });
+tf::Task D = taskflow.emplace([](){ std::cout << "D" << std::endl; });
+tf::Task E = taskflow.emplace([](){ std::cout << "E" << std::endl; });
+
+critical_section.add(A, B, C, D, E);
+
+executor.run(taskflow).wait();
+@endcode
+
+@section DefineAConflictGraph Define a Conflict Graph
+
+One important application of tf::Semaphore is <i>conflict-aware scheduling</i>
+using a conflict graph.
+A conflict graph is a @em undirected graph where each vertex represents a task and 
+each edge represents a conflict between a pair of tasks.
+When a task conflicts with another task, they cannot run together.
+Consider the conflict graph below,
+task @c A conflicts with task @c B and task @c C (and vice versa), meaning that
+@c A cannot run together with @c B and @c C whereas 
+@c B and @c C can run together.
+
+@dotfile images/semaphore3.dot
+
+We can create one semaphore of one concurrency for each edge in the conflict graph and 
+let the two tasks of that edge acquire the semaphore.
+This organization forces the two tasks to not run concurrently.
+
+@code{.cpp}
+tf::Executor executor;
+tf::Taskflow taskflow;
+
+tf::Semaphore conflict_AB(1);
+tf::Semaphore conflict_AC(1);
+
+tf::Task A = taskflow.emplace([](){ std::cout << "A" << std::endl; });
+tf::Task B = taskflow.emplace([](){ std::cout << "B" << std::endl; });
+tf::Task C = taskflow.emplace([](){ std::cout << "C" << std::endl; });
+
+// describe the conflict between A and B
+A.acquire(conflict_AB).release(conflict_AB);
+B.acquire(conflict_AB).release(conflict_AB);
+
+// describe the conflict between A and C
+A.acquire(conflict_AC).release(conflict_AC);
+C.acquire(conflict_AC).release(conflict_AC);
+
+executor.run(taskflow).wait();
+@endcode
+
+@code{.shell-session}
+# One possible output: B and C run concurrently after A
+A
+BC
+@endcode
+
+@note
+A task can acquire and release multiple semaphores. When the executor
+is running a task, it will first try to acquire all semaphores of that task.
+When the executor finishes a task, it will release all acquired semaphores of
+that task.
+
+The above code can be rewritten with tf::CriticalSection for simplicity, as
+shown below:
+
+@code{.cpp}
+tf::Executor executor;
+tf::Taskflow taskflow;
+
+tf::CriticalSection critical_section_AB(1);
+tf::CriticalSection critical_section_AC(1);
+
+tf::Task A = taskflow.emplace([](){ std::cout << "A" << std::endl; });
+tf::Task B = taskflow.emplace([](){ std::cout << "B" << std::endl; });
+tf::Task C = taskflow.emplace([](){ std::cout << "C" << std::endl; });
+
+// describe the conflict graph
+critical_section_AB.add(A, B);
+critical_section_AC.add(A, C);
+
+executor.run(taskflow).wait();
+@endcode
+
+*/
+
+}
+
+

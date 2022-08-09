@@ -1,0 +1,154 @@
+namespace tf {
+
+/** @page CUDASTDScan Parallel Scan
+
+%Taskflow provides standard template methods for scanning a range of items on 
+a CUDA GPU.
+
+@tableofcontents
+
+@section CUDASTDParallelScanIncludeTheHeader Include the Header
+
+You need to include the header file, `%taskflow/cuda/algorithm/scan.hpp`, 
+for using the parallel-scan algorithm.
+
+@section CUDASTDScanItems Scan a Range of Items
+
+tf::cuda_inclusive_scan computes an inclusive prefix sum operation using
+the given binary operator over a range of elements specified by <tt>[first, last)</tt>.
+The term &quot;inclusive&quot; means that the i-th input element is included 
+in the i-th sum.
+The following code computes the inclusive prefix sum over an input array and
+stores the result in an output array.
+
+@code{.cpp}
+const size_t N = 1000000;
+int* input  = tf::cuda_malloc_shared<int>(N);  // input  vector
+int* output = tf::cuda_malloc_shared<int>(N);  // output vector
+
+// initializes the data
+for(size_t i=0; i<N; input[i++] = rand()); 
+
+// queries the required buffer size to scan N elements using the given policy
+tf::cudaDefaultExecutionPolicy policy;
+auto bytes  = tf::cuda_scan_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
+
+// computes inclusive scan over input and stores the result in output
+tf::cuda_inclusive_scan(policy, 
+  input, input + N, output, [] __device__ (int a, int b) {return a + b;}, buffer
+);
+
+// synchronizes and verifies the result
+policy.synchronize();
+for(size_t i=1; i<N; i++) {
+  assert(output[i] == output[i-1] + input[i]);
+}
+
+// delete the buffer
+tf::cuda_free(buffer);
+@endcode
+
+The scan algorithm runs @em asynchronously through the stream specified
+in the execution policy. You need to synchronize the stream to
+obtain correct results.
+Since the GPU scan algorithm may require extra buffer to store the 
+temporary results, you must provide a buffer of size at least bytes
+returned from tf::cuda_scan_buffer_size.
+
+@attention
+You must keep the buffer alive before the scan call completes.
+
+On the other hand, tf::cuda_exclusive_scan computes an exclusive prefix sum operation.
+The term &quot;exclusive&quot; means that the i-th input element is @em NOT included 
+in the i-th sum.
+
+@code{.cpp}
+// computes exclusive scan over input and stores the result in output
+tf::cuda_exclusive_scan(policy, 
+  input, input + N, output, [] __device__ (int a, int b) {return a + b;}, buffer
+);
+
+// synchronizes the execution and verifies the result
+policy.synchronize();
+for(size_t i=1; i<N; i++) {
+  assert(output[i] == output[i-1] + input[i-1]);
+}
+@endcode
+
+@section CUDASTDScanTransformedItems Scan a Range of Transformed Items
+
+tf::cuda_transform_inclusive_scan transforms each item in the range <tt>[first, last)</tt>
+and computes an inclusive prefix sum over these transformed items.
+The following code multiplies each item by 10 and then compute the inclusive prefix sum
+over 1000000 transformed items.
+
+@code{.cpp}
+const size_t N = 1000000;
+int* input  = tf::cuda_malloc_shared<int>(N);  // input  vector
+int* output = tf::cuda_malloc_shared<int>(N);  // output vector
+
+// initializes the data
+for(size_t i=0; i<N; input[i++] = rand()); 
+
+// queries the required buffer size to scan N elements using the given policy
+tf::cudaDefaultExecutionPolicy policy;
+auto bytes  = tf::cuda_scan_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
+
+// computes inclusive scan over transformed input and stores the result in output
+tf::cuda_transform_inclusive_scan(policy, 
+  input, input + N, output, 
+  [] __device__ (int a, int b) { return a + b; },  // binary scan operator
+  [] __device__ (int a) { return a*10; },          // unary transform operator
+  buffer
+);
+policy.synchronize();
+
+// verifies the result
+for(size_t i=1; i<N; i++) {
+  assert(output[i] == output[i-1] + input[i] * 10);
+}
+@endcode
+
+Similarly, tf::cuda_transform_exclusive_scan performs an exclusive prefix sum
+over a range of transformed items.
+The following code computes the exclusive prefix sum over 1000000 transformed items
+each multipled by 10.
+
+@code{.cpp}
+const size_t N = 1000000;
+int* input  = tf::cuda_malloc_shared<int>(N);  // input  vector
+int* output = tf::cuda_malloc_shared<int>(N);  // output vector
+
+// initializes the data
+for(size_t i=0; i<N; input[i++] = rand()); 
+
+// queries the required buffer size to scan N elements using the given policy
+tf::cudaDefaultExecutionPolicy policy;
+auto bytes  = tf::cuda_scan_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
+
+// computes exclusive scan over transformed input and stores the result in output
+tf::cuda_transform_exclusive_scan(policy, 
+  input, input + N, output, 
+  [] __device__ (int a, int b) { return a + b; },  // binary scan operator
+  [] __device__ (int a) { return a*10; },          // unary transform operator
+  buffer
+);
+policy.synchronize();
+
+// verifies the result
+for(size_t i=1; i<N; i++) {
+  assert(output[i] == output[i-1] + input[i-1] * 10);
+}
+@endcode
+
+*/
+}
+
+
+
+
+
+

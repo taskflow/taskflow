@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<!-- BEG HEAD -->
+  <head>
+    <title>Taskflow Profiler</title>
+
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+
+    <link rel="icon" href="favicon/favicon.ico" type="image/x-icon">
+    
+    <link rel="stylesheet" href="css/bootstrap/4.4.1/bootstrap.min.css">
+    <script type="text/javascript" src="js/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap/4.4.1/bootstrap.bundle.min.js"></script>
+
+    <!-- d3 -->
+    <script type="text/javascript" src="js/d3/d3.v5.min.js"></script>
+    <script type="text/javascript" src="js/d3/d3-tip.min.js"></script>
+    
+    <!-- tfp -->
+    <link rel="stylesheet" href="css/tfp.css">
+  </head>
+
+<!-- BEG BODY -->
+  <body>
+    
+    <!--<nav class="navbar navbar-expand-sm mb-3 navbar-dark bg-dark">-->
+    <nav class="navbar navbar-expand-md mb-2 navbar-dark fixed-top bg-dark" >
+      <!-- Brand
+      <a class="navbar-brand" href=""><img src="images/logo.png" alt="Logo" style="width:40px;"></a>-->
+
+      <button class="navbar-toggler btn-sm" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- left-side navbar -->
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <div class="btn-group mr-1 mb-1 mt-1" role="group">
+        <button type="button" class="btn btn-outline-success btn-sm dropdown-toggle" data-toggle="dropdown">View</button>
+        <div class="dropdown-menu tfp-tb-view" id="tfp_tb_view">
+          <a class="dropdown-item">Cluster</a>
+          <a class="dropdown-item">Criticality</a>
+        </div>
+      </div>
+      
+      <!-- tfp-tb-workers -->
+      <div class="btn-group mr-1 mb-1 mt-1" role="group">
+        <button type="button" class="btn btn-outline-info btn-sm dropdown-toggle" data-toggle="dropdown">Workers</button>
+        <div class="dropdown-menu tfp-tb-workers" id="tfp_tb_workers"></div>
+      </div> 
+
+      <!-- tfp-tb-reset -->
+      <div class="btn-group mr-1 mb-1 mt-1" role="group">
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="tfp_tb_reset_zoom">Zoom</button>
+      </div> 
+    
+      <!-- tfp-tb-limit -->
+      <div class="btn-group mr-1 mb-1 mt-1" role="group">
+        <input id="tfp_tb_limit" class="border-0 mr-1" type="range" />
+        <button type="button" class="btn btn-primary btn-sm">Limit</button>
+      </div>
+
+      <ul class="navbar-nav mr-auto">
+        <!--<li class="nav-item"><a class="nav-link" href="">MainBoard</a></li>-->
+      </ul>
+
+      <button type="button" class="btn btn-light btn-sm mb-1 mt-1">
+        <span class="badge" id="tfp_tb_finfo"></span>
+        <span class="badge badge-info" id="tfp_tb_einfo">- executors</span>
+        <span class="badge badge-info" id="tfp_tb_winfo">- workers</span>
+        <span class="badge badge-info" id="tfp_tb_tinfo">- tasks</span>
+      </button>
+      </div>
+    </nav>
+    
+    <!-- loader -->
+    <div class="container loader" id="tfp_loader"></div>
+    
+    <!-- svg -->
+    <div style="display:none;" class="container-fluidic" id="tfp"></div>
+    
+    <!-- js -->
+    <script src="js/index.js"></script>
+
+    <footer class="page-footer font-small blue">
+      <div><br></div>
+    </footer>
+
+  </body>
+
+</html>
+
+

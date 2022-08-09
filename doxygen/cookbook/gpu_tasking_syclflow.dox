@@ -1,0 +1,324 @@
+namespace tf {
+
+/** @page GPUTaskingsyclFlow GPU Tasking (%syclFlow)
+
+%Taskflow supports SYCL, a general-purpose heterogeneous programming model,
+to program heterogeneous tasks in a single-source C++ environment.
+This chapter discusses how to write SYCL C++ kernel code with %Taskflow
+based on @sycl20_spec.
+
+@tableofcontents
+
+@section GPUTaskingsyclFlowIncludeTheHeader Include the Header
+
+You need to include the header file, `%taskflow/sycl/syclflow.hpp`, 
+for using tf::syclFlow.
+
+@section Create_a_syclFlow Create a syclFlow
+
+%Taskflow introduces a task graph-based programming model, 
+tf::syclFlow, to program SYCL tasks and their dependencies.
+A %syclFlow is a task in a taskflow and is associated with a
+SYCL queue to execute kernels on a SYCL device.
+To create a %syclFlow task, emplace a callable with an argument of type tf::syclFlow
+and associate it with a SYCL queue.
+The following example (@c saxpy.cpp) implements the canonical 
+saxpy (A·X Plus Y) task graph
+using tf::syclFlow.
+
+@code{.cpp}
+ 1: #include <taskflow/syclflow.hpp>
+ 2: 
+ 3: constexpr size_t N = 1000000;
+ 4: 
+ 5: int main() {
+ 6: 
+ 7:   tf::Executor executor;
+ 8:   tf::Taskflow taskflow("saxpy example");
+ 9:  
+10:   sycl::queue queue{sycl::gpu_selector{}};
+11:  
+12:   // allocate shared memory that is accessible on both host and device
+13:   float* X = sycl::malloc_shared<float>(N, queue);
+14:   float* Y = sycl::malloc_shared<float>(N, queue);
+15:  
+16:   // create a syclFlow to perform the saxpy operation
+17:   taskflow.emplace_on([&](tf::syclFlow& sf){
+18:     tf::syclTask fillX = sf.fill(X, 1.0f, N).name("fillX");
+19:     tf::syclTask fillY = sf.fill(Y, 2.0f, N).name("fillY");
+20:     tf::syclTask saxpy = sf.parallel_for(sycl::range<1>(N), 
+21:       [=] (sycl::id<1> id) {
+22:         X[id] = 3.0f * X[id] + Y[id];
+23:       }
+24:     ).name("saxpy");
+25:     saxpy.succeed(fillX, fillY);
+26:   }, queue).name("syclFlow");
+27:   
+28:   executor.run(taskflow).wait();  // run the taskflow
+29:   taskflow.dump(std::cout);       // dump the taskflow
+30:  
+31:   // free the shared memory to avoid memory leak
+32:   sycl::free(X, queue); 
+33:   sycl::free(Y, queue);           
+34: }
+@endcode
+
+@dotfile images/syclflow_saxpy.dot
+
+Debrief:
+
+@li Lines 7-8 create a taskflow and an executor
+@li Lines 10 creates a SYCL queue on a default-selected GPU device
+@li Lines 13-14 allocate shared memory that is accessible on both host and device
+@li Lines 17-26 creates a %syclFlow to define the saxpy task graph that contains:
+  + one fill task to fill the memory area @c X with @c 1.0f
+  + one fill task to fill the memory area @c Y with @c 2.0f
+  + one kernel task to perform the saxpy operation on the GPU
+@li Lines 28-29 executes the taskflow and dumps its graph to a DOT format
+@li Lines 32-33 deallocates the shared memory to avoid memory leak
+
+tf::syclFlow is a lightweight task graph-based programming layer atop SYCL.
+We do not expend yet another effort on simplifying kernel programming 
+but focus on tasking SYCL operations and their dependencies.
+This organization lets users fully take advantage of SYCL features
+that are commensurate with their domain knowledge, 
+while leaving difficult task parallelism details to %Taskflow.
+
+@section Compile_a_syclFlow_program Compile a syclFlow Program
+
+Use DPC++ clang to compile a %syclFlow program: 
+
+@code{.shell-session}
+~$ clang++ -fsycl -fsycl-unnamed-lambda \
+           -fsycl-targets=nvptx64-nvidia-cuda \  # for CUDA target
+           -I path/to/taskflow -pthread -std=c++17 saxpy.cpp -o saxpy
+~$ ./saxpy
+@endcode
+
+Please visit the page @ref CompileTaskflowWithSYCL for more details.
+
+@section CreateMemoryOperationTasks Create Memory Operation Tasks
+
+tf::syclFlow provides a set of methods for creating tasks to perform common
+memory operations, such as copy, set, and fill,
+on memory area pointed to by <i>unified shared memory</i> (USM) pointers.
+The following example creates a %syclFlow task of two copy operations 
+and one fill operation that set the first @c N/2 elements in the vector to @c -1.
+
+@code{.cpp}
+sycl::queue queue;
+
+size_t N  = 1000;
+int* hvec = new int[N] (100);
+int* dvec = sycl::malloc_device<int>(N, queue);
+
+// create a syclflow task to set the first N/2 elements to -1
+taskflow.emplace_on([&](tf::syclFlow& syclflow){
+  tf::syclTask ch2d = syclflow.copy(dvec, hvec, N);
+  tf::syclTask fill = syclflow.fill(dvec, -1, N/2);
+  tf::syclTask cd2h = syclflow.copy(hvec, dvec, N); 
+  fill.precede(cd2h)
+      .succeed(ch2d);
+}, queue);
+
+executor.run(taskflow).wait();
+
+// inspect the result
+for(size_t i=0; i<N/2; i++) {
+  (i < N / 2) ? assert(hvec[i] == -1) : assert(hvec[i] == 100);
+}
+@endcode
+
+Both tf::syclFlow::copy and tf::syclFlow::fill operate on @c typed data.
+You can use tf::syclFlow::memcpy and tf::syclFlow::memset to operate 
+on @c untyped data (i.e., array of bytes).
+
+@code{.cpp}
+taskflow.emplace_on([&](tf::syclFlow& syclflow){
+  tf::syclTask ch2d = syclflow.memcpy(dvec, hvec, N*sizeof(int));
+  tf::syclTask mset = syclflow.memset(dvec, -1, N/2*sizeof(int));
+  tf::syclTask cd2h = syclflow.memcpy(hvec, dvec, N*sizeof(int)); 
+  fill.precede(cd2h)
+      .succeed(ch2d);
+}, queue);
+@endcode
+
+@section CreateKernelTasks Create Kernel Tasks
+
+SYCL allows a simple execution model in which a kernel is invoked over 
+an N-dimensional index space defined by @c sycl::range<N>, 
+where @c N is one, two or three. 
+Each work item in such a kernel executes independently
+across a set of partitioned work groups.
+tf::syclFlow::parallel_for defines several variants to create a kernel task.
+The following variant pairs up a @c sycl::range and a @c sycl::id 
+to set each element in @c data to @c 1.0f
+when it is not necessary to query the global range of the index space
+being executed across.
+
+@code{.cpp}
+tf::syclTask task = syclflow.parallel_for(
+  sycl::range<1>(N), [data](sycl::id<1> id){ data[id] = 1.0f; }
+);
+@endcode
+
+As the same example,
+the following variant enables low-level functionality of 
+work items and work groups
+using @c sycl::nd_range and @c sycl::nd_item.
+This becomes valuable when an execution requires groups of work items 
+that communicate and synchronize.
+
+@code{.cpp}
+// partition the N-element range to N/M work groups each of M work items
+tf::syclTask task = syclflow.parallel_for(
+  sycl::nd_range<1>{sycl::range<1>(N), sycl::range<1>(M)},
+  [data](sycl::nd_item<1> item){
+    auto id = item.get_global_linear_id();
+    data[id] = 1.0f;
+
+    // query detailed work group information
+    // item.get_group_linear_id();
+    // item.get_local_linear_id();
+    // ...
+  }
+);
+@endcode
+
+All the kernel methods defined in the SYCL queue 
+are applicable for tf::syclFlow::parallel_for.
+
+@section CreateCommandGroupFunctionObjectTasks Create Command Group Function Object Tasks
+
+SYCL provides a way to encapsulate a device-side operation and all its 
+data and event dependencies in a single <i>command group function object</i>. 
+The function object accepts an argument of 
+command group @em handler constructed by the SYCL runtime.
+Command group handler is the heart of SYCL programming as it defines
+pretty much all kernel-related methods, 
+including submission, execution, and synchronization.
+You can directly create a SYCL task from a command group function object
+using tf::syclFlow::on.
+
+@code{.cpp}
+tf::syclTask task = syclflow.on(
+  [=] (sycl::handler& handler) {
+    handler.require(accessor);
+    handler.single_task([=](){  // place a single-threaded kernel function
+      data[0] = 1;
+    );
+  }
+);
+@endcode
+
+@section OffloadAsyclFlow Offload a syclFlow
+
+By default, the executor offloads and executes the %syclFlow once.
+When a %syclFlow is being executed, its task graph will be materialized
+by the %Taskflow runtime and submitted to its associated SYCL queue 
+in a topological order of task dependencies defined in that graph.
+You can explicitly execute a %syclFlow using different offload methods:
+
+@code{.cpp}
+taskflow.emplace_on([](tf::syclFlow& sf) {
+  // ... create SYCL tasks
+  sf.offload();      // offload the syclFlow and run it once
+  sf.offload_n(10);  // offload the syclFlow and run it 10 times
+  sf.offload_until([repeat=5] () mutable { return repeat-- == 0; })  // five times
+}, queue);
+@endcode
+
+
+After you offload a %syclFlow, 
+it is considered executed, and the executor will @em not run an offloaded %syclFlow
+after leaving the %syclFlow task callable.
+On the other hand, if a %syclFlow is not offloaded, 
+the executor runs it once.
+For example, the following two versions represent the same execution logic.
+
+@code{.cpp}
+// version 1: explicitly offload a syclFlow once
+taskflow.emplace_on([](tf::syclFlow& sf) {
+  sf.single_task([](){});
+  sf.offload();
+}, queue);
+
+// version 2 (same as version 1): executor offloads the syclFlow once
+taskflow.emplace_on([](tf::syclFlow& sf) {
+  sf.single_task([](){});
+}, queue);
+@endcode
+
+
+@section UpdateAsyclFlow Update a syclFlow
+
+You can update a SYCL task from an offloaded %syclFlow and @em rebind it to another
+task type.
+For example, you can rebind a memory operation task to a parallel-for kernel 
+task from an offloaded %syclFlow and vice versa.
+
+@code{.cpp}
+size_t N = 10000;
+sycl::queue queue;
+int* data = sycl::malloc_shared<int>(N, queue);
+
+taskflow.emplace_on([&](tf::syclFlow& syclflow){
+  
+  // create a task to set each element to -1 
+  tf::syclTask task = syclflow.fill(data, -1, N);
+  syclflow.offload();
+
+  std::for_each(data, data+N, [](int i){ assert(data[i] == -1); });
+
+  // rebind the task to a parallel-for kernel task setting each element to 100
+  syclflow.rebind_parallel_for(task, sycl::range<1>(N), [](sycl::id<1> id){
+    data[id] = 100;
+  });
+  syclflow.offload();
+
+  std::for_each(data, data+N, [data](int i){ assert(data[i] == 100); });
+}, queue);
+
+executor.run(taskflow).wait();
+@endcode
+
+Each method of task creation in tf::syclFlow has a corresponding method of 
+rebinding a task to that task type
+(e.g., tf::syclFlow::on and tf::syclFlow::rebind_on,
+       tf::syclFlow::parallel_for and tf::syclFlow::parallel_for).
+
+@section UsesyclFlowInAStandaloneEnvironment Use syclFlow in a Standalone Environment
+
+You can use tf::syclFlow in a standalone environment without going through
+tf::Taskflow and offloads it to a SYCL device from the caller thread.
+All the tasking methods we have discussed so far apply to the standalone use.
+
+@code{.cpp}
+sycl::queue queue;       
+tf::syclFlow sf(queue);  // create a standalone syclFlow
+
+tf::syclTask h2d_x = sf.copy(dx, hx.data(), N).name("h2d_x");
+tf::syclTask h2d_y = sf.copy(dy, hy.data(), N).name("h2d_y");
+tf::syclTask d2h_x = sf.copy(hx.data(), dx, N).name("d2h_x");
+tf::syclTask d2h_y = sf.copy(hy.data(), dy, N).name("d2h_y");
+tf::syclTask saxpy = sf.parallel_for(
+  sycl::range<1>(N), [=] (sycl::id<1> id) {
+    dx[id] = 2.0f * dx[id] + dy[id];
+  }
+).name("saxpy");
+
+saxpy.succeed(h2d_x, h2d_y)   // kernel runs after  host-to-device copy
+     .precede(d2h_x, d2h_y);  // kernel runs before device-to-host copy
+
+sf.offload();  // offload and run the standalone syclFlow once
+@endcode
+
+@note
+In the standalone mode, a written %syclFlow will not be executed untile
+you explicitly call an offload method, as there is neither a taskflow nor an executor.
+
+*/
+
+}
+
+

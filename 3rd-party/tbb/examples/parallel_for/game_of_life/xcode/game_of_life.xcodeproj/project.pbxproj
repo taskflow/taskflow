@@ -1,0 +1,270 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		612CD8DD11F573FC00A587B2 /* Game_of_life.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 612CD8DB11F573FC00A587B2 /* Game_of_life.cpp */; };
+		612CD8DE11F573FC00A587B2 /* Update_state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 612CD8DC11F573FC00A587B2 /* Update_state.cpp */; };
+		612CD8E111F5742000A587B2 /* Evolution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 612CD8E011F5742000A587B2 /* Evolution.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		C3C58967218C3E4A00DAC94C /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.intel.compilers.icc.latest;
+			fileType = sourcecode.cpp;
+			isEditable = 1;
+			outputFiles = (
+			);
+			script = "# Type a script or drag a script file from your workspace to insert its path.\n";
+		};
+/* End PBXBuildRule section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8DD76F690486A84900D96B5E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		612CD8DB11F573FC00A587B2 /* Game_of_life.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Game_of_life.cpp; path = ../src/Game_of_life.cpp; sourceTree = SOURCE_ROOT; };
+		612CD8DC11F573FC00A587B2 /* Update_state.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Update_state.cpp; path = ../src/Update_state.cpp; sourceTree = SOURCE_ROOT; };
+		612CD8E011F5742000A587B2 /* Evolution.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Evolution.cpp; path = ../src/Evolution.cpp; sourceTree = SOURCE_ROOT; };
+		8DD76F6C0486A84900D96B5E /* game_of_life */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = game_of_life; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DD76F660486A84900D96B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* game_of_life */ = {
+			isa = PBXGroup;
+			children = (
+				08FB7795FE84155DC02AAC07 /* Source */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = game_of_life;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				612CD8E011F5742000A587B2 /* Evolution.cpp */,
+				612CD8DB11F573FC00A587B2 /* Game_of_life.cpp */,
+				612CD8DC11F573FC00A587B2 /* Update_state.cpp */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DD76F6C0486A84900D96B5E /* game_of_life */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8DD76F620486A84900D96B5E /* game_of_life */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "game_of_life" */;
+			buildPhases = (
+				8DD76F640486A84900D96B5E /* Sources */,
+				8DD76F660486A84900D96B5E /* Frameworks */,
+				8DD76F690486A84900D96B5E /* CopyFiles */,
+			);
+			buildRules = (
+				C3C58967218C3E4A00DAC94C /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = game_of_life;
+			productInstallPath = "$(HOME)/bin";
+			productName = game_of_life;
+			productReference = 8DD76F6C0486A84900D96B5E /* game_of_life */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1000;
+			};
+			buildConfigurationList = 1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "game_of_life" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 08FB7794FE84155DC02AAC07 /* game_of_life */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8DD76F620486A84900D96B5E /* game_of_life */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DD76F640486A84900D96B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				612CD8DD11F573FC00A587B2 /* Game_of_life.cpp in Sources */,
+				612CD8DE11F573FC00A587B2 /* Update_state.cpp in Sources */,
+				612CD8E111F5742000A587B2 /* Evolution.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A1F593C60B8F0E6E00073279 /* Debug64 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = _CONSOLE;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INSTALL_PATH = "$(HOME)/bin";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				PRODUCT_NAME = game_of_life;
+				ZERO_LINK = NO;
+			};
+			name = Debug64;
+		};
+		A1F593C70B8F0E6E00073279 /* Release64 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = _CONSOLE;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INSTALL_PATH = "$(HOME)/bin";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				PRODUCT_NAME = game_of_life;
+				ZERO_LINK = NO;
+			};
+			name = Release64;
+		};
+		A1F593C80B8F0E6E00073279 /* Debug64 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ENABLE_TESTABILITY = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_MODEL_TUNING = "";
+				GCC_VERSION = "";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(TBBROOT)/include",
+					/opt/intel/tbb/include,
+				);
+				ICC_CXX_LANG_DIALECT = "c++11";
+				LD_RUNPATH_SEARCH_PATHS = "$(TBBROOT)/lib /opt/intel/tbb/lib";
+				LIBRARY_SEARCH_PATHS = (
+					"$(TBBROOT)/lib",
+					/opt/intel/tbb/lib,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-m64",
+				);
+				OTHER_LDFLAGS = (
+					"-m64",
+					"-ltbb_debug",
+				);
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				SYMROOT = "/tmp/tbb-$(USER)";
+				VALID_ARCHS = x86_64;
+			};
+			name = Debug64;
+		};
+		A1F593C90B8F0E6E00073279 /* Release64 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_MODEL_TUNING = "";
+				GCC_VERSION = "";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(TBBROOT)/include",
+					/opt/intel/tbb/include,
+				);
+				ICC_CXX_LANG_DIALECT = "c++11";
+				LD_RUNPATH_SEARCH_PATHS = "$(TBBROOT)/lib /opt/intel/tbb/lib";
+				LIBRARY_SEARCH_PATHS = (
+					"$(TBBROOT)/lib",
+					/opt/intel/tbb/lib,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-m64",
+				);
+				OTHER_LDFLAGS = (
+					"-m64",
+					"-ltbb",
+				);
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				SYMROOT = "/tmp/tbb-$(USER)";
+				VALID_ARCHS = x86_64;
+			};
+			name = Release64;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "game_of_life" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1F593C60B8F0E6E00073279 /* Debug64 */,
+				A1F593C70B8F0E6E00073279 /* Release64 */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release64;
+		};
+		1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "game_of_life" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1F593C80B8F0E6E00073279 /* Debug64 */,
+				A1F593C90B8F0E6E00073279 /* Release64 */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release64;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

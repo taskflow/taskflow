@@ -1,0 +1,133 @@
+namespace tf {
+
+/** @page release-3-1-0 Release 3.1.0 (2021/04/14)
+
+%Taskflow 3.1.0 is the 2nd release in the 3.x line! 
+This release includes several new changes such as CPU-GPU tasking, algorithm collection,
+enhanced web-based profiler, documentation, and unit tests.
+
+@tableofcontents
+
+@section release-3-1-0_download Download
+
+%Taskflow 3.1.0 can be downloaded from <a href="https://github.com/taskflow/taskflow/releases/tag/v3.1.0">here</a>.
+
+@section release-3-1-0_system_requirements System Requirements
+
+To use %Taskflow v3.1.0, you need a compiler that supports C++17:
+
+@li GNU C++ Compiler at least v8.4 with -std=c++17
+@li Clang C++ Compiler at least v6.0 with -std=c++17
+@li Microsoft Visual Studio at least v19.27 with /std:c++17
+@li AppleClang Xode Version at least v12.0 with -std=c++17
+@li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
+@li Intel C++ Compiler at least v19.0.1 with -std=c++17
+@li Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20
+
+%Taskflow works on Linux, Windows, and Mac OS X.
+
+@section release-3-1-0_new_features New Features
+
+@subsection release-3-1-0_taskflow_core Taskflow Core
+
+@li optimized task node storage by using std::unique_ptr for semaphores
+@li introduced tf::syclFlow based on Intel DPC++ and SYCL 2020 spec
+@li merged the execution flow of %cudaFlow and %cudaFlow capturer 
+
+@subsection release-3-1-0_cudaflow cudaFlow
+
+@li optimized tf::cudaRoundRobinCapturing through an event-pruning heuristic
+@li optimized the default block size used in %cudaFlow algorithms
+@li added tf::cudaFlow::clear() to clean up a %cudaFlow
+@li added tf::cudaFlow::num_tasks() to query the task count in a %cudaFlow
+@li added tf::cudaTask::num_dependents() to query the dependent count in a %cudaTask
+@li added tf::cudaFlowCapturer::clear() to clean up a %cudaFlow capturer
+@li added tf::cudaFlowCapturer::num_tasks() to query the task count in a %cudaFlow capturer
+@li added tf::cudaFlowCapturer rebind methods:
+  + tf::cudaFlowCapturer::rebind_single_task
+  + tf::cudaFlowCapturer::rebind_for_each
+  + tf::cudaFlowCapturer::rebind_for_each_index
+  + tf::cudaFlowCapturer::rebind_transform
+  + tf::cudaFlowCapturer::rebind_reduce
+  + tf::cudaFlowCapturer::rebind_uninitialized_reduce
+@li added tf::cudaFlow update methods:
+  + tf::cudaFlow::update_for_each
+  + tf::cudaFlow::update_for_each_index
+  + tf::cudaFlow::update_transform
+  + tf::cudaFlow::update_reduce
+  + tf::cudaFlow::update_uninitialized_reduce
+@li added %cudaFlow examples:
+  + parallel reduction (examples/cuda/cuda_reduce.cu)
+  + parallel transform (examples/cuda/cuda_transform.cu)
+  + rebind (examples/cuda/cuda_rebind.cu)
+
+@subsection release-3-1-0_syclflow syclFlow
+
+@li added a task graph-based programming model (see @ref GPUTaskingsyclFlow)
+@li added %syclFlow examples:
+  + device query (examples/sycl/sycl_device.cpp)
+  + range query (examples/sycl/sycl_ndrange.cpp)
+  + saxpy kernel (examples/sycl/sycl_saxpy.cpp)
+  + atomic operation using oneAPI atomic_ref (examples/sycl/sycl_atomic.cpp)
+  + vector addition (examples/sycl/sycl_vector_add.cpp)
+  + parallel reduction (examples/sycl/sycl_reduce.cpp)
+  + matrix multiplication (examples/sycl/sycl_matmul.cpp)
+  + parallel transform (examples/sycl/transform.cpp)
+  + rebind (examples/sycl/sycl_rebind.cpp)
+@li added %syclFlow algorithms
+  + tf::syclFlow::single_task for single-threaded kernel
+  + tf::syclFlow::for_each for parallel iterations
+  + tf::syclFlow::for_each_index for index-based parallel iterations
+  + tf::syclFlow::reduce for parallel reduction
+  + tf::syclFlow::uninitialized_reduce for uninitialized parallel reduction
+
+Please visit these pages, @ref GPUTaskingsyclFlow and @ref CompileTaskflowWithSYCL,
+to know more details about compiling and running
+%syclFlow programs.
+
+@subsection release-3-1-0_utilities Utilities
+
+@li resolved the compiler warning in serializer caused by <tt>constexpr if</tt>
+@li resolved the compiler error of nvcc when parsin variadic namespace
+
+@subsection release-3-1-0_profiler Taskflow Profiler (TFProf)
+
+ + added support for syclflow task
+
+@section release-3-1-0_bug_fixes Bug Fixes 
+ + fixed the macro expansion issue with MSVC on @c TF_CUDA_CHECK
+ + fixed the serializer compile error ([#288](https://github.com/taskflow/taskflow/issues/288))
+ + fixed the tf::cudaTask::type bug in mixing host and empty task types
+
+@section release-3-1-0_breaking_changes Breaking Changes
+
+There are no breaking changes in this release.
+
+@section release-3-1-0_deprecated_items Deprecated and Removed Items 
+
+There are no deprecated or removed items in this release.
+
+@section release-3-1-0_documentation Documentation
+
++ added @ref CompileTaskflowWithSYCL
++ added SYCL example and tests to the page @ref install
++ added @ref QueryTheWorkerID to the cookbook page @ref ExecuteTaskflow
++ added @ref syclFlowAlgorithms
+  + @ref SingleTaskSYCL
+  + @ref ForEachSYCL
+  + @ref SYCLReduce
+  + @ref ParallelTransformsSYCL
++ revised update methods in @ref GPUTaskingcudaFlow 
++ revised rebind methods in @ref GPUTaskingcudaFlowCapturer
+
+@section release-3-1-0_miscellaneous_items Miscellaneous Items
+
++ removed Circle-CI from the continuous integration
++ updated <a href="https://github.com/GrokImageCompression/grok">grok</a> to the user list
++ updated <a href="https://github.com/Ravbug/RavEngine">RavEngine</a> to the user list
++ updated <a href="https://github.com/erri120/rpgmpacker">RPGMPacker</a> to the user list
++ updated <a href="https://github.com/JayXon/Leanify">Leanify</a> to the user list
+
+*/
+
+}

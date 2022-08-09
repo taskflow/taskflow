@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Release Notes &raquo; Release 2.2.0 (2019/06/15) | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="Releases.html">Release Notes</a> &raquo;</span>
+          Release 2.2.0 (2019/06/15)
+        </h1>
+<p>Cpp-Taskflow 2.2.0 is the 3rd release in the 2.x line! This release includes several new changes such as tf::ExecutorObserverInterface, <a href="classtf_1_1Executor.html" class="m-doc">tf::<wbr />Executor</a>, isolation of taskflow graph and executor, benchmarks, and so forth. In particular, this release improve the performance of the work stealing scheduler.</p><section id="release-2-2-0_download"><h2><a href="#release-2-2-0_download">Download</a></h2><p>Cpp-Taskflow 2.2.0 can be downloaded from <a href="https://github.com/cpp-taskflow/cpp-taskflow/releases/tag/v2.2.0">here</a>.</p></section><section id="release-2-2-0_new_features"><h2><a href="#release-2-2-0_new_features">New Features</a></h2><ul><li>A new executor class to isolate the execution module from a taskflow</li><li>A new observer interface to inspect the activities of an executor</li><li>A decomposable taskflow construction interface</li><li>A new work-stealing algorithm to improve the performance</li></ul></section><section id="release-2-2-0_breaks_and_deprecated_features"><h2><a href="#release-2-2-0_breaks_and_deprecated_features">Breaks and Deprecated Features</a></h2><p>In this release, we isolated the executor interface from <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a>, and merge tf::Framework with <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a>. This change largely improved the modularity and composability of Cpp-Taskflow in creating clean task dependency graphs and execution flows. Performance is also better. While this introduced some breaks in <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a>, we have managed to make it as less painful as possible for users to adapt to the new change.</p><p>Previously, <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> is a hero class that manages both a task dependency graph and the execution of all graphs including frameworks. For example:</p><pre class="m-code"><span class="c1">// before v2.2.0, tf::Taskflow manages both graph and execution</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="nf">taskflow</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span><span class="w">  </span><span class="c1">// create a taskflow object with 4 threads</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;task A</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span><span class="w">   </span><span class="c1">// dispatch the present graph</span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Framework</span><span class="w"> </span><span class="n">framework</span><span class="p">;</span><span class="w">   </span><span class="c1">// create a framework object</span>
+<span class="n">framework</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;task B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">framework</span><span class="p">);</span><span class="w">   </span><span class="c1">// run the framework once</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span><span class="w">   </span><span class="c1">// wait until the framework finishes</span></pre><p>However, this design is awkward in many aspects. For instance, calling <code>wait_for_all</code> dispatches the present graph and the graph vanishes when the execution completes. To reuse a graph, users have to create another special graph called framework and mix its execution with the one in a taskflow object. Given the user feedback and lessons we have learned so far, we decided to isolate the executor interface out of <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> and merge tf::Framework with <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a>. All execution methods such as <code>dispatch</code> and <code>wait_for_all</code> have been moved from <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> to <a href="classtf_1_1Executor.html" class="m-doc">tf::<wbr />Executor</a>.</p><pre class="m-code"><span class="c1">// starting from v2.2.0, tf::Executor manages the execution of graphs</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w">      </span><span class="c1">// create a taskflow to build dependent tasks</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;task A</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;task B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">);</span><span class="w"></span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="nf">executor</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span><span class="w">   </span><span class="c1">// create an executor of 4 threads</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span><span class="w">     </span><span class="c1">// run the taskflow once</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w">  </span><span class="c1">// run the taskflow twice</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span><span class="w">    </span><span class="c1">// wait for the three runs to finish</span></pre><p>The new design has a clean separation between a task dependency graph builder <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> and the execution of graphs <a href="classtf_1_1Executor.html" class="m-doc">tf::<wbr />Executor</a>. Users are fully responsible for the lifetime of a taskflow, and need to ensure a taskflow is alive during its execution. Besides, all task constructs remain unchanged in <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a>. In most situations, you will just need to add an executor to your program to run your taskflow graphs.</p><p>Again, we apologize this breaking change! I hope you can understand what we did is to make Cpp-Taskflow provide good performance scaling and user experience.</p></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

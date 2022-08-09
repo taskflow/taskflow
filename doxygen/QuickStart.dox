@@ -1,0 +1,350 @@
+namespace tf {
+
+/** @mainpage Modern C++ Parallel Task Programming
+
+%Taskflow helps you quickly write parallel and heterogeneous 
+task programs with <i>high performance</i>
+and simultaneous <i>high productivity</i>.
+It is faster, more expressive, fewer lines of code, and easier for drop-in integration
+than many of existing task programming libraries.
+The source code is available in @ProjectGitHub.
+
+@tableofcontents
+
+@section ASimpleFirstProgram Start Your First Taskflow Program
+
+The following program (@c simple.cpp) creates four tasks 
+@c A, @c B, @c C, and @c D, where @c A runs before @c B and @c C, and @c D
+runs after @c B and @c C.
+When @c A finishes, @c B and @c C can run in parallel.
+
+
+<!-- @image html images/simple.svg width=35% -->
+@dotfile images/simple.dot
+
+@code{.cpp}
+#include <taskflow/taskflow.hpp>  // Taskflow is header-only
+
+int main(){
+  
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+
+  auto [A, B, C, D] = taskflow.emplace(  // create four tasks
+    [] () { std::cout << "TaskA\n"; },
+    [] () { std::cout << "TaskB\n"; },
+    [] () { std::cout << "TaskC\n"; },
+    [] () { std::cout << "TaskD\n"; } 
+  );                                  
+                                      
+  A.precede(B, C);  // A runs before B and C
+  D.succeed(B, C);  // D runs after  B and C
+                                      
+  executor.run(taskflow).wait(); 
+
+  return 0;
+}
+@endcode
+
+%Taskflow is *header-only* and there is no wrangle with installation.
+To compile the program, clone the %Taskflow project and 
+tell the compiler to include the headers under @c taskflow/.
+
+@code{.shell-session}
+~$ git clone https://github.com/taskflow/taskflow.git  # clone it only once
+~$ g++ -std=c++17 simple.cpp -I taskflow/taskflow -O2 -pthread -o simple
+~$ ./simple
+TaskA
+TaskC 
+TaskB 
+TaskD
+@endcode
+
+%Taskflow comes with a built-in profiler, @TFProf, 
+for you to profile and visualize taskflow programs
+in an easy-to-use web-based interface.
+
+@image html images/tfprof.png 
+
+@code{.shell-session}
+# run the program with the environment variable TF_ENABLE_PROFILER enabled
+~$ TF_ENABLE_PROFILER=simple.json ./simple
+~$ cat simple.json
+[
+{"executor":"0","data":[{"worker":0,"level":0,"data":[{"span":[172,186],"name":"0_0","type":"static"},{"span":[187,189],"name":"0_1","type":"static"}]},{"worker":2,"level":0,"data":[{"span":[93,164],"name":"2_0","type":"static"},{"span":[170,179],"name":"2_1","type":"static"}]}]}
+]
+# paste the profiling json data to https://taskflow.github.io/tfprof/
+@endcode
+
+@section QuickStartCreateASubflowGraph Create a Subflow Graph
+
+%Taskflow supports <i>dynamic tasking</i> for you to create a subflow
+graph from the execution of a task to perform dynamic parallelism.
+The following program spawns a task dependency graph parented at task @c B.
+
+@code{.cpp}
+tf::Task A = taskflow.emplace([](){}).name("A");  
+tf::Task C = taskflow.emplace([](){}).name("C");  
+tf::Task D = taskflow.emplace([](){}).name("D");  
+
+tf::Task B = taskflow.emplace([] (tf::Subflow& subflow) { // subflow task B
+  tf::Task B1 = subflow.emplace([](){}).name("B1");  
+  tf::Task B2 = subflow.emplace([](){}).name("B2");  
+  tf::Task B3 = subflow.emplace([](){}).name("B3");  
+  B3.succeed(B1, B2);  // B3 runs after B1 and B2
+}).name("B");
+
+A.precede(B, C);  // A runs before B and C
+D.succeed(B, C);  // D runs after  B and C
+@endcode
+
+@dotfile images/subflow-join.dot
+
+@section QuickStartIntegrateControlFlowIntoATaskGraph Integrate Control Flow into a Task Graph
+
+%Taskflow supports <i>conditional tasking</i> for you to make rapid 
+control-flow decisions across dependent tasks to implement cycles 
+and conditions in an @em end-to-end task graph.
+
+@code{.cpp}
+tf::Task init = taskflow.emplace([](){}).name("init");
+tf::Task stop = taskflow.emplace([](){}).name("stop");
+
+// creates a condition task that returns a random binary
+tf::Task cond = taskflow.emplace([](){ return std::rand() % 2; }).name("cond");
+
+// creates a feedback loop {0: cond, 1: stop}
+init.precede(cond);
+cond.precede(cond, stop);  // moves on to 'cond' on returning 0, or 'stop' on 1
+@endcode
+
+@dotfile images/conditional-tasking-1.dot
+
+@section QuickStartOffloadTasksToGPU Offload Tasks to a GPU
+
+%Taskflow supports GPU tasking for you to accelerate a wide range of scientific computing applications by harnessing the power of CPU-GPU collaborative computing using CUDA.
+
+@code{.cpp}
+__global__ void saxpy(int n, float a, float *x, float *y) {
+  int i = blockIdx.x*blockDim.x + threadIdx.x;
+  if (i < n) {
+    y[i] = a*x[i] + y[i];
+  }
+}
+tf::Task cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
+  tf::cudaTask h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
+  tf::cudaTask h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");
+  tf::cudaTask d2h_x = cf.copy(hx.data(), dx, N).name("d2h_x");
+  tf::cudaTask d2h_y = cf.copy(hy.data(), dy, N).name("d2h_y");
+  tf::cudaTask saxpy = cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy)
+                         .name("saxpy");  // parameters to the saxpy kernel
+  saxpy.succeed(h2d_x, h2d_y)
+       .precede(d2h_x, d2h_y);
+}).name("cudaFlow");
+@endcode
+
+@dotfile images/saxpy_1_cudaflow.dot
+
+@section QuickStartComposeTaskGraphs Compose Task Graphs
+
+%Taskflow is composable. You can create large parallel graphs through composition of modular and reusable blocks that are easier to optimize at an individual scope.
+
+@code{.cpp}
+tf::Taskflow f1, f2;
+
+// create taskflow f1 of two tasks
+tf::Task f1A = f1.emplace([]() { std::cout << "Task f1A\n"; }).name("f1A");
+tf::Task f1B = f1.emplace([]() { std::cout << "Task f1B\n"; }).name("f1B");
+
+// create taskflow f2 with one module task composed of f1
+tf::Task f2A = f2.emplace([]() { std::cout << "Task f2A\n"; }).name("f2A");
+tf::Task f2B = f2.emplace([]() { std::cout << "Task f2B\n"; }).name("f2B");
+tf::Task f2C = f2.emplace([]() { std::cout << "Task f2C\n"; }).name("f2C");
+tf::Task f1_module_task = f2.composed_of(f1).name("module");
+
+f1_module_task.succeed(f2A, f2B)
+              .precede(f2C);
+@endcode
+
+@dotfile images/composition.dot
+
+@section QuickStartLaunchAsyncTasks Launch Asynchronous Tasks
+
+%Taskflow supports @em asynchronous tasking.
+You can launch tasks asynchronously to incorporate independent, dynamic 
+parallelism in your taskflows.
+
+@code{.cpp}
+tf::Executor executor;
+tf::Taskflow taskflow;
+
+// create asynchronous tasks directly from an executor
+tf::Future<std::optional<int>> future = executor.async([](){ 
+  std::cout << "async task returns 1\n";
+  return 1;
+}); 
+executor.silent_async([](){ std::cout << "async task does not return\n"; });
+
+// launch an asynchronous task from a running task
+taskflow.emplace([&](){
+  executor.async([](){ std::cout << "async task created within a task\n"; });
+});
+
+executor.run(taskflow).wait();
+@endcode
+
+
+
+@section QuickStartRunATaskflowThroughAnExecution Run a Taskflow through an Executor
+
+The executor provides several @em thread-safe methods to run a taskflow. 
+You can run a taskflow once, multiple times, or until a stopping criteria is met. 
+These methods are non-blocking with a @c tf::Future<void> return 
+to let you query the execution status. 
+
+@code{.cpp}
+// runs the taskflow once
+tf::Future<void> run_once = executor.run(taskflow); 
+
+// wait on this run to finish
+run_once.get();
+
+// run the taskflow four times
+executor.run_n(taskflow, 4);
+
+// runs the taskflow five times
+executor.run_until(taskflow, [counter=5](){ return --counter == 0; });
+
+// blocks the executor until all submitted taskflows complete
+executor.wait_for_all();
+@endcode
+
+@section QuickStartLeverageStandardParallelAlgorithms Leverage Standard Parallel Algorithms
+
+%Taskflow defines algorithms for you to quickly express common parallel patterns
+using standard C++ syntaxes, 
+such as parallel iterations, parallel reductions, and parallel sort.
+
+@code{.cpp}
+// standard parallel CPU algorithms
+tf::Task task1 = taskflow.for_each( // assign each element to 100 in parallel
+  first, last, [] (auto& i) { i = 100; }    
+);
+tf::Task task2 = taskflow.reduce(   // reduce a range of items in parallel
+  first, last, init, [] (auto a, auto b) { return a + b; }
+);
+tf::Task task3 = taskflow.sort(     // sort a range of items in parallel
+  first, last, [] (auto a, auto b) { return a < b; }
+);
+
+// standard parallel GPU algorithms
+tf::cudaTask cuda1 = cudaflow.for_each( // assign each element to 100 on GPU
+  dfirst, dlast, [] __device__ (auto i) { i = 100; }
+);
+tf::cudaTask cuda2 = cudaflow.reduce(   // reduce a range of items on GPU
+  dfirst, dlast, init, [] __device__ (auto a, auto b) { return a + b; }
+);
+tf::cudaTask cuda3 = cudaflow.sort(     // sort a range of items on GPU
+  dfirst, dlast, [] __device__ (auto a, auto b) { return a < b; }
+);
+@endcode
+
+Additionally, %Taskflow provides composable graph building blocks for you to 
+efficiently implement common parallel algorithms, such as parallel pipeline.
+
+@code{.cpp}
+// create a pipeline to propagate five tokens through three serial stages
+tf::Pipeline pl(num_lines,
+  tf::Pipe{tf::PipeType::SERIAL, [](tf::Pipeflow& pf) {
+    if(pf.token() == 5) {
+      pf.stop();
+    }
+  }},
+  tf::Pipe{tf::PipeType::SERIAL, [](tf::Pipeflow& pf) {
+    printf("stage 2: input buffer[%zu] = %d\n", pf.line(), buffer[pf.line()]);
+  }},
+  tf::Pipe{tf::PipeType::SERIAL, [](tf::Pipeflow& pf) {
+    printf("stage 3: input buffer[%zu] = %d\n", pf.line(), buffer[pf.line()]);
+  }}
+);
+taskflow.composed_of(pl)
+executor.run(taskflow).wait();
+@endcode
+
+@section QuickStartVisualizeATaskflow Visualize Taskflow Graphs
+
+You can dump a taskflow graph to a DOT format and visualize it
+using a number of free GraphViz tools such as @GraphVizOnline.
+
+
+@code{.cpp}
+tf::Taskflow taskflow;
+
+tf::Task A = taskflow.emplace([] () {}).name("A");
+tf::Task B = taskflow.emplace([] () {}).name("B");
+tf::Task C = taskflow.emplace([] () {}).name("C");
+tf::Task D = taskflow.emplace([] () {}).name("D");
+tf::Task E = taskflow.emplace([] () {}).name("E");
+A.precede(B, C, E);
+C.precede(D);
+B.precede(D, E);
+
+// dump the graph to a DOT file through std::cout
+taskflow.dump(std::cout); 
+@endcode
+
+@dotfile images/graphviz.dot
+
+@section SupportedCompilers Supported Compilers
+
+To use %Taskflow, you only need a compiler that supports C++17:
+
+@li GNU C++ Compiler at least v8.4 with -std=c++17
+@li Clang C++ Compiler at least v6.0 with -std=c++17
+@li Microsoft Visual Studio at least v19.27 with /std:c++17
+@li AppleClang Xode Version at least v12.0 with -std=c++17
+@li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
+@li Intel C++ Compiler at least v19.0.1 with -std=c++17
+@li Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20
+
+%Taskflow works on Linux, Windows, and Mac OS X.
+
+@section QuickStartGetInvolved Get Involved
+
+Visit our @ProjectWebsite and @ShowcasePresentation 
+to learn more about %Taskflow. To get involved:
+
+  + See release notes at @ref Releases
+  + Read the step-by-step tutorial at @ref Cookbook
+  + Submit an issue at @IssueTracker
+  + Learn more about our technical details at @ref References
+  + Watch our @CppCon20Talk and @MUCpp20Talk
+
+We are committed to support trustworthy developments for 
+both academic and industrial research projects in parallel 
+and heterogeneous computing. 
+If you are using %Taskflow, please cite the following paper we publised at 2022 IEEE TPDS:
+
++ Tsung-Wei Huang, Dian-Lun Lin, Chun-Xun Lin, and Yibo Lin, &quot;[Taskflow: A Lightweight Parallel and Heterogeneous Task Graph Computing System](https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf),&quot; <i>IEEE Transactions on Parallel and Distributed Systems (TPDS)</i>, vol. 33, no. 6, pp. 1303-1320, June 2022
+
+More importantly, we appreciate all %Taskflow @ref contributors and 
+the following organizations for sponsoring the %Taskflow project!
+
+| <!-- --> | <!-- --> | <!-- --> | <!-- --> |
+|:-- -----:|:--------:|:--------:|:--------:|
+|@image html "images/utah-ece-logo.png" |@image html "images/nsf.png"|@image html "images/darpa.png"|@image html "images/NumFocus.png"|
+|@image html "images/nvidia-logo.png" | | | |
+
+
+
+@section License License
+
+%Taskflow is open-source under permissive MIT license.
+You are completely free to use, modify, and redistribute any work 
+on top of %Taskflow.
+The source code is available in @ProjectGitHub and is actively
+maintained by @twhuang and his research group at the University of Utah.
+
+*/
+
+}

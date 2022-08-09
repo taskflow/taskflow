@@ -1,0 +1,190 @@
+namespace tf {
+
+/** @page guidelines Guidelines
+
+This pages outlines the process that you will need to follow
+to get a patch merged. 
+
+@tableofcontents
+
+@section HowCanIContribute How Can I Contribute?
+
+There are multiple ways in which you can contribute to %Taskflow:
+
+@li Use it! Let us know what you think and how it helps your jobs!
+@li Catch a typo in documentation or want to make it better to understand? Edit the [doc source](https://github.com/taskflow/taskflow/tree/master/doxygen) and visit @ref BAIBuildDocumentation!
+@li Ask questions, request new features, and catch bugs? Report it at @IssueTracker!
+@li Know how to fix an issue, bug, or add new features? Make a @PullRequest!
+@li Share %Taskflow with others. The more people use it, the more solid %Taskflow becomes!
+
+Your contributions are always welcome.
+Every contribution regardless of its size is significant to keep %Taskflow thrive.
+
+@section HowCanIGetCredit How Can I Get Credit?
+
+Your contribution is an undeniably important piece of the %Taskflow project, 
+and we want to make sure you always get credit for your work.
+Depending on the technical innovation and engineering effort, 
+we credit your contributions as follows:
+
+@li We document your commit or pull request at the @ref contributors page
+@li We advertise your organization as either users or sponsors at the @ProjectWebsite
+@li We highlight your names in our technical presentations (e.g., [CppCon](https://www.youtube.com/user/CppCon)) from time to time
+@li We co-author you in our research publications if you introduce significant innovation (see @ref References) 
+
+Your effort really matters to us and we are eater to acknowledge your contributions!
+As such, we would welcome any advice and recommendations 
+that can improve our credit system.
+Please @ContactUs.
+
+@section HowCanIGetStarted How Can I Get Started?
+
+There are no better ways other than trying out %Taskflow before you want to contribute.
+We summarize a few steps below for you to follow.
+
+@subsection Step1LookAround Step 1: Look around
+
+Visit the @ProjectWebsite and get an 1000-feet overview
+of %Taskflow, in which you shall find recent news, releases, use cases, 
+and other useful information of %Taskflow.
+We also provided a @ShowcasePresentation for you to quickly understand the technical work of %Taskflow.
+Then, check out our @ref usecases and get a sense about
+the problems %Taskflow is good at.
+
+@subsection Step2WriteATaskflowProgram Step 2: Write a Taskflow program
+
+%Taskflow is a programming system. We believe it is impossible to understand
+what %Taskflow is doing without writing real code. 
+Visit the quick-start page and program your first hello-world with %Taskflow!
+
+@code{.cpp}
+#include <taskflow/taskflow.hpp>  // Taskflow is header-only
+
+int main(){
+  
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+
+  auto [A, B, C, D] = taskflow.emplace(
+    [] () { std::cout << "TaskA\n"; },   //  task dependency graph
+    [] () { std::cout << "TaskB\n"; },   // 
+    [] () { std::cout << "TaskC\n"; },   //          +---+          
+    [] () { std::cout << "TaskD\n"; }    //    +---->| B |-----+   
+  );                                     //    |     +---+     |
+                                         //  +---+           +-v-+ 
+  A.precede(B);  // A runs before B      //  | A |           | D | 
+  A.precede(C);  // A runs before C      //  +---+           +-^-+ 
+  B.precede(D);  // B runs before D      //    |     +---+     |    
+  C.precede(D);  // C runs before D      //    +---->| C |-----+    
+                                         //          +---+          
+  executor.run(taskflow).wait();
+
+  return 0;
+}
+@endcode
+
+The hello-world program creates four tasks, @c A, @c B, @c C, and @c D,
+where @c A runs before @c B and @c C, and @c D runs after @c B and @c C.
+When @c A finishes, @c B and @c C can run in parallel, and then @c D.
+
+
+@subsection Step3WriteATaskflowProgram Step 3: Dive in
+
+After you successfully finish the hello-world example, 
+give a deep dive-in to the technical details
+by visiting @ref Cookbook, @ref Algorithms, and @ref Examples.
+These pages provides you step-by-step tutorials about the
+fundamental syntaxes and tasking models in %Taskflow 
+that you need to fully take advantage
+of task graph parallelism to boost your application performance.
+
+At this stage, you may encounter issues, features requests, 
+and questions.
+Then, start your first contribution by posting them in our @IssueTracker!
+
+
+@section HowCanIReportAnIssue How Can I Report Issues?
+
+%Taskflow is in active development. 
+We are not surprised that you encounter something that needs improvement
+or fixes to work for your use cases.
+Or you want to suggest something that can improve %Taskflow's functionality.
+Please do not hesitate to share any of these issues with by
+by opening an post at our @IssueTracker!
+
+Please make sure that you provide all the necessary information 
+in the issue body to communicate your problem clearly so we can work on it efficiently.
+
+@section HowCanIEditTheDocumentation How Can I Edit the Documentation?
+
+Documentation is just as important as the codebase!
+There is always a scope of improvement in documentation to 
+add some missing information or to make it easier to read. 
+We use the famous [Doxygen](https://www.doxygen.nl/index.html) to compile 
+our documentation.
+You can edit the [documentation source](https://github.com/taskflow/taskflow/tree/master/doxygen) which is stored as a text file in the @c doxygen directory of %Taskflow.
+After editing the file locally, you can submit your changes to us by making a patch.
+
+@section HowCanISubmitAPatch How Can I Submit a Patch?
+
+To contribute your code to %Taskflow, 
+you need to make a @PullRequest 
+from your [fork of %Taskflow](https://github.com/taskflow/taskflow/network/members). 
+GitHub makes the development flow of [submitting pull requests](https://docs.github.com/en/enterprise/2.13/user/articles/about-pull-requests) extremely handy
+as long as you follow the standard fork process.
+
+When you make a pull request, please provide all the necessary information requested by prompts in the pull request body. 
+In addition, make sure the code you are submitting always accounts for 
+the following three guidelines:
+
+@li <b>Run the tests:</b> You must pass through our unit tests (see @ref install) before submitting the pull request. Our unit tests have accumulated many corner cases over the past years that can detect defects in the newly developed features or bugs when changing the existing functionality.
+
+@li <b>Profile the change:</b> You must inspect any performance hit caused by your changes. There are multiple ways to profile %Taskflow but we recommend you try to record the runtime of completing all unit tests @em before and @em after your changes. 
+
+@li <b>Document the code:</b> You must document the code or provide a clear explanation about your pull request. You may also provide [examples](https://github.com/taskflow/taskflow/tree/master/examples) specific to your new changes and include them in our cmake script.
+
+Please let us know all people who are involved in the pull request so that we can appropriately acknowledge everyone's effort at the @ref contributors page.
+If there are any issues that you would like to communicate
+offline, please @ContactUs.
+
+@section HowCanILeadAProject How Can I Lead a Project?
+
+There are many on-going and future projects that interest us and 
+the %Taskflow community.
+Given the tremendous amount of work, we welcome organizations
+or individuals to take lead on these projects. 
+The table below summarizes a list of projects that need you to 
+either take lead or contribute:
+
+| Item | Status | Description |
+| :-:  | :-:    | :--         |
+| Visualizing %Taskflow | need contributors | enhance [tfprof](https://taskflow.github.io/tfprof/) in various aspects, including visualizing critical paths along the taskflow graphs, handling large profile data to overcome, improving the user interface, and embedding WebAssembly to speed up the data query |
+| Binding Python | need leaders | provide a python binding with a programming model to allow %Taskflow to contribute to the python scientific computing communities |
+| Adding Benchmarks | need contributors | enhance the [benchmark pool](https://github.com/taskflow/taskflow/tree/master/benchmarks) to provide more parallel computing instances that can help profile %Taskflow |
+| Developing Algorithms | need contributors | enhance our generic @ref Algorithms collection by adding more parallel algorithm skeletons that can help developers quickly describe common parallel workloads (e.g., C++ 17/20 parallel algorithms) |
+| Developing Kernels Algorithms | need contributors | enhance our %cudaFlow by providing common GPU kernels (e.g., reduce, sort, scan, prefix_sum, etc.) that developers can quickly leverage when describing GPU work using cudaFlows |
+| Integrating OpenCL| need leaders | design another task type, @em clFlow, to support OpenCL in a task-graph fasion and schedule OpenCL tasks using graph parallelism |
+| Supporting pipeline | need leaders | design a tasking interface to support pipeline of a data stream over a taskflow graph, where we may resemble [tbb::parallel_pipeline](https://www.threadingbuildingblocks.org/docs/help/tbb_userguide/Working_on_the_Assembly_Line_pipeline.html) |
+| Diagnosing %Taskflow | need contributors | devise API and algorithms to diagnose if the given taskflow is properly conditioned under our @ref TaskSchedulingPolicy, for example, tf::Taskflow::diagnose, under two modes, before running and on the running |
+
+
+If you have identified any other projects that can be included to the list,
+please make a post at our @IssueTracker or @ContactUs.
+
+@section YourVoiceMatters Your Voice Matters!
+
+If you find %Taskflow helpful, 
+please share it with your peers, colleagues, and anyone who
+can benefit from %Taskflow.
+By telling other people about how %Taskflow helped you,
+you will help us in turn and broaden our impact.
+
+Thank you very much for contributing!
+
+*/
+
+}
+
+
+
+

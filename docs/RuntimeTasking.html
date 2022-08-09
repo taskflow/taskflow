@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cookbook &raquo; Runtime Tasking | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="Cookbook.html">Cookbook</a> &raquo;</span>
+          Runtime Tasking
+        </h1>
+<p>Taskflow allows you to interact with the scheduling runtime from the execution context of a runtime task. Runtime tasking is mostly used for designing specialized parallel algorithms that go beyond the default scheduling rules of taskflows.</p><section id="CreateARuntimeTask"><h2><a href="#CreateARuntimeTask">Create a Runtime Task</a></h2><p>A runtime task is a callable that takes a reference to a <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a> object in its argument. A <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a> object is created by the running executor and contains several methods for users to interact with the scheduling runtime. For instance, the following code creates a runtime task to <em>forcefully</em> schedule a conditioned task that would never happens:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">;</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">tie</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="p">[</span><span class="o">&amp;</span><span class="n">C</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="c1">// C must be captured by reference</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">C</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;C</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;D</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+<span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">);</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 12.875rem; height: 9.438rem;" viewBox="0.00 0.00 206.00 150.77">
+<g transform="scale(1 1) rotate(0) translate(4 146.77)">
+<title>Taskflow</title>
+<g id="node1" class="node"><title>p0x7bc400014030</title>
+<ellipse cx="27" cy="-18.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="27" y="-14.5848">D</text>
+</g>
+<g id="node2" class="node"><title>p0x7bc400014118</title>
+<ellipse cx="99" cy="-18.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="99" y="-14.5848">C</text>
+</g>
+<g id="node3" class="node"><title>p0x7bc400014200</title>
+<polygon points="198,-36.3848 144,-36.3848 144,-32.3848 140,-32.3848 140,-28.3848 144,-28.3848 144,-8.38478 140,-8.38478 140,-4.38478 144,-4.38478 144,-0.384776 198,-0.384776 198,-36.3848"/>
+<polyline points="144,-32.3848 148,-32.3848 148,-28.3848 144,-28.3848 "/>
+<polyline points="144,-8.38478 148,-8.38478 148,-4.38478 144,-4.38478 "/>
+<text text-anchor="middle" x="171" y="-14.5848">B</text>
+</g>
+<g id="node4" class="node"><title>p0x7bc4000142e8</title>
+<polygon points="99,-142.77 72,-116.77 99,-90.7696 126,-116.77 99,-142.77"/>
+<text text-anchor="middle" x="99" y="-112.97">A</text>
+</g>
+<g id="edge3" class="edge"><title>p0x7bc4000142e8&#45;&gt;p0x7bc400014030</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M88.0647,-101.131C76.6379,-85.8339 58.5225,-61.5832 44.9855,-43.4615"/>
+<polygon points="47.5459,-41.0407 38.7572,-35.1238 41.9378,-45.23 47.5459,-41.0407"/>
+<text text-anchor="middle" x="71" y="-59.9696">2</text>
+</g>
+<g id="edge2" class="edge"><title>p0x7bc4000142e8&#45;&gt;p0x7bc400014118</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M99,-90.6972C99,-77.4055 99,-61.0387 99,-47.3385"/>
+<polygon points="102.5,-47.0325 99,-37.0326 95.5001,-47.0326 102.5,-47.0325"/>
+<text text-anchor="middle" x="104" y="-59.9696">1</text>
+</g>
+<g id="edge1" class="edge"><title>p0x7bc4000142e8&#45;&gt;p0x7bc400014200</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M109.935,-101.131C121.092,-86.1959 138.624,-62.7262 152.046,-44.7584"/>
+<polygon points="155.078,-46.5474 158.259,-36.4413 149.47,-42.3582 155.078,-46.5474"/>
+<text text-anchor="middle" x="148" y="-59.9696">0</text>
+</g>
+</g>
+</svg>
+</div><p>When the condition task <code>A</code> completes and returns <code>0</code>, the scheduler moves on to the runtime task <code>B</code>. Under the normal circumstance, tasks <code>C</code> and <code>D</code> will not run because their conditional dependencies never happen. This can be broken by forcefully scheduling <code>C</code> or/and <code>D</code> via a runtime task that resides in the same graph. Here, the runtime task <code>B</code> call <a href="classtf_1_1Runtime.html#aa7e72cc0f298475195b252c8f1793343" class="m-doc">tf::<wbr />Runtime::<wbr />schedule(tf::<wbr />Task)</a> to run task <code>C</code> even though the weak dependency between <code>A</code> and <code>C</code> will never happen based on the graph structure itself. As a result, we will see both <code>B</code> and <code>C</code> in the output:</p><pre class="m-code"><span class="n">B</span><span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">runtime</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">schedule</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="n">out</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">its</span><span class="w"> </span><span class="n">dependency</span><span class="w"> </span><span class="n">constraint</span><span class="w"></span>
+<span class="n">C</span><span class="w"></span></pre><aside class="m-note m-warning"><h4>Attention</h4><p>You should only schedule an <em>active</em> task from a runtime task. An active task is a task in a running taskflow. The task may or may not be running, and scheduling that task will immediately put the task into the task queue of the worker that is running the runtime task.</p></aside></section><section id="AcquireTheRunningExecutor"><h2><a href="#AcquireTheRunningExecutor">Acquire the Running Executor</a></h2><p>You can acquire the reference to the running executor using <a href="classtf_1_1Runtime.html#a4ee48a82df1f9758a999d18e6015cec4" class="m-doc">tf::<wbr />Runtime::<wbr />executor()</a>. The running executor of a runtime task is the executor that runs the parent taskflow of that runtime task.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span><span class="w"></span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">rt</span><span class="p">.</span><span class="n">executor</span><span class="p">())</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">&amp;</span><span class="n">executor</span><span class="p">);</span><span class="w"></span>
+<span class="p">});</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre></section><section id="RuntimeTaskingRunATaskGraphSynchronously"><h2><a href="#RuntimeTaskingRunATaskGraphSynchronously">Run a Task Graph Synchronously</a></h2><p>A runtime task can spawn and run a task graph synchronously using <a href="classtf_1_1Runtime.html#a479dc5dbf2b988bd166a2b6da089bb17" class="m-doc">tf::<wbr />Runtime::<wbr />run_and_wait</a>. This model allows you to leverage dynamic tasking to execute a parallel workload within a runtime task. The following code creates a subflow of two independent tasks and executes it synchronously via the given runtime task:</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span><span class="w"></span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">run_and_wait</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span><span class="w"></span>
+<span class="w">    </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;independent task 1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="w">    </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;independent task 2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="w">  </span><span class="p">});</span><span class="w"></span>
+<span class="w">  </span><span class="c1">// subflow joins upon run_and_wait returns</span>
+<span class="p">});</span><span class="w"></span></pre><p>You can also create a task graph yourself and execute it through a runtime task. This organization avoids repetitive creation of a subflow with the same topology, such as running a runtime task repetitively. The following code performs the same execution logic as the above example but using the given task graph to avoid repetitive creations of a subflow:</p><pre class="m-code"><span class="c1">// create a custom graph</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">graph</span><span class="p">;</span><span class="w"></span>
+<span class="n">graph</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;independent task 1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="n">graph</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;independent task 2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+
+<span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span><span class="w"> </span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">run_and_wait</span><span class="p">(</span><span class="n">graph</span><span class="p">);</span><span class="w">  </span><span class="c1">// this worker thread continues the work-stealing loop</span>
+<span class="p">});</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run_n</span><span class="p">(</span><span class="n">taskflow</span><span class="p">,</span><span class="w"> </span><span class="mi">10000</span><span class="p">);</span><span class="w"></span></pre><p>Although <a href="classtf_1_1Runtime.html#a479dc5dbf2b988bd166a2b6da089bb17" class="m-doc">tf::<wbr />Runtime::<wbr />run_and_wait</a> blocks until the operation completes, the caller thread (worker) is not blocked (e.g., sleep or holding any lock). Instead, the caller thread joins the work-stealing loop of the executor and returns whenever the spawned task graph completes. This is different from waiting for a submitted taskflow to finish (<code>executor.run(taskflow).wait()</code>) which blocks the caller thread until the submitted taskflow completes. When multiple submitted taskflows are being waited, their executions can potentially lead to deadlock. Using <a href="classtf_1_1Runtime.html#a479dc5dbf2b988bd166a2b6da089bb17" class="m-doc">tf::<wbr />Runtime::<wbr />run_and_wait</a> avoids the deadlock problem.</p></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

@@ -1,0 +1,97 @@
+namespace tf {
+
+/** @page SYCLReduce Parallel Reduction 
+
+tf::syclFlow provides two template methods, 
+tf::syclFlow::reduce and tf::syclFlow::uninitialized_reduce,
+for creating tasks to perform parallel reductions over a range of items.
+
+@tableofcontents
+
+@section SYCLReduceItemsWithAnInitialValue Reduce Items with an Initial Value
+
+The reduction task created by 
+tf::syclFlow::reduce(I first, I last, T* result, C&& bop) performs
+parallel reduction over a range of elements specified by <tt>[first, last)</tt> 
+using the binary operator @c bop and stores the reduced result in @c result.
+It represents the parallel execution of the following reduction loop
+on a SYCL device:
+    
+@code{.cpp}
+while (first != last) {
+  *result = op(*result, *first++);
+}
+@endcode
+
+The variable @c result participates in the reduction loop and must be initialized
+with an initial value.
+The following code performs a parallel reduction to sum all the numbers in 
+the given range with an initial value @c 1000:
+
+@code{.cpp}
+const size_t N = 1000000;
+
+int* soln = sycl::malloc_shared<int>(1);  // solution
+int* data = sycl::malloc_shared<int>(N);  // data
+
+std::for_each(data, data+N, [](int& v){ d = 1; });
+*soln = 1000;
+
+// create a syclflow to perform parallel reduction on a SYCL device
+sycl::queue queue;
+tf::syclFlow syclflow(queue);
+syclflow.reduce(data, data+N, soln, [] (int a, int b) { return a + b; });
+syclflow.offload();
+
+assert(sol == N + 1000);
+@endcode
+
+@section SYCLReduceItemsWithoutAnInitialValue Reduce Items without an Initial Value
+
+You can use tf::syclFlow::uninitialized_reduce to perform parallel reduction
+without any initial value.
+This method represents a parallel execution of the following reduction loop
+on a SYCL device that does not assum any initial value to reduce.
+    
+@code{.cpp}
+*result = *first++;  // no initial values participate in the reduction loop
+while (first != last) {
+  *result = op(*result, *first++);
+}
+@endcode
+
+The variable @c result is overwritten with the reduced value
+and no initial values participate in the reduction loop.
+The following code performs a parallel reduction to sum all the numbers in 
+the given range without any initial value:
+
+@code{.cpp}
+const size_t N = 1000000;
+
+int* soln = sycl::malloc_shared<int>(1);  // solution
+int* data = sycl::malloc_shared<int>(N);  // data 
+
+std::for_each(data, data+N, [](int& v){ d = 1; });
+*soln = 1000;                             // no effect
+
+// create a syclflow to perform parallel reduction on a SYCL device
+sycl::queue queue;
+tf::syclFlow syclflow(queue);
+syclflow.uninitialized_reduce(
+  data, data+N, soln, [] (int a, int b) { return a + b; }
+);
+syclflow.offload();
+
+assert(sol == N);
+@endcode
+
+
+
+*/
+}
+
+
+
+
+
+

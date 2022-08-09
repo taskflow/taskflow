@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Real Use Cases &raquo; Standard Cell Placement | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="usecases.html">Real Use Cases</a> &raquo;</span>
+          Standard Cell Placement
+        </h1>
+<p>We applied Taskflow to solve a VLSI placement problem. The goal is to determine the physical locations of cells (logic gates) in a fixed layout region using minimal interconnect wirelength.</p><section id="UseCasesDreamPlace"><h2><a href="#UseCasesDreamPlace">DreamPlace: GPU-accelerated Placement Engine</a></h2><p>Placement is an important step in the layout generation stage of a circuit design. It places each cell of synthesized netlists in a region and optimizes their interconnect. The following figure shows a placement layout of an industrial design, adaptec1.</p><img class="m-image" src="dreamplace_1.png" alt="Image" /><p>Modern placement typically incorporates hundreds of millions of cells and takes several hours to finish. To reduce the long runtime, recent work started investigating new CPU-GPU algorithms. We consider matching-based hybrid CPU-GPU placement refinement algorithm developed by <a href="https://github.com/limbo018/DREAMPlace">DREAMPlace</a>. The algorithm iterates the following:</p><ul><li>A GPU-based maximal independent set algorithm to identify cell candidates</li><li>A CPU-based partition algorithm to cluster adjacent cells</li><li>A CPU-based bipartite matching algorithm to find the best permutation of cell locations.</li></ul><p>Each iteration contains overlapped CPU and GPU tasks with nested conditions to decide the convergence.</p><img class="m-image" src="dreamplace_2.png" alt="Image" /></section><section id="UseCasesDreamPlaceProgrammingEffort"><h2><a href="#UseCasesDreamPlaceProgrammingEffort">Programming Effort</a></h2><p>We implemented the hybrid CPU-GPU placement algorithm using Taskflow, <a href="https://github.com/oneapi-src/oneTBB">Intel TBB</a>, and <a href="http://starpu.gforge.inria.fr/">StarPU</a>. The algorithm is crafted on one GPU and many CPUs. Since TBB and StarPU have no support for nested conditions, we unroll their task graphs across fixed-length iterations found in hindsight. The figure below shows a partial taskflow of 4 cudaFlows, 1 conditioned cycle, and 12 static tasks for one placement iteration.</p><div class="m-graph"><svg style="width: 109.125rem; height: 45.125rem;" viewBox="0.00 0.00 1746.02 721.88">
+<g transform="scale(1 1) rotate(0) translate(4 717.88)">
+<title>Taskflow</title>
+<g id="clust1" class="cluster"><title>cluster_p0x55f824e16950</title>
+<polygon points="643.673,-389.385 643.673,-577.385 1063.16,-577.385 1063.16,-389.385 643.673,-389.385"/>
+<text text-anchor="middle" x="853.418" y="-560.585">cudaFlow: h2d_constant</text>
+</g>
+<g id="clust2" class="cluster"><title>cluster_p0x55f824e16ea0</title>
+<polygon points="611.146,-133.385 611.146,-321.385 1054.16,-321.385 1054.16,-133.385 611.146,-133.385"/>
+<text text-anchor="middle" x="832.655" y="-304.585">cudaFlow: [0]mis_h2d</text>
+</g>
+<g id="clust3" class="cluster"><title>cluster_p0x55f824e170c0</title>
+<polygon points="8,-434.385 8,-566.385 556.687,-566.385 556.687,-434.385 8,-434.385"/>
+<text text-anchor="middle" x="282.343" y="-549.585">cudaFlow: [0]mis_loop_k</text>
+</g>
+<g id="clust4" class="cluster"><title>cluster_p0x55f824e173f0</title>
+<polygon points="882.304,-47.3848 882.304,-125.385 1317.14,-125.385 1317.14,-47.3848 882.304,-47.3848"/>
+<text text-anchor="middle" x="1099.72" y="-108.585">cudaFlow: [0]mis_loop_end</text>
+</g>
+<g id="node1" class="node"><title>p0x55f824e15da0</title>
+<ellipse cx="730.869" cy="-658.385" rx="92.7622" ry="18.2703"/>
+<text text-anchor="middle" x="730.869" y="-654.585">new_net_mask</text>
+</g>
+<g id="node2" class="node"><title>p0x55f824e16950</title>
+<polygon points="1055.16,-528.385 1052.16,-532.385 1031.16,-532.385 1028.16,-528.385 936.163,-528.385 936.163,-492.385 1055.16,-492.385 1055.16,-528.385"/>
+<text text-anchor="middle" x="995.663" y="-506.585">h2d_constant</text>
+</g>
+<g id="edge1" class="edge"><title>p0x55f824e15da0&#45;&gt;p0x55f824e16950</title>
+<path fill="none" stroke="black" d="M803.476,-646.892C819.175,-642.873 835.365,-637.511 849.663,-630.385 898.048,-606.27 944.455,-563.205 971.232,-535.755"/>
+<polygon points="973.842,-538.091 978.249,-528.456 968.796,-533.239 973.842,-538.091"/>
+</g>
+<g id="node4" class="node"><title>p0x55f824e16fb0</title>
+<ellipse cx="1237.64" cy="-416.385" rx="86.9483" ry="18.2703"/>
+<text text-anchor="middle" x="1237.64" y="-412.585">mis_loop_beg</text>
+</g>
+<g id="edge3" class="edge"><title>p0x55f824e16950&#45;&gt;p0x55f824e16fb0</title>
+<path fill="none" stroke="black" d="M1042.65,-492.372C1083.56,-476.348 1143.29,-452.948 1185.65,-436.357"/>
+<polygon points="1187.18,-439.516 1195.22,-432.61 1184.63,-432.998 1187.18,-439.516"/>
+</g>
+<g id="node3" class="node"><title>p0x55f824e160d0</title>
+<ellipse cx="730.869" cy="-603.385" rx="81.135" ry="18.2703"/>
+<text text-anchor="middle" x="730.869" y="-599.585">new_pin2net</text>
+</g>
+<g id="edge2" class="edge"><title>p0x55f824e160d0&#45;&gt;p0x55f824e16950</title>
+<path fill="none" stroke="black" d="M800.56,-593.791C816.873,-590.629 834.062,-586.555 849.663,-581.385 886.876,-569.053 926.708,-549.004 955.189,-533.35"/>
+<polygon points="956.983,-536.357 964.02,-528.437 953.58,-530.24 956.983,-536.357"/>
+</g>
+<g id="node16" class="node"><title>p0x55f824e170c0</title>
+<polygon points="548.687,-501.385 545.687,-505.385 524.687,-505.385 521.687,-501.385 424.687,-501.385 424.687,-465.385 548.687,-465.385 548.687,-501.385"/>
+<text text-anchor="middle" x="486.687" y="-479.585">[0]mis_loop_k</text>
+</g>
+<g id="edge15" class="edge"><title>p0x55f824e16fb0&#45;&gt;p0x55f824e170c0</title>
+<path fill="none" stroke="black" d="M1226.29,-434.784C1206.63,-468.241 1160.79,-539.448 1104.66,-581.385 1006.61,-654.646 969.773,-661.834 849.663,-685.385 745.637,-705.782 703.607,-737.237 611.146,-685.385 543.991,-647.724 509.009,-557.014 495.075,-511.06"/>
+<polygon points="498.43,-510.064 492.269,-501.444 491.71,-512.024 498.43,-510.064"/>
+</g>
+<g id="node5" class="node"><title>p0x7f4ad8000e70</title>
+<ellipse cx="730.869" cy="-470.385" rx="79.3924" ry="18.2703"/>
+<text text-anchor="middle" x="730.869" y="-466.585">h2d_pin2net</text>
+</g>
+<g id="edge4" class="edge"><title>p0x7f4ad8000e70&#45;&gt;p0x55f824e16950</title>
+<path fill="none" stroke="black" d="M797.505,-480.375C836.664,-486.336 886.322,-493.894 926.004,-499.934"/>
+<polygon points="925.714,-503.43 936.126,-501.475 926.767,-496.51 925.714,-503.43"/>
+</g>
+<g id="node6" class="node"><title>p0x7f4ad8000f30</title>
+<ellipse cx="730.869" cy="-415.385" rx="71.3357" ry="18.2703"/>
+<text text-anchor="middle" x="730.869" y="-411.585">h2d_fv2pin</text>
+</g>
+<g id="edge5" class="edge"><title>p0x7f4ad8000f30&#45;&gt;p0x55f824e16950</title>
+<path fill="none" stroke="black" d="M788.249,-426.383C807.925,-430.851 829.997,-436.58 849.663,-443.385 884.863,-455.564 923.042,-473.407 951.384,-487.618"/>
+<polygon points="950.097,-490.889 960.6,-492.284 953.26,-484.644 950.097,-490.889"/>
+</g>
+<g id="node7" class="node"><title>p0x7f4ad8001140</title>
+<ellipse cx="730.869" cy="-525.385" rx="67.3507" ry="18.2703"/>
+<text text-anchor="middle" x="730.869" y="-521.585">h2d_pin2v</text>
+</g>
+<g id="edge6" class="edge"><title>p0x7f4ad8001140&#45;&gt;p0x55f824e16950</title>
+<path fill="none" stroke="black" d="M796.83,-521.677C835.98,-519.442 885.808,-516.598 925.663,-514.323"/>
+<polygon points="926.046,-517.807 935.83,-513.743 925.647,-510.819 926.046,-517.807"/>
+</g>
+<g id="node8" class="node"><title>p0x55f824e16a60</title>
+<ellipse cx="88.1249" cy="-104.385" rx="87.8629" ry="18.2703"/>
+<text text-anchor="middle" x="88.1249" y="-100.585">[0]shuffle_beg</text>
+</g>
+<g id="node9" class="node"><title>p0x55f824e16b70</title>
+<ellipse cx="287.052" cy="-104.385" rx="74.4932" ry="18.2703"/>
+<text text-anchor="middle" x="287.052" y="-100.585">[0]shuffle_k</text>
+</g>
+<g id="edge7" class="edge"><title>p0x55f824e16a60&#45;&gt;p0x55f824e16b70</title>
+<path fill="none" stroke="black" d="M176.073,-104.385C184.812,-104.385 193.673,-104.385 202.377,-104.385"/>
+<polygon points="202.505,-107.885 212.505,-104.385 202.505,-100.885 202.505,-107.885"/>
+</g>
+<g id="node10" class="node"><title>p0x55f824e16c80</title>
+<ellipse cx="486.687" cy="-104.385" rx="88.2768" ry="18.2703"/>
+<text text-anchor="middle" x="486.687" y="-100.585">[0]shuffle_end</text>
+</g>
+<g id="edge8" class="edge"><title>p0x55f824e16b70&#45;&gt;p0x55f824e16c80</title>
+<path fill="none" stroke="black" d="M361.363,-104.385C370.063,-104.385 379.046,-104.385 388.017,-104.385"/>
+<polygon points="388.123,-107.885 398.123,-104.385 388.123,-100.885 388.123,-107.885"/>
+</g>
+<g id="node11" class="node"><title>p0x55f824e16d90</title>
+<ellipse cx="730.869" cy="-104.385" rx="115.931" ry="18.2703"/>
+<text text-anchor="middle" x="730.869" y="-100.585">[0]mis_parallel_beg</text>
+</g>
+<g id="edge9" class="edge"><title>p0x55f824e16c80&#45;&gt;p0x55f824e16d90</title>
+<path fill="none" stroke="black" d="M575.12,-104.385C584.774,-104.385 594.737,-104.385 604.738,-104.385"/>
+<polygon points="604.74,-107.885 614.74,-104.385 604.74,-100.885 604.74,-107.885"/>
+</g>
+<g id="node12" class="node"><title>p0x55f824e16ea0</title>
+<polygon points="1046.16,-232.385 1043.16,-236.385 1022.16,-236.385 1019.16,-232.385 945.163,-232.385 945.163,-196.385 1046.16,-196.385 1046.16,-232.385"/>
+<text text-anchor="middle" x="995.663" y="-210.585">[0]mis_h2d</text>
+</g>
+<g id="edge10" class="edge"><title>p0x55f824e16d90&#45;&gt;p0x55f824e16ea0</title>
+<path fill="none" stroke="black" d="M811.46,-117.628C824.436,-120.82 837.577,-124.702 849.663,-129.385 890.226,-145.102 932.718,-171.339 961.137,-190.513"/>
+<polygon points="959.256,-193.467 969.487,-196.218 963.204,-187.687 959.256,-193.467"/>
+</g>
+<g id="edge11" class="edge"><title>p0x55f824e16ea0&#45;&gt;p0x55f824e16fb0</title>
+<path fill="none" stroke="black" d="M1028.39,-232.428C1056.95,-249.337 1099.42,-276.177 1132.66,-304.385 1163.97,-330.948 1195.42,-366.324 1215.4,-390.151"/>
+<polygon points="1212.89,-392.606 1221.97,-398.064 1218.28,-388.134 1212.89,-392.606"/>
+</g>
+<g id="node13" class="node"><title>p0x7f4ad8004530</title>
+<ellipse cx="730.869" cy="-214.385" rx="111.946" ry="18.2703"/>
+<text text-anchor="middle" x="730.869" y="-210.585">[0]h2d_ordered_vs</text>
+</g>
+<g id="edge12" class="edge"><title>p0x7f4ad8004530&#45;&gt;p0x55f824e16ea0</title>
+<path fill="none" stroke="black" d="M842.937,-214.385C874.487,-214.385 907.64,-214.385 934.88,-214.385"/>
+<polygon points="935.015,-217.885 945.015,-214.385 935.015,-210.885 935.015,-217.885"/>
+</g>
+<g id="node14" class="node"><title>p0x7f4ad8006d10</title>
+<ellipse cx="730.869" cy="-159.385" rx="109.703" ry="18.2703"/>
+<text text-anchor="middle" x="730.869" y="-155.585">[0]h2d_dependent</text>
+</g>
+<g id="edge13" class="edge"><title>p0x7f4ad8006d10&#45;&gt;p0x55f824e16ea0</title>
+<path fill="none" stroke="black" d="M800.229,-173.692C842.008,-182.436 894.93,-193.512 935.009,-201.9"/>
+<polygon points="934.403,-205.349 944.908,-203.971 935.837,-198.497 934.403,-205.349"/>
+</g>
+<g id="node15" class="node"><title>p0x7f4ad8006df0</title>
+<ellipse cx="730.869" cy="-269.385" rx="96.7474" ry="18.2703"/>
+<text text-anchor="middle" x="730.869" y="-265.585">[0]h2d_selected</text>
+</g>
+<g id="edge14" class="edge"><title>p0x7f4ad8006df0&#45;&gt;p0x55f824e16ea0</title>
+<path fill="none" stroke="black" d="M796.492,-255.86C838.893,-246.986 893.927,-235.468 935.237,-226.822"/>
+<polygon points="936.089,-230.22 945.16,-224.745 934.655,-223.368 936.089,-230.22"/>
+</g>
+<g id="node17" class="node"><title>p0x55f824e171d0</title>
+<ellipse cx="730.869" cy="-358.385" rx="118.588" ry="18.2703"/>
+<text text-anchor="middle" x="730.869" y="-354.585">[0]mis_loop_update</text>
+</g>
+<g id="edge16" class="edge"><title>p0x55f824e170c0&#45;&gt;p0x55f824e171d0</title>
+<path fill="none" stroke="black" d="M505.133,-465.231C527.564,-442.983 568.707,-405.743 611.146,-385.385 619.937,-381.168 629.414,-377.594 639.045,-374.568"/>
+<polygon points="640.104,-377.905 648.707,-371.722 638.126,-371.19 640.104,-377.905"/>
+</g>
+<g id="node21" class="node"><title>p0x55f824e172e0</title>
+<polygon points="995.663,-381.385 886.663,-355.385 995.663,-329.385 1104.66,-355.385 995.663,-381.385"/>
+<text text-anchor="middle" x="995.663" y="-351.585">[0]mis_cond</text>
+</g>
+<g id="edge20" class="edge"><title>p0x55f824e171d0&#45;&gt;p0x55f824e172e0</title>
+<path fill="none" stroke="black" d="M849.431,-357.043C859.994,-356.922 870.678,-356.8 881.206,-356.68"/>
+<polygon points="881.283,-360.179 891.242,-356.565 881.203,-353.18 881.283,-360.179"/>
+</g>
+<g id="node18" class="node"><title>p0x7f4ad8007e00</title>
+<ellipse cx="88.1249" cy="-514.385" rx="72.25" ry="18.2703"/>
+<text text-anchor="middle" x="88.1249" y="-510.585">[0]h2d_size</text>
+</g>
+<g id="node19" class="node"><title>p0x7f4ad8007d00</title>
+<polygon points="327.552,-532.385 250.552,-532.385 246.552,-528.385 246.552,-496.385 323.552,-496.385 327.552,-500.385 327.552,-532.385"/>
+<polyline points="323.552,-528.385 246.552,-528.385 "/>
+<polyline points="323.552,-528.385 323.552,-496.385 "/>
+<polyline points="323.552,-528.385 327.552,-532.385 "/>
+<text text-anchor="middle" x="287.052" y="-510.585">[0]mis_k</text>
+</g>
+<g id="edge17" class="edge"><title>p0x7f4ad8007e00&#45;&gt;p0x7f4ad8007d00</title>
+<path fill="none" stroke="black" d="M160.499,-514.385C185.603,-514.385 213.255,-514.385 236.203,-514.385"/>
+<polygon points="236.39,-517.885 246.39,-514.385 236.39,-510.885 236.39,-517.885"/>
+</g>
+<g id="edge18" class="edge"><title>p0x7f4ad8007d00&#45;&gt;p0x55f824e170c0</title>
+<path fill="none" stroke="black" d="M327.572,-508.186C352.36,-504.298 385.048,-499.17 414.266,-494.587"/>
+<polygon points="415.101,-497.999 424.438,-492.992 414.016,-491.084 415.101,-497.999"/>
+</g>
+<g id="node20" class="node"><title>p0x7f4ad8007b80</title>
+<ellipse cx="287.052" cy="-460.385" rx="72.25" ry="18.2703"/>
+<text text-anchor="middle" x="287.052" y="-456.585">[0]d2h_size</text>
+</g>
+<g id="edge19" class="edge"><title>p0x7f4ad8007b80&#45;&gt;p0x55f824e170c0</title>
+<path fill="none" stroke="black" d="M353.039,-467.948C372.769,-470.244 394.546,-472.778 414.652,-475.118"/>
+<polygon points="414.344,-478.606 424.682,-476.285 415.154,-471.653 414.344,-478.606"/>
+</g>
+<g id="edge21" class="edge"><title>p0x55f824e172e0&#45;&gt;p0x55f824e16fb0</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M1049.03,-368.696C1084.86,-377.803 1132.63,-389.946 1171,-399.699"/>
+<polygon points="1170.49,-403.181 1181.04,-402.253 1172.21,-396.397 1170.49,-403.181"/>
+<text text-anchor="middle" x="1127.66" y="-395.585">0</text>
+</g>
+<g id="node22" class="node"><title>p0x55f824e173f0</title>
+<polygon points="1309.14,-91.3848 1306.14,-95.3848 1285.14,-95.3848 1282.14,-91.3848 1166.14,-91.3848 1166.14,-55.3848 1309.14,-55.3848 1309.14,-91.3848"/>
+<text text-anchor="middle" x="1237.64" y="-69.5848">[0]mis_loop_end</text>
+</g>
+<g id="edge22" class="edge"><title>p0x55f824e172e0&#45;&gt;p0x55f824e173f0</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M1064.13,-345.708C1078.59,-341.269 1093.01,-334.803 1104.66,-325.385 1178.51,-265.708 1215.87,-153.538 1229.9,-101.377"/>
+<polygon points="1233.34,-102.047 1232.47,-91.4879 1226.57,-100.285 1233.34,-102.047"/>
+<text text-anchor="middle" x="1127.66" y="-310.585">1</text>
+</g>
+<g id="node23" class="node"><title>p0x55f824e1aa20</title>
+<ellipse cx="1425.96" cy="-73.3848" rx="64.1938" ry="18.2703"/>
+<text text-anchor="middle" x="1425.96" y="-69.5848">[0]hpwl_k</text>
+</g>
+<g id="edge23" class="edge"><title>p0x55f824e173f0&#45;&gt;p0x55f824e1aa20</title>
+<path fill="none" stroke="black" d="M1309.34,-73.3848C1322.96,-73.3848 1337.26,-73.3848 1350.98,-73.3848"/>
+<polygon points="1351.33,-76.8849 1361.33,-73.3848 1351.33,-69.8849 1351.33,-76.8849"/>
+</g>
+<g id="node25" class="node"><title>p0x55f824e1ab30</title>
+<ellipse cx="1632.66" cy="-128.385" rx="86.9483" ry="18.2703"/>
+<text text-anchor="middle" x="1632.66" y="-124.585">del_net_mask</text>
+</g>
+<g id="edge25" class="edge"><title>p0x55f824e1aa20&#45;&gt;p0x55f824e1ab30</title>
+<path fill="none" stroke="black" d="M1473.42,-85.893C1490.38,-90.4566 1509.71,-95.6567 1527.3,-100.385 1540.57,-103.949 1554.79,-107.765 1568.32,-111.398"/>
+<polygon points="1567.47,-114.793 1578.04,-114.004 1569.28,-108.032 1567.47,-114.793"/>
+</g>
+<g id="node26" class="node"><title>p0x55f824e1ac40</title>
+<ellipse cx="1632.66" cy="-73.3848" rx="79.3924" ry="18.2703"/>
+<text text-anchor="middle" x="1632.66" y="-69.5848">del_fnet2pin</text>
+</g>
+<g id="edge26" class="edge"><title>p0x55f824e1aa20&#45;&gt;p0x55f824e1ac40</title>
+<path fill="none" stroke="black" d="M1490.33,-73.3848C1507.01,-73.3848 1525.33,-73.3848 1543.07,-73.3848"/>
+<polygon points="1543.44,-76.8849 1553.44,-73.3848 1543.44,-69.8849 1543.44,-76.8849"/>
+</g>
+<g id="node27" class="node"><title>p0x55f824e1ad50</title>
+<ellipse cx="1632.66" cy="-18.3848" rx="105.218" ry="18.2703"/>
+<text text-anchor="middle" x="1632.66" y="-14.5848">del_fnet2pin_ofst</text>
+</g>
+<g id="edge27" class="edge"><title>p0x55f824e1aa20&#45;&gt;p0x55f824e1ad50</title>
+<path fill="none" stroke="black" d="M1473.42,-60.8765C1490.38,-56.3129 1509.71,-51.1129 1527.3,-46.3848 1539.31,-43.1585 1552.1,-39.7259 1564.45,-36.41"/>
+<polygon points="1565.5,-39.7542 1574.25,-33.782 1563.68,-32.9934 1565.5,-39.7542"/>
+</g>
+<g id="node24" class="node"><title>p0x7f4ad8008470</title>
+<ellipse cx="995.663" cy="-73.3848" rx="105.218" ry="18.2703"/>
+<text text-anchor="middle" x="995.663" y="-69.5848">p0x7f4ad8008470</text>
+</g>
+<g id="edge24" class="edge"><title>p0x7f4ad8008470&#45;&gt;p0x55f824e173f0</title>
+<path fill="none" stroke="black" d="M1101.22,-73.3848C1119.49,-73.3848 1138.24,-73.3848 1155.74,-73.3848"/>
+<polygon points="1155.89,-76.8849 1165.89,-73.3848 1155.89,-69.8849 1155.89,-76.8849"/>
+</g>
+</g>
+</svg>
+</div><p>The table below lists the programming effort of each method, measured by <a href="https://dwheeler.com/sloccount/">SLOCCount</a>. Taskflow outperforms TBB and StarPU in all aspects. The whole program is about 1.5x and 1.7x less complex than that of TBB and StarPU, respectively.</p><table class="m-table"><thead><tr><th>Method</th><th>Lines of Code</th><th>Number of Tokens</th><th>Cyclomatic Complexity</th><th>Cost</th></tr></thead><tbody><tr><td>Taskflow</td><td>677</td><td>4180</td><td>53</td><td>$15,054</td></tr><tr><td>TBB</td><td>1000</td><td>6415</td><td>78</td><td>$21,736</td></tr><tr><td>StarPU</td><td>1279</td><td>8136</td><td>90</td><td>$29,686</td></tr></tbody></table></section><section id="UseCasesDreamPlacePerformance"><h2><a href="#UseCasesDreamPlacePerformance">Performance</a></h2><p>Using 8 CPUs and 1 GPU, Taskflow is consistently faster than others across all problem sizes (placement iterations). The gap becomes clear at large problem size; at 100 iterations, Taskflow is 17% faster than TBB and StarPU. We observed similar results using other CPU numbers. Performance saturates at about 16 CPUs, primarily due to the inherent irregularity of the placement algorithm.</p><img class="m-image" src="dreamplace_4.png" alt="Image" /><p>The memory footprint shows the benefit of our conditional tasking. We keep nearly no growth of memory when the problem size increases, whereas StarPU and TBB grow linearly due to unrolled task graphs. At a vertical scale, increasing the number of CPUs bumps up the memory usage of all methods, but the growth rate of Taskflow is much slower than the others.</p><img class="m-image" src="dreamplace_5.png" alt="Image" /><p>In terms of energy, our scheduler is very power efficient in completing the placement workload, regardless of problem sizes and CPU numbers. Beyond 16 CPUs where performance saturates, our system does not suffer from increasing power as StarPU, due to our adaptive task scheduling algorithm.</p><img class="m-image" src="dreamplace_6.png" alt="Image" /><p>For irregular task graphs akin to this placement workload, resource utilization is critical to the system throughput. We corun the same program by up to nine processes that compete for 40 CPUs and 1 GPU. Corunning a placement program is very common for searching the best parameters for an algorithm. We plot the throughput using <em>weighted speed-up</em> across nine coruns at two problem sizes. Both Taskflow and TBB achieve higher throughput than StarPU. At the largest problem size, Taskflow outperforms TBB and StarPU across all coruns.</p><img class="m-image" src="dreamplace_7.png" alt="Image" /></section><section id="UseCasesDreamPlaceConclusion"><h2><a href="#UseCasesDreamPlaceConclusion">Conclusion</a></h2><p>We have observed two significant benefits of Taskflow over existing programming systems. The first benefit is our conditional tasking. Condition tasks encode control-flow decisions directly in a cyclic task graph rather than unrolling it statically across iterations, saving a lot of memory usage. The second benefit is our runtime scheduler. Our scheduler is able to adapt the number of worker threads to available task parallelism at any time during the graph execution, providing improved performance, power efficiency, and system throughput.</p></section><section id="UseCasesDreamPlaceReferences"><h2><a href="#UseCasesDreamPlaceReferences">References</a></h2><ul><li>Yibo Lin, Wuxi Li, Jiaqi Gu, Haoxing Ren, Brucek Khailany and David Z. Pan, &quot;<a href="https://ieeexplore.ieee.org/document/8982049">ABCDPlace: Accelerated Batch-based Concurrent Detailed Placement on Multi-threaded CPUs and GPUs</a>,&quot; <em>IEEE Transactions on Computer-aided Design of Integrated Circuits and Systems (TCAD)</em>, vol. 39, no. 12, pp. 5083-5096, Dec. 2020</li><li>Yibo Lin, Shounak Dhar, Wuxi Li, Haoxing Ren, Brucek Khailany and David Z. Pan, &quot;<a href="lin_19_01.pdf">DREAMPlace: Deep Learning Toolkit-Enabled GPU Acceleration for Modern VLSI Placement</a>&quot;, <em>ACM/IEEE Design Automation Conference (DAC)</em>, Las Vegas, NV, Jun 2-6, 2019</li></ul></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

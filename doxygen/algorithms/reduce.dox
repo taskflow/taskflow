@@ -1,0 +1,135 @@
+namespace tf {
+
+/** @page ParallelReduction Parallel Reduction
+
+%Taskflow provides template function that constructs a task to perform parallel reduction over a range of items.
+
+@tableofcontents
+
+@section ParallelReductionInclude Include the Header
+
+You need to include the header file, <tt>taskflow/algorithm/reduce.hpp</tt>,
+for creating a parallel-reduction task.
+
+@code{.cpp}
+#include <taskflow/algorithm/reduce.hpp>
+@endcode
+
+@section A2ParallelReduction Create a Parallel-Reduction Task
+
+The reduction task created by 
+tf::Taskflow::reduce(B first, E last, T& result, O bop) performs
+parallel reduction over a range of elements specified by <tt>[first, last)</tt> using the binary operator @c bop and stores the reduced result in @c result.
+It represents the parallel execution of the following reduction loop:
+
+@code{.cpp}
+for(auto itr=first; itr<last; itr++) {
+  result = bop(result, *itr);
+}
+@endcode
+
+At runtime, the reduction task spawns a subflow to perform parallel reduction.
+The reduced result is stored in @c result that will be captured by reference in the reduction task.
+It is your responsibility to ensure @c result remains alive during the parallel execution.
+
+@code{.cpp}
+int sum = 100;
+std::vector<int> vec = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+tf::Task task = taskflow.reduce(vec.begin(), vec.end(), sum, 
+  [] (int l, int r) { return l + r; }  // binary reducer operator
+);
+executor.run(taskflow).wait();
+
+assert(sum == 100 + 55);
+@endcode
+
+The order in which the binary operator is applied to pairs of elements is @em unspecified.
+In other words, the elements of the range may be grouped and rearranged in arbitrary order.
+The result and the argument types of the binary operator must be consistent with the input data type .
+
+Similar to @ref ParallelIterations, 
+you can use std::reference_wrapper to enable stateful parameter passing 
+between the reduction task and others.
+
+@code{.cpp}
+int sum = 100;
+std::vector<int> vec;
+std::vector<int>::iterator first, last;
+
+tf::Task init = taskflow.emplace([&](){
+  vec   = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  first = vec.begin();
+  last  = vec.end();
+});
+
+tf::Task task = taskflow.reduce(std::ref(first), std::ref(last), sum, 
+  [] (int l, int r) { return l + r; }  // binary reducer operator
+);
+
+// wrong! must use std::ref, or first and last are captured by copy
+// tf::Task task = taskflow.reduce(first, last, sum, [] (int l, int r) { 
+//   return l + r;    // binary reducer operator
+// });
+
+init.precede(task);
+
+executor.run(taskflow).wait();
+
+assert(sum == 100 + 55);
+@endcode
+
+In the above example, when @c init finishes, @c vec has been initialized to 10 elements with
+@c first pointing to the first element and @c last pointing to the next of the last element
+(i.e., end of the range).
+These changes are visible to the execution context of the reduction task.
+
+@section A2ParallelTransformationReduction Create a Parallel-Transform-Reduction Task
+
+It is common to transform each element into a new data type and
+then perform reduction on the transformed elements.
+%Taskflow provides a method, 
+tf::Taskflow::transform_reduce(B first, E last, T& result, BOP bop, UOP uop), 
+that applies @c uop to transform each element in the specified range 
+and then perform parallel reduction over @c result and transformed elements.
+It represents the parallel execution of the following reduction loop:
+
+@code{.cpp}
+for(auto itr=first; itr<last; itr++) {
+  result = bop(result, uop(*itr));
+}
+@endcode
+
+The example below transforms each digit in a string to an integer number
+and then sums up all integers in parallel.
+
+@code{.cpp}
+std::string str = "12345678";
+int sum {0};
+tf::Task task = taskflow.transform_reduce(str.begin(), str.end(), sum,
+  [] (int a, int b) {      // binary reduction operator
+    return a + b;
+  },  
+  [] (char c) -> int {     // unary transformation operator
+    return c - '0';
+  }   
+); 
+executor.run(taskflow).wait(); 
+assert(sum == 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8);  // sum will be 36 
+@endcode
+
+The order in which we apply the binary operator on the transformed elements is @em unspecified.
+It is possible that the binary operator will take @em r-value in both arguments, for example, 
+<tt>bop(uop(*itr1), uop(*itr2))</tt>, due to the transformed temporaries.
+When data passing is expensive, 
+you may define the result type @c T to be move-constructible.
+
+*/
+
+}
+
+
+
+
+
+

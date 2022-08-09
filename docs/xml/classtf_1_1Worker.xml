@@ -1,0 +1,203 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+  <compounddef id="classtf_1_1Worker" kind="class" language="C++" prot="public">
+    <compoundname>tf::Worker</compoundname>
+    <includes refid="worker_8hpp" local="no">worker.hpp</includes>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classtf_1_1Worker_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class Executor</definition>
+        <argsstring></argsstring>
+        <name>Executor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="30" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtf_1_1Worker_1a0f36eeb628ab3803180651682f5821f3" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class WorkerView</definition>
+        <argsstring></argsstring>
+        <name>WorkerView</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="31" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classtf_1_1Worker_1ab21837ab13c416c19d133fc2a73f031c" prot="private" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t tf::Worker::_id</definition>
+        <argsstring></argsstring>
+        <name>_id</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="62" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1Worker_1a59a04a39db3d147221eed60da75a9744" prot="private" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t tf::Worker::_vtm</definition>
+        <argsstring></argsstring>
+        <name>_vtm</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="63" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1Worker_1a0884258c54f630a3b31e4d1e208852bb" prot="private" static="no" mutable="no">
+        <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> *</type>
+        <definition>Executor* tf::Worker::_executor</definition>
+        <argsstring></argsstring>
+        <name>_executor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="64" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1Worker_1a843309d64f4013e49c4bf36684bd1aae" prot="private" static="no" mutable="no">
+        <type><ref refid="cpp/thread/thread" kindref="compound" external="/home/xiongzc/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::thread</ref> *</type>
+        <definition>std::thread* tf::Worker::_thread</definition>
+        <argsstring></argsstring>
+        <name>_thread</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="65" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1Worker_1ac08ba8b8d845b8278a501f836e0cf176" prot="private" static="no" mutable="no">
+        <type>Notifier::Waiter *</type>
+        <definition>Notifier::Waiter* tf::Worker::_waiter</definition>
+        <argsstring></argsstring>
+        <name>_waiter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="66" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1Worker_1a753b13866ccf3badaebf5e92af0bf63f" prot="private" static="no" mutable="no">
+        <type><ref refid="cpp/numeric/random" kindref="compound" external="/home/xiongzc/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::default_random_engine</ref></type>
+        <definition>std::default_random_engine tf::Worker::_rdgen</definition>
+        <argsstring></argsstring>
+        <name>_rdgen</name>
+        <initializer>{ <ref refid="cpp/numeric/random/random_device" kindref="compound" external="/home/xiongzc/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::random_device</ref>{}() }</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="67" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1Worker_1a48d8af5d9ce1227254d202548c9b5f13" prot="private" static="no" mutable="no">
+        <type><ref refid="classtf_1_1TaskQueue" kindref="compound">TaskQueue</ref>&lt; Node * &gt;</type>
+        <definition>TaskQueue&lt;Node*&gt; tf::Worker::_wsq</definition>
+        <argsstring></argsstring>
+        <name>_wsq</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="68" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1Worker_1a128877122bc839b18a58f7adb4a58da5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::Worker::id</definition>
+        <argsstring>() const </argsstring>
+        <name>id</name>
+        <briefdescription>
+<para>queries the worker id associated with its parent executor </para>        </briefdescription>
+        <detaileddescription>
+<para>A worker id is a unsigned integer in the range <computeroutput>[0, N)</computeroutput>, where <computeroutput>N</computeroutput> is the number of workers spawned at the construction time of the executor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="42" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="42" bodyend="42"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1Worker_1aec88b9e6ad48816e156315e0708a8749" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="cpp/thread/thread" kindref="compound" external="/home/xiongzc/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::thread</ref> *</type>
+        <definition>std::thread* tf::Worker::thread</definition>
+        <argsstring>() const </argsstring>
+        <name>thread</name>
+        <briefdescription>
+<para>acquires a pointer access to the underlying thread </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="47" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="47" bodyend="47"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1Worker_1a8f9bfbae4aa2eab204b00fda904e086c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::Worker::queue_size</definition>
+        <argsstring>() const </argsstring>
+        <name>queue_size</name>
+        <briefdescription>
+<para>queries the size of the queue (i.e., number of enqueued tasks to run) associated with the worker </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="53" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="53" bodyend="53"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1Worker_1ae02a5c1b30ad70707a42cee6824a0542" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::Worker::queue_capacity</definition>
+        <argsstring>() const </argsstring>
+        <name>queue_capacity</name>
+        <briefdescription>
+<para>queries the current capacity of the queue </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="58" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="58" bodyend="58"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>class to create a worker in an executor </para>    </briefdescription>
+    <detaileddescription>
+<para>The class is primarily used by the executor to perform work-stealing algorithm. Users can access a worker object and alter its property (e.g., changing the thread affinity in a POSIX-like system) using <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref>. </para>    </detaileddescription>
+    <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="28" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="28" bodyend="69"/>
+    <listofallmembers>
+      <member refid="classtf_1_1Worker_1a0884258c54f630a3b31e4d1e208852bb" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_executor</name></member>
+      <member refid="classtf_1_1Worker_1ab21837ab13c416c19d133fc2a73f031c" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_id</name></member>
+      <member refid="classtf_1_1Worker_1a753b13866ccf3badaebf5e92af0bf63f" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_rdgen</name></member>
+      <member refid="classtf_1_1Worker_1a843309d64f4013e49c4bf36684bd1aae" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_thread</name></member>
+      <member refid="classtf_1_1Worker_1a59a04a39db3d147221eed60da75a9744" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_vtm</name></member>
+      <member refid="classtf_1_1Worker_1ac08ba8b8d845b8278a501f836e0cf176" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_waiter</name></member>
+      <member refid="classtf_1_1Worker_1a48d8af5d9ce1227254d202548c9b5f13" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_wsq</name></member>
+      <member refid="classtf_1_1Worker_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>Executor</name></member>
+      <member refid="classtf_1_1Worker_1a128877122bc839b18a58f7adb4a58da5" prot="public" virt="non-virtual"><scope>tf::Worker</scope><name>id</name></member>
+      <member refid="classtf_1_1Worker_1ae02a5c1b30ad70707a42cee6824a0542" prot="public" virt="non-virtual"><scope>tf::Worker</scope><name>queue_capacity</name></member>
+      <member refid="classtf_1_1Worker_1a8f9bfbae4aa2eab204b00fda904e086c" prot="public" virt="non-virtual"><scope>tf::Worker</scope><name>queue_size</name></member>
+      <member refid="classtf_1_1Worker_1aec88b9e6ad48816e156315e0708a8749" prot="public" virt="non-virtual"><scope>tf::Worker</scope><name>thread</name></member>
+      <member refid="classtf_1_1Worker_1a0f36eeb628ab3803180651682f5821f3" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>WorkerView</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

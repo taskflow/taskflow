@@ -1,0 +1,102 @@
+namespace tf {
+
+/** @page ParallelSort Parallel Sort
+
+%Taskflow provides template functions for constructing tasks
+to sort ranges of items in parallel.
+
+@tableofcontents
+
+@section ParallelSortInclude Include the Header
+
+You need to include the header file, <tt>taskflow/algorithm/sort.hpp</tt>,
+for creating a parallel-sort task.
+
+@code{.cpp}
+#include <taskflow/algorithm/sort.hpp>
+@endcode
+
+@section SortARangeOfItems Sort a Range of Items
+
+The task created by tf::Taskflow::sort(B first, E last) 
+performs parallel sort to rank a range of elements specified by 
+<tt>[first, last)</tt> in increasing order.
+The given iterators must be @em random-accessible.
+The following example creates a task to sort a data vector in increasing order.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+tf::Executor executor;
+
+std::vector<int> data = {1, 4, 9, 2, 3, 11, -8};
+
+tf::Task sort = taskflow.sort(data.begin(), data.end());
+
+executor.run(taskflow).wait();
+
+assert(std::is_sorted(data.begin(), data.end()));
+@endcode
+
+@note
+Elements are compared using the operator @c <.
+
+@section SortARangeOfItemsWithACustomComparator Sort a Range of Items with a Custom Comparator
+
+tf::Taskflow::sort(B first, E last, C cmp) is an overload of 
+parallel sort that allows users to specify a custom comparator.
+The following example sorts a data vector in decreasing order.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+tf::Executor executor;
+
+std::vector<int> data = {1, 4, 9, 2, 3, 11, -8};
+
+tf::Task sort = taskflow.sort(data.begin(), data.end(), 
+  [](int a, int b) { return a > b; }
+);
+
+executor.run(taskflow).wait();
+
+assert(std::is_sorted(data.begin(), data.end(), std::greater<int>{}));
+@endcode
+
+@note
+tf::Taskflow::sort is not stable. That is, two or more objects with equal keys
+may not appear in the same order before sorting.
+
+@section ParallelSortEnableStatefulDataPassing Enable Stateful Data Passing
+
+The iterators taken by tf::Taskflow::sort are templated.
+You can use std::reference_wrapper to enable stateful data passing
+between the sort task and others.
+The following example creates a task @c init to initialize the data vector
+and a task @c sort to sort the data in parallel after @c init finishes.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+tf::Executor executor;
+
+std::vector<int> data;
+std::vector<int>::iterator first, last;
+
+tf::Task init = taskflow.emplace([&](){ 
+  data  = {1, 4, 9, 2, 3, 11, -8}; 
+  first = data.begin();
+  last  = data.end();
+});
+tf::Task sort = taskflow.sort(
+  std::ref(first), std::ref(last), [] (int l, int r) { return l < r; }
+);
+init.precede(sort);
+
+executor.run(taskflow).wait();
+
+assert(std::is_sorted(data.begin(), data.end()));
+@endcode
+
+*/
+
+}
+
+

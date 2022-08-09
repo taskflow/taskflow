@@ -1,0 +1,229 @@
+namespace tf {
+
+/** @page CUDASTDReduce Parallel Reduction 
+
+%Taskflow provides standard template methods for reducing a range of items on a CUDA GPU.
+
+@tableofcontents
+
+@section CUDASTDParallelReductionIncludeTheHeader Include the Header
+
+You need to include the header file, `%taskflow/cuda/algorithm/reduce.hpp`, 
+for using the parallel-reduction algorithm.
+
+@section CUDASTDReduceItemsWithAnInitialValue Reduce a Range of Items with an Initial Value
+
+tf::cuda_reduce performs
+a parallel reduction over a range of elements specified by <tt>[first, last)</tt> 
+using the binary operator @c bop and stores the reduced result in @c result.
+It represents the parallel execution of the following reduction loop on a GPU:
+    
+@code{.cpp}
+while (first != last) {
+  *result = bop(*result, *first++);
+}
+@endcode
+
+The variable @c result participates in the reduction loop and must be initialized
+with an initial value.
+The following code performs a parallel reduction to sum all the numbers in 
+the given range with an initial value @c 1000:
+
+@code{.cpp}
+const size_t N = 1000000;
+int* res = tf::cuda_malloc_shared<int>(1);  // result
+int* vec = tf::cuda_malloc_shared<int>(N);  // vector
+
+// initializes the data
+*res = 1000;
+for(size_t i=0; i<N; i++) 
+  vec[i] = i;
+} 
+
+// queries the required buffer size to reduce N elements using the given policy
+tf::cudaDefaultExecutionPolicy policy;
+auto bytes  = tf::cuda_reduce_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
+
+// *res = 1000 + (0 + 1 + 2 + 3 + 4 + ... + N-1)
+tf::cuda_reduce(policy,
+  vec, vec + N, res, [] __device__ (int a, int b) { return a + b; }, buffer
+);
+
+// synchronize the execution
+policy.synchronize();
+
+// delete the memory
+tf::cuda_free(buffer);
+tf::cuda_free(res);
+tf::cuda_free(vec);
+@endcode
+
+The reduce algorithm runs @em asynchronously through the stream specified
+in the execution policy. You need to synchronize the stream to
+obtain correct results.
+Since the GPU reduction algorithm may require extra buffer to store the 
+temporary results, you must provide a buffer of size at least bytes
+returned from tf::cuda_reduce_buffer_size.
+
+@attention
+You must keep the buffer alive before the reduction call completes.
+
+@section CUDASTDReduceItemsWithoutAnInitialValue Reduce a Range of Items without an Initial Value
+
+tf::cuda_uninitialized_reduce performs a parallel reduction 
+over a range of items without an initial value.
+This method represents a parallel execution of the following reduction loop
+on a GPU:
+    
+@code{.cpp}
+*result = *first++;  // no initial values to participate in the reduction loop
+while (first != last) {
+  *result = bop(*result, *first++);
+}
+@endcode
+
+The variable @c result is directly assigned the reduced value without any initial value
+participating in the reduction loop.
+The following code performs a parallel reduction to sum all the numbers in 
+the given range without any initial value:
+
+@code{.cpp}
+const size_t N = 1000000;
+int* res = tf::cuda_malloc_shared<int>(1);  // result
+int* vec = tf::cuda_malloc_shared<int>(N);  // vector
+
+// initializes the data
+for(size_t i=0; i<N; i++) 
+  vec[i] = i;
+} 
+
+// queries the required buffer size to reduce N elements using the given policy
+tf::cudaDefaultExecutionPolicy policy;
+auto bytes  = tf::cuda_reduce_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
+
+// *res = 0 + 1 + 2 + 3 + 4 + ... + N-1
+tf::cuda_uninitialized_reduce(policy,
+  vec, vec + N, res, [] __device__ (int a, int b) { return a + b; }, buffer
+);
+
+// synchronize the execution
+policy.synchronize();
+
+// delete the buffer
+tf::cuda_free(buffer);
+@endcode
+
+
+@section CUDASTDReduceTransformedItemsWithAnInitialValue Reduce a Range of Transformed Items with an Initial Value
+
+tf::cuda_transform_reduce performs
+a parallel reduction over a range of @em transformed elements 
+specified by <tt>[first, last)</tt>
+using a binary reduce operator @c bop and a unary transform operator @c uop.
+It represents the parallel execution of the following reduction loop on a GPU:
+    
+@code{.cpp}
+while (first != last) {
+  *result = bop(*result, uop(*first++));
+}
+@endcode
+
+The variable @c result participates in the reduction loop and must be initialized
+with an initial value.
+The following code performs a parallel reduction to sum all the transformed numbers 
+multiplied by @c 10 in the given range with an initial value @c 1000:
+
+@code{.cpp}
+const size_t N = 1000000;
+int* res = tf::cuda_malloc_shared<int>(1);  // result
+int* vec = tf::cuda_malloc_shared<int>(N);  // vector
+
+// initializes the data
+*res = 1000;
+for(size_t i=0; i<N; i++) {
+  vec[i] = i;
+} 
+
+// queries the required buffer size to reduce N elements using the given policy
+tf::cudaDefaultExecutionPolicy policy;
+auto bytes  = tf::cuda_reduce_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
+
+// *res = 1000 + (0*10 + 1*10 + 2*10 + 3*10 + 4*10 + ... + (N-1)*10)
+tf::cuda_transform_reduce(policy,
+  vec, vec + N, res, 
+  [] __device__ (int a, int b) { return a + b; },
+  [] __device__ (int a) { return a*10; },
+  buffer
+);
+
+// synchronize the execution
+policy.synchronize();
+
+// delete the buffer
+tf::cuda_free(buffer);
+@endcode
+
+
+@section CUDASTDReduceTransformedItemsWithoutAnInitialValue Reduce a Range of Transformed Items without an Initial Value
+
+tf::cuda_transform_uninitialized_reduce performs a parallel reduction 
+over a range of transformed items without an initial value.
+This method represents a parallel execution of the following reduction loop
+on a GPU:
+    
+@code{.cpp}
+*result = *first++;  // no initial values to participate in the reduction loop
+while (first != last) {
+  *result = bop(*result, uop(*first++));
+}
+@endcode
+
+The variable @c result is directly assigned the reduced value without any initial value
+participating in the reduction loop.
+The following code performs a parallel reduction to sum all the transformed numbers 
+multiplied by @c 10 in the given range without any initial value:
+
+@code{.cpp}
+const size_t N = 1000000;
+int* res = tf::cuda_malloc_shared<int>(1);  // result
+int* vec = tf::cuda_malloc_shared<int>(N);  // vector
+
+// initializes the data
+for(size_t i=0; i<N; i++) {
+  vec[i] = i;
+} 
+
+// queries the required buffer size to reduce N elements using the given policy
+tf::cudaDefaultExecutionPolicy policy;
+auto bytes  = tf::cuda_reduce_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
+
+// *res = 0*10 + 1*10 + 2*10 + 3*10 + 4*10 + ... + (N-1)*10
+tf::cuda_uninitialized_reduce(policy,
+  vec, vec + N, res, 
+  [] __device__ (int a, int b) { return a + b; },
+  [] __device__ (int a) { return a*10; },
+  buffer
+);
+
+// synchronize the execution
+policy.synchronize();
+
+// delete the data
+tf::cuda_free(buffer);
+tf::cuda_free(res);
+tf::cuda_free(vec);
+@endcode
+
+
+*/
+}
+
+
+
+
+
+

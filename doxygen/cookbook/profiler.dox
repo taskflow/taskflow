@@ -1,0 +1,55 @@
+namespace tf {
+
+/** @page Profiler Profile Taskflow Programs
+
+%Taskflow comes with a built-in profiler, @em TFProf, 
+for you to profile and visualize taskflow programs.
+
+@tableofcontents
+
+@image html images/tfprof.png width=100%
+
+@section ProfilerEnableTFProf Enable Taskflow Profiler
+
+All taskflow programs come with a lightweight profiling module 
+to observer worker activities in every executor.
+To enable the profiler,
+set the environment variable @c TF_ENABLE_PROFILER to a file name
+in which the profiling result will be stored.
+
+@code{.shell-session}
+~$ TF_ENABLE_PROFILER=result.json ./my_taskflow
+~$ cat result.json
+[
+{"executor":"0","data":[{"worker":12,"level":0,"data":[{"span":[72,117],"name":"12_0","type":"static"},{"span":[121,123],"name":"12_1","type":"static"},{"span":[123,125],"name":"12_2","type":"static"},{"span":[125,127],"name":"12_3","type":"static"}]}]}
+]
+@endcode
+
+When the program finishes, it generates and saves the profiling data to @c result.json
+in JavaScript Object Notation (JSON) format.
+You can then paste the JSON data to our web-based interface, @TFProf,
+to visualize the execution timelines of tasks and workers.
+The web interface supports the following features:
+  + zoom into a selected window
+  + double click to zoom back to the previously selected window
+  + filter workers
+  + mouse over to show the tooltip of the task
+  + rank tasks in decreasing order of criticality (i.e., execution time)
+
+TFProf implements a clustering-based algorithm to efficiently 
+visualize tasks and their execution timelines in a browser.
+Without losing much visual accuracy,
+each @em clustered task indicates a group of adjacent tasks clustered by 
+the algorithm, and you can zoom in to see these tasks.
+
+
+*/
+
+}
+
+
+
+
+
+
+

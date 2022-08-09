@@ -1,0 +1,44 @@
+namespace tf {
+
+/** @page release-2-6-0 Release 2.6.0 (2020/08/25)
+
+%Taskflow 2.6.0 is the 8th release in the 2.x line! 
+This release includes several new changes such as CPU-GPU tasking, algorithm collection,
+enhanced web-based profiler, documentation, and unit tests.
+
+We have a new <a href="https://taskflow.github.io/">webpage</a> for %Taskflow!
+
+@tableofcontents
+
+@section release-2-6-0_download Download
+
+%Taskflow 2.6.0 can be downloaded from <a href="https://github.com/taskflow/taskflow/releases/tag/v2.6.0">here</a>.
+
+@section release-2-6-0_new_features New Features
+
+@li added explicit join behavior of tf::Subflow (see @ref JoinASubflow and @ref fibonacci)
+@li added version macro (@c TF_VERSION, @c TF_MAJOR_VERSION, @c TF_MINOR_VERSION, @c TF_PATCH_VERSION) to retrieve version info programmatically (tf::version)
+@li added @c TF_BUILD_TESTS and @c TF_BUILD_EXAMPLES (default on) to let users disable the build of tests and examples (see @ref install)
+@li renamed tf::Taskflkow::parallel_for to tf::Taskflow::for_each to follow the STL convention
+@li redesigned tf::Taskflow::for_each and tf::Taskflow::for_each_index using OpenMP-styled scheduling algorithms; this redesign largely improved the performance of parallel-for using a single dynamic task return, but it breaks the previous API that returned a std::pair of tasks to synchronize on a set of static parallel-for tasks. Yet, we believe adopting this change is not difficult (see @ref ParallelIterations).
+@li added multiple unit tests for tf::Taskflow::for_each and tf::Taskflow::for_each_index at different partition algorithms; we have implemented our partition algorithms based on the OpenMP library implementation of LLVM and GCC.
+@li added Mandelbrot application in the benchmark to evaluate the performance of parallel-for
+@li redesigned tf::Taskflow::reduce and tf::Taskflow::transform_reduce based on the parallel architecture of tf::Taskflow::for_each (see @ref ParallelReduction).
+
+
+@section release-2-6-0_bug_fixes Bug Fixes 
+
+@li fixed the bug of iteratively detaching a subflow from a run loop or a condition loop (see @ref DetachASubflow)
+@li fixed the bug of conflict macro with boost (<a href="https://github.com/taskflow/taskflow/issues/184">#184</a>)
+
+@section release-2-6-0_deprecated_items Deprecated Items 
+
+@li removed two methods, tf::detached and tf::joined, due to the new join/detach behavior
+
+@section release-2-6-0_miscellaneous_items Miscellaneous Items
+
+@li improved the section @ref ObserveThreadActivities
+
+*/
+
+}

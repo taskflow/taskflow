@@ -1,0 +1,86 @@
+namespace tf {
+
+/** @page CUDASTDTransform Parallel Transforms
+
+%Taskflow provides template methods for transforming ranges of items
+to different outputs.
+
+@tableofcontents
+
+@section CUDASTDParallelTransformsIncludeTheHeader Include the Header
+
+You need to include the header file, `%taskflow/cuda/algorithm/transform.hpp`, 
+for using the parallel-transform algorithm.
+
+@section CUDASTDTransformARangeOfItems Transform a Range of Items
+
+Parallel-transform algorithm applies the given transform function to a range of items and store the result in another range specified 
+by two iterators, @c first and @c last.
+The task created by tf::cuda_transform(P&& p, I first, I last, O output, C op) 
+represents a parallel execution for the following loop:
+    
+@code{.cpp}
+while (first != last) {
+  *output++ = op(*first++);
+}
+@endcode
+
+The following example creates a transform kernel that transforms an input
+range of @c N items to an output range by multiplying each item by 10.
+
+@code{.cpp}
+tf::cudaDefaultExecutionPolicy policy;
+
+// output[i] = input[i]*10
+tf::cuda_transform(
+  policy, input, input + N, output, [] __device__ (int x) { return x*10; }
+);
+
+// synchronize the execution
+policy.synchronize();
+@endcode
+
+Each iteration is independent of each other and is assigned one kernel thread 
+to run the callable.
+The transform algorithm runs @em asynchronously through the stream specified
+in the execution policy. You need to synchronize the stream to
+obtain correct results.
+
+@section CUDASTDTransformTwoRangesOfItems Transform Two Ranges of Items
+
+You can transform two ranges of items to an output range through a binary operator.
+The task created by 
+tf::cuda_transform(P&& p, I1 first1, I1 last1, I2 first2, O output, C op) 
+represents a parallel execution for the following loop:
+    
+@code{.cpp}
+while (first1 != last1) {
+  *output++ = op(*first1++, *first2++);
+}
+@endcode
+
+The following example creates a transform kernel that transforms two input
+ranges of @c N items to an output range by summing each pair of items 
+in the input ranges.
+
+@code{.cpp}
+tf::cudaDefaultExecutionPolicy policy;
+
+// output[i] = input1[i] + inpu2[i]
+tf::cuda_transform(policy,
+  input1, input1+N, input2, output, []__device__(int a, int b) { return a+b; }
+); 
+
+// synchronize the execution
+policy.synchronize();
+@endcode
+
+
+*/
+}
+
+
+
+
+
+
