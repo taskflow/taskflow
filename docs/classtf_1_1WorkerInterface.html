@@ -48,7 +48,7 @@
         <h1>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>WorkerInterface <span class="m-thin">class</span>
         </h1>
-        <p>class <a href="classtf_1_1WorkerInterface.html" class="m-doc">WorkerInterface</a></p>
+        <p>class to configure worker behavior in an executor</p>
         <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -61,7 +61,7 @@
             </li>
           </ul>
         </nav>
-<p>The <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a> class lets users to interact with the executor to customize the thread behavior, such as calling custom methods before and after a worker enters and leaves the loop.</p><p>When you create an executor, it spawns a set of workers to run tasks. The interaction between the executor and its spawned workers looks like the following:</p><p>for(size_t n=0; n&lt;num_workers; n++) { create_thread([](<a href="classtf_1_1Worker.html" class="m-doc">Worker</a>&amp; worker)</p><p>pre-processing executor-specific worker information ...</p><p>enter the scheduling loop Here, <a href="classtf_1_1WorkerInterface.html#a41c3b931a36bde8eff4aa8d375e8888a" class="m-doc">WorkerInterface::<wbr />scheduler_prologue</a> is invoked, if any</p><pre>while(1) {
+<p>The <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a> class lets users interact with the executor to customize the worker behavior, such as calling custom methods before and after a worker enters and leaves the loop. When you create an executor, it spawns a set of workers to run tasks. The interaction between the executor and its spawned workers looks like the following:</p><p>for(size_t n=0; n&lt;num_workers; n++) { create_thread([](<a href="classtf_1_1Worker.html" class="m-doc">Worker</a>&amp; worker)</p><p>pre-processing executor-specific worker information ...</p><p>enter the scheduling loop Here, <a href="classtf_1_1WorkerInterface.html#a41c3b931a36bde8eff4aa8d375e8888a" class="m-doc">WorkerInterface::<wbr />scheduler_prologue</a> is invoked, if any</p><pre>while(1) {
   perform_work_stealing_algorithm();
   if(stop) {
     break; 
@@ -109,6 +109,7 @@
                 </tr>
               </tbody>
             </table>
+<p>The method is called by the constructor of an executor.</p>
           </div></section>
           <section class="m-doc-details" id="a3e6d68fd4041f433d1b7ca9e5786b57c"><div>
             <h3>
@@ -131,6 +132,7 @@
                 </tr>
               </tbody>
             </table>
+<p>The method is called by the constructor of an executor.</p>
           </div></section>
         </section>
       </div>
