@@ -32,7 +32,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <para><itemizedlist>
 <listitem><para>Added <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> to allow changing properties of workers upon their creations</para></listitem><listitem><para>Added <ref refid="classtf_1_1Executor_1afbff30c324c5887aace09e7fe9a0d607" kindref="member">tf::Executor::loop_until</ref> to allow looping a worker with a custom stop predicate</para></listitem><listitem><para>Extended <ref refid="classtf_1_1TaskQueue" kindref="compound">tf::TaskQueue</ref> to include priority (<ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346f" kindref="member">tf::TaskPriority</ref>)<itemizedlist>
 <listitem><para>See <ref refid="PrioritizedTasking" kindref="compound">Prioritized Tasking</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Extended <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> to include <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref></para></listitem></itemizedlist>
+</para></listitem><listitem><para>Extended <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> to include <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref></para></listitem><listitem><para>Improved parallel algorithms (e.g., <ref refid="classtf_1_1FlowBuilder_1ab405d7b10040530d8b04c11767b4960d" kindref="member">tf::Taskflow::for_each</ref>) with tail optimization</para></listitem></itemizedlist>
 </para></sect2>
 <sect2 id="release-3-5-0_1release-3-5-0_cudaflow">
 <title>cudaFlow</title>

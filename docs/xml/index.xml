@@ -549,11 +549,11 @@
   <compound refid="structtf_1_1cudaFlow_1_1External" kind="struct"><name>tf::cudaFlow::External</name>
     <member refid="structtf_1_1cudaFlow_1_1External_1add55ef590408418dee0c8b79db7a747b" kind="variable"><name>graph</name></member>
   </compound>
-  <compound refid="structtf_1_1cudaFlowCapturer_1_1External" kind="struct"><name>tf::cudaFlowCapturer::External</name>
-    <member refid="structtf_1_1cudaFlowCapturer_1_1External_1acb0595d884b28d21f661595e718c3cc2" kind="variable"><name>graph</name></member>
-  </compound>
   <compound refid="structtf_1_1syclFlow_1_1External" kind="struct"><name>tf::syclFlow::External</name>
     <member refid="structtf_1_1syclFlow_1_1External_1ace2afbeee949bd808c7e374bdceb0467" kind="variable"><name>graph</name></member>
+  </compound>
+  <compound refid="structtf_1_1cudaFlowCapturer_1_1External" kind="struct"><name>tf::cudaFlowCapturer::External</name>
+    <member refid="structtf_1_1cudaFlowCapturer_1_1External_1acb0595d884b28d21f661595e718c3cc2" kind="variable"><name>graph</name></member>
   </compound>
   <compound refid="classtf_1_1FlowBuilder" kind="class"><name>tf::FlowBuilder</name>
     <member refid="classtf_1_1FlowBuilder_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -626,13 +626,13 @@
     <member refid="structtf_1_1cudaFlow_1_1Internal_1a699f86e6abe3d2aa41432898feb5f281" kind="variable"><name>executor</name></member>
     <member refid="structtf_1_1cudaFlow_1_1Internal_1a885341edb70e164ef4010de5346ec8f0" kind="function"><name>Internal</name></member>
   </compound>
-  <compound refid="structtf_1_1syclFlow_1_1Internal" kind="struct"><name>tf::syclFlow::Internal</name>
-    <member refid="structtf_1_1syclFlow_1_1Internal_1a9bbc7eb920ae573d5360cae1cd7fb03d" kind="variable"><name>executor</name></member>
-    <member refid="structtf_1_1syclFlow_1_1Internal_1a25015cffaeb326799d37ecb8ca5baceb" kind="function"><name>Internal</name></member>
-  </compound>
   <compound refid="structtf_1_1cudaFlowCapturer_1_1Internal" kind="struct"><name>tf::cudaFlowCapturer::Internal</name>
     <member refid="structtf_1_1cudaFlowCapturer_1_1Internal_1a308a6dfd7a2fd2d6cd3d391fa9377493" kind="variable"><name>executor</name></member>
     <member refid="structtf_1_1cudaFlowCapturer_1_1Internal_1a3c1426585bbb7e10549f24aaa7b93be3" kind="function"><name>Internal</name></member>
+  </compound>
+  <compound refid="structtf_1_1syclFlow_1_1Internal" kind="struct"><name>tf::syclFlow::Internal</name>
+    <member refid="structtf_1_1syclFlow_1_1Internal_1a9bbc7eb920ae573d5360cae1cd7fb03d" kind="variable"><name>executor</name></member>
+    <member refid="structtf_1_1syclFlow_1_1Internal_1a25015cffaeb326799d37ecb8ca5baceb" kind="function"><name>Internal</name></member>
   </compound>
   <compound refid="structtf_1_1IsPod" kind="struct"><name>tf::IsPod</name>
   </compound>
@@ -762,6 +762,8 @@
     <member refid="structtf_1_1ProfileData_1aca16c42f4ae3056bddcc1f14b9216958" kind="function"><name>ProfileData</name></member>
     <member refid="structtf_1_1ProfileData_1a78c6fcf63302872220bd75ef82cd1a55" kind="function"><name>operator=</name></member>
     <member refid="structtf_1_1ProfileData_1a12535e834bc6e429f3815c90162e1c57" kind="function"><name>operator=</name></member>
+    <member refid="structtf_1_1ProfileData_1ac8bd5a12ea62aa7f5c1afbcceae1b075" kind="function"><name>save</name></member>
+    <member refid="structtf_1_1ProfileData_1a8ba1ef7e916c4b827707a48c886381c4" kind="function"><name>load</name></member>
   </compound>
   <compound refid="structtf_1_1cudaFlowCapturer_1_1Proxy" kind="struct"><name>tf::cudaFlowCapturer::Proxy</name>
   </compound>
@@ -816,6 +818,8 @@
     <member refid="structtf_1_1Segment_1a8f567dbac067898e2e5c4d4947b04fb4" kind="variable"><name>type</name></member>
     <member refid="structtf_1_1Segment_1aad42f04f26507aa8ad977627774ee2b4" kind="variable"><name>beg</name></member>
     <member refid="structtf_1_1Segment_1ae7558748ed58c8e274539295e6c6d770" kind="variable"><name>end</name></member>
+    <member refid="structtf_1_1Segment_1a24021971938c984d134c29a44b5b6093" kind="function"><name>save</name></member>
+    <member refid="structtf_1_1Segment_1a74c1671a8ec913fac3a675bb4c5c9be3" kind="function"><name>load</name></member>
     <member refid="structtf_1_1Segment_1ad6393c5cf90f07b0eda6bf0c0321322d" kind="function"><name>Segment</name></member>
     <member refid="structtf_1_1Segment_1aab1d1ddd792d5b7b312ad14532034054" kind="function"><name>Segment</name></member>
     <member refid="structtf_1_1Segment_1a336d5825032b4b9085f1e78a1fa26341" kind="function"><name>span</name></member>
@@ -1009,6 +1013,18 @@
     <member refid="classtf_1_1Subflow_1a1c0af82b2cd8ee9fb381714452d6912b" kind="function"><name>_named_async</name></member>
     <member refid="classtf_1_1Subflow_1a85ef182a840e26d424b961c488a464d9" kind="function"><name>_named_silent_async</name></member>
   </compound>
+  <compound refid="structtf_1_1TFProfObserver_1_1Summary" kind="struct"><name>tf::TFProfObserver::Summary</name>
+    <member refid="structtf_1_1TFProfObserver_1_1Summary_1ab19b2d75d9114064ea88c24b991e3b45" kind="variable"><name>tsum</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1Summary_1acedcc0c1efd703f6b7c5ffe82d9bdabf" kind="variable"><name>wsum</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1Summary_1aa59e1a4195d9fb7378f75ad27261bfdd" kind="function"><name>dump_tsum</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1Summary_1a94eb7887b66179efda784941e592ae40" kind="function"><name>dump_wsum</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1Summary_1ae9a3467e622801c8482bc7f1e5fbbd67" kind="function"><name>dump</name></member>
+  </compound>
+  <compound refid="structtf_1_1Node_1_1syclFlow" kind="struct"><name>tf::Node::syclFlow</name>
+    <member refid="structtf_1_1Node_1_1syclFlow_1a0755dfffb5144f9923d986194c282420" kind="variable"><name>work</name></member>
+    <member refid="structtf_1_1Node_1_1syclFlow_1a584dcf5ee530c16455e41199c0dbb8d6" kind="variable"><name>graph</name></member>
+    <member refid="structtf_1_1Node_1_1syclFlow_1ad21223d0f39fcda58a4fa050664fb876" kind="function"><name>syclFlow</name></member>
+  </compound>
   <compound refid="classtf_1_1syclFlow" kind="class"><name>tf::syclFlow</name>
     <member refid="classtf_1_1syclFlow_1a946b048dd1f13121d8998d8d943e216e" kind="typedef"><name>handle_t</name></member>
     <member refid="classtf_1_1syclFlow_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -1046,11 +1062,6 @@
     <member refid="classtf_1_1syclFlow_1a90c1559f1db6644ce0f06c76659cc735" kind="function"><name>parallel_for</name></member>
     <member refid="classtf_1_1syclFlow_1ad0d9d75c49a0d0efe4e026d8c874b598" kind="function"><name>single_task</name></member>
     <member refid="classtf_1_1syclFlow_1a90ff935d7a98daadf3e4f9f4aa663b95" kind="function"><name>syclFlow</name></member>
-  </compound>
-  <compound refid="structtf_1_1Node_1_1syclFlow" kind="struct"><name>tf::Node::syclFlow</name>
-    <member refid="structtf_1_1Node_1_1syclFlow_1a0755dfffb5144f9923d986194c282420" kind="variable"><name>work</name></member>
-    <member refid="structtf_1_1Node_1_1syclFlow_1a584dcf5ee530c16455e41199c0dbb8d6" kind="variable"><name>graph</name></member>
-    <member refid="structtf_1_1Node_1_1syclFlow_1ad21223d0f39fcda58a4fa050664fb876" kind="function"><name>syclFlow</name></member>
   </compound>
   <compound refid="classtf_1_1syclTask" kind="class"><name>tf::syclTask</name>
     <member refid="classtf_1_1syclTask_1a455510eca2667dc9fbd73f542cca61a2" kind="friend"><name>syclFlow</name></member>
@@ -1157,6 +1168,14 @@
     <member refid="classtf_1_1TaskQueue_1ab606d0aae898033208d10c7ef44fbcb2" kind="function"><name>steal</name></member>
     <member refid="classtf_1_1TaskQueue_1a3529facba0cc44f75cb4a12c440ae073" kind="function"><name>steal</name></member>
   </compound>
+  <compound refid="structtf_1_1TFProfObserver_1_1TaskSummary" kind="struct"><name>tf::TFProfObserver::TaskSummary</name>
+    <member refid="structtf_1_1TFProfObserver_1_1TaskSummary_1a5fa5b907905c841525c183de80cc4779" kind="variable"><name>type</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1TaskSummary_1a8d5ae242b9a13dde380122f9fa1ee58a" kind="variable"><name>count</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1TaskSummary_1abfb35499e1c1168896dd0a479c094095" kind="variable"><name>total_span</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1TaskSummary_1ac4ef1685aa1e8192deea59919462dfd7" kind="variable"><name>min_span</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1TaskSummary_1aceb22e37f1c12bf9b27db4a03a0d2316" kind="variable"><name>max_span</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1TaskSummary_1ac5220ba82a25714ec5e9440e0eafd2e2" kind="function"><name>avg_span</name></member>
+  </compound>
   <compound refid="classtf_1_1TaskView" kind="class"><name>tf::TaskView</name>
     <member refid="classtf_1_1TaskView_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
     <member refid="classtf_1_1TaskView_1a05d718be8be0374448b570276709bedb" kind="variable"><name>_node</name></member>
@@ -1192,11 +1211,19 @@
     <member refid="classtf_1_1TFProfObserver_1a07f9db5edc30436d8ec55bdaecca5aaa" kind="variable"><name>_stacks</name></member>
     <member refid="classtf_1_1TFProfObserver_1a9f1e839e2a8d3abd0b91ac454f0d078b" kind="function"><name>dump</name></member>
     <member refid="classtf_1_1TFProfObserver_1a59e82cb3f9b0ada38aa1ddea14f14d02" kind="function"><name>dump</name></member>
+    <member refid="classtf_1_1TFProfObserver_1a6102cedbaf2e40f8b8ff916827297198" kind="function"><name>summary</name></member>
+    <member refid="classtf_1_1TFProfObserver_1a6f12a927a328bd594cf6c3c3a6bfe992" kind="function"><name>summary</name></member>
     <member refid="classtf_1_1TFProfObserver_1a5e1f63034a96a5a79cef6da412efd203" kind="function"><name>clear</name></member>
     <member refid="classtf_1_1TFProfObserver_1a8b3b0bee8762af654cfebd2bb2ee98ed" kind="function"><name>num_tasks</name></member>
+    <member refid="classtf_1_1TFProfObserver_1a62ccf28199e35748903559848072fc29" kind="function"><name>num_workers</name></member>
     <member refid="classtf_1_1TFProfObserver_1aa030d8154dd03aea3b8fa8ce42e1151b" kind="function"><name>set_up</name></member>
     <member refid="classtf_1_1TFProfObserver_1a5debfce27f7e012d22872c134b261c63" kind="function"><name>on_entry</name></member>
     <member refid="classtf_1_1TFProfObserver_1af3a1630b5b1db5341a239a5d4c12c891" kind="function"><name>on_exit</name></member>
+  </compound>
+  <compound refid="structtf_1_1ChromeObserver_1_1Timeline" kind="struct"><name>tf::ChromeObserver::Timeline</name>
+    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a3b3761840cd96e8af15e35ba65093e3d" kind="variable"><name>origin</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a68e28885dc55ee0c4a910efb8e89919e" kind="variable"><name>segments</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a9094de2f3a2857b6e0d8ccea358aaa0e" kind="variable"><name>stacks</name></member>
   </compound>
   <compound refid="structtf_1_1Timeline" kind="struct"><name>tf::Timeline</name>
     <member refid="structtf_1_1Timeline_1ad2de68d870637ec1fccd98c2c8973c9f" kind="variable"><name>uid</name></member>
@@ -1207,11 +1234,8 @@
     <member refid="structtf_1_1Timeline_1a2da600f14a05fd319237d79944d3bb4d" kind="function"><name>Timeline</name></member>
     <member refid="structtf_1_1Timeline_1a947baa8607959e2204d7df20a850df86" kind="function"><name>operator=</name></member>
     <member refid="structtf_1_1Timeline_1a9f315578cf84dd0ddfa4bff43762eebb" kind="function"><name>operator=</name></member>
-  </compound>
-  <compound refid="structtf_1_1ChromeObserver_1_1Timeline" kind="struct"><name>tf::ChromeObserver::Timeline</name>
-    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a3b3761840cd96e8af15e35ba65093e3d" kind="variable"><name>origin</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a68e28885dc55ee0c4a910efb8e89919e" kind="variable"><name>segments</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a9094de2f3a2857b6e0d8ccea358aaa0e" kind="variable"><name>stacks</name></member>
+    <member refid="structtf_1_1Timeline_1a435fff911fa14d75c7000f1a908cee57" kind="function"><name>save</name></member>
+    <member refid="structtf_1_1Timeline_1af08d956eca1550dcbe161eb53a11fe46" kind="function"><name>load</name></member>
   </compound>
   <compound refid="classtf_1_1Worker" kind="class"><name>tf::Worker</name>
     <member refid="classtf_1_1Worker_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -1232,6 +1256,15 @@
     <member refid="classtf_1_1WorkerInterface_1a4f086cadaabff4094cf07fd387b2e185" kind="function"><name>~WorkerInterface</name></member>
     <member refid="classtf_1_1WorkerInterface_1a41c3b931a36bde8eff4aa8d375e8888a" kind="function"><name>scheduler_prologue</name></member>
     <member refid="classtf_1_1WorkerInterface_1a3e6d68fd4041f433d1b7ca9e5786b57c" kind="function"><name>scheduler_epilogue</name></member>
+  </compound>
+  <compound refid="structtf_1_1TFProfObserver_1_1WorkerSummary" kind="struct"><name>tf::TFProfObserver::WorkerSummary</name>
+    <member refid="structtf_1_1TFProfObserver_1_1WorkerSummary_1a0e19f9b6dac7b433f0ff817c4cad7902" kind="variable"><name>id</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1WorkerSummary_1aba890e5db5231cae8bbb9a7dde220fad" kind="variable"><name>level</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1WorkerSummary_1aeea3d821e97a0ace6b52794af1a5d0c3" kind="variable"><name>count</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1WorkerSummary_1a26c54c572e38a10e3e1e85d48c3a957f" kind="variable"><name>total_delay</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1WorkerSummary_1a6ce7e5bc3e33a7e592c098da9e69cf7c" kind="variable"><name>min_delay</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1WorkerSummary_1aadb28d1c5c59363b130b85eb4c636464" kind="variable"><name>max_delay</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1WorkerSummary_1ab08741c8be85b5d7c7b52ed6479b4305" kind="function"><name>avg_delay</name></member>
   </compound>
   <compound refid="classtf_1_1WorkerView" kind="class"><name>tf::WorkerView</name>
     <member refid="classtf_1_1WorkerView_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>

@@ -197,9 +197,9 @@ TEST_CASE("Runtime.Subflow.8threads" * doctest::timeout(300)){
 
 void pipeline_sp_runtime_subflow(size_t w) {
   
-  const size_t num_lines = 2;
-  const size_t subtask = 2;
-  const size_t max_tokens = 100000;
+  size_t num_lines = 2;
+  size_t subtask = 2;
+  size_t max_tokens = 100000;
 
   tf::Executor executor(w);
   tf::Taskflow taskflow;
@@ -277,9 +277,9 @@ TEST_CASE("Pipeline(SP).Runtime.Subflow.8threads" * doctest::timeout(300)){
 
 void pipeline_spspspsp_runtime_subflow(size_t w) {
   
-  const size_t num_lines = 4;
-  const size_t subtasks = 8;
-  const size_t max_tokens = 4096;
+  size_t num_lines = 4;
+  size_t subtasks = 8;
+  size_t max_tokens = 4096;
 
   tf::Executor executor(w);
   tf::Taskflow taskflow;
@@ -430,8 +430,8 @@ TEST_CASE("Pipeline(SPSPSPSP).Runtime.Subflow.8threads" * doctest::timeout(300))
 
 void pipeline_spspspsp_runtime_irregular_subflow(size_t w) {
   
-  const size_t num_lines = 4;
-  const size_t max_tokens = 32767;
+  size_t num_lines = 4;
+  size_t max_tokens = 32767;
 
   tf::Executor executor(w);
   tf::Taskflow taskflow;
@@ -651,9 +651,9 @@ TEST_CASE("Pipeline(SPSPSPSP).Runtime.Irregular.Subflow.8threads" * doctest::tim
 
 void scalable_pipeline_spspspsp_runtime_subflow(size_t w) {
   
-  const size_t num_lines = 4;
-  const size_t subtasks = 8;
-  const size_t max_tokens = 4096;
+  size_t num_lines = 4;
+  size_t subtasks = 8;
+  size_t max_tokens = 4096;
 
   tf::Executor executor(w);
   tf::Taskflow taskflow;

@@ -171,13 +171,14 @@ inline size_t WorkerView::queue_capacity() const {
 // ----------------------------------------------------------------------------
 
 /**
-@brief class WorkerInterface
+@class WorkerInterface
 
-The tf::WorkerInterface class lets users to interact with the executor
-to customize the thread behavior,
+@brief class to configure worker behavior in an executor
+
+The tf::WorkerInterface class lets users interact with the executor
+to customize the worker behavior,
 such as calling custom methods before and after a worker enters and leaves
 the loop.
-
 When you create an executor, it spawns a set of workers to run tasks.
 The interaction between the executor and its spawned workers looks like
 the following:
@@ -220,6 +221,8 @@ class WorkerInterface {
   /**
   @brief method to call before a worker enters the scheduling loop
   @param worker a reference to the worker
+
+  The method is called by the constructor of an executor.
   */
   virtual void scheduler_prologue(Worker& worker) = 0;
   
@@ -227,6 +230,8 @@ class WorkerInterface {
   @brief method to call after a worker leaves the scheduling loop
   @param worker a reference to the worker
   @param ptr an pointer to the exception thrown by the scheduling loop
+
+  The method is called by the constructor of an executor.
   */
   virtual void scheduler_epilogue(Worker& worker, std::exception_ptr ptr) = 0;
 

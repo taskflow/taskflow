@@ -125,33 +125,79 @@
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="71" column="1"/>
       </memberdef>
+      <memberdef kind="function" id="structtf_1_1Timeline_1a435fff911fa14d75c7000f1a908cee57" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Archiver</type>
+          </param>
+        </templateparamlist>
+        <type>auto</type>
+        <definition>auto tf::Timeline::save</definition>
+        <argsstring>(Archiver &amp;ar) const</argsstring>
+        <name>save</name>
+        <param>
+          <type>Archiver &amp;</type>
+          <declname>ar</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="74" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="74" bodyend="76"/>
+      </memberdef>
+      <memberdef kind="function" id="structtf_1_1Timeline_1af08d956eca1550dcbe161eb53a11fe46" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Archiver</type>
+          </param>
+        </templateparamlist>
+        <type>auto</type>
+        <definition>auto tf::Timeline::load</definition>
+        <argsstring>(Archiver &amp;ar)</argsstring>
+        <name>load</name>
+        <param>
+          <type>Archiver &amp;</type>
+          <declname>ar</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="79" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="79" bodyend="81"/>
+      </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
-      <node id="306">
+      <node id="317">
         <label>tf::Timeline</label>
-        <childnode refid="307" relation="usage">
+        <childnode refid="318" relation="usage">
           <edgelabel>segments</edgelabel>
         </childnode>
-        <childnode refid="308" relation="usage">
+        <childnode refid="319" relation="usage">
           <edgelabel>origin</edgelabel>
         </childnode>
       </node>
-      <node id="308">
+      <node id="319">
         <label>std::chrono::time_point&lt; std::chrono::steady_clock &gt;</label>
       </node>
-      <node id="307">
+      <node id="318">
         <label>std::vector&lt; std::vector&lt; std::vector&lt; Segment &gt; &gt; &gt;</label>
       </node>
     </collaborationgraph>
     <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="58" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="58" bodyend="82"/>
     <listofallmembers>
+      <member refid="structtf_1_1Timeline_1af08d956eca1550dcbe161eb53a11fe46" prot="public" virt="non-virtual"><scope>tf::Timeline</scope><name>load</name></member>
       <member refid="structtf_1_1Timeline_1a947baa8607959e2204d7df20a850df86" prot="public" virt="non-virtual"><scope>tf::Timeline</scope><name>operator=</name></member>
       <member refid="structtf_1_1Timeline_1a9f315578cf84dd0ddfa4bff43762eebb" prot="public" virt="non-virtual"><scope>tf::Timeline</scope><name>operator=</name></member>
       <member refid="structtf_1_1Timeline_1ad38c8a527bc603571c53cfce08ccbab7" prot="public" virt="non-virtual"><scope>tf::Timeline</scope><name>origin</name></member>
+      <member refid="structtf_1_1Timeline_1a435fff911fa14d75c7000f1a908cee57" prot="public" virt="non-virtual"><scope>tf::Timeline</scope><name>save</name></member>
       <member refid="structtf_1_1Timeline_1a5a942a8ff1ad574d7fc339540be960c4" prot="public" virt="non-virtual"><scope>tf::Timeline</scope><name>segments</name></member>
       <member refid="structtf_1_1Timeline_1a2c5e949150d6ac49dfcb9c0ff51ba519" prot="public" virt="non-virtual"><scope>tf::Timeline</scope><name>Timeline</name></member>
       <member refid="structtf_1_1Timeline_1af744379a935c916c98596e43cd416047" prot="public" virt="non-virtual"><scope>tf::Timeline</scope><name>Timeline</name></member>
