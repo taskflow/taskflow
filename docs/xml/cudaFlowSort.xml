@@ -1,22 +1,42 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="cudaFlowSort" kind="page">
     <compoundname>cudaFlowSort</compoundname>
     <title>Parallel Sort</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Include the Header</name>
+        <reference>cudaFlowSort_1CUDAParallelSortIncludeTheHeader</reference>
+    </tocsect>
+      <tocsect>
+        <name>Sort a Range of Items</name>
+        <reference>cudaFlowSort_1cudaFlowSortARangeofItems</reference>
+    </tocsect>
+      <tocsect>
+        <name>Sort a Range of Key-Value Items</name>
+        <reference>cudaFlowSort_1cudaFlowSortKeyValueItems</reference>
+    </tocsect>
+      <tocsect>
+        <name>Miscellaneous Items</name>
+        <reference>cudaFlowSort_1cudaFlowSortMiscellaneousItems</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>cudaFlow provides template methods to create parallel sort tasks on a CUDA GPU.</para><sect1 id="cudaFlowSort_1CUDAParallelSortIncludeTheHeader">
+<para>cudaFlow provides template methods to create parallel sort tasks on a CUDA GPU.</para>
+<sect1 id="cudaFlowSort_1CUDAParallelSortIncludeTheHeader">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/sort.hpp</computeroutput>, for creating a parallel-sort task.</para></sect1>
+<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/sort.hpp</computeroutput>, for creating a parallel-sort task.</para>
+</sect1>
 <sect1 id="cudaFlowSort_1cudaFlowSortARangeofItems">
 <title>Sort a Range of Items</title>
-<para><ref refid="classtf_1_1cudaFlow_1ae462d455fed06dfcdbd1e25a2c9c5da6" kindref="member">tf::cudaFlow::sort</ref> performs an in-place parallel sort over a range of elements specified by <computeroutput>[first, last)</computeroutput> using the given comparator. The following code sorts one million random integers in an increasing order on a GPU.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+<para><ref refid="classtf_1_1cudaFlow_1ae462d455fed06dfcdbd1e25a2c9c5da6" kindref="member">tf::cudaFlow::sort</ref> performs an in-place parallel sort over a range of elements specified by <computeroutput>[first, last)</computeroutput> using the given comparator. The following code sorts one million random integers in an increasing order on a GPU.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>vec<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>vec[i++]=<ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>vec[i++]=<ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>cudaFlow<sp/>of<sp/>one<sp/>task<sp/>to<sp/>perform<sp/>parallel<sp/>sort</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
@@ -26,11 +46,13 @@
 <codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">offload</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(std::is_sorted(vec,<sp/>vec+N));</highlight></codeline>
-</programlisting></para><para>You can specify a different comparator to <ref refid="classtf_1_1cudaFlow_1ae462d455fed06dfcdbd1e25a2c9c5da6" kindref="member">tf::cudaFlow::sort</ref> to alter the sorting order. For example, the following code sorts one million random integers in an decreasing order on a GPU.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+</programlisting></para>
+<para>You can specify a different comparator to <ref refid="classtf_1_1cudaFlow_1ae462d455fed06dfcdbd1e25a2c9c5da6" kindref="member">tf::cudaFlow::sort</ref> to alter the sorting order. For example, the following code sorts one million random integers in an decreasing order on a GPU.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>vec<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>vec[i++]=<ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>vec[i++]=<ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>cudaFlow<sp/>of<sp/>one<sp/>task<sp/>to<sp/>perform<sp/>parallel<sp/>sort</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
@@ -40,10 +62,12 @@
 <codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">offload</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(std::is_sorted(vec,<sp/>vec+N,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>&gt;<sp/>b;<sp/>}));</highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+</sect1>
 <sect1 id="cudaFlowSort_1cudaFlowSortKeyValueItems">
 <title>Sort a Range of Key-Value Items</title>
-<para><ref refid="classtf_1_1cudaFlow_1a979739fcf70fbd760ad1a7682a8dfea8" kindref="member">tf::cudaFlow::sort_by_key</ref> sorts a range of key-value items into ascending key order. If <computeroutput>i</computeroutput> and <computeroutput>j</computeroutput> are any two valid iterators in <computeroutput>[k_first, k_last)</computeroutput> such that <computeroutput>i</computeroutput> precedes <computeroutput>j</computeroutput>, and <computeroutput>p</computeroutput> and <computeroutput>q</computeroutput> are iterators in <computeroutput>[v_first, v_first + (k_last - k_first))</computeroutput> corresponding to <computeroutput>i</computeroutput> and <computeroutput>j</computeroutput> respectively, then <computeroutput>comp(*j, *i)</computeroutput> evaluates to <computeroutput>false</computeroutput>. The following example sorts a range of items into ascending key order and swaps their corresponding values:</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>4;</highlight></codeline>
+<para><ref refid="classtf_1_1cudaFlow_1a979739fcf70fbd760ad1a7682a8dfea8" kindref="member">tf::cudaFlow::sort_by_key</ref> sorts a range of key-value items into ascending key order. If <computeroutput>i</computeroutput> and <computeroutput>j</computeroutput> are any two valid iterators in <computeroutput>[k_first, k_last)</computeroutput> such that <computeroutput>i</computeroutput> precedes <computeroutput>j</computeroutput>, and <computeroutput>p</computeroutput> and <computeroutput>q</computeroutput> are iterators in <computeroutput>[v_first, v_first + (k_last - k_first))</computeroutput> corresponding to <computeroutput>i</computeroutput> and <computeroutput>j</computeroutput> respectively, then <computeroutput>comp(*j, *i)</computeroutput> evaluates to <computeroutput>false</computeroutput>. The following example sorts a range of items into ascending key order and swaps their corresponding values:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>4;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>vec<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>keys</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>idx<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>values</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -63,11 +87,16 @@
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(buffer);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(vec);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(idx);</highlight></codeline>
-</programlisting></para><para>While you can capture the values into the lambda and sort them indirectly using plain <ref refid="classtf_1_1cudaFlow_1ae462d455fed06dfcdbd1e25a2c9c5da6" kindref="member">tf::cudaFlow::sort</ref>, this organization will result in frequent and costly access to the global memory. For example, we can sort <computeroutput>idx</computeroutput> indirectly using the captured keys in <computeroutput>vec:</computeroutput> </para><para><programlisting filename=".cpp"><codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlow_1ae462d455fed06dfcdbd1e25a2c9c5da6" kindref="member">sort</ref>(idx,<sp/>idx+N,<sp/>[vec]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>vec[a]<sp/>&lt;<sp/>vec[b];<sp/>});</highlight></codeline>
-</programlisting></para><para>The comparator here will frequently access the global memory of <computeroutput>vec</computeroutput>, resulting in high memory latency. Instead, you should use <ref refid="classtf_1_1cudaFlow_1a979739fcf70fbd760ad1a7682a8dfea8" kindref="member">tf::cudaFlow::sort_by_key</ref> that has been optimized for this purpose.</para></sect1>
+</programlisting></para>
+<para>While you can capture the values into the lambda and sort them indirectly using plain <ref refid="classtf_1_1cudaFlow_1ae462d455fed06dfcdbd1e25a2c9c5da6" kindref="member">tf::cudaFlow::sort</ref>, this organization will result in frequent and costly access to the global memory. For example, we can sort <computeroutput>idx</computeroutput> indirectly using the captured keys in <computeroutput>vec:</computeroutput> </para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlow_1ae462d455fed06dfcdbd1e25a2c9c5da6" kindref="member">sort</ref>(idx,<sp/>idx+N,<sp/>[vec]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>vec[a]<sp/>&lt;<sp/>vec[b];<sp/>});</highlight></codeline>
+</programlisting></para>
+<para>The comparator here will frequently access the global memory of <computeroutput>vec</computeroutput>, resulting in high memory latency. Instead, you should use <ref refid="classtf_1_1cudaFlow_1a979739fcf70fbd760ad1a7682a8dfea8" kindref="member">tf::cudaFlow::sort_by_key</ref> that has been optimized for this purpose.</para>
+</sect1>
 <sect1 id="cudaFlowSort_1cudaFlowSortMiscellaneousItems">
 <title>Miscellaneous Items</title>
-<para>Parallel sort algorithms are also available in <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> with the same API. </para></sect1>
+<para>Parallel sort algorithms are also available in <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> with the same API. </para>
+</sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

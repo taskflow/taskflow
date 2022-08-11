@@ -1,17 +1,36 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="matrix_multiplication" kind="page">
     <compoundname>matrix_multiplication</compoundname>
     <title>Matrix Multiplication</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Problem Formulation</name>
+        <reference>matrix_multiplication_1MatrixMultiplicationProblem</reference>
+    </tocsect>
+      <tocsect>
+        <name>Parallel Patterns</name>
+        <reference>matrix_multiplication_1MatrixMultiplicationParallelPattern</reference>
+    </tocsect>
+      <tocsect>
+        <name>Benchmarking</name>
+        <reference>matrix_multiplication_1MatrixMultiplicationBenchmarking</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>We study the classic problem, <emphasis>2D matrix multiplication</emphasis>. We will start with a short introduction about the problem and then discuss how to solve it parallel CPUs.</para><sect1 id="matrix_multiplication_1MatrixMultiplicationProblem">
+<para>We study the classic problem, <emphasis>2D matrix multiplication</emphasis>. We will start with a short introduction about the problem and then discuss how to solve it parallel CPUs.</para>
+<sect1 id="matrix_multiplication_1MatrixMultiplicationProblem">
 <title>Problem Formulation</title>
-<para>We are multiplying two matrices, <computeroutput>A</computeroutput> (<computeroutput>MxK</computeroutput>) and <computeroutput>B</computeroutput> (<computeroutput>KxN</computeroutput>). The numbers of columns of <computeroutput>A</computeroutput> must match the number of rows of <computeroutput>B</computeroutput>. The output matrix <computeroutput>C</computeroutput> has the shape of <computeroutput></computeroutput>(MxN) where <computeroutput>M</computeroutput> is the rows of <computeroutput>A</computeroutput> and <computeroutput>N</computeroutput> the columns of <computeroutput>B</computeroutput>. The following example multiplies a <computeroutput>3x3</computeroutput> matrix with a <computeroutput>3x2</computeroutput> matrix to derive a <computeroutput>3x2</computeroutput> matrix.</para><para><image type="html" name="matrix_multiplication_1.png" width="50%"></image>
-</para><para>As a general view, for each element of <computeroutput>C</computeroutput> we iterate a complete row of <computeroutput>A</computeroutput> and a complete column of <computeroutput>B</computeroutput>, multiplying each element and summing them.</para><para><image type="html" name="matrix_multiplication_2.png" width="50%"></image>
-</para><para>We can implement matrix multiplication using three nested loops.</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>m=0;<sp/>m&lt;M;<sp/>m++)<sp/>{</highlight></codeline>
+<para>We are multiplying two matrices, <computeroutput>A</computeroutput> (<computeroutput>MxK</computeroutput>) and <computeroutput>B</computeroutput> (<computeroutput>KxN</computeroutput>). The numbers of columns of <computeroutput>A</computeroutput> must match the number of rows of <computeroutput>B</computeroutput>. The output matrix <computeroutput>C</computeroutput> has the shape of <computeroutput></computeroutput>(MxN) where <computeroutput>M</computeroutput> is the rows of <computeroutput>A</computeroutput> and <computeroutput>N</computeroutput> the columns of <computeroutput>B</computeroutput>. The following example multiplies a <computeroutput>3x3</computeroutput> matrix with a <computeroutput>3x2</computeroutput> matrix to derive a <computeroutput>3x2</computeroutput> matrix.</para>
+<para><image type="html" name="matrix_multiplication_1.png" width="50%"></image>
+</para>
+<para>As a general view, for each element of <computeroutput>C</computeroutput> we iterate a complete row of <computeroutput>A</computeroutput> and a complete column of <computeroutput>B</computeroutput>, multiplying each element and summing them.</para>
+<para><image type="html" name="matrix_multiplication_2.png" width="50%"></image>
+</para>
+<para>We can implement matrix multiplication using three nested loops.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>m=0;<sp/>m&lt;M;<sp/>m++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n=0;<sp/>n&lt;N;<sp/>n++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>C[m][n]<sp/>=<sp/>0;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k=0;<sp/>k&lt;K;<sp/>k++)<sp/>{</highlight></codeline>
@@ -19,10 +38,12 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+</sect1>
 <sect1 id="matrix_multiplication_1MatrixMultiplicationParallelPattern">
 <title>Parallel Patterns</title>
-<para>At a fine-grained level, computing each element of <computeroutput>C</computeroutput> is independent of each other. Similarly, computing each row of <computeroutput>C</computeroutput> or each column of <computeroutput>C</computeroutput> is also independent of one another. With task parallelism, we prefer <emphasis>coarse-grained</emphasis> model to have each task perform rather large computation to amortize the overhead of creating and scheduling tasks. In this case, we avoid intensive tasks each working on only a single element. by creating a task per row of <computeroutput>C</computeroutput> to multiply a row of <computeroutput>A</computeroutput> by every column of <computeroutput>B</computeroutput>.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>C<sp/>=<sp/>A<sp/>*<sp/>B</highlight><highlight class="normal"></highlight></codeline>
+<para>At a fine-grained level, computing each element of <computeroutput>C</computeroutput> is independent of each other. Similarly, computing each row of <computeroutput>C</computeroutput> or each column of <computeroutput>C</computeroutput> is also independent of one another. With task parallelism, we prefer <emphasis>coarse-grained</emphasis> model to have each task perform rather large computation to amortize the overhead of creating and scheduling tasks. In this case, we avoid intensive tasks each working on only a single element. by creating a task per row of <computeroutput>C</computeroutput> to multiply a row of <computeroutput>A</computeroutput> by every column of <computeroutput>B</computeroutput>.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>C<sp/>=<sp/>A<sp/>*<sp/>B</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>A<sp/>is<sp/>a<sp/>MxK<sp/>matrix,<sp/>B<sp/>is<sp/>a<sp/>KxN<sp/>matrix,<sp/>and<sp/>C<sp/>is<sp/>a<sp/>MxN<sp/>matrix</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>matrix_multiplication(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">**<sp/>A,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">**<sp/>B,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">**<sp/>C,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>M,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>K,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
@@ -38,7 +59,9 @@
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>Instead of creating tasks one-by-one over a loop, you can leverage <ref refid="classtf_1_1FlowBuilder_1a38ffe176bc3ae1827b9964322e3769d4" kindref="member">Taskflow::for_each_index</ref> to create a <emphasis>parallel-for</emphasis> task. A parallel-for task spawns a subflow to perform parallel iterations over the given range.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>perform<sp/>parallel<sp/>iterations<sp/>on<sp/>the<sp/>range<sp/>[0,<sp/>M)<sp/>with<sp/>the<sp/>step<sp/>size<sp/>of<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+</programlisting></para>
+<para>Instead of creating tasks one-by-one over a loop, you can leverage <ref refid="classtf_1_1FlowBuilder_1a38ffe176bc3ae1827b9964322e3769d4" kindref="member">Taskflow::for_each_index</ref> to create a <emphasis>parallel-for</emphasis> task. A parallel-for task spawns a subflow to perform parallel iterations over the given range.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>perform<sp/>parallel<sp/>iterations<sp/>on<sp/>the<sp/>range<sp/>[0,<sp/>M)<sp/>with<sp/>the<sp/>step<sp/>size<sp/>of<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a38ffe176bc3ae1827b9964322e3769d4" kindref="member">for_each_index</ref>(0,<sp/>M,<sp/>1,<sp/>[&amp;]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>m)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n=0;<sp/>n&lt;N;<sp/>n++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k=0;<sp/>k&lt;K;<sp/>k++)<sp/>{</highlight></codeline>
@@ -46,25 +69,65 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}<sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}<sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal">});<sp/></highlight></codeline>
-</programlisting></para><para>Please visit <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for more details.</para></sect1>
+</programlisting></para>
+<para>Please visit <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for more details.</para>
+</sect1>
 <sect1 id="matrix_multiplication_1MatrixMultiplicationBenchmarking">
 <title>Benchmarking</title>
-<para>Based on the discussion above, we compare the runtime of computing various matrix sizes of <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput> between a sequential CPU and parallel CPUs on a machine of 12 Intel i7-8700 CPUs at 3.2 GHz.</para><para> <table rows="7" cols="5"><row>
-<entry thead="yes"><para>A  </para></entry><entry thead="yes"><para>B  </para></entry><entry thead="yes"><para>C  </para></entry><entry thead="yes"><para>CPU Sequential  </para></entry><entry thead="yes"><para>CPU Parallel   </para></entry></row>
+<para>Based on the discussion above, we compare the runtime of computing various matrix sizes of <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput> between a sequential CPU and parallel CPUs on a machine of 12 Intel i7-8700 CPUs at 3.2 GHz.</para>
+<para> <table rows="7" cols="5"><row>
+<entry thead="yes" align='center'><para>A  </para>
+</entry><entry thead="yes" align='center'><para>B  </para>
+</entry><entry thead="yes" align='center'><para>C  </para>
+</entry><entry thead="yes" align='center'><para>CPU Sequential  </para>
+</entry><entry thead="yes" align='center'><para>CPU Parallel   </para>
+</entry></row>
 <row>
-<entry thead="no"><para>10x10  </para></entry><entry thead="no"><para>10x10  </para></entry><entry thead="no"><para>10x10  </para></entry><entry thead="no"><para>0.142 ms  </para></entry><entry thead="no"><para>0.414 ms   </para></entry></row>
+<entry thead="no" align='center'><para>10x10  </para>
+</entry><entry thead="no" align='center'><para>10x10  </para>
+</entry><entry thead="no" align='center'><para>10x10  </para>
+</entry><entry thead="no" align='center'><para>0.142 ms  </para>
+</entry><entry thead="no" align='center'><para>0.414 ms   </para>
+</entry></row>
 <row>
-<entry thead="no"><para>100x100  </para></entry><entry thead="no"><para>100x100  </para></entry><entry thead="no"><para>100x100  </para></entry><entry thead="no"><para>1.641 ms  </para></entry><entry thead="no"><para>0.733 ms   </para></entry></row>
+<entry thead="no" align='center'><para>100x100  </para>
+</entry><entry thead="no" align='center'><para>100x100  </para>
+</entry><entry thead="no" align='center'><para>100x100  </para>
+</entry><entry thead="no" align='center'><para>1.641 ms  </para>
+</entry><entry thead="no" align='center'><para>0.733 ms   </para>
+</entry></row>
 <row>
-<entry thead="no"><para>1000x1000  </para></entry><entry thead="no"><para>1000x1000  </para></entry><entry thead="no"><para>1000x1000  </para></entry><entry thead="no"><para>1532 ms  </para></entry><entry thead="no"><para>504 ms   </para></entry></row>
+<entry thead="no" align='center'><para>1000x1000  </para>
+</entry><entry thead="no" align='center'><para>1000x1000  </para>
+</entry><entry thead="no" align='center'><para>1000x1000  </para>
+</entry><entry thead="no" align='center'><para>1532 ms  </para>
+</entry><entry thead="no" align='center'><para>504 ms   </para>
+</entry></row>
 <row>
-<entry thead="no"><para>2000x2000  </para></entry><entry thead="no"><para>2000x2000  </para></entry><entry thead="no"><para>2000x2000  </para></entry><entry thead="no"><para>25688 ms  </para></entry><entry thead="no"><para>4387 ms   </para></entry></row>
+<entry thead="no" align='center'><para>2000x2000  </para>
+</entry><entry thead="no" align='center'><para>2000x2000  </para>
+</entry><entry thead="no" align='center'><para>2000x2000  </para>
+</entry><entry thead="no" align='center'><para>25688 ms  </para>
+</entry><entry thead="no" align='center'><para>4387 ms   </para>
+</entry></row>
 <row>
-<entry thead="no"><para>3000x3000  </para></entry><entry thead="no"><para>3000x3000  </para></entry><entry thead="no"><para>3000x3000  </para></entry><entry thead="no"><para>104838 ms  </para></entry><entry thead="no"><para>16170 ms   </para></entry></row>
+<entry thead="no" align='center'><para>3000x3000  </para>
+</entry><entry thead="no" align='center'><para>3000x3000  </para>
+</entry><entry thead="no" align='center'><para>3000x3000  </para>
+</entry><entry thead="no" align='center'><para>104838 ms  </para>
+</entry><entry thead="no" align='center'><para>16170 ms   </para>
+</entry></row>
 <row>
-<entry thead="no"><para>4000x4000  </para></entry><entry thead="no"><para>4000x4000  </para></entry><entry thead="no"><para>4000x4000  </para></entry><entry thead="no"><para>250133 ms  </para></entry><entry thead="no"><para>39646 ms   </para></entry></row>
+<entry thead="no" align='center'><para>4000x4000  </para>
+</entry><entry thead="no" align='center'><para>4000x4000  </para>
+</entry><entry thead="no" align='center'><para>4000x4000  </para>
+</entry><entry thead="no" align='center'><para>250133 ms  </para>
+</entry><entry thead="no" align='center'><para>39646 ms   </para>
+</entry></row>
 </table>
-</para><para>The speed-up of parallel execution becomes clean as we increase the problem size. For example, at <computeroutput>4000x4000</computeroutput>, the parallel runtime is 6.3 times faster than the sequential runtime. </para></sect1>
+</para>
+<para>The speed-up of parallel execution becomes clean as we increase the problem size. For example, at <computeroutput>4000x4000</computeroutput>, the parallel runtime is 6.3 times faster than the sequential runtime. </para>
+</sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>
