@@ -149,6 +149,7 @@
     <xsd:attribute name="const" type="DoxBool" use="optional"/>
     <xsd:attribute name="explicit" type="DoxBool" use="optional"/>
     <xsd:attribute name="inline" type="DoxBool" use="optional"/>
+    <xsd:attribute name="refqual" type="DoxRefQualifierKind" use="optional"/>
     <xsd:attribute name="virt" type="DoxVirtualKind" use="optional"/>
     <xsd:attribute name="volatile" type="DoxBool" use="optional"/>
     <xsd:attribute name="mutable" type="DoxBool" use="optional"/>
@@ -548,7 +549,7 @@
       <xsd:element name="oline" type="docEmptyType" />
       <xsd:element name="frasl" type="docEmptyType" />
       <xsd:element name="weierp" type="docEmptyType" />
-      <xsd:element name="image" type="docEmptyType" />
+      <xsd:element name="imaginary" type="docEmptyType" />
       <xsd:element name="real" type="docEmptyType" />
       <xsd:element name="trademark" type="docEmptyType" />
       <xsd:element name="alefsym" type="docEmptyType" />
@@ -640,7 +641,7 @@
       <xsd:element name="lsaquo" type="docEmptyType" />
       <xsd:element name="rsaquo" type="docEmptyType" />
       <xsd:element name="euro" type="docEmptyType" />
-      <xsd:element name="trademark" type="docEmptyType" />
+      <xsd:element name="tm" type="docEmptyType" />
     </xsd:choice>
   </xsd:group>
 
@@ -937,6 +938,13 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:simpleType name="DoxRefQualifierKind">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="lvalue" />
+      <xsd:enumeration value="rvalue" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
   <xsd:simpleType name="DoxLanguage">
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="Unknown" />
@@ -952,6 +960,7 @@
       <xsd:enumeration value="Fortran" />
       <xsd:enumeration value="VHDL" />
       <xsd:enumeration value="XML" />
+      <xsd:enumeration value="SQL" />
       <xsd:enumeration value="Tcl" />
       <xsd:enumeration value="Markdown" />
     </xsd:restriction>

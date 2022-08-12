@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
   <compounddef id="classtf_1_1WorkerInterface" kind="class" language="C++" prot="public" abstract="yes">
     <compoundname>tf::WorkerInterface</compoundname>
     <includes refid="worker_8hpp" local="no">worker.hpp</includes>
@@ -15,7 +15,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="218" column="1"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/core/worker.hpp" line="218" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1WorkerInterface_1a41c3b931a36bde8eff4aa8d375e8888a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
         <type>void</type>
@@ -40,7 +40,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="224" column="1"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/core/worker.hpp" line="224" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1WorkerInterface_1a3e6d68fd4041f433d1b7ca9e5786b57c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
         <type>void</type>
@@ -52,7 +52,7 @@
           <declname>worker</declname>
         </param>
         <param>
-          <type><ref refid="cpp/error/exception_ptr" kindref="compound" external="/home/xiongzc/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::exception_ptr</ref></type>
+          <type><ref refid="cpp/error/exception_ptr" kindref="compound" external="/home/phrygiangates/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::exception_ptr</ref></type>
           <declname>ptr</declname>
         </param>
         <briefdescription>
@@ -76,7 +76,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="231" column="1"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/core/worker.hpp" line="231" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -90,7 +90,7 @@
 }
 </verbatim></para><para>leaves the scheduling loop and joins this worker thread Here, <ref refid="classtf_1_1WorkerInterface_1a3e6d68fd4041f433d1b7ca9e5786b57c" kindref="member">WorkerInterface::scheduler_epilogue</ref> is invoked, if any ); }</para><para><simplesect kind="note"><para>Methods defined in <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> are not thread-safe and may be be invoked by multiple workers concurrently. </para></simplesect>
 </para>    </detaileddescription>
-    <location file="/home/xiongzc/taskflow/taskflow/core/worker.hpp" line="211" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/core/worker.hpp" bodystart="211" bodyend="234"/>
+    <location file="/home/phrygiangates/taskflow/taskflow/core/worker.hpp" line="211" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/worker.hpp" bodystart="211" bodyend="234"/>
     <listofallmembers>
       <member refid="classtf_1_1WorkerInterface_1a3e6d68fd4041f433d1b7ca9e5786b57c" prot="public" virt="pure-virtual"><scope>tf::WorkerInterface</scope><name>scheduler_epilogue</name></member>
       <member refid="classtf_1_1WorkerInterface_1a41c3b931a36bde8eff4aa8d375e8888a" prot="public" virt="pure-virtual"><scope>tf::WorkerInterface</scope><name>scheduler_prologue</name></member>

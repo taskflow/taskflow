@@ -61,19 +61,15 @@
             </li>
           </ul>
         </nav>
-<p><a href="classtf_1_1Pipeflow.html" class="m-doc">Pipeflow</a> represents a <em>scheduling token</em> in the pipeline scheduling framework. A pipeflow is created by the pipeline scheduler at runtime to pass to the pipe callable. Users can query the present statistics of that scheduling token, including the line identifier, pipe identifier, and token identifier, and build their application algorithms based on these statistics. At the first stage, users can explicitly call the stop method to stop the pipeline scheduler.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="p">[](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pf</span><span class="p">){</span><span class="w"></span>
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;token id=&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; at line=&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; at pipe=&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()</span><span class="w"></span>
-<span class="w">            </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w"></span>
-<span class="p">}};</span><span class="w"></span></pre><p><a href="classtf_1_1Pipeflow.html" class="m-doc">Pipeflow</a> can only be created privately by the <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> and be used through the pipe callable.</p>
+<p><a href="classtf_1_1Pipeflow.html" class="m-doc">Pipeflow</a> represents a <em>scheduling token</em> in the pipeline scheduling framework. A pipeflow is created by the pipeline scheduler at runtime to pass to the pipe callable. Users can query the present statistics of that scheduling token, including the line identifier, pipe identifier, and token identifier, and build their application algorithms based on these statistics. At the first stage, users can explicitly call the stop method to stop the pipeline scheduler.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> <span class="p">[](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span> <span class="n">pf</span><span class="p">){</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;token id=&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()</span>
+            <span class="o">&lt;&lt;</span> <span class="s">&quot; at line=&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()</span>
+            <span class="o">&lt;&lt;</span> <span class="s">&quot; at pipe=&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()</span>
+            <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+<span class="p">}};</span></pre><p><a href="classtf_1_1Pipeflow.html" class="m-doc">Pipeflow</a> can only be created privately by the <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> and be used through the pipe callable.</p>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
-            <dt id="a801877443f7046b9e450160c05c26d7d">
-              <span class="m-doc-wrap-bumper"><a href="#a801877443f7046b9e450160c05c26d7d" class="m-doc-self">Pipeflow</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
-            </dt>
-            <dd>default constructor</dd>
             <dt id="a801877443f7046b9e450160c05c26d7d">
               <span class="m-doc-wrap-bumper"><a href="#a801877443f7046b9e450160c05c26d7d" class="m-doc-self">Pipeflow</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
@@ -83,32 +79,16 @@
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="a579d15bb66fbcc2ab63d0570abe6c971">
-              <span class="m-doc-wrap-bumper">auto <a href="#a579d15bb66fbcc2ab63d0570abe6c971" class="m-doc-self">line</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            <dt id="afee054e6a99965d4b3e36ff903227e6c">
+              <span class="m-doc-wrap-bumper">auto <a href="#afee054e6a99965d4b3e36ff903227e6c" class="m-doc-self">line</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>queries the line identifier of the present token</dd>
-            <dt id="ac31ced16a1d60a5b7c6007549b8d39a4">
-              <span class="m-doc-wrap-bumper">auto <a href="#ac31ced16a1d60a5b7c6007549b8d39a4" class="m-doc-self">pipe</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            <dt id="a4914c1f381a3016e98285b019cf60d6d">
+              <span class="m-doc-wrap-bumper">auto <a href="#a4914c1f381a3016e98285b019cf60d6d" class="m-doc-self">pipe</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>queries the pipe identifier of the present token</dd>
-            <dt id="a70d993ed5b211e6a151277e091afccf8">
-              <span class="m-doc-wrap-bumper">auto <a href="#a70d993ed5b211e6a151277e091afccf8" class="m-doc-self">token</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
-            </dt>
-            <dd>queries the token identifier</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a830b7f204cb87fff17e8d424918d9453" class="m-doc">stop</a>(</span><span class="m-doc-wrap">)</span>
-            </dt>
-            <dd>stops the pipeline scheduling</dd>
-            <dt id="a579d15bb66fbcc2ab63d0570abe6c971">
-              <span class="m-doc-wrap-bumper">auto <a href="#a579d15bb66fbcc2ab63d0570abe6c971" class="m-doc-self">line</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
-            </dt>
-            <dd>queries the line identifier of the present token</dd>
-            <dt id="ac31ced16a1d60a5b7c6007549b8d39a4">
-              <span class="m-doc-wrap-bumper">auto <a href="#ac31ced16a1d60a5b7c6007549b8d39a4" class="m-doc-self">pipe</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
-            </dt>
-            <dd>queries the pipe identifier of the present token</dd>
-            <dt id="a70d993ed5b211e6a151277e091afccf8">
-              <span class="m-doc-wrap-bumper">auto <a href="#a70d993ed5b211e6a151277e091afccf8" class="m-doc-self">token</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            <dt id="a295e5d884665c076f4ef5d78139f7c51">
+              <span class="m-doc-wrap-bumper">auto <a href="#a295e5d884665c076f4ef5d78139f7c51" class="m-doc-self">token</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>queries the token identifier</dd>
             <dt>
@@ -119,13 +99,6 @@
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="a830b7f204cb87fff17e8d424918d9453"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />Pipeflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a830b7f204cb87fff17e8d424918d9453" class="m-doc-self">stop</a>(</span><span class="m-doc-wrap">)</span></span>
-            </h3>
-            <p>stops the pipeline scheduling</p>
-<p>Only the first pipe can call this method to stop the pipeline. Others have no effect.</p>
-          </div></section>
           <section class="m-doc-details" id="a830b7f204cb87fff17e8d424918d9453"><div>
             <h3>
               <span class="m-doc-wrap-bumper">void tf::<wbr />Pipeflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a830b7f204cb87fff17e8d424918d9453" class="m-doc-self">stop</a>(</span><span class="m-doc-wrap">)</span></span>
@@ -178,7 +151,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

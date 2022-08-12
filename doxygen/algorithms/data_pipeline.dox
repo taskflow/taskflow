@@ -225,6 +225,68 @@ stage 2: map = j:1 k:3 i:1
 stage 3: k:3
 @endcode
 
+@section DataPipelineAPILearnMore Learn More About Data Pipeline API
+The DataPipe class is similar to the Pipe class, but with template to record input type and output type. 
+Remember to use <i>make_data_pipe</i> function when you want to create a pipe in the DataPipeline.
+Let's look at the following example.
+
+@code
+1: tf::make_data_pipe<int, std::string>(
+2:   tf::PipeType::SERIAL, 
+3:   [](int& input) {return std::to_string(input + 100);}
+4: )
+@endcode
+
+Debrief:
+@li Line 1  define input and output type, here it takes interger as input and string as output
+@li Line 2  define the pipetype, here it is serial
+@li Line 3  define the lambda function that computes output from input and return type should match your output type
+
+The input and output type you give to the <i>make_data_pipe</i> function will be decayed to its original form.
+The arguments of your lambda can be either a copy or a reference, we will use it by value or by reference as you want.
+
+You can also add an additional pipeflow argument in the lambda function to get token and line position of current pipe.
+@code
+tf::make_data_pipe<int, std::string>(
+  tf::PipeType::SERIAL, 
+  [](int& input, tf::Pipeflow& pf) {
+    std::cout << "token: " << pf.token() << std:: endl;
+    std::cout << "line: " << pf.line() << std::endl;
+    return std::to_string(input + 100);
+  }
+)
+@endcode
+
+For the first pipe, we ignore the input type and require that pipetype should be serial.
+Our lambda function take a pipeflow argument to control when to stop.
+@code
+tf::make_data_pipe<void, int>(tf::PipeType::SERIAL, [](tf::Pipeflow& pf) -> int{
+  if(pf.token() == 5) {
+    pf.stop();
+    return 0;
+  }
+  else {
+    return pf.token();
+  }
+}),
+@endcode
+
+For the last pipe, output type must be void.
+@code
+tf::make_data_pipe<std::string, void>(tf::PipeType::SERIAL, [](std::string& input) {
+  std::cout << input << std::endl;
+})
+@endcode
+
+@section PaddingToCacheLineSize Padding to Cache Line Size
+Our original design is to allocate a buffer of the corresponding size based on `num_lines` and the input data type when the pipeline class is created. 
+This is a simple design, and the space allocated is contiguous, so cache utilisation is high as the pipeline reads data continuously. 
+However, false sharing at the parallel pipe level can be very serious, making parallelism almost impossible and performance poor.
+
+Therefore, to avoid false sharing, we came up with an alternative design, i.e., giving every line a buffer of a multiple of the cache line size. 
+As every line corresponds to a process, we can avoid false sharing at the parallel pipe level, as the data from every line can fill up the cache of the corresponding process.
+
+
 @section ParallelDataPipelineLearnMore Learn More about Taskflow Pipeline
 
 Visit the following pages to learn more about pipeline:

@@ -86,7 +86,7 @@
             </dt>
             <dd>destructs the CUDA stream</dd>
             <dt>
-              <span class="m-doc-wrap-bumper"><a href="#ad7a386a2b1b75687e215899f63072806" class="m-doc">operator cudaStream_t</a>(</span><span class="m-doc-wrap">) const</span>
+              <span class="m-doc-wrap-bumper"><a href="#ae8b74e156e740ab2d1b3ba305a9eef45" class="m-doc">operator cudaStream_t</a>(</span><span class="m-doc-wrap">) const</span>
             </dt>
             <dd>implicit conversion to the native CUDA stream (cudaStream_t)</dd>
           </dl>
@@ -103,23 +103,23 @@
             </dt>
             <dd>move assignment</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a2a66eefd328111c1074cc86b3c0beec6" class="m-doc">synchronize</a>(</span><span class="m-doc-wrap">) const</span>
+              <span class="m-doc-wrap-bumper">void <a href="#a1a81d6005e8d60ad082dba2303a8aa30" class="m-doc">synchronize</a>(</span><span class="m-doc-wrap">) const</span>
             </dt>
             <dd>synchronizes the associated stream</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a6f1085eaf436b32c73c63ae5184971ab" class="m-doc">begin_capture</a>(</span><span class="m-doc-wrap">cudaStreamCaptureMode m = cudaStreamCaptureModeGlobal) const</span>
+              <span class="m-doc-wrap-bumper">void <a href="#ad98a025ff4306aa799e664a1e2aefd2e" class="m-doc">begin_capture</a>(</span><span class="m-doc-wrap">cudaStreamCaptureMode m = cudaStreamCaptureModeGlobal) const</span>
             </dt>
             <dd>begins graph capturing on the stream</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#a986380f97db83ce289cc1fe910685427" class="m-doc">end_capture</a>(</span><span class="m-doc-wrap">) const -&gt; cudaGraph_t</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#a9c48388031655cc691b267de96516a66" class="m-doc">end_capture</a>(</span><span class="m-doc-wrap">) const -&gt; cudaGraph_t</span>
             </dt>
             <dd>ends graph capturing on the stream</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#aca9f0a2cc66b8f687a1a02ef85d63f31" class="m-doc">record</a>(</span><span class="m-doc-wrap">cudaEvent_t event) const</span>
+              <span class="m-doc-wrap-bumper">void <a href="#a8343c234b4a3040b59626dc70e81d767" class="m-doc">record</a>(</span><span class="m-doc-wrap">cudaEvent_t event) const</span>
             </dt>
             <dd>records an event on the stream</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a6377a19972a6b7ac44888f4befa9e8b9" class="m-doc">wait</a>(</span><span class="m-doc-wrap">cudaEvent_t event) const</span>
+              <span class="m-doc-wrap-bumper">void <a href="#a6bb195945f7a580bec6105691c53c699" class="m-doc">wait</a>(</span><span class="m-doc-wrap">cudaEvent_t event) const</span>
             </dt>
             <dd>waits on an event</dd>
           </dl>
@@ -140,44 +140,44 @@
             <p>constructs an RAII-styled object for a new CUDA stream</p>
 <p>Equivalently calling <code>cudaStreamCreate</code> to create a stream.</p>
           </div></section>
-          <section class="m-doc-details" id="ad7a386a2b1b75687e215899f63072806"><div>
+          <section class="m-doc-details" id="ae8b74e156e740ab2d1b3ba305a9eef45"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"> tf::<wbr />cudaStream::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad7a386a2b1b75687e215899f63072806" class="m-doc-self">operator cudaStream_t</a>(</span><span class="m-doc-wrap">) const</span></span>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />cudaStream::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ae8b74e156e740ab2d1b3ba305a9eef45" class="m-doc-self">operator cudaStream_t</a>(</span><span class="m-doc-wrap">) const</span></span>
             </h3>
             <p>implicit conversion to the native CUDA stream (cudaStream_t)</p>
 <p>Returns the underlying stream of type <code>cudaStream_t</code>.</p>
           </div></section>
-          <section class="m-doc-details" id="a2a66eefd328111c1074cc86b3c0beec6"><div>
+          <section class="m-doc-details" id="a1a81d6005e8d60ad082dba2303a8aa30"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaStream::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a2a66eefd328111c1074cc86b3c0beec6" class="m-doc-self">synchronize</a>(</span><span class="m-doc-wrap">) const</span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaStream::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1a81d6005e8d60ad082dba2303a8aa30" class="m-doc-self">synchronize</a>(</span><span class="m-doc-wrap">) const</span></span>
             </h3>
             <p>synchronizes the associated stream</p>
 <p>Equivalently calling <code>cudaStreamSynchronize</code> to block until this stream has completed all operations.</p>
           </div></section>
-          <section class="m-doc-details" id="a6f1085eaf436b32c73c63ae5184971ab"><div>
+          <section class="m-doc-details" id="ad98a025ff4306aa799e664a1e2aefd2e"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaStream::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6f1085eaf436b32c73c63ae5184971ab" class="m-doc-self">begin_capture</a>(</span><span class="m-doc-wrap">cudaStreamCaptureMode m = cudaStreamCaptureModeGlobal) const</span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaStream::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad98a025ff4306aa799e664a1e2aefd2e" class="m-doc-self">begin_capture</a>(</span><span class="m-doc-wrap">cudaStreamCaptureMode m = cudaStreamCaptureModeGlobal) const</span></span>
             </h3>
             <p>begins graph capturing on the stream</p>
-<p>When a stream is in capture mode, all operations pushed into the stream will not be executed, but will instead be captured into a graph, which will be returned via <a href="classtf_1_1cudaStream.html#a986380f97db83ce289cc1fe910685427" class="m-doc">cudaStream::<wbr />end_capture</a>.</p><p>A thread&#x27;s mode can be one of the following:</p><ul><li><code>cudaStreamCaptureModeGlobal:</code> This is the default mode. If the local thread has an ongoing capture sequence that was not initiated with <code>cudaStreamCaptureModeRelaxed</code> at <code>cuStreamBeginCapture</code>, or if any other thread has a concurrent capture sequence initiated with <code>cudaStreamCaptureModeGlobal</code>, this thread is prohibited from potentially unsafe API calls.</li><li><code>cudaStreamCaptureModeThreadLocal:</code> If the local thread has an ongoing capture sequence not initiated with <code>cudaStreamCaptureModeRelaxed</code>, it is prohibited from potentially unsafe API calls. Concurrent capture sequences in other threads are ignored.</li><li><code>cudaStreamCaptureModeRelaxed:</code> The local thread is not prohibited from potentially unsafe API calls. Note that the thread is still prohibited from API calls which necessarily conflict with stream capture, for example, attempting <code>cudaEventQuery</code> on an event that was last recorded inside a capture sequence.</li></ul>
+<p>When a stream is in capture mode, all operations pushed into the stream will not be executed, but will instead be captured into a graph, which will be returned via <a href="classtf_1_1cudaStream.html#a9c48388031655cc691b267de96516a66" class="m-doc">cudaStream::<wbr />end_capture</a>.</p><p>A thread&#x27;s mode can be one of the following:</p><ul><li><code>cudaStreamCaptureModeGlobal:</code> This is the default mode. If the local thread has an ongoing capture sequence that was not initiated with <code>cudaStreamCaptureModeRelaxed</code> at <code>cuStreamBeginCapture</code>, or if any other thread has a concurrent capture sequence initiated with <code>cudaStreamCaptureModeGlobal</code>, this thread is prohibited from potentially unsafe API calls.</li><li><code>cudaStreamCaptureModeThreadLocal:</code> If the local thread has an ongoing capture sequence not initiated with <code>cudaStreamCaptureModeRelaxed</code>, it is prohibited from potentially unsafe API calls. Concurrent capture sequences in other threads are ignored.</li><li><code>cudaStreamCaptureModeRelaxed:</code> The local thread is not prohibited from potentially unsafe API calls. Note that the thread is still prohibited from API calls which necessarily conflict with stream capture, for example, attempting <code>cudaEventQuery</code> on an event that was last recorded inside a capture sequence.</li></ul>
           </div></section>
-          <section class="m-doc-details" id="a986380f97db83ce289cc1fe910685427"><div>
+          <section class="m-doc-details" id="a9c48388031655cc691b267de96516a66"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">cudaGraph_t tf::<wbr />cudaStream::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a986380f97db83ce289cc1fe910685427" class="m-doc-self">end_capture</a>(</span><span class="m-doc-wrap">) const</span></span>
+              <span class="m-doc-wrap-bumper">cudaGraph_t tf::<wbr />cudaStream::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a9c48388031655cc691b267de96516a66" class="m-doc-self">end_capture</a>(</span><span class="m-doc-wrap">) const</span></span>
             </h3>
             <p>ends graph capturing on the stream</p>
-<p>Equivalently calling <code>cudaStreamEndCapture</code> to end capture on stream and returning the captured graph. Capture must have been initiated on stream via a call to <a href="classtf_1_1cudaStream.html#a6f1085eaf436b32c73c63ae5184971ab" class="m-doc">cudaStream::<wbr />begin_capture</a>. If capture was invalidated, due to a violation of the rules of stream capture, then a NULL graph will be returned.</p>
+<p>Equivalently calling <code>cudaStreamEndCapture</code> to end capture on stream and returning the captured graph. Capture must have been initiated on stream via a call to <a href="classtf_1_1cudaStream.html#ad98a025ff4306aa799e664a1e2aefd2e" class="m-doc">cudaStream::<wbr />begin_capture</a>. If capture was invalidated, due to a violation of the rules of stream capture, then a NULL graph will be returned.</p>
           </div></section>
-          <section class="m-doc-details" id="aca9f0a2cc66b8f687a1a02ef85d63f31"><div>
+          <section class="m-doc-details" id="a8343c234b4a3040b59626dc70e81d767"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaStream::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aca9f0a2cc66b8f687a1a02ef85d63f31" class="m-doc-self">record</a>(</span><span class="m-doc-wrap">cudaEvent_t event) const</span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaStream::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8343c234b4a3040b59626dc70e81d767" class="m-doc-self">record</a>(</span><span class="m-doc-wrap">cudaEvent_t event) const</span></span>
             </h3>
             <p>records an event on the stream</p>
 <p>Equivalently calling <code>cudaEventRecord</code> to record an event on this stream, both of which must be on the same CUDA context.</p>
           </div></section>
-          <section class="m-doc-details" id="a6377a19972a6b7ac44888f4befa9e8b9"><div>
+          <section class="m-doc-details" id="a6bb195945f7a580bec6105691c53c699"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaStream::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6377a19972a6b7ac44888f4befa9e8b9" class="m-doc-self">wait</a>(</span><span class="m-doc-wrap">cudaEvent_t event) const</span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaStream::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6bb195945f7a580bec6105691c53c699" class="m-doc-self">wait</a>(</span><span class="m-doc-wrap">cudaEvent_t event) const</span></span>
             </h3>
             <p>waits on an event</p>
 <p>Equivalently calling <code>cudaStreamWaitEvent</code> to make all future work submitted to stream wait for all work captured in event.</p>
@@ -227,7 +227,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

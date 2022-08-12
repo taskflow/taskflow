@@ -49,199 +49,239 @@
           <span class="m-breadcrumb"><a href="Examples.html">Learning from Examples</a> &raquo;</span>
           Wavefront Parallelism
         </h1>
-<p>We study the wavefront parallelism, which is a common pattern in dynamic programming to sweep elements in a diagonal direction.</p><section id="WavefrontComputingFormulation"><h2><a href="#WavefrontComputingFormulation">Problem Formulation</a></h2><p>The computation starts at a singular point at a corner of a data plan (e.g., grid) and propagates its effect diagonally to other elements. This sweep of computation is known as <em>wavefront</em>. Each point in the wavefront can be computed in parallel. The following example shows a wavefront parallelism in a 2D matrix.</p><img class="m-image" src="wavefront_1.png" alt="Image" style="width: 70%;" /><p>We partition the 9x9 grid into a 3x3 block and assign a task to one block. The wavefront propagates task dependencies from the top-left block all the way to the bottom-right block. Each task precedes two tasks, one to the right and another below.</p></section><section id="WavefrontTaskGraph"><h2><a href="#WavefrontTaskGraph">Wavefront Task Graph</a></h2><p>We can describe the wavefront parallelism in a simple two-level loop. Since we need to address the two tasks upper and left to a task when creating its dependencies, we use a 2D vector to pre-allocate all tasks via <a href="classtf_1_1FlowBuilder.html#acab0b4ac82260f47fdb36a3244ee3aaf" class="m-doc">tf::<wbr />Taskflow::<wbr />placeholder</a>.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span><span class="cp"></span>
+<p>We study the wavefront parallelism, which is a common pattern in dynamic programming to sweep elements in a diagonal direction.</p><section id="WavefrontComputingFormulation"><h2><a href="#WavefrontComputingFormulation">Problem Formulation</a></h2><p>The computation starts at a singular point at a corner of a data plan (e.g., grid) and propagates its effect diagonally to other elements. This sweep of computation is known as <em>wavefront</em>. Each point in the wavefront can be computed in parallel. The following example shows a wavefront parallelism in a 2D matrix.</p><img class="m-image" src="wavefront_1.png" alt="Image" style="width: 70%;" /><p>We partition the 9x9 grid into a 3x3 block and assign a task to one block. The wavefront propagates task dependencies from the top-left block all the way to the bottom-right block. Each task precedes two tasks, one to the right and another below.</p></section><section id="WavefrontTaskGraph"><h2><a href="#WavefrontTaskGraph">Wavefront Task Graph</a></h2><p>We can describe the wavefront parallelism in a simple two-level loop. Since we need to address the two tasks upper and left to a task when creating its dependencies, we use a 2D vector to pre-allocate all tasks via <a href="classtf_1_1FlowBuilder.html#acab0b4ac82260f47fdb36a3244ee3aaf" class="m-doc">tf::<wbr />Taskflow::<wbr />placeholder</a>.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span><span class="cp"></span>
 
-<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
 
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">node</span><span class="p">(</span><span class="n">num_blocks</span><span class="p">);</span><span class="w"></span>
-<span class="w">  </span>
-<span class="w">  </span><span class="c1">// create num_blocks*num_blocks placeholder tasks</span>
-<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">n</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">node</span><span class="p">){</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">num_blocks</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">){</span><span class="w"></span>
-<span class="w">      </span><span class="n">n</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">taskflow</span><span class="p">.</span><span class="n">placeholder</span><span class="p">());</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w">   </span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span>
-<span class="w">  </span><span class="c1">// scan each block and create dependencies</span>
-<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="n">num_blocks</span><span class="p">;</span><span class="w"> </span><span class="o">--</span><span class="n">i</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
-<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">j</span><span class="o">=</span><span class="n">num_blocks</span><span class="p">;</span><span class="w"> </span><span class="o">--</span><span class="n">j</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
-<span class="w">      </span><span class="c1">// deferred task assignment</span>
-<span class="w">      </span><span class="n">node</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">].</span><span class="n">work</span><span class="p">([</span><span class="o">=</span><span class="p">]()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;compute block (%d, %d)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">);</span><span class="w"> </span><span class="p">});</span><span class="w">  </span>
-<span class="w">      </span>
-<span class="w">      </span><span class="c1">// wavefront dependency</span>
-<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">num_blocks</span><span class="p">)</span><span class="w"> </span><span class="n">node</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">].</span><span class="n">precede</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]);</span><span class="w"></span>
-<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">num_blocks</span><span class="p">)</span><span class="w"> </span><span class="n">node</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">].</span><span class="n">precede</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]);</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w">   </span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="o">&gt;&gt;</span> <span class="n">node</span><span class="p">(</span><span class="n">num_blocks</span><span class="p">);</span>
+  
+  <span class="c1">// create num_blocks*num_blocks placeholder tasks</span>
+  <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="nl">n</span> <span class="p">:</span> <span class="n">node</span><span class="p">){</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">num_blocks</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+      <span class="n">n</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">taskflow</span><span class="p">.</span><span class="n">placeholder</span><span class="p">());</span>
+    <span class="p">}</span>   
+  <span class="p">}</span>
+  
+  <span class="c1">// scan each block and create dependencies</span>
+  <span class="k">for</span><span class="p">(</span> <span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="n">num_blocks</span><span class="p">;</span> <span class="o">--</span><span class="n">i</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">;</span> <span class="p">)</span> <span class="p">{</span> 
+    <span class="k">for</span><span class="p">(</span> <span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="n">num_blocks</span><span class="p">;</span> <span class="o">--</span><span class="n">j</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">;</span> <span class="p">)</span> <span class="p">{</span> 
+      <span class="c1">// deferred task assignment</span>
+      <span class="n">node</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">].</span><span class="n">work</span><span class="p">([</span><span class="o">=</span><span class="p">]()</span> <span class="p">{</span> <span class="n">printf</span><span class="p">(</span><span class="s">&quot;compute block (%d, %d)&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">);</span> <span class="p">});</span>  
+      
+      <span class="c1">// wavefront dependency</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span> <span class="o">&lt;</span> <span class="n">num_blocks</span><span class="p">)</span> <span class="n">node</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">].</span><span class="n">precede</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]);</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span> <span class="o">&lt;</span> <span class="n">num_blocks</span><span class="p">)</span> <span class="n">node</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">].</span><span class="n">precede</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]);</span>
+    <span class="p">}</span>   
+  <span class="p">}</span>
 
-<span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+  <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
 
-<span class="w">  </span><span class="c1">// dump the taskflow</span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre><p>The figure below shows the wavefront parallelism in a 3x3 grid:</p><div class="m-graph"><svg style="width: 53.000rem; height: 13.125rem;" viewBox="0.00 0.00 847.67 209.77">
-<g transform="scale(1 1) rotate(0) translate(4 205.77)">
+  <span class="c1">// dump the taskflow</span>
+  <span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
+<span class="p">}</span></pre><p>The figure below shows the wavefront parallelism in a 3x3 grid:</p><div class="m-graph"><svg style="width: 53.000rem; height: 13.125rem;" viewBox="0.00 0.00 847.67 209.77">
+<g transform="scale(1 1) rotate(0) translate(4 205.7696)">
 <title>Taskflow</title>
-<g id="node1" class="node"><title>p0x563eef67dc70</title>
+<g class="m-node m-flat">
+<title>p0x563eef67dc70</title>
 <ellipse cx="44.5477" cy="-99.3848" rx="44.5955" ry="18.2703"/>
 <text text-anchor="middle" x="44.5477" y="-95.5848">B_0_0</text>
 </g>
-<g id="node2" class="node"><title>p0x563eef67dd78</title>
-<ellipse cx="169.643" cy="-127.385" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="169.643" y="-123.585">B_0_1</text>
+<g class="m-node m-flat">
+<title>p0x563eef67dd78</title>
+<ellipse cx="169.6432" cy="-127.3848" rx="44.5955" ry="18.2703"/>
+<text text-anchor="middle" x="169.6432" y="-123.5848">B_0_1</text>
 </g>
-<g id="edge1" class="edge"><title>p0x563eef67dc70&#45;&gt;p0x563eef67dd78</title>
-<path fill="none" stroke="black" d="M83.8211,-108.091C95.4,-110.724 108.268,-113.651 120.409,-116.413"/>
-<polygon points="119.866,-119.879 130.393,-118.684 121.419,-113.053 119.866,-119.879"/>
+<g class="m-edge">
+<title>p0x563eef67dc70&#45;&gt;p0x563eef67dd78</title>
+<path d="M83.7855,-108.1673C95.3172,-110.7485 108.0824,-113.6057 120.1663,-116.3104"/>
+<polygon points="119.5915,-119.7683 130.1145,-118.5371 121.1205,-112.9373 119.5915,-119.7683"/>
 </g>
-<g id="node3" class="node"><title>p0x563eef67e090</title>
-<ellipse cx="169.643" cy="-72.3848" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="169.643" y="-68.5848">B_1_0</text>
+<g class="m-node m-flat">
+<title>p0x563eef67e090</title>
+<ellipse cx="169.6432" cy="-72.3848" rx="44.5955" ry="18.2703"/>
+<text text-anchor="middle" x="169.6432" y="-68.5848">B_1_0</text>
 </g>
-<g id="edge2" class="edge"><title>p0x563eef67dc70&#45;&gt;p0x563eef67e090</title>
-<path fill="none" stroke="black" d="M84.1582,-90.9159C95.5055,-88.4269 108.067,-85.6718 119.957,-83.0636"/>
-<polygon points="120.729,-86.4777 129.747,-80.9164 119.229,-79.6403 120.729,-86.4777"/>
+<g class="m-edge">
+<title>p0x563eef67dc70&#45;&gt;p0x563eef67e090</title>
+<path d="M84.1287,-90.8418C95.5368,-88.3795 108.1286,-85.6618 120.0618,-83.0862"/>
+<polygon points="120.8539,-86.4959 129.8903,-80.9648 119.377,-79.6535 120.8539,-86.4959"/>
 </g>
-<g id="node4" class="node"><title>p0x563eef67de80</title>
-<ellipse cx="294.739" cy="-155.385" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="294.739" y="-151.585">B_0_2</text>
+<g class="m-node m-flat">
+<title>p0x563eef67de80</title>
+<ellipse cx="294.7386" cy="-155.3848" rx="44.5955" ry="18.2703"/>
+<text text-anchor="middle" x="294.7386" y="-151.5848">B_0_2</text>
 </g>
-<g id="edge3" class="edge"><title>p0x563eef67dd78&#45;&gt;p0x563eef67de80</title>
-<path fill="none" stroke="black" d="M208.917,-136.091C220.495,-138.724 233.363,-141.651 245.505,-144.413"/>
-<polygon points="244.962,-147.879 255.489,-146.684 246.514,-141.053 244.962,-147.879"/>
+<g class="m-edge">
+<title>p0x563eef67dd78&#45;&gt;p0x563eef67de80</title>
+<path d="M208.8809,-136.1673C220.4126,-138.7485 233.1778,-141.6057 245.2618,-144.3104"/>
+<polygon points="244.6869,-147.7683 255.21,-146.5371 246.216,-140.9373 244.6869,-147.7683"/>
 </g>
-<g id="node5" class="node"><title>p0x563eef67e198</title>
-<ellipse cx="294.739" cy="-100.385" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="294.739" y="-96.5848">B_1_1</text>
+<g class="m-node m-flat">
+<title>p0x563eef67e198</title>
+<ellipse cx="294.7386" cy="-100.3848" rx="44.5955" ry="18.2703"/>
+<text text-anchor="middle" x="294.7386" y="-96.5848">B_1_1</text>
 </g>
-<g id="edge4" class="edge"><title>p0x563eef67dd78&#45;&gt;p0x563eef67e198</title>
-<path fill="none" stroke="black" d="M209.254,-118.916C220.601,-116.427 233.162,-113.672 245.053,-111.064"/>
-<polygon points="245.824,-114.478 254.842,-108.916 244.324,-107.64 245.824,-114.478"/>
+<g class="m-edge">
+<title>p0x563eef67dd78&#45;&gt;p0x563eef67e198</title>
+<path d="M209.2242,-118.8418C220.6323,-116.3795 233.2241,-113.6618 245.1572,-111.0862"/>
+<polygon points="245.9493,-114.4959 254.9858,-108.9648 244.4724,-107.6535 245.9493,-114.4959"/>
 </g>
-<g id="edge8" class="edge"><title>p0x563eef67e090&#45;&gt;p0x563eef67e198</title>
-<path fill="none" stroke="black" d="M208.917,-81.0907C220.495,-83.7245 233.363,-86.6514 245.505,-89.4132"/>
-<polygon points="244.962,-92.879 255.489,-91.6843 246.514,-86.0534 244.962,-92.879"/>
+<g class="m-edge">
+<title>p0x563eef67e090&#45;&gt;p0x563eef67e198</title>
+<path d="M208.8809,-81.1673C220.4126,-83.7485 233.1778,-86.6057 245.2618,-89.3104"/>
+<polygon points="244.6869,-92.7683 255.21,-91.5371 246.216,-85.9373 244.6869,-92.7683"/>
 </g>
-<g id="node9" class="node"><title>p0x563eef67e4b0</title>
-<ellipse cx="294.739" cy="-45.3848" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="294.739" y="-41.5848">B_2_0</text>
+<g class="m-node m-flat">
+<title>p0x563eef67e4b0</title>
+<ellipse cx="294.7386" cy="-45.3848" rx="44.5955" ry="18.2703"/>
+<text text-anchor="middle" x="294.7386" y="-41.5848">B_2_0</text>
 </g>
-<g id="edge9" class="edge"><title>p0x563eef67e090&#45;&gt;p0x563eef67e4b0</title>
-<path fill="none" stroke="black" d="M209.254,-63.9159C220.601,-61.4269 233.162,-58.6718 245.053,-56.0636"/>
-<polygon points="245.824,-59.4777 254.842,-53.9164 244.324,-52.6403 245.824,-59.4777"/>
+<g class="m-edge">
+<title>p0x563eef67e090&#45;&gt;p0x563eef67e4b0</title>
+<path d="M209.2242,-63.8418C220.6323,-61.3795 233.2241,-58.6618 245.1572,-56.0862"/>
+<polygon points="245.9493,-59.4959 254.9858,-53.9648 244.4724,-52.6535 245.9493,-59.4959"/>
 </g>
-<g id="node6" class="node"><title>p0x563eef67df88</title>
-<ellipse cx="419.834" cy="-183.385" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="419.834" y="-179.585">B_0_3</text>
+<g class="m-node m-flat">
+<title>p0x563eef67df88</title>
+<ellipse cx="419.8341" cy="-183.3848" rx="44.5955" ry="18.2703"/>
+<text text-anchor="middle" x="419.8341" y="-179.5848">B_0_3</text>
 </g>
-<g id="edge5" class="edge"><title>p0x563eef67de80&#45;&gt;p0x563eef67df88</title>
-<path fill="none" stroke="black" d="M334.012,-164.091C345.591,-166.724 358.459,-169.651 370.6,-172.413"/>
-<polygon points="370.057,-175.879 380.584,-174.684 371.61,-169.053 370.057,-175.879"/>
+<g class="m-edge">
+<title>p0x563eef67de80&#45;&gt;p0x563eef67df88</title>
+<path d="M333.9764,-164.1673C345.5081,-166.7485 358.2733,-169.6057 370.3572,-172.3104"/>
+<polygon points="369.7824,-175.7683 380.3054,-174.5371 371.3114,-168.9373 369.7824,-175.7683"/>
 </g>
-<g id="node7" class="node"><title>p0x563eef67e2a0</title>
-<ellipse cx="419.834" cy="-128.385" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="419.834" y="-124.585">B_1_2</text>
+<g class="m-node m-flat">
+<title>p0x563eef67e2a0</title>
+<ellipse cx="419.8341" cy="-128.3848" rx="44.5955" ry="18.2703"/>
+<text text-anchor="middle" x="419.8341" y="-124.5848">B_1_2</text>
 </g>
-<g id="edge6" class="edge"><title>p0x563eef67de80&#45;&gt;p0x563eef67e2a0</title>
-<path fill="none" stroke="black" d="M334.349,-146.916C345.696,-144.427 358.258,-141.672 370.148,-139.064"/>
-<polygon points="370.92,-142.478 379.937,-136.916 369.42,-135.64 370.92,-142.478"/>
+<g class="m-edge">
+<title>p0x563eef67de80&#45;&gt;p0x563eef67e2a0</title>
+<path d="M334.3196,-146.8418C345.7277,-144.3795 358.3195,-141.6618 370.2527,-139.0862"/>
+<polygon points="371.0448,-142.4959 380.0812,-136.9648 369.5679,-135.6535 371.0448,-142.4959"/>
 </g>
-<g id="edge10" class="edge"><title>p0x563eef67e198&#45;&gt;p0x563eef67e2a0</title>
-<path fill="none" stroke="black" d="M334.012,-109.091C345.591,-111.724 358.459,-114.651 370.6,-117.413"/>
-<polygon points="370.057,-120.879 380.584,-119.684 371.61,-114.053 370.057,-120.879"/>
+<g class="m-edge">
+<title>p0x563eef67e198&#45;&gt;p0x563eef67e2a0</title>
+<path d="M333.9764,-109.1673C345.5081,-111.7485 358.2733,-114.6057 370.3572,-117.3104"/>
+<polygon points="369.7824,-120.7683 380.3054,-119.5371 371.3114,-113.9373 369.7824,-120.7683"/>
 </g>
-<g id="node10" class="node"><title>p0x563eef67e5b8</title>
-<ellipse cx="419.834" cy="-73.3848" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="419.834" y="-69.5848">B_2_1</text>
+<g class="m-node m-flat">
+<title>p0x563eef67e5b8</title>
+<ellipse cx="419.8341" cy="-73.3848" rx="44.5955" ry="18.2703"/>
+<text text-anchor="middle" x="419.8341" y="-69.5848">B_2_1</text>
 </g>
-<g id="edge11" class="edge"><title>p0x563eef67e198&#45;&gt;p0x563eef67e5b8</title>
-<path fill="none" stroke="black" d="M334.349,-91.9159C345.696,-89.4269 358.258,-86.6718 370.148,-84.0636"/>
-<polygon points="370.92,-87.4777 379.937,-81.9164 369.42,-80.6403 370.92,-87.4777"/>
+<g class="m-edge">
+<title>p0x563eef67e198&#45;&gt;p0x563eef67e5b8</title>
+<path d="M334.3196,-91.8418C345.7277,-89.3795 358.3195,-86.6618 370.2527,-84.0862"/>
+<polygon points="371.0448,-87.4959 380.0812,-81.9648 369.5679,-80.6535 371.0448,-87.4959"/>
 </g>
-<g id="node8" class="node"><title>p0x563eef67e3a8</title>
-<ellipse cx="544.93" cy="-155.385" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="544.93" y="-151.585">B_1_3</text>
+<g class="m-node m-flat">
+<title>p0x563eef67e3a8</title>
+<ellipse cx="544.9295" cy="-155.3848" rx="44.5955" ry="18.2703"/>
+<text text-anchor="middle" x="544.9295" y="-151.5848">B_1_3</text>
 </g>
-<g id="edge7" class="edge"><title>p0x563eef67df88&#45;&gt;p0x563eef67e3a8</title>
-<path fill="none" stroke="black" d="M459.108,-174.679C470.686,-172.045 483.554,-169.118 495.696,-166.356"/>
-<polygon points="496.705,-169.716 505.68,-164.085 495.153,-162.891 496.705,-169.716"/>
+<g class="m-edge">
+<title>p0x563eef67df88&#45;&gt;p0x563eef67e3a8</title>
+<path d="M459.0718,-174.6022C470.6035,-172.0211 483.3688,-169.1639 495.4527,-166.4591"/>
+<polygon points="496.4069,-169.8322 505.4009,-164.2324 494.8778,-163.0013 496.4069,-169.8322"/>
 </g>
-<g id="edge12" class="edge"><title>p0x563eef67e2a0&#45;&gt;p0x563eef67e3a8</title>
-<path fill="none" stroke="black" d="M459.445,-136.854C470.792,-139.343 483.353,-142.098 495.244,-144.706"/>
-<polygon points="494.515,-148.129 505.033,-146.853 496.015,-141.292 494.515,-148.129"/>
+<g class="m-edge">
+<title>p0x563eef67e2a0&#45;&gt;p0x563eef67e3a8</title>
+<path d="M459.4151,-136.9277C470.8232,-139.39 483.415,-142.1078 495.3481,-144.6834"/>
+<polygon points="494.6633,-148.1161 505.1767,-146.8047 496.1402,-141.2736 494.6633,-148.1161"/>
 </g>
-<g id="node11" class="node"><title>p0x563eef67e6c0</title>
-<ellipse cx="544.93" cy="-100.385" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="544.93" y="-96.5848">B_2_2</text>
+<g class="m-node m-flat">
+<title>p0x563eef67e6c0</title>
+<ellipse cx="544.9295" cy="-100.3848" rx="44.5955" ry="18.2703"/>
+<text text-anchor="middle" x="544.9295" y="-96.5848">B_2_2</text>
 </g>
-<g id="edge13" class="edge"><title>p0x563eef67e2a0&#45;&gt;p0x563eef67e6c0</title>
-<path fill="none" stroke="black" d="M459.108,-119.679C470.686,-117.045 483.554,-114.118 495.696,-111.356"/>
-<polygon points="496.705,-114.716 505.68,-109.085 495.153,-107.891 496.705,-114.716"/>
+<g class="m-edge">
+<title>p0x563eef67e2a0&#45;&gt;p0x563eef67e6c0</title>
+<path d="M459.0718,-119.6022C470.6035,-117.0211 483.3688,-114.1639 495.4527,-111.4591"/>
+<polygon points="496.4069,-114.8322 505.4009,-109.2324 494.8778,-108.0013 496.4069,-114.8322"/>
 </g>
-<g id="node12" class="node"><title>p0x563eef67e7c8</title>
-<ellipse cx="670.025" cy="-127.385" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="670.025" y="-123.585">B_2_3</text>
+<g class="m-node m-flat">
+<title>p0x563eef67e7c8</title>
+<ellipse cx="670.025" cy="-127.3848" rx="44.5955" ry="18.2703"/>
+<text text-anchor="middle" x="670.025" y="-123.5848">B_2_3</text>
 </g>
-<g id="edge14" class="edge"><title>p0x563eef67e3a8&#45;&gt;p0x563eef67e7c8</title>
-<path fill="none" stroke="black" d="M584.203,-146.679C595.782,-144.045 608.65,-141.118 620.791,-138.356"/>
-<polygon points="621.801,-141.716 630.775,-136.085 620.248,-134.891 621.801,-141.716"/>
+<g class="m-edge">
+<title>p0x563eef67e3a8&#45;&gt;p0x563eef67e7c8</title>
+<path d="M584.1673,-146.6022C595.699,-144.0211 608.4642,-141.1639 620.5481,-138.4591"/>
+<polygon points="621.5023,-141.8322 630.4964,-136.2324 619.9733,-135.0013 621.5023,-141.8322"/>
 </g>
-<g id="edge15" class="edge"><title>p0x563eef67e4b0&#45;&gt;p0x563eef67e5b8</title>
-<path fill="none" stroke="black" d="M334.012,-54.0907C345.591,-56.7245 358.459,-59.6514 370.6,-62.4132"/>
-<polygon points="370.057,-65.879 380.584,-64.6843 371.61,-59.0534 370.057,-65.879"/>
+<g class="m-edge">
+<title>p0x563eef67e4b0&#45;&gt;p0x563eef67e5b8</title>
+<path d="M333.9764,-54.1673C345.5081,-56.7485 358.2733,-59.6057 370.3572,-62.3104"/>
+<polygon points="369.7824,-65.7683 380.3054,-64.5371 371.3114,-58.9373 369.7824,-65.7683"/>
 </g>
-<g id="node13" class="node"><title>p0x563eef67e8d0</title>
-<ellipse cx="419.834" cy="-18.3848" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="419.834" y="-14.5848">B_3_0</text>
+<g class="m-node m-flat">
+<title>p0x563eef67e8d0</title>
+<ellipse cx="419.8341" cy="-18.3848" rx="44.5955" ry="18.2703"/>
+<text text-anchor="middle" x="419.8341" y="-14.5848">B_3_0</text>
 </g>
-<g id="edge16" class="edge"><title>p0x563eef67e4b0&#45;&gt;p0x563eef67e8d0</title>
-<path fill="none" stroke="black" d="M334.349,-36.9159C345.696,-34.4269 358.258,-31.6718 370.148,-29.0636"/>
-<polygon points="370.92,-32.4777 379.937,-26.9164 369.42,-25.6403 370.92,-32.4777"/>
+<g class="m-edge">
+<title>p0x563eef67e4b0&#45;&gt;p0x563eef67e8d0</title>
+<path d="M334.3196,-36.8418C345.7277,-34.3795 358.3195,-31.6618 370.2527,-29.0862"/>
+<polygon points="371.0448,-32.4959 380.0812,-26.9648 369.5679,-25.6535 371.0448,-32.4959"/>
 </g>
-<g id="edge17" class="edge"><title>p0x563eef67e5b8&#45;&gt;p0x563eef67e6c0</title>
-<path fill="none" stroke="black" d="M459.445,-81.8537C470.792,-84.3426 483.353,-87.0978 495.244,-89.7059"/>
-<polygon points="494.515,-93.1293 505.033,-91.8531 496.015,-86.2918 494.515,-93.1293"/>
+<g class="m-edge">
+<title>p0x563eef67e5b8&#45;&gt;p0x563eef67e6c0</title>
+<path d="M459.4151,-81.9277C470.8232,-84.39 483.415,-87.1078 495.3481,-89.6834"/>
+<polygon points="494.6633,-93.1161 505.1767,-91.8047 496.1402,-86.2736 494.6633,-93.1161"/>
 </g>
-<g id="node14" class="node"><title>p0x563eef67e9d8</title>
-<ellipse cx="544.93" cy="-45.3848" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="544.93" y="-41.5848">B_3_1</text>
+<g class="m-node m-flat">
+<title>p0x563eef67e9d8</title>
+<ellipse cx="544.9295" cy="-45.3848" rx="44.5955" ry="18.2703"/>
+<text text-anchor="middle" x="544.9295" y="-41.5848">B_3_1</text>
 </g>
-<g id="edge18" class="edge"><title>p0x563eef67e5b8&#45;&gt;p0x563eef67e9d8</title>
-<path fill="none" stroke="black" d="M459.108,-64.6789C470.686,-62.0451 483.554,-59.1181 495.696,-56.3563"/>
-<polygon points="496.705,-59.7162 505.68,-54.0853 495.153,-52.8905 496.705,-59.7162"/>
+<g class="m-edge">
+<title>p0x563eef67e5b8&#45;&gt;p0x563eef67e9d8</title>
+<path d="M459.0718,-64.6022C470.6035,-62.0211 483.3688,-59.1639 495.4527,-56.4591"/>
+<polygon points="496.4069,-59.8322 505.4009,-54.2324 494.8778,-53.0013 496.4069,-59.8322"/>
 </g>
-<g id="edge19" class="edge"><title>p0x563eef67e6c0&#45;&gt;p0x563eef67e7c8</title>
-<path fill="none" stroke="black" d="M584.54,-108.854C595.887,-111.343 608.448,-114.098 620.339,-116.706"/>
-<polygon points="619.611,-120.129 630.128,-118.853 621.11,-113.292 619.611,-120.129"/>
+<g class="m-edge">
+<title>p0x563eef67e6c0&#45;&gt;p0x563eef67e7c8</title>
+<path d="M584.5105,-108.9277C595.9186,-111.39 608.5104,-114.1078 620.4436,-116.6834"/>
+<polygon points="619.7588,-120.1161 630.2721,-118.8047 621.2357,-113.2736 619.7588,-120.1161"/>
 </g>
-<g id="node15" class="node"><title>p0x563eef67eae0</title>
+<g class="m-node m-flat">
+<title>p0x563eef67eae0</title>
 <ellipse cx="670.025" cy="-72.3848" rx="44.5955" ry="18.2703"/>
 <text text-anchor="middle" x="670.025" y="-68.5848">B_3_2</text>
 </g>
-<g id="edge20" class="edge"><title>p0x563eef67e6c0&#45;&gt;p0x563eef67eae0</title>
-<path fill="none" stroke="black" d="M584.203,-91.6789C595.782,-89.0451 608.65,-86.1181 620.791,-83.3563"/>
-<polygon points="621.801,-86.7162 630.775,-81.0853 620.248,-79.8905 621.801,-86.7162"/>
+<g class="m-edge">
+<title>p0x563eef67e6c0&#45;&gt;p0x563eef67eae0</title>
+<path d="M584.1673,-91.6022C595.699,-89.0211 608.4642,-86.1639 620.5481,-83.4591"/>
+<polygon points="621.5023,-86.8322 630.4964,-81.2324 619.9733,-80.0013 621.5023,-86.8322"/>
 </g>
-<g id="node16" class="node"><title>p0x563eef67ebe8</title>
-<ellipse cx="795.12" cy="-99.3848" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="795.12" y="-95.5848">B_3_3</text>
+<g class="m-node m-flat">
+<title>p0x563eef67ebe8</title>
+<ellipse cx="795.1205" cy="-99.3848" rx="44.5955" ry="18.2703"/>
+<text text-anchor="middle" x="795.1205" y="-95.5848">B_3_3</text>
 </g>
-<g id="edge21" class="edge"><title>p0x563eef67e7c8&#45;&gt;p0x563eef67ebe8</title>
-<path fill="none" stroke="black" d="M709.298,-118.679C720.877,-116.045 733.745,-113.118 745.887,-110.356"/>
-<polygon points="746.896,-113.716 755.871,-108.085 745.343,-106.891 746.896,-113.716"/>
+<g class="m-edge">
+<title>p0x563eef67e7c8&#45;&gt;p0x563eef67ebe8</title>
+<path d="M709.2628,-118.6022C720.7944,-116.0211 733.5597,-113.1639 745.6436,-110.4591"/>
+<polygon points="746.5978,-113.8322 755.5918,-108.2324 745.0688,-107.0013 746.5978,-113.8322"/>
 </g>
-<g id="edge22" class="edge"><title>p0x563eef67e8d0&#45;&gt;p0x563eef67e9d8</title>
-<path fill="none" stroke="black" d="M459.445,-26.8537C470.792,-29.3426 483.353,-32.0978 495.244,-34.7059"/>
-<polygon points="494.515,-38.1293 505.033,-36.8531 496.015,-31.2918 494.515,-38.1293"/>
+<g class="m-edge">
+<title>p0x563eef67e8d0&#45;&gt;p0x563eef67e9d8</title>
+<path d="M459.4151,-26.9277C470.8232,-29.39 483.415,-32.1078 495.3481,-34.6834"/>
+<polygon points="494.6633,-38.1161 505.1767,-36.8047 496.1402,-31.2736 494.6633,-38.1161"/>
 </g>
-<g id="edge23" class="edge"><title>p0x563eef67e9d8&#45;&gt;p0x563eef67eae0</title>
-<path fill="none" stroke="black" d="M584.54,-53.8537C595.887,-56.3426 608.448,-59.0978 620.339,-61.7059"/>
-<polygon points="619.611,-65.1293 630.128,-63.8531 621.11,-58.2918 619.611,-65.1293"/>
+<g class="m-edge">
+<title>p0x563eef67e9d8&#45;&gt;p0x563eef67eae0</title>
+<path d="M584.5105,-53.9277C595.9186,-56.39 608.5104,-59.1078 620.4436,-61.6834"/>
+<polygon points="619.7588,-65.1161 630.2721,-63.8047 621.2357,-58.2736 619.7588,-65.1161"/>
 </g>
-<g id="edge24" class="edge"><title>p0x563eef67eae0&#45;&gt;p0x563eef67ebe8</title>
-<path fill="none" stroke="black" d="M709.635,-80.8537C720.983,-83.3426 733.544,-86.0978 745.435,-88.7059"/>
-<polygon points="744.706,-92.1293 755.224,-90.8531 746.206,-85.2918 744.706,-92.1293"/>
+<g class="m-edge">
+<title>p0x563eef67eae0&#45;&gt;p0x563eef67ebe8</title>
+<path d="M709.606,-80.9277C721.0141,-83.39 733.6059,-86.1078 745.5391,-88.6834"/>
+<polygon points="744.8542,-92.1161 755.3676,-90.8047 746.3311,-85.2736 744.8542,-92.1161"/>
 </g>
 </g>
 </svg>
@@ -290,7 +330,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

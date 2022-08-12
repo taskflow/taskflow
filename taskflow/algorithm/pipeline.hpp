@@ -47,6 +47,9 @@ class Pipeflow {
   template <typename P>
   friend class ScalablePipeline;
 
+  template <typename... Ps>
+  friend class DataPipeline;
+
   public:
 
   /**

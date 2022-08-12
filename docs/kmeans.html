@@ -54,318 +54,355 @@
 <span class="c1">// K: number of clusters</span>
 <span class="c1">// M: number of iterations</span>
 <span class="c1">// px/py: 2D point vector </span>
-<span class="kt">void</span><span class="w"> </span><span class="nf">kmeans_seq</span><span class="p">(</span><span class="w"></span>
-<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">px</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">py</span><span class="w"></span>
-<span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kt">void</span> <span class="nf">kmeans_seq</span><span class="p">(</span>
+  <span class="kt">int</span> <span class="n">N</span><span class="p">,</span> <span class="kt">int</span> <span class="n">K</span><span class="p">,</span> <span class="kt">int</span> <span class="n">M</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span> <span class="n">px</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span> <span class="n">py</span>
+<span class="p">)</span> <span class="p">{</span>
 
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">(</span><span class="n">K</span><span class="p">);</span><span class="w"></span>
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">sx</span><span class="p">(</span><span class="n">K</span><span class="p">),</span><span class="w"> </span><span class="n">sy</span><span class="p">(</span><span class="n">K</span><span class="p">),</span><span class="w"> </span><span class="n">mx</span><span class="p">(</span><span class="n">K</span><span class="p">),</span><span class="w"> </span><span class="n">my</span><span class="p">(</span><span class="n">K</span><span class="p">);</span><span class="w"></span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">c</span><span class="p">(</span><span class="n">K</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">sx</span><span class="p">(</span><span class="n">K</span><span class="p">),</span> <span class="n">sy</span><span class="p">(</span><span class="n">K</span><span class="p">),</span> <span class="n">mx</span><span class="p">(</span><span class="n">K</span><span class="p">),</span> <span class="n">my</span><span class="p">(</span><span class="n">K</span><span class="p">);</span>
 
-<span class="w">  </span><span class="c1">// initial centroids</span>
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">copy_n</span><span class="p">(</span><span class="n">px</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="n">mx</span><span class="p">.</span><span class="n">begin</span><span class="p">());</span><span class="w"></span>
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">copy_n</span><span class="p">(</span><span class="n">py</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="n">my</span><span class="p">.</span><span class="n">begin</span><span class="p">());</span><span class="w"></span>
-<span class="w">  </span>
-<span class="w">  </span><span class="c1">// k-means iteration</span>
-<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">m</span><span class="o">&lt;</span><span class="n">M</span><span class="p">;</span><span class="w"> </span><span class="n">m</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+  <span class="c1">// initial centroids</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">copy_n</span><span class="p">(</span><span class="n">px</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">K</span><span class="p">,</span> <span class="n">mx</span><span class="p">.</span><span class="n">begin</span><span class="p">());</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">copy_n</span><span class="p">(</span><span class="n">py</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">K</span><span class="p">,</span> <span class="n">my</span><span class="p">.</span><span class="n">begin</span><span class="p">());</span>
+  
+  <span class="c1">// k-means iteration</span>
+  <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">m</span><span class="o">&lt;</span><span class="n">M</span><span class="p">;</span> <span class="n">m</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 
-<span class="w">    </span><span class="c1">// clear the storage</span>
-<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">fill_n</span><span class="p">(</span><span class="n">sx</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">fill_n</span><span class="p">(</span><span class="n">sy</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">);</span><span class="w"></span>
-<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">fill_n</span><span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+    <span class="c1">// clear the storage</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">fill_n</span><span class="p">(</span><span class="n">sx</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">K</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">);</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">fill_n</span><span class="p">(</span><span class="n">sy</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">K</span><span class="p">,</span> <span class="mf">0.0f</span><span class="p">);</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">fill_n</span><span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">K</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
 
-<span class="w">    </span><span class="c1">// find the best k (cluster id) for each point</span>
-<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">px</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w"></span>
-<span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">py</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w"></span>
-<span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">best_d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">();</span><span class="w"></span>
-<span class="w">      </span><span class="kt">int</span><span class="w"> </span><span class="n">best_k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
-<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">K</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">L2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">],</span><span class="w"> </span><span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span><span class="w"></span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">d</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">best_d</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">          </span><span class="n">best_d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="p">;</span><span class="w"></span>
-<span class="w">          </span><span class="n">best_k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">      </span><span class="p">}</span><span class="w"></span>
-<span class="w">      </span><span class="n">sx</span><span class="p">[</span><span class="n">best_k</span><span class="p">]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"></span>
-<span class="w">      </span><span class="n">sy</span><span class="p">[</span><span class="n">best_k</span><span class="p">]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">y</span><span class="p">;</span><span class="w"></span>
-<span class="w">      </span><span class="n">c</span><span class="w"> </span><span class="p">[</span><span class="n">best_k</span><span class="p">]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+    <span class="c1">// find the best k (cluster id) for each point</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kt">float</span> <span class="n">x</span> <span class="o">=</span> <span class="n">px</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+      <span class="kt">float</span> <span class="n">y</span> <span class="o">=</span> <span class="n">py</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+      <span class="kt">float</span> <span class="n">best_d</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">();</span>
+      <span class="kt">int</span> <span class="n">best_k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">K</span><span class="p">;</span> <span class="o">++</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">const</span> <span class="kt">float</span> <span class="n">d</span> <span class="o">=</span> <span class="n">L2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">d</span> <span class="o">&lt;</span> <span class="n">best_d</span><span class="p">)</span> <span class="p">{</span>
+          <span class="n">best_d</span> <span class="o">=</span> <span class="n">d</span><span class="p">;</span>
+          <span class="n">best_k</span> <span class="o">=</span> <span class="n">k</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+      <span class="n">sx</span><span class="p">[</span><span class="n">best_k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">x</span><span class="p">;</span>
+      <span class="n">sy</span><span class="p">[</span><span class="n">best_k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">y</span><span class="p">;</span>
+      <span class="n">c</span> <span class="p">[</span><span class="n">best_k</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
 
-<span class="w">    </span><span class="c1">// update the centroid</span>
-<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">k</span><span class="o">&lt;</span><span class="n">K</span><span class="p">;</span><span class="w"> </span><span class="n">k</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span><span class="w">  </span><span class="c1">// turn 0/0 to 0/1</span>
-<span class="w">      </span><span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w"></span>
-<span class="w">      </span><span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
+    <span class="c1">// update the centroid</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">k</span><span class="o">&lt;</span><span class="n">K</span><span class="p">;</span> <span class="n">k</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">const</span> <span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span>  <span class="c1">// turn 0/0 to 0/1</span>
+      <span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">sx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">count</span><span class="p">;</span>
+      <span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">sy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">count</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
 
-<span class="w">  </span><span class="c1">// print the k centroids found</span>
-<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">k</span><span class="o">&lt;</span><span class="n">K</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;centroid &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">setw</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39; &#39;</span><span class="w"></span>
-<span class="w">                                          </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">setw</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre></section><section id="ParallelKMeansUsingCPUs"><h2><a href="#ParallelKMeansUsingCPUs">Parallel k-means using CPUs</a></h2><p>The second step of k-means algorithm, <em>assigning every point to the nearest centroid</em>, is highly parallelizable across individual points. We can create a <em>parallel-for</em> task to run parallel iterations.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">best_ks</span><span class="p">(</span><span class="n">N</span><span class="p">);</span><span class="w">  </span><span class="c1">// nearest centroid of each point</span>
+  <span class="c1">// print the k centroids found</span>
+  <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">k</span><span class="o">&lt;</span><span class="n">K</span><span class="p">;</span> <span class="o">++</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;centroid &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">k</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">setw</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39; &#39;</span>
+                                          <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">setw</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span></pre></section><section id="ParallelKMeansUsingCPUs"><h2><a href="#ParallelKMeansUsingCPUs">Parallel k-means using CPUs</a></h2><p>The second step of k-means algorithm, <em>assigning every point to the nearest centroid</em>, is highly parallelizable across individual points. We can create a <em>parallel-for</em> task to run parallel iterations.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">best_ks</span><span class="p">(</span><span class="n">N</span><span class="p">);</span>  <span class="c1">// nearest centroid of each point</span>
 
-<span class="kt">unsigned</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12</span><span class="p">;</span><span class="w">  </span><span class="c1">// 12 partitioned tasks</span>
+<span class="kt">unsigned</span> <span class="n">P</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>  <span class="c1">// 12 partitioned tasks</span>
 
 <span class="c1">// update cluster</span>
-<span class="n">taskflow</span><span class="p">.</span><span class="n">for_each_index</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">){</span><span class="w"></span>
-<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">px</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w"></span>
-<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">py</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w"></span>
-<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">best_d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">();</span><span class="w"></span>
-<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">best_k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">K</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">L2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">],</span><span class="w"> </span><span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span><span class="w"></span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">d</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">best_d</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="n">best_d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="p">;</span><span class="w"></span>
-<span class="w">      </span><span class="n">best_k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span><span class="n">best_ks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">best_k</span><span class="p">;</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre><p>The third step of moving every centroid to the average of points is also parallelizable across individual centroids. However, since k is typically not large, one task of doing this update is sufficient.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
-<span class="w">  </span><span class="c1">// sum of points</span>
-<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">sx</span><span class="p">[</span><span class="n">best_ks</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">px</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w"></span>
-<span class="w">    </span><span class="n">sy</span><span class="p">[</span><span class="n">best_ks</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">py</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w"></span>
-<span class="w">    </span><span class="n">c</span><span class="w"> </span><span class="p">[</span><span class="n">best_ks</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span>
-<span class="w">  </span><span class="c1">// average of points</span>
-<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">k</span><span class="o">&lt;</span><span class="n">K</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span><span class="w">  </span><span class="c1">// turn 0/0 to 0/1</span>
-<span class="w">    </span><span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre><p>To describe <code>M</code> iterations, we create a condition task that loops the second step of the algorithm by <code>M</code> times. The return value of zero goes to the first successor which we will connect to the task of the second step later; otherwise, k-means completes.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">]()</span><span class="w"> </span><span class="k">mutable</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">m</span><span class="o">++</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">M</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre><p>The entire code of CPU-parallel k-means is shown below. Here we use an additional storage, <code>best_ks</code>, to record the nearest centroid of a point at an iteration.</p><pre class="m-code"><span class="c1">// N: number of points</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">for_each_index</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="kt">int</span> <span class="n">i</span><span class="p">){</span>
+  <span class="kt">float</span> <span class="n">x</span> <span class="o">=</span> <span class="n">px</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+  <span class="kt">float</span> <span class="n">y</span> <span class="o">=</span> <span class="n">py</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+  <span class="kt">float</span> <span class="n">best_d</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">();</span>
+  <span class="kt">int</span> <span class="n">best_k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">K</span><span class="p">;</span> <span class="o">++</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="kt">float</span> <span class="n">d</span> <span class="o">=</span> <span class="n">L2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">d</span> <span class="o">&lt;</span> <span class="n">best_d</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">best_d</span> <span class="o">=</span> <span class="n">d</span><span class="p">;</span>
+      <span class="n">best_k</span> <span class="o">=</span> <span class="n">k</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="n">best_ks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">best_k</span><span class="p">;</span>
+<span class="p">});</span></pre><p>The third step of moving every centroid to the average of points is also parallelizable across individual centroids. However, since k is typically not large, one task of doing this update is sufficient.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
+  <span class="c1">// sum of points</span>
+  <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">sx</span><span class="p">[</span><span class="n">best_ks</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+=</span> <span class="n">px</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">sy</span><span class="p">[</span><span class="n">best_ks</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+=</span> <span class="n">py</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">c</span> <span class="p">[</span><span class="n">best_ks</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  
+  <span class="c1">// average of points</span>
+  <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">k</span><span class="o">&lt;</span><span class="n">K</span><span class="p">;</span> <span class="o">++</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">count</span> <span class="o">=</span> <span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span>  <span class="c1">// turn 0/0 to 0/1</span>
+    <span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">sx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">count</span><span class="p">;</span>
+    <span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">sy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">count</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">});</span></pre><p>To describe <code>M</code> iterations, we create a condition task that loops the second step of the algorithm by <code>M</code> times. The return value of zero goes to the first successor which we will connect to the task of the second step later; otherwise, k-means completes.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">M</span><span class="p">]()</span> <span class="k">mutable</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">(</span><span class="n">m</span><span class="o">++</span> <span class="o">&lt;</span> <span class="n">M</span><span class="p">)</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">});</span></pre><p>The entire code of CPU-parallel k-means is shown below. Here we use an additional storage, <code>best_ks</code>, to record the nearest centroid of a point at an iteration.</p><pre class="m-code"><span class="c1">// N: number of points</span>
 <span class="c1">// K: number of clusters</span>
 <span class="c1">// M: number of iterations</span>
 <span class="c1">// px/py: 2D point vector </span>
-<span class="kt">void</span><span class="w"> </span><span class="nf">kmeans_par</span><span class="p">(</span><span class="w"></span>
-<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">cconst</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">px</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">py</span><span class="w"></span>
-<span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="kt">void</span> <span class="nf">kmeans_par</span><span class="p">(</span>
+  <span class="kt">int</span> <span class="n">N</span><span class="p">,</span> <span class="kt">int</span> <span class="n">K</span><span class="p">,</span> <span class="kt">int</span> <span class="n">M</span><span class="p">,</span> <span class="n">cconst</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span> <span class="n">px</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span> <span class="n">py</span>
+<span class="p">)</span> <span class="p">{</span>
 
-<span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12</span><span class="p">;</span><span class="w">  </span><span class="c1">// 12 partitions of the parallel-for graph</span>
+  <span class="kt">unsigned</span> <span class="n">P</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>  <span class="c1">// 12 partitions of the parallel-for graph</span>
 
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;K-Means&quot;</span><span class="p">);</span><span class="w"></span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;K-Means&quot;</span><span class="p">);</span>
 
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">(</span><span class="n">K</span><span class="p">),</span><span class="w"> </span><span class="n">best_ks</span><span class="p">(</span><span class="n">N</span><span class="p">);</span><span class="w"></span>
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">sx</span><span class="p">(</span><span class="n">K</span><span class="p">),</span><span class="w"> </span><span class="n">sy</span><span class="p">(</span><span class="n">K</span><span class="p">),</span><span class="w"> </span><span class="n">mx</span><span class="p">(</span><span class="n">K</span><span class="p">),</span><span class="w"> </span><span class="n">my</span><span class="p">(</span><span class="n">K</span><span class="p">);</span><span class="w"></span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">c</span><span class="p">(</span><span class="n">K</span><span class="p">),</span> <span class="n">best_ks</span><span class="p">(</span><span class="n">N</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">sx</span><span class="p">(</span><span class="n">K</span><span class="p">),</span> <span class="n">sy</span><span class="p">(</span><span class="n">K</span><span class="p">),</span> <span class="n">mx</span><span class="p">(</span><span class="n">K</span><span class="p">),</span> <span class="n">my</span><span class="p">(</span><span class="n">K</span><span class="p">);</span>
 
-<span class="w">  </span><span class="c1">// initial centroids</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">K</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="n">mx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">px</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w"></span>
-<span class="w">      </span><span class="n">my</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">py</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;init&quot;</span><span class="p">);</span><span class="w"></span>
+  <span class="c1">// initial centroids</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">init</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">K</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">mx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">px</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+      <span class="n">my</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">py</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="p">}</span>
+  <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;init&quot;</span><span class="p">);</span>
 
-<span class="w">  </span><span class="c1">// clear the storage</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">clean_up</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">k</span><span class="o">&lt;</span><span class="n">K</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="n">sx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span><span class="w"></span>
-<span class="w">      </span><span class="n">sy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span><span class="w"></span>
-<span class="w">      </span><span class="n">c</span><span class="w"> </span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;clean_up&quot;</span><span class="p">);</span><span class="w"></span>
+  <span class="c1">// clear the storage</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">clean_up</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">k</span><span class="o">&lt;</span><span class="n">K</span><span class="p">;</span> <span class="o">++</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">sx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0f</span><span class="p">;</span>
+      <span class="n">sy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0f</span><span class="p">;</span>
+      <span class="n">c</span> <span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;clean_up&quot;</span><span class="p">);</span>
 
-<span class="w">  </span><span class="c1">// update cluster</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">pf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">for_each_index</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">){</span><span class="w"></span>
-<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">px</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w"></span>
-<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">py</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w"></span>
-<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">best_d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">();</span><span class="w"></span>
-<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">best_k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">K</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">L2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">],</span><span class="w"> </span><span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span><span class="w"></span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">d</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">best_d</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">best_d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="n">best_k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k</span><span class="p">;</span><span class="w"></span>
-<span class="w">      </span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="n">best_ks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">best_k</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;parallel-for&quot;</span><span class="p">);</span><span class="w"></span>
+  <span class="c1">// update cluster</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">pf</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">for_each_index</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="kt">int</span> <span class="n">i</span><span class="p">){</span>
+    <span class="kt">float</span> <span class="n">x</span> <span class="o">=</span> <span class="n">px</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="kt">float</span> <span class="n">y</span> <span class="o">=</span> <span class="n">py</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="kt">float</span> <span class="n">best_d</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">();</span>
+    <span class="kt">int</span> <span class="n">best_k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">K</span><span class="p">;</span> <span class="o">++</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">const</span> <span class="kt">float</span> <span class="n">d</span> <span class="o">=</span> <span class="n">L2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">d</span> <span class="o">&lt;</span> <span class="n">best_d</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">best_d</span> <span class="o">=</span> <span class="n">d</span><span class="p">;</span>
+        <span class="n">best_k</span> <span class="o">=</span> <span class="n">k</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">best_ks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">best_k</span><span class="p">;</span>
+  <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;parallel-for&quot;</span><span class="p">);</span>
 
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">update_cluster</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="n">sx</span><span class="p">[</span><span class="n">best_ks</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">px</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w"></span>
-<span class="w">      </span><span class="n">sy</span><span class="p">[</span><span class="n">best_ks</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">py</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w"></span>
-<span class="w">      </span><span class="n">c</span><span class="w"> </span><span class="p">[</span><span class="n">best_ks</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">update_cluster</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">sx</span><span class="p">[</span><span class="n">best_ks</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+=</span> <span class="n">px</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+      <span class="n">sy</span><span class="p">[</span><span class="n">best_ks</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+=</span> <span class="n">py</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+      <span class="n">c</span> <span class="p">[</span><span class="n">best_ks</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
 
-<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">k</span><span class="o">&lt;</span><span class="n">K</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="k">auto</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span><span class="w">  </span><span class="c1">// turn 0/0 to 0/1</span>
-<span class="w">      </span><span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w"></span>
-<span class="w">      </span><span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;update_cluster&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">  </span>
-<span class="w">  </span><span class="c1">// convergence check</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">condition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">]()</span><span class="w"> </span><span class="k">mutable</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">m</span><span class="o">++</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">M</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;converged?&quot;</span><span class="p">);</span><span class="w"></span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">k</span><span class="o">&lt;</span><span class="n">K</span><span class="p">;</span> <span class="o">++</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">auto</span> <span class="n">count</span> <span class="o">=</span> <span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span>  <span class="c1">// turn 0/0 to 0/1</span>
+      <span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">sx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">count</span><span class="p">;</span>
+      <span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">sy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">count</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;update_cluster&quot;</span><span class="p">);</span>
+  
+  <span class="c1">// convergence check</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">M</span><span class="p">]()</span> <span class="k">mutable</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">m</span><span class="o">++</span> <span class="o">&lt;</span> <span class="n">M</span><span class="p">)</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;converged?&quot;</span><span class="p">);</span>
 
-<span class="w">  </span><span class="n">init</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">clean_up</span><span class="p">);</span><span class="w"></span>
+  <span class="n">init</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">clean_up</span><span class="p">);</span>
 
-<span class="w">  </span><span class="n">clean_up</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">pf</span><span class="p">);</span><span class="w"></span>
-<span class="w">  </span><span class="n">pf</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">update_cluster</span><span class="p">);</span><span class="w"></span>
+  <span class="n">clean_up</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">pf</span><span class="p">);</span>
+  <span class="n">pf</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">update_cluster</span><span class="p">);</span>
 
-<span class="w">  </span><span class="n">condition</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">clean_up</span><span class="p">)</span><span class="w"></span>
-<span class="w">           </span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">update_cluster</span><span class="p">);</span><span class="w"></span>
+  <span class="n">condition</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">clean_up</span><span class="p">)</span>
+           <span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">update_cluster</span><span class="p">);</span>
 
-<span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre><p>The taskflow consists of two parts, a <code>clean_up</code> task and a parallel-for graph. The former cleans up the storage <code>sx</code>, <code>sy</code>, and <code>c</code> that are used to average points for new centroids, and the later parallelizes the searching for nearest centroids across individual points using 12 tasks (may vary depending on the machine). If the iteration count is smaller than <code>M</code>, the condition task returns 0 to let the execution path go back to <code>clean_up</code>. Otherwise, it returns 1 to stop (i.e., no successor tasks at index 1). The taskflow graph is illustrated below:</p><div class="m-graph"><svg style="width: 57.812rem; height: 47.625rem;" viewBox="0.00 0.00 925.23 762.00">
+  <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
+<span class="p">}</span></pre><p>The taskflow consists of two parts, a <code>clean_up</code> task and a parallel-for graph. The former cleans up the storage <code>sx</code>, <code>sy</code>, and <code>c</code> that are used to average points for new centroids, and the later parallelizes the searching for nearest centroids across individual points using 12 tasks (may vary depending on the machine). If the iteration count is smaller than <code>M</code>, the condition task returns 0 to let the execution path go back to <code>clean_up</code>. Otherwise, it returns 1 to stop (i.e., no successor tasks at index 1). The taskflow graph is illustrated below:</p><div class="m-graph"><svg style="width: 62.000rem; height: 47.625rem;" viewBox="0.00 0.00 992.20 762.00">
 <g transform="scale(1 1) rotate(0) translate(4 758)">
 <title>Taskflow</title>
-<g id="clust1" class="cluster"><title>cluster_p0x1dcb6e0</title>
-<polygon points="8,-8 8,-746 295.759,-746 295.759,-8 8,-8"/>
-<text text-anchor="middle" x="151.88" y="-729.2">Subflow: parallel&#45;for</text>
+<g class="m-cluster">
+<title>cluster_p0x1dcb6e0</title>
+<polygon points="8,-8 8,-746 343.6589,-746 343.6589,-8 8,-8"/>
+<text text-anchor="middle" x="175.8295" y="-729.2">Subflow: parallel&#45;for</text>
 </g>
-<g id="node1" class="node"><title>p0x1dcb4c0</title>
-<ellipse cx="647.607" cy="-418" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="647.607" y="-414.2">init</text>
+<g class="m-node m-flat">
+<title>p0x1dcb4c0</title>
+<ellipse cx="707.1636" cy="-427" rx="28.9828" ry="18.2703"/>
+<text text-anchor="middle" x="707.1636" y="-423.2">init</text>
 </g>
-<g id="node2" class="node"><title>p0x1dcb5d0</title>
-<ellipse cx="856.418" cy="-372" rx="60.623" ry="18.2703"/>
-<text text-anchor="middle" x="856.418" y="-368.2">clean_up</text>
+<g class="m-node m-flat">
+<title>p0x1dcb5d0</title>
+<ellipse cx="922.6819" cy="-381" rx="61.5366" ry="18.2703"/>
+<text text-anchor="middle" x="922.6819" y="-377.2">clean_up</text>
 </g>
-<g id="edge1" class="edge"><title>p0x1dcb4c0&#45;&gt;p0x1dcb5d0</title>
-<path fill="none" stroke="black" d="M675.221,-412.08C705.795,-405.28 756.887,-393.916 796.875,-385.021"/>
-<polygon points="797.782,-388.405 806.783,-382.818 796.262,-381.572 797.782,-388.405"/>
+<g class="m-edge">
+<title>p0x1dcb4c0&#45;&gt;p0x1dcb5d0</title>
+<path d="M734.8976,-421.0805C766.9988,-414.2288 820.8061,-402.7443 862.6147,-393.8207"/>
+<polygon points="863.3721,-397.2379 872.4212,-391.7276 861.9109,-390.3921 863.3721,-397.2379"/>
 </g>
-<g id="node3" class="node"><title>p0x1dcb6e0</title>
-<ellipse cx="218.463" cy="-364" rx="69.0935" ry="18.2703"/>
-<text text-anchor="middle" x="218.463" y="-360.2">parallel&#45;for</text>
+<g class="m-node m-flat">
+<title>p0x1dcb6e0</title>
+<ellipse cx="262.1198" cy="-364" rx="73.5782" ry="18.2703"/>
+<text text-anchor="middle" x="262.1198" y="-360.2">parallel&#45;for</text>
 </g>
-<g id="edge2" class="edge"><title>p0x1dcb5d0&#45;&gt;p0x1dcb6e0</title>
-<path fill="none" stroke="black" d="M795.407,-371.245C679.903,-369.792 426.749,-366.608 298.004,-364.988"/>
-<polygon points="297.866,-361.486 287.823,-364.86 297.778,-368.486 297.866,-361.486"/>
+<g class="m-edge">
+<title>p0x1dcb5d0&#45;&gt;p0x1dcb6e0</title>
+<path d="M861.3135,-379.4206C742.3521,-376.3591 480.2611,-369.614 345.5961,-366.1483"/>
+<polygon points="345.4222,-362.6428 335.3354,-365.8843 345.242,-369.6405 345.4222,-362.6428"/>
 </g>
-<g id="node4" class="node"><title>p0x1dcb7f0</title>
-<ellipse cx="416.683" cy="-324" rx="91.8478" ry="18.2703"/>
-<text text-anchor="middle" x="416.683" y="-320.2">update_cluster</text>
+<g class="m-node m-flat">
+<title>p0x1dcb7f0</title>
+<ellipse cx="467.4113" cy="-333" rx="94.5053" ry="18.2703"/>
+<text text-anchor="middle" x="467.4113" y="-329.2">update_cluster</text>
 </g>
-<g id="edge3" class="edge"><title>p0x1dcb6e0&#45;&gt;p0x1dcb7f0</title>
-<path fill="none" stroke="black" d="M273.861,-352.911C294.905,-348.621 319.321,-343.644 341.903,-339.04"/>
-<polygon points="342.691,-342.452 351.79,-337.025 341.293,-335.593 342.691,-342.452"/>
+<g class="m-edge">
+<title>p0x1dcb6e0&#45;&gt;p0x1dcb7f0</title>
+<path d="M325.1092,-354.4883C343.2759,-351.745 363.4009,-348.7061 382.6589,-345.798"/>
+<polygon points="383.2703,-349.2455 392.6356,-344.2915 382.2251,-342.3239 383.2703,-349.2455"/>
 </g>
-<g id="node18" class="node"><title>p0x1dcb900</title>
-<polygon points="647.607,-344 545.607,-318 647.607,-292 749.607,-318 647.607,-344"/>
-<text text-anchor="middle" x="647.607" y="-314.2">converged?</text>
+<g class="m-node">
+<title>p0x1dcb900</title>
+<polygon points="707.1636,-353 599.1636,-327 707.1636,-301 815.1636,-327 707.1636,-353"/>
+<text text-anchor="middle" x="707.1636" y="-323.2">converged?</text>
 </g>
-<g id="edge17" class="edge"><title>p0x1dcb7f0&#45;&gt;p0x1dcb900</title>
-<path fill="none" stroke="black" d="M508.16,-321.629C520.17,-321.314 532.548,-320.989 544.734,-320.67"/>
-<polygon points="545.007,-324.164 554.912,-320.403 544.824,-317.167 545.007,-324.164"/>
+<g class="m-edge">
+<title>p0x1dcb7f0&#45;&gt;p0x1dcb900</title>
+<path d="M561.4796,-330.6459C573.7979,-330.3376 586.4979,-330.0198 599.0252,-329.7063"/>
+<polygon points="599.115,-333.2052 609.0243,-329.456 598.9398,-326.2074 599.115,-333.2052"/>
 </g>
-<g id="node5" class="node"><title>p0x7fd610000b50</title>
-<ellipse cx="64.0833" cy="-694" rx="41.9398" ry="18.2703"/>
-<text text-anchor="middle" x="64.0833" y="-690.2">pfg_0</text>
+<g class="m-node m-flat">
+<title>p0x7fd610000b50</title>
+<ellipse cx="64.7904" cy="-694" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="64.7904" y="-690.2">pfg_0</text>
 </g>
-<g id="edge4" class="edge"><title>p0x7fd610000b50&#45;&gt;p0x1dcb6e0</title>
-<path fill="none" stroke="black" d="M93.9319,-681.149C100.63,-677.083 107.233,-672.04 112.167,-666 180.803,-581.967 206.008,-450.264 214.094,-392.625"/>
-<polygon points="217.6,-392.811 215.451,-382.436 210.661,-391.886 217.6,-392.811"/>
+<g class="m-edge">
+<title>p0x7fd610000b50&#45;&gt;p0x1dcb6e0</title>
+<path d="M94.1764,-680.8728C101.1268,-676.8126 108.1017,-671.8407 113.5807,-666 191.8571,-582.556 237.2918,-450.0751 254.3291,-392.393"/>
+<polygon points="257.7679,-393.1002 257.1814,-382.5216 251.043,-391.157 257.7679,-393.1002"/>
 </g>
-<g id="node6" class="node"><title>p0x7fd610000c60</title>
-<ellipse cx="64.0833" cy="-639" rx="41.9398" ry="18.2703"/>
-<text text-anchor="middle" x="64.0833" y="-635.2">pfg_1</text>
+<g class="m-node m-flat">
+<title>p0x7fd610000c60</title>
+<ellipse cx="64.7904" cy="-639" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="64.7904" y="-635.2">pfg_1</text>
 </g>
-<g id="edge5" class="edge"><title>p0x7fd610000c60&#45;&gt;p0x1dcb6e0</title>
-<path fill="none" stroke="black" d="M93.6534,-625.913C100.356,-621.852 107.032,-616.87 112.167,-611 170.065,-544.804 199.813,-442.031 211.457,-392.542"/>
-<polygon points="214.926,-393.072 213.732,-382.544 208.1,-391.519 214.926,-393.072"/>
+<g class="m-edge">
+<title>p0x7fd610000c60&#45;&gt;p0x1dcb6e0</title>
+<path d="M93.5875,-625.6936C100.6263,-621.6107 107.7906,-616.673 113.5807,-611 181.2942,-544.6563 230.1344,-441.2366 250.952,-391.9487"/>
+<polygon points="254.247,-393.14 254.8525,-382.5625 247.783,-390.4537 254.247,-393.14"/>
 </g>
-<g id="node7" class="node"><title>p0x7fd610000d70</title>
-<ellipse cx="64.0833" cy="-584" rx="41.9398" ry="18.2703"/>
-<text text-anchor="middle" x="64.0833" y="-580.2">pfg_2</text>
+<g class="m-node m-flat">
+<title>p0x7fd610000d70</title>
+<ellipse cx="64.7904" cy="-584" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="64.7904" y="-580.2">pfg_2</text>
 </g>
-<g id="edge6" class="edge"><title>p0x7fd610000d70&#45;&gt;p0x1dcb6e0</title>
-<path fill="none" stroke="black" d="M93.2609,-570.553C99.9715,-566.499 106.749,-561.61 112.167,-556 159.641,-506.84 192.363,-432.046 207.642,-391.86"/>
-<polygon points="210.945,-393.019 211.148,-382.426 204.383,-390.58 210.945,-393.019"/>
+<g class="m-edge">
+<title>p0x7fd610000d70&#45;&gt;p0x1dcb6e0</title>
+<path d="M92.892,-570.3633C100.0158,-566.2558 107.3951,-561.3888 113.5807,-556 171.0675,-505.9184 221.484,-430.7372 246.1149,-390.9409"/>
+<polygon points="249.1596,-392.6707 251.3925,-382.3138 243.1883,-389.0178 249.1596,-392.6707"/>
 </g>
-<g id="node8" class="node"><title>p0x7fd610000e80</title>
-<ellipse cx="64.0833" cy="-529" rx="41.9398" ry="18.2703"/>
-<text text-anchor="middle" x="64.0833" y="-525.2">pfg_3</text>
+<g class="m-node m-flat">
+<title>p0x7fd610000e80</title>
+<ellipse cx="64.7904" cy="-529" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="64.7904" y="-525.2">pfg_3</text>
 </g>
-<g id="edge7" class="edge"><title>p0x7fd610000e80&#45;&gt;p0x1dcb6e0</title>
-<path fill="none" stroke="black" d="M92.1948,-515.248C99.0694,-511.141 106.192,-506.304 112.167,-501 149.371,-467.971 182.562,-420.24 201.326,-390.717"/>
-<polygon points="204.334,-392.509 206.674,-382.176 198.401,-388.794 204.334,-392.509"/>
+<g class="m-edge">
+<title>p0x7fd610000e80&#45;&gt;p0x1dcb6e0</title>
+<path d="M91.803,-514.9298C99.0808,-510.7588 106.809,-505.9686 113.5807,-501 160.8365,-466.3274 209.6767,-418.561 237.9065,-389.5587"/>
+<polygon points="240.5318,-391.8787 244.9649,-382.2559 235.4986,-387.0139 240.5318,-391.8787"/>
 </g>
-<g id="node9" class="node"><title>p0x7fd610000f90</title>
-<ellipse cx="64.0833" cy="-474" rx="41.9398" ry="18.2703"/>
-<text text-anchor="middle" x="64.0833" y="-470.2">pfg_4</text>
+<g class="m-node m-flat">
+<title>p0x7fd610000f90</title>
+<ellipse cx="64.7904" cy="-474" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="64.7904" y="-470.2">pfg_4</text>
 </g>
-<g id="edge8" class="edge"><title>p0x7fd610000f90&#45;&gt;p0x1dcb6e0</title>
-<path fill="none" stroke="black" d="M90.86,-459.458C97.882,-455.285 105.412,-450.612 112.167,-446 138.857,-427.776 167.722,-405.068 188.468,-388.172"/>
-<polygon points="190.759,-390.819 196.277,-381.774 186.323,-385.404 190.759,-390.819"/>
+<g class="m-edge">
+<title>p0x7fd610000f90&#45;&gt;p0x1dcb6e0</title>
+<path d="M90.9942,-459.3928C124.7703,-440.5646 183.7962,-407.661 222.9218,-385.8507"/>
+<polygon points="224.8945,-388.7582 231.9249,-380.832 221.4861,-382.644 224.8945,-388.7582"/>
 </g>
-<g id="node10" class="node"><title>p0x7fd6100010a0</title>
-<ellipse cx="64.0833" cy="-419" rx="41.9398" ry="18.2703"/>
-<text text-anchor="middle" x="64.0833" y="-415.2">pfg_5</text>
+<g class="m-node m-flat">
+<title>p0x7fd6100010a0</title>
+<ellipse cx="64.7904" cy="-419" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="64.7904" y="-415.2">pfg_5</text>
 </g>
-<g id="edge9" class="edge"><title>p0x7fd6100010a0&#45;&gt;p0x1dcb6e0</title>
-<path fill="none" stroke="black" d="M97.027,-407.47C117.263,-400.166 143.871,-390.562 166.93,-382.239"/>
-<polygon points="168.348,-385.449 176.566,-378.761 165.972,-378.864 168.348,-385.449"/>
+<g class="m-edge">
+<title>p0x7fd6100010a0&#45;&gt;p0x1dcb6e0</title>
+<path d="M100.0689,-409.1671C128.6229,-401.2085 169.4598,-389.8264 202.9947,-380.4795"/>
+<polygon points="204.0002,-383.8327 212.6933,-377.7763 202.1207,-377.0897 204.0002,-383.8327"/>
 </g>
-<g id="node11" class="node"><title>p0x7fd6100011b0</title>
-<ellipse cx="64.0833" cy="-364" rx="41.9398" ry="18.2703"/>
-<text text-anchor="middle" x="64.0833" y="-360.2">pfg_6</text>
+<g class="m-node m-flat">
+<title>p0x7fd6100011b0</title>
+<ellipse cx="64.7904" cy="-364" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="64.7904" y="-360.2">pfg_6</text>
 </g>
-<g id="edge10" class="edge"><title>p0x7fd6100011b0&#45;&gt;p0x1dcb6e0</title>
-<path fill="none" stroke="black" d="M105.918,-364C116.214,-364 127.617,-364 139.085,-364"/>
-<polygon points="139.155,-367.5 149.155,-364 139.155,-360.5 139.155,-367.5"/>
+<g class="m-edge">
+<title>p0x7fd6100011b0&#45;&gt;p0x1dcb6e0</title>
+<path d="M106.6389,-364C127.5199,-364 153.5513,-364 178.3062,-364"/>
+<polygon points="178.4488,-367.5001 188.4487,-364 178.4487,-360.5001 178.4488,-367.5001"/>
 </g>
-<g id="node12" class="node"><title>p0x7fd6100012c0</title>
-<ellipse cx="64.0833" cy="-309" rx="41.9398" ry="18.2703"/>
-<text text-anchor="middle" x="64.0833" y="-305.2">pfg_7</text>
+<g class="m-node m-flat">
+<title>p0x7fd6100012c0</title>
+<ellipse cx="64.7904" cy="-309" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="64.7904" y="-305.2">pfg_7</text>
 </g>
-<g id="edge11" class="edge"><title>p0x7fd6100012c0&#45;&gt;p0x1dcb6e0</title>
-<path fill="none" stroke="black" d="M97.027,-320.53C117.263,-327.834 143.871,-337.438 166.93,-345.761"/>
-<polygon points="165.972,-349.136 176.566,-349.239 168.348,-342.551 165.972,-349.136"/>
+<g class="m-edge">
+<title>p0x7fd6100012c0&#45;&gt;p0x1dcb6e0</title>
+<path d="M100.0689,-318.8329C128.6229,-326.7915 169.4598,-338.1736 202.9947,-347.5205"/>
+<polygon points="202.1207,-350.9103 212.6933,-350.2237 204.0002,-344.1673 202.1207,-350.9103"/>
 </g>
-<g id="node13" class="node"><title>p0x7fd6100013d0</title>
-<ellipse cx="64.0833" cy="-254" rx="41.9398" ry="18.2703"/>
-<text text-anchor="middle" x="64.0833" y="-250.2">pfg_8</text>
+<g class="m-node m-flat">
+<title>p0x7fd6100013d0</title>
+<ellipse cx="64.7904" cy="-254" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="64.7904" y="-250.2">pfg_8</text>
 </g>
-<g id="edge12" class="edge"><title>p0x7fd6100013d0&#45;&gt;p0x1dcb6e0</title>
-<path fill="none" stroke="black" d="M90.86,-268.542C97.882,-272.715 105.412,-277.388 112.167,-282 138.857,-300.224 167.722,-322.932 188.468,-339.828"/>
-<polygon points="186.323,-342.596 196.277,-346.226 190.759,-337.181 186.323,-342.596"/>
+<g class="m-edge">
+<title>p0x7fd6100013d0&#45;&gt;p0x1dcb6e0</title>
+<path d="M90.9942,-268.6072C124.7703,-287.4354 183.7962,-320.339 222.9218,-342.1493"/>
+<polygon points="221.4861,-345.356 231.9249,-347.168 224.8945,-339.2418 221.4861,-345.356"/>
 </g>
-<g id="node14" class="node"><title>p0x7fd6100014e0</title>
-<ellipse cx="64.0833" cy="-199" rx="41.9398" ry="18.2703"/>
-<text text-anchor="middle" x="64.0833" y="-195.2">pfg_9</text>
+<g class="m-node m-flat">
+<title>p0x7fd6100014e0</title>
+<ellipse cx="64.7904" cy="-199" rx="41.9398" ry="18.2703"/>
+<text text-anchor="middle" x="64.7904" y="-195.2">pfg_9</text>
 </g>
-<g id="edge13" class="edge"><title>p0x7fd6100014e0&#45;&gt;p0x1dcb6e0</title>
-<path fill="none" stroke="black" d="M92.1948,-212.752C99.0694,-216.859 106.192,-221.696 112.167,-227 149.371,-260.029 182.562,-307.76 201.326,-337.283"/>
-<polygon points="198.401,-339.206 206.674,-345.824 204.334,-335.491 198.401,-339.206"/>
+<g class="m-edge">
+<title>p0x7fd6100014e0&#45;&gt;p0x1dcb6e0</title>
+<path d="M91.803,-213.0702C99.0808,-217.2412 106.809,-222.0314 113.5807,-227 160.8365,-261.6726 209.6767,-309.439 237.9065,-338.4413"/>
+<polygon points="235.4986,-340.9861 244.9649,-345.7441 240.5318,-336.1213 235.4986,-340.9861"/>
 </g>
-<g id="node15" class="node"><title>p0x7fd6100015f0</title>
-<ellipse cx="64.0833" cy="-144" rx="48.1667" ry="18.2703"/>
-<text text-anchor="middle" x="64.0833" y="-140.2">pfg_10</text>
+<g class="m-node m-flat">
+<title>p0x7fd6100015f0</title>
+<ellipse cx="64.7904" cy="-144" rx="48.5816" ry="18.2703"/>
+<text text-anchor="middle" x="64.7904" y="-140.2">pfg_10</text>
 </g>
-<g id="edge14" class="edge"><title>p0x7fd6100015f0&#45;&gt;p0x1dcb6e0</title>
-<path fill="none" stroke="black" d="M94.7345,-158.351C100.956,-162.221 107.146,-166.801 112.167,-172 159.641,-221.16 192.363,-295.954 207.642,-336.14"/>
-<polygon points="204.383,-337.42 211.148,-345.574 210.945,-334.981 204.383,-337.42"/>
+<g class="m-edge">
+<title>p0x7fd6100015f0&#45;&gt;p0x1dcb6e0</title>
+<path d="M94.6775,-158.6792C101.2374,-162.559 107.9106,-167.0603 113.5807,-172 171.0675,-222.0816 221.484,-297.2628 246.1149,-337.0591"/>
+<polygon points="243.1883,-338.9822 251.3925,-345.6862 249.1596,-335.3293 243.1883,-338.9822"/>
 </g>
-<g id="node16" class="node"><title>p0x7fd610001700</title>
-<ellipse cx="64.0833" cy="-89" rx="48.1667" ry="18.2703"/>
-<text text-anchor="middle" x="64.0833" y="-85.2">pfg_11</text>
+<g class="m-node m-flat">
+<title>p0x7fd610001700</title>
+<ellipse cx="64.7904" cy="-89" rx="48.5816" ry="18.2703"/>
+<text text-anchor="middle" x="64.7904" y="-85.2">pfg_11</text>
 </g>
-<g id="edge15" class="edge"><title>p0x7fd610001700&#45;&gt;p0x1dcb6e0</title>
-<path fill="none" stroke="black" d="M95.6131,-103.301C101.644,-107.128 107.533,-111.703 112.167,-117 170.065,-183.196 199.813,-285.969 211.457,-335.458"/>
-<polygon points="208.1,-336.481 213.732,-345.456 214.926,-334.928 208.1,-336.481"/>
+<g class="m-edge">
+<title>p0x7fd610001700&#45;&gt;p0x1dcb6e0</title>
+<path d="M95.3702,-103.3576C101.825,-107.2274 108.279,-111.8055 113.5807,-117 181.2942,-183.3437 230.1344,-286.7634 250.952,-336.0513"/>
+<polygon points="247.783,-337.5463 254.8525,-345.4375 254.247,-334.86 247.783,-337.5463"/>
 </g>
-<g id="node17" class="node"><title>p0x7fd610001810</title>
-<ellipse cx="64.0833" cy="-34" rx="48.1667" ry="18.2703"/>
-<text text-anchor="middle" x="64.0833" y="-30.2">pfg_12</text>
+<g class="m-node m-flat">
+<title>p0x7fd610001810</title>
+<ellipse cx="64.7904" cy="-34" rx="48.5816" ry="18.2703"/>
+<text text-anchor="middle" x="64.7904" y="-30.2">pfg_12</text>
 </g>
-<g id="edge16" class="edge"><title>p0x7fd610001810&#45;&gt;p0x1dcb6e0</title>
-<path fill="none" stroke="black" d="M95.8881,-48.069C101.902,-51.9103 107.715,-56.5494 112.167,-62 180.803,-146.033 206.008,-277.736 214.094,-335.375"/>
-<polygon points="210.661,-336.114 215.451,-345.564 217.6,-335.189 210.661,-336.114"/>
+<g class="m-edge">
+<title>p0x7fd610001810&#45;&gt;p0x1dcb6e0</title>
+<path d="M95.956,-48.1869C102.3067,-52.0426 108.5694,-56.6579 113.5807,-62 191.8571,-145.444 237.2918,-277.9249 254.3291,-335.607"/>
+<polygon points="251.043,-336.843 257.1814,-345.4784 257.7679,-334.8998 251.043,-336.843"/>
 </g>
-<g id="edge18" class="edge"><title>p0x1dcb900&#45;&gt;p0x1dcb5d0</title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M716.195,-326.638C736.175,-329.964 757.954,-334.358 777.607,-340 789.453,-343.4 801.943,-348.036 813.366,-352.722"/>
-<polygon points="812.098,-355.986 822.672,-356.645 814.817,-349.535 812.098,-355.986"/>
-<text text-anchor="middle" x="772.607" y="-345.2">0</text>
+<g class="m-edge">
+<title>p0x1dcb900&#45;&gt;p0x1dcb5d0</title>
+<path stroke-dasharray="5,2" d="M779.451,-335.64C800.225,-338.9428 822.7714,-343.3237 843.1636,-349 855.1477,-352.3359 867.7841,-356.9052 879.3689,-361.5468"/>
+<polygon points="878.236,-364.8654 888.8154,-365.4372 880.9017,-358.3928 878.236,-364.8654"/>
+<text text-anchor="middle" x="838.1636" y="-354.2">0</text>
 </g>
 </g>
 </svg>
@@ -414,7 +451,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

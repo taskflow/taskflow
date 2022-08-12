@@ -49,297 +49,350 @@
           <span class="m-breadcrumb"><a href="Cookbook.html">Cookbook</a> &raquo;</span>
           Composable Tasking
         </h1>
-<p>Composition is a key to improve the programmability of a complex workflow. This chapter describes how to create a large parallel graph through composition of modular and reusable blocks that are easier to optimize.</p><section id="ComposeATaskflow"><h2><a href="#ComposeATaskflow">Compose a Taskflow</a></h2><p>A powerful feature of <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> is its <em>composable</em> interface. You can break down a large parallel workload into smaller pieces each designed to run a specific task dependency graph. This largely facilitates the <em>modularity</em> of writing a parallel task program.</p><pre class="m-code"><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="c1">// f1 has three independent tasks</span>
-<span class="w"> </span><span class="mi">2</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">f1</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="n">f1</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;F1&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w"> </span><span class="mi">4</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">f1A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f1</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;F1 TaskA</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
-<span class="w"> </span><span class="mi">5</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">f1B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f1</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;F1 TaskB</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
-<span class="w"> </span><span class="mi">6</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">f1C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f1</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;F1 TaskC</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
-<span class="w"> </span><span class="mi">7</span><span class="o">:</span><span class="w"> </span>
-<span class="w"> </span><span class="mi">8</span><span class="o">:</span><span class="w"> </span><span class="n">f1A</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;f1A&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w"> </span><span class="mi">9</span><span class="o">:</span><span class="w"> </span><span class="n">f1B</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;f1B&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="mi">10</span><span class="o">:</span><span class="w"> </span><span class="n">f1C</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;f1C&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="mi">11</span><span class="o">:</span><span class="w"> </span><span class="n">f1A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">f1C</span><span class="p">);</span><span class="w"></span>
-<span class="mi">12</span><span class="o">:</span><span class="w"> </span><span class="n">f1B</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">f1C</span><span class="p">);</span><span class="w"></span>
-<span class="mi">13</span><span class="o">:</span><span class="w"></span>
-<span class="mi">14</span><span class="o">:</span><span class="w"> </span><span class="c1">// f2A ---</span>
-<span class="mi">15</span><span class="o">:</span><span class="w"> </span><span class="c1">//        |----&gt; f2C ----&gt; f1_module_task ----&gt; f2D</span>
-<span class="mi">16</span><span class="o">:</span><span class="w"> </span><span class="c1">// f2B --- </span>
-<span class="mi">17</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">f2</span><span class="p">;</span><span class="w"></span>
-<span class="mi">18</span><span class="o">:</span><span class="w"> </span><span class="n">f2</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;F2&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="mi">19</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">f2A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f2</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  F2 TaskA</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
-<span class="mi">20</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">f2B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f2</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  F2 TaskB</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
-<span class="mi">21</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">f2C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f2</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  F2 TaskC</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
-<span class="mi">22</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">f2D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f2</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  F2 TaskD</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
-<span class="mi">23</span><span class="o">:</span><span class="w"> </span>
-<span class="mi">24</span><span class="o">:</span><span class="w"> </span><span class="n">f2A</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;f2A&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="mi">25</span><span class="o">:</span><span class="w"> </span><span class="n">f2B</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;f2B&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="mi">26</span><span class="o">:</span><span class="w"> </span><span class="n">f2C</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;f2C&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="mi">27</span><span class="o">:</span><span class="w"> </span><span class="n">f2D</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;f2D&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="mi">28</span><span class="o">:</span><span class="w"></span>
-<span class="mi">29</span><span class="o">:</span><span class="w"> </span><span class="n">f2A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">f2C</span><span class="p">);</span><span class="w"></span>
-<span class="mi">30</span><span class="o">:</span><span class="w"> </span><span class="n">f2B</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">f2C</span><span class="p">);</span><span class="w"></span>
-<span class="mi">31</span><span class="o">:</span><span class="w"></span>
-<span class="mi">32</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">f1_module_task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f2</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">f1</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;module&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="mi">33</span><span class="o">:</span><span class="w"> </span><span class="n">f2C</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">f1_module_task</span><span class="p">);</span><span class="w"></span>
-<span class="mi">34</span><span class="o">:</span><span class="w"> </span><span class="n">f1_module_task</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">f2D</span><span class="p">);</span><span class="w"></span>
-<span class="mi">35</span><span class="o">:</span><span class="w"></span>
-<span class="mi">36</span><span class="o">:</span><span class="w"> </span><span class="n">f2</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 23.750rem; height: 20.000rem;" viewBox="0.00 0.00 380.00 320.31">
-<g transform="scale(1 1) rotate(0) translate(4 316.309)">
+<p>Composition is a key to improve the programmability of a complex workflow. This chapter describes how to create a large parallel graph through composition of modular and reusable blocks that are easier to optimize.</p><section id="ComposeATaskflow"><h2><a href="#ComposeATaskflow">Compose a Taskflow</a></h2><p>A powerful feature of <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> is its <em>composable</em> interface. You can break down a large parallel workload into smaller pieces each designed to run a specific task dependency graph. This largely facilitates the <em>modularity</em> of writing a parallel task program.</p><pre class="m-code"> <span class="mi">1</span><span class="o">:</span> <span class="c1">// f1 has three independent tasks</span>
+ <span class="mi">2</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">f1</span><span class="p">;</span>
+ <span class="mi">3</span><span class="o">:</span> <span class="n">f1</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;F1&quot;</span><span class="p">);</span>
+ <span class="mi">4</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">f1A</span> <span class="o">=</span> <span class="n">f1</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;F1 TaskA</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span>
+ <span class="mi">5</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">f1B</span> <span class="o">=</span> <span class="n">f1</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;F1 TaskB</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span>
+ <span class="mi">6</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">f1C</span> <span class="o">=</span> <span class="n">f1</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;F1 TaskC</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span>
+ <span class="mi">7</span><span class="o">:</span> 
+ <span class="mi">8</span><span class="o">:</span> <span class="n">f1A</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;f1A&quot;</span><span class="p">);</span>
+ <span class="mi">9</span><span class="o">:</span> <span class="n">f1B</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;f1B&quot;</span><span class="p">);</span>
+<span class="mi">10</span><span class="o">:</span> <span class="n">f1C</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;f1C&quot;</span><span class="p">);</span>
+<span class="mi">11</span><span class="o">:</span> <span class="n">f1A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">f1C</span><span class="p">);</span>
+<span class="mi">12</span><span class="o">:</span> <span class="n">f1B</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">f1C</span><span class="p">);</span>
+<span class="mi">13</span><span class="o">:</span>
+<span class="mi">14</span><span class="o">:</span> <span class="c1">// f2A ---</span>
+<span class="mi">15</span><span class="o">:</span> <span class="c1">//        |----&gt; f2C ----&gt; f1_module_task ----&gt; f2D</span>
+<span class="mi">16</span><span class="o">:</span> <span class="c1">// f2B --- </span>
+<span class="mi">17</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">f2</span><span class="p">;</span>
+<span class="mi">18</span><span class="o">:</span> <span class="n">f2</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;F2&quot;</span><span class="p">);</span>
+<span class="mi">19</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">f2A</span> <span class="o">=</span> <span class="n">f2</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;  F2 TaskA</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span>
+<span class="mi">20</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">f2B</span> <span class="o">=</span> <span class="n">f2</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;  F2 TaskB</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span>
+<span class="mi">21</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">f2C</span> <span class="o">=</span> <span class="n">f2</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;  F2 TaskC</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span>
+<span class="mi">22</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">f2D</span> <span class="o">=</span> <span class="n">f2</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;  F2 TaskD</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">});</span>
+<span class="mi">23</span><span class="o">:</span> 
+<span class="mi">24</span><span class="o">:</span> <span class="n">f2A</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;f2A&quot;</span><span class="p">);</span>
+<span class="mi">25</span><span class="o">:</span> <span class="n">f2B</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;f2B&quot;</span><span class="p">);</span>
+<span class="mi">26</span><span class="o">:</span> <span class="n">f2C</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;f2C&quot;</span><span class="p">);</span>
+<span class="mi">27</span><span class="o">:</span> <span class="n">f2D</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;f2D&quot;</span><span class="p">);</span>
+<span class="mi">28</span><span class="o">:</span>
+<span class="mi">29</span><span class="o">:</span> <span class="n">f2A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">f2C</span><span class="p">);</span>
+<span class="mi">30</span><span class="o">:</span> <span class="n">f2B</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">f2C</span><span class="p">);</span>
+<span class="mi">31</span><span class="o">:</span>
+<span class="mi">32</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">f1_module_task</span> <span class="o">=</span> <span class="n">f2</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">f1</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;module&quot;</span><span class="p">);</span>
+<span class="mi">33</span><span class="o">:</span> <span class="n">f2C</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">f1_module_task</span><span class="p">);</span>
+<span class="mi">34</span><span class="o">:</span> <span class="n">f1_module_task</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">f2D</span><span class="p">);</span>
+<span class="mi">35</span><span class="o">:</span>
+<span class="mi">36</span><span class="o">:</span> <span class="n">f2</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre><div class="m-graph"><svg style="width: 24.188rem; height: 20.000rem;" viewBox="0.00 0.00 387.00 320.31">
+<g transform="scale(1 1) rotate(0) translate(4 316.3087)">
 <title>Taskflow</title>
-<g id="clust1" class="cluster"><title>cluster_p0x7ffee9223970</title>
-<polygon points="8,-8 8,-304.309 206,-304.309 206,-8 8,-8"/>
-<text text-anchor="middle" x="107" y="-287.509">Taskflow: F2</text>
+<g class="m-cluster">
+<title>cluster_p0x7ffee9223970</title>
+<polygon points="8,-8 8,-304.3087 210,-304.3087 210,-8 8,-8"/>
+<text text-anchor="middle" x="109" y="-287.5087">Taskflow: F2</text>
 </g>
-<g id="clust2" class="cluster"><title>cluster_p0x7ffee92238d0</title>
-<polygon points="214,-152.77 214,-304.309 364,-304.309 364,-152.77 214,-152.77"/>
-<text text-anchor="middle" x="289" y="-287.509">Taskflow: F1</text>
+<g class="m-cluster">
+<title>cluster_p0x7ffee92238d0</title>
+<polygon points="218,-152.7696 218,-304.3087 371,-304.3087 371,-152.7696 218,-152.7696"/>
+<text text-anchor="middle" x="294.5" y="-287.5087">Taskflow: F1</text>
 </g>
-<g id="node1" class="node"><title>p0x7f816f402b60</title>
-<ellipse cx="145" cy="-251.924" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="145" y="-248.124">f2A</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402b60</title>
+<ellipse cx="147" cy="-251.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="147" y="-248.1239">f2A</text>
 </g>
-<g id="node2" class="node"><title>p0x7f816f402d80</title>
-<ellipse cx="107" cy="-179.154" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="107" y="-175.354">f2C</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402d80</title>
+<ellipse cx="109" cy="-179.1543" rx="30.3115" ry="18.2703"/>
+<text text-anchor="middle" x="109" y="-175.3543">f2C</text>
 </g>
-<g id="edge1" class="edge"><title>p0x7f816f402b60&#45;&gt;p0x7f816f402d80</title>
-<path fill="none" stroke="black" d="M135.995,-234.152C131.451,-225.692 125.842,-215.246 120.772,-205.803"/>
-<polygon points="123.755,-203.96 115.941,-196.805 117.588,-207.271 123.755,-203.96"/>
+<g class="m-edge">
+<title>p0x7f816f402b60&#45;&gt;p0x7f816f402d80</title>
+<path d="M137.8013,-234.3084C133.3533,-225.7906 127.9185,-215.383 122.9732,-205.9128"/>
+<polygon points="125.9771,-204.1039 118.2457,-196.8598 119.7722,-207.3441 125.9771,-204.1039"/>
 </g>
-<g id="node4" class="node"><title>p0x7f816f402fa0</title>
-<polygon points="197.5,-124.77 20.5,-124.77 16.5,-120.77 16.5,-88.7696 193.5,-88.7696 197.5,-92.7696 197.5,-124.77"/>
-<polyline points="193.5,-120.77 16.5,-120.77 "/>
-<polyline points="193.5,-120.77 193.5,-88.7696 "/>
-<polyline points="193.5,-120.77 197.5,-124.77 "/>
-<text text-anchor="middle" x="107" y="-102.97">module [Taskflow: F1]</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402fa0</title>
+<polygon points="202.5,-124.7696 19.5,-124.7696 15.5,-120.7696 15.5,-88.7696 198.5,-88.7696 202.5,-92.7696 202.5,-124.7696"/>
+<polyline points="198.5,-120.7696 15.5,-120.7696 "/>
+<polyline points="198.5,-120.7696 198.5,-88.7696 "/>
+<polyline points="198.5,-120.7696 202.5,-124.7696 "/>
+<text text-anchor="middle" x="109" y="-102.9696">module [Taskflow: F1]</text>
 </g>
-<g id="edge3" class="edge"><title>p0x7f816f402d80&#45;&gt;p0x7f816f402fa0</title>
-<path fill="none" stroke="black" d="M107,-160.756C107,-153 107,-143.678 107,-135.031"/>
-<polygon points="110.5,-134.968 107,-124.968 103.5,-134.968 110.5,-134.968"/>
+<g class="m-edge">
+<title>p0x7f816f402d80&#45;&gt;p0x7f816f402fa0</title>
+<path d="M109,-160.5135C109,-152.8556 109,-143.8146 109,-135.3544"/>
+<polygon points="112.5001,-135.0966 109,-125.0967 105.5001,-135.0967 112.5001,-135.0966"/>
 </g>
-<g id="node3" class="node"><title>p0x7f816f402c70</title>
-<ellipse cx="69" cy="-251.924" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="69" y="-248.124">f2B</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402c70</title>
+<ellipse cx="70" cy="-251.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="70" y="-248.1239">f2B</text>
 </g>
-<g id="edge2" class="edge"><title>p0x7f816f402c70&#45;&gt;p0x7f816f402d80</title>
-<path fill="none" stroke="black" d="M78.0055,-234.152C82.5486,-225.692 88.1575,-215.246 93.2278,-205.803"/>
-<polygon points="96.412,-207.271 98.0592,-196.805 90.2448,-203.96 96.412,-207.271"/>
+<g class="m-edge">
+<title>p0x7f816f402c70&#45;&gt;p0x7f816f402d80</title>
+<path d="M79.4408,-234.3084C84.0058,-225.7906 89.5837,-215.383 94.6591,-205.9128"/>
+<polygon points="97.872,-207.3271 99.511,-196.8598 91.7023,-204.0205 97.872,-207.3271"/>
 </g>
-<g id="node5" class="node"><title>p0x7f816f402e90</title>
-<ellipse cx="107" cy="-34.3848" rx="29.8983" ry="18.2703"/>
-<text text-anchor="middle" x="107" y="-30.5848">f2D</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402e90</title>
+<ellipse cx="109" cy="-34.3848" rx="31.2258" ry="18.2703"/>
+<text text-anchor="middle" x="109" y="-30.5848">f2D</text>
 </g>
-<g id="edge4" class="edge"><title>p0x7f816f402fa0&#45;&gt;p0x7f816f402e90</title>
-<path fill="none" stroke="black" d="M107,-88.7314C107,-81.0954 107,-71.8891 107,-63.2899"/>
-<polygon points="110.5,-63.2482 107,-53.2482 103.5,-63.2482 110.5,-63.2482"/>
+<g class="m-edge">
+<title>p0x7f816f402fa0&#45;&gt;p0x7f816f402e90</title>
+<path d="M109,-88.5038C109,-80.7623 109,-71.5567 109,-62.9533"/>
+<polygon points="112.5001,-62.8964 109,-52.8964 105.5001,-62.8965 112.5001,-62.8964"/>
 </g>
-<g id="node6" class="node"><title>p0x7f816f402830</title>
-<ellipse cx="327" cy="-251.924" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="327" y="-248.124">f1A</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402830</title>
+<ellipse cx="333" cy="-251.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="333" y="-248.1239">f1A</text>
 </g>
-<g id="node7" class="node"><title>p0x7f816f402a50</title>
-<ellipse cx="289" cy="-179.154" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="289" y="-175.354">f1C</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402a50</title>
+<ellipse cx="294" cy="-179.1543" rx="30.3115" ry="18.2703"/>
+<text text-anchor="middle" x="294" y="-175.3543">f1C</text>
 </g>
-<g id="edge5" class="edge"><title>p0x7f816f402830&#45;&gt;p0x7f816f402a50</title>
-<path fill="none" stroke="black" d="M317.995,-234.152C313.451,-225.692 307.842,-215.246 302.772,-205.803"/>
-<polygon points="305.755,-203.96 297.941,-196.805 299.588,-207.271 305.755,-203.96"/>
+<g class="m-edge">
+<title>p0x7f816f402830&#45;&gt;p0x7f816f402a50</title>
+<path d="M323.5592,-234.3084C318.9942,-225.7906 313.4163,-215.383 308.3409,-205.9128"/>
+<polygon points="311.2977,-204.0205 303.489,-196.8598 305.128,-207.3271 311.2977,-204.0205"/>
 </g>
-<g id="node8" class="node"><title>p0x7f816f402940</title>
-<ellipse cx="251" cy="-251.924" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="251" y="-248.124">f1B</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402940</title>
+<ellipse cx="256" cy="-251.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="256" y="-248.1239">f1B</text>
 </g>
-<g id="edge6" class="edge"><title>p0x7f816f402940&#45;&gt;p0x7f816f402a50</title>
-<path fill="none" stroke="black" d="M260.005,-234.152C264.549,-225.692 270.158,-215.246 275.228,-205.803"/>
-<polygon points="278.412,-207.271 280.059,-196.805 272.245,-203.96 278.412,-207.271"/>
+<g class="m-edge">
+<title>p0x7f816f402940&#45;&gt;p0x7f816f402a50</title>
+<path d="M265.1987,-234.3084C269.6467,-225.7906 275.0815,-215.383 280.0268,-205.9128"/>
+<polygon points="283.2278,-207.3441 284.7543,-196.8598 277.0229,-204.1039 283.2278,-207.3441"/>
 </g>
 </g>
 </svg>
-</div><p>Debrief:</p><ul><li>Lines 1-12 create a taskflow of three tasks f1A, f1B, and f1C with f1A and f1B preceding f1C</li><li>Lines 17-30 create a taskflow of four tasks f2A, f2B, f2C, and f2D</li><li>Line 32 creates a module task from taskflow f1 through the method <a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc">Taskflow::<wbr />composed_of</a></li><li>Line 33 enforces task f2C to run before the module task</li><li>Line 34 enforces the module task to run before task f2D</li></ul></section><section id="CreateAModuleTask"><h2><a href="#CreateAModuleTask">Create a Module Task</a></h2><p>The task created from <a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc">Taskflow::<wbr />composed_of</a> is a <em>module</em> task that runs on a pre-defined taskflow. A module task does not own the taskflow but maintains a soft mapping to the taskflow. You can create multiple module tasks from the same taskflow but only one module task can run at one time. For example, the following composition is valid. Even though the two module tasks <code>module1</code> and <code>module2</code> refer to the same taskflow <code>F1</code>, the dependency link prevents <code>F1</code> from multiple executions at the same time.</p><div class="m-graph"><svg style="width: 23.750rem; height: 24.500rem;" viewBox="0.00 0.00 380.00 392.31">
-<g transform="scale(1 1) rotate(0) translate(4 388.309)">
+</div><p>Debrief:</p><ul><li>Lines 1-12 create a taskflow of three tasks f1A, f1B, and f1C with f1A and f1B preceding f1C</li><li>Lines 17-30 create a taskflow of four tasks f2A, f2B, f2C, and f2D</li><li>Line 32 creates a module task from taskflow f1 through the method <a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc">Taskflow::<wbr />composed_of</a></li><li>Line 33 enforces task f2C to run before the module task</li><li>Line 34 enforces the module task to run before task f2D</li></ul></section><section id="CreateAModuleTask"><h2><a href="#CreateAModuleTask">Create a Module Task</a></h2><p>The task created from <a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc">Taskflow::<wbr />composed_of</a> is a <em>module</em> task that runs on a pre-defined taskflow. A module task does not own the taskflow but maintains a soft mapping to the taskflow. You can create multiple module tasks from the same taskflow but only one module task can run at one time. For example, the following composition is valid. Even though the two module tasks <code>module1</code> and <code>module2</code> refer to the same taskflow <code>F1</code>, the dependency link prevents <code>F1</code> from multiple executions at the same time.</p><div class="m-graph"><svg style="width: 24.188rem; height: 24.500rem;" viewBox="0.00 0.00 387.00 392.31">
+<g transform="scale(1 1) rotate(0) translate(4 388.3087)">
 <title>Taskflow</title>
-<g id="clust1" class="cluster"><title>cluster_p0x7ffee9223970</title>
-<polygon points="8,-8 8,-376.309 206,-376.309 206,-8 8,-8"/>
-<text text-anchor="middle" x="107" y="-359.509">Taskflow: F2</text>
+<g class="m-cluster">
+<title>cluster_p0x7ffee9223970</title>
+<polygon points="8,-8 8,-376.3087 210,-376.3087 210,-8 8,-8"/>
+<text text-anchor="middle" x="109" y="-359.5087">Taskflow: F2</text>
 </g>
-<g id="clust2" class="cluster"><title>cluster_p0x7ffee92238d0</title>
-<polygon points="214,-224.77 214,-376.309 364,-376.309 364,-224.77 214,-224.77"/>
-<text text-anchor="middle" x="289" y="-359.509">Taskflow: F1</text>
+<g class="m-cluster">
+<title>cluster_p0x7ffee92238d0</title>
+<polygon points="218,-224.7696 218,-376.3087 371,-376.3087 371,-224.7696 218,-224.7696"/>
+<text text-anchor="middle" x="294.5" y="-359.5087">Taskflow: F1</text>
 </g>
-<g id="node1" class="node"><title>p0x7f816f402b60</title>
-<ellipse cx="145" cy="-323.924" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="145" y="-320.124">f2A</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402b60</title>
+<ellipse cx="147" cy="-323.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="147" y="-320.1239">f2A</text>
 </g>
-<g id="node2" class="node"><title>p0x7f816f402d80</title>
-<ellipse cx="107" cy="-251.154" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="107" y="-247.354">f2C</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402d80</title>
+<ellipse cx="109" cy="-251.1543" rx="30.3115" ry="18.2703"/>
+<text text-anchor="middle" x="109" y="-247.3543">f2C</text>
 </g>
-<g id="edge1" class="edge"><title>p0x7f816f402b60&#45;&gt;p0x7f816f402d80</title>
-<path fill="none" stroke="black" d="M135.995,-306.152C131.451,-297.692 125.842,-287.246 120.772,-277.803"/>
-<polygon points="123.755,-275.96 115.941,-268.805 117.588,-279.271 123.755,-275.96"/>
+<g class="m-edge">
+<title>p0x7f816f402b60&#45;&gt;p0x7f816f402d80</title>
+<path d="M137.8013,-306.3084C133.3533,-297.7906 127.9185,-287.383 122.9732,-277.9128"/>
+<polygon points="125.9771,-276.1039 118.2457,-268.8598 119.7722,-279.3441 125.9771,-276.1039"/>
 </g>
-<g id="node4" class="node"><title>p0x7f816f402fa0</title>
-<polygon points="197.5,-196.77 20.5,-196.77 16.5,-192.77 16.5,-160.77 193.5,-160.77 197.5,-164.77 197.5,-196.77"/>
-<polyline points="193.5,-192.77 16.5,-192.77 "/>
-<polyline points="193.5,-192.77 193.5,-160.77 "/>
-<polyline points="193.5,-192.77 197.5,-196.77 "/>
-<text text-anchor="middle" x="107" y="-174.97">module [Taskflow: F1]</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402fa0</title>
+<polygon points="202.5,-196.7696 19.5,-196.7696 15.5,-192.7696 15.5,-160.7696 198.5,-160.7696 202.5,-164.7696 202.5,-196.7696"/>
+<polyline points="198.5,-192.7696 15.5,-192.7696 "/>
+<polyline points="198.5,-192.7696 198.5,-160.7696 "/>
+<polyline points="198.5,-192.7696 202.5,-196.7696 "/>
+<text text-anchor="middle" x="109" y="-174.9696">module [Taskflow: F1]</text>
 </g>
-<g id="edge3" class="edge"><title>p0x7f816f402d80&#45;&gt;p0x7f816f402fa0</title>
-<path fill="none" stroke="black" d="M107,-232.756C107,-225 107,-215.678 107,-207.031"/>
-<polygon points="110.5,-206.968 107,-196.968 103.5,-206.968 110.5,-206.968"/>
+<g class="m-edge">
+<title>p0x7f816f402d80&#45;&gt;p0x7f816f402fa0</title>
+<path d="M109,-232.5135C109,-224.8556 109,-215.8146 109,-207.3544"/>
+<polygon points="112.5001,-207.0966 109,-197.0967 105.5001,-207.0967 112.5001,-207.0966"/>
 </g>
-<g id="node3" class="node"><title>p0x7f816f402c70</title>
-<ellipse cx="69" cy="-323.924" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="69" y="-320.124">f2B</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402c70</title>
+<ellipse cx="70" cy="-323.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="70" y="-320.1239">f2B</text>
 </g>
-<g id="edge2" class="edge"><title>p0x7f816f402c70&#45;&gt;p0x7f816f402d80</title>
-<path fill="none" stroke="black" d="M78.0055,-306.152C82.5486,-297.692 88.1575,-287.246 93.2278,-277.803"/>
-<polygon points="96.412,-279.271 98.0592,-268.805 90.2448,-275.96 96.412,-279.271"/>
+<g class="m-edge">
+<title>p0x7f816f402c70&#45;&gt;p0x7f816f402d80</title>
+<path d="M79.4408,-306.3084C84.0058,-297.7906 89.5837,-287.383 94.6591,-277.9128"/>
+<polygon points="97.872,-279.3271 99.511,-268.8598 91.7023,-276.0205 97.872,-279.3271"/>
 </g>
-<g id="node6" class="node"><title>p0x7f816f402fa1</title>
-<polygon points="197.5,-124.77 20.5,-124.77 16.5,-120.77 16.5,-88.7696 193.5,-88.7696 197.5,-92.7696 197.5,-124.77"/>
-<polyline points="193.5,-120.77 16.5,-120.77 "/>
-<polyline points="193.5,-120.77 193.5,-88.7696 "/>
-<polyline points="193.5,-120.77 197.5,-124.77 "/>
-<text text-anchor="middle" x="107" y="-102.97">module [Taskflow: F1]</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402fa1</title>
+<polygon points="202.5,-124.7696 19.5,-124.7696 15.5,-120.7696 15.5,-88.7696 198.5,-88.7696 202.5,-92.7696 202.5,-124.7696"/>
+<polyline points="198.5,-120.7696 15.5,-120.7696 "/>
+<polyline points="198.5,-120.7696 198.5,-88.7696 "/>
+<polyline points="198.5,-120.7696 202.5,-124.7696 "/>
+<text text-anchor="middle" x="109" y="-102.9696">module [Taskflow: F1]</text>
 </g>
-<g id="edge5" class="edge"><title>p0x7f816f402fa0&#45;&gt;p0x7f816f402fa1</title>
-<path fill="none" stroke="black" d="M107,-160.466C107,-152.752 107,-143.482 107,-134.882"/>
-<polygon points="110.5,-134.874 107,-124.874 103.5,-134.874 110.5,-134.874"/>
+<g class="m-edge">
+<title>p0x7f816f402fa0&#45;&gt;p0x7f816f402fa1</title>
+<path d="M109,-160.6009C109,-152.9005 109,-143.7439 109,-135.1862"/>
+<polygon points="112.5001,-135.1828 109,-125.1828 105.5001,-135.1829 112.5001,-135.1828"/>
 </g>
-<g id="node5" class="node"><title>p0x7f816f402e90</title>
-<ellipse cx="107" cy="-34.3848" rx="29.8983" ry="18.2703"/>
-<text text-anchor="middle" x="107" y="-30.5848">f2D</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402e90</title>
+<ellipse cx="109" cy="-34.3848" rx="31.2258" ry="18.2703"/>
+<text text-anchor="middle" x="109" y="-30.5848">f2D</text>
 </g>
-<g id="edge4" class="edge"><title>p0x7f816f402fa1&#45;&gt;p0x7f816f402e90</title>
-<path fill="none" stroke="black" d="M107,-88.7314C107,-81.0954 107,-71.8891 107,-63.2899"/>
-<polygon points="110.5,-63.2482 107,-53.2482 103.5,-63.2482 110.5,-63.2482"/>
+<g class="m-edge">
+<title>p0x7f816f402fa1&#45;&gt;p0x7f816f402e90</title>
+<path d="M109,-88.5038C109,-80.7623 109,-71.5567 109,-62.9533"/>
+<polygon points="112.5001,-62.8964 109,-52.8964 105.5001,-62.8965 112.5001,-62.8964"/>
 </g>
-<g id="node7" class="node"><title>p0x7f816f402830</title>
-<ellipse cx="327" cy="-323.924" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="327" y="-320.124">f1A</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402830</title>
+<ellipse cx="333" cy="-323.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="333" y="-320.1239">f1A</text>
 </g>
-<g id="node8" class="node"><title>p0x7f816f402a50</title>
-<ellipse cx="289" cy="-251.154" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="289" y="-247.354">f1C</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402a50</title>
+<ellipse cx="294" cy="-251.1543" rx="30.3115" ry="18.2703"/>
+<text text-anchor="middle" x="294" y="-247.3543">f1C</text>
 </g>
-<g id="edge6" class="edge"><title>p0x7f816f402830&#45;&gt;p0x7f816f402a50</title>
-<path fill="none" stroke="black" d="M317.995,-306.152C313.451,-297.692 307.842,-287.246 302.772,-277.803"/>
-<polygon points="305.755,-275.96 297.941,-268.805 299.588,-279.271 305.755,-275.96"/>
+<g class="m-edge">
+<title>p0x7f816f402830&#45;&gt;p0x7f816f402a50</title>
+<path d="M323.5592,-306.3084C318.9942,-297.7906 313.4163,-287.383 308.3409,-277.9128"/>
+<polygon points="311.2977,-276.0205 303.489,-268.8598 305.128,-279.3271 311.2977,-276.0205"/>
 </g>
-<g id="node9" class="node"><title>p0x7f816f402940</title>
-<ellipse cx="251" cy="-323.924" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="251" y="-320.124">f1B</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402940</title>
+<ellipse cx="256" cy="-323.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="256" y="-320.1239">f1B</text>
 </g>
-<g id="edge7" class="edge"><title>p0x7f816f402940&#45;&gt;p0x7f816f402a50</title>
-<path fill="none" stroke="black" d="M260.005,-306.152C264.549,-297.692 270.158,-287.246 275.228,-277.803"/>
-<polygon points="278.412,-279.271 280.059,-268.805 272.245,-275.96 278.412,-279.271"/>
+<g class="m-edge">
+<title>p0x7f816f402940&#45;&gt;p0x7f816f402a50</title>
+<path d="M265.1987,-306.3084C269.6467,-297.7906 275.0815,-287.383 280.0268,-277.9128"/>
+<polygon points="283.2278,-279.3441 284.7543,-268.8598 277.0229,-276.1039 283.2278,-279.3441"/>
 </g>
 </g>
 </svg>
-</div><p>However, the following composition is <em>invalid</em>. Both module tasks refer to the same taskflow. They can not run at the same time because they are associated with the same graph.</p><div class="m-graph"><svg style="width: 36.188rem; height: 20.000rem;" viewBox="0.00 0.00 579.00 320.31">
-<g transform="scale(1 1) rotate(0) translate(4 316.309)">
+</div><p>However, the following composition is <em>invalid</em>. Both module tasks refer to the same taskflow. They can not run at the same time because they are associated with the same graph.</p><div class="m-graph"><svg style="width: 37.000rem; height: 20.000rem;" viewBox="0.00 0.00 592.00 320.31">
+<g transform="scale(1 1) rotate(0) translate(4 316.3087)">
 <title>Taskflow</title>
-<g id="clust1" class="cluster"><title>cluster_p0x7ffee9223970</title>
-<polygon points="8,-8 8,-304.309 405,-304.309 405,-8 8,-8"/>
-<text text-anchor="middle" x="206.5" y="-287.509">Taskflow: F2</text>
+<g class="m-cluster">
+<title>cluster_p0x7ffee9223970</title>
+<polygon points="8,-8 8,-304.3087 415,-304.3087 415,-8 8,-8"/>
+<text text-anchor="middle" x="211.5" y="-287.5087">Taskflow: F2</text>
 </g>
-<g id="clust2" class="cluster"><title>cluster_p0x7ffee92238d0</title>
-<polygon points="413,-152.77 413,-304.309 563,-304.309 563,-152.77 413,-152.77"/>
-<text text-anchor="middle" x="488" y="-287.509">Taskflow: F1</text>
+<g class="m-cluster">
+<title>cluster_p0x7ffee92238d0</title>
+<polygon points="423,-152.7696 423,-304.3087 576,-304.3087 576,-152.7696 423,-152.7696"/>
+<text text-anchor="middle" x="499.5" y="-287.5087">Taskflow: F1</text>
 </g>
-<g id="node1" class="node"><title>p0x7f816f402b60</title>
-<ellipse cx="251" cy="-251.924" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="251" y="-248.124">f2A</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402b60</title>
+<ellipse cx="154" cy="-251.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="154" y="-248.1239">f2A</text>
 </g>
-<g id="node2" class="node"><title>p0x7f816f402d80</title>
-<ellipse cx="206" cy="-179.154" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="206" y="-175.354">f2C</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402d80</title>
+<ellipse cx="131" cy="-179.1543" rx="30.3115" ry="18.2703"/>
+<text text-anchor="middle" x="131" y="-175.3543">f2C</text>
 </g>
-<g id="edge1" class="edge"><title>p0x7f816f402b60&#45;&gt;p0x7f816f402d80</title>
-<path fill="none" stroke="black" d="M240.563,-234.51C234.997,-225.757 228.033,-214.804 221.817,-205.029"/>
-<polygon points="224.7,-203.04 216.38,-196.479 218.793,-206.796 224.7,-203.04"/>
+<g class="m-edge">
+<title>p0x7f816f402b60&#45;&gt;p0x7f816f402d80</title>
+<path d="M148.1961,-233.5611C145.6435,-225.4849 142.59,-215.824 139.7692,-206.8991"/>
+<polygon points="143.0734,-205.7395 136.7223,-197.2592 136.3988,-207.8491 143.0734,-205.7395"/>
 </g>
-<g id="node4" class="node"><title>p0x7f816f402fa0</title>
-<polygon points="197.5,-124.77 20.5,-124.77 16.5,-120.77 16.5,-88.7696 193.5,-88.7696 197.5,-92.7696 197.5,-124.77"/>
-<polyline points="193.5,-120.77 16.5,-120.77 "/>
-<polyline points="193.5,-120.77 193.5,-88.7696 "/>
-<polyline points="193.5,-120.77 197.5,-124.77 "/>
-<text text-anchor="middle" x="107" y="-102.97">module [Taskflow: F1]</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402fa0</title>
+<polygon points="202.5,-124.7696 19.5,-124.7696 15.5,-120.7696 15.5,-88.7696 198.5,-88.7696 202.5,-92.7696 202.5,-124.7696"/>
+<polyline points="198.5,-120.7696 15.5,-120.7696 "/>
+<polyline points="198.5,-120.7696 198.5,-88.7696 "/>
+<polyline points="198.5,-120.7696 202.5,-124.7696 "/>
+<text text-anchor="middle" x="109" y="-102.9696">module [Taskflow: F1]</text>
 </g>
-<g id="edge3" class="edge"><title>p0x7f816f402d80&#45;&gt;p0x7f816f402fa0</title>
-<path fill="none" stroke="black" d="M187.379,-164.915C173.957,-155.373 155.492,-142.246 139.645,-130.979"/>
-<polygon points="141.337,-127.887 131.159,-124.945 137.281,-133.592 141.337,-127.887"/>
+<g class="m-edge">
+<title>p0x7f816f402d80&#45;&gt;p0x7f816f402fa0</title>
+<path d="M125.4485,-160.8886C123.0069,-152.8552 120.0861,-143.2453 117.3879,-134.3677"/>
+<polygon points="120.7303,-133.3287 114.4735,-124.7787 114.0328,-135.3644 120.7303,-133.3287"/>
 </g>
-<g id="node6" class="node"><title>p0x7f816f402fa1</title>
-<polygon points="396.5,-124.77 219.5,-124.77 215.5,-120.77 215.5,-88.7696 392.5,-88.7696 396.5,-92.7696 396.5,-124.77"/>
-<polyline points="392.5,-120.77 215.5,-120.77 "/>
-<polyline points="392.5,-120.77 392.5,-88.7696 "/>
-<polyline points="392.5,-120.77 396.5,-124.77 "/>
-<text text-anchor="middle" x="306" y="-102.97">module [Taskflow: F1]</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402fa1</title>
+<polygon points="407.5,-124.7696 224.5,-124.7696 220.5,-120.7696 220.5,-88.7696 403.5,-88.7696 407.5,-92.7696 407.5,-124.7696"/>
+<polyline points="403.5,-120.7696 220.5,-120.7696 "/>
+<polyline points="403.5,-120.7696 403.5,-88.7696 "/>
+<polyline points="403.5,-120.7696 407.5,-124.7696 "/>
+<text text-anchor="middle" x="314" y="-102.9696">module [Taskflow: F1]</text>
 </g>
-<g id="edge6" class="edge"><title>p0x7f816f402d80&#45;&gt;p0x7f816f402fa1</title>
-<path fill="none" stroke="black" d="M224.809,-164.915C238.367,-155.373 257.018,-142.246 273.025,-130.979"/>
-<polygon points="275.434,-133.563 281.597,-124.945 271.405,-127.839 275.434,-133.563"/>
+<g class="m-edge">
+<title>p0x7f816f402d80&#45;&gt;p0x7f816f402fa1</title>
+<path d="M156.4454,-169.0895C182.8377,-158.6502 224.9296,-142.0009 258.9698,-128.5365"/>
+<polygon points="260.326,-131.764 268.3376,-124.8311 257.7512,-125.2547 260.326,-131.764"/>
 </g>
-<g id="node3" class="node"><title>p0x7f816f402c70</title>
-<ellipse cx="175" cy="-251.924" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="175" y="-248.124">f2B</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402c70</title>
+<ellipse cx="77" cy="-251.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="77" y="-248.1239">f2B</text>
 </g>
-<g id="edge2" class="edge"><title>p0x7f816f402c70&#45;&gt;p0x7f816f402d80</title>
-<path fill="none" stroke="black" d="M182.504,-233.793C186.084,-225.621 190.446,-215.662 194.436,-206.553"/>
-<polygon points="197.758,-207.692 198.565,-197.128 191.347,-204.883 197.758,-207.692"/>
+<g class="m-edge">
+<title>p0x7f816f402c70&#45;&gt;p0x7f816f402d80</title>
+<path d="M89.5244,-235.0462C96.3399,-225.8617 104.9025,-214.3229 112.4753,-204.1179"/>
+<polygon points="115.395,-206.0567 118.5435,-195.9405 109.7736,-201.8853 115.395,-206.0567"/>
 </g>
-<g id="node5" class="node"><title>p0x7f816f402e90</title>
-<ellipse cx="206" cy="-34.3848" rx="29.8983" ry="18.2703"/>
-<text text-anchor="middle" x="206" y="-30.5848">f2D</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402e90</title>
+<ellipse cx="211" cy="-34.3848" rx="31.2258" ry="18.2703"/>
+<text text-anchor="middle" x="211" y="-30.5848">f2D</text>
 </g>
-<g id="edge5" class="edge"><title>p0x7f816f402fa0&#45;&gt;p0x7f816f402e90</title>
-<path fill="none" stroke="black" d="M130.965,-88.7314C145.412,-78.4604 163.855,-65.3484 178.84,-54.6942"/>
-<polygon points="181.086,-57.3922 187.208,-48.7452 177.03,-51.6871 181.086,-57.3922"/>
+<g class="m-edge">
+<title>p0x7f816f402fa0&#45;&gt;p0x7f816f402e90</title>
+<path d="M134.4758,-88.6905C149.0764,-78.3292 167.4374,-65.2992 182.5142,-54.5999"/>
+<polygon points="184.8288,-57.2491 190.9584,-48.6074 180.7776,-51.5405 184.8288,-57.2491"/>
 </g>
-<g id="edge4" class="edge"><title>p0x7f816f402fa1&#45;&gt;p0x7f816f402e90</title>
-<path fill="none" stroke="black" d="M281.793,-88.7314C267.2,-78.4604 248.571,-65.3484 233.434,-54.6942"/>
-<polygon points="235.174,-51.6388 224.982,-48.7452 231.145,-57.3631 235.174,-51.6388"/>
+<g class="m-edge">
+<title>p0x7f816f402fa1&#45;&gt;p0x7f816f402e90</title>
+<path d="M288.2744,-88.6905C273.5307,-78.3292 254.9897,-65.2992 239.7651,-54.5999"/>
+<polygon points="241.4322,-51.4936 231.2381,-48.6074 237.4074,-57.2208 241.4322,-51.4936"/>
 </g>
-<g id="node7" class="node"><title>p0x7f816f402830</title>
-<ellipse cx="526" cy="-251.924" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="526" y="-248.124">f1A</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402830</title>
+<ellipse cx="538" cy="-251.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="538" y="-248.1239">f1A</text>
 </g>
-<g id="node8" class="node"><title>p0x7f816f402a50</title>
-<ellipse cx="488" cy="-179.154" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="488" y="-175.354">f1C</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402a50</title>
+<ellipse cx="499" cy="-179.1543" rx="30.3115" ry="18.2703"/>
+<text text-anchor="middle" x="499" y="-175.3543">f1C</text>
 </g>
-<g id="edge7" class="edge"><title>p0x7f816f402830&#45;&gt;p0x7f816f402a50</title>
-<path fill="none" stroke="black" d="M516.995,-234.152C512.451,-225.692 506.842,-215.246 501.772,-205.803"/>
-<polygon points="504.755,-203.96 496.941,-196.805 498.588,-207.271 504.755,-203.96"/>
+<g class="m-edge">
+<title>p0x7f816f402830&#45;&gt;p0x7f816f402a50</title>
+<path d="M528.5592,-234.3084C523.9942,-225.7906 518.4163,-215.383 513.3409,-205.9128"/>
+<polygon points="516.2977,-204.0205 508.489,-196.8598 510.128,-207.3271 516.2977,-204.0205"/>
 </g>
-<g id="node9" class="node"><title>p0x7f816f402940</title>
-<ellipse cx="450" cy="-251.924" rx="28.9828" ry="18.2703"/>
-<text text-anchor="middle" x="450" y="-248.124">f1B</text>
+<g class="m-node m-flat">
+<title>p0x7f816f402940</title>
+<ellipse cx="461" cy="-251.9239" rx="29.8983" ry="18.2703"/>
+<text text-anchor="middle" x="461" y="-248.1239">f1B</text>
 </g>
-<g id="edge8" class="edge"><title>p0x7f816f402940&#45;&gt;p0x7f816f402a50</title>
-<path fill="none" stroke="black" d="M459.005,-234.152C463.549,-225.692 469.158,-215.246 474.228,-205.803"/>
-<polygon points="477.412,-207.271 479.059,-196.805 471.245,-203.96 477.412,-207.271"/>
+<g class="m-edge">
+<title>p0x7f816f402940&#45;&gt;p0x7f816f402a50</title>
+<path d="M470.1987,-234.3084C474.6467,-225.7906 480.0815,-215.383 485.0268,-205.9128"/>
+<polygon points="488.2278,-207.3441 489.7543,-196.8598 482.0229,-204.1039 488.2278,-207.3441"/>
 </g>
 </g>
 </svg>
-</div></section><section id="CreateACustomComposableGraph"><h2><a href="#CreateACustomComposableGraph">Create a Custom Composable Graph</a></h2><p>Taskflow allows you to create a custom graph object that can participate in the scheduling using composition. To become a module task, your class <code>T</code> must define a method <code>T::graph()</code> that returns a reference to a <a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a> object. The following example defines a custom graph object that can be assembled in a taskflow throw composition:</p><pre class="m-code"><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">CustomGraph</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w"> </span><span class="mi">2</span><span class="o">:</span><span class="w">   </span><span class="n">tf</span><span class="o">::</span><span class="n">Graph</span><span class="w"> </span><span class="n">graph</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w">   </span><span class="n">CustomGraph</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w"> </span><span class="mi">4</span><span class="o">:</span><span class="w">     </span><span class="n">tf</span><span class="o">::</span><span class="n">FlowBuilder</span><span class="w"> </span><span class="n">builder</span><span class="p">(</span><span class="n">graph</span><span class="p">);</span><span class="w"></span>
-<span class="w"> </span><span class="mi">5</span><span class="o">:</span><span class="w">     </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"></span>
-<span class="w"> </span><span class="mi">6</span><span class="o">:</span><span class="w">       </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;a task</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// static task</span>
-<span class="w"> </span><span class="mi">7</span><span class="o">:</span><span class="w">     </span><span class="p">});</span><span class="w"></span>
-<span class="w"> </span><span class="mi">8</span><span class="o">:</span><span class="w">   </span><span class="p">}</span><span class="w"></span>
-<span class="w"> </span><span class="mi">9</span><span class="o">:</span><span class="w">   </span><span class="c1">// returns a reference to the graph for taskflow composition</span>
-<span class="mi">10</span><span class="o">:</span><span class="w">   </span><span class="n">Graph</span><span class="o">&amp;</span><span class="w"> </span><span class="n">graph</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">graph</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
-<span class="mi">11</span><span class="o">:</span><span class="w"> </span><span class="p">};</span><span class="w"></span>
-<span class="mi">12</span><span class="o">:</span><span class="w"></span>
-<span class="mi">13</span><span class="o">:</span><span class="w"> </span><span class="n">CustomGraph</span><span class="w"> </span><span class="n">obj</span><span class="p">;</span><span class="w"></span>
-<span class="mi">14</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">comp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span><span class="w"></span></pre><p>Debrief:</p><ul><li>Lines 1-11 define a custom graph interface to participate in taskflow composition</li><li>Line 2 defines the graph object using <a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a></li><li>Lines 3-8 defines the constructor that constructs the task graph using <a href="classtf_1_1FlowBuilder.html" class="m-doc">tf::<wbr />FlowBuilder</a></li><li>Line 10 defines the required method for taskflow composition</li><li>Lines 13-14 creates a module task for the declared graph object in the taskflow</li></ul><p>The composition method <a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc">tf::<wbr />Taskflow::<wbr />composed_of</a> requires the target to define the <code>graph()</code> method that returns a reference to a <a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a> object defined by the target. At runtime, the executor will run dependent tasks in that graph using the same work-stealing scheduling algorithm as other taskflows. Taskflow leverages this powerful feature to design high-level algorithms, such as <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a>.</p><aside class="m-note m-info"><h4>Note</h4><p>While Taskflow gives you the flexibility to create a composable graph object, you should consider using <a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a> as an opaque data structure just to interact with the library. Additionally, as other module tasks, Taskflow does not own the lifetime of a custom composable graph object but keeps a soft mapping to it. You should keep the graph object alive during its execution.</p></aside></section>
+</div></section><section id="CreateACustomComposableGraph"><h2><a href="#CreateACustomComposableGraph">Create a Custom Composable Graph</a></h2><p>Taskflow allows you to create a custom graph object that can participate in the scheduling using composition. To become a module task, your class <code>T</code> must define a method <code>T::graph()</code> that returns a reference to a <a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a> object. The following example defines a custom graph object that can be assembled in a taskflow throw composition:</p><pre class="m-code"> <span class="mi">1</span><span class="o">:</span> <span class="k">struct</span> <span class="n">CustomGraph</span> <span class="p">{</span>
+ <span class="mi">2</span><span class="o">:</span>   <span class="n">tf</span><span class="o">::</span><span class="n">Graph</span> <span class="n">graph</span><span class="p">;</span>
+ <span class="mi">3</span><span class="o">:</span>   <span class="n">CustomGraph</span><span class="p">()</span> <span class="p">{</span>
+ <span class="mi">4</span><span class="o">:</span>     <span class="n">tf</span><span class="o">::</span><span class="n">FlowBuilder</span> <span class="n">builder</span><span class="p">(</span><span class="n">graph</span><span class="p">);</span>
+ <span class="mi">5</span><span class="o">:</span>     <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">task</span> <span class="o">=</span> <span class="n">builder</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span>
+ <span class="mi">6</span><span class="o">:</span>       <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;a task</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>  <span class="c1">// static task</span>
+ <span class="mi">7</span><span class="o">:</span>     <span class="p">});</span>
+ <span class="mi">8</span><span class="o">:</span>   <span class="p">}</span>
+ <span class="mi">9</span><span class="o">:</span>   <span class="c1">// returns a reference to the graph for taskflow composition</span>
+<span class="mi">10</span><span class="o">:</span>   <span class="n">Graph</span><span class="o">&amp;</span> <span class="n">graph</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">graph</span><span class="p">;</span> <span class="p">}</span>
+<span class="mi">11</span><span class="o">:</span> <span class="p">};</span>
+<span class="mi">12</span><span class="o">:</span>
+<span class="mi">13</span><span class="o">:</span> <span class="n">CustomGraph</span> <span class="n">obj</span><span class="p">;</span>
+<span class="mi">14</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">comp</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span></pre><p>Debrief:</p><ul><li>Lines 1-11 define a custom graph interface to participate in taskflow composition</li><li>Line 2 defines the graph object using <a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a></li><li>Lines 3-8 defines the constructor that constructs the task graph using <a href="classtf_1_1FlowBuilder.html" class="m-doc">tf::<wbr />FlowBuilder</a></li><li>Line 10 defines the required method for taskflow composition</li><li>Lines 13-14 creates a module task for the declared graph object in the taskflow</li></ul><p>The composition method <a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc">tf::<wbr />Taskflow::<wbr />composed_of</a> requires the target to define the <code>graph()</code> method that returns a reference to a <a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a> object defined by the target. At runtime, the executor will run dependent tasks in that graph using the same work-stealing scheduling algorithm as other taskflows. Taskflow leverages this powerful feature to design high-level algorithms, such as <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a>.</p><aside class="m-note m-info"><h4>Note</h4><p>While Taskflow gives you the flexibility to create a composable graph object, you should consider using <a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a> as an opaque data structure just to interact with the library. Additionally, as other module tasks, Taskflow does not own the lifetime of a custom composable graph object but keeps a soft mapping to it. You should keep the graph object alive during its execution.</p></aside></section>
       </div>
     </div>
   </div>
@@ -384,7 +437,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

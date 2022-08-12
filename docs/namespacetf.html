@@ -127,6 +127,16 @@
             </dt>
             <dd>class to create a unified shared memory (USM) allocator</dd>
             <dt>
+              <div class="m-doc-template">template&lt;typename Input, typename Output, typename C&gt;</div>
+              class <a href="classtf_1_1DataPipe.html" class="m-doc">DataPipe</a>
+            </dt>
+            <dd>class to create a data pipe object for a data pipeline stage</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename... Ps&gt;</div>
+              class <a href="classtf_1_1DataPipeline.html" class="m-doc">DataPipeline</a>
+            </dt>
+            <dd>class to create a data pipeline scheduling framework</dd>
+            <dt>
               class <a href="classtf_1_1Executor.html" class="m-doc">Executor</a>
             </dt>
             <dd>class to create an executor for running a taskflow graph</dd>
@@ -258,18 +268,9 @@
             <dd>enumeration of all observer types</dd>
             <dt>
               <span class="m-doc-wrap-bumper">enum <a href="#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">PipeType</a> { </span><span class="m-doc-wrap"><a href="#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc">PARALLEL</a> = 1,
-              <a href="#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">SERIAL</a> = 2,
-              <a href="#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc">PARALLEL</a> = 1,
               <a href="#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">SERIAL</a> = 2 }</span>
             </dt>
             <dd>enumeration of all pipe types</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">enum <a href="#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">PipeType</a> { </span><span class="m-doc-wrap"><a href="#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc">PARALLEL</a> = 1,
-              <a href="#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">SERIAL</a> = 2,
-              <a href="#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc">PARALLEL</a> = 1,
-              <a href="#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">SERIAL</a> = 2 }</span>
-            </dt>
-            <dd></dd>
             <dt>
               <span class="m-doc-wrap-bumper">enum <a href="#afebc56ae6d5765010d0dd13a5f04132e" class="m-doc">cudaTaskType</a> { </span><span class="m-doc-wrap"><a href="#afebc56ae6d5765010d0dd13a5f04132eaba2b45bdc11e2a4a6e86aab2ac693cbb" class="m-doc">EMPTY</a> = 0,
               <a href="#afebc56ae6d5765010d0dd13a5f04132eab9361011891280a44d85b967739cc6a5" class="m-doc">HOST</a>,
@@ -312,6 +313,12 @@
               <span class="m-doc-wrap-bumper">auto <a href="#aa3fc0699b2c2b8f2f76bb39f91be1acb" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#a192f7cb0fab2eb6f1c84f6046706435d" class="m-doc">ObserverType</a> type) -&gt; const char*</span>
             </dt>
             <dd>convert an observer type to a human-readable string</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename Input, typename Output, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a8975fa5762088789adb0b60f38208309" class="m-doc">make_data_pipe</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">PipeType</a> d,
+              C&amp;&amp; callable) -&gt; auto</span>
+            </dt>
+            <dd>constructs the data pipe object</dd>
             <dt id="abffa70155a5f160b7ceb86ee52ab2136">
               <span class="m-doc-wrap-bumper">auto <a href="#abffa70155a5f160b7ceb86ee52ab2136" class="m-doc-self">cuda_get_num_devices</a>(</span><span class="m-doc-wrap">) -&gt; size_t</span>
             </dt>
@@ -874,52 +881,6 @@
                   <p>serial type</p>
                   </td>
                 </tr>
-                <tr>
-                  <td><a href="#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc-self" id="abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb">PARALLEL</a></td>
-                  <td>
-                  <p>parallel type</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc-self" id="abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0">SERIAL</a></td>
-                  <td>
-                  <p>serial type</p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div></section>
-          <section class="m-doc-details" id="abb7a11e41fd457f69e7ff45d4c769564"><div>
-            <h3>
-              enum tf::<wbr /><a href="#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc-self">PipeType</a>
-            </h3>
-            <table class="m-table m-fullwidth m-flat m-doc">
-              <thead><tr><th style="width: 1%">Enumerators</th><th></th></tr></thead>
-              <tbody>
-                <tr>
-                  <td><a href="#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc-self" id="abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb">PARALLEL</a></td>
-                  <td>
-                  <p>parallel type</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc-self" id="abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0">SERIAL</a></td>
-                  <td>
-                  <p>serial type</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc-self" id="abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb">PARALLEL</a></td>
-                  <td>
-                  <p>parallel type</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc-self" id="abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0">SERIAL</a></td>
-                  <td>
-                  <p>serial type</p>
-                  </td>
-                </tr>
               </tbody>
             </table>
           </div></section>
@@ -990,16 +951,52 @@
               <span class="m-doc-wrap-bumper">const char* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a9ca58dc6c666698cc7373eb0262140ef" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a> type)</span></span>
             </h3>
             <p>convert a task type to a human-readable string</p>
-<p>The name of each task type is the litte-case string of its characters.</p><pre class="m-code"><span class="n">TaskType</span><span class="o">::</span><span class="n">PLACEHOLDER</span><span class="w">     </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;placeholder&quot;</span><span class="w"></span>
-<span class="n">TaskType</span><span class="o">::</span><span class="n">CUDAFLOW</span><span class="w">        </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;cudaflow&quot;</span><span class="w"></span>
-<span class="n">TaskType</span><span class="o">::</span><span class="n">SYCLFLOW</span><span class="w">        </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;syclflow&quot;</span><span class="w"></span>
-<span class="n">TaskType</span><span class="o">::</span><span class="n">STATIC</span><span class="w">          </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;static&quot;</span><span class="w"></span>
-<span class="n">TaskType</span><span class="o">::</span><span class="n">DYNAMIC</span><span class="w">         </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;subflow&quot;</span><span class="w"></span>
-<span class="n">TaskType</span><span class="o">::</span><span class="n">CONDITION</span><span class="w">       </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;condition&quot;</span><span class="w"></span>
-<span class="n">TaskType</span><span class="o">::</span><span class="n">MULTI_CONDITION</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;multi_condition&quot;</span><span class="w"></span>
-<span class="n">TaskType</span><span class="o">::</span><span class="n">MODULE</span><span class="w">          </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;module&quot;</span><span class="w"></span>
-<span class="n">TaskType</span><span class="o">::</span><span class="n">ASYNC</span><span class="w">           </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;async&quot;</span><span class="w"></span>
-<span class="n">TaskType</span><span class="o">::</span><span class="n">RUNTIME</span><span class="w">         </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;runtime&quot;</span><span class="w"></span></pre>
+<p>The name of each task type is the litte-case string of its characters.</p><pre class="m-code"><span class="n">TaskType</span><span class="o">::</span><span class="n">PLACEHOLDER</span>     <span class="o">-&gt;</span>  <span class="s">&quot;placeholder&quot;</span>
+<span class="n">TaskType</span><span class="o">::</span><span class="n">CUDAFLOW</span>        <span class="o">-&gt;</span>  <span class="s">&quot;cudaflow&quot;</span>
+<span class="n">TaskType</span><span class="o">::</span><span class="n">SYCLFLOW</span>        <span class="o">-&gt;</span>  <span class="s">&quot;syclflow&quot;</span>
+<span class="n">TaskType</span><span class="o">::</span><span class="n">STATIC</span>          <span class="o">-&gt;</span>  <span class="s">&quot;static&quot;</span>
+<span class="n">TaskType</span><span class="o">::</span><span class="n">DYNAMIC</span>         <span class="o">-&gt;</span>  <span class="s">&quot;subflow&quot;</span>
+<span class="n">TaskType</span><span class="o">::</span><span class="n">CONDITION</span>       <span class="o">-&gt;</span>  <span class="s">&quot;condition&quot;</span>
+<span class="n">TaskType</span><span class="o">::</span><span class="n">MULTI_CONDITION</span> <span class="o">-&gt;</span>  <span class="s">&quot;multi_condition&quot;</span>
+<span class="n">TaskType</span><span class="o">::</span><span class="n">MODULE</span>          <span class="o">-&gt;</span>  <span class="s">&quot;module&quot;</span>
+<span class="n">TaskType</span><span class="o">::</span><span class="n">ASYNC</span>           <span class="o">-&gt;</span>  <span class="s">&quot;async&quot;</span>
+<span class="n">TaskType</span><span class="o">::</span><span class="n">RUNTIME</span>         <span class="o">-&gt;</span>  <span class="s">&quot;runtime&quot;</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a8975fa5762088789adb0b60f38208309"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename Input, typename Output, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">auto tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8975fa5762088789adb0b60f38208309" class="m-doc-self">make_data_pipe</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">PipeType</a> d,
+              C&amp;&amp; callable)</span></span>
+            </h3>
+            <p>constructs the data pipe object</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">d</td>
+                  <td>pipe type (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">tf::<wbr />PipeType</a>)</td>
+                </tr>
+                <tr>
+                  <td>callable</td>
+                  <td>callable type</td>
+                </tr>
+              </tbody>
+            </table>
+<p>You must call the make_data_type function to create a <a href="classtf_1_1DataPipe.html" class="m-doc">DataPipe</a> object. The input and output type you give to the make_data_pipe function will be decayed to its original form. The arguments of your lambda can be either a copy or a reference, we will use it by value or by reference as you want.</p><p>Usually your lambda function takes only one argument as input(The first pipe must takes a Pipeflow object to control flow). You can also add an additional pipeflow argument in the lambda function to get token and line position of current pipe.</p><pre class="m-code"><span class="mi">1</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="mi">2</span><span class="o">:</span>   <span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> 
+<span class="mi">3</span><span class="o">:</span>   <span class="p">[](</span><span class="kt">int</span> <span class="n">input</span><span class="p">)</span> <span class="p">{</span><span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">input</span> <span class="o">+</span> <span class="mi">100</span><span class="p">);}</span>
+<span class="mi">4</span><span class="o">:</span> <span class="p">)</span></pre><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span>
+  <span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> 
+  <span class="p">[](</span><span class="kt">int</span> <span class="n">input</span><span class="p">,</span> <span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span> <span class="n">pf</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;token: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;line: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">input</span> <span class="o">+</span> <span class="mi">100</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">)</span></pre><p>When creating a pipeline, the direction of the first pipe must be serial (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>).</p>
           </div></section>
           <section class="m-doc-details" id="a6f04fd3168c45eeb2dffb223e5c81e45"><div>
             <h3>
@@ -1253,9 +1250,9 @@
                 </tr>
               </tbody>
             </table>
-<p>This function is equivalent to a parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">itr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">first</span><span class="p">;</span><span class="w"> </span><span class="n">itr</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="n">itr</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="n">c</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre>
+<p>This function is equivalent to a parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">itr</span> <span class="o">=</span> <span class="n">first</span><span class="p">;</span> <span class="n">itr</span> <span class="o">!=</span> <span class="n">last</span><span class="p">;</span> <span class="n">itr</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">c</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">);</span>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="a01ad7ce62fa6f42f2f2fbff3659b7884"><div>
             <h3>
@@ -1314,14 +1311,14 @@
               </tbody>
             </table>
 <p>This function is equivalent to a parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="c1">// step is positive [first, last)</span>
-<span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="n">c</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">last</span><span class="p">;</span> <span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">c</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="p">}</span>
 
 <span class="c1">// step is negative [first, last)</span>
-<span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&gt;</span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="n">c</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre>
+<span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">i</span><span class="o">&gt;</span><span class="n">last</span><span class="p">;</span> <span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">c</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="a3ed764530620a419e3400e1f9ab6c956"><div>
             <h3>
@@ -1383,9 +1380,9 @@
                 </tr>
               </tbody>
             </table>
-<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="o">*</span><span class="n">output</span><span class="o">++</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">output</span><span class="o">++</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="abdcb5b755f7ace2aa452541d5bf93b5f"><div>
             <h3>
@@ -1456,9 +1453,9 @@
                 </tr>
               </tbody>
             </table>
-<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">first1</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="o">*</span><span class="n">output</span><span class="o">++</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">first1</span><span class="o">++</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">first2</span><span class="o">++</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first1</span> <span class="o">!=</span> <span class="n">last1</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">output</span><span class="o">++</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">first1</span><span class="o">++</span><span class="p">,</span> <span class="o">*</span><span class="n">first2</span><span class="o">++</span><span class="p">);</span>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="a1ca0bd68df882048e4b9b4d92efc3168"><div>
             <h3>
@@ -1559,9 +1556,9 @@
                 </tr>
               </tbody>
             </table>
-<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="a492e8410db032a0273a99dd905486161"><div>
             <h3>
@@ -1628,10 +1625,10 @@
                 </tr>
               </tbody>
             </table>
-<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">;</span><span class="w">  </span><span class="c1">// no initial values partitipcate in the loop</span>
-<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">;</span>  <span class="c1">// no initial values partitipcate in the loop</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="a4463d06240d608bc31d8b3546a851e4e"><div>
             <h3>
@@ -1707,9 +1704,9 @@
                 </tr>
               </tbody>
             </table>
-<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bop</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">));</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">bop</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">));</span>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="a747a41c0474fd34da370839b60ddc4ca"><div>
             <h3>
@@ -1785,10 +1782,10 @@
                 </tr>
               </tbody>
             </table>
-<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span><span class="w">  </span><span class="c1">// no initial values partitipcate in the loop</span>
-<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bop</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">));</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>  <span class="c1">// no initial values partitipcate in the loop</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">bop</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">));</span>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="afd7e7a0886352201cced5c55205f3229"><div>
             <h3>
@@ -2549,13 +2546,13 @@
                 </tr>
               </tbody>
             </table>
-<p>The function launches kernels asynchronously to find the index <code>idx</code> of the first element in the range <code>[first, last)</code> such that <code>op(*(first+idx))</code> is true. This is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="kt">unsigned</span><span class="w"> </span><span class="n">idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
-<span class="k">for</span><span class="p">(;</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="o">++</span><span class="n">idx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">idx</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-<span class="k">return</span><span class="w"> </span><span class="n">idx</span><span class="p">;</span><span class="w"></span></pre>
+<p>The function launches kernels asynchronously to find the index <code>idx</code> of the first element in the range <code>[first, last)</code> such that <code>op(*(first+idx))</code> is true. This is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="kt">unsigned</span> <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">for</span><span class="p">(;</span> <span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">;</span> <span class="o">++</span><span class="n">first</span><span class="p">,</span> <span class="o">++</span><span class="n">idx</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">p</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">idx</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="k">return</span> <span class="n">idx</span><span class="p">;</span></pre>
           </div></section>
           <section class="m-doc-details" id="abe3b31aaf686b491e9000f0867934713"><div>
             <h3>
@@ -2652,16 +2649,16 @@
                 </tr>
               </tbody>
             </table>
-<p>The function launches kernels asynchronously to find the smallest element in the range <code>[first, last)</code> using the given comparator <code>op</code>. You need to provide a buffer that holds at least <a href="namespacetf.html#abe3b31aaf686b491e9000f0867934713" class="m-doc">tf::<wbr />cuda_min_element_buffer_size</a> bytes for internal use. The function is equivalent to a parallel execution of the following loop:</p><pre class="m-code"><span class="k">if</span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-<span class="k">auto</span><span class="w"> </span><span class="n">smallest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">first</span><span class="p">;</span><span class="w"></span>
-<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="o">++</span><span class="n">first</span><span class="p">;</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">first</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">smallest</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">smallest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">first</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-<span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">distance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">smallest</span><span class="p">);</span><span class="w"></span></pre>
+<p>The function launches kernels asynchronously to find the smallest element in the range <code>[first, last)</code> using the given comparator <code>op</code>. You need to provide a buffer that holds at least <a href="namespacetf.html#abe3b31aaf686b491e9000f0867934713" class="m-doc">tf::<wbr />cuda_min_element_buffer_size</a> bytes for internal use. The function is equivalent to a parallel execution of the following loop:</p><pre class="m-code"><span class="k">if</span><span class="p">(</span><span class="n">first</span> <span class="o">==</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">auto</span> <span class="n">smallest</span> <span class="o">=</span> <span class="n">first</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="o">++</span><span class="n">first</span><span class="p">;</span> <span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">;</span> <span class="o">++</span><span class="n">first</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="p">,</span> <span class="o">*</span><span class="n">smallest</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">smallest</span> <span class="o">=</span> <span class="n">first</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">distance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">smallest</span><span class="p">);</span></pre>
           </div></section>
           <section class="m-doc-details" id="a04965f210cc6447c7c38206a28c3c3d4"><div>
             <h3>
@@ -2758,16 +2755,16 @@
                 </tr>
               </tbody>
             </table>
-<p>The function launches kernels asynchronously to find the largest element in the range <code>[first, last)</code> using the given comparator <code>op</code>. You need to provide a buffer that holds at least <a href="namespacetf.html#a04965f210cc6447c7c38206a28c3c3d4" class="m-doc">tf::<wbr />cuda_max_element_buffer_size</a> bytes for internal use. The function is equivalent to a parallel execution of the following loop:</p><pre class="m-code"><span class="k">if</span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-<span class="k">auto</span><span class="w"> </span><span class="n">largest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">first</span><span class="p">;</span><span class="w"></span>
-<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="o">++</span><span class="n">first</span><span class="p">;</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">first</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">largest</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">first</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">largest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">first</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-<span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">distance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">largest</span><span class="p">);</span><span class="w"></span></pre>
+<p>The function launches kernels asynchronously to find the largest element in the range <code>[first, last)</code> using the given comparator <code>op</code>. You need to provide a buffer that holds at least <a href="namespacetf.html#a04965f210cc6447c7c38206a28c3c3d4" class="m-doc">tf::<wbr />cuda_max_element_buffer_size</a> bytes for internal use. The function is equivalent to a parallel execution of the following loop:</p><pre class="m-code"><span class="k">if</span><span class="p">(</span><span class="n">first</span> <span class="o">==</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">auto</span> <span class="n">largest</span> <span class="o">=</span> <span class="n">first</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="o">++</span><span class="n">first</span><span class="p">;</span> <span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">;</span> <span class="o">++</span><span class="n">first</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">largest</span><span class="p">,</span> <span class="o">*</span><span class="n">first</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">largest</span> <span class="o">=</span> <span class="n">first</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">distance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">largest</span><span class="p">);</span></pre>
           </div></section>
           <section class="m-doc-details" id="a30fa078dcf625e9eada5a95af1467588"><div>
             <h3>
@@ -2894,7 +2891,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

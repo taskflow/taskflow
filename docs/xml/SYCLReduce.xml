@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
   <compounddef id="SYCLReduce" kind="page">
     <compoundname>SYCLReduce</compoundname>
     <title>Parallel Reduction</title>
@@ -14,7 +14,7 @@
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>soln<sp/>=<sp/>sycl::malloc_shared&lt;int&gt;(1);<sp/><sp/></highlight><highlight class="comment">//<sp/>solution</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>data<sp/>=<sp/>sycl::malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/algorithm/for_each" kindref="compound" external="/home/xiongzc/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::for_each</ref>(data,<sp/>data+N,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>v){<sp/>d<sp/>=<sp/>1;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/algorithm/for_each" kindref="compound" external="/home/phrygiangates/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::for_each</ref>(data,<sp/>data+N,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>v){<sp/>d<sp/>=<sp/>1;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">*soln<sp/>=<sp/>1000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>syclflow<sp/>to<sp/>perform<sp/>parallel<sp/>reduction<sp/>on<sp/>a<sp/>SYCL<sp/>device</highlight><highlight class="normal"></highlight></codeline>
@@ -36,7 +36,7 @@
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>soln<sp/>=<sp/>sycl::malloc_shared&lt;int&gt;(1);<sp/><sp/></highlight><highlight class="comment">//<sp/>solution</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>data<sp/>=<sp/>sycl::malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>data<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/algorithm/for_each" kindref="compound" external="/home/xiongzc/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::for_each</ref>(data,<sp/>data+N,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>v){<sp/>d<sp/>=<sp/>1;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/algorithm/for_each" kindref="compound" external="/home/phrygiangates/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::for_each</ref>(data,<sp/>data+N,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>v){<sp/>d<sp/>=<sp/>1;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">*soln<sp/>=<sp/>1000;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>no<sp/>effect</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>syclflow<sp/>to<sp/>perform<sp/>parallel<sp/>reduction<sp/>on<sp/>a<sp/>SYCL<sp/>device</highlight><highlight class="normal"></highlight></codeline>

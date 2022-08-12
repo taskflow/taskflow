@@ -1,10 +1,12 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
   <compounddef id="classtf_1_1SmallVectorBase" kind="class" language="C++" prot="private">
     <compoundname>tf::SmallVectorBase</compoundname>
     <derivedcompoundref refid="classtf_1_1SmallVectorTemplateCommon" prot="public" virt="non-virtual">tf::SmallVectorTemplateCommon&lt; Node * &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classtf_1_1SmallVectorTemplateCommon" prot="public" virt="non-virtual">tf::SmallVectorTemplateCommon&lt; Node *&gt;</derivedcompoundref>
     <derivedcompoundref refid="classtf_1_1SmallVectorTemplateCommon" prot="public" virt="non-virtual">tf::SmallVectorTemplateCommon&lt; T &gt;</derivedcompoundref>
     <derivedcompoundref refid="classtf_1_1SmallVectorTemplateCommon" prot="public" virt="non-virtual">tf::SmallVectorTemplateCommon&lt; tf::Semaphore * &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classtf_1_1SmallVectorTemplateCommon" prot="public" virt="non-virtual">tf::SmallVectorTemplateCommon&lt; tf::Semaphore *&gt;</derivedcompoundref>
       <sectiondef kind="protected-attrib">
       <memberdef kind="variable" id="classtf_1_1SmallVectorBase_1a5d08aaf8e30cf35422fd5fc00a08365e" prot="protected" static="no" mutable="no">
         <type>void *</type>
@@ -17,7 +19,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/utility/small_vector.hpp" line="62" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/utility/small_vector.hpp" bodystart="62" bodyend="-1"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/utility/small_vector.hpp" line="62" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/utility/small_vector.hpp" bodystart="62" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1SmallVectorBase_1ac1a0459890042d10254b7be5dd7c1752" prot="protected" static="no" mutable="no">
         <type>void *</type>
@@ -30,7 +32,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/utility/small_vector.hpp" line="62" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/utility/small_vector.hpp" bodystart="62" bodyend="-1"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/utility/small_vector.hpp" line="62" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/utility/small_vector.hpp" bodystart="62" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1SmallVectorBase_1a13c5c546448248a63e004725258f1ea3" prot="protected" static="no" mutable="no">
         <type>void *</type>
@@ -43,7 +45,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/utility/small_vector.hpp" line="62" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/utility/small_vector.hpp" bodystart="62" bodyend="-1"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/utility/small_vector.hpp" line="62" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/utility/small_vector.hpp" bodystart="62" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="protected-func">
@@ -66,7 +68,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/utility/small_vector.hpp" line="65" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/utility/small_vector.hpp" bodystart="65" bodyend="66"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/utility/small_vector.hpp" line="65" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/utility/small_vector.hpp" bodystart="65" bodyend="66"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorBase_1a39b8b0b14783568a42fc606dee073096" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -91,14 +93,14 @@
 <para>This is an implementation of the grow() method which only works on POD-like data types and is out of line to reduce code duplication. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/utility/small_vector.hpp" line="70" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/utility/small_vector.hpp" bodystart="70" bodyend="92"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/utility/small_vector.hpp" line="70" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/utility/small_vector.hpp" bodystart="70" bodyend="92"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
-      <memberdef kind="function" id="classtf_1_1SmallVectorBase_1a612eea8d9785ba9bf51f42227a0c1129" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1SmallVectorBase_1ab2a8fa067f915dc2b67c6e0c33527081" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::SmallVectorBase::size_in_bytes</definition>
-        <argsstring>() const </argsstring>
+        <argsstring>() const</argsstring>
         <name>size_in_bytes</name>
         <briefdescription>
 <para>This returns size()*sizeof(T). </para>        </briefdescription>
@@ -106,12 +108,12 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/utility/small_vector.hpp" line="96" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/utility/small_vector.hpp" bodystart="96" bodyend="98"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/utility/small_vector.hpp" line="96" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/utility/small_vector.hpp" bodystart="96" bodyend="98"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1SmallVectorBase_1a2c6d30bf6833605c765e596d60e5c5ba" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1SmallVectorBase_1a11236e318bfb73ce440e6f29985b08f3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::SmallVectorBase::capacity_in_bytes</definition>
-        <argsstring>() const </argsstring>
+        <argsstring>() const</argsstring>
         <name>capacity_in_bytes</name>
         <briefdescription>
 <para>capacity_in_bytes - This returns capacity()*sizeof(T). </para>        </briefdescription>
@@ -119,12 +121,12 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/utility/small_vector.hpp" line="101" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/utility/small_vector.hpp" bodystart="101" bodyend="103"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/utility/small_vector.hpp" line="101" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/utility/small_vector.hpp" bodystart="101" bodyend="103"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1SmallVectorBase_1a36f9f41016c163b613030b2e1ca95e4e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1SmallVectorBase_1a538b6a18b5dfe80f650a2ada367a2050" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
         <definition>bool tf::SmallVectorBase::empty</definition>
-        <argsstring>() const </argsstring>
+        <argsstring>() const</argsstring>
         <name>empty</name>
         <briefdescription>
         </briefdescription>
@@ -132,7 +134,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/utility/small_vector.hpp" line="105" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/utility/small_vector.hpp" bodystart="105" bodyend="105"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/utility/small_vector.hpp" line="105" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/utility/small_vector.hpp" bodystart="105" bodyend="105"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -140,34 +142,44 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="366">
+      <node id="235">
+        <label>tf::SmallVectorTemplateCommon&lt; tf::Semaphore *&gt;</label>
+        <childnode refid="230" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="233">
         <label>tf::SmallVectorTemplateCommon&lt; T &gt;</label>
-        <childnode refid="364" relation="public-inheritance">
+        <childnode refid="230" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="365">
+      <node id="231">
         <label>tf::SmallVectorTemplateCommon&lt; Node * &gt;</label>
-        <childnode refid="364" relation="public-inheritance">
+        <childnode refid="230" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="367">
+      <node id="234">
         <label>tf::SmallVectorTemplateCommon&lt; tf::Semaphore * &gt;</label>
-        <childnode refid="364" relation="public-inheritance">
+        <childnode refid="230" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="364">
+      <node id="230">
         <label>tf::SmallVectorBase</label>
       </node>
+      <node id="232">
+        <label>tf::SmallVectorTemplateCommon&lt; Node *&gt;</label>
+        <childnode refid="230" relation="public-inheritance">
+        </childnode>
+      </node>
     </inheritancegraph>
-    <location file="/home/xiongzc/taskflow/taskflow/utility/small_vector.hpp" line="60" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/utility/small_vector.hpp" bodystart="60" bodyend="106"/>
+    <location file="/home/phrygiangates/taskflow/taskflow/utility/small_vector.hpp" line="60" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/utility/small_vector.hpp" bodystart="60" bodyend="106"/>
     <listofallmembers>
       <member refid="classtf_1_1SmallVectorBase_1a5d08aaf8e30cf35422fd5fc00a08365e" prot="protected" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>BeginX</name></member>
-      <member refid="classtf_1_1SmallVectorBase_1a2c6d30bf6833605c765e596d60e5c5ba" prot="public" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>capacity_in_bytes</name></member>
+      <member refid="classtf_1_1SmallVectorBase_1a11236e318bfb73ce440e6f29985b08f3" prot="public" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>capacity_in_bytes</name></member>
       <member refid="classtf_1_1SmallVectorBase_1a13c5c546448248a63e004725258f1ea3" prot="protected" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>CapacityX</name></member>
-      <member refid="classtf_1_1SmallVectorBase_1a36f9f41016c163b613030b2e1ca95e4e" prot="public" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>empty</name></member>
+      <member refid="classtf_1_1SmallVectorBase_1a538b6a18b5dfe80f650a2ada367a2050" prot="public" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>empty</name></member>
       <member refid="classtf_1_1SmallVectorBase_1ac1a0459890042d10254b7be5dd7c1752" prot="protected" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>EndX</name></member>
       <member refid="classtf_1_1SmallVectorBase_1a39b8b0b14783568a42fc606dee073096" prot="protected" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>grow_pod</name></member>
-      <member refid="classtf_1_1SmallVectorBase_1a612eea8d9785ba9bf51f42227a0c1129" prot="public" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>size_in_bytes</name></member>
+      <member refid="classtf_1_1SmallVectorBase_1ab2a8fa067f915dc2b67c6e0c33527081" prot="public" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>size_in_bytes</name></member>
       <member refid="classtf_1_1SmallVectorBase_1a326c733a440cd9a1197bed0f75892152" prot="protected" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>SmallVectorBase</name></member>
     </listofallmembers>
   </compounddef>

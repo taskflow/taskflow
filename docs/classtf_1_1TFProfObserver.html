@@ -62,20 +62,20 @@
             </li>
           </ul>
         </nav>
-<p>A <a href="classtf_1_1TFProfObserver.html" class="m-doc">tf::<wbr />TFProfObserver</a> inherits <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> and defines methods to dump the observed thread activities into a format that can be visualized through <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+<p>A <a href="classtf_1_1TFProfObserver.html" class="m-doc">tf::<wbr />TFProfObserver</a> inherits <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> and defines methods to dump the observed thread activities into a format that can be visualized through <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
 
 <span class="c1">// insert tasks into taskflow</span>
 <span class="c1">// ...</span>
-<span class="w">  </span>
+  
 <span class="c1">// create a custom observer</span>
-<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">TFProfObserver</span><span class="o">&gt;</span><span class="w"> </span><span class="n">observer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">make_observer</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">TFProfObserver</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">TFProfObserver</span><span class="o">&gt;</span> <span class="n">observer</span> <span class="o">=</span> <span class="n">executor</span><span class="p">.</span><span class="n">make_observer</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">TFProfObserver</span><span class="o">&gt;</span><span class="p">();</span>
 
 <span class="c1">// run the taskflow</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
 
 <span class="c1">// dump the thread activities to Taskflow Profiler format.</span>
-<span class="n">observer</span><span class="o">-&gt;</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span></pre><p>We recommend using our <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a> python script to observe thread activities instead of the raw function call. The script will turn on environment variables needed for observing all executors in a taskflow program and dump the result to a valid, clean JSON file compatible with the format of <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a>.</p>
+<span class="n">observer</span><span class="o">-&gt;</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre><p>We recommend using our <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a> python script to observe thread activities instead of the raw function call. The script will turn on environment variables needed for observing all executors in a taskflow program and dump the result to a valid, clean JSON file compatible with the format of <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a>.</p>
         <section id="base-classes">
           <h2><a href="#base-classes">Base classes</a></h2>
           <dl class="m-doc">
@@ -88,20 +88,20 @@
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="a6dfa983eb6c3469934852f16545a443c">
-              <span class="m-doc-wrap-bumper">void <a href="#a6dfa983eb6c3469934852f16545a443c" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; ostream) const</span>
+            <dt id="a9f1e839e2a8d3abd0b91ac454f0d078b">
+              <span class="m-doc-wrap-bumper">void <a href="#a9f1e839e2a8d3abd0b91ac454f0d078b" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; ostream) const</span>
             </dt>
             <dd>dumps the timelines into a <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a> format through an output stream</dd>
-            <dt id="ac28e50b0ca920e39182f0cd87c8097ad">
-              <span class="m-doc-wrap-bumper">auto <a href="#ac28e50b0ca920e39182f0cd87c8097ad" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap">) const -&gt; <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a></span>
+            <dt id="a59e82cb3f9b0ada38aa1ddea14f14d02">
+              <span class="m-doc-wrap-bumper">auto <a href="#a59e82cb3f9b0ada38aa1ddea14f14d02" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap">) const -&gt; <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a></span>
             </dt>
             <dd>dumps the timelines into a JSON string</dd>
             <dt id="a5e1f63034a96a5a79cef6da412efd203">
               <span class="m-doc-wrap-bumper">void <a href="#a5e1f63034a96a5a79cef6da412efd203" class="m-doc-self">clear</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
             <dd>clears the timeline data</dd>
-            <dt id="a602624ab65f58b703300906f52ba71b5">
-              <span class="m-doc-wrap-bumper">auto <a href="#a602624ab65f58b703300906f52ba71b5" class="m-doc-self">num_tasks</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            <dt id="a8b3b0bee8762af654cfebd2bb2ee98ed">
+              <span class="m-doc-wrap-bumper">auto <a href="#a8b3b0bee8762af654cfebd2bb2ee98ed" class="m-doc-self">num_tasks</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>queries the number of tasks observed</dd>
           </dl>
@@ -110,26 +110,26 @@
           <h2><a href="#pri-methods">Private functions</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#ab42d03129d93512aea971c90709d4884" class="m-doc">set_up</a>(</span><span class="m-doc-wrap">size_t num_workers) overridefinal <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper">void <a href="#aa030d8154dd03aea3b8fa8ce42e1151b" class="m-doc">set_up</a>(</span><span class="m-doc-wrap">size_t num_workers) <span class="m-label m-flat m-warning">final</span></span>
             </dt>
             <dd>constructor-like method to call when the executor observer is fully created</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#ab9035cde2d5b2118102069f3fae81a87" class="m-doc">on_entry</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
-              <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) overridefinal <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper">void <a href="#a5debfce27f7e012d22872c134b261c63" class="m-doc">on_entry</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
+              <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) <span class="m-label m-flat m-warning">final</span></span>
             </dt>
             <dd>method to call before a worker thread executes a closure</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a6cd407cc622b0a508526ed75cf249725" class="m-doc">on_exit</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
-              <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) overridefinal <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper">void <a href="#af3a1630b5b1db5341a239a5d4c12c891" class="m-doc">on_exit</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
+              <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) <span class="m-label m-flat m-warning">final</span></span>
             </dt>
             <dd>method to call after a worker thread executed a closure</dd>
           </dl>
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="ab42d03129d93512aea971c90709d4884"><div>
+          <section class="m-doc-details" id="aa030d8154dd03aea3b8fa8ce42e1151b"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />TFProfObserver::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab42d03129d93512aea971c90709d4884" class="m-doc-self">set_up</a>(</span><span class="m-doc-wrap">size_t num_workers) overridefinal <span class="m-label m-warning">virtual</span> <span class="m-label m-danger">private</span></span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />TFProfObserver::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa030d8154dd03aea3b8fa8ce42e1151b" class="m-doc-self">set_up</a>(</span><span class="m-doc-wrap">size_t num_workers) <span class="m-label m-warning">final</span> <span class="m-label m-danger">private</span></span></span>
             </h3>
             <p>constructor-like method to call when the executor observer is fully created</p>
             <table class="m-table m-fullwidth m-flat">
@@ -144,10 +144,10 @@
               </tbody>
             </table>
           </div></section>
-          <section class="m-doc-details" id="ab9035cde2d5b2118102069f3fae81a87"><div>
+          <section class="m-doc-details" id="a5debfce27f7e012d22872c134b261c63"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />TFProfObserver::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab9035cde2d5b2118102069f3fae81a87" class="m-doc-self">on_entry</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
-              <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) overridefinal <span class="m-label m-warning">virtual</span> <span class="m-label m-danger">private</span></span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />TFProfObserver::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a5debfce27f7e012d22872c134b261c63" class="m-doc-self">on_entry</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
+              <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) <span class="m-label m-warning">final</span> <span class="m-label m-danger">private</span></span></span>
             </h3>
             <p>method to call before a worker thread executes a closure</p>
             <table class="m-table m-fullwidth m-flat">
@@ -166,10 +166,10 @@
               </tbody>
             </table>
           </div></section>
-          <section class="m-doc-details" id="a6cd407cc622b0a508526ed75cf249725"><div>
+          <section class="m-doc-details" id="af3a1630b5b1db5341a239a5d4c12c891"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />TFProfObserver::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6cd407cc622b0a508526ed75cf249725" class="m-doc-self">on_exit</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
-              <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) overridefinal <span class="m-label m-warning">virtual</span> <span class="m-label m-danger">private</span></span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />TFProfObserver::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af3a1630b5b1db5341a239a5d4c12c891" class="m-doc-self">on_exit</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
+              <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) <span class="m-label m-warning">final</span> <span class="m-label m-danger">private</span></span></span>
             </h3>
             <p>method to call after a worker thread executed a closure</p>
             <table class="m-table m-fullwidth m-flat">
@@ -233,7 +233,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

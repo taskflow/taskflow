@@ -62,20 +62,20 @@
             </li>
           </ul>
         </nav>
-<p>A <a href="classtf_1_1ChromeObserver.html" class="m-doc">tf::<wbr />ChromeObserver</a> inherits <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> and defines methods to dump the observed thread activities into a format that can be visualized through <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chrome Tracing</a>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+<p>A <a href="classtf_1_1ChromeObserver.html" class="m-doc">tf::<wbr />ChromeObserver</a> inherits <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> and defines methods to dump the observed thread activities into a format that can be visualized through <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chrome Tracing</a>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
 
 <span class="c1">// insert tasks into taskflow</span>
 <span class="c1">// ...</span>
-<span class="w">  </span>
+  
 <span class="c1">// create a custom observer</span>
-<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">ChromeObserver</span><span class="o">&gt;</span><span class="w"> </span><span class="n">observer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">make_observer</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">ChromeObserver</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">ChromeObserver</span><span class="o">&gt;</span> <span class="n">observer</span> <span class="o">=</span> <span class="n">executor</span><span class="p">.</span><span class="n">make_observer</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">ChromeObserver</span><span class="o">&gt;</span><span class="p">();</span>
 
 <span class="c1">// run the taskflow</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
 
 <span class="c1">// dump the thread activities to a chrome-tracing format.</span>
-<span class="n">observer</span><span class="o">-&gt;</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span></pre>
+<span class="n">observer</span><span class="o">-&gt;</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre>
         <section id="base-classes">
           <h2><a href="#base-classes">Base classes</a></h2>
           <dl class="m-doc">
@@ -88,20 +88,20 @@
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="a7cafce047d0f04517408ba8a287bb916">
-              <span class="m-doc-wrap-bumper">void <a href="#a7cafce047d0f04517408ba8a287bb916" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; ostream) const</span>
+            <dt id="a5df3852d8525cabafee696d5f77b3fd7">
+              <span class="m-doc-wrap-bumper">void <a href="#a5df3852d8525cabafee696d5f77b3fd7" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; ostream) const</span>
             </dt>
             <dd>dumps the timelines into a <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chrome Tracing</a> format through an output stream</dd>
-            <dt id="a2618bce37019a3b2748e689929ae16a4">
-              <span class="m-doc-wrap-bumper">auto <a href="#a2618bce37019a3b2748e689929ae16a4" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap">) const -&gt; <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a></span>
+            <dt id="a414d60cee91db1d3924636fcea5f4ea7">
+              <span class="m-doc-wrap-bumper">auto <a href="#a414d60cee91db1d3924636fcea5f4ea7" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap">) const -&gt; <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a></span>
             </dt>
             <dd>dumps the timelines into a <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chrome Tracing</a> format</dd>
             <dt id="a3948e57186155a6934c100447cb9332d">
               <span class="m-doc-wrap-bumper">void <a href="#a3948e57186155a6934c100447cb9332d" class="m-doc-self">clear</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
             <dd>clears the timeline data</dd>
-            <dt id="a3ea948d06f85f847fb88ad88a5fb9870">
-              <span class="m-doc-wrap-bumper">auto <a href="#a3ea948d06f85f847fb88ad88a5fb9870" class="m-doc-self">num_tasks</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            <dt id="a44032b7607de5dd929683739f4df9ef2">
+              <span class="m-doc-wrap-bumper">auto <a href="#a44032b7607de5dd929683739f4df9ef2" class="m-doc-self">num_tasks</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>queries the number of tasks observed</dd>
           </dl>
@@ -110,26 +110,26 @@
           <h2><a href="#pri-methods">Private functions</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a1747f5970e721af7007f6edafbc76282" class="m-doc">set_up</a>(</span><span class="m-doc-wrap">size_t num_workers) overridefinal <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper">void <a href="#aa8d5d9c3d0de7e7006d27079d8eb3888" class="m-doc">set_up</a>(</span><span class="m-doc-wrap">size_t num_workers) <span class="m-label m-flat m-warning">final</span></span>
             </dt>
             <dd>constructor-like method to call when the executor observer is fully created</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a1710f9da5d2d5319ffcf4d008b76636d" class="m-doc">on_entry</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
-              <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) overridefinal <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper">void <a href="#a6fa502ca5ef6bfb9d2168db190125855" class="m-doc">on_entry</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
+              <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) <span class="m-label m-flat m-warning">final</span></span>
             </dt>
             <dd>method to call before a worker thread executes a closure</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a584e391620cda0fa1ccb5b4d4681efa4" class="m-doc">on_exit</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
-              <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) overridefinal <span class="m-label m-flat m-warning">virtual</span></span>
+              <span class="m-doc-wrap-bumper">void <a href="#a62ae8c50814d285d29e50a322461a803" class="m-doc">on_exit</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
+              <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) <span class="m-label m-flat m-warning">final</span></span>
             </dt>
             <dd>method to call after a worker thread executed a closure</dd>
           </dl>
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="a1747f5970e721af7007f6edafbc76282"><div>
+          <section class="m-doc-details" id="aa8d5d9c3d0de7e7006d27079d8eb3888"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />ChromeObserver::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1747f5970e721af7007f6edafbc76282" class="m-doc-self">set_up</a>(</span><span class="m-doc-wrap">size_t num_workers) overridefinal <span class="m-label m-warning">virtual</span> <span class="m-label m-danger">private</span></span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />ChromeObserver::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa8d5d9c3d0de7e7006d27079d8eb3888" class="m-doc-self">set_up</a>(</span><span class="m-doc-wrap">size_t num_workers) <span class="m-label m-warning">final</span> <span class="m-label m-danger">private</span></span></span>
             </h3>
             <p>constructor-like method to call when the executor observer is fully created</p>
             <table class="m-table m-fullwidth m-flat">
@@ -144,10 +144,10 @@
               </tbody>
             </table>
           </div></section>
-          <section class="m-doc-details" id="a1710f9da5d2d5319ffcf4d008b76636d"><div>
+          <section class="m-doc-details" id="a6fa502ca5ef6bfb9d2168db190125855"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />ChromeObserver::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1710f9da5d2d5319ffcf4d008b76636d" class="m-doc-self">on_entry</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
-              <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) overridefinal <span class="m-label m-warning">virtual</span> <span class="m-label m-danger">private</span></span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />ChromeObserver::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6fa502ca5ef6bfb9d2168db190125855" class="m-doc-self">on_entry</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
+              <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) <span class="m-label m-warning">final</span> <span class="m-label m-danger">private</span></span></span>
             </h3>
             <p>method to call before a worker thread executes a closure</p>
             <table class="m-table m-fullwidth m-flat">
@@ -166,10 +166,10 @@
               </tbody>
             </table>
           </div></section>
-          <section class="m-doc-details" id="a584e391620cda0fa1ccb5b4d4681efa4"><div>
+          <section class="m-doc-details" id="a62ae8c50814d285d29e50a322461a803"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />ChromeObserver::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a584e391620cda0fa1ccb5b4d4681efa4" class="m-doc-self">on_exit</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
-              <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) overridefinal <span class="m-label m-warning">virtual</span> <span class="m-label m-danger">private</span></span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />ChromeObserver::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a62ae8c50814d285d29e50a322461a803" class="m-doc-self">on_exit</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a> wv,
+              <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> task_view) <span class="m-label m-warning">final</span> <span class="m-label m-danger">private</span></span></span>
             </h3>
             <p>method to call after a worker thread executed a closure</p>
             <table class="m-table m-fullwidth m-flat">
@@ -233,7 +233,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

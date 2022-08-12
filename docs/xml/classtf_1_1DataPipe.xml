@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
   <compounddef id="classtf_1_1DataPipe" kind="class" language="C++" prot="public">
     <compoundname>tf::DataPipe</compoundname>
+    <includes refid="data__pipeline_8hpp" local="no">data_pipeline.hpp</includes>
     <templateparamlist>
       <param>
         <type>typename</type>
@@ -31,7 +32,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" line="156" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="156" bodyend="-1"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" line="62" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="62" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1DataPipe_1ae5e9dd100a02edb2d560e8a1d516037d" prot="public" static="no">
         <type>Input</type>
@@ -44,7 +45,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" line="157" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="157" bodyend="-1"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" line="63" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="63" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1DataPipe_1a8a99a980f0fa6bc55203cb33f526f007" prot="public" static="no">
         <type>Output</type>
@@ -57,7 +58,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" line="158" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="158" bodyend="-1"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" line="64" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="64" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="friend">
@@ -79,7 +80,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" line="148" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="148" bodyend="-1"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" line="55" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="55" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
@@ -94,7 +95,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" line="219" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="219" bodyend="-1"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" line="112" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="112" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1DataPipe_1a0a91ad80a855658439bb9d9750ae4fc9" prot="private" static="no" mutable="no">
         <type><ref refid="classtf_1_1DataPipe_1a5cc3b76f16379f4cb2ecdef66dee1ba3" kindref="member">callable_t</ref></type>
@@ -107,7 +108,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" line="221" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="221" bodyend="-1"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" line="114" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="114" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -122,7 +123,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" line="163" column="1"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" line="69" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1DataPipe_1a542531895cb9363c6291e0ce9d126974" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -138,41 +139,25 @@
           <declname>callable</declname>
         </param>
         <briefdescription>
-<para>constructs the pipe object </para>        </briefdescription>
+<para>You must use the make_data_pipe function to create a <ref refid="classtf_1_1DataPipe" kindref="compound">DataPipe</ref> object. </para>        </briefdescription>
         <detaileddescription>
-<para><parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>d</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pipe type (<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" kindref="member">tf::PipeType</ref>) </para></parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>callable</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>callable type</para></parameterdescription>
-</parameteritem>
-</parameterlist>
-The constructor constructs a pipe with the given direction (<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref> or <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::PARALLEL</ref>) and the given callable. The callable must take a referenced <ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref> object in the first argument.</para><para><programlisting><codeline><highlight class="normal">Pipe{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">PipeType::SERIAL</ref>,<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;){}}</highlight></codeline>
-</programlisting></para><para>When creating a pipeline, the direction of the first pipe must be serial (<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>). </para>        </detaileddescription>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" line="182" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="182" bodyend="184"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" line="75" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="75" bodyend="77"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1DataPipe_1a441c04d82ab03a18470e1d1e0bd8064f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1DataPipe_1a82ef8e8f06444b251ccfe323facbf67a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" kindref="member">PipeType</ref></type>
         <definition>PipeType tf::DataPipe&lt; Input, Output, C &gt;::type</definition>
-        <argsstring>() const </argsstring>
+        <argsstring>() const</argsstring>
         <name>type</name>
         <briefdescription>
-<para>queries the type of the pipe </para>        </briefdescription>
+<para>queries the type of the data pipe </para>        </briefdescription>
         <detaileddescription>
 <para>Returns the type of the callable. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" line="191" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="191" bodyend="193"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" line="84" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="84" bodyend="86"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1DataPipe_1af7a3c2d313edd443b049e937f8ec8cd8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -184,7 +169,7 @@ The constructor constructs a pipe with the given direction (<ref refid="namespac
           <declname>type</declname>
         </param>
         <briefdescription>
-<para>assigns a new type to the pipe </para>        </briefdescription>
+<para>assigns a new type to the data pipe </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
@@ -197,7 +182,7 @@ The constructor constructs a pipe with the given direction (<ref refid="namespac
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" line="200" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="200" bodyend="202"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" line="93" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="93" bodyend="95"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1DataPipe_1a5931f0ae2db8e00f4ad4c42a26adbeae" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -214,7 +199,7 @@ The constructor constructs a pipe with the given direction (<ref refid="namespac
           <declname>callable</declname>
         </param>
         <briefdescription>
-<para>assigns a new callable to the pipe </para>        </briefdescription>
+<para>assigns a new callable to the data pipe </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
@@ -232,17 +217,29 @@ The constructor constructs a pipe with the given direction (<ref refid="namespac
 <para>a callable object constructible from std::function&lt;void(tf::Pipeflow&amp;)&gt;</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-Assigns a new callable to the pipe with universal forwarding. </para>        </detaileddescription>
+Assigns a new callable to the data pipe with universal forwarding. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" line="213" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="213" bodyend="215"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" line="106" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="106" bodyend="108"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-    </briefdescription>
+<para>class to create a data pipe object for a data pipeline stage </para>    </briefdescription>
     <detaileddescription>
-    </detaileddescription>
-    <location file="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" line="145" column="1" bodyfile="/home/xiongzc/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="145" bodyend="222"/>
+<para>A data pipe represents a stage of a data pipeline. A data pipe can be either <emphasis>parallel</emphasis> direction or <emphasis>serial</emphasis> direction (specified by <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" kindref="member">tf::PipeType</ref>) and is coupled with a callable to invoke by the pipeline scheduler.</para><para>You must call the make_data_type function to create a <ref refid="classtf_1_1DataPipe" kindref="compound">DataPipe</ref> object. The input and output type you give to the make_data_pipe function will be decayed to its original form. The arguments of your lambda can be either a copy or a reference, we will use it by value or by reference as you want.</para><para>Usually your lambda function takes only one argument as input(The first pipe must takes a Pipeflow object to control flow). You can also add an additional pipeflow argument in the lambda function to get token and line position of current pipe.</para><para><programlisting><codeline><highlight class="normal">1:<sp/>tf::make_data_pipe&lt;int,<sp/>std::string&gt;(</highlight></codeline>
+<codeline><highlight class="normal">2:<sp/><sp/><sp/>tf::PipeType::SERIAL,<sp/></highlight></codeline>
+<codeline><highlight class="normal">3:<sp/><sp/><sp/>[](int<sp/>input)<sp/>{return<sp/>std::to_string(input<sp/>+<sp/>100);}</highlight></codeline>
+<codeline><highlight class="normal">4:<sp/>)</highlight></codeline>
+</programlisting></para><para><programlisting><codeline><highlight class="normal">tf::make_data_pipe&lt;int,<sp/>std::string&gt;(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tf::PipeType::SERIAL,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[](int<sp/>input,<sp/>tf::Pipeflow&amp;<sp/>pf)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/>&quot;token:<sp/>&quot;<sp/>&lt;&lt;<sp/>pf.token()<sp/>&lt;&lt;<sp/>std::<sp/>endl;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/>&quot;line:<sp/>&quot;<sp/>&lt;&lt;<sp/>pf.line()<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>return<sp/>std::to_string(input<sp/>+<sp/>100);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">)</highlight></codeline>
+</programlisting></para><para>The pipeflow object is used to query the statistics of a scheduling token in the pipeline, such as pipe, line, and token numbers. </para>    </detaileddescription>
+    <location file="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" line="52" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="52" bodyend="115"/>
     <listofallmembers>
       <member refid="classtf_1_1DataPipe_1a0a91ad80a855658439bb9d9750ae4fc9" prot="private" virt="non-virtual"><scope>tf::DataPipe</scope><name>_callable</name></member>
       <member refid="classtf_1_1DataPipe_1af7e6b232e5d82bd0443b4e4606a3fbea" prot="private" virt="non-virtual"><scope>tf::DataPipe</scope><name>_type</name></member>
@@ -253,7 +250,7 @@ Assigns a new callable to the pipe with universal forwarding. </para>        </d
       <member refid="classtf_1_1DataPipe_1a576c05629fadf8120eb4db27cf28e659" prot="private" virt="non-virtual"><scope>tf::DataPipe</scope><name>DataPipeline</name></member>
       <member refid="classtf_1_1DataPipe_1ae5e9dd100a02edb2d560e8a1d516037d" prot="public" virt="non-virtual"><scope>tf::DataPipe</scope><name>input_t</name></member>
       <member refid="classtf_1_1DataPipe_1a8a99a980f0fa6bc55203cb33f526f007" prot="public" virt="non-virtual"><scope>tf::DataPipe</scope><name>output_t</name></member>
-      <member refid="classtf_1_1DataPipe_1a441c04d82ab03a18470e1d1e0bd8064f" prot="public" virt="non-virtual"><scope>tf::DataPipe</scope><name>type</name></member>
+      <member refid="classtf_1_1DataPipe_1a82ef8e8f06444b251ccfe323facbf67a" prot="public" virt="non-virtual"><scope>tf::DataPipe</scope><name>type</name></member>
       <member refid="classtf_1_1DataPipe_1af7a3c2d313edd443b049e937f8ec8cd8" prot="public" virt="non-virtual"><scope>tf::DataPipe</scope><name>type</name></member>
     </listofallmembers>
   </compounddef>

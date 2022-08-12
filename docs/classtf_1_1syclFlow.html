@@ -77,16 +77,16 @@
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="a1fdcb5980f37a9e93095000eac064c1a">
-              <span class="m-doc-wrap-bumper">auto <a href="#a1fdcb5980f37a9e93095000eac064c1a" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
+            <dt id="a0e33d2d4f26e52a55690d17f77d467b0">
+              <span class="m-doc-wrap-bumper">auto <a href="#a0e33d2d4f26e52a55690d17f77d467b0" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
             </dt>
             <dd>queries the emptiness of the graph</dd>
-            <dt id="ab6f0391f29753764e635b415054b8006">
-              <span class="m-doc-wrap-bumper">auto <a href="#ab6f0391f29753764e635b415054b8006" class="m-doc-self">num_tasks</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            <dt id="aedcc6b3363f98c68762e7fb32ea45406">
+              <span class="m-doc-wrap-bumper">auto <a href="#aedcc6b3363f98c68762e7fb32ea45406" class="m-doc-self">num_tasks</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>queries the number of tasks</dd>
-            <dt id="ab3aeb5ab316d12b3d95f59bf0b268339">
-              <span class="m-doc-wrap-bumper">void <a href="#ab3aeb5ab316d12b3d95f59bf0b268339" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os) const</span>
+            <dt id="a6284f266b5d603fbecd148304c107dc6">
+              <span class="m-doc-wrap-bumper">void <a href="#a6284f266b5d603fbecd148304c107dc6" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os) const</span>
             </dt>
             <dd>dumps the syclFlow graph into a DOT format through an output stream</dd>
             <dt id="a4d07f698f4defa3f8c0600c5c2f64c1c">
@@ -132,7 +132,7 @@
             <dd>creates a copy task that copies typed data from a source to a target memory block</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename... ArgsT&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a3ecb3f10938a01e2c59e00c94296caee" class="m-doc">parallel_for</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) -&gt; <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a></span>
+              <span class="m-doc-wrap-bumper">auto <a href="#ae42b1da441d5696dc589ee9ee89b9deb" class="m-doc">parallel_for</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) -&gt; <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a></span>
             </dt>
             <dd>creates a kernel task</dd>
             <dt>
@@ -157,7 +157,7 @@
             <dd>applies a callable to each index in the range with the step size</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename I, typename C, typename... S&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a89f6e33fd7fa165fc86bca762d099407" class="m-doc">transform</a>(</span><span class="m-doc-wrap">I first,
+              <span class="m-doc-wrap-bumper">auto <a href="#ae278939334a90b6d58d8771e87b2e793" class="m-doc">transform</a>(</span><span class="m-doc-wrap">I first,
               I last,
               C&amp;&amp; callable,
               S... srcs) -&gt; <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a></span>
@@ -224,7 +224,7 @@
             <dd>rebinds the task to a copy task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename... ArgsT&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#a4559b79baf51860e0f8528fbeefb1b46" class="m-doc">parallel_for</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              <span class="m-doc-wrap-bumper">void <a href="#a90c1559f1db6644ce0f06c76659cc735" class="m-doc">parallel_for</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
               ArgsT &amp;&amp; ... args)</span>
             </dt>
             <dd>rebinds the task to a parallel-for kernel task</dd>
@@ -434,12 +434,12 @@
             </table>
 <p>Creates a task that copies <code>count</code> items of type <code>T</code> from a source memory location to a target memory location.</p>
           </div></section>
-          <section class="m-doc-details" id="a3ecb3f10938a01e2c59e00c94296caee"><div>
+          <section class="m-doc-details" id="ae42b1da441d5696dc589ee9ee89b9deb"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename... ArgsT&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3ecb3f10938a01e2c59e00c94296caee" class="m-doc-self">parallel_for</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args)</span></span>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ae42b1da441d5696dc589ee9ee89b9deb" class="m-doc-self">parallel_for</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args)</span></span>
             </h3>
             <p>creates a kernel task</p>
             <table class="m-table m-fullwidth m-flat">
@@ -542,9 +542,9 @@
                 </tr>
               </tfoot>
             </table>
-<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">itr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">first</span><span class="p">;</span><span class="w"> </span><span class="n">itr</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="n">itr</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre>
+<p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">itr</span> <span class="o">=</span> <span class="n">first</span><span class="p">;</span> <span class="n">itr</span> <span class="o">!=</span> <span class="n">last</span><span class="p">;</span> <span class="n">itr</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">);</span>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="a25e8aa7d7efbd05ef11353317174574a"><div>
             <h3>
@@ -600,21 +600,21 @@
               </tfoot>
             </table>
 <p>This method is equivalent to the parallel execution of the following loop on a GPU:</p><pre class="m-code"><span class="c1">// step is positive [first, last)</span>
-<span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">last</span><span class="p">;</span> <span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="p">}</span>
 
 <span class="c1">// step is negative [first, last)</span>
-<span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&gt;</span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre>
+<span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span> <span class="n">i</span><span class="o">&gt;</span><span class="n">last</span><span class="p">;</span> <span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="p">}</span></pre>
           </div></section>
-          <section class="m-doc-details" id="a89f6e33fd7fa165fc86bca762d099407"><div>
+          <section class="m-doc-details" id="ae278939334a90b6d58d8771e87b2e793"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename I, typename C, typename... S&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a89f6e33fd7fa165fc86bca762d099407" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">I first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ae278939334a90b6d58d8771e87b2e793" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">I first,
               I last,
               C&amp;&amp; callable,
               S... srcs)</span></span>
@@ -666,9 +666,9 @@
                 </tr>
               </tfoot>
             </table>
-<p>This method is equivalent to the parallel execution of the following loop on a SYCL device:</p><pre class="m-code"><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">src1</span><span class="o">++</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">src2</span><span class="o">++</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">src3</span><span class="o">++</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre>
+<p>This method is equivalent to the parallel execution of the following loop on a SYCL device:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">first</span><span class="o">++</span> <span class="o">=</span> <span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">src1</span><span class="o">++</span><span class="p">,</span> <span class="o">*</span><span class="n">src2</span><span class="o">++</span><span class="p">,</span> <span class="o">*</span><span class="n">src3</span><span class="o">++</span><span class="p">,</span> <span class="p">...);</span>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="acddd05832e53597ae9d30dc913d422ca"><div>
             <h3>
@@ -727,9 +727,9 @@
                 </tr>
               </tfoot>
             </table>
-<p>This method is equivalent to the parallel execution of the following loop on a SYCL device:</p><pre class="m-code"><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre>
+<p>This method is equivalent to the parallel execution of the following loop on a SYCL device:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="a7a3af92f105114b1095a2cec2ccdffbf"><div>
             <h3>
@@ -742,10 +742,10 @@
               C&amp;&amp; op)</span></span>
             </h3>
             <p>similar to <a href="classtf_1_1syclFlow.html#acddd05832e53597ae9d30dc913d422ca" class="m-doc">tf::<wbr />syclFlow::<wbr />reduce</a> but does not assume any initial value to reduce</p>
-<p>This method is equivalent to the parallel execution of the following loop on a SYCL device:</p><pre class="m-code"><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">;</span><span class="w">  </span><span class="c1">// no initial values partitipcate in the loop</span>
-<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre>
+<p>This method is equivalent to the parallel execution of the following loop on a SYCL device:</p><pre class="m-code"><span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">;</span>  <span class="c1">// no initial values partitipcate in the loop</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+  <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span>
+<span class="p">}</span></pre>
           </div></section>
           <section class="m-doc-details" id="a1b033143bcfd857b45a2c2bad213b769"><div>
             <h3>
@@ -840,16 +840,16 @@
             <p>rebinds the task to a copy task</p>
 <p>Similar to <a href="classtf_1_1syclFlow.html#ac433456f3960028fb12a53018b263aee" class="m-doc">tf::<wbr />syclFlow::<wbr />copy</a> but operates on an existing task.</p>
           </div></section>
-          <section class="m-doc-details" id="a4559b79baf51860e0f8528fbeefb1b46"><div>
+          <section class="m-doc-details" id="a90c1559f1db6644ce0f06c76659cc735"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename... ArgsT&gt;
               </div>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4559b79baf51860e0f8528fbeefb1b46" class="m-doc-self">parallel_for</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
+              <span class="m-doc-wrap-bumper">void tf::<wbr />syclFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a90c1559f1db6644ce0f06c76659cc735" class="m-doc-self">parallel_for</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> task,
               ArgsT &amp;&amp; ... args)</span></span>
             </h3>
             <p>rebinds the task to a parallel-for kernel task</p>
-<p>Similar to <a href="classtf_1_1syclFlow.html#a3ecb3f10938a01e2c59e00c94296caee" class="m-doc">tf::<wbr />syclFlow::<wbr />parallel_for</a> but operates on an existing task.</p>
+<p>Similar to <a href="classtf_1_1syclFlow.html#ae42b1da441d5696dc589ee9ee89b9deb" class="m-doc">tf::<wbr />syclFlow::<wbr />parallel_for</a> but operates on an existing task.</p>
           </div></section>
           <section class="m-doc-details" id="ad0d9d75c49a0d0efe4e026d8c874b598"><div>
             <h3>
@@ -907,7 +907,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.11 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

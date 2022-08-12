@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.11">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
   <compounddef id="SingleTaskSYCL" kind="page">
     <compoundname>SingleTaskSYCL</compoundname>
     <title>Single Task</title>
@@ -15,10 +15,10 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[gpu_variable]<sp/>()<sp/>{<sp/>*gpu_variable<sp/>=<sp/>1;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>one<sp/>kernel<sp/>task<sp/>that<sp/>needs<sp/>access<sp/>to<sp/>gpu_variable</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>kernel1<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1a3ecb3f10938a01e2c59e00c94296caee" kindref="member">parallel_for</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>kernel1<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" kindref="member">parallel_for</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>sycl::range&lt;1&gt;(N),<sp/>[=]<sp/>(sycl::id&lt;1&gt;<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">)<sp/>{<sp/>data1[id]<sp/>*=<sp/>gpu_variable;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>set_par.<ref refid="classtf_1_1cudaTask_1acd60931b507f40db2eccddc351f5f6c4" kindref="member">precede</ref>(kernel1);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>set_par.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(kernel1);</highlight></codeline>
 <codeline><highlight class="normal">},<sp/>queue);</highlight></codeline>
 </programlisting> </para></sect1>
     </detaileddescription>
