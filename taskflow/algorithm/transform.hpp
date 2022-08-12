@@ -104,6 +104,7 @@ Task FlowBuilder::transform(B first1, E last1, O d_first, C c) {
       // tail optimization
       if(r <= chunk_size || w == W-1) {
         loop(); 
+        break;
       }
       else {
         sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
@@ -216,6 +217,7 @@ Task FlowBuilder::transform(B1 first1, E1 last1, B2 first2, O d_first, C c) {
       // tail optimization
       if(r <= chunk_size || w == W-1) {
         loop(); 
+        break;
       }
       else {
         sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);

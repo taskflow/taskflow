@@ -445,7 +445,6 @@ class TFProfObserver : public ObserverInterface {
 
   /** @private overall task summary */
   struct TaskSummary {
-    TaskType type;
     size_t count {0};
     size_t total_span {0};
     size_t min_span;
@@ -456,16 +455,18 @@ class TFProfObserver : public ObserverInterface {
 
   /** @private worker summary at a level */
   struct WorkerSummary {
+
     size_t id;
     size_t level;
     size_t count {0};
-    size_t total_delay {0};
-    size_t min_delay{0};
-    size_t max_delay{0};
-    
-    float avg_delay() const {
-      return count < 2 ? 0.0f : total_delay * 1.0f / (count-1); 
-    }
+    size_t total_span {0};
+    size_t min_span{0};
+    size_t max_span{0};
+
+    std::array<TaskSummary, TASK_TYPES.size()> tsum;
+
+    float avg_span() const { return total_span * 1.0f / count; }
+    //return count < 2 ? 0.0f : total_delay * 1.0f / (count-1); 
   };
   
   /** @private */
@@ -532,7 +533,7 @@ class TFProfObserver : public ObserverInterface {
 inline void TFProfObserver::Summary::dump_tsum(std::ostream& os) const {
 
   // task summary
-  size_t type_w{15}, count_w{5}, time_w{9}, avg_w{8}, min_w{8}, max_w{8};
+  size_t type_w{10}, count_w{5}, time_w{9}, avg_w{8}, min_w{8}, max_w{8};
 
   std::for_each(tsum.begin(), tsum.end(), [&](const auto& i){
     if(i.count == 0) return;
@@ -585,7 +586,7 @@ inline void TFProfObserver::Summary::dump_tsum(std::ostream& os) const {
 inline void TFProfObserver::Summary::dump_wsum(std::ostream& os) const {
   
   // task summary
-  size_t w_w{15}, l_w{5}, c_w{5}, d_w{10}, avg_w{8}, min_w{8}, max_w{8};
+  size_t w_w{10}, t_w{10}, l_w{5}, c_w{5}, d_w{9}, avg_w{8}, min_w{8}, max_w{8};
 
   std::for_each(wsum.begin(), wsum.end(), [&](const auto& i){
     if(i.count == 0) return;
@@ -599,45 +600,73 @@ inline void TFProfObserver::Summary::dump_wsum(std::ostream& os) const {
   
   std::for_each(wsum.begin(), wsum.end(), [&](const auto& i){
     if(i.count == 0) return;
-    d_w = std::max(d_w, std::to_string(i.total_delay).size());
+    d_w = std::max(d_w, std::to_string(i.total_span).size());
   });
   
   std::for_each(wsum.begin(), wsum.end(), [&](const auto& i){
     if(i.count == 0) return;
-    avg_w = std::max(avg_w, std::to_string(i.avg_delay()).size());
+    avg_w = std::max(avg_w, std::to_string(i.avg_span()).size());
   });
   
   std::for_each(wsum.begin(), wsum.end(), [&](const auto& i){
     if(i.count == 0) return;
-    min_w = std::max(min_w, std::to_string(i.min_delay).size());
+    min_w = std::max(min_w, std::to_string(i.min_span).size());
   });
   
   std::for_each(wsum.begin(), wsum.end(), [&](const auto& i){
     if(i.count == 0) return;
-    max_w = std::max(max_w, std::to_string(i.max_delay).size());
+    max_w = std::max(max_w, std::to_string(i.max_span).size());
   });
   
   os << std::setw(w_w) << "-Worker-" 
      << std::setw(l_w+2) << "Level"
-     << std::setw(c_w+2) << "Tasks"
-     << std::setw(d_w+2) << "Delay (ns)"
-     << std::setw(avg_w+2) << "Avg (ns)"
-     << std::setw(min_w+2) << "Min (ns)"
-     << std::setw(max_w+2) << "Max (ns)"
+     << std::setw(t_w) << "Task"
+     << std::setw(c_w+2) << "Count"
+     << std::setw(d_w+2) << "Time (us)"
+     << std::setw(avg_w+2) << "Avg (us)"
+     << std::setw(min_w+2) << "Min (us)"
+     << std::setw(max_w+2) << "Max (us)"
      << '\n';
 
-  for(const auto & ws : wsum) {
+  for(const auto& ws : wsum) {
+
     if(ws.count == 0) {
       continue;
     }
+
     os << std::setw(w_w) << ws.id
-       << std::setw(l_w+2) << ws.level
-       << std::setw(c_w+2) << ws.count
-       << std::setw(d_w+2) << ws.total_delay
-       << std::setw(avg_w+2) << std::to_string(ws.avg_delay())
-       << std::setw(min_w+2) << ws.min_delay
-       << std::setw(max_w+2) << ws.max_delay
+       << std::setw(l_w+2) << ws.level;
+    
+    bool first = true;
+    for(size_t i=0; i<TASK_TYPES.size(); i++) {
+
+      if(ws.tsum[i].count == 0) {
+        continue;
+      }
+
+      os << (first ? std::setw(t_w) : std::setw(w_w + l_w + 2 + t_w));
+      first = false;
+
+      os << to_string(TASK_TYPES[i])
+         << std::setw(c_w+2) << ws.tsum[i].count
+         << std::setw(d_w+2) << ws.tsum[i].total_span
+         << std::setw(avg_w+2) << std::to_string(ws.tsum[i].avg_span())
+         << std::setw(min_w+2) << ws.tsum[i].min_span
+         << std::setw(max_w+2) << ws.tsum[i].max_span
+         << '\n';
+    }
+
+    // per-worker summary
+    os << std::setw(w_w + l_w + t_w + c_w + 4) << ws.count
+       << std::setw(d_w+2) << ws.total_span
+       << std::setw(avg_w+2) << std::to_string(ws.avg_span())
+       << std::setw(min_w+2) << ws.min_span
+       << std::setw(max_w+2) << ws.max_span
        << '\n';
+    
+    //for(size_t j=0; j<w_w+l_w+t_w+4; j++) os << ' ';
+    //for(size_t j=0; j<c_w+d_w+avg_w+min_w+max_w+8; j++) os << '-';
+    //os <<'\n';
   }
 }
 
@@ -823,15 +852,26 @@ inline void TFProfObserver::summary(std::ostream& os) const {
         x.min_span = (x.count == 1) ? t : std::min(t, x.min_span);
         x.max_span = (x.count == 1) ? t : std::max(t, x.max_span);
 
-        // update the inter-task delay
-        if(i) {
-          size_t d = duration_cast<nanoseconds>(
-            s.beg - _timeline.segments[w][l][i-1].end
-          ).count();
-          ws.total_delay += d;
-          ws.min_delay = (i == 1) ? d : std::min(ws.min_delay, d);
-          ws.max_delay = (i == 1) ? d : std::max(ws.max_delay, d);
-        }
+        // update the worker summary
+        ws.total_span += t;
+        ws.min_span = (i == 0) ? t : std::min(t, ws.min_span);
+        ws.max_span = (i == 0) ? t : std::max(t, ws.max_span);
+
+        auto&y = ws.tsum[static_cast<int>(s.type)];
+        y.count += 1;
+        y.total_span += t;
+        y.min_span = (y.count == 1) ? t : std::min(t, y.min_span);
+        y.max_span = (y.count == 1) ? t : std::max(t, y.max_span);
+        
+        // update the delay
+        //if(i) {
+        //  size_t d = duration_cast<nanoseconds>(
+        //    s.beg - _timeline.segments[w][l][i-1].end
+        //  ).count();
+        //  ws.total_delay += d;
+        //  ws.min_delay = (i == 1) ? d : std::min(ws.min_delay, d);
+        //  ws.max_delay = (i == 1) ? d : std::max(ws.max_delay, d);
+        //}
       }
       summary.wsum.push_back(ws);
     }

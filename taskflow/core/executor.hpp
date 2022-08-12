@@ -2071,7 +2071,7 @@ void Subflow::_named_silent_async(
 
   node->_name = name;
   node->_topology = _parent->_topology;
-  node->_parent = _parent;
+  node->_parent = _parent; 
 
   _executor._schedule(w, node);
 }
