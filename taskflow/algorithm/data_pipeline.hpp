@@ -1,8 +1,6 @@
 #pragma once
 
-#include "../taskflow.hpp"
 #include "pipeline.hpp"
-#include "../utility/traits.hpp"
 
 
 namespace tf {
@@ -337,7 +335,7 @@ class DataPipeline {
   std::vector<Pipeflow> _pipeflows;
   using variant_t = unique_variant_t<std::variant<std::conditional_t<std::is_void_v<typename Ps::output_t>, std::monostate, std::decay_t<typename Ps::output_t>>...>>;
   // std::vector<variant_t> _buffer;
-  alignas (TF_CACHELINE_SIZE << 1) std::vector<padded_t<variant_t> > _buffer;
+  std::vector<padded_t<variant_t> > _buffer;
 
   template <size_t... I>
   auto _gen_meta(std::tuple<Ps...>&&, std::index_sequence<I...>);
