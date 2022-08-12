@@ -759,8 +759,8 @@ TEST_CASE("MultiCond.Types") {
   static_assert(tf::is_multi_condition_task_v<decltype(explicit_mc)>);
   static_assert(tf::is_multi_condition_task_v<decltype(implicit_mc)>);
 
-  REQUIRE(explicit_task.type() == tf::TaskType::MULTI_CONDITION);
-  REQUIRE(implicit_task.type() == tf::TaskType::MULTI_CONDITION);
+  REQUIRE(explicit_task.type() == tf::TaskType::CONDITION);
+  REQUIRE(implicit_task.type() == tf::TaskType::CONDITION);
 }
 
 // ----------------------------------------------------------------------------

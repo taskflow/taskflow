@@ -467,11 +467,21 @@ class Executor {
     @tparam P predicate type
     @param predicate a boolean predicate to indicate when to stop the loop
 
-    The method keeps running the caller worker in the work-stealing loop
+    The method keeps the caller worker in the work-stealing loop such that it
+    does not block (e.g., causing deadlock with other blocking workers) 
     until the stop predicate becomes true.
 
+    @code{.cpp}
+    taskflow.emplace([&](){
+      std::future<void> fu = std::async([](){ std::sleep(100s); });
+      executor.loop_until([](){
+        return fu.wait_for(std::chrono::seconds(0)) == future_status::ready;
+      });
+    });
+    @endcode
+
     @attention
-    You must call tf::Executor::run_and_wait from a worker of the calling executor
+    You must call tf::Executor::loop_until from a worker of the calling executor
     or an exception will be thrown.
     */
     template <typename P>
@@ -2061,7 +2071,7 @@ void Subflow::_named_silent_async(
 
   node->_name = name;
   node->_topology = _parent->_topology;
-  node->_parent = _parent;
+  node->_parent = _parent; 
 
   _executor._schedule(w, node);
 }

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaCapturingBase" kind="class" language="C++" prot="private">
     <compoundname>tf::cudaCapturingBase</compoundname>
     <derivedcompoundref refid="classtf_1_1cudaLinearCapturing" prot="public" virt="non-virtual">tf::cudaLinearCapturing</derivedcompoundref>
@@ -7,7 +7,7 @@
     <derivedcompoundref refid="classtf_1_1cudaSequentialCapturing" prot="public" virt="non-virtual">tf::cudaSequentialCapturing</derivedcompoundref>
       <sectiondef kind="protected-func">
       <memberdef kind="function" id="classtf_1_1cudaCapturingBase_1ab970a4a344cca5be7e479e09f2599194" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; cudaNode * &gt;</type>
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; cudaNode * &gt;</type>
         <definition>std::vector&lt; cudaNode * &gt; tf::cudaCapturingBase::_toposort</definition>
         <argsstring>(cudaGraph &amp;)</argsstring>
         <name>_toposort</name>
@@ -21,10 +21,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="25" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="30" bodyend="65"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="25" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="30" bodyend="65"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaCapturingBase_1aa33d24eb535b83f0719c3f9770328a37" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; cudaNode * &gt; &gt;</type>
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; cudaNode * &gt; &gt;</type>
         <definition>std::vector&lt; std::vector&lt; cudaNode * &gt; &gt; tf::cudaCapturingBase::_levelize</definition>
         <argsstring>(cudaGraph &amp;)</argsstring>
         <name>_levelize</name>
@@ -38,37 +38,38 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="26" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="69" bodyend="119"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="26" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="69" bodyend="119"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class to provide helper common methods for optimization algorithms </para>    </briefdescription>
+<para>class to provide helper common methods for optimization algorithms </para>
+    </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="25">
+      <node id="2">
         <label>tf::cudaLinearCapturing</label>
         <link refid="classtf_1_1cudaLinearCapturing"/>
-        <childnode refid="24" relation="public-inheritance">
+        <childnode refid="1" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="26">
+      <node id="3">
         <label>tf::cudaRoundRobinCapturing</label>
         <link refid="classtf_1_1cudaRoundRobinCapturing"/>
-        <childnode refid="24" relation="public-inheritance">
+        <childnode refid="1" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="24">
+      <node id="1">
         <label>tf::cudaCapturingBase</label>
       </node>
-      <node id="27">
+      <node id="4">
         <label>tf::cudaSequentialCapturing</label>
         <link refid="classtf_1_1cudaSequentialCapturing"/>
-        <childnode refid="24" relation="public-inheritance">
+        <childnode refid="1" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="21" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="21" bodyend="27"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="21" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="21" bodyend="27"/>
     <listofallmembers>
       <member refid="classtf_1_1cudaCapturingBase_1aa33d24eb535b83f0719c3f9770328a37" prot="protected" virt="non-virtual"><scope>tf::cudaCapturingBase</scope><name>_levelize</name></member>
       <member refid="classtf_1_1cudaCapturingBase_1ab970a4a344cca5be7e479e09f2599194" prot="protected" virt="non-virtual"><scope>tf::cudaCapturingBase</scope><name>_toposort</name></member>

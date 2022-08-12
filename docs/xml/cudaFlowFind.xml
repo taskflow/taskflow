@@ -1,30 +1,56 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="cudaFlowFind" kind="page">
     <compoundname>cudaFlowFind</compoundname>
     <title>Parallel Find</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Include the Header</name>
+        <reference>cudaFlowFind_1CUDAParallelFindIncludeTheHeader</reference>
+    </tocsect>
+      <tocsect>
+        <name>Find an Element in a Range</name>
+        <reference>cudaFlowFind_1cudaFlowFindItems</reference>
+    </tocsect>
+      <tocsect>
+        <name>Find the Minimum Element in a Range</name>
+        <reference>cudaFlowFind_1cudaFlowFindMinItems</reference>
+    </tocsect>
+      <tocsect>
+        <name>Find the Maximum Element in a Range</name>
+        <reference>cudaFlowFind_1cudaFlowFindMaxItems</reference>
+    </tocsect>
+      <tocsect>
+        <name>Miscellaneous Items</name>
+        <reference>cudaFlowFind_1cudaFlowFindMiscellaneousItems</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow provides standalone template methods for finding elements in the given ranges using CUDA.</para><sect1 id="cudaFlowFind_1CUDAParallelFindIncludeTheHeader">
+<para>Taskflow provides standalone template methods for finding elements in the given ranges using CUDA.</para>
+<sect1 id="cudaFlowFind_1CUDAParallelFindIncludeTheHeader">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/find.hpp</computeroutput>, for creating a parallel-find task.</para></sect1>
+<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/find.hpp</computeroutput>, for creating a parallel-find task.</para>
+</sect1>
 <sect1 id="cudaFlowFind_1cudaFlowFindItems">
 <title>Find an Element in a Range</title>
-<para><ref refid="classtf_1_1cudaFlow_1a4812f4eccece9217da13dbc09992670c" kindref="member">tf::cudaFlow::find_if</ref> finds the index of the first element in the range <computeroutput>[first, last)</computeroutput> that satisfies the given criteria. This is equivalent to the parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>idx<sp/>=<sp/>0;</highlight></codeline>
+<para><ref refid="classtf_1_1cudaFlow_1a4812f4eccece9217da13dbc09992670c" kindref="member">tf::cudaFlow::find_if</ref> finds the index of the first element in the range <computeroutput>[first, last)</computeroutput> that satisfies the given criteria. This is equivalent to the parallel execution of the following loop:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>idx<sp/>=<sp/>0;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>first<sp/>!=<sp/>last;<sp/>++first,<sp/>++idx)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(p(*first))<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>idx;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>idx;</highlight></codeline>
-</programlisting></para><para>If no such an element is found, the size of the range is returned. The following code finds the index of the first element that is dividable by <computeroutput>17</computeroutput> over a range of one million elements.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+</programlisting></para>
+<para>If no such an element is found, the size of the range is returned. The following code finds the index of the first element that is dividable by <computeroutput>17</computeroutput> over a range of one million elements.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>vec<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>idx<sp/>=<sp/>tf::cuda_malloc_shared&lt;unsigned&gt;(1);<sp/><sp/></highlight><highlight class="comment">//<sp/>index</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>vec[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>vec[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>finds<sp/>the<sp/>index<sp/>of<sp/>the<sp/>first<sp/>element<sp/>that<sp/>is<sp/>a<sp/>multiple<sp/>of<sp/>17</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cudaflow;</highlight></codeline>
@@ -41,10 +67,12 @@
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>deletes<sp/>the<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(vec);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(idx);</highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+</sect1>
 <sect1 id="cudaFlowFind_1cudaFlowFindMinItems">
 <title>Find the Minimum Element in a Range</title>
-<para><ref refid="classtf_1_1cudaFlow_1a63d18c5a42bb351fda43305258f51262" kindref="member">tf::cudaFlow::min_element</ref> finds the index of the minimum element in the given range <computeroutput>[first, last)</computeroutput> using the given comparison function object. This is equivalent to a parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">if</highlight><highlight class="normal">(first<sp/>==<sp/>last)<sp/>{</highlight></codeline>
+<para><ref refid="classtf_1_1cudaFlow_1a63d18c5a42bb351fda43305258f51262" kindref="member">tf::cudaFlow::min_element</ref> finds the index of the minimum element in the given range <computeroutput>[first, last)</computeroutput> using the given comparison function object. This is equivalent to a parallel execution of the following loop:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">if</highlight><highlight class="normal">(first<sp/>==<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>smallest<sp/>=<sp/>first;</highlight></codeline>
@@ -53,13 +81,15 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>smallest<sp/>=<sp/>first;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>smallest);</highlight></codeline>
-</programlisting></para><para>The following code finds the index of the minimum element in a range of one millions elements.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>smallest);</highlight></codeline>
+</programlisting></para>
+<para>The following code finds the index of the minimum element in a range of one millions elements.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>vec<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>idx<sp/>=<sp/>tf::cuda_malloc_shared&lt;unsigned&gt;(1);<sp/><sp/></highlight><highlight class="comment">//<sp/>index</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>vec[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>vec[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>finds<sp/>the<sp/>minimum<sp/>element<sp/>using<sp/>the<sp/>less<sp/>comparator</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cudaflow;</highlight></codeline>
@@ -69,15 +99,17 @@
 <codeline><highlight class="normal">cudaflow.<ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">offload</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">assert(vec[*idx]<sp/>==<sp/>*std::min_element(vec,<sp/>vec+N,<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>{}));</highlight></codeline>
+<codeline><highlight class="normal">assert(vec[*idx]<sp/>==<sp/>*std::min_element(vec,<sp/>vec+N,<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>{}));</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>deletes<sp/>the<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(vec);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(idx);</highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+</sect1>
 <sect1 id="cudaFlowFind_1cudaFlowFindMaxItems">
 <title>Find the Maximum Element in a Range</title>
-<para>Similar to <ref refid="classtf_1_1cudaFlow_1a63d18c5a42bb351fda43305258f51262" kindref="member">tf::cudaFlow::min_element</ref>, <ref refid="classtf_1_1cudaFlow_1a7c99f8f1a961a225e2ea708afaa34905" kindref="member">tf::cudaFlow::max_element</ref> finds the index of the maximum element in the given range <computeroutput>[first, last)</computeroutput> using the given comparison function object. This is equivalent to a parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">if</highlight><highlight class="normal">(first<sp/>==<sp/>last)<sp/>{</highlight></codeline>
+<para>Similar to <ref refid="classtf_1_1cudaFlow_1a63d18c5a42bb351fda43305258f51262" kindref="member">tf::cudaFlow::min_element</ref>, <ref refid="classtf_1_1cudaFlow_1a7c99f8f1a961a225e2ea708afaa34905" kindref="member">tf::cudaFlow::max_element</ref> finds the index of the maximum element in the given range <computeroutput>[first, last)</computeroutput> using the given comparison function object. This is equivalent to a parallel execution of the following loop:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">if</highlight><highlight class="normal">(first<sp/>==<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>largest<sp/>=<sp/>first;</highlight></codeline>
@@ -86,13 +118,15 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>largest<sp/>=<sp/>first;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>largest);</highlight></codeline>
-</programlisting></para><para>The following code finds the index of the maximum element in a range of one millions elements.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>largest);</highlight></codeline>
+</programlisting></para>
+<para>The following code finds the index of the maximum element in a range of one millions elements.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>vec<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>idx<sp/>=<sp/>tf::cuda_malloc_shared&lt;unsigned&gt;(1);<sp/><sp/></highlight><highlight class="comment">//<sp/>index</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>vec[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>vec[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>finds<sp/>the<sp/>maximum<sp/>element<sp/>using<sp/>the<sp/>less<sp/>comparator</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cudaflow;</highlight></codeline>
@@ -102,15 +136,17 @@
 <codeline><highlight class="normal">cudaflow.<ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">offload</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">assert(vec[*idx]<sp/>==<sp/>*std::max_element(vec,<sp/>vec+N,<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>{}));</highlight></codeline>
+<codeline><highlight class="normal">assert(vec[*idx]<sp/>==<sp/>*std::max_element(vec,<sp/>vec+N,<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>{}));</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>deletes<sp/>the<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(vec);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(idx);</highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+</sect1>
 <sect1 id="cudaFlowFind_1cudaFlowFindMiscellaneousItems">
 <title>Miscellaneous Items</title>
-<para>Parallel find algorithms are also available in <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> with the same API. </para></sect1>
+<para>Parallel find algorithms are also available in <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> with the same API. </para>
+</sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>
