@@ -217,9 +217,30 @@ for(size_t n=0; n<1000; n++) {
 executor.run(taskflow).wait();
 @endcode
 
+<<<<<<< HEAD
 @attention
 You must call tf::Executor::run_and_wait from a worker of the calling executor
 or an exception will be thrown.
+=======
+Similar to tf::Executor::run_and_wait, the method tf::Executor::loop_until
+is another variant that keeps the calling worker in the work-stealing loop 
+until the given predicate becomes true. 
+You can use this method to prevent blocking a worker from doing useful things,
+such as being blocked when submitting an outstanding task (e.g., a GPU operation).
+
+@code{.cpp}
+taskflow.emplace([&](){
+  auto fu = std::async([](){ std::sleep(100s); });
+  executor.loop_until([](){
+    return fu.wait_for(std::chrono::seconds(0)) == future_status::ready;
+  });
+});
+@endcode
+
+@attention
+You must call tf::Executor::loop_until and tf::Executor:run_and_wait
+from a worker of the calling executor or an exception will be thrown.
+>>>>>>> 0dc0291de3cf926fe81561f8073ed43718146077
 
 @section ThreadSafety Touch an Executor from Multiple Threads
 
@@ -395,7 +416,11 @@ However, the @em ready message always appears before the corresponding task mess
 (e.g., numbers)
 and then the  @em finished message.
 
+<<<<<<< HEAD
 @section ChangeWorkerProperty Change the Worker Property
+=======
+@section ModifyWorkerProperty Modify Worker Property
+>>>>>>> 0dc0291de3cf926fe81561f8073ed43718146077
 
 You can change the property of each worker thread from its executor,
 such as assigning thread-processor affinity before the worker enters the scheduler loop
@@ -438,8 +463,13 @@ worker 1 leaves the scheduler loop
 
 When you create an executor, it spawns a set of worker threads to run tasks
 using a work-stealing algorithm.
+<<<<<<< HEAD
 Executor logic of the scheduler and its interaction with each spawned worker 
 via tf::WorkerInterface is given below:
+=======
+The interaction with each spawned worker 
+using tf::WorkerInterface is given below:
+>>>>>>> 0dc0291de3cf926fe81561f8073ed43718146077
 
 @code{.cpp}
 for(size_t n=0; n<num_workers; n++) {

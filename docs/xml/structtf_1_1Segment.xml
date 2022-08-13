@@ -57,6 +57,50 @@
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
+      <memberdef kind="function" id="structtf_1_1Segment_1a24021971938c984d134c29a44b5b6093" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Archiver</type>
+          </param>
+        </templateparamlist>
+        <type>auto</type>
+        <definition>auto tf::Segment::save</definition>
+        <argsstring>(Archiver &amp;ar) const</argsstring>
+        <name>save</name>
+        <param>
+          <type>Archiver &amp;</type>
+          <declname>ar</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/phrygiangates/taskflow/taskflow/core/observer.hpp" line="34" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/observer.hpp" bodystart="34" bodyend="36"/>
+      </memberdef>
+      <memberdef kind="function" id="structtf_1_1Segment_1a74c1671a8ec913fac3a675bb4c5c9be3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Archiver</type>
+          </param>
+        </templateparamlist>
+        <type>auto</type>
+        <definition>auto tf::Segment::load</definition>
+        <argsstring>(Archiver &amp;ar)</argsstring>
+        <name>load</name>
+        <param>
+          <type>Archiver &amp;</type>
+          <declname>ar</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/phrygiangates/taskflow/taskflow/core/observer.hpp" line="39" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/observer.hpp" bodystart="39" bodyend="41"/>
+      </memberdef>
       <memberdef kind="function" id="structtf_1_1Segment_1ad6393c5cf90f07b0eda6bf0c0321322d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::Segment::Segment</definition>
@@ -118,20 +162,20 @@
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
-      <node id="205">
+      <node id="201">
         <label>std::chrono::time_point&lt; std::chrono::steady_clock &gt;</label>
       </node>
-      <node id="204">
+      <node id="200">
         <label>tf::Segment</label>
-        <childnode refid="205" relation="usage">
+        <childnode refid="201" relation="usage">
           <edgelabel>end</edgelabel>
           <edgelabel>beg</edgelabel>
         </childnode>
-        <childnode refid="206" relation="usage">
+        <childnode refid="202" relation="usage">
           <edgelabel>name</edgelabel>
         </childnode>
       </node>
-      <node id="206">
+      <node id="202">
         <label>std::string</label>
       </node>
     </collaborationgraph>
@@ -139,7 +183,9 @@
     <listofallmembers>
       <member refid="structtf_1_1Segment_1aad42f04f26507aa8ad977627774ee2b4" prot="public" virt="non-virtual"><scope>tf::Segment</scope><name>beg</name></member>
       <member refid="structtf_1_1Segment_1ae7558748ed58c8e274539295e6c6d770" prot="public" virt="non-virtual"><scope>tf::Segment</scope><name>end</name></member>
+      <member refid="structtf_1_1Segment_1a74c1671a8ec913fac3a675bb4c5c9be3" prot="public" virt="non-virtual"><scope>tf::Segment</scope><name>load</name></member>
       <member refid="structtf_1_1Segment_1a3e259f6da83dcf714ec785aa1a3d14bd" prot="public" virt="non-virtual"><scope>tf::Segment</scope><name>name</name></member>
+      <member refid="structtf_1_1Segment_1a24021971938c984d134c29a44b5b6093" prot="public" virt="non-virtual"><scope>tf::Segment</scope><name>save</name></member>
       <member refid="structtf_1_1Segment_1ad6393c5cf90f07b0eda6bf0c0321322d" prot="public" virt="non-virtual"><scope>tf::Segment</scope><name>Segment</name></member>
       <member refid="structtf_1_1Segment_1aab1d1ddd792d5b7b312ad14532034054" prot="public" virt="non-virtual"><scope>tf::Segment</scope><name>Segment</name></member>
       <member refid="structtf_1_1Segment_1a336d5825032b4b9085f1e78a1fa26341" prot="public" virt="non-virtual"><scope>tf::Segment</scope><name>span</name></member>

@@ -75,7 +75,7 @@
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
 
 <span class="c1">// dump the thread activities to Taskflow Profiler format.</span>
-<span class="n">observer</span><span class="o">-&gt;</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre><p>We recommend using our <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a> python script to observe thread activities instead of the raw function call. The script will turn on environment variables needed for observing all executors in a taskflow program and dump the result to a valid, clean JSON file compatible with the format of <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a>.</p>
+<span class="n">observer</span><span class="o">-&gt;</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre>
         <section id="base-classes">
           <h2><a href="#base-classes">Base classes</a></h2>
           <dl class="m-doc">
@@ -96,6 +96,14 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a59e82cb3f9b0ada38aa1ddea14f14d02" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap">) const -&gt; <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a></span>
             </dt>
             <dd>dumps the timelines into a JSON string</dd>
+            <dt id="a6102cedbaf2e40f8b8ff916827297198">
+              <span class="m-doc-wrap-bumper">void <a href="#a6102cedbaf2e40f8b8ff916827297198" class="m-doc-self">summary</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; ostream) const</span>
+            </dt>
+            <dd>shows the summary report through an output stream</dd>
+            <dt id="a6f12a927a328bd594cf6c3c3a6bfe992">
+              <span class="m-doc-wrap-bumper">auto <a href="#a6f12a927a328bd594cf6c3c3a6bfe992" class="m-doc-self">summary</a>(</span><span class="m-doc-wrap">) const -&gt; <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a></span>
+            </dt>
+            <dd>returns the summary report in a string</dd>
             <dt id="a5e1f63034a96a5a79cef6da412efd203">
               <span class="m-doc-wrap-bumper">void <a href="#a5e1f63034a96a5a79cef6da412efd203" class="m-doc-self">clear</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
@@ -104,6 +112,10 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a8b3b0bee8762af654cfebd2bb2ee98ed" class="m-doc-self">num_tasks</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>queries the number of tasks observed</dd>
+            <dt id="a62ccf28199e35748903559848072fc29">
+              <span class="m-doc-wrap-bumper">auto <a href="#a62ccf28199e35748903559848072fc29" class="m-doc-self">num_workers</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            </dt>
+            <dd>queries the number of observed workers</dd>
           </dl>
         </section>
         <section id="pri-methods">

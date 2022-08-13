@@ -155,7 +155,7 @@
 <para>number of work units per thread</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-Execution policy configures the kernel execution parameters in CUDA algorithms. The first template argument, <computeroutput>NT</computeroutput>, the number of threads per block should always be a power-of-two number. The second template argument, <computeroutput>VT</computeroutput>, the number of work units per thread is recommended to be an odd number to avoid bank conflict.</para><para>Details can be referred to <ref refid="CUDASTDExecutionPolicy" kindref="compound">Execution Policy</ref>. </para>    </detaileddescription>
+Execution policy configures the kernel execution parameters in CUDA algorithms. The first template argument, <computeroutput>NT</computeroutput>, the number of threads per block should always be a power-of-two number. The second template argument, <computeroutput>VT</computeroutput>, the number of work units per thread is recommended to be an odd number to avoid bank conflict.</para><para>Details can be referred to CUDASTDExecutionPolicy. </para>    </detaileddescription>
     <location file="/home/phrygiangates/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="29" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="29" bodyend="67"/>
     <listofallmembers>
       <member refid="classtf_1_1cudaExecutionPolicy_1a1eaf3d45afdf53b4bf9927dd1bd7a02b" prot="private" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>_stream</name></member>

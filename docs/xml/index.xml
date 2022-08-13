@@ -583,11 +583,11 @@
   <compound refid="structtf_1_1cudaFlow_1_1External" kind="struct"><name>tf::cudaFlow::External</name>
     <member refid="structtf_1_1cudaFlow_1_1External_1add55ef590408418dee0c8b79db7a747b" kind="variable"><name>graph</name></member>
   </compound>
-  <compound refid="structtf_1_1cudaFlowCapturer_1_1External" kind="struct"><name>tf::cudaFlowCapturer::External</name>
-    <member refid="structtf_1_1cudaFlowCapturer_1_1External_1acb0595d884b28d21f661595e718c3cc2" kind="variable"><name>graph</name></member>
-  </compound>
   <compound refid="structtf_1_1syclFlow_1_1External" kind="struct"><name>tf::syclFlow::External</name>
     <member refid="structtf_1_1syclFlow_1_1External_1ace2afbeee949bd808c7e374bdceb0467" kind="variable"><name>graph</name></member>
+  </compound>
+  <compound refid="structtf_1_1cudaFlowCapturer_1_1External" kind="struct"><name>tf::cudaFlowCapturer::External</name>
+    <member refid="structtf_1_1cudaFlowCapturer_1_1External_1acb0595d884b28d21f661595e718c3cc2" kind="variable"><name>graph</name></member>
   </compound>
   <compound refid="classtf_1_1FlowBuilder" kind="class"><name>tf::FlowBuilder</name>
     <member refid="classtf_1_1FlowBuilder_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -656,13 +656,13 @@
     <member refid="classtf_1_1Graph_1ab804f1d7061f031df585a1b0ae15128d" kind="function"><name>_emplace_back</name></member>
     <member refid="classtf_1_1Graph_1aed34729a3fbafdc2f328cab4ed0fcabb" kind="function"><name>_emplace_back</name></member>
   </compound>
-  <compound refid="structtf_1_1cudaFlow_1_1Internal" kind="struct"><name>tf::cudaFlow::Internal</name>
-    <member refid="structtf_1_1cudaFlow_1_1Internal_1a699f86e6abe3d2aa41432898feb5f281" kind="variable"><name>executor</name></member>
-    <member refid="structtf_1_1cudaFlow_1_1Internal_1a885341edb70e164ef4010de5346ec8f0" kind="function"><name>Internal</name></member>
-  </compound>
   <compound refid="structtf_1_1cudaFlowCapturer_1_1Internal" kind="struct"><name>tf::cudaFlowCapturer::Internal</name>
     <member refid="structtf_1_1cudaFlowCapturer_1_1Internal_1a308a6dfd7a2fd2d6cd3d391fa9377493" kind="variable"><name>executor</name></member>
     <member refid="structtf_1_1cudaFlowCapturer_1_1Internal_1a3c1426585bbb7e10549f24aaa7b93be3" kind="function"><name>Internal</name></member>
+  </compound>
+  <compound refid="structtf_1_1cudaFlow_1_1Internal" kind="struct"><name>tf::cudaFlow::Internal</name>
+    <member refid="structtf_1_1cudaFlow_1_1Internal_1a699f86e6abe3d2aa41432898feb5f281" kind="variable"><name>executor</name></member>
+    <member refid="structtf_1_1cudaFlow_1_1Internal_1a885341edb70e164ef4010de5346ec8f0" kind="function"><name>Internal</name></member>
   </compound>
   <compound refid="structtf_1_1syclFlow_1_1Internal" kind="struct"><name>tf::syclFlow::Internal</name>
     <member refid="structtf_1_1syclFlow_1_1Internal_1a9bbc7eb920ae573d5360cae1cd7fb03d" kind="variable"><name>executor</name></member>
@@ -790,11 +790,11 @@
     <member refid="classtf_1_1Pipeline_1aa2e4a635ac4469754f2d922ea67151f9" kind="function"><name>_on_pipe</name></member>
     <member refid="classtf_1_1Pipeline_1ad091bbd38c1538884aa83d488fdf40f2" kind="function"><name>_build</name></member>
   </compound>
-  <compound refid="structtf_1_1Pipeline_1_1PipeMeta" kind="struct"><name>tf::Pipeline::PipeMeta</name>
-    <member refid="structtf_1_1Pipeline_1_1PipeMeta_1a9ff8f29a229bba87f9e08bbc1a86bb33" kind="variable"><name>type</name></member>
-  </compound>
   <compound refid="structtf_1_1DataPipeline_1_1PipeMeta" kind="struct"><name>tf::DataPipeline::PipeMeta</name>
     <member refid="structtf_1_1DataPipeline_1_1PipeMeta_1a46556eee44255bb7e1048e8445086e80" kind="variable"><name>type</name></member>
+  </compound>
+  <compound refid="structtf_1_1Pipeline_1_1PipeMeta" kind="struct"><name>tf::Pipeline::PipeMeta</name>
+    <member refid="structtf_1_1Pipeline_1_1PipeMeta_1a9ff8f29a229bba87f9e08bbc1a86bb33" kind="variable"><name>type</name></member>
   </compound>
   <compound refid="structtf_1_1ProfileData" kind="struct"><name>tf::ProfileData</name>
     <member refid="structtf_1_1ProfileData_1a4fb1f988a4e0697b8ce09cf53d82b559" kind="variable"><name>timelines</name></member>
@@ -803,14 +803,16 @@
     <member refid="structtf_1_1ProfileData_1aca16c42f4ae3056bddcc1f14b9216958" kind="function"><name>ProfileData</name></member>
     <member refid="structtf_1_1ProfileData_1a78c6fcf63302872220bd75ef82cd1a55" kind="function"><name>operator=</name></member>
     <member refid="structtf_1_1ProfileData_1a12535e834bc6e429f3815c90162e1c57" kind="function"><name>operator=</name></member>
+    <member refid="structtf_1_1ProfileData_1ac8bd5a12ea62aa7f5c1afbcceae1b075" kind="function"><name>save</name></member>
+    <member refid="structtf_1_1ProfileData_1a8ba1ef7e916c4b827707a48c886381c4" kind="function"><name>load</name></member>
   </compound>
   <compound refid="structtf_1_1cudaFlowCapturer_1_1Proxy" kind="struct"><name>tf::cudaFlowCapturer::Proxy</name>
   </compound>
-  <compound refid="structtf_1_1cudaDeviceAllocator_1_1rebind" kind="struct"><name>tf::cudaDeviceAllocator::rebind</name>
-    <member refid="structtf_1_1cudaDeviceAllocator_1_1rebind_1a6d0799b927ce743f4fa174c6a9806282" kind="typedef"><name>other</name></member>
-  </compound>
   <compound refid="structtf_1_1cudaUSMAllocator_1_1rebind" kind="struct"><name>tf::cudaUSMAllocator::rebind</name>
     <member refid="structtf_1_1cudaUSMAllocator_1_1rebind_1ad110a928d2b4e991f1dacd473a6ba00c" kind="typedef"><name>other</name></member>
+  </compound>
+  <compound refid="structtf_1_1cudaDeviceAllocator_1_1rebind" kind="struct"><name>tf::cudaDeviceAllocator::rebind</name>
+    <member refid="structtf_1_1cudaDeviceAllocator_1_1rebind_1a6d0799b927ce743f4fa174c6a9806282" kind="typedef"><name>other</name></member>
   </compound>
   <compound refid="structtf_1_1Node_1_1Runtime" kind="struct"><name>tf::Node::Runtime</name>
     <member refid="structtf_1_1Node_1_1Runtime_1a9a4a9b752d58da42469cf5a7a09da400" kind="variable"><name>work</name></member>
@@ -852,20 +854,22 @@
     <member refid="classtf_1_1ScalablePipeline_1ae695c9b1bbe3a5f65a5bb4217087c356" kind="function"><name>_build</name></member>
     <member refid="classtf_1_1ScalablePipeline_1a81b18c25db2cba4c530d85c5ab413a6c" kind="function"><name>_line</name></member>
   </compound>
-  <compound refid="structtf_1_1ChromeObserver_1_1Segment" kind="struct"><name>tf::ChromeObserver::Segment</name>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a8e3739d8a5b9be34851a6404f5916d95" kind="variable"><name>name</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a197cf797abb156e1f17dd276acd2cd74" kind="variable"><name>beg</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1abe331473cff75d9f11c7fb69e481f2f7" kind="variable"><name>end</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a069ca8806de9e01a0ae2b3f5263a20c2" kind="function"><name>Segment</name></member>
-  </compound>
   <compound refid="structtf_1_1Segment" kind="struct"><name>tf::Segment</name>
     <member refid="structtf_1_1Segment_1a3e259f6da83dcf714ec785aa1a3d14bd" kind="variable"><name>name</name></member>
     <member refid="structtf_1_1Segment_1a8f567dbac067898e2e5c4d4947b04fb4" kind="variable"><name>type</name></member>
     <member refid="structtf_1_1Segment_1aad42f04f26507aa8ad977627774ee2b4" kind="variable"><name>beg</name></member>
     <member refid="structtf_1_1Segment_1ae7558748ed58c8e274539295e6c6d770" kind="variable"><name>end</name></member>
+    <member refid="structtf_1_1Segment_1a24021971938c984d134c29a44b5b6093" kind="function"><name>save</name></member>
+    <member refid="structtf_1_1Segment_1a74c1671a8ec913fac3a675bb4c5c9be3" kind="function"><name>load</name></member>
     <member refid="structtf_1_1Segment_1ad6393c5cf90f07b0eda6bf0c0321322d" kind="function"><name>Segment</name></member>
     <member refid="structtf_1_1Segment_1aab1d1ddd792d5b7b312ad14532034054" kind="function"><name>Segment</name></member>
     <member refid="structtf_1_1Segment_1a336d5825032b4b9085f1e78a1fa26341" kind="function"><name>span</name></member>
+  </compound>
+  <compound refid="structtf_1_1ChromeObserver_1_1Segment" kind="struct"><name>tf::ChromeObserver::Segment</name>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a8e3739d8a5b9be34851a6404f5916d95" kind="variable"><name>name</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a197cf797abb156e1f17dd276acd2cd74" kind="variable"><name>beg</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1abe331473cff75d9f11c7fb69e481f2f7" kind="variable"><name>end</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a069ca8806de9e01a0ae2b3f5263a20c2" kind="function"><name>Segment</name></member>
   </compound>
   <compound refid="classtf_1_1Semaphore" kind="class"><name>tf::Semaphore</name>
     <member refid="classtf_1_1Semaphore_1a6db9d28bd448a131448276ee03de1e6d" kind="friend"><name>Node</name></member>
@@ -1016,12 +1020,12 @@
     <member refid="structtf_1_1Node_1_1Static_1a30c34caf3aa9406c70dbab295c082468" kind="variable"><name>work</name></member>
     <member refid="structtf_1_1Node_1_1Static_1a91ebe904215e44a81df97586f15b4e07" kind="function"><name>Static</name></member>
   </compound>
-  <compound refid="structtf_1_1detail_1_1cudaBlockReduce_1_1Storage" kind="struct"><name>tf::detail::cudaBlockReduce::Storage</name>
-    <member refid="structtf_1_1detail_1_1cudaBlockReduce_1_1Storage_1ae96b4912d9ac0413c68bfce227a15d04" kind="variable"><name>data</name></member>
-  </compound>
   <compound refid="uniontf_1_1detail_1_1cudaBlockSort_1_1Storage" kind="union"><name>tf::detail::cudaBlockSort::Storage</name>
     <member refid="uniontf_1_1detail_1_1cudaBlockSort_1_1Storage_1a08bff3542e11e199012d1ca64b14881c" kind="variable"><name>keys</name></member>
     <member refid="uniontf_1_1detail_1_1cudaBlockSort_1_1Storage_1a45d6a1f7e31ddb9905bc4c802f7e3e7a" kind="variable"><name>vals</name></member>
+  </compound>
+  <compound refid="structtf_1_1detail_1_1cudaBlockReduce_1_1Storage" kind="struct"><name>tf::detail::cudaBlockReduce::Storage</name>
+    <member refid="structtf_1_1detail_1_1cudaBlockReduce_1_1Storage_1ae96b4912d9ac0413c68bfce227a15d04" kind="variable"><name>data</name></member>
   </compound>
   <compound refid="uniontf_1_1detail_1_1cudaBlockScan_1_1storage__t" kind="union"><name>tf::detail::cudaBlockScan::storage_t</name>
     <member refid="uniontf_1_1detail_1_1cudaBlockScan_1_1storage__t_1a9cc602c1e7c8358505637a42b958f398" kind="variable"><name>data</name></member>
@@ -1049,6 +1053,13 @@
     <member refid="classtf_1_1Subflow_1a84f5f8f179fd27d44ff6a02c7c482659" kind="function"><name>Subflow</name></member>
     <member refid="classtf_1_1Subflow_1a1c0af82b2cd8ee9fb381714452d6912b" kind="function"><name>_named_async</name></member>
     <member refid="classtf_1_1Subflow_1a85ef182a840e26d424b961c488a464d9" kind="function"><name>_named_silent_async</name></member>
+  </compound>
+  <compound refid="structtf_1_1TFProfObserver_1_1Summary" kind="struct"><name>tf::TFProfObserver::Summary</name>
+    <member refid="structtf_1_1TFProfObserver_1_1Summary_1ab19b2d75d9114064ea88c24b991e3b45" kind="variable"><name>tsum</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1Summary_1acedcc0c1efd703f6b7c5ffe82d9bdabf" kind="variable"><name>wsum</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1Summary_1aa59e1a4195d9fb7378f75ad27261bfdd" kind="function"><name>dump_tsum</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1Summary_1a94eb7887b66179efda784941e592ae40" kind="function"><name>dump_wsum</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1Summary_1ae9a3467e622801c8482bc7f1e5fbbd67" kind="function"><name>dump</name></member>
   </compound>
   <compound refid="structtf_1_1Node_1_1syclFlow" kind="struct"><name>tf::Node::syclFlow</name>
     <member refid="structtf_1_1Node_1_1syclFlow_1a0755dfffb5144f9923d986194c282420" kind="variable"><name>work</name></member>
@@ -1198,6 +1209,14 @@
     <member refid="classtf_1_1TaskQueue_1ab606d0aae898033208d10c7ef44fbcb2" kind="function"><name>steal</name></member>
     <member refid="classtf_1_1TaskQueue_1a3529facba0cc44f75cb4a12c440ae073" kind="function"><name>steal</name></member>
   </compound>
+  <compound refid="structtf_1_1TFProfObserver_1_1TaskSummary" kind="struct"><name>tf::TFProfObserver::TaskSummary</name>
+    <member refid="structtf_1_1TFProfObserver_1_1TaskSummary_1a5fa5b907905c841525c183de80cc4779" kind="variable"><name>type</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1TaskSummary_1a8d5ae242b9a13dde380122f9fa1ee58a" kind="variable"><name>count</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1TaskSummary_1abfb35499e1c1168896dd0a479c094095" kind="variable"><name>total_span</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1TaskSummary_1ac4ef1685aa1e8192deea59919462dfd7" kind="variable"><name>min_span</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1TaskSummary_1aceb22e37f1c12bf9b27db4a03a0d2316" kind="variable"><name>max_span</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1TaskSummary_1ac5220ba82a25714ec5e9440e0eafd2e2" kind="function"><name>avg_span</name></member>
+  </compound>
   <compound refid="classtf_1_1TaskView" kind="class"><name>tf::TaskView</name>
     <member refid="classtf_1_1TaskView_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
     <member refid="classtf_1_1TaskView_1a05d718be8be0374448b570276709bedb" kind="variable"><name>_node</name></member>
@@ -1233,8 +1252,11 @@
     <member refid="classtf_1_1TFProfObserver_1a07f9db5edc30436d8ec55bdaecca5aaa" kind="variable"><name>_stacks</name></member>
     <member refid="classtf_1_1TFProfObserver_1a9f1e839e2a8d3abd0b91ac454f0d078b" kind="function"><name>dump</name></member>
     <member refid="classtf_1_1TFProfObserver_1a59e82cb3f9b0ada38aa1ddea14f14d02" kind="function"><name>dump</name></member>
+    <member refid="classtf_1_1TFProfObserver_1a6102cedbaf2e40f8b8ff916827297198" kind="function"><name>summary</name></member>
+    <member refid="classtf_1_1TFProfObserver_1a6f12a927a328bd594cf6c3c3a6bfe992" kind="function"><name>summary</name></member>
     <member refid="classtf_1_1TFProfObserver_1a5e1f63034a96a5a79cef6da412efd203" kind="function"><name>clear</name></member>
     <member refid="classtf_1_1TFProfObserver_1a8b3b0bee8762af654cfebd2bb2ee98ed" kind="function"><name>num_tasks</name></member>
+    <member refid="classtf_1_1TFProfObserver_1a62ccf28199e35748903559848072fc29" kind="function"><name>num_workers</name></member>
     <member refid="classtf_1_1TFProfObserver_1aa030d8154dd03aea3b8fa8ce42e1151b" kind="function"><name>set_up</name></member>
     <member refid="classtf_1_1TFProfObserver_1a5debfce27f7e012d22872c134b261c63" kind="function"><name>on_entry</name></member>
     <member refid="classtf_1_1TFProfObserver_1af3a1630b5b1db5341a239a5d4c12c891" kind="function"><name>on_exit</name></member>
@@ -1253,6 +1275,8 @@
     <member refid="structtf_1_1Timeline_1a2da600f14a05fd319237d79944d3bb4d" kind="function"><name>Timeline</name></member>
     <member refid="structtf_1_1Timeline_1a947baa8607959e2204d7df20a850df86" kind="function"><name>operator=</name></member>
     <member refid="structtf_1_1Timeline_1a9f315578cf84dd0ddfa4bff43762eebb" kind="function"><name>operator=</name></member>
+    <member refid="structtf_1_1Timeline_1a435fff911fa14d75c7000f1a908cee57" kind="function"><name>save</name></member>
+    <member refid="structtf_1_1Timeline_1af08d956eca1550dcbe161eb53a11fe46" kind="function"><name>load</name></member>
   </compound>
   <compound refid="classtf_1_1Worker" kind="class"><name>tf::Worker</name>
     <member refid="classtf_1_1Worker_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -1273,6 +1297,15 @@
     <member refid="classtf_1_1WorkerInterface_1a4f086cadaabff4094cf07fd387b2e185" kind="function"><name>~WorkerInterface</name></member>
     <member refid="classtf_1_1WorkerInterface_1a41c3b931a36bde8eff4aa8d375e8888a" kind="function"><name>scheduler_prologue</name></member>
     <member refid="classtf_1_1WorkerInterface_1a3e6d68fd4041f433d1b7ca9e5786b57c" kind="function"><name>scheduler_epilogue</name></member>
+  </compound>
+  <compound refid="structtf_1_1TFProfObserver_1_1WorkerSummary" kind="struct"><name>tf::TFProfObserver::WorkerSummary</name>
+    <member refid="structtf_1_1TFProfObserver_1_1WorkerSummary_1a0e19f9b6dac7b433f0ff817c4cad7902" kind="variable"><name>id</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1WorkerSummary_1aba890e5db5231cae8bbb9a7dde220fad" kind="variable"><name>level</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1WorkerSummary_1aeea3d821e97a0ace6b52794af1a5d0c3" kind="variable"><name>count</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1WorkerSummary_1a26c54c572e38a10e3e1e85d48c3a957f" kind="variable"><name>total_delay</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1WorkerSummary_1a6ce7e5bc3e33a7e592c098da9e69cf7c" kind="variable"><name>min_delay</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1WorkerSummary_1aadb28d1c5c59363b130b85eb4c636464" kind="variable"><name>max_delay</name></member>
+    <member refid="structtf_1_1TFProfObserver_1_1WorkerSummary_1ab08741c8be85b5d7c7b52ed6479b4305" kind="function"><name>avg_delay</name></member>
   </compound>
   <compound refid="classtf_1_1WorkerView" kind="class"><name>tf::WorkerView</name>
     <member refid="classtf_1_1WorkerView_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -1974,15 +2007,9 @@
   </compound>
   <compound refid="cancellation_8dox" kind="file"><name>cancellation.dox</name>
   </compound>
-  <compound refid="codeofconduct_8dox" kind="file"><name>codeofconduct.dox</name>
-  </compound>
   <compound refid="composable__tasking_8dox" kind="file"><name>composable_tasking.dox</name>
   </compound>
   <compound refid="conditional__tasking_8dox" kind="file"><name>conditional_tasking.dox</name>
-  </compound>
-  <compound refid="contributing_8dox" kind="file"><name>contributing.dox</name>
-  </compound>
-  <compound refid="contributors_8dox" kind="file"><name>contributors.dox</name>
   </compound>
   <compound refid="Cookbook_8dox" kind="file"><name>Cookbook.dox</name>
   </compound>
@@ -2000,77 +2027,27 @@
   </compound>
   <compound refid="cuda__optimizer_8hpp" kind="file"><name>cuda_optimizer.hpp</name>
   </compound>
-  <compound refid="cuda__std__algorithms_8dox" kind="file"><name>cuda_std_algorithms.dox</name>
-  </compound>
-  <compound refid="cuda__std__execution__policy_8dox" kind="file"><name>cuda_std_execution_policy.dox</name>
-  </compound>
-  <compound refid="cuda__std__find_8dox" kind="file"><name>cuda_std_find.dox</name>
-  </compound>
-  <compound refid="cuda__std__for__each_8dox" kind="file"><name>cuda_std_for_each.dox</name>
-  </compound>
-  <compound refid="cuda__std__merge_8dox" kind="file"><name>cuda_std_merge.dox</name>
-  </compound>
-  <compound refid="cuda__std__reduce_8dox" kind="file"><name>cuda_std_reduce.dox</name>
-  </compound>
-  <compound refid="cuda__std__scan_8dox" kind="file"><name>cuda_std_scan.dox</name>
-  </compound>
-  <compound refid="cuda__std__sort_8dox" kind="file"><name>cuda_std_sort.dox</name>
-  </compound>
-  <compound refid="cuda__std__transform_8dox" kind="file"><name>cuda_std_transform.dox</name>
-  </compound>
   <compound refid="cuda__stream_8hpp" kind="file"><name>cuda_stream.hpp</name>
   </compound>
   <compound refid="cuda__task_8hpp" kind="file"><name>cuda_task.hpp</name>
   </compound>
   <compound refid="cudaflow_8hpp" kind="file"><name>cudaflow.hpp</name>
   </compound>
-  <compound refid="cudaflow__algorithms_8dox" kind="file"><name>cudaflow_algorithms.dox</name>
-  </compound>
-  <compound refid="cudaflow__find_8dox" kind="file"><name>cudaflow_find.dox</name>
-  </compound>
-  <compound refid="cudaflow__for__each_8dox" kind="file"><name>cudaflow_for_each.dox</name>
-  </compound>
-  <compound refid="cudaflow__merge_8dox" kind="file"><name>cudaflow_merge.dox</name>
-  </compound>
-  <compound refid="cudaflow__reduce_8dox" kind="file"><name>cudaflow_reduce.dox</name>
-  </compound>
-  <compound refid="cudaflow__scan_8dox" kind="file"><name>cudaflow_scan.dox</name>
-  </compound>
-  <compound refid="cudaflow__single__task_8dox" kind="file"><name>cudaflow_single_task.dox</name>
-  </compound>
-  <compound refid="cudaflow__sort_8dox" kind="file"><name>cudaflow_sort.dox</name>
-  </compound>
-  <compound refid="cudaflow__transform_8dox" kind="file"><name>cudaflow_transform.dox</name>
-  </compound>
-  <compound refid="data__pipeline_8dox" kind="file"><name>data_pipeline.dox</name>
-  </compound>
   <compound refid="data__pipeline_8hpp" kind="file"><name>data_pipeline.hpp</name>
   </compound>
-  <compound refid="dreamplace_8dox" kind="file"><name>dreamplace.dox</name>
-  </compound>
   <compound refid="dynamic__tasking_8dox" kind="file"><name>dynamic_tasking.dox</name>
-  </compound>
-  <compound refid="examples_8dox" kind="file"><name>examples.dox</name>
   </compound>
   <compound refid="executor_8dox" kind="file"><name>executor.dox</name>
   </compound>
   <compound refid="executor_8hpp" kind="file"><name>executor.hpp</name>
   </compound>
-  <compound refid="FAQ_8dox" kind="file"><name>FAQ.dox</name>
-  </compound>
-  <compound refid="fibonacci_8dox" kind="file"><name>fibonacci.dox</name>
-  </compound>
   <compound refid="find_8hpp" kind="file"><name>find.hpp</name>
-  </compound>
-  <compound refid="flipcoins_8dox" kind="file"><name>flipcoins.dox</name>
   </compound>
   <compound refid="flow__builder_8hpp" kind="file"><name>flow_builder.hpp</name>
   </compound>
   <compound refid="for__each_8dox" kind="file"><name>for_each.dox</name>
   </compound>
   <compound refid="for__each_8hpp" kind="file"><name>for_each.hpp</name>
-  </compound>
-  <compound refid="governance_8dox" kind="file"><name>governance.dox</name>
   </compound>
   <compound refid="gpu__tasking__cudaflow_8dox" kind="file"><name>gpu_tasking_cudaflow.dox</name>
   </compound>
@@ -2080,31 +2057,13 @@
   </compound>
   <compound refid="graph_8hpp" kind="file"><name>graph.hpp</name>
   </compound>
-  <compound refid="graph__pipeline_8dox" kind="file"><name>graph_pipeline.dox</name>
-  </compound>
-  <compound refid="graph__traversal_8dox" kind="file"><name>graph_traversal.dox</name>
-  </compound>
-  <compound refid="guidelines_8dox" kind="file"><name>guidelines.dox</name>
-  </compound>
-  <compound refid="header_8html" kind="file"><name>header.html</name>
-  </compound>
   <compound refid="install_8dox" kind="file"><name>install.dox</name>
-  </compound>
-  <compound refid="kmeans_8dox" kind="file"><name>kmeans.dox</name>
-  </compound>
-  <compound refid="kmeans__cudaflow_8dox" kind="file"><name>kmeans_cudaflow.dox</name>
-  </compound>
-  <compound refid="matrix__multiplication_8dox" kind="file"><name>matrix_multiplication.dox</name>
-  </compound>
-  <compound refid="matrix__multiplication__cudaflow_8dox" kind="file"><name>matrix_multiplication_cudaflow.dox</name>
   </compound>
   <compound refid="merge_8hpp" kind="file"><name>merge.hpp</name>
   </compound>
   <compound refid="motivation_8dox" kind="file"><name>motivation.dox</name>
   </compound>
   <compound refid="observer_8hpp" kind="file"><name>observer.hpp</name>
-  </compound>
-  <compound refid="opentimer_8dox" kind="file"><name>opentimer.dox</name>
   </compound>
   <compound refid="pipeline_8dox" kind="file"><name>pipeline.dox</name>
   </compound>
@@ -2119,8 +2078,6 @@
   <compound refid="reduce_8dox" kind="file"><name>reduce.dox</name>
   </compound>
   <compound refid="reduce_8hpp" kind="file"><name>reduce.hpp</name>
-  </compound>
-  <compound refid="references_8dox" kind="file"><name>references.dox</name>
   </compound>
   <compound refid="release-1_8x_8x_8dox" kind="file"><name>release-1.x.x.dox</name>
   </compound>
@@ -2158,11 +2115,7 @@
   </compound>
   <compound refid="releases_8dox" kind="file"><name>releases.dox</name>
   </compound>
-  <compound refid="rules_8dox" kind="file"><name>rules.dox</name>
-  </compound>
   <compound refid="runtime__tasking_8dox" kind="file"><name>runtime_tasking.dox</name>
-  </compound>
-  <compound refid="scalable__pipeline_8dox" kind="file"><name>scalable_pipeline.dox</name>
   </compound>
   <compound refid="scan_8hpp" kind="file"><name>scan.hpp</name>
   </compound>
@@ -2178,19 +2131,9 @@
   </compound>
   <compound refid="static__tasking_8dox" kind="file"><name>static_tasking.dox</name>
   </compound>
-  <compound refid="sycl__algorithms_8dox" kind="file"><name>sycl_algorithms.dox</name>
-  </compound>
   <compound refid="sycl__compile_8dox" kind="file"><name>sycl_compile.dox</name>
   </compound>
-  <compound refid="sycl__for__each_8dox" kind="file"><name>sycl_for_each.dox</name>
-  </compound>
-  <compound refid="sycl__reduce_8dox" kind="file"><name>sycl_reduce.dox</name>
-  </compound>
-  <compound refid="sycl__single__task_8dox" kind="file"><name>sycl_single_task.dox</name>
-  </compound>
   <compound refid="sycl__task_8hpp" kind="file"><name>sycl_task.hpp</name>
-  </compound>
-  <compound refid="sycl__transform_8dox" kind="file"><name>sycl_transform.dox</name>
   </compound>
   <compound refid="syclflow_8hpp" kind="file"><name>syclflow.hpp</name>
   </compound>
@@ -2200,21 +2143,11 @@
   </compound>
   <compound refid="taskflow_8hpp" kind="file"><name>taskflow.hpp</name>
   </compound>
-  <compound refid="taskflow__pipeline_8dox" kind="file"><name>taskflow_pipeline.dox</name>
-  </compound>
-  <compound refid="team_8dox" kind="file"><name>team.dox</name>
-  </compound>
-  <compound refid="text__pipeline_8dox" kind="file"><name>text_pipeline.dox</name>
-  </compound>
   <compound refid="transform_8dox" kind="file"><name>transform.dox</name>
   </compound>
   <compound refid="transform_8hpp" kind="file"><name>transform.hpp</name>
   </compound>
   <compound refid="tsq_8hpp" kind="file"><name>tsq.hpp</name>
-  </compound>
-  <compound refid="usecases_8dox" kind="file"><name>usecases.dox</name>
-  </compound>
-  <compound refid="wavefront_8dox" kind="file"><name>wavefront.dox</name>
   </compound>
   <compound refid="worker_8hpp" kind="file"><name>worker.hpp</name>
   </compound>
@@ -2305,104 +2238,6 @@
   <compound refid="ParallelSort" kind="page"><name>ParallelSort</name>
   </compound>
   <compound refid="ParallelPipeline" kind="page"><name>ParallelPipeline</name>
-  </compound>
-  <compound refid="ParallelDataPipeline" kind="page"><name>ParallelDataPipeline</name>
-  </compound>
-  <compound refid="ParallelScalablePipeline" kind="page"><name>ParallelScalablePipeline</name>
-  </compound>
-  <compound refid="cudaFlowAlgorithms" kind="page"><name>cudaFlowAlgorithms</name>
-  </compound>
-  <compound refid="SingleTaskCUDA" kind="page"><name>SingleTaskCUDA</name>
-  </compound>
-  <compound refid="ForEachCUDA" kind="page"><name>ForEachCUDA</name>
-  </compound>
-  <compound refid="ParallelTransformsCUDA" kind="page"><name>ParallelTransformsCUDA</name>
-  </compound>
-  <compound refid="cudaFlowReduce" kind="page"><name>cudaFlowReduce</name>
-  </compound>
-  <compound refid="cudaFlowScan" kind="page"><name>cudaFlowScan</name>
-  </compound>
-  <compound refid="cudaFlowMerge" kind="page"><name>cudaFlowMerge</name>
-  </compound>
-  <compound refid="cudaFlowSort" kind="page"><name>cudaFlowSort</name>
-  </compound>
-  <compound refid="cudaFlowFind" kind="page"><name>cudaFlowFind</name>
-  </compound>
-  <compound refid="syclFlowAlgorithms" kind="page"><name>syclFlowAlgorithms</name>
-  </compound>
-  <compound refid="SingleTaskSYCL" kind="page"><name>SingleTaskSYCL</name>
-  </compound>
-  <compound refid="ForEachSYCL" kind="page"><name>ForEachSYCL</name>
-  </compound>
-  <compound refid="ParallelTransformsSYCL" kind="page"><name>ParallelTransformsSYCL</name>
-  </compound>
-  <compound refid="SYCLReduce" kind="page"><name>SYCLReduce</name>
-  </compound>
-  <compound refid="cudaStandardAlgorithms" kind="page"><name>cudaStandardAlgorithms</name>
-  </compound>
-  <compound refid="CUDASTDExecutionPolicy" kind="page"><name>CUDASTDExecutionPolicy</name>
-  </compound>
-  <compound refid="CUDASTDForEach" kind="page"><name>CUDASTDForEach</name>
-  </compound>
-  <compound refid="CUDASTDTransform" kind="page"><name>CUDASTDTransform</name>
-  </compound>
-  <compound refid="CUDASTDReduce" kind="page"><name>CUDASTDReduce</name>
-  </compound>
-  <compound refid="CUDASTDScan" kind="page"><name>CUDASTDScan</name>
-  </compound>
-  <compound refid="CUDASTDMerge" kind="page"><name>CUDASTDMerge</name>
-  </compound>
-  <compound refid="CUDASTDSort" kind="page"><name>CUDASTDSort</name>
-  </compound>
-  <compound refid="CUDASTDFind" kind="page"><name>CUDASTDFind</name>
-  </compound>
-  <compound refid="Examples" kind="page"><name>Examples</name>
-  </compound>
-  <compound refid="wavefront" kind="page"><name>wavefront</name>
-  </compound>
-  <compound refid="matrix_multiplication" kind="page"><name>matrix_multiplication</name>
-  </compound>
-  <compound refid="matrix_multiplication_cudaflow" kind="page"><name>matrix_multiplication_cudaflow</name>
-  </compound>
-  <compound refid="kmeans" kind="page"><name>kmeans</name>
-  </compound>
-  <compound refid="kmeans_cudaflow" kind="page"><name>kmeans_cudaflow</name>
-  </compound>
-  <compound refid="fibonacci" kind="page"><name>fibonacci</name>
-  </compound>
-  <compound refid="flipcoins" kind="page"><name>flipcoins</name>
-  </compound>
-  <compound refid="graphtraversal" kind="page"><name>graphtraversal</name>
-  </compound>
-  <compound refid="TextProcessingPipeline" kind="page"><name>TextProcessingPipeline</name>
-  </compound>
-  <compound refid="GraphProcessingPipeline" kind="page"><name>GraphProcessingPipeline</name>
-  </compound>
-  <compound refid="TaskflowProcessingPipeline" kind="page"><name>TaskflowProcessingPipeline</name>
-  </compound>
-  <compound refid="usecases" kind="page"><name>usecases</name>
-  </compound>
-  <compound refid="opentimer" kind="page"><name>opentimer</name>
-  </compound>
-  <compound refid="dreamplace" kind="page"><name>dreamplace</name>
-  </compound>
-  <compound refid="Contributing" kind="page"><name>Contributing</name>
-  </compound>
-  <compound refid="guidelines" kind="page"><name>guidelines</name>
-  </compound>
-  <compound refid="contributors" kind="page"><name>contributors</name>
-  </compound>
-  <compound refid="Governance" kind="page"><name>Governance</name>
-  </compound>
-  <compound refid="rules" kind="page"><name>rules</name>
-  </compound>
-  <compound refid="team" kind="page"><name>team</name>
-  </compound>
-  <compound refid="codeofconduct" kind="page"><name>codeofconduct</name>
-  </compound>
-  <compound refid="FAQ" kind="page"><name>FAQ</name>
-  </compound>
-  <compound refid="References" kind="page"><name>References</name>
   </compound>
   <compound refid="dir_04c130fdbeeccfa0338db9f77a5dc2c3" kind="dir"><name>algorithm</name>
   </compound>

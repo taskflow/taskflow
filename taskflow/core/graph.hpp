@@ -1,11 +1,12 @@
 #pragma once
 
+#include "../utility/traits.hpp"
 #include "../utility/iterator.hpp"
 #include "../utility/object_pool.hpp"
-#include "../utility/traits.hpp"
 #include "../utility/os.hpp"
 #include "../utility/math.hpp"
 #include "../utility/small_vector.hpp"
+#include "../utility/serializer.hpp"
 #include "error.hpp"
 #include "declarations.hpp"
 #include "semaphore.hpp"

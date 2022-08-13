@@ -15,7 +15,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" line="153" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" bodystart="153" bodyend="-1"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" line="154" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" bodystart="154" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
@@ -30,7 +30,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" line="242" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" bodystart="242" bodyend="-1"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" line="243" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" bodystart="243" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Runtime_1ae9bd2bcb1e004b078f627472fb9e0371" prot="private" static="no" mutable="no">
         <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
@@ -43,7 +43,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" line="243" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" bodystart="243" bodyend="-1"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" line="244" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" bodystart="244" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Runtime_1ac040d7410fbb82703ac39ac3b1baf8fd" prot="private" static="no" mutable="no">
         <type>Node *</type>
@@ -56,7 +56,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" line="244" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" bodystart="244" bodyend="-1"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" line="245" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" bodystart="245" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -77,7 +77,7 @@
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" line="172" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" bodystart="255" bodyend="257"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" line="173" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" bodystart="256" bodyend="258"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1aa7e72cc0f298475195b252c8f1793343" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -114,7 +114,7 @@ This member function immediately schedules an active task to the task queue of t
 </programlisting></para><para>The executor will first run the condition task <computeroutput>A</computeroutput> which returns <computeroutput>0</computeroutput> to inform the scheduler to go to the runtime task <computeroutput>B</computeroutput>. During the execution of <computeroutput>B</computeroutput>, it directly schedules task <computeroutput>C</computeroutput> without going through the normal taskflow graph scheduling process. At this moment, task <computeroutput>C</computeroutput> is active because its parent taskflow is running. When the taskflow finishes, we will see both <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> in the output. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" line="209" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/executor.hpp" bodystart="2082" bodyend="2088"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" line="210" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/executor.hpp" bodystart="2098" bodyend="2104"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1a479dc5dbf2b988bd166a2b6da089bb17" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -150,7 +150,7 @@ This member function immediately schedules an active task to the task queue of t
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" line="236" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/executor.hpp" bodystart="2092" bodyend="2107"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" line="237" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/executor.hpp" bodystart="2108" bodyend="2123"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -177,7 +177,7 @@ This member function immediately schedules an active task to the task queue of t
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" line="240" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" bodystart="248" bodyend="252"/>
+        <location file="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" line="241" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" bodystart="249" bodyend="253"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -191,7 +191,7 @@ This member function immediately schedules an active task to the task queue of t
 <codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting></para><para>A runtime task is associated with an executor and a worker that runs the runtime task. </para>    </detaileddescription>
-    <location file="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" line="151" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" bodystart="151" bodyend="245"/>
+    <location file="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" line="152" column="1" bodyfile="/home/phrygiangates/taskflow/taskflow/core/graph.hpp" bodystart="152" bodyend="246"/>
     <listofallmembers>
       <member refid="classtf_1_1Runtime_1a8074028372bb09946927b1b6ec01c6e1" prot="private" virt="non-virtual"><scope>tf::Runtime</scope><name>_executor</name></member>
       <member refid="classtf_1_1Runtime_1ac040d7410fbb82703ac39ac3b1baf8fd" prot="private" virt="non-virtual"><scope>tf::Runtime</scope><name>_parent</name></member>

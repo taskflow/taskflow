@@ -467,11 +467,21 @@ class Executor {
     @tparam P predicate type
     @param predicate a boolean predicate to indicate when to stop the loop
 
-    The method keeps running the caller worker in the work-stealing loop
+    The method keeps the caller worker in the work-stealing loop such that it
+    does not block (e.g., causing deadlock with other blocking workers) 
     until the stop predicate becomes true.
 
+    @code{.cpp}
+    taskflow.emplace([&](){
+      std::future<void> fu = std::async([](){ std::sleep(100s); });
+      executor.loop_until([](){
+        return fu.wait_for(std::chrono::seconds(0)) == future_status::ready;
+      });
+    });
+    @endcode
+
     @attention
-    You must call tf::Executor::run_and_wait from a worker of the calling executor
+    You must call tf::Executor::loop_until from a worker of the calling executor
     or an exception will be thrown.
     */
     template <typename P>
@@ -944,7 +954,7 @@ inline void Executor::_spawn(size_t N) {
       if(_worker_interface) {
         _worker_interface->scheduler_prologue(w);
       }
-
+      
       // must use 1 as condition instead of !done because
       // the previous worker may stop while the following workers
       // are still preparing for entering the scheduling loop
@@ -971,6 +981,14 @@ inline void Executor::_spawn(size_t N) {
       }
 
     }, std::ref(_workers[id]), std::ref(mutex), std::ref(cond), std::ref(n));
+    
+    // POSIX-like system can use the following to affine threads to cores 
+    //cpu_set_t cpuset;
+    //CPU_ZERO(&cpuset);
+    //CPU_SET(id, &cpuset);
+    //pthread_setaffinity_np(
+    //  _threads[id].native_handle(), sizeof(cpu_set_t), &cpuset
+    //);
   }
 
   std::unique_lock<std::mutex> lock(mutex);
@@ -983,7 +1001,6 @@ inline void Executor::_loop_until(Worker& w, P&& stop_predicate) {
 
   std::uniform_int_distribution<size_t> rdvtm(0, _workers.size()-1);
 
-  //while(p->_join_counter != 0) {
   exploit:
 
   while(!stop_predicate()) {
@@ -1004,7 +1021,6 @@ inline void Executor::_loop_until(Worker& w, P&& stop_predicate) {
         _invoke(w, t);
         goto exploit;
       }
-      //else if(p->_join_counter != 0){
       else if(!stop_predicate()) {
         if(num_steals++ > _MAX_STEALS) {
           std::this_thread::yield();
