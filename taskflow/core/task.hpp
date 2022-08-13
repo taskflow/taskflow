@@ -31,8 +31,6 @@ enum class TaskType : int {
   DYNAMIC,
   /** @brief condition task type */
   CONDITION,
-  /** @brief multi-condition task type */
-  MULTI_CONDITION,
   /** @brief module task type */
   MODULE,
   /** @brief asynchronous task type */
@@ -47,14 +45,13 @@ enum class TaskType : int {
 @private
 @brief array of all task types (used for iterating task types)
 */
-inline constexpr std::array<TaskType, 10> TASK_TYPES = {
+inline constexpr std::array<TaskType, 9> TASK_TYPES = {
   TaskType::PLACEHOLDER,
   TaskType::CUDAFLOW,
   TaskType::SYCLFLOW,
   TaskType::STATIC,
   TaskType::DYNAMIC,
   TaskType::CONDITION,
-  TaskType::MULTI_CONDITION,
   TaskType::MODULE,
   TaskType::ASYNC,
   TaskType::RUNTIME
@@ -72,7 +69,6 @@ TaskType::SYCLFLOW        ->  "syclflow"
 TaskType::STATIC          ->  "static"
 TaskType::DYNAMIC         ->  "subflow"
 TaskType::CONDITION       ->  "condition"
-TaskType::MULTI_CONDITION ->  "multi_condition"
 TaskType::MODULE          ->  "module"
 TaskType::ASYNC           ->  "async"
 TaskType::RUNTIME         ->  "runtime"
@@ -89,7 +85,6 @@ inline const char* to_string(TaskType type) {
     case TaskType::STATIC:           val = "static";          break;
     case TaskType::DYNAMIC:          val = "subflow";         break;
     case TaskType::CONDITION:        val = "condition";       break;
-    case TaskType::MULTI_CONDITION:  val = "multi_condition"; break;
     case TaskType::MODULE:           val = "module";          break;
     case TaskType::ASYNC:            val = "async";           break;
     case TaskType::RUNTIME:          val = "runtime";         break;
@@ -553,7 +548,7 @@ inline TaskType Task::type() const {
     case Node::STATIC:          return TaskType::STATIC;
     case Node::DYNAMIC:         return TaskType::DYNAMIC;
     case Node::CONDITION:       return TaskType::CONDITION;
-    case Node::MULTI_CONDITION: return TaskType::MULTI_CONDITION;
+    case Node::MULTI_CONDITION: return TaskType::CONDITION;
     case Node::MODULE:          return TaskType::MODULE;
     case Node::ASYNC:           return TaskType::ASYNC;
     case Node::SILENT_ASYNC:    return TaskType::ASYNC;
@@ -759,7 +754,7 @@ inline TaskType TaskView::type() const {
     case Node::STATIC:          return TaskType::STATIC;
     case Node::DYNAMIC:         return TaskType::DYNAMIC;
     case Node::CONDITION:       return TaskType::CONDITION;
-    case Node::MULTI_CONDITION: return TaskType::MULTI_CONDITION;
+    case Node::MULTI_CONDITION: return TaskType::CONDITION;
     case Node::MODULE:          return TaskType::MODULE;
     case Node::ASYNC:           return TaskType::ASYNC;
     case Node::SILENT_ASYNC:    return TaskType::ASYNC;

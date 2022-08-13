@@ -262,6 +262,7 @@ message(STATUS "CMAKE_INSTALL_FULL_LIBDIR: " ${CMAKE_INSTALL_FULL_LIBDIR})
 message(STATUS "CMAKE_MODULE_PATH: " ${CMAKE_MODULE_PATH})
 message(STATUS "CMAKE_PREFIX_PATH: " ${CMAKE_PREFIX_PATH})
 message(STATUS "TF_BUILD_BENCHMARKS: " ${TF_BUILD_BENCHMARKS})
+message(STATUS "TF_BUILD_PROFILER: " ${TF_BUILD_PROFILER})
 message(STATUS "TF_BUILD_CUDA: " ${TF_BUILD_CUDA})
 message(STATUS "TF_BUILD_SYCL: " ${TF_BUILD_SYCL})
 message(STATUS "TF_BUILD_SYCL_BITCODE: " ${TF_BUILD_SYCL_BITCODE})
@@ -310,6 +311,14 @@ endif(TF_BUILD_EXAMPLES)
 if(TF_BUILD_TESTS)
   add_subdirectory(unittests)
 endif(TF_BUILD_TESTS)
+
+# -----------------------------------------------------------------------------
+# Profiler
+# -----------------------------------------------------------------------------
+
+if(TF_BUILD_PROFILER)
+  add_subdirectory(tfprof/server)
+endif(TF_BUILD_PROFILER)
 
 # -----------------------------------------------------------------------------
 # Benchmarking

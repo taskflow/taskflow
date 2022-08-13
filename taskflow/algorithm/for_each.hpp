@@ -102,6 +102,7 @@ Task FlowBuilder::for_each(B beg, E end, C c) {
       // tail optimization
       if(r <= chunk_size || w == W-1) {
         loop(); 
+        break;
       }
       else {
         sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
@@ -259,6 +260,7 @@ Task FlowBuilder::for_each_index(B beg, E end, S inc, C c){
       // tail optimization
       if(r <= chunk_size || w == W-1) {
         loop(); 
+        break;
       }
       else {
         sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);

@@ -22,7 +22,7 @@ TEST_CASE("Type" * doctest::timeout(300)) {
   REQUIRE(t2.type() == tf::TaskType::CONDITION);
   REQUIRE(t3.type() == tf::TaskType::DYNAMIC);
   REQUIRE(t4.type() == tf::TaskType::MODULE);
-  REQUIRE(t5.type() == tf::TaskType::MULTI_CONDITION);
+  REQUIRE(t5.type() == tf::TaskType::CONDITION);
   REQUIRE(t6.type() == tf::TaskType::RUNTIME);
 }
 
