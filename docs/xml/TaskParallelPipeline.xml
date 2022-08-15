@@ -1,24 +1,24 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
-  <compounddef id="ParallelPipeline" kind="page">
-    <compoundname>ParallelPipeline</compoundname>
-    <title>Parallel Pipeline</title>
+  <compounddef id="TaskParallelPipeline" kind="page">
+    <compoundname>TaskParallelPipeline</compoundname>
+    <title>Task-parallel Pipeline</title>
     <tableofcontents/>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow provides a <emphasis>task-parallel</emphasis> pipeline programming framework for you to create a <emphasis>pipeline scheduling framework</emphasis>. Pipeline parallelism refers to a parallel execution of multiple data tokens through a linear chain of pipes or stages. Each stage processes the data token sent from the previous stage, applies the given callable to that data token, and then sends the result to the next stage. Multiple data tokens can be processed simultaneously across different stages.</para><sect1 id="ParallelPipeline_1ParallelPipelineIncludeHeaderFile">
+<para>Taskflow provides a <emphasis>task-parallel</emphasis> pipeline programming framework for you to implement a pipeline algorithm. Pipeline parallelism refers to a parallel execution of multiple data tokens through a linear chain of pipes or stages. Each stage processes the data token sent from the previous stage, applies the given callable to that data token, and then sends the result to the next stage. Multiple data tokens can be processed simultaneously across different stages.</para><sect1 id="TaskParallelPipeline_1TaskParallelPipelineIncludeHeaderFile">
 <title>Include the Header</title>
 <para>You need to include the header file, <computeroutput>taskflow/algorithm/pipeline.hpp</computeroutput>, for creating a pipeline scheduling framework.</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="pipeline_8hpp" kindref="compound">taskflow/algorithm/pipeline.hpp</ref>&gt;</highlight></codeline>
 </programlisting></para></sect1>
-<sect1 id="ParallelPipeline_1UnderstandPipelineScheduling">
+<sect1 id="TaskParallelPipeline_1UnderstandPipelineScheduling">
 <title>Understand the Pipeline Scheduling Framework</title>
 <para>A <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref> object is a <emphasis>composable</emphasis> graph to create a <emphasis>pipeline scheduling framework</emphasis> through a module task in a taskflow (see <ref refid="ComposableTasking" kindref="compound">Composable Tasking</ref>). Unlike the conventional pipeline programming frameworks (e.g., Intel TBB Parallel <ref refid="classtf_1_1Pipeline" kindref="compound">Pipeline</ref>), Taskflow&apos;s pipeline algorithm does not provide any data abstraction, which often restricts users from optimizing data layouts in their applications, but a flexible framework for users to customize their application data atop an efficient pipeline scheduling framework.</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/pipeline_our_structure.dot"></dotfile>
 </para><para>The figure above gives an example of our pipeline scheduling framework. The framework consists of three <emphasis>pipes</emphasis> (serial-parallel-serial stages) and four <emphasis>lines</emphasis> (maximum parallelism), where each line processes at most one data token. A pipeline of three pipes and four lines will propagate each data token through a sequential chain of three pipes and can simultaneously process up to four data tokens at the four lines. Each edge represents a task dependency. For example, the edge from <computeroutput>pipe-0</computeroutput> to <computeroutput>pipe-1</computeroutput> in line <computeroutput>0</computeroutput> represents the task dependency between the first and the second pipes in the first line; the edge from <computeroutput>pipe-0</computeroutput> in line <computeroutput>0</computeroutput> to <computeroutput>pipe-0</computeroutput> in line <computeroutput>1</computeroutput> represents the task dependency between two adjacent lines when processing two data tokens at the same pipe. Each pipe can be either a <emphasis>serial</emphasis> type or a <emphasis>parallel</emphasis> type, where a serial pipe processes data tokens sequentially and a parallel pipe processes different data tokens simultaneously.</para><para><simplesect kind="note"><para>Due to the nature of pipeline, Taskflow requires the first pipe to be a serial type. The pipeline scheduling algorithm operates in a circular fashion with a factor of line count.</para></simplesect>
 </para></sect1>
-<sect1 id="ParallelPipeline_1CreatePipeline">
-<title>Create a Pipeline Module Task</title>
-<para>Taskflow leverages modern C++ and template techniques to strike a balance between the <emphasis>expressiveness</emphasis> and <emphasis>generality</emphasis> in designing the pipeline programming model. In general, there are three steps to create a pipeline application:</para><para><orderedlist>
+<sect1 id="TaskParallelPipeline_1CreateATaskParallelPipelineModuleTask">
+<title>Create a Task-parallel Pipeline Module Task</title>
+<para>Taskflow leverages modern C++ and template techniques to strike a balance between the <emphasis>expressiveness</emphasis> and <emphasis>generality</emphasis> in designing the pipeline programming model. In general, there are three steps to create a task-parallel pipeline application:</para><para><orderedlist>
 <listitem><para>Define the pipeline structure (e.g., pipe type, pipe callable, stopping rule, line count)</para></listitem><listitem><para>Define the data storage and layout, if needed for the application</para></listitem><listitem><para>Define the pipeline taskflow graph using composition</para></listitem></orderedlist>
 </para><para>The following code creates a pipeline scheduling framework using the example from the previous section. The framework schedules a total of five <emphasis>scheduling tokens</emphasis> labeled from 0 to 4. The first pipe stores the token identifier in a custom data storage, <computeroutput>buffer</computeroutput>, and each of the rest pipes adds one to the input data from the result of the previous pipe and stores the result into the corresponding line entry in the buffer.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>2:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
@@ -100,11 +100,11 @@ Our pipeline algorithm schedules tokens in a <emphasis>circular</emphasis> manne
 <codeline><highlight class="normal">pipe<sp/>1:<sp/>input<sp/>buffer[0]<sp/>=<sp/>4</highlight></codeline>
 <codeline><highlight class="normal">pipe<sp/>2:<sp/>input<sp/>buffer[0]<sp/>=<sp/>5</highlight></codeline>
 </programlisting></para><para>There are a total of five tokens running through three pipes. Each pipes prints its input data value, except the first pipe that prints its token identifier. Since the second pipe is a parallel pipe, the output can interleave.</para></sect1>
-<sect1 id="ParallelPipeline_1ConnectWithTasks">
+<sect1 id="TaskParallelPipeline_1ConnectWithTasks">
 <title>Connect Pipeline with Other Tasks</title>
 <para>You can connect the pipeline module task with other tasks to create a taskflow application that embeds one or multiple pipeline algorithms. We describe three common examples below:<itemizedlist>
-<listitem><para><ref refid="ParallelPipeline_1IterateAPipeline" kindref="member">Example 1: Iterate a Pipeline</ref></para></listitem><listitem><para><ref refid="ParallelPipeline_1ConcatenateTwoPipelines" kindref="member">Example 2: Concatenate Two Pipelines</ref></para></listitem><listitem><para><ref refid="ParallelPipeline_1DefineMultipleParallelPipelines" kindref="member">Example 3: Define Multiple Parallel Pipelines</ref></para></listitem></itemizedlist>
-</para><sect2 id="ParallelPipeline_1IterateAPipeline">
+<listitem><para><ref refid="TaskParallelPipeline_1IterateAPipeline" kindref="member">Example 1: Iterate a Pipeline</ref></para></listitem><listitem><para><ref refid="TaskParallelPipeline_1ConcatenateTwoPipelines" kindref="member">Example 2: Concatenate Two Pipelines</ref></para></listitem><listitem><para><ref refid="TaskParallelPipeline_1DefineMultipleTaskParallelPipelines" kindref="member">Example 3: Define Multiple Parallel Pipelines</ref></para></listitem></itemizedlist>
+</para><sect2 id="TaskParallelPipeline_1IterateAPipeline">
 <title>Example 1: Iterate a Pipeline</title>
 <para>This example emulates a data streaming application that iteratively runs a stream of data through a pipeline using conditional tasking. The taskflow graph consists of one pipeline module task and one condition task. The pipeline module task processes a stream of data. The condition task decides the availability of data and reruns the pipeline when the next stream of data becomes available. <linebreak/>
  <programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
@@ -226,7 +226,7 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal">stage<sp/>2:<sp/>input<sp/>buffer[1]<sp/>=<sp/>10</highlight></codeline>
 <codeline><highlight class="normal">stop</highlight></codeline>
 </programlisting></para><para>The pipeline runs twice as controlled by the condition task <computeroutput>conditional</computeroutput>. The starting token in the second run of the pipeline is <computeroutput>5</computeroutput> rather than <computeroutput>0</computeroutput> because the pipeline keeps a stateful number of tokens. The last token is <computeroutput>9</computeroutput>, which means the pipeline processes in total <computeroutput>10</computeroutput> scheduling tokens. The first five tokens (token <computeroutput>0</computeroutput> to <computeroutput>4</computeroutput>) are processed in the first run, and the remaining five tokens (token <computeroutput>5</computeroutput> to <computeroutput>9</computeroutput>) are processed in the second run. In the condition task, we use <computeroutput>N</computeroutput> as a decision-making counter to process the next stream of data.</para></sect2>
-<sect2 id="ParallelPipeline_1ConcatenateTwoPipelines">
+<sect2 id="TaskParallelPipeline_1ConcatenateTwoPipelines">
 <title>Example 2: Concatenate Two Pipelines</title>
 <para>This example demonstrates two concatenated pipelines where a sequence of data tokens run synchronously from one pipeline to another pipeline. The first pipeline task precedes the second pipeline task.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/>2:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
@@ -356,7 +356,7 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal">pipeline<sp/>2,<sp/>pipe<sp/>2:<sp/>input<sp/>buffer_2[3]<sp/>=<sp/>5</highlight></codeline>
 <codeline><highlight class="normal">pipeline<sp/>2,<sp/>pipe<sp/>3:<sp/>input<sp/>buffer_2[3]<sp/>=<sp/>6</highlight></codeline>
 </programlisting></para><para>The output of pipelines <computeroutput>pl_1</computeroutput> and <computeroutput>pl_2</computeroutput> can be different from run to run because their second pipes are both parallel types. Due to the task dependency between <computeroutput>pipeline_1</computeroutput> and <computeroutput>pipeline_2</computeroutput>, the output of <computeroutput>pl_1</computeroutput> precedes the output of <computeroutput>pl_2</computeroutput>.</para></sect2>
-<sect2 id="ParallelPipeline_1DefineMultipleParallelPipelines">
+<sect2 id="TaskParallelPipeline_1DefineMultipleTaskParallelPipelines">
 <title>Example 3: Define Multiple Parallel Pipelines</title>
 <para>This example creates two independent pipelines that run in parallel on different data sets.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/>2:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
@@ -494,9 +494,9 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal">pipeline<sp/>1,<sp/>pipe<sp/>2:<sp/>input<sp/>buffer_1[0]<sp/>=<sp/>5</highlight></codeline>
 </programlisting></para><para>Because pipeline <computeroutput>pl_1</computeroutput> and pipeline <computeroutput>pl_2</computeroutput> are running in parallel, their outputs may interleave.</para></sect2>
 </sect1>
-<sect1 id="ParallelPipeline_1ResetPipeline">
+<sect1 id="TaskParallelPipeline_1ResetPipeline">
 <title>Reset a Pipeline</title>
-<para>Our pipeline scheduling framework keeps a <emphasis>stateful</emphasis> number of scheduled tokens at each submitted run. You can reset the pipeline to the initial state using <ref refid="classtf_1_1Pipeline_1a311d874b98de6f0def8a7d869e8d15bd" kindref="member">tf::Pipeline::reset()</ref>, where the number of scheduled tokens will start from zero in the next run. Borrowed from <ref refid="ParallelPipeline_1IterateAPipeline" kindref="member">Example 1: Iterate a Pipeline</ref>, the program below resets the pipeline at the second iteration (inside the condition task) so the scheduling token will start from zero in the next run.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<para>Our pipeline scheduling framework keeps a <emphasis>stateful</emphasis> number of scheduled tokens at each submitted run. You can reset the pipeline to the initial state using <ref refid="classtf_1_1Pipeline_1a311d874b98de6f0def8a7d869e8d15bd" kindref="member">tf::Pipeline::reset()</ref>, where the number of scheduled tokens will start from zero in the next run. Borrowed from <ref refid="TaskParallelPipeline_1IterateAPipeline" kindref="member">Example 1: Iterate a Pipeline</ref>, the program below resets the pipeline at the second iteration (inside the condition task) so the scheduling token will start from zero in the next run.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>define<sp/>the<sp/>maximum<sp/>parallelism<sp/>of<sp/>the<sp/>pipeline</highlight><highlight class="normal"></highlight></codeline>
@@ -594,10 +594,10 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal">pipe<sp/>2:<sp/>input<sp/>buffer_1[0]<sp/>=<sp/>5</highlight></codeline>
 <codeline><highlight class="normal">stop</highlight></codeline>
 </programlisting></para><para>The output can be different from run to run, since the second pipe is a parallel type. At the second iteration from the condition task, we reset the pipeline so the token identifier starts from <computeroutput>0</computeroutput> rather than <computeroutput>5</computeroutput>.</para></sect1>
-<sect1 id="ParallelPipeline_1ParallelPipelineLearnMore">
+<sect1 id="TaskParallelPipeline_1TaskParallelPipelineLearnMore">
 <title>Learn More about Taskflow Pipeline</title>
 <para>Visit the following pages to learn more about pipeline:</para><para><orderedlist>
-<listitem><para><ref refid="ParallelScalablePipeline" kindref="compound">Parallel Scalable Pipeline</ref></para></listitem><listitem><para><ref refid="TextProcessingPipeline" kindref="compound">Text Processing Pipeline</ref></para></listitem><listitem><para><ref refid="GraphProcessingPipeline" kindref="compound">Graph Processing Pipeline</ref></para></listitem><listitem><para><ref refid="TaskflowProcessingPipeline" kindref="compound">Taskflow Processing Pipeline</ref></para></listitem><listitem><para><ref refid="ParallelDataPipeline" kindref="compound">Parallel Data Pipeline</ref> </para></listitem></orderedlist>
+<listitem><para><ref refid="TaskParallelScalablePipeline" kindref="compound">Task-parallel Scalable Pipeline</ref></para></listitem><listitem><para><ref refid="TextProcessingPipeline" kindref="compound">Text Processing Pipeline</ref></para></listitem><listitem><para><ref refid="GraphProcessingPipeline" kindref="compound">Graph Processing Pipeline</ref></para></listitem><listitem><para><ref refid="TaskflowProcessingPipeline" kindref="compound">Taskflow Processing Pipeline</ref></para></listitem><listitem><para><ref refid="DataParallelPipeline" kindref="compound">Data-parallel Pipeline</ref> </para></listitem></orderedlist>
 </para></sect1>
     </detaileddescription>
   </compounddef>

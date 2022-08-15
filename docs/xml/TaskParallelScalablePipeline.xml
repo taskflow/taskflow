@@ -1,17 +1,17 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
-  <compounddef id="ParallelScalablePipeline" kind="page">
-    <compoundname>ParallelScalablePipeline</compoundname>
-    <title>Parallel Scalable Pipeline</title>
+  <compounddef id="TaskParallelScalablePipeline" kind="page">
+    <compoundname>TaskParallelScalablePipeline</compoundname>
+    <title>Task-parallel Scalable Pipeline</title>
     <tableofcontents/>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Unlike <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref> (see <ref refid="ParallelPipeline" kindref="compound">Parallel Pipeline</ref>) that instantiates all pipes at the construction time, Taskflow provides a scalable alternative called <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref> to allow variable assignments of pipes using range iterators. A scalable pipeline is thus more flexible for applications to create a pipeline scheduling framework whose pipeline structure depends on runtime variables.</para><sect1 id="ParallelScalablePipeline_1IncludeTheScalablePipelineHeader">
+<para>Unlike <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref> (see <ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref>) that instantiates all pipes at the construction time, Taskflow provides a scalable alternative called <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref> to allow variable assignments of pipes using range iterators. A scalable pipeline is thus more flexible for applications to create a pipeline scheduling framework whose pipeline structure depends on runtime variables.</para><sect1 id="TaskParallelScalablePipeline_1IncludeTheScalablePipelineHeader">
 <title>Include the Header</title>
 <para>You need to include the header file, <computeroutput>taskflow/algorithm/pipeline.hpp</computeroutput>, for creating a scalable pipeline scheduling framework.</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="pipeline_8hpp" kindref="compound">taskflow/algorithm/pipeline.hpp</ref>&gt;</highlight></codeline>
 </programlisting></para></sect1>
-<sect1 id="ParallelScalablePipeline_1CreateAScalablePipelineModuleTask">
+<sect1 id="TaskParallelScalablePipeline_1CreateAScalablePipelineModuleTask">
 <title>Create a Scalable Pipeline Module Task</title>
 <para>Similar to <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref>, <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref> is a composable graph object to implement a <emphasis>pipeline scheduling framework</emphasis> in a taskflow. The key difference between <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref> and <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref> is that a scalable pipeline can accept <emphasis>variable</emphasis> assignments of pipes rather than instantiating all pipes at construction or programming time. Users define a linear range of pipes, each of the same callable type, and apply that range to construct a scalable pipeline. Between successive runs, users can reset the pipeline to a different range of pipes. The following code creates a scalable pipeline that uses four parallel lines to schedule tokens through three serial pipes in the given vector, then resetting that pipeline to a new range of five serial pipes:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
@@ -90,7 +90,7 @@
 </para><para>Then, the program appends another two pipes into the vector and resets the pipeline to the new range of two additional pipes, resulting in a pipeline of five serial stages:</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/scalable_pipeline_2.dot"></dotfile>
 </para><para>When resetting a scalable pipeline to a new range, it will start from the initial state as if it has just been constructed, i.e., the token number counts from zero.</para><para><simplesect kind="attention"><para>Unlike <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref> that keeps the given pipes in a <ref refid="cpp/utility/tuple" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::tuple</ref> object, <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref> does not own the given pipe but maintains a vector of iterators to each pipe in the given range. It is your responsibility to keep those pipe objects alive during the execution of the pipeline task.</para></simplesect>
 </para></sect1>
-<sect1 id="ParallelScalablePipeline_1ResetAPlaceholderScalablePipeline">
+<sect1 id="TaskParallelScalablePipeline_1ResetAPlaceholderScalablePipeline">
 <title>Reset a Placeholder Scalable Pipeline</title>
 <para>It is possible to create a scalable pipeline as a placeholder using the constructor <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline(size_t num_lines)</ref> and reset it to another range later in the application. The following code creates a task to emplace a range of pipes and reset the pipeline to that range, before running the pipeline task:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
@@ -123,7 +123,7 @@ Similarly, you can create an empty scalable pipeline using the default construct
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>pipes<sp/>...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">spl.<ref refid="classtf_1_1ScalablePipeline_1a940a8de7b53ac5cbd59c55091d88c88f" kindref="member">reset</ref>(num_lines,<sp/>pipes.begin(),<sp/>pipes.end());</highlight></codeline>
 </programlisting></para></sect1>
-<sect1 id="ParallelScalablePipeline_1ScalablePipelineUseOtherIteratorTypes">
+<sect1 id="TaskParallelScalablePipeline_1ScalablePipelineUseOtherIteratorTypes">
 <title>Use Other Iterator Types</title>
 <para>When assigning a range to a scalable pipeline, the pipeline fetches all pipe iterators in that range to an internal vector. This organization allows invoking a pipe callable to be a random accessible operation, regardless of the pipe container type. Taskflow does not have much restriction on the iterator type, as long as these pipes can be iterated in a sequential order using the postfix increment operator, <computeroutput>++</computeroutput>.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>use<sp/>vector<sp/>to<sp/>store<sp/>pipes</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;tf::Pipe&lt;std::function&lt;void(tf::Pipeflow&amp;)&gt;</ref>&gt;&gt;<sp/>vector;</highlight></codeline>
@@ -133,10 +133,10 @@ Similarly, you can create an empty scalable pipeline using the default construct
 <codeline><highlight class="normal"><ref refid="cpp/container/list" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::list&lt;tf::Pipe&lt;std::function&lt;void(tf::Pipeflow&amp;)&gt;</ref>&gt;&gt;<sp/>list;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref><sp/>spl2(num_lines,<sp/>list.begin(),<sp/>list.end());</highlight></codeline>
 </programlisting></para></sect1>
-<sect1 id="ParallelScalablePipeline_1ParallelScalablePipelineLearnMore">
+<sect1 id="TaskParallelScalablePipeline_1ParallelScalablePipelineLearnMore">
 <title>Learn More about Taskflow Pipeline</title>
 <para>Visit the following pages to learn more about pipeline:</para><para><orderedlist>
-<listitem><para><ref refid="ParallelPipeline" kindref="compound">Parallel Pipeline</ref></para></listitem><listitem><para><ref refid="TextProcessingPipeline" kindref="compound">Text Processing Pipeline</ref></para></listitem><listitem><para><ref refid="GraphProcessingPipeline" kindref="compound">Graph Processing Pipeline</ref></para></listitem><listitem><para><ref refid="TaskflowProcessingPipeline" kindref="compound">Taskflow Processing Pipeline</ref></para></listitem><listitem><para><ref refid="ParallelDataPipeline" kindref="compound">Parallel Data Pipeline</ref> </para></listitem></orderedlist>
+<listitem><para><ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref></para></listitem><listitem><para><ref refid="TextProcessingPipeline" kindref="compound">Text Processing Pipeline</ref></para></listitem><listitem><para><ref refid="GraphProcessingPipeline" kindref="compound">Graph Processing Pipeline</ref></para></listitem><listitem><para><ref refid="TaskflowProcessingPipeline" kindref="compound">Taskflow Processing Pipeline</ref></para></listitem><listitem><para><ref refid="DataParallelPipeline" kindref="compound">Data-parallel Pipeline</ref> </para></listitem></orderedlist>
 </para></sect1>
     </detaileddescription>
   </compounddef>

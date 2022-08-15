@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Taskflow Algorithms &raquo; Data-parallel Pipeline | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="Algorithms.html">Taskflow Algorithms</a> &raquo;</span>
+          Data-parallel Pipeline
+        </h1>
+        <nav class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li><a href="#ParallelDataPipelineIncludeHeaderFile">Include the Header</a></li>
+            <li><a href="#CreateADataPipelineModuleTask">Create a Data Pipeline Module Task</a></li>
+            <li><a href="#UnderstandInternalDataStorage">Understand Internal Data Storage</a></li>
+            <li><a href="#DataParallelPipelineLearnMore">Learn More about Taskflow Pipeline</a></li>
+          </ul>
+        </nav>
+<p>Taskflow provides another variant, tf::DataPipaline, on top of <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> (see <a href="TaskParallelPipeline.html" class="m-doc">Task-parallel Pipeline</a>) to help you implement data-parallel pipeline algorithms while leaving data management to Taskflow.</p><section id="ParallelDataPipelineIncludeHeaderFile"><h2><a href="#ParallelDataPipelineIncludeHeaderFile">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/algorithm/data_pipeline.hpp</code>, for using tf::DataPipaline.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/algorithm/data_pipeline.hpp&gt;</span><span class="cp"></span></pre></section><section id="CreateADataPipelineModuleTask"><h2><a href="#CreateADataPipelineModuleTask">Create a Data Pipeline Module Task</a></h2><p>Similar to creating a task-parallel pipeline (<a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a>), there are three steps to create a data-parallel pipeline application:</p><ol><li>Define the pipeline structure (e.g., pipe type, pipe callable, stopping rule, line count)</li><li>Define the data storage and layout, if needed for the application</li><li>Define the pipeline taskflow graph using composition</li></ol><p>The following example creates a data-parallel pipeline that generates a total of five dataflow tokens from <code>void</code> to <code>int</code> at the first stage, from <code>int</code> to <code><a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a></code> at the second stage, from <code><a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a></code> to <code>float</code> at the third stage, and <code>float</code> to <code>void</code> at the final stage. Data storage between stages is automatically managed by <a href="classtf_1_1DataPipeline.html" class="m-doc">tf::<wbr />DataPipeline</a>.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/algorithm/data_pipeline.hpp&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">  </span><span class="c1">// data flow =&gt; void -&gt; int -&gt; std::string -&gt; float -&gt; void </span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">num_lines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// create a pipeline graph</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">DataPipeline</span><span class="w"> </span><span class="n">pl</span><span class="p">(</span><span class="n">num_lines</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pf</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="kt">int</span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">pf</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;first pipe returns %lu</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">());</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}),</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="p">[](</span><span class="kt">int</span><span class="o">&amp;</span><span class="w"> </span><span class="n">input</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;second pipe returns a strong of %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">input</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}),</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="p">[](</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">input</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;third pipe receives the input string %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span><span class="w"></span>
+<span class="w">    </span><span class="p">})</span><span class="w"></span>
+<span class="w">  </span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="c1">// build the pipeline graph using composition</span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">pl</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="c1">// dump the pipeline graph structure (with composition)</span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="c1">// run the pipeline</span>
+<span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="n">The</span><span class="w"> </span><span class="n">interface</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">DataPipeline</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">very</span><span class="w"> </span><span class="n">similar</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeline</span><span class="p">,</span><span class="w"> </span><span class="n">except</span><span class="w"> </span><span class="n">that</span><span class="w"></span>
+<span class="n">the</span><span class="w"> </span><span class="n">library</span><span class="w"> </span><span class="n">transparently</span><span class="w"> </span><span class="n">manages</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">dataflow</span><span class="w"> </span><span class="n">between</span><span class="w"> </span><span class="n">pipes</span><span class="p">.</span><span class="w"></span>
+<span class="n">To</span><span class="w"> </span><span class="n">create</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">stage</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">data</span><span class="o">-</span><span class="n">parallel</span><span class="w"> </span><span class="n">pipeline</span><span class="p">,</span><span class="w"> </span>
+<span class="n">you</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">always</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">helper</span><span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">:</span><span class="w"></span>
+
+<span class="err">@</span><span class="n">code</span><span class="p">{.</span><span class="n">cpp</span><span class="p">}</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="p">[](</span><span class="kt">int</span><span class="o">&amp;</span><span class="w"> </span><span class="n">input</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">input</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span></pre><p>The helper function starts with a pair of an input and an output types in its template arguments. Both types will always be decayed to their original form using <a href="http://en.cppreference.com/w/cpp/types/decay.html" class="m-doc-external">std::<wbr />decay</a> (e.g., <code>const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp;</code> becomes <code><a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a></code>) for storage purpose. In terms of function arguments, the first argument specifies the direction of this data pipe, which can be either <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a> or <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc">tf::<wbr />PipeType::<wbr />PARALLEL</a>, and the second argument is a callable to invoke by the pipeline scheduler. The callable must take the input data type in its first argument and returns a value of the output data type. Additionally, the callable can take a <a href="classtf_1_1Pipeflow.html" class="m-doc">tf::<wbr />Pipeflow</a> reference in its second argument which allows you to query the runtime information of a stage task, such as its line number and token number.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="p">[](</span><span class="kt">int</span><span class="o">&amp;</span><span class="w"> </span><span class="n">input</span><span class="p">,</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;token=%lu, line=%lu</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">(),</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">());</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">input</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">)</span><span class="w"></span></pre><aside class="m-note m-info"><h4>Note</h4><p>By default, <a href="classtf_1_1DataPipeline.html" class="m-doc">tf::<wbr />DataPipeline</a> passes the data in reference to your callable at which you can take it in copy or in reference.</p></aside><p>For the first pipe, the input type should always be <code>void</code> and the callable must take a <a href="classtf_1_1Pipeflow.html" class="m-doc">tf::<wbr />Pipeflow</a> reference in its argument. In this example, we will stop the pipeline when processing five tokens.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="p">[](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pf</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="kt">int</span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">pf</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}),</span><span class="w"></span></pre><p>Similarly, the output type of the last pipe should be <code>void</code> as no more data will go out of the final pipe.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="p">[](</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">input</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"></span>
+<span class="p">})</span><span class="w"></span></pre><p>Finally, you need to compose the pipeline graph by creating a module task.</p><pre class="m-code"><span class="c1">// build the pipeline graph using composition</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">pl</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="c1">// dump the pipeline graph structure (with composition)</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span>
+
+<span class="c1">// run the pipeline</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 28.500rem; height: 15.375rem;" viewBox="0.00 0.00 456.00 246.00">
+<g transform="scale(1 1) rotate(0) translate(4 242)">
+<title>Taskflow</title>
+<g class="m-cluster">
+<title>cluster_p0x7ffc47e53358</title>
+<polygon points="8,-144 8,-222 146,-222 146,-144 8,-144"/>
+<text text-anchor="middle" x="77" y="-205.2">Taskflow</text>
+</g>
+<g class="m-cluster">
+<title>cluster_p0x7ffc47e53220</title>
+<polygon points="154,-8 154,-230 440,-230 440,-8 154,-8"/>
+<text text-anchor="middle" x="297" y="-213.2">m1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x1878a88</title>
+<polygon points="137.5,-188 20.5,-188 16.5,-184 16.5,-152 133.5,-152 137.5,-156 137.5,-188"/>
+<polyline points="133.5,-184 16.5,-184 "/>
+<polyline points="133.5,-184 133.5,-152 "/>
+<polyline points="133.5,-184 137.5,-188 "/>
+<text text-anchor="middle" x="77" y="-166.2">pipeline [m1]</text>
+</g>
+<g class="m-node">
+<title>p0x1878600</title>
+<polygon points="297,-196 242,-170 297,-144 352,-170 297,-196"/>
+<text text-anchor="middle" x="297" y="-166.2">cond</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x18786e8</title>
+<polygon points="216,-52 162,-52 162,-48 158,-48 158,-44 162,-44 162,-24 158,-24 158,-20 162,-20 162,-16 216,-16 216,-52"/>
+<polyline points="162,-48 166,-48 166,-44 162,-44 "/>
+<polyline points="162,-24 166,-24 166,-20 162,-20 "/>
+<text text-anchor="middle" x="189" y="-30.2">rt&#45;0</text>
+</g>
+<g class="m-edge">
+<title>p0x1878600&#45;&gt;p0x18786e8</title>
+<path stroke-dasharray="5,2" d="M281.9831,-151.0898C263.2598,-127.5123 231.1482,-87.0755 209.996,-60.4394"/>
+<polygon points="212.5041,-57.9696 203.5443,-52.3151 207.0223,-62.3228 212.5041,-57.9696"/>
+<text text-anchor="middle" x="251" y="-94.2">0</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x18787d0</title>
+<polygon points="288,-52 234,-52 234,-48 230,-48 230,-44 234,-44 234,-24 230,-24 230,-20 234,-20 234,-16 288,-16 288,-52"/>
+<polyline points="234,-48 238,-48 238,-44 234,-44 "/>
+<polyline points="234,-24 238,-24 238,-20 234,-20 "/>
+<text text-anchor="middle" x="261" y="-30.2">rt&#45;1</text>
+</g>
+<g class="m-edge">
+<title>p0x1878600&#45;&gt;p0x18787d0</title>
+<path stroke-dasharray="5,2" d="M290.8114,-146.6208C284.6195,-123.2294 275.0892,-87.2258 268.4777,-62.249"/>
+<polygon points="271.7836,-61.06 265.8411,-52.2886 265.0166,-62.8513 271.7836,-61.06"/>
+<text text-anchor="middle" x="285" y="-94.2">1</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x18788b8</title>
+<polygon points="360,-52 306,-52 306,-48 302,-48 302,-44 306,-44 306,-24 302,-24 302,-20 306,-20 306,-16 360,-16 360,-52"/>
+<polyline points="306,-48 310,-48 310,-44 306,-44 "/>
+<polyline points="306,-24 310,-24 310,-20 306,-20 "/>
+<text text-anchor="middle" x="333" y="-30.2">rt&#45;2</text>
+</g>
+<g class="m-edge">
+<title>p0x1878600&#45;&gt;p0x18788b8</title>
+<path stroke-dasharray="5,2" d="M303.1886,-146.6208C309.3805,-123.2294 318.9108,-87.2258 325.5223,-62.249"/>
+<polygon points="328.9834,-62.8513 328.1589,-52.2886 322.2164,-61.06 328.9834,-62.8513"/>
+<text text-anchor="middle" x="323" y="-94.2">2</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x18789a0</title>
+<polygon points="432,-52 378,-52 378,-48 374,-48 374,-44 378,-44 378,-24 374,-24 374,-20 378,-20 378,-16 432,-16 432,-52"/>
+<polyline points="378,-48 382,-48 382,-44 378,-44 "/>
+<polyline points="378,-24 382,-24 382,-20 378,-20 "/>
+<text text-anchor="middle" x="405" y="-30.2">rt&#45;3</text>
+</g>
+<g class="m-edge">
+<title>p0x1878600&#45;&gt;p0x18789a0</title>
+<path stroke-dasharray="5,2" d="M312.0169,-151.0898C330.7402,-127.5123 362.8518,-87.0755 384.004,-60.4394"/>
+<polygon points="386.9777,-62.3228 390.4557,-52.3151 381.4959,-57.9696 386.9777,-62.3228"/>
+<text text-anchor="middle" x="365" y="-94.2">3</text>
+</g>
+</g>
+</svg>
+</div></section><section id="UnderstandInternalDataStorage"><h2><a href="#UnderstandInternalDataStorage">Understand Internal Data Storage</a></h2><p>By default, <a href="classtf_1_1DataPipeline.html" class="m-doc">tf::<wbr />DataPipeline</a> uses std::variant to store a type-safe union of all input and output data types extracted from the given data pipes. To avoid false sharing, each line keeps a variant that is aligned with the cacheline size. When invoking a pipe callable, the input data is acquired in reference from the variant using std::get. When returning from a pipe callable, the output data is stored back to the variant using assignment operator.</p></section><section id="DataParallelPipelineLearnMore"><h2><a href="#DataParallelPipelineLearnMore">Learn More about Taskflow Pipeline</a></h2><p>Visit the following pages to learn more about pipeline:</p><ol><li><a href="TaskParallelPipeline.html" class="m-doc">Task-parallel Pipeline</a></li><li><a href="TaskParallelScalablePipeline.html" class="m-doc">Task-parallel Scalable Pipeline</a></li></ol><ol><li><a href="TextProcessingPipeline.html" class="m-doc">Text Processing Pipeline</a></li><li><a href="GraphProcessingPipeline.html" class="m-doc">Graph Processing Pipeline</a></li><li><a href="TaskflowProcessingPipeline.html" class="m-doc">Taskflow Processing Pipeline</a></li></ol></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>
