@@ -1,8 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="release-3-4-0" kind="page">
     <compoundname>release-3-4-0</compoundname>
     <title>Release 3.4.0 (2022/05/23)</title>
+    <tableofcontents/>
+    <briefdescription>
+    </briefdescription>
     <detaileddescription>
 <para>Taskflow 3.4.0 is the 5th release in the 3.x line! This release includes several new changes, such as pipeline parallelism, deadlock-free execution methods, documentation, examples, and unit tests.</para><sect1 id="release-3-4-0_1release-3-4-0_download">
 <title>Download</title>
@@ -66,11 +69,11 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <para><itemizedlist>
 <listitem><para>Revised <ref refid="ExecuteTaskflow" kindref="compound">Executor</ref><itemizedlist>
 <listitem><para>Added <ref refid="ExecuteTaskflow_1ExecuteATaskflowFromAnInternalWorker" kindref="member">Execute a Taskflow from an Internal Worker</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Revised CUDASTDExecutionPolicy</para></listitem><listitem><para>Revised <ref refid="ParallelPipeline" kindref="compound">Parallel Pipeline</ref><itemizedlist>
-<listitem><para>Added <ref refid="ParallelPipeline_1ParallelPipelineLearnMore" kindref="member">Learn More about Taskflow Pipeline</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Revised Examples<itemizedlist>
-<listitem><para>Added TextProcessingPipeline</para></listitem><listitem><para>Added GraphProcessingPipeline</para></listitem><listitem><para>Added TaskflowProcessingPipeline</para></listitem></itemizedlist>
-</para></listitem><listitem><para>Added ParallelScalablePipeline</para></listitem></itemizedlist>
+</para></listitem><listitem><para>Revised <ref refid="CUDASTDExecutionPolicy" kindref="compound">Execution Policy</ref></para></listitem><listitem><para>Revised <ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref><itemizedlist>
+<listitem><para>Added <ref refid="TaskParallelPipeline_1TaskParallelPipelineLearnMore" kindref="member">Learn More about Taskflow Pipeline</ref></para></listitem></itemizedlist>
+</para></listitem><listitem><para>Revised <ref refid="Examples" kindref="compound">Learning from Examples</ref><itemizedlist>
+<listitem><para>Added <ref refid="TextProcessingPipeline" kindref="compound">Text Processing Pipeline</ref></para></listitem><listitem><para>Added <ref refid="GraphProcessingPipeline" kindref="compound">Graph Processing Pipeline</ref></para></listitem><listitem><para>Added <ref refid="TaskflowProcessingPipeline" kindref="compound">Taskflow Processing Pipeline</ref></para></listitem></itemizedlist>
+</para></listitem><listitem><para>Added <ref refid="TaskParallelScalablePipeline" kindref="compound">Task-parallel Scalable Pipeline</ref></para></listitem></itemizedlist>
 </para></sect1>
 <sect1 id="release-3-4-0_1release-3-4-0_miscellaneous_items">
 <title>Miscellaneous Items</title>

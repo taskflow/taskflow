@@ -38,13 +38,11 @@ To use %Taskflow v3.5.0, you need a compiler that supports C++17:
 
 + Added tf::WorkerInterface to allow changing properties of workers upon their creations
 + Added tf::Executor::loop_until to allow looping a worker with a custom stop predicate
++ Added tf::DataPipeline to implement data-parallel algorithms
 + Extended tf::TaskQueue to include priority (tf::TaskPriority)
   + See @ref PrioritizedTasking
 + Extended tf::Executor to include tf::WorkerInterface
-<<<<<<< HEAD
-=======
 + Improved parallel algorithms (e.g., tf::Taskflow::for_each) with tail optimization
->>>>>>> 0dc0291de3cf926fe81561f8073ed43718146077
 
 @subsection release-3-5-0_cudaflow cudaFlow
 
@@ -71,12 +69,8 @@ If you encounter any potential bugs, please submit an issue at @IssueTracker.
 @section release-3-5-0_documentation Documentation
 
 + Revised @ref ExecuteTaskflow
-<<<<<<< HEAD
-  + Added @ref ChangeWorkerProperty
-=======
   + Added @ref ExecuteATaskflowFromAnInternalWorker
   + Added @ref ModifyWorkerProperty
->>>>>>> 0dc0291de3cf926fe81561f8073ed43718146077
 + Added @ref PrioritizedTasking 
 
 @section release-3-5-0_miscellaneous_items Miscellaneous Items

@@ -49,7 +49,7 @@
           <div class="m-doc-template">template&lt;typename... Ps&gt;</div>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>DataPipeline <span class="m-thin">class</span>
         </h1>
-        <p>class to create a data pipeline scheduling framework</p>
+        <p>class to create a data-parallel pipeline scheduling framework</p>
         <table class="m-table m-fullwidth m-flat">
           <thead>
             <tr><th colspan="2">Template parameters</th></tr>
@@ -57,7 +57,7 @@
           <tbody>
             <tr>
               <td style="width: 1%">Ps</td>
-              <td>pipe types</td>
+              <td>data pipe types</td>
             </tr>
           </tbody>
         </table>
@@ -67,63 +67,71 @@
             <li>
               Reference
               <ul>
+                <li><a href="#pub-types">Public types</a></li>
                 <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
                 <li><a href="#pub-methods">Public functions</a></li>
               </ul>
             </li>
           </ul>
         </nav>
-<p>You can study the <a href="ParallelPipeline.html" class="m-doc">Parallel Pipeline</a> first, and then you will know the concept of Data <a href="classtf_1_1Pipeline.html" class="m-doc">Pipeline</a>. Here we add a layer of data abstraction on top of the original <a href="ParallelPipeline.html" class="m-doc">Parallel Pipeline</a>, so that users can either choose to prepare the data buffer manually and use an efficient pipeline without data abstraction, or choose to use a pipeline with data abstraction and let the program allocate the buffer automatically.</p><p>The following code is an example:</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;taskflow/algorithm/data_pipeline.hpp&gt;</span><span class="cp"></span>
+<p>Similar to <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a>, a <a href="classtf_1_1DataPipeline.html" class="m-doc">tf::<wbr />DataPipeline</a> is a composable graph object for users to create a <em>data-parallel pipeline scheduling framework</em> using a module task in a taskflow. The only difference is that tf::DataPipline provides a data abstraction for users to quickly express dataflow in a pipeline. The following example creates a data-parallel pipeline of three stages that generate dataflow from <code>void</code> to <code>int</code>, <code><a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a></code>, <code>float</code>, and <code>void</code>.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/algorithm/data_pipeline.hpp&gt;</span><span class="cp"></span>
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
-  <span class="c1">// data flow =&gt; void -&gt; int -&gt; std::string -&gt; float -&gt; void </span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// data flow =&gt; void -&gt; int -&gt; std::string -&gt; float -&gt; void </span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
 
-  <span class="k">const</span> <span class="kt">size_t</span> <span class="n">num_lines</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">num_lines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"></span>
 
-  <span class="n">tf</span><span class="o">::</span><span class="n">DataPipeline</span> <span class="n">pl</span><span class="p">(</span><span class="n">num_lines</span><span class="p">,</span>
-    <span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span> <span class="n">pf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">int</span><span class="p">{</span>
-      <span class="k">if</span><span class="p">(</span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()</span> <span class="o">==</span> <span class="mi">5</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">pf</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span>
-        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-      <span class="p">}</span>
-      <span class="k">else</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">();</span>
-      <span class="p">}</span>
-    <span class="p">}),</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">DataPipeline</span><span class="w"> </span><span class="n">pl</span><span class="p">(</span><span class="n">num_lines</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pf</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="kt">int</span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">pf</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}),</span><span class="w"></span>
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="p">[](</span><span class="kt">int</span><span class="o">&amp;</span><span class="w"> </span><span class="n">input</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">input</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}),</span><span class="w"></span>
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="p">[](</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">input</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">})</span><span class="w"></span>
+<span class="w">  </span><span class="p">);</span><span class="w"></span>
 
-    <span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> <span class="p">[](</span><span class="kt">int</span><span class="o">&amp;</span> <span class="n">input</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">input</span> <span class="o">+</span> <span class="mi">100</span><span class="p">);</span>
-    <span class="p">}),</span>
+<span class="w">  </span><span class="c1">// build the pipeline graph using composition</span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">pl</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span><span class="w"></span>
 
-    <span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span> <span class="kt">void</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> <span class="p">[](</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">input</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">input</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-    <span class="p">})</span>
-  <span class="p">);</span>
+<span class="w">  </span><span class="c1">// dump the pipeline graph structure (with composition)</span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span>
 
-  <span class="c1">// build the pipeline graph using composition</span>
-  <span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">pl</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// run the pipeline</span>
+<span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
 
-  <span class="c1">// dump the pipeline graph structure (with composition)</span>
-  <span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
-
-  <span class="c1">// run the pipeline</span>
-  <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
-
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span></pre><p>The above example creates a pipeline graph that schedules five tokens over four parallel lines in a circular fashion, as depicted below:</p><pre class="m-code"><span class="n">o</span> <span class="o">-&gt;</span> <span class="n">o</span> <span class="o">-&gt;</span> <span class="n">o</span>
-<span class="o">|</span>    <span class="o">|</span>    <span class="o">|</span>
-<span class="n">v</span>    <span class="n">v</span>    <span class="n">v</span>
-<span class="n">o</span> <span class="o">-&gt;</span> <span class="n">o</span> <span class="o">-&gt;</span> <span class="n">o</span>
-<span class="o">|</span>    <span class="o">|</span>    <span class="o">|</span>
-<span class="n">v</span>    <span class="n">v</span>    <span class="n">v</span>
-<span class="n">o</span> <span class="o">-&gt;</span> <span class="n">o</span> <span class="o">-&gt;</span> <span class="n">o</span>
-<span class="o">|</span>    <span class="o">|</span>    <span class="o">|</span>
-<span class="n">v</span>    <span class="n">v</span>    <span class="n">v</span>
-<span class="n">o</span> <span class="o">-&gt;</span> <span class="n">o</span> <span class="o">-&gt;</span> <span class="n">o</span></pre>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre><p>The pipeline schedules five tokens over four parallel lines in a circular fashion, as depicted below:</p><pre class="m-console"><span class="go">o -&gt; o -&gt; o</span>
+<span class="go">|    |    |</span>
+<span class="go">v    v    v</span>
+<span class="go">o -&gt; o -&gt; o</span>
+<span class="go">|    |    |</span>
+<span class="go">v    v    v</span>
+<span class="go">o -&gt; o -&gt; o</span>
+<span class="go">|    |    |</span>
+<span class="go">v    v    v</span>
+<span class="go">o -&gt; o -&gt; o</span></pre>
+        <section id="pub-types">
+          <h2><a href="#pub-types">Public types</a></h2>
+          <dl class="m-doc">
+            <dt id="a4fafcfd61a19628b48042b79e0d3f86e">
+              using <a href="#a4fafcfd61a19628b48042b79e0d3f86e" class="m-doc-self">data_t</a> = unique_variant_t&lt;std::variant&lt;std::conditional_t&lt;std::is_void_v&lt;typename Ps::output_t&gt;, std::monostate, std::decay_t&lt;typename Ps::output_t&gt;&gt;...&gt;&gt;
+            </dt>
+            <dd>internal storage type for each data token (default std::variant)</dd>
+          </dl>
+        </section>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
@@ -131,12 +139,12 @@
               <span class="m-doc-wrap-bumper"><a href="#a1559f218ca91b41d6c871a88183a04e5" class="m-doc">DataPipeline</a>(</span><span class="m-doc-wrap">size_t num_lines,
               Ps &amp;&amp; ... ps)</span>
             </dt>
-            <dd>constructs a pipeline object</dd>
+            <dd>constructs a data-parallel pipeline object</dd>
             <dt>
               <span class="m-doc-wrap-bumper"><a href="#abe9f09834e32eebf792c330fe825138d" class="m-doc">DataPipeline</a>(</span><span class="m-doc-wrap">size_t num_lines,
               <a href="http://en.cppreference.com/w/cpp/utility/tuple.html" class="m-doc-external">std::<wbr />tuple</a>&lt;Ps...&gt;&amp;&amp; ps)</span>
             </dt>
-            <dd>constructs a pipeline object</dd>
+            <dd>constructs a data-parallel pipeline object</dd>
           </dl>
         </section>
         <section id="pub-methods">
@@ -174,7 +182,7 @@
               <span class="m-doc-wrap-bumper"> tf::<wbr />DataPipeline&lt;Ps&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1559f218ca91b41d6c871a88183a04e5" class="m-doc-self">DataPipeline</a>(</span><span class="m-doc-wrap">size_t num_lines,
               Ps &amp;&amp; ... ps)</span></span>
             </h3>
-            <p>constructs a pipeline object</p>
+            <p>constructs a data-parallel pipeline object</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
@@ -190,7 +198,7 @@
                 </tr>
               </tbody>
             </table>
-<p>Constructs a pipeline of up to <code>num_lines</code> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>) or an exception will be thrown.</p>
+<p>Constructs a data-parallel pipeline of up to <code>num_lines</code> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>) or an exception will be thrown.</p>
           </div></section>
           <section class="m-doc-details" id="abe9f09834e32eebf792c330fe825138d"><div>
             <h3>
@@ -200,7 +208,7 @@
               <span class="m-doc-wrap-bumper"> tf::<wbr />DataPipeline&lt;Ps&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#abe9f09834e32eebf792c330fe825138d" class="m-doc-self">DataPipeline</a>(</span><span class="m-doc-wrap">size_t num_lines,
               <a href="http://en.cppreference.com/w/cpp/utility/tuple.html" class="m-doc-external">std::<wbr />tuple</a>&lt;Ps...&gt;&amp;&amp; ps)</span></span>
             </h3>
-            <p>constructs a pipeline object</p>
+            <p>constructs a data-parallel pipeline object</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
@@ -216,7 +224,7 @@
                 </tr>
               </tbody>
             </table>
-<p>Constructs a pipeline of up to <code>num_lines</code> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>) or an exception will be thrown.</p>
+<p>Constructs a data-parallel pipeline of up to <code>num_lines</code> parallel lines to schedule tokens through the given linear chain of pipes stored in a <a href="http://en.cppreference.com/w/cpp/utility/tuple.html" class="m-doc-external">std::<wbr />tuple</a>. The first pipe must define a serial direction (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>) or an exception will be thrown.</p>
           </div></section>
           <section class="m-doc-details" id="aaa74a52dac68155a9b73f5f70d9d14aa"><div>
             <h3>
@@ -266,7 +274,7 @@
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Graph.html" class="m-doc">Graph</a>&amp; tf::<wbr />DataPipeline&lt;Ps&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#adfc70da6fdffc4a0a56bd2fe0f0dc07d" class="m-doc-self">graph</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>obtains the graph object associated with the pipeline construct</p>
-<p>This method is primarily used as an opaque data structure for creating a module task of the this pipeline.</p>
+<p>This method is primarily used as an opaque data structure for creating a module task of this pipeline.</p>
           </div></section>
         </section>
       </div>
@@ -313,7 +321,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

@@ -1,8 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="release-3-1-0" kind="page">
     <compoundname>release-3-1-0</compoundname>
     <title>Release 3.1.0 (2021/04/14)</title>
+    <tableofcontents/>
+    <briefdescription>
+    </briefdescription>
     <detaileddescription>
 <para>Taskflow 3.1.0 is the 2nd release in the 3.x line! This release includes several new changes such as CPU-GPU tasking, algorithm collection, enhanced web-based profiler, documentation, and unit tests.</para><sect1 id="release-3-1-0_1release-3-1-0_download">
 <title>Download</title>
@@ -24,7 +27,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect2 id="release-3-1-0_1release-3-1-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>optimized task node storage by using <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/phrygiangates/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> for semaphores </para></listitem>
+<listitem><para>optimized task node storage by using <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> for semaphores </para></listitem>
 <listitem><para>introduced <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> based on Intel DPC++ and SYCL 2020 spec </para></listitem>
 <listitem><para>merged the execution flow of cudaFlow and cudaFlow capturer</para></listitem>
 </itemizedlist>
@@ -89,8 +92,8 @@ Please visit these pages, <ref refid="GPUTaskingsyclFlow" kindref="compound">GPU
 <sect1 id="release-3-1-0_1release-3-1-0_documentation">
 <title>Documentation</title>
 <para><itemizedlist>
-<listitem><para>added <ref refid="CompileTaskflowWithSYCL" kindref="compound">Compile Taskflow with SYCL</ref></para></listitem><listitem><para>added SYCL example and tests to the page <ref refid="install" kindref="compound">Building and Installing</ref></para></listitem><listitem><para>added <ref refid="ExecuteTaskflow_1QueryTheWorkerID" kindref="member">Query the Worker Identieir</ref> to the cookbook page <ref refid="ExecuteTaskflow" kindref="compound">Executor</ref></para></listitem><listitem><para>added syclFlowAlgorithms<itemizedlist>
-<listitem><para>SingleTaskSYCL</para></listitem><listitem><para>ForEachSYCL</para></listitem><listitem><para>SYCLReduce</para></listitem><listitem><para>ParallelTransformsSYCL</para></listitem></itemizedlist>
+<listitem><para>added <ref refid="CompileTaskflowWithSYCL" kindref="compound">Compile Taskflow with SYCL</ref></para></listitem><listitem><para>added SYCL example and tests to the page <ref refid="install" kindref="compound">Building and Installing</ref></para></listitem><listitem><para>added <ref refid="ExecuteTaskflow_1QueryTheWorkerID" kindref="member">Query the Worker Identieir</ref> to the cookbook page <ref refid="ExecuteTaskflow" kindref="compound">Executor</ref></para></listitem><listitem><para>added <ref refid="syclFlowAlgorithms" kindref="compound">syclFlow Algorithms</ref><itemizedlist>
+<listitem><para><ref refid="SingleTaskSYCL" kindref="compound">Single Task</ref></para></listitem><listitem><para><ref refid="ForEachSYCL" kindref="compound">Parallel Iterations</ref></para></listitem><listitem><para><ref refid="SYCLReduce" kindref="compound">Parallel Reduction</ref></para></listitem><listitem><para><ref refid="ParallelTransformsSYCL" kindref="compound">Parallel Transforms</ref></para></listitem></itemizedlist>
 </para></listitem><listitem><para>revised update methods in <ref refid="GPUTaskingcudaFlow" kindref="compound">GPU Tasking (cudaFlow)</ref></para></listitem><listitem><para>revised rebind methods in <ref refid="GPUTaskingcudaFlowCapturer" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref></para></listitem></itemizedlist>
 </para></sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_miscellaneous_items">

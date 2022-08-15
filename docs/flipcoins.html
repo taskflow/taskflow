@@ -5,11 +5,7 @@
   <title>Learning from Examples &raquo; Flip Coins | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-<<<<<<< HEAD
   <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
-=======
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
->>>>>>> 0dc0291de3cf926fe81561f8073ed43718146077
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -53,7 +49,14 @@
           <span class="m-breadcrumb"><a href="Examples.html">Learning from Examples</a> &raquo;</span>
           Flip Coins
         </h1>
-<<<<<<< HEAD
+        <nav class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li><a href="#FlipCoinsProblemFormulation">Problem Formulation</a></li>
+            <li><a href="#FlipCoinsProbabilistic">Probabilistic Conditions</a></li>
+            <li><a href="#FlipCoinsTernaryCoins">Ternary Coins</a></li>
+          </ul>
+        </nav>
 <p>We study dynamic control flow of non-determinism using conditional tasking. Non-deterministic control flow is a fundamental building block in many optimization and simulation algorithms that rely on stochastic convergence rules or probabilistic pruning.</p><section id="FlipCoinsProblemFormulation"><h2><a href="#FlipCoinsProblemFormulation">Problem Formulation</a></h2><p>We have a fair binary coin and want to simulate its tosses. We flip the coin for five times. Apparently, the probability for the result to be all heads is 1/32. It is equivalently to say the expected number we need to toss for obtaining five heads is 32.</p><div class="m-graph"><svg style="width: 53.062rem; height: 2.812rem;" viewBox="0.00 0.00 849.21 44.77">
 <g transform="scale(1 1) rotate(0) translate(4 40.7696)">
 <title>G</title>
@@ -101,114 +104,6 @@
 <title>d&#45;&gt;e</title>
 <path d="M624.2824,-18.3848C632.7202,-18.3848 641.3608,-18.3848 649.9693,-18.3848"/>
 <polygon points="650.0461,-21.8849 660.046,-18.3848 650.046,-14.8849 650.0461,-21.8849"/>
-</g>
-</g>
-</svg>
-</div></section><section id="FlipCoinsProbabilistic"><h2><a href="#FlipCoinsProbabilistic">Probabilistic Conditions</a></h2><p>We use condition tasks to simulate the five coin tosses. We create five condition tasks each returning a random binary number. If the return is zero (head toss), the execution moves to the next condition task; or it (tail toss) goes back to the first condition task to start over the simulation.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span><span class="cp"></span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-
-  <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span> <span class="n">taskflow</span><span class="p">;</span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span> <span class="n">executor</span><span class="p">;</span>
-  
-  <span class="kt">size_t</span> <span class="n">rounds</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">;</span>
-  <span class="kt">size_t</span> <span class="n">tosses</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> 
-  <span class="kt">size_t</span> <span class="n">total_tosses</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> 
-  <span class="kt">double</span> <span class="n">average_tosses</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span> 
-  
-  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">A</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">tosses</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">})</span>
-                       <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;init&quot;</span><span class="p">);</span> 
-  
-  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">B</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="o">++</span><span class="n">tosses</span><span class="p">;</span> <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">2</span><span class="p">;</span> <span class="p">})</span>
-                       <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;flip-coin-1&quot;</span><span class="p">);</span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">C</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">2</span><span class="p">;</span> <span class="p">})</span>
-                       <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;flip-coin-2&quot;</span><span class="p">);</span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">D</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">2</span><span class="p">;</span> <span class="p">})</span>
-                       <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;flip-coin-3&quot;</span><span class="p">);</span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">E</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">2</span><span class="p">;</span> <span class="p">})</span>
-                       <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;flip-coin-4&quot;</span><span class="p">);</span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">F</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">2</span><span class="p">;</span> <span class="p">})</span>
-                       <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;flip-coin-5&quot;</span><span class="p">);</span>
-  
-  <span class="c1">// reach the target; record the number of tosses </span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">G</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">total_tosses</span> <span class="o">+=</span> <span class="n">tosses</span><span class="p">;</span> <span class="p">})</span>
-                       <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;stop&quot;</span><span class="p">);</span>
-  
-  <span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">);</span>
-  
-  <span class="c1">// five probabilistic conditions</span>
-  <span class="n">B</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">B</span><span class="p">);</span>
-  <span class="n">C</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">B</span><span class="p">);</span>
-  <span class="n">D</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">B</span><span class="p">);</span>
-  <span class="n">E</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">B</span><span class="p">);</span>
-  <span class="n">F</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">B</span><span class="p">);</span>
-  
-  <span class="c1">// repeat the flip-coin simulation by rounds times</span>
-  <span class="n">executor</span><span class="p">.</span><span class="n">run_n</span><span class="p">(</span><span class="n">taskflow</span><span class="p">,</span> <span class="n">rounds</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
-  
-  <span class="c1">// calculate the expected number of tosses</span>
-  <span class="n">average_tosses</span> <span class="o">=</span> <span class="n">total_tosses</span> <span class="o">/</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">rounds</span><span class="p">;</span>
-  
-  <span class="n">assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">fabs</span><span class="p">(</span><span class="n">average_tosses</span><span class="o">-</span><span class="mf">32.0</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1.0</span><span class="p">);</span>
-  
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span></pre><p>Running the taskflow by a fair number of times, the average tosses we have is close to 32. The taskflow diagram is depicted below.</p><div class="m-graph"><svg style="width: 84.625rem; height: 12.375rem;" viewBox="0.00 0.00 1353.69 198.00">
-=======
-        <div class="m-block m-default">
-          <h3>Contents</h3>
-          <ul>
-            <li><a href="#FlipCoinsProblemFormulation">Problem Formulation</a></li>
-            <li><a href="#FlipCoinsProbabilistic">Probabilistic Conditions</a></li>
-            <li><a href="#FlipCoinsTernaryCoins">Ternary Coins</a></li>
-          </ul>
-        </div>
-<p>We study dynamic control flow of non-determinism using conditional tasking. Non-deterministic control flow is a fundamental building block in many optimization and simulation algorithms that rely on stochastic convergence rules or probabilistic pruning.</p><section id="FlipCoinsProblemFormulation"><h2><a href="#FlipCoinsProblemFormulation">Problem Formulation</a></h2><p>We have a fair binary coin and want to simulate its tosses. We flip the coin for five times. Apparently, the probability for the result to be all heads is 1/32. It is equivalently to say the expected number we need to toss for obtaining five heads is 32.</p><div class="m-graph"><svg style="width: 49.875rem; height: 2.812rem;" viewBox="0.00 0.00 798.30 44.77">
-<g transform="scale(1 1) rotate(0) translate(4 40.77)">
-<title>G</title>
-<g class="m-node m-flat">
-<title>a</title>
-<ellipse cx="45.96" cy="-18.38" rx="45.92" ry="18.27"/>
-<text text-anchor="middle" x="45.96" y="-14.58">1/2 (H)</text>
-</g>
-<g class="m-node m-flat">
-<title>b</title>
-<ellipse cx="182.37" cy="-18.38" rx="54.39" ry="18.27"/>
-<text text-anchor="middle" x="182.37" y="-14.58">1/4 (HH)</text>
-</g>
-<g class="m-edge">
-<title>a&#45;&gt;b</title>
-<path d="M92.09,-18.38C100.31,-18.38 109.03,-18.38 117.67,-18.38"/>
-<polygon points="117.75,-21.88 127.75,-18.38 117.75,-14.88 117.75,-21.88"/>
-</g>
-<g class="m-node m-flat">
-<title>c</title>
-<ellipse cx="335.04" cy="-18.38" rx="62.45" ry="18.27"/>
-<text text-anchor="middle" x="335.04" y="-14.58">1/8 (HHH)</text>
-</g>
-<g class="m-edge">
-<title>b&#45;&gt;c</title>
-<path d="M236.92,-18.38C245.25,-18.38 253.96,-18.38 262.61,-18.38"/>
-<polygon points="262.71,-21.88 272.71,-18.38 262.71,-14.88 262.71,-21.88"/>
-</g>
-<g class="m-node m-flat">
-<title>d</title>
-<ellipse cx="509.64" cy="-18.38" rx="76.24" ry="18.27"/>
-<text text-anchor="middle" x="509.64" y="-14.58">1/16 (HHHH)</text>
-</g>
-<g class="m-edge">
-<title>c&#45;&gt;d</title>
-<path d="M397.38,-18.38C405.67,-18.38 414.29,-18.38 422.91,-18.38"/>
-<polygon points="423,-21.88 433,-18.38 423,-14.88 423,-21.88"/>
-</g>
-<g class="m-node m-flat">
-<title>e</title>
-<ellipse cx="706.15" cy="-18.38" rx="84.29" ry="18.27"/>
-<text text-anchor="middle" x="706.15" y="-14.58">1/32 (HHHHH)</text>
-</g>
-<g class="m-edge">
-<title>d&#45;&gt;e</title>
-<path d="M586.12,-18.38C594.56,-18.38 603.24,-18.38 611.87,-18.38"/>
-<polygon points="611.97,-21.88 621.97,-18.38 611.97,-14.88 611.97,-21.88"/>
 </g>
 </g>
 </svg>
@@ -260,13 +155,11 @@
 <span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">fabs</span><span class="p">(</span><span class="n">average_tosses</span><span class="mf">-32.0</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1.0</span><span class="p">);</span><span class="w"></span>
 <span class="w">  </span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre><p>Running the taskflow by a fair number of times, the average tosses we have is close to 32. The taskflow diagram is depicted below.</p><div class="m-graph"><svg style="width: 79.062rem; height: 12.375rem;" viewBox="0.00 0.00 1265.47 198.00">
->>>>>>> 0dc0291de3cf926fe81561f8073ed43718146077
+<span class="p">}</span><span class="w"></span></pre><p>Running the taskflow by a fair number of times, the average tosses we have is close to 32. The taskflow diagram is depicted below.</p><div class="m-graph"><svg style="width: 84.625rem; height: 12.375rem;" viewBox="0.00 0.00 1353.69 198.00">
 <g transform="scale(1 1) rotate(0) translate(4 194)">
 <title>Taskflow</title>
 <g class="m-node m-flat">
 <title>p0x7fa9a4803e30</title>
-<<<<<<< HEAD
 <ellipse cx="28.9914" cy="-102" rx="28.9828" ry="18.2703"/>
 <text text-anchor="middle" x="28.9914" y="-98.2">init</text>
 </g>
@@ -367,142 +260,6 @@
 </g>
 </g>
 </svg>
-</div><p>Although the execution of this taskflow is non-deterministic, its control flow can expand to a tree of tasks based on our scheduling rule for conditional tasking (see <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a>). Each path from the root to a leaf represents a result of five heads, and none of them can overlap at the same time (no task race). You must follow the same rule when creating a probabilistic framework using conditional tasking.</p></section><section id="FlipCoinsTernaryCoins"><h2><a href="#FlipCoinsTernaryCoins">Ternary Coins</a></h2><p>We can extend the binary coin example to a ternary case. Each condition task has one successor going back to the beginning and two successors moving to the next task. The expected number of tosses to reach five identical results is 3*3*3*3*3 = 243.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">A</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">tosses</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span> <span class="p">)</span>
-                     <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;init&quot;</span><span class="p">);</span> 
-
-<span class="c1">// start over the flip again</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">B</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="o">++</span><span class="n">tosses</span><span class="p">;</span> <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">3</span><span class="p">;</span> <span class="p">})</span>
-                     <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;flip-coin-1&quot;</span><span class="p">);</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">C</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">3</span><span class="p">;</span> <span class="p">})</span>
-                     <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;flip-coin-2&quot;</span><span class="p">);</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">D</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">3</span><span class="p">;</span> <span class="p">})</span>
-                     <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;flip-coin-3&quot;</span><span class="p">);</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">E</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">3</span><span class="p">;</span> <span class="p">})</span>
-                     <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;flip-coin-4&quot;</span><span class="p">);</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">F</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">3</span><span class="p">;</span> <span class="p">})</span>
-                     <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;flip-coin-5&quot;</span><span class="p">);</span>
-
-<span class="c1">// reach the target; record the number of tosses </span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span> <span class="n">G</span> <span class="o">=</span> <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span> <span class="n">total_tosses</span> <span class="o">+=</span> <span class="n">tosses</span><span class="p">;</span> <span class="p">})</span>
-                     <span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;stop&quot;</span><span class="p">);</span>
-
-<span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">);</span>
-
-<span class="c1">// five probabilistic conditions</span>
-<span class="n">B</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">B</span><span class="p">);</span>
-<span class="n">C</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">B</span><span class="p">);</span>
-<span class="n">D</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">B</span><span class="p">);</span>
-<span class="n">E</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">B</span><span class="p">);</span>
-<span class="n">F</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">B</span><span class="p">);</span>
-
-<span class="c1">// repeat the flip-coin simulation by rounds times</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run_n</span><span class="p">(</span><span class="n">taskflow</span><span class="p">,</span> <span class="n">rounds</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
-
-<span class="c1">// calculate the expected number of tosses</span>
-<span class="n">average_tosses</span> <span class="o">=</span> <span class="n">total_tosses</span> <span class="o">/</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">rounds</span><span class="p">;</span>
-
-<span class="n">assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">fabs</span><span class="p">(</span><span class="n">average_tosses</span><span class="o">-</span><span class="mf">243.0</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1.0</span><span class="p">);</span></pre><div class="m-graph"><svg style="width: 84.625rem; height: 21.688rem;" viewBox="0.00 0.00 1353.69 347.00">
-=======
-<ellipse cx="27" cy="-102" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="27" y="-98.2">init</text>
-</g>
-<g class="m-node">
-<title>p0x7fa9a4803f50</title>
-<polygon points="178,-128 91,-102 178,-76 265,-102 178,-128"/>
-<text text-anchor="middle" x="178" y="-98.2">flip&#45;coin&#45;1</text>
-</g>
-<g class="m-edge">
-<title>p0x7fa9a4803e30&#45;&gt;p0x7fa9a4803f50</title>
-<path d="M54.3,-102C62.11,-102 71.16,-102 80.74,-102"/>
-<polygon points="80.88,-105.5 90.88,-102 80.88,-98.5 80.88,-105.5"/>
-</g>
-<g class="m-edge">
-<title>p0x7fa9a4803f50&#45;&gt;p0x7fa9a4803f50</title>
-<path stroke-dasharray="5,2" d="M159.57,-122.82C155.81,-134.83 161.95,-146 178,-146 189.28,-146 195.67,-140.48 197.16,-133.02"/>
-<polygon points="200.63,-132.55 196.43,-122.82 193.65,-133.05 200.63,-132.55"/>
-<text text-anchor="middle" x="178" y="-151.2">1</text>
-</g>
-<g class="m-node">
-<title>p0x7fa9a4804070</title>
-<polygon points="398,-190 311,-164 398,-138 485,-164 398,-190"/>
-<text text-anchor="middle" x="398" y="-160.2">flip&#45;coin&#45;2</text>
-</g>
-<g class="m-edge">
-<title>p0x7fa9a4803f50&#45;&gt;p0x7fa9a4804070</title>
-<path stroke-dasharray="5,2" d="M206.96,-119.62C227.25,-131.48 255.8,-146.31 283,-154 291.63,-156.44 300.77,-158.33 309.96,-159.79"/>
-<polygon points="309.54,-163.27 319.94,-161.21 310.53,-156.34 309.54,-163.27"/>
-<text text-anchor="middle" x="288" y="-161.2">0</text>
-</g>
-<g class="m-edge">
-<title>p0x7fa9a4804070&#45;&gt;p0x7fa9a4803f50</title>
-<path stroke-dasharray="5,2" d="M355.12,-150.68C336.2,-144.78 313.53,-137.86 293,-132 274.32,-126.67 253.81,-121.17 235.41,-116.35"/>
-<polygon points="236.27,-112.96 225.71,-113.83 234.51,-119.73 236.27,-112.96"/>
-<text text-anchor="middle" x="288" y="-137.2">1</text>
-</g>
-<g class="m-node">
-<title>p0x7fa9a4804190</title>
-<polygon points="618,-136 531,-110 618,-84 705,-110 618,-136"/>
-<text text-anchor="middle" x="618" y="-106.2">flip&#45;coin&#45;3</text>
-</g>
-<g class="m-edge">
-<title>p0x7fa9a4804070&#45;&gt;p0x7fa9a4804190</title>
-<path stroke-dasharray="5,2" d="M446.03,-152.35C479.44,-144.07 524.48,-132.92 559.94,-124.13"/>
-<polygon points="560.81,-127.52 569.67,-121.72 559.13,-120.73 560.81,-127.52"/>
-<text text-anchor="middle" x="508" y="-142.2">0</text>
-</g>
-<g class="m-edge">
-<title>p0x7fa9a4804190&#45;&gt;p0x7fa9a4803f50</title>
-<path stroke-dasharray="5,2" d="M535.61,-108.51C460.38,-107.14 348.72,-105.1 270.44,-103.67"/>
-<polygon points="270.16,-100.16 260.1,-103.48 270.04,-107.16 270.16,-100.16"/>
-<text text-anchor="middle" x="398" y="-112.2">1</text>
-</g>
-<g class="m-node">
-<title>p0x7fa9a48042b0</title>
-<polygon points="838,-90 751,-64 838,-38 925,-64 838,-90"/>
-<text text-anchor="middle" x="838" y="-60.2">flip&#45;coin&#45;4</text>
-</g>
-<g class="m-edge">
-<title>p0x7fa9a4804190&#45;&gt;p0x7fa9a48042b0</title>
-<path stroke-dasharray="5,2" d="M669.56,-99.33C701.36,-92.62 742.59,-83.92 776.18,-76.83"/>
-<polygon points="777.27,-80.18 786.34,-74.69 775.83,-73.33 777.27,-80.18"/>
-<text text-anchor="middle" x="728" y="-92.2">0</text>
-</g>
-<g class="m-edge">
-<title>p0x7fa9a48042b0&#45;&gt;p0x7fa9a4803f50</title>
-<path stroke-dasharray="5,2" d="M757.39,-65.98C695.6,-67.72 607.83,-70.67 531,-75 436.08,-80.34 326.95,-89.13 255.68,-95.22"/>
-<polygon points="255.11,-91.75 245.45,-96.09 255.71,-98.73 255.11,-91.75"/>
-<text text-anchor="middle" x="508" y="-81.2">1</text>
-</g>
-<g class="m-node">
-<title>p0x7fa9a48043d0</title>
-<polygon points="1058,-52 971,-26 1058,0 1145,-26 1058,-52"/>
-<text text-anchor="middle" x="1058" y="-22.2">flip&#45;coin&#45;5</text>
-</g>
-<g class="m-edge">
-<title>p0x7fa9a48042b0&#45;&gt;p0x7fa9a48043d0</title>
-<path stroke-dasharray="5,2" d="M893.45,-54.51C923.49,-49.27 960.98,-42.74 992.49,-37.25"/>
-<polygon points="993.24,-40.67 1002.49,-35.5 992.04,-33.77 993.24,-40.67"/>
-<text text-anchor="middle" x="948" y="-50.2">0</text>
-</g>
-<g class="m-edge">
-<title>p0x7fa9a48043d0&#45;&gt;p0x7fa9a4803f50</title>
-<path stroke-dasharray="5,2" d="M994.13,-18.94C950.63,-14.65 891.37,-10 839,-10 397,-10 397,-10 397,-10 327.01,-10 253.62,-50.75 212.36,-78.01"/>
-<polygon points="210.39,-75.11 204.05,-83.6 214.3,-80.92 210.39,-75.11"/>
-<text text-anchor="middle" x="618" y="-15.2">1</text>
-</g>
-<g class="m-node m-flat">
-<title>p0x7fa9a48044f0</title>
-<ellipse cx="1224.23" cy="-26" rx="33.47" ry="18.27"/>
-<text text-anchor="middle" x="1224.23" y="-22.2">stop</text>
-</g>
-<g class="m-edge">
-<title>p0x7fa9a48043d0&#45;&gt;p0x7fa9a48044f0</title>
-<path stroke-dasharray="5,2" d="M1145.45,-26C1157.74,-26 1169.91,-26 1180.84,-26"/>
-<polygon points="1180.91,-29.5 1190.91,-26 1180.91,-22.5 1180.91,-29.5"/>
-<text text-anchor="middle" x="1168" y="-31.2">0</text>
-</g>
-</g>
-</svg>
 </div><p>Although the execution of this taskflow is non-deterministic, its control flow can expand to a tree of tasks based on our scheduling rule for conditional tasking (see <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a>). Each path from the root to a leaf represents a result of five heads, and none of them can overlap at the same time (no task race). You must follow the same rule when creating a probabilistic framework using conditional tasking.</p></section><section id="FlipCoinsTernaryCoins"><h2><a href="#FlipCoinsTernaryCoins">Ternary Coins</a></h2><p>We can extend the binary coin example to a ternary case. Each condition task has one successor going back to the beginning and two successors moving to the next task. The expected number of tosses to reach five identical results is 3*3*3*3*3 = 243.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">tosses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
 <span class="w">                     </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;init&quot;</span><span class="p">);</span><span class="w"> </span>
 
@@ -537,13 +294,11 @@
 <span class="c1">// calculate the expected number of tosses</span>
 <span class="n">average_tosses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">total_tosses</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">rounds</span><span class="p">;</span><span class="w"></span>
 
-<span class="n">assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">fabs</span><span class="p">(</span><span class="n">average_tosses</span><span class="mf">-243.0</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1.0</span><span class="p">);</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 79.062rem; height: 21.688rem;" viewBox="0.00 0.00 1265.47 347.00">
->>>>>>> 0dc0291de3cf926fe81561f8073ed43718146077
+<span class="n">assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">fabs</span><span class="p">(</span><span class="n">average_tosses</span><span class="mf">-243.0</span><span class="p">)</span><span class="o">&lt;</span><span class="mf">1.0</span><span class="p">);</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 84.625rem; height: 21.688rem;" viewBox="0.00 0.00 1353.69 347.00">
 <g transform="scale(1 1) rotate(0) translate(4 343)">
 <title>Taskflow</title>
 <g class="m-node m-flat">
 <title>p0x7fca00803e30</title>
-<<<<<<< HEAD
 <ellipse cx="28.9914" cy="-183" rx="28.9828" ry="18.2703"/>
 <text text-anchor="middle" x="28.9914" y="-179.2">init</text>
 </g>
@@ -671,135 +426,6 @@
 <path stroke-dasharray="5,2" d="M1229.129,-54C1241.4575,-54 1253.6033,-54 1264.5941,-54"/>
 <polygon points="1264.7462,-57.5001 1274.7461,-54 1264.7461,-50.5001 1264.7462,-57.5001"/>
 <text text-anchor="middle" x="1251.9828" y="-59.2">0</text>
-=======
-<ellipse cx="27" cy="-183" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="27" y="-179.2">init</text>
-</g>
-<g class="m-node">
-<title>p0x7fca00803f50</title>
-<polygon points="178,-209 91,-183 178,-157 265,-183 178,-209"/>
-<text text-anchor="middle" x="178" y="-179.2">flip&#45;coin&#45;1</text>
-</g>
-<g class="m-edge">
-<title>p0x7fca00803e30&#45;&gt;p0x7fca00803f50</title>
-<path d="M54.3,-183C62.11,-183 71.16,-183 80.74,-183"/>
-<polygon points="80.88,-186.5 90.88,-183 80.88,-179.5 80.88,-186.5"/>
-</g>
-<g class="m-edge">
-<title>p0x7fca00803f50&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M168.44,-206.54C167.4,-217.46 170.59,-227 178,-227 182.98,-227 186.05,-222.69 187.22,-216.55"/>
-<polygon points="190.72,-216.65 187.56,-206.54 183.72,-216.42 190.72,-216.65"/>
-<text text-anchor="middle" x="178" y="-232.2">1</text>
-</g>
-<g class="m-edge">
-<title>p0x7fca00803f50&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M162.1,-204.28C154.11,-223.88 159.41,-245 178,-245 193.54,-245 199.79,-230.24 196.76,-213.95"/>
-<polygon points="200.09,-212.88 193.9,-204.28 193.38,-214.87 200.09,-212.88"/>
-<text text-anchor="middle" x="178" y="-250.2">2</text>
-</g>
-<g class="m-node">
-<title>p0x7fca00804070</title>
-<polygon points="398,-325 311,-299 398,-273 485,-299 398,-325"/>
-<text text-anchor="middle" x="398" y="-295.2">flip&#45;coin&#45;2</text>
-</g>
-<g class="m-edge">
-<title>p0x7fca00803f50&#45;&gt;p0x7fca00804070</title>
-<path stroke-dasharray="5,2" d="M188.67,-205.95C203.57,-237.93 235.48,-294.62 283,-318 304.96,-328.8 331.86,-325 354.02,-318.06"/>
-<polygon points="355.19,-321.36 363.52,-314.81 352.92,-314.73 355.19,-321.36"/>
-<text text-anchor="middle" x="288" y="-326.2">0</text>
-</g>
-<g class="m-edge">
-<title>p0x7fca00804070&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M331.69,-292.67C315.22,-289.41 297.97,-284.47 283,-277 251.19,-261.13 221.82,-232.77 202.47,-211.34"/>
-<polygon points="205.05,-208.97 195.8,-203.79 199.8,-213.6 205.05,-208.97"/>
-<text text-anchor="middle" x="288" y="-285.2">1</text>
-</g>
-<g class="m-edge">
-<title>p0x7fca00804070&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M361.93,-283.53C346.21,-276.37 327.51,-267.57 311,-259 278.46,-242.11 242.45,-221.22 216.27,-205.62"/>
-<polygon points="217.82,-202.47 207.44,-200.34 214.22,-208.47 217.82,-202.47"/>
-<text text-anchor="middle" x="288" y="-254.2">2</text>
-</g>
-<g class="m-node">
-<title>p0x7fca00804190</title>
-<polygon points="618,-247 531,-221 618,-195 705,-221 618,-247"/>
-<text text-anchor="middle" x="618" y="-217.2">flip&#45;coin&#45;3</text>
-</g>
-<g class="m-edge">
-<title>p0x7fca00804070&#45;&gt;p0x7fca00804190</title>
-<path stroke-dasharray="5,2" d="M438.23,-284.97C474.61,-271.95 528.9,-252.52 568.1,-238.5"/>
-<polygon points="569.49,-241.72 577.72,-235.05 567.13,-235.13 569.49,-241.72"/>
-<text text-anchor="middle" x="508" y="-265.2">0</text>
-</g>
-<g class="m-edge">
-<title>p0x7fca00804190&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M536.59,-219.27C474.76,-217.35 387.28,-213.32 311,-205 288.17,-202.51 263.29,-198.66 241.34,-194.88"/>
-<polygon points="241.94,-191.43 231.48,-193.15 240.73,-198.32 241.94,-191.43"/>
-<text text-anchor="middle" x="398" y="-222.2">1</text>
-</g>
-<g class="m-edge">
-<title>p0x7fca00804190&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M578.35,-206.77C552.36,-197.97 517.11,-187.53 485,-183 408.14,-172.16 319.33,-173.69 257.25,-177.01"/>
-<polygon points="256.93,-173.52 247.14,-177.57 257.32,-180.51 256.93,-173.52"/>
-<text text-anchor="middle" x="398" y="-188.2">2</text>
-</g>
-<g class="m-node">
-<title>p0x7fca008042b0</title>
-<polygon points="838,-152 751,-126 838,-100 925,-126 838,-152"/>
-<text text-anchor="middle" x="838" y="-122.2">flip&#45;coin&#45;4</text>
-</g>
-<g class="m-edge">
-<title>p0x7fca00804190&#45;&gt;p0x7fca008042b0</title>
-<path stroke-dasharray="5,2" d="M654.03,-205.74C691.66,-189.34 751.56,-163.23 792.5,-145.39"/>
-<polygon points="793.93,-148.59 801.7,-141.38 791.13,-142.17 793.93,-148.59"/>
-<text text-anchor="middle" x="728" y="-178.2">0</text>
-</g>
-<g class="m-edge">
-<title>p0x7fca008042b0&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M766.97,-130.93C661.79,-138.5 456.82,-153.92 283,-171 272.41,-172.04 261.22,-173.23 250.26,-174.45"/>
-<polygon points="249.82,-170.98 240.28,-175.58 250.61,-177.94 249.82,-170.98"/>
-<text text-anchor="middle" x="508" y="-156.2">1</text>
-</g>
-<g class="m-edge">
-<title>p0x7fca008042b0&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M761.37,-122.87C658.53,-120.08 469.26,-120.12 311,-149 284.82,-153.78 256.18,-160.92 232.28,-167.42"/>
-<polygon points="231.06,-164.13 222.35,-170.16 232.92,-170.88 231.06,-164.13"/>
-<text text-anchor="middle" x="508" y="-131.2">2</text>
-</g>
-<g class="m-node">
-<title>p0x7fca008043d0</title>
-<polygon points="1058,-80 971,-54 1058,-28 1145,-54 1058,-80"/>
-<text text-anchor="middle" x="1058" y="-50.2">flip&#45;coin&#45;5</text>
-</g>
-<g class="m-edge">
-<title>p0x7fca008042b0&#45;&gt;p0x7fca008043d0</title>
-<path stroke-dasharray="5,2" d="M880,-112.46C915.67,-100.68 967.5,-83.56 1005.87,-70.89"/>
-<polygon points="1007.41,-74.06 1015.81,-67.6 1005.22,-67.42 1007.41,-74.06"/>
-<text text-anchor="middle" x="948" y="-95.2">0</text>
-</g>
-<g class="m-edge">
-<title>p0x7fca008043d0&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M970.8,-54C930.73,-54 882.43,-54 839,-54 397,-54 397,-54 397,-54 318.05,-54 242.62,-117.44 204.6,-155.35"/>
-<polygon points="202.02,-152.98 197.5,-162.56 207.01,-157.88 202.02,-152.98"/>
-<text text-anchor="middle" x="618" y="-59.2">1</text>
-</g>
-<g class="m-edge">
-<title>p0x7fca008043d0&#45;&gt;p0x7fca00803f50</title>
-<path stroke-dasharray="5,2" d="M1020.27,-39.1C977.48,-23.12 904.31,0 839,0 397,0 397,0 397,0 303.54,0 229.18,-99.9 196.72,-152.08"/>
-<polygon points="193.54,-150.56 191.33,-160.93 199.52,-154.21 193.54,-150.56"/>
-<text text-anchor="middle" x="618" y="-5.2">2</text>
-</g>
-<g class="m-node m-flat">
-<title>p0x7fca008044f0</title>
-<ellipse cx="1224.23" cy="-54" rx="33.47" ry="18.27"/>
-<text text-anchor="middle" x="1224.23" y="-50.2">stop</text>
-</g>
-<g class="m-edge">
-<title>p0x7fca008043d0&#45;&gt;p0x7fca008044f0</title>
-<path stroke-dasharray="5,2" d="M1145.45,-54C1157.74,-54 1169.91,-54 1180.84,-54"/>
-<polygon points="1180.91,-57.5 1190.91,-54 1180.91,-50.5 1180.91,-57.5"/>
-<text text-anchor="middle" x="1168" y="-59.2">0</text>
->>>>>>> 0dc0291de3cf926fe81561f8073ed43718146077
 </g>
 </g>
 </svg>
@@ -842,22 +468,13 @@
     </div>
   </div>
 </div>
-<<<<<<< HEAD
 <script src="search-v2.js"></script>
 <script src="searchdata-v2.js" async="async"></script>
-=======
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
->>>>>>> 0dc0291de3cf926fe81561f8073ed43718146077
 <footer><nav>
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-<<<<<<< HEAD
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
-=======
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
->>>>>>> 0dc0291de3cf926fe81561f8073ed43718146077
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

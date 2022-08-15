@@ -1,18 +1,18 @@
 namespace tf {
 
-/** @page ParallelDataPipeline Parallel Data Pipeline
+/** @page DataParallelPipeline Data-parallel Pipeline
 
 @tableofcontents
 
-You can study the @ref ParallelPipeline first, and then you will know the concept of Data Pipeline.
-Here we add a layer of data abstraction on top of the original @ref ParallelPipeline, 
-so that users can either choose to prepare the data buffer manually and use an efficient pipeline without data abstraction, 
-or choose to use a pipeline with data abstraction and let the program allocate the buffer automatically.
+%Taskflow provides another variant, tf::DataPipaline, on top of 
+tf::Pipeline (see @ref TaskParallelPipeline) to help you
+implement data-parallel pipeline algorithms while
+leaving data management to %Taskflow.
 
 @section ParallelDataPipelineIncludeHeaderFile Include the Header 
 
-You need to include the header file, <tt>%taskflow/algorithm/data_pipeline.hpp</tt>, for creating
-a pipeline scheduling framework.
+You need to include the header file, <tt>%taskflow/algorithm/data_pipeline.hpp</tt>,
+for using tf::DataPipaline.
 
 @code{.cpp}
 #include <taskflow/algorithm/data_pipeline.hpp>
@@ -20,169 +20,53 @@ a pipeline scheduling framework.
 
 @section CreateADataPipelineModuleTask Create a Data Pipeline Module Task
 
-The original @ref ParallelPipeline is efficient, but we need a more user-friendly pipeline, which is Data Pipeline.
-The original one is not equipped with a data abstraction layer and 
-requires the user to manually allocate a data buffer before it can work.   
-A good example of this is the following program.
+Similar to creating a task-parallel pipeline (tf::Pipeline), 
+there are three steps to create a data-parallel pipeline application:
+
+  1. Define the pipeline structure (e.g., pipe type, pipe callable, stopping rule, line count)
+  2. Define the data storage and layout, if needed for the application
+  3. Define the pipeline taskflow graph using composition
+
+The following example creates a data-parallel pipeline that generates a total of
+five dataflow tokens
+from `void` to `int` at the first stage, 
+from `int` to `std::string` at the second stage, 
+from `std::string` to `float` at the third stage, 
+and `float` to `void` at the final stage.
+Data storage between stages is automatically managed by tf::DataPipeline.
 
 @code{.cpp}
 #include <taskflow/taskflow.hpp>
-#include <taskflow/algorithm/pipeline.hpp>
-
-// Function: format the map
-std::string format_map(const std::unordered_map<char, size_t>& map) {
-  std::ostringstream oss;
-  for(const auto& [i, j] : map) {
-    oss << i << ':' << j << ' ';
-  }
-  return oss.str();
-}
-
-int main() {
-
-  tf::Taskflow taskflow("text-processing pipeline");
-  tf::Executor executor;
-
-  const size_t num_lines = 2;
-
-  // input data
-  std::vector<std::string> input = {
-    "abade",
-    "ddddf",
-    "eefge",
-    "xyzzd",
-    "ijjjj",
-    "jiiii",
-    "kkijk"
-  };
-
-  // custom data storage
-  using data_type = std::variant<
-    std::string, std::unordered_map<char, size_t>, std::pair<char, size_t>
-  >;
-  std::array<data_type, num_lines> buffer;
-
-  // the pipeline consists of three pipes (serial-parallel-serial)
-  // and up to two concurrent scheduling tokens
-  tf::Pipeline pl(num_lines,
-
-    // first pipe processes the input data
-    tf::Pipe{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) {
-      if(pf.token() == input.size()) {
-        pf.stop();
-      }
-      else {
-        buffer[pf.line()] = input[pf.token()];
-        printf("stage 1: input token = %s\n", input[pf.token()].c_str());
-      }
-    }},
-
-    // second pipe counts the frequency of each character
-    tf::Pipe{tf::PipeType::PARALLEL, [&](tf::Pipeflow& pf) {
-      std::unordered_map<char, size_t> map;
-      for(auto c : std::get<std::string>(buffer[pf.line()])) {
-        map[c]++;
-      }
-      buffer[pf.line()] = map;
-      printf("stage 2: map = %s\n", format_map(map).c_str());
-    }},
-
-    // third pipe reduces the most frequent character
-    tf::Pipe{tf::PipeType::SERIAL, [&buffer](tf::Pipeflow& pf) {
-      auto& map = std::get<std::unordered_map<char, size_t>>(buffer[pf.line()]);
-      auto sol = std::max_element(map.begin(), map.end(), [](auto& a, auto& b){
-        return a.second < b.second;
-      });
-      printf("stage 3: %c:%zu\n", sol->first, sol->second);
-    }}
-  );
-
-  // build the pipeline graph using composition
-  tf::Task init = taskflow.emplace([](){ std::cout << "ready\n"; })
-                          .name("starting pipeline");
-  tf::Task task = taskflow.composed_of(pl)
-                          .name("pipeline");
-  tf::Task stop = taskflow.emplace([](){ std::cout << "stopped\n"; })
-                          .name("pipeline stopped");
-
-  // create task dependency
-  init.precede(task);
-  task.precede(stop);
-
-  // dump the pipeline graph structure (with composition)
-  taskflow.dump(std::cout);
-
-  // run the pipeline
-  executor.run(taskflow).wait();
-
-  return 0;
-}
-@endcode
-
-In the above code, you needs to manually prepare a `std::array<data_type, num_lines> buffer` before using @ref ParallelPipeline, 
-and needs to use the buffer to read and write data in the function corresponding to each `pipe`.   
-This is a very cumbersome thing for many data-centric programs, 
-so we provide Data Pipeline with data abstraction to allow programs to allocate buffer efficiently.
-The above code can be written as below.
-
-@code
-#include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/data_pipeline.hpp>
 
-std::string format_map(const std::unordered_map<char, size_t>& map) {
-  std::ostringstream oss;
-  for(const auto& [i, j] : map) {
-    oss << i << ':' << j << ' ';
-  }
-  return oss.str();
-}
-
 int main() {
- 
+
+  // data flow => void -> int -> std::string -> float -> void 
   tf::Taskflow taskflow("pipeline");
   tf::Executor executor;
 
-  const size_t num_lines = 2;
-  // input data
-  std::vector<std::string> input = {
-    "abade",
-    "ddddf",
-    "eefge",
-    "xyzzd",
-    "ijjjj",
-    "jiiii",
-    "kkijk"
-  };
-
-  // the pipeline consists of three pipes(serial-parallel-serial)
-  // and up to two concurrent scheduling tokens
+  const size_t num_lines = 4;
+  
+  // create a pipeline graph
   tf::DataPipeline pl(num_lines,
-    // first pipe processes the input data
-    tf::make_data_pipe<void, std::string>(tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) -> std::string {
-      if(pf.token() == input.size()) {
+    tf::make_data_pipe<void, int>(tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) -> int{
+      if(pf.token() == 5) {
         pf.stop();
-        return "";
+        return 0;
       }
       else {
-        printf("stage 1: input token = %s\n", input[pf.token()].c_str());
-        return input[pf.token()];
+        printf("first pipe returns %lu\n", pf.token());
+        return pf.token();
       }
     }),
-    // second pipe counts the frequency of each character
-    tf::make_data_pipe<std::string, std::unordered_map<char, size_t>>(tf::PipeType::PARALLEL, [](std::string& str) {
-      std::unordered_map<char, size_t> map;
-      for(auto c : str) {
-        map[c]++;
-      }
-      printf("stage 2: map = %s\n", format_map(map).c_str());
-      return map;
+
+    tf::make_data_pipe<int, std::string>(tf::PipeType::SERIAL, [](int& input) {
+      printf("second pipe returns a strong of %d\n", input + 100);
+      return std::to_string(input + 100);
     }),
-    // third pipe reduces the most frequent character
-    tf::make_data_pipe<std::unordered_map<char, size_t>, void>(tf::PipeType::SERIAL, [](std::unordered_map<char, size_t>& map) {
-      auto sol = std::max_element(map.begin(), map.end(), [](auto& a, auto& b){
-        return a.second < b.second;
-      });
-      printf("stage 3: %c:%zu\n", sol->first, sol->second);
+
+    tf::make_data_pipe<std::string, void>(tf::PipeType::SERIAL, [](std::string& input) {
+      printf("third pipe receives the input string %s\n", input.c_str());
     })
   );
 
@@ -197,69 +81,55 @@ int main() {
 
   return 0;
 }
+
+The interface of tf::DataPipeline is very similar to tf::Pipeline, except that
+the library transparently manages the dataflow between pipes.
+To create a stage in a data-parallel pipeline, 
+you should always use the helper function tf::make_data_pipe:
+
+@code{.cpp}
+tf::make_data_pipe<int, std::string>(
+  tf::PipeType::SERIAL, 
+  [](int& input) { 
+    return std::to_string(input + 100);
+  }
+);
 @endcode
 
-Both should output the following results:
+The helper function starts with a pair of an input and an output types
+in its template arguments. 
+Both types will always be decayed to their original form using std::decay
+(e.g., `const std::string&` becomes `std::string`) for storage purpose.
+In terms of function arguments,
+the first argument specifies the direction of this data pipe,
+which can be either tf::PipeType::SERIAL or tf::PipeType::PARALLEL,
+and the second argument is a callable to invoke by the pipeline scheduler.
+The callable must take the input data type in its first argument
+and returns a value of the output data type.
+Additionally,
+the callable can take a tf::Pipeflow reference in its second argument
+which allows you to query the runtime information of a stage task,
+such as its line number and token number.
 
-@code{.bash}
-stage 1: input token = abade
-stage 1: input token = ddddf
-stage 2: map = e:1 d:1 a:2 b:1 
-stage 2: map = f:1 d:4 
-stage 3: a:2
-stage 1: input token = eefge
-stage 3: d:4
-stage 1: input token = xyzzd
-stage 2: map = g:1 e:3 f:1 
-stage 3: e:3
-stage 1: input token = ijjjj
-stage 2: map = z:2 x:1 d:1 y:1 
-stage 3: z:2
-stage 1: input token = jiiii
-stage 2: map = i:4 j:1 
-stage 2: map = j:4 i:1 
-stage 3: j:4
-stage 1: input token = kkijk
-stage 3: i:4
-stage 2: map = j:1 k:3 i:1 
-stage 3: k:3
-@endcode
-
-@section DataPipelineAPILearnMore Learn More About Data Pipeline API
-The DataPipe class is similar to the Pipe class, but with template to record input type and output type. 
-Remember to use <i>make_data_pipe</i> function when you want to create a pipe in the DataPipeline.
-Let's look at the following example.
-
-@code
-1: tf::make_data_pipe<int, std::string>(
-2:   tf::PipeType::SERIAL, 
-3:   [](int& input) {return std::to_string(input + 100);}
-4: )
-@endcode
-
-Debrief:
-@li Line 1  define input and output type, here it takes interger as input and string as output
-@li Line 2  define the pipetype, here it is serial
-@li Line 3  define the lambda function that computes output from input and return type should match your output type
-
-The input and output type you give to the <i>make_data_pipe</i> function will be decayed to its original form.
-The arguments of your lambda can be either a copy or a reference, we will use it by value or by reference as you want.
-
-You can also add an additional pipeflow argument in the lambda function to get token and line position of current pipe.
-@code
+@code{.cpp}
 tf::make_data_pipe<int, std::string>(
   tf::PipeType::SERIAL, 
   [](int& input, tf::Pipeflow& pf) {
-    std::cout << "token: " << pf.token() << std:: endl;
-    std::cout << "line: " << pf.line() << std::endl;
+    printf("token=%lu, line=%lu\n", pf.token(), pf.line());
     return std::to_string(input + 100);
   }
 )
 @endcode
 
-For the first pipe, we ignore the input type and require that pipetype should be serial.
-Our lambda function take a pipeflow argument to control when to stop.
-@code
+@note
+By default, tf::DataPipeline passes the data
+in reference to your callable at which you can take it in copy or in reference.
+
+For the first pipe, the input type should always be `void` and 
+the callable must take a tf::Pipeflow reference in its argument.
+In this example, we will stop the pipeline when processing five tokens.
+
+@code{.cpp}
 tf::make_data_pipe<void, int>(tf::PipeType::SERIAL, [](tf::Pipeflow& pf) -> int{
   if(pf.token() == 5) {
     pf.stop();
@@ -271,31 +141,51 @@ tf::make_data_pipe<void, int>(tf::PipeType::SERIAL, [](tf::Pipeflow& pf) -> int{
 }),
 @endcode
 
-For the last pipe, output type must be void.
-@code
+Similarly, the output type of the last pipe should be `void` as no more data
+will go out of the final pipe.
+
+@code{.cpp}
 tf::make_data_pipe<std::string, void>(tf::PipeType::SERIAL, [](std::string& input) {
   std::cout << input << std::endl;
 })
 @endcode
 
-@section PaddingToCacheLineSize Padding to Cache Line Size
-Our original design is to allocate a buffer of the corresponding size based on `num_lines` and the input data type when the pipeline class is created. 
-This is a simple design, and the space allocated is contiguous, so cache utilisation is high as the pipeline reads data continuously. 
-However, false sharing at the parallel pipe level can be very serious, making parallelism almost impossible and performance poor.
+Finally, you need to compose the pipeline graph by creating a module task.
+  
+@code{.cpp}  
+// build the pipeline graph using composition
+taskflow.composed_of(pl).name("pipeline");
 
-Therefore, to avoid false sharing, we came up with an alternative design, i.e., giving every line a buffer of a multiple of the cache line size. 
-As every line corresponds to a process, we can avoid false sharing at the parallel pipe level, as the data from every line can fill up the cache of the corresponding process.
+// dump the pipeline graph structure (with composition)
+taskflow.dump(std::cout);
+
+// run the pipeline
+executor.run(taskflow).wait();
+@endcode
+
+@dotfile images/pipeline_basic_dependency_graph.dot
 
 
-@section ParallelDataPipelineLearnMore Learn More about Taskflow Pipeline
+@section UnderstandInternalDataStorage Understand Internal Data Storage
+
+By default, tf::DataPipeline uses std::variant to store a type-safe union of 
+all input and output data types extracted from the given data pipes.
+To avoid false sharing, each line keeps a variant that is aligned 
+with the cacheline size.
+When invoking a pipe callable, the input data is acquired in reference
+from the variant using std::get.
+When returning from a pipe callable, the output data is stored back 
+to the variant using assignment operator.
+
+@section DataParallelPipelineLearnMore Learn More about Taskflow Pipeline
 
 Visit the following pages to learn more about pipeline:
 
-1. @ref ParallelPipeline
+1. @ref TaskParallelPipeline
+5. @ref TaskParallelScalablePipeline
 2. @ref TextProcessingPipeline
 3. @ref GraphProcessingPipeline
 4. @ref TaskflowProcessingPipeline
-5. @ref ParallelScalablePipeline
 
 */
 

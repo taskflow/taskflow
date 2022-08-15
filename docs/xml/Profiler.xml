@@ -1,13 +1,16 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="Profiler" kind="page">
     <compoundname>Profiler</compoundname>
     <title>Profile Taskflow Programs</title>
+    <tableofcontents/>
+    <briefdescription>
+    </briefdescription>
     <detaileddescription>
 <para>Taskflow comes with a built-in profiler, <emphasis>TFProf</emphasis>, for you to profile and visualize taskflow programs.</para><para><image type="html" name="tfprof.png" width="100%"></image>
 </para><sect1 id="Profiler_1ProfilerEnableTFProf">
 <title>Enable Taskflow Profiler</title>
-<para>All taskflow programs come with a lightweight profiling module to observer worker activities in every executor. To enable the profiler, set the environment variable <computeroutput>TF_ENABLE_PROFILER</computeroutput> to a file name in which the profiling result will be stored.</para><para><programlisting><codeline><highlight class="normal">~$<sp/>TF_ENABLE_PROFILER=result.json<sp/>./my_taskflow</highlight></codeline>
+<para>All taskflow programs come with a lightweight profiling module to observer worker activities in every executor. To enable the profiler, set the environment variable <computeroutput>TF_ENABLE_PROFILER</computeroutput> to a file name in which the profiling result will be stored.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>TF_ENABLE_PROFILER=result.json<sp/>./my_taskflow</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>cat<sp/>result.json</highlight></codeline>
 <codeline><highlight class="normal">[</highlight></codeline>
 <codeline><highlight class="normal">{&quot;executor&quot;:&quot;0&quot;,&quot;data&quot;:[{&quot;worker&quot;:12,&quot;level&quot;:0,&quot;data&quot;:[{&quot;span&quot;:[72,117],&quot;name&quot;:&quot;12_0&quot;,&quot;type&quot;:&quot;static&quot;},{&quot;span&quot;:[121,123],&quot;name&quot;:&quot;12_1&quot;,&quot;type&quot;:&quot;static&quot;},{&quot;span&quot;:[123,125],&quot;name&quot;:&quot;12_2&quot;,&quot;type&quot;:&quot;static&quot;},{&quot;span&quot;:[125,127],&quot;name&quot;:&quot;12_3&quot;,&quot;type&quot;:&quot;static&quot;}]}]}</highlight></codeline>

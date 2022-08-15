@@ -1,8 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="release-3-0-0" kind="page">
     <compoundname>release-3-0-0</compoundname>
     <title>Release 3.0.0 (2021/01/01)</title>
+    <tableofcontents/>
+    <briefdescription>
+    </briefdescription>
     <detaileddescription>
 <para>Taskflow 3.0.0 is the 1st release in the 3.x line! This release includes several new changes such as CPU-GPU tasking, algorithm collection, enhanced web-based profiler, documentation, and unit tests.</para><para><simplesect kind="note"><para>Starting from v3, we have migrated the codebase to the <ulink url="https://en.wikipedia.org/wiki/C%2B%2B17">C++17</ulink> standard to largely improve the expressivity and efficiency of the codebase.</para></simplesect>
 </para><sect1 id="release-3-0-0_1release-3-0-0_download">
@@ -87,10 +90,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect2 id="release-3-0-0_1release-3-0-0_gpu_algorithms">
 <title>GPU Algorithms</title>
 <para><itemizedlist>
-<listitem><para>added single task (see SingleTaskCUDA) </para></listitem>
-<listitem><para>added parallel iterations (see ForEachCUDA) </para></listitem>
-<listitem><para>added parallel transforms (see ParallelTransformsCUDA) </para></listitem>
-<listitem><para>added parallel reduction (see cudaFlowReduce)</para></listitem>
+<listitem><para>added single task (see <ref refid="SingleTaskCUDA" kindref="compound">Single Task</ref>) </para></listitem>
+<listitem><para>added parallel iterations (see <ref refid="ForEachCUDA" kindref="compound">Parallel Iterations</ref>) </para></listitem>
+<listitem><para>added parallel transforms (see <ref refid="ParallelTransformsCUDA" kindref="compound">Parallel Transforms</ref>) </para></listitem>
+<listitem><para>added parallel reduction (see <ref refid="cudaFlowReduce" kindref="compound">Parallel Reduction</ref>)</para></listitem>
 </itemizedlist>
 </para></sect2>
 </sect1>
@@ -126,14 +129,14 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <listitem><para>added <ref refid="GPUTaskingcudaFlowCapturer" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref> </para></listitem>
 <listitem><para>added <ref refid="RequestCancellation" kindref="compound">Request Cancellation</ref> </para></listitem>
 <listitem><para>added <ref refid="Profiler" kindref="compound">Profile Taskflow Programs</ref> </para></listitem>
-<listitem><para>added cudaFlowAlgorithms<itemizedlist>
-<listitem><para>SingleTaskCUDA to run a kernel function in just a single thread</para></listitem><listitem><para>ForEachCUDA to perform parallel iterations over a range of items</para></listitem><listitem><para>ParallelTransformsCUDA to perform parallel transforms over a range of items</para></listitem><listitem><para>cudaFlowReduce to perform parallel reduction over a range of items </para></listitem></itemizedlist>
+<listitem><para>added <ref refid="cudaFlowAlgorithms" kindref="compound">cudaFlow Algorithms</ref><itemizedlist>
+<listitem><para><ref refid="SingleTaskCUDA" kindref="compound">Single Task</ref> to run a kernel function in just a single thread</para></listitem><listitem><para><ref refid="ForEachCUDA" kindref="compound">Parallel Iterations</ref> to perform parallel iterations over a range of items</para></listitem><listitem><para><ref refid="ParallelTransformsCUDA" kindref="compound">Parallel Transforms</ref> to perform parallel transforms over a range of items</para></listitem><listitem><para><ref refid="cudaFlowReduce" kindref="compound">Parallel Reduction</ref> to perform parallel reduction over a range of items </para></listitem></itemizedlist>
 </para></listitem>
-<listitem><para>added Governance<itemizedlist>
-<listitem><para>rules</para></listitem><listitem><para>team</para></listitem><listitem><para>codeofconduct </para></listitem></itemizedlist>
+<listitem><para>added <ref refid="Governance" kindref="compound">Governance</ref><itemizedlist>
+<listitem><para><ref refid="rules" kindref="compound">Rules</ref></para></listitem><listitem><para><ref refid="team" kindref="compound">Team</ref></para></listitem><listitem><para><ref refid="codeofconduct" kindref="compound">Code of Conduct</ref> </para></listitem></itemizedlist>
 </para></listitem>
-<listitem><para>added Contributing<itemizedlist>
-<listitem><para>guidelines</para></listitem><listitem><para>contributors </para></listitem></itemizedlist>
+<listitem><para>added <ref refid="Contributing" kindref="compound">Contributing</ref><itemizedlist>
+<listitem><para><ref refid="guidelines" kindref="compound">Guidelines</ref></para></listitem><listitem><para><ref refid="contributors" kindref="compound">Contributors</ref> </para></listitem></itemizedlist>
 </para></listitem>
 <listitem><para>revised <ref refid="ConditionalTasking" kindref="compound">Conditional Tasking</ref> </para></listitem>
 <listitem><para>revised documentation pages for files</para></listitem>

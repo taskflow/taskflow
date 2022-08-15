@@ -49,7 +49,7 @@
           <div class="m-doc-template">template&lt;typename Input, typename Output, typename C&gt;</div>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>DataPipe <span class="m-thin">class</span>
         </h1>
-        <p>class to create a data pipe object for a data pipeline stage</p>
+        <p>class to create a stage in a data-parallel pipeline</p>
         <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -63,24 +63,31 @@
             </li>
           </ul>
         </nav>
-<p>A data pipe represents a stage of a data pipeline. A data pipe can be either <em>parallel</em> direction or <em>serial</em> direction (specified by <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">tf::<wbr />PipeType</a>) and is coupled with a callable to invoke by the pipeline scheduler.</p><p>You must call the make_data_type function to create a <a href="classtf_1_1DataPipe.html" class="m-doc">DataPipe</a> object. The input and output type you give to the make_data_pipe function will be decayed to its original form. The arguments of your lambda can be either a copy or a reference, we will use it by value or by reference as you want.</p><p>Usually your lambda function takes only one argument as input(The first pipe must takes a Pipeflow object to control flow). You can also add an additional pipeflow argument in the lambda function to get token and line position of current pipe.</p><pre class="m-code"><span class="mi">1</span><span class="o">:</span> <span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span>
-<span class="mi">2</span><span class="o">:</span>   <span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> 
-<span class="mi">3</span><span class="o">:</span>   <span class="p">[](</span><span class="kt">int</span> <span class="n">input</span><span class="p">)</span> <span class="p">{</span><span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">input</span> <span class="o">+</span> <span class="mi">100</span><span class="p">);}</span>
-<span class="mi">4</span><span class="o">:</span> <span class="p">)</span></pre><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span> 
-  <span class="p">[](</span><span class="kt">int</span> <span class="n">input</span><span class="p">,</span> <span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span> <span class="n">pf</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;token: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span> <span class="n">endl</span><span class="p">;</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;line: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-    <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">input</span> <span class="o">+</span> <span class="mi">100</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">)</span></pre><p>The pipeflow object is used to query the statistics of a scheduling token in the pipeline, such as pipe, line, and token numbers.</p>
+<p>A data pipe represents a stage of a data-parallel pipeline. A data pipe can be either <em>parallel</em> direction or <em>serial</em> direction (specified by <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">tf::<wbr />PipeType</a>) and is associated with a callable to invoke by the pipeline scheduler.</p><p>You need to use the template function, <a href="namespacetf.html#a8975fa5762088789adb0b60f38208309" class="m-doc">tf::<wbr />make_data_pipe</a>, to create a data pipe. The input and output types of a <a href="classtf_1_1DataPipe.html" class="m-doc">tf::<wbr />DataPipe</a> should be decayed types (though the library will always decay them for you using <code><a href="http://en.cppreference.com/w/cpp/types/decay.html" class="m-doc-external">std::<wbr />decay</a></code>) to allow internal storage to work. The data will be passed by reference to your callable, at which you can take it by copy or reference.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="p">[](</span><span class="kt">int</span><span class="o">&amp;</span><span class="w"> </span><span class="n">input</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">input</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">100</span><span class="p">);}</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span></pre><p>In addition to the data, you callable can take an additional reference of <a href="classtf_1_1Pipeflow.html" class="m-doc">tf::<wbr />Pipeflow</a> in the second argument to probe the runtime information for a stage task, such as its line number and token number:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="p">[](</span><span class="kt">int</span><span class="o">&amp;</span><span class="w"> </span><span class="n">input</span><span class="p">,</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;token=%lu, line=%lu</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">(),</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">());</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">input</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span></pre>
         <section id="pub-types">
           <h2><a href="#pub-types">Public types</a></h2>
           <dl class="m-doc">
             <dt id="a5cc3b76f16379f4cb2ecdef66dee1ba3">
               using <a href="#a5cc3b76f16379f4cb2ecdef66dee1ba3" class="m-doc-self">callable_t</a> = C
             </dt>
-            <dd>alias of the type</dd>
+            <dd>callable type of the data pipe</dd>
+            <dt id="ae5e9dd100a02edb2d560e8a1d516037d">
+              using <a href="#ae5e9dd100a02edb2d560e8a1d516037d" class="m-doc-self">input_t</a> = Input
+            </dt>
+            <dd>input type of the data pipe</dd>
+            <dt id="a8a99a980f0fa6bc55203cb33f526f007">
+              using <a href="#a8a99a980f0fa6bc55203cb33f526f007" class="m-doc-self">output_t</a> = Output
+            </dt>
+            <dd>output type of the data pipe</dd>
           </dl>
         </section>
         <section id="typeless-methods">
@@ -90,11 +97,11 @@
               <span class="m-doc-wrap-bumper"><a href="#a8b7e8194874901eacfb5d3d2b72a2b85" class="m-doc-self">DataPipe</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
             <dd>default constructor</dd>
-            <dt id="a542531895cb9363c6291e0ce9d126974">
-              <span class="m-doc-wrap-bumper"><a href="#a542531895cb9363c6291e0ce9d126974" class="m-doc-self">DataPipe</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">PipeType</a> d,
+            <dt>
+              <span class="m-doc-wrap-bumper"><a href="#a542531895cb9363c6291e0ce9d126974" class="m-doc">DataPipe</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">PipeType</a> d,
               <a href="classtf_1_1DataPipe.html#a5cc3b76f16379f4cb2ecdef66dee1ba3" class="m-doc">callable_<wbr />t</a>&amp;&amp; callable)</span>
             </dt>
-            <dd>You must use the make_data_pipe function to create a <a href="classtf_1_1DataPipe.html" class="m-doc">DataPipe</a> object.</dd>
+            <dd>constructs a data pipe</dd>
           </dl>
         </section>
         <section id="pub-methods">
@@ -104,8 +111,8 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a82ef8e8f06444b251ccfe323facbf67a" class="m-doc">type</a>(</span><span class="m-doc-wrap">) const -&gt; <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">PipeType</a></span>
             </dt>
             <dd>queries the type of the data pipe</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#af7a3c2d313edd443b049e937f8ec8cd8" class="m-doc">type</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">PipeType</a> type)</span>
+            <dt id="af7a3c2d313edd443b049e937f8ec8cd8">
+              <span class="m-doc-wrap-bumper">void <a href="#af7a3c2d313edd443b049e937f8ec8cd8" class="m-doc-self">type</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">PipeType</a> type)</span>
             </dt>
             <dd>assigns a new type to the data pipe</dd>
             <dt>
@@ -117,6 +124,17 @@
         </section>
         <section>
           <h2>Function documentation</h2>
+          <section class="m-doc-details" id="a542531895cb9363c6291e0ce9d126974"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename Input, typename Output, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />DataPipe&lt;Input, Output, C&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a542531895cb9363c6291e0ce9d126974" class="m-doc-self">DataPipe</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">PipeType</a> d,
+              <a href="classtf_1_1DataPipe.html#a5cc3b76f16379f4cb2ecdef66dee1ba3" class="m-doc">callable_<wbr />t</a>&amp;&amp; callable)</span></span>
+            </h3>
+            <p>constructs a data pipe</p>
+<p>You should use the helper function, <a href="namespacetf.html#a8975fa5762088789adb0b60f38208309" class="m-doc">tf::<wbr />make_data_pipe</a>, to create a <a href="classtf_1_1DataPipe.html" class="m-doc">DataPipe</a> object, especially when you need <a href="classtf_1_1DataPipe.html" class="m-doc">tf::<wbr />DataPipe</a> to automatically deduct the lambda type.</p>
+          </div></section>
           <section class="m-doc-details" id="a82ef8e8f06444b251ccfe323facbf67a"><div>
             <h3>
               <div class="m-doc-template">
@@ -125,27 +143,7 @@
               <span class="m-doc-wrap-bumper"><a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">PipeType</a> tf::<wbr />DataPipe&lt;Input, Output, C&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a82ef8e8f06444b251ccfe323facbf67a" class="m-doc-self">type</a>(</span><span class="m-doc-wrap">) const</span></span>
             </h3>
             <p>queries the type of the data pipe</p>
-<p>Returns the type of the callable.</p>
-          </div></section>
-          <section class="m-doc-details" id="af7a3c2d313edd443b049e937f8ec8cd8"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename Input, typename Output, typename C&gt;
-              </div>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />DataPipe&lt;Input, Output, C&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af7a3c2d313edd443b049e937f8ec8cd8" class="m-doc-self">type</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">PipeType</a> type)</span></span>
-            </h3>
-            <p>assigns a new type to the data pipe</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">type</td>
-                  <td>a <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">tf::<wbr />PipeType</a> variable</td>
-                </tr>
-              </tbody>
-            </table>
+<p>A data pipe can be either parallel (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc">tf::<wbr />PipeType::<wbr />PARALLEL</a>) or serial (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>).</p>
           </div></section>
           <section class="m-doc-details" id="a5931f0ae2db8e00f4ad4c42a26adbeae"><div>
             <h3>
@@ -172,11 +170,11 @@
               <tbody>
                 <tr>
                   <td>callable</td>
-                  <td>a callable object constructible from std::function&lt;void(tf::Pipeflow&amp;)&gt;</td>
+                  <td>a callable object constructible from the callable type of this data pipe</td>
                 </tr>
               </tbody>
             </table>
-<p>Assigns a new callable to the data pipe with universal forwarding.</p>
+<p>Assigns a new callable to the pipe using universal forwarding.</p>
           </div></section>
         </section>
       </div>
@@ -223,7 +221,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

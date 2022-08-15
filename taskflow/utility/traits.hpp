@@ -265,21 +265,7 @@ struct unique_variant<std::variant<Ts...>> : filter_duplicates<std::variant<>, T
 template <typename T>
 using unique_variant_t = typename unique_variant<T>::type;
 
-// ----------------------------------------------------------------------------
-// padding to cache lines size
-// ----------------------------------------------------------------------------
 
-template<class T>
-struct padded
-{
-    using type = struct
-    {
-        alignas(TF_CACHELINE_SIZE << 1)T v;
-    };
-};
-
-template<class T>
-using padded_t = typename padded<T>::type;
 
 
 

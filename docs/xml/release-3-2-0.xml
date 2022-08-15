@@ -1,8 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="release-3-2-0" kind="page">
     <compoundname>release-3-2-0</compoundname>
     <title>Release 3.2.0 (2021/07/29)</title>
+    <tableofcontents/>
+    <briefdescription>
+    </briefdescription>
     <detaileddescription>
 <para>Taskflow 3.2.0 is the 3rd release in the 3.x line! This release includes several new changes such as CPU-GPU tasking, algorithm collection, enhanced web-based profiler, documentation, and unit tests.</para><sect1 id="release-3-2-0_1release-3-2-0_download">
 <title>Download</title>
@@ -150,12 +153,12 @@ New algorithms in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFl
 <listitem><para>revised <ref refid="ExecuteTaskflow" kindref="compound">Executor</ref><itemizedlist>
 <listitem><para><ref refid="ExecuteTaskflow_1ExecuteATaskflowWithTransferredOwnership" kindref="member">Execute a Taskflow with Transferred Ownership</ref> </para></listitem></itemizedlist>
 </para></listitem>
-<listitem><para>revised cudaFlowReduce </para></listitem>
-<listitem><para>added cudaFlowAlgorithms<itemizedlist>
-<listitem><para>cudaFlowReduce</para></listitem><listitem><para>cudaFlowScan</para></listitem><listitem><para>cudaFlowMerge</para></listitem><listitem><para>cudaFlowSort </para></listitem></itemizedlist>
+<listitem><para>revised <ref refid="cudaFlowReduce" kindref="compound">Parallel Reduction</ref> </para></listitem>
+<listitem><para>added <ref refid="cudaFlowAlgorithms" kindref="compound">cudaFlow Algorithms</ref><itemizedlist>
+<listitem><para><ref refid="cudaFlowReduce" kindref="compound">Parallel Reduction</ref></para></listitem><listitem><para><ref refid="cudaFlowScan" kindref="compound">Parallel Scan</ref></para></listitem><listitem><para><ref refid="cudaFlowMerge" kindref="compound">Parallel Merge</ref></para></listitem><listitem><para><ref refid="cudaFlowSort" kindref="compound">Parallel Sort</ref> </para></listitem></itemizedlist>
 </para></listitem>
-<listitem><para>added cudaStandardAlgorithms<itemizedlist>
-<listitem><para>CUDASTDExecutionPolicy</para></listitem><listitem><para>CUDASTDReduce</para></listitem><listitem><para>CUDASTDScan</para></listitem><listitem><para>CUDASTDMerge</para></listitem><listitem><para>CUDASTDSort</para></listitem><listitem><para>CUDASTDFind</para></listitem></itemizedlist>
+<listitem><para>added <ref refid="cudaStandardAlgorithms" kindref="compound">CUDA Standard Algorithms</ref><itemizedlist>
+<listitem><para><ref refid="CUDASTDExecutionPolicy" kindref="compound">Execution Policy</ref></para></listitem><listitem><para><ref refid="CUDASTDReduce" kindref="compound">Parallel Reduction</ref></para></listitem><listitem><para><ref refid="CUDASTDScan" kindref="compound">Parallel Scan</ref></para></listitem><listitem><para><ref refid="CUDASTDMerge" kindref="compound">Parallel Merge</ref></para></listitem><listitem><para><ref refid="CUDASTDSort" kindref="compound">Parallel Sort</ref></para></listitem><listitem><para><ref refid="CUDASTDFind" kindref="compound">Parallel Find</ref></para></listitem></itemizedlist>
 </para></listitem>
 </itemizedlist>
 </para></sect1>

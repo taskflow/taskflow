@@ -5,11 +5,7 @@
   <title>syclFlow Algorithms &raquo; Parallel Transforms | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-<<<<<<< HEAD
   <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
-=======
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
->>>>>>> 0dc0291de3cf926fe81561f8073ed43718146077
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -53,25 +49,13 @@
           <span class="m-breadcrumb"><a href="syclFlowAlgorithms.html">syclFlow Algorithms</a> &raquo;</span>
           Parallel Transforms
         </h1>
-<<<<<<< HEAD
-<p><a href="classtf_1_1syclFlow.html" class="m-doc">tf::<wbr />syclFlow</a> provides a template method, <a href="classtf_1_1syclFlow.html#ae278939334a90b6d58d8771e87b2e793" class="m-doc">tf::<wbr />syclFlow::<wbr />transform</a>, for creating a task to perform parallel transforms by applying the given function to a range of item and stores the transformed result in another range.</p><section id="IteratorBasedParallelTransformSYCL"><h2><a href="#IteratorBasedParallelTransformSYCL">Iterator-based Parallel Transforms</a></h2><p>Iterator-based parallel-transform applies the given transform function to a range of items and store the result in another range specified by two iterators, <code>first</code> and <code>last</code>. The two iterators are typically two raw pointers to the first element and the next to the last element in the range in GPU memory space. The task created by <a href="classtf_1_1syclFlow.html#ae278939334a90b6d58d8771e87b2e793" class="m-doc">tf::<wbr />syclFlow::<wbr />transform</a>(I first, I last, C&amp;&amp; callable, S... srcs) represents a kernel of parallel execution for the following loop:</p><pre class="m-code"><span class="k">while</span> <span class="p">(</span><span class="n">first</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
-  <span class="o">*</span><span class="n">first</span><span class="o">++</span> <span class="o">=</span> <span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">src1</span><span class="o">++</span><span class="p">,</span> <span class="o">*</span><span class="n">src2</span><span class="o">++</span><span class="p">,</span> <span class="o">*</span><span class="n">src3</span><span class="o">++</span><span class="p">,</span> <span class="p">...);</span>
-<span class="p">}</span></pre><p>The two iterators, <code>first</code> and <code>last</code>, are typically two raw pointers to the first element and the next to the last element in the range. The following example creates a <code>transform</code> kernel that assigns each element, starting from <code>gpu_data</code> to <code>gpu_data + 1000</code>, to the sum of the corresponding elements at <code>gpu_data_x</code>, <code>gpu_data_y</code>, and <code>gpu_data_z</code>.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace_on</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">syclFlow</span><span class="o">&amp;</span> <span class="n">sf</span><span class="p">){</span>
-  <span class="c1">// gpu_data[i] = gpu_data_x[i] + gpu_data_y[i] + gpu_data_z[i]</span>
-  <span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span> <span class="n">task</span> <span class="o">=</span> <span class="n">sf</span><span class="p">.</span><span class="n">transform</span><span class="p">(</span>
-    <span class="n">gpu_data</span><span class="p">,</span> <span class="n">gpu_data</span> <span class="o">+</span> <span class="mi">1000</span><span class="p">,</span> 
-    <span class="p">[]</span> <span class="p">(</span><span class="kt">int</span> <span class="n">xi</span><span class="p">,</span> <span class="kt">int</span> <span class="n">yi</span><span class="p">,</span> <span class="kt">int</span> <span class="n">zi</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">xi</span> <span class="o">+</span> <span class="n">yi</span> <span class="o">+</span> <span class="n">zi</span><span class="p">;</span> <span class="p">},</span>
-    <span class="n">gpu_data_x</span><span class="p">,</span> <span class="n">gpu_data_y</span><span class="p">,</span> <span class="n">gpu_data_z</span>
-  <span class="p">);</span> 
-<span class="p">},</span> <span class="n">sycl_queue</span><span class="p">);</span></pre><p>Each iteration is independent of each other and is assigned one kernel thread to run the callable.</p></section>
-=======
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#IteratorBasedParallelTransformSYCL">Iterator-based Parallel Transforms</a></li>
           </ul>
-        </div>
-<p><a href="classtf_1_1syclFlow.html" class="m-doc">tf::<wbr />syclFlow</a> provides a template method, <a href="classtf_1_1syclFlow.html#ae278939334a90b6d58d8771e87b2e793" class="m-doc">tf::<wbr />syclFlow::<wbr />transform</a>, for creating a task to perform parallel transforms by applying the given function to a range of item and stores the transformed result in another range.</p><section id="IteratorBasedParallelTransformSYCL"><h2><a href="#IteratorBasedParallelTransformSYCL">Iterator-based Parallel Transforms</a></h2><p>Iterator-based parallel-transform applies the given transform function to a range of items and store the result in another range specified by two iterators, <code>first</code> and <code>last</code>. The two iterators are typically two raw pointers to the first element and the next to the last element in the range in GPU memory space. The task created by <a href="classtf_1_1syclFlow.html#ae278939334a90b6d58d8771e87b2e793" class="m-doc">tf::<wbr />syclFlow::<wbr />transform(I first, I last, C&amp;&amp; callable, S... srcs)</a> represents a kernel of parallel execution for the following loop:</p><pre class="m-code"><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+        </nav>
+<p><a href="classtf_1_1syclFlow.html" class="m-doc">tf::<wbr />syclFlow</a> provides a template method, <a href="classtf_1_1syclFlow.html#ae278939334a90b6d58d8771e87b2e793" class="m-doc">tf::<wbr />syclFlow::<wbr />transform</a>, for creating a task to perform parallel transforms by applying the given function to a range of item and stores the transformed result in another range.</p><section id="IteratorBasedParallelTransformSYCL"><h2><a href="#IteratorBasedParallelTransformSYCL">Iterator-based Parallel Transforms</a></h2><p>Iterator-based parallel-transform applies the given transform function to a range of items and store the result in another range specified by two iterators, <code>first</code> and <code>last</code>. The two iterators are typically two raw pointers to the first element and the next to the last element in the range in GPU memory space. The task created by <a href="classtf_1_1syclFlow.html#ae278939334a90b6d58d8771e87b2e793" class="m-doc">tf::<wbr />syclFlow::<wbr />transform</a>(I first, I last, C&amp;&amp; callable, S... srcs) represents a kernel of parallel execution for the following loop:</p><pre class="m-code"><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">src1</span><span class="o">++</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">src2</span><span class="o">++</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">src3</span><span class="o">++</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>The two iterators, <code>first</code> and <code>last</code>, are typically two raw pointers to the first element and the next to the last element in the range. The following example creates a <code>transform</code> kernel that assigns each element, starting from <code>gpu_data</code> to <code>gpu_data + 1000</code>, to the sum of the corresponding elements at <code>gpu_data_x</code>, <code>gpu_data_y</code>, and <code>gpu_data_z</code>.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace_on</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">syclFlow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span><span class="w"></span>
 <span class="w">  </span><span class="c1">// gpu_data[i] = gpu_data_x[i] + gpu_data_y[i] + gpu_data_z[i]</span>
@@ -81,7 +65,6 @@
 <span class="w">    </span><span class="n">gpu_data_x</span><span class="p">,</span><span class="w"> </span><span class="n">gpu_data_y</span><span class="p">,</span><span class="w"> </span><span class="n">gpu_data_z</span><span class="w"></span>
 <span class="w">  </span><span class="p">);</span><span class="w"> </span>
 <span class="p">},</span><span class="w"> </span><span class="n">sycl_queue</span><span class="p">);</span><span class="w"></span></pre><p>Each iteration is independent of each other and is assigned one kernel thread to run the callable.</p></section>
->>>>>>> 0dc0291de3cf926fe81561f8073ed43718146077
       </div>
     </div>
   </div>
@@ -120,22 +103,13 @@
     </div>
   </div>
 </div>
-<<<<<<< HEAD
 <script src="search-v2.js"></script>
 <script src="searchdata-v2.js" async="async"></script>
-=======
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
->>>>>>> 0dc0291de3cf926fe81561f8073ed43718146077
 <footer><nav>
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-<<<<<<< HEAD
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.13 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
-=======
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
->>>>>>> 0dc0291de3cf926fe81561f8073ed43718146077
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

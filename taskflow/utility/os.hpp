@@ -131,6 +131,7 @@
 namespace tf {
 
 // Struct: CachelineAligned
+// Due to prefetch, we typically do 2x cacheline for the alignment.
 template <typename T>
 struct CachelineAligned {
   alignas (2*TF_CACHELINE_SIZE) T data;

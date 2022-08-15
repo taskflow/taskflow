@@ -71,28 +71,5 @@ int main(int argc, char* argv[]) {
     std::cout << std::setw(12) << L
               << std::setw(12) << runtime / num_rounds / 1e3
               << std::endl;
-
-    /*if (model == "tf") {
-      std::ofstream outputfile;
-      outputfile.open("./tf_time.csv", std::ofstream::app);
-      outputfile << num_threads << ','
-                 << num_lines   << ','
-                 << pipes       << ','
-                 << L           << ','
-                 << runtime / num_rounds / 1e3 << '\n';
-
-      outputfile.close();
-    }
-    else if (model == "tbb") {
-      std::ofstream outputfile;
-      outputfile.open("./tbb_time.csv", std::ofstream::app);
-      outputfile << num_threads << ','
-                 << num_lines   << ','
-                 << pipes       << ','
-                 << L           << ','
-                 << runtime / num_rounds / 1e3 << '\n';
-
-      outputfile.close();
-    }*/
   }
 }

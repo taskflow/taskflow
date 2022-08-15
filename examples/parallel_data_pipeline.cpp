@@ -1,14 +1,19 @@
+// This program demonstrates how to use tf::DataPipeline to create
+// a pipeline with in-pipe data automatically managed by the Taskflow
+// library.
+
 #include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/data_pipeline.hpp>
 
 int main() {
 
-  // data flow => void -> int -> std::string -> float -> void 
+  // dataflow => void -> int -> std::string -> float -> void 
   tf::Taskflow taskflow("pipeline");
   tf::Executor executor;
 
   const size_t num_lines = 3;
-
+  
+  // create a pipeline graph
   tf::DataPipeline pl(num_lines,
     tf::make_data_pipe<void, int>(tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) -> int{
       if(pf.token() == 5) {
@@ -16,16 +21,18 @@ int main() {
         return 0;
       }
       else {
+        printf("first pipe returns %lu\n", pf.token());
         return pf.token();
       }
     }),
 
     tf::make_data_pipe<int, std::string>(tf::PipeType::SERIAL, [](int& input) {
+      printf("second pipe returns a strong of %d\n", input + 100);
       return std::to_string(input + 100);
     }),
 
     tf::make_data_pipe<std::string, void>(tf::PipeType::SERIAL, [](std::string& input) {
-      std::cout << input << std::endl;
+      printf("third pipe receives the input string %s\n", input.c_str());
     })
   );
 
@@ -40,3 +47,4 @@ int main() {
 
   return 0;
 }
+
