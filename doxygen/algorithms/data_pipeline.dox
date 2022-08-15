@@ -4,15 +4,17 @@ namespace tf {
 
 @tableofcontents
 
-%Taskflow provides another variant, tf::DataPipaline, on top of 
+%Taskflow provides another variant, tf::DataPipeline, on top of 
 tf::Pipeline (see @ref TaskParallelPipeline) to help you
 implement data-parallel pipeline algorithms while
 leaving data management to %Taskflow.
+We recommend you finishing reading TaskParallelPipeline first 
+before learning tf::DataPipeline.
 
 @section ParallelDataPipelineIncludeHeaderFile Include the Header 
 
 You need to include the header file, <tt>%taskflow/algorithm/data_pipeline.hpp</tt>,
-for using tf::DataPipaline.
+for implementing data-parallel pipeline algorithms.
 
 @code{.cpp}
 #include <taskflow/algorithm/data_pipeline.hpp>
@@ -30,8 +32,8 @@ there are three steps to create a data-parallel pipeline application:
 The following example creates a data-parallel pipeline that generates a total of
 five dataflow tokens
 from `void` to `int` at the first stage, 
-from `int` to `std::string` at the second stage, 
-from `std::string` to `float` at the third stage, 
+from `int` to `%std::string` at the second stage, 
+from `%std::string` to `float` at the third stage, 
 and `float` to `void` at the final stage.
 Data storage between stages is automatically managed by tf::DataPipeline.
 
@@ -81,6 +83,7 @@ int main() {
 
   return 0;
 }
+@endcode
 
 The interface of tf::DataPipeline is very similar to tf::Pipeline, except that
 the library transparently manages the dataflow between pipes.
@@ -99,7 +102,7 @@ tf::make_data_pipe<int, std::string>(
 The helper function starts with a pair of an input and an output types
 in its template arguments. 
 Both types will always be decayed to their original form using std::decay
-(e.g., `const std::string&` becomes `std::string`) for storage purpose.
+(e.g., `const int&` becomes `int`) for storage purpose.
 In terms of function arguments,
 the first argument specifies the direction of this data pipe,
 which can be either tf::PipeType::SERIAL or tf::PipeType::PARALLEL,
@@ -123,7 +126,8 @@ tf::make_data_pipe<int, std::string>(
 
 @note
 By default, tf::DataPipeline passes the data
-in reference to your callable at which you can take it in copy or in reference.
+in reference to your callable at which you can take it in copy or in reference
+depending on application needs.
 
 For the first pipe, the input type should always be `void` and 
 the callable must take a tf::Pipeflow reference in its argument.
@@ -133,7 +137,7 @@ In this example, we will stop the pipeline when processing five tokens.
 tf::make_data_pipe<void, int>(tf::PipeType::SERIAL, [](tf::Pipeflow& pf) -> int{
   if(pf.token() == 5) {
     pf.stop();
-    return 0;
+    return 0;    // returns a dummy value
   }
   else {
     return pf.token();
@@ -150,7 +154,8 @@ tf::make_data_pipe<std::string, void>(tf::PipeType::SERIAL, [](std::string& inpu
 })
 @endcode
 
-Finally, you need to compose the pipeline graph by creating a module task.
+Finally, you need to compose the pipeline graph by creating a module task
+(i.e., tf::Taskflow::compoased_of).
   
 @code{.cpp}  
 // build the pipeline graph using composition
@@ -168,12 +173,12 @@ executor.run(taskflow).wait();
 
 @section UnderstandInternalDataStorage Understand Internal Data Storage
 
-By default, tf::DataPipeline uses std::variant to store a type-safe union of 
+By default, tf::DataPipeline uses @std_variant to store a type-safe union of 
 all input and output data types extracted from the given data pipes.
 To avoid false sharing, each line keeps a variant that is aligned 
 with the cacheline size.
 When invoking a pipe callable, the input data is acquired in reference
-from the variant using std::get.
+from the variant using @std_variant_get.
 When returning from a pipe callable, the output data is stored back 
 to the variant using assignment operator.
 
@@ -182,10 +187,10 @@ to the variant using assignment operator.
 Visit the following pages to learn more about pipeline:
 
 1. @ref TaskParallelPipeline
-5. @ref TaskParallelScalablePipeline
-2. @ref TextProcessingPipeline
-3. @ref GraphProcessingPipeline
-4. @ref TaskflowProcessingPipeline
+2. @ref TaskParallelScalablePipeline
+3. @ref TextProcessingPipeline
+4. @ref GraphProcessingPipeline
+5. @ref TaskflowProcessingPipeline
 
 */
 

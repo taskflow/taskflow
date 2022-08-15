@@ -5,7 +5,7 @@
   <title>Frequently Asked Questions | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -48,7 +48,7 @@
         <h1>
           Frequently Asked Questions
         </h1>
-        <nav class="m-block m-default">
+        <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
@@ -90,7 +90,7 @@
               </ul>
             </li>
           </ul>
-        </nav>
+        </div>
 <p>This page summarizes a list of frequently asked questions about Taskflow. If you cannot find a solution here, please post an issue at <a href="https://github.com/taskflow/taskflow/issues">here</a>.</p><section id="GeneralQuestions"><h2><a href="#GeneralQuestions">General Questions</a></h2><section id="GeneralQuestion1"><h3><a href="#GeneralQuestion1">Q1: What&#x27;s the goal of Taskflow?</a></h3><p>Taskflow aims to help C++ developers quickly implement efficient parallel decomposition strategies using task-based approaches.</p></section><section id="GeneralQuestion2"><h3><a href="#GeneralQuestion2">Q2: How do I use Taskflow in my projects?</a></h3><p>Taskflow is a header-only library with zero dependencies. The only thing you need is a C++17 compiler. To use Taskflow, simply drop the folder <code>taskflow/</code> to your project and include taskflow.hpp.</p></section><section id="GeneralQuestion3"><h3><a href="#GeneralQuestion3">Q3: What is the difference between static tasking and dynamic tasking?</a></h3><p>Static tasking refers to those tasks created before execution, while dynamic tasking refers to those tasks created during the execution of static tasks or dynamic tasks (nested). Dynamic tasks created by the same task node are grouped together to a subflow.</p></section><section id="GeneralQuestion4"><h3><a href="#GeneralQuestion4">Q4: How many tasks can Taskflow handle?</a></h3><p>Benchmarks showed Taskflow can efficiently handle millions or billions of tasks (both large and small tasks) on a machine with up to 64 CPUs.</p></section><section id="GeneralQuestion5"><h3><a href="#GeneralQuestion5">Q5: What is the weird hex value, like 0x7fc39d402ab0, in the dumped graph?</a></h3><p>The hex value represents the memory address of the task. Each task has a method <a href="classtf_1_1Task.html#a9057ecd0f3833b717480e914f8568f02" class="m-doc">tf::<wbr />Task::<wbr />name(const std::<wbr />string&amp;)</a> for user to assign a human readable string to ease the debugging process. If a task is not assigned a name or is an internal node, its address value in the memory is used instead.</p></section><section id="GeneralQuestion6"><h3><a href="#GeneralQuestion6">Q6: Does Taskflow have backward compatibility with C++03/98/11/14?</a></h3><p>Unfortunately, Taskflow is heavily relying on modern C++17&#x27;s features/idoms/STL and it is very difficult to provide a version that compiles under older C++ versions.</p></section><section id="GeneralQuestion7"><h3><a href="#GeneralQuestion7">Q7: How does Taskflow schedule tasks?</a></h3><p>Taskflow implemented a very efficient <a href="https://en.wikipedia.org/wiki/Work_stealing">work-stealing scheduler</a> to execute task dependency graphs. The source code is available at <code><a href="executor_8hpp.html" class="m-doc">taskflow/<wbr />core/<wbr />executor.hpp</a></code>.</p></section><section id="GeneralQuestion8"><h3><a href="#GeneralQuestion8">Q8: What is the overhead of taskflow?</a></h3><p>Creating a taskflow has certain overhead. For example, creating a task and a dependency takes about 61 and 14 nanoseconds in our system (Intel 4-core CPU at 2.00GHz). The time is amortized over 1M operations, since we have implemented an object pool to recycle tasks for minimal overhead.</p></section><section id="GeneralQuestion9"><h3><a href="#GeneralQuestion9">Q9: How does it compare to existing task programming systems?</a></h3><p>There is a large amount of work on programming systems (e.g., StarPU, Intel TBB, OpenMP, PaRSEC, Kokkos, HPX) in the interest of simplifying the programming complexity of parallel and heterogeneous computing. Each of these systems has its own pros and cons and deserves a reason to exist. However, they do have some problems, particularly from the standpoint of ease of use, static control flow, and scheduling efficiency. Taskflow addresses these limitations through a simple, expressive, and transparent graph programming model.</p></section><section id="GeneralQuestion10"><h3><a href="#GeneralQuestion10">Q10: Do you try to simplify the GPU kernel programming?</a></h3><p>No, we do not develop new programming models to simplify the kernel programming. The rationale is simple: Writing efficient kernels requires domain-specific knowledge and developers often require direct access to the native GPU programming interface. High-level kernel programming models or abstractions all come with restricted applicability. Despite non-trivial kernel programming, we believe what makes heterogeneous computing difficult are surrounding tasks. A mistake made by task scheduling can outweigh all speed-up benefits from a highly optimized kernel. Therefore, Taskflow focuses on heterogeneous tasking that affects the overall system performance to a large extent.</p></section><section id="GeneralQuestion11"><h3><a href="#GeneralQuestion11">Q11: Do you have any real use cases?</a></h3><p>We have applied Taskflow to solve many realistic workloads and demonstrated promising performance scalability and programming productivity. Please refer to <a href="usecases.html" class="m-doc">Real Use Cases</a> and <a href="References.html" class="m-doc">References</a>.</p></section><section id="GeneralQuestion12"><h3><a href="#GeneralQuestion12">Q12: Who is the Principal Investigator of Taskflow I can talk to?</a></h3><p>Please visit this <a href="https://taskflow.github.io/#tag_contact">page</a> or email the investigator <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>.</p></section><section id="GeneralQuestion13"><h3><a href="#GeneralQuestion13">Q13: Who are developing and maintaining Taskflow?</a></h3><p>Taskflow is in active development with core functionalities contributed by an academic group at the University of Utah, led by <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>. While coming out of an academic lab, Taskflow aims to be industrial-strength and is committed to long-term support.</p></section><section id="GeneralQuestion14"><h3><a href="#GeneralQuestion14">Q14: Is Taskflow just an another API or model?</a></h3><p>OK, let me ask this first: <em>Is your new car just another vehicle? Or, is your new home just another place to live?</em></p><p>The answer to this question is the question itself. As technology advances, we can always find new ways to solve computational problems and achieve new performance milestones that were previously out-of-reach.</p></section><section id="GeneralQuestion15"><h3><a href="#GeneralQuestion15">Q15: How can I contribute?</a></h3><p>New contributors are always welcome! Please visit <a href="Contributing.html" class="m-doc">Contributing</a>.</p></section><section id="GeneralQuestion16"><h3><a href="#GeneralQuestion16">Q16: Does Taskflow support pipeline parallelism?</a></h3><p>Yes, Taskflow has a specialized programming model to create a pipeline scheduling framework. Please visit <a href="TaskParallelPipeline.html" class="m-doc">Task-parallel Pipeline</a> and <a href="DataParallelPipeline.html" class="m-doc">Data-parallel Pipeline</a>.</p><hr/></section></section><section id="ProgrammingQuestions"><h2><a href="#ProgrammingQuestions">Programming Questions</a></h2><section id="ProgrammingQuestions1"><h3><a href="#ProgrammingQuestions1">Q1: What is the difference between Taskflow threads and workers?</a></h3><p>The master thread owns the thread pool and can spawn workers to run tasks or shutdown the pool. Giving taskflow <code>N</code> threads means using <code>N</code> threads to do the works, and there is a total of <code>N+1</code> threads (including the master thread) in the program. Please refer to <a href="ExecuteTaskflow.html#CreateAnExecutor" class="m-doc">Create an Executor</a> for more details.</p></section><section id="ProgrammingQuestions2"><h3><a href="#ProgrammingQuestions2">Q2: What is the Lifetime of a Task and a Graph?</a></h3><p>The lifetime of a task sticks with its parent graph. A task is not destroyed until its parent graph is destroyed. Please refer to <a href="StaticTasking.html#UnderstandTheLifetimeOfATask" class="m-doc">Understand the Lifetime of a Task</a> for more details.</p></section><section id="ProgrammingQuestions3"><h3><a href="#ProgrammingQuestions3">Q3: Is taskflow thread-safe?</a></h3><p>No, the taskflow object is not thread-safe. Multiple threads cannot create tasks from the same taskflow at the same time.</p></section><section id="ProgrammingQuestions4"><h3><a href="#ProgrammingQuestions4">Q4: Is executor thread-safe?</a></h3><p>Yes, the executor object is thread-safe. You can have multiple threads submit different taskflows to the same executor.</p></section><section id="ProgrammingQuestions5"><h3><a href="#ProgrammingQuestions5">Q5: My program hangs and never returns after dispatching a taskflow graph. What&#x27;s wrong?</a></h3><p>When the program hangs forever it is very likely your taskflow graph has a cycle or not properly conditioned (see <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a>). Try the <a href="classtf_1_1Taskflow.html#ac433018262e44b12c4cc9f0c4748d758" class="m-doc">tf::<wbr />Taskflow::<wbr />dump</a> method to debug the graph before dispatching your taskflow graph.</p></section><section id="ProgrammingQuestions6"><h3><a href="#ProgrammingQuestions6">Q6: In the following example where B spawns a joined subflow of three tasks B1, B2, and B3, do they run concurrently with task A?</a></h3><div class="m-graph"><svg style="width: 23.250rem; height: 15.188rem;" viewBox="0.00 0.00 372.00 243.00">
 <g transform="scale(1 1) rotate(0) translate(4 239)">
 <title>Taskflow</title>
@@ -106,73 +106,73 @@
 </g>
 <g class="m-node m-flat">
 <title>p0x7f9866c01820</title>
-<ellipse cx="141" cy="-34" rx="27" ry="18.2703"/>
+<ellipse cx="141" cy="-34" rx="27" ry="18.27"/>
 <text text-anchor="middle" x="141" y="-30.2">A</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f9866c01b70</title>
-<ellipse cx="231" cy="-89" rx="27" ry="18.2703"/>
+<ellipse cx="231" cy="-89" rx="27" ry="18.27"/>
 <text text-anchor="middle" x="231" y="-85.2">B</text>
 </g>
 <g class="m-edge">
 <title>p0x7f9866c01820&#45;&gt;p0x7f9866c01b70</title>
-<path d="M161.4224,-46.4804C173.3897,-53.7937 188.7024,-63.1515 201.9143,-71.2254"/>
-<polygon points="200.3005,-74.341 210.6584,-76.569 203.9507,-68.368 200.3005,-74.341"/>
+<path d="M161.53,-46.21C173.38,-53.61 188.7,-63.19 201.84,-71.4"/>
+<polygon points="200.19,-74.5 210.52,-76.83 203.9,-68.56 200.19,-74.5"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f9866c01930</title>
-<ellipse cx="231" cy="-34" rx="27" ry="18.2703"/>
+<ellipse cx="231" cy="-34" rx="27" ry="18.27"/>
 <text text-anchor="middle" x="231" y="-30.2">C</text>
 </g>
 <g class="m-edge">
 <title>p0x7f9866c01820&#45;&gt;p0x7f9866c01930</title>
-<path d="M168.003,-34C176.0277,-34 184.9665,-34 193.5309,-34"/>
-<polygon points="193.7051,-37.5001 203.705,-34 193.705,-30.5001 193.7051,-37.5001"/>
+<path d="M168.4,-34C176.39,-34 185.31,-34 193.82,-34"/>
+<polygon points="193.92,-37.5 203.92,-34 193.92,-30.5 193.92,-37.5"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f9866c01a40</title>
-<ellipse cx="321" cy="-61" rx="27" ry="18.2703"/>
+<ellipse cx="321" cy="-61" rx="27" ry="18.27"/>
 <text text-anchor="middle" x="321" y="-57.2">D</text>
 </g>
 <g class="m-edge">
 <title>p0x7f9866c01b70&#45;&gt;p0x7f9866c01a40</title>
-<path d="M255.5929,-81.3489C265.2164,-78.3549 276.4198,-74.8694 286.8067,-71.6379"/>
-<polygon points="287.928,-74.9546 296.4368,-68.6419 285.8485,-68.2706 287.928,-74.9546"/>
+<path d="M256.05,-81.35C265.44,-78.36 276.36,-74.88 286.5,-71.66"/>
+<polygon points="287.82,-74.91 296.29,-68.54 285.7,-68.24 287.82,-74.91"/>
 </g>
 <g class="m-edge">
 <title>p0x7f9866c01930&#45;&gt;p0x7f9866c01a40</title>
-<path d="M256.07,-41.521C265.4322,-44.3297 276.2367,-47.571 286.3123,-50.5937"/>
-<polygon points="285.4804,-53.9982 296.0644,-53.5193 287.4919,-47.2934 285.4804,-53.9982"/>
+<path d="M256.05,-41.38C265.36,-44.24 276.18,-47.56 286.25,-50.65"/>
+<polygon points="285.4,-54.04 295.98,-53.63 287.45,-47.35 285.4,-54.04"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f9866d01880</title>
-<ellipse cx="51" cy="-141" rx="27" ry="18.2703"/>
+<ellipse cx="51" cy="-141" rx="27" ry="18.27"/>
 <text text-anchor="middle" x="51" y="-137.2">B1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f9866d01ac0</title>
-<ellipse cx="141" cy="-89" rx="27" ry="18.2703"/>
+<ellipse cx="141" cy="-89" rx="27" ry="18.27"/>
 <text text-anchor="middle" x="141" y="-85.2">B3</text>
 </g>
 <g class="m-edge">
 <title>p0x7f9866d01880&#45;&gt;p0x7f9866d01ac0</title>
-<path d="M71.874,-128.9395C83.574,-122.1795 98.3631,-113.6346 111.2568,-106.1849"/>
-<polygon points="113.3315,-109.0285 120.2392,-100.9951 109.8295,-102.9674 113.3315,-109.0285"/>
+<path d="M71.97,-129.2C83.56,-122.35 98.35,-113.61 111.19,-106.03"/>
+<polygon points="113.28,-108.85 120.11,-100.75 109.72,-102.83 113.28,-108.85"/>
 </g>
 <g class="m-edge">
 <title>p0x7f9866d01ac0&#45;&gt;p0x7f9866c01b70</title>
-<path d="M168.003,-89C176.0277,-89 184.9665,-89 193.5309,-89"/>
-<polygon points="193.7051,-92.5001 203.705,-89 193.705,-85.5001 193.7051,-92.5001"/>
+<path d="M168.4,-89C176.39,-89 185.31,-89 193.82,-89"/>
+<polygon points="193.92,-92.5 203.92,-89 193.92,-85.5 193.92,-92.5"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f9866d019a0</title>
-<ellipse cx="51" cy="-86" rx="27" ry="18.2703"/>
+<ellipse cx="51" cy="-86" rx="27" ry="18.27"/>
 <text text-anchor="middle" x="51" y="-82.2">B2</text>
 </g>
 <g class="m-edge">
 <title>p0x7f9866d019a0&#45;&gt;p0x7f9866d01ac0</title>
-<path d="M78.003,-86.9001C86.1013,-87.17 95.1306,-87.471 103.7665,-87.7589"/>
-<polygon points="103.905,-91.2654 114.0161,-88.1005 104.1383,-84.2692 103.905,-91.2654"/>
+<path d="M78.4,-86.9C86.39,-87.17 95.31,-87.48 103.82,-87.77"/>
+<polygon points="103.81,-91.27 113.92,-88.11 104.04,-84.27 103.81,-91.27"/>
 </g>
 </g>
 </svg>
@@ -215,13 +215,13 @@
     </div>
   </div>
 </div>
-<script src="search-v2.js"></script>
-<script src="searchdata-v2.js" async="async"></script>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

@@ -1,18 +1,54 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="GPUTaskingcudaFlowCapturer" kind="page">
     <compoundname>GPUTaskingcudaFlowCapturer</compoundname>
     <title>GPU Tasking (cudaFlowCapturer)</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Include the Header</name>
+        <reference>GPUTaskingcudaFlowCapturer_1GPUTaskingcudaFlowCapturerIncludeTheHeader</reference>
+    </tocsect>
+      <tocsect>
+        <name>Capture a cudaFlow</name>
+        <reference>GPUTaskingcudaFlowCapturer_1Capture_a_cudaFlow</reference>
+    </tocsect>
+      <tocsect>
+        <name>Common Capture Methods</name>
+        <reference>GPUTaskingcudaFlowCapturer_1CommonCaptureMethods</reference>
+    </tocsect>
+      <tocsect>
+        <name>Create a Capturer on a Specific GPU</name>
+        <reference>GPUTaskingcudaFlowCapturer_1CreateACapturerOnASpecificGPU</reference>
+    </tocsect>
+      <tocsect>
+        <name>Create a Capturer within a cudaFlow</name>
+        <reference>GPUTaskingcudaFlowCapturer_1CreateACapturerWithinAcudaFlow</reference>
+    </tocsect>
+      <tocsect>
+        <name>Offload a cudaFlow Capturer</name>
+        <reference>GPUTaskingcudaFlowCapturer_1OffloadAcudaFlowCapturer</reference>
+    </tocsect>
+      <tocsect>
+        <name>Update a cudaFlow Capturer</name>
+        <reference>GPUTaskingcudaFlowCapturer_1UpdateAcudaFlowCapturer</reference>
+    </tocsect>
+      <tocsect>
+        <name>Use cudaFlow Capturer in a Standalone Environment</name>
+        <reference>GPUTaskingcudaFlowCapturer_1UsecudaFlowCapturerInAStandaloneEnvironment</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>You can create a cudaFlow through <emphasis>stream capture</emphasis>, which allows you to implicitly capture a CUDA graph using stream-based interface. Compared to explicit CUDA Graph construction (<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>), implicit CUDA Graph capturing (<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>) is more flexible in building GPU task graphs.</para><sect1 id="GPUTaskingcudaFlowCapturer_1GPUTaskingcudaFlowCapturerIncludeTheHeader">
+<para>You can create a cudaFlow through <emphasis>stream capture</emphasis>, which allows you to implicitly capture a CUDA graph using stream-based interface. Compared to explicit CUDA Graph construction (<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>), implicit CUDA Graph capturing (<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>) is more flexible in building GPU task graphs.</para>
+<sect1 id="GPUTaskingcudaFlowCapturer_1GPUTaskingcudaFlowCapturerIncludeTheHeader">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/cuda/cudaflow.hpp</computeroutput>, for creating a <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> task.</para></sect1>
+<para>You need to include the header file, <computeroutput>taskflow/cuda/cudaflow.hpp</computeroutput>, for creating a <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> task.</para>
+</sect1>
 <sect1 id="GPUTaskingcudaFlowCapturer_1Capture_a_cudaFlow">
 <title>Capture a cudaFlow</title>
-<para>When your program has no access to direct kernel calls but invoke it through a stream-based interface (e.g., <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> and <ulink url="https://developer.nvidia.com/cudnn">cuDNN</ulink> library functions), you can use <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> to capture the hidden GPU operations into a CUDA graph. A cudaFlowCapturer is similar to a cudaFlow except it constructs a GPU task graph through <emphasis>stream capture</emphasis>. You use the method <ref refid="classtf_1_1cudaFlowCapturer_1ad0d937ae0d77239f148b66a77e35db41" kindref="member">tf::cudaFlowCapturer::on</ref> to capture a sequence of <emphasis>asynchronous</emphasis> GPU operations through the given stream. The following example creates a CUDA graph that captures two kernel tasks, <computeroutput>task_1</computeroutput> (<computeroutput>my_kernel_1</computeroutput>) and <computeroutput>task_2</computeroutput> (<computeroutput>my_kernel_2</computeroutput>) , where <computeroutput>task_1</computeroutput> runs before <computeroutput>task_2</computeroutput>.</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="cudaflow_8hpp" kindref="compound">taskflow/cuda/cudaflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<para>When your program has no access to direct kernel calls but invoke it through a stream-based interface (e.g., <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> and <ulink url="https://developer.nvidia.com/cudnn">cuDNN</ulink> library functions), you can use <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> to capture the hidden GPU operations into a CUDA graph. A cudaFlowCapturer is similar to a cudaFlow except it constructs a GPU task graph through <emphasis>stream capture</emphasis>. You use the method <ref refid="classtf_1_1cudaFlowCapturer_1ad0d937ae0d77239f148b66a77e35db41" kindref="member">tf::cudaFlowCapturer::on</ref> to capture a sequence of <emphasis>asynchronous</emphasis> GPU operations through the given stream. The following example creates a CUDA graph that captures two kernel tasks, <computeroutput>task_1</computeroutput> (<computeroutput>my_kernel_1</computeroutput>) and <computeroutput>task_2</computeroutput> (<computeroutput>my_kernel_2</computeroutput>) , where <computeroutput>task_1</computeroutput> runs before <computeroutput>task_2</computeroutput>.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="cudaflow_8hpp" kindref="compound">taskflow/cuda/cudaflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -36,18 +72,23 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/cudaflow_capturer_1.dot"></dotfile>
-</para><para><simplesect kind="warning"><para>Inside <ref refid="classtf_1_1cudaFlowCapturer_1ad0d937ae0d77239f148b66a77e35db41" kindref="member">tf::cudaFlowCapturer::on</ref>, you should <emphasis>NOT</emphasis> modify the properties of the stream argument but only use it to capture <emphasis>asynchronous</emphasis> GPU operations (e.g., <computeroutput>kernel</computeroutput>, <computeroutput>cudaMemcpyAsync</computeroutput>).</para></simplesect>
-</para></sect1>
+</programlisting></para>
+<para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/cudaflow_capturer_1.dot"></dotfile>
+</para>
+<para><simplesect kind="warning"><para>Inside <ref refid="classtf_1_1cudaFlowCapturer_1ad0d937ae0d77239f148b66a77e35db41" kindref="member">tf::cudaFlowCapturer::on</ref>, you should <emphasis>NOT</emphasis> modify the properties of the stream argument but only use it to capture <emphasis>asynchronous</emphasis> GPU operations (e.g., <computeroutput>kernel</computeroutput>, <computeroutput>cudaMemcpyAsync</computeroutput>).</para>
+</simplesect>
+</para>
+</sect1>
 <sect1 id="GPUTaskingcudaFlowCapturer_1CommonCaptureMethods">
 <title>Common Capture Methods</title>
-<para>cudaFlowCapturer defines a set of methods for capturing common GPU operations, such as <ref refid="classtf_1_1cudaFlowCapturer_1a6f06c7f6954d8d67ad89f0eddfe285e9" kindref="member">tf::cudaFlowCapturer::kernel</ref>, <ref refid="classtf_1_1cudaFlowCapturer_1ae84d097cdae9e2e8ce108dea760483ed" kindref="member">tf::cudaFlowCapturer::memcpy</ref>, <ref refid="classtf_1_1cudaFlowCapturer_1a0d38965b380f940bf6cfc6667a281052" kindref="member">tf::cudaFlowCapturer::memset</ref>, and so on. For example, the following code snippet uses these pre-defined methods to construct a GPU task graph of one host-to-device copy, kernel, and one device-to-host copy, in this order of their dependencies.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>capturer){</highlight></codeline>
+<para>cudaFlowCapturer defines a set of methods for capturing common GPU operations, such as <ref refid="classtf_1_1cudaFlowCapturer_1a6f06c7f6954d8d67ad89f0eddfe285e9" kindref="member">tf::cudaFlowCapturer::kernel</ref>, <ref refid="classtf_1_1cudaFlowCapturer_1ae84d097cdae9e2e8ce108dea760483ed" kindref="member">tf::cudaFlowCapturer::memcpy</ref>, <ref refid="classtf_1_1cudaFlowCapturer_1a0d38965b380f940bf6cfc6667a281052" kindref="member">tf::cudaFlowCapturer::memset</ref>, and so on. For example, the following code snippet uses these pre-defined methods to construct a GPU task graph of one host-to-device copy, kernel, and one device-to-host copy, in this order of their dependencies.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>capturer){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>copy<sp/>data<sp/>from<sp/>host_data<sp/>to<sp/>gpu_data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>h2d<sp/>=<sp/>capturer.<ref refid="classtf_1_1cudaFlowCapturer_1ae84d097cdae9e2e8ce108dea760483ed" kindref="member">memcpy</ref>(gpu_data,<sp/>host_data,<sp/>bytes).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;h2d&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>h2d<sp/>=<sp/>capturer.<ref refid="classtf_1_1cudaFlowCapturer_1ae84d097cdae9e2e8ce108dea760483ed" kindref="member">memcpy</ref>(gpu_data,<sp/>host_data,<sp/>bytes).name(</highlight><highlight class="stringliteral">&quot;h2d&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>capture<sp/>my_kernel<sp/>to<sp/>do<sp/>computation<sp/>on<sp/>gpu_data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>kernel<sp/>=<sp/>capturer.<ref refid="classtf_1_1cudaFlowCapturer_1ad0d937ae0d77239f148b66a77e35db41" kindref="member">on</ref>([&amp;](cudaStream_t<sp/>stream){<sp/><sp/></highlight></codeline>
@@ -60,19 +101,26 @@
 <codeline><highlight class="normal"><sp/><sp/>h2d.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(kernel);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>kernel.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(d2h);</highlight></codeline>
 <codeline><highlight class="normal">}).name(</highlight><highlight class="stringliteral">&quot;capturer&quot;</highlight><highlight class="normal">);</highlight></codeline>
-</programlisting></para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/cudaflow_capturer_2.dot"></dotfile>
-</para></sect1>
+</programlisting></para>
+<para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/cudaflow_capturer_2.dot"></dotfile>
+</para>
+</sect1>
 <sect1 id="GPUTaskingcudaFlowCapturer_1CreateACapturerOnASpecificGPU">
 <title>Create a Capturer on a Specific GPU</title>
-<para>You can capture a cudaFlow on a specific GPU by calling <ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">tf::Taskflow::emplace_on</ref>. By default, a cudaFlow runs on the current GPU associated with the caller, which is typically 0. You can emplace a cudaFlowCapturer on a specific GPU. The following example creates a capturer on GPU 2. When the executor runs the callable, it switches to GPU 2 and scopes the callable under this GPU context.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>capturer){</highlight></codeline>
+<para>You can capture a cudaFlow on a specific GPU by calling <ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">tf::Taskflow::emplace_on</ref>. By default, a cudaFlow runs on the current GPU associated with the caller, which is typically 0. You can emplace a cudaFlowCapturer on a specific GPU. The following example creates a capturer on GPU 2. When the executor runs the callable, it switches to GPU 2 and scopes the callable under this GPU context.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>capturer){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>here,<sp/>capturer<sp/>is<sp/>under<sp/>GPU<sp/>device<sp/>2</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">},<sp/>2);</highlight></codeline>
-</programlisting></para><para><simplesect kind="attention"><para>It is your responsibility to allocate the GPU memory in the same GPU context as the capturer.</para></simplesect>
-</para></sect1>
+</programlisting></para>
+<para><simplesect kind="attention"><para>It is your responsibility to allocate the GPU memory in the same GPU context as the capturer.</para>
+</simplesect>
+</para>
+</sect1>
 <sect1 id="GPUTaskingcudaFlowCapturer_1CreateACapturerWithinAcudaFlow">
 <title>Create a Capturer within a cudaFlow</title>
-<para>Within a parent cudaFlow, you can capture a cudaFlow to form a subflow that eventually becomes a <emphasis>child</emphasis> node in the underlying CUDA task graph. The following example defines a captured flow <computeroutput>task2</computeroutput> of two dependent tasks, <computeroutput>task2_1</computeroutput> and <computeroutput>task2_2</computeroutput>, and <computeroutput>task2</computeroutput> runs after <computeroutput>task1</computeroutput>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
+<para>Within a parent cudaFlow, you can capture a cudaFlow to form a subflow that eventually becomes a <emphasis>child</emphasis> node in the underlying CUDA task graph. The following example defines a captured flow <computeroutput>task2</computeroutput> of two dependent tasks, <computeroutput>task2_1</computeroutput> and <computeroutput>task2_2</computeroutput>, and <computeroutput>task2</computeroutput> runs after <computeroutput>task1</computeroutput>.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task1<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" kindref="member">kernel</ref>(grid,<sp/>block,<sp/>shm,<sp/>my_kernel,<sp/>args...)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;my_kernel&quot;</highlight><highlight class="normal">);</highlight></codeline>
@@ -82,31 +130,36 @@
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task2<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a89c389fff64a16e5dd8c60875d3b514d" kindref="member">capture</ref>([&amp;](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>capturer){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>capture<sp/>my_kernel1<sp/>using<sp/>the<sp/>given<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task2_1<sp/>=<sp/>capturer.<ref refid="classtf_1_1cudaFlowCapturer_1ad0d937ae0d77239f148b66a77e35db41" kindref="member">on</ref>([&amp;](cudaStream_t<sp/>stream){<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tf::cudaTask<sp/>task2_1<sp/>=<sp/>capturer.on([&amp;](cudaStream_t<sp/>stream){<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>my_kernel2&lt;&lt;&lt;grid1,<sp/>block1,<sp/>shm_size1,<sp/>stream&gt;&gt;&gt;(args1...);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;my_kernel1&quot;</highlight><highlight class="normal">);<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;my_kernel1&quot;</highlight><highlight class="normal">);<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>capture<sp/>my_kernel2<sp/>using<sp/>the<sp/>given<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task2_2<sp/>=<sp/>capturer.<ref refid="classtf_1_1cudaFlowCapturer_1ad0d937ae0d77239f148b66a77e35db41" kindref="member">on</ref>([&amp;](cudaStream_t<sp/>stream){<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>my_kernel2&lt;&lt;&lt;grid2,<sp/>block2,<sp/>shm_size2,<sp/>stream&gt;&gt;&gt;(args2...);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;my_kernel2&quot;</highlight><highlight class="normal">);<sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;my_kernel2&quot;</highlight><highlight class="normal">);<sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>task2_1.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(task2_2);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;capturer&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>task1.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(task2);</highlight></codeline>
 <codeline><highlight class="normal">}).name(</highlight><highlight class="stringliteral">&quot;cudaFlow&quot;</highlight><highlight class="normal">);</highlight></codeline>
-</programlisting></para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/cudaflow_capturer_3.dot"></dotfile>
-</para></sect1>
+</programlisting></para>
+<para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/cudaflow_capturer_3.dot"></dotfile>
+</para>
+</sect1>
 <sect1 id="GPUTaskingcudaFlowCapturer_1OffloadAcudaFlowCapturer">
 <title>Offload a cudaFlow Capturer</title>
-<para>By default, the executor offloads and executes the cudaFlow capturer once. When you offload a cudaFlow capturer, the Taskflow runtime transforms the user-described graph into an executable graph that is optimized for maximum stream concurrency. Depending on the optimization algorithm, the user-described graph may be different from the actual executable graph submitted to the CUDA runtime. Similar to <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref>, <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> provides several offload methods to run the GPU task graph:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>cf)<sp/>{</highlight></codeline>
+<para>By default, the executor offloads and executes the cudaFlow capturer once. When you offload a cudaFlow capturer, the Taskflow runtime transforms the user-described graph into an executable graph that is optimized for maximum stream concurrency. Depending on the optimization algorithm, the user-described graph may be different from the actual executable graph submitted to the CUDA runtime. Similar to <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref>, <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> provides several offload methods to run the GPU task graph:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>cf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...<sp/>capture<sp/>CUDA<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1a5959002af1cf1a1ada3d86a073682232" kindref="member">offload</ref>();<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>offload<sp/>the<sp/>cudaFlow<sp/>capturer<sp/>and<sp/>run<sp/>it<sp/>once</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1a0bc6231cc6b1dbf5171b0bc421dc6577" kindref="member">offload_n</ref>(10);<sp/><sp/></highlight><highlight class="comment">//<sp/>offload<sp/>the<sp/>cudaFlow<sp/>capturer<sp/>and<sp/>run<sp/>it<sp/>10<sp/>times</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1a8678573f19e01f441a6b4108e62781f3" kindref="member">offload_until</ref>([repeat=5]<sp/>()<sp/></highlight><highlight class="keyword">mutable</highlight><highlight class="normal"><sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>repeat--<sp/>==<sp/>0;<sp/>})<sp/><sp/></highlight><highlight class="comment">//<sp/>five<sp/>times</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-</programlisting></para><para>After you offload a cudaFlow capturer, it is considered executed, and the executor will <emphasis>not</emphasis> run an offloaded cudaFlow after leaving the cudaFlow capturer task callable. On the other hand, if a cudaFlow capturer is not offloaded, the executor runs it once. For example, the following two versions represent the same execution logic.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>version<sp/>1:<sp/>explicitly<sp/>offload<sp/>a<sp/>cudaFlow<sp/>capturer<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+</programlisting></para>
+<para>After you offload a cudaFlow capturer, it is considered executed, and the executor will <emphasis>not</emphasis> run an offloaded cudaFlow after leaving the cudaFlow capturer task callable. On the other hand, if a cudaFlow capturer is not offloaded, the executor runs it once. For example, the following two versions represent the same execution logic.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>version<sp/>1:<sp/>explicitly<sp/>offload<sp/>a<sp/>cudaFlow<sp/>capturer<sp/>once</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>cf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1ac944c7d20056e0633ef84f1a25b52296" kindref="member">single_task</ref>([]<sp/>__device__<sp/>(){});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1a5959002af1cf1a1ada3d86a073682232" kindref="member">offload</ref>();</highlight></codeline>
@@ -116,10 +169,12 @@
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>sf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1ac944c7d20056e0633ef84f1a25b52296" kindref="member">single_task</ref>([]<sp/>__device__<sp/>(){});</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+</sect1>
 <sect1 id="GPUTaskingcudaFlowCapturer_1UpdateAcudaFlowCapturer">
 <title>Update a cudaFlow Capturer</title>
-<para>Between successive offloads (i.e., executions of a cudaFlow capturer), you can update the captured task with a different set of parameters. For example, you can update a kernel task to a memory task from an offloaded cudaFlow capturer.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>cf)<sp/>{</highlight></codeline>
+<para>Between successive offloads (i.e., executions of a cudaFlow capturer), you can update the captured task with a different set of parameters. For example, you can update a kernel task to a memory task from an offloaded cudaFlow capturer.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>cf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1a6f06c7f6954d8d67ad89f0eddfe285e9" kindref="member">kernel</ref>(grid1,<sp/>block1,<sp/>shm1,<sp/>kernel1,<sp/>kernel1_args);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1a5959002af1cf1a1ada3d86a073682232" kindref="member">offload</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -131,16 +186,21 @@
 <codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1a0d38965b380f940bf6cfc6667a281052" kindref="member">memset</ref>(task,<sp/>target,<sp/>0,<sp/>num_bytes);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1a5959002af1cf1a1ada3d86a073682232" kindref="member">offload</ref>();</highlight></codeline>
 <codeline><highlight class="normal">};</highlight></codeline>
-</programlisting></para><para>When you offload a updated cudaFlow capturer, the runtime will try to update the underlying executable with the new captured graph first, or destroy the executable graph and replace it with a new one. Each method of task creation in <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> has an overload of updating the parameters of the task created from the same creation method.</para><para><simplesect kind="note"><para>Unlike <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> that is restrictive about the use of update methods, it is valid to alter the topology and change the type of a captured task between successive execution of a cudaFlow capturer.</para></simplesect>
-</para></sect1>
+</programlisting></para>
+<para>When you offload a updated cudaFlow capturer, the runtime will try to update the underlying executable with the new captured graph first, or destroy the executable graph and replace it with a new one. Each method of task creation in <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> has an overload of updating the parameters of the task created from the same creation method.</para>
+<para><simplesect kind="note"><para>Unlike <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> that is restrictive about the use of update methods, it is valid to alter the topology and change the type of a captured task between successive execution of a cudaFlow capturer.</para>
+</simplesect>
+</para>
+</sect1>
 <sect1 id="GPUTaskingcudaFlowCapturer_1UsecudaFlowCapturerInAStandaloneEnvironment">
 <title>Use cudaFlow Capturer in a Standalone Environment</title>
-<para>You can use <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> in a standalone environment without going through <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> and offloads it to a GPU from the caller thread. All the features we have discussed so far apply to the standalone use.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref><sp/>cf;<sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>standalone<sp/>cudaFlow<sp/>capturer</highlight><highlight class="normal"></highlight></codeline>
+<para>You can use <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> in a standalone environment without going through <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> and offloads it to a GPU from the caller thread. All the features we have discussed so far apply to the standalone use.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref><sp/>cf;<sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>standalone<sp/>cudaFlow<sp/>capturer</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>h2d_x<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1ab70f12050e78b588f5c23d874aa4e538" kindref="member">copy</ref>(dx,<sp/>hx.data(),<sp/>N).name(</highlight><highlight class="stringliteral">&quot;h2d_x&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>h2d_y<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1ab70f12050e78b588f5c23d874aa4e538" kindref="member">copy</ref>(dy,<sp/>hy.data(),<sp/>N).name(</highlight><highlight class="stringliteral">&quot;h2d_y&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>d2h_x<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1ab70f12050e78b588f5c23d874aa4e538" kindref="member">copy</ref>(hx.data(),<sp/>dx,<sp/>N).name(</highlight><highlight class="stringliteral">&quot;d2h_x&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>d2h_y<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1ab70f12050e78b588f5c23d874aa4e538" kindref="member">copy</ref>(hy.data(),<sp/>dy,<sp/>N).name(</highlight><highlight class="stringliteral">&quot;d2h_y&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>h2d_x<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1ab70f12050e78b588f5c23d874aa4e538" kindref="member">copy</ref>(dx,<sp/>hx.data(),<sp/>N).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;h2d_x&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>h2d_y<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1ab70f12050e78b588f5c23d874aa4e538" kindref="member">copy</ref>(dy,<sp/>hy.data(),<sp/>N).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;h2d_y&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>d2h_x<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1ab70f12050e78b588f5c23d874aa4e538" kindref="member">copy</ref>(hx.data(),<sp/>dx,<sp/>N).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;d2h_x&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>d2h_y<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1ab70f12050e78b588f5c23d874aa4e538" kindref="member">copy</ref>(hy.data(),<sp/>dy,<sp/>N).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;d2h_y&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>saxpy<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1a6f06c7f6954d8d67ad89f0eddfe285e9" kindref="member">kernel</ref>((N+255)/256,<sp/>256,<sp/>0,<sp/>saxpy,<sp/>N,<sp/>2.0f,<sp/>dx,<sp/>dy)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;saxpy&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -148,11 +208,16 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(d2h_x,<sp/>d2h_y);<sp/><sp/></highlight><highlight class="comment">//<sp/>kernel<sp/>runs<sp/>before<sp/>device-to-host<sp/>copy</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlowCapturer_1a5959002af1cf1a1ada3d86a073682232" kindref="member">offload</ref>();<sp/><sp/></highlight><highlight class="comment">//<sp/>offload<sp/>and<sp/>run<sp/>the<sp/>standalone<sp/>cudaFlow<sp/>capturer<sp/>once</highlight></codeline>
-</programlisting></para><para>When using cudaFlow Capturer in a standalone environment, it is your choice to decide its GPU context. The following example creates a cudaFlow capturer and executes it on GPU 2.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaScopedDevice" kindref="compound">tf::cudaScopedDevice</ref><sp/>gpu(2);</highlight></codeline>
+</programlisting></para>
+<para>When using cudaFlow Capturer in a standalone environment, it is your choice to decide its GPU context. The following example creates a cudaFlow capturer and executes it on GPU 2.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaScopedDevice" kindref="compound">tf::cudaScopedDevice</ref><sp/>gpu(2);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref><sp/>cf;<sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>standalone<sp/>cudaFlow<sp/>capturer<sp/>on<sp/>GPU<sp/>2</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlowCapturer_1a5959002af1cf1a1ada3d86a073682232" kindref="member">offload</ref>();<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>capturer<sp/>once<sp/>on<sp/>GPU<sp/>2</highlight></codeline>
-</programlisting></para><para><simplesect kind="note"><para>In the standalone mode, a written cudaFlow capturer will not be executed until you explicitly call an offload method, as there is neither a taskflow nor an executor. </para></simplesect>
-</para></sect1>
+</programlisting></para>
+<para><simplesect kind="note"><para>In the standalone mode, a written cudaFlow capturer will not be executed until you explicitly call an offload method, as there is neither a taskflow nor an executor. </para>
+</simplesect>
+</para>
+</sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

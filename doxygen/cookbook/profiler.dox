@@ -42,6 +42,94 @@ Without losing much visual accuracy,
 each @em clustered task indicates a group of adjacent tasks clustered by 
 the algorithm, and you can zoom in to see these tasks.
 
+@section ProfilerEnableTFProfServer Enable Taskflow Profiler on a HTTP Server
+
+When profiling large taskflow programs,
+the method in the previous section may not work because of the limitation of processing
+large JSON files.
+For example, a taskflow program of a million tasks can
+produce several GBs of profiling data, and
+the profile may respond to your requests very slowly.
+To solve this problem,
+we have implemented a C++-based http server optimized for our profiling data.
+To compile the server, enable the cmake option
+@c TF_BUILD_PROFILER.
+You may visit @ref install to understand %Taskflow's build environment.
+
+@code{.shell-session}
+# under the build directory
+~$ cmake ../ -DTF_BUILD_PROFILER=ON
+~$ make
+@endcode
+
+After successfully compiling the server,
+you can find the executable at @c tfprof/server/tfprof.
+Now, generate profiling data from running a taskflow program
+but specify the output file with extension @c .tfp.
+
+@code{.shell-session}
+~$ TF_ENABLE_PROFILER=my_taskflow.tfp ./my_taskflow
+~$ ls
+my_taskflow.tfp    # my_taskflow.tfp is of binary format
+@endcode
+
+Launch the server program @c tfprof/server/tfprof and pass
+(1) the directory of @c index.html (default at @c tfprof/)
+via the option @c --mount and
+(2) the @c my_taskflow.tfp via the option @c --input.
+
+@code{.shell-session}
+# under the build/ directory
+~$ ./tfprof/server/tfprof --mount ../tfprof/ --input my_taskflow.tfp
+@endcode
+
+Now, open your favorite browser at @c localhost:8080
+to visualize and profile your @c my_taskflow program.
+
+@image html images/tfprof-local.png
+
+The compiled profiler is a more powerful version than the pure
+JavaScript-based interface and it is able to more efficiently
+handle large profiling data under different queries.
+We currently support the following two view types:
+  + Cluster: visualize the profiling data using a clustering algorithm with a limit
+  + Criticality: visualize the top-limit tasks in decreasing order of their execution times
+
+@section ProfilerDisplayProfileSummary Display Profile Summary
+
+You can display a profile summary by specifying only the environment variable
+`TF_ENABLE_PROFILER` without any value.
+The %Taskflow will generate a separate summary report of tasks and workers
+for each executor created by the program.
+
+@code{.shell-session}
+# enable the environment variable without any value
+~$ TF_ENABLE_PROFILER=    ./my_taskflow_program  
+
+# your program output
+...
+... 
+...
+# Taskflow profile summary
+==Observer 0: 1 workers completed 18 tasks in 28 us
+    -Task-  Count  Time (us)   Avg (us)  Min (us)  Max (us)
+    static      7          5   0.714286         0         4
+ condition     11          0   0.000000         0         0
+
+  -Worker-  Level      Task  Count  Time (us)  Avg (us)  Min (us)  Max (us)
+        14      0    static      7          5  0.714286         0         4
+                  condition     11          0  0.000000         0         0
+                                18          5  0.277778         0         4
+@endcode
+
+The report consists of two sections, task summary and worker summary.
+In the first section,
+the summary reports for each task type the number of executions (`Count`),
+the total execution time (`Time`), average execution time per task (`Avg`),
+and the minimum (`Min`) and the maximum (`Max`) execution time among all tasks.
+Similarly in the second section,
+the summary reports for each worker the task execution statistics.
+
 
 */
 

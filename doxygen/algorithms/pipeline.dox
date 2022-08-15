@@ -14,8 +14,8 @@ Multiple data tokens can be processed simultaneously across different stages.
 
 @section TaskParallelPipelineIncludeHeaderFile Include the Header 
 
-You need to include the header file, <tt>%taskflow/algorithm/pipeline.hpp</tt>, for creating
-a pipeline scheduling framework.
+You need to include the header file, <tt>%taskflow/algorithm/pipeline.hpp</tt>, 
+for implementing task-parallel pipeline algorithms.
 
 @code{.cpp}
 #include <taskflow/algorithm/pipeline.hpp>
@@ -26,7 +26,7 @@ a pipeline scheduling framework.
 A tf::Pipeline object is a @em composable graph to create a 
 <i>pipeline scheduling framework</i> through a module task in a taskflow
 (see @ref ComposableTasking).
-Unlike the conventional pipeline programming frameworks (e.g., Intel TBB Parallel Pipeline), 
+Unlike the conventional pipeline programming frameworks (e.g., Intel TBB Parallel %Pipeline), 
 %Taskflow's pipeline algorithm does not provide any data abstraction, 
 which often restricts users from optimizing data layouts in their applications, 
 but a flexible framework for users to customize their application data atop 
@@ -781,10 +781,10 @@ we reset the pipeline so the token identifier starts from @c 0 rather than @c 5.
 Visit the following pages to learn more about pipeline:
 
 1. @ref TaskParallelScalablePipeline
-2. @ref TextProcessingPipeline
-3. @ref GraphProcessingPipeline
-4. @ref TaskflowProcessingPipeline
-5. @ref DataParallelPipeline
+2. @ref DataParallelPipeline
+3. @ref TextProcessingPipeline
+4. @ref GraphProcessingPipeline
+5. @ref TaskflowProcessingPipeline
 
 
 */

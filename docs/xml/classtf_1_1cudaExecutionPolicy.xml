@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaExecutionPolicy" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaExecutionPolicy</compoundname>
     <includes refid="cuda__execution__policy_8hpp" local="no">cuda_execution_policy.hpp</includes>
@@ -23,12 +23,13 @@
         <name>nt</name>
         <initializer>= NT</initializer>
         <briefdescription>
-<para>static constant for getting the number of threads per block </para>        </briefdescription>
+<para>static constant for getting the number of threads per block </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="36" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="36" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="36" column="25" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="36" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1cudaExecutionPolicy_1a9410f1b3a5cb9a3cc5e8d640bc7d3990" prot="public" static="yes" mutable="no">
         <type>const unsigned</type>
@@ -37,12 +38,13 @@
         <name>vt</name>
         <initializer>= VT</initializer>
         <briefdescription>
-<para>static constant for getting the number of work units per thread </para>        </briefdescription>
+<para>static constant for getting the number of work units per thread </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="39" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="39" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="39" column="25" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="39" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1cudaExecutionPolicy_1a92ac5a32147584738f32a720ea08e3f4" prot="public" static="yes" mutable="no">
         <type>const unsigned</type>
@@ -51,12 +53,13 @@
         <name>nv</name>
         <initializer>= NT*VT</initializer>
         <briefdescription>
-<para>static constant for getting the number of elements to process per block </para>        </briefdescription>
+<para>static constant for getting the number of elements to process per block </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="42" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="42" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="42" column="25" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="42" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
@@ -72,7 +75,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="66" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="66" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="66" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="66" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -82,12 +85,13 @@
         <argsstring>()=default</argsstring>
         <name>cudaExecutionPolicy</name>
         <briefdescription>
-<para>constructs an execution policy object with default stream </para>        </briefdescription>
+<para>constructs an execution policy object with default stream </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="47" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="47" column="3"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1ac1c7784472394d4abcb6f6a2a80cc019" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
@@ -99,27 +103,29 @@
           <declname>s</declname>
         </param>
         <briefdescription>
-<para>constructs an execution policy object with the given stream </para>        </briefdescription>
+<para>constructs an execution policy object with the given stream </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="52" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="52" bodyend="52"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="52" column="12" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="52" bodyend="52"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1a5be1b273985800ab886665d28663c29b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1a5be1b273985800ab886665d28663c29b" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
         <type>cudaStream_t</type>
         <definition>cudaStream_t tf::cudaExecutionPolicy&lt; NT, VT &gt;::stream</definition>
         <argsstring>() noexcept</argsstring>
         <name>stream</name>
         <briefdescription>
-<para>queries the associated stream </para>        </briefdescription>
+<para>queries the associated stream </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="57" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="57" bodyend="57"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="57" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="57" bodyend="57"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1a5f2a4d6b35af49403756ee2291264758" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1a5f2a4d6b35af49403756ee2291264758" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::cudaExecutionPolicy&lt; NT, VT &gt;::stream</definition>
         <argsstring>(cudaStream_t stream) noexcept</argsstring>
@@ -129,34 +135,40 @@
           <declname>stream</declname>
         </param>
         <briefdescription>
-<para>assigns a stream </para>        </briefdescription>
+<para>assigns a stream </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="62" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="62" bodyend="62"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="62" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="62" bodyend="62"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class to define execution policy for CUDA standard algorithms </para>    </briefdescription>
+<para>class to define execution policy for CUDA standard algorithms </para>
+    </briefdescription>
     <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>NT</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of threads per block </para></parameterdescription>
+<para>number of threads per block </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>VT</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of work units per thread</para></parameterdescription>
+<para>number of work units per thread</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-Execution policy configures the kernel execution parameters in CUDA algorithms. The first template argument, <computeroutput>NT</computeroutput>, the number of threads per block should always be a power-of-two number. The second template argument, <computeroutput>VT</computeroutput>, the number of work units per thread is recommended to be an odd number to avoid bank conflict.</para><para>Details can be referred to <ref refid="CUDASTDExecutionPolicy" kindref="compound">Execution Policy</ref>. </para>    </detaileddescription>
-    <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="29" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="29" bodyend="67"/>
+Execution policy configures the kernel execution parameters in CUDA algorithms. The first template argument, <computeroutput>NT</computeroutput>, the number of threads per block should always be a power-of-two number. The second template argument, <computeroutput>VT</computeroutput>, the number of work units per thread is recommended to be an odd number to avoid bank conflict.</para>
+<para>Details can be referred to <ref refid="CUDASTDExecutionPolicy" kindref="compound">Execution Policy</ref>. </para>
+    </detaileddescription>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="29" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="29" bodyend="67"/>
     <listofallmembers>
       <member refid="classtf_1_1cudaExecutionPolicy_1a1eaf3d45afdf53b4bf9927dd1bd7a02b" prot="private" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>_stream</name></member>
       <member refid="classtf_1_1cudaExecutionPolicy_1aea3b671f778bfb9eca5d7113636f63bf" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>cudaExecutionPolicy</name></member>
