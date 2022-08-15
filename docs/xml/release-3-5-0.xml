@@ -30,7 +30,9 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect2 id="release-3-5-0_1release-3-5-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>Added <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> to allow changing properties of workers upon their creations</para></listitem><listitem><para>Added <ref refid="classtf_1_1Executor_1afbff30c324c5887aace09e7fe9a0d607" kindref="member">tf::Executor::loop_until</ref> to allow looping a worker with a custom stop predicate</para></listitem><listitem><para>Added <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref> to implement data-parallel algorithms</para></listitem><listitem><para>Extended <ref refid="classtf_1_1TaskQueue" kindref="compound">tf::TaskQueue</ref> to include priority (<ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346f" kindref="member">tf::TaskPriority</ref>)<itemizedlist>
+<listitem><para>Added <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> to allow changing properties of workers upon their creations</para></listitem><listitem><para>Added <ref refid="classtf_1_1Executor_1afbff30c324c5887aace09e7fe9a0d607" kindref="member">tf::Executor::loop_until</ref> to allow looping a worker with a custom stop predicate</para></listitem><listitem><para>Added <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref> to implement data-parallel algorithms<itemizedlist>
+<listitem><para>See <ref refid="DataParallelPipeline" kindref="compound">Data-parallel Pipeline</ref></para></listitem></itemizedlist>
+</para></listitem><listitem><para>Extended <ref refid="classtf_1_1TaskQueue" kindref="compound">tf::TaskQueue</ref> to include priority (<ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346f" kindref="member">tf::TaskPriority</ref>)<itemizedlist>
 <listitem><para>See <ref refid="PrioritizedTasking" kindref="compound">Prioritized Tasking</ref></para></listitem></itemizedlist>
 </para></listitem><listitem><para>Extended <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> to include <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref></para></listitem><listitem><para>Improved parallel algorithms (e.g., <ref refid="classtf_1_1FlowBuilder_1ab405d7b10040530d8b04c11767b4960d" kindref="member">tf::Taskflow::for_each</ref>) with tail optimization</para></listitem></itemizedlist>
 </para></sect2>
@@ -43,11 +45,15 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect2 id="release-3-5-0_1release-3-5-0_utilities">
 <title>Utilities</title>
 <para><itemizedlist>
-<listitem><para>Added tf::unroll to unroll loops using template techniques</para></listitem><listitem><para>Added tf::CachelineAligned to create a cacheline-aligned struct</para></listitem></itemizedlist>
+<listitem><para>Added tf::unroll to unroll loops using template techniques</para></listitem><listitem><para>Added tf::CachelineAligned to create a cacheline-aligned object</para></listitem></itemizedlist>
 </para></sect2>
 <sect2 id="release-3-5-0_1release-3-5-0_profiler">
 <title>Taskflow Profiler (TFProf)</title>
-</sect2>
+<para><itemizedlist>
+<listitem><para>Added a new feature to generate a profile summary report<itemizedlist>
+<listitem><para>See <ref refid="Profiler_1ProfilerDisplayProfileSummary" kindref="member">Display Profile Summary</ref></para></listitem></itemizedlist>
+</para></listitem></itemizedlist>
+</para></sect2>
 </sect1>
 <sect1 id="release-3-5-0_1release-3-5-0_bug_fixes">
 <title>Bug Fixes</title>
@@ -65,7 +71,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <para><itemizedlist>
 <listitem><para>Revised <ref refid="ExecuteTaskflow" kindref="compound">Executor</ref><itemizedlist>
 <listitem><para>Added <ref refid="ExecuteTaskflow_1ExecuteATaskflowFromAnInternalWorker" kindref="member">Execute a Taskflow from an Internal Worker</ref></para></listitem><listitem><para>Added <ref refid="ExecuteTaskflow_1ModifyWorkerProperty" kindref="member">Modify Worker Property</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Added <ref refid="PrioritizedTasking" kindref="compound">Prioritized Tasking</ref></para></listitem></itemizedlist>
+</para></listitem><listitem><para>Added <ref refid="PrioritizedTasking" kindref="compound">Prioritized Tasking</ref></para></listitem><listitem><para>Added <ref refid="DataParallelPipeline" kindref="compound">Data-parallel Pipeline</ref></para></listitem></itemizedlist>
 </para></sect1>
 <sect1 id="release-3-5-0_1release-3-5-0_miscellaneous_items">
 <title>Miscellaneous Items</title>

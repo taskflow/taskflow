@@ -21,11 +21,7 @@ as defined in tf::TaskPriority.
 When there are parallel tasks (i.e., no dependencies),
 %Taskflow will @c try to execute tasks of higher priorities
 before tasks of lower priorities.
-<<<<<<< HEAD
-By default, all tasks have the highest priorities (@c TaskPriority::HIGH)
-=======
 By default, all tasks have the highest priorities (@c tf::TaskPriority::HIGH)
->>>>>>> 0dc0291de3cf926fe81561f8073ed43718146077
 unless otherwise assigned.
 
 @code{.cpp}

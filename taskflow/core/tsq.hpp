@@ -49,7 +49,7 @@ enum class TaskPriority : unsigned {
 @tparam T data type (must be a pointer type)
 @tparam MAX_PRIORITY maximum level of the priority 
 
-@brief Lock-free unbounded single-producer multiple-consumer queue.
+@brief class to create a lock-free unbounded single-producer multiple-consumer queue
 
 This class implements the work-stealing queue described in the paper,
 <a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</a>,

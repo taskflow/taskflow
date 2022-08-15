@@ -217,11 +217,6 @@ for(size_t n=0; n<1000; n++) {
 executor.run(taskflow).wait();
 @endcode
 
-<<<<<<< HEAD
-@attention
-You must call tf::Executor::run_and_wait from a worker of the calling executor
-or an exception will be thrown.
-=======
 Similar to tf::Executor::run_and_wait, the method tf::Executor::loop_until
 is another variant that keeps the calling worker in the work-stealing loop 
 until the given predicate becomes true. 
@@ -240,7 +235,6 @@ taskflow.emplace([&](){
 @attention
 You must call tf::Executor::loop_until and tf::Executor:run_and_wait
 from a worker of the calling executor or an exception will be thrown.
->>>>>>> 0dc0291de3cf926fe81561f8073ed43718146077
 
 @section ThreadSafety Touch an Executor from Multiple Threads
 
