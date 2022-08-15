@@ -153,59 +153,6 @@ Task FlowBuilder::for_each_index(B beg, E end, S inc, C c){
     }
 
     std::atomic<size_t> next(0);
-<<<<<<< HEAD
-
-    for(size_t w=0; w<W; w++) {
-
-      //sf.emplace([&next, beg, inc, N, chunk_size, W, c] () mutable {
-      sf._named_silent_async(
-        sf._worker, "part-"s + std::to_string(w), [=, &next] () mutable {
-
-        size_t p1 = 2 * W * (chunk_size + 1);
-        double p2 = 0.5 / static_cast<double>(W);
-        size_t s0 = next.load(std::memory_order_relaxed);
-
-        while(s0 < N) {
-
-          size_t r = N - s0;
-
-          // fine-grained
-          if(r < p1) {
-            while(1) {
-              s0 = next.fetch_add(chunk_size, std::memory_order_relaxed);
-              if(s0 >= N) {
-                return;
-              }
-              size_t e0 = (chunk_size <= (N - s0)) ? s0 + chunk_size : N;
-              auto s = static_cast<B_t>(s0) * inc + beg;
-              for(size_t x=s0; x<e0; x++, s+=inc) {
-                c(s);
-              }
-            }
-            break;
-          }
-          // coarse-grained
-          else {
-            size_t q = static_cast<size_t>(p2 * r);
-            if(q < chunk_size) {
-              q = chunk_size;
-            }
-            size_t e0 = (q <= r) ? s0 + q : N;
-            if(next.compare_exchange_strong(s0, e0, std::memory_order_relaxed,
-                                                    std::memory_order_relaxed)) {
-              auto s = static_cast<B_t>(s0) * inc + beg;
-              for(size_t x=s0; x<e0; x++, s+= inc) {
-                c(s);
-              }
-              s0 = next.load(std::memory_order_relaxed);
-            }
-          }
-        }
-      //}).name("pfg_"s + std::to_string(w));
-      });
-    }
-
-=======
       
     auto loop = [=, &next] () mutable {
 
@@ -267,7 +214,6 @@ Task FlowBuilder::for_each_index(B beg, E end, S inc, C c){
       }
     }
       
->>>>>>> 0dc0291de3cf926fe81561f8073ed43718146077
     sf.join();
   });
 
