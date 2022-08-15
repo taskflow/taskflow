@@ -1,37 +1,22 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="fibonacci" kind="page">
     <compoundname>fibonacci</compoundname>
     <title>Fibonacci Number</title>
-    <tableofcontents>
-      <tocsect>
-        <name>Problem Formulation</name>
-        <reference>fibonacci_1FibonacciNumberProblem</reference>
-    </tocsect>
-      <tocsect>
-        <name>Recursive Fibonacci Parallelism</name>
-        <reference>fibonacci_1RecursiveFibonacciParallelism</reference>
-    </tocsect>
-    </tableofcontents>
+    <tableofcontents/>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>We study the classic problem, <emphasis>Fibonacci Number</emphasis>, to demonstrate the use of recursive task parallelism.</para>
-<sect1 id="fibonacci_1FibonacciNumberProblem">
+<para>We study the classic problem, <emphasis>Fibonacci Number</emphasis>, to demonstrate the use of recursive task parallelism.</para><sect1 id="fibonacci_1FibonacciNumberProblem">
 <title>Problem Formulation</title>
-<para>In mathematics, the Fibonacci numbers, commonly denoted <computeroutput>F(n)</computeroutput>, form a sequence such that each number is the sum of the two preceding ones, starting from 0 and 1.</para>
-<para><computeroutput>0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...</computeroutput></para>
-<para>A common solution for computing fibonacci numbers is <emphasis>recursion</emphasis>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>fib(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n)<sp/>{</highlight></codeline>
+<para>In mathematics, the Fibonacci numbers, commonly denoted <computeroutput>F(n)</computeroutput>, form a sequence such that each number is the sum of the two preceding ones, starting from 0 and 1.</para><para><computeroutput>0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...</computeroutput></para><para>A common solution for computing fibonacci numbers is <emphasis>recursion</emphasis>.</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>fib(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(n<sp/>&lt;<sp/>2)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>n;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>fib(n-1)<sp/>+<sp/>fib(n-2);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para>
-</sect1>
+</programlisting></para></sect1>
 <sect1 id="fibonacci_1RecursiveFibonacciParallelism">
 <title>Recursive Fibonacci Parallelism</title>
-<para>We use <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> to recursively compute fibonacci numbers in parallel.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<para>We use <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> to recursively compute fibonacci numbers in parallel.</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>spawn(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n,<sp/><ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>sbf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(n<sp/>&lt;<sp/>2)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>n;</highlight></codeline>
@@ -57,18 +42,14 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Fib[&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>N<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;]:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>res<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Fib[&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>N<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;]:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>res<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para>
-<para>The spawned taskflow graph for computing up to the fifth fibonacci number is shown below:</para>
-<para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/fibonacci_7.dot"></dotfile>
-</para>
-<para>Even if recursive dynamic tasking or subflows are possible, the recursion depth may not be too deep or it can cause stack overflow. </para>
-</sect1>
+</programlisting></para><para>The spawned taskflow graph for computing up to the fifth fibonacci number is shown below:</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/fibonacci_7.dot"></dotfile>
+</para><para>Even if recursive dynamic tasking or subflows are possible, the recursion depth may not be too deep or it can cause stack overflow. </para></sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

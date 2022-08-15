@@ -27,7 +27,7 @@ void data_pipeline_1P(size_t L, unsigned w, tf::PipeType type) {
     if (type == tf::PipeType::SERIAL) {
       tf::Taskflow taskflow;
       size_t j = 0;
-      tf::DataPipeline pl (L, tf::make_datapipe<tf::Pipeflow&, void>(type, [L, N, &j, &source](auto& pf) mutable {
+      tf::DataPipeline pl (L, tf::make_data_pipe<tf::Pipeflow&, void>(type, [L, N, &j, &source](auto& pf) mutable {
         if (j == N) {
           pf.stop();
           return;
@@ -145,7 +145,7 @@ void data_pipeline_2P_SS(size_t L, unsigned w) {
 
     tf::DataPipeline pl(
       L,
-      tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j1, L](auto& pf) mutable {
+      tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j1, L](auto& pf) mutable {
         if(j1 == N) {
           pf.stop();
           return 0;
@@ -157,7 +157,7 @@ void data_pipeline_2P_SS(size_t L, unsigned w) {
         return source[j1++] + 1;
       }),
 
-      tf::make_datapipe<int, void>(tf::PipeType::SERIAL, [N, &source, &j2, L](int& input, tf::Pipeflow& pf) mutable {
+      tf::make_data_pipe<int, void>(tf::PipeType::SERIAL, [N, &source, &j2, L](int& input, tf::Pipeflow& pf) mutable {
         REQUIRE(j2 < N);
         REQUIRE(pf.token() % L == pf.line());
         // REQUIRE(source[j2] + 1 == mybuffer[pf.line()][pf.pipe() - 1]);
@@ -277,7 +277,7 @@ void data_pipeline_2P_SP(size_t L, unsigned w) {
     size_t cnt = 1;
 
     tf::DataPipeline pl(L,
-      tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j1, L](auto& pf) mutable {
+      tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j1, L](auto& pf) mutable {
         if(j1 == N) {
           pf.stop();
           return 0;
@@ -289,7 +289,7 @@ void data_pipeline_2P_SP(size_t L, unsigned w) {
         return source[j1++] + 1;
       }),
 
-      tf::make_datapipe<int, void>(tf::PipeType::PARALLEL,
+      tf::make_data_pipe<int, void>(tf::PipeType::PARALLEL,
       [N, &collection, &mutex, &j2, L](int& input, tf::Pipeflow& pf) mutable {
         REQUIRE(j2++ < N);
         {
@@ -414,7 +414,7 @@ void data_pipeline_3P_SSS(size_t L, unsigned w) {
     size_t cnt = 1;
 
     tf::DataPipeline pl(L,
-      tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j1, L](auto& pf) mutable {
+      tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j1, L](auto& pf) mutable {
         if(j1 == N) {
           pf.stop();
           return 0;
@@ -426,7 +426,7 @@ void data_pipeline_3P_SSS(size_t L, unsigned w) {
         return source[j1++] + 1;
       }),
 
-      tf::make_datapipe<int, std::string>(tf::PipeType::SERIAL, [N, &source, &j2, L](int input, tf::Pipeflow& pf) mutable {
+      tf::make_data_pipe<int, std::string>(tf::PipeType::SERIAL, [N, &source, &j2, L](int input, tf::Pipeflow& pf) mutable {
         REQUIRE(j2 < N);
         REQUIRE(source[j2] + 1 == input);
         REQUIRE(pf.token() % L == pf.line());
@@ -435,7 +435,7 @@ void data_pipeline_3P_SSS(size_t L, unsigned w) {
         return std::to_string(input);
       }),
 
-      tf::make_datapipe<std::string, void>(tf::PipeType::SERIAL, [N, &source, &j3, L](std::string input, tf::Pipeflow& pf) mutable {
+      tf::make_data_pipe<std::string, void>(tf::PipeType::SERIAL, [N, &source, &j3, L](std::string input, tf::Pipeflow& pf) mutable {
         REQUIRE(j3 < N);
         REQUIRE(source[j3] + 1 == stoi(input));
         REQUIRE(pf.token() % L == pf.line());
@@ -555,7 +555,7 @@ void data_pipeline_3P_SSP(size_t L, unsigned w) {
     size_t cnt = 1;
 
     tf::DataPipeline pl(L,
-      tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j1, L](auto& pf) mutable {
+      tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j1, L](auto& pf) mutable {
         if(j1 == N) {
           pf.stop();
           return 0;
@@ -568,7 +568,7 @@ void data_pipeline_3P_SSP(size_t L, unsigned w) {
         return source[j1++] + 1;
       }),
 
-      tf::make_datapipe<int, int>(tf::PipeType::SERIAL, [N, &source, &j2, L](int input, tf::Pipeflow& pf) mutable {
+      tf::make_data_pipe<int, int>(tf::PipeType::SERIAL, [N, &source, &j2, L](int input, tf::Pipeflow& pf) mutable {
         REQUIRE(j2 < N);
         REQUIRE(source[j2] + 1 == input);
         REQUIRE(pf.token() % L == pf.line());
@@ -578,7 +578,7 @@ void data_pipeline_3P_SSP(size_t L, unsigned w) {
         return input;
       }),
 
-      tf::make_datapipe<int, void>(tf::PipeType::PARALLEL, [N, &j3, &mutex, &collection, L](int input, tf::Pipeflow& pf) mutable {
+      tf::make_data_pipe<int, void>(tf::PipeType::PARALLEL, [N, &j3, &mutex, &collection, L](int input, tf::Pipeflow& pf) mutable {
         REQUIRE(j3++ < N);
         {
           std::scoped_lock<std::mutex> lock(mutex);
@@ -707,7 +707,7 @@ void data_pipeline_3P_SPS(size_t L, unsigned w) {
     size_t cnt = 1;
 
     tf::DataPipeline pl(L,
-      tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j1, L](tf::Pipeflow& pf) mutable {
+      tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j1, L](tf::Pipeflow& pf) mutable {
         if(j1 == N) {
           pf.stop();
           return 0;
@@ -720,7 +720,7 @@ void data_pipeline_3P_SPS(size_t L, unsigned w) {
         return source[j1++] + 1;
       }),
 
-      tf::make_datapipe<int, int>(tf::PipeType::PARALLEL, [N, &j2, &mutex, &collection, L](int input, tf::Pipeflow& pf) mutable {
+      tf::make_data_pipe<int, int>(tf::PipeType::PARALLEL, [N, &j2, &mutex, &collection, L](int input, tf::Pipeflow& pf) mutable {
         REQUIRE(j2++ < N);
         //*(pf.output()) = *(pf.input()) + 1;
         {
@@ -732,7 +732,7 @@ void data_pipeline_3P_SPS(size_t L, unsigned w) {
         }
       }),
 
-      tf::make_datapipe<int, void>(tf::PipeType::SERIAL, [N, &source, &j3, L](int input, tf::Pipeflow& pf) mutable {
+      tf::make_data_pipe<int, void>(tf::PipeType::SERIAL, [N, &source, &j3, L](int input, tf::Pipeflow& pf) mutable {
         REQUIRE(j3 < N);
         REQUIRE(pf.token() % L == pf.line());
         REQUIRE(source[j3] + 2 == input);
@@ -865,7 +865,7 @@ void data_pipeline_3P_SPP(size_t L, unsigned w) {
     size_t cnt = 1;
 
     tf::DataPipeline pl(L,
-      tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j1, L](tf::Pipeflow& pf) mutable {
+      tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j1, L](tf::Pipeflow& pf) mutable {
         if(j1 == N) {
           pf.stop();
           return 0;
@@ -878,7 +878,7 @@ void data_pipeline_3P_SPP(size_t L, unsigned w) {
         return source[j1++] + 1;
       }),
 
-      tf::make_datapipe<int, int>(tf::PipeType::PARALLEL, [N, &j2, &mutex2, &collection2, L](int input, tf::Pipeflow& pf) mutable {
+      tf::make_data_pipe<int, int>(tf::PipeType::PARALLEL, [N, &j2, &mutex2, &collection2, L](int input, tf::Pipeflow& pf) mutable {
         REQUIRE(j2++ < N);
         //*pf.output() = *pf.input() + 1;
         {
@@ -890,7 +890,7 @@ void data_pipeline_3P_SPP(size_t L, unsigned w) {
         }
       }),
 
-      tf::make_datapipe<int, void>(tf::PipeType::PARALLEL, [N, &j3, &mutex3, &collection3, L](int input, tf::Pipeflow& pf) mutable {
+      tf::make_data_pipe<int, void>(tf::PipeType::PARALLEL, [N, &j3, &mutex3, &collection3, L](int input, tf::Pipeflow& pf) mutable {
         REQUIRE(j3++ < N);
         {
           std::scoped_lock<std::mutex> lock(mutex3);
@@ -1033,7 +1033,7 @@ void three_parallel_data_pipelines(size_t L, unsigned w) {
 
     // pipeline 1 is SSSS
     tf::DataPipeline pl1(L,
-      tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j1_1, L](tf::Pipeflow& pf) mutable {
+      tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j1_1, L](tf::Pipeflow& pf) mutable {
         if(j1_1 == N) {
           pf.stop();
           return 0;
@@ -1045,7 +1045,7 @@ void three_parallel_data_pipelines(size_t L, unsigned w) {
         return source[j1_1++] + 1;
       }),
 
-      tf::make_datapipe<int, int>(tf::PipeType::SERIAL, [N, &source, &j1_2, L](int input, tf::Pipeflow& pf) mutable {
+      tf::make_data_pipe<int, int>(tf::PipeType::SERIAL, [N, &source, &j1_2, L](int input, tf::Pipeflow& pf) mutable {
         REQUIRE(j1_2 < N);
         REQUIRE(pf.token() % L == pf.line());
         REQUIRE(source[j1_2] + 1 == input);
@@ -1054,7 +1054,7 @@ void three_parallel_data_pipelines(size_t L, unsigned w) {
         return input;
       }),
 
-      tf::make_datapipe<int, int>(tf::PipeType::SERIAL, [N, &source, &j1_3, L](int input, tf::Pipeflow& pf) mutable {
+      tf::make_data_pipe<int, int>(tf::PipeType::SERIAL, [N, &source, &j1_3, L](int input, tf::Pipeflow& pf) mutable {
         REQUIRE(j1_3 < N);
         REQUIRE(pf.token() % L == pf.line());
         REQUIRE(source[j1_3] + 1 == input);
@@ -1063,7 +1063,7 @@ void three_parallel_data_pipelines(size_t L, unsigned w) {
         return input;
       }),
 
-      tf::make_datapipe<int, void>(tf::PipeType::SERIAL, [N, &source, &j1_4, L](int input, tf::Pipeflow& pf) mutable {
+      tf::make_data_pipe<int, void>(tf::PipeType::SERIAL, [N, &source, &j1_4, L](int input, tf::Pipeflow& pf) mutable {
         REQUIRE(j1_4 < N);
         REQUIRE(pf.token() % L == pf.line());
         REQUIRE(source[j1_4] + 1 == input);
@@ -1093,7 +1093,7 @@ void three_parallel_data_pipelines(size_t L, unsigned w) {
 
     // pipeline 2 is SSP
     tf::DataPipeline pl2(L,
-      tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j2_1, L](tf::Pipeflow& pf) mutable {
+      tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j2_1, L](tf::Pipeflow& pf) mutable {
         if(j2_1 == N) {
           pf.stop();
           return 0 ;
@@ -1105,7 +1105,7 @@ void three_parallel_data_pipelines(size_t L, unsigned w) {
         return source[j2_1++] + 1;
       }),
 
-      tf::make_datapipe<int, int>(tf::PipeType::SERIAL, [N, &source, &j2_2, L](int input, tf::Pipeflow& pf) mutable {
+      tf::make_data_pipe<int, int>(tf::PipeType::SERIAL, [N, &source, &j2_2, L](int input, tf::Pipeflow& pf) mutable {
         REQUIRE(j2_2 < N);
         REQUIRE(source[j2_2] + 1 == input);
         REQUIRE(pf.token() % L == pf.line());
@@ -1114,7 +1114,7 @@ void three_parallel_data_pipelines(size_t L, unsigned w) {
         return input;
       }),
 
-      tf::make_datapipe<int, void>(tf::PipeType::PARALLEL, [N, &j2_3, &mutex2_3, &collection2_3, L](int input, tf::Pipeflow& pf) mutable {
+      tf::make_data_pipe<int, void>(tf::PipeType::PARALLEL, [N, &j2_3, &mutex2_3, &collection2_3, L](int input, tf::Pipeflow& pf) mutable {
         REQUIRE(j2_3++ < N);
         {
           std::scoped_lock<std::mutex> lock(mutex2_3);
@@ -1151,7 +1151,7 @@ void three_parallel_data_pipelines(size_t L, unsigned w) {
 
     // pipeline 3 is SP
     tf::DataPipeline pl3(L,
-      tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j3_1, L](tf::Pipeflow& pf) mutable {
+      tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j3_1, L](tf::Pipeflow& pf) mutable {
         if(j3_1 == N) {
           pf.stop();
           return 0;
@@ -1163,7 +1163,7 @@ void three_parallel_data_pipelines(size_t L, unsigned w) {
         return source[j3_1++] + 1;
       }),
 
-      tf::make_datapipe<int, void>(tf::PipeType::PARALLEL,
+      tf::make_data_pipe<int, void>(tf::PipeType::PARALLEL,
       [N, &collection3_2, &mutex3_2, &j3_2, L](int input, tf::Pipeflow& pf) mutable {
         REQUIRE(j3_2++ < N);
         {
@@ -1519,7 +1519,7 @@ void three_concatenated_data_pipelines(size_t L, unsigned w) {
 
     // pipeline 1 is SSSS
     tf::DataPipeline pl1(L,
-      tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j1_1, L](auto& pf) mutable {
+      tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j1_1, L](auto& pf) mutable {
         if(j1_1 == N) {
           pf.stop();
           return 0;
@@ -1531,7 +1531,7 @@ void three_concatenated_data_pipelines(size_t L, unsigned w) {
         return source[j1_1++] + 1;
       }),
 
-      tf::make_datapipe<int, std::string>(tf::PipeType::SERIAL, [N, &source, &j1_2, L](int input, auto& pf) mutable {
+      tf::make_data_pipe<int, std::string>(tf::PipeType::SERIAL, [N, &source, &j1_2, L](int input, auto& pf) mutable {
         REQUIRE(j1_2 < N);
         REQUIRE(pf.token() % L == pf.line());
         REQUIRE(source[j1_2] + 1 == input);
@@ -1540,7 +1540,7 @@ void three_concatenated_data_pipelines(size_t L, unsigned w) {
         return std::to_string(input);
       }),
 
-      tf::make_datapipe<std::string, int>(tf::PipeType::SERIAL, [N, &source, &j1_3, L](std::string& input, auto& pf) mutable {
+      tf::make_data_pipe<std::string, int>(tf::PipeType::SERIAL, [N, &source, &j1_3, L](std::string& input, auto& pf) mutable {
         REQUIRE(j1_3 < N);
         REQUIRE(pf.token() % L == pf.line());
         REQUIRE(source[j1_3] + 1 == stoi(input));
@@ -1549,7 +1549,7 @@ void three_concatenated_data_pipelines(size_t L, unsigned w) {
         return stoi(input);
       }),
 
-      tf::make_datapipe<int, void>(tf::PipeType::SERIAL, [N, &source, &j1_4, L](int input, auto& pf) mutable {
+      tf::make_data_pipe<int, void>(tf::PipeType::SERIAL, [N, &source, &j1_4, L](int input, auto& pf) mutable {
         REQUIRE(j1_4 < N);
         REQUIRE(pf.token() % L == pf.line());
         REQUIRE(source[j1_4] + 1 == input);
@@ -1577,7 +1577,7 @@ void three_concatenated_data_pipelines(size_t L, unsigned w) {
 
     // pipeline 2 is SSP
     tf::DataPipeline pl2(L,
-      tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j2_1, L](auto& pf) mutable {
+      tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j2_1, L](auto& pf) mutable {
         if(j2_1 == N) {
           pf.stop();
           return 0;
@@ -1589,7 +1589,7 @@ void three_concatenated_data_pipelines(size_t L, unsigned w) {
         return source[j2_1++] + 1;
       }),
 
-      tf::make_datapipe<int, int>(tf::PipeType::SERIAL, [N, &source, &j2_2, L](int input, auto& pf) mutable {
+      tf::make_data_pipe<int, int>(tf::PipeType::SERIAL, [N, &source, &j2_2, L](int input, auto& pf) mutable {
         REQUIRE(j2_2 < N);
         REQUIRE(source[j2_2] + 1 == input);
         REQUIRE(pf.token() % L == pf.line());
@@ -1598,7 +1598,7 @@ void three_concatenated_data_pipelines(size_t L, unsigned w) {
         return input;
       }),
 
-      tf::make_datapipe<int, void>(tf::PipeType::PARALLEL, [N, &j2_3, &mutex2_3, &collection2_3, L](int input, auto& pf) mutable {
+      tf::make_data_pipe<int, void>(tf::PipeType::PARALLEL, [N, &j2_3, &mutex2_3, &collection2_3, L](int input, auto& pf) mutable {
         REQUIRE(j2_3++ < N);
         {
           std::scoped_lock<std::mutex> lock(mutex2_3);
@@ -1633,7 +1633,7 @@ void three_concatenated_data_pipelines(size_t L, unsigned w) {
 
     // pipeline 3 is SP
     tf::DataPipeline pl3(L,
-      tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j3_1, L](auto& pf) mutable {
+      tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [N, &source, &j3_1, L](auto& pf) mutable {
         if(j3_1 == N) {
           pf.stop();
           return 0;
@@ -1645,7 +1645,7 @@ void three_concatenated_data_pipelines(size_t L, unsigned w) {
         return source[j3_1++] + 1;
       }),
 
-      tf::make_datapipe<int, void>(tf::PipeType::PARALLEL,
+      tf::make_data_pipe<int, void>(tf::PipeType::PARALLEL,
       [N, &collection3_2, &mutex3_2, &j3_2, L](int input, auto& pf) mutable {
         REQUIRE(j3_2++ < N);
         {
@@ -2006,7 +2006,7 @@ void looping_data_pipelines(size_t L, unsigned w) {
   size_t N = 0;
 
   tf::DataPipeline pl(L,
-    tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [&N, &source, &j1, L](auto& pf) mutable {
+    tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [&N, &source, &j1, L](auto& pf) mutable {
       if(j1 == N) {
         pf.stop();
         return 0;
@@ -2018,7 +2018,7 @@ void looping_data_pipelines(size_t L, unsigned w) {
       return source[j1++] + 1;
     }),
 
-    tf::make_datapipe<int, int>(tf::PipeType::PARALLEL, [&N, &j2, &mutex2, &collection2, L](int input, auto& pf) mutable {
+    tf::make_data_pipe<int, int>(tf::PipeType::PARALLEL, [&N, &j2, &mutex2, &collection2, L](int input, auto& pf) mutable {
       REQUIRE(j2++ < N);
       {
         std::scoped_lock<std::mutex> lock(mutex2);
@@ -2029,7 +2029,7 @@ void looping_data_pipelines(size_t L, unsigned w) {
       }
     }),
 
-    tf::make_datapipe<int, int>(tf::PipeType::SERIAL, [&N, &source, &j3, L](int input, auto& pf) mutable {
+    tf::make_data_pipe<int, int>(tf::PipeType::SERIAL, [&N, &source, &j3, L](int input, auto& pf) mutable {
       REQUIRE(j3 < N);
       REQUIRE(pf.token() % L == pf.line());
       REQUIRE(source[j3] + 2 == input);
@@ -2038,7 +2038,7 @@ void looping_data_pipelines(size_t L, unsigned w) {
       return input + 1;
     }),
 
-    tf::make_datapipe<int, void>(tf::PipeType::PARALLEL, [&N, &j4, &mutex4, &collection4, L](int input, auto& pf) mutable {
+    tf::make_data_pipe<int, void>(tf::PipeType::PARALLEL, [&N, &j4, &mutex4, &collection4, L](int input, auto& pf) mutable {
       REQUIRE(j4++ < N);
       {
         std::scoped_lock<std::mutex> lock(mutex4);
@@ -2397,7 +2397,7 @@ void ifelse_data_pipeline(size_t L, unsigned w) {
 
     tf::DataPipeline pl(L,
       // pipe 1
-      tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [&, N](auto& pf){
+      tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [&, N](auto& pf){
         if(pf.token() == N) {
           pf.stop();
           return 0;
@@ -2415,7 +2415,7 @@ void ifelse_data_pipeline(size_t L, unsigned w) {
       }),
 
       // pipe 2
-      tf::make_datapipe<int, int>(tf::PipeType::PARALLEL, [&](int input){
+      tf::make_data_pipe<int, int>(tf::PipeType::PARALLEL, [&](int input){
 
         if(input > 4897) {
           // buffer[pf.line()][pf.pipe()] =  buffer[pf.line()][pf.pipe() - 1] - 1834;
@@ -2429,7 +2429,7 @@ void ifelse_data_pipeline(size_t L, unsigned w) {
       }),
 
       // pipe 3
-      tf::make_datapipe<int, void>(tf::PipeType::SERIAL, [&](int input){
+      tf::make_data_pipe<int, void>(tf::PipeType::SERIAL, [&](int input){
         int tmp = 0;
         if((input + 9) / 4 < 50) {
           // buffer[pf.line()][pf.pipe()] = buffer[pf.line()][pf.pipe() - 1] + 1;
@@ -2574,7 +2574,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
       tf::DataPipeline pl(L,
 
         // begin of pipe 1 -----------------------------
-        tf::make_datapipe<void, int>(tf::PipeType::SERIAL, [&, w, N, subN, subL](auto& pf) mutable {
+        tf::make_data_pipe<void, int>(tf::PipeType::SERIAL, [&, w, N, subN, subL](auto& pf) mutable {
           if(j1 == N) {
             pf.stop();
             return 0;
@@ -2589,7 +2589,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
           tf::DataPipeline subpl(subL,
 
             // subpipe 1
-            tf::make_datapipe<void, int>(tf::PipeType::SERIAL, [&, subN](auto& subpf) mutable {
+            tf::make_data_pipe<void, int>(tf::PipeType::SERIAL, [&, subN](auto& subpf) mutable {
               if(subj1 == subN) {
                 subpf.stop();
                 return 0;
@@ -2599,7 +2599,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
             }),
 
             // subpipe 2
-            tf::make_datapipe<int, int>(tf::PipeType::PARALLEL, [&, subN](int input, auto& subpf) mutable {
+            tf::make_data_pipe<int, int>(tf::PipeType::PARALLEL, [&, subN](int input, auto& subpf) mutable {
               REQUIRE(subj2++ < subN);
               REQUIRE(subpf.token() % subL == subpf.line());
               REQUIRE(source[pf.token()][subpf.token()] + 1 == input);
@@ -2608,7 +2608,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
 
 
             // subpipe 3
-            tf::make_datapipe<int, void>(tf::PipeType::SERIAL, [&, subN](int input, auto& subpf) mutable {
+            tf::make_data_pipe<int, void>(tf::PipeType::SERIAL, [&, subN](int input, auto& subpf) mutable {
               REQUIRE(subj3 < subN);
               REQUIRE(subpf.token() % subL == subpf.line());
               REQUIRE(source[pf.token()][subj3] + 1 == input);
@@ -2646,7 +2646,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
         // end of pipe 1 -----------------------------
 
          //begin of pipe 2 ---------------------------
-        tf::make_datapipe<int, int>(tf::PipeType::PARALLEL, [&, w, N, subN, subL](int input, auto& pf) mutable {
+        tf::make_data_pipe<int, int>(tf::PipeType::PARALLEL, [&, w, N, subN, subL](int input, auto& pf) mutable {
           REQUIRE(j2++ < N);
           int res = std::accumulate(
             source[pf.token()].begin(),
@@ -2664,7 +2664,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
           tf::DataPipeline subpl(subL,
 
             // subpipe 1
-            tf::make_datapipe<void, int>(tf::PipeType::SERIAL, [&, subN](auto& subpf) mutable {
+            tf::make_data_pipe<void, int>(tf::PipeType::SERIAL, [&, subN](auto& subpf) mutable {
               if(subj1 == subN) {
                 subpf.stop();
                 return 0;
@@ -2674,7 +2674,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
             }),
 
             // subpipe 2
-            tf::make_datapipe<int, int>(tf::PipeType::PARALLEL, [&, subN](int input, auto& subpf) mutable {
+            tf::make_data_pipe<int, int>(tf::PipeType::PARALLEL, [&, subN](int input, auto& subpf) mutable {
               REQUIRE(subj2++ < subN);
               REQUIRE(subpf.token() % subL == subpf.line());
               REQUIRE(source[j2][subpf.token()] + 1 == input);
@@ -2683,7 +2683,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
 
 
             // subpipe 3
-            tf::make_datapipe<int, void>(tf::PipeType::SERIAL, [&, subN](int input, auto& subpf) mutable {
+            tf::make_data_pipe<int, void>(tf::PipeType::SERIAL, [&, subN](int input, auto& subpf) mutable {
               REQUIRE(subj3 < subN);
               REQUIRE(subpf.token() % subL == subpf.line());
               REQUIRE(source[pf.token()][subj3] + 1 == input);
@@ -2720,7 +2720,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
         // end of pipe 2 -----------------------------
 
         // begin of pipe 3 ---------------------------
-        tf::make_datapipe<int, int>(tf::PipeType::SERIAL, [&, w, N, subN, subL](int input, auto& pf) mutable {
+        tf::make_data_pipe<int, int>(tf::PipeType::SERIAL, [&, w, N, subN, subL](int input, auto& pf) mutable {
 
           REQUIRE(j3++ < N);
           int res = std::accumulate(
@@ -2740,7 +2740,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
           tf::DataPipeline subpl(subL,
 
             // subpipe 1
-            tf::make_datapipe<void, int>(tf::PipeType::SERIAL, [&, subN](auto& subpf) mutable {
+            tf::make_data_pipe<void, int>(tf::PipeType::SERIAL, [&, subN](auto& subpf) mutable {
               if(subj1 == subN) {
                 subpf.stop();
                 return 0;
@@ -2750,7 +2750,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
             }),
 
             // subpipe 2
-            tf::make_datapipe<int, int>(tf::PipeType::PARALLEL, [&, subN](int input, auto& subpf) mutable {
+            tf::make_data_pipe<int, int>(tf::PipeType::PARALLEL, [&, subN](int input, auto& subpf) mutable {
               REQUIRE(subj2++ < subN);
               REQUIRE(subpf.token() % subL == subpf.line());
               REQUIRE(source[pf.token()][subpf.token()] + 1 == input);
@@ -2759,7 +2759,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
 
 
             // subpipe 3
-            tf::make_datapipe<int, void>(tf::PipeType::SERIAL, [&, subN](int input, auto& subpf) mutable {
+            tf::make_data_pipe<int, void>(tf::PipeType::SERIAL, [&, subN](int input, auto& subpf) mutable {
               REQUIRE(subj3 < subN);
               REQUIRE(subpf.token() % subL == subpf.line());
               REQUIRE(source[pf.token()][subj3] + 1 == input);
@@ -2796,7 +2796,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
         // end of pipe 3 -----------------------------
 
         // begin of pipe 4 ---------------------------
-        tf::make_datapipe<int, void>(tf::PipeType::SERIAL, [&, subN](int input, auto& pf) mutable {
+        tf::make_data_pipe<int, void>(tf::PipeType::SERIAL, [&, subN](int input) mutable {
 
           int res = std::accumulate(
             source[j4].begin(),

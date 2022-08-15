@@ -5,7 +5,7 @@
   <title>Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -75,14 +75,16 @@
                   <li>struct <a href="structtf_1_1cudaUSMAllocator_1_1rebind.html" class="m-doc">rebind</a> <span class="m-doc">its member type <code>U</code> is the equivalent allocator type to allocate elements of type U</span></li>
                 </ul>
               </li>
+              <li>class <a href="classtf_1_1DataPipe.html" class="m-doc">DataPipe</a> <span class="m-doc">class to create a stage in a data-parallel pipeline</span></li>
+              <li>class <a href="classtf_1_1DataPipeline.html" class="m-doc">DataPipeline</a> <span class="m-doc">class to create a data-parallel pipeline scheduling framework</span></li>
               <li>class <a href="classtf_1_1Executor.html" class="m-doc">Executor</a> <span class="m-doc">class to create an executor for running a taskflow graph</span></li>
               <li>class <a href="classtf_1_1FlowBuilder.html" class="m-doc">FlowBuilder</a> <span class="m-doc">class to build a task dependency graph</span></li>
               <li>class <a href="classtf_1_1Future.html" class="m-doc">Future</a> <span class="m-doc">class to access the result of an execution</span></li>
               <li>class <a href="classtf_1_1Graph.html" class="m-doc">Graph</a> <span class="m-doc">class to create a graph object</span></li>
               <li>class <a href="classtf_1_1ObserverInterface.html" class="m-doc">ObserverInterface</a> <span class="m-doc">class to derive an executor observer</span></li>
-              <li>class <a href="classtf_1_1Pipe.html" class="m-doc">Pipe</a> <span class="m-doc">class to create a pipe object for a pipeline stage</span></li>
+              <li>class <a href="classtf_1_1Pipe.html" class="m-doc">Pipe</a> <span class="m-doc">class to create a stage in a task-parallel pipeline</span></li>
               <li>class <a href="classtf_1_1Pipeflow.html" class="m-doc">Pipeflow</a> <span class="m-doc">class to create a pipeflow object used by the pipe callable</span></li>
-              <li>class <a href="classtf_1_1Pipeline.html" class="m-doc">Pipeline</a> <span class="m-doc">class to create a pipeline scheduling framework</span></li>
+              <li>class <a href="classtf_1_1Pipeline.html" class="m-doc">Pipeline</a> <span class="m-doc">class to create a task-parallel pipeline scheduling framework</span></li>
               <li>class <a href="classtf_1_1Runtime.html" class="m-doc">Runtime</a> <span class="m-doc">class to create a runtime object used by a runtime task</span></li>
               <li>class <a href="classtf_1_1ScalablePipeline.html" class="m-doc">ScalablePipeline</a> <span class="m-doc">class to create a scalable pipeline object</span></li>
               <li>class <a href="classtf_1_1Semaphore.html" class="m-doc">Semaphore</a> <span class="m-doc">class to create a semophore object for building a concurrency constraint</span></li>
@@ -92,7 +94,7 @@
               <li>class <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> <span class="m-doc">handle to a node of the internal CUDA graph</span></li>
               <li>class <a href="classtf_1_1Task.html" class="m-doc">Task</a> <span class="m-doc">class to create a task handle over a node in a taskflow graph</span></li>
               <li>class <a href="classtf_1_1Taskflow.html" class="m-doc">Taskflow</a> <span class="m-doc">class to create a taskflow object</span></li>
-              <li>class <a href="classtf_1_1TaskQueue.html" class="m-doc">TaskQueue</a> <span class="m-doc">Lock-free unbounded single-producer multiple-consumer queue.</span></li>
+              <li>class <a href="classtf_1_1TaskQueue.html" class="m-doc">TaskQueue</a> <span class="m-doc">class to create a lock-free unbounded single-producer multiple-consumer queue</span></li>
               <li>class <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> <span class="m-doc">class to access task information from the observer interface</span></li>
               <li class="m-doc-collapsible collapsed">
                 <a href="#" onclick="return toggle(this)">class</a> <a href="classtf_1_1TFProfObserver.html" class="m-doc">TFProfObserver</a> <span class="m-doc">class to create an observer based on the built-in taskflow profiler format</span>
@@ -161,13 +163,13 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

@@ -21,33 +21,33 @@ struct unique_variant<std::variant<Ts...>> : filter_duplicates<std::variant<>, T
 template <typename T>
 using unique_variant_t = typename unique_variant<T>::type;
 
-constexpr size_t CLPAD(size_t _objSize) {
-  return ((_objSize / TF_CACHELINE_SIZE) * TF_CACHELINE_SIZE) +
-      (((_objSize % TF_CACHELINE_SIZE) > 0) * TF_CACHELINE_SIZE) -
-      _objSize;
-}
+// constexpr size_t CLPAD(size_t _objSize) {
+//   return ((_objSize / TF_CACHELINE_SIZE) * TF_CACHELINE_SIZE) +
+//       (((_objSize % TF_CACHELINE_SIZE) > 0) * TF_CACHELINE_SIZE) -
+//       _objSize;
+// }
 
-template<class T, bool = false>
+// template<class T, bool = false>
+// struct padded
+// {
+//     using type = struct
+//     {
+//         alignas(TF_CACHELINE_SIZE)T v;
+//         // char padding[CLPAD(sizeof(T))];
+//     };
+// };
+
+template<class T>
 struct padded
 {
     using type = struct
     {
         alignas(TF_CACHELINE_SIZE)T v;
-        char padding[CLPAD(sizeof(T))];
     };
 };
 
 template<class T>
-struct padded<T, true>
-{
-    using type = struct
-    {
-        alignas(TF_CACHELINE_SIZE)T v;
-    };
-};
-
-template<class T>
-using padded_t = typename padded<T, (sizeof(T) % TF_CACHELINE_SIZE == 0)>::type;
+using padded_t = typename padded<T>::type;
 
 
 namespace tf {
@@ -244,7 +244,7 @@ class DataPipe {
 };
 
 template <typename Input, typename Output, typename C>
-auto make_datapipe(PipeType d, C&& callable) {
+auto make_data_pipe(PipeType d, C&& callable) {
   return DataPipe<Input, Output, C>(d, std::forward<C>(callable));
 }
 

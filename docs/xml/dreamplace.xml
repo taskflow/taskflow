@@ -1,118 +1,52 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="dreamplace" kind="page">
     <compoundname>dreamplace</compoundname>
     <title>Standard Cell Placement</title>
-    <tableofcontents>
-      <tocsect>
-        <name>DreamPlace: GPU-accelerated Placement Engine</name>
-        <reference>dreamplace_1UseCasesDreamPlace</reference>
-    </tocsect>
-      <tocsect>
-        <name>Programming Effort</name>
-        <reference>dreamplace_1UseCasesDreamPlaceProgrammingEffort</reference>
-    </tocsect>
-      <tocsect>
-        <name>Performance</name>
-        <reference>dreamplace_1UseCasesDreamPlacePerformance</reference>
-    </tocsect>
-      <tocsect>
-        <name>Conclusion</name>
-        <reference>dreamplace_1UseCasesDreamPlaceConclusion</reference>
-    </tocsect>
-      <tocsect>
-        <name>References</name>
-        <reference>dreamplace_1UseCasesDreamPlaceReferences</reference>
-    </tocsect>
-    </tableofcontents>
+    <tableofcontents/>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>We applied Taskflow to solve a VLSI placement problem. The goal is to determine the physical locations of cells (logic gates) in a fixed layout region using minimal interconnect wirelength.</para>
-<sect1 id="dreamplace_1UseCasesDreamPlace">
+<para>We applied Taskflow to solve a VLSI placement problem. The goal is to determine the physical locations of cells (logic gates) in a fixed layout region using minimal interconnect wirelength.</para><sect1 id="dreamplace_1UseCasesDreamPlace">
 <title>DreamPlace: GPU-accelerated Placement Engine</title>
-<para>Placement is an important step in the layout generation stage of a circuit design. It places each cell of synthesized netlists in a region and optimizes their interconnect. The following figure shows a placement layout of an industrial design, adaptec1.</para>
-<para><image type="html" name="dreamplace_1.png"></image>
-</para>
-<para>Modern placement typically incorporates hundreds of millions of cells and takes several hours to finish. To reduce the long runtime, recent work started investigating new CPU-GPU algorithms. We consider matching-based hybrid CPU-GPU placement refinement algorithm developed by <ulink url="https://github.com/limbo018/DREAMPlace">DREAMPlace</ulink>. The algorithm iterates the following:</para>
-<para><itemizedlist>
-<listitem><para>A GPU-based maximal independent set algorithm to identify cell candidates </para>
-</listitem>
-<listitem><para>A CPU-based partition algorithm to cluster adjacent cells </para>
-</listitem>
-<listitem><para>A CPU-based bipartite matching algorithm to find the best permutation of cell locations.</para>
-</listitem>
+<para>Placement is an important step in the layout generation stage of a circuit design. It places each cell of synthesized netlists in a region and optimizes their interconnect. The following figure shows a placement layout of an industrial design, adaptec1.</para><para><image type="html" name="dreamplace_1.png"></image>
+</para><para>Modern placement typically incorporates hundreds of millions of cells and takes several hours to finish. To reduce the long runtime, recent work started investigating new CPU-GPU algorithms. We consider matching-based hybrid CPU-GPU placement refinement algorithm developed by <ulink url="https://github.com/limbo018/DREAMPlace">DREAMPlace</ulink>. The algorithm iterates the following:</para><para><itemizedlist>
+<listitem><para>A GPU-based maximal independent set algorithm to identify cell candidates </para></listitem>
+<listitem><para>A CPU-based partition algorithm to cluster adjacent cells </para></listitem>
+<listitem><para>A CPU-based bipartite matching algorithm to find the best permutation of cell locations.</para></listitem>
 </itemizedlist>
-Each iteration contains overlapped CPU and GPU tasks with nested conditions to decide the convergence.</para>
-<para><image type="html" name="dreamplace_2.png"></image>
-</para>
-</sect1>
+Each iteration contains overlapped CPU and GPU tasks with nested conditions to decide the convergence.</para><para><image type="html" name="dreamplace_2.png"></image>
+</para></sect1>
 <sect1 id="dreamplace_1UseCasesDreamPlaceProgrammingEffort">
 <title>Programming Effort</title>
-<para>We implemented the hybrid CPU-GPU placement algorithm using Taskflow, <ulink url="https://github.com/oneapi-src/oneTBB">Intel TBB</ulink>, and <ulink url="http://starpu.gforge.inria.fr/">StarPU</ulink>. The algorithm is crafted on one GPU and many CPUs. Since TBB and StarPU have no support for nested conditions, we unroll their task graphs across fixed-length iterations found in hindsight. The figure below shows a partial taskflow of 4 cudaFlows, 1 conditioned cycle, and 12 static tasks for one placement iteration.</para>
-<para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/dreamplace_3.dot"></dotfile>
-</para>
-<para>The table below lists the programming effort of each method, measured by <ulink url="https://dwheeler.com/sloccount/">SLOCCount</ulink>. Taskflow outperforms TBB and StarPU in all aspects. The whole program is about 1.5x and 1.7x less complex than that of TBB and StarPU, respectively.</para>
-<para> <table rows="4" cols="5"><row>
-<entry thead="yes" align='center'><para>Method  </para>
-</entry><entry thead="yes" align='center'><para>Lines of Code  </para>
-</entry><entry thead="yes" align='center'><para>Number of Tokens  </para>
-</entry><entry thead="yes" align='center'><para>Cyclomatic Complexity  </para>
-</entry><entry thead="yes" align='center'><para>Cost   </para>
-</entry></row>
+<para>We implemented the hybrid CPU-GPU placement algorithm using Taskflow, <ulink url="https://github.com/oneapi-src/oneTBB">Intel TBB</ulink>, and <ulink url="http://starpu.gforge.inria.fr/">StarPU</ulink>. The algorithm is crafted on one GPU and many CPUs. Since TBB and StarPU have no support for nested conditions, we unroll their task graphs across fixed-length iterations found in hindsight. The figure below shows a partial taskflow of 4 cudaFlows, 1 conditioned cycle, and 12 static tasks for one placement iteration.</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/dreamplace_3.dot"></dotfile>
+</para><para>The table below lists the programming effort of each method, measured by <ulink url="https://dwheeler.com/sloccount/">SLOCCount</ulink>. Taskflow outperforms TBB and StarPU in all aspects. The whole program is about 1.5x and 1.7x less complex than that of TBB and StarPU, respectively.</para><para> <table rows="4" cols="5"><row>
+<entry thead="yes"><para>Method  </para></entry><entry thead="yes"><para>Lines of Code  </para></entry><entry thead="yes"><para>Number of Tokens  </para></entry><entry thead="yes"><para>Cyclomatic Complexity  </para></entry><entry thead="yes"><para>Cost   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Taskflow  </para>
-</entry><entry thead="no" align='center'><para>677  </para>
-</entry><entry thead="no" align='center'><para>4180  </para>
-</entry><entry thead="no" align='center'><para>53  </para>
-</entry><entry thead="no" align='center'><para>$15,054   </para>
-</entry></row>
+<entry thead="no"><para>Taskflow  </para></entry><entry thead="no"><para>677  </para></entry><entry thead="no"><para>4180  </para></entry><entry thead="no"><para>53  </para></entry><entry thead="no"><para>$15,054   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>TBB  </para>
-</entry><entry thead="no" align='center'><para>1000  </para>
-</entry><entry thead="no" align='center'><para>6415  </para>
-</entry><entry thead="no" align='center'><para>78  </para>
-</entry><entry thead="no" align='center'><para>$21,736   </para>
-</entry></row>
+<entry thead="no"><para>TBB  </para></entry><entry thead="no"><para>1000  </para></entry><entry thead="no"><para>6415  </para></entry><entry thead="no"><para>78  </para></entry><entry thead="no"><para>$21,736   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>StarPU  </para>
-</entry><entry thead="no" align='center'><para>1279  </para>
-</entry><entry thead="no" align='center'><para>8136  </para>
-</entry><entry thead="no" align='center'><para>90  </para>
-</entry><entry thead="no" align='center'><para>$29,686   </para>
-</entry></row>
+<entry thead="no"><para>StarPU  </para></entry><entry thead="no"><para>1279  </para></entry><entry thead="no"><para>8136  </para></entry><entry thead="no"><para>90  </para></entry><entry thead="no"><para>$29,686   </para></entry></row>
 </table>
-</para>
-</sect1>
+</para></sect1>
 <sect1 id="dreamplace_1UseCasesDreamPlacePerformance">
 <title>Performance</title>
-<para>Using 8 CPUs and 1 GPU, Taskflow is consistently faster than others across all problem sizes (placement iterations). The gap becomes clear at large problem size; at 100 iterations, Taskflow is 17% faster than TBB and StarPU. We observed similar results using other CPU numbers. Performance saturates at about 16 CPUs, primarily due to the inherent irregularity of the placement algorithm.</para>
-<para><image type="html" name="dreamplace_4.png"></image>
-</para>
-<para>The memory footprint shows the benefit of our conditional tasking. We keep nearly no growth of memory when the problem size increases, whereas StarPU and TBB grow linearly due to unrolled task graphs. At a vertical scale, increasing the number of CPUs bumps up the memory usage of all methods, but the growth rate of Taskflow is much slower than the others.</para>
-<para><image type="html" name="dreamplace_5.png"></image>
-</para>
-<para>In terms of energy, our scheduler is very power efficient in completing the placement workload, regardless of problem sizes and CPU numbers. Beyond 16 CPUs where performance saturates, our system does not suffer from increasing power as StarPU, due to our adaptive task scheduling algorithm.</para>
-<para><image type="html" name="dreamplace_6.png"></image>
-</para>
-<para>For irregular task graphs akin to this placement workload, resource utilization is critical to the system throughput. We corun the same program by up to nine processes that compete for 40 CPUs and 1 GPU. Corunning a placement program is very common for searching the best parameters for an algorithm. We plot the throughput using <emphasis>weighted speed-up</emphasis> across nine coruns at two problem sizes. Both Taskflow and TBB achieve higher throughput than StarPU. At the largest problem size, Taskflow outperforms TBB and StarPU across all coruns.</para>
-<para><image type="html" name="dreamplace_7.png"></image>
-</para>
-</sect1>
+<para>Using 8 CPUs and 1 GPU, Taskflow is consistently faster than others across all problem sizes (placement iterations). The gap becomes clear at large problem size; at 100 iterations, Taskflow is 17% faster than TBB and StarPU. We observed similar results using other CPU numbers. Performance saturates at about 16 CPUs, primarily due to the inherent irregularity of the placement algorithm.</para><para><image type="html" name="dreamplace_4.png"></image>
+</para><para>The memory footprint shows the benefit of our conditional tasking. We keep nearly no growth of memory when the problem size increases, whereas StarPU and TBB grow linearly due to unrolled task graphs. At a vertical scale, increasing the number of CPUs bumps up the memory usage of all methods, but the growth rate of Taskflow is much slower than the others.</para><para><image type="html" name="dreamplace_5.png"></image>
+</para><para>In terms of energy, our scheduler is very power efficient in completing the placement workload, regardless of problem sizes and CPU numbers. Beyond 16 CPUs where performance saturates, our system does not suffer from increasing power as StarPU, due to our adaptive task scheduling algorithm.</para><para><image type="html" name="dreamplace_6.png"></image>
+</para><para>For irregular task graphs akin to this placement workload, resource utilization is critical to the system throughput. We corun the same program by up to nine processes that compete for 40 CPUs and 1 GPU. Corunning a placement program is very common for searching the best parameters for an algorithm. We plot the throughput using <emphasis>weighted speed-up</emphasis> across nine coruns at two problem sizes. Both Taskflow and TBB achieve higher throughput than StarPU. At the largest problem size, Taskflow outperforms TBB and StarPU across all coruns.</para><para><image type="html" name="dreamplace_7.png"></image>
+</para></sect1>
 <sect1 id="dreamplace_1UseCasesDreamPlaceConclusion">
 <title>Conclusion</title>
-<para>We have observed two significant benefits of Taskflow over existing programming systems. The first benefit is our conditional tasking. Condition tasks encode control-flow decisions directly in a cyclic task graph rather than unrolling it statically across iterations, saving a lot of memory usage. The second benefit is our runtime scheduler. Our scheduler is able to adapt the number of worker threads to available task parallelism at any time during the graph execution, providing improved performance, power efficiency, and system throughput.</para>
-</sect1>
+<para>We have observed two significant benefits of Taskflow over existing programming systems. The first benefit is our conditional tasking. Condition tasks encode control-flow decisions directly in a cyclic task graph rather than unrolling it statically across iterations, saving a lot of memory usage. The second benefit is our runtime scheduler. Our scheduler is able to adapt the number of worker threads to available task parallelism at any time during the graph execution, providing improved performance, power efficiency, and system throughput.</para></sect1>
 <sect1 id="dreamplace_1UseCasesDreamPlaceReferences">
 <title>References</title>
 <para><itemizedlist>
-<listitem><para>Yibo Lin, Wuxi Li, Jiaqi Gu, Haoxing Ren, Brucek Khailany and David Z. Pan, "<ulink url="https://ieeexplore.ieee.org/document/8982049">ABCDPlace: Accelerated Batch-based Concurrent Detailed Placement on Multi-threaded CPUs and GPUs</ulink>," <emphasis>IEEE Transactions on Computer-aided Design of Integrated Circuits and Systems (TCAD)</emphasis>, vol. 39, no. 12, pp. 5083-5096, Dec. 2020 </para>
-</listitem>
-<listitem><para>Yibo Lin, Shounak Dhar, Wuxi Li, Haoxing Ren, Brucek Khailany and David Z. Pan, "<ulink url="lin_19_01.pdf">DREAMPlace: Deep Learning Toolkit-Enabled GPU Acceleration for Modern VLSI Placement</ulink>", <emphasis>ACM/IEEE Design Automation Conference (DAC)</emphasis>, Las Vegas, NV, Jun 2-6, 2019 </para>
-</listitem>
+<listitem><para>Yibo Lin, Wuxi Li, Jiaqi Gu, Haoxing Ren, Brucek Khailany and David Z. Pan, "<ulink url="https://ieeexplore.ieee.org/document/8982049">ABCDPlace: Accelerated Batch-based Concurrent Detailed Placement on Multi-threaded CPUs and GPUs</ulink>," <emphasis>IEEE Transactions on Computer-aided Design of Integrated Circuits and Systems (TCAD)</emphasis>, vol. 39, no. 12, pp. 5083-5096, Dec. 2020 </para></listitem>
+<listitem><para>Yibo Lin, Shounak Dhar, Wuxi Li, Haoxing Ren, Brucek Khailany and David Z. Pan, "<ulink url="lin_19_01.pdf">DREAMPlace: Deep Learning Toolkit-Enabled GPU Acceleration for Modern VLSI Placement</ulink>", <emphasis>ACM/IEEE Design Automation Conference (DAC)</emphasis>, Las Vegas, NV, Jun 2-6, 2019 </para></listitem>
 </itemizedlist>
-</para>
-</sect1>
+</para></sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

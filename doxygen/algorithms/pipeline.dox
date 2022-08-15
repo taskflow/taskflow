@@ -1,21 +1,21 @@
 namespace tf {
 
-/** @page ParallelPipeline Parallel Pipeline
+/** @page TaskParallelPipeline Task-parallel Pipeline
 
 @tableofcontents
 
-%Taskflow provides a @em task-parallel pipeline programming framework for you to create a
-<i>pipeline scheduling framework</i>.
+%Taskflow provides a @em task-parallel pipeline programming framework for you to
+implement a pipeline algorithm.
 %Pipeline parallelism refers to a parallel execution of multiple data
 tokens through a linear chain of pipes or stages.
 Each stage processes the data token sent from the previous stage, applies the
 given callable to that data token, and then sends the result to the next stage.
 Multiple data tokens can be processed simultaneously across different stages.
 
-@section ParallelPipelineIncludeHeaderFile Include the Header 
+@section TaskParallelPipelineIncludeHeaderFile Include the Header 
 
-You need to include the header file, <tt>%taskflow/algorithm/pipeline.hpp</tt>, for creating
-a pipeline scheduling framework.
+You need to include the header file, <tt>%taskflow/algorithm/pipeline.hpp</tt>, 
+for implementing task-parallel pipeline algorithms.
 
 @code{.cpp}
 #include <taskflow/algorithm/pipeline.hpp>
@@ -26,7 +26,7 @@ a pipeline scheduling framework.
 A tf::Pipeline object is a @em composable graph to create a 
 <i>pipeline scheduling framework</i> through a module task in a taskflow
 (see @ref ComposableTasking).
-Unlike the conventional pipeline programming frameworks (e.g., Intel TBB Parallel Pipeline), 
+Unlike the conventional pipeline programming frameworks (e.g., Intel TBB Parallel %Pipeline), 
 %Taskflow's pipeline algorithm does not provide any data abstraction, 
 which often restricts users from optimizing data layouts in their applications, 
 but a flexible framework for users to customize their application data atop 
@@ -54,12 +54,12 @@ a parallel pipe processes different data tokens simultaneously.
 Due to the nature of pipeline, %Taskflow requires the first pipe to be a serial type.
 The pipeline scheduling algorithm operates in a circular fashion with a factor of line count.
 
-@section CreatePipeline Create a Pipeline Module Task
+@section CreateATaskParallelPipelineModuleTask Create a Task-parallel Pipeline Module Task
 
 %Taskflow leverages modern C++ and template techniques to strike a balance 
 between the @em expressiveness and @em generality
 in designing the pipeline programming model.
-In general, there are three steps to create a pipeline application: 
+In general, there are three steps to create a task-parallel pipeline application: 
 
   1. Define the pipeline structure (e.g., pipe type, pipe callable, stopping rule, line count)
   2. Define the data storage and layout, if needed for the application
@@ -206,7 +206,7 @@ that embeds one or multiple pipeline algorithms.
 We describe three common examples below:
   + @ref IterateAPipeline
   + @ref ConcatenateTwoPipelines
-  + @ref DefineMultipleParallelPipelines
+  + @ref DefineMultipleTaskParallelPipelines
 
 @subsection IterateAPipeline Example 1: Iterate a Pipeline
 
@@ -503,7 +503,7 @@ because their second pipes are both parallel types.
 Due to the task dependency between @c pipeline_1 and @c pipeline_2, 
 the output of @c pl_1 precedes the output of @c pl_2.
   
-@subsection DefineMultipleParallelPipelines Example 3: Define Multiple Parallel Pipelines
+@subsection DefineMultipleTaskParallelPipelines Example 3: Define Multiple Parallel Pipelines
 
 This example creates two independent pipelines that run in parallel on different data sets.
 
@@ -776,14 +776,15 @@ The output can be different from run to run, since the second pipe is a parallel
 At the second iteration from the condition task,
 we reset the pipeline so the token identifier starts from @c 0 rather than @c 5.
 
-@section ParallelPipelineLearnMore Learn More about Taskflow Pipeline
+@section TaskParallelPipelineLearnMore Learn More about Taskflow Pipeline
 
 Visit the following pages to learn more about pipeline:
 
-1. @ref ParallelScalablePipeline
-2. @ref TextProcessingPipeline
-3. @ref GraphProcessingPipeline
-4. @ref TaskflowProcessingPipeline
+1. @ref TaskParallelScalablePipeline
+2. @ref DataParallelPipeline
+3. @ref TextProcessingPipeline
+4. @ref GraphProcessingPipeline
+5. @ref TaskflowProcessingPipeline
 
 
 */

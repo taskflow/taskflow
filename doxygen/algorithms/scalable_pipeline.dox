@@ -1,10 +1,10 @@
 namespace tf {
 
-/** @page ParallelScalablePipeline Parallel Scalable Pipeline
+/** @page TaskParallelScalablePipeline Task-parallel Scalable Pipeline
 
 @tableofcontents
 
-Unlike tf::Pipeline (see @ref ParallelPipeline) that instantiates all pipes
+Unlike tf::Pipeline (see @ref TaskParallelPipeline) that instantiates all pipes
 at the construction time,
 %Taskflow provides a scalable alternative called tf::ScalablePipeline
 to allow variable assignments of pipes using range iterators.
@@ -214,10 +214,12 @@ tf::ScalablePipeline spl2(num_lines, list.begin(), list.end());
 
 Visit the following pages to learn more about pipeline:
 
-1. @ref ParallelPipeline
-2. @ref TextProcessingPipeline
-3. @ref GraphProcessingPipeline
-4. @ref TaskflowProcessingPipeline
+1. @ref TaskParallelPipeline
+2. @ref DataParallelPipeline
+3. @ref TextProcessingPipeline
+4. @ref GraphProcessingPipeline
+5. @ref TaskflowProcessingPipeline
+
 
 */
 

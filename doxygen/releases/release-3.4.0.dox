@@ -58,11 +58,6 @@ There is no update on %syclFlow in this release.
 
 + Removed serializer to improve compilation speed
 
-@subsection release-3-4-0_profiler Taskflow Profiler (TFProf)
-
-+ Disabled local TFProf support due to non-portable serialization
-
-
 @section release-3-4-0_bug_fixes Bug Fixes 
 
 + Fixed the compilation error due to non-portable include of `immintrin.h` ([#371](https://github.com/taskflow/taskflow/issues/371))
@@ -84,13 +79,13 @@ There are no deprecated items in this release.
 + Revised @ref ExecuteTaskflow
   + Added @ref ExecuteATaskflowFromAnInternalWorker
 + Revised @ref CUDASTDExecutionPolicy
-+ Revised @ref ParallelPipeline
-  + Added @ref ParallelPipelineLearnMore
++ Revised @ref TaskParallelPipeline
+  + Added @ref TaskParallelPipelineLearnMore
 + Revised @ref Examples
   + Added @ref TextProcessingPipeline
   + Added @ref GraphProcessingPipeline
   + Added @ref TaskflowProcessingPipeline
-+ Added @ref ParallelScalablePipeline
++ Added @ref TaskParallelScalablePipeline
 
 @section release-3-4-0_miscellaneous_items Miscellaneous Items
 

@@ -1,162 +1,53 @@
 #pragma once
 
-#include "../taskflow.hpp"
-
-
-template <typename T, typename... Ts>
-struct filter_duplicates { using type = T; };
-
-template <template <typename...> class C, typename... Ts, typename U, typename... Us>
-struct filter_duplicates<C<Ts...>, U, Us...>
-    : std::conditional_t<(std::is_same_v<U, Ts> || ...)
-                       , filter_duplicates<C<Ts...>, Us...>
-                       , filter_duplicates<C<Ts..., U>, Us...>> {};
-
-template <typename T>
-struct unique_variant;
-
-template <typename... Ts>
-struct unique_variant<std::variant<Ts...>> : filter_duplicates<std::variant<>, Ts...> {};
-
-template <typename T>
-using unique_variant_t = typename unique_variant<T>::type;
-
-constexpr size_t CLPAD(size_t _objSize) {
-  return ((_objSize / TF_CACHELINE_SIZE) * TF_CACHELINE_SIZE) +
-      (((_objSize % TF_CACHELINE_SIZE) > 0) * TF_CACHELINE_SIZE) -
-      _objSize;
-}
-
-template<class T, bool = false>
-struct padded
-{
-    using type = struct
-    {
-        alignas(TF_CACHELINE_SIZE)T v;
-        char padding[CLPAD(sizeof(T))];
-    };
-};
-
-template<class T>
-struct padded<T, true>
-{
-    using type = struct
-    {
-        alignas(TF_CACHELINE_SIZE)T v;
-    };
-};
-
-template<class T>
-using padded_t = typename padded<T, (sizeof(T) % TF_CACHELINE_SIZE == 0)>::type;
+#include "pipeline.hpp"
 
 
 namespace tf {
 
 // ----------------------------------------------------------------------------
-// Class Definition: Pipeflow
-// ----------------------------------------------------------------------------
-
-/**
-@class Pipeflow
-
-@brief class to create a pipeflow object used by the pipe callable
-
-Pipeflow represents a <i>scheduling token</i> in the pipeline scheduling
-framework. A pipeflow is created by the pipeline scheduler at runtime to
-pass to the pipe callable. Users can query the present statistics
-of that scheduling token, including the line identifier, pipe identifier,
-and token identifier, and build their application algorithms based on
-these statistics.
-At the first stage, users can explicitly call the stop method
-to stop the pipeline scheduler.
-
-@code{.cpp}
-tf::Pipe{tf::PipeType::SERIAL, [](tf::Pipeflow& pf){
-  std::cout << "token id=" << pf.token()
-            << " at line=" << pf.line()
-            << " at pipe=" << pf.pipe()
-            << '\n';
-}};
-@endcode
-
-Pipeflow can only be created privately by the tf::Pipeline and
-be used through the pipe callable.
-*/
-class Pipeflow {
-
-  template <typename... Ps>
-  friend class DataPipeline;
-
-  public:
-
-  /**
-  @brief default constructor
-  */
-  Pipeflow() = default;
-
-  /**
-  @brief queries the line identifier of the present token
-  */
-  size_t line() const {
-    return _line;
-  }
-
-  /**
-  @brief queries the pipe identifier of the present token
-  */
-  size_t pipe() const {
-    return _pipe;
-  }
-
-  /**
-  @brief queries the token identifier
-  */
-  size_t token() const {
-    return _token;
-  }
-
-  /**
-  @brief stops the pipeline scheduling
-
-  Only the first pipe can call this method to stop the pipeline.
-  Others have no effect.
-  */
-  void stop() {
-    if(_pipe != 0) {
-      TF_THROW("only the first pipe can stop the token");
-    }
-    _stop = true;
-  }
-
-  private:
-
-  size_t _line;
-  size_t _pipe;
-  size_t _token;
-  bool   _stop;
-};
-
-// ----------------------------------------------------------------------------
-// Class Definition: PipeType
-// ----------------------------------------------------------------------------
-
-/**
-@enum PipeType
-
-@brief enumeration of all pipe types
-*/
-enum class PipeType : int {
-  /** @brief parallel type */
-  PARALLEL = 1,
-  /** @brief serial type */
-  SERIAL   = 2
-};
-
-
-// ----------------------------------------------------------------------------
 // Class Definition: DataPipe
 // ----------------------------------------------------------------------------
 
+/**
+@class DataPipe
+
+@brief class to create a stage in a data-parallel pipeline 
+
+A data pipe represents a stage of a data-parallel pipeline. 
+A data pipe can be either @em parallel direction or @em serial direction 
+(specified by tf::PipeType) and is associated with a callable to invoke 
+by the pipeline scheduler.
+
+You need to use the template function, tf::make_data_pipe, to create 
+a data pipe. The input and output types of a tf::DataPipe should be decayed types 
+(though the library will always decay them for you using `std::decay`)
+to allow internal storage to work.
+The data will be passed by reference to your callable, at which you can take 
+it by copy or reference.
+
+@code{.cpp}
+tf::make_data_pipe<int, std::string>(
+  tf::PipeType::SERIAL, 
+  [](int& input) {return std::to_string(input + 100);}
+);
+@endcode
+
+In addition to the data, you callable can take an additional reference 
+of tf::Pipeflow in the second argument to probe the runtime information
+for a stage task, such as its line number and token number:
+
+@code{.cpp}
+tf::make_data_pipe<int, std::string>(
+  tf::PipeType::SERIAL, 
+  [](int& input, tf::Pipeflow& pf) {
+    printf("token=%lu, line=%lu\n", pf.token(), pf.line());
+    return std::to_string(input + 100);
+  }
+);
+@endcode
+
+*/
 template <typename Input, typename Output, typename C>
 class DataPipe {
 
@@ -166,11 +57,18 @@ class DataPipe {
   public:
 
   /**
-  @brief alias of the type
+  @brief callable type of the data pipe
   */
-  // using callable_t = std::conditional_t<enable_pf, std::function<Output(Input, Pipeflow&)>, std::function<Output(Input)>>;
   using callable_t = C;
+
+  /**
+  @brief input type of the data pipe
+  */
   using input_t = Input;
+
+  /**
+  @brief output type of the data pipe
+  */
   using output_t = Output;
 
   /**
@@ -179,51 +77,41 @@ class DataPipe {
   DataPipe() = default;
 
   /**
-  @brief constructs the pipe object
+  @brief constructs a data pipe
 
-  @param d pipe type (tf::PipeType)
-  @param callable callable type
-
-  The constructor constructs a pipe with the given direction
-  (tf::PipeType::SERIAL or tf::PipeType::PARALLEL) and the given callable. 
-  The callable must take a referenced tf::Pipeflow object in the first argument.
-
-  @code{.cpp}
-  Pipe{PipeType::SERIAL, [](tf::Pipeflow&){}}
-  @endcode
-
-  When creating a pipeline, the direction of the first pipe must be serial
-  (tf::PipeType::SERIAL).
+  You should use the helper function, tf::make_data_pipe, 
+  to create a DataPipe object, especially when you need tf::DataPipe
+  to automatically deduct the lambda type.
   */
   DataPipe(PipeType d, callable_t&& callable) :
     _type{d}, _callable{std::forward<callable_t>(callable)} {
   }
 
   /**
-  @brief queries the type of the pipe
+  @brief queries the type of the data pipe
 
-  Returns the type of the callable.
+  A data pipe can be either parallel (tf::PipeType::PARALLEL) or serial
+  (tf::PipeType::SERIAL).
   */
   PipeType type() const {
     return _type;
   }
 
   /**
-  @brief assigns a new type to the pipe
-
-  @param type a tf::PipeType variable
+  @brief assigns a new type to the data pipe
   */
   void type(PipeType type) {
     _type = type;
   }
 
   /**
-  @brief assigns a new callable to the pipe
+  @brief assigns a new callable to the data pipe
 
   @tparam U callable type
-  @param callable a callable object constructible from std::function<void(tf::Pipeflow&)>
+  @param callable a callable object constructible from the callable type
+                  of this data pipe
 
-  Assigns a new callable to the pipe with universal forwarding.
+  Assigns a new callable to the pipe using universal forwarding.
   */
   template <typename U>
   void callable(U&& callable) {
@@ -237,16 +125,131 @@ class DataPipe {
   callable_t _callable;
 };
 
+/**
+@brief function to construct a data pipe (tf::DataPipe)
+
+@tparam Input input data type
+@tparam Output output data type
+@tparam C callable type
+
+tf::make_data_pipe is a helper function to create a data pipe (tf::DataPipe)
+in a data-parallel pipeline (tf::DataPipeline).
+The first argument specifies the direction of the data pipe,
+either tf::PipeType::SERIAL or tf::PipeType::PARALLE,
+and the second argument is a callable to invoke by the pipeline scheduler.
+Input and output data types are specified via template parameters,
+which will always be decayed by the library to its original form
+for storage purpose.
+The callable must take the input data type in its first argument
+and returns a value of the output data type.
+
+@code{.cpp}
+tf::make_data_pipe<int, std::string>(
+  tf::PipeType::SERIAL, 
+  [](int& input) {
+    return std::to_string(input + 100);
+  }
+);
+@endcode
+
+The callable can additionally take a reference of tf::Pipeflow, 
+which allows you to query the runtime information of a stage task,
+such as its line number and token number.
+
+@code{.cpp}
+tf::make_data_pipe<int, std::string>(
+  tf::PipeType::SERIAL, 
+  [](int& input, tf::Pipeflow& pf) {
+    printf("token=%lu, line=%lu\n", pf.token(), pf.line());
+    return std::to_string(input + 100);
+  }
+);
+@endcode
+
+*/
 template <typename Input, typename Output, typename C>
-auto make_datapipe(PipeType d, C&& callable) {
+auto make_data_pipe(PipeType d, C&& callable) {
   return DataPipe<Input, Output, C>(d, std::forward<C>(callable));
 }
-
 
 // ----------------------------------------------------------------------------
 // Class Definition: DataPipeline
 // ----------------------------------------------------------------------------
 
+/**
+@class DataPipeline
+
+@brief class to create a data-parallel pipeline scheduling framework
+
+@tparam Ps data pipe types
+
+Similar to tf::Pipeline, a tf::DataPipeline is a composable graph object
+for users to create a <i>data-parallel pipeline scheduling framework</i> 
+using a module task in a taskflow.
+The only difference is that tf::DataPipline provides a data abstraction
+for users to quickly express dataflow in a pipeline.
+The following example creates a data-parallel pipeline of three stages
+that generate dataflow from `void` to `int`, `std::string`, `float`, and `void`.
+
+@code{.cpp}
+#include <taskflow/taskflow.hpp>
+#include <taskflow/algorithm/data_pipeline.hpp>
+
+int main() {
+
+  // data flow => void -> int -> std::string -> float -> void 
+  tf::Taskflow taskflow("pipeline");
+  tf::Executor executor;
+
+  const size_t num_lines = 4;
+
+  tf::DataPipeline pl(num_lines,
+    tf::make_data_pipe<void, int>(tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) -> int{
+      if(pf.token() == 5) {
+        pf.stop();
+        return 0;
+      }
+      else {
+        return pf.token();
+      }
+    }),
+    tf::make_data_pipe<int, std::string>(tf::PipeType::SERIAL, [](int& input) {
+      return std::to_string(input + 100);
+    }),
+    tf::make_data_pipe<std::string, void>(tf::PipeType::SERIAL, [](std::string& input) {
+      std::cout << input << std::endl;
+    })
+  );
+
+  // build the pipeline graph using composition
+  taskflow.composed_of(pl).name("pipeline");
+
+  // dump the pipeline graph structure (with composition)
+  taskflow.dump(std::cout);
+
+  // run the pipeline
+  executor.run(taskflow).wait();
+
+  return 0;
+}
+@endcode
+
+The pipeline schedules five tokens over four parallel lines in a circular fashion, 
+as depicted below:
+
+@code{.shell-session}
+o -> o -> o
+|    |    |
+v    v    v
+o -> o -> o
+|    |    |
+v    v    v
+o -> o -> o
+|    |    |
+v    v    v
+o -> o -> o
+@endcode
+*/
 template <typename... Ps>
 class DataPipeline {
 
@@ -268,14 +271,23 @@ class DataPipeline {
 
 
   public:
+  
+  /**
+  @brief internal storage type for each data token (default std::variant)
+  */
+  using data_t = unique_variant_t<std::variant<std::conditional_t<
+    std::is_void_v<typename Ps::output_t>, 
+    std::monostate, 
+    std::decay_t<typename Ps::output_t>>...
+  >>;
 
   /**
-  @brief constructs a pipeline object
+  @brief constructs a data-parallel pipeline object
 
   @param num_lines the number of parallel lines
   @param ps a list of pipes
 
-  Constructs a pipeline of up to @c num_lines parallel lines to schedule
+  Constructs a data-parallel pipeline of up to @c num_lines parallel lines to schedule
   tokens through the given linear chain of pipes.
   The first pipe must define a serial direction (tf::PipeType::SERIAL)
   or an exception will be thrown.
@@ -283,13 +295,13 @@ class DataPipeline {
   DataPipeline(size_t num_lines, Ps&&... ps);
 
   /**
-  @brief constructs a pipeline object
+  @brief constructs a data-parallel pipeline object
 
   @param num_lines the number of parallel lines
   @param ps a tuple of pipes
 
-  Constructs a pipeline of up to @c num_lines parallel lines to schedule
-  tokens through the given linear chain of pipes.
+  Constructs a data-parallel pipeline of up to @c num_lines parallel lines to schedule
+  tokens through the given linear chain of pipes stored in a std::tuple.
   The first pipe must define a serial direction (tf::PipeType::SERIAL)
   or an exception will be thrown.
   */
@@ -334,7 +346,7 @@ class DataPipeline {
   @brief obtains the graph object associated with the pipeline construct
 
   This method is primarily used as an opaque data structure for creating
-  a module task of the this pipeline.
+  a module task of this pipeline.
   */
   Graph& graph();
 
@@ -349,9 +361,7 @@ class DataPipeline {
   std::vector<std::array<Line, sizeof...(Ps)>> _lines;
   std::vector<Task> _tasks;
   std::vector<Pipeflow> _pipeflows;
-  using variant_t = unique_variant_t<std::variant<std::conditional_t<std::is_void_v<typename Ps::output_t>, std::monostate, std::decay_t<typename Ps::output_t>>...>>;
-  // std::vector<variant_t> _buffer;
-  alignas (TF_CACHELINE_SIZE) std::vector<padded_t<variant_t> > _buffer;
+  std::vector<CachelineAligned<data_t>> _buffer;
 
   template <size_t... I>
   auto _gen_meta(std::tuple<Ps...>&&, std::index_sequence<I...>);
@@ -471,36 +481,52 @@ void DataPipeline<Ps...>::reset() {
 
 // Procedure: _on_pipe
 template <typename... Ps>
-void DataPipeline<Ps...>::_on_pipe(Pipeflow& pf, Runtime& rt) {
+void DataPipeline<Ps...>::_on_pipe(Pipeflow& pf, Runtime&) {
+
   visit_tuple([&](auto&& pipe){
-    using callable_t = typename std::decay_t<decltype(pipe)>::callable_t;
-    using input_t = std::decay_t<typename std::decay_t<decltype(pipe)>::input_t>;
-    using output_t = std::decay_t<typename std::decay_t<decltype(pipe)>::output_t>;
+
+    using data_pipe_t = std::decay_t<decltype(pipe)>;
+    using callable_t  = typename data_pipe_t::callable_t;
+    using input_t     = std::decay_t<typename data_pipe_t::input_t>;
+    using output_t    = std::decay_t<typename data_pipe_t::output_t>;
     
+    // first pipe
     if constexpr (std::is_invocable_v<callable_t, Pipeflow&>) {
+      // [](tf::Pipeflow&) -> void {}, i.e., we only have one pipe
       if constexpr (std::is_void_v<output_t>) {
         pipe._callable(pf);
+      // [](tf::Pipeflow&) -> output_t {}
       } else {
-        _buffer[pf._line].v = pipe._callable(pf);
+        _buffer[pf._line].data = pipe._callable(pf);
       }
     }
+    // other pipes without pipeflow in the second argument
     else if constexpr (std::is_invocable_v<callable_t, input_t&>) {
+      // [](input_t&) -> void {}, i.e., the last pipe
       if constexpr (std::is_void_v<output_t>) {
-        pipe._callable(std::get<input_t>(_buffer[pf._line].v));
+        pipe._callable(std::get<input_t>(_buffer[pf._line].data));
+      // [](input_t&) -> output_t {}
       } else {
-        _buffer[pf._line].v = pipe._callable(std::get<input_t>(_buffer[pf._line].v));
+        _buffer[pf._line].data = pipe._callable(
+          std::get<input_t>(_buffer[pf._line].data)
+        );
       }
     }
+    // other pipes with pipeflow in the second argument
     else if constexpr (std::is_invocable_v<callable_t, input_t&, Pipeflow&>) {
+      // [](input_t&, tf::Pipeflow&) -> void {}
       if constexpr (std::is_void_v<output_t>) {
-        pipe._callable(std::get<input_t>(_buffer[pf._line].v), pf);
+        pipe._callable(std::get<input_t>(_buffer[pf._line].data), pf);
+      // [](input_t&, tf::Pipeflow&) -> output_t {}
       } else {
-        _buffer[pf._line].v = pipe._callable(std::get<input_t>(_buffer[pf._line].v), pf);
+        _buffer[pf._line].data = pipe._callable(
+          std::get<input_t>(_buffer[pf._line].data), pf
+        );
       }
     }
-    else if constexpr(std::is_invocable_v<callable_t, Pipeflow&, Runtime&>) {
-      pipe._callable(pf, rt);
-    }
+    //else if constexpr(std::is_invocable_v<callable_t, Pipeflow&, Runtime&>) {
+    //  pipe._callable(pf, rt);
+    //}
     else {
       static_assert(dependent_false_v<callable_t>, "un-supported pipe callable type");
     }

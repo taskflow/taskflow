@@ -453,8 +453,13 @@ worker 1 leaves the scheduler loop
 
 When you create an executor, it spawns a set of worker threads to run tasks
 using a work-stealing algorithm.
+<<<<<<< HEAD
+Executor logic of the scheduler and its interaction with each spawned worker 
+via tf::WorkerInterface is given below:
+=======
 The interaction with each spawned worker 
 using tf::WorkerInterface is given below:
+>>>>>>> 0dc0291de3cf926fe81561f8073ed43718146077
 
 @code{.cpp}
 for(size_t n=0; n<num_workers; n++) {

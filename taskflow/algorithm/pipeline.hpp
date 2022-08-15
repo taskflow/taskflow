@@ -47,6 +47,9 @@ class Pipeflow {
   template <typename P>
   friend class ScalablePipeline;
 
+  template <typename... Ps>
+  friend class DataPipeline;
+
   public:
 
   /**
@@ -119,14 +122,14 @@ enum class PipeType : int {
 /**
 @class Pipe
 
-@brief class to create a pipe object for a pipeline stage
+@brief class to create a stage in a task-parallel pipeline 
 
 @tparam C callable type
 
 A pipe represents a stage of a pipeline. A pipe can be either
 @em parallel direction or @em serial direction (specified by tf::PipeType)
-and is coupled with a callable to invoke by the pipeline scheduler.
-The callable must take a referenced tf::Pipeflow object in the first argument:
+and is associated with a callable to invoke by the pipeline scheduler.
+The callable must take a referenced tf::Pipeflow object in its argument:
 
 @code{.cpp}
 Pipe{PipeType::SERIAL, [](tf::Pipeflow&){}}
@@ -199,7 +202,8 @@ class Pipe {
   @brief assigns a new callable to the pipe
 
   @tparam U callable type
-  @param callable a callable object constructible from std::function<void(tf::Pipeflow&)>
+  @param callable a callable object constructible from the callable type
+                  of this pipe
 
   Assigns a new callable to the pipe with universal forwarding.
   */
@@ -222,12 +226,12 @@ class Pipe {
 /**
 @class Pipeline
 
-@brief class to create a pipeline scheduling framework
+@brief class to create a task-parallel pipeline scheduling framework
 
 @tparam Ps pipe types
 
-A pipeline is a composable graph object for users to create a
-<i>pipeline scheduling framework</i> using a module task in a taskflow.
+A tf::Pipeline is a composable graph object for users to create a
+<i>task-parallel pipeline scheduling framework</i> using a module task in a taskflow.
 Unlike the conventional pipeline programming frameworks (e.g., Intel TBB),
 %Taskflow's pipeline algorithm does not provide any data abstraction,
 which often restricts users from optimizing data layouts in their applications,
@@ -285,7 +289,7 @@ task.precede(stop);
 executor.run(taskflow).wait();
 @endcode
 
-The above example creates a pipeline graph that schedules five tokens over
+The pipeline graph schedules five tokens over
 four parallel lines in a circular fashion, as depicted below:
 
 @code{.shell-session}
@@ -397,7 +401,7 @@ class Pipeline {
   @brief obtains the graph object associated with the pipeline construct
 
   This method is primarily used as an opaque data structure for creating
-  a module task of the this pipeline.
+  a module task of this pipeline.
   */
   Graph& graph();
 
@@ -931,7 +935,7 @@ class ScalablePipeline {
   @brief obtains the graph object associated with the pipeline construct
 
   This method is primarily used as an opaque data structure for creating
-  a module task of the this pipeline.
+  a module task of this pipeline.
   */
   Graph& graph();
 

@@ -21,7 +21,6 @@ public:
 
   void operator()(tbb::flow_control& fc) const {
     int retval = 0;
-    work();
     if (i++ == s) {
       fc.stop();
     }
@@ -42,7 +41,6 @@ public:
 
   int operator()(tbb::flow_control& fc) const{
     int retval = 0;
-    work();
     if (i++ == s) {
       fc.stop();
       return -1;
@@ -54,41 +52,41 @@ public:
 };
 
 auto int2string = [](int input) -> std::string {
-  work();
+  work_int(input);
   return std::to_string(input);
 };
 
 auto string2int = [](std::string input) -> int {
-  work();
+  work_string(input);
   return std::stoi(input);
 };
 
 auto int2float = [](int input) -> float {
-  work();
+  work_int(input);
   return input * 1.0;
 };
 
 auto float2int = [](float input) -> int {
-  work();
+  work_float(input);
   return (int)input;
 };
 
 auto int2vector = [](int input) -> std::vector<int> {
-  work();
-  return std::vector{input};
+  work_int(input);
+  return std::vector<int>{input};
 };
 
 auto vector2int = [](std::vector<int> input) -> int {
-  work();
+  work_vector(input);
   return input[0];
 };
 
 auto int2int = [](int input) {
-  work();
+  work_int(input);
   return input;
 };
 
-auto int2void = [](int input) {  work(); };
+auto int2void = [](int input) {  work_int(input); };
 
 // parallel_pipeline_tbb_1_pipe
 void parallel_pipeline_tbb_1_pipe(unsigned num_lines, size_t size) {

@@ -33,7 +33,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_1_pipe_int(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<tf::Pipeflow&, void>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> void{
+    tf::make_data_pipe<tf::Pipeflow&, void>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> void{
       if(pf.token() == size) {
         pf.stop();
       }
@@ -56,7 +56,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_2_pipes_int(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
+    tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
       if(pf.token() == size) {
         pf.stop();
         return 0;
@@ -65,7 +65,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_2_pipes_int(
         return pf.token();
       }
     }),
-    tf::make_datapipe<int, void>(to_pipe_type(pipes[1]), int2void)
+    tf::make_data_pipe<int, void>(to_pipe_type(pipes[1]), int2void)
   );
 
   taskflow.composed_of(pl);
@@ -83,7 +83,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_3_pipes_int(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
+    tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
       if(pf.token() == size) {
         pf.stop();
         return 0;
@@ -92,8 +92,8 @@ std::chrono::microseconds parallel_pipeline_taskflow_3_pipes_int(
         return pf.token();
       }
     }),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[1]), int2int),
-    tf::make_datapipe<int, void>(to_pipe_type(pipes[2]), int2void)
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[1]), int2int),
+    tf::make_data_pipe<int, void>(to_pipe_type(pipes[2]), int2void)
   );
 
   taskflow.composed_of(pl);
@@ -111,7 +111,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_4_pipes_int(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
+    tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
       if(pf.token() == size) {
         pf.stop();
         return 0;
@@ -120,9 +120,9 @@ std::chrono::microseconds parallel_pipeline_taskflow_4_pipes_int(
         return pf.token();
       }
     }),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[1]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[2]), int2int),
-    tf::make_datapipe<int, void>(to_pipe_type(pipes[3]), int2void)
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[1]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[2]), int2int),
+    tf::make_data_pipe<int, void>(to_pipe_type(pipes[3]), int2void)
   );
 
   taskflow.composed_of(pl);
@@ -140,7 +140,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_5_pipes_int(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
+    tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
       if(pf.token() == size) {
         pf.stop();
         return 0;
@@ -149,10 +149,10 @@ std::chrono::microseconds parallel_pipeline_taskflow_5_pipes_int(
         return pf.token();
       }
     }),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[1]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[2]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[3]), int2int),
-    tf::make_datapipe<int, void>(to_pipe_type(pipes[4]), int2void)
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[1]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[2]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[3]), int2int),
+    tf::make_data_pipe<int, void>(to_pipe_type(pipes[4]), int2void)
   );
 
   taskflow.composed_of(pl);
@@ -170,7 +170,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_6_pipes_int(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
+    tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
       if(pf.token() == size) {
         pf.stop();
         return 0;
@@ -179,11 +179,11 @@ std::chrono::microseconds parallel_pipeline_taskflow_6_pipes_int(
         return pf.token();
       }
     }),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[1]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[2]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[3]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[4]), int2int),
-    tf::make_datapipe<int, void>(to_pipe_type(pipes[5]), int2void)
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[1]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[2]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[3]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[4]), int2int),
+    tf::make_data_pipe<int, void>(to_pipe_type(pipes[5]), int2void)
   );
 
   taskflow.composed_of(pl);
@@ -201,7 +201,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_7_pipes_int(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
+    tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
       if(pf.token() == size) {
         pf.stop();
         return 0;
@@ -210,12 +210,12 @@ std::chrono::microseconds parallel_pipeline_taskflow_7_pipes_int(
         return pf.token();
       }
     }),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[1]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[2]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[3]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[4]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[5]), int2int),
-    tf::make_datapipe<int, void>(to_pipe_type(pipes[6]), int2void)
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[1]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[2]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[3]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[4]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[5]), int2int),
+    tf::make_data_pipe<int, void>(to_pipe_type(pipes[6]), int2void)
   );
 
   taskflow.composed_of(pl);
@@ -233,7 +233,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_8_pipes_int(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
+    tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
       if(pf.token() == size) {
         pf.stop();
         return 0;
@@ -242,13 +242,13 @@ std::chrono::microseconds parallel_pipeline_taskflow_8_pipes_int(
         return pf.token();
       }
     }),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[1]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[2]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[3]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[4]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[5]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[6]), int2int),
-    tf::make_datapipe<int, void>(to_pipe_type(pipes[7]), int2void)
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[1]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[2]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[3]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[4]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[5]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[6]), int2int),
+    tf::make_data_pipe<int, void>(to_pipe_type(pipes[7]), int2void)
   );
 
   taskflow.composed_of(pl);
@@ -266,7 +266,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_9_pipes_int(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
+    tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
       if(pf.token() == size) {
         pf.stop();
         return 0;
@@ -275,14 +275,14 @@ std::chrono::microseconds parallel_pipeline_taskflow_9_pipes_int(
         return pf.token();
       }
     }),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[1]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[2]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[3]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[4]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[5]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[6]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[7]), int2int),
-    tf::make_datapipe<int, void>(to_pipe_type(pipes[8]), int2void)
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[1]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[2]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[3]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[4]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[5]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[6]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[7]), int2int),
+    tf::make_data_pipe<int, void>(to_pipe_type(pipes[8]), int2void)
   );
 
   taskflow.composed_of(pl);
@@ -300,7 +300,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_10_pipes_int(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
+    tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
       if(pf.token() == size) {
         pf.stop();
         return 0;
@@ -309,15 +309,15 @@ std::chrono::microseconds parallel_pipeline_taskflow_10_pipes_int(
         return pf.token();
       }
     }),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[1]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[2]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[3]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[4]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[5]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[6]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[7]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[8]), int2int),
-    tf::make_datapipe<int, void>(to_pipe_type(pipes[9]), int2void)
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[1]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[2]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[3]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[4]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[5]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[6]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[7]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[8]), int2int),
+    tf::make_data_pipe<int, void>(to_pipe_type(pipes[9]), int2void)
   );
 
   taskflow.composed_of(pl);
@@ -336,7 +336,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_11_pipes_int(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
+    tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
       if(pf.token() == size) {
         pf.stop();
         return 0;
@@ -345,16 +345,16 @@ std::chrono::microseconds parallel_pipeline_taskflow_11_pipes_int(
         return pf.token();
       }
     }),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[1]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[2]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[3]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[4]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[5]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[6]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[7]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[8]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[9]), int2int),
-    tf::make_datapipe<int, void>(to_pipe_type(pipes[10]), int2void)
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[1]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[2]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[3]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[4]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[5]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[6]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[7]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[8]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[9]), int2int),
+    tf::make_data_pipe<int, void>(to_pipe_type(pipes[10]), int2void)
   );
 
   taskflow.composed_of(pl);
@@ -372,7 +372,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_12_pipes_int(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
+    tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
       if(pf.token() == size) {
         pf.stop();
         return 0;
@@ -381,17 +381,17 @@ std::chrono::microseconds parallel_pipeline_taskflow_12_pipes_int(
         return pf.token();
       }
     }),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[1]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[2]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[3]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[4]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[5]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[6]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[7]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[8]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[9]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[10]), int2int),
-    tf::make_datapipe<int, void>(to_pipe_type(pipes[11]), int2void)
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[1]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[2]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[3]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[4]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[5]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[6]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[7]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[8]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[9]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[10]), int2int),
+    tf::make_data_pipe<int, void>(to_pipe_type(pipes[11]), int2void)
   );
 
   taskflow.composed_of(pl);
@@ -409,7 +409,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_13_pipes_int(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
+    tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
       if(pf.token() == size) {
         pf.stop();
         return 0;
@@ -418,18 +418,18 @@ std::chrono::microseconds parallel_pipeline_taskflow_13_pipes_int(
         return pf.token();
       }
     }),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[1]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[2]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[3]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[4]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[5]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[6]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[7]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[8]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[9]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[10]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[11]), int2int),
-    tf::make_datapipe<int, void>(to_pipe_type(pipes[12]), int2void)
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[1]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[2]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[3]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[4]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[5]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[6]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[7]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[8]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[9]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[10]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[11]), int2int),
+    tf::make_data_pipe<int, void>(to_pipe_type(pipes[12]), int2void)
   );
 
   taskflow.composed_of(pl);
@@ -447,7 +447,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_14_pipes_int(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
+    tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
       if(pf.token() == size) {
         pf.stop();
         return 0;
@@ -456,19 +456,19 @@ std::chrono::microseconds parallel_pipeline_taskflow_14_pipes_int(
         return pf.token();
       }
     }),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[1]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[2]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[3]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[4]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[5]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[6]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[7]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[8]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[9]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[10]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[11]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[12]), int2int),
-    tf::make_datapipe<int, void>(to_pipe_type(pipes[13]), int2void)
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[1]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[2]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[3]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[4]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[5]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[6]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[7]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[8]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[9]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[10]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[11]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[12]), int2int),
+    tf::make_data_pipe<int, void>(to_pipe_type(pipes[13]), int2void)
   );
 
   taskflow.composed_of(pl);
@@ -486,7 +486,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_15_pipes_int(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
+    tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
       if(pf.token() == size) {
         pf.stop();
         return 0;
@@ -495,20 +495,20 @@ std::chrono::microseconds parallel_pipeline_taskflow_15_pipes_int(
         return pf.token();
       }
     }),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[1]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[2]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[3]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[4]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[5]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[6]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[7]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[8]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[9]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[10]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[11]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[12]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[13]), int2int),
-    tf::make_datapipe<int, void>(to_pipe_type(pipes[14]), int2void)
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[1]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[2]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[3]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[4]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[5]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[6]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[7]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[8]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[9]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[10]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[11]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[12]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[13]), int2int),
+    tf::make_data_pipe<int, void>(to_pipe_type(pipes[14]), int2void)
   );
 
   taskflow.composed_of(pl);
@@ -526,7 +526,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_16_pipes_int(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
+    tf::make_data_pipe<tf::Pipeflow&, int>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> int{
       if(pf.token() == size) {
         pf.stop();
         return 0;
@@ -535,21 +535,21 @@ std::chrono::microseconds parallel_pipeline_taskflow_16_pipes_int(
         return pf.token();
       }
     }),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[1]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[2]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[3]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[4]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[5]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[6]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[7]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[8]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[9]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[10]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[11]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[12]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[13]), int2int),
-    tf::make_datapipe<int, int>(to_pipe_type(pipes[14]), int2int),
-    tf::make_datapipe<int, void>(to_pipe_type(pipes[15]), int2void)
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[1]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[2]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[3]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[4]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[5]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[6]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[7]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[8]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[9]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[10]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[11]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[12]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[13]), int2int),
+    tf::make_data_pipe<int, int>(to_pipe_type(pipes[14]), int2int),
+    tf::make_data_pipe<int, void>(to_pipe_type(pipes[15]), int2void)
   );
 
   taskflow.composed_of(pl);
@@ -568,7 +568,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_1_pipe_string(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<void, void>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> void{
+    tf::make_data_pipe<void, void>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> void{
       if(pf.token() == size) {
         pf.stop();
       }
@@ -591,7 +591,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_2_pipes_string(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+    tf::make_data_pipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
       if(pf.token() == size) {
         pf.stop();
         return "";
@@ -600,7 +600,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_2_pipes_string(
         return std::to_string(pf.token());
       }
     }),
-    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[1]), string2void)
+    tf::make_data_pipe<std::string, void>(to_pipe_type(pipes[1]), string2void)
   );
 
   taskflow.composed_of(pl);
@@ -618,7 +618,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_3_pipes_string(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+    tf::make_data_pipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
       if(pf.token() == size) {
         pf.stop();
         return "";
@@ -627,8 +627,8 @@ std::chrono::microseconds parallel_pipeline_taskflow_3_pipes_string(
         return std::to_string(pf.token());
       }
     }),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
-    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[2]), string2void)
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_data_pipe<std::string, void>(to_pipe_type(pipes[2]), string2void)
   );
 
   taskflow.composed_of(pl);
@@ -646,7 +646,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_4_pipes_string(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+    tf::make_data_pipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
       if(pf.token() == size) {
         pf.stop();
         return "";
@@ -655,9 +655,9 @@ std::chrono::microseconds parallel_pipeline_taskflow_4_pipes_string(
         return std::to_string(pf.token());
       }
     }),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
-    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[3]), string2void)
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_data_pipe<std::string, void>(to_pipe_type(pipes[3]), string2void)
   );
 
   taskflow.composed_of(pl);
@@ -675,7 +675,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_5_pipes_string(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+    tf::make_data_pipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
       if(pf.token() == size) {
         pf.stop();
         return "";
@@ -684,10 +684,10 @@ std::chrono::microseconds parallel_pipeline_taskflow_5_pipes_string(
         return std::to_string(pf.token());
       }
     }),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
-    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[4]), string2void)
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_data_pipe<std::string, void>(to_pipe_type(pipes[4]), string2void)
   );
 
   taskflow.composed_of(pl);
@@ -705,7 +705,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_6_pipes_string(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+    tf::make_data_pipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
       if(pf.token() == size) {
         pf.stop();
         return "";
@@ -714,11 +714,11 @@ std::chrono::microseconds parallel_pipeline_taskflow_6_pipes_string(
         return std::to_string(pf.token());
       }
     }),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
-    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[5]), string2void)
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_data_pipe<std::string, void>(to_pipe_type(pipes[5]), string2void)
   );
 
   taskflow.composed_of(pl);
@@ -736,7 +736,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_7_pipes_string(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+    tf::make_data_pipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
       if(pf.token() == size) {
         pf.stop();
         return "";
@@ -745,12 +745,12 @@ std::chrono::microseconds parallel_pipeline_taskflow_7_pipes_string(
         return std::to_string(pf.token());
       }
     }),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
-    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[6]), string2void)
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_data_pipe<std::string, void>(to_pipe_type(pipes[6]), string2void)
   );
 
   taskflow.composed_of(pl);
@@ -768,7 +768,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_8_pipes_string(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+    tf::make_data_pipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
       if(pf.token() == size) {
         pf.stop();
         return "";
@@ -777,13 +777,13 @@ std::chrono::microseconds parallel_pipeline_taskflow_8_pipes_string(
         return std::to_string(pf.token());
       }
     }),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
-    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[7]), string2void)
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
+    tf::make_data_pipe<std::string, void>(to_pipe_type(pipes[7]), string2void)
   );
 
   taskflow.composed_of(pl);
@@ -801,7 +801,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_9_pipes_string(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+    tf::make_data_pipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
       if(pf.token() == size) {
         pf.stop();
         return "";
@@ -810,14 +810,14 @@ std::chrono::microseconds parallel_pipeline_taskflow_9_pipes_string(
         return std::to_string(pf.token());
       }
     }),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
-    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[8]), string2void)
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
+    tf::make_data_pipe<std::string, void>(to_pipe_type(pipes[8]), string2void)
   );
 
   taskflow.composed_of(pl);
@@ -835,7 +835,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_10_pipes_string(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+    tf::make_data_pipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
       if(pf.token() == size) {
         pf.stop();
         return "";
@@ -844,15 +844,15 @@ std::chrono::microseconds parallel_pipeline_taskflow_10_pipes_string(
         return std::to_string(pf.token());
       }
     }),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
-    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[9]), string2void)
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
+    tf::make_data_pipe<std::string, void>(to_pipe_type(pipes[9]), string2void)
   );
 
   taskflow.composed_of(pl);
@@ -871,7 +871,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_11_pipes_string(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+    tf::make_data_pipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
       if(pf.token() == size) {
         pf.stop();
         return "";
@@ -880,16 +880,16 @@ std::chrono::microseconds parallel_pipeline_taskflow_11_pipes_string(
         return std::to_string(pf.token());
       }
     }),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[9]), string2string),
-    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[10]), string2void)
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[9]), string2string),
+    tf::make_data_pipe<std::string, void>(to_pipe_type(pipes[10]), string2void)
   );
 
   taskflow.composed_of(pl);
@@ -907,7 +907,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_12_pipes_string(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+    tf::make_data_pipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
       if(pf.token() == size) {
         pf.stop();
         return "";
@@ -916,17 +916,17 @@ std::chrono::microseconds parallel_pipeline_taskflow_12_pipes_string(
         return std::to_string(pf.token());
       }
     }),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[9]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[10]), string2string),
-    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[11]), string2void)
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[9]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[10]), string2string),
+    tf::make_data_pipe<std::string, void>(to_pipe_type(pipes[11]), string2void)
   );
 
   taskflow.composed_of(pl);
@@ -944,7 +944,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_13_pipes_string(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+    tf::make_data_pipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
       if(pf.token() == size) {
         pf.stop();
         return "";
@@ -953,18 +953,18 @@ std::chrono::microseconds parallel_pipeline_taskflow_13_pipes_string(
         return std::to_string(pf.token());
       }
     }),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[9]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[10]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[11]), string2string),
-    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[12]), string2void)
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[9]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[10]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[11]), string2string),
+    tf::make_data_pipe<std::string, void>(to_pipe_type(pipes[12]), string2void)
   );
 
   taskflow.composed_of(pl);
@@ -982,7 +982,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_14_pipes_string(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+    tf::make_data_pipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
       if(pf.token() == size) {
         pf.stop();
         return "";
@@ -991,19 +991,19 @@ std::chrono::microseconds parallel_pipeline_taskflow_14_pipes_string(
         return std::to_string(pf.token());
       }
     }),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[9]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[10]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[11]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[12]), string2string),
-    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[13]), string2void)
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[9]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[10]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[11]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[12]), string2string),
+    tf::make_data_pipe<std::string, void>(to_pipe_type(pipes[13]), string2void)
   );
 
   taskflow.composed_of(pl);
@@ -1021,7 +1021,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_15_pipes_string(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+    tf::make_data_pipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
       if(pf.token() == size) {
         pf.stop();
         return "";
@@ -1030,20 +1030,20 @@ std::chrono::microseconds parallel_pipeline_taskflow_15_pipes_string(
         return std::to_string(pf.token());
       }
     }),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[9]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[10]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[11]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[12]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[13]), string2string),
-    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[14]), string2void)
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[9]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[10]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[11]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[12]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[13]), string2string),
+    tf::make_data_pipe<std::string, void>(to_pipe_type(pipes[14]), string2void)
   );
 
   taskflow.composed_of(pl);
@@ -1061,7 +1061,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_16_pipes_string(
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
-    tf::make_datapipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
+    tf::make_data_pipe<void, std::string>(tf::PipeType::SERIAL, [size](tf::Pipeflow& pf) -> std::string{
       if(pf.token() == size) {
         pf.stop();
         return "";
@@ -1070,21 +1070,21 @@ std::chrono::microseconds parallel_pipeline_taskflow_16_pipes_string(
         return std::to_string(pf.token());
       }
     }),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[9]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[10]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[11]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[12]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[13]), string2string),
-    tf::make_datapipe<std::string, std::string>(to_pipe_type(pipes[14]), string2string),
-    tf::make_datapipe<std::string, void>(to_pipe_type(pipes[15]), string2void)
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[1]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[2]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[3]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[4]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[5]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[6]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[7]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[8]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[9]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[10]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[11]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[12]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[13]), string2string),
+    tf::make_data_pipe<std::string, std::string>(to_pipe_type(pipes[14]), string2string),
+    tf::make_data_pipe<std::string, void>(to_pipe_type(pipes[15]), string2void)
   );
 
   taskflow.composed_of(pl);
