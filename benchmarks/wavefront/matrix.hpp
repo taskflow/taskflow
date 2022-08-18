@@ -41,7 +41,6 @@ inline void destroy_matrix() {
 
 //computation given block row index i, block col index j
 inline int block_computation(int i, int j){
-  // When testing taskflow
   return i + j;
 
   //int start_i = i*B;
@@ -83,8 +82,4 @@ inline void framework_computation(int i, int j){
 std::chrono::microseconds measure_time_taskflow(unsigned);
 std::chrono::microseconds measure_time_omp(unsigned);
 std::chrono::microseconds measure_time_tbb(unsigned);
-
-std::chrono::microseconds measure_time_taskflow(unsigned, unsigned);
-std::chrono::microseconds measure_time_omp(unsigned, unsigned);
-std::chrono::microseconds measure_time_tbb(unsigned, unsigned);
 

@@ -131,7 +131,7 @@
 
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>Taskflow is <em>header-only</em> and there is no wrangle with installation. To compile the program, clone the Taskflow project and tell the compiler to include the headers under <code>taskflow/</code>.</p><pre class="m-console"><span class="go">~$ git clone https://github.com/taskflow/taskflow.git  # clone it only once</span>
-<span class="go">~$ g++ -std=c++17 simple.cpp -I taskflow/taskflow -O2 -pthread -o simple</span>
+<span class="go">~$ g++ -std=c++17 simple.cpp -I taskflow/ -O2 -pthread -o simple</span>
 <span class="go">~$ ./simple</span>
 <span class="go">TaskA</span>
 <span class="go">TaskC </span>

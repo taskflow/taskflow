@@ -296,23 +296,6 @@ target_link_libraries(
 )
 set_target_properties(data_pipeline PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
-## benchmark 15: data_pipeline_dev (temporary)
-add_executable(
-  data_pipeline_dev
-  ${TF_BENCHMARK_DIR}/data_pipeline_dev/main.cpp
-  ${TF_BENCHMARK_DIR}/data_pipeline_dev/normal.cpp
-  ${TF_BENCHMARK_DIR}/data_pipeline_dev/efficient.cpp
-)
-target_include_directories(data_pipeline_dev PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
-target_link_libraries(
-  data_pipeline_dev
-  ${PROJECT_NAME} 
-  ${TBB_IMPORTED_TARGETS} 
-  ${OpenMP_CXX_LIBRARIES} 
-  tf::default_settings
-)
-set_target_properties(data_pipeline_dev PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
-
 ###############################################################################
 # CUDA benchmarks
 ###############################################################################

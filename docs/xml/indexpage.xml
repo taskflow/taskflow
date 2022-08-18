@@ -32,7 +32,7 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para><para>Taskflow is <emphasis>header-only</emphasis> and there is no wrangle with installation. To compile the program, clone the Taskflow project and tell the compiler to include the headers under <computeroutput>taskflow/</computeroutput>.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>git<sp/>clone<sp/>https://github.com/taskflow/taskflow.git<sp/><sp/>#<sp/>clone<sp/>it<sp/>only<sp/>once</highlight></codeline>
-<codeline><highlight class="normal">~$<sp/>g++<sp/>-std=c++17<sp/>simple.cpp<sp/>-I<sp/>taskflow/taskflow<sp/>-O2<sp/>-pthread<sp/>-o<sp/>simple</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>g++<sp/>-std=c++17<sp/>simple.cpp<sp/>-I<sp/>taskflow/<sp/>-O2<sp/>-pthread<sp/>-o<sp/>simple</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./simple</highlight></codeline>
 <codeline><highlight class="normal">TaskA</highlight></codeline>
 <codeline><highlight class="normal">TaskC<sp/></highlight></codeline>
