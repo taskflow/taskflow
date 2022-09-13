@@ -1957,7 +1957,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
       // TODO: in the future, we may need to synchronize on wait
       // (which means the following code should the moved before set_value)
       if(s) {
-        std::scoped_lock<std::mutex> lock(_taskflow_mutex);
+        std::scoped_lock<std::mutex> lock2(_taskflow_mutex);
         _taskflows.erase(*s);
       }
     }
