@@ -702,6 +702,26 @@ class Executor {
     */
     size_t max_steals() const noexcept;
 
+    /**
+    @brief sets handler for exceptions that are propagated from
+    user-provided task callables and for which the library does not
+    specify any other way of handling them.
+
+    There is no synchronization when invoking the handler.
+    If exception propagates out of handler it is ignored.
+
+    This exception handler is considered a fallback to handle exceptions.
+    There is no guarantee that exceptions originating from a particular
+    task will be delivered to the handler passed to this function in
+    future versions of the library. The future versions of the library
+    may introduce different, more specific ways to handle exceptions.
+
+    @param handler that accepts a caught exception pointer.
+
+    This member function is not thread-safe.
+    */
+    void set_uncaught_exception_handler(std::function<void(std::exception_ptr)> handler);
+
   private:
     
     const size_t _MAX_STEALS;
@@ -727,6 +747,7 @@ class Executor {
 
     std::shared_ptr<WorkerInterface> _worker_interface;
     std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
+    std::function<void(std::exception_ptr)> _uncaught_exception_handler;
 
     Worker* _this_worker();
 
@@ -793,6 +814,8 @@ inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix) :
   if(has_env(TF_ENABLE_PROFILER)) {
     TFProfManager::get()._manage(make_observer<TFProfObserver>());
   }
+
+  set_uncaught_exception_handler({});
 }
 
 // Destructor
@@ -819,6 +842,24 @@ inline size_t Executor::num_workers() const noexcept {
 // Function: max_steals
 inline size_t Executor::max_steals() const noexcept {
   return _MAX_STEALS;
+}
+
+inline void Executor::set_uncaught_exception_handler(
+        std::function<void(std::exception_ptr)> handler) {
+  if (handler) {
+    _uncaught_exception_handler = handler;
+  } else {
+    // Setup default uncaught exception handler to print a message to stderr
+    _uncaught_exception_handler = [](std::exception_ptr eptr) {
+      try {
+        std::rethrow_exception(eptr);
+      } catch (const std::exception& e) {
+        std::fprintf(stderr, "[taskflow] Got uncaught exception: %s\n", e.what());
+      } catch (...) {
+        std::fprintf(stderr, "[taskflow] Got unknown uncaught exception\n");
+      }
+    };
+  }
 }
 
 // Function: num_topologies
@@ -1540,7 +1581,12 @@ inline void Executor::_cancel_invoke(Worker& worker, Node* node) {
   switch(node->_handle.index()) {
     // async task needs to carry out the promise
     case Node::ASYNC:
-      std::get_if<Node::Async>(&(node->_handle))->work(true);
+      try {
+        std::get_if<Node::Async>(&(node->_handle))->work(true);
+      } catch (...) {
+        _uncaught_exception_handler(std::current_exception());
+      }
+
       _tear_down_async(node);
     break;
 
@@ -1574,7 +1620,11 @@ inline void Executor::_observer_epilogue(Worker& worker, Node* node) {
 // Procedure: _invoke_static_task
 inline void Executor::_invoke_static_task(Worker& worker, Node* node) {
   _observer_prologue(worker, node);
-  std::get_if<Node::Static>(&node->_handle)->work();
+  try {
+    std::get_if<Node::Static>(&node->_handle)->work();
+  } catch (...) {
+    _uncaught_exception_handler(std::current_exception());
+  }
   _observer_epilogue(worker, node);
 }
 
@@ -1589,7 +1639,11 @@ inline void Executor::_invoke_dynamic_task(Worker& w, Node* node) {
 
   Subflow sf(*this, w, node, handle->subgraph);
 
-  handle->work(sf);
+  try {
+    handle->work(sf);
+  } catch (...) {
+    _uncaught_exception_handler(std::current_exception());
+  }
 
   if(sf._joinable) {
     _consume_graph(w, node, handle->subgraph);
@@ -1660,7 +1714,12 @@ inline void Executor::_invoke_condition_task(
   Worker& worker, Node* node, SmallVector<int>& conds
 ) {
   _observer_prologue(worker, node);
-  conds = { std::get_if<Node::Condition>(&node->_handle)->work() };
+  try {
+    conds = { std::get_if<Node::Condition>(&node->_handle)->work() };
+  } catch (...) {
+    _uncaught_exception_handler(std::current_exception());
+    // Storing nothing into conds will skip any successor tasks
+  }
   _observer_epilogue(worker, node);
 }
 
@@ -1669,21 +1728,34 @@ inline void Executor::_invoke_multi_condition_task(
   Worker& worker, Node* node, SmallVector<int>& conds
 ) {
   _observer_prologue(worker, node);
-  conds = std::get_if<Node::MultiCondition>(&node->_handle)->work();
+  try {
+    conds = std::get_if<Node::MultiCondition>(&node->_handle)->work();
+  } catch (...) {
+    _uncaught_exception_handler(std::current_exception());
+    // Storing nothing into conds will skip any successor tasks
+  }
   _observer_epilogue(worker, node);
 }
 
 // Procedure: _invoke_cudaflow_task
 inline void Executor::_invoke_cudaflow_task(Worker& worker, Node* node) {
   _observer_prologue(worker, node);
-  std::get_if<Node::cudaFlow>(&node->_handle)->work(*this, node);
+  try {
+    std::get_if<Node::cudaFlow>(&node->_handle)->work(*this, node);
+  } catch (...) {
+    _uncaught_exception_handler(std::current_exception());
+  }
   _observer_epilogue(worker, node);
 }
 
 // Procedure: _invoke_syclflow_task
 inline void Executor::_invoke_syclflow_task(Worker& worker, Node* node) {
   _observer_prologue(worker, node);
-  std::get_if<Node::syclFlow>(&node->_handle)->work(*this, node);
+  try {
+    std::get_if<Node::syclFlow>(&node->_handle)->work(*this, node);
+  } catch (...) {
+    _uncaught_exception_handler(std::current_exception());
+  }
   _observer_epilogue(worker, node);
 }
 
@@ -1699,14 +1771,22 @@ inline void Executor::_invoke_module_task(Worker& w, Node* node) {
 // Procedure: _invoke_async_task
 inline void Executor::_invoke_async_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
-  std::get_if<Node::Async>(&node->_handle)->work(false);
+  try {
+    std::get_if<Node::Async>(&node->_handle)->work(false);
+  } catch (...) {
+    _uncaught_exception_handler(std::current_exception());
+  }
   _observer_epilogue(w, node);
 }
 
 // Procedure: _invoke_silent_async_task
 inline void Executor::_invoke_silent_async_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
-  std::get_if<Node::SilentAsync>(&node->_handle)->work();
+  try {
+    std::get_if<Node::SilentAsync>(&node->_handle)->work();
+  } catch (...) {
+    _uncaught_exception_handler(std::current_exception());
+  }
   _observer_epilogue(w, node);
 }
 
@@ -1714,7 +1794,11 @@ inline void Executor::_invoke_silent_async_task(Worker& w, Node* node) {
 inline void Executor::_invoke_runtime_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
   Runtime rt(*this, w, node);
-  std::get_if<Node::Runtime>(&node->_handle)->work(rt);
+  try {
+    std::get_if<Node::Runtime>(&node->_handle)->work(rt);
+  } catch (...) {
+    _uncaught_exception_handler(std::current_exception());
+  }
   _observer_epilogue(w, node);
 }
 

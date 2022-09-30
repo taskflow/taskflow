@@ -790,3 +790,47 @@ TEST_CASE("ScalablePipeline(SPSPSPSP).Runtime.Subflow.8threads" * doctest::timeo
   scalable_pipeline_spspspsp_runtime_subflow(8);
 }
 
+// --------------------------------------------------------
+// Testcase: Runtime.Exceptions
+// --------------------------------------------------------
+
+TEST_CASE("Runtime.Exceptions" * doctest::timeout(300)) {
+  // This test checks whether procuding an uncaught exception from a subflow task
+  // does not cause the library to misbehave.
+  std::atomic<uint64_t> uncaught_exceptions{0};
+  tf::Executor executor(4);
+  executor.set_uncaught_exception_handler([&](const auto& e) { uncaught_exceptions++; });
+
+  tf::Taskflow tf;
+  std::vector<tf::Task> exception_tasks;
+
+  for(unsigned i = 0; i < 10; ++i) {
+    tf.emplace([&](tf::Runtime& rt){
+      rt.run_and_wait([&](tf::Subflow& sf){
+        sf.emplace([&](){ throw std::runtime_error("error"); });
+        sf.emplace([&](){ throw std::runtime_error("error"); });
+        sf.emplace([&](){ throw std::runtime_error("error"); });
+        sf.emplace([&](){ throw std::runtime_error("error"); });
+        sf.emplace([&](){ throw std::runtime_error("error"); });
+      });
+    });
+  }
+
+  std::atomic<uint64_t> normal_task_executions{0};
+
+  for(unsigned i = 0; i < 10; ++i) {
+    tf.emplace([&](tf::Runtime& rt){
+      rt.run_and_wait([&](tf::Subflow& sf){
+        sf.emplace([&](){ normal_task_executions++; });
+        sf.emplace([&](){ normal_task_executions++; });
+        sf.emplace([&](){ normal_task_executions++; });
+        sf.emplace([&](){ normal_task_executions++; });
+        sf.emplace([&](){ normal_task_executions++; });
+      });
+    });
+  }
+
+  executor.run(tf).get();
+  REQUIRE(uncaught_exceptions == 50);
+  REQUIRE(normal_task_executions == 50);
+}

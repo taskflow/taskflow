@@ -1391,4 +1391,47 @@ TEST_CASE("Observer.4threads" * doctest::timeout(300)) {
   observer(4);
 }
 
+// --------------------------------------------------------
+// Testcase: Basic.Exception
+// --------------------------------------------------------
 
+TEST_CASE("Basic.Exception" * doctest::timeout(300)) {
+  // This test checks whether procuding an uncaught exception from a task
+  // does not cause the library to misbehave.
+  std::atomic<uint64_t> uncaught_exceptions{0};
+  tf::Executor executor(4);
+  executor.set_uncaught_exception_handler([&](const auto&) { uncaught_exceptions++; });
+
+  tf::Taskflow tf;
+  std::vector<tf::Task> exception_tasks;
+
+  for (unsigned i = 0; i < 20; ++i) {
+    exception_tasks.emplace_back(tf.emplace([&]() {
+      throw std::runtime_error("error");
+    }));
+  }
+
+
+  tf::Task common_task = tf.emplace([&]() {});
+  for (auto& task : exception_tasks) {
+    task.precede(common_task);
+  }
+
+
+  std::vector<tf::Task> normal_tasks;
+  std::atomic<uint64_t> normal_task_executions{0};
+
+  for (unsigned i = 0; i < 20; ++i) {
+    normal_tasks.emplace_back(tf.emplace([&]() {
+      normal_task_executions++;
+    }));
+  }
+
+  for (auto& task : normal_tasks) {
+    task.succeed(common_task);
+  }
+
+  executor.run(tf).get();
+  REQUIRE(uncaught_exceptions == 20);
+  REQUIRE(normal_task_executions == 20);
+}
