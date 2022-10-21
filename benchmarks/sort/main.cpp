@@ -20,7 +20,7 @@ void reduce_sum(
     for(unsigned j=0; j<num_rounds; ++j) {
 
       for(auto& d : vec) {
-        d = ::rand();
+        d = std::to_string(::rand());
       }
 
       if(model == "tf") {

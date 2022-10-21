@@ -3,7 +3,8 @@
 
 // OMP parallel sort
 // https://cw.fel.cvut.cz/old/_media/courses/b4m35pag/lab6_slides_advanced_openmp.pdf
-void mergeSortRecursive(std::vector<double>& v, size_t left, size_t right) {
+template <typename V>
+void mergeSortRecursive(V& v, size_t left, size_t right) {
   if (left < right) {
     if (right-left >= 32) {
       size_t mid = (left+right)/2;

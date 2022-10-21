@@ -11,7 +11,7 @@
 #include <cmath>
 #include <atomic>
 
-inline std::vector<double> vec;
+inline std::vector<std::string> vec;
 
 std::chrono::microseconds measure_time_taskflow(size_t);
 std::chrono::microseconds measure_time_tbb(size_t);

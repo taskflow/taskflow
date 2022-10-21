@@ -14,7 +14,7 @@ constexpr size_t parallel_sort_cutoff() {
   constexpr size_t object_size = sizeof(value_type);
 
   if constexpr(std::is_same_v<value_type, std::string>) {
-    return 128;
+    return 65536 / sizeof(std::string);
   }
   else {
     if constexpr(object_size < 16) return 4096;
@@ -286,16 +286,16 @@ void parallel_pdqsort(
     }
 
     // Partition and get results.
-    auto pair = partition_right(begin, end, comp);
-    auto pivot_pos = pair.first;
-    auto already_partitioned = pair.second;
+    const auto pair = partition_right(begin, end, comp);
+    const auto pivot_pos = pair.first;
+    const auto already_partitioned = pair.second;
 
     // Check for a highly unbalanced partition.
     //diff_t l_size = pivot_pos - begin;
     //diff_t r_size = end - (pivot_pos + 1);
-    size_t l_size = pivot_pos - begin;
-    size_t r_size = end - (pivot_pos + 1);
-    bool highly_unbalanced = l_size < size / 8 || r_size < size / 8;
+    const size_t l_size = pivot_pos - begin;
+    const size_t r_size = end - (pivot_pos + 1);
+    const bool highly_unbalanced = l_size < size / 8 || r_size < size / 8;
 
     // If we got a highly unbalanced partition we shuffle elements
     // to break many patterns.
