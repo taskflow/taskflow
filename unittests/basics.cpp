@@ -1340,6 +1340,90 @@ TEST_CASE("ReduceMax" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
+// Testcase: WakeUpSequentialToParallel
+// --------------------------------------------------------
+
+void wake_up_sequential_to_parallel(unsigned w) {
+  // This test checks whether additional worker threads are woken up when a
+  // completion of a task results in a more than one task being available.
+  tf::Executor executor(w);
+
+  std::atomic<std::uint32_t> init_barrier = 0;
+
+  tf::Taskflow tf;
+  std::vector<tf::Task> init_tasks;
+
+  // Startup worker threads and wait until they no longer process tasks - either
+  // parked or stealing tasks.
+  for(unsigned i = 0; i < w; ++i) {
+    init_tasks.emplace_back(tf.emplace([&]() {
+      init_barrier++;
+      while (init_barrier != w) {
+        std::this_thread::yield();
+      }
+    }));
+  }
+
+  tf::Task single_active_task = tf.emplace([&]() {
+    while (executor.num_waiting() != w - 1) {
+      std::this_thread::yield();
+    }
+  });
+
+  for (auto& task : init_tasks) {
+    task.precede(single_active_task);
+  }
+
+  // Now start as many tasks as there are worker threads and verify that
+  // all worker threads were woken up via a barrier.
+  std::atomic<std::uint32_t> wakeup_barrier = 0;
+  std::vector<tf::Task> wakeup_tasks;
+
+  for(unsigned i = 0; i < w; ++i) {
+    wakeup_tasks.emplace_back(tf.emplace([&]() {
+      wakeup_barrier++;
+      while (wakeup_barrier != w) {
+        std::this_thread::yield();
+      }
+    }));
+  }
+
+  for (auto& task : wakeup_tasks) {
+    single_active_task.precede(task);
+  }
+
+  executor.run(tf).get();
+}
+
+TEST_CASE("WakeUpSequentialToParallel.2thread" * doctest::timeout(300)) {
+  wake_up_sequential_to_parallel(2);
+}
+
+TEST_CASE("WakeUpSequentialToParallel.3threads" * doctest::timeout(300)) {
+  wake_up_sequential_to_parallel(3);
+}
+
+TEST_CASE("WakeUpSequentialToParallel.4threads" * doctest::timeout(300)) {
+  wake_up_sequential_to_parallel(4);
+}
+
+TEST_CASE("WakeUpSequentialToParallel.5threads" * doctest::timeout(300)) {
+  wake_up_sequential_to_parallel(5);
+}
+
+TEST_CASE("WakeUpSequentialToParallel.6threads" * doctest::timeout(300)) {
+  wake_up_sequential_to_parallel(6);
+}
+
+TEST_CASE("WakeUpSequentialToParallel.7threads" * doctest::timeout(300)) {
+  wake_up_sequential_to_parallel(7);
+}
+
+TEST_CASE("WakeUpSequentialToParallel.8threads" * doctest::timeout(300)) {
+  wake_up_sequential_to_parallel(8);
+}
+
+// --------------------------------------------------------
 // Testcase: Observer
 // --------------------------------------------------------
 
