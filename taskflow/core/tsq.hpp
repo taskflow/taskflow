@@ -232,7 +232,7 @@ class TaskQueue {
     Only the owner thread can pop out an item from the queue.
     The return can be a @c nullptr if this operation failed (empty queue).
     */
-    T pop(unsigned priority);
+    TF_FORCE_INLINE T pop(unsigned priority);
 
     /**
     @brief steals an item from the queue
@@ -345,7 +345,7 @@ T TaskQueue<T, MAX_PRIORITY>::pop() {
 
 // Function: pop
 template <typename T, unsigned MAX_PRIORITY>
-T TaskQueue<T, MAX_PRIORITY>::pop(unsigned p) {
+TF_FORCE_INLINE T TaskQueue<T, MAX_PRIORITY>::pop(unsigned p) {
 
   int64_t b = _bottom[p].data.load(std::memory_order_relaxed) - 1;
   Array* a = _array[p].load(std::memory_order_relaxed);
