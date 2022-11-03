@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../utility/macros.hpp"
 #include "../utility/traits.hpp"
 
 /**
@@ -213,7 +214,7 @@ class TaskQueue {
     The operation can trigger the queue to resize its capacity
     if more space is required.
     */
-    void push(T item, unsigned priority = 0);
+    TF_FORCE_INLINE void push(T item, unsigned priority = 0);
 
     /**
     @brief pops out an item from the queue
@@ -231,7 +232,7 @@ class TaskQueue {
     Only the owner thread can pop out an item from the queue.
     The return can be a @c nullptr if this operation failed (empty queue).
     */
-    T pop(unsigned priority);
+    TF_FORCE_INLINE T pop(unsigned priority);
 
     /**
     @brief steals an item from the queue
@@ -250,6 +251,9 @@ class TaskQueue {
     The return can be a @c nullptr if this operation failed (not necessary empty).
     */
     T steal(unsigned priority);
+
+  private:
+    TF_NO_INLINE Array* resize_array(Array* a, unsigned p, std::int64_t b, std::int64_t t);
 };
 
 // Constructor
@@ -312,7 +316,7 @@ size_t TaskQueue<T, MAX_PRIORITY>::size(unsigned p) const noexcept {
 
 // Function: push
 template <typename T, unsigned MAX_PRIORITY>
-void TaskQueue<T, MAX_PRIORITY>::push(T o, unsigned p) {
+TF_FORCE_INLINE void TaskQueue<T, MAX_PRIORITY>::push(T o, unsigned p) {
 
   int64_t b = _bottom[p].data.load(std::memory_order_relaxed);
   int64_t t = _top[p].data.load(std::memory_order_acquire);
@@ -320,12 +324,7 @@ void TaskQueue<T, MAX_PRIORITY>::push(T o, unsigned p) {
 
   // queue is full
   if(a->capacity() - 1 < (b - t)) {
-    Array* tmp = a->resize(b, t);
-    _garbage[p].push_back(a);
-    std::swap(a, tmp);
-    _array[p].store(a, std::memory_order_release);
-    // Note: the original paper using relaxed causes t-san to complain
-    //_array.store(a, std::memory_order_relaxed);
+    a = resize_array(a, p, b, t);
   }
 
   a->push(b, o);
@@ -346,7 +345,7 @@ T TaskQueue<T, MAX_PRIORITY>::pop() {
 
 // Function: pop
 template <typename T, unsigned MAX_PRIORITY>
-T TaskQueue<T, MAX_PRIORITY>::pop(unsigned p) {
+TF_FORCE_INLINE T TaskQueue<T, MAX_PRIORITY>::pop(unsigned p) {
 
   int64_t b = _bottom[p].data.load(std::memory_order_relaxed) - 1;
   Array* a = _array[p].load(std::memory_order_relaxed);
@@ -424,5 +423,19 @@ template <typename T, unsigned MAX_PRIORITY>
 int64_t TaskQueue<T, MAX_PRIORITY>::capacity(unsigned p) const noexcept {
   return _array[p].load(std::memory_order_relaxed)->capacity();
 }
+
+template <typename T, unsigned MAX_PRIORITY>
+TF_NO_INLINE typename TaskQueue<T, MAX_PRIORITY>::Array*
+  TaskQueue<T, MAX_PRIORITY>::resize_array(Array* a, unsigned p, std::int64_t b, std::int64_t t) {
+
+  Array* tmp = a->resize(b, t);
+  _garbage[p].push_back(a);
+  std::swap(a, tmp);
+  _array[p].store(a, std::memory_order_release);
+  // Note: the original paper using relaxed causes t-san to complain
+  //_array.store(a, std::memory_order_relaxed);
+  return a;
+}
+
 
 }  // end of namespace tf -----------------------------------------------------
