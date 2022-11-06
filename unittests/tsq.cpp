@@ -284,4 +284,51 @@ TEST_CASE("PriorityTSQ.Owner" * doctest::timeout(300)) {
   priority_tsq_owner();
 }
 
+// ----------------------------------------------------------------------------
+
+void ws_broom(size_t W) {
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+  
+  tf::Task task, prev;
+  for(size_t i=0; i<10; i++) {
+    task = taskflow.emplace([&](){
+      //std::cout << executor.this_worker() << std::endl;
+      printf("linear by worker %d\n", executor.this_worker_id());
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    });
+
+    if(i) {
+      prev.precede(task);
+    }
+
+    prev = task;
+  }
+
+  for(size_t i=0; i<10; i++) {
+    taskflow.emplace([&](){
+      //std::cout << executor.this_worker() << std::endl;
+      printf("parallel by worker %d\n", executor.this_worker_id());
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }).succeed(task);
+  }
+
+  executor.run(taskflow).wait();
+
+}
+ 
+//TEST_CASE("WS.broom.2threads") {
+//  ws_broom(10);
+//}
+
+
+
+
+
+
+
+
+
+
 
