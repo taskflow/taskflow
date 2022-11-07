@@ -216,6 +216,35 @@ class Notifier {
     return _waiters.size();
   }
 
+  // Returns the number of committed waiters.
+  size_t num_committed_waiters() const {
+    // This function walks whole stack of committed waiters. If the state is
+    // still the same after the walk, then it means there has been no
+    // modifications in the mean time and the result is correct. Any modification
+    // of the stack can at worst result in incorrect count, which will be
+    // discarded once state modification is observed. Stack modification can not
+    // prevent progress because w->next can either be null or a pointer to
+    // a different stack element.
+    uint64_t state = _state.load(std::memory_order_acquire);
+    for (;;) {
+      if ((state & kStackMask) == kStackMask) {
+        return 0;
+      }
+      const Waiter* w = &_waiters[state & kStackMask];
+      size_t count = 0;
+      while (w) {
+        w = w->next.load(std::memory_order_relaxed);
+        count++;
+      }
+      uint64_t new_state = _state.load(std::memory_order_acquire);
+      if (state == new_state) {
+        return count;
+      }
+      // There was a modification to the state, retry loop
+      state = new_state;
+    }
+  }
+
  private:
 
   // State_ layout:

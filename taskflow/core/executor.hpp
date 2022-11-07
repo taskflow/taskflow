@@ -549,6 +549,14 @@ class Executor {
     size_t num_thieves() const;
 
     /**
+    @brief queries the number of workers that are waiting
+
+    The function returns the current number of workers that are neither actively processing
+    tasks, nor stealing them, nor in transition state between the two.
+    */
+    size_t num_waiting() const;
+
+    /**
     @brief queries the id of the caller thread in this executor
 
     Each worker has an unique id in the range of @c 0 to @c N-1 associated with
@@ -835,6 +843,11 @@ inline size_t Executor::num_taskflows() const {
 inline size_t Executor::num_thieves() const {
   return _num_thieves;
 } 
+
+// Function: num_waiting
+inline size_t Executor::num_waiting() const {
+  return _notifier.num_committed_waiters();
+}
 
 // Function: _this_worker
 inline Worker* Executor::_this_worker() {
