@@ -36,10 +36,12 @@ cmake_policy(POP)
 #find_package(TBB REQUIRED tbb_preview)
 find_package(TBB REQUIRED)
 #cmake_policy(POP)
+message(STATUS "TBB_IMPORTED_TARGETS: ${TBB_IMPORTED_TARGETS}")
 
 # -----------------------------------------------------------------------------
 # Benchmarks
 # -----------------------------------------------------------------------------
+
 
 ## benchmark 1: wavefront computing
 add_executable(
