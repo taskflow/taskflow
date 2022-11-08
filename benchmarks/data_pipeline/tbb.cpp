@@ -8,6 +8,8 @@
 #include <vector>
 #include <cmath>
 
+namespace {
+
 size_t i = 0;
 
 // Filter for one filter only
@@ -471,6 +473,8 @@ void parallel_pipeline_tbb_16_pipes(std::string pipes, unsigned num_lines, size_
       pipes[15] == 's' ? tbb::filter::serial_in_order : tbb::filter::parallel, int2void)
   );
 }
+
+} // namespace
 
 std::chrono::microseconds measure_time_tbb(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {

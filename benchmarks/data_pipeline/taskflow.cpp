@@ -2,6 +2,8 @@
 #include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/data_pipeline.hpp>
 
+namespace {
+
 //my convert function
 auto int2string = [](int& input) -> std::string {
   work_int(input);
@@ -577,6 +579,8 @@ std::chrono::microseconds parallel_pipeline_taskflow_16_pipes(
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
+
+} // namespace
 
 std::chrono::microseconds measure_time_taskflow(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
