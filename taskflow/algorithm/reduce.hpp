@@ -172,7 +172,7 @@ Task FlowBuilder::transform_reduce(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= chunk_size) {
-      for(; beg!=end; r = bop(r, uop(*beg++)));
+      for(; beg!=end; r = bop(std::move(r), uop(*beg++)));
       return;
     }
 
@@ -195,7 +195,7 @@ Task FlowBuilder::transform_reduce(
 
       if(N - s0 == 1) {
         std::lock_guard<std::mutex> lock(mutex);
-        r = bop(r, uop(*beg));
+        r = bop(std::move(r), uop(*beg));
         return;
       }
 
@@ -223,7 +223,7 @@ Task FlowBuilder::transform_reduce(
             size_t e0 = (chunk_size <= (N - s0)) ? s0 + chunk_size : N;
             std::advance(beg, s0-z);
             for(size_t x=s0; x<e0; x++, beg++) {
-              sum = bop(sum, uop(*beg));
+              sum = bop(std::move(sum), uop(*beg));
             }
             z = e0;
           }
@@ -240,7 +240,7 @@ Task FlowBuilder::transform_reduce(
                                                   std::memory_order_relaxed)) {
             std::advance(beg, s0-z);
             for(size_t x = s0; x<e0; x++, beg++) {
-              sum = bop(sum, uop(*beg));
+              sum = bop(std::move(sum), uop(*beg));
             }
             z = e0;
             s0 = next.load(std::memory_order_relaxed);
@@ -249,7 +249,7 @@ Task FlowBuilder::transform_reduce(
       }
 
       std::lock_guard<std::mutex> lock(mutex);
-      r = bop(r, sum);
+      r = bop(std::move(r), std::move(sum));
     };
 
     for(size_t w=0; w<W; w++) {

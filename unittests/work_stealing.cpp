@@ -1,52 +1,3 @@
-// 2020/02/24 - modified by Tsung-Wei Huang
-//  - isolaged wsq to a standalone project
-//  - here we focus on tsq where T must be a pointer type
-//
-// 2019/05/15 - modified by Tsung-Wei Huang
-//  - temporarily disable executor test
-//
-// 2019/04/11 - modified by Tsung-Wei Huang
-//  - renamed threadpool to executor
-//
-// 2019/02/15 - modified by Tsung-Wei Huang
-//  - modified batch tests (reference instead of move)
-//
-// 2018/12/04 - modified by Tsung-Wei Huang
-//  - replaced privatized executor with work stealing executor
-//
-// 2018/12/03 - modified by Tsung-Wei Huang
-//  - added work stealing queue tests
-//
-// 2018/11/29 - modified by Chun-Xun Lin
-//  - added batch tests
-//
-// 2018/10/04 - modified by Tsung-Wei Huang
-//  - removed binary tree tests
-//  - removed spawn/shutdown tests
-//  - removed siltne_async and async tests
-//  - added emplace test
-//  - adopted the new thread pool implementation
-//
-// 2018/09/29 - modified by Tsung-Wei Huang
-//  - added binary tree tests
-//  - added worker queue tests
-//  - added external thread tests
-//  - refactored executor tests
-//
-// 2018/09/13 - modified by Tsung-Wei Huang & Chun-Xun
-//  - added tests for ownership
-//  - modified spawn-shutdown tests
-//
-// 2018/09/10 - modified by Tsung-Wei Huang
-//  - added tests for SpeculativeExecutor
-//  - added dynamic tasking tests
-//  - added spawn and shutdown tests
-//
-// 2018/09/02 - created by Guannan
-//  - test_silent_async
-//  - test_async
-//  - test_wait_for_all
-
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include <doctest.h>
@@ -157,63 +108,63 @@ void tsq_n_thieves(size_t M) {
 // ----------------------------------------------------------------------------
 // Testcase: TSQTest.Owner
 // ----------------------------------------------------------------------------
-TEST_CASE("TSQ.Owner" * doctest::timeout(300)) {
+TEST_CASE("WorkStealing.QueueOwner" * doctest::timeout(300)) {
   tsq_owner();
 }
 
 // ----------------------------------------------------------------------------
 // Testcase: TSQTest.1Thief
 // ----------------------------------------------------------------------------
-TEST_CASE("TSQ.1Thief" * doctest::timeout(300)) {
+TEST_CASE("WorkStealing.Queue1Thief" * doctest::timeout(300)) {
   tsq_n_thieves(1);
 }
 
 // ----------------------------------------------------------------------------
 // Testcase: TSQTest.2Thieves
 // ----------------------------------------------------------------------------
-TEST_CASE("TSQ.2Thieves" * doctest::timeout(300)) {
+TEST_CASE("WorkStealing.Queue2Thieves" * doctest::timeout(300)) {
   tsq_n_thieves(2);
 }
 
 // ----------------------------------------------------------------------------
 // Testcase: TSQTest.3Thieves
 // ----------------------------------------------------------------------------
-TEST_CASE("TSQ.3Thieves" * doctest::timeout(300)) {
+TEST_CASE("WorkStealing.Queue3Thieves" * doctest::timeout(300)) {
   tsq_n_thieves(3);
 }
 
 // ----------------------------------------------------------------------------
 // Testcase: TSQTest.4Thieves
 // ----------------------------------------------------------------------------
-TEST_CASE("TSQ.4Thieves" * doctest::timeout(300)) {
+TEST_CASE("WorkStealing.Queue4Thieves" * doctest::timeout(300)) {
   tsq_n_thieves(4);
 }
 
 // ----------------------------------------------------------------------------
 // Testcase: TSQTest.5Thieves
 // ----------------------------------------------------------------------------
-TEST_CASE("TSQ.5Thieves" * doctest::timeout(300)) {
+TEST_CASE("WorkStealing.Queue5Thieves" * doctest::timeout(300)) {
   tsq_n_thieves(5);
 }
 
 // ----------------------------------------------------------------------------
 // Testcase: TSQTest.6Thieves
 // ----------------------------------------------------------------------------
-TEST_CASE("TSQ.6Thieves" * doctest::timeout(300)) {
+TEST_CASE("WorkStealing.Queue6Thieves" * doctest::timeout(300)) {
   tsq_n_thieves(6);
 }
 
 // ----------------------------------------------------------------------------
 // Testcase: TSQTest.7Thieves
 // ----------------------------------------------------------------------------
-TEST_CASE("TSQ.7Thieves" * doctest::timeout(300)) {
+TEST_CASE("WorkStealing.Queue7Thieves" * doctest::timeout(300)) {
   tsq_n_thieves(7);
 }
 
 // ----------------------------------------------------------------------------
 // Testcase: TSQTest.8Thieves
 // ----------------------------------------------------------------------------
-TEST_CASE("TSQ.8Thieves" * doctest::timeout(300)) {
+TEST_CASE("WorkStealing.Queue8Thieves" * doctest::timeout(300)) {
   tsq_n_thieves(8);
 }
 
@@ -227,6 +178,27 @@ void priority_tsq_owner() {
   const unsigned P = 5;
 
   tf::TaskQueue<void*, P> queue;
+
+  for(unsigned p=0; p<P; p++) {
+    REQUIRE(queue.push(nullptr, p) == true);
+    REQUIRE(queue.push(nullptr, p) == false);
+    REQUIRE(queue.push(nullptr, p) == false);
+    REQUIRE(queue.push(nullptr, p) == false);
+
+    REQUIRE(queue.pop(p) == nullptr);
+    REQUIRE(queue.pop(p) == nullptr);
+    REQUIRE(queue.pop(p) == nullptr);
+    REQUIRE(queue.pop(p) == nullptr);
+    REQUIRE(queue.pop(p) == nullptr);
+    
+    REQUIRE(queue.push(nullptr, p) == true);
+    REQUIRE(queue.push(nullptr, p) == false);
+    
+    REQUIRE(queue.pop(p) == nullptr);
+    REQUIRE(queue.pop(p) == nullptr);
+
+    REQUIRE(queue.empty(p) == true);
+  }
 
   for(size_t N=1; N<=777777; N=N*2+1) {
 
@@ -280,8 +252,182 @@ void priority_tsq_owner() {
   }
 }
 
-TEST_CASE("PriorityTSQ.Owner" * doctest::timeout(300)) {
+TEST_CASE("WorkStealing.PriorityQueue.Owner" * doctest::timeout(300)) {
   priority_tsq_owner();
+}
+
+// ----------------------------------------------------------------------------
+// Starvation Test
+// ----------------------------------------------------------------------------
+
+void starvation_test(size_t W) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  tf::Task prev, curr;
+
+  for(size_t l=0; l<100; l++) {
+
+    curr = taskflow.emplace([&](){
+      // wait until all workers sleep
+      while(executor.num_thieves() != 0);
+    });
+
+    if(l) {
+      curr.succeed(prev);
+    }
+
+    prev = curr;
+  }
+
+  // branches
+  std::atomic<size_t> counter{0};
+  for(size_t b=W/2; b<W; b++) {
+    taskflow.emplace([&](){
+      counter++;
+    }).succeed(curr);
+  }
+
+  for(size_t b=0; b<W/2; b++) {
+    taskflow.emplace([&](){
+      while(counter != W - W/2);
+    }).succeed(curr);
+  }
+
+  executor.run(taskflow).wait();
+
+  while(executor.num_thieves() != 0);
+
+  REQUIRE(counter == W - W/2);
+
+  // large linear chaing and many branches
+  taskflow.clear();
+  counter = 0;
+  
+  for(size_t l=0; l<10000; l++) {
+    curr = taskflow.emplace([&](){
+      while(executor.num_thieves() != 0);
+    });
+    if(l) {
+      curr.succeed(prev);
+    }
+    prev = curr;
+  }
+
+  const int w = rand() % W;
+
+  for(size_t b=0; b<10000; b++) {
+    taskflow.emplace([&](){
+      // the first W-1 workers loop
+      if(executor.this_worker_id() != w) {
+        while(counter != 10000 - W + 1);
+      }
+      // one worker must be there to increment the counter
+      else {
+        counter++;
+      }
+    }).succeed(curr);
+  }
+
+  executor.run(taskflow).wait();
+
+  REQUIRE(counter == 10000 - W + 1);
+}
+
+TEST_CASE("WorkStealing.Starvation.1thread" * doctest::timeout(300)) {
+  starvation_test(1);
+}
+
+TEST_CASE("WorkStealing.Starvation.2threads" * doctest::timeout(300)) {
+  starvation_test(2);
+}
+
+TEST_CASE("WorkStealing.Starvation.3threads" * doctest::timeout(300)) {
+  starvation_test(3);
+}
+
+TEST_CASE("WorkStealing.Starvation.4threads" * doctest::timeout(300)) {
+  starvation_test(4);
+}
+
+TEST_CASE("WorkStealing.Starvation.5threads" * doctest::timeout(300)) {
+  starvation_test(5);
+}
+
+TEST_CASE("WorkStealing.Starvation.6threads" * doctest::timeout(300)) {
+  starvation_test(6);
+}
+
+TEST_CASE("WorkStealing.Starvation.7threads" * doctest::timeout(300)) {
+  starvation_test(7);
+}
+
+TEST_CASE("WorkStealing.Starvation.8threads" * doctest::timeout(300)) {
+  starvation_test(8);
+}
+
+// ----------------------------------------------------------------------------
+// Oversubscription Test
+// ----------------------------------------------------------------------------
+
+void oversubscription_test(size_t W) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  std::atomic<size_t> counter{0};
+
+  for(size_t n = 0; n<W/2; n++) { 
+  
+    tf::Task prev, curr;
+
+    for(size_t l=0; l<100; l++) {
+
+      curr = taskflow.emplace([&](){
+        counter++;
+        while(executor.num_thieves() != 0);
+      });
+
+      if(l) {
+        curr.succeed(prev);
+      }
+
+      prev = curr;
+    }
+  }
+
+  executor.run(taskflow).wait();
+
+  REQUIRE(counter == 100*(W/2));
+}
+
+TEST_CASE("WorkStealing.Oversubscription.4threads" * doctest::timeout(300)) {
+  oversubscription_test(4);
+}
+
+TEST_CASE("WorkStealing.Oversubscription.5threads" * doctest::timeout(300)) {
+  oversubscription_test(5);
+}
+
+TEST_CASE("WorkStealing.Oversubscription.6threads" * doctest::timeout(300)) {
+  oversubscription_test(6);
+}
+
+TEST_CASE("WorkStealing.Oversubscription.7threads" * doctest::timeout(300)) {
+  oversubscription_test(7);
+}
+
+TEST_CASE("WorkStealing.Oversubscription.8threads" * doctest::timeout(300)) {
+  oversubscription_test(8);
+}
+
+TEST_CASE("WorkStealing.Oversubscription.16threads" * doctest::timeout(300)) {
+  oversubscription_test(16);
+}
+
+TEST_CASE("WorkStealing.Oversubscription.32threads" * doctest::timeout(300)) {
+  oversubscription_test(32);
 }
 
 // ----------------------------------------------------------------------------

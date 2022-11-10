@@ -4,7 +4,7 @@ include(${TF_3RD_PARTY_DIR}/doctest/doctest.cmake)
 
 list(APPEND TF_UNITTESTS 
   utility 
-  tsq 
+  work_stealing 
   #serializer 
   priorities
   basics 
