@@ -315,7 +315,7 @@ void starvation_test(size_t W) {
     prev = curr;
   }
 
-  const int w = rand() % W;
+  const int w = rand()%W;
 
   for(size_t b=0; b<10000; b++) {
     taskflow.emplace([&](){
