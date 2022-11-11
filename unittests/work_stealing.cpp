@@ -421,13 +421,13 @@ TEST_CASE("WorkStealing.Oversubscription.8threads" * doctest::timeout(300)) {
   oversubscription_test(8);
 }
 
-TEST_CASE("WorkStealing.Oversubscription.16threads" * doctest::timeout(300)) {
-  oversubscription_test(16);
-}
-
-TEST_CASE("WorkStealing.Oversubscription.32threads" * doctest::timeout(300)) {
-  oversubscription_test(32);
-}
+//TEST_CASE("WorkStealing.Oversubscription.16threads" * doctest::timeout(300)) {
+//  oversubscription_test(16);
+//}
+//
+//TEST_CASE("WorkStealing.Oversubscription.32threads" * doctest::timeout(300)) {
+//  oversubscription_test(32);
+//}
 
 // ----------------------------------------------------------------------------
 

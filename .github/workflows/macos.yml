@@ -12,7 +12,7 @@ jobs:
     - name: build
       run: cmake --build build --parallel 10
     - name: test
-      run: cd build ; ctest -j 10 --output-on-failure
+      run: cd build ; ctest --output-on-failure
   
   release-test:
     runs-on: macos-latest
@@ -23,7 +23,7 @@ jobs:
     - name: build
       run: cmake --build build --parallel 10
     - name: test
-      run: cd build ; ctest -j 10 --output-on-failure
+      run: cd build ; ctest --output-on-failure
   
   undefined-test:
     runs-on: macos-latest
@@ -34,7 +34,7 @@ jobs:
     - name: build
       run: cmake --build build --parallel 10
     - name: test
-      run: cd build ; ctest -j 10 --output-on-failure
+      run: cd build ; ctest --output-on-failure
   
   tsan-test:
     runs-on: macos-latest
@@ -45,4 +45,4 @@ jobs:
     - name: build
       run: cmake --build build --parallel 10
     - name: test
-      run: cd build ; ctest -j 10 --output-on-failure
+      run: cd build ; ctest --output-on-failure

@@ -17,4 +17,4 @@ jobs:
     - name: build
       run: cmake --build build --parallel 10
     - name: test
-      run: cd build ; ctest -j 10 --exclude-regex "test-unicode" --output-on-failure
+      run: cd build ; ctest --exclude-regex "test-unicode" --output-on-failure
