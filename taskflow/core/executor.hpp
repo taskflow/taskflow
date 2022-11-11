@@ -1234,7 +1234,7 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
 
   // caller is a worker to this pool
   if(worker._executor == this) {
-    if(worker._wsq.push(node, p)) {
+    if(worker._wsq.push(node, p) && _num_thieves == 0) {
       _notifier.notify(false);
     }
     return;
@@ -1285,7 +1285,7 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
     for(size_t i=0; i<num_nodes; ++i) {
       auto p = nodes[i]->_priority;
       nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
-      if(worker._wsq.push(nodes[i], p)) {
+      if(worker._wsq.push(nodes[i], p) && _num_thieves == 0) {
         _notifier.notify(false);
       }
     }
