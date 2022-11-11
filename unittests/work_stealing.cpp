@@ -303,7 +303,7 @@ void starvation_test(size_t W) {
 
   /*
   TODO: bug? (some extreme situations may run forever ...)
-  // large linear chaing and many branches
+  // large linear chain followed by many branches
   size_t N = 100000;
   taskflow.clear();
   counter = 0;
