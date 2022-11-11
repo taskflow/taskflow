@@ -331,7 +331,7 @@ TF_FORCE_INLINE bool TaskQueue<T, MAX_PRIORITY>::push(T o, unsigned p) {
   std::atomic_thread_fence(std::memory_order_release);
   _bottom[p].data.store(b + 1, std::memory_order_relaxed);
 
-  return b == t;
+  return b <= t;
 }
 
 // Function: pop

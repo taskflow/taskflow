@@ -302,10 +302,11 @@ void starvation_test(size_t W) {
   REQUIRE(counter == W - W/2);
 
   // large linear chaing and many branches
+  size_t N = 100000;
   taskflow.clear();
   counter = 0;
   
-  for(size_t l=0; l<10000; l++) {
+  for(size_t l=0; l<N; l++) {
     curr = taskflow.emplace([&](){
       while(executor.num_thieves() != 0);
     });
@@ -315,12 +316,12 @@ void starvation_test(size_t W) {
     prev = curr;
   }
 
-  for(size_t b=0; b<10000; b++) {
+  for(size_t b=0; b<N; b++) {
 
     if(b & 1) {
       taskflow.emplace([&](){ 
         if(executor.this_worker_id() != 0) {
-          while(counter != 5000); 
+          while(counter != N/2); 
         }
       }).succeed(curr);
     }
@@ -331,7 +332,7 @@ void starvation_test(size_t W) {
 
   executor.run(taskflow).wait();
 
-  REQUIRE(counter == 5000);
+  REQUIRE(counter == N/2);
 }
 
 TEST_CASE("WorkStealing.Starvation.1thread" * doctest::timeout(300)) {
