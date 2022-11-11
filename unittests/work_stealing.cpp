@@ -315,24 +315,23 @@ void starvation_test(size_t W) {
     prev = curr;
   }
 
-  const int w = rand()%W;
-
   for(size_t b=0; b<10000; b++) {
-    taskflow.emplace([&](){
-      // the first W-1 workers loop
-      if(executor.this_worker_id() != w) {
-        while(counter != 10000 - W + 1);
-      }
-      // one worker must be there to increment the counter
-      else {
-        counter++;
-      }
-    }).succeed(curr);
+
+    if(b & 1) {
+      taskflow.emplace([&](){ 
+        if(executor.this_worker_id() != 0) {
+          while(counter != 5000); 
+        }
+      }).succeed(curr);
+    }
+    else {
+      taskflow.emplace([&](){ ++counter; }).succeed(curr);
+    }
   }
 
   executor.run(taskflow).wait();
 
-  REQUIRE(counter == 10000 - W + 1);
+  REQUIRE(counter == 5000);
 }
 
 TEST_CASE("WorkStealing.Starvation.1thread" * doctest::timeout(300)) {
