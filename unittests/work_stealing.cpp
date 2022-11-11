@@ -317,12 +317,10 @@ void starvation_test(size_t W) {
     prev = curr;
   }
 
-  const int w = rand() % executor.num_workers();
-
   for(size_t b=0; b<N; b++) {
     if(b & 1) {
       taskflow.emplace([&](){ 
-        if(executor.this_worker_id() != w) {
+        if(executor.this_worker_id() != 0) {
           while(counter != N/2); 
         }
       }).succeed(curr);
