@@ -13,8 +13,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: cmake
-      run: cmake -S . -B build -D CMAKE_BUILD_TYPE=Debug -D CMAKE_BUILD_BENCHMARKS=ON -D CMAKE_BUILD_PROFILER=ON
+      run: cmake -S . -B build -D CMAKE_BUILD_TYPE=Release -D CMAKE_BUILD_BENCHMARKS=ON -D CMAKE_BUILD_PROFILER=ON
     - name: build
       run: cmake --build build --parallel 10
     - name: test
-      run: cd build ; ctest -j 10 -C Debug --exclude-regex "test-unicode" --output-on-failure
+      run: cd build ; ctest -j 10 --exclude-regex "test-unicode" --output-on-failure
