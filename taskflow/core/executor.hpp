@@ -1057,7 +1057,9 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
   size_t num_yields = 0;
 
   std::uniform_int_distribution<size_t> rdvtm(0, _workers.size()-1);
-
+  
+  // Here, we write do-while to make the worker steal at once
+  // from the assigned victim.
   do {
     t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
 
@@ -1108,22 +1110,31 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 
   --_num_thieves;
   
+  //for(auto& w : _workers) {
+  //  auto queue = std::array{&w._wsq, &_wsq}[w._id == worker._id];
+  //  if(!queue->empty()) {
+  //    worker._vtm = w._id;
+  //    _notifier.cancel_wait(worker._waiter);
+  //    goto explore_task;
+  //  }
+  //}
+
+  if(!_wsq.empty()) {
+    _notifier.cancel_wait(worker._waiter);
+    worker._vtm = worker._id;
+    goto explore_task;
+  }
+  
   if(_done) {
     _notifier.cancel_wait(worker._waiter);
     _notifier.notify(true);
     return false;
   }
-
-  if(!_wsq.empty()) {
-    worker._vtm = worker._id;
-    _notifier.cancel_wait(worker._waiter);
-    goto explore_task;
-  }
     
   for(auto& w : _workers) {
     if(!w._wsq.empty()) {
-      worker._vtm = w._id;
       _notifier.cancel_wait(worker._waiter);
+      worker._vtm = w._id;
       goto explore_task;
     }
   }
