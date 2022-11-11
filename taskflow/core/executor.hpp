@@ -1079,13 +1079,10 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
 
 // Procedure: _exploit_task
 inline void Executor::_exploit_task(Worker& w, Node*& t) {
-
-  //if(t) {
-    while(t) {
-      _invoke(w, t);
-      t = w._wsq.pop();
-    }
-  //}
+  while(t) {
+    _invoke(w, t);
+    t = w._wsq.pop();
+  }
 }
 
 // Function: _wait_for_task
@@ -1098,8 +1095,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   _explore_task(worker, t);
   
   // The last thief who successfully stole a task will wake up
-  // another worker to steal tasks.
-  // This check will prevent starvation (under-utilized workers).
+  // another thief worker to avoid starvation.
   if(t) {
     if(_num_thieves.fetch_sub(1) == 1) {
       _notifier.notify(false);
@@ -1111,6 +1107,12 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   _notifier.prepare_wait(worker._waiter);
 
   --_num_thieves;
+  
+  if(_done) {
+    _notifier.cancel_wait(worker._waiter);
+    _notifier.notify(true);
+    return false;
+  }
 
   if(!_wsq.empty()) {
     worker._vtm = worker._id;
@@ -1124,12 +1126,6 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
       _notifier.cancel_wait(worker._waiter);
       goto explore_task;
     }
-  }
-  
-  if(_done) {
-    _notifier.cancel_wait(worker._waiter);
-    _notifier.notify(true);
-    return false;
   }
   
   /*//if(auto vtm = _find_vtm(me); vtm != _workers.size()) {
