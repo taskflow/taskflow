@@ -110,11 +110,7 @@ tell the compiler to include the [headers](./taskflow/).
 
 ```bash
 ~$ git clone https://github.com/taskflow/taskflow.git  # clone it only once
-<<<<<<< HEAD
-~$ g++ -std=c++17 simple.cpp -I taskflow/ -O2 -pthread -o simple
-=======
-~$ g++ -std=c++17 simple.cpp -I taskflow -O2 -pthread -o simple
->>>>>>> a0328bf93ec5be3b2f79f46ac6f575a50c79e56b
+~$ g++ -std=c++17 examples/simple.cpp -I. -O2 -pthread -o simple
 ~$ ./simple
 TaskA
 TaskC 
