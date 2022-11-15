@@ -214,7 +214,7 @@ class TaskQueue {
     The operation can trigger the queue to resize its capacity
     if more space is required.
     */
-    TF_FORCE_INLINE bool push(T item, unsigned priority = 0);
+    TF_FORCE_INLINE bool push(T item, unsigned priority);
 
     /**
     @brief pops out an item from the queue

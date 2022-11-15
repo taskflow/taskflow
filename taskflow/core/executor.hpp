@@ -566,7 +566,7 @@ class Executor {
     @endcode
     */
     int this_worker_id() const;
-
+  
     /**
     @brief runs a given function asynchronously
 
@@ -1090,9 +1090,11 @@ inline void Executor::_exploit_task(Worker& w, Node*& t) {
 // Function: _wait_for_task
 inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 
-  explore_task:
-  
+  prepare_thief:
+
   ++_num_thieves;
+
+  explore_task:
 
   _explore_task(worker, t);
   
@@ -1108,17 +1110,6 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   // ---- 2PC guard ----
   _notifier.prepare_wait(worker._waiter);
 
-  --_num_thieves;
-  
-  //for(auto& w : _workers) {
-  //  auto queue = std::array{&w._wsq, &_wsq}[w._id == worker._id];
-  //  if(!queue->empty()) {
-  //    worker._vtm = w._id;
-  //    _notifier.cancel_wait(worker._waiter);
-  //    goto explore_task;
-  //  }
-  //}
-
   if(!_wsq.empty()) {
     _notifier.cancel_wait(worker._waiter);
     worker._vtm = worker._id;
@@ -1128,6 +1119,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   if(_done) {
     _notifier.cancel_wait(worker._waiter);
     _notifier.notify(true);
+    _num_thieves.fetch_sub(1, std::memory_order_relaxed);
     return false;
   }
     
@@ -1138,6 +1130,8 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
       goto explore_task;
     }
   }
+  
+  --_num_thieves;
   
   /*//if(auto vtm = _find_vtm(me); vtm != _workers.size()) {
   if(!_wsq.empty()) {
@@ -1181,9 +1175,10 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   }*/
 
   // Now I really need to relinguish my self to others
-  _notifier.commit_wait(worker._waiter);
 
-  goto explore_task;
+  _notifier.commit_wait(worker._waiter);
+  
+  goto prepare_thief;
 }
 
 // Function: make_observer
@@ -1234,7 +1229,7 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
 
   // caller is a worker to this pool
   if(worker._executor == this) {
-    if(worker._wsq.push(node, p) && _num_thieves == 0) {
+    if(worker._wsq.push(node, p) || _num_thieves == 0) {
       _notifier.notify(false);
     }
     return;
@@ -1285,7 +1280,7 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
     for(size_t i=0; i<num_nodes; ++i) {
       auto p = nodes[i]->_priority;
       nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
-      if(worker._wsq.push(nodes[i], p) && _num_thieves == 0) {
+      if(worker._wsq.push(nodes[i], p) || _num_thieves == 0) {
         _notifier.notify(false);
       }
     }

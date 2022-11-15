@@ -19,7 +19,7 @@ void tsq_owner() {
     // push and pop
     for(size_t i=0; i<N; ++i) {
       gold[i] = &i;
-      queue.push(gold[i]);
+      queue.push(gold[i], 0);
     }
     for(size_t i=0; i<N; ++i) {
       auto ptr = queue.pop();
@@ -30,7 +30,7 @@ void tsq_owner() {
 
     // push and steal
     for(size_t i=0; i<N; ++i) {
-      queue.push(gold[i]);
+      queue.push(gold[i], 0);
     }
     // i starts from 1 to avoid cache effect
     for(size_t i=1; i<N; ++i) {
@@ -71,7 +71,7 @@ void tsq_n_thieves(size_t M) {
 
     // master thread
     for(size_t i=0; i<N; ++i) {
-      queue.push(gold[i]);
+      queue.push(gold[i], 0);
     }
 
     std::vector<void*> items;
@@ -301,16 +301,20 @@ void starvation_test(size_t W) {
 
   REQUIRE(counter == W - W/2);
   
-  /*
+  
   //TODO: bug? (some extreme situations may run forever ...)
   // large linear chain followed by many branches
   size_t N = 100000;
+  size_t target = 0;
   taskflow.clear();
   counter = 0;
   
   for(size_t l=0; l<N; l++) {
-    curr = taskflow.emplace([&](){
+    curr = taskflow.emplace([&, l](){
       while(executor.num_thieves() != 0);
+      //if(l == N-1) {
+        //printf("worker %d at the last node of the chain\n", executor.this_worker_id());
+      //}
     });
     if(l) {
       curr.succeed(prev);
@@ -318,22 +322,31 @@ void starvation_test(size_t W) {
     prev = curr;
   }
 
+  const int w = rand() % W;
+
   for(size_t b=0; b<N; b++) {
-    if(b & 1) {
+    // wait with a probability of 0.9
+    if(rand() % 10 != 0) {
       taskflow.emplace([&](){ 
-        if(executor.this_worker_id() != 0) {
-          while(counter != N/2); 
+        if(executor.this_worker_id() != w) {
+          //printf("worker %lu enters the loop (t=%lu, c=%lu, w=%d, n=%lu)\n", 
+          //  worker->id(), target, counter.load(), w, worker->queue_size()
+          //);
+          while(counter != target); 
         }
       }).succeed(curr);
     }
+    // increment the counter with a probability of 0.1
     else {
+      target++;
       taskflow.emplace([&](){ ++counter; }).succeed(curr);
     }
   }
 
   executor.run(taskflow).wait();
 
-  REQUIRE(counter == N/2);*/
+  REQUIRE(counter == target);
+  
 }
 
 TEST_CASE("WorkStealing.Starvation.1thread" * doctest::timeout(300)) {
