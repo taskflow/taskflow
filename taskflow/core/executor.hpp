@@ -1119,7 +1119,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   if(_done) {
     _notifier.cancel_wait(worker._waiter);
     _notifier.notify(true);
-    _num_thieves.fetch_sub(1, std::memory_order_relaxed);
+    _num_thieves.fetch_sub(1);
     return false;
   }
     
