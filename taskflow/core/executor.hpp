@@ -1122,11 +1122,12 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
     _num_thieves.fetch_sub(1);
     return false;
   }
-    
-  for(auto& w : _workers) {
-    if(!w._wsq.empty()) {
+  
+  // TODO: comment
+  for(size_t vtm=0; vtm<_workers.size(); vtm++) {
+    if(!_workers[vtm]._wsq.empty()) {
       _notifier.cancel_wait(worker._waiter);
-      worker._vtm = w._id;
+      worker._vtm = vtm;
       goto explore_task;
     }
   }
