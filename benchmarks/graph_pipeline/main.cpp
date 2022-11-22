@@ -14,8 +14,8 @@ int main(int argc, char* argv[]) {
   std::string model = "tf";
   app.add_option("-m,--model", model, "model name tbb|omp|tf (default=tf)")
      ->check([] (const std::string& m) {
-        if(m != "tbb" && m != "omp" && m != "tf" && m !="gold") {
-          return "model name should be \"tbb\", \"omp\", or \"tf\"";
+        if(m != "tbb" && m != "omp" && m != "tf" && m !="gold" && m != "ff") {
+          return "model name should be \"tbb\", \"omp\", or \"tf\", or \"ff\"";
         }
         return "";
      });
@@ -61,6 +61,9 @@ int main(int argc, char* argv[]) {
       }
       else if(model == "gold") {
         runtime += measure_time_gold(graph, pipes).count();
+      }
+      else if(model == "ff") {
+        runtime += measure_time_fastflow(graph, pipes).count();
       }
       graph.clear_graph();
     }

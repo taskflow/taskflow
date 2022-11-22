@@ -22,8 +22,8 @@ int pipe_helper(
 
 // 1 pipe
 void graph_pipeline_gold_1_pipe(LevelGraph& graph) {
-  //std::ofstream outputfile;
-  //outputfile.open("./gold_1_pipe.txt", std::ofstream::app);
+  std::ofstream outputfile;
+  outputfile.open("./gold_1_pipe.txt", std::ofstream::app);
 
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
@@ -33,16 +33,16 @@ void graph_pipeline_gold_1_pipe(LevelGraph& graph) {
       //std::cout << "retval = " << retval << '\n';
       graph.node_at(i, j).set_value(retval);
 
-      //outputfile << graph.node_at(i, j).get_value() << '\n';
+      outputfile << graph.node_at(i, j).get_value() << '\n';
     }
   }
-  //outputfile.close();
+  outputfile.close();
 }
 
 // 2 pipes
 void graph_pipeline_gold_2_pipes(LevelGraph& graph) {
-  //std::ofstream outputfile;
-  //outputfile.open("./gold_2_pipes.txt", std::ofstream::app);
+  std::ofstream outputfile;
+  outputfile.open("./gold_2_pipes.txt", std::ofstream::app);
 
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
@@ -64,16 +64,17 @@ void graph_pipeline_gold_2_pipes(LevelGraph& graph) {
       else {
         graph.node_at(i, j).set_value(retval);
       }
+      outputfile << graph.node_at(i, j).get_value() << '\n';
     }
   }
 
-  //outputfile.close();
+  outputfile.close();
 }
 
 // 3 pipes
 void graph_pipeline_gold_3_pipes(LevelGraph& graph) {
-  //std::ofstream outputfile;
-  //outputfile.open("./gold_3_pipes.txt", std::ofstream::app);
+  std::ofstream outputfile;
+  outputfile.open("./gold_3_pipes.txt", std::ofstream::app);
 
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
@@ -95,17 +96,18 @@ void graph_pipeline_gold_3_pipes(LevelGraph& graph) {
       else {
         graph.node_at(i, j).set_value(retval);
       }
+      outputfile << graph.node_at(i, j).get_value() << '\n';
     }
   }
 
 
-  //outputfile.close();
+  outputfile.close();
 }
 
 // 4 pipes
 void graph_pipeline_gold_4_pipes(LevelGraph& graph) {
-  //std::ofstream outputfile;
-  //outputfile.open("./gold_4_pipes.txt", std::ofstream::app);
+  std::ofstream outputfile;
+  outputfile.open("./gold_4_pipes.txt", std::ofstream::app);
 
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
@@ -127,15 +129,16 @@ void graph_pipeline_gold_4_pipes(LevelGraph& graph) {
       else {
         graph.node_at(i, j).set_value(retval);
       }
+      outputfile << graph.node_at(i, j).get_value() << '\n';
     }
   }
-  //outputfile.close();
+  outputfile.close();
 }
 
 // 5 pipes
 void graph_pipeline_gold_5_pipes(LevelGraph& graph) {
-  //std::ofstream outputfile;
-  //outputfile.open("./gold_5_pipes.txt", std::ofstream::app);
+  std::ofstream outputfile;
+  outputfile.open("./gold_5_pipes.txt", std::ofstream::app);
 
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
@@ -157,15 +160,16 @@ void graph_pipeline_gold_5_pipes(LevelGraph& graph) {
       else {
         graph.node_at(i, j).set_value(retval);
       }
+      outputfile << graph.node_at(i, j).get_value() << '\n';
     }
   }
-  //outputfile.close();
+  outputfile.close();
 }
 
 // 6 pipes
 void graph_pipeline_gold_6_pipes(LevelGraph& graph) {
-  //std::ofstream outputfile;
-  //outputfile.open("./gold_6_pipes.txt", std::ofstream::app);
+  std::ofstream outputfile;
+  outputfile.open("./gold_6_pipes.txt", std::ofstream::app);
 
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
@@ -187,15 +191,16 @@ void graph_pipeline_gold_6_pipes(LevelGraph& graph) {
       else {
         graph.node_at(i, j).set_value(retval);
       }
+      outputfile << graph.node_at(i, j).get_value() << '\n';
     }
   }
-  //outputfile.close();
+  outputfile.close();
 }
 
 // 7 pipes
 void graph_pipeline_gold_7_pipes(LevelGraph& graph) {
-  //std::ofstream outputfile;
-  //outputfile.open("./gold_7_pipes.txt", std::ofstream::app);
+  std::ofstream outputfile;
+  outputfile.open("./gold_7_pipes.txt", std::ofstream::app);
 
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
@@ -217,15 +222,16 @@ void graph_pipeline_gold_7_pipes(LevelGraph& graph) {
       else {
         graph.node_at(i, j).set_value(retval);
       }
+      outputfile << graph.node_at(i, j).get_value() << '\n';
     }
   }
-  //outputfile.close();
+  outputfile.close();
 }
 
 // 8 pipes
 void graph_pipeline_gold_8_pipes(LevelGraph& graph) {
-  //std::ofstream outputfile;
-  //outputfile.open("./gold_8_pipes.txt", std::ofstream::app);
+  std::ofstream outputfile;
+  outputfile.open("./gold_8_pipes.txt", std::ofstream::app);
 
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
@@ -247,15 +253,16 @@ void graph_pipeline_gold_8_pipes(LevelGraph& graph) {
       else {
         graph.node_at(i, j).set_value(retval);
       }
+      outputfile << graph.node_at(i, j).get_value() << '\n';
     }
   }
-  //outputfile.close();
+  outputfile.close();
 }
 
 // 9 pipes
 void graph_pipeline_gold_9_pipes(LevelGraph& graph) {
-  //std::ofstream outputfile;
-  //outputfile.open("./gold_9_pipes.txt", std::ofstream::app);
+  std::ofstream outputfile;
+  outputfile.open("./gold_9_pipes.txt", std::ofstream::app);
 
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
@@ -277,15 +284,17 @@ void graph_pipeline_gold_9_pipes(LevelGraph& graph) {
       else {
         graph.node_at(i, j).set_value(retval);
       }
+
+      outputfile << graph.node_at(i, j).get_value() << '\n';
     }
   }
-  //outputfile.close();
+  outputfile.close();
 }
 
 // 10 pipes
 void graph_pipeline_gold_10_pipes(LevelGraph& graph) {
-  //std::ofstream outputfile;
-  //outputfile.open("./gold_10_pipes.txt", std::ofstream::app);
+  std::ofstream outputfile;
+  outputfile.open("./gold_10_pipes.txt", std::ofstream::app);
 
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
@@ -307,15 +316,17 @@ void graph_pipeline_gold_10_pipes(LevelGraph& graph) {
       else {
         graph.node_at(i, j).set_value(retval);
       }
+
+      outputfile << graph.node_at(i, j).get_value() << '\n';
     }
   }
-  //outputfile.close();
+  outputfile.close();
 }
 
 // 11 pipes
 void graph_pipeline_gold_11_pipes(LevelGraph& graph) {
-  //std::ofstream outputfile;
-  //outputfile.open("./gold_11_pipes.txt", std::ofstream::app);
+  std::ofstream outputfile;
+  outputfile.open("./gold_11_pipes.txt", std::ofstream::app);
 
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
@@ -337,15 +348,17 @@ void graph_pipeline_gold_11_pipes(LevelGraph& graph) {
       else {
         graph.node_at(i, j).set_value(retval);
       }
+
+      outputfile << graph.node_at(i, j).get_value() << '\n';
     }
   }
-  //outputfile.close();
+  outputfile.close();
 }
 
 // 12 pipes
 void graph_pipeline_gold_12_pipes(LevelGraph& graph) {
-  //std::ofstream outputfile;
-  //outputfile.open("./gold_12_pipes.txt", std::ofstream::app);
+  std::ofstream outputfile;
+  outputfile.open("./gold_12_pipes.txt", std::ofstream::app);
 
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
@@ -367,15 +380,16 @@ void graph_pipeline_gold_12_pipes(LevelGraph& graph) {
       else {
         graph.node_at(i, j).set_value(retval);
       }
+      outputfile << graph.node_at(i, j).get_value() << '\n';
     }
   }
-  //outputfile.close();
+  outputfile.close();
 }
 
 // 13 pipes
 void graph_pipeline_gold_13_pipes(LevelGraph& graph) {
-  //std::ofstream outputfile;
-  //outputfile.open("./gold_13_pipes.txt", std::ofstream::app);
+  std::ofstream outputfile;
+  outputfile.open("./gold_13_pipes.txt", std::ofstream::app);
 
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
@@ -397,15 +411,16 @@ void graph_pipeline_gold_13_pipes(LevelGraph& graph) {
       else {
         graph.node_at(i, j).set_value(retval);
       }
+      outputfile << graph.node_at(i, j).get_value() << '\n';
     }
   }
-  //outputfile.close();
+  outputfile.close();
 }
 
 // 14 pipes
 void graph_pipeline_gold_14_pipes(LevelGraph& graph) {
-  //std::ofstream outputfile;
-  //outputfile.open("./gold_14_pipes.txt", std::ofstream::app);
+  std::ofstream outputfile;
+  outputfile.open("./gold_14_pipes.txt", std::ofstream::app);
 
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
@@ -427,15 +442,16 @@ void graph_pipeline_gold_14_pipes(LevelGraph& graph) {
       else {
         graph.node_at(i, j).set_value(retval);
       }
+      outputfile << graph.node_at(i, j).get_value() << '\n';
     }
   }
-  //outputfile.close();
+  outputfile.close();
 }
 
 // 15 pipes
 void graph_pipeline_gold_15_pipes(LevelGraph& graph) {
-  //std::ofstream outputfile;
-  //outputfile.open("./gold_15_pipes.txt", std::ofstream::app);
+  std::ofstream outputfile;
+  outputfile.open("./gold_15_pipes.txt", std::ofstream::app);
 
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
@@ -457,15 +473,17 @@ void graph_pipeline_gold_15_pipes(LevelGraph& graph) {
       else {
         graph.node_at(i, j).set_value(retval);
       }
+
+      outputfile << graph.node_at(i, j).get_value() << '\n';
     }
   }
-  //outputfile.close();
+  outputfile.close();
 }
 
 // 16 pipes
 void graph_pipeline_gold_16_pipes(LevelGraph& graph) {
-  //std::ofstream outputfile;
-  //outputfile.open("./gold_16_pipes.txt", std::ofstream::app);
+  std::ofstream outputfile;
+  outputfile.open("./gold_16_pipes.txt", std::ofstream::app);
 
   for (size_t i = 0; i < graph.level(); ++i) {
     for (size_t j = 0; j < graph.length(); ++j) {
@@ -487,13 +505,10 @@ void graph_pipeline_gold_16_pipes(LevelGraph& graph) {
       else {
         graph.node_at(i, j).set_value(retval);
       }
-      //std::ofstream outputfile;
-      //outputfile.open("./gold_result_.txt", std::ofstream::app);
-      //outputfile << graph.node_at(i, j).get_value() << '\n';
-      //outputfile.close();
+      outputfile << graph.node_at(i, j).get_value() << '\n';
     }
   }
-  //outputfile.close();
+  outputfile.close();
 }
 
 std::chrono::microseconds measure_time_gold(
