@@ -12,7 +12,7 @@ int main(int argc, char* argv[]) {
   app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
 
   std::string model = "tf";
-  app.add_option("-m,--model", model, "model name tbb|omp|tf (default=tf)")
+  app.add_option("-m,--model", model, "model name tbb|omp|tf|ff (default=tf)")
      ->check([] (const std::string& m) {
         if(m != "tbb" && m != "omp" && m != "tf" && m !="gold" && m != "ff") {
           return "model name should be \"tbb\", \"omp\", or \"tf\", or \"ff\"";
