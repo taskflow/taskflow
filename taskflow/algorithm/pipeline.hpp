@@ -42,12 +42,8 @@ public:
   DeferredPipeflow(const DeferredPipeflow&) = delete;
   DeferredPipeflow(DeferredPipeflow&&) = delete;
 
-  DeferredPipeflow(size_t t, size_t n, std::list<size_t>&& dep) : 
-  _token{t}, _num_deferrals{n}, _dependents{std::move(dep)} {
-  
-    for (auto it = _dependents.begin(); it!= _dependents.end(); ++it) {
-      _dependent_satellites[*it] = it;
-    }
+  DeferredPipeflow(size_t t, size_t n, std::unordered_set<size_t>&& dep) : 
+    _token{t}, _num_deferrals{n}, _dependents{std::move(dep)} {
   }
 
   DeferredPipeflow& operator = (const DeferredPipeflow&) = delete;
@@ -62,16 +58,10 @@ private:
   size_t _num_deferrals;  
 
   // dependents
-  std::list<size_t> _dependents;
-
-  // unordered_map of satellite iterators
-  // For example, 
-  // 12.defer(7); 12.defer(16);
-  // 12._dependents = std::list{7, 16}; 
-  // 12._dependent_satellites has the following two entries
-  // {key:  7, value: 12._dependents.begin()} and
-  // {key: 16, value: 12._dependents.begin() + 1}
-  std::unordered_map<size_t, std::list<size_t>::iterator> _dependent_satellites;
+  // For example,
+  // 12.defer(7); 12.defer(16)
+  // _dependents = {7, 16}
+  std::unordered_set<size_t> _dependents;
 };
 
 
@@ -170,7 +160,7 @@ class Pipeflow {
   @brief pushes token in _dependents
   */
   void defer(size_t token) {
-    _dependents.push_back(token);
+    _dependents.insert(token);
   }
   
   private:
@@ -183,7 +173,7 @@ class Pipeflow {
   
   // Data field for token dependencies
   size_t _num_deferrals; 
-  std::list<size_t> _dependents; 
+  std::unordered_set<size_t> _dependents; 
 
 };
 
@@ -775,9 +765,9 @@ void Pipeline<Ps...>::_resolve_token_dependencies(Pipeflow& pf) {
 
       // erase pf._token from target's _dependents
       // (e.g., remove 16 from 12's dependents)
-      dpf->second._dependents.erase(
-        dpf->second._dependent_satellites[pf._token]
-      );
+      dpf->second._dependents.erase(pf._token);
+      //  dpf->second._dependent_satellites[pf._token]
+      //);
 
       // target has no dependents
       if (dpf->second._dependents.empty()) {
