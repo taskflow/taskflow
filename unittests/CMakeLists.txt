@@ -20,6 +20,7 @@ list(APPEND TF_UNITTESTS
   sorting
   pipelines
   scalable_pipelines
+  deferred_pipelines
   runtimes
   data_pipelines
   workers
@@ -41,6 +42,7 @@ endif()
 if(TF_BUILD_SYCL)
   add_subdirectory(${TF_UTEST_DIR}/sycl)
 endif()
+
 
 
 
