@@ -615,16 +615,13 @@ void Pipeline<Ps...>::reset() {
     _pipeflows[l]._pipe = 0;
     _pipeflows[l]._line = l;
     
-    // chiu
     _pipeflows[l]._num_deferrals = 0;
     _pipeflows[l]._dependents.clear();
-    // chiu
   }
-  // chiu
+  
   assert(_ready_tokens.empty() == true);
   _token_dependencies.clear();
   _deferred_tokens.clear();
-  // chiu
 
 
   _lines[0][0].join_counter.store(0, std::memory_order_relaxed);
