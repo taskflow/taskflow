@@ -2,29 +2,30 @@
 #include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/pipeline.hpp>
 
-struct Frame {
-  bool processed = false;
+struct frame {
   size_t fid;
   char ftype;
   std::vector<int> depend_on;
+  frame() = default;
+
+  frame(const size_t id, char t, const std::vector<int>& vec):
+    fid{id}, ftype{t}, depend_on{vec} {}
 };
 
-std::chrono::microseconds measure_time_taskflow(
-  size_t  num_threads, std::string type, size_t num_frames) {
-  
-  std::vector<Frame> video(num_frames);
-
+void construct_video(std::vector<frame>& video, const size_t num_frames, std::string type) {
   for (size_t i = 0; i < num_frames; ++i) {
+    frame f;
     // video_1 frame pattern
     if (type == "1") {
-      video[i].fid = i;
-      video[i].ftype = video_1[i%128];
+      f.fid = i;
+      f.ftype = video_1[i%128];
     }
     // video_2 frame pattern
     else {
-      video[i].fid = i;
-      video[i].ftype = video_2[i%300];
+      f.fid = i;
+      f.ftype = video_2[i%300];
     }
+    video.push_back(f);
   }
   // construct the frame dependency
   for (size_t i = 0; i < num_frames; ++i) {
@@ -60,23 +61,39 @@ std::chrono::microseconds measure_time_taskflow(
     }
   }
 
-  std::chrono::microseconds elapsed;
+  //for (size_t i = 0; i < video.size(); ++i) {
+  //  std::cout << "frame[" << i << "] is " << video[i].ftype << ", depends on ";
+
+  //  for (const auto& d : video[i].depend_on) {
+  //    std::cout << d << ' ';
+  //  }
+  //  std::cout << '\n';
+  //}
+}
+
+std::chrono::microseconds measure_time_taskflow(
+  size_t num_threads, std::string type, size_t num_frames) {
+
+  // declare a x264 format video
+  std::vector<frame> video;
+  construct_video(video, num_frames, type);
   
+  std::chrono::microseconds elapsed;
+
   auto beg = std::chrono::high_resolution_clock::now();
   
   tf::Taskflow taskflow;
-  
   tf::Executor executor(num_threads);
-   
-  tf::Pipeline pl(num_threads,
-    tf::Pipe{tf::PipeType::SERIAL, [num_frames, &video](tf::Pipeflow& pf) {
+
+  tf::Pipeline pl(
+    num_threads,
+    tf::Pipe{tf::PipeType::SERIAL, [num_frames, &video](auto& pf) mutable {
       if(pf.token() == num_frames) {
         pf.stop();
+        return;
       }
-
       else {
         if (video[pf.token()].ftype == 'I') {
-          // no dependency
           // proceed to the next pipe
         }
         else if (video[pf.token()].ftype == 'P') {
@@ -86,12 +103,11 @@ std::chrono::microseconds measure_time_taskflow(
                 int depend_on_id = video[pf.token()].depend_on[0];
                 pf.defer(depend_on_id);
               }
-            break;
+             break;
 
-            default:
-              // dependency is resolved
-              // proceed to the next pipe
-            break;
+             default:
+               // proceed to the next pipe
+             break;
           }
         }
         else {
@@ -100,8 +116,7 @@ std::chrono::microseconds measure_time_taskflow(
               {
                 int depend_on_id = video[pf.token()].depend_on[0];
                 pf.defer(depend_on_id);
-
-                // one more dependency
+              
                 if (video[pf.token()].depend_on.size() > 1) {
                   depend_on_id = video[pf.token()].depend_on[1];
                   pf.defer(depend_on_id);
@@ -110,18 +125,16 @@ std::chrono::microseconds measure_time_taskflow(
             break;
 
             default:
-              // dependency is resolved
-              // proceed to the next pipe
+              // proceed to the next npipe
             break;
           }
         }
       }
     }},
-    
-    // second parallel pipe
-    tf::Pipe{tf::PipeType::PARALLEL, [&video](tf::Pipeflow& pf){
+
+    tf::Pipe{tf::PipeType::PARALLEL, [&video](auto& pf) {
       if (video[pf.token()].ftype == 'I') {
-      work_I();
+        work_I();
       }
       else if (video[pf.token()].ftype == 'P') {
         work_P();
@@ -132,13 +145,13 @@ std::chrono::microseconds measure_time_taskflow(
     }}
   );
 
-  taskflow.composed_of(pl);
+  taskflow.composed_of(pl).name("module_of_pipeline");
+
   executor.run(taskflow).wait();
   
   auto end = std::chrono::high_resolution_clock::now();
 
   elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
- 
   return elapsed;
 }
 

@@ -147,7 +147,7 @@ std::chrono::microseconds measure_time_pthread(
         }
         --p_idx;
       }
-      while(l_idx < num_frames) {
+      while(l_idx < static_cast<int>(num_frames)) {
         if (video[l_idx]->ftype == 'I' || video[l_idx]->ftype == 'P') {
           video[i]->depend_on.push_back(l_idx);
           break;

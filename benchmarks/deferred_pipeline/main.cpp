@@ -23,10 +23,10 @@ int main(int argc, char* argv[]) {
     });
 
   std::string pattern = "1";
-  app.add_option("-p, --pattern", pattern, "x264 video types (default=1). Check deferred_pipeline.hpp for detailed frame patterns.")
-    ->check([] (const std::string& v) {
-      if(v != "1" && v != "2") {
-        return "video types should be \"1\" or \"2\"";
+  app.add_option("-p, --pattern", pattern, "x264 video pattern (default=1). Check deferred_pipeline.hpp for detailed frame patterns.")
+    ->check([] (const std::string& p) {
+      if(p != "1" && p != "2") {
+        return "video patterns should be \"1\" or \"2\"";
       }
       return "";
     });
@@ -34,10 +34,10 @@ int main(int argc, char* argv[]) {
    
   CLI11_PARSE(app, argc, argv);
   
-  std::cout << "model="       << model       << ' '
-            << "num_threads=" << num_threads << ' '
-            << "num_rounds="  << num_rounds  << ' '
-            << "video_type="  << pattern        << ' '
+  std::cout << "model="          << model       << ' '
+            << "num_threads="    << num_threads << ' '
+            << "num_rounds="     << num_rounds  << ' '
+            << "video_pattern="  << pattern     << ' '
             << std::endl;
 
   std::cout << std::setw(12) << "Size"
@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
     double runtime {0.0};
 
     for(unsigned j = 0; j < num_rounds; ++j) {
-      
+      std::cout << " i = " << i << ", j = " << j << ", runtime = " << runtime << '\n'; 
       if(model == "tf") {
         runtime += measure_time_taskflow(num_threads, pattern, i).count();
       }
@@ -64,6 +64,5 @@ int main(int argc, char* argv[]) {
     std::cout << std::setw(12) << i
               << std::setw(12) << runtime / num_rounds / 1e3
               << std::endl;
-
   }
 }
