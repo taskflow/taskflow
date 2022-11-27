@@ -833,7 +833,7 @@ inline size_t Executor::num_taskflows() const {
 
 // Function: num_thieves
 inline size_t Executor::num_thieves() const {
-  return _num_thieves;
+  return _num_thieves.load(std::memory_order_relaxed);
 } 
 
 // Function: _this_worker
@@ -1119,7 +1119,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   if(_done) {
     _notifier.cancel_wait(worker._waiter);
     _notifier.notify(true);
-    _num_thieves.fetch_sub(1);
+    _num_thieves.fetch_sub(1, std::memory_order_relaxed);
     return false;
   }
   
@@ -1132,7 +1132,8 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
     }
   }
   
-  --_num_thieves;
+  //--_num_thieves;
+  _num_thieves.fetch_sub(1, std::memory_order_release);
   
   /*//if(auto vtm = _find_vtm(me); vtm != _workers.size()) {
   if(!_wsq.empty()) {
@@ -1230,7 +1231,7 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
 
   // caller is a worker to this pool
   if(worker._executor == this) {
-    if(worker._wsq.push(node, p) || _num_thieves == 0) {
+    if(worker._wsq.push(node, p) || _num_thieves.load(std::memory_order_acquire) == 0) {
       _notifier.notify(false);
     }
     return;
@@ -1281,7 +1282,7 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
     for(size_t i=0; i<num_nodes; ++i) {
       auto p = nodes[i]->_priority;
       nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
-      if(worker._wsq.push(nodes[i], p) || _num_thieves == 0) {
+      if(worker._wsq.push(nodes[i], p) || _num_thieves.load(std::memory_order_acquire) == 0) {
         _notifier.notify(false);
       }
     }
