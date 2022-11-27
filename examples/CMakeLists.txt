@@ -23,7 +23,6 @@ list(APPEND TF_EXAMPLES
   text_pipeline
   taskflow_pipeline
   parallel_graph_pipeline
-  parallel_data_pipeline
   run 
   run_and_wait
   runtime
@@ -33,6 +32,14 @@ list(APPEND TF_EXAMPLES
   cancel
   cancel_async
 )
+
+if (MSVC)
+    if(MSVC_VERSION VERSION_LESS 1920)
+        message("visual studio 2017 can not compile example: parallel_data_pipeline, skip it")
+    endif()
+else()
+    list(append TF_EXAMPLES  parallel_data_pipeline)
+endif()
 
 foreach(example IN LISTS TF_EXAMPLES)
   add_executable(${example} ${example}.cpp)

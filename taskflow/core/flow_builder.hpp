@@ -1096,6 +1096,9 @@ class Subflow : public FlowBuilder {
     template <typename F, typename... ArgsT>
     auto _named_async(Worker& w, const std::string& name, F&& f, ArgsT&&... args);
 
+    template <typename F, bool IsVoidRet, typename... ArgsT>
+    auto _named_async_T(Worker& w, const std::string& name, F&& f, ArgsT&&... args);
+
     template <typename F, typename... ArgsT>
     void _named_silent_async(Worker& w, const std::string& name, F&& f, ArgsT&&... args);
 };

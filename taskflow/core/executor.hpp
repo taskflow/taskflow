@@ -766,6 +766,9 @@ class Executor {
     template <typename P>
     void _loop_until(Worker&, P&&);
 
+    template <typename F, bool IsVoidRet, typename... ArgsT>
+    auto _named_async_T(const std::string& name, F&& f, ArgsT&&... args);
+
     template <typename C, std::enable_if_t<is_cudaflow_task_v<C>, void>* = nullptr>
     void _invoke_cudaflow_task_entry(Node*, C&&);
 
@@ -842,9 +845,16 @@ inline Worker* Executor::_this_worker() {
   return itr == _wids.end() ? nullptr : &_workers[itr->second];
 }
 
-// Function: named_async
 template <typename F, typename... ArgsT>
 auto Executor::named_async(const std::string& name, F&& f, ArgsT&&... args) {
+    // workaround for visual studio 2017, see details in issues#446
+    return _named_async_T<F, std::is_same_v<std::invoke_result_t<F, ArgsT...>, void>, ArgsT...>
+        (name, std::forward<F>(f), std::forward<ArgsT>(args)...);
+}
+
+// Function: named_async
+template <typename F, bool IsVoidRet, typename... ArgsT>
+auto Executor::_named_async_T(const std::string& name, F&& f, ArgsT&&... args) {
 
   _increment_topology();
 
@@ -861,7 +871,7 @@ auto Executor::named_async(const std::string& name, F&& f, ArgsT&&... args) {
     std::in_place_type_t<Node::Async>{},
     [p=make_moc(std::move(p)), f=std::forward<F>(f), args...]
     (bool cancel) mutable {
-      if constexpr(std::is_same_v<R, void>) {
+      if constexpr(IsVoidRet) {
         if(!cancel) {
           f(args...);
         }
@@ -2040,6 +2050,20 @@ auto Subflow::named_async(const std::string& name, F&& f, ArgsT&&... args) {
 // Function: _named_async
 template <typename F, typename... ArgsT>
 auto Subflow::_named_async(
+    Worker& w,
+    const std::string& name,
+    F&& f,
+    ArgsT&&... args
+) {
+    // workaround for visual studio 2017, see details in discussion in issues#446
+    // by adding an extra function call wrapper, because type_trait not working in lambda
+    return _named_async_T<F, std::is_same_v<std::invoke_result_t<F, ArgsT...>, void>, ArgsT...>
+        (w, name, std::forward<F>(f), std::forward<ArgsT>(args)...);
+}
+
+// workaround 
+template <typename F, bool IsVoidRet, typename... ArgsT>
+auto Subflow::_named_async_T(
   Worker& w,
   const std::string& name,
   F&& f,
@@ -2061,7 +2085,7 @@ auto Subflow::_named_async(
     std::in_place_type_t<Node::Async>{},
     [p=make_moc(std::move(p)), f=std::forward<F>(f), args...]
     (bool cancel) mutable {
-      if constexpr(std::is_same_v<R, void>) {
+      if constexpr(IsVoidRet) {
         if(!cancel) {
           f(args...);
         }

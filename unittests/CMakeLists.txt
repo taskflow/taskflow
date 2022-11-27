@@ -21,9 +21,16 @@ list(APPEND TF_UNITTESTS
   pipelines
   scalable_pipelines
   runtimes
-  data_pipelines
   workers
 )
+
+if (MSVC)
+    if(MSVC_VERSION VERSION_LESS 1920)
+        message("visual studio 2017 can not compile unittest: data_pipelines, skip it")
+    endif()
+else()
+    list(append TF_UNITTESTS data_pipelines)
+endif()
 
 foreach(unittest IN LISTS TF_UNITTESTS)
   add_executable(${unittest} ${unittest}.cpp)
