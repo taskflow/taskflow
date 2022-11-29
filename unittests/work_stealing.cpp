@@ -179,26 +179,26 @@ void priority_tsq_owner() {
 
   tf::TaskQueue<void*, P> queue;
 
-  for(unsigned p=0; p<P; p++) {
-    REQUIRE(queue.push(nullptr, p) == true);
-    REQUIRE(queue.push(nullptr, p) == false);
-    REQUIRE(queue.push(nullptr, p) == false);
-    REQUIRE(queue.push(nullptr, p) == false);
+  //for(unsigned p=0; p<P; p++) {
+  //  REQUIRE(queue.push(nullptr, p) == true);
+  //  REQUIRE(queue.push(nullptr, p) == false);
+  //  REQUIRE(queue.push(nullptr, p) == false);
+  //  REQUIRE(queue.push(nullptr, p) == false);
 
-    REQUIRE(queue.pop(p) == nullptr);
-    REQUIRE(queue.pop(p) == nullptr);
-    REQUIRE(queue.pop(p) == nullptr);
-    REQUIRE(queue.pop(p) == nullptr);
-    REQUIRE(queue.pop(p) == nullptr);
-    
-    REQUIRE(queue.push(nullptr, p) == true);
-    REQUIRE(queue.push(nullptr, p) == false);
-    
-    REQUIRE(queue.pop(p) == nullptr);
-    REQUIRE(queue.pop(p) == nullptr);
+  //  REQUIRE(queue.pop(p) == nullptr);
+  //  REQUIRE(queue.pop(p) == nullptr);
+  //  REQUIRE(queue.pop(p) == nullptr);
+  //  REQUIRE(queue.pop(p) == nullptr);
+  //  REQUIRE(queue.pop(p) == nullptr);
+  //  
+  //  REQUIRE(queue.push(nullptr, p) == true);
+  //  REQUIRE(queue.push(nullptr, p) == false);
+  //  
+  //  REQUIRE(queue.pop(p) == nullptr);
+  //  REQUIRE(queue.pop(p) == nullptr);
 
-    REQUIRE(queue.empty(p) == true);
-  }
+  //  REQUIRE(queue.empty(p) == true);
+  //}
 
   for(size_t N=1; N<=777777; N=N*2+1) {
 
@@ -271,7 +271,7 @@ void starvation_test(size_t W) {
 
     curr = taskflow.emplace([&](){
       // wait until all workers sleep
-      while(executor.num_thieves() != 0);
+      //while(executor.num_thieves() != 0);
     });
 
     if(l) {
@@ -297,7 +297,7 @@ void starvation_test(size_t W) {
 
   executor.run(taskflow).wait();
 
-  while(executor.num_thieves() != 0);
+  //while(executor.num_thieves() != 0);
 
   REQUIRE(counter == W - W/2);
   
@@ -311,7 +311,7 @@ void starvation_test(size_t W) {
   
   for(size_t l=0; l<N; l++) {
     curr = taskflow.emplace([&, l](){
-      while(executor.num_thieves() != 0);
+      //while(executor.num_thieves() != 0);
       //if(l == N-1) {
         //printf("worker %d at the last node of the chain\n", executor.this_worker_id());
       //}
@@ -400,7 +400,7 @@ void oversubscription_test(size_t W) {
 
       curr = taskflow.emplace([&](){
         counter++;
-        while(executor.num_thieves() != 0);
+        //while(executor.num_thieves() != 0);
       });
 
       if(l) {

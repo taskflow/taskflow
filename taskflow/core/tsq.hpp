@@ -214,7 +214,7 @@ class TaskQueue {
     The operation can trigger the queue to resize its capacity
     if more space is required.
     */
-    TF_FORCE_INLINE bool push(T item, unsigned priority);
+    TF_FORCE_INLINE void push(T item, unsigned priority);
 
     /**
     @brief pops out an item from the queue
@@ -316,7 +316,7 @@ size_t TaskQueue<T, MAX_PRIORITY>::size(unsigned p) const noexcept {
 
 // Function: push
 template <typename T, unsigned MAX_PRIORITY>
-TF_FORCE_INLINE bool TaskQueue<T, MAX_PRIORITY>::push(T o, unsigned p) {
+TF_FORCE_INLINE void TaskQueue<T, MAX_PRIORITY>::push(T o, unsigned p) {
 
   int64_t b = _bottom[p].data.load(std::memory_order_relaxed);
   int64_t t = _top[p].data.load(std::memory_order_acquire);
@@ -330,8 +330,6 @@ TF_FORCE_INLINE bool TaskQueue<T, MAX_PRIORITY>::push(T o, unsigned p) {
   a->push(b, o);
   std::atomic_thread_fence(std::memory_order_release);
   _bottom[p].data.store(b + 1, std::memory_order_relaxed);
-
-  return b == t;
 }
 
 // Function: pop

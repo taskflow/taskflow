@@ -541,14 +541,6 @@ class Executor {
     size_t num_taskflows() const;
   
     /**
-    @brief queries the number of workers that are stealing tasks
-
-    The function returns the current number of workers that are making stealing attempts.
-    The queue of a thieve worker is guaranteed to be empty.
-    */
-    size_t num_thieves() const;
-
-    /**
     @brief queries the id of the caller thread in this executor
 
     Each worker has an unique id in the range of @c 0 to @c N-1 associated with
@@ -697,11 +689,6 @@ class Executor {
     */
     size_t num_observers() const noexcept;
 
-    /**
-    @brief queries the maximum number of steals before yielding
-    */
-    size_t max_steals() const noexcept;
-
   private:
     
     const size_t _MAX_STEALS;
@@ -722,8 +709,7 @@ class Executor {
 
     TaskQueue<Node*> _wsq;
 
-    std::atomic<size_t> _num_thieves {0};
-    std::atomic<bool>   _done {0};
+    std::atomic<bool> _done {0};
 
     std::shared_ptr<WorkerInterface> _worker_interface;
     std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
@@ -816,11 +802,6 @@ inline size_t Executor::num_workers() const noexcept {
   return _workers.size();
 }
 
-// Function: max_steals
-inline size_t Executor::max_steals() const noexcept {
-  return _MAX_STEALS;
-}
-
 // Function: num_topologies
 inline size_t Executor::num_topologies() const {
   return _num_topologies;
@@ -830,11 +811,6 @@ inline size_t Executor::num_topologies() const {
 inline size_t Executor::num_taskflows() const {
   return _taskflows.size();
 }
-
-// Function: num_thieves
-inline size_t Executor::num_thieves() const {
-  return _num_thieves;
-} 
 
 // Function: _this_worker
 inline Worker* Executor::_this_worker() {
@@ -1090,9 +1066,9 @@ inline void Executor::_exploit_task(Worker& w, Node*& t) {
 // Function: _wait_for_task
 inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 
-  prepare_thief:
+  //prepare_thief:
 
-  ++_num_thieves;
+  //++_num_thieves;
 
   explore_task:
 
@@ -1101,9 +1077,9 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   // The last thief who successfully stole a task will wake up
   // another thief worker to avoid starvation.
   if(t) {
-    if(_num_thieves.fetch_sub(1) == 1) {
+    //if(_num_thieves.fetch_sub(1) == 1) {
       _notifier.notify(false);
-    }
+    //}
     return true;
   }
 
@@ -1119,7 +1095,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   if(_done) {
     _notifier.cancel_wait(worker._waiter);
     _notifier.notify(true);
-    _num_thieves.fetch_sub(1);
+    //_num_thieves.fetch_sub(1, std::memory_order_relaxed);
     return false;
   }
   
@@ -1132,7 +1108,8 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
     }
   }
   
-  --_num_thieves;
+  //--_num_thieves;
+  //_num_thieves.fetch_sub(1, std::memory_order_release);
   
   /*//if(auto vtm = _find_vtm(me); vtm != _workers.size()) {
   if(!_wsq.empty()) {
@@ -1179,7 +1156,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 
   _notifier.commit_wait(worker._waiter);
   
-  goto prepare_thief;
+  goto explore_task;
 }
 
 // Function: make_observer
@@ -1230,9 +1207,11 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
 
   // caller is a worker to this pool
   if(worker._executor == this) {
-    if(worker._wsq.push(node, p) || _num_thieves == 0) {
-      _notifier.notify(false);
-    }
+    //if(worker._wsq.push(node, p) || _num_thieves.load(std::memory_order_acquire) == 0) {
+    //  _notifier.notify(false);
+    //}
+    worker._wsq.push(node, p);
+    _notifier.notify(false);
     return;
   }
 
@@ -1281,9 +1260,8 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
     for(size_t i=0; i<num_nodes; ++i) {
       auto p = nodes[i]->_priority;
       nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
-      if(worker._wsq.push(nodes[i], p) || _num_thieves == 0) {
-        _notifier.notify(false);
-      }
+      worker._wsq.push(nodes[i], p);
+      _notifier.notify(false);
     }
     return;
   }
