@@ -88,7 +88,7 @@ std::chrono::microseconds graph_pipeline_fastflow_1_pipe(LevelGraph& graph) {
   ff_node_F<mydata> stage1(STAGE1);
   ff_Pipe<mydata> pipe(true, stage1);
   pipe.run_then_freeze();
-  size_t node_counts = graph.get_node_count();
+  int node_counts = static_cast<int>(graph.get_node_count());
   while (nodes++ < node_counts) {
     //std::cout << nodes << '\n';
     pipe.offload(new mydata(ptr, 0));
@@ -123,7 +123,7 @@ std::chrono::microseconds graph_pipeline_fastflow_2_pipes(LevelGraph& graph) {
   ff_node_F<mydata> stage1(STAGE1), stage3(STAGE3);
   ff_Pipe<mydata, mydata> pipe(true, stage1, stage3);
   pipe.run_then_freeze();
-  size_t node_counts = graph.get_node_count();
+  int node_counts = static_cast<int>(graph.get_node_count());
   while (nodes++ < node_counts) {
     //std::cout << nodes << '\n';
     pipe.offload(new mydata(ptr, 0));
@@ -164,7 +164,7 @@ std::chrono::microseconds graph_pipeline_fastflow_3_pipes(LevelGraph& graph) {
   ff_Pipe<mydata> pipe(true, stage1, stage2, stage3);
   
   pipe.run_then_freeze();
-  size_t node_counts = graph.get_node_count();
+  int node_counts = static_cast<int>(graph.get_node_count());
   while (nodes++ < node_counts) {
     //std::cout << nodes << '\n';
     pipe.offload(new mydata(ptr, 0));
@@ -205,7 +205,7 @@ std::chrono::microseconds graph_pipeline_fastflow_4_pipes(LevelGraph& graph) {
   ff_Pipe<mydata> pipe(true, stage1, stage2, stage3, stage4);
   
   pipe.run_then_freeze();
-  size_t node_counts = graph.get_node_count();
+  int node_counts = static_cast<int>(graph.get_node_count());
   while (nodes++ < node_counts) {
     //std::cout << nodes << '\n';
     pipe.offload(new mydata(ptr, 0));
@@ -247,7 +247,7 @@ std::chrono::microseconds graph_pipeline_fastflow_5_pipes(LevelGraph& graph) {
   ff_Pipe<mydata> pipe(true, stage1, stage2, stage3, stage4, stage5);
   
   pipe.run_then_freeze();
-  size_t node_counts = graph.get_node_count();
+  int node_counts = static_cast<int>(graph.get_node_count());
   while (nodes++ < node_counts) {
     //std::cout << nodes << '\n';
     pipe.offload(new mydata(ptr, 0));
@@ -290,7 +290,7 @@ std::chrono::microseconds graph_pipeline_fastflow_6_pipes(LevelGraph& graph) {
   ff_Pipe<mydata> pipe(true, stage1, stage2, stage3, stage4, stage5, stage6);
   
   pipe.run_then_freeze();
-  size_t node_counts = graph.get_node_count();
+  int node_counts = static_cast<int>(graph.get_node_count());
   while (nodes++ < node_counts) {
     //std::cout << nodes << '\n';
     pipe.offload(new mydata(ptr, 0));
@@ -334,7 +334,7 @@ std::chrono::microseconds graph_pipeline_fastflow_7_pipes(LevelGraph& graph) {
   ff_Pipe<mydata> pipe(true, stage1, stage2, stage3, stage4, stage5, stage6, stage7);
   
   pipe.run_then_freeze();
-  size_t node_counts = graph.get_node_count();
+  int node_counts = static_cast<int>(graph.get_node_count());
   while (nodes++ < node_counts) {
     //std::cout << nodes << '\n';
     pipe.offload(new mydata(ptr, 0));
@@ -379,7 +379,7 @@ std::chrono::microseconds graph_pipeline_fastflow_8_pipes(LevelGraph& graph) {
   ff_Pipe<mydata> pipe(true, stage1, stage2, stage3, stage4, stage5, stage6, stage7, stage8);
   
   pipe.run_then_freeze();
-  size_t node_counts = graph.get_node_count();
+  int node_counts = static_cast<int>(graph.get_node_count());
   while (nodes++ < node_counts) {
     //std::cout << nodes << '\n';
     pipe.offload(new mydata(ptr, 0));
@@ -423,7 +423,7 @@ std::chrono::microseconds graph_pipeline_fastflow_9_pipes(LevelGraph& graph) {
   ff_Pipe<mydata> pipe(true, stage1, stage2, stage3, stage4, stage5, stage6, stage7, stage8, stage9);
   
   pipe.run_then_freeze();
-  size_t node_counts = graph.get_node_count();
+  int node_counts = static_cast<int>(graph.get_node_count());
   while (nodes++ < node_counts) {
     //std::cout << nodes << '\n';
     pipe.offload(new mydata(ptr, 0));
@@ -470,7 +470,7 @@ std::chrono::microseconds graph_pipeline_fastflow_10_pipes(LevelGraph& graph) {
   ff_Pipe<mydata> pipe(true, stage1, stage2, stage3, stage4, stage5, stage6, stage7, stage8, stage9, stage10);
   
   pipe.run_then_freeze();
-  size_t node_counts = graph.get_node_count();
+  int node_counts = static_cast<int>(graph.get_node_count());
   while (nodes++ < node_counts) {
     //std::cout << nodes << '\n';
     pipe.offload(new mydata(ptr, 0));
@@ -518,7 +518,7 @@ std::chrono::microseconds graph_pipeline_fastflow_11_pipes(LevelGraph& graph) {
   ff_Pipe<mydata> pipe(true, stage1, stage2, stage3, stage4, stage5, stage6, stage7, stage8, stage9, stage10, stage11);
   
   pipe.run_then_freeze();
-  size_t node_counts = graph.get_node_count();
+  int node_counts = static_cast<int>(graph.get_node_count());
   while (nodes++ < node_counts) {
     //std::cout << nodes << '\n';
     pipe.offload(new mydata(ptr, 0));
@@ -567,7 +567,7 @@ std::chrono::microseconds graph_pipeline_fastflow_12_pipes(LevelGraph& graph) {
   ff_Pipe<mydata> pipe(true, stage1, stage2, stage3, stage4, stage5, stage6, stage7, stage8, stage9, stage10, stage11, stage12);
   
   pipe.run_then_freeze();
-  size_t node_counts = graph.get_node_count();
+  int node_counts = static_cast<int>(graph.get_node_count());
   while (nodes++ < node_counts) {
     //std::cout << nodes << '\n';
     pipe.offload(new mydata(ptr, 0));
@@ -617,7 +617,7 @@ std::chrono::microseconds graph_pipeline_fastflow_13_pipes(LevelGraph& graph) {
   ff_Pipe<mydata> pipe(true, stage1, stage2, stage3, stage4, stage5, stage6, stage7, stage8, stage9, stage10, stage11, stage12, stage13);
   
   pipe.run_then_freeze();
-  size_t node_counts = graph.get_node_count();
+  int node_counts = static_cast<int>(graph.get_node_count());
   while (nodes++ < node_counts) {
     //std::cout << nodes << '\n';
     pipe.offload(new mydata(ptr, 0));
@@ -668,7 +668,7 @@ std::chrono::microseconds graph_pipeline_fastflow_14_pipes(LevelGraph& graph) {
   ff_Pipe<mydata> pipe(true, stage1, stage2, stage3, stage4, stage5, stage6, stage7, stage8, stage9, stage10, stage11, stage12, stage13, stage14);
   
   pipe.run_then_freeze();
-  size_t node_counts = graph.get_node_count();
+  int node_counts = static_cast<int>(graph.get_node_count());
   while (nodes++ < node_counts) {
     //std::cout << nodes << '\n';
     pipe.offload(new mydata(ptr, 0));
@@ -720,7 +720,7 @@ std::chrono::microseconds graph_pipeline_fastflow_15_pipes(LevelGraph& graph) {
   ff_Pipe<mydata> pipe(true, stage1, stage2, stage3, stage4, stage5, stage6, stage7, stage8, stage9, stage10, stage11, stage12, stage13, stage14, stage15);
   
   pipe.run_then_freeze();
-  size_t node_counts = graph.get_node_count();
+  int node_counts = static_cast<int>(graph.get_node_count());
   while (nodes++ < node_counts) {
     //std::cout << nodes << '\n';
     pipe.offload(new mydata(ptr, 0));
@@ -773,7 +773,7 @@ std::chrono::microseconds graph_pipeline_fastflow_16_pipes(LevelGraph& graph) {
   ff_Pipe<mydata> pipe(true, stage1, stage2, stage3, stage4, stage5, stage6, stage7, stage8, stage9, stage10, stage11, stage12, stage13, stage14, stage15, stage16);
   
   pipe.run_then_freeze();
-  size_t node_counts = graph.get_node_count();
+  int node_counts = static_cast<int>(graph.get_node_count());
   while (nodes++ < node_counts) {
     //std::cout << nodes << '\n';
     pipe.offload(new mydata(ptr, 0));

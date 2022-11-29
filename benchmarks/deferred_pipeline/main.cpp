@@ -52,7 +52,6 @@ int main(int argc, char* argv[]) {
     double runtime {0.0};
 
     for(unsigned j = 0; j < num_rounds; ++j) {
-      std::cout << " i = " << i << ", j = " << j << ", runtime = " << runtime << '\n'; 
       if(model == "tf") {
         runtime += measure_time_taskflow(num_threads, pattern, i).count();
       }
