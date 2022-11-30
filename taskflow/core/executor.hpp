@@ -1099,7 +1099,8 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
     return false;
   }
   
-  // TODO: comment
+  // We need to use index-based scanning to avoid data race
+  // with _spawn which may initialize a worker at the same time.
   for(size_t vtm=0; vtm<_workers.size(); vtm++) {
     if(!_workers[vtm]._wsq.empty()) {
       _notifier.cancel_wait(worker._waiter);
