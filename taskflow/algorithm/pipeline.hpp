@@ -869,10 +869,6 @@ void Pipeline<Ps...>::_build() {
       }
       else {
         _on_pipe(*pf, rt);
-        // TODO: do we really need to reset it here again?
-        //if (pf->_pipe == num_pipes()-1) {
-        //  pf->_num_deferrals = 0;
-        //}
       }
 
       size_t c_f = pf->_pipe;
