@@ -665,12 +665,11 @@ void pipeline_2P_SS_DeferNextToken(size_t L, unsigned w, tf::PipeType second_typ
     deferrals1.resize(N);
     deferrals2.resize(N);
 
-    size_t j1 = 0, j2 = 0;
-    size_t value = (N-1)%L;
+    //size_t value = (N-1)%L;
     //std::cout << "N = " << N << ", value = " << value << ", L = " << L << ", W = " << w << '\n';    
     tf::Pipeline pl(
       L,
-      tf::Pipe{tf::PipeType::SERIAL, [value, N, &source, &j1, &mybuffer, L, &collection1, &deferrals1](auto& pf) mutable {
+      tf::Pipe{tf::PipeType::SERIAL, [N, &mybuffer, &collection1, &deferrals1](auto& pf) mutable {
         if(pf.token() == N) {
           pf.stop();
           return;
@@ -697,7 +696,7 @@ void pipeline_2P_SS_DeferNextToken(size_t L, unsigned w, tf::PipeType second_typ
         }
       }},
 
-      tf::Pipe{second_type, [value, N, &source, &j2, &mybuffer, L, &collection2, &deferrals2](auto& pf) mutable {
+      tf::Pipe{second_type, [&mybuffer, &collection2, &deferrals2](auto& pf) mutable {
         collection2.push_back(mybuffer[pf.line()]);
         deferrals2[pf.token()] = pf.num_deferrals();
       }}
@@ -820,12 +819,10 @@ void pipeline_2P_SP_DeferNextToken(size_t L, unsigned w) {
     deferrals1.resize(N);
     deferrals2.resize(N);
 
-    size_t j1 = 0, j2 = 0;
-    size_t value = (N-1)%L;
     //std::cout << "N = " << N << ", value = " << value << ", L = " << L << ", W = " << w << '\n';    
     tf::Pipeline pl(
       L,
-      tf::Pipe{tf::PipeType::SERIAL, [value, N, &source, &j1, &mybuffer, L, &collection1, &deferrals1](auto& pf) mutable {
+      tf::Pipe{tf::PipeType::SERIAL, [N, &mybuffer, &collection1, &deferrals1](auto& pf) mutable {
         if(pf.token() == N) {
           pf.stop();
           return;
@@ -852,7 +849,7 @@ void pipeline_2P_SP_DeferNextToken(size_t L, unsigned w) {
         }
       }},
 
-      tf::Pipe{tf::PipeType::PARALLEL, [value, N, &source, &j2, &mybuffer, L, &collection2, &mtx, &deferrals2](auto& pf) mutable {
+      tf::Pipe{tf::PipeType::PARALLEL, [&mybuffer, &collection2, &mtx, &deferrals2](auto& pf) mutable {
         {
           std::unique_lock lk(mtx);
           collection2.push_back(mybuffer[pf.line()]);
@@ -962,7 +959,7 @@ struct Frames {
   size_t id;
   bool b_defer = false;
   std::vector<size_t> defers;
-  Frames(char t, size_t i, std::vector<size_t> d) : type{t}, id{i}, defers{d} {}
+  Frames(char t, size_t i, std::vector<size_t>&& d) : type{t}, id{i}, defers{std::move(d)} {}
 };
 
 std::vector<char> types{'I','B','B','B','P','P','I','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','I','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','I','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','P','I','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','I','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','P','B','B','P','P','P','P','P','P','P','P','P','P','P','P','P','P','P','P','P','P','P','P','I','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','B','B','B','P','P'};
@@ -970,12 +967,12 @@ std::vector<char> types{'I','B','B','B','P','P','I','B','B','B','P','B','B','B',
 
 void construct_video(std::vector<Frames>& video, const size_t N) {
   for (size_t i = 0; i < N; ++i) {
-    video.push_back({types[i], i, std::vector<size_t>{}});
+    video.emplace_back(types[i], i, std::vector<size_t>{});
 
     if (types[i] == 'P') {
       size_t step = 1;
       size_t index;
-      while (static_cast<int>(i-step) >= 0) {
+      while (i >= step) {
         index = i - step;
         if (types[index] == 'P' || types[index] == 'I') {
           video[i].defers.push_back(index);
@@ -989,7 +986,7 @@ void construct_video(std::vector<Frames>& video, const size_t N) {
     else if (types[i] == 'B') {
       size_t step = 1;
       size_t index;
-      while (static_cast<int>(i-step) >= 0) {
+      while (i >= step) {
         index = i - step;
         if (types[index] == 'P' || types[index] == 'I') {
           video[i].defers.push_back(index);
@@ -1054,7 +1051,7 @@ void pipeline_1P_S_264VideoFormat(size_t L, unsigned w) {
 
     tf::Pipeline pl(
       L,
-      tf::Pipe{tf::PipeType::SERIAL, [N, &collection1, L, &video, &deferrals1](auto& pf) mutable {
+      tf::Pipe{tf::PipeType::SERIAL, [N, &collection1, &video, &deferrals1](auto& pf) mutable {
         //printf("toekn %zu, deferred = %zu, N=%zu\n", pf.token(), pf.num_deferrals(), N);
         if(pf.token() == N) {
           //printf("Token %zu stops on line %zu\n", pf.token() ,pf.line());
@@ -1073,7 +1070,7 @@ void pipeline_1P_S_264VideoFormat(size_t L, unsigned w) {
                 //printf("Token %zu is a P frame", pf.token());
                 size_t step = 1;
                 size_t index = 0;
-                while (static_cast<int>(pf.token()-step) >= 0) {
+                while (pf.token() >= step) {
                   index = pf.token()-step;
                   if (video[index].type == 'P' || video[index].type == 'I') {
                     pf.defer(index);
@@ -1088,7 +1085,7 @@ void pipeline_1P_S_264VideoFormat(size_t L, unsigned w) {
                 size_t step = 1;
                 size_t index = 0;
                 
-                while (static_cast<int>(pf.token()-step) >= 0) {
+                while (pf.token() >= step) {
                   index = pf.token()-step;
                   if (video[index].type == 'P' || video[index].type == 'I') {
                     //printf(" defers to token %zu which is a %c frame\n", index, video[index].type);
@@ -1243,7 +1240,7 @@ void pipeline_2P_SS_264VideoFormat(size_t L, unsigned w) {
 
     tf::Pipeline pl(
       L,
-      tf::Pipe{tf::PipeType::SERIAL, [N, &collection1, &mybuffer, L, &video, &deferrals1](auto& pf) mutable {
+      tf::Pipe{tf::PipeType::SERIAL, [N, &collection1, &mybuffer, &video, &deferrals1](auto& pf) mutable {
         if(pf.token() == N) {
           //printf("Token %zu stops on line %zu\n", pf.token() ,pf.line());
           pf.stop();
@@ -1262,7 +1259,7 @@ void pipeline_2P_SS_264VideoFormat(size_t L, unsigned w) {
                 //printf("Token %zu is a P frame", pf.token());
                 size_t step = 1;
                 size_t index = 0;
-                while (static_cast<int>(pf.token()-step) >= 0) {
+                while (pf.token() >= step) {
                   index = pf.token()-step;
                   if (video[index].type == 'P' || video[index].type == 'I') {
                     pf.defer(index);
@@ -1277,7 +1274,7 @@ void pipeline_2P_SS_264VideoFormat(size_t L, unsigned w) {
                 size_t step = 1;
                 size_t index = 0;
                 
-                while (static_cast<int>(pf.token()-step) >= 0) {
+                while (pf.token() >= step) {
                   index = pf.token()-step;
                   if (video[index].type == 'P' || video[index].type == 'I') {
                     //printf(" defers to token %zu which is a %c frame\n", index, video[index].type);
@@ -1309,7 +1306,7 @@ void pipeline_2P_SS_264VideoFormat(size_t L, unsigned w) {
         }
       }},
 
-      tf::Pipe{tf::PipeType::SERIAL, [N, &mybuffer, &mutex, &collection2, L, &deferrals2](auto& pf) mutable {
+      tf::Pipe{tf::PipeType::SERIAL, [&mybuffer, &mutex, &collection2, &deferrals2](auto& pf) mutable {
         {
           std::scoped_lock<std::mutex> lock(mutex);
           collection2.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
@@ -1454,7 +1451,7 @@ void pipeline_2P_SP_264VideoFormat(size_t L, unsigned w) {
 
     tf::Pipeline pl(
       L,
-      tf::Pipe{tf::PipeType::SERIAL, [N, &collection1, &mybuffer, L, &video, &deferrals1](auto& pf) mutable {
+      tf::Pipe{tf::PipeType::SERIAL, [N, &collection1, &mybuffer, &video, &deferrals1](auto& pf) mutable {
         if(pf.token() == N) {
           pf.stop();
           return;
@@ -1472,7 +1469,7 @@ void pipeline_2P_SP_264VideoFormat(size_t L, unsigned w) {
                 //printf("Token %zu is a P frame", pf.token());
                 size_t step = 1;
                 size_t index = 0;
-                while (static_cast<int>(pf.token()-step) >= 0) {
+                while (pf.token() >= step) {
                   index = pf.token()-step;
                   if (video[index].type == 'P' || video[index].type == 'I') {
                     pf.defer(index);
@@ -1487,7 +1484,7 @@ void pipeline_2P_SP_264VideoFormat(size_t L, unsigned w) {
                 size_t step = 1;
                 size_t index = 0;
                 
-                while (static_cast<int>(pf.token()-step) >= 0) {
+                while (pf.token() >= step) {
                   index = pf.token()-step;
                   if (video[index].type == 'P' || video[index].type == 'I') {
                     //printf(" defers to token %zu which is a %c frame\n", index, video[index].type);
@@ -1519,7 +1516,7 @@ void pipeline_2P_SP_264VideoFormat(size_t L, unsigned w) {
         }
       }},
 
-      tf::Pipe{tf::PipeType::PARALLEL, [N, &mybuffer, &mutex, &collection2, L, &deferrals2](auto& pf) mutable {
+      tf::Pipe{tf::PipeType::PARALLEL, [&mybuffer, &mutex, &collection2, &deferrals2](auto& pf) mutable {
         {
           std::scoped_lock<std::mutex> lock(mutex);
           collection2.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
@@ -1657,7 +1654,7 @@ void pipeline_3P_SPP_264VideoFormat(size_t L, unsigned w) {
 
     tf::Pipeline pl(
       L,
-      tf::Pipe{tf::PipeType::SERIAL, [N, &collection1, &mybuffer, L, &video, &deferrals1](auto& pf) mutable {
+      tf::Pipe{tf::PipeType::SERIAL, [N, &collection1, &mybuffer, &video, &deferrals1](auto& pf) mutable {
         if(pf.token() == N) {
           pf.stop();
           return;
@@ -1675,7 +1672,7 @@ void pipeline_3P_SPP_264VideoFormat(size_t L, unsigned w) {
                 //printf("Token %zu is a P frame", pf.token());
                 size_t step = 1;
                 size_t index = 0;
-                while (static_cast<int>(pf.token()-step) >= 0) {
+                while (pf.token() >= step) {
                   index = pf.token()-step;
                   if (video[index].type == 'P' || video[index].type == 'I') {
                     pf.defer(index);
@@ -1690,7 +1687,7 @@ void pipeline_3P_SPP_264VideoFormat(size_t L, unsigned w) {
                 size_t step = 1;
                 size_t index = 0;
                 
-                while (static_cast<int>(pf.token()-step) >= 0) {
+                while (pf.token() >= step) {
                   index = pf.token()-step;
                   if (video[index].type == 'P' || video[index].type == 'I') {
                     //printf(" defers to token %zu which is a %c frame\n", index, video[index].type);
@@ -1739,7 +1736,7 @@ void pipeline_3P_SPP_264VideoFormat(size_t L, unsigned w) {
         }
       }},
 
-      tf::Pipe{tf::PipeType::PARALLEL, [N, &mybuffer, &mutex, &collection2, L, &deferrals2](auto& pf) mutable {
+      tf::Pipe{tf::PipeType::PARALLEL, [&mybuffer, &mutex, &collection2, &deferrals2](auto& pf) mutable {
         {
           std::scoped_lock<std::mutex> lock(mutex);
           collection2.push_back(mybuffer[pf.line()][pf.pipe() - 1]);
@@ -1748,7 +1745,7 @@ void pipeline_3P_SPP_264VideoFormat(size_t L, unsigned w) {
         //printf("Stage 2 : token %zu at line %zu\n", pf.token(), pf.line());
       }},
 
-      tf::Pipe{tf::PipeType::PARALLEL, [N, &mybuffer, &mutex, &collection3, L, &deferrals3](auto& pf) mutable {
+      tf::Pipe{tf::PipeType::PARALLEL, [&mybuffer, &mutex, &collection3, &deferrals3](auto& pf) mutable {
         {
           std::scoped_lock<std::mutex> lock(mutex);
           collection3.push_back(mybuffer[pf.line()][pf.pipe() - 1]);

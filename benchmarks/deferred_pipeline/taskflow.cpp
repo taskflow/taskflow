@@ -25,7 +25,7 @@ void construct_video(std::vector<frame>& video, const size_t num_frames, std::st
       f.fid = i;
       f.ftype = video_2[i%300];
     }
-    video.push_back(f);
+    video.emplace_back(std::move(f));
   }
   // construct the frame dependency
   for (size_t i = 0; i < num_frames; ++i) {
