@@ -1066,10 +1066,6 @@ inline void Executor::_exploit_task(Worker& w, Node*& t) {
 // Function: _wait_for_task
 inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 
-  //prepare_thief:
-
-  //++_num_thieves;
-
   explore_task:
 
   _explore_task(worker, t);
@@ -1077,9 +1073,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   // The last thief who successfully stole a task will wake up
   // another thief worker to avoid starvation.
   if(t) {
-    //if(_num_thieves.fetch_sub(1) == 1) {
-      _notifier.notify(false);
-    //}
+    _notifier.notify(false);
     return true;
   }
 
@@ -1095,7 +1089,6 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   if(_done) {
     _notifier.cancel_wait(worker._waiter);
     _notifier.notify(true);
-    //_num_thieves.fetch_sub(1, std::memory_order_relaxed);
     return false;
   }
   
@@ -1206,7 +1199,9 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
 
   node->_state.fetch_or(Node::READY, std::memory_order_release);
 
-  // caller is a worker to this pool
+  // caller is a worker to this pool - starting at v3.5 we do not use
+  // any complicated notification mechanism as the experimental result
+  // has shown no significant advantage.
   if(worker._executor == this) {
     //if(worker._wsq.push(node, p) || _num_thieves.load(std::memory_order_acquire) == 0) {
     //  _notifier.notify(false);
@@ -1216,7 +1211,6 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
     return;
   }
 
-  // TODO: empty?
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     _wsq.push(node, p);
@@ -1254,11 +1248,14 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
     return;
   }
 
-  // We need to fetch p before the release such that the read 
-  // operation is synchronized properly with other thread to
-  // void data race.
+  // caller is a worker to this pool - starting at v3.5 we do not use
+  // any complicated notification mechanism as the experimental result
+  // has shown no significant advantage.
   if(worker._executor == this) {
     for(size_t i=0; i<num_nodes; ++i) {
+      // We need to fetch p before the release such that the read 
+      // operation is synchronized properly with other thread to
+      // void data race.
       auto p = nodes[i]->_priority;
       nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
       worker._wsq.push(nodes[i], p);
@@ -1919,7 +1916,6 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
   else {
 
     // TODO: if the topology is cancelled, need to release all semaphores
-
     if(tpg->_call != nullptr) {
       tpg->_call();
     }

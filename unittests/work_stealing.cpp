@@ -264,14 +264,14 @@ void starvation_test(size_t W) {
 
   tf::Taskflow taskflow;
   tf::Executor executor(W);
+  std::atomic<size_t> counter{0};
 
   tf::Task prev, curr;
 
   for(size_t l=0; l<100; l++) {
 
     curr = taskflow.emplace([&](){
-      // wait until all workers sleep
-      //while(executor.num_thieves() != 0);
+      counter.fetch_add(1, std::memory_order_relaxed);
     });
 
     if(l) {
@@ -282,27 +282,23 @@ void starvation_test(size_t W) {
   }
 
   // branches
-  std::atomic<size_t> counter{0};
+
   for(size_t b=W/2; b<W; b++) {
     taskflow.emplace([&](){
-      counter++;
+      counter.fetch_add(1, std::memory_order_relaxed);
     }).succeed(curr);
   }
 
   for(size_t b=0; b<W/2; b++) {
     taskflow.emplace([&](){
-      while(counter != W - W/2);
+      while(counter.load(std::memory_order_relaxed) != W - W/2 + 100);
     }).succeed(curr);
   }
 
   executor.run(taskflow).wait();
 
-  //while(executor.num_thieves() != 0);
+  REQUIRE(counter == W - W/2 + 100);
 
-  REQUIRE(counter == W - W/2);
-  
-  
-  //TODO: bug? (some extreme situations may run forever ...)
   // large linear chain followed by many branches
   size_t N = 100000;
   size_t target = 0;
@@ -310,11 +306,8 @@ void starvation_test(size_t W) {
   counter = 0;
   
   for(size_t l=0; l<N; l++) {
-    curr = taskflow.emplace([&, l](){
-      //while(executor.num_thieves() != 0);
-      //if(l == N-1) {
-        //printf("worker %d at the last node of the chain\n", executor.this_worker_id());
-      //}
+    curr = taskflow.emplace([&](){
+      counter.fetch_add(1, std::memory_order_relaxed);
     });
     if(l) {
       curr.succeed(prev);
@@ -329,23 +322,22 @@ void starvation_test(size_t W) {
     if(rand() % 10 != 0) {
       taskflow.emplace([&](){ 
         if(executor.this_worker_id() != w) {
-          //printf("worker %lu enters the loop (t=%lu, c=%lu, w=%d, n=%lu)\n", 
-          //  worker->id(), target, counter.load(), w, worker->queue_size()
-          //);
-          while(counter != target); 
+          while(counter.load(std::memory_order_relaxed) != target + N); 
         }
       }).succeed(curr);
     }
     // increment the counter with a probability of 0.1
     else {
       target++;
-      taskflow.emplace([&](){ ++counter; }).succeed(curr);
+      taskflow.emplace([&](){ 
+        counter.fetch_add(1, std::memory_order_relaxed);
+      }).succeed(curr);
     }
   }
 
   executor.run(taskflow).wait();
 
-  REQUIRE(counter == target);
+  REQUIRE(counter == target + N);
   
 }
 
@@ -400,7 +392,8 @@ void oversubscription_test(size_t W) {
 
       curr = taskflow.emplace([&](){
         counter++;
-        //while(executor.num_thieves() != 0);
+        // add a latency to make all other workers sleep
+        //std::this_thread::sleep_for(std::chrono::microseconds(1));
       });
 
       if(l) {
