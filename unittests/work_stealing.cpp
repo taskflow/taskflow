@@ -267,7 +267,8 @@ void starvation_test(size_t W) {
   std::atomic<size_t> counter{0};
 
   tf::Task prev, curr;
-
+  
+  // simple linear chain
   for(size_t l=0; l<100; l++) {
 
     curr = taskflow.emplace([&](){
@@ -282,7 +283,6 @@ void starvation_test(size_t W) {
   }
 
   // branches
-
   for(size_t b=W/2; b<W; b++) {
     taskflow.emplace([&](){
       counter.fetch_add(1, std::memory_order_relaxed);
@@ -300,7 +300,7 @@ void starvation_test(size_t W) {
   REQUIRE(counter == W - W/2 + 100);
 
   // large linear chain followed by many branches
-  size_t N = 100000;
+  size_t N = 1000;
   size_t target = 0;
   taskflow.clear();
   counter = 0;
@@ -374,6 +374,120 @@ TEST_CASE("WorkStealing.Starvation.8threads" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
+// Starvation Loop Test
+// ----------------------------------------------------------------------------
+
+void starvation_loop_test(size_t W) {
+
+  size_t L=100, B = 1024;
+
+  REQUIRE(B > W);
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  std::atomic<size_t> counter{0};
+  std::atomic<size_t> barrier{0};
+
+  // all worker must be involved
+  std::mutex mutex;
+  std::unordered_set<int> set;
+
+  auto [merge, cond, stop] = taskflow.emplace(
+    [&](){  
+      REQUIRE(barrier.load(std::memory_order_relaxed) == B);
+      REQUIRE(counter.load(std::memory_order_relaxed) == (L + B - 1));
+      REQUIRE(set.size() == W);
+      counter = 0;
+      barrier = 0;
+      set.clear();
+    },
+    [n=0]() mutable { 
+      return ++n >= 10 ? 1 : 0;
+    },
+    [&](){
+      REQUIRE(barrier.load(std::memory_order_relaxed) == 0);
+      REQUIRE(counter.load(std::memory_order_relaxed) == 0);
+      REQUIRE(set.size() == 0);
+    }
+  );
+
+  tf::Task prev, curr, second;
+  
+  // linear chain with delay to make workers sleep
+  for(size_t l=0; l<L; l++) {
+
+    curr = taskflow.emplace([&, l](){
+      if(l) {
+        counter.fetch_add(1, std::memory_order_relaxed);
+      }
+    });
+
+    if(l) {
+      curr.succeed(prev);
+    }
+
+    if(l==1) {
+      second = curr;
+    }
+
+    prev = curr;
+  }
+  
+  cond.precede(second, stop);
+
+
+  // fork
+  for(size_t b=0; b<B; b++) {
+    tf::Task task = taskflow.emplace([&](){
+      // record the threads
+      {
+        std::scoped_lock lock(mutex);
+        set.insert(executor.this_worker_id());
+      }
+
+      // all threads should be notified
+      barrier.fetch_add(1, std::memory_order_relaxed);
+      while(barrier.load(std::memory_order_relaxed) < W);
+      
+      // increment the counter
+      counter.fetch_add(1, std::memory_order_relaxed);
+    });
+    task.succeed(curr)
+        .precede(merge);
+  }
+
+  merge.precede(cond);
+
+  //taskflow.dump(std::cout);
+  executor.run(taskflow).wait();
+}
+
+TEST_CASE("WorkStealing.StarvationLoop.1thread" * doctest::timeout(300)) {
+  starvation_loop_test(1);
+}
+
+TEST_CASE("WorkStealing.StarvationLoop.2threads" * doctest::timeout(300)) {
+  starvation_loop_test(2);
+}
+
+TEST_CASE("WorkStealing.StarvationLoop.4threads" * doctest::timeout(300)) {
+  starvation_loop_test(4);
+}
+
+TEST_CASE("WorkStealing.StarvationLoop.8threads" * doctest::timeout(300)) {
+  starvation_loop_test(8);
+}
+
+TEST_CASE("WorkStealing.StarvationLoop.16threads" * doctest::timeout(300)) {
+  starvation_loop_test(16);
+}
+
+//TEST_CASE("WorkStealing.StarvationLoop.32threads" * doctest::timeout(300)) {
+//  starvation_loop_test(32);
+//}
+
+// ----------------------------------------------------------------------------
 // Oversubscription Test
 // ----------------------------------------------------------------------------
 
@@ -391,9 +505,7 @@ void oversubscription_test(size_t W) {
     for(size_t l=0; l<100; l++) {
 
       curr = taskflow.emplace([&](){
-        counter++;
-        // add a latency to make all other workers sleep
-        //std::this_thread::sleep_for(std::chrono::microseconds(1));
+        counter.fetch_add(1, std::memory_order_relaxed);
       });
 
       if(l) {
@@ -429,13 +541,13 @@ TEST_CASE("WorkStealing.Oversubscription.8threads" * doctest::timeout(300)) {
   oversubscription_test(8);
 }
 
-//TEST_CASE("WorkStealing.Oversubscription.16threads" * doctest::timeout(300)) {
-//  oversubscription_test(16);
-//}
-//
-//TEST_CASE("WorkStealing.Oversubscription.32threads" * doctest::timeout(300)) {
-//  oversubscription_test(32);
-//}
+TEST_CASE("WorkStealing.Oversubscription.16threads" * doctest::timeout(300)) {
+  oversubscription_test(16);
+}
+
+TEST_CASE("WorkStealing.Oversubscription.32threads" * doctest::timeout(300)) {
+  oversubscription_test(32);
+}
 
 // ----------------------------------------------------------------------------
 

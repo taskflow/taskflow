@@ -1147,9 +1147,8 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   }*/
 
   // Now I really need to relinguish my self to others
-
   _notifier.commit_wait(worker._waiter);
-  
+
   goto explore_task;
 }
 
