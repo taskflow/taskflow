@@ -471,21 +471,102 @@ TEST_CASE("WorkStealing.StarvationLoop.2threads" * doctest::timeout(300)) {
   starvation_loop_test(2);
 }
 
+TEST_CASE("WorkStealing.StarvationLoop.3threads" * doctest::timeout(300)) {
+  starvation_loop_test(3);
+}
+
 TEST_CASE("WorkStealing.StarvationLoop.4threads" * doctest::timeout(300)) {
   starvation_loop_test(4);
+}
+
+TEST_CASE("WorkStealing.StarvationLoop.5threads" * doctest::timeout(300)) {
+  starvation_loop_test(5);
+}
+
+TEST_CASE("WorkStealing.StarvationLoop.6threads" * doctest::timeout(300)) {
+  starvation_loop_test(6);
+}
+
+TEST_CASE("WorkStealing.StarvationLoop.7threads" * doctest::timeout(300)) {
+  starvation_loop_test(7);
 }
 
 TEST_CASE("WorkStealing.StarvationLoop.8threads" * doctest::timeout(300)) {
   starvation_loop_test(8);
 }
 
-TEST_CASE("WorkStealing.StarvationLoop.16threads" * doctest::timeout(300)) {
-  starvation_loop_test(16);
+// ----------------------------------------------------------------------------
+// Embarrassing Starvation Test
+// ----------------------------------------------------------------------------
+
+void embarrasing_starvation_test(size_t W) {
+
+  size_t B = 65536;
+
+  REQUIRE(B > W);
+  
+  tf::Taskflow taskflow, parent;
+  tf::Executor executor(W);
+
+  std::atomic<size_t> barrier{0};
+
+  // all worker must be involved
+  std::mutex mutex;
+  std::unordered_set<int> set;
+
+  // fork
+  for(size_t b=0; b<B; b++) {
+    taskflow.emplace([&](){
+      // record worker
+      {
+        std::scoped_lock lock(mutex);
+        set.insert(executor.this_worker_id());
+      }
+
+      // all threads should be notified
+      barrier.fetch_add(1, std::memory_order_relaxed);
+      while(barrier.load(std::memory_order_relaxed) < W);
+    });
+  }
+
+  parent.composed_of(taskflow);
+
+  executor.run(parent).wait();
+
+  REQUIRE(set.size() == W);
 }
 
-//TEST_CASE("WorkStealing.StarvationLoop.32threads" * doctest::timeout(300)) {
-//  starvation_loop_test(32);
-//}
+TEST_CASE("WorkStealing.EmbarrasingStarvation.1thread" * doctest::timeout(300)) {
+  embarrasing_starvation_test(1);
+}
+
+TEST_CASE("WorkStealing.EmbarrasingStarvation.2threads" * doctest::timeout(300)) {
+  embarrasing_starvation_test(2);
+}
+
+TEST_CASE("WorkStealing.EmbarrasingStarvation.3threads" * doctest::timeout(300)) {
+  embarrasing_starvation_test(3);
+}
+
+TEST_CASE("WorkStealing.EmbarrasingStarvation.4threads" * doctest::timeout(300)) {
+  embarrasing_starvation_test(4);
+}
+
+TEST_CASE("WorkStealing.EmbarrasingStarvation.5threads" * doctest::timeout(300)) {
+  embarrasing_starvation_test(5);
+}
+
+TEST_CASE("WorkStealing.EmbarrasingStarvation.6threads" * doctest::timeout(300)) {
+  embarrasing_starvation_test(6);
+}
+
+TEST_CASE("WorkStealing.EmbarrasingStarvation.7threads" * doctest::timeout(300)) {
+  embarrasing_starvation_test(7);
+}
+
+TEST_CASE("WorkStealing.EmbarrasingStarvation.8threads" * doctest::timeout(300)) {
+  embarrasing_starvation_test(8);
+}
 
 // ----------------------------------------------------------------------------
 // Oversubscription Test
@@ -497,6 +578,10 @@ void oversubscription_test(size_t W) {
   tf::Executor executor(W);
 
   std::atomic<size_t> counter{0};
+  
+  // all worker must be involved
+  std::mutex mutex;
+  std::unordered_set<int> set;
 
   for(size_t n = 0; n<W/2; n++) { 
   
@@ -505,6 +590,11 @@ void oversubscription_test(size_t W) {
     for(size_t l=0; l<100; l++) {
 
       curr = taskflow.emplace([&](){
+        // record worker
+        {
+          std::scoped_lock lock(mutex);
+          set.insert(executor.this_worker_id());
+        }
         counter.fetch_add(1, std::memory_order_relaxed);
       });
 
@@ -516,9 +606,20 @@ void oversubscription_test(size_t W) {
     }
   }
 
-  executor.run(taskflow).wait();
+  for(size_t t=1; t<=100; t++) {
+    set.clear();
+    executor.run(taskflow).wait();
+    REQUIRE(counter == 100*(W/2)*t);
+    REQUIRE(set.size() <= W/2);
+  }
+}
 
-  REQUIRE(counter == 100*(W/2));
+TEST_CASE("WorkStealing.Oversubscription.2threads" * doctest::timeout(300)) {
+  oversubscription_test(2);
+}
+
+TEST_CASE("WorkStealing.Oversubscription.3threads" * doctest::timeout(300)) {
+  oversubscription_test(3);
 }
 
 TEST_CASE("WorkStealing.Oversubscription.4threads" * doctest::timeout(300)) {
@@ -541,13 +642,13 @@ TEST_CASE("WorkStealing.Oversubscription.8threads" * doctest::timeout(300)) {
   oversubscription_test(8);
 }
 
-TEST_CASE("WorkStealing.Oversubscription.16threads" * doctest::timeout(300)) {
-  oversubscription_test(16);
-}
-
-TEST_CASE("WorkStealing.Oversubscription.32threads" * doctest::timeout(300)) {
-  oversubscription_test(32);
-}
+//TEST_CASE("WorkStealing.Oversubscription.16threads" * doctest::timeout(300)) {
+//  oversubscription_test(16);
+//}
+//
+//TEST_CASE("WorkStealing.Oversubscription.32threads" * doctest::timeout(300)) {
+//  oversubscription_test(32);
+//}
 
 // ----------------------------------------------------------------------------
 
