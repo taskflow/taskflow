@@ -1202,9 +1202,6 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
   // any complicated notification mechanism as the experimental result
   // has shown no significant advantage.
   if(worker._executor == this) {
-    //if(worker._wsq.push(node, p) || _num_thieves.load(std::memory_order_acquire) == 0) {
-    //  _notifier.notify(false);
-    //}
     worker._wsq.push(node, p);
     _notifier.notify(false);
     return;
@@ -1425,8 +1422,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   Node* cache {nullptr};
   auto max_p = static_cast<unsigned>(TaskPriority::MAX);
 
-  // At this point, the node storage might be destructed (to be verified)
-  // case 1: non-condition task
+  // Invoke the task based on the corresponding type
   switch(node->_handle.index()) {
 
     // condition and multi-condition tasks

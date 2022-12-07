@@ -496,6 +496,131 @@ TEST_CASE("WorkStealing.StarvationLoop.8threads" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
+// Starvation Loop Test
+// ----------------------------------------------------------------------------
+
+void subflow_starvation_test(size_t W) {
+
+  size_t L=100, B = 1024;
+
+  REQUIRE(B > W);
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  std::atomic<size_t> counter{0};
+  std::atomic<size_t> barrier{0};
+
+  // all worker must be involved
+  std::mutex mutex;
+  std::unordered_set<int> set;
+
+  taskflow.emplace([&](tf::Subflow& subflow){
+
+    auto [merge, cond, stop] = subflow.emplace(
+      [&](){  
+        REQUIRE(barrier.load(std::memory_order_relaxed) == B);
+        REQUIRE(counter.load(std::memory_order_relaxed) == (L + B - 1));
+        REQUIRE(set.size() == W);
+        counter = 0;
+        barrier = 0;
+        set.clear();
+      },
+      [n=0]() mutable { 
+        return ++n >= 10 ? 1 : 0;
+      },
+      [&](){
+        REQUIRE(barrier.load(std::memory_order_relaxed) == 0);
+        REQUIRE(counter.load(std::memory_order_relaxed) == 0);
+        REQUIRE(set.size() == 0);
+      }
+    );
+
+    tf::Task prev, curr, second;
+    
+    // linear chain with delay to make workers sleep
+    for(size_t l=0; l<L; l++) {
+
+      curr = subflow.emplace([&, l](){
+        if(l) {
+          counter.fetch_add(1, std::memory_order_relaxed);
+        }
+      });
+
+      if(l) {
+        curr.succeed(prev);
+      }
+
+      if(l==1) {
+        second = curr;
+      }
+
+      prev = curr;
+    }
+    
+    cond.precede(second, stop);
+
+
+    // fork
+    for(size_t b=0; b<B; b++) {
+      tf::Task task = subflow.emplace([&](){
+        // record the threads
+        {
+          std::scoped_lock lock(mutex);
+          set.insert(executor.this_worker_id());
+        }
+
+        // all threads should be notified
+        barrier.fetch_add(1, std::memory_order_relaxed);
+        while(barrier.load(std::memory_order_relaxed) < W);
+        
+        // increment the counter
+        counter.fetch_add(1, std::memory_order_relaxed);
+      });
+      task.succeed(curr)
+          .precede(merge);
+    }
+
+    merge.precede(cond);
+  });
+
+  //taskflow.dump(std::cout);
+  executor.run_n(taskflow, 10).wait();
+}
+
+TEST_CASE("WorkStealing.SubflowStarvation.1thread" * doctest::timeout(300)) {
+  subflow_starvation_test(1);
+}
+
+TEST_CASE("WorkStealing.SubflowStarvation.2threads" * doctest::timeout(300)) {
+  subflow_starvation_test(2);
+}
+
+TEST_CASE("WorkStealing.SubflowStarvation.3threads" * doctest::timeout(300)) {
+  subflow_starvation_test(3);
+}
+
+TEST_CASE("WorkStealing.SubflowStarvation.4threads" * doctest::timeout(300)) {
+  subflow_starvation_test(4);
+}
+
+TEST_CASE("WorkStealing.SubflowStarvation.5threads" * doctest::timeout(300)) {
+  subflow_starvation_test(5);
+}
+
+TEST_CASE("WorkStealing.SubflowStarvation.6threads" * doctest::timeout(300)) {
+  subflow_starvation_test(6);
+}
+
+TEST_CASE("WorkStealing.SubflowStarvation.7threads" * doctest::timeout(300)) {
+  subflow_starvation_test(7);
+}
+
+TEST_CASE("WorkStealing.SubflowStarvation.8threads" * doctest::timeout(300)) {
+  subflow_starvation_test(8);
+}
+
+// ----------------------------------------------------------------------------
 // Embarrassing Starvation Test
 // ----------------------------------------------------------------------------
 
@@ -688,7 +813,57 @@ void ws_broom(size_t W) {
 //  ws_broom(10);
 //}
 
+// ----------------------------------------------------------------------------
+// Continuation
+// ----------------------------------------------------------------------------
 
+void continuation_test(size_t W) {
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+  
+  tf::Task curr, prev;
+
+  int w = executor.this_worker_id();
+
+  REQUIRE(w == -1);
+
+  for(size_t i=0; i<1000; i++) {
+    curr = taskflow.emplace([&, i]() mutable {
+      if(i == 0) {
+        w = executor.this_worker_id();
+      } 
+      else {
+        REQUIRE(w == executor.this_worker_id());
+      }
+    });
+
+    if(i) {
+      prev.precede(curr);
+    }
+
+    prev = curr;
+  }
+
+  executor.run(taskflow).wait();
+
+}
+
+TEST_CASE("WorkStealing.Continuation.1thread" * doctest::timeout(300)) {
+  continuation_test(1);
+}
+
+TEST_CASE("WorkStealing.Continuation.2threads" * doctest::timeout(300)) {
+  continuation_test(2);
+}
+
+TEST_CASE("WorkStealing.Continuation.4threads" * doctest::timeout(300)) {
+  continuation_test(4);
+}
+
+TEST_CASE("WorkStealing.Continuation.8threads" * doctest::timeout(300)) {
+  continuation_test(8);
+}
 
 
 
