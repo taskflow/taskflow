@@ -291,7 +291,9 @@ void starvation_test(size_t W) {
 
   for(size_t b=0; b<W/2; b++) {
     taskflow.emplace([&](){
-      while(counter.load(std::memory_order_relaxed) != W - W/2 + 100);
+      while(counter.load(std::memory_order_relaxed) != W - W/2 + 100){
+        std::this_thread::yield();
+      }
     }).succeed(curr);
   }
 
@@ -322,7 +324,9 @@ void starvation_test(size_t W) {
     if(rand() % 10 != 0) {
       taskflow.emplace([&](){ 
         if(executor.this_worker_id() != w) {
-          while(counter.load(std::memory_order_relaxed) != target + N); 
+          while(counter.load(std::memory_order_relaxed) != target + N) {
+            std::this_thread::yield();
+          }
         }
       }).succeed(curr);
     }
@@ -448,7 +452,9 @@ void starvation_loop_test(size_t W) {
 
       // all threads should be notified
       barrier.fetch_add(1, std::memory_order_relaxed);
-      while(barrier.load(std::memory_order_relaxed) < W);
+      while(barrier.load(std::memory_order_relaxed) < W){
+        std::this_thread::yield();
+      }
       
       // increment the counter
       counter.fetch_add(1, std::memory_order_relaxed);
@@ -527,7 +533,7 @@ void subflow_starvation_test(size_t W) {
         set.clear();
       },
       [n=0]() mutable { 
-        return ++n >= 10 ? 1 : 0;
+        return ++n >= 5 ? 1 : 0;
       },
       [&](){
         REQUIRE(barrier.load(std::memory_order_relaxed) == 0);
@@ -572,7 +578,9 @@ void subflow_starvation_test(size_t W) {
 
         // all threads should be notified
         barrier.fetch_add(1, std::memory_order_relaxed);
-        while(barrier.load(std::memory_order_relaxed) < W);
+        while(barrier.load(std::memory_order_relaxed) < W) {
+          std::this_thread::yield();
+        }
         
         // increment the counter
         counter.fetch_add(1, std::memory_order_relaxed);
@@ -585,7 +593,7 @@ void subflow_starvation_test(size_t W) {
   });
 
   //taskflow.dump(std::cout);
-  executor.run_n(taskflow, 10).wait();
+  executor.run_n(taskflow, 5).wait();
 }
 
 TEST_CASE("WorkStealing.SubflowStarvation.1thread" * doctest::timeout(300)) {
@@ -650,7 +658,9 @@ void embarrasing_starvation_test(size_t W) {
 
       // all threads should be notified
       barrier.fetch_add(1, std::memory_order_relaxed);
-      while(barrier.load(std::memory_order_relaxed) < W);
+      while(barrier.load(std::memory_order_relaxed) < W) {
+        std::this_thread::yield();
+      }
     });
   }
 
