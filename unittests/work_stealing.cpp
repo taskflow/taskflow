@@ -704,6 +704,224 @@ TEST_CASE("WorkStealing.EmbarrasingStarvation.8threads" * doctest::timeout(300))
 }
 
 // ----------------------------------------------------------------------------
+// skewed starvation
+// ----------------------------------------------------------------------------
+
+void skewed_starvation(size_t W) {
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  std::atomic<size_t> stop, count;
+  
+  // all worker must be involved
+  std::mutex mutex;
+  std::unordered_set<int> set;
+
+  tf::Task parent = taskflow.emplace([&](){ 
+    set.clear();
+    count.store(0, std::memory_order_relaxed);
+    stop.store(false, std::memory_order_relaxed);
+  }).name("root");
+
+  tf::Task left, right;
+
+  for(size_t w=0; w<W; w++) {
+    right = taskflow.emplace([&, w](){
+      if(w) {
+        // record the worker
+        {
+          std::scoped_lock lock(mutex);
+          set.insert(executor.this_worker_id());
+        }
+
+        count.fetch_add(1, std::memory_order_release);
+
+        // block the worker
+        while(stop.load(std::memory_order_relaxed) == false) {
+          std::this_thread::yield();
+        }
+      }
+    }).name(std::string("right-") + std::to_string(w));
+
+    left = taskflow.emplace([&](){
+      std::this_thread::yield();
+    }).name(std::string("left-") + std::to_string(w));
+    
+    // we want to remove the effect of parent stealing
+    if(rand() & 1) {
+      parent.precede(left, right);
+    }
+    else {
+      parent.precede(right, left);
+    }
+
+    parent = left;
+  }
+
+  left = taskflow.emplace([&](){
+    // wait for the other W-1 workers to block
+    while(count.load(std::memory_order_acquire) + 1 != W) {
+      std::this_thread::yield();
+    }
+    stop.store(true, std::memory_order_relaxed);
+
+    REQUIRE(set.size() + 1 == W);
+  }).name("stop");
+
+  parent.precede(left);
+
+  //taskflow.dump(std::cout);
+
+  executor.run_n(taskflow, 1024).wait();
+}
+
+TEST_CASE("WorkStealing.SkewedStarvation.1thread") {
+  skewed_starvation(1);
+}
+
+TEST_CASE("WorkStealing.SkewedStarvation.2threads") {
+  skewed_starvation(2);
+}
+
+TEST_CASE("WorkStealing.SkewedStarvation.3threads") {
+  skewed_starvation(3);
+}
+
+TEST_CASE("WorkStealing.SkewedStarvation.4threads") {
+  skewed_starvation(4);
+}
+
+TEST_CASE("WorkStealing.SkewedStarvation.5threads") {
+  skewed_starvation(5);
+}
+
+TEST_CASE("WorkStealing.SkewedStarvation.6threads") {
+  skewed_starvation(6);
+}
+
+TEST_CASE("WorkStealing.SkewedStarvation.7threads") {
+  skewed_starvation(7);
+}
+
+TEST_CASE("WorkStealing.SkewedStarvation.8threads") {
+  skewed_starvation(8);
+}
+
+// ----------------------------------------------------------------------------
+// NAryStravtion
+// ----------------------------------------------------------------------------
+
+void nary_starvation(size_t W) {
+  
+  size_t N = 1024;
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  std::atomic<size_t> stop, count;
+  
+  // all worker must be involved
+  std::mutex mutex;
+  std::unordered_set<int> set;
+
+  tf::Task parent = taskflow.emplace([&](){ 
+    set.clear();
+    count.store(0, std::memory_order_relaxed);
+    stop.store(false, std::memory_order_relaxed);
+  }).name("root");
+
+  tf::Task pivot;
+
+  for(size_t w=0; w<W; w++) {
+    
+    // randomly choose a pivot to be the parent for the next level
+    size_t p = rand()%N;
+
+    for(size_t i=0; i<N; i++) {
+      tf::Task task = taskflow.emplace([&, w, p, i](){
+        
+        // the blocker cannot be the pivot - others simply return
+        if(i != (p+1)%N) {
+          std::this_thread::yield();
+          return;
+        }
+        
+        // now I need to block
+        if(w) {
+          // record the worker
+          {
+            std::scoped_lock lock(mutex);
+            set.insert(executor.this_worker_id());
+          }
+
+          count.fetch_add(1, std::memory_order_release);
+
+          // block the worker
+          while(stop.load(std::memory_order_relaxed) == false) {
+            std::this_thread::yield();
+          }
+        }
+      }).name(std::to_string(w));
+
+      parent.precede(task);
+
+      if(p == i) {
+        pivot = task;
+      }
+    }
+    parent = pivot;
+  }
+
+  pivot = taskflow.emplace([&](){
+    // wait for the other W-1 workers to block
+    while(count.load(std::memory_order_acquire) + 1 != W) {
+      std::this_thread::yield();
+    }
+    stop.store(true, std::memory_order_relaxed);
+    REQUIRE(set.size() + 1 == W);
+  }).name("stop");
+
+  parent.precede(pivot);
+
+  //taskflow.dump(std::cout);
+
+  executor.run_n(taskflow, 5).wait();
+}
+
+TEST_CASE("WorkStealing.NAryStarvation.1thread") {
+  nary_starvation(1);
+}
+
+TEST_CASE("WorkStealing.NAryStarvation.2threads") {
+  nary_starvation(2);
+}
+
+TEST_CASE("WorkStealing.NAryStarvation.3threads") {
+  nary_starvation(3);
+}
+
+TEST_CASE("WorkStealing.NAryStarvation.4threads") {
+  nary_starvation(4);
+}
+
+TEST_CASE("WorkStealing.NAryStarvation.5threads") {
+  nary_starvation(5);
+}
+
+TEST_CASE("WorkStealing.NAryStarvation.6threads") {
+  nary_starvation(6);
+}
+
+TEST_CASE("WorkStealing.NAryStarvation.7threads") {
+  nary_starvation(7);
+}
+
+TEST_CASE("WorkStealing.NAryStarvation.8threads") {
+  nary_starvation(8);
+}
+
+// ----------------------------------------------------------------------------
 // Oversubscription Test
 // ----------------------------------------------------------------------------
 
@@ -867,8 +1085,24 @@ TEST_CASE("WorkStealing.Continuation.2threads" * doctest::timeout(300)) {
   continuation_test(2);
 }
 
+TEST_CASE("WorkStealing.Continuation.3threads" * doctest::timeout(300)) {
+  continuation_test(3);
+}
+
 TEST_CASE("WorkStealing.Continuation.4threads" * doctest::timeout(300)) {
   continuation_test(4);
+}
+
+TEST_CASE("WorkStealing.Continuation.5threads" * doctest::timeout(300)) {
+  continuation_test(5);
+}
+
+TEST_CASE("WorkStealing.Continuation.6threads" * doctest::timeout(300)) {
+  continuation_test(6);
+}
+
+TEST_CASE("WorkStealing.Continuation.7threads" * doctest::timeout(300)) {
+  continuation_test(7);
 }
 
 TEST_CASE("WorkStealing.Continuation.8threads" * doctest::timeout(300)) {
