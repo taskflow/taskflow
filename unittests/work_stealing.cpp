@@ -922,6 +922,132 @@ TEST_CASE("WorkStealing.NAryStarvation.8threads") {
 }
 
 // ----------------------------------------------------------------------------
+// Wavefront Starvation Test
+// ----------------------------------------------------------------------------
+
+void wavefront_starvation(size_t W) {
+  
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  std::atomic<size_t> stop, count{0}, blocked;
+  
+  // all worker must be involved
+  std::mutex mutex;
+  std::unordered_set<int> set;
+
+  std::vector<std::vector<tf::Task>> G;
+  G.resize(W);
+
+  // create tasks
+  for(size_t i=0; i<W; i++) {
+    G[i].resize(W);
+    for(size_t j=0; j<W; j++) {
+      // source
+      if(i + j == 0) {
+        G[i][j] = taskflow.emplace([&](){
+          count.fetch_add(1, std::memory_order_relaxed);
+          stop.store(false, std::memory_order_relaxed);
+          blocked.store(0, std::memory_order_relaxed);
+          set.clear();
+        });
+      }
+      // diagonal tasks
+      else if(i + j + 1 == W) {
+        
+        G[i][j] = taskflow.emplace([&, i, j](){
+
+          count.fetch_add(1, std::memory_order_relaxed);
+          
+          // top-right will unblock all W-1 workers
+          if(i == 0 && j + 1 == W) {
+            while(blocked.load(std::memory_order_acquire) + 1 != W) {
+              std::this_thread::yield();
+            }
+            stop.store(true, std::memory_order_relaxed);
+            REQUIRE(set.size() + 1 == W);
+          }
+          else {
+            // record the worker
+            {
+              std::scoped_lock lock(mutex);
+              set.insert(executor.this_worker_id());
+            }
+
+            blocked.fetch_add(1, std::memory_order_release);
+
+            // block the worker
+            while(stop.load(std::memory_order_relaxed) == false) {
+              std::this_thread::yield();
+            }
+          }
+        });
+      }
+      // other tasks
+      else {
+        G[i][j] = taskflow.emplace([&](){
+          count.fetch_add(1, std::memory_order_relaxed);
+        });
+      }
+
+      // name the task
+      G[i][j].name(std::to_string(i) + ", " + std::to_string(j));
+    }
+  }
+
+  // create dependency
+  for(size_t i=0; i<W; i++) {
+    for(size_t j=0; j<W; j++) {
+      size_t next_i = i + 1;
+      size_t next_j = j + 1;
+      if(next_i < W) {
+        G[i][j].precede(G[next_i][j]);
+      }
+      if(next_j < W) {
+        G[i][j].precede(G[i][next_j]);
+      }
+    }
+  }
+
+  //taskflow.dump(std::cout);
+  executor.run_n(taskflow, 1024).wait();
+
+  REQUIRE(count == W*W*1024);
+}
+
+TEST_CASE("WorkStealing.WavefrontStarvation.1thread") {
+  wavefront_starvation(1);
+}
+
+TEST_CASE("WorkStealing.WavefrontStarvation.2threads") {
+  wavefront_starvation(2);
+}
+
+TEST_CASE("WorkStealing.WavefrontStarvation.3threads") {
+  wavefront_starvation(3);
+}
+
+TEST_CASE("WorkStealing.WavefrontStarvation.4threads") {
+  wavefront_starvation(4);
+}
+
+TEST_CASE("WorkStealing.WavefrontStarvation.5threads") {
+  wavefront_starvation(5);
+}
+
+TEST_CASE("WorkStealing.WavefrontStarvation.6threads") {
+  wavefront_starvation(6);
+}
+
+TEST_CASE("WorkStealing.WavefrontStarvation.7threads") {
+  wavefront_starvation(7);
+}
+
+TEST_CASE("WorkStealing.WavefrontStarvation.8threads") {
+  wavefront_starvation(8);
+}
+
+// ----------------------------------------------------------------------------
 // Oversubscription Test
 // ----------------------------------------------------------------------------
 
