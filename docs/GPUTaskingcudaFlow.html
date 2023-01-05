@@ -5,7 +5,7 @@
   <title>Cookbook &raquo; GPU Tasking (cudaFlow) | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -115,96 +115,96 @@
 <span class="mi">51</span><span class="o">:</span><span class="w">   </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
 <span class="mi">52</span><span class="o">:</span><span class="w"></span>
 <span class="mi">53</span><span class="o">:</span><span class="w">   </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w">                  </span><span class="c1">// dump the taskflow</span>
-<span class="mi">54</span><span class="o">:</span><span class="w"> </span><span class="p">}</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 31.125rem; height: 14.562rem;" viewBox="0.00 0.00 498.27 232.77">
-<g transform="scale(1 1) rotate(0) translate(4 228.7696)">
+<span class="mi">54</span><span class="o">:</span><span class="w"> </span><span class="p">}</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 30.000rem; height: 14.562rem;" viewBox="0.00 0.00 479.55 232.77">
+<g transform="scale(1 1) rotate(0) translate(4 228.77)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x55b2191178a8</title>
-<polygon points="8,-47.3848 8,-180.3848 482.2742,-180.3848 482.2742,-47.3848 8,-47.3848"/>
-<text text-anchor="middle" x="245.1371" y="-163.5848">cudaFlow: saxpy</text>
+<polygon points="8,-47.38 8,-180.38 463.55,-180.38 463.55,-47.38 8,-47.38"/>
+<text text-anchor="middle" x="235.77" y="-163.58">cudaFlow: saxpy</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x55b219117698</title>
-<ellipse cx="307.6848" cy="-206.3848" rx="68.6788" ry="18.2703"/>
-<text text-anchor="middle" x="307.6848" y="-202.5848">allocate_x</text>
+<ellipse cx="296.91" cy="-206.38" rx="63.78" ry="18.27"/>
+<text text-anchor="middle" x="296.91" y="-202.58">allocate_x</text>
 </g>
 <g class="m-node">
 <title>p0x55b2191178a8</title>
-<polygon points="474.2742,-118.3848 471.2742,-122.3848 450.2742,-122.3848 447.2742,-118.3848 412.2742,-118.3848 412.2742,-82.3848 474.2742,-82.3848 474.2742,-118.3848"/>
-<text text-anchor="middle" x="443.2742" y="-96.5848">saxpy</text>
+<polygon points="455.55,-118.38 452.55,-122.38 431.55,-122.38 428.55,-118.38 396.55,-118.38 396.55,-82.38 455.55,-82.38 455.55,-118.38"/>
+<text text-anchor="middle" x="426.05" y="-96.58">saxpy</text>
 </g>
 <g class="m-edge">
 <title>p0x55b219117698&#45;&gt;p0x55b2191178a8</title>
-<path d="M358.3808,-193.9235C364.6824,-191.2971 370.8188,-188.1487 376.2742,-184.3848 397.914,-169.4545 416.0339,-145.5039 427.9507,-126.9903"/>
-<polygon points="430.9827,-128.7423 433.2907,-118.4019 425.0381,-125.0461 430.9827,-128.7423"/>
+<path d="M343.62,-193.87C349.59,-191.24 355.41,-188.1 360.55,-184.38 381.31,-169.35 398.59,-145.77 410.02,-127.42"/>
+<polygon points="413.15,-129 415.3,-118.63 407.15,-125.4 413.15,-129"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x55b2191177a0</title>
-<ellipse cx="307.6848" cy="-18.3848" rx="68.6788" ry="18.2703"/>
-<text text-anchor="middle" x="307.6848" y="-14.5848">allocate_y</text>
+<ellipse cx="296.91" cy="-18.38" rx="63.78" ry="18.27"/>
+<text text-anchor="middle" x="296.91" y="-14.58">allocate_y</text>
 </g>
 <g class="m-edge">
 <title>p0x55b2191177a0&#45;&gt;p0x55b2191178a8</title>
-<path d="M353.0018,-32.3015C360.9846,-35.4758 369.0451,-39.176 376.2742,-43.3848 391.323,-52.1462 406.258,-64.4108 418.1951,-75.3198"/>
-<polygon points="415.8889,-77.9553 425.5776,-82.2423 420.677,-72.849 415.8889,-77.9553"/>
+<path d="M338.66,-32.28C346.17,-35.49 353.77,-39.21 360.55,-43.38 374.92,-52.23 389.16,-64.37 400.6,-75.17"/>
+<polygon points="398.41,-77.92 408.03,-82.37 403.29,-72.9 398.41,-77.92"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f2870401a50</title>
-<ellipse cx="60.5477" cy="-128.3848" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="60.5477" y="-124.5848">h2d_x</text>
+<ellipse cx="59.13" cy="-128.38" rx="43.27" ry="18.27"/>
+<text text-anchor="middle" x="59.13" y="-124.58">h2d_x</text>
 </g>
 <g class="m-node">
 <title>p0x7f2870402bc0</title>
-<polygon points="203.0955,-118.3848 145.0955,-118.3848 141.0955,-114.3848 141.0955,-82.3848 199.0955,-82.3848 203.0955,-86.3848 203.0955,-118.3848"/>
-<polyline points="199.0955,-114.3848 141.0955,-114.3848 "/>
-<polyline points="199.0955,-114.3848 199.0955,-82.3848 "/>
-<polyline points="199.0955,-114.3848 203.0955,-118.3848 "/>
-<text text-anchor="middle" x="172.0955" y="-96.5848">saxpy</text>
+<polygon points="197.27,-118.38 142.27,-118.38 138.27,-114.38 138.27,-82.38 193.27,-82.38 197.27,-86.38 197.27,-118.38"/>
+<polyline points="193.27,-114.38 138.27,-114.38"/>
+<polyline points="193.27,-114.38 193.27,-82.38"/>
+<polyline points="193.27,-114.38 197.27,-118.38"/>
+<text text-anchor="middle" x="167.77" y="-96.58">saxpy</text>
 </g>
 <g class="m-edge">
 <title>p0x7f2870401a50&#45;&gt;p0x7f2870402bc0</title>
-<path d="M98.6241,-118.8271C109.0508,-116.2098 120.3981,-113.3615 130.9863,-110.7037"/>
-<polygon points="132.0035,-114.0571 140.8505,-108.2277 130.2993,-107.2677 132.0035,-114.0571"/>
+<path d="M96.23,-118.91C106.58,-116.19 117.9,-113.22 128.38,-110.46"/>
+<polygon points="129.33,-113.83 138.11,-107.91 127.55,-107.06 129.33,-113.83"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f2870402310</title>
-<ellipse cx="307.6848" cy="-73.3848" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="307.6848" y="-69.5848">d2h_x</text>
+<ellipse cx="296.91" cy="-73.38" rx="43.27" ry="18.27"/>
+<text text-anchor="middle" x="296.91" y="-69.58">d2h_x</text>
 </g>
 <g class="m-edge">
 <title>p0x7f2870402bc0&#45;&gt;p0x7f2870402310</title>
-<path d="M203.2024,-94.1904C219.2987,-90.9852 239.3435,-86.9936 257.5589,-83.3664"/>
-<polygon points="258.3298,-86.7817 267.4537,-81.396 256.9627,-79.9165 258.3298,-86.7817"/>
+<path d="M197.3,-94.33C212.23,-91.15 230.92,-87.19 247.99,-83.56"/>
+<polygon points="248.77,-86.97 257.82,-81.47 247.31,-80.13 248.77,-86.97"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f2870402780</title>
-<ellipse cx="307.6848" cy="-128.3848" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="307.6848" y="-124.5848">d2h_y</text>
+<ellipse cx="296.91" cy="-128.38" rx="43.27" ry="18.27"/>
+<text text-anchor="middle" x="296.91" y="-124.58">d2h_y</text>
 </g>
 <g class="m-edge">
 <title>p0x7f2870402bc0&#45;&gt;p0x7f2870402780</title>
-<path d="M203.2024,-106.8085C219.3647,-110.1461 239.5079,-114.3058 257.7828,-118.0797"/>
-<polygon points="257.2049,-121.5342 267.7062,-120.129 258.6207,-114.6788 257.2049,-121.5342"/>
+<path d="M197.3,-106.67C212.36,-109.98 231.22,-114.14 248.41,-117.93"/>
+<polygon points="247.78,-121.37 258.3,-120.1 249.29,-114.53 247.78,-121.37"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f2870401eb0</title>
-<ellipse cx="60.5477" cy="-73.3848" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="60.5477" y="-69.5848">h2d_y</text>
+<ellipse cx="59.13" cy="-73.38" rx="43.27" ry="18.27"/>
+<text text-anchor="middle" x="59.13" y="-69.58">h2d_y</text>
 </g>
 <g class="m-edge">
 <title>p0x7f2870401eb0&#45;&gt;p0x7f2870402bc0</title>
-<path d="M99.2487,-82.7523C109.4425,-85.2197 120.4785,-87.8909 130.8031,-90.39"/>
-<polygon points="130.2904,-93.8669 140.8331,-92.8178 131.9372,-87.0634 130.2904,-93.8669"/>
+<path d="M96.53,-82.6C106.67,-85.17 117.71,-87.96 127.98,-90.56"/>
+<polygon points="127.37,-94.02 137.93,-93.08 129.09,-87.24 127.37,-94.02"/>
 </g>
 <g class="m-edge">
 <title>p0x7f2870402310&#45;&gt;p0x55b2191178a8</title>
-<path d="M347.999,-81.4126C364.9361,-84.7853 384.6278,-88.7065 401.698,-92.1057"/>
-<polygon points="401.4487,-95.6247 411.9397,-94.1451 402.8158,-88.7595 401.4487,-95.6247"/>
+<path d="M336.05,-81.49C351.89,-84.85 370.25,-88.75 386.17,-92.13"/>
+<polygon points="385.72,-95.61 396.23,-94.26 387.17,-88.76 385.72,-95.61"/>
 </g>
 <g class="m-edge">
 <title>p0x7f2870402780&#45;&gt;p0x55b2191178a8</title>
-<path d="M347.6327,-120.1353C364.872,-116.5753 385.0189,-112.4148 402.3641,-108.8329"/>
-<polygon points="403.1242,-112.2499 412.2097,-106.7998 401.7085,-105.3946 403.1242,-112.2499"/>
+<path d="M335.71,-120.06C351.68,-116.54 370.26,-112.45 386.33,-108.91"/>
+<polygon points="387.46,-112.25 396.48,-106.68 385.96,-105.41 387.46,-112.25"/>
 </g>
 </g>
 </svg>
@@ -243,131 +243,131 @@
 <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;kernel&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// creates the 5th cudaFlow</span>
 
 <span class="n">kernel</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">h2d_x</span><span class="p">,</span><span class="w"> </span><span class="n">h2d_y</span><span class="p">)</span><span class="w"></span>
-<span class="w">      </span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">d2h_x</span><span class="p">,</span><span class="w"> </span><span class="n">d2h_y</span><span class="p">);</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 39.875rem; height: 21.250rem;" viewBox="0.00 0.00 638.00 339.54">
-<g transform="scale(1 1) rotate(0) translate(4 335.5391)">
+<span class="w">      </span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">d2h_x</span><span class="p">,</span><span class="w"> </span><span class="n">d2h_y</span><span class="p">);</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 37.750rem; height: 21.250rem;" viewBox="0.00 0.00 604.00 339.54">
+<g transform="scale(1 1) rotate(0) translate(4 335.54)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x21987b0</title>
-<polygon points="475,-166.7696 475,-323.5391 622,-323.5391 622,-166.7696 475,-166.7696"/>
-<text text-anchor="middle" x="548.5" y="-306.7391">cudaFlow: h2d_x</text>
+<polygon points="449,-166.77 449,-323.54 588,-323.54 588,-166.77 449,-166.77"/>
+<text text-anchor="middle" x="518.5" y="-306.74">cudaFlow: h2d_x</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x2198870</title>
-<polygon points="320,-166.7696 320,-323.5391 467,-323.5391 467,-166.7696 320,-166.7696"/>
-<text text-anchor="middle" x="393.5" y="-306.7391">cudaFlow: h2d_y</text>
+<polygon points="302,-166.77 302,-323.54 441,-323.54 441,-166.77 302,-166.77"/>
+<text text-anchor="middle" x="371.5" y="-306.74">cudaFlow: h2d_y</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x2198930</title>
-<polygon points="8,-8 8,-158.7696 155,-158.7696 155,-8 8,-8"/>
-<text text-anchor="middle" x="81.5" y="-141.9696">cudaFlow: d2h_x</text>
+<polygon points="8,-8 8,-158.77 147,-158.77 147,-8 8,-8"/>
+<text text-anchor="middle" x="77.5" y="-141.97">cudaFlow: d2h_x</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x21989f0</title>
-<polygon points="320,-8 320,-158.7696 467,-158.7696 467,-8 320,-8"/>
-<text text-anchor="middle" x="393.5" y="-141.9696">cudaFlow: d2h_y</text>
+<polygon points="302,-8 302,-158.77 441,-158.77 441,-8 302,-8"/>
+<text text-anchor="middle" x="371.5" y="-141.97">cudaFlow: d2h_y</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x2198ab0</title>
-<polygon points="163,-80.3848 163,-244.7696 312,-244.7696 312,-80.3848 163,-80.3848"/>
-<text text-anchor="middle" x="237.5" y="-227.9696">cudaFlow: kernel</text>
+<polygon points="155,-80.38 155,-244.77 294,-244.77 294,-80.38 155,-80.38"/>
+<text text-anchor="middle" x="224.5" y="-227.97">cudaFlow: kernel</text>
 </g>
 <g class="m-node">
 <title>p0x21987b0</title>
-<polygon points="552.5,-210.7696 549.5,-214.7696 528.5,-214.7696 525.5,-210.7696 489.5,-210.7696 489.5,-174.7696 552.5,-174.7696 552.5,-210.7696"/>
-<text text-anchor="middle" x="521" y="-188.9696">h2d_x</text>
+<polygon points="524.5,-210.77 521.5,-214.77 500.5,-214.77 497.5,-210.77 463.5,-210.77 463.5,-174.77 524.5,-174.77 524.5,-210.77"/>
+<text text-anchor="middle" x="494" y="-188.97">h2d_x</text>
 </g>
 <g class="m-node">
 <title>p0x2198ab0</title>
-<polygon points="303.5,-124.3848 300.5,-128.3848 279.5,-128.3848 276.5,-124.3848 238.5,-124.3848 238.5,-88.3848 303.5,-88.3848 303.5,-124.3848"/>
-<text text-anchor="middle" x="271" y="-102.5848">kernel</text>
+<polygon points="285.5,-124.38 282.5,-128.38 261.5,-128.38 258.5,-124.38 224.5,-124.38 224.5,-88.38 285.5,-88.38 285.5,-124.38"/>
+<text text-anchor="middle" x="255" y="-102.58">kernel</text>
 </g>
 <g class="m-edge">
 <title>p0x21987b0&#45;&gt;p0x2198ab0</title>
-<path d="M491.1754,-174.6478C484.7266,-171.4837 477.7976,-168.6183 471,-166.7696 437.7186,-157.7181 346.9612,-173.9678 316,-158.7696 304.4293,-153.0897 294.6407,-142.9418 287.178,-133.0803"/>
-<polygon points="289.8414,-130.7826 281.2323,-124.6074 284.1114,-134.8035 289.8414,-130.7826"/>
+<path d="M465.52,-174.74C458.99,-171.55 451.92,-168.63 445,-166.77 413.41,-158.26 327.25,-173.42 298,-158.77 286.58,-153.05 277.04,-142.78 269.87,-132.92"/>
+<polygon points="272.68,-130.82 264.2,-124.48 266.88,-134.73 272.68,-130.82"/>
 </g>
 <g class="m-node">
 <title>p0x2198930</title>
-<polygon points="139.5,-52 136.5,-56 115.5,-56 112.5,-52 76.5,-52 76.5,-16 139.5,-16 139.5,-52"/>
-<text text-anchor="middle" x="108" y="-30.2">d2h_x</text>
+<polygon points="132.5,-52 129.5,-56 108.5,-56 105.5,-52 71.5,-52 71.5,-16 132.5,-16 132.5,-52"/>
+<text text-anchor="middle" x="102" y="-30.2">d2h_x</text>
 </g>
 <g class="m-edge">
 <title>p0x2198ab0&#45;&gt;p0x2198930</title>
-<path d="M238.4063,-91.9106C212.7263,-80.5067 176.7664,-64.5377 149.1106,-52.2563"/>
-<polygon points="150.2651,-48.9395 139.7052,-48.0796 147.4241,-55.337 150.2651,-48.9395"/>
+<path d="M224.41,-91.31C200.64,-80.38 167.49,-65.13 141.69,-53.26"/>
+<polygon points="143.09,-50.05 132.54,-49.05 140.16,-56.41 143.09,-50.05"/>
 </g>
 <g class="m-node">
 <title>p0x21989f0</title>
-<polygon points="397.5,-52 394.5,-56 373.5,-56 370.5,-52 334.5,-52 334.5,-16 397.5,-16 397.5,-52"/>
-<text text-anchor="middle" x="366" y="-30.2">d2h_y</text>
+<polygon points="377.5,-52 374.5,-56 353.5,-56 350.5,-52 316.5,-52 316.5,-16 377.5,-16 377.5,-52"/>
+<text text-anchor="middle" x="347" y="-30.2">d2h_y</text>
 </g>
 <g class="m-edge">
 <title>p0x2198ab0&#45;&gt;p0x21989f0</title>
-<path d="M294.9725,-88.119C306.8762,-79.0491 321.4173,-67.9695 334.2351,-58.2031"/>
-<polygon points="336.5313,-60.8538 342.3642,-52.0091 332.2888,-55.2859 336.5313,-60.8538"/>
+<path d="M277.27,-88.35C289.05,-79.34 303.69,-68.14 316.5,-58.33"/>
+<polygon points="318.8,-60.98 324.62,-52.13 314.55,-55.42 318.8,-60.98"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe390000e60</title>
-<ellipse cx="528" cy="-271.1543" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="528" y="-267.3543">h2d_x</text>
+<ellipse cx="500" cy="-271.15" rx="43.27" ry="18.27"/>
+<text text-anchor="middle" x="500" y="-267.35">h2d_x</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe390000e60&#45;&gt;p0x21987b0</title>
-<path d="M526.3411,-252.5782C525.4981,-243.1389 524.456,-231.4692 523.5167,-220.951"/>
-<polygon points="526.9986,-220.5909 522.6228,-210.9419 520.0263,-221.2136 526.9986,-220.5909"/>
+<path d="M498.61,-252.44C497.88,-243.15 496.97,-231.56 496.15,-221.15"/>
+<polygon points="499.62,-220.56 495.34,-210.86 492.64,-221.11 499.62,-220.56"/>
 </g>
 <g class="m-node">
 <title>p0x2198870</title>
-<polygon points="397.5,-210.7696 394.5,-214.7696 373.5,-214.7696 370.5,-210.7696 334.5,-210.7696 334.5,-174.7696 397.5,-174.7696 397.5,-210.7696"/>
-<text text-anchor="middle" x="366" y="-188.9696">h2d_y</text>
+<polygon points="377.5,-210.77 374.5,-214.77 353.5,-214.77 350.5,-210.77 316.5,-210.77 316.5,-174.77 377.5,-174.77 377.5,-210.77"/>
+<text text-anchor="middle" x="347" y="-188.97">h2d_y</text>
 </g>
 <g class="m-edge">
 <title>p0x2198870&#45;&gt;p0x2198ab0</title>
-<path d="M336.7388,-174.7686C329.6751,-169.9182 322.3411,-164.4343 316,-158.7696 307.1007,-150.8194 298.3192,-141.1326 290.9091,-132.2614"/>
-<polygon points="293.552,-129.964 284.5254,-124.4169 288.1226,-134.3824 293.552,-129.964"/>
+<path d="M318.78,-174.73C311.7,-169.94 304.32,-164.47 298,-158.77 289.36,-150.98 280.9,-141.43 273.81,-132.69"/>
+<polygon points="276.4,-130.33 267.46,-124.64 270.9,-134.66 276.4,-130.33"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe390001890</title>
-<ellipse cx="373" cy="-271.1543" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="373" y="-267.3543">h2d_y</text>
+<ellipse cx="353" cy="-271.15" rx="43.27" ry="18.27"/>
+<text text-anchor="middle" x="353" y="-267.35">h2d_y</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe390001890&#45;&gt;p0x2198870</title>
-<path d="M371.3411,-252.5782C370.4981,-243.1389 369.456,-231.4692 368.5167,-220.951"/>
-<polygon points="371.9986,-220.5909 367.6228,-210.9419 365.0263,-221.2136 371.9986,-220.5909"/>
+<path d="M351.61,-252.44C350.88,-243.15 349.97,-231.56 349.15,-221.15"/>
+<polygon points="352.62,-220.56 348.34,-210.86 345.64,-221.11 352.62,-220.56"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe39000b790</title>
-<ellipse cx="102" cy="-106.3848" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="102" y="-102.5848">d2h_x</text>
+<ellipse cx="96" cy="-106.38" rx="43.27" ry="18.27"/>
+<text text-anchor="middle" x="96" y="-102.58">d2h_x</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe39000b790&#45;&gt;p0x2198930</title>
-<path d="M103.5451,-87.7439C104.187,-80.001 104.946,-70.844 105.6539,-62.3031"/>
-<polygon points="109.1427,-62.5821 106.4809,-52.3271 102.1667,-62.0038 109.1427,-62.5821"/>
+<path d="M97.48,-87.99C98.14,-80.23 98.94,-70.91 99.68,-62.26"/>
+<polygon points="103.17,-62.46 100.53,-52.2 96.2,-61.86 103.17,-62.46"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe3900017e0</title>
-<ellipse cx="373" cy="-106.3848" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="373" y="-102.5848">d2h_y</text>
+<ellipse cx="353" cy="-106.38" rx="43.27" ry="18.27"/>
+<text text-anchor="middle" x="353" y="-102.58">d2h_y</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe3900017e0&#45;&gt;p0x21989f0</title>
-<path d="M371.1973,-87.7439C370.4485,-80.001 369.563,-70.844 368.7371,-62.3031"/>
-<polygon points="372.2187,-61.9438 367.7723,-52.3271 365.2512,-62.6176 372.2187,-61.9438"/>
+<path d="M351.52,-87.99C350.86,-80.23 350.06,-70.91 349.32,-62.26"/>
+<polygon points="352.8,-61.86 348.47,-52.2 345.83,-62.46 352.8,-61.86"/>
 </g>
 <g class="m-node">
 <title>p0x7fe390002000</title>
-<polygon points="302,-210.7696 244,-210.7696 240,-206.7696 240,-174.7696 298,-174.7696 302,-178.7696 302,-210.7696"/>
-<polyline points="298,-206.7696 240,-206.7696 "/>
-<polyline points="298,-206.7696 298,-174.7696 "/>
-<polyline points="298,-206.7696 302,-210.7696 "/>
-<text text-anchor="middle" x="271" y="-188.9696">saxpy</text>
+<polygon points="284.5,-210.77 229.5,-210.77 225.5,-206.77 225.5,-174.77 280.5,-174.77 284.5,-178.77 284.5,-210.77"/>
+<polyline points="280.5,-206.77 225.5,-206.77"/>
+<polyline points="280.5,-206.77 280.5,-174.77"/>
+<polyline points="280.5,-206.77 284.5,-210.77"/>
+<text text-anchor="middle" x="255" y="-188.97">saxpy</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe390002000&#45;&gt;p0x2198ab0</title>
-<path d="M271,-174.4496C271,-162.9966 271,-148.0043 271,-135.0062"/>
-<polygon points="274.5001,-134.6783 271,-124.6784 267.5001,-134.6784 274.5001,-134.6783"/>
+<path d="M255,-174.69C255,-163.26 255,-147.95 255,-134.82"/>
+<polygon points="258.5,-134.44 255,-124.44 251.5,-134.44 258.5,-134.44"/>
 </g>
 </g>
 </svg>
@@ -380,56 +380,56 @@
 <span class="w">                         </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;saxpy&quot;</span><span class="p">);</span><span class="w"></span>
 <span class="w">  </span><span class="n">saxpy</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">h2d_x</span><span class="p">,</span><span class="w"> </span><span class="n">h2d_y</span><span class="p">)</span><span class="w"></span>
 <span class="w">       </span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">d2h_x</span><span class="p">,</span><span class="w"> </span><span class="n">d2h_y</span><span class="p">);</span><span class="w"></span>
-<span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;saxpy&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// creates one cudaFlow</span></pre><div class="m-graph"><svg style="width: 20.000rem; height: 6.250rem;" viewBox="0.00 0.00 320.19 99.77">
-<g transform="scale(1 1) rotate(0) translate(4 95.7696)">
+<span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;saxpy&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// creates one cudaFlow</span></pre><div class="m-graph"><svg style="width: 19.500rem; height: 6.250rem;" viewBox="0.00 0.00 311.53 99.77">
+<g transform="scale(1 1) rotate(0) translate(4 95.77)">
 <title>Taskflow</title>
 <g class="m-node m-flat">
 <title>p0x7f2870401a50</title>
-<ellipse cx="44.5477" cy="-73.3848" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="44.5477" y="-69.5848">h2d_x</text>
+<ellipse cx="43.13" cy="-73.38" rx="43.27" ry="18.27"/>
+<text text-anchor="middle" x="43.13" y="-69.58">h2d_x</text>
 </g>
 <g class="m-node">
 <title>p0x7f2870402bc0</title>
-<polygon points="187.0955,-63.3848 129.0955,-63.3848 125.0955,-59.3848 125.0955,-27.3848 183.0955,-27.3848 187.0955,-31.3848 187.0955,-63.3848"/>
-<polyline points="183.0955,-59.3848 125.0955,-59.3848 "/>
-<polyline points="183.0955,-59.3848 183.0955,-27.3848 "/>
-<polyline points="183.0955,-59.3848 187.0955,-63.3848 "/>
-<text text-anchor="middle" x="156.0955" y="-41.5848">saxpy</text>
+<polygon points="181.27,-63.38 126.27,-63.38 122.27,-59.38 122.27,-27.38 177.27,-27.38 181.27,-31.38 181.27,-63.38"/>
+<polyline points="177.27,-59.38 122.27,-59.38"/>
+<polyline points="177.27,-59.38 177.27,-27.38"/>
+<polyline points="177.27,-59.38 181.27,-63.38"/>
+<text text-anchor="middle" x="151.77" y="-41.58">saxpy</text>
 </g>
 <g class="m-edge">
 <title>p0x7f2870401a50&#45;&gt;p0x7f2870402bc0</title>
-<path d="M82.6241,-63.8271C93.0508,-61.2098 104.3981,-58.3615 114.9863,-55.7037"/>
-<polygon points="116.0035,-59.0571 124.8505,-53.2277 114.2993,-52.2677 116.0035,-59.0571"/>
+<path d="M80.23,-63.91C90.58,-61.19 101.9,-58.22 112.38,-55.46"/>
+<polygon points="113.33,-58.83 122.11,-52.91 111.55,-52.06 113.33,-58.83"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f2870402310</title>
-<ellipse cx="267.6432" cy="-73.3848" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="267.6432" y="-69.5848">d2h_x</text>
+<ellipse cx="260.4" cy="-73.38" rx="43.27" ry="18.27"/>
+<text text-anchor="middle" x="260.4" y="-69.58">d2h_x</text>
 </g>
 <g class="m-edge">
 <title>p0x7f2870402bc0&#45;&gt;p0x7f2870402310</title>
-<path d="M187.1677,-53.1843C197.1376,-55.6869 208.4272,-58.5208 219.3295,-61.2574"/>
-<polygon points="218.6328,-64.691 229.184,-63.731 220.3371,-57.9016 218.6328,-64.691"/>
+<path d="M181.34,-52.89C191.17,-55.47 202.43,-58.43 213.29,-61.28"/>
+<polygon points="212.53,-64.7 223.09,-63.85 214.31,-57.93 212.53,-64.7"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f2870402780</title>
-<ellipse cx="267.6432" cy="-18.3848" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="267.6432" y="-14.5848">d2h_y</text>
+<ellipse cx="260.4" cy="-18.38" rx="43.27" ry="18.27"/>
+<text text-anchor="middle" x="260.4" y="-14.58">d2h_y</text>
 </g>
 <g class="m-edge">
 <title>p0x7f2870402bc0&#45;&gt;p0x7f2870402780</title>
-<path d="M187.1677,-37.8638C197.1376,-35.4506 208.4272,-32.7179 219.3295,-30.079"/>
-<polygon points="220.2881,-33.4482 229.184,-27.6938 218.6413,-26.6446 220.2881,-33.4482"/>
+<path d="M181.34,-38.15C191.07,-35.69 202.22,-32.86 212.98,-30.14"/>
+<polygon points="213.87,-33.52 222.7,-27.68 212.15,-26.74 213.87,-33.52"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f2870401eb0</title>
-<ellipse cx="44.5477" cy="-18.3848" rx="44.5955" ry="18.2703"/>
-<text text-anchor="middle" x="44.5477" y="-14.5848">h2d_y</text>
+<ellipse cx="43.13" cy="-18.38" rx="43.27" ry="18.27"/>
+<text text-anchor="middle" x="43.13" y="-14.58">h2d_y</text>
 </g>
 <g class="m-edge">
 <title>p0x7f2870401eb0&#45;&gt;p0x7f2870402bc0</title>
-<path d="M83.2487,-27.7523C93.4425,-30.2197 104.4785,-32.8909 114.8031,-35.39"/>
-<polygon points="114.2904,-38.8669 124.8331,-37.8178 115.9372,-32.0634 114.2904,-38.8669"/>
+<path d="M80.53,-27.6C90.67,-30.17 101.71,-32.96 111.98,-35.56"/>
+<polygon points="111.37,-39.02 121.93,-38.08 113.09,-32.24 111.37,-39.02"/>
 </g>
 </g>
 </svg>
@@ -513,7 +513,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

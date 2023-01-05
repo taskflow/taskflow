@@ -1,54 +1,77 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="kmeans" kind="page">
     <compoundname>kmeans</compoundname>
     <title>k-means Clustering</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Problem Formulation</name>
+        <reference>kmeans_1KMeansProblemFormulation</reference>
+    </tocsect>
+      <tocsect>
+        <name>Parallel k-means using CPUs</name>
+        <reference>kmeans_1ParallelKMeansUsingCPUs</reference>
+    </tocsect>
+      <tocsect>
+        <name>Benchmarking</name>
+        <reference>kmeans_1KMeansBenchmarking</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>We study a fundamental clustering problem in unsupervised learning, <emphasis>k-means clustering</emphasis>. We will begin by discussing the problem formulation and then learn how to write a parallel k-means algorithm.</para><sect1 id="kmeans_1KMeansProblemFormulation">
+<para>We study a fundamental clustering problem in unsupervised learning, <emphasis>k-means clustering</emphasis>. We will begin by discussing the problem formulation and then learn how to write a parallel k-means algorithm.</para>
+<sect1 id="kmeans_1KMeansProblemFormulation">
 <title>Problem Formulation</title>
-<para>k-means clustering uses <emphasis>centroids</emphasis>, k different randomly-initiated points in the data, and assigns every data point to the nearest centroid. After every point has been assigned, the centroid is moved to the average of all of the points assigned to it. We describe the k-means algorithm in the following steps:</para><para><itemizedlist>
+<para>k-means clustering uses <emphasis>centroids</emphasis>, k different randomly-initiated points in the data, and assigns every data point to the nearest centroid. After every point has been assigned, the centroid is moved to the average of all of the points assigned to it. We describe the k-means algorithm in the following steps:</para>
+<para><itemizedlist>
 <listitem>
-<para>Step 1: initialize k random centroids </para></listitem>
+<para>Step 1: initialize k random centroids </para>
+</listitem>
 <listitem>
-<para>Step 2: for every data point, find the nearest centroid (L2 distance or other measurements) and assign the point to it </para></listitem>
+<para>Step 2: for every data point, find the nearest centroid (L2 distance or other measurements) and assign the point to it </para>
+</listitem>
 <listitem>
-<para>Step 3: for every centroid, move the centroid to the average of the points assigned to that centroid </para></listitem>
+<para>Step 3: for every centroid, move the centroid to the average of the points assigned to that centroid </para>
+</listitem>
 <listitem>
-<para>Step 4: go to Step 2 until converged (no more changes in the last few iterations) or maximum iterations reached </para></listitem>
+<para>Step 4: go to Step 2 until converged (no more changes in the last few iterations) or maximum iterations reached </para>
+</listitem>
 </itemizedlist>
-</para><para>The algorithm is illustrated as follows:</para><para><image type="html" name="kmeans_1.png"></image>
-</para><para>A sequential implementation of k-means is described as follows:</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>sequential<sp/>implementation<sp/>of<sp/>k-means<sp/>on<sp/>a<sp/>CPU</highlight><highlight class="normal"></highlight></codeline>
+</para>
+<para>The algorithm is illustrated as follows:</para>
+<para><image type="html" name="kmeans_1.png"></image>
+</para>
+<para>A sequential implementation of k-means is described as follows:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>sequential<sp/>implementation<sp/>of<sp/>k-means<sp/>on<sp/>a<sp/>CPU</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>N:<sp/>number<sp/>of<sp/>points</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>K:<sp/>number<sp/>of<sp/>clusters</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>M:<sp/>number<sp/>of<sp/>iterations</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>px/py:<sp/>2D<sp/>point<sp/>vector<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>kmeans_seq(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>K,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>M,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref>&amp;<sp/>px,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref>&amp;<sp/>py</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>K,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>M,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref>&amp;<sp/>px,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref>&amp;<sp/>py</highlight></codeline>
 <codeline><highlight class="normal">)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>c(K);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref><sp/>sx(K),<sp/>sy(K),<sp/>mx(K),<sp/>my(K);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>c(K);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref><sp/>sx(K),<sp/>sy(K),<sp/>mx(K),<sp/>my(K);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>initial<sp/>centroids</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/copy_n" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::copy_n</ref>(px.begin(),<sp/>K,<sp/>mx.begin());</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/copy_n" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::copy_n</ref>(py.begin(),<sp/>K,<sp/>my.begin());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/copy_n" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::copy_n</ref>(px.begin(),<sp/>K,<sp/>mx.begin());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/algorithm/copy_n" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::copy_n</ref>(py.begin(),<sp/>K,<sp/>my.begin());</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>k-means<sp/>iteration</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>m=0;<sp/>m&lt;M;<sp/>m++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>clear<sp/>the<sp/>storage</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/algorithm/fill_n" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::fill_n</ref>(sx.begin(),<sp/>K,<sp/>0.0f);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/algorithm/fill_n" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::fill_n</ref>(sy.begin(),<sp/>K,<sp/>0.0f);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/algorithm/fill_n" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::fill_n</ref>(c.begin(),<sp/>K,<sp/>0);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/algorithm/fill_n" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::fill_n</ref>(sx.begin(),<sp/>K,<sp/>0.0f);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/algorithm/fill_n" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::fill_n</ref>(sy.begin(),<sp/>K,<sp/>0.0f);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/algorithm/fill_n" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::fill_n</ref>(c.begin(),<sp/>K,<sp/>0);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>find<sp/>the<sp/>best<sp/>k<sp/>(cluster<sp/>id)<sp/>for<sp/>each<sp/>point</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>++i)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>x<sp/>=<sp/>px[i];</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>y<sp/>=<sp/>py[i];</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>best_d<sp/>=<sp/><ref refid="cpp/types/numeric_limits/max" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::numeric_limits&lt;float&gt;::max</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>best_d<sp/>=<sp/><ref refid="cpp/types/numeric_limits/max" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::numeric_limits&lt;float&gt;::max</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>best_k<sp/>=<sp/>0;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k<sp/>=<sp/>0;<sp/>k<sp/>&lt;<sp/>K;<sp/>++k)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>d<sp/>=<sp/>L2(x,<sp/>y,<sp/>mx[k],<sp/>my[k]);</highlight></codeline>
@@ -64,22 +87,24 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>update<sp/>the<sp/>centroid</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k=0;<sp/>k&lt;K;<sp/>k++)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/><ref refid="cpp/algorithm/max" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">max</ref>(1,<sp/>c[k]);<sp/><sp/></highlight><highlight class="comment">//<sp/>turn<sp/>0/0<sp/>to<sp/>0/1</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>mx[k]<sp/>=<sp/>sx[k]<sp/>/<sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref>;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>my[k]<sp/>=<sp/>sy[k]<sp/>/<sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/><ref refid="cpp/algorithm/max" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">max</ref>(1,<sp/>c[k]);<sp/><sp/></highlight><highlight class="comment">//<sp/>turn<sp/>0/0<sp/>to<sp/>0/1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>mx[k]<sp/>=<sp/>sx[k]<sp/>/<sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>my[k]<sp/>=<sp/>sy[k]<sp/>/<sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref>;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>print<sp/>the<sp/>k<sp/>centroids<sp/>found</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k=0;<sp/>k&lt;K;<sp/>++k)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;centroid<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>k<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/setw" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::setw</ref>(10)<sp/>&lt;&lt;<sp/>mx[k]<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;<sp/>&apos;</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/setw" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::setw</ref>(10)<sp/>&lt;&lt;<sp/>my[k]<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;centroid<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>k<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/setw" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::setw</ref>(10)<sp/>&lt;&lt;<sp/>mx[k]<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;<sp/>&apos;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/setw" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::setw</ref>(10)<sp/>&lt;&lt;<sp/>my[k]<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+</sect1>
 <sect1 id="kmeans_1ParallelKMeansUsingCPUs">
 <title>Parallel k-means using CPUs</title>
-<para>The second step of k-means algorithm, <emphasis>assigning every point to the nearest centroid</emphasis>, is highly parallelizable across individual points. We can create a <emphasis>parallel-for</emphasis> task to run parallel iterations.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>best_ks(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>nearest<sp/>centroid<sp/>of<sp/>each<sp/>point</highlight><highlight class="normal"></highlight></codeline>
+<para>The second step of k-means algorithm, <emphasis>assigning every point to the nearest centroid</emphasis>, is highly parallelizable across individual points. We can create a <emphasis>parallel-for</emphasis> task to run parallel iterations.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>best_ks(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>nearest<sp/>centroid<sp/>of<sp/>each<sp/>point</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>P<sp/>=<sp/>12;<sp/><sp/></highlight><highlight class="comment">//<sp/>12<sp/>partitioned<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -87,7 +112,7 @@
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a38ffe176bc3ae1827b9964322e3769d4" kindref="member">for_each_index</ref>(0,<sp/>N,<sp/>1,<sp/>[&amp;](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>x<sp/>=<sp/>px[i];</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>y<sp/>=<sp/>py[i];</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>best_d<sp/>=<sp/><ref refid="cpp/types/numeric_limits/max" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::numeric_limits&lt;float&gt;::max</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>best_d<sp/>=<sp/><ref refid="cpp/types/numeric_limits/max" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::numeric_limits&lt;float&gt;::max</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>best_k<sp/>=<sp/>0;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k<sp/>=<sp/>0;<sp/>k<sp/>&lt;<sp/>K;<sp/>++k)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>d<sp/>=<sp/>L2(x,<sp/>y,<sp/>mx[k],<sp/>my[k]);</highlight></codeline>
@@ -98,7 +123,9 @@
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>best_ks[i]<sp/>=<sp/>best_k;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-</programlisting></para><para>The third step of moving every centroid to the average of points is also parallelizable across individual centroids. However, since k is typically not large, one task of doing this update is sufficient.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+</programlisting></para>
+<para>The third step of moving every centroid to the average of points is also parallelizable across individual centroids. However, since k is typically not large, one task of doing this update is sufficient.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>sum<sp/>of<sp/>points</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>sx[best_ks[i]]<sp/>+=<sp/>px[i];</highlight></codeline>
@@ -108,20 +135,24 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>average<sp/>of<sp/>points</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k=0;<sp/>k&lt;K;<sp/>++k)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/><ref refid="cpp/algorithm/max" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">max</ref>(1,<sp/>c[k]);<sp/><sp/></highlight><highlight class="comment">//<sp/>turn<sp/>0/0<sp/>to<sp/>0/1</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>mx[k]<sp/>=<sp/>sx[k]<sp/>/<sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref>;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>my[k]<sp/>=<sp/>sy[k]<sp/>/<sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/><ref refid="cpp/algorithm/max" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">max</ref>(1,<sp/>c[k]);<sp/><sp/></highlight><highlight class="comment">//<sp/>turn<sp/>0/0<sp/>to<sp/>0/1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>mx[k]<sp/>=<sp/>sx[k]<sp/>/<sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>my[k]<sp/>=<sp/>sy[k]<sp/>/<sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref>;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-</programlisting></para><para>To describe <computeroutput>M</computeroutput> iterations, we create a condition task that loops the second step of the algorithm by <computeroutput>M</computeroutput> times. The return value of zero goes to the first successor which we will connect to the task of the second step later; otherwise, k-means completes.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([m=0,<sp/>M]()<sp/></highlight><highlight class="keyword">mutable</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+</programlisting></para>
+<para>To describe <computeroutput>M</computeroutput> iterations, we create a condition task that loops the second step of the algorithm by <computeroutput>M</computeroutput> times. The return value of zero goes to the first successor which we will connect to the task of the second step later; otherwise, k-means completes.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([m=0,<sp/>M]()<sp/></highlight><highlight class="keyword">mutable</highlight><highlight class="normal"><sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(m++<sp/>&lt;<sp/>M)<sp/>?<sp/>0<sp/>:<sp/>1;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-</programlisting></para><para>The entire code of CPU-parallel k-means is shown below. Here we use an additional storage, <computeroutput>best_ks</computeroutput>, to record the nearest centroid of a point at an iteration.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>N:<sp/>number<sp/>of<sp/>points</highlight><highlight class="normal"></highlight></codeline>
+</programlisting></para>
+<para>The entire code of CPU-parallel k-means is shown below. Here we use an additional storage, <computeroutput>best_ks</computeroutput>, to record the nearest centroid of a point at an iteration.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>N:<sp/>number<sp/>of<sp/>points</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>K:<sp/>number<sp/>of<sp/>clusters</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>M:<sp/>number<sp/>of<sp/>iterations</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>px/py:<sp/>2D<sp/>point<sp/>vector<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>kmeans_par(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>K,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>M,<sp/>cconst<sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref>&amp;<sp/>px,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref>&amp;<sp/>py</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>K,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>M,<sp/>cconst<sp/><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref>&amp;<sp/>px,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref>&amp;<sp/>py</highlight></codeline>
 <codeline><highlight class="normal">)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>P<sp/>=<sp/>12;<sp/><sp/></highlight><highlight class="comment">//<sp/>12<sp/>partitions<sp/>of<sp/>the<sp/>parallel-for<sp/>graph</highlight><highlight class="normal"></highlight></codeline>
@@ -129,8 +160,8 @@
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;K-Means&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>c(K),<sp/>best_ks(N);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref><sp/>sx(K),<sp/>sy(K),<sp/>mx(K),<sp/>my(K);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>c(K),<sp/>best_ks(N);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref><sp/>sx(K),<sp/>sy(K),<sp/>mx(K),<sp/>my(K);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>initial<sp/>centroids</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
@@ -153,7 +184,7 @@
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>pf<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a38ffe176bc3ae1827b9964322e3769d4" kindref="member">for_each_index</ref>(0,<sp/>N,<sp/>1,<sp/>[&amp;](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>x<sp/>=<sp/>px[i];</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>y<sp/>=<sp/>py[i];</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>best_d<sp/>=<sp/><ref refid="cpp/types/numeric_limits/max" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::numeric_limits&lt;float&gt;::max</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>best_d<sp/>=<sp/><ref refid="cpp/types/numeric_limits/max" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::numeric_limits&lt;float&gt;::max</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>best_k<sp/>=<sp/>0;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k<sp/>=<sp/>0;<sp/>k<sp/>&lt;<sp/>K;<sp/>++k)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>d<sp/>=<sp/>L2(x,<sp/>y,<sp/>mx[k],<sp/>my[k]);</highlight></codeline>
@@ -173,9 +204,9 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k=0;<sp/>k&lt;K;<sp/>++k)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/><ref refid="cpp/algorithm/max" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">max</ref>(1,<sp/>c[k]);<sp/><sp/></highlight><highlight class="comment">//<sp/>turn<sp/>0/0<sp/>to<sp/>0/1</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>mx[k]<sp/>=<sp/>sx[k]<sp/>/<sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref>;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>my[k]<sp/>=<sp/>sy[k]<sp/>/<sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/><ref refid="cpp/algorithm/max" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">max</ref>(1,<sp/>c[k]);<sp/><sp/></highlight><highlight class="comment">//<sp/>turn<sp/>0/0<sp/>to<sp/>0/1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>mx[k]<sp/>=<sp/>sx[k]<sp/>/<sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>my[k]<sp/>=<sp/>sy[k]<sp/>/<sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref>;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;update_cluster&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
@@ -194,24 +225,61 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>The taskflow consists of two parts, a <computeroutput>clean_up</computeroutput> task and a parallel-for graph. The former cleans up the storage <computeroutput>sx</computeroutput>, <computeroutput>sy</computeroutput>, and <computeroutput>c</computeroutput> that are used to average points for new centroids, and the later parallelizes the searching for nearest centroids across individual points using 12 tasks (may vary depending on the machine). If the iteration count is smaller than <computeroutput>M</computeroutput>, the condition task returns 0 to let the execution path go back to <computeroutput>clean_up</computeroutput>. Otherwise, it returns 1 to stop (i.e., no successor tasks at index 1). The taskflow graph is illustrated below:</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/kmeans_2.dot"></dotfile>
-</para><para>The scheduler starts with <computeroutput>init</computeroutput>, moves on to <computeroutput>clean_up</computeroutput>, and then enters the parallel-for task <computeroutput>paralle-for</computeroutput> that spawns a subflow of 12 workers to perform parallel iterations. When <computeroutput>parallel-for</computeroutput> completes, it updates the cluster centroids and checks if they have converged through a condition task. If not, the condition task informs the scheduler to go back to <computeroutput>clean_up</computeroutput> and then <computeroutput>parallel-for</computeroutput>; otherwise, it returns a nominal index to stop the scheduler.</para></sect1>
+</programlisting></para>
+<para>The taskflow consists of two parts, a <computeroutput>clean_up</computeroutput> task and a parallel-for graph. The former cleans up the storage <computeroutput>sx</computeroutput>, <computeroutput>sy</computeroutput>, and <computeroutput>c</computeroutput> that are used to average points for new centroids, and the later parallelizes the searching for nearest centroids across individual points using 12 tasks (may vary depending on the machine). If the iteration count is smaller than <computeroutput>M</computeroutput>, the condition task returns 0 to let the execution path go back to <computeroutput>clean_up</computeroutput>. Otherwise, it returns 1 to stop (i.e., no successor tasks at index 1). The taskflow graph is illustrated below:</para>
+<para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/kmeans_2.dot"></dotfile>
+</para>
+<para>The scheduler starts with <computeroutput>init</computeroutput>, moves on to <computeroutput>clean_up</computeroutput>, and then enters the parallel-for task <computeroutput>paralle-for</computeroutput> that spawns a subflow of 12 workers to perform parallel iterations. When <computeroutput>parallel-for</computeroutput> completes, it updates the cluster centroids and checks if they have converged through a condition task. If not, the condition task informs the scheduler to go back to <computeroutput>clean_up</computeroutput> and then <computeroutput>parallel-for</computeroutput>; otherwise, it returns a nominal index to stop the scheduler.</para>
+</sect1>
 <sect1 id="kmeans_1KMeansBenchmarking">
 <title>Benchmarking</title>
-<para>Based on the discussion above, we compare the runtime of computing various k-means problem sizes between a sequential CPU and parallel CPUs on a machine of 12 Intel i7-8700 CPUs at 3.2 GHz.</para><para> <table rows="6" cols="5"><row>
-<entry thead="yes"><para>N  </para></entry><entry thead="yes"><para>K  </para></entry><entry thead="yes"><para>M  </para></entry><entry thead="yes"><para>CPU Sequential  </para></entry><entry thead="yes"><para>CPU Parallel   </para></entry></row>
+<para>Based on the discussion above, we compare the runtime of computing various k-means problem sizes between a sequential CPU and parallel CPUs on a machine of 12 Intel i7-8700 CPUs at 3.2 GHz.</para>
+<para> <table rows="6" cols="5"><row>
+<entry thead="yes" align='center'><para>N  </para>
+</entry><entry thead="yes" align='center'><para>K  </para>
+</entry><entry thead="yes" align='center'><para>M  </para>
+</entry><entry thead="yes" align='center'><para>CPU Sequential  </para>
+</entry><entry thead="yes" align='center'><para>CPU Parallel   </para>
+</entry></row>
 <row>
-<entry thead="no"><para>10  </para></entry><entry thead="no"><para>5  </para></entry><entry thead="no"><para>10  </para></entry><entry thead="no"><para>0.14 ms  </para></entry><entry thead="no"><para>77 ms   </para></entry></row>
+<entry thead="no" align='center'><para>10  </para>
+</entry><entry thead="no" align='center'><para>5  </para>
+</entry><entry thead="no" align='center'><para>10  </para>
+</entry><entry thead="no" align='center'><para>0.14 ms  </para>
+</entry><entry thead="no" align='center'><para>77 ms   </para>
+</entry></row>
 <row>
-<entry thead="no"><para>100  </para></entry><entry thead="no"><para>10  </para></entry><entry thead="no"><para>100  </para></entry><entry thead="no"><para>0.56 ms  </para></entry><entry thead="no"><para>86 ms   </para></entry></row>
+<entry thead="no" align='center'><para>100  </para>
+</entry><entry thead="no" align='center'><para>10  </para>
+</entry><entry thead="no" align='center'><para>100  </para>
+</entry><entry thead="no" align='center'><para>0.56 ms  </para>
+</entry><entry thead="no" align='center'><para>86 ms   </para>
+</entry></row>
 <row>
-<entry thead="no"><para>1000  </para></entry><entry thead="no"><para>10  </para></entry><entry thead="no"><para>1000  </para></entry><entry thead="no"><para>10 ms  </para></entry><entry thead="no"><para>98 ms   </para></entry></row>
+<entry thead="no" align='center'><para>1000  </para>
+</entry><entry thead="no" align='center'><para>10  </para>
+</entry><entry thead="no" align='center'><para>1000  </para>
+</entry><entry thead="no" align='center'><para>10 ms  </para>
+</entry><entry thead="no" align='center'><para>98 ms   </para>
+</entry></row>
 <row>
-<entry thead="no"><para>10000  </para></entry><entry thead="no"><para>10  </para></entry><entry thead="no"><para>10000  </para></entry><entry thead="no"><para>1006 ms  </para></entry><entry thead="no"><para>713 ms   </para></entry></row>
+<entry thead="no" align='center'><para>10000  </para>
+</entry><entry thead="no" align='center'><para>10  </para>
+</entry><entry thead="no" align='center'><para>10000  </para>
+</entry><entry thead="no" align='center'><para>1006 ms  </para>
+</entry><entry thead="no" align='center'><para>713 ms   </para>
+</entry></row>
 <row>
-<entry thead="no"><para>100000  </para></entry><entry thead="no"><para>10  </para></entry><entry thead="no"><para>100000  </para></entry><entry thead="no"><para>102483 ms  </para></entry><entry thead="no"><para>49966 ms   </para></entry></row>
+<entry thead="no" align='center'><para>100000  </para>
+</entry><entry thead="no" align='center'><para>10  </para>
+</entry><entry thead="no" align='center'><para>100000  </para>
+</entry><entry thead="no" align='center'><para>102483 ms  </para>
+</entry><entry thead="no" align='center'><para>49966 ms   </para>
+</entry></row>
 </table>
-</para><para>When the number of points is larger than 10K, the parallel CPU implementation starts to outperform the sequential CPU implementation. </para></sect1>
+</para>
+<para>When the number of points is larger than 10K, the parallel CPU implementation starts to outperform the sequential CPU implementation. </para>
+</sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

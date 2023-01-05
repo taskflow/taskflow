@@ -587,7 +587,7 @@ T* ObjectPool<T, S>::animate(ArgsT&&... args) {
 
   h.mutex.lock();
 
-  // scan the list of superblocks from most full to least
+  // scan the list of superblocks from the most full to the least full
   int f = static_cast<int>(F-1);
   for(; f>=0; f--) {
     if(!_blocklist_is_empty(&h.lists[f])) {

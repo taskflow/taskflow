@@ -1,23 +1,43 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="cudaFlowScan" kind="page">
     <compoundname>cudaFlowScan</compoundname>
     <title>Parallel Scan</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Include the Header</name>
+        <reference>cudaFlowScan_1CUDAParallelScanIncludeTheHeader</reference>
+    </tocsect>
+      <tocsect>
+        <name>Scan a Range of Items</name>
+        <reference>cudaFlowScan_1cudaFlowScanARangeOfItems</reference>
+    </tocsect>
+      <tocsect>
+        <name>Scan a Range of Transformed Items</name>
+        <reference>cudaFlowScan_1cudaFlowScanTransformedItems</reference>
+    </tocsect>
+      <tocsect>
+        <name>Miscellaneous Items</name>
+        <reference>cudaFlowScan_1cudaFlowScanMiscellaneousItems</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>cudaFlow provides template methods to create parallel scan tasks on a CUDA GPU.</para><sect1 id="cudaFlowScan_1CUDAParallelScanIncludeTheHeader">
+<para>cudaFlow provides template methods to create parallel scan tasks on a CUDA GPU.</para>
+<sect1 id="cudaFlowScan_1CUDAParallelScanIncludeTheHeader">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/scan.hpp</computeroutput>, for creating a parallel-scan task.</para></sect1>
+<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/scan.hpp</computeroutput>, for creating a parallel-scan task.</para>
+</sect1>
 <sect1 id="cudaFlowScan_1cudaFlowScanARangeOfItems">
 <title>Scan a Range of Items</title>
-<para><ref refid="classtf_1_1cudaFlow_1a062cc98a0b2d2199b50c3cbad16f5fb8" kindref="member">tf::cudaFlow::inclusive_scan</ref> computes an inclusive prefix sum operation using the given binary operator over a range of elements specified by <computeroutput>[first, last)</computeroutput>. The term "inclusive" means that the i-th input element is included in the i-th sum. The following code computes the inclusive prefix sum over an input array and stores the result in an output array.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+<para><ref refid="classtf_1_1cudaFlow_1a062cc98a0b2d2199b50c3cbad16f5fb8" kindref="member">tf::cudaFlow::inclusive_scan</ref> computes an inclusive prefix sum operation using the given binary operator over a range of elements specified by <computeroutput>[first, last)</computeroutput>. The term "inclusive" means that the i-th input element is included in the i-th sum. The following code computes the inclusive prefix sum over an input array and stores the result in an output array.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>input<sp/><sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>input<sp/><sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>output<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>output<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>input[i++]=<ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>input[i++]=<ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
 <codeline><highlight class="normal"><sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>creates<sp/>a<sp/>cudaFlow<sp/>of<sp/>one<sp/>task<sp/>to<sp/>perform<sp/>inclusive<sp/>scan<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
@@ -30,7 +50,9 @@
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=1;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(output[i]<sp/>==<sp/>output[i-1]<sp/>+<sp/>input[i]);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>On the other hand, <ref refid="classtf_1_1cudaFlow_1a8d59da7369a8634fea307219c7eb17c4" kindref="member">tf::cudaFlow::exclusive_scan</ref> computes an exclusive prefix sum operation. The term "exclusive" means that the i-th input element is <emphasis>NOT</emphasis> included in the i-th sum.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>creates<sp/>a<sp/>cudaFlow<sp/>of<sp/>one<sp/>task<sp/>to<sp/>perform<sp/>exclusive<sp/>scan<sp/></highlight><highlight class="normal"></highlight></codeline>
+</programlisting></para>
+<para>On the other hand, <ref refid="classtf_1_1cudaFlow_1a8d59da7369a8634fea307219c7eb17c4" kindref="member">tf::cudaFlow::exclusive_scan</ref> computes an exclusive prefix sum operation. The term "exclusive" means that the i-th input element is <emphasis>NOT</emphasis> included in the i-th sum.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>creates<sp/>a<sp/>cudaFlow<sp/>of<sp/>one<sp/>task<sp/>to<sp/>perform<sp/>exclusive<sp/>scan<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a8d59da7369a8634fea307219c7eb17c4" kindref="member">exclusive_scan</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>input,<sp/>input<sp/>+<sp/>N,<sp/>output,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>+<sp/>b;<sp/>}</highlight></codeline>
@@ -41,16 +63,18 @@
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=1;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(output[i]<sp/>==<sp/>output[i-1]<sp/>+<sp/>input[i-1]);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+</sect1>
 <sect1 id="cudaFlowScan_1cudaFlowScanTransformedItems">
 <title>Scan a Range of Transformed Items</title>
-<para><ref refid="classtf_1_1cudaFlow_1a5028579479a2393ce57ad37a7a809588" kindref="member">tf::cudaFlow::transform_inclusive_scan</ref> transforms each item in the range <computeroutput>[first, last)</computeroutput> and computes an inclusive prefix sum over these transformed items. The following code multiplies each item by 10 and then compute the inclusive prefix sum over 1000000 transformed items.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+<para><ref refid="classtf_1_1cudaFlow_1a5028579479a2393ce57ad37a7a809588" kindref="member">tf::cudaFlow::transform_inclusive_scan</ref> transforms each item in the range <computeroutput>[first, last)</computeroutput> and computes an inclusive prefix sum over these transformed items. The following code multiplies each item by 10 and then compute the inclusive prefix sum over 1000000 transformed items.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>input<sp/><sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>input<sp/><sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>output<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>output<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>i++)<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>();</highlight></codeline>
 <codeline><highlight class="normal">}<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>creates<sp/>a<sp/>cudaFlow<sp/>of<sp/>one<sp/>task<sp/>to<sp/>inclusively<sp/>scan<sp/>over<sp/>transformed<sp/>input<sp/></highlight><highlight class="normal"></highlight></codeline>
@@ -66,12 +90,14 @@
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=1;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(output[i]<sp/>==<sp/>output[i-1]<sp/>+<sp/>input[i]<sp/>*<sp/>10);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>Similarly, <ref refid="classtf_1_1cudaFlow_1ae80df494109b0dc6db77111917207e6b" kindref="member">tf::cudaFlow::transform_exclusive_scan</ref> performs an exclusive prefix sum over a range of transformed items. The following code computes the exclusive prefix sum over 1000000 transformed items each multipled by 10.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+</programlisting></para>
+<para>Similarly, <ref refid="classtf_1_1cudaFlow_1ae80df494109b0dc6db77111917207e6b" kindref="member">tf::cudaFlow::transform_exclusive_scan</ref> performs an exclusive prefix sum over a range of transformed items. The following code computes the exclusive prefix sum over 1000000 transformed items each multipled by 10.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>input<sp/><sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>input<sp/><sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>output<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>output<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>input[i++]=<ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>input[i++]=<ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>creates<sp/>a<sp/>cudaFlow<sp/>of<sp/>one<sp/>task<sp/>to<sp/>exclusively<sp/>scan<sp/>over<sp/>transformed<sp/>input<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
@@ -86,10 +112,12 @@
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=1;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(output[i]<sp/>==<sp/>output[i-1]<sp/>+<sp/>input[i-1]<sp/>*<sp/>10);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+</sect1>
 <sect1 id="cudaFlowScan_1cudaFlowScanMiscellaneousItems">
 <title>Miscellaneous Items</title>
-<para>Parallel scan algorithms are also available in <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> with the same API. </para></sect1>
+<para>Parallel scan algorithms are also available in <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> with the same API. </para>
+</sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>
