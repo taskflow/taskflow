@@ -1,21 +1,39 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="CUDASTDTransform" kind="page">
     <compoundname>CUDASTDTransform</compoundname>
     <title>Parallel Transforms</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Include the Header</name>
+        <reference>CUDASTDTransform_1CUDASTDParallelTransformsIncludeTheHeader</reference>
+    </tocsect>
+      <tocsect>
+        <name>Transform a Range of Items</name>
+        <reference>CUDASTDTransform_1CUDASTDTransformARangeOfItems</reference>
+    </tocsect>
+      <tocsect>
+        <name>Transform Two Ranges of Items</name>
+        <reference>CUDASTDTransform_1CUDASTDTransformTwoRangesOfItems</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow provides template methods for transforming ranges of items to different outputs.</para><sect1 id="CUDASTDTransform_1CUDASTDParallelTransformsIncludeTheHeader">
+<para>Taskflow provides template methods for transforming ranges of items to different outputs.</para>
+<sect1 id="CUDASTDTransform_1CUDASTDParallelTransformsIncludeTheHeader">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/transform.hpp</computeroutput>, for using the parallel-transform algorithm.</para></sect1>
+<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/transform.hpp</computeroutput>, for using the parallel-transform algorithm.</para>
+</sect1>
 <sect1 id="CUDASTDTransform_1CUDASTDTransformARangeOfItems">
 <title>Transform a Range of Items</title>
-<para>Parallel-transform algorithm applies the given transform function to a range of items and store the result in another range specified by two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by <ref refid="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" kindref="member">tf::cuda_transform(P&amp;&amp; p, I first, I last, O output, C op)</ref> represents a parallel execution for the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
+<para>Parallel-transform algorithm applies the given transform function to a range of items and store the result in another range specified by two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by <ref refid="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" kindref="member">tf::cuda_transform(P&amp;&amp; p, I first, I last, O output, C op)</ref> represents a parallel execution for the following loop:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*output++<sp/>=<sp/>op(*first++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>The following example creates a transform kernel that transforms an input range of <computeroutput>N</computeroutput> items to an output range by multiplying each item by 10.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
+</programlisting></para>
+<para>The following example creates a transform kernel that transforms an input range of <computeroutput>N</computeroutput> items to an output range by multiplying each item by 10.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>output[i]<sp/>=<sp/>input[i]*10</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" kindref="member">tf::cuda_transform</ref>(</highlight></codeline>
@@ -24,13 +42,18 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronize<sp/>the<sp/>execution</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
-</programlisting></para><para>Each iteration is independent of each other and is assigned one kernel thread to run the callable. The transform algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results.</para></sect1>
+</programlisting></para>
+<para>Each iteration is independent of each other and is assigned one kernel thread to run the callable. The transform algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results.</para>
+</sect1>
 <sect1 id="CUDASTDTransform_1CUDASTDTransformTwoRangesOfItems">
 <title>Transform Two Ranges of Items</title>
-<para>You can transform two ranges of items to an output range through a binary operator. The task created by <ref refid="namespacetf_1abdcb5b755f7ace2aa452541d5bf93b5f" kindref="member">tf::cuda_transform(P&amp;&amp; p, I1 first1, I1 last1, I2 first2, O output, C op)</ref> represents a parallel execution for the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first1<sp/>!=<sp/>last1)<sp/>{</highlight></codeline>
+<para>You can transform two ranges of items to an output range through a binary operator. The task created by <ref refid="namespacetf_1abdcb5b755f7ace2aa452541d5bf93b5f" kindref="member">tf::cuda_transform(P&amp;&amp; p, I1 first1, I1 last1, I2 first2, O output, C op)</ref> represents a parallel execution for the following loop:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first1<sp/>!=<sp/>last1)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*output++<sp/>=<sp/>op(*first1++,<sp/>*first2++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>The following example creates a transform kernel that transforms two input ranges of <computeroutput>N</computeroutput> items to an output range by summing each pair of items in the input ranges.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
+</programlisting></para>
+<para>The following example creates a transform kernel that transforms two input ranges of <computeroutput>N</computeroutput> items to an output range by summing each pair of items in the input ranges.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>output[i]<sp/>=<sp/>input1[i]<sp/>+<sp/>inpu2[i]</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" kindref="member">tf::cuda_transform</ref>(policy,</highlight></codeline>
@@ -39,7 +62,8 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronize<sp/>the<sp/>execution</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
-</programlisting> </para></sect1>
+</programlisting> </para>
+</sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

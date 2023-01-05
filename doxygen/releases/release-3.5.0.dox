@@ -1,20 +1,16 @@
 namespace tf {
 
-/** @page release-3-5-0 Release 3.5.0 (Master)
+/** @page release-3-5-0 Release 3.5.0 (2023/01/05)
 
-%Taskflow 3.5.0 is the newest developing line to new features and improvements 
-we continue to support.
-It is also where this documentation is generated.
-Many things are considered @em experimental and may change or break from time to time.
-While it may be difficult to be keep all things consistent when introducing new features, 
-we continue to try our best to ensure backward compatibility.
+%Taskflow 3.5.0 is the 6th release in the 3.x line! 
+This release includes several new changes, such as pipeline parallelism,
+improved work-stealing performance, profiling, documentation, examples, and unit tests.
 
 @tableofcontents
 
 @section release-3-5-0_download Download
 
-To download the newest version of %Taskflow, please clone the master branch 
-from <a href="https://github.com/taskflow/taskflow">%Taskflow's GitHub</a>.
+%Taskflow 3.5.0 can be downloaded from <a href="https://github.com/taskflow/taskflow/releases/tag/v3.5.0">here</a>.
 
 @section release-3-5-0_system_requirements System Requirements
 
@@ -32,6 +28,10 @@ To use %Taskflow v3.5.0, you need a compiler that supports C++17:
 
 @section release-3-5-0_summary Release Summary
 
+This release introduces a new data-parallel pipeline programming model,
+solves the busy-waiting problem in our work-stealing scheduler,
+and adds a new text-based feature for profiler report.
+
 @section release-3-5-0_new_features New Features
 
 @subsection release-3-5-0_taskflow_core Taskflow Core
@@ -44,11 +44,11 @@ To use %Taskflow v3.5.0, you need a compiler that supports C++17:
   + See @ref PrioritizedTasking
 + Extended tf::Executor to include tf::WorkerInterface
 + Improved parallel algorithms (e.g., tf::Taskflow::for_each) with tail optimization
-+ Resolved the busy-stealing problem with a new scheduling invariant ([#400](https://github.com/taskflow/taskflow/pull/440))
++ Resolved the busy-waiting problem in our work-stealing algorithm ([#400](https://github.com/taskflow/taskflow/pull/440))
 
 @subsection release-3-5-0_cudaflow cudaFlow
 
-@subsection release-3-5-0_syclflow syclFlow
+This release has no update on tf::cudaFlow.
 
 @subsection release-3-5-0_utilities Utilities
 
@@ -71,7 +71,11 @@ If you encounter any potential bugs, please submit an issue at @IssueTracker.
 
 @section release-3-5-0_breaking_changes Breaking Changes
 
+This release has no breaking changes.
+
 @section release-3-5-0_deprecated_items Deprecated and Removed Items 
+
+This release has no deprecated and removed items.
 
 @section release-3-5-0_documentation Documentation
 
@@ -84,6 +88,8 @@ If you encounter any potential bugs, please submit an issue at @IssueTracker.
 @section release-3-5-0_miscellaneous_items Miscellaneous Items
 
 We have published %Taskflow in the following venues:
+  + Tsung-Wei Huang and Leslie Hwang, &quot;[Task-Parallel Programming with Constrained Parallelism](https://tsung-wei-huang.github.io/papers/hpec22-semaphore.pdf),&quot; <em>IEEE High-Performance Extreme Computing Conference (HPEC)</em>, MA, 2022
+  + Tsung-Wei Huang, &quot;[Enhancing the Performance Portability of Heterogeneous Circuit Analysis Programs](https://tsung-wei-huang.github.io/papers/hpec22-ot.pdf),&quot; <em>IEEE High-Performance Extreme Computing Conference (HPEC)</em>, MA, 2022
   + Dian-Lun Lin, Haoxing Ren, Yanqing Zhang, and Tsung-Wei Huang, &quot;[From RTL to CUDA: A GPU Acceleration Flow for RTL Simulation with Batch Stimulus](https://doi.org/10.1145/3545008.3545091),&quot; <em>ACM International Conference on Parallel Processing (ICPP)</em>, Bordeaux, France, 2022
 
 Please do not hesitate to contact @twhuang if you intend to collaborate with us 

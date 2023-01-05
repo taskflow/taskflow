@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaStream" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaStream</compoundname>
     <includes refid="cuda__stream_8hpp" local="no">cuda_stream.hpp</includes>
@@ -18,7 +18,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="195" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="195" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="195" column="18" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="195" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -32,12 +32,14 @@
           <declname>stream</declname>
         </param>
         <briefdescription>
-<para>constructs an RAII-styled object from the given CUDA stream </para>        </briefdescription>
+<para>constructs an RAII-styled object from the given CUDA stream </para>
+        </briefdescription>
         <detaileddescription>
-<para>Constructs a <ref refid="classtf_1_1cudaStream" kindref="compound">cudaStream</ref> object which owns <computeroutput>stream</computeroutput>. </para>        </detaileddescription>
+<para>Constructs a <ref refid="classtf_1_1cudaStream" kindref="compound">cudaStream</ref> object which owns <computeroutput>stream</computeroutput>. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="50" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="50" bodyend="51"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="50" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="50" bodyend="51"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1ada2ff649e58e8934ab521e5b436e7044" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -45,12 +47,14 @@
         <argsstring>()</argsstring>
         <name>cudaStream</name>
         <briefdescription>
-<para>constructs an RAII-styled object for a new CUDA stream </para>        </briefdescription>
+<para>constructs an RAII-styled object for a new CUDA stream </para>
+        </briefdescription>
         <detaileddescription>
-<para>Equivalently calling <computeroutput>cudaStreamCreate</computeroutput> to create a stream. </para>        </detaileddescription>
+<para>Equivalently calling <computeroutput>cudaStreamCreate</computeroutput> to create a stream. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="58" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="58" bodyend="59"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="58" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="58" bodyend="59"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1af3dcddcb21c077f0b425aa9b699a27c9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -61,12 +65,13 @@
           <type>const <ref refid="classtf_1_1cudaStream" kindref="compound">cudaStream</ref> &amp;</type>
         </param>
         <briefdescription>
-<para>disabled copy constructor </para>        </briefdescription>
+<para>disabled copy constructor </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="64" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="64" column="5"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1af888fcab2b9b6e39a8270a4f6522f51c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -78,12 +83,13 @@
           <declname>rhs</declname>
         </param>
         <briefdescription>
-<para>move constructor </para>        </briefdescription>
+<para>move constructor </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="69" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="69" bodyend="71"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="69" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="69" bodyend="71"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1ac4b105d27894573adb41ff8b691499d9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -91,12 +97,13 @@
         <argsstring>()</argsstring>
         <name>~cudaStream</name>
         <briefdescription>
-<para>destructs the CUDA stream </para>        </briefdescription>
+<para>destructs the CUDA stream </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="76" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="76" bodyend="78"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="76" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="76" bodyend="78"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1a0b9304ac4f5e088dfb4a77a08233c9d0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaStream" kindref="compound">cudaStream</ref> &amp;</type>
@@ -107,12 +114,13 @@
           <type>const <ref refid="classtf_1_1cudaStream" kindref="compound">cudaStream</ref> &amp;</type>
         </param>
         <briefdescription>
-<para>disabled copy assignment </para>        </briefdescription>
+<para>disabled copy assignment </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="83" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="83" column="16"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1a4c3f85b9fe0e9a1504721b35a929650e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaStream" kindref="compound">cudaStream</ref> &amp;</type>
@@ -124,12 +132,13 @@
           <declname>rhs</declname>
         </param>
         <briefdescription>
-<para>move assignment </para>        </briefdescription>
+<para>move assignment </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="88" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="88" bodyend="93"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="88" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="88" bodyend="93"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1ae8b74e156e740ab2d1b3ba305a9eef45" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -137,12 +146,14 @@
         <argsstring>() const</argsstring>
         <name>operator cudaStream_t</name>
         <briefdescription>
-<para>implicit conversion to the native CUDA stream (cudaStream_t) </para>        </briefdescription>
+<para>implicit conversion to the native CUDA stream (cudaStream_t) </para>
+        </briefdescription>
         <detaileddescription>
-<para>Returns the underlying stream of type <computeroutput>cudaStream_t</computeroutput>. </para>        </detaileddescription>
+<para>Returns the underlying stream of type <computeroutput>cudaStream_t</computeroutput>. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="100" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="100" bodyend="102"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="100" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="100" bodyend="102"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -150,12 +161,14 @@
         <argsstring>() const</argsstring>
         <name>synchronize</name>
         <briefdescription>
-<para>synchronizes the associated stream </para>        </briefdescription>
+<para>synchronizes the associated stream </para>
+        </briefdescription>
         <detaileddescription>
-<para>Equivalently calling <computeroutput>cudaStreamSynchronize</computeroutput> to block until this stream has completed all operations. </para>        </detaileddescription>
+<para>Equivalently calling <computeroutput>cudaStreamSynchronize</computeroutput> to block until this stream has completed all operations. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="110" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="110" bodyend="114"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="110" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="110" bodyend="114"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1ad98a025ff4306aa799e664a1e2aefd2e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -168,14 +181,20 @@
           <defval>cudaStreamCaptureModeGlobal</defval>
         </param>
         <briefdescription>
-<para>begins graph capturing on the stream </para>        </briefdescription>
+<para>begins graph capturing on the stream </para>
+        </briefdescription>
         <detaileddescription>
-<para>When a stream is in capture mode, all operations pushed into the stream will not be executed, but will instead be captured into a graph, which will be returned via <ref refid="classtf_1_1cudaStream_1a9c48388031655cc691b267de96516a66" kindref="member">cudaStream::end_capture</ref>.</para><para>A thread&apos;s mode can be one of the following:<itemizedlist>
-<listitem><para><computeroutput>cudaStreamCaptureModeGlobal:</computeroutput> This is the default mode. If the local thread has an ongoing capture sequence that was not initiated with <computeroutput>cudaStreamCaptureModeRelaxed</computeroutput> at <computeroutput>cuStreamBeginCapture</computeroutput>, or if any other thread has a concurrent capture sequence initiated with <computeroutput>cudaStreamCaptureModeGlobal</computeroutput>, this thread is prohibited from potentially unsafe API calls.</para></listitem><listitem><para><computeroutput>cudaStreamCaptureModeThreadLocal:</computeroutput> If the local thread has an ongoing capture sequence not initiated with <computeroutput>cudaStreamCaptureModeRelaxed</computeroutput>, it is prohibited from potentially unsafe API calls. Concurrent capture sequences in other threads are ignored.</para></listitem><listitem><para><computeroutput>cudaStreamCaptureModeRelaxed:</computeroutput> The local thread is not prohibited from potentially unsafe API calls. Note that the thread is still prohibited from API calls which necessarily conflict with stream capture, for example, attempting <computeroutput>cudaEventQuery</computeroutput> on an event that was last recorded inside a capture sequence. </para></listitem></itemizedlist>
-</para>        </detaileddescription>
+<para>When a stream is in capture mode, all operations pushed into the stream will not be executed, but will instead be captured into a graph, which will be returned via <ref refid="classtf_1_1cudaStream_1a9c48388031655cc691b267de96516a66" kindref="member">cudaStream::end_capture</ref>.</para>
+<para>A thread&apos;s mode can be one of the following:<itemizedlist>
+<listitem><para><computeroutput>cudaStreamCaptureModeGlobal:</computeroutput> This is the default mode. If the local thread has an ongoing capture sequence that was not initiated with <computeroutput>cudaStreamCaptureModeRelaxed</computeroutput> at <computeroutput>cuStreamBeginCapture</computeroutput>, or if any other thread has a concurrent capture sequence initiated with <computeroutput>cudaStreamCaptureModeGlobal</computeroutput>, this thread is prohibited from potentially unsafe API calls.</para>
+</listitem><listitem><para><computeroutput>cudaStreamCaptureModeThreadLocal:</computeroutput> If the local thread has an ongoing capture sequence not initiated with <computeroutput>cudaStreamCaptureModeRelaxed</computeroutput>, it is prohibited from potentially unsafe API calls. Concurrent capture sequences in other threads are ignored.</para>
+</listitem><listitem><para><computeroutput>cudaStreamCaptureModeRelaxed:</computeroutput> The local thread is not prohibited from potentially unsafe API calls. Note that the thread is still prohibited from API calls which necessarily conflict with stream capture, for example, attempting <computeroutput>cudaEventQuery</computeroutput> on an event that was last recorded inside a capture sequence. </para>
+</listitem></itemizedlist>
+</para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="142" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="142" bodyend="147"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="142" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="142" bodyend="147"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1a9c48388031655cc691b267de96516a66" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>cudaGraph_t</type>
@@ -183,12 +202,14 @@
         <argsstring>() const</argsstring>
         <name>end_capture</name>
         <briefdescription>
-<para>ends graph capturing on the stream </para>        </briefdescription>
+<para>ends graph capturing on the stream </para>
+        </briefdescription>
         <detaileddescription>
-<para>Equivalently calling <computeroutput>cudaStreamEndCapture</computeroutput> to end capture on stream and returning the captured graph. Capture must have been initiated on stream via a call to <ref refid="classtf_1_1cudaStream_1ad98a025ff4306aa799e664a1e2aefd2e" kindref="member">cudaStream::begin_capture</ref>. If capture was invalidated, due to a violation of the rules of stream capture, then a NULL graph will be returned. </para>        </detaileddescription>
+<para>Equivalently calling <computeroutput>cudaStreamEndCapture</computeroutput> to end capture on stream and returning the captured graph. Capture must have been initiated on stream via a call to <ref refid="classtf_1_1cudaStream_1ad98a025ff4306aa799e664a1e2aefd2e" kindref="member">cudaStream::begin_capture</ref>. If capture was invalidated, due to a violation of the rules of stream capture, then a NULL graph will be returned. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="158" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="158" bodyend="165"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="158" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="158" bodyend="165"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1a8343c234b4a3040b59626dc70e81d767" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -200,12 +221,14 @@
           <declname>event</declname>
         </param>
         <briefdescription>
-<para>records an event on the stream </para>        </briefdescription>
+<para>records an event on the stream </para>
+        </briefdescription>
         <detaileddescription>
-<para>Equivalently calling <computeroutput>cudaEventRecord</computeroutput> to record an event on this stream, both of which must be on the same CUDA context. </para>        </detaileddescription>
+<para>Equivalently calling <computeroutput>cudaEventRecord</computeroutput> to record an event on this stream, both of which must be on the same CUDA context. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="173" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="173" bodyend="178"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="173" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="173" bodyend="178"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1a6bb195945f7a580bec6105691c53c699" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -217,19 +240,23 @@
           <declname>event</declname>
         </param>
         <briefdescription>
-<para>waits on an event </para>        </briefdescription>
+<para>waits on an event </para>
+        </briefdescription>
         <detaileddescription>
-<para>Equivalently calling <computeroutput>cudaStreamWaitEvent</computeroutput> to make all future work submitted to stream wait for all work captured in event. </para>        </detaileddescription>
+<para>Equivalently calling <computeroutput>cudaStreamWaitEvent</computeroutput> to make all future work submitted to stream wait for all work captured in event. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="186" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="186" bodyend="191"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="186" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="186" bodyend="191"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class to create an RAII-styled wrapper over a native CUDA stream </para>    </briefdescription>
+<para>class to create an RAII-styled wrapper over a native CUDA stream </para>
+    </briefdescription>
     <detaileddescription>
-<para>A <ref refid="classtf_1_1cudaStream" kindref="compound">cudaStream</ref> object is an RAII-styled wrapper over a native CUDA stream (<computeroutput>cudaStream_t</computeroutput>). A <ref refid="classtf_1_1cudaStream" kindref="compound">cudaStream</ref> object is move-only. </para>    </detaileddescription>
-    <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="25" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="25" bodyend="196"/>
+<para>A <ref refid="classtf_1_1cudaStream" kindref="compound">cudaStream</ref> object is an RAII-styled wrapper over a native CUDA stream (<computeroutput>cudaStream_t</computeroutput>). A <ref refid="classtf_1_1cudaStream" kindref="compound">cudaStream</ref> object is move-only. </para>
+    </detaileddescription>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="25" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="25" bodyend="196"/>
     <listofallmembers>
       <member refid="classtf_1_1cudaStream_1aae075e080f811a4a90d5a24b42ea3f6e" prot="private" virt="non-virtual"><scope>tf::cudaStream</scope><name>_stream</name></member>
       <member refid="classtf_1_1cudaStream_1ad98a025ff4306aa799e664a1e2aefd2e" prot="public" virt="non-virtual"><scope>tf::cudaStream</scope><name>begin_capture</name></member>

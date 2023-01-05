@@ -1,15 +1,22 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="SingleTaskSYCL" kind="page">
     <compoundname>SingleTaskSYCL</compoundname>
     <title>Single Task</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Run a Task with a Single Thread</name>
+        <reference>SingleTaskSYCL_1SingleTaskSYCLSingleTask</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para><ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> provides a template method, <ref refid="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" kindref="member">tf::syclFlow::single_task</ref>, for creating a task to run the given callable using a single kernel thread.</para><sect1 id="SingleTaskSYCL_1SingleTaskSYCLSingleTask">
+<para><ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> provides a template method, <ref refid="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" kindref="member">tf::syclFlow::single_task</ref>, for creating a task to run the given callable using a single kernel thread.</para>
+<sect1 id="SingleTaskSYCL_1SingleTaskSYCLSingleTask">
 <title>Run a Task with a Single Thread</title>
-<para>You can create a task to run a kernel function just once, i.e., using one GPU thread. This is handy when you want to set up a single or a few global variables that do not need multiple threads and will be used by multiple kernels afterwards. The following example creates a single-task kernel that sets <computeroutput>gpu_variable</computeroutput> to 1.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">sycl::queue<sp/>queue;</highlight></codeline>
+<para>You can create a task to run a kernel function just once, i.e., using one GPU thread. This is handy when you want to set up a single or a few global variables that do not need multiple threads and will be used by multiple kernels afterwards. The following example creates a single-task kernel that sets <computeroutput>gpu_variable</computeroutput> to 1.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">sycl::queue<sp/>queue;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>gpu_variable<sp/>=<sp/>sycl::malloc_shared&lt;int&gt;(1,<sp/>queue);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([&amp;]<sp/>(<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>sf)<sp/>{</highlight></codeline>
@@ -23,7 +30,8 @@
 <codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>set_par.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(kernel1);</highlight></codeline>
 <codeline><highlight class="normal">},<sp/>queue);</highlight></codeline>
-</programlisting> </para></sect1>
+</programlisting> </para>
+</sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

@@ -5,7 +5,7 @@
   <title>tf::Pipeline class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -49,7 +49,7 @@
           <div class="m-doc-template">template&lt;typename... Ps&gt;</div>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>Pipeline <span class="m-thin">class</span>
         </h1>
-        <p>class to create a task-parallel pipeline scheduling framework</p>
+        <p>class to create a pipeline scheduling framework</p>
         <table class="m-table m-fullwidth m-flat">
           <thead>
             <tr><th colspan="2">Template parameters</th></tr>
@@ -73,7 +73,7 @@
             </li>
           </ul>
         </nav>
-<p>A <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> is a composable graph object for users to create a <em>task-parallel pipeline scheduling framework</em> using a module task in a taskflow. Unlike the conventional pipeline programming frameworks (e.g., Intel TBB), Taskflow&#x27;s pipeline algorithm does not provide any data abstraction, which often restricts users from optimizing data layouts in their applications, but a flexible framework for users to customize their application data atop our pipeline scheduling. The following code creates a pipeline of four parallel lines to schedule tokens through three serial pipes:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
+<p>A pipeline is a composable graph object for users to create a <em>pipeline scheduling framework</em> using a module task in a taskflow. Unlike the conventional pipeline programming frameworks (e.g., Intel TBB), Taskflow&#x27;s pipeline algorithm does not provide any data abstraction, which often restricts users from optimizing data layouts in their applications, but a flexible framework for users to customize their application data atop our pipeline scheduling. The following code creates a pipeline of four parallel lines to schedule tokens through three serial pipes:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
 
 <span class="k">const</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">num_lines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"></span>
@@ -118,7 +118,7 @@
 <span class="n">task</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">stop</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// run the pipeline</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>The pipeline graph schedules five tokens over four parallel lines in a circular fashion, as depicted below:</p><pre class="m-console"><span class="go">o -&gt; o -&gt; o</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>The above example creates a pipeline graph that schedules five tokens over four parallel lines in a circular fashion, as depicted below:</p><pre class="m-console"><span class="go">o -&gt; o -&gt; o</span>
 <span class="go">|    |    |</span>
 <span class="go">v    v    v</span>
 <span class="go">o -&gt; o -&gt; o</span>
@@ -194,7 +194,7 @@
                 </tr>
               </tbody>
             </table>
-<p>Constructs a pipeline of up to <code>num_lines</code> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>) or an exception will be thrown.</p>
+<p>Constructs a pipeline of up to <code>num_lines</code> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>) or an exception will be thrown.</p>
           </div></section>
           <section class="m-doc-details" id="a879a54b37af5db33e5768e5b3c135ba6"><div>
             <h3>
@@ -220,7 +220,7 @@
                 </tr>
               </tbody>
             </table>
-<p>Constructs a pipeline of up to <code>num_lines</code> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>) or an exception will be thrown.</p>
+<p>Constructs a pipeline of up to <code>num_lines</code> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a>) or an exception will be thrown.</p>
           </div></section>
           <section class="m-doc-details" id="a79f066bacd6c1abd28c26d8196955e95"><div>
             <h3>
@@ -270,7 +270,7 @@
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Graph.html" class="m-doc">Graph</a>&amp; tf::<wbr />Pipeline&lt;Ps&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4320bdd8b8cf05c9aac1b9fa000e4a35" class="m-doc-self">graph</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>obtains the graph object associated with the pipeline construct</p>
-<p>This method is primarily used as an opaque data structure for creating a module task of this pipeline.</p>
+<p>This method is primarily used as an opaque data structure for creating a module task of the this pipeline.</p>
           </div></section>
         </section>
       </div>
@@ -317,7 +317,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

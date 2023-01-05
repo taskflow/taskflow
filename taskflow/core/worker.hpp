@@ -240,6 +240,8 @@ class WorkerInterface {
 /**
 @fn make_worker_interface
 @brief helper function to create an instance derived from tf::WorkerInterface
+
+@param args arguments to forward to the constructor of @c T
 */
 template <typename T, typename... ArgsT>
 std::shared_ptr<T> make_worker_interface(ArgsT&&... args) {

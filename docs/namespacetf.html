@@ -5,7 +5,7 @@
   <title>tf namespace | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -161,7 +161,7 @@
               <div class="m-doc-template">template&lt;typename C = <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function</a>&lt;void(<a href="classtf_1_1Pipeflow.html" class="m-doc">tf::<wbr />Pipeflow</a>&amp;)&gt;&gt;</div>
               class <a href="classtf_1_1Pipe.html" class="m-doc">Pipe</a>
             </dt>
-            <dd>class to create a stage in a task-parallel pipeline</dd>
+            <dd>class to create a pipe object for a pipeline stage</dd>
             <dt>
               class <a href="classtf_1_1Pipeflow.html" class="m-doc">Pipeflow</a>
             </dt>
@@ -170,7 +170,7 @@
               <div class="m-doc-template">template&lt;typename... Ps&gt;</div>
               class <a href="classtf_1_1Pipeline.html" class="m-doc">Pipeline</a>
             </dt>
-            <dd>class to create a task-parallel pipeline scheduling framework</dd>
+            <dd>class to create a pipeline scheduling framework</dd>
             <dt>
               class <a href="classtf_1_1Runtime.html" class="m-doc">Runtime</a>
             </dt>
@@ -210,7 +210,7 @@
             </dt>
             <dd>class to create a taskflow object</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename T, unsigned MAX_PRIORITY = static_cast&lt;unsigned&gt;(<a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fa26a4b44a837bf97b972628509912b4a5" class="m-doc">TaskPriority::<wbr />MAX</a>)&gt;</div>
+              <div class="m-doc-template">template&lt;typename T, unsigned MAX_PRIORITY = static_cast&lt;unsigned&gt;(<a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" class="m-doc">TaskPriority::<wbr />MAX</a>)&gt;</div>
               class <a href="classtf_1_1TaskQueue.html" class="m-doc">TaskQueue</a>
             </dt>
             <dd>class to create a lock-free unbounded single-producer multiple-consumer queue</dd>
@@ -759,13 +759,13 @@
                 <tr>
                   <td><a href="#ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" class="m-doc-self" id="ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c">HIGH</a></td>
                   <td>
-                  <p>value of the highest priority (i.e., 0)</p>
+                  <p>value of the highest priority (i.e., 0)<br /></p>
                   </td>
                 </tr>
                 <tr>
                   <td><a href="#ac9f4add8f716ed323b0bdbbc1d89346fa1e23852820b9154316c7c06e2b7ba051" class="m-doc-self" id="ac9f4add8f716ed323b0bdbbc1d89346fa1e23852820b9154316c7c06e2b7ba051">NORMAL</a></td>
                   <td>
-                  <p>value of the normal priority (i.e., 1)</p>
+                  <p>value of the normal priority (i.e., 1)<br /></p>
                   </td>
                 </tr>
                 <tr>
@@ -982,7 +982,7 @@
                 </tr>
               </tbody>
             </table>
-<p><a href="namespacetf.html#a8975fa5762088789adb0b60f38208309" class="m-doc">tf::<wbr />make_data_pipe</a> is a helper function to create a data pipe (<a href="classtf_1_1DataPipe.html" class="m-doc">tf::<wbr />DataPipe</a>) in a data-parallel pipeline (<a href="classtf_1_1DataPipeline.html" class="m-doc">tf::<wbr />DataPipeline</a>). The first argument specifies the direction of the data pipe, either <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a> or tf::PipeType::PARALLE, and the second argument is a callable to invoke by the pipeline scheduler. Input and output data types are specified via template parameters, which will always be decayed by the library to its original form for storage purpose. The callable must take the input data type in its first argument and returns a value of the output data type.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="w"></span>
+<p><a href="namespacetf.html#a8975fa5762088789adb0b60f38208309" class="m-doc">tf::<wbr />make_data_pipe</a> is a helper function to create a data pipe (<a href="classtf_1_1DataPipe.html" class="m-doc">tf::<wbr />DataPipe</a>) in a data-parallel pipeline (<a href="classtf_1_1DataPipeline.html" class="m-doc">tf::<wbr />DataPipeline</a>). The first argument specifies the direction of the data pipe, either <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a> or tf::PipeType::PARALLE, and the second argument is a callable to invoke by the pipeline scheduler. Input and output data types are specified via template parameters, which will always be decayed by the library to its original form for storage purpose. The callable must take the input data type in its first argument and returns a value of the output data type.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="w"></span>
 <span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span>
 <span class="w">  </span><span class="p">[](</span><span class="kt">int</span><span class="o">&amp;</span><span class="w"> </span><span class="n">input</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">input</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
@@ -2888,7 +2888,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>
