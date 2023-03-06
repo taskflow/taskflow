@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../core/executor.hpp"
+#include "partitioner.hpp"
 
 namespace tf {
 
@@ -47,52 +47,15 @@ Task FlowBuilder::transform(B first1, E last1, O d_first, C c) {
     std::atomic<size_t> next(0);
       
     auto loop = [=, &next] () mutable {
-
-      size_t z = 0;
-      size_t p1 = 2 * W * (chunk_size + 1);
-      double p2 = 0.5 / static_cast<double>(W);
-      size_t s0 = next.load(std::memory_order_relaxed);
-
-      while(s0 < N) {
-
-        size_t r = N - s0;
-
-        // fine-grained
-        if(r < p1) {
-          while(1) {
-            s0 = next.fetch_add(chunk_size, std::memory_order_relaxed);
-            if(s0 >= N) {
-              return;
-            }
-            size_t e0 = (chunk_size <= (N - s0)) ? s0 + chunk_size : N;
-            std::advance(beg, s0-z);
-            std::advance(d_beg, s0-z);
-            for(size_t x=s0; x<e0; x++) {
-              *d_beg++ = c(*beg++);
-            }
-            z = e0;
-          }
-          break;
-        }
-        // coarse-grained
-        else {
-          size_t q = static_cast<size_t>(p2 * r);
-          if(q < chunk_size) {
-            q = chunk_size;
-          }
-          size_t e0 = (q <= r) ? s0 + q : N;
-          if(next.compare_exchange_strong(s0, e0, std::memory_order_relaxed,
-                                                  std::memory_order_relaxed)) {
-            std::advance(beg, s0-z);
-            std::advance(d_beg, s0-z);
-            for(size_t x = s0; x< e0; x++) {
-              *d_beg++ = c(*beg++);
-            }
-            z = e0;
-            s0 = next.load(std::memory_order_relaxed);
+      detail::loop_guided(N, W, chunk_size, 0, next, 
+        [&](size_t prev_e, size_t curr_b, size_t curr_e) {
+          std::advance(beg, curr_b - prev_e);
+          std::advance(d_beg, curr_b - prev_e);
+          for(size_t x = curr_b; x<curr_e; x++) {
+            *d_beg++ = c(*beg++);
           }
         }
-      }
+      ); 
     };
 
     for(size_t w=0; w<W; w++) {
@@ -156,56 +119,18 @@ Task FlowBuilder::transform(B1 first1, E1 last1, B2 first2, O d_first, C c) {
     }
 
     std::atomic<size_t> next(0);
-      
+    
     auto loop = [=, &next] () mutable {
-
-      size_t z = 0;
-      size_t p1 = 2 * W * (chunk_size + 1);
-      double p2 = 0.5 / static_cast<double>(W);
-      size_t s0 = next.load(std::memory_order_relaxed);
-
-      while(s0 < N) {
-
-        size_t r = N - s0;
-
-        // fine-grained
-        if(r < p1) {
-          while(1) {
-            s0 = next.fetch_add(chunk_size, std::memory_order_relaxed);
-            if(s0 >= N) {
-              return;
-            }
-            size_t e0 = (chunk_size <= (N - s0)) ? s0 + chunk_size : N;
-            std::advance(beg1, s0-z);
-            std::advance(beg2, s0-z);
-            std::advance(d_beg, s0-z);
-            for(size_t x=s0; x<e0; x++) {
-              *d_beg++ = c(*beg1++, *beg2++);
-            }
-            z = e0;
-          }
-          break;
-        }
-        // coarse-grained
-        else {
-          size_t q = static_cast<size_t>(p2 * r);
-          if(q < chunk_size) {
-            q = chunk_size;
-          }
-          size_t e0 = (q <= r) ? s0 + q : N;
-          if(next.compare_exchange_strong(s0, e0, std::memory_order_relaxed,
-                                                  std::memory_order_relaxed)) {
-            std::advance(beg1, s0-z);
-            std::advance(beg2, s0-z);
-            std::advance(d_beg, s0-z);
-            for(size_t x = s0; x< e0; x++) {
-              *d_beg++ = c(*beg1++, *beg2++);
-            }
-            z = e0;
-            s0 = next.load(std::memory_order_relaxed);
+      detail::loop_guided(N, W, chunk_size, 0, next, 
+        [&](size_t prev_e, size_t curr_b, size_t curr_e) {
+          std::advance(beg1, curr_b - prev_e);
+          std::advance(beg2, curr_b - prev_e);
+          std::advance(d_beg, curr_b - prev_e);
+          for(size_t x = curr_b; x<curr_e; x++) {
+            *d_beg++ = c(*beg1++, *beg2++);
           }
         }
-      }
+      ); 
     };
 
     for(size_t w=0; w<W; w++) {

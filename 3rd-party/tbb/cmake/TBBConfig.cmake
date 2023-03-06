@@ -48,10 +48,10 @@ get_filename_component(_tbb_root "${_tbb_root}" PATH)
 foreach (_tbb_component ${TBB_FIND_COMPONENTS})
     set(TBB_${_tbb_component}_FOUND 0)
 
-    set(_tbb_release_lib "/home/chchiu/Documents/taskflow/deferred_token/taskflow-dev-defer/taskflow/build/benchmarks/tbb_cmake_build/tbb_cmake_build_subdir_release/lib${_tbb_component}.so.2")
+    set(_tbb_release_lib "/home/twhuang/Code/taskflow/build/benchmarks/tbb_cmake_build/tbb_cmake_build_subdir_release/lib${_tbb_component}.so.2")
 
     if (NOT TBB_FIND_RELEASE_ONLY)
-        set(_tbb_debug_lib "/home/chchiu/Documents/taskflow/deferred_token/taskflow-dev-defer/taskflow/build/benchmarks/tbb_cmake_build/tbb_cmake_build_subdir_debug/lib${_tbb_component}_debug.so.2")
+        set(_tbb_debug_lib "/home/twhuang/Code/taskflow/build/benchmarks/tbb_cmake_build/tbb_cmake_build_subdir_debug/lib${_tbb_component}_debug.so.2")
     endif()
 
     if (EXISTS "${_tbb_release_lib}" OR EXISTS "${_tbb_debug_lib}")

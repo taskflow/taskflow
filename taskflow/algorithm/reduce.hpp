@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../core/executor.hpp"
+#include "partitioner.hpp"
 
 namespace tf {
 
@@ -44,7 +44,8 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop) {
     std::atomic<size_t> next(0);
       
     auto loop = [=, &mutex, &next, &r] () mutable {
-
+      
+      // pre-reduce
       size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
       if(s0 >= N) {
@@ -63,64 +64,23 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop) {
       auto beg2 = beg++;
 
       T sum = bop(*beg1, *beg2);
-
-      size_t z = s0 + 2;
-      size_t p1 = 2 * W * (chunk_size + 1);
-      double p2 = 0.5 / static_cast<double>(W);
-      s0 = next.load(std::memory_order_relaxed);
-
-      while(s0 < N) {
-
-        size_t r = N - s0;
-
-        // fine-grained
-        if(r < p1) {
-          while(1) {
-            s0 = next.fetch_add(chunk_size, std::memory_order_relaxed);
-            if(s0 >= N) {
-              break;
-            }
-            size_t e0 = (chunk_size <= (N - s0)) ? s0 + chunk_size : N;
-            std::advance(beg, s0-z);
-            for(size_t x=s0; x<e0; x++, beg++) {
-              sum = bop(sum, *beg);
-            }
-            z = e0;
-          }
-          break;
-        }
-        // coarse-grained
-        else {
-          size_t q = static_cast<size_t>(p2 * r);
-          if(q < chunk_size) {
-            q = chunk_size;
-          }
-          size_t e0 = (q <= r) ? s0 + q : N;
-          if(next.compare_exchange_strong(s0, e0, std::memory_order_relaxed,
-                                                  std::memory_order_relaxed)) {
-            std::advance(beg, s0-z);
-            for(size_t x = s0; x<e0; x++, beg++) {
-              sum = bop(sum, *beg);
-            }
-            z = e0;
-            s0 = next.load(std::memory_order_relaxed);
+      
+      // loop reduce
+      detail::loop_guided(N, W, chunk_size, s0+2, next, 
+        [&](size_t prev_e, size_t curr_b, size_t curr_e) {
+          std::advance(beg, curr_b - prev_e);
+          for(size_t x=curr_b; x<curr_e; x++, beg++) {
+            sum = bop(sum, *beg);
           }
         }
-      }
-
+      ); 
+      
+      // final reduce
       std::lock_guard<std::mutex> lock(mutex);
       r = bop(r, sum);
     };
 
     for(size_t w=0; w<W; w++) {
-
-      //if(w*2 >= N) {
-      //  break;
-      //}
-      //sf._named_silent_async(
-      //  sf._worker, "part-"s + std::to_string(w), loop
-      //);
-      
       auto r = N - next.load(std::memory_order_relaxed);
       // no more loop work to do - finished by previous async tasks
       if(!r) {
@@ -185,6 +145,7 @@ Task FlowBuilder::transform_reduce(
       
     auto loop = [=, &mutex, &next, &r] () mutable {
 
+      // pre-reduce
       size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
       if(s0 >= N) {
@@ -203,61 +164,23 @@ Task FlowBuilder::transform_reduce(
       auto beg2 = beg++;
 
       T sum = bop(uop(*beg1), uop(*beg2));
-
-      size_t z = s0 + 2;
-      size_t p1 = 2 * W * (chunk_size + 1);
-      double p2 = 0.5 / static_cast<double>(W);
-      s0 = next.load(std::memory_order_relaxed);
-
-      while(s0 < N) {
-
-        size_t r = N - s0;
-
-        // fine-grained
-        if(r < p1) {
-          while(1) {
-            s0 = next.fetch_add(chunk_size, std::memory_order_relaxed);
-            if(s0 >= N) {
-              break;
-            }
-            size_t e0 = (chunk_size <= (N - s0)) ? s0 + chunk_size : N;
-            std::advance(beg, s0-z);
-            for(size_t x=s0; x<e0; x++, beg++) {
-              sum = bop(std::move(sum), uop(*beg));
-            }
-            z = e0;
-          }
-          break;
-        }
-        // coarse-grained
-        else {
-          size_t q = static_cast<size_t>(p2 * r);
-          if(q < chunk_size) {
-            q = chunk_size;
-          }
-          size_t e0 = (q <= r) ? s0 + q : N;
-          if(next.compare_exchange_strong(s0, e0, std::memory_order_relaxed,
-                                                  std::memory_order_relaxed)) {
-            std::advance(beg, s0-z);
-            for(size_t x = s0; x<e0; x++, beg++) {
-              sum = bop(std::move(sum), uop(*beg));
-            }
-            z = e0;
-            s0 = next.load(std::memory_order_relaxed);
+      
+      // loop reduce
+      detail::loop_guided(N, W, chunk_size, s0+2, next, 
+        [&](size_t prev_e, size_t curr_b, size_t curr_e) {
+          std::advance(beg, curr_b - prev_e);
+          for(size_t x=curr_b; x<curr_e; x++, beg++) {
+            sum = bop(std::move(sum), uop(*beg));
           }
         }
-      }
-
+      ); 
+      
+      // final reduce
       std::lock_guard<std::mutex> lock(mutex);
       r = bop(std::move(r), std::move(sum));
     };
 
     for(size_t w=0; w<W; w++) {
-      //if(w*2 >= N) {
-      //  break;
-      //}
-      //sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
-      
       auto r = N - next.load(std::memory_order_relaxed);
       // no more loop work to do - finished by previous async tasks
       if(!r) {
