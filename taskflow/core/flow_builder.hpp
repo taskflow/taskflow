@@ -1,6 +1,7 @@
 #pragma once
 
 #include "task.hpp"
+#include "../algorithm/partitioner.hpp"
 
 /**
 @file flow_builder.hpp
@@ -457,15 +458,17 @@ class FlowBuilder {
     // ------------------------------------------------------------------------
 
     /**
-    @brief constructs a STL-styled parallel-for task
+    @brief constructs an STL-styled parallel-for task
 
     @tparam B beginning iterator type
     @tparam E ending iterator type
     @tparam C callable type
+    @tparam P partitioner type (default tf::GuidedPartitioner)
 
     @param first iterator to the beginning (inclusive)
     @param last iterator to the end (exclusive)
-    @param callable a callable object to apply to the dereferenced iterator
+    @param callable callable object to apply to the dereferenced iterator
+    @param partitioner partitioner to schedule parallel iterations
 
     @return a tf::Task handle
 
@@ -485,21 +488,26 @@ class FlowBuilder {
 
     Please refer to @ref ParallelIterations for details.
     */
-    template <typename B, typename E, typename C>
-    Task for_each(B first, E last, C callable);
+    template <
+      typename B, typename E, typename C, typename P = GuidedPartitioner,
+      std::enable_if_t<is_partitioner_v<P>, void>* = nullptr
+    >
+    Task for_each(B first, E last, C callable, P partitioner = P());
 
     /**
-    @brief constructs a parallel-transform task
+    @brief constructs an STL-styled index-based parallel-for task 
 
     @tparam B beginning index type (must be integral)
     @tparam E ending index type (must be integral)
     @tparam S step type (must be integral)
     @tparam C callable type
+    @tparam P partitioner type (default tf::GuidedPartitioner)
 
     @param first index of the beginning (inclusive)
     @param last index of the end (exclusive)
     @param step step size
-    @param callable a callable object to apply to each valid index
+    @param callable callable object to apply to each valid index
+    @param partitioner partitioner to schedule parallel iterations
 
     @return a tf::Task handle
 
@@ -524,8 +532,11 @@ class FlowBuilder {
 
     Please refer to @ref ParallelIterations for details.
     */
-    template <typename B, typename E, typename S, typename C>
-    Task for_each_index(B first, E last, S step, C callable);
+    template <
+      typename B, typename E, typename S, typename C, typename P = GuidedPartitioner,
+      std::enable_if_t<is_partitioner_v<P>, void>* = nullptr
+    >
+    Task for_each_index(B first, E last, S step, C callable, P partitioner = P());
 
     // ------------------------------------------------------------------------
     // transform
@@ -538,11 +549,13 @@ class FlowBuilder {
     @tparam E ending input iterator type
     @tparam O output iterator type
     @tparam C callable type
+    @tparam P partitioner type (default tf::GuidedPartitioner)
 
     @param first1 iterator to the beginning of the first range
     @param last1 iterator to the end of the first range
     @param d_first iterator to the beginning of the output range
     @param c an unary callable to apply to dereferenced input elements
+    @param partitioner partitioner to schedule parallel iterations
 
     @return a tf::Task handle
 
@@ -560,8 +573,12 @@ class FlowBuilder {
     The callable needs to take a single argument of the dereferenced
     iterator type.
     */
-    template <typename B, typename E, typename O, typename C>
-    Task transform(B first1, E last1, O d_first, C c);
+    template <
+      typename B, typename E, typename O, typename C, 
+      typename P = GuidedPartitioner,
+      std::enable_if_t<is_partitioner_v<P>, void>* = nullptr
+    >
+    Task transform(B first1, E last1, O d_first, C c, P partitioner = P());
 
     /**
     @brief constructs a parallel-transform task
@@ -571,12 +588,14 @@ class FlowBuilder {
     @tparam B2 beginning input iterator type for the first second range
     @tparam O output iterator type
     @tparam C callable type
+    @tparam P partitioner type (default tf::GuidedPartitioner)
 
     @param first1 iterator to the beginning of the first input range
     @param last1 iterator to the end of the first input range
     @param first2 iterator to the beginning of the second input range
     @param d_first iterator to the beginning of the output range
     @param c a binary operator to apply to dereferenced input elements
+    @param partitioner partitioner to schedule parallel iterations
 
     @return a tf::Task handle
 
@@ -594,8 +613,12 @@ class FlowBuilder {
     The callable needs to take two arguments of dereferenced elements
     from the two input ranges.
     */
-    template <typename B1, typename E1, typename B2, typename O, typename C>
-    Task transform(B1 first1, E1 last1, B2 first2, O d_first, C c);
+    template <
+      typename B1, typename E1, typename B2, typename O, typename C, 
+      typename P = GuidedPartitioner,
+      std::enable_if_t<!is_partitioner_v<C> && is_partitioner_v<P>, void>* = nullptr
+    >
+    Task transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P partitioner = P());
 
     // ------------------------------------------------------------------------
     // reduction
@@ -608,11 +631,13 @@ class FlowBuilder {
     @tparam E ending iterator type
     @tparam T result type
     @tparam O binary reducer type
+    @tparam P partitioner type (default tf::GuidedPartitioner)
 
     @param first iterator to the beginning (inclusive)
     @param last iterator to the end (exclusive)
     @param init initial value of the reduction and the storage for the reduced result
     @param bop binary operator that will be applied
+    @param partitioner partitioner to schedule parallel iterations
 
     @return a tf::Task handle
 
@@ -631,8 +656,12 @@ class FlowBuilder {
 
     Please refer to @ref ParallelReduction for details.
     */
-    template <typename B, typename E, typename T, typename O>
-    Task reduce(B first, E last, T& init, O bop);
+    template <
+      typename B, typename E, typename T, typename O, 
+      typename P = GuidedPartitioner,
+      std::enable_if_t<is_partitioner_v<P>, void>* = nullptr
+    >
+    Task reduce(B first, E last, T& init, O bop, P partitioner = P());
 
     // ------------------------------------------------------------------------
     // transfrom and reduction
@@ -646,12 +675,14 @@ class FlowBuilder {
     @tparam T result type
     @tparam BOP binary reducer type
     @tparam UOP unary transformion type
+    @tparam P partitioner type (default tf::GuidedPartitioner)
 
     @param first iterator to the beginning (inclusive)
     @param last iterator to the end (exclusive)
     @param init initial value of the reduction and the storage for the reduced result
     @param bop binary operator that will be applied in unspecified order to the results of @c uop
     @param uop unary operator that will be applied to transform each element in the range to the result type
+    @param partitioner partitioner to schedule parallel iterations
 
     @return a tf::Task handle
 
@@ -670,8 +701,12 @@ class FlowBuilder {
 
     Please refer to @ref ParallelReduction for details.
     */
-    template <typename B, typename E, typename T, typename BOP, typename UOP>
-    Task transform_reduce(B first, E last, T& init, BOP bop, UOP uop);
+    template <
+      typename B, typename E, typename T, typename BOP, typename UOP,
+      typename P = GuidedPartitioner,
+      std::enable_if_t<is_partitioner_v<P>, void>* = nullptr
+    >
+    Task transform_reduce(B first, E last, T& init, BOP bop, UOP uop, P partitioner = P());
 
     // ------------------------------------------------------------------------
     // sort

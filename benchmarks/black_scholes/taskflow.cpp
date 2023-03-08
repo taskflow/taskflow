@@ -18,7 +18,7 @@ void bs_taskflow(unsigned num_threads) {
 #ifdef ERR_CHK
     check_error(i, price);
 #endif
-  });
+  }, tf::StaticPartitioner());
 
   executor.run_n(taskflow, NUM_RUNS).wait();
 }

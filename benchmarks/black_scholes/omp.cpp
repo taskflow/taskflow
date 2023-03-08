@@ -47,7 +47,7 @@ void bs_omp_parallel_for(unsigned num_threads) {
   float price;
 
   for (j=0; j<NUM_RUNS; j++) {
-    #pragma omp parallel for private(i, price) schedule(guided)
+    #pragma omp parallel for private(i, price) schedule(static)
     for (i=0; i<numOptions; i++) {
       /* Calling main function to calculate option value based on
        * Black & Scholes's equation.

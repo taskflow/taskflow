@@ -8,14 +8,17 @@ namespace tf {
 // default reduction
 // ----------------------------------------------------------------------------
 
-template <typename B, typename E, typename T, typename O>
-Task FlowBuilder::reduce(B beg, E end, T& init, O bop) {
+template <
+  typename B, typename E, typename T, typename O, typename P,
+  std::enable_if_t<is_partitioner_v<P>, void>*
+>
+Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P part) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  Task task = emplace([b=beg, e=end, &r=init, bop] (Subflow& sf) mutable {
+  Task task = emplace([b=beg, e=end, &r=init, bop, part] (Subflow& sf) mutable {
 
     // fetch the iterator values
     B_t beg = b;
@@ -25,13 +28,11 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop) {
       return;
     }
 
-    //size_t C = (c == 0) ? 1 : c;
-    size_t chunk_size = 1;
     size_t W = sf._executor.num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
-    if(W <= 1 || N <= chunk_size) {
+    if(W <= 1 || N <= part.chunk_size()) {
       for(; beg!=end; r = bop(r, *beg++));
       return;
     }
@@ -42,8 +43,8 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop) {
 
     std::mutex mutex;
     std::atomic<size_t> next(0);
-      
-    auto loop = [=, &mutex, &next, &r] () mutable {
+
+    auto loop = [=, &mutex, &next, &r, &part] () mutable {
       
       // pre-reduce
       size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
@@ -66,12 +67,13 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop) {
       T sum = bop(*beg1, *beg2);
       
       // loop reduce
-      detail::loop_guided(N, W, chunk_size, s0+2, next, 
-        [&](size_t prev_e, size_t curr_b, size_t curr_e) {
+      part(N, W, next, 
+        [&, prev_e=size_t{s0+2}](size_t curr_b, size_t curr_e) mutable {
           std::advance(beg, curr_b - prev_e);
           for(size_t x=curr_b; x<curr_e; x++, beg++) {
             sum = bop(sum, *beg);
           }
+          prev_e = curr_e;
         }
       ); 
       
@@ -87,7 +89,7 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop) {
         break;
       }
       // tail optimization
-      if(r <= chunk_size || w == W-1) {
+      if(r <= part.chunk_size() || w == W-1) {
         loop(); 
         break;
       }
@@ -106,16 +108,19 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop) {
 // default transform and reduction
 // ----------------------------------------------------------------------------
 
-template <typename B, typename E, typename T, typename BOP, typename UOP>
+template <
+  typename B, typename E, typename T, typename BOP, typename UOP, typename P,
+  std::enable_if_t<is_partitioner_v<P>, void>*
+>
 Task FlowBuilder::transform_reduce(
-  B beg, E end, T& init, BOP bop, UOP uop
+  B beg, E end, T& init, BOP bop, UOP uop, P part
 ) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  Task task = emplace([b=beg, e=end, &r=init, bop, uop] (Subflow& sf) mutable {
+  Task task = emplace([b=beg, e=end, &r=init, bop, uop, part] (Subflow& sf) mutable {
 
     // fetch the iterator values
     B_t beg = b;
@@ -125,13 +130,11 @@ Task FlowBuilder::transform_reduce(
       return;
     }
 
-    //size_t chunk_size = (c == 0) ? 1 : c;
-    size_t chunk_size = 1;
     size_t W = sf._executor.num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
-    if(W <= 1 || N <= chunk_size) {
+    if(W <= 1 || N <= part.chunk_size()) {
       for(; beg!=end; r = bop(std::move(r), uop(*beg++)));
       return;
     }
@@ -143,7 +146,7 @@ Task FlowBuilder::transform_reduce(
     std::mutex mutex;
     std::atomic<size_t> next(0);
       
-    auto loop = [=, &mutex, &next, &r] () mutable {
+    auto loop = [=, &mutex, &next, &r, &part] () mutable {
 
       // pre-reduce
       size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
@@ -166,12 +169,13 @@ Task FlowBuilder::transform_reduce(
       T sum = bop(uop(*beg1), uop(*beg2));
       
       // loop reduce
-      detail::loop_guided(N, W, chunk_size, s0+2, next, 
-        [&](size_t prev_e, size_t curr_b, size_t curr_e) {
+      part(N, W, next, 
+        [&, prev_e=size_t{s0+2}](size_t curr_b, size_t curr_e) mutable {
           std::advance(beg, curr_b - prev_e);
           for(size_t x=curr_b; x<curr_e; x++, beg++) {
             sum = bop(std::move(sum), uop(*beg));
           }
+          prev_e = curr_e;
         }
       ); 
       
@@ -187,7 +191,7 @@ Task FlowBuilder::transform_reduce(
         break;
       }
       // tail optimization
-      if(r <= chunk_size || w == W-1) {
+      if(r <= part.chunk_size() || w == W-1) {
         loop(); 
         break;
       }
