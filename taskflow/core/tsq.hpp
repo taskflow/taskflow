@@ -48,7 +48,7 @@ enum class TaskPriority : unsigned {
 @class: TaskQueue
 
 @tparam T data type (must be a pointer type)
-@tparam MAX_PRIORITY maximum level of the priority 
+@tparam TF_MAX_PRIORITY maximum level of the priority 
 
 @brief class to create a lock-free unbounded single-producer multiple-consumer queue
 
@@ -59,11 +59,11 @@ and extends it to include priority.
 Only the queue owner can perform pop and push operations,
 while others can steal data from the queue simultaneously.
 Priority starts from zero (highest priority) to the template value 
-`MAX_PRIORITY-1` (lowest priority).
+`TF_MAX_PRIORITY-1` (lowest priority).
 All operations are associated with priority values to indicate
 the corresponding queues to which an operation is applied.
 
-The default template value, `MAX_PRIORITY`, is `TaskPriority::MAX` 
+The default template value, `TF_MAX_PRIORITY`, is `TaskPriority::MAX` 
 which applies only three priority levels to the task queue.
 
 @code{.cpp}
@@ -106,10 +106,10 @@ Task C: 2
 @endcode
 
 */
-template <typename T, unsigned MAX_PRIORITY = static_cast<unsigned>(TaskPriority::MAX)>
+template <typename T, unsigned TF_MAX_PRIORITY = static_cast<unsigned>(TaskPriority::MAX)>
 class TaskQueue {
   
-  static_assert(MAX_PRIORITY > 0, "MAX_PRIORITY must be at least one");
+  static_assert(TF_MAX_PRIORITY > 0, "TF_MAX_PRIORITY must be at least one");
   static_assert(std::is_pointer_v<T>, "T must be a pointer type");
 
   struct Array {
@@ -152,10 +152,10 @@ class TaskQueue {
 
   // Doubling the alignment by 2 seems to generate the most
   // decent performance.
-  CachelineAligned<std::atomic<int64_t>> _top[MAX_PRIORITY];
-  CachelineAligned<std::atomic<int64_t>> _bottom[MAX_PRIORITY];
-  std::atomic<Array*> _array[MAX_PRIORITY];
-  std::vector<Array*> _garbage[MAX_PRIORITY];
+  CachelineAligned<std::atomic<int64_t>> _top[TF_MAX_PRIORITY];
+  CachelineAligned<std::atomic<int64_t>> _bottom[TF_MAX_PRIORITY];
+  std::atomic<Array*> _array[TF_MAX_PRIORITY];
+  std::vector<Array*> _garbage[TF_MAX_PRIORITY];
 
   //std::atomic<T> _cache {nullptr};
 
@@ -257,10 +257,10 @@ class TaskQueue {
 };
 
 // Constructor
-template <typename T, unsigned MAX_PRIORITY>
-TaskQueue<T, MAX_PRIORITY>::TaskQueue(int64_t c) {
+template <typename T, unsigned TF_MAX_PRIORITY>
+TaskQueue<T, TF_MAX_PRIORITY>::TaskQueue(int64_t c) {
   assert(c && (!(c & (c-1))));
-  unroll<0, MAX_PRIORITY, 1>([&](auto p){
+  unroll<0, TF_MAX_PRIORITY, 1>([&](auto p){
     _top[p].data.store(0, std::memory_order_relaxed);
     _bottom[p].data.store(0, std::memory_order_relaxed);
     _array[p].store(new Array{c}, std::memory_order_relaxed);
@@ -269,9 +269,9 @@ TaskQueue<T, MAX_PRIORITY>::TaskQueue(int64_t c) {
 }
 
 // Destructor
-template <typename T, unsigned MAX_PRIORITY>
-TaskQueue<T, MAX_PRIORITY>::~TaskQueue() {
-  unroll<0, MAX_PRIORITY, 1>([&](auto p){
+template <typename T, unsigned TF_MAX_PRIORITY>
+TaskQueue<T, TF_MAX_PRIORITY>::~TaskQueue() {
+  unroll<0, TF_MAX_PRIORITY, 1>([&](auto p){
     for(auto a : _garbage[p]) {
       delete a;
     }
@@ -280,9 +280,9 @@ TaskQueue<T, MAX_PRIORITY>::~TaskQueue() {
 }
 
 // Function: empty
-template <typename T, unsigned MAX_PRIORITY>
-bool TaskQueue<T, MAX_PRIORITY>::empty() const noexcept {
-  for(unsigned i=0; i<MAX_PRIORITY; i++) {
+template <typename T, unsigned TF_MAX_PRIORITY>
+bool TaskQueue<T, TF_MAX_PRIORITY>::empty() const noexcept {
+  for(unsigned i=0; i<TF_MAX_PRIORITY; i++) {
     if(!empty(i)) {
       return false;
     }
@@ -291,32 +291,32 @@ bool TaskQueue<T, MAX_PRIORITY>::empty() const noexcept {
 }
 
 // Function: empty
-template <typename T, unsigned MAX_PRIORITY>
-bool TaskQueue<T, MAX_PRIORITY>::empty(unsigned p) const noexcept {
+template <typename T, unsigned TF_MAX_PRIORITY>
+bool TaskQueue<T, TF_MAX_PRIORITY>::empty(unsigned p) const noexcept {
   int64_t b = _bottom[p].data.load(std::memory_order_relaxed);
   int64_t t = _top[p].data.load(std::memory_order_relaxed);
   return (b <= t);
 }
 
 // Function: size
-template <typename T, unsigned MAX_PRIORITY>
-size_t TaskQueue<T, MAX_PRIORITY>::size() const noexcept {
+template <typename T, unsigned TF_MAX_PRIORITY>
+size_t TaskQueue<T, TF_MAX_PRIORITY>::size() const noexcept {
   size_t s;
-  unroll<0, MAX_PRIORITY, 1>([&](auto i) { s = i ? size(i) + s : size(i); });
+  unroll<0, TF_MAX_PRIORITY, 1>([&](auto i) { s = i ? size(i) + s : size(i); });
   return s;
 }
 
 // Function: size
-template <typename T, unsigned MAX_PRIORITY>
-size_t TaskQueue<T, MAX_PRIORITY>::size(unsigned p) const noexcept {
+template <typename T, unsigned TF_MAX_PRIORITY>
+size_t TaskQueue<T, TF_MAX_PRIORITY>::size(unsigned p) const noexcept {
   int64_t b = _bottom[p].data.load(std::memory_order_relaxed);
   int64_t t = _top[p].data.load(std::memory_order_relaxed);
   return static_cast<size_t>(b >= t ? b - t : 0);
 }
 
 // Function: push
-template <typename T, unsigned MAX_PRIORITY>
-TF_FORCE_INLINE void TaskQueue<T, MAX_PRIORITY>::push(T o, unsigned p) {
+template <typename T, unsigned TF_MAX_PRIORITY>
+TF_FORCE_INLINE void TaskQueue<T, TF_MAX_PRIORITY>::push(T o, unsigned p) {
 
   int64_t b = _bottom[p].data.load(std::memory_order_relaxed);
   int64_t t = _top[p].data.load(std::memory_order_acquire);
@@ -333,9 +333,9 @@ TF_FORCE_INLINE void TaskQueue<T, MAX_PRIORITY>::push(T o, unsigned p) {
 }
 
 // Function: pop
-template <typename T, unsigned MAX_PRIORITY>
-T TaskQueue<T, MAX_PRIORITY>::pop() {
-  for(unsigned i=0; i<MAX_PRIORITY; i++) {
+template <typename T, unsigned TF_MAX_PRIORITY>
+T TaskQueue<T, TF_MAX_PRIORITY>::pop() {
+  for(unsigned i=0; i<TF_MAX_PRIORITY; i++) {
     if(auto t = pop(i); t) {
       return t;
     }
@@ -344,8 +344,8 @@ T TaskQueue<T, MAX_PRIORITY>::pop() {
 }
 
 // Function: pop
-template <typename T, unsigned MAX_PRIORITY>
-TF_FORCE_INLINE T TaskQueue<T, MAX_PRIORITY>::pop(unsigned p) {
+template <typename T, unsigned TF_MAX_PRIORITY>
+TF_FORCE_INLINE T TaskQueue<T, TF_MAX_PRIORITY>::pop(unsigned p) {
 
   int64_t b = _bottom[p].data.load(std::memory_order_relaxed) - 1;
   Array* a = _array[p].load(std::memory_order_relaxed);
@@ -375,9 +375,9 @@ TF_FORCE_INLINE T TaskQueue<T, MAX_PRIORITY>::pop(unsigned p) {
 }
 
 // Function: steal
-template <typename T, unsigned MAX_PRIORITY>
-T TaskQueue<T, MAX_PRIORITY>::steal() {
-  for(unsigned i=0; i<MAX_PRIORITY; i++) {
+template <typename T, unsigned TF_MAX_PRIORITY>
+T TaskQueue<T, TF_MAX_PRIORITY>::steal() {
+  for(unsigned i=0; i<TF_MAX_PRIORITY; i++) {
     if(auto t = steal(i); t) {
       return t;
     }
@@ -386,8 +386,8 @@ T TaskQueue<T, MAX_PRIORITY>::steal() {
 }
 
 // Function: steal
-template <typename T, unsigned MAX_PRIORITY>
-T TaskQueue<T, MAX_PRIORITY>::steal(unsigned p) {
+template <typename T, unsigned TF_MAX_PRIORITY>
+T TaskQueue<T, TF_MAX_PRIORITY>::steal(unsigned p) {
   
   int64_t t = _top[p].data.load(std::memory_order_acquire);
   std::atomic_thread_fence(std::memory_order_seq_cst);
@@ -409,24 +409,24 @@ T TaskQueue<T, MAX_PRIORITY>::steal(unsigned p) {
 }
 
 // Function: capacity
-template <typename T, unsigned MAX_PRIORITY>
-int64_t TaskQueue<T, MAX_PRIORITY>::capacity() const noexcept {
+template <typename T, unsigned TF_MAX_PRIORITY>
+int64_t TaskQueue<T, TF_MAX_PRIORITY>::capacity() const noexcept {
   size_t s;
-  unroll<0, MAX_PRIORITY, 1>([&](auto i) { 
+  unroll<0, TF_MAX_PRIORITY, 1>([&](auto i) { 
     s = i ? capacity(i) + s : capacity(i); 
   });
   return s;
 }
 
 // Function: capacity
-template <typename T, unsigned MAX_PRIORITY>
-int64_t TaskQueue<T, MAX_PRIORITY>::capacity(unsigned p) const noexcept {
+template <typename T, unsigned TF_MAX_PRIORITY>
+int64_t TaskQueue<T, TF_MAX_PRIORITY>::capacity(unsigned p) const noexcept {
   return _array[p].load(std::memory_order_relaxed)->capacity();
 }
 
-template <typename T, unsigned MAX_PRIORITY>
-TF_NO_INLINE typename TaskQueue<T, MAX_PRIORITY>::Array*
-  TaskQueue<T, MAX_PRIORITY>::resize_array(Array* a, unsigned p, std::int64_t b, std::int64_t t) {
+template <typename T, unsigned TF_MAX_PRIORITY>
+TF_NO_INLINE typename TaskQueue<T, TF_MAX_PRIORITY>::Array*
+  TaskQueue<T, TF_MAX_PRIORITY>::resize_array(Array* a, unsigned p, std::int64_t b, std::int64_t t) {
 
   Array* tmp = a->resize(b, t);
   _garbage[p].push_back(a);
