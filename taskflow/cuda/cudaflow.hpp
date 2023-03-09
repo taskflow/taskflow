@@ -55,33 +55,10 @@ Please refer to @ref GPUTaskingcudaFlow for details.
 */
 class cudaFlow {
 
-  friend class Executor;
-  
-  // created by user
-  struct External {
-    cudaGraph graph;
-  };
-  
-  // created by executor
-  struct Internal {
-    Internal(Executor& e) : executor{e} {}
-    Executor& executor;
-  };
-
-  using handle_t = std::variant<External, Internal>;
-  
-  // variant index
-  constexpr static auto EXTERNAL = get_index_v<External, handle_t>;
-  constexpr static auto INTERNAL = get_index_v<Internal, handle_t>;
-
   public:
 
     /**
-    @brief constructs a standalone %cudaFlow
-
-    A standalone %cudaFlow does not go through any taskflow and
-    can be run by the caller thread using explicit offload methods
-    (e.g., tf::cudaFlow::offload).
+    @brief constructs a  %cudaFlow
     */
     cudaFlow();
 
@@ -89,7 +66,7 @@ class cudaFlow {
     @brief destroys the %cudaFlow and its associated native CUDA graph
            and executable graph
      */
-    ~cudaFlow();
+    ~cudaFlow() = default;
 
     /**
     @brief queries the emptiness of the graph
@@ -344,12 +321,10 @@ class cudaFlow {
     void copy(cudaTask task, T* tgt, const T* src, size_t num);
 
     // ------------------------------------------------------------------------
-    // offload methods
+    // run method
     // ------------------------------------------------------------------------
-
     /**
-    @brief offloads the %cudaFlow onto a GPU and repeatedly runs it until
-    the predicate becomes true
+    @brief offloads the %cudaFlow onto a GPU asynchronously via a stream
 
     @tparam P predicate type (a binary callable)
 
@@ -365,20 +340,17 @@ class cudaFlow {
     By default, if users do not offload the %cudaFlow,
     the executor will offload it once.
     */
-    template <typename P>
-    void offload_until(P&& predicate);
+    void run(cudaStream_t stream);
 
     /**
-    @brief offloads the %cudaFlow and executes it by the given times
-
-    @param N number of executions
+    @brief acquires a reference to the underlying CUDA graph
     */
-    void offload_n(size_t N);
+    cudaGraph_t native_graph();
 
     /**
-    @brief offloads the %cudaFlow and executes it once
+    @brief acquires a reference to the underlying CUDA graph executable
     */
-    void offload();
+    cudaGraphExec_t executable_graph();
 
     // ------------------------------------------------------------------------
     // generic algorithms
@@ -1147,63 +1119,20 @@ class cudaFlow {
 
   private:
 
-    handle_t _handle;
-    cudaGraph& _graph;
+    cudaFlowGraph _graph;
     cudaGraphExec _exec {nullptr};
-
-    cudaFlow(cudaGraph&, Executor&);
-    
-    template <typename P>
-    void _offload_until_external(P&&);
-    
-    template <typename P>
-    void _offload_until_internal(P&&);
 };
 
 // Construct a standalone cudaFlow
-inline cudaFlow::cudaFlow() :
-  _handle {std::in_place_type_t<External>{}},
-  _graph  {std::get_if<External>(&_handle)->graph} {
-
-  TF_CHECK_CUDA(
-    cudaGraphCreate(&_graph._native_handle, 0),
-    "cudaFlow failed to create a native graph (external mode)"
-  );
-}
-
-// Construct the cudaFlow from executor (internal graph)
-inline cudaFlow::cudaFlow(cudaGraph& g, Executor& executor) :
-  _handle {std::in_place_type_t<Internal>{}, executor},
-  _graph  {g} {
-
-  assert(_graph._native_handle == nullptr);
-
-  TF_CHECK_CUDA(
-    cudaGraphCreate(&_graph._native_handle, 0),
-    "failed to create a native graph (internal mode)"
-  );
-}
-
-// Destructor
-inline cudaFlow::~cudaFlow() {
-  cudaGraphDestroy(_graph._native_handle);
-  _graph._native_handle = nullptr;
+inline cudaFlow::cudaFlow() {
+  _graph._native_handle.create();
 }
 
 // Procedure: clear
 inline void cudaFlow::clear() {
-
   _exec.clear();
-
-  TF_CHECK_CUDA(
-    cudaGraphDestroy(_graph._native_handle), "failed to destroy native graph"
-  );
-
-  TF_CHECK_CUDA(
-    cudaGraphCreate(&_graph._native_handle, 0), "failed to create native graph"
-  );
-
-  _graph._nodes.clear();
+  _graph.clear();
+  _graph._native_handle.create();
 }
 
 // Function: empty
@@ -1234,7 +1163,7 @@ inline void cudaFlow::dump_native_graph(std::ostream& os) const {
 inline cudaTask cudaFlow::noop() {
 
   auto node = _graph.emplace_back(
-    _graph, std::in_place_type_t<cudaNode::Empty>{}
+    _graph, std::in_place_type_t<cudaFlowNode::Empty>{}
   );
 
   TF_CHECK_CUDA(
@@ -1252,13 +1181,13 @@ template <typename C>
 cudaTask cudaFlow::host(C&& c) {
 
   auto node = _graph.emplace_back(
-    _graph, std::in_place_type_t<cudaNode::Host>{}, std::forward<C>(c)
+    _graph, std::in_place_type_t<cudaFlowNode::Host>{}, std::forward<C>(c)
   );
 
-  auto h = std::get_if<cudaNode::Host>(&node->_handle);
+  auto h = std::get_if<cudaFlowNode::Host>(&node->_handle);
 
   cudaHostNodeParams p;
-  p.fn = cudaNode::Host::callback;
+  p.fn = cudaFlowNode::Host::callback;
   p.userData = h;
 
   TF_CHECK_CUDA(
@@ -1278,7 +1207,7 @@ cudaTask cudaFlow::kernel(
 ) {
 
   auto node = _graph.emplace_back(
-    _graph, std::in_place_type_t<cudaNode::Kernel>{}, (void*)f
+    _graph, std::in_place_type_t<cudaFlowNode::Kernel>{}, (void*)f
   );
 
   cudaKernelNodeParams p;
@@ -1307,7 +1236,7 @@ template <typename T, std::enable_if_t<
 cudaTask cudaFlow::zero(T* dst, size_t count) {
 
   auto node = _graph.emplace_back(
-    _graph, std::in_place_type_t<cudaNode::Memset>{}
+    _graph, std::in_place_type_t<cudaFlowNode::Memset>{}
   );
 
   auto p = cuda_get_zero_parms(dst, count);
@@ -1329,7 +1258,7 @@ template <typename T, std::enable_if_t<
 cudaTask cudaFlow::fill(T* dst, T value, size_t count) {
 
   auto node = _graph.emplace_back(
-    _graph, std::in_place_type_t<cudaNode::Memset>{}
+    _graph, std::in_place_type_t<cudaFlowNode::Memset>{}
   );
 
   auto p = cuda_get_fill_parms(dst, value, count);
@@ -1352,7 +1281,7 @@ template <
 cudaTask cudaFlow::copy(T* tgt, const T* src, size_t num) {
 
   auto node = _graph.emplace_back(
-    _graph, std::in_place_type_t<cudaNode::Memcpy>{}
+    _graph, std::in_place_type_t<cudaFlowNode::Memcpy>{}
   );
 
   auto p = cuda_get_copy_parms(tgt, src, num);
@@ -1371,7 +1300,7 @@ cudaTask cudaFlow::copy(T* tgt, const T* src, size_t num) {
 inline cudaTask cudaFlow::memset(void* dst, int ch, size_t count) {
 
   auto node = _graph.emplace_back(
-    _graph, std::in_place_type_t<cudaNode::Memset>{}
+    _graph, std::in_place_type_t<cudaFlowNode::Memset>{}
   );
 
   auto p = cuda_get_memset_parms(dst, ch, count);
@@ -1390,7 +1319,7 @@ inline cudaTask cudaFlow::memset(void* dst, int ch, size_t count) {
 inline cudaTask cudaFlow::memcpy(void* tgt, const void* src, size_t bytes) {
 
   auto node = _graph.emplace_back(
-    _graph, std::in_place_type_t<cudaNode::Memcpy>{}
+    _graph, std::in_place_type_t<cudaFlowNode::Memcpy>{}
   );
 
   auto p = cuda_get_memcpy_parms(tgt, src, bytes);
@@ -1417,7 +1346,7 @@ void cudaFlow::host(cudaTask task, C&& c) {
     TF_THROW(task, " is not a host task");
   }
 
-  auto h = std::get_if<cudaNode::Host>(&task._node->_handle);
+  auto h = std::get_if<cudaFlowNode::Host>(&task._node->_handle);
 
   h->func = std::forward<C>(c);
 }
@@ -1542,7 +1471,7 @@ void cudaFlow::capture(cudaTask task, C c) {
 
   // insert a subflow node
   // construct a captured flow from the callable
-  auto node_handle = std::get_if<cudaNode::Subflow>(&task._node->_handle);
+  auto node_handle = std::get_if<cudaFlowNode::Subflow>(&task._node->_handle);
   node_handle->graph.clear();
 
   cudaFlowCapturer capturer(node_handle->graph);
@@ -1550,15 +1479,13 @@ void cudaFlow::capture(cudaTask task, C c) {
   c(capturer);
 
   // obtain the optimized captured graph
-  auto captured = capturer._capture();
+  cudaGraph captured(capturer.capture());
   //cuda_dump_graph(std::cout, captured);
 
   TF_CHECK_CUDA(
     cudaGraphExecChildGraphNodeSetParams(_exec, task._node->_native_handle, captured),
     "failed to update a captured child graph"
   );
-
-  TF_CHECK_CUDA(cudaGraphDestroy(captured), "failed to destroy captured graph");
 }
 
 // ----------------------------------------------------------------------------
@@ -1571,18 +1498,18 @@ cudaTask cudaFlow::capture(C&& c) {
 
   // insert a subflow node
   auto node = _graph.emplace_back(
-    _graph, std::in_place_type_t<cudaNode::Subflow>{}
+    _graph, std::in_place_type_t<cudaFlowNode::Subflow>{}
   );
 
   // construct a captured flow from the callable
-  auto node_handle = std::get_if<cudaNode::Subflow>(&node->_handle);
+  auto node_handle = std::get_if<cudaFlowNode::Subflow>(&node->_handle);
   node_handle->graph.clear();
   cudaFlowCapturer capturer(node_handle->graph);
 
   c(capturer);
 
   // obtain the optimized captured graph
-  auto captured = capturer._capture();
+  cudaGraph captured(capturer.capture());
   //cuda_dump_graph(std::cout, captured);
 
   TF_CHECK_CUDA(
@@ -1592,136 +1519,31 @@ cudaTask cudaFlow::capture(C&& c) {
     "failed to add a cudaFlow capturer task"
   );
 
-  TF_CHECK_CUDA(cudaGraphDestroy(captured), "failed to destroy captured graph");
-
   return cudaTask(node);
 }
 
 // ----------------------------------------------------------------------------
-// Offload methods
+// run method
 // ----------------------------------------------------------------------------
 
-// Procedure: offload_until
-template <typename P>
-void cudaFlow::offload_until(P&& predicate) {
-
-  _offload_until_external(std::forward<P>(predicate));
-  
-  /*
-  // turns out the optimized version runs slower...
-  switch(_handle.index()) {
-    case EXTERNAL: {
-      _offload_until_external(std::forward<P>(predicate));
-    }
-    break;
-    case INTERNAL: {
-      _offload_until_internal(std::forward<P>(predicate));
-    }
-    break;
-    default:
-    break;
-  }*/
-}
-
-template <typename P>
-void cudaFlow::_offload_until_external(P&& predicate) {
+// Procedure: run
+inline void cudaFlow::run(cudaStream_t stream) {
   if(!_exec) {
     _exec.instantiate(_graph._native_handle);
   }
-  cudaStream stream;
-  while(!predicate()) {
-    _exec.launch(stream);
-    stream.synchronize();
-  }
-  _graph._state = cudaGraph::OFFLOADED;
+  _exec.launch(stream);
+  _graph._state = cudaFlowGraph::OFFLOADED;
 }
 
-template <typename P>
-void cudaFlow::_offload_until_internal(P&& predicate) {
-  
-  auto& executor = std::get<Internal>(_handle).executor;
-
-  if(!_exec) {
-    _exec.instantiate(_graph._native_handle);
-  }
-  
-  cudaStream stream;
-  cudaEvent event(cudaEventDisableTiming);
-
-  while(!predicate()) {
-    _exec.launch(stream);
-    stream.record(event);
-    executor.loop_until([&event] () -> bool { 
-      return cudaEventQuery(event) == cudaSuccess;
-    });
-  }
-
-  _graph._state = cudaGraph::OFFLOADED;
+// Function: native_graph
+inline cudaGraph_t cudaFlow::native_graph() {
+  return _graph._native_handle;
 }
 
-// Procedure: offload_n
-inline void cudaFlow::offload_n(size_t n) {
-  offload_until([repeat=n] () mutable { return repeat-- == 0; });
+// Function: executable_graph
+inline cudaGraphExec_t cudaFlow::executable_graph() {
+  return _exec;
 }
-
-// Procedure: offload
-inline void cudaFlow::offload() {
-  offload_until([repeat=1] () mutable { return repeat-- == 0; });
-}
-
-// ############################################################################
-// Forward declaration: FlowBuilder
-// ############################################################################
-
-// FlowBuilder::emplace_on
-template <typename C, typename D,
-  std::enable_if_t<is_cudaflow_task_v<C>, void>*
->
-Task FlowBuilder::emplace_on(C&& c, D&& d) {
-  auto n = _graph._emplace_back(
-    std::in_place_type_t<Node::cudaFlow>{},
-    [c=std::forward<C>(c), d=std::forward<D>(d)] (Executor& e, Node* p) mutable {
-      cudaScopedDevice ctx(d);
-      e._invoke_cudaflow_task_entry(p, c);
-    },
-    std::make_unique<cudaGraph>()
-  );
-  return Task(n);
-}
-
-// FlowBuilder::emplace
-template <typename C, std::enable_if_t<is_cudaflow_task_v<C>, void>*>
-Task FlowBuilder::emplace(C&& c) {
-  return emplace_on(std::forward<C>(c), tf::cuda_get_device());
-}
-
-// ############################################################################
-// Forward declaration: Executor
-// ############################################################################
-
-// Procedure: _invoke_cudaflow_task_entry
-template <typename C, std::enable_if_t<is_cudaflow_task_v<C>, void>*>
-void Executor::_invoke_cudaflow_task_entry(Node* node, C&& c) {
-
-  using T = std::conditional_t<
-    std::is_invocable_r_v<void, C, cudaFlow&>, cudaFlow, cudaFlowCapturer
-  >;
-
-  auto h = std::get_if<Node::cudaFlow>(&node->_handle);
-
-  cudaGraph* g = dynamic_cast<cudaGraph*>(h->graph.get());
-
-  g->clear();
-
-  T cf(*g, *this);
-
-  c(cf);
-
-  if(!(g->_state & cudaGraph::OFFLOADED)) {
-    cf.offload();
-  }
-}
-
 
 }  // end of namespace tf -----------------------------------------------------
 

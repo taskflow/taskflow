@@ -193,7 +193,9 @@ void dependencies(OPT_Args ...args) {
       }
     }
 
-    cf.offload();
+    tf::cudaStream stream;
+    cf.run(stream);
+    stream.synchronize();
     
     int result = 2;
     for(int i = 1; i < num_iterations; ++i) {

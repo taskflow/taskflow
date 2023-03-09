@@ -125,7 +125,7 @@ cudaMemsetParams cuda_get_zero_parms(T* dst, size_t count) {
 /**
 @brief queries the number of root nodes in a native CUDA graph
 */
-inline size_t cuda_get_graph_num_root_nodes(cudaGraph_t graph) {
+inline size_t cuda_graph_get_num_root_nodes(cudaGraph_t graph) {
   size_t num_nodes;
   TF_CHECK_CUDA(
     cudaGraphGetRootNodes(graph, nullptr, &num_nodes),
@@ -137,7 +137,7 @@ inline size_t cuda_get_graph_num_root_nodes(cudaGraph_t graph) {
 /**
 @brief queries the number of nodes in a native CUDA graph
 */
-inline size_t cuda_get_graph_num_nodes(cudaGraph_t graph) {
+inline size_t cuda_graph_get_num_nodes(cudaGraph_t graph) {
   size_t num_nodes;
   TF_CHECK_CUDA(
     cudaGraphGetNodes(graph, nullptr, &num_nodes),
@@ -149,7 +149,7 @@ inline size_t cuda_get_graph_num_nodes(cudaGraph_t graph) {
 /**
 @brief queries the number of edges in a native CUDA graph
 */
-inline size_t cuda_get_graph_num_edges(cudaGraph_t graph) {
+inline size_t cuda_graph_get_num_edges(cudaGraph_t graph) {
   size_t num_edges;
   TF_CHECK_CUDA(
     cudaGraphGetEdges(graph, nullptr, nullptr, &num_edges),
@@ -161,8 +161,8 @@ inline size_t cuda_get_graph_num_edges(cudaGraph_t graph) {
 /**
 @brief acquires the nodes in a native CUDA graph
 */
-inline std::vector<cudaGraphNode_t> cuda_get_graph_nodes(cudaGraph_t graph) {
-  size_t num_nodes = cuda_get_graph_num_nodes(graph);
+inline std::vector<cudaGraphNode_t> cuda_graph_get_nodes(cudaGraph_t graph) {
+  size_t num_nodes = cuda_graph_get_num_nodes(graph);
   std::vector<cudaGraphNode_t> nodes(num_nodes);
   TF_CHECK_CUDA(
     cudaGraphGetNodes(graph, nodes.data(), &num_nodes),
@@ -174,8 +174,8 @@ inline std::vector<cudaGraphNode_t> cuda_get_graph_nodes(cudaGraph_t graph) {
 /**
 @brief acquires the root nodes in a native CUDA graph
 */
-inline std::vector<cudaGraphNode_t> cuda_get_graph_root_nodes(cudaGraph_t graph) {
-  size_t num_nodes = cuda_get_graph_num_root_nodes(graph);
+inline std::vector<cudaGraphNode_t> cuda_graph_get_root_nodes(cudaGraph_t graph) {
+  size_t num_nodes = cuda_graph_get_num_root_nodes(graph);
   std::vector<cudaGraphNode_t> nodes(num_nodes);
   TF_CHECK_CUDA(
     cudaGraphGetRootNodes(graph, nodes.data(), &num_nodes),
@@ -188,8 +188,8 @@ inline std::vector<cudaGraphNode_t> cuda_get_graph_root_nodes(cudaGraph_t graph)
 @brief acquires the edges in a native CUDA graph
 */
 inline std::vector<std::pair<cudaGraphNode_t, cudaGraphNode_t>>
-cuda_get_graph_edges(cudaGraph_t graph) {
-  size_t num_edges = cuda_get_graph_num_edges(graph);
+cuda_graph_get_edges(cudaGraph_t graph) {
+  size_t num_edges = cuda_graph_get_num_edges(graph);
   std::vector<cudaGraphNode_t> froms(num_edges), tos(num_edges);
   TF_CHECK_CUDA(
     cudaGraphGetEdges(graph, froms.data(), tos.data(), &num_edges),
@@ -270,8 +270,8 @@ void cuda_dump_graph(T& os, cudaGraph_t graph) {
        << "label=\"cudaGraph-L" << l << "\";\n"
        << "color=\"purple\";\n";
 
-    auto nodes = cuda_get_graph_nodes(graph);
-    auto edges = cuda_get_graph_edges(graph);
+    auto nodes = cuda_graph_get_nodes(graph);
+    auto edges = cuda_graph_get_edges(graph);
 
     for(auto& [from, to] : edges) {
       os << 'p' << from << " -> " << 'p' << to << ";\n";
@@ -320,21 +320,21 @@ void cuda_dump_graph(T& os, cudaGraph_t graph) {
 }
 
 // ----------------------------------------------------------------------------
-// cudaGraphNative
+// cudaGraph
 // ----------------------------------------------------------------------------
 
 /**
-@class cudaGraphNative
+@class cudaGraph
 
 @brief class to create an RAII-styled wrapper over a CUDA executable graph
 
-A cudaGraphNative object is an RAII-styled wrapper over 
-a native CUDA executable graph (@c cudaGraphNative_t).
-A cudaGraphNative object is move-only.
+A cudaGraph object is an RAII-styled wrapper over 
+a native CUDA graph (@c cudaGraph_t).
+A cudaGraph object is move-only.
 */
-class cudaGraphNative {
+class cudaGraph {
 
-  struct cudaGraphNativeCreator {
+  struct cudaGraphCreator {
     cudaGraph_t operator () () const { 
       cudaGraph_t g;
       TF_CHECK_CUDA(cudaGraphCreate(&g, 0), "failed to create a CUDA native graph");
@@ -342,7 +342,7 @@ class cudaGraphNative {
     }
   };
   
-  struct cudaGraphNativeDeleter {
+  struct cudaGraphDeleter {
     void operator () (cudaGraph_t g) const {
       if(g) {
         cudaGraphDestroy(g);
@@ -355,65 +355,89 @@ class cudaGraphNative {
     /**
     @brief constructs an RAII-styled object from the given CUDA exec
 
-    Constructs a cudaGraphNative object which owns @c exec.
+    Constructs a cudaGraph object which owns @c exec.
     */
-    explicit cudaGraphNative(cudaGraph_t native) : _native(native) {
+    explicit cudaGraph(cudaGraph_t native) : _graph(native) {
     }
     
     /**
     @brief constructs an RAII-styled object for a new CUDA exec
 
-    Equivalently calling @c cudaGraphNativeCreate to create a exec.
+    Equivalently calling @c cudaGraphCreate to create a exec.
     */
-    cudaGraphNative() : _native{ cudaGraphNativeCreator{}() } {
+    cudaGraph() : _graph{ cudaGraphCreator{}() } {
     }
     
     /**
     @brief disabled copy constructor
     */
-    cudaGraphNative(const cudaGraphNative&) = delete;
+    cudaGraph(const cudaGraph&) = delete;
     
     /**
     @brief move constructor
     */
-    cudaGraphNative(cudaGraphNative&& rhs) : _native{rhs._native} {
-      rhs._native = nullptr;
+    cudaGraph(cudaGraph&& rhs) : _graph{rhs._graph} {
+      rhs._graph = nullptr;
     }
 
     /**
     @brief destructs the CUDA exec
     */
-    ~cudaGraphNative() {
-      cudaGraphNativeDeleter {} (_native);
+    ~cudaGraph() {
+      cudaGraphDeleter {} (_graph);
     }
     
     /**
     @brief disabled copy assignment
     */
-    cudaGraphNative& operator = (const cudaGraphNative&) = delete;
+    cudaGraph& operator = (const cudaGraph&) = delete;
 
     /**
     @brief move assignment
     */
-    cudaGraphNative& operator = (cudaGraphNative&& rhs) {
-      cudaGraphNativeDeleter {} (_native);
-      _native = rhs._native;
-      rhs._native = nullptr;
+    cudaGraph& operator = (cudaGraph&& rhs) {
+      cudaGraphDeleter {} (_graph);
+      _graph = rhs._graph;
+      rhs._graph = nullptr;
       return *this;
     }
     
     /**
-    @brief implicit conversion to the native CUDA exec (cudaGraphNative_t)
+    @brief deletes the current CUDA graph (if any) and creates a new CUDA graph
+    */
+    void create() {
+      cudaGraphDeleter {} (_graph);
+      _graph = cudaGraphCreator{}();
+    }
+    
+    /**
+    @brief deletes the current CUDA Graph
+    */
+    void clear() {
+      cudaGraphDeleter {} (_graph);
+      _graph = nullptr;
+    }
+    
+    /**
+    @brief resets this to the given CUDA graph
+    */
+    void reset(cudaGraph_t graph) {
+      cudaGraphDeleter {} (_graph);
+      _graph = graph;
+    }
+  
+    /**
+    @brief implicit conversion to the native CUDA exec (cudaGraph_t)
 
-    Returns the underlying exec of type @c cudaGraphNative_t.
+    Returns the underlying exec of type @c cudaGraph_t.
     */
     operator cudaGraph_t () const {
-      return _native;
+      return _graph;
     }
     
   private:
 
-    cudaGraph_t _native {nullptr};
+    cudaGraph_t _graph {nullptr};
 };
 
 // ----------------------------------------------------------------------------
@@ -496,15 +520,13 @@ class cudaGraphExec {
     }
     
     /**
-    @brief replaces the managed executable graph with the given one
-
-    Destructs the managed exec and resets it to the given exec.
+    @brief clears the underlying CUDA executable graph
     */
     void clear() {
       cudaGraphExecDeleter {} (_exec);
       _exec = nullptr;
     }
-    
+
     /**
     @brief instantiates the exexutable from the given CUDA graph
     */
@@ -554,9 +576,9 @@ class cudaGraphExec {
 // ----------------------------------------------------------------------------
 
 // class: cudaGraph
-class cudaGraph : public CustomGraphBase {
+class cudaFlowGraph {
 
-  friend class cudaNode;
+  friend class cudaFlowNode;
   friend class cudaTask;
   friend class cudaFlowCapturerBase;
   friend class cudaFlowCapturer;
@@ -574,44 +596,41 @@ class cudaGraph : public CustomGraphBase {
 
   public:
 
-    cudaGraph() = default;
-    ~cudaGraph();
+    cudaFlowGraph() = default;
+    ~cudaFlowGraph() = default;
 
-    cudaGraph(const cudaGraph&) = delete;
-    cudaGraph(cudaGraph&&);
+    cudaFlowGraph(const cudaFlowGraph&) = delete;
+    cudaFlowGraph(cudaFlowGraph&&) = default;
 
-    cudaGraph& operator = (const cudaGraph&) = delete;
-    cudaGraph& operator = (cudaGraph&&);
+    cudaFlowGraph& operator = (const cudaFlowGraph&) = delete;
+    cudaFlowGraph& operator = (cudaFlowGraph&&) = default;
 
     template <typename... ArgsT>
-    cudaNode* emplace_back(ArgsT&&...);
+    cudaFlowNode* emplace_back(ArgsT&&...);
 
     bool empty() const;
 
     void clear();
-    void dump(std::ostream&, const void*, const std::string&) const override final;
+    void dump(std::ostream&, const void*, const std::string&) const ;
 
   private:
 
     int _state{CHANGED};
-
-    cudaGraph_t _native_handle {nullptr};
-
-    std::vector<std::unique_ptr<cudaNode>> _nodes;
-    //std::vector<cudaNode*> _nodes;
+    cudaGraph _native_handle {nullptr};
+    std::vector<std::unique_ptr<cudaFlowNode>> _nodes;
 };
 
 // ----------------------------------------------------------------------------
-// cudaNode class
+// cudaFlowNode class
 // ----------------------------------------------------------------------------
 
 /**
 @private
-@class: cudaNode
+@class: cudaFlowNode
 */
-class cudaNode {
+class cudaFlowNode {
 
-  friend class cudaGraph;
+  friend class cudaFlowGraph;
   friend class cudaTask;
   friend class cudaFlow;
   friend class cudaFlowCapturer;
@@ -657,7 +676,7 @@ class cudaNode {
 
   // Subflow handle
   struct Subflow {
-    cudaGraph graph;
+    cudaFlowGraph graph;
   };
 
   // Capture
@@ -695,14 +714,14 @@ class cudaNode {
   constexpr static auto SUBFLOW = get_index_v<Subflow, handle_t>;
   constexpr static auto CAPTURE = get_index_v<Capture, handle_t>;
 
-    cudaNode() = delete;
+    cudaFlowNode() = delete;
 
     template <typename... ArgsT>
-    cudaNode(cudaGraph&, ArgsT&&...);
+    cudaFlowNode(cudaFlowGraph&, ArgsT&&...);
 
   private:
 
-    cudaGraph& _graph;
+    cudaFlowGraph& _graph;
 
     std::string _name;
 
@@ -710,55 +729,55 @@ class cudaNode {
 
     cudaGraphNode_t _native_handle {nullptr};
 
-    SmallVector<cudaNode*> _successors;
-    SmallVector<cudaNode*> _dependents;
+    SmallVector<cudaFlowNode*> _successors;
+    SmallVector<cudaFlowNode*> _dependents;
 
-    void _precede(cudaNode*);
+    void _precede(cudaFlowNode*);
 };
 
 // ----------------------------------------------------------------------------
-// cudaNode definitions
+// cudaFlowNode definitions
 // ----------------------------------------------------------------------------
 
 // Host handle constructor
 template <typename C>
-cudaNode::Host::Host(C&& c) : func {std::forward<C>(c)} {
+cudaFlowNode::Host::Host(C&& c) : func {std::forward<C>(c)} {
 }
 
 // Host callback
-inline void cudaNode::Host::callback(void* data) {
+inline void cudaFlowNode::Host::callback(void* data) {
   static_cast<Host*>(data)->func();
 };
 
 // Kernel handle constructor
 template <typename F>
-cudaNode::Kernel::Kernel(F&& f) :
+cudaFlowNode::Kernel::Kernel(F&& f) :
   func {std::forward<F>(f)} {
 }
 
 // Capture handle constructor
 template <typename C>
-cudaNode::Capture::Capture(C&& work) :
+cudaFlowNode::Capture::Capture(C&& work) :
   work {std::forward<C>(work)} {
 }
 
 // Constructor
 template <typename... ArgsT>
-cudaNode::cudaNode(cudaGraph& graph, ArgsT&&... args) :
+cudaFlowNode::cudaFlowNode(cudaFlowGraph& graph, ArgsT&&... args) :
   _graph {graph},
   _handle {std::forward<ArgsT>(args)...} {
 }
 
 // Procedure: _precede
-inline void cudaNode::_precede(cudaNode* v) {
+inline void cudaFlowNode::_precede(cudaFlowNode* v) {
 
-  _graph._state |= cudaGraph::CHANGED;
+  _graph._state |= cudaFlowGraph::CHANGED;
 
   _successors.push_back(v);
   v->_dependents.push_back(this);
 
   // capture node doesn't have the native graph yet
-  if(_handle.index() != cudaNode::CAPTURE) {
+  if(_handle.index() != cudaFlowNode::CAPTURE) {
     TF_CHECK_CUDA(
       cudaGraphAddDependencies(
         _graph._native_handle, &_native_handle, &v->_native_handle, 1
@@ -768,100 +787,45 @@ inline void cudaNode::_precede(cudaNode* v) {
   }
 }
 
-//// Procedure: _set_state
-//inline void cudaNode::_set_state(int flag) {
-//  _state |= flag;
-//}
-//
-//// Procedure: _unset_state
-//inline void cudaNode::_unset_state(int flag) {
-//  _state &= ~flag;
-//}
-//
-//// Procedure: _clear_state
-//inline void cudaNode::_clear_state() {
-//  _state = 0;
-//}
-//
-//// Function: _has_state
-//inline bool cudaNode::_has_state(int flag) const {
-//  return _state & flag;
-//}
-
 // ----------------------------------------------------------------------------
 // cudaGraph definitions
 // ----------------------------------------------------------------------------
 
-// Destructor
-inline cudaGraph::~cudaGraph() {
-  //clear();
-  assert(_native_handle == nullptr);
-}
-
-// Move constructor
-inline cudaGraph::cudaGraph(cudaGraph&& g) :
-  _native_handle {g._native_handle},
-  _nodes         {std::move(g._nodes)} {
-
-  g._native_handle = nullptr;
-
-  assert(g._nodes.empty());
-}
-
-// Move assignment
-inline cudaGraph& cudaGraph::operator = (cudaGraph&& rhs) {
-
-  //clear();
-
-  // lhs
-  _native_handle = rhs._native_handle;
-  _nodes = std::move(rhs._nodes);
-
-  assert(rhs._nodes.empty());
-
-  // rhs
-  rhs._native_handle = nullptr;
-
-  return *this;
-}
-
 // Function: empty
-inline bool cudaGraph::empty() const {
+inline bool cudaFlowGraph::empty() const {
   return _nodes.empty();
 }
 
 // Procedure: clear
-inline void cudaGraph::clear() {
-  //for(auto n : _nodes) {
-  //  delete n;
-  //}
-  _state = cudaGraph::CHANGED;
+inline void cudaFlowGraph::clear() {
+  _state = cudaFlowGraph::CHANGED;
   _nodes.clear();
+  _native_handle.clear();
 }
 
 // Function: emplace_back
 template <typename... ArgsT>
-cudaNode* cudaGraph::emplace_back(ArgsT&&... args) {
+cudaFlowNode* cudaFlowGraph::emplace_back(ArgsT&&... args) {
 
-  _state |= cudaGraph::CHANGED;
+  _state |= cudaFlowGraph::CHANGED;
 
-  auto node = std::make_unique<cudaNode>(std::forward<ArgsT>(args)...);
+  auto node = std::make_unique<cudaFlowNode>(std::forward<ArgsT>(args)...);
   _nodes.emplace_back(std::move(node));
   return _nodes.back().get();
 
   // TODO: use object pool to save memory
-  //auto node = new cudaNode(std::forward<ArgsT>(args)...);
+  //auto node = new cudaFlowNode(std::forward<ArgsT>(args)...);
   //_nodes.push_back(node);
   //return node;
 }
 
 // Procedure: dump the graph to a DOT format
-inline void cudaGraph::dump(
+inline void cudaFlowGraph::dump(
   std::ostream& os, const void* root, const std::string& root_name
 ) const {
 
   // recursive dump with stack
-  std::stack<std::tuple<const cudaGraph*, const cudaNode*, int>> stack;
+  std::stack<std::tuple<const cudaFlowGraph*, const cudaFlowNode*, int>> stack;
   stack.push(std::make_tuple(this, nullptr, 1));
 
   int pl = 0;
@@ -906,16 +870,16 @@ inline void cudaGraph::dump(
       }
 
       switch(v->_handle.index()) {
-        case cudaNode::KERNEL:
+        case cudaFlowNode::KERNEL:
           os << " style=\"filled\""
              << " color=\"white\" fillcolor=\"black\""
              << " fontcolor=\"white\""
              << " shape=\"box3d\"";
         break;
 
-        case cudaNode::SUBFLOW:
+        case cudaFlowNode::SUBFLOW:
           stack.push(std::make_tuple(
-            &(std::get_if<cudaNode::Subflow>(&v->_handle)->graph), v, l+1)
+            &(std::get_if<cudaFlowNode::Subflow>(&v->_handle)->graph), v, l+1)
           );
           os << " style=\"filled\""
              << " color=\"black\" fillcolor=\"purple\""

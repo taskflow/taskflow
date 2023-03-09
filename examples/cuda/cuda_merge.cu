@@ -63,15 +63,6 @@ int main(int argc, char* argv[]) {
   // verify the result
   // --------------------------------------------------------------------------
 
-  //for(unsigned i=0; i< N; i++) {
-  //  printf("a[%u]=%d, b[%u]=%d\n", i, a[i], i, b[i]);
-  //}
-  //printf("\n");
-
-  //for(unsigned i=0; i<N+N; i++) {
-  //  printf("c[%u]=%d\n", i, c[i]);
-  //}
-  
   for(size_t i=0; i<N; i++) {
     if(dc[i] != hc[i]) {
       throw std::runtime_error("incorrect result");

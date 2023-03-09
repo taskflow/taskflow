@@ -34,8 +34,8 @@ class Pipeline;
 // ----------------------------------------------------------------------------
 // cudaFlow
 // ----------------------------------------------------------------------------
-class cudaNode;
-class cudaGraph;
+class cudaFlowNode;
+class cudaFlowGraph;
 class cudaTask;
 class cudaFlow;
 class cudaFlowCapturer;

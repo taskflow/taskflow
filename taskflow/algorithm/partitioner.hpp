@@ -94,7 +94,7 @@ class GuidedPartitioner : public PartitionerBase {
     size_t chunk_size = (_chunk_size == 0) ? size_t{1} : _chunk_size;
 
     size_t p1 = 2 * W * (chunk_size + 1);
-    double p2 = 0.5 / static_cast<double>(W);
+    float  p2 = 0.5f / static_cast<float>(W);
     size_t curr_b = next.load(std::memory_order_relaxed);
 
     while(curr_b < N) {
@@ -118,9 +118,10 @@ class GuidedPartitioner : public PartitionerBase {
         if(q < chunk_size) {
           q = chunk_size;
         }
-        size_t curr_e = (q <= r) ? curr_b + q : N;
+        //size_t curr_e = (q <= r) ? curr_b + q : N;
+        size_t curr_e = std::min(curr_b + q, N);
         if(next.compare_exchange_strong(curr_b, curr_e, std::memory_order_relaxed,
-                                                std::memory_order_relaxed)) {
+                                                        std::memory_order_relaxed)) {
           func(curr_b, curr_e);
           curr_b = next.load(std::memory_order_relaxed);
         }
@@ -189,7 +190,7 @@ class DynamicPartitioner : public PartitionerBase {
 
 The partitioner divides iterations into chunks and distributes chunks 
 to workers in order.
-If the chunk size is not specified, i.e., 0, the partitioner resorts to a chunk size
+If the chunk size is not specified (default @c 0), the partitioner resorts to a chunk size
 that equally distributes iterations into workers.
 */
 class StaticPartitioner : public PartitionerBase {
@@ -241,6 +242,91 @@ class StaticPartitioner : public PartitionerBase {
       curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
     }
   }
+
+};
+
+// ----------------------------------------------------------------------------
+// RandomPartitioner
+// ----------------------------------------------------------------------------
+
+/**
+@class RandomPartitioner
+
+@brief class to construct a random partitioner for scheduling parallel algorithms
+
+Similar to tf::DynamicPartitioner, 
+the partitioner splits iterations into many partitions but each with a random
+chunk size in the range, <tt>c = [alpha * N * W, beta * N * W]</tt>.
+By default, @c alpha is <tt>0.01</tt> and @c beta is <tt>0.5</tt>, respectively.
+
+*/
+class RandomPartitioner : public PartitionerBase {
+
+  public:
+
+  /**
+  @brief default constructor
+  */
+  RandomPartitioner() = default;
+  
+  /**
+  @brief constructs a random partitioner 
+  */
+  RandomPartitioner(size_t cz) : PartitionerBase{cz} {}
+  
+  /**
+  @brief constructs a random partitioner with the given parameters
+  */
+  RandomPartitioner(float alpha, float beta) : _alpha {alpha}, _beta {beta} {}
+
+  /**
+  @brief queries the @alpha value
+  */
+  float alpha() const { return _alpha; }
+  
+  /**
+  @brief queries the @beta value
+  */
+  float beta() const { return _beta; }
+  
+  /**
+  @private
+  */
+  template <typename F>
+  void operator () (
+    size_t N, 
+    size_t W, 
+    std::atomic<size_t>& next, 
+    F&& func
+  ) const {
+
+    size_t b1 = static_cast<size_t>(_alpha * N * W);
+    size_t b2 = static_cast<size_t>(_beta  * N * W);
+
+    if(b1 > b2) {
+      std::swap(b1, b2);
+    }
+
+    b1 = std::max(b1, size_t{1});
+    b2 = std::max(b2, b1 + 1);
+    
+    std::default_random_engine engine {std::random_device{}()};
+    std::uniform_int_distribution<size_t> dist(b1, b2);
+    
+    size_t chunk_size = dist(engine);
+    size_t curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
+
+    while(curr_b < N) {
+      func(curr_b, std::min(curr_b + chunk_size, N));
+      chunk_size = dist(engine);
+      curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
+    }
+  }
+
+  private:
+
+  float _alpha {0.01f};
+  float _beta  {0.5f};
 
 };
 

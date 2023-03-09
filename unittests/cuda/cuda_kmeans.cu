@@ -7,6 +7,13 @@
 
 #define L2(x1, y1, x2, y2) ((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2))
 
+template <typename T>
+void run_and_wait(T& cf) {
+  tf::cudaStream stream;
+  cf.run(stream);
+  stream.synchronize();
+}
+
 // Each point (thread) computes its distance to each centroid 
 // and adds its x and y values to the sum of its closest
 // centroid, as well as incrementing that centroid's count of assigned points.
@@ -173,14 +180,18 @@ void kmeans(int N, int K, int M, size_t num_cpus, size_t num_gpus) {
     REQUIRE(cudaMalloc(&d_c, K*sizeof(float)) == cudaSuccess);
   }).name("allocate_c");
 
-  auto h2d = taskflow.emplace([&](tf::cudaFlow& cf){
+  auto h2d = taskflow.emplace([&](){
+    tf::cudaFlow cf;
     cf.copy(d_px, h_px.data(), N).name("h2d_px");
     cf.copy(d_py, h_py.data(), N).name("h2d_py");
     cf.copy(d_mx, h_mx.data(), K).name("h2d_mx");
     cf.copy(d_my, h_my.data(), K).name("h2d_my");
+    run_and_wait(cf);
   }).name("h2d");
 
-  auto kmeans = taskflow.emplace([&](tf::cudaFlow& cf){
+  auto kmeans = taskflow.emplace([&](){
+
+    tf::cudaFlow cf;
 
     auto zero_c = cf.zero(d_c, K).name("zero_c");
     auto zero_sx = cf.zero(d_sx, K).name("zero_sx");
@@ -198,15 +209,19 @@ void kmeans(int N, int K, int M, size_t num_cpus, size_t num_gpus) {
 
     cluster.precede(new_centroid)
            .succeed(zero_c, zero_sx, zero_sy);
+
+    run_and_wait(cf);
   }).name("update_means");
 
   auto gpu_condition = taskflow.emplace([i=0, M] () mutable {
     return i++ < M ? 0 : 1;
   }).name("converged?");
 
-  auto stop = taskflow.emplace([&](tf::cudaFlow& cf){
+  auto stop = taskflow.emplace([&](){
+    tf::cudaFlow cf;
     cf.copy(h_mx.data(), d_mx, K).name("d2h_mx");
     cf.copy(h_my.data(), d_my, K).name("d2h_my");
+    run_and_wait(cf);
   }).name("stop");
 
   auto free = taskflow.emplace([&](){

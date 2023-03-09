@@ -745,20 +745,10 @@ class Executor {
     void _invoke_module_task(Worker&, Node*);
     void _invoke_async_task(Worker&, Node*);
     void _invoke_silent_async_task(Worker&, Node*);
-    void _invoke_cudaflow_task(Worker&, Node*);
-    void _invoke_syclflow_task(Worker&, Node*);
     void _invoke_runtime_task(Worker&, Node*);
     
     template <typename P>
     void _loop_until(Worker&, P&&);
-
-    template <typename C, std::enable_if_t<is_cudaflow_task_v<C>, void>* = nullptr>
-    void _invoke_cudaflow_task_entry(Node*, C&&);
-
-    template <typename C, typename Q,
-      std::enable_if_t<is_syclflow_task_v<C>, void>* = nullptr
-    >
-    void _invoke_syclflow_task_entry(Node*, C&&, Q&);
 };
 
 // Constructor
@@ -1373,18 +1363,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     }
     break;
 
-    // cudaflow task
-    case Node::CUDAFLOW: {
-      _invoke_cudaflow_task(worker, node);
-    }
-    break;
-
-    // syclflow task
-    case Node::SYCLFLOW: {
-      _invoke_syclflow_task(worker, node);
-    }
-    break;
-
     // runtime task
     case Node::RUNTIME: {
       _invoke_runtime_task(worker, node);
@@ -1644,20 +1622,6 @@ inline void Executor::_invoke_multi_condition_task(
 ) {
   _observer_prologue(worker, node);
   conds = std::get_if<Node::MultiCondition>(&node->_handle)->work();
-  _observer_epilogue(worker, node);
-}
-
-// Procedure: _invoke_cudaflow_task
-inline void Executor::_invoke_cudaflow_task(Worker& worker, Node* node) {
-  _observer_prologue(worker, node);
-  std::get_if<Node::cudaFlow>(&node->_handle)->work(*this, node);
-  _observer_epilogue(worker, node);
-}
-
-// Procedure: _invoke_syclflow_task
-inline void Executor::_invoke_syclflow_task(Worker& worker, Node* node) {
-  _observer_prologue(worker, node);
-  std::get_if<Node::syclFlow>(&node->_handle)->work(*this, node);
   _observer_epilogue(worker, node);
 }
 

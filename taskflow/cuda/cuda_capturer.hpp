@@ -61,20 +61,14 @@ class cudaFlowCapturer {
 
   // created by user
   struct External {
-    cudaGraph graph;
-  };
-  
-  // created from executor
-  struct Internal {
-    Internal(Executor& e) : executor{e} {}
-    Executor& executor;
+    cudaFlowGraph graph;
   };
   
   // created from cudaFlow
-  struct Proxy {
+  struct Internal {
   };
 
-  using handle_t = std::variant<External, Internal, Proxy>;
+  using handle_t = std::variant<External, Internal>;
 
   using Optimizer = std::variant<
     cudaRoundRobinCapturing,
@@ -96,7 +90,7 @@ class cudaFlowCapturer {
     /**
     @brief destructs the cudaFlowCapturer
     */
-    virtual ~cudaFlowCapturer();
+    ~cudaFlowCapturer() = default;
 
     /**
     @brief queries the emptiness of the graph
@@ -114,33 +108,16 @@ class cudaFlowCapturer {
     void clear();
 
     /**
-    @brief dumps the capture graph into a DOT format through an
+    @brief dumps the %cudaFlow graph into a DOT format through an
            output stream
     */
     void dump(std::ostream& os) const;
 
     /**
-    @brief selects a different optimization algorithm
-
-    @tparam OPT optimizer type
-    @tparam ArgsT arguments types
-
-    @param args arguments to forward to construct the optimizer
-
-    @return a reference to the optimizer
-
-    We currently supports the following optimization algorithms to capture
-    a user-described %cudaFlow:
-      + tf::cudaSequentialCapturing
-      + tf::cudaRoundRobinCapturing
-      + tf::cudaLinearCapturing
-
-    By default, tf::cudaFlowCapturer uses the round-robin optimization
-    algorithm with four streams to transform a user-level graph into
-    a native CUDA graph.
+    @brief dumps the native captured graph into a DOT format through 
+           an output stream
     */
-    template <typename OPT, typename... ArgsT>
-    OPT& make_optimizer(ArgsT&&... args);
+    void dump_native_graph(std::ostream& os) const;
 
     // ------------------------------------------------------------------------
     // basic methods
@@ -1006,6 +983,38 @@ class cudaFlowCapturer {
     void max_element(cudaTask task, I first, I last, unsigned* idx, O op);
 
     // ------------------------------------------------------------------------
+    // Capturing methods
+    // ------------------------------------------------------------------------
+    
+    /**
+    @brief selects a different optimization algorithm
+
+    @tparam OPT optimizer type
+    @tparam ArgsT arguments types
+
+    @param args arguments to forward to construct the optimizer
+
+    @return a reference to the optimizer
+
+    We currently supports the following optimization algorithms to capture
+    a user-described %cudaFlow:
+      + tf::cudaSequentialCapturing
+      + tf::cudaRoundRobinCapturing
+      + tf::cudaLinearCapturing
+
+    By default, tf::cudaFlowCapturer uses the round-robin optimization
+    algorithm with four streams to transform a user-level graph into
+    a native CUDA graph.
+    */
+    template <typename OPT, typename... ArgsT>
+    OPT& make_optimizer(ArgsT&&... args);
+    
+    /**
+    @brief captures the cudaFlow and turns it into a CUDA Graph
+    */
+    cudaGraph_t capture();
+
+    // ------------------------------------------------------------------------
     // offload methods
     // ------------------------------------------------------------------------
 
@@ -1023,46 +1032,34 @@ class cudaFlowCapturer {
     By default, if users do not offload the %cudaFlow capturer,
     the executor will offload it once.
     */
-    template <typename P>
-    void offload_until(P&& predicate);
+    void run(cudaStream_t stream);
+    
+    /**
+    @brief acquires a reference to the underlying CUDA graph
+    */
+    cudaGraph_t native_graph();
 
     /**
-    @brief offloads the captured %cudaFlow and executes it by the given times
-
-    @param n number of executions
+    @brief acquires a reference to the underlying CUDA graph executable
     */
-    void offload_n(size_t n);
-
-    /**
-    @brief offloads the captured %cudaFlow and executes it once
-    */
-    void offload();
+    cudaGraphExec_t executable_graph();
 
   private:
 
     handle_t _handle;
 
-    cudaGraph& _graph;
+    cudaFlowGraph& _graph;
 
     Optimizer _optimizer;
 
     cudaGraphExec _exec {nullptr};
 
-    cudaFlowCapturer(cudaGraph&, Executor& executor);
-    cudaFlowCapturer(cudaGraph&);
-
-    cudaGraph_t _capture();
+    cudaFlowCapturer(cudaFlowGraph&);
 };
 
 // constructs a cudaFlow capturer from a taskflow
-inline cudaFlowCapturer::cudaFlowCapturer(cudaGraph& g) :
-  _handle {std::in_place_type_t<Proxy>{}},
-  _graph  {g} {
-}
-
-// constructs a cudaFlow capturer from a taskflow
-inline cudaFlowCapturer::cudaFlowCapturer(cudaGraph& g, Executor& e) :
-  _handle {std::in_place_type_t<Internal>{}, e},
+inline cudaFlowCapturer::cudaFlowCapturer(cudaFlowGraph& g) :
+  _handle {std::in_place_type_t<Internal>{}},
   _graph  {g} {
 }
 
@@ -1070,9 +1067,6 @@ inline cudaFlowCapturer::cudaFlowCapturer(cudaGraph& g, Executor& e) :
 inline cudaFlowCapturer::cudaFlowCapturer() :
   _handle {std::in_place_type_t<External>{}},
   _graph  {std::get_if<External>(&_handle)->graph} {
-}
-
-inline cudaFlowCapturer::~cudaFlowCapturer() {
 }
 
 // Function: empty
@@ -1088,12 +1082,17 @@ inline size_t cudaFlowCapturer::num_tasks() const {
 // Procedure: clear
 inline void cudaFlowCapturer::clear() {
   _exec.clear();
-  _graph._nodes.clear();
+  _graph.clear();
 }
 
 // Procedure: dump
 inline void cudaFlowCapturer::dump(std::ostream& os) const {
   _graph.dump(os, nullptr, "");
+}
+
+// Procedure: dump_native_graph
+inline void cudaFlowCapturer::dump_native_graph(std::ostream& os) const {
+  cuda_dump_graph(os, _graph._native_handle);
 }
 
 // Function: capture
@@ -1102,7 +1101,7 @@ template <typename C, std::enable_if_t<
 >
 cudaTask cudaFlowCapturer::on(C&& callable) {
   auto node = _graph.emplace_back(_graph,
-    std::in_place_type_t<cudaNode::Capture>{}, std::forward<C>(callable)
+    std::in_place_type_t<cudaFlowNode::Capture>{}, std::forward<C>(callable)
   );
   return cudaTask(node);
 }
@@ -1159,56 +1158,52 @@ cudaTask cudaFlowCapturer::kernel(
   });
 }
 
-// Function: _capture
-inline cudaGraph_t cudaFlowCapturer::_capture() {
+// Function: capture
+inline cudaGraph_t cudaFlowCapturer::capture() {
   return std::visit(
     [this](auto&& opt){ return opt._optimize(_graph); }, _optimizer
   );
 }
 
-// Procedure: offload_until
-template <typename P>
-void cudaFlowCapturer::offload_until(P&& predicate) {
+// Procedure: run
+inline void cudaFlowCapturer::run(cudaStream_t stream) {
 
   // If the topology got changed, we need to destroy the executable
   // and create a new one
-  if(_graph._state & cudaGraph::CHANGED) {
-    // TODO: store the native graph?
-    cudaGraphNative g(_capture());
-    _exec.instantiate(g);
+  if(_graph._state & cudaFlowGraph::CHANGED) {
+    _graph._native_handle.reset(capture());
+    _exec.instantiate(_graph._native_handle);
   }
   // if the graph is just updated (i.e., topology does not change),
   // we can skip part of the optimization and just update the executable
   // with the new captured graph
-  else if(_graph._state & cudaGraph::UPDATED) {
+  else if(_graph._state & cudaFlowGraph::UPDATED) {
     // TODO: skip part of the optimization (e.g., levelization)
-    cudaGraphNative g(_capture());
-    if(_exec.update(g) != cudaGraphExecUpdateSuccess) {
-      _exec.instantiate(g);
+    _graph._native_handle.reset(capture());
+    if(_exec.update(_graph._native_handle) != cudaGraphExecUpdateSuccess) {
+      _exec.instantiate(_graph._native_handle);
     }
-    // TODO: store the native graph?
   }
 
-  // offload the executable
+  // run the executable
   if(_exec) {
-    cudaStream s;
-    while(!predicate()) {
-      _exec.launch(s);
-      s.synchronize();
-    }
+    _exec.launch(stream);
+  }
+  else {
+    TF_THROW("failed to run cudaFlowCapturer")
   }
 
-  _graph._state = cudaGraph::OFFLOADED;
+  _graph._state = cudaFlowGraph::OFFLOADED;
 }
 
-// Procedure: offload_n
-inline void cudaFlowCapturer::offload_n(size_t n) {
-  offload_until([repeat=n] () mutable { return repeat-- == 0; });
+// Function: native_graph
+inline cudaGraph_t cudaFlowCapturer::native_graph() {
+  return _graph._native_handle;
 }
 
-// Procedure: offload
-inline void cudaFlowCapturer::offload() {
-  offload_until([repeat=1] () mutable { return repeat-- == 0; });
+// Function: executable_graph
+inline cudaGraphExec_t cudaFlowCapturer::executable_graph() {
+  return _exec;
 }
 
 // Function: on
@@ -1221,9 +1216,9 @@ void cudaFlowCapturer::on(cudaTask task, C&& callable) {
     TF_THROW("invalid cudaTask type (must be CAPTURE)");
   }
 
-  _graph._state |= cudaGraph::UPDATED;
+  _graph._state |= cudaFlowGraph::UPDATED;
 
-  std::get_if<cudaNode::Capture>(&task._node->_handle)->work =
+  std::get_if<cudaFlowNode::Capture>(&task._node->_handle)->work =
     std::forward<C>(callable);
 }
 

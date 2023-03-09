@@ -215,122 +215,7 @@ __global__ void compute_new_means(
   my[cluster] = sy[cluster] / count;
 }
 
-// Runs k-means on gpu using conditional tasking
-std::pair<std::vector<float>, std::vector<float>> gpu(
- const int N, 
- const int K, 
- const int M,
- const std::vector<float>& h_px,
- const std::vector<float>& h_py
-) {
-  
-  std::vector<float> h_mx, h_my;
-  float *d_px, *d_py, *d_mx, *d_my, *d_sx, *d_sy, *d_c;
-  
-  for(int i=0; i<K; ++i) {
-    h_mx.push_back(h_px[i]);
-    h_my.push_back(h_py[i]);
-  }
-  
-  // create a taskflow graph
-  tf::Executor executor;
-  tf::Taskflow taskflow("K-Means");
-  
-  auto allocate_px = taskflow.emplace([&](){
-    TF_CHECK_CUDA(cudaMalloc(&d_px, N*sizeof(float)), "failed to allocate d_px"); 
-  }).name("allocate_px");
-
-  auto allocate_py = taskflow.emplace([&](){
-    TF_CHECK_CUDA(cudaMalloc(&d_py, N*sizeof(float)), "failed to allocate d_py"); 
-  }).name("allocate_py");
-  
-  auto allocate_mx = taskflow.emplace([&](){
-    TF_CHECK_CUDA(cudaMalloc(&d_mx, K*sizeof(float)), "failed to allocate d_mx"); 
-  }).name("allocate_mx");
-
-  auto allocate_my = taskflow.emplace([&](){
-    TF_CHECK_CUDA(cudaMalloc(&d_my, K*sizeof(float)), "failed to allocate d_my"); 
-  }).name("allocate_my");
-
-  auto allocate_sx = taskflow.emplace([&](){
-    TF_CHECK_CUDA(cudaMalloc(&d_sx, K*sizeof(float)), "failed to allocate d_sx"); 
-  }).name("allocate_sx");
-
-  auto allocate_sy = taskflow.emplace([&](){
-    TF_CHECK_CUDA(cudaMalloc(&d_sy, K*sizeof(float)), "failed to allocate d_sy"); 
-  }).name("allocate_sy");
-
-  auto allocate_c = taskflow.emplace([&](){
-    TF_CHECK_CUDA(cudaMalloc(&d_c, K*sizeof(float)), "failed to allocate dc");
-  }).name("allocate_c");
-
-  auto h2d = taskflow.emplace([&](tf::cudaFlow& cf){
-    cf.copy(d_px, h_px.data(), N).name("h2d_px");
-    cf.copy(d_py, h_py.data(), N).name("h2d_py");
-    cf.copy(d_mx, h_mx.data(), K).name("h2d_mx");
-    cf.copy(d_my, h_my.data(), K).name("h2d_my");
-  }).name("h2d");
-
-  auto kmeans = taskflow.emplace([&](tf::cudaFlow& cf){
-
-    auto zero_c = cf.zero(d_c, K).name("zero_c");
-    auto zero_sx = cf.zero(d_sx, K).name("zero_sx");
-    auto zero_sy = cf.zero(d_sy, K).name("zero_sy");
-    
-    auto cluster = cf.kernel(
-      (N+512-1) / 512, 512, 0, 
-      assign_clusters, d_px, d_py, N, d_mx, d_my, d_sx, d_sy, K, d_c
-    ).name("cluster"); 
-    
-    auto new_centroid = cf.kernel(
-      1, K, 0, 
-      compute_new_means, d_mx, d_my, d_sx, d_sy, d_c
-    ).name("new_centroid");
-
-    cluster.precede(new_centroid)
-           .succeed(zero_c, zero_sx, zero_sy);
-  }).name("update_means");
-
-  auto condition = taskflow.emplace([i=0, M] () mutable {
-    return i++ < M ? 0 : 1;
-  }).name("converged?");
-
-  auto stop = taskflow.emplace([&](tf::cudaFlow& cf){
-    cf.copy(h_mx.data(), d_mx, K).name("d2h_mx");
-    cf.copy(h_my.data(), d_my, K).name("d2h_my");
-  }).name("d2h");
-
-  auto free = taskflow.emplace([&](){
-    TF_CHECK_CUDA(cudaFree(d_px), "failed to free d_px");
-    TF_CHECK_CUDA(cudaFree(d_py), "failed to free d_py");
-    TF_CHECK_CUDA(cudaFree(d_mx), "failed to free d_mx");
-    TF_CHECK_CUDA(cudaFree(d_my), "failed to free d_my");
-    TF_CHECK_CUDA(cudaFree(d_sx), "failed to free d_sx");
-    TF_CHECK_CUDA(cudaFree(d_sy), "failed to free d_sy");
-    TF_CHECK_CUDA(cudaFree(d_c),  "failed to free d_c");
-  }).name("free");
-  
-  // build up the dependency
-  h2d.succeed(allocate_px, allocate_py, allocate_mx, allocate_my);
-
-  kmeans.succeed(allocate_sx, allocate_sy, allocate_c, h2d)
-        .precede(condition);
-
-  condition.precede(kmeans, stop);
-
-  stop.precede(free);
-  
-  //taskflow.dump(std::cout);
-
-  // run the taskflow
-  executor.run(taskflow).wait();
-
-  //std::cout << "dumping kmeans graph ...\n";
-  //taskflow.dump(std::cout);
-  return {h_mx, h_my};
-}
-
-// Runs k-means on gpu without using conditional tasking
+// Runs k-means on gpu
 std::pair<std::vector<float>, std::vector<float>> gpu_predicate(
  const int N, 
  const int K, 
@@ -379,14 +264,22 @@ std::pair<std::vector<float>, std::vector<float>> gpu_predicate(
     TF_CHECK_CUDA(cudaMalloc(&d_c, K*sizeof(float)), "failed to allocate dc");
   }).name("allocate_c");
 
-  auto h2d = taskflow.emplace([&](tf::cudaFlow& cf){
+  auto h2d = taskflow.emplace([&](){
+    tf::cudaFlow cf;
     cf.copy(d_px, h_px.data(), N).name("h2d_px");
     cf.copy(d_py, h_py.data(), N).name("h2d_py");
     cf.copy(d_mx, h_mx.data(), K).name("h2d_mx");
     cf.copy(d_my, h_my.data(), K).name("h2d_my");
+
+    // execute the cudaflow
+    tf::cudaStream stream;
+    cf.run(stream);
+    stream.synchronize();
   }).name("h2d");
 
-  auto kmeans = taskflow.emplace([&](tf::cudaFlow& cf){
+  auto kmeans = taskflow.emplace([&](){
+
+    tf::cudaFlow cf;
 
     auto zero_c = cf.zero(d_c, K).name("zero_c");
     auto zero_sx = cf.zero(d_sx, K).name("zero_sx");
@@ -404,13 +297,25 @@ std::pair<std::vector<float>, std::vector<float>> gpu_predicate(
 
     cluster.precede(new_centroid)
            .succeed(zero_c, zero_sx, zero_sy);
-
-    cf.offload_n(M);
+    
+    tf::cudaStream stream;
+    for(int i=0; i<M; i++) {
+      cf.run(stream);
+    }
+    stream.synchronize();
   }).name("update_means");
 
-  auto stop = taskflow.emplace([&](tf::cudaFlow& cf){
+  auto stop = taskflow.emplace([&](){
+    
+    tf::cudaFlow cf;
+    
     cf.copy(h_mx.data(), d_mx, K).name("d2h_mx");
     cf.copy(h_my.data(), d_my, K).name("d2h_my");
+    
+    // execute the cudaflow
+    tf::cudaStream stream;
+    cf.run(stream);
+    stream.synchronize();
   }).name("d2h");
 
   auto free = taskflow.emplace([&](){
@@ -503,24 +408,9 @@ int main(int argc, const char* argv[]) {
     std::cout << "centroid " << k << ": " << std::setw(10) << mx[k] << ' ' 
                                           << std::setw(10) << my[k] << '\n';  
   }
- 
-  // k-means on gpu with conditional tasking
-  std::cout << "running k-means on gpu (with conditional tasking) ... ";
-  auto gbeg = std::chrono::steady_clock::now();
-  std::tie(mx, my) = gpu(N, K, M, h_px, h_py);
-  auto gend = std::chrono::steady_clock::now();
-  std::cout << "completed with " 
-            << std::chrono::duration_cast<std::chrono::milliseconds>(gend-gbeg).count()
-            << " ms\n";
   
-  std::cout << "k centroids found by gpu (with conditional tasking)\n";
-  for(int k=0; k<K; ++k) {
-    std::cout << "centroid " << k << ": " << std::setw(10) << mx[k] << ' ' 
-                                          << std::setw(10) << my[k] << '\n';  
-  }
-  
-  // k-means on gpu without conditional tasking
-  std::cout << "running k-means on gpu (without conditional tasking) ... ";
+  // k-means on gpu 
+  std::cout << "running k-means on gpu ...";
   auto rbeg = std::chrono::steady_clock::now();
   std::tie(mx, my) = gpu_predicate(N, K, M, h_px, h_py);
   auto rend = std::chrono::steady_clock::now();

@@ -28,6 +28,7 @@ int main(int argc, char* argv[]) {
   
   // perform reduction
   tf::cudaFlow cudaflow;
+  tf::cudaStream stream;
   
   // res1 = res1 + data[0] + data[1] + ... 
   cudaflow.reduce(
@@ -39,7 +40,8 @@ int main(int argc, char* argv[]) {
     data, data+N, res2, [] __device__ (int a, int b){ return a+b; }
   );
 
-  cudaflow.offload();
+  cudaflow.run(stream);
+  stream.synchronize();
   
   // inspect 
   if(hres + 10 != *res1 || hres != *res2) {

@@ -24,13 +24,15 @@ int main(int argc, char* argv[]) {
   
   // perform parallel transform
   tf::cudaFlow cudaflow;
+  tf::cudaStream stream;
   
   // output[i] = input[i] + 11
   cudaflow.transform(
     input, input + N, output, [] __device__ (int a) { return a + 11; }
   );
 
-  cudaflow.offload();
+  cudaflow.run(stream);
+  stream.synchronize();
 
   // inspect the result
   for(size_t i=0; i<N; i++) {

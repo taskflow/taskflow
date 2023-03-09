@@ -136,7 +136,7 @@ class cudaTask {
     size_t num_dependents() const;
 
     /**
-    @brief queries if the task is associated with a cudaNode
+    @brief queries if the task is associated with a cudaFlowNode
     */
     bool empty() const;
 
@@ -168,13 +168,13 @@ class cudaTask {
 
   private:
 
-    cudaTask(cudaNode*);
+    cudaTask(cudaFlowNode*);
 
-    cudaNode* _node {nullptr};
+    cudaFlowNode* _node {nullptr};
 };
 
 // Constructor
-inline cudaTask::cudaTask(cudaNode* node) : _node {node} {
+inline cudaTask::cudaTask(cudaFlowNode* node) : _node {node} {
 }
 
 // Function: precede
@@ -220,13 +220,13 @@ inline size_t cudaTask::num_dependents() const {
 // Function: type
 inline cudaTaskType cudaTask::type() const {
   switch(_node->_handle.index()) {
-    case cudaNode::EMPTY:   return cudaTaskType::EMPTY;
-    case cudaNode::HOST:    return cudaTaskType::HOST;
-    case cudaNode::MEMSET:  return cudaTaskType::MEMSET;
-    case cudaNode::MEMCPY:  return cudaTaskType::MEMCPY;
-    case cudaNode::KERNEL:  return cudaTaskType::KERNEL;
-    case cudaNode::SUBFLOW: return cudaTaskType::SUBFLOW;
-    case cudaNode::CAPTURE: return cudaTaskType::CAPTURE;
+    case cudaFlowNode::EMPTY:   return cudaTaskType::EMPTY;
+    case cudaFlowNode::HOST:    return cudaTaskType::HOST;
+    case cudaFlowNode::MEMSET:  return cudaTaskType::MEMSET;
+    case cudaFlowNode::MEMCPY:  return cudaTaskType::MEMCPY;
+    case cudaFlowNode::KERNEL:  return cudaTaskType::KERNEL;
+    case cudaFlowNode::SUBFLOW: return cudaTaskType::SUBFLOW;
+    case cudaFlowNode::CAPTURE: return cudaTaskType::CAPTURE;
     default:                return cudaTaskType::UNDEFINED;
   }
 }

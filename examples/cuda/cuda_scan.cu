@@ -27,12 +27,14 @@ int main(int argc, char* argv[]) {
   std::iota(data2, data2 + N, 0);
   
   tf::cudaFlow cudaflow;
+  tf::cudaStream stream;
   
   // create inclusive and exclusive scan tasks
   cudaflow.inclusive_scan(data1, data1+N, scan1, tf::cuda_plus<int>{});
   cudaflow.exclusive_scan(data2, data2+N, scan2, tf::cuda_plus<int>{});
 
-  cudaflow.offload();
+  cudaflow.run(stream);
+  stream.synchronize();
   
   // inspect 
   for(int i=1; i<N; i++) {
@@ -69,8 +71,9 @@ int main(int argc, char* argv[]) {
     data2, data2+N, scan2, tf::cuda_plus<int>{},
     [] __device__ (int a) { return a*11; }
   );
-
-  cudaflow.offload();
+  
+  cudaflow.run(stream);
+  stream.synchronize();
   
   // inspect 
   for(int i=1; i<N; i++) {
@@ -84,7 +87,7 @@ int main(int argc, char* argv[]) {
     }
   }
 
-  std::cout << "transform scan done\n";
+  std::cout << "transform scan done - all results are correct\n";
 
   return 0;
 }

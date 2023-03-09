@@ -39,10 +39,12 @@ int main() {
     cudaMalloc(&dy, N*sizeof(float));
   }).name("allocate_y");
   
-  // saxpy
-  auto cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
-
+  // saxpy cudaFlow
+  auto cudaflow = taskflow.emplace([&]() {
+    
     std::cout << "running cudaflow ...\n";
+
+    tf::cudaFlow cf;
     auto h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
     auto h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");
     auto d2h_x = cf.copy(hx.data(), dx, N).name("d2h_x");
@@ -51,6 +53,14 @@ int main() {
                     .name("saxpy");
     kernel.succeed(h2d_x, h2d_y)
           .precede(d2h_x, d2h_y);
+
+    tf::cudaStream stream;
+    cf.run(stream);
+    stream.synchronize();
+    
+    // visualize this cudaflow
+    cf.dump(std::cout);
+
   }).name("saxpy");
 
   cudaflow.succeed(allocate_x, allocate_y);

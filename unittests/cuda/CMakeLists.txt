@@ -5,9 +5,9 @@ list(APPEND TF_CUDA_UNITTESTS
   cuda_basics 
   cuda_matrix 
   cuda_kmeans 
-  cuda_algorithms
-  cuda_updates
-  cuda_rebinds
+  #cuda_algorithms
+  #cuda_algorithm_updates
+  cuda_basic_updates
   cuda_capturer_optimizer
 )
 

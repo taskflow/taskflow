@@ -255,6 +255,55 @@ TEST_CASE("ParallelFor.Static.12threads" * doctest::timeout(300)) {
   for_each<tf::StaticPartitioner>(12);
 }
 
+// random
+TEST_CASE("ParallelFor.Random.1thread" * doctest::timeout(300)) {
+  for_each<tf::RandomPartitioner>(1);
+}
+
+TEST_CASE("ParallelFor.Random.2threads" * doctest::timeout(300)) {
+  for_each<tf::RandomPartitioner>(2);
+}
+
+TEST_CASE("ParallelFor.Random.3threads" * doctest::timeout(300)) {
+  for_each<tf::RandomPartitioner>(3);
+}
+
+TEST_CASE("ParallelFor.Random.4threads" * doctest::timeout(300)) {
+  for_each<tf::RandomPartitioner>(4);
+}
+
+TEST_CASE("ParallelFor.Random.5threads" * doctest::timeout(300)) {
+  for_each<tf::RandomPartitioner>(5);
+}
+
+TEST_CASE("ParallelFor.Random.6threads" * doctest::timeout(300)) {
+  for_each<tf::RandomPartitioner>(6);
+}
+
+TEST_CASE("ParallelFor.Random.7threads" * doctest::timeout(300)) {
+  for_each<tf::RandomPartitioner>(7);
+}
+
+TEST_CASE("ParallelFor.Random.8threads" * doctest::timeout(300)) {
+  for_each<tf::RandomPartitioner>(8);
+}
+
+TEST_CASE("ParallelFor.Random.9threads" * doctest::timeout(300)) {
+  for_each<tf::RandomPartitioner>(9);
+}
+
+TEST_CASE("ParallelFor.Random.10threads" * doctest::timeout(300)) {
+  for_each<tf::RandomPartitioner>(10);
+}
+
+TEST_CASE("ParallelFor.Random.11threads" * doctest::timeout(300)) {
+  for_each<tf::RandomPartitioner>(11);
+}
+
+TEST_CASE("ParallelFor.Random.12threads" * doctest::timeout(300)) {
+  for_each<tf::RandomPartitioner>(12);
+}
+
 // ----------------------------------------------------------------------------
 // stateful_for_each
 // ----------------------------------------------------------------------------
@@ -468,6 +517,55 @@ TEST_CASE("StatefulParallelFor.Static.12threads" * doctest::timeout(300)) {
   stateful_for_each<tf::StaticPartitioner>(12);
 }
 
+// random
+TEST_CASE("StatefulParallelFor.Random.1thread" * doctest::timeout(300)) {
+  stateful_for_each<tf::RandomPartitioner>(1);
+}
+
+TEST_CASE("StatefulParallelFor.Random.2threads" * doctest::timeout(300)) {
+  stateful_for_each<tf::RandomPartitioner>(2);
+}
+
+TEST_CASE("StatefulParallelFor.Random.3threads" * doctest::timeout(300)) {
+  stateful_for_each<tf::RandomPartitioner>(3);
+}
+
+TEST_CASE("StatefulParallelFor.Random.4threads" * doctest::timeout(300)) {
+  stateful_for_each<tf::RandomPartitioner>(4);
+}
+
+TEST_CASE("StatefulParallelFor.Random.5threads" * doctest::timeout(300)) {
+  stateful_for_each<tf::RandomPartitioner>(5);
+}
+
+TEST_CASE("StatefulParallelFor.Random.6threads" * doctest::timeout(300)) {
+  stateful_for_each<tf::RandomPartitioner>(6);
+}
+
+TEST_CASE("StatefulParallelFor.Random.7threads" * doctest::timeout(300)) {
+  stateful_for_each<tf::RandomPartitioner>(7);
+}
+
+TEST_CASE("StatefulParallelFor.Random.8threads" * doctest::timeout(300)) {
+  stateful_for_each<tf::RandomPartitioner>(8);
+}
+
+TEST_CASE("StatefulParallelFor.Random.9threads" * doctest::timeout(300)) {
+  stateful_for_each<tf::RandomPartitioner>(9);
+}
+
+TEST_CASE("StatefulParallelFor.Random.10threads" * doctest::timeout(300)) {
+  stateful_for_each<tf::RandomPartitioner>(10);
+}
+
+TEST_CASE("StatefulParallelFor.Random.11threads" * doctest::timeout(300)) {
+  stateful_for_each<tf::RandomPartitioner>(11);
+}
+
+TEST_CASE("StatefulParallelFor.Random.12threads" * doctest::timeout(300)) {
+  stateful_for_each<tf::RandomPartitioner>(12);
+}
+
 // --------------------------------------------------------
 // Testcase: reduce
 // --------------------------------------------------------
@@ -662,6 +760,55 @@ TEST_CASE("Reduce.Static.11threads" * doctest::timeout(300)) {
 
 TEST_CASE("Reduce.Static.12threads" * doctest::timeout(300)) {
   reduce<tf::StaticPartitioner>(12);
+}
+
+// random
+TEST_CASE("Reduce.Random.1thread" * doctest::timeout(300)) {
+  reduce<tf::RandomPartitioner>(1);
+}
+
+TEST_CASE("Reduce.Random.2threads" * doctest::timeout(300)) {
+  reduce<tf::RandomPartitioner>(2);
+}
+
+TEST_CASE("Reduce.Random.3threads" * doctest::timeout(300)) {
+  reduce<tf::RandomPartitioner>(3);
+}
+
+TEST_CASE("Reduce.Random.4threads" * doctest::timeout(300)) {
+  reduce<tf::RandomPartitioner>(4);
+}
+
+TEST_CASE("Reduce.Random.5threads" * doctest::timeout(300)) {
+  reduce<tf::RandomPartitioner>(5);
+}
+
+TEST_CASE("Reduce.Random.6threads" * doctest::timeout(300)) {
+  reduce<tf::RandomPartitioner>(6);
+}
+
+TEST_CASE("Reduce.Random.7threads" * doctest::timeout(300)) {
+  reduce<tf::RandomPartitioner>(7);
+}
+
+TEST_CASE("Reduce.Random.8threads" * doctest::timeout(300)) {
+  reduce<tf::RandomPartitioner>(8);
+}
+
+TEST_CASE("Reduce.Random.9threads" * doctest::timeout(300)) {
+  reduce<tf::RandomPartitioner>(9);
+}
+
+TEST_CASE("Reduce.Random.10threads" * doctest::timeout(300)) {
+  reduce<tf::RandomPartitioner>(10);
+}
+
+TEST_CASE("Reduce.Random.11threads" * doctest::timeout(300)) {
+  reduce<tf::RandomPartitioner>(11);
+}
+
+TEST_CASE("Reduce.Random.12threads" * doctest::timeout(300)) {
+  reduce<tf::RandomPartitioner>(12);
 }
 
 // ----------------------------------------------------------------------------
@@ -869,6 +1016,55 @@ TEST_CASE("TransformReduce.Static.11threads" * doctest::timeout(300)) {
 
 TEST_CASE("TransformReduce.Static.12threads" * doctest::timeout(300)) {
   transform_reduce<tf::StaticPartitioner>(12);
+}
+
+// random
+TEST_CASE("TransformReduce.Random.1thread" * doctest::timeout(300)) {
+  transform_reduce<tf::RandomPartitioner>(1);
+}
+
+TEST_CASE("TransformReduce.Random.2threads" * doctest::timeout(300)) {
+  transform_reduce<tf::RandomPartitioner>(2);
+}
+
+TEST_CASE("TransformReduce.Random.3threads" * doctest::timeout(300)) {
+  transform_reduce<tf::RandomPartitioner>(3);
+}
+
+TEST_CASE("TransformReduce.Random.4threads" * doctest::timeout(300)) {
+  transform_reduce<tf::RandomPartitioner>(4);
+}
+
+TEST_CASE("TransformReduce.Random.5threads" * doctest::timeout(300)) {
+  transform_reduce<tf::RandomPartitioner>(5);
+}
+
+TEST_CASE("TransformReduce.Random.6threads" * doctest::timeout(300)) {
+  transform_reduce<tf::RandomPartitioner>(6);
+}
+
+TEST_CASE("TransformReduce.Random.7threads" * doctest::timeout(300)) {
+  transform_reduce<tf::RandomPartitioner>(7);
+}
+
+TEST_CASE("TransformReduce.Random.8threads" * doctest::timeout(300)) {
+  transform_reduce<tf::RandomPartitioner>(8);
+}
+
+TEST_CASE("TransformReduce.Random.9threads" * doctest::timeout(300)) {
+  transform_reduce<tf::RandomPartitioner>(9);
+}
+
+TEST_CASE("TransformReduce.Random.10threads" * doctest::timeout(300)) {
+  transform_reduce<tf::RandomPartitioner>(10);
+}
+
+TEST_CASE("TransformReduce.Random.11threads" * doctest::timeout(300)) {
+  transform_reduce<tf::RandomPartitioner>(11);
+}
+
+TEST_CASE("TransformReduce.Random.12threads" * doctest::timeout(300)) {
+  transform_reduce<tf::RandomPartitioner>(12);
 }
 
 // ----------------------------------------------------------------------------
@@ -1209,25 +1405,25 @@ TEST_CASE("ParallelTransform.Guided.4threads") {
   parallel_transform<std::list<int>, tf::GuidedPartitioner>(4);
 }
 
-// dynamic
-TEST_CASE("ParallelTransform.Dynamic.1thread") {
-  parallel_transform<std::vector<int>, tf::DynamicPartitioner>(1);
-  parallel_transform<std::list<int>, tf::DynamicPartitioner>(1);
+// random
+TEST_CASE("ParallelTransform.Random.1thread") {
+  parallel_transform<std::vector<int>, tf::RandomPartitioner>(1);
+  parallel_transform<std::list<int>, tf::RandomPartitioner>(1);
 }
 
-TEST_CASE("ParallelTransform.Dynamic.2threads") {
-  parallel_transform<std::vector<int>, tf::DynamicPartitioner>(2);
-  parallel_transform<std::list<int>, tf::DynamicPartitioner>(2);
+TEST_CASE("ParallelTransform.Random.2threads") {
+  parallel_transform<std::vector<int>, tf::RandomPartitioner>(2);
+  parallel_transform<std::list<int>, tf::RandomPartitioner>(2);
 }
 
-TEST_CASE("ParallelTransform.Dynamic.3threads") {
-  parallel_transform<std::vector<int>, tf::DynamicPartitioner>(3);
-  parallel_transform<std::list<int>, tf::DynamicPartitioner>(3);
+TEST_CASE("ParallelTransform.Random.3threads") {
+  parallel_transform<std::vector<int>, tf::RandomPartitioner>(3);
+  parallel_transform<std::list<int>, tf::RandomPartitioner>(3);
 }
 
-TEST_CASE("ParallelTransform.Dynamic.4threads") {
-  parallel_transform<std::vector<int>, tf::DynamicPartitioner>(4);
-  parallel_transform<std::list<int>, tf::DynamicPartitioner>(4);
+TEST_CASE("ParallelTransform.Random.4threads") {
+  parallel_transform<std::vector<int>, tf::RandomPartitioner>(4);
+  parallel_transform<std::list<int>, tf::RandomPartitioner>(4);
 }
 
 // static
@@ -1370,6 +1566,27 @@ TEST_CASE("ParallelTransform2.Static.3threads") {
 TEST_CASE("ParallelTransform2.Static.4threads") {
   parallel_transform2<std::vector<int>, tf::StaticPartitioner>(4);
   parallel_transform2<std::list<int>, tf::StaticPartitioner>(4);
+}
+
+// random
+TEST_CASE("ParallelTransform2.Random.1thread") {
+  parallel_transform2<std::vector<int>, tf::RandomPartitioner>(1);
+  parallel_transform2<std::list<int>, tf::RandomPartitioner>(1);
+}
+
+TEST_CASE("ParallelTransform2.Random.2threads") {
+  parallel_transform2<std::vector<int>, tf::RandomPartitioner>(2);
+  parallel_transform2<std::list<int>, tf::RandomPartitioner>(2);
+}
+
+TEST_CASE("ParallelTransform2.Random.3threads") {
+  parallel_transform2<std::vector<int>, tf::RandomPartitioner>(3);
+  parallel_transform2<std::list<int>, tf::RandomPartitioner>(3);
+}
+
+TEST_CASE("ParallelTransform2.Random.4threads") {
+  parallel_transform2<std::vector<int>, tf::RandomPartitioner>(4);
+  parallel_transform2<std::list<int>, tf::RandomPartitioner>(4);
 }
 
 
@@ -1525,4 +1742,25 @@ TEST_CASE("ParallelTransform3.Static.3threads") {
 TEST_CASE("ParallelTransform3.Static.4threads") {
   parallel_transform3<tf::StaticPartitioner>(4);
   parallel_transform3<tf::StaticPartitioner>(4);
+}
+
+// random
+TEST_CASE("ParallelTransform3.Random.1thread") {
+  parallel_transform3<tf::RandomPartitioner>(1);
+  parallel_transform3<tf::RandomPartitioner>(1);
+}
+
+TEST_CASE("ParallelTransform3.Random.2threads") {
+  parallel_transform3<tf::RandomPartitioner>(2);
+  parallel_transform3<tf::RandomPartitioner>(2);
+}
+
+TEST_CASE("ParallelTransform3.Random.3threads") {
+  parallel_transform3<tf::RandomPartitioner>(3);
+  parallel_transform3<tf::RandomPartitioner>(3);
+}
+
+TEST_CASE("ParallelTransform3.Random.4threads") {
+  parallel_transform3<tf::RandomPartitioner>(4);
+  parallel_transform3<tf::RandomPartitioner>(4);
 }

@@ -34,7 +34,10 @@ void GraphExecutor<OPT>::traversal(OPT_Args&&... args) {
   tf::Taskflow taskflow;
   tf::Executor executor;
 
-  taskflow.emplace([this, args...](tf::cudaFlowCapturer& cf) {
+  taskflow.emplace([this, args...]() {
+
+    tf::cudaFlowCapturer cf;
+
     cf.make_optimizer<OPT>(args...);
 
     std::vector<std::vector<tf::cudaTask>> tasks;
@@ -57,6 +60,10 @@ void GraphExecutor<OPT>::traversal(OPT_Args&&... args) {
         }
       }
     }
+
+    tf::cudaStream stream;
+    cf.run(stream);
+    stream.synchronize();
 
   }).name("traverse");
 

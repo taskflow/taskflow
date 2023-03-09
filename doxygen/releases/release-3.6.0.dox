@@ -36,15 +36,21 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
 
 @subsection release-3-6-0_taskflow_core Taskflow Core
 
-@subsection release-3-6-0_cudaflow cudaFlow
++ Extended parallel algorithms with the following partitioning methods:
+  + tf::StaticPartitioner
+  + tf::GuidedPartitioner
+  + tf::DynamicPartitioner
+  + tf::RandomPartitioner
 
-@subsection release-3-6-0_syclflow syclFlow
+@subsection release-3-6-0_cudaflow cudaFlow
 
 @subsection release-3-6-0_utilities Utilities
 
 @subsection release-3-6-0_profiler Taskflow Profiler (TFProf)
 
 @section release-3-6-0_bug_fixes Bug Fixes 
+
++ Fixed the compilation bugs caused by clashing `MAX_PRIORITY` wtih `winspool.h` ([#459](https://github.com/taskflow/taskflow/pull/459))
 
 If you encounter any potential bugs, please submit an issue at @IssueTracker.
 

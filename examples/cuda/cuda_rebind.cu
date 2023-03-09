@@ -11,6 +11,7 @@ int main() {
   auto data = tf::cuda_malloc_shared<int>(N);
   
   tf::cudaFlowCapturer cudaflow;
+  tf::cudaStream stream;
 
   // set data to -1
   for(size_t i=0; i<N; i++) {
@@ -21,7 +22,8 @@ int main() {
   std::cout << "clearing data with 0 ...\n";
 
   tf::cudaTask task = cudaflow.memset(data, 0, N*sizeof(int));
-  cudaflow.offload();
+  cudaflow.run(stream);
+  stream.synchronize();
 
   for(size_t i=0; i<N; i++) {
     if(data[i] != 0) {
@@ -38,7 +40,8 @@ int main() {
   cudaflow.for_each(
     task, data, data+N, [] __device__ (int& i){ i = 100; }
   );
-  cudaflow.offload();
+  cudaflow.run(stream);
+  stream.synchronize();
   
   for(size_t i=0; i<N; i++) {
     if(data[i] != 100) {
