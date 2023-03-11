@@ -1,18 +1,34 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="SingleTaskCUDA" kind="page">
     <compoundname>SingleTaskCUDA</compoundname>
     <title>Single Task</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Include the Header</name>
+        <reference>SingleTaskCUDA_1CUDASingleTaskIncludeTheHeader</reference>
+    </tocsect>
+      <tocsect>
+        <name>Run a Task with a Single Thread</name>
+        <reference>SingleTaskCUDA_1SingleTaskCUDASingleTask</reference>
+    </tocsect>
+      <tocsect>
+        <name>Miscellaneous Items</name>
+        <reference>SingleTaskCUDA_1SingleTaskCUDAMiscellaneousItems</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> provides a template method, <ref refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" kindref="member">tf::cudaFlow::single_task</ref>, for creating a task to run the given callable using a single kernel thread.</para><sect1 id="SingleTaskCUDA_1CUDASingleTaskIncludeTheHeader">
+<para><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> provides a template method, <ref refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" kindref="member">tf::cudaFlow::single_task</ref>, for creating a task to run the given callable using a single kernel thread.</para>
+<sect1 id="SingleTaskCUDA_1CUDASingleTaskIncludeTheHeader">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/for_each.hpp</computeroutput>, for creating a single-threaded task.</para></sect1>
+<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/for_each.hpp</computeroutput>, for creating a single-threaded task.</para>
+</sect1>
 <sect1 id="SingleTaskCUDA_1SingleTaskCUDASingleTask">
 <title>Run a Task with a Single Thread</title>
-<para>You can create a task to run a kernel function just once, i.e., using one GPU thread. This is handy when you want to set up a single or a few global variables that do not need multiple threads and will be used by multiple kernels afterwards. The following example creates a single-task kernel that sets <computeroutput>gpu_variable</computeroutput> to 1.</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>gpu_variable;</highlight></codeline>
+<para>You can create a task to run a kernel function just once, i.e., using one GPU thread. This is handy when you want to set up a single or a few global variables that do not need multiple threads and will be used by multiple kernels afterwards. The following example creates a single-task kernel that sets <computeroutput>gpu_variable</computeroutput> to 1.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>gpu_variable;</highlight></codeline>
 <codeline><highlight class="normal">cudaMalloc(&amp;gpu_variable,<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">));</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;]<sp/>(<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>single<sp/>task<sp/>to<sp/>set<sp/>the<sp/>gpu_variable<sp/>to<sp/>1</highlight><highlight class="normal"></highlight></codeline>
@@ -26,10 +42,13 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>set_par.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(kernel1,<sp/>kernel2);</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-</programlisting></para><para>Since the callable runs on GPU, it must be declared with a <computeroutput>__device__</computeroutput> specifier.</para></sect1>
+</programlisting></para>
+<para>Since the callable runs on GPU, it must be declared with a <computeroutput>__device__</computeroutput> specifier.</para>
+</sect1>
 <sect1 id="SingleTaskCUDA_1SingleTaskCUDAMiscellaneousItems">
 <title>Miscellaneous Items</title>
-<para>The single-task algorithm is also available in <ref refid="classtf_1_1cudaFlowCapturer_1ac944c7d20056e0633ef84f1a25b52296" kindref="member">tf::cudaFlowCapturer::single_task</ref>. </para></sect1>
+<para>The single-task algorithm is also available in <ref refid="classtf_1_1cudaFlowCapturer_1ac944c7d20056e0633ef84f1a25b52296" kindref="member">tf::cudaFlowCapturer::single_task</ref>. </para>
+</sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

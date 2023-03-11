@@ -1,15 +1,22 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="PrioritizedTasking" kind="page">
     <compoundname>PrioritizedTasking</compoundname>
     <title>Prioritized Tasking</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Assign a Priority to a Task</name>
+        <reference>PrioritizedTasking_1AssignAPriorityToATask</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>This chapter demonstrates how to assigns a task a priority to <emphasis>hint</emphasis> the scheduler about one task of a higher priority should start earlier than another task of a lower priority. Task priorities are useful in many cases. For instance, we may prioritize some tasks over others to improve responsiveness or data locality of parallel tasks.</para><sect1 id="PrioritizedTasking_1AssignAPriorityToATask">
+<para>This chapter demonstrates how to assigns a task a priority to <emphasis>hint</emphasis> the scheduler about one task of a higher priority should start earlier than another task of a lower priority. Task priorities are useful in many cases. For instance, we may prioritize some tasks over others to improve responsiveness or data locality of parallel tasks.</para>
+<sect1 id="PrioritizedTasking_1AssignAPriorityToATask">
 <title>Assign a Priority to a Task</title>
-<para>Taskflow supports three different priority levels, <ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" kindref="member">tf::TaskPriority::HIGH</ref>, <ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fa1e23852820b9154316c7c06e2b7ba051" kindref="member">tf::TaskPriority::NORMAL</ref>, and <ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fa41bc94cbd8eebea13ce0491b2ac11b88" kindref="member">tf::TaskPriority::LOW</ref>, as defined in <ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346f" kindref="member">tf::TaskPriority</ref>. When there are parallel tasks (i.e., no dependencies), Taskflow will <computeroutput>try</computeroutput> to execute tasks of higher priorities before tasks of lower priorities. By default, all tasks have the highest priorities (<computeroutput><ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" kindref="member">tf::TaskPriority::HIGH</ref></computeroutput>) unless otherwise assigned.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(1);</highlight></codeline>
+<para>Taskflow supports three different priority levels, tf::TaskPriority::HIGH, tf::TaskPriority::NORMAL, and tf::TaskPriority::LOW, as defined in <ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346f" kindref="member">tf::TaskPriority</ref>. When there are parallel tasks (i.e., no dependencies), Taskflow will <computeroutput>try</computeroutput> to execute tasks of higher priorities before tasks of lower priorities. By default, all tasks have the highest priorities (<computeroutput>tf::TaskPriority::HIGH</computeroutput>) unless otherwise assigned.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(1);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>counter<sp/>=<sp/>0;</highlight></codeline>
@@ -17,13 +24,13 @@
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[A,<sp/>B,<sp/>C,<sp/>D,<sp/>E]<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[&amp;]<sp/>()<sp/>{<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>B:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>counter++<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>0</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>B:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>counter++<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>0</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[&amp;]<sp/>()<sp/>{<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>C:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>counter++<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>2</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>C:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>counter++<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>2</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[&amp;]<sp/>()<sp/>{<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>D:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>counter++<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>D:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>counter++<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
@@ -31,16 +38,22 @@
 <codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B,<sp/>C,<sp/>D);<sp/></highlight></codeline>
 <codeline><highlight class="normal">E.<ref refid="classtf_1_1Task_1a331b1b726555072e7c7d10941257f664" kindref="member">succeed</ref>(B,<sp/>C,<sp/>D);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">B.<ref refid="classtf_1_1Task_1a65ba160c1464b4084f85bd9d3dd41291" kindref="member">priority</ref>(<ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" kindref="member">tf::TaskPriority::HIGH</ref>);</highlight></codeline>
-<codeline><highlight class="normal">C.<ref refid="classtf_1_1Task_1a65ba160c1464b4084f85bd9d3dd41291" kindref="member">priority</ref>(<ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fa41bc94cbd8eebea13ce0491b2ac11b88" kindref="member">tf::TaskPriority::LOW</ref>);</highlight></codeline>
-<codeline><highlight class="normal">D.<ref refid="classtf_1_1Task_1a65ba160c1464b4084f85bd9d3dd41291" kindref="member">priority</ref>(<ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fa1e23852820b9154316c7c06e2b7ba051" kindref="member">tf::TaskPriority::NORMAL</ref>);</highlight></codeline>
+<codeline><highlight class="normal">B.<ref refid="classtf_1_1Task_1a65ba160c1464b4084f85bd9d3dd41291" kindref="member">priority</ref>(tf::TaskPriority::HIGH);</highlight></codeline>
+<codeline><highlight class="normal">C.<ref refid="classtf_1_1Task_1a65ba160c1464b4084f85bd9d3dd41291" kindref="member">priority</ref>(tf::TaskPriority::LOW);</highlight></codeline>
+<codeline><highlight class="normal">D.<ref refid="classtf_1_1Task_1a65ba160c1464b4084f85bd9d3dd41291" kindref="member">priority</ref>(tf::TaskPriority::NORMAL);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
-</programlisting></para><para>In the above code, we have a task graph of five tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, <computeroutput>C</computeroutput>, <computeroutput>D</computeroutput>, and <computeroutput>E</computeroutput>, in which <computeroutput>B</computeroutput>, <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput> can run in simultaneously when <computeroutput>A</computeroutput> finishes. Since we only uses one worker thread in the executor, we can deterministically run <computeroutput>B</computeroutput> first, then <computeroutput>D</computeroutput>, and <computeroutput>C</computeroutput> in order of their priority values. The output of the above code is as follows:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">Task<sp/>B:<sp/>0</highlight></codeline>
+</programlisting></para>
+<para>In the above code, we have a task graph of five tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, <computeroutput>C</computeroutput>, <computeroutput>D</computeroutput>, and <computeroutput>E</computeroutput>, in which <computeroutput>B</computeroutput>, <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput> can run in simultaneously when <computeroutput>A</computeroutput> finishes. Since we only uses one worker thread in the executor, we can deterministically run <computeroutput>B</computeroutput> first, then <computeroutput>D</computeroutput>, and <computeroutput>C</computeroutput> in order of their priority values. The output of the above code is as follows:</para>
+<para><programlisting filename=".shell-session"><codeline><highlight class="normal">Task<sp/>B:<sp/>0</highlight></codeline>
 <codeline><highlight class="normal">Task<sp/>D:<sp/>1</highlight></codeline>
 <codeline><highlight class="normal">Task<sp/>C:<sp/>2</highlight></codeline>
-</programlisting></para><para>Task priorities are just <emphasis>hints</emphasis> to Taskflow&apos;s work-stealing scheduler about which task should run before another. Due to the randomness nature of work stealing, there is no guarantee that the scheduler will always follow these hints to run tasks when multiple workers exist.</para><para><simplesect kind="note"><para>Currently, Taskflow does not have any high-level abstraction for assigning priorities to threads but tasks. </para></simplesect>
-</para></sect1>
+</programlisting></para>
+<para>Task priorities are just <emphasis>hints</emphasis> to Taskflow&apos;s work-stealing scheduler about which task should run before another. Due to the randomness nature of work stealing, there is no guarantee that the scheduler will always follow these hints to run tasks when multiple workers exist.</para>
+<para><simplesect kind="note"><para>Currently, Taskflow does not have any high-level abstraction for assigning priorities to threads but tasks. </para>
+</simplesect>
+</para>
+</sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

@@ -541,14 +541,6 @@ class Executor {
     size_t num_taskflows() const;
   
     /**
-    @brief queries the number of workers that are stealing tasks
-
-    The function returns the current number of workers that are making stealing attempts.
-    The queue of a thieve worker is guaranteed to be empty.
-    */
-    size_t num_thieves() const;
-
-    /**
     @brief queries the id of the caller thread in this executor
 
     Each worker has an unique id in the range of @c 0 to @c N-1 associated with
@@ -697,11 +689,6 @@ class Executor {
     */
     size_t num_observers() const noexcept;
 
-    /**
-    @brief queries the maximum number of steals before yielding
-    */
-    size_t max_steals() const noexcept;
-
   private:
     
     const size_t _MAX_STEALS;
@@ -722,8 +709,7 @@ class Executor {
 
     TaskQueue<Node*> _wsq;
 
-    std::atomic<size_t> _num_thieves {0};
-    std::atomic<bool>   _done {0};
+    std::atomic<bool> _done {0};
 
     std::shared_ptr<WorkerInterface> _worker_interface;
     std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
@@ -819,11 +805,6 @@ inline size_t Executor::num_workers() const noexcept {
   return _workers.size();
 }
 
-// Function: max_steals
-inline size_t Executor::max_steals() const noexcept {
-  return _MAX_STEALS;
-}
-
 // Function: num_topologies
 inline size_t Executor::num_topologies() const {
   return _num_topologies;
@@ -833,11 +814,6 @@ inline size_t Executor::num_topologies() const {
 inline size_t Executor::num_taskflows() const {
   return _taskflows.size();
 }
-
-// Function: num_thieves
-inline size_t Executor::num_thieves() const {
-  return _num_thieves;
-} 
 
 // Function: _this_worker
 inline Worker* Executor::_this_worker() {
@@ -1100,10 +1076,6 @@ inline void Executor::_exploit_task(Worker& w, Node*& t) {
 // Function: _wait_for_task
 inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 
-  prepare_thief:
-
-  ++_num_thieves;
-
   explore_task:
 
   _explore_task(worker, t);
@@ -1111,9 +1083,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   // The last thief who successfully stole a task will wake up
   // another thief worker to avoid starvation.
   if(t) {
-    if(_num_thieves.fetch_sub(1) == 1) {
-      _notifier.notify(false);
-    }
+    _notifier.notify(false);
     return true;
   }
 
@@ -1129,11 +1099,11 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   if(_done) {
     _notifier.cancel_wait(worker._waiter);
     _notifier.notify(true);
-    _num_thieves.fetch_sub(1);
     return false;
   }
   
-  // TODO: comment
+  // We need to use index-based scanning to avoid data race
+  // with _spawn which may initialize a worker at the same time.
   for(size_t vtm=0; vtm<_workers.size(); vtm++) {
     if(!_workers[vtm]._wsq.empty()) {
       _notifier.cancel_wait(worker._waiter);
@@ -1142,7 +1112,8 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
     }
   }
   
-  --_num_thieves;
+  //--_num_thieves;
+  //_num_thieves.fetch_sub(1, std::memory_order_release);
   
   /*//if(auto vtm = _find_vtm(me); vtm != _workers.size()) {
   if(!_wsq.empty()) {
@@ -1186,10 +1157,9 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   }*/
 
   // Now I really need to relinguish my self to others
-
   _notifier.commit_wait(worker._waiter);
-  
-  goto prepare_thief;
+
+  goto explore_task;
 }
 
 // Function: make_observer
@@ -1238,15 +1208,15 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
 
   node->_state.fetch_or(Node::READY, std::memory_order_release);
 
-  // caller is a worker to this pool
+  // caller is a worker to this pool - starting at v3.5 we do not use
+  // any complicated notification mechanism as the experimental result
+  // has shown no significant advantage.
   if(worker._executor == this) {
-    if(worker._wsq.push(node, p) || _num_thieves == 0) {
-      _notifier.notify(false);
-    }
+    worker._wsq.push(node, p);
+    _notifier.notify(false);
     return;
   }
 
-  // TODO: empty?
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     _wsq.push(node, p);
@@ -1284,16 +1254,18 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
     return;
   }
 
-  // We need to fetch p before the release such that the read 
-  // operation is synchronized properly with other thread to
-  // void data race.
+  // caller is a worker to this pool - starting at v3.5 we do not use
+  // any complicated notification mechanism as the experimental result
+  // has shown no significant advantage.
   if(worker._executor == this) {
     for(size_t i=0; i<num_nodes; ++i) {
+      // We need to fetch p before the release such that the read 
+      // operation is synchronized properly with other thread to
+      // void data race.
       auto p = nodes[i]->_priority;
       nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
-      if(worker._wsq.push(nodes[i], p) || _num_thieves == 0) {
-        _notifier.notify(false);
-      }
+      worker._wsq.push(nodes[i], p);
+      _notifier.notify(false);
     }
     return;
   }
@@ -1460,8 +1432,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   Node* cache {nullptr};
   auto max_p = static_cast<unsigned>(TaskPriority::MAX);
 
-  // At this point, the node storage might be destructed (to be verified)
-  // case 1: non-condition task
+  // Invoke the task based on the corresponding type
   switch(node->_handle.index()) {
 
     // condition and multi-condition tasks
@@ -1950,7 +1921,6 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
   else {
 
     // TODO: if the topology is cancelled, need to release all semaphores
-
     if(tpg->_call != nullptr) {
       tpg->_call();
     }

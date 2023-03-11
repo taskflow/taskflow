@@ -235,9 +235,22 @@ class WorkerInterface {
   */
   virtual void scheduler_epilogue(Worker& worker, std::exception_ptr ptr) = 0;
 
-
 };
 
+/**
+@fn make_worker_interface
+@brief helper function to create an instance derived from tf::WorkerInterface
+
+@param args arguments to forward to the constructor of @c T
+*/
+template <typename T, typename... ArgsT>
+std::shared_ptr<T> make_worker_interface(ArgsT&&... args) {
+  static_assert(
+    std::is_base_of_v<WorkerInterface, T>, 
+    "T must be derived from WorkerInterface"
+  );
+  return std::make_shared<T>(std::forward<ArgsT>(args)...);
+}
 
 }  // end of namespact tf -----------------------------------------------------
 

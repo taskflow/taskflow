@@ -171,9 +171,17 @@ class LevelGraph {
           }
         }
       }
+    }
 
-      //print_graph();
-
+    int get_node_count() const {
+      int counts = 0;
+      //std::cout << "level = " << _level_num << '\n';
+      //std::cout << "length = " << _length_num << '\n';
+      for(size_t l = 0; l < _graph.size(); l++){
+        //std::cout << "level[" << l << "] = " << _graph[l].size() << '\n';
+        counts += _graph[l].size();
+      }
+      return counts; 
     }
 
     void print_graph(){
@@ -287,6 +295,7 @@ std::chrono::microseconds measure_time_taskflow(LevelGraph&, size_t, unsigned, u
 std::chrono::microseconds measure_time_omp(LevelGraph&, size_t, unsigned, unsigned);
 std::chrono::microseconds measure_time_tbb(LevelGraph&, size_t, unsigned, unsigned);
 std::chrono::microseconds measure_time_gold(LevelGraph&, size_t);
+std::chrono::microseconds measure_time_fastflow(LevelGraph&, size_t);
 
 
 inline int work(const int seed) {

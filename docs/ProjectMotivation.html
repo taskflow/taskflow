@@ -5,7 +5,7 @@
   <title>Cookbook &raquo; Project Motivation | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -59,73 +59,73 @@
             <li><a href="#TheProjectMantra">The Project Mantra</a></li>
           </ul>
         </nav>
-<p>Taskflow addresses a long-standing problem, <em>how can we make it easier for C++ developers to quickly write parallel and heterogeneous programs with high performance scalability and simultaneous high productivity?</em></p><section id="TheEraOfMulticore"><h2><a href="#TheEraOfMulticore">The Era of Multicore</a></h2><p>In the past, we embrace <em>free</em> performance scaling on our software thanks to advances in manufacturing technologies and micro-architectural innovations. Approximately for every 1.5 year we can speed up our programs by simply switching to new hardware and compiler vendors that brings 2x more transistors, faster clock rates, and higher instruction-level parallelism. However, this paradigm was challenged by the power wall and increasing difficulties in exploiting instruction-level parallelism. The boost to computing performance has stemmed from changes to multicore chip designs.</p><img class="m-image" src="era_multicore.jpg" alt="Image" style="width: 60%;" /><p>The above sweeping visualization (thanks to Prof. Mark Horowitz and his group) shows the evolution of computer architectures is moving toward multicore designs. Today, multicore processors and multiprocessor systems are common in many electronic products such as mobiles, laptops, desktops, and servers. In order to keep up with the performance scaling, it is becoming necessary for software developers to write parallel programs that utilize the number of available cores.</p></section><section id="C0HeterogeneousComputing"><h2><a href="#C0HeterogeneousComputing">Heterogeneous Computing</a></h2><p>With the influence of artificial intelligence (AI) through new and merged workloads, heterogeneous computing becomes demanding and will continue to be heard for years to come. We have not just CPUs but GPUs, TPUs, FPGAs, and ASICs to accelerator a wide variety of scientific computing problems.</p><img class="m-image" src="CPU-vs-TPU-vs-GPU.png" alt="Image" style="width: 60%;" /><p>The question is: <em>How are we going to program these beasts?</em> Writing a high-performance sequential program is hard. Parallel programming is harder. Parallel programming of heterogeneous devices is extremely challenging if we care about performance and power efficiency. Programming models need to deal with productivity versus performance.</p></section><section id="LoopLevelParallelism"><h2><a href="#LoopLevelParallelism">Loop-level Parallelism</a></h2><p>The most basic and simplest concept of parallel programming is <em>loop-level parallelism</em>, exploiting parallelism that exists among the iterations of a loop. The program typically partitions a loop of iterations into a set of of blocks, either fixed or dynamic, and run each block in parallel. Below the figure illustrates this pattern.</p><img class="m-image" src="loop-level-parallelism.jpeg" alt="Image" style="width: 50%;" /><p>The main advantage of the loop-based approach is its simplicity in speeding up a regular workload in line with Amdahl&#x27;s Law. Programmers only need to discover independence of each iteration within a loop and, once possible, the parallel decomposition strategy can be easily implemented. Many existing libraries have built-in support to write a parallel-for loop.</p></section><section id="TaskBasedParallelism"><h2><a href="#TaskBasedParallelism">Task-based Parallelism</a></h2><p>The traditional loop-level parallelism is simple but hardly allows users to exploit parallelism in more irregular applications such as graph algorithms, incremental flows, recursion, and dynamically-allocated data structures. To address these challenges, parallel programming and libraries are evolving from the tradition loop-based parallelism to the <em>task-based</em> model.</p><div class="m-graph"><svg style="width: 16.625rem; height: 16.438rem;" viewBox="0.00 0.00 265.85 263.08">
-<g transform="scale(1 1) rotate(0) translate(4 259.0782)">
+<p>Taskflow addresses a long-standing problem, <em>how can we make it easier for C++ developers to quickly write parallel and heterogeneous programs with high performance scalability and simultaneous high productivity?</em></p><section id="TheEraOfMulticore"><h2><a href="#TheEraOfMulticore">The Era of Multicore</a></h2><p>In the past, we embrace <em>free</em> performance scaling on our software thanks to advances in manufacturing technologies and micro-architectural innovations. Approximately for every 1.5 year we can speed up our programs by simply switching to new hardware and compiler vendors that brings 2x more transistors, faster clock rates, and higher instruction-level parallelism. However, this paradigm was challenged by the power wall and increasing difficulties in exploiting instruction-level parallelism. The boost to computing performance has stemmed from changes to multicore chip designs.</p><img class="m-image" src="era_multicore.jpg" alt="Image" style="width: 60%;" /><p>The above sweeping visualization (thanks to Prof. Mark Horowitz and his group) shows the evolution of computer architectures is moving toward multicore designs. Today, multicore processors and multiprocessor systems are common in many electronic products such as mobiles, laptops, desktops, and servers. In order to keep up with the performance scaling, it is becoming necessary for software developers to write parallel programs that utilize the number of available cores.</p></section><section id="C0HeterogeneousComputing"><h2><a href="#C0HeterogeneousComputing">Heterogeneous Computing</a></h2><p>With the influence of artificial intelligence (AI) through new and merged workloads, heterogeneous computing becomes demanding and will continue to be heard for years to come. We have not just CPUs but GPUs, TPUs, FPGAs, and ASICs to accelerator a wide variety of scientific computing problems.</p><img class="m-image" src="CPU-vs-TPU-vs-GPU.png" alt="Image" style="width: 60%;" /><p>The question is: <em>How are we going to program these beasts?</em> Writing a high-performance sequential program is hard. Parallel programming is harder. Parallel programming of heterogeneous devices is extremely challenging if we care about performance and power efficiency. Programming models need to deal with productivity versus performance.</p></section><section id="LoopLevelParallelism"><h2><a href="#LoopLevelParallelism">Loop-level Parallelism</a></h2><p>The most basic and simplest concept of parallel programming is <em>loop-level parallelism</em>, exploiting parallelism that exists among the iterations of a loop. The program typically partitions a loop of iterations into a set of of blocks, either fixed or dynamic, and run each block in parallel. Below the figure illustrates this pattern.</p><img class="m-image" src="loop-level-parallelism.jpeg" alt="Image" style="width: 50%;" /><p>The main advantage of the loop-based approach is its simplicity in speeding up a regular workload in line with Amdahl&#x27;s Law. Programmers only need to discover independence of each iteration within a loop and, once possible, the parallel decomposition strategy can be easily implemented. Many existing libraries have built-in support to write a parallel-for loop.</p></section><section id="TaskBasedParallelism"><h2><a href="#TaskBasedParallelism">Task-based Parallelism</a></h2><p>The traditional loop-level parallelism is simple but hardly allows users to exploit parallelism in more irregular applications such as graph algorithms, incremental flows, recursion, and dynamically-allocated data structures. To address these challenges, parallel programming and libraries are evolving from the tradition loop-based parallelism to the <em>task-based</em> model.</p><div class="m-graph"><svg style="width: 16.375rem; height: 16.438rem;" viewBox="0.00 0.00 262.44 263.08">
+<g transform="scale(1 1) rotate(0) translate(4 259.08)">
 <title>Taskflow</title>
 <g class="m-node m-flat">
 <title>Task1</title>
-<ellipse cx="145.4264" cy="-236.6934" rx="42.3529" ry="18.2703"/>
-<text text-anchor="middle" x="145.4264" y="-232.8934">Task1</text>
+<ellipse cx="142.72" cy="-236.69" rx="41.94" ry="18.27"/>
+<text text-anchor="middle" x="142.72" y="-232.89">Task1</text>
 </g>
 <g class="m-node m-flat">
 <title>Task2</title>
-<ellipse cx="42.4264" cy="-163.9239" rx="42.3529" ry="18.2703"/>
-<text text-anchor="middle" x="42.4264" y="-160.1239">Task2</text>
+<ellipse cx="41.72" cy="-163.92" rx="41.94" ry="18.27"/>
+<text text-anchor="middle" x="41.72" y="-160.12">Task2</text>
 </g>
 <g class="m-edge">
 <title>Task1&#45;&gt;Task2</title>
-<path d="M123.0769,-220.9035C108.4999,-210.6048 89.2768,-197.0237 73.2544,-185.7039"/>
-<polygon points="74.9192,-182.5947 64.7323,-179.683 70.88,-188.3118 74.9192,-182.5947"/>
+<path d="M121.3,-220.69C106.84,-210.55 87.55,-197.04 71.58,-185.85"/>
+<polygon points="73.31,-182.78 63.11,-179.91 69.29,-188.52 73.31,-182.78"/>
 </g>
 <g class="m-node m-flat">
 <title>Task3</title>
-<ellipse cx="145.4264" cy="-163.9239" rx="42.3529" ry="18.2703"/>
-<text text-anchor="middle" x="145.4264" y="-160.1239">Task3</text>
+<ellipse cx="142.72" cy="-163.92" rx="41.94" ry="18.27"/>
+<text text-anchor="middle" x="142.72" y="-160.12">Task3</text>
 </g>
 <g class="m-edge">
 <title>Task1&#45;&gt;Task3</title>
-<path d="M145.4264,-217.9535C145.4264,-210.1694 145.4264,-200.9637 145.4264,-192.3774"/>
-<polygon points="148.9265,-192.3484 145.4264,-182.3484 141.9265,-192.3485 148.9265,-192.3484"/>
+<path d="M142.72,-218.2C142.72,-210.52 142.72,-201.31 142.72,-192.72"/>
+<polygon points="146.22,-192.71 142.72,-182.71 139.22,-192.71 146.22,-192.71"/>
 </g>
 <g class="m-node m-flat">
 <title>Task4</title>
-<ellipse cx="215.4264" cy="-91.1543" rx="42.3529" ry="18.2703"/>
-<text text-anchor="middle" x="215.4264" y="-87.3543">Task4</text>
+<ellipse cx="212.72" cy="-91.15" rx="41.94" ry="18.27"/>
+<text text-anchor="middle" x="212.72" y="-87.35">Task4</text>
 </g>
 <g class="m-edge">
 <title>Task1&#45;&gt;Task4</title>
-<path d="M165.4494,-220.2932C176.2334,-210.3929 188.8442,-196.8943 196.4264,-182.3087 206.5709,-162.794 211.2992,-138.2751 213.5029,-119.5831"/>
-<polygon points="216.9885,-119.9008 214.5083,-109.6004 210.0238,-119.1993 216.9885,-119.9008"/>
+<path d="M161.97,-220.34C172.92,-210.59 185.95,-197.05 193.72,-182.31 203.95,-162.91 208.67,-138.43 210.85,-119.88"/>
+<polygon points="214.35,-120.02 211.86,-109.72 207.39,-119.33 214.35,-120.02"/>
 </g>
 <g class="m-node m-flat">
 <title>Task5</title>
-<ellipse cx="112.4264" cy="-91.1543" rx="42.3529" ry="18.2703"/>
-<text text-anchor="middle" x="112.4264" y="-87.3543">Task5</text>
+<ellipse cx="111.72" cy="-91.15" rx="41.94" ry="18.27"/>
+<text text-anchor="middle" x="111.72" y="-87.35">Task5</text>
 </g>
 <g class="m-edge">
 <title>Task2&#45;&gt;Task5</title>
-<path d="M59.0154,-146.6785C67.9074,-137.4347 79.0158,-125.8869 88.7955,-115.7202"/>
-<polygon points="91.5463,-117.9092 95.9565,-108.2759 86.5014,-113.0564 91.5463,-117.9092"/>
+<path d="M57.6,-146.87C66.69,-137.68 78.26,-125.98 88.37,-115.76"/>
+<polygon points="90.87,-118.21 95.41,-108.64 85.89,-113.29 90.87,-118.21"/>
 </g>
 <g class="m-edge">
 <title>Task3&#45;&gt;Task5</title>
-<path d="M137.0991,-145.5611C133.3973,-137.3981 128.9613,-127.616 124.8779,-118.6115"/>
-<polygon points="127.9544,-116.921 120.6367,-109.2592 121.5793,-119.812 127.9544,-116.921"/>
+<path d="M135.22,-145.79C131.69,-137.74 127.4,-127.95 123.46,-118.96"/>
+<polygon points="126.59,-117.37 119.37,-109.62 120.18,-120.18 126.59,-117.37"/>
 </g>
 <g class="m-node m-flat">
 <title>Task6</title>
-<ellipse cx="163.4264" cy="-18.3848" rx="42.3529" ry="18.2703"/>
-<text text-anchor="middle" x="163.4264" y="-14.5848">Task6</text>
+<ellipse cx="161.72" cy="-18.38" rx="41.94" ry="18.27"/>
+<text text-anchor="middle" x="161.72" y="-14.58">Task6</text>
 </g>
 <g class="m-edge">
 <title>Task4&#45;&gt;Task6</title>
-<path d="M202.8387,-73.5389C196.5618,-64.7549 188.8487,-53.9611 181.9152,-44.2582"/>
-<polygon points="184.7402,-42.1915 176.0785,-36.0903 179.0448,-46.2614 184.7402,-42.1915"/>
+<path d="M200.63,-73.38C194.35,-64.66 186.54,-53.82 179.57,-44.15"/>
+<polygon points="182.4,-42.1 173.72,-36.04 176.73,-46.19 182.4,-42.1"/>
 </g>
 <g class="m-edge">
 <title>Task5&#45;&gt;Task6</title>
-<path d="M124.7721,-73.5389C130.8661,-64.8436 138.3403,-54.1789 145.0869,-44.5526"/>
-<polygon points="148.1445,-46.2881 151.0177,-36.0903 142.4122,-42.2706 148.1445,-46.2881"/>
+<path d="M123.57,-73.38C129.67,-64.75 137.23,-54.04 144.01,-44.44"/>
+<polygon points="147.04,-46.22 149.96,-36.04 141.33,-42.18 147.04,-46.22"/>
 </g>
 </g>
 </svg>
@@ -174,7 +174,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

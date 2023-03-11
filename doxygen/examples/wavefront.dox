@@ -34,7 +34,7 @@ we use a 2D vector to pre-allocate all tasks via tf::Taskflow::placeholder.
 int main() {
   tf::Executor executor;
   tf::Taskflow taskflow;
-
+  int num_blocks = 3;
   std::vector<std::vector<tf::Task>> node(num_blocks);
   
   // create num_blocks*num_blocks placeholder tasks

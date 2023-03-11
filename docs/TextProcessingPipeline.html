@@ -5,7 +5,7 @@
   <title>Learning from Examples &raquo; Text Processing Pipeline | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -225,77 +225,77 @@
 <span class="go">stage 3: i:4</span>
 <span class="go">stage 2: map = j:1 k:3 i:1 </span>
 <span class="go">stage 3: k:3</span>
-<span class="go">stopped</span></pre><p>We can see seven outputs at the third stage that show the most frequent character for each of the seven strings in order (<code>a:2</code>, <code>d:4</code>, <code>e:3</code>, <code>z:2</code>, <code>j:4</code>, <code>i:4</code>, <code>k:3</code>). The taskflow graph of this pipeline workload is shown below:</p><div class="m-graph"><svg style="width: 24.875rem; height: 22.375rem;" viewBox="0.00 0.00 398.00 357.77">
-<g transform="scale(1 1) rotate(0) translate(4 353.7696)">
+<span class="go">stopped</span></pre><p>We can see seven outputs at the third stage that show the most frequent character for each of the seven strings in order (<code>a:2</code>, <code>d:4</code>, <code>e:3</code>, <code>z:2</code>, <code>j:4</code>, <code>i:4</code>, <code>k:3</code>). The taskflow graph of this pipeline workload is shown below:</p><div class="m-graph"><svg style="width: 23.750rem; height: 17.625rem;" viewBox="0.00 0.00 380.00 281.77">
+<g transform="scale(1 1) rotate(0) translate(4 277.77)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x7ffd7418c200</title>
-<polygon points="8,-8 8,-334.1543 232,-334.1543 232,-8 8,-8"/>
-<text text-anchor="middle" x="120" y="-317.3543">Text Processing Pipeline</text>
+<polygon points="8,-8 8,-258.15 214,-258.15 214,-8 8,-8"/>
+<text text-anchor="middle" x="111" y="-241.35">Text Processing Pipeline</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7ffd7418c110</title>
-<polygon points="240,-119.7696 240,-341.7696 382,-341.7696 382,-119.7696 240,-119.7696"/>
-<text text-anchor="middle" x="311" y="-324.9696">m1</text>
+<polygon points="222,-81.77 222,-265.77 364,-265.77 364,-81.77 222,-81.77"/>
+<text text-anchor="middle" x="293" y="-248.97">m1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7bc4000142e8</title>
-<ellipse cx="120" cy="-281.7696" rx="102.561" ry="18.2703"/>
-<text text-anchor="middle" x="120" y="-277.9696">starting pipeline</text>
+<ellipse cx="111" cy="-205.77" rx="92.76" ry="18.27"/>
+<text text-anchor="middle" x="111" y="-201.97">starting pipeline</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7bc4000143d0</title>
-<polygon points="180.5,-163.7696 63.5,-163.7696 59.5,-159.7696 59.5,-127.7696 176.5,-127.7696 180.5,-131.7696 180.5,-163.7696"/>
-<polyline points="176.5,-159.7696 59.5,-159.7696 "/>
-<polyline points="176.5,-159.7696 176.5,-127.7696 "/>
-<polyline points="176.5,-159.7696 180.5,-163.7696 "/>
-<text text-anchor="middle" x="120" y="-141.9696">pipeline [m1]</text>
+<polygon points="165.5,-125.77 60.5,-125.77 56.5,-121.77 56.5,-89.77 161.5,-89.77 165.5,-93.77 165.5,-125.77"/>
+<polyline points="161.5,-121.77 56.5,-121.77"/>
+<polyline points="161.5,-121.77 161.5,-89.77"/>
+<polyline points="161.5,-121.77 165.5,-125.77"/>
+<text text-anchor="middle" x="111" y="-103.97">pipeline [m1]</text>
 </g>
 <g class="m-edge">
 <title>p0x7bc4000142e8&#45;&gt;p0x7bc4000143d0</title>
-<path d="M120,-263.1445C120,-240.2544 120,-201.1696 120,-174.4397"/>
-<polygon points="123.5001,-174.1696 120,-164.1697 116.5001,-174.1697 123.5001,-174.1696"/>
+<path d="M111,-187.16C111,-172.86 111,-152.45 111,-136.04"/>
+<polygon points="114.5,-135.94 111,-125.94 107.5,-135.94 114.5,-135.94"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7bc4000144b8</title>
-<ellipse cx="120" cy="-34.3848" rx="103.8894" ry="18.2703"/>
-<text text-anchor="middle" x="120" y="-30.5848">pipeline stopped</text>
+<ellipse cx="111" cy="-34.38" rx="95.42" ry="18.27"/>
+<text text-anchor="middle" x="111" y="-30.58">pipeline stopped</text>
 </g>
 <g class="m-edge">
 <title>p0x7bc4000143d0&#45;&gt;p0x7bc4000144b8</title>
-<path d="M120,-127.3766C120,-109.8829 120,-83.3019 120,-63.0326"/>
-<polygon points="123.5001,-62.805 120,-52.805 116.5001,-62.8051 123.5001,-62.805"/>
+<path d="M111,-89.49C111,-81.63 111,-72.12 111,-63.29"/>
+<polygon points="114.5,-63 111,-53 107.5,-63 114.5,-63"/>
 </g>
 <g class="m-node">
 <title>p0x7bc400014030</title>
-<polygon points="311,-307.7696 256,-281.7696 311,-255.7696 366,-281.7696 311,-307.7696"/>
-<text text-anchor="middle" x="311" y="-277.9696">cond</text>
+<polygon points="291,-231.77 239,-205.77 291,-179.77 343,-205.77 291,-231.77"/>
+<text text-anchor="middle" x="291" y="-201.97">cond</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7bc400014118</title>
-<polygon points="302,-163.7696 248,-163.7696 248,-159.7696 244,-159.7696 244,-155.7696 248,-155.7696 248,-135.7696 244,-135.7696 244,-131.7696 248,-131.7696 248,-127.7696 302,-127.7696 302,-163.7696"/>
-<polyline points="248,-159.7696 252,-159.7696 252,-155.7696 248,-155.7696 "/>
-<polyline points="248,-135.7696 252,-135.7696 252,-131.7696 248,-131.7696 "/>
-<text text-anchor="middle" x="275" y="-141.9696">rt&#45;0</text>
+<polygon points="284,-125.77 230,-125.77 230,-121.77 226,-121.77 226,-117.77 230,-117.77 230,-97.77 226,-97.77 226,-93.77 230,-93.77 230,-89.77 284,-89.77 284,-125.77"/>
+<polyline points="230,-121.77 234,-121.77 234,-117.77 230,-117.77"/>
+<polyline points="230,-97.77 234,-97.77 234,-93.77 230,-93.77"/>
+<text text-anchor="middle" x="257" y="-103.97">rt&#45;0</text>
 </g>
 <g class="m-edge">
 <title>p0x7bc400014030&#45;&gt;p0x7bc400014118</title>
-<path stroke-dasharray="5,2" d="M304.8114,-258.3903C298.6195,-234.9989 289.0892,-198.9954 282.4777,-174.0185"/>
-<polygon points="285.7836,-172.8296 279.8411,-164.0581 279.0166,-174.6209 285.7836,-172.8296"/>
-<text text-anchor="middle" x="299" y="-205.9696">0</text>
+<path stroke-dasharray="5,2" d="M279.24,-185.62C275.19,-178.36 270.94,-169.89 268,-161.77 265.03,-153.57 262.76,-144.35 261.09,-135.93"/>
+<polygon points="264.48,-135.04 259.27,-125.82 257.59,-136.28 264.48,-135.04"/>
+<text text-anchor="middle" x="273" y="-148.97">0</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7bc400014200</title>
-<polygon points="374,-163.7696 320,-163.7696 320,-159.7696 316,-159.7696 316,-155.7696 320,-155.7696 320,-135.7696 316,-135.7696 316,-131.7696 320,-131.7696 320,-127.7696 374,-127.7696 374,-163.7696"/>
-<polyline points="320,-159.7696 324,-159.7696 324,-155.7696 320,-155.7696 "/>
-<polyline points="320,-135.7696 324,-135.7696 324,-131.7696 320,-131.7696 "/>
-<text text-anchor="middle" x="347" y="-141.9696">rt&#45;1</text>
+<polygon points="356,-125.77 302,-125.77 302,-121.77 298,-121.77 298,-117.77 302,-117.77 302,-97.77 298,-97.77 298,-93.77 302,-93.77 302,-89.77 356,-89.77 356,-125.77"/>
+<polyline points="302,-121.77 306,-121.77 306,-117.77 302,-117.77"/>
+<polyline points="302,-97.77 306,-97.77 306,-93.77 302,-93.77"/>
+<text text-anchor="middle" x="329" y="-103.97">rt&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p0x7bc400014030&#45;&gt;p0x7bc400014200</title>
-<path stroke-dasharray="5,2" d="M317.1886,-258.3903C323.3805,-234.9989 332.9108,-198.9954 339.5223,-174.0185"/>
-<polygon points="342.9834,-174.6209 342.1589,-164.0581 336.2164,-172.8296 342.9834,-174.6209"/>
-<text text-anchor="middle" x="337" y="-205.9696">1</text>
+<path stroke-dasharray="5,2" d="M299.43,-183.46C305.07,-169.24 312.51,-150.42 318.53,-135.23"/>
+<polygon points="321.81,-136.45 322.24,-125.86 315.3,-133.87 321.81,-136.45"/>
+<text text-anchor="middle" x="319" y="-148.97">1</text>
 </g>
 </g>
 </svg>
@@ -344,7 +344,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

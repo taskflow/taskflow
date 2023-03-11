@@ -1,15 +1,44 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
   <compounddef id="TextProcessingPipeline" kind="page">
     <compoundname>TextProcessingPipeline</compoundname>
     <title>Text Processing Pipeline</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Formulate the Text Processing Pipeline Problem</name>
+        <reference>TextProcessingPipeline_1FormulateTheTextProcessingPipelineProblem</reference>
+    </tocsect>
+      <tocsect>
+        <name>Create a Text Processing Pipeline</name>
+        <reference>TextProcessingPipeline_1CreateAParallelTextPipeline</reference>
+    <tableofcontents>
+      <tocsect>
+        <name>Define the Data Buffer</name>
+        <reference>TextProcessingPipeline_1TextPipelineDefineTheDataBuffer</reference>
+    </tocsect>
+      <tocsect>
+        <name>Define the Pipes</name>
+        <reference>TextProcessingPipeline_1TextPipelineDefineThePipes</reference>
+    </tocsect>
+      <tocsect>
+        <name>Define the Task Graph</name>
+        <reference>TextProcessingPipeline_1TextPipelineDefineTheTaskGraph</reference>
+    </tocsect>
+      <tocsect>
+        <name>Submit the Task Graph</name>
+        <reference>TextProcessingPipeline_1TextPipelineSubmitTheTaskGraph</reference>
+    </tocsect>
+    </tableofcontents>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>We study a text processing pipeline that finds the most frequent character of each string from an input source. Parallelism exhibits in the form of a three-stage pipeline that transforms the input string to a final pair type.</para><sect1 id="TextProcessingPipeline_1FormulateTheTextProcessingPipelineProblem">
+<para>We study a text processing pipeline that finds the most frequent character of each string from an input source. Parallelism exhibits in the form of a three-stage pipeline that transforms the input string to a final pair type.</para>
+<sect1 id="TextProcessingPipeline_1FormulateTheTextProcessingPipelineProblem">
 <title>Formulate the Text Processing Pipeline Problem</title>
-<para>Given an input vector of strings, we want to compute the most frequent character for each string using a series of transform operations. For example:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>input<sp/>strings</highlight></codeline>
+<para>Given an input vector of strings, we want to compute the most frequent character for each string using a series of transform operations. For example:</para>
+<para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>input<sp/>strings</highlight></codeline>
 <codeline><highlight class="normal">abade</highlight></codeline>
 <codeline><highlight class="normal">ddddf</highlight></codeline>
 <codeline><highlight class="normal">eefge</highlight></codeline>
@@ -26,17 +55,25 @@
 <codeline><highlight class="normal">j:4</highlight></codeline>
 <codeline><highlight class="normal">i:4</highlight></codeline>
 <codeline><highlight class="normal">k:3</highlight></codeline>
-</programlisting></para><para>We decompose the algorithm into three stages:</para><para><orderedlist>
-<listitem><para>read a <computeroutput>std::string</computeroutput> from the input vector</para></listitem><listitem><para>generate a <computeroutput>std::unorder_map&lt;char, size_t&gt;</computeroutput> frequency map from the string</para></listitem><listitem><para>reduce the most frequent character to a <computeroutput>std::pair&lt;char, size_t&gt;</computeroutput> from the map</para></listitem></orderedlist>
-</para><para>The first and the third stages process inputs and generate results in serial, and the second stage can run in parallel. The algorithm is a perfect fit to pipeline parallelism, as different stages can overlap with each other in time across parallel lines.</para></sect1>
+</programlisting></para>
+<para>We decompose the algorithm into three stages:</para>
+<para><orderedlist>
+<listitem><para>read a <computeroutput>std::string</computeroutput> from the input vector</para>
+</listitem><listitem><para>generate a <computeroutput>std::unorder_map&lt;char, size_t&gt;</computeroutput> frequency map from the string</para>
+</listitem><listitem><para>reduce the most frequent character to a <computeroutput>std::pair&lt;char, size_t&gt;</computeroutput> from the map</para>
+</listitem></orderedlist>
+</para>
+<para>The first and the third stages process inputs and generate results in serial, and the second stage can run in parallel. The algorithm is a perfect fit to pipeline parallelism, as different stages can overlap with each other in time across parallel lines.</para>
+</sect1>
 <sect1 id="TextProcessingPipeline_1CreateAParallelTextPipeline">
 <title>Create a Text Processing Pipeline</title>
-<para>We create a pipeline of three pipes (stages) and two parallel lines to solve the problem. The number of parallel lines is a tunable parameter. In most cases, we can just use <computeroutput><ref refid="cpp/thread/thread/hardware_concurrency" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::thread::hardware_concurrency</ref></computeroutput> as the line count. The first pipe reads an input string from the vector in order, the second pipe transforms the input string from the first pipe to a frequency map in parallel, and the third pipe reduces the frequency map to find the most frequent character. The overall implementation is shown below:</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<para>We create a pipeline of three pipes (stages) and two parallel lines to solve the problem. The number of parallel lines is a tunable parameter. In most cases, we can just use <computeroutput><ref refid="cpp/thread/thread/hardware_concurrency" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::thread::hardware_concurrency</ref></computeroutput> as the line count. The first pipe reads an input string from the vector in order, the second pipe transforms the input string from the first pipe to a frequency map in parallel, and the third pipe reduces the frequency map to find the most frequent character. The overall implementation is shown below:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="pipeline_8hpp" kindref="compound">taskflow/algorithm/pipeline.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Function:<sp/>format<sp/>the<sp/>map</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/string/basic_string" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref><sp/>format_map(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/container/unordered_map" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_map&lt;char, size_t&gt;</ref>&amp;<sp/>map)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostringstream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostringstream</ref><sp/>oss;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref><sp/>format_map(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/container/unordered_map" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_map&lt;char, size_t&gt;</ref>&amp;<sp/>map)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostringstream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostringstream</ref><sp/>oss;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>[i,<sp/>j]<sp/>:<sp/>map)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>oss<sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;:&apos;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>j<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;<sp/>&apos;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
@@ -51,7 +88,7 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>num_lines<sp/>=<sp/>2;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>input<sp/>data<sp/></highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;std::string&gt;</ref><sp/>input<sp/>=<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;std::string&gt;</ref><sp/>input<sp/>=<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;abade&quot;</highlight><highlight class="normal">,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;ddddf&quot;</highlight><highlight class="normal">,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;eefge&quot;</highlight><highlight class="normal">,</highlight></codeline>
@@ -63,53 +100,53 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>custom<sp/>data<sp/>storage</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>data_type<sp/>=<sp/>std::variant&lt;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/string/basic_string" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>,<sp/><ref refid="cpp/container/unordered_map" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_map&lt;char, size_t&gt;</ref>,<sp/><ref refid="cpp/utility/pair" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::pair&lt;char, size_t&gt;</ref></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>,<sp/><ref refid="cpp/container/unordered_map" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_map&lt;char, size_t&gt;</ref>,<sp/><ref refid="cpp/utility/pair" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::pair&lt;char, size_t&gt;</ref></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>&gt;;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/array" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;data_type, num_lines&gt;</ref><sp/>mybuffer;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/array" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;data_type, num_lines&gt;</ref><sp/>mybuffer;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>the<sp/>pipeline<sp/>consists<sp/>of<sp/>three<sp/>pipes<sp/>(serial-parallel-serial)</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>and<sp/>up<sp/>to<sp/>two<sp/>concurrent<sp/>scheduling<sp/>tokens</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref><sp/>pl(num_lines,</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>first<sp/>pipe<sp/>processes<sp/>the<sp/>input<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(pf.token()<sp/>==<sp/>input.size())<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.stop();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>1:<sp/>input<sp/>token<sp/>=<sp/>%s\n&quot;</highlight><highlight class="normal">,<sp/>input[pf.token()].c_str());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>1:<sp/>input<sp/>token<sp/>=<sp/>%s\n&quot;</highlight><highlight class="normal">,<sp/>input[pf.token()].c_str());</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>mybuffer[pf.line()]<sp/>=<sp/>input[pf.token()];</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>second<sp/>pipe<sp/>counts<sp/>the<sp/>frequency<sp/>of<sp/>each<sp/>character</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::PARALLEL</ref>,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/container/unordered_map" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_map&lt;char, size_t&gt;</ref><sp/>map;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{tf::PipeType::PARALLEL,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/container/unordered_map" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_map&lt;char, size_t&gt;</ref><sp/>map;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>c<sp/>:<sp/>std::get&lt;std::string&gt;(mybuffer[pf.line()]))<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>map[c]++;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>2:<sp/>map<sp/>=<sp/>%s\n&quot;</highlight><highlight class="normal">,<sp/>format_map(map).c_str());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>2:<sp/>map<sp/>=<sp/>%s\n&quot;</highlight><highlight class="normal">,<sp/>format_map(map).c_str());</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>mybuffer[pf.line()]<sp/>=<sp/>map;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>third<sp/>pipe<sp/>reduces<sp/>the<sp/>most<sp/>frequent<sp/>character</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;mybuffer](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;mybuffer](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>map<sp/>=<sp/>std::get&lt;std::unordered_map&lt;char,<sp/>size_t&gt;&gt;(mybuffer[pf.line()]);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>sol<sp/>=<sp/><ref refid="cpp/algorithm/max_element" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::max_element</ref>(map.begin(),<sp/>map.end(),<sp/>[](</highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>a,<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>b){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a.second<sp/>&lt;<sp/>b.second;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>sol<sp/>=<sp/><ref refid="cpp/algorithm/max_element" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::max_element</ref>(map.begin(),<sp/>map.end(),<sp/>[](</highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>a,<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>b){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>return<sp/>a.second<sp/>&lt;<sp/>b.second;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>3:<sp/>%c:%zu\n&quot;</highlight><highlight class="normal">,<sp/>sol-&gt;first,<sp/>sol-&gt;second);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>3:<sp/>%c:%zu\n&quot;</highlight><highlight class="normal">,<sp/>sol-&gt;first,<sp/>sol-&gt;second);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>not<sp/>necessary<sp/>to<sp/>store<sp/>the<sp/>last-stage<sp/>data,<sp/>just<sp/>for<sp/>demo<sp/>purpose</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>mybuffer[pf.line()]<sp/>=<sp/>*sol;<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>build<sp/>the<sp/>pipeline<sp/>graph<sp/>using<sp/>composition</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;ready\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;ready\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;starting<sp/>pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">composed_of</ref>(pl)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>stop<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;stopped\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>stop<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;stopped\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;pipeline<sp/>stopped&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>task<sp/>dependency</highlight><highlight class="normal"></highlight></codeline>
@@ -117,63 +154,79 @@
 <codeline><highlight class="normal"><sp/><sp/>task.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(stop);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>pipeline<sp/>graph<sp/>structure<sp/>(with<sp/>composition)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>pipeline</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><sect2 id="TextProcessingPipeline_1TextPipelineDefineTheDataBuffer">
+</programlisting></para>
+<sect2 id="TextProcessingPipeline_1TextPipelineDefineTheDataBuffer">
 <title>Define the Data Buffer</title>
-<para>Taskflow does not provide any data abstraction to perform pipeline scheduling, but give users full control over data management in their applications. In this example, we create an one-dimensional buffer of a <ulink url="https://en.cppreference.com/w/cpp/utility/variant">std::variant</ulink> data type to store the output of each pipe in a uniform storage:</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">using</highlight><highlight class="normal"><sp/>data_type<sp/>=<sp/>std::variant&lt;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/string/basic_string" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>,<sp/><ref refid="cpp/container/unordered_map" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_map&lt;char, size_t&gt;</ref>,<sp/><ref refid="cpp/utility/pair" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::pair&lt;char, size_t&gt;</ref></highlight></codeline>
+<para>Taskflow does not provide any data abstraction to perform pipeline scheduling, but give users full control over data management in their applications. In this example, we create an one-dimensional buffer of a <ulink url="https://en.cppreference.com/w/cpp/utility/variant">std::variant</ulink> data type to store the output of each pipe in a uniform storage:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">using</highlight><highlight class="normal"><sp/>data_type<sp/>=<sp/>std::variant&lt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>,<sp/><ref refid="cpp/container/unordered_map" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_map&lt;char, size_t&gt;</ref>,<sp/><ref refid="cpp/utility/pair" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::pair&lt;char, size_t&gt;</ref></highlight></codeline>
 <codeline><highlight class="normal">&gt;;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/array" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;std::array&lt;data_type, num_pipes&gt;</ref>,<sp/>num_lines&gt;<sp/>mybuffer;</highlight></codeline>
-</programlisting></para><para><simplesect kind="note"><para>One-dimensional buffer is sufficient because Taskflow enables only one scheduling token per line at a time.</para></simplesect>
-</para></sect2>
+<codeline><highlight class="normal"><ref refid="cpp/container/array" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;std::array&lt;data_type, num_pipes&gt;</ref>,<sp/>num_lines&gt;<sp/>mybuffer;</highlight></codeline>
+</programlisting></para>
+<para><simplesect kind="note"><para>One-dimensional buffer is sufficient because Taskflow enables only one scheduling token per line at a time.</para>
+</simplesect>
+</para>
+</sect2>
 <sect2 id="TextProcessingPipeline_1TextPipelineDefineThePipes">
 <title>Define the Pipes</title>
-<para>The first pipe reads one string and puts it in the corresponding entry at the buffer, <computeroutput>mybuffer[pf.line()]</computeroutput>. Since we read in each string in order, we declare the pipe as a serial type:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
+<para>The first pipe reads one string and puts it in the corresponding entry at the buffer, <computeroutput>mybuffer[pf.line()]</computeroutput>. Since we read in each string in order, we declare the pipe as a serial type:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(pf.token()<sp/>==<sp/>input.size())<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>pf.stop();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>mybuffer[pf.line()]<sp/>=<sp/>input[pf.token()];</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>1:<sp/>input<sp/>token<sp/>=<sp/>%s\n&quot;</highlight><highlight class="normal">,<sp/>input[pf.token()].c_str());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>1:<sp/>input<sp/>token<sp/>=<sp/>%s\n&quot;</highlight><highlight class="normal">,<sp/>input[pf.token()].c_str());</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}},</highlight></codeline>
-</programlisting></para><para>The second pipe needs to get the input string from the previous pipe and then transforms that input string into a frequency map that records the occurrence of each character in the string. As multiple transforms can operate simultaneously, we declare the pipe as a parallel type:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::PARALLEL</ref>,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/unordered_map" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_map&lt;char, size_t&gt;</ref><sp/>map;</highlight></codeline>
+</programlisting></para>
+<para>The second pipe needs to get the input string from the previous pipe and then transforms that input string into a frequency map that records the occurrence of each character in the string. As multiple transforms can operate simultaneously, we declare the pipe as a parallel type:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{tf::PipeType::PARALLEL,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/unordered_map" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_map&lt;char, size_t&gt;</ref><sp/>map;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>c<sp/>:<sp/>std::get&lt;std::string&gt;(mybuffer[pf.line()]))<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>map[c]++;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>mybuffer[pf.line()]<sp/>=<sp/>map;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>2:<sp/>map<sp/>=<sp/>%s\n&quot;</highlight><highlight class="normal">,<sp/>format_map(map).c_str());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>2:<sp/>map<sp/>=<sp/>%s\n&quot;</highlight><highlight class="normal">,<sp/>format_map(map).c_str());</highlight></codeline>
 <codeline><highlight class="normal">}}</highlight></codeline>
-</programlisting></para><para>Similarly, the third pipe needs to get the input frequency map from the previous pipe and then reduces the result to find the most frequent character. We may not need to store the result in the buffer but other places defined by the application (e.g., an output file). As we want to output the result in the same order as the input, we declare the pipe as a serial type:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;mybuffer](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
+</programlisting></para>
+<para>Similarly, the third pipe needs to get the input frequency map from the previous pipe and then reduces the result to find the most frequent character. We may not need to store the result in the buffer but other places defined by the application (e.g., an output file). As we want to output the result in the same order as the input, we declare the pipe as a serial type:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;mybuffer](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>map<sp/>=<sp/>std::get&lt;std::unordered_map&lt;char,<sp/>size_t&gt;&gt;(mybuffer[pf.line()]);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>sol<sp/>=<sp/><ref refid="cpp/algorithm/max_element" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::max_element</ref>(map.begin(),<sp/>map.end(),<sp/>[](</highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>a,<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>b){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a.second<sp/>&lt;<sp/>b.second;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>sol<sp/>=<sp/><ref refid="cpp/algorithm/max_element" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::max_element</ref>(map.begin(),<sp/>map.end(),<sp/>[](</highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>a,<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>b){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>return<sp/>a.second<sp/>&lt;<sp/>b.second;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>3:<sp/>%c:%zu\n&quot;</highlight><highlight class="normal">,<sp/>sol-&gt;first,<sp/>sol-&gt;second);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>3:<sp/>%c:%zu\n&quot;</highlight><highlight class="normal">,<sp/>sol-&gt;first,<sp/>sol-&gt;second);</highlight></codeline>
 <codeline><highlight class="normal">}}</highlight></codeline>
-</programlisting></para></sect2>
+</programlisting></para>
+</sect2>
 <sect2 id="TextProcessingPipeline_1TextPipelineDefineTheTaskGraph">
 <title>Define the Task Graph</title>
-<para>To build up the taskflow graph for the pipeline, we create a module task out of the pipeline structure and connect it with two tasks that outputs messages before and after the pipeline:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;ready\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
+<para>To build up the taskflow graph for the pipeline, we create a module task out of the pipeline structure and connect it with two tasks that outputs messages before and after the pipeline:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;ready\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;starting<sp/>pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">composed_of</ref>(pl)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>stop<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;stopped\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>stop<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;stopped\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;pipeline<sp/>stopped&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">init.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(task);</highlight></codeline>
 <codeline><highlight class="normal">task.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(stop);</highlight></codeline>
-</programlisting></para></sect2>
+</programlisting></para>
+</sect2>
 <sect2 id="TextProcessingPipeline_1TextPipelineSubmitTheTaskGraph">
 <title>Submit the Task Graph</title>
-<para>Finally, we submit the taskflow to the execution and run it once:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
-</programlisting></para><para>As the second stage is a parallel pipe, the output may interleave. One possible result is shown below:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">ready</highlight></codeline>
+<para>Finally, we submit the taskflow to the execution and run it once:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+</programlisting></para>
+<para>As the second stage is a parallel pipe, the output may interleave. One possible result is shown below:</para>
+<para><programlisting filename=".shell-session"><codeline><highlight class="normal">ready</highlight></codeline>
 <codeline><highlight class="normal">stage<sp/>1:<sp/>input<sp/>token<sp/>=<sp/>abade</highlight></codeline>
 <codeline><highlight class="normal">stage<sp/>1:<sp/>input<sp/>token<sp/>=<sp/>ddddf</highlight></codeline>
 <codeline><highlight class="normal">stage<sp/>2:<sp/>map<sp/>=<sp/>f:1<sp/>d:4<sp/></highlight></codeline>
@@ -196,8 +249,11 @@
 <codeline><highlight class="normal">stage<sp/>2:<sp/>map<sp/>=<sp/>j:1<sp/>k:3<sp/>i:1<sp/></highlight></codeline>
 <codeline><highlight class="normal">stage<sp/>3:<sp/>k:3</highlight></codeline>
 <codeline><highlight class="normal">stopped</highlight></codeline>
-</programlisting></para><para>We can see seven outputs at the third stage that show the most frequent character for each of the seven strings in order (<computeroutput>a:2</computeroutput>, <computeroutput>d:4</computeroutput>, <computeroutput>e:3</computeroutput>, <computeroutput>z:2</computeroutput>, <computeroutput>j:4</computeroutput>, <computeroutput>i:4</computeroutput>, <computeroutput>k:3</computeroutput>). The taskflow graph of this pipeline workload is shown below:</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/text_processing_pipeline.dot"></dotfile>
- </para></sect2>
+</programlisting></para>
+<para>We can see seven outputs at the third stage that show the most frequent character for each of the seven strings in order (<computeroutput>a:2</computeroutput>, <computeroutput>d:4</computeroutput>, <computeroutput>e:3</computeroutput>, <computeroutput>z:2</computeroutput>, <computeroutput>j:4</computeroutput>, <computeroutput>i:4</computeroutput>, <computeroutput>k:3</computeroutput>). The taskflow graph of this pipeline workload is shown below:</para>
+<para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/text_processing_pipeline.dot"></dotfile>
+ </para>
+</sect2>
 </sect1>
     </detaileddescription>
   </compounddef>

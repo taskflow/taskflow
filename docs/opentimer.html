@@ -5,7 +5,7 @@
   <title>Real Use Cases &raquo; Static Timing Analysis | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -59,438 +59,438 @@
             <li><a href="#UseCaseOpenTimerReferences">References</a></li>
           </ul>
         </nav>
-<p>We have applied Taskflow to solve a real-world VLSI static timing analysis problem that incorporates hundreds of millions of tasks and dependencies. The goal is to analyze the timing behavior of a design.</p><section id="UseCasesOpenTimer"><h2><a href="#UseCasesOpenTimer">OpenTimer: A High-performance Timing Analysis Tool</a></h2><p>Static timing analysis (STA) is an important step in the overall chip design flow. It verifies the static behavior of a circuit design and ensure its correct functionality under the given clock speed. However, efficient parallel timing analysis is extremely challenging to design and implement, due to large irregularity and graph-oriented computing. The following figure shows an extracted timing graph from an industrial design.</p><img class="m-image" src="opentimer_1.png" alt="Image" /><p>We consider our research project <a href="https://github.com/OpenTimer/OpenTimer">OpenTimer</a>, an open-source static timing analyzer that has been used in many industrial and academic projects. The first release v1 in 2015 implemented the <em>pipeline-based levelization</em> algorithm using the OpenMP 4.5 task dependency clause. To overcome the performance bottleneck caused by pipeline, we rewrote the core incremental timing engine using Taskflow in the second release v2.</p></section><section id="UseCaseOpenTimerProgrammingEffort"><h2><a href="#UseCaseOpenTimerProgrammingEffort">Programming Effort</a></h2><p>The table below measures the software costs of two OpenTimer versions using the Linux tool <a href="https://dwheeler.com/sloccount/">SLOCCount</a>. In OpenTimer v2, a large amount of exhaustive OpenMP dependency clauses that were used to carry out task dependencies are now replaced with only a few lines of flexible Taskflow code (9123 vs 4482). The maximum cyclomatic complexity in a single function is reduced from 58 to 20, due to Taskflow&#x27;s programmability.</p><table class="m-table"><thead><tr><th>Tool</th><th>Task Model</th><th>Lines of Code</th><th>Cyclomatic Complexity</th><th>Cost</th></tr></thead><tbody><tr><td>OpenTimer v1</td><td>OpenMP 4.5</td><td>9123</td><td>58</td><td>$275,287</td></tr><tr><td>OpenTimer v2</td><td>Taskflow</td><td>4482</td><td>20</td><td>$130,523</td></tr></tbody></table><p>OpenTimer v1 relied on a pipeline data structure to adtop loop parallelism with OpenMP. We found it very difficult to go beyond this paradigm because of the insufficient support for dynamic dependencies in OpenMP. With Taskflow in place, we can break this bottleneck and easily model both static and dynamic task dependencies at programming time and runtime. The task dependency graph flows computations naturally with the timing graph, providing improved asynchrony and performance. The following figure shows a task graph to carry one iteration of timing update.</p><div class="m-graph"><svg style="width: 56.125rem; height: 71.000rem;" viewBox="0.00 0.00 897.55 1136.31">
-<g transform="scale(1 1) rotate(0) translate(4 1132.3128)">
+<p>We have applied Taskflow to solve a real-world VLSI static timing analysis problem that incorporates hundreds of millions of tasks and dependencies. The goal is to analyze the timing behavior of a design.</p><section id="UseCasesOpenTimer"><h2><a href="#UseCasesOpenTimer">OpenTimer: A High-performance Timing Analysis Tool</a></h2><p>Static timing analysis (STA) is an important step in the overall chip design flow. It verifies the static behavior of a circuit design and ensure its correct functionality under the given clock speed. However, efficient parallel timing analysis is extremely challenging to design and implement, due to large irregularity and graph-oriented computing. The following figure shows an extracted timing graph from an industrial design.</p><img class="m-image" src="opentimer_1.png" alt="Image" /><p>We consider our research project <a href="https://github.com/OpenTimer/OpenTimer">OpenTimer</a>, an open-source static timing analyzer that has been used in many industrial and academic projects. The first release v1 in 2015 implemented the <em>pipeline-based levelization</em> algorithm using the OpenMP 4.5 task dependency clause. To overcome the performance bottleneck caused by pipeline, we rewrote the core incremental timing engine using Taskflow in the second release v2.</p></section><section id="UseCaseOpenTimerProgrammingEffort"><h2><a href="#UseCaseOpenTimerProgrammingEffort">Programming Effort</a></h2><p>The table below measures the software costs of two OpenTimer versions using the Linux tool <a href="https://dwheeler.com/sloccount/">SLOCCount</a>. In OpenTimer v2, a large amount of exhaustive OpenMP dependency clauses that were used to carry out task dependencies are now replaced with only a few lines of flexible Taskflow code (9123 vs 4482). The maximum cyclomatic complexity in a single function is reduced from 58 to 20, due to Taskflow&#x27;s programmability.</p><table class="m-table"><thead><tr><th>Tool</th><th>Task Model</th><th>Lines of Code</th><th>Cyclomatic Complexity</th><th>Cost</th></tr></thead><tbody><tr><td>OpenTimer v1</td><td>OpenMP 4.5</td><td>9123</td><td>58</td><td>$275,287</td></tr><tr><td>OpenTimer v2</td><td>Taskflow</td><td>4482</td><td>20</td><td>$130,523</td></tr></tbody></table><p>OpenTimer v1 relied on a pipeline data structure to adtop loop parallelism with OpenMP. We found it very difficult to go beyond this paradigm because of the insufficient support for dynamic dependencies in OpenMP. With Taskflow in place, we can break this bottleneck and easily model both static and dynamic task dependencies at programming time and runtime. The task dependency graph flows computations naturally with the timing graph, providing improved asynchrony and performance. The following figure shows a task graph to carry one iteration of timing update.</p><div class="m-graph"><svg style="width: 52.562rem; height: 71.000rem;" viewBox="0.00 0.00 841.28 1136.31">
+<g transform="scale(1 1) rotate(0) translate(4 1132.31)">
 <title>Taskflow</title>
 <g class="m-node">
 <title>[A33] bprop_tau2015_clk</title>
-<ellipse cx="219.3589" cy="-18.3848" rx="150.7276" ry="18.2703"/>
-<text text-anchor="middle" x="219.3589" y="-14.5848">[A33] bprop_tau2015_clk</text>
+<ellipse cx="207.87" cy="-18.38" rx="139.1" ry="18.27"/>
+<text text-anchor="middle" x="207.87" y="-14.58">[A33] bprop_tau2015_clk</text>
 </g>
 <g class="m-node">
 <title>[A32] bprop_f1:CLK</title>
-<ellipse cx="219.3589" cy="-91.1543" rx="119.5021" ry="18.2703"/>
-<text text-anchor="middle" x="219.3589" y="-87.3543">[A32] bprop_f1:CLK</text>
+<ellipse cx="207.87" cy="-91.15" rx="111.95" ry="18.27"/>
+<text text-anchor="middle" x="207.87" y="-87.35">[A32] bprop_f1:CLK</text>
 </g>
 <g class="m-edge">
 <title>[A32] bprop_f1:CLK&#45;&gt;[A33] bprop_tau2015_clk</title>
-<path d="M219.3589,-72.4144C219.3589,-64.6303 219.3589,-55.4246 219.3589,-46.8383"/>
-<polygon points="222.859,-46.8093 219.3589,-36.8093 215.859,-46.8094 222.859,-46.8093"/>
+<path d="M207.87,-72.66C207.87,-64.98 207.87,-55.77 207.87,-47.19"/>
+<polygon points="211.37,-47.17 207.87,-37.17 204.37,-47.17 211.37,-47.17"/>
 </g>
 <g class="m-node">
 <title>[A31] bprop_f1:Q</title>
-<ellipse cx="313.3589" cy="-163.9239" rx="106.5467" ry="18.2703"/>
-<text text-anchor="middle" x="313.3589" y="-160.1239">[A31] bprop_f1:Q</text>
+<ellipse cx="294.87" cy="-163.92" rx="98.99" ry="18.27"/>
+<text text-anchor="middle" x="294.87" y="-160.12">[A31] bprop_f1:Q</text>
 </g>
 <g class="m-edge">
 <title>[A31] bprop_f1:Q&#45;&gt;[A32] bprop_f1:CLK</title>
-<path d="M284.4668,-146.1224C271.8998,-137.097 257.3646,-125.9861 245.1645,-116.1213"/>
-<polygon points="247.0928,-113.1758 237.1442,-109.5318 242.649,-118.5844 247.0928,-113.1758"/>
+<path d="M268.42,-146.15C256.42,-137.19 242.47,-125.99 230.91,-116.12"/>
+<polygon points="233.19,-113.47 223.35,-109.54 228.6,-118.75 233.19,-113.47"/>
 </g>
 <g class="m-edge">
 <title>[A31] bprop_f1:Q&#45;&gt;[A32] bprop_f1:CLK</title>
-<path d="M295.5911,-145.5611C284.5047,-136.2863 269.9663,-124.9213 256.5168,-114.9815"/>
-<polygon points="258.4663,-112.0714 248.3239,-109.0082 254.3424,-117.7277 258.4663,-112.0714"/>
+<path d="M279.28,-145.43C269.06,-136.36 255.46,-125.17 242.82,-115.39"/>
+<polygon points="244.78,-112.48 234.7,-109.2 240.53,-118.05 244.78,-112.48"/>
 </g>
 <g class="m-node">
 <title>[A30] bprop_u4:B</title>
-<ellipse cx="313.3589" cy="-236.6934" rx="108.375" ry="18.2703"/>
-<text text-anchor="middle" x="313.3589" y="-232.8934">[A30] bprop_u4:B</text>
+<ellipse cx="294.87" cy="-236.69" rx="100.32" ry="18.27"/>
+<text text-anchor="middle" x="294.87" y="-232.89">[A30] bprop_u4:B</text>
 </g>
 <g class="m-edge">
 <title>[A30] bprop_u4:B&#45;&gt;[A31] bprop_f1:Q</title>
-<path d="M313.3589,-217.9535C313.3589,-210.1694 313.3589,-200.9637 313.3589,-192.3774"/>
-<polygon points="316.859,-192.3484 313.3589,-182.3484 309.859,-192.3485 316.859,-192.3484"/>
+<path d="M294.87,-218.2C294.87,-210.52 294.87,-201.31 294.87,-192.72"/>
+<polygon points="298.37,-192.71 294.87,-182.71 291.37,-192.71 298.37,-192.71"/>
 </g>
 <g class="m-node">
 <title>[A29] bprop_u2:A</title>
-<ellipse cx="781.3589" cy="-236.6934" rx="108.375" ry="18.2703"/>
-<text text-anchor="middle" x="781.3589" y="-232.8934">[A29] bprop_u2:A</text>
+<ellipse cx="732.87" cy="-236.69" rx="100.32" ry="18.27"/>
+<text text-anchor="middle" x="732.87" y="-232.89">[A29] bprop_u2:A</text>
 </g>
 <g class="m-edge">
 <title>[A29] bprop_u2:A&#45;&gt;[A31] bprop_f1:Q</title>
-<path d="M701.7485,-224.1558C689.2368,-222.1934 676.4473,-220.1923 664.3589,-218.3087 560.824,-202.1758 534.9043,-198.3742 431.3589,-182.3087 422.0832,-180.8695 412.3978,-179.3644 402.7377,-177.8616"/>
-<polygon points="403.1175,-174.3787 392.6982,-176.2993 402.0411,-181.2954 403.1175,-174.3787"/>
+<path d="M660.06,-223.93C582.14,-211.34 458.79,-191.41 377.35,-178.25"/>
+<polygon points="377.57,-174.74 367.14,-176.6 376.45,-181.65 377.57,-174.74"/>
 </g>
 <g class="m-node">
 <title>[A28] bprop_u2:Y</title>
-<ellipse cx="781.3589" cy="-309.463" rx="107.4605" ry="18.2703"/>
-<text text-anchor="middle" x="781.3589" y="-305.663">[A28] bprop_u2:Y</text>
+<ellipse cx="732.87" cy="-309.46" rx="100.32" ry="18.27"/>
+<text text-anchor="middle" x="732.87" y="-305.66">[A28] bprop_u2:Y</text>
 </g>
 <g class="m-edge">
 <title>[A28] bprop_u2:Y&#45;&gt;[A29] bprop_u2:A</title>
-<path d="M775.4065,-291.1002C774.6503,-283.2576 774.4318,-273.9205 774.751,-265.2143"/>
-<polygon points="778.2556,-265.2551 775.4071,-255.0504 771.2701,-264.8041 778.2556,-265.2551"/>
+<path d="M726.96,-290.97C726.17,-283.29 725.94,-274.08 726.26,-265.49"/>
+<polygon points="729.76,-265.69 726.93,-255.48 722.77,-265.22 729.76,-265.69"/>
 </g>
 <g class="m-edge">
 <title>[A28] bprop_u2:Y&#45;&gt;[A29] bprop_u2:A</title>
-<path d="M787.3113,-291.1002C788.0675,-283.2576 788.286,-273.9205 787.9668,-265.2143"/>
-<polygon points="791.4477,-264.8041 787.3107,-255.0504 784.4622,-265.2551 791.4477,-264.8041"/>
+<path d="M738.79,-290.97C739.57,-283.29 739.8,-274.08 739.48,-265.49"/>
+<polygon points="742.97,-265.22 738.82,-255.48 735.99,-265.69 742.97,-265.22"/>
 </g>
 <g class="m-node">
 <title>[A27] bprop_u3:A</title>
-<ellipse cx="776.3589" cy="-382.2325" rx="108.375" ry="18.2703"/>
-<text text-anchor="middle" x="776.3589" y="-378.4325">[A27] bprop_u3:A</text>
+<ellipse cx="727.87" cy="-382.23" rx="100.32" ry="18.27"/>
+<text text-anchor="middle" x="727.87" y="-378.43">[A27] bprop_u3:A</text>
 </g>
 <g class="m-edge">
 <title>[A27] bprop_u3:A&#45;&gt;[A28] bprop_u2:Y</title>
-<path d="M777.6465,-363.4926C778.1814,-355.7085 778.8139,-346.5028 779.4039,-337.9165"/>
-<polygon points="782.8991,-338.104 780.093,-327.8875 775.9156,-337.6241 782.8991,-338.104"/>
+<path d="M729.11,-363.74C729.65,-356.06 730.3,-346.85 730.91,-338.26"/>
+<polygon points="734.4,-338.47 731.62,-328.25 727.42,-337.98 734.4,-338.47"/>
 </g>
 <g class="m-node">
 <title>[A26] bprop_u3:Y</title>
-<ellipse cx="776.3589" cy="-455.0021" rx="107.4605" ry="18.2703"/>
-<text text-anchor="middle" x="776.3589" y="-451.2021">[A26] bprop_u3:Y</text>
+<ellipse cx="727.87" cy="-455" rx="100.32" ry="18.27"/>
+<text text-anchor="middle" x="727.87" y="-451.2">[A26] bprop_u3:Y</text>
 </g>
 <g class="m-edge">
 <title>[A26] bprop_u3:Y&#45;&gt;[A27] bprop_u3:A</title>
-<path d="M770.4065,-436.6393C769.6503,-428.7967 769.4318,-419.4596 769.751,-410.7534"/>
-<polygon points="773.2556,-410.7942 770.4071,-400.5895 766.2701,-410.3433 773.2556,-410.7942"/>
+<path d="M721.96,-436.51C721.17,-428.83 720.94,-419.62 721.26,-411.03"/>
+<polygon points="724.76,-411.23 721.93,-401.02 717.77,-410.76 724.76,-411.23"/>
 </g>
 <g class="m-edge">
 <title>[A26] bprop_u3:Y&#45;&gt;[A27] bprop_u3:A</title>
-<path d="M782.3113,-436.6393C783.0675,-428.7967 783.286,-419.4596 782.9668,-410.7534"/>
-<polygon points="786.4477,-410.3433 782.3107,-400.5895 779.4622,-410.7942 786.4477,-410.3433"/>
+<path d="M733.79,-436.51C734.57,-428.83 734.8,-419.62 734.48,-411.03"/>
+<polygon points="737.97,-410.76 733.82,-401.02 730.99,-411.23 737.97,-410.76"/>
 </g>
 <g class="m-node">
 <title>[A25] bprop_out</title>
-<ellipse cx="755.3589" cy="-527.7716" rx="101.2327" ry="18.2703"/>
-<text text-anchor="middle" x="755.3589" y="-523.9716">[A25] bprop_out</text>
+<ellipse cx="707.87" cy="-527.77" rx="92.76" ry="18.27"/>
+<text text-anchor="middle" x="707.87" y="-523.97">[A25] bprop_out</text>
 </g>
 <g class="m-edge">
 <title>[A25] bprop_out&#45;&gt;[A26] bprop_u3:Y</title>
-<path d="M760.6581,-509.4088C762.9287,-501.5406 765.6335,-492.1681 768.1529,-483.4375"/>
-<polygon points="771.5784,-484.1906 770.9884,-473.6122 764.8529,-482.2496 771.5784,-484.1906"/>
+<path d="M712.82,-509.28C715.01,-501.51 717.65,-492.18 720.1,-483.52"/>
+<polygon points="723.5,-484.36 722.85,-473.79 716.76,-482.46 723.5,-484.36"/>
 </g>
 <g class="m-node">
 <title>[A24] bprop_inp2</title>
-<ellipse cx="521.3589" cy="-18.3848" rx="107.4605" ry="18.2703"/>
-<text text-anchor="middle" x="521.3589" y="-14.5848">[A24] bprop_inp2</text>
+<ellipse cx="488.87" cy="-18.38" rx="98.99" ry="18.27"/>
+<text text-anchor="middle" x="488.87" y="-14.58">[A24] bprop_inp2</text>
 </g>
 <g class="m-node">
 <title>[A23] bprop_u1:B</title>
-<ellipse cx="521.3589" cy="-91.1543" rx="108.375" ry="18.2703"/>
-<text text-anchor="middle" x="521.3589" y="-87.3543">[A23] bprop_u1:B</text>
+<ellipse cx="488.87" cy="-91.15" rx="100.32" ry="18.27"/>
+<text text-anchor="middle" x="488.87" y="-87.35">[A23] bprop_u1:B</text>
 </g>
 <g class="m-edge">
 <title>[A23] bprop_u1:B&#45;&gt;[A24] bprop_inp2</title>
-<path d="M521.3589,-72.4144C521.3589,-64.6303 521.3589,-55.4246 521.3589,-46.8383"/>
-<polygon points="524.859,-46.8093 521.3589,-36.8093 517.859,-46.8094 524.859,-46.8093"/>
+<path d="M488.87,-72.66C488.87,-64.98 488.87,-55.77 488.87,-47.19"/>
+<polygon points="492.37,-47.17 488.87,-37.17 485.37,-47.17 492.37,-47.17"/>
 </g>
 <g class="m-node">
 <title>[A22] bprop_inp1</title>
-<ellipse cx="755.3589" cy="-18.3848" rx="107.4605" ry="18.2703"/>
-<text text-anchor="middle" x="755.3589" y="-14.5848">[A22] bprop_inp1</text>
+<ellipse cx="707.87" cy="-18.38" rx="98.99" ry="18.27"/>
+<text text-anchor="middle" x="707.87" y="-14.58">[A22] bprop_inp1</text>
 </g>
 <g class="m-node">
 <title>[A21] bprop_u1:A</title>
-<ellipse cx="755.3589" cy="-91.1543" rx="108.375" ry="18.2703"/>
-<text text-anchor="middle" x="755.3589" y="-87.3543">[A21] bprop_u1:A</text>
+<ellipse cx="707.87" cy="-91.15" rx="100.32" ry="18.27"/>
+<text text-anchor="middle" x="707.87" y="-87.35">[A21] bprop_u1:A</text>
 </g>
 <g class="m-edge">
 <title>[A21] bprop_u1:A&#45;&gt;[A22] bprop_inp1</title>
-<path d="M755.3589,-72.4144C755.3589,-64.6303 755.3589,-55.4246 755.3589,-46.8383"/>
-<polygon points="758.859,-46.8093 755.3589,-36.8093 751.859,-46.8094 758.859,-46.8093"/>
+<path d="M707.87,-72.66C707.87,-64.98 707.87,-55.77 707.87,-47.19"/>
+<polygon points="711.37,-47.17 707.87,-37.17 704.37,-47.17 711.37,-47.17"/>
 </g>
 <g class="m-node">
 <title>[A20] bprop_u1:Y</title>
-<ellipse cx="547.3589" cy="-163.9239" rx="107.4605" ry="18.2703"/>
-<text text-anchor="middle" x="547.3589" y="-160.1239">[A20] bprop_u1:Y</text>
+<ellipse cx="513.87" cy="-163.92" rx="100.32" ry="18.27"/>
+<text text-anchor="middle" x="513.87" y="-160.12">[A20] bprop_u1:Y</text>
 </g>
 <g class="m-edge">
 <title>[A20] bprop_u1:Y&#45;&gt;[A23] bprop_u1:B</title>
-<path d="M534.8456,-145.5611C531.2757,-137.6928 527.7095,-128.3203 524.914,-119.5898"/>
-<polygon points="528.2052,-118.3751 522.0321,-109.7644 521.4882,-120.3453 528.2052,-118.3751"/>
+<path d="M501.78,-145.43C498.24,-137.66 494.72,-128.34 491.99,-119.67"/>
+<polygon points="495.33,-118.59 489.21,-109.94 488.6,-120.52 495.33,-118.59"/>
 </g>
 <g class="m-edge">
 <title>[A20] bprop_u1:Y&#45;&gt;[A23] bprop_u1:B</title>
-<path d="M546.6515,-145.1839C544.5543,-137.2288 541.38,-127.7888 537.9069,-119.0427"/>
-<polygon points="541.022,-117.423 533.9002,-109.5789 534.5759,-120.1522 541.022,-117.423"/>
+<path d="M513.61,-145.43C511.59,-137.37 508.36,-127.64 504.81,-118.71"/>
+<polygon points="508.01,-117.28 500.88,-109.45 501.57,-120.02 508.01,-117.28"/>
 </g>
 <g class="m-edge">
 <title>[A20] bprop_u1:Y&#45;&gt;[A21] bprop_u1:A</title>
-<path d="M590.0525,-146.9545C619.9183,-136.0987 660.1862,-121.982 693.5362,-110.6637"/>
-<polygon points="694.8407,-113.9174 703.1935,-107.3996 692.5993,-107.286 694.8407,-113.9174"/>
+<path d="M552.13,-146.87C580.29,-136.15 618.94,-122.02 650.73,-110.8"/>
+<polygon points="652.08,-114.04 660.35,-107.42 649.76,-107.43 652.08,-114.04"/>
 </g>
 <g class="m-edge">
 <title>[A20] bprop_u1:Y&#45;&gt;[A21] bprop_u1:A</title>
-<path d="M599.2409,-147.774C630.9351,-137.111 671.2704,-123.0483 703.0405,-111.6056"/>
-<polygon points="704.3932,-114.8383 712.6061,-108.1452 702.0119,-108.2558 704.3932,-114.8383"/>
+<path d="M561.65,-147.57C591.67,-137.08 630.18,-123.08 660.18,-111.78"/>
+<polygon points="661.49,-115.03 669.6,-108.22 659.01,-108.48 661.49,-115.03"/>
 </g>
 <g class="m-node">
 <title>[A19] bprop_u4:A</title>
-<ellipse cx="547.3589" cy="-236.6934" rx="108.375" ry="18.2703"/>
-<text text-anchor="middle" x="547.3589" y="-232.8934">[A19] bprop_u4:A</text>
+<ellipse cx="513.87" cy="-236.69" rx="100.32" ry="18.27"/>
+<text text-anchor="middle" x="513.87" y="-232.89">[A19] bprop_u4:A</text>
 </g>
 <g class="m-edge">
 <title>[A19] bprop_u4:A&#45;&gt;[A20] bprop_u1:Y</title>
-<path d="M547.3589,-217.9535C547.3589,-210.1694 547.3589,-200.9637 547.3589,-192.3774"/>
-<polygon points="550.859,-192.3484 547.3589,-182.3484 543.859,-192.3485 550.859,-192.3484"/>
+<path d="M513.87,-218.2C513.87,-210.52 513.87,-201.31 513.87,-192.72"/>
+<polygon points="517.37,-192.71 513.87,-182.71 510.37,-192.71 517.37,-192.71"/>
 </g>
 <g class="m-node">
 <title>[A18] bprop_u4:Y</title>
-<ellipse cx="313.3589" cy="-309.463" rx="107.4605" ry="18.2703"/>
-<text text-anchor="middle" x="313.3589" y="-305.663">[A18] bprop_u4:Y</text>
+<ellipse cx="294.87" cy="-309.46" rx="100.32" ry="18.27"/>
+<text text-anchor="middle" x="294.87" y="-305.66">[A18] bprop_u4:Y</text>
 </g>
 <g class="m-edge">
 <title>[A18] bprop_u4:Y&#45;&gt;[A30] bprop_u4:B</title>
-<path d="M307.4065,-291.1002C306.6503,-283.2576 306.4318,-273.9205 306.751,-265.2143"/>
-<polygon points="310.2556,-265.2551 307.4071,-255.0504 303.2701,-264.8041 310.2556,-265.2551"/>
+<path d="M288.96,-290.97C288.17,-283.29 287.94,-274.08 288.26,-265.49"/>
+<polygon points="291.76,-265.69 288.93,-255.48 284.77,-265.22 291.76,-265.69"/>
 </g>
 <g class="m-edge">
 <title>[A18] bprop_u4:Y&#45;&gt;[A30] bprop_u4:B</title>
-<path d="M319.3113,-291.1002C320.0675,-283.2576 320.286,-273.9205 319.9668,-265.2143"/>
-<polygon points="323.4477,-264.8041 319.3107,-255.0504 316.4622,-265.2551 323.4477,-264.8041"/>
+<path d="M300.79,-290.97C301.57,-283.29 301.8,-274.08 301.48,-265.49"/>
+<polygon points="304.97,-265.22 300.82,-255.48 297.99,-265.69 304.97,-265.22"/>
 </g>
 <g class="m-edge">
 <title>[A18] bprop_u4:Y&#45;&gt;[A19] bprop_u4:A</title>
-<path d="M360.6963,-292.9504C395.235,-281.8257 442.4257,-267.1257 480.7498,-255.5422"/>
-<polygon points="482.2305,-258.7516 490.7962,-252.5163 480.2117,-252.049 482.2305,-258.7516"/>
+<path d="M337.76,-292.76C370.59,-281.73 416.21,-266.96 452.83,-255.5"/>
+<polygon points="453.91,-258.83 462.41,-252.51 451.83,-252.14 453.91,-258.83"/>
 </g>
 <g class="m-edge">
 <title>[A18] bprop_u4:Y&#45;&gt;[A19] bprop_u4:A</title>
-<path d="M369.5132,-293.7627C406.0804,-282.7933 453.5651,-268.068 490.3065,-256.3229"/>
-<polygon points="491.4308,-259.638 499.8835,-253.2504 489.2923,-252.9726 491.4308,-259.638"/>
+<path d="M346.4,-293.63C381.11,-282.85 426.67,-268.17 461.55,-256.56"/>
+<polygon points="462.71,-259.86 471.08,-253.37 460.49,-253.22 462.71,-259.86"/>
 </g>
 <g class="m-node">
 <title>[A17] bprop_f1:D</title>
-<ellipse cx="210.3589" cy="-382.2325" rx="106.1321" ry="18.2703"/>
-<text text-anchor="middle" x="210.3589" y="-378.4325">[A17] bprop_f1:D</text>
+<ellipse cx="196.87" cy="-382.23" rx="97.66" ry="18.27"/>
+<text text-anchor="middle" x="196.87" y="-378.43">[A17] bprop_f1:D</text>
 </g>
 <g class="m-edge">
 <title>[A17] bprop_f1:D&#45;&gt;[A32] bprop_f1:CLK</title>
-<path d="M196.9518,-363.7928C193.047,-353.3497 189.8741,-339.9854 188.3589,-327.8478 178.3223,-247.4457 172.3353,-224.965 188.3589,-145.5391 190.1736,-136.5442 193.4358,-127.1447 197.2941,-118.7394"/>
-<polygon points="200.4535,-120.2478 201.8583,-109.7465 194.2114,-117.0797 200.4535,-120.2478"/>
+<path d="M184.42,-363.58C180.85,-353.24 178.1,-339.9 176.87,-327.85 168.66,-247.24 162.23,-225.04 177.87,-145.54 179.66,-136.45 182.92,-126.92 186.78,-118.47"/>
+<polygon points="189.94,-119.97 191.34,-109.47 183.7,-116.8 189.94,-119.97"/>
 </g>
 <g class="m-edge">
 <title>[A17] bprop_f1:D&#45;&gt;[A32] bprop_f1:CLK</title>
-<path d="M212.8056,-363.7928C211.047,-353.3497 207.8741,-339.9854 206.3589,-327.8478 196.3223,-247.4457 190.3353,-224.965 206.3589,-145.5391 208.1345,-136.7376 211.2961,-127.5488 214.311,-119.283"/>
-<polygon points="217.6513,-120.3401 217.8128,-109.7465 211.0803,-117.9272 217.6513,-120.3401"/>
+<path d="M200.17,-363.58C198.85,-353.24 196.1,-339.9 194.87,-327.85 186.66,-247.24 180.23,-225.04 195.87,-145.54 197.6,-136.79 200.68,-127.62 203.59,-119.41"/>
+<polygon points="206.9,-120.54 206.93,-109.95 200.3,-118.21 206.9,-120.54"/>
 </g>
 <g class="m-edge">
 <title>[A17] bprop_f1:D&#45;&gt;[A18] bprop_u4:Y</title>
-<path d="M235.8196,-364.2446C248.9424,-354.9733 265.1261,-343.5395 279.3079,-333.52"/>
-<polygon points="281.6864,-336.125 287.8342,-327.4962 277.6473,-330.4079 281.6864,-336.125"/>
+<path d="M220.6,-364.1C233.36,-354.89 249.27,-343.4 263.08,-333.42"/>
+<polygon points="265.31,-336.13 271.37,-327.44 261.21,-330.45 265.31,-336.13"/>
 </g>
 <g class="m-node m-flat">
 <title>[A16] fprop_f1:D</title>
-<ellipse cx="462.3589" cy="-746.0803" rx="103.4757" ry="18.2703"/>
-<text text-anchor="middle" x="462.3589" y="-742.2803">[A16] fprop_f1:D</text>
+<ellipse cx="430.87" cy="-746.08" rx="94.51" ry="18.27"/>
+<text text-anchor="middle" x="430.87" y="-742.28">[A16] fprop_f1:D</text>
 </g>
 <g class="m-edge">
 <title>[A16] fprop_f1:D&#45;&gt;[A17] bprop_f1:D</title>
-<path d="M416.8957,-729.4842C367.1418,-708.0425 294.3589,-665.564 294.3589,-600.5412 294.3589,-600.5412 294.3589,-600.5412 294.3589,-527.7716 294.3589,-480.7735 261.0947,-435.2921 236.4317,-408.03"/>
-<polygon points="238.7978,-405.4352 229.4198,-400.5053 233.6766,-410.2074 238.7978,-405.4352"/>
+<path d="M391.51,-729.31C345.29,-707.88 274.87,-664.84 274.87,-601.54 274.87,-601.54 274.87,-601.54 274.87,-526.77 274.87,-480.76 243.55,-435.43 220.61,-408.39"/>
+<polygon points="223.02,-405.82 213.8,-400.6 217.75,-410.43 223.02,-405.82"/>
 </g>
 <g class="m-node m-flat">
 <title>[A15] fprop_u4:Y</title>
-<ellipse cx="434.3589" cy="-818.8499" rx="104.8038" ry="18.2703"/>
-<text text-anchor="middle" x="434.3589" y="-815.0499">[A15] fprop_u4:Y</text>
+<ellipse cx="401.87" cy="-818.85" rx="96.75" ry="18.27"/>
+<text text-anchor="middle" x="401.87" y="-815.05">[A15] fprop_u4:Y</text>
 </g>
 <g class="m-edge">
 <title>[A15] fprop_u4:Y&#45;&gt;[A16] fprop_f1:D</title>
-<path d="M441.4245,-800.487C444.5085,-792.4721 448.193,-782.8962 451.6053,-774.0281"/>
-<polygon points="454.971,-775.0271 455.2956,-764.4373 448.4379,-772.5133 454.971,-775.0271"/>
+<path d="M409.04,-800.36C412.26,-792.51 416.13,-783.06 419.71,-774.32"/>
+<polygon points="423.03,-775.44 423.59,-764.86 416.56,-772.79 423.03,-775.44"/>
 </g>
 <g class="m-node m-flat">
 <title>[A14] fprop_u4:A</title>
-<ellipse cx="219.3589" cy="-891.6194" rx="105.218" ry="18.2703"/>
-<text text-anchor="middle" x="219.3589" y="-887.8194">[A14] fprop_u4:A</text>
+<ellipse cx="202.87" cy="-891.62" rx="96.75" ry="18.27"/>
+<text text-anchor="middle" x="202.87" y="-887.82">[A14] fprop_u4:A</text>
 </g>
 <g class="m-edge">
 <title>[A14] fprop_u4:A&#45;&gt;[A15] fprop_u4:Y</title>
-<path d="M263.1633,-874.8332C294.4997,-863.822 337.041,-849.3973 371.9119,-837.9479"/>
-<polygon points="373.1116,-841.238 381.5282,-834.8027 370.9356,-834.5848 373.1116,-841.238"/>
+<path d="M241.79,-874.74C270.99,-863.91 311.33,-849.53 344.25,-838.21"/>
+<polygon points="345.43,-841.5 353.76,-834.95 343.17,-834.88 345.43,-841.5"/>
 </g>
 <g class="m-edge">
 <title>[A14] fprop_u4:A&#45;&gt;[A15] fprop_u4:Y</title>
-<path d="M272.2409,-875.6498C305.3254,-864.8735 347.7397,-850.5646 380.9244,-839.0047"/>
-<polygon points="382.1804,-842.2734 390.464,-835.6678 379.8691,-835.666 382.1804,-842.2734"/>
+<path d="M250.71,-875.61C281.91,-864.98 322.4,-850.64 353.66,-839.16"/>
+<polygon points="354.88,-842.44 363.05,-835.7 352.46,-835.87 354.88,-842.44"/>
 </g>
 <g class="m-node m-flat">
 <title>[A13] fprop_u1:Y</title>
-<ellipse cx="219.3589" cy="-964.389" rx="104.8038" ry="18.2703"/>
-<text text-anchor="middle" x="219.3589" y="-960.589">[A13] fprop_u1:Y</text>
+<ellipse cx="202.87" cy="-964.39" rx="96.75" ry="18.27"/>
+<text text-anchor="middle" x="202.87" y="-960.59">[A13] fprop_u1:Y</text>
 </g>
 <g class="m-edge">
 <title>[A13] fprop_u1:Y&#45;&gt;[A14] fprop_u4:A</title>
-<path d="M219.3589,-945.649C219.3589,-937.8649 219.3589,-928.6592 219.3589,-920.073"/>
-<polygon points="222.859,-920.0439 219.3589,-910.044 215.859,-920.044 222.859,-920.0439"/>
+<path d="M202.87,-945.9C202.87,-938.21 202.87,-929 202.87,-920.42"/>
+<polygon points="206.37,-920.4 202.87,-910.4 199.37,-920.4 206.37,-920.4"/>
 </g>
 <g class="m-node m-flat">
 <title>[A12] fprop_u1:A</title>
-<ellipse cx="105.3589" cy="-1037.1585" rx="105.218" ry="18.2703"/>
-<text text-anchor="middle" x="105.3589" y="-1033.3585">[A12] fprop_u1:A</text>
+<ellipse cx="96.87" cy="-1037.16" rx="96.75" ry="18.27"/>
+<text text-anchor="middle" x="96.87" y="-1033.36">[A12] fprop_u1:A</text>
 </g>
 <g class="m-edge">
 <title>[A12] fprop_u1:A&#45;&gt;[A13] fprop_u1:Y</title>
-<path d="M127.623,-1019.1705C141.8226,-1009.4935 160.5421,-997.4605 177.4093,-987.1389"/>
-<polygon points="179.2872,-990.0935 186.0272,-981.9189 175.6606,-984.1062 179.2872,-990.0935"/>
+<path d="M116.66,-1019.03C129.92,-1009.5 147.69,-997.54 163.7,-987.34"/>
+<polygon points="165.78,-990.17 172.37,-981.88 162.04,-984.24 165.78,-990.17"/>
 </g>
 <g class="m-edge">
 <title>[A12] fprop_u1:A&#45;&gt;[A13] fprop_u1:Y</title>
-<path d="M138.8334,-1019.543C154.4406,-1010.1899 172.8335,-998.558 188.1476,-988.3909"/>
-<polygon points="190.4152,-991.084 196.7642,-982.6022 186.5116,-985.2735 190.4152,-991.084"/>
+<path d="M127.55,-1019.57C142.48,-1010.28 160.22,-998.55 174.79,-988.39"/>
+<polygon points="176.81,-991.25 182.96,-982.62 172.77,-985.53 176.81,-991.25"/>
 </g>
 <g class="m-node m-flat">
 <title>[A11] fprop_inp1</title>
-<ellipse cx="105.3589" cy="-1109.9281" rx="103.8894" ry="18.2703"/>
-<text text-anchor="middle" x="105.3589" y="-1106.1281">[A11] fprop_inp1</text>
+<ellipse cx="96.87" cy="-1109.93" rx="94.51" ry="18.27"/>
+<text text-anchor="middle" x="96.87" y="-1106.13">[A11] fprop_inp1</text>
 </g>
 <g class="m-edge">
 <title>[A11] fprop_inp1&#45;&gt;[A12] fprop_u1:A</title>
-<path d="M105.3589,-1091.1881C105.3589,-1083.404 105.3589,-1074.1984 105.3589,-1065.6121"/>
-<polygon points="108.859,-1065.583 105.3589,-1055.5831 101.859,-1065.5831 108.859,-1065.583"/>
+<path d="M96.87,-1091.43C96.87,-1083.75 96.87,-1074.54 96.87,-1065.96"/>
+<polygon points="100.37,-1065.94 96.87,-1055.94 93.37,-1065.94 100.37,-1065.94"/>
 </g>
 <g class="m-node m-flat">
 <title>[A10] fprop_u1:B</title>
-<ellipse cx="334.3589" cy="-1037.1585" rx="105.218" ry="18.2703"/>
-<text text-anchor="middle" x="334.3589" y="-1033.3585">[A10] fprop_u1:B</text>
+<ellipse cx="308.87" cy="-1037.16" rx="96.75" ry="18.27"/>
+<text text-anchor="middle" x="308.87" y="-1033.36">[A10] fprop_u1:B</text>
 </g>
 <g class="m-edge">
 <title>[A10] fprop_u1:B&#45;&gt;[A13] fprop_u1:Y</title>
-<path d="M300.6424,-1019.543C284.7883,-1010.1196 266.0747,-998.383 250.552,-988.1618"/>
-<polygon points="252.0895,-984.9804 241.8269,-982.3478 248.2078,-990.8056 252.0895,-984.9804"/>
+<path d="M278.2,-1019.57C263.27,-1010.28 245.53,-998.55 230.96,-988.39"/>
+<polygon points="232.97,-985.53 222.79,-982.62 228.93,-991.25 232.97,-985.53"/>
 </g>
 <g class="m-edge">
 <title>[A10] fprop_u1:B&#45;&gt;[A13] fprop_u1:Y</title>
-<path d="M311.8477,-1019.1705C297.515,-1009.4935 278.6302,-997.4605 261.6211,-987.1389"/>
-<polygon points="263.3061,-984.0682 252.9315,-981.9189 259.7014,-990.0687 263.3061,-984.0682"/>
+<path d="M289.09,-1019.03C275.82,-1009.5 258.05,-997.54 242.05,-987.34"/>
+<polygon points="243.7,-984.24 233.38,-981.88 239.97,-990.17 243.7,-984.24"/>
 </g>
 <g class="m-node m-flat">
 <title>[A9] fprop_inp2</title>
-<ellipse cx="334.3589" cy="-1109.9281" rx="96.7474" ry="18.2703"/>
-<text text-anchor="middle" x="334.3589" y="-1106.1281">[A9] fprop_inp2</text>
+<ellipse cx="308.87" cy="-1109.93" rx="89.19" ry="18.27"/>
+<text text-anchor="middle" x="308.87" y="-1106.13">[A9] fprop_inp2</text>
 </g>
 <g class="m-edge">
 <title>[A9] fprop_inp2&#45;&gt;[A10] fprop_u1:B</title>
-<path d="M334.3589,-1091.1881C334.3589,-1083.404 334.3589,-1074.1984 334.3589,-1065.6121"/>
-<polygon points="337.859,-1065.583 334.3589,-1055.5831 330.859,-1065.5831 337.859,-1065.583"/>
+<path d="M308.87,-1091.43C308.87,-1083.75 308.87,-1074.54 308.87,-1065.96"/>
+<polygon points="312.37,-1065.94 308.87,-1055.94 305.37,-1065.94 312.37,-1065.94"/>
 </g>
 <g class="m-node m-flat">
 <title>[A8] fprop_out</title>
-<ellipse cx="745.3589" cy="-600.5412" rx="91.4341" ry="18.2703"/>
-<text text-anchor="middle" x="745.3589" y="-596.7412">[A8] fprop_out</text>
+<ellipse cx="697.87" cy="-600.54" rx="83.38" ry="18.27"/>
+<text text-anchor="middle" x="697.87" y="-596.74">[A8] fprop_out</text>
 </g>
 <g class="m-edge">
 <title>[A8] fprop_out&#45;&gt;[A25] bprop_out</title>
-<path d="M747.9342,-581.8012C749.0038,-574.0172 750.2689,-564.8115 751.4488,-556.2252"/>
-<polygon points="754.9329,-556.5796 752.827,-546.1962 747.9981,-555.6266 754.9329,-556.5796"/>
+<path d="M700.35,-582.05C701.43,-574.37 702.73,-565.16 703.95,-556.57"/>
+<polygon points="707.43,-556.95 705.36,-546.56 700.5,-555.97 707.43,-556.95"/>
 </g>
 <g class="m-node m-flat">
 <title>[A7] fprop_u3:Y</title>
-<ellipse cx="740.3589" cy="-673.3107" rx="97.6615" ry="18.2703"/>
-<text text-anchor="middle" x="740.3589" y="-669.5107">[A7] fprop_u3:Y</text>
+<ellipse cx="692.87" cy="-673.31" rx="90.52" ry="18.27"/>
+<text text-anchor="middle" x="692.87" y="-669.51">[A7] fprop_u3:Y</text>
 </g>
 <g class="m-edge">
 <title>[A7] fprop_u3:Y&#45;&gt;[A8] fprop_out</title>
-<path d="M741.6465,-654.5708C742.1814,-646.7867 742.8139,-637.581 743.4039,-628.9947"/>
-<polygon points="746.8991,-629.1822 744.093,-618.9657 739.9156,-628.7023 746.8991,-629.1822"/>
+<path d="M694.11,-654.82C694.65,-647.13 695.3,-637.93 695.91,-629.34"/>
+<polygon points="699.4,-629.55 696.62,-619.33 692.42,-629.05 699.4,-629.55"/>
 </g>
 <g class="m-node m-flat">
 <title>[A6] fprop_u3:A</title>
-<ellipse cx="740.3589" cy="-746.0803" rx="98.0761" ry="18.2703"/>
-<text text-anchor="middle" x="740.3589" y="-742.2803">[A6] fprop_u3:A</text>
+<ellipse cx="692.87" cy="-746.08" rx="90.52" ry="18.27"/>
+<text text-anchor="middle" x="692.87" y="-742.28">[A6] fprop_u3:A</text>
 </g>
 <g class="m-edge">
 <title>[A6] fprop_u3:A&#45;&gt;[A7] fprop_u3:Y</title>
-<path d="M734.4065,-727.7175C733.6503,-719.8749 733.4318,-710.5378 733.751,-701.8316"/>
-<polygon points="737.2556,-701.8724 734.4071,-691.6677 730.2701,-701.4215 737.2556,-701.8724"/>
+<path d="M686.96,-727.59C686.17,-719.9 685.94,-710.7 686.26,-702.11"/>
+<polygon points="689.76,-702.3 686.93,-692.09 682.77,-701.84 689.76,-702.3"/>
 </g>
 <g class="m-edge">
 <title>[A6] fprop_u3:A&#45;&gt;[A7] fprop_u3:Y</title>
-<path d="M746.3113,-727.7175C747.0675,-719.8749 747.286,-710.5378 746.9668,-701.8316"/>
-<polygon points="750.4477,-701.4215 746.3107,-691.6677 743.4622,-701.8724 750.4477,-701.4215"/>
+<path d="M698.79,-727.59C699.57,-719.9 699.8,-710.7 699.48,-702.11"/>
+<polygon points="702.97,-701.84 698.82,-692.09 695.99,-702.3 702.97,-701.84"/>
 </g>
 <g class="m-node m-flat">
 <title>[A5] fprop_u2:Y</title>
-<ellipse cx="730.3589" cy="-818.8499" rx="97.6615" ry="18.2703"/>
-<text text-anchor="middle" x="730.3589" y="-815.0499">[A5] fprop_u2:Y</text>
+<ellipse cx="682.87" cy="-818.85" rx="90.52" ry="18.27"/>
+<text text-anchor="middle" x="682.87" y="-815.05">[A5] fprop_u2:Y</text>
 </g>
 <g class="m-edge">
 <title>[A5] fprop_u2:Y&#45;&gt;[A6] fprop_u3:A</title>
-<path d="M732.9342,-800.1099C734.0038,-792.3258 735.2689,-783.1201 736.4488,-774.5338"/>
-<polygon points="739.9329,-774.8883 737.827,-764.5049 732.9981,-773.9352 739.9329,-774.8883"/>
+<path d="M685.35,-800.36C686.43,-792.67 687.73,-783.46 688.95,-774.88"/>
+<polygon points="692.43,-775.26 690.36,-764.86 685.5,-774.28 692.43,-775.26"/>
 </g>
 <g class="m-node m-flat">
 <title>[A4] fprop_u2:A</title>
-<ellipse cx="730.3589" cy="-891.6194" rx="98.0761" ry="18.2703"/>
-<text text-anchor="middle" x="730.3589" y="-887.8194">[A4] fprop_u2:A</text>
+<ellipse cx="682.87" cy="-891.62" rx="90.52" ry="18.27"/>
+<text text-anchor="middle" x="682.87" y="-887.82">[A4] fprop_u2:A</text>
 </g>
 <g class="m-edge">
 <title>[A4] fprop_u2:A&#45;&gt;[A5] fprop_u2:Y</title>
-<path d="M724.4065,-873.2566C723.6503,-865.414 723.4318,-856.0769 723.751,-847.3707"/>
-<polygon points="727.2556,-847.4115 724.4071,-837.2068 720.2701,-846.9606 727.2556,-847.4115"/>
+<path d="M676.96,-873.13C676.17,-865.44 675.94,-856.23 676.26,-847.65"/>
+<polygon points="679.76,-847.84 676.93,-837.63 672.77,-847.38 679.76,-847.84"/>
 </g>
 <g class="m-edge">
 <title>[A4] fprop_u2:A&#45;&gt;[A5] fprop_u2:Y</title>
-<path d="M736.3113,-873.2566C737.0675,-865.414 737.286,-856.0769 736.9668,-847.3707"/>
-<polygon points="740.4477,-846.9606 736.3107,-837.2068 733.4622,-847.4115 740.4477,-846.9606"/>
+<path d="M688.79,-873.13C689.57,-865.44 689.8,-856.23 689.48,-847.65"/>
+<polygon points="692.97,-847.38 688.82,-837.63 685.99,-847.84 692.97,-847.38"/>
 </g>
 <g class="m-node m-flat">
 <title>[A3] fprop_u4:B</title>
-<ellipse cx="441.3589" cy="-891.6194" rx="98.0761" ry="18.2703"/>
-<text text-anchor="middle" x="441.3589" y="-887.8194">[A3] fprop_u4:B</text>
+<ellipse cx="407.87" cy="-891.62" rx="90.52" ry="18.27"/>
+<text text-anchor="middle" x="407.87" y="-887.82">[A3] fprop_u4:B</text>
 </g>
 <g class="m-edge">
 <title>[A3] fprop_u4:B&#45;&gt;[A15] fprop_u4:Y</title>
-<path d="M433.6401,-873.2566C432.141,-865.4739 431.0299,-856.2194 430.5065,-847.5702"/>
-<polygon points="434.0009,-847.3391 430.1731,-837.4599 427.0047,-847.5699 434.0009,-847.3391"/>
+<path d="M400.47,-873.13C399.04,-865.44 398.03,-856.23 397.62,-847.65"/>
+<polygon points="401.12,-847.57 397.44,-837.63 394.12,-847.7 401.12,-847.57"/>
 </g>
 <g class="m-edge">
 <title>[A3] fprop_u4:B&#45;&gt;[A15] fprop_u4:Y</title>
-<path d="M445.5445,-872.8794C445.5248,-865.0954 444.845,-855.8897 443.7014,-847.3034"/>
-<polygon points="447.1321,-846.5923 442.0896,-837.2744 440.2208,-847.7031 447.1321,-846.5923"/>
+<path d="M412.31,-873.13C412.44,-865.44 411.89,-856.23 410.84,-847.65"/>
+<polygon points="414.28,-847 409.33,-837.63 407.36,-848.04 414.28,-847"/>
 </g>
 <g class="m-node m-flat">
 <title>[A2] fprop_f1:Q</title>
-<ellipse cx="710.3589" cy="-964.389" rx="96.7474" ry="18.2703"/>
-<text text-anchor="middle" x="710.3589" y="-960.589">[A2] fprop_f1:Q</text>
+<ellipse cx="661.87" cy="-964.39" rx="89.19" ry="18.27"/>
+<text text-anchor="middle" x="661.87" y="-960.59">[A2] fprop_f1:Q</text>
 </g>
 <g class="m-edge">
 <title>[A2] fprop_f1:Q&#45;&gt;[A4] fprop_u2:A</title>
-<path d="M715.4058,-946.0261C717.5683,-938.1579 720.1442,-928.7854 722.5437,-920.0548"/>
-<polygon points="725.9688,-920.7995 725.2441,-910.2295 719.2191,-918.9444 725.9688,-920.7995"/>
+<path d="M667.06,-945.9C669.37,-938.13 672.14,-928.8 674.71,-920.14"/>
+<polygon points="678.11,-920.99 677.6,-910.4 671.4,-918.99 678.11,-920.99"/>
 </g>
 <g class="m-edge">
 <title>[A2] fprop_f1:Q&#45;&gt;[A3] fprop_u4:B</title>
-<path d="M654.6219,-949.3111C611.7542,-937.7145 552.4051,-921.6595 507.1974,-909.43"/>
-<polygon points="508.0536,-906.0358 497.4866,-906.803 506.2256,-912.793 508.0536,-906.0358"/>
+<path d="M611.08,-949.24C570.12,-937.82 512.37,-921.73 468.89,-909.62"/>
+<polygon points="469.58,-906.18 459.01,-906.87 467.7,-912.92 469.58,-906.18"/>
 </g>
 <g class="m-node m-flat">
 <title>[A1] fprop_f1:CLK</title>
-<ellipse cx="650.3589" cy="-1037.1585" rx="109.7032" ry="18.2703"/>
-<text text-anchor="middle" x="650.3589" y="-1033.3585">[A1] fprop_f1:CLK</text>
+<ellipse cx="603.87" cy="-1037.16" rx="101.65" ry="18.27"/>
+<text text-anchor="middle" x="603.87" y="-1033.36">[A1] fprop_f1:CLK</text>
 </g>
 <g class="m-edge">
 <title>[A1] fprop_f1:CLK&#45;&gt;[A16] fprop_f1:D</title>
-<path d="M623.9155,-1019.1822C613.5558,-1009.1981 602.6518,-996.1219 595.3589,-982.7737 554.7183,-908.3894 590.8222,-867.8165 539.3589,-800.4651 529.6858,-787.8056 516.1547,-777.3161 503.0779,-769.0388"/>
-<polygon points="504.5225,-765.8231 494.1503,-763.6623 500.9111,-771.8197 504.5225,-765.8231"/>
+<path d="M580.6,-1018.9C571.28,-1008.92 561.49,-995.78 554.87,-982.77 516.45,-907.22 548.9,-868.89 498.87,-800.47 489.91,-788.21 477.25,-777.79 465.21,-769.5"/>
+<polygon points="466.89,-766.42 456.62,-763.85 463.05,-772.27 466.89,-766.42"/>
 </g>
 <g class="m-edge">
 <title>[A1] fprop_f1:CLK&#45;&gt;[A16] fprop_f1:D</title>
-<path d="M639.3027,-1018.4462C631.0261,-1008.5601 620.474,-995.7964 613.3589,-982.7737 572.7183,-908.3894 608.8222,-867.8165 557.3589,-800.4651 547.1445,-787.0972 532.6282,-776.1489 517.9609,-767.67"/>
-<polygon points="519.3027,-764.4156 508.846,-762.7102 515.957,-770.5642 519.3027,-764.4156"/>
+<path d="M596.11,-1018.42C588.97,-1008.5 579.38,-995.57 572.87,-982.77 534.45,-907.22 566.9,-868.89 516.87,-800.47 507.42,-787.54 493.86,-776.66 480.22,-768.17"/>
+<polygon points="481.69,-764.97 471.3,-762.93 478.15,-771.01 481.69,-764.97"/>
 </g>
 <g class="m-edge">
 <title>[A1] fprop_f1:CLK&#45;&gt;[A2] fprop_f1:Q</title>
-<path d="M659.5471,-1018.7957C665.8699,-1010.1117 674.3628,-999.5953 682.6467,-990.132"/>
-<polygon points="685.4279,-992.2733 689.5038,-982.4938 680.2189,-987.597 685.4279,-992.2733"/>
+<path d="M612.29,-1018.66C618.44,-1010.09 626.84,-999.62 635.03,-990.24"/>
+<polygon points="637.74,-992.46 641.81,-982.68 632.53,-987.79 637.74,-992.46"/>
 </g>
 <g class="m-edge">
 <title>[A1] fprop_f1:CLK&#45;&gt;[A2] fprop_f1:Q</title>
-<path d="M671.4518,-1018.7957C679.23,-1010.3498 687.8136,-1000.1707 695.0141,-990.9129"/>
-<polygon points="697.9468,-992.837 701.175,-982.7459 692.3585,-988.6213 697.9468,-992.837"/>
+<path d="M623.79,-1019.03C631.55,-1010.63 640.19,-1000.35 647.36,-991.05"/>
+<polygon points="650.3,-992.96 653.47,-982.85 644.69,-988.78 650.3,-992.96"/>
 </g>
 <g class="m-node m-flat">
 <title>[A0] fprop_tau2015_clk</title>
-<ellipse cx="650.3589" cy="-1109.9281" rx="140.9288" ry="18.2703"/>
-<text text-anchor="middle" x="650.3589" y="-1106.1281">[A0] fprop_tau2015_clk</text>
+<ellipse cx="603.87" cy="-1109.93" rx="129.3" ry="18.27"/>
+<text text-anchor="middle" x="603.87" y="-1106.13">[A0] fprop_tau2015_clk</text>
 </g>
 <g class="m-edge">
 <title>[A0] fprop_tau2015_clk&#45;&gt;[A1] fprop_f1:CLK</title>
-<path d="M650.3589,-1091.1881C650.3589,-1083.404 650.3589,-1074.1984 650.3589,-1065.6121"/>
-<polygon points="653.859,-1065.583 650.3589,-1055.5831 646.859,-1065.5831 653.859,-1065.583"/>
+<path d="M603.87,-1091.43C603.87,-1083.75 603.87,-1074.54 603.87,-1065.96"/>
+<polygon points="607.37,-1065.94 603.87,-1055.94 600.37,-1065.94 607.37,-1065.94"/>
 </g>
 </g>
 </svg>
@@ -539,7 +539,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>
