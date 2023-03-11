@@ -102,3 +102,41 @@ TEST_CASE("cudaEvent" * doctest::timeout(300)) {
   REQUIRE(cudaEventQuery(e2) != cudaSuccess);
 }
 
+// ----------------------------------------------------------------------------
+// CUDA Graph
+// ----------------------------------------------------------------------------
+
+TEST_CASE("cudaGraph" * doctest::timeout(300)) {
+  
+  // create a new graph g1 inside
+  tf::cudaGraph g1;
+  
+  cudaGraph_t g1_source = g1;
+  REQUIRE(g1 == g1_source);
+  
+  // create another graph g2 from the outside
+  cudaGraph_t g2_source;
+  cudaGraphCreate(&g2_source, 0);
+  tf::cudaGraph g2(g2_source);
+  
+  REQUIRE(g2 == g2_source);
+
+  g1 = std::move(g2);
+
+  REQUIRE(g2 == nullptr);
+  REQUIRE(g1 == g2_source);
+
+  // reassign g1 (now holding g2_source) to g2
+  g2.reset(g1.release());
+  REQUIRE(g1 == nullptr);
+  REQUIRE(g2 == g2_source);
+
+  // clear
+  g2.clear();
+  g1.clear();
+
+  REQUIRE(g1 == nullptr);
+  REQUIRE(g2 == nullptr);
+}
+
+

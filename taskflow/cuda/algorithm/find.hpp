@@ -185,52 +185,6 @@ void cuda_find_if(
 }
 
 // ----------------------------------------------------------------------------
-// cudaFlow
-// ----------------------------------------------------------------------------
-
-// Function: find_if
-template <typename I, typename U>
-cudaTask cudaFlow::find_if(I first, I last, unsigned* idx, U op) {
-  return capture([=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.find_if(first, last, idx, op);
-  });
-}
-
-// Function: find_if
-template <typename I, typename U>
-void cudaFlow::find_if(cudaTask task, I first, I last, unsigned* idx, U op) {
-  capture(task, [=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.find_if(first, last, idx, op);
-  });
-}
-
-// ----------------------------------------------------------------------------
-// cudaFlowCapturer
-// ----------------------------------------------------------------------------
-
-// Function: find_if
-template <typename I, typename U>
-cudaTask cudaFlowCapturer::find_if(I first, I last, unsigned* idx, U op) {
-  return on([=](cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_find_if(p, first, last, idx, op);
-  });
-}
-
-// Function: find_if
-template <typename I, typename U>
-void cudaFlowCapturer::find_if(
-  cudaTask task, I first, I last, unsigned* idx, U op
-) {
-  on(task, [=](cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_find_if(p, first, last, idx, op);
-  });
-}
-
-// ----------------------------------------------------------------------------
 // cuda_min_element
 // ----------------------------------------------------------------------------
 
@@ -246,8 +200,8 @@ The function is used to decide the buffer size in bytes for calling
 tf::cuda_min_element.
 */
 template <typename P, typename T>
-unsigned cuda_min_element_buffer_size(unsigned count) {
-  return cuda_reduce_buffer_size<P, detail::cudaFindPair<T>>(count);
+unsigned cuda_min_element_bufsz(unsigned count) {
+  return cuda_reduce_bufsz<P, detail::cudaFindPair<T>>(count);
 }
 
 /**
@@ -268,7 +222,7 @@ The function launches kernels asynchronously to find
 the smallest element in the range <tt>[first, last)</tt>
 using the given comparator @c op.
 You need to provide a buffer that holds at least
-tf::cuda_min_element_buffer_size bytes for internal use.
+tf::cuda_min_element_bufsz bytes for internal use.
 The function is equivalent to a parallel execution of the following loop:
 
 @code{.cpp}
@@ -292,70 +246,6 @@ void cuda_min_element(P&& p, I first, I last, unsigned* idx, O op, void* buf) {
 }
 
 // ----------------------------------------------------------------------------
-// cudaFlowCapturer::min_element
-// ----------------------------------------------------------------------------
-
-// Function: min_element
-template <typename I, typename O>
-cudaTask cudaFlowCapturer::min_element(I first, I last, unsigned* idx, O op) {
-
-  using T = typename std::iterator_traits<I>::value_type;
-
-  auto bufsz = cuda_min_element_buffer_size<cudaDefaultExecutionPolicy, T>(
-    std::distance(first, last)
-  );
-
-  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
-  (cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_min_element(p, first, last, idx, op, buf.get().data());
-  });
-}
-
-// Function: min_element
-template <typename I, typename O>
-void cudaFlowCapturer::min_element(
-  cudaTask task, I first, I last, unsigned* idx, O op
-) {
-
-  using T = typename std::iterator_traits<I>::value_type;
-
-  auto bufsz = cuda_min_element_buffer_size<cudaDefaultExecutionPolicy, T>(
-    std::distance(first, last)
-  );
-
-  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
-  (cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_min_element(p, first, last, idx, op, buf.get().data());
-  });
-}
-
-// ----------------------------------------------------------------------------
-// cudaFlow::min_element
-// ----------------------------------------------------------------------------
-
-// Function: min_element
-template <typename I, typename O>
-cudaTask cudaFlow::min_element(I first, I last, unsigned* idx, O op) {
-  return capture([=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.min_element(first, last, idx, op);
-  });
-}
-
-// Function: min_element
-template <typename I, typename O>
-void cudaFlow::min_element(
-  cudaTask task, I first, I last, unsigned* idx, O op
-) {
-  capture(task, [=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.min_element(first, last, idx, op);
-  });
-}
-
-// ----------------------------------------------------------------------------
 // cuda_max_element
 // ----------------------------------------------------------------------------
 
@@ -371,8 +261,8 @@ The function is used to decide the buffer size in bytes for calling
 tf::cuda_max_element.
 */
 template <typename P, typename T>
-unsigned cuda_max_element_buffer_size(unsigned count) {
-  return cuda_reduce_buffer_size<P, detail::cudaFindPair<T>>(count);
+unsigned cuda_max_element_bufsz(unsigned count) {
+  return cuda_reduce_bufsz<P, detail::cudaFindPair<T>>(count);
 }
 
 /**
@@ -393,7 +283,7 @@ The function launches kernels asynchronously to find
 the largest element in the range <tt>[first, last)</tt>
 using the given comparator @c op.
 You need to provide a buffer that holds at least
-tf::cuda_max_element_buffer_size bytes for internal use.
+tf::cuda_max_element_bufsz bytes for internal use.
 The function is equivalent to a parallel execution of the following loop:
 
 @code{.cpp}
@@ -416,69 +306,6 @@ void cuda_max_element(P&& p, I first, I last, unsigned* idx, O op, void* buf) {
   );
 }
 
-// ----------------------------------------------------------------------------
-// cudaFlowCapturer::max_element
-// ----------------------------------------------------------------------------
-
-// Function: max_element
-template <typename I, typename O>
-cudaTask cudaFlowCapturer::max_element(I first, I last, unsigned* idx, O op) {
-
-  using T = typename std::iterator_traits<I>::value_type;
-
-  auto bufsz = cuda_max_element_buffer_size<cudaDefaultExecutionPolicy, T>(
-    std::distance(first, last)
-  );
-
-  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
-  (cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_max_element(p, first, last, idx, op, buf.get().data());
-  });
-}
-
-// Function: max_element
-template <typename I, typename O>
-void cudaFlowCapturer::max_element(
-  cudaTask task, I first, I last, unsigned* idx, O op
-) {
-
-  using T = typename std::iterator_traits<I>::value_type;
-
-  auto bufsz = cuda_max_element_buffer_size<cudaDefaultExecutionPolicy, T>(
-    std::distance(first, last)
-  );
-
-  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
-  (cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_max_element(p, first, last, idx, op, buf.get().data());
-  });
-}
-
-// ----------------------------------------------------------------------------
-// cudaFlow::max_element
-// ----------------------------------------------------------------------------
-
-// Function: max_element
-template <typename I, typename O>
-cudaTask cudaFlow::max_element(I first, I last, unsigned* idx, O op) {
-  return capture([=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.max_element(first, last, idx, op);
-  });
-}
-
-// Function: max_element
-template <typename I, typename O>
-void cudaFlow::max_element(
-  cudaTask task, I first, I last, unsigned* idx, O op
-) {
-  capture(task, [=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.max_element(first, last, idx, op);
-  });
-}
 
 }  // end of namespace tf -----------------------------------------------------
 

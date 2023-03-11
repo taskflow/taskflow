@@ -4,6 +4,176 @@
 #include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/sort.hpp>
 
+// ----------------------------------------------------------------------------
+// Data Type
+// ----------------------------------------------------------------------------
+
+struct MoveOnly1{
+
+  int a {-1234};
+  
+  MoveOnly1() = default;
+
+  MoveOnly1(const MoveOnly1&) = delete;
+  MoveOnly1(MoveOnly1&&) = default;
+
+  MoveOnly1& operator = (const MoveOnly1& rhs) = delete;
+  MoveOnly1& operator = (MoveOnly1&& rhs) = default;
+
+};
+
+// ----------------------------------------------------------------------------
+// parallel sort
+// ----------------------------------------------------------------------------
+
+template <typename T>
+void ps_pod(size_t W, size_t N) {
+
+  std::srand(static_cast<unsigned int>(time(NULL)));
+
+  std::vector<T> data(N);
+
+  for(auto& d : data) {
+    d = ::rand() % 1000 - 500;
+  }
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  taskflow.sort(data.begin(), data.end());
+
+  executor.run(taskflow).wait();
+
+  REQUIRE(std::is_sorted(data.begin(), data.end()));
+}
+
+TEST_CASE("ParallelSort.int.1.100000") {
+  ps_pod<int>(1, 100000);
+}
+
+TEST_CASE("ParallelSort.int.2.100000") {
+  ps_pod<int>(2, 100000);
+}
+
+TEST_CASE("ParallelSort.int.3.100000") {
+  ps_pod<int>(3, 100000);
+}
+
+TEST_CASE("ParallelSort.int.4.100000") {
+  ps_pod<int>(4, 100000);
+}
+
+TEST_CASE("ParallelSort.ldouble.1.100000") {
+  ps_pod<long double>(1, 100000);
+}
+
+TEST_CASE("ParallelSort.ldouble.2.100000") {
+  ps_pod<long double>(2, 100000);
+}
+
+TEST_CASE("ParallelSort.ldouble.3.100000") {
+  ps_pod<long double>(3, 100000);
+}
+
+TEST_CASE("ParallelSort.ldouble.4.100000") {
+  ps_pod<long double>(4, 100000);
+}
+
+struct Object {
+
+  std::array<int, 10> integers;
+
+  int sum() const {
+    int s = 0;
+    for(const auto i : integers) {
+      s += i;
+    }
+    return s;
+  }
+};
+
+void ps_object(size_t W, size_t N) {
+
+  std::srand(static_cast<unsigned int>(time(NULL)));
+
+  std::vector<Object> data(N);
+
+  for(auto& d : data) {
+    for(auto& i : d.integers) {
+      i = ::rand();
+    }
+  }
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  taskflow.sort(data.begin(), data.end(), [](const auto& l, const auto& r){
+    return l.sum() < r.sum();
+  });
+
+  executor.run(taskflow).wait();
+
+  REQUIRE(std::is_sorted(data.begin(), data.end(),
+    [](const auto& l, const auto& r){ return l.sum() < r.sum(); }
+  ));
+}
+
+TEST_CASE("ParallelSort.object.1.100000") {
+  ps_object(1, 100000);
+}
+
+TEST_CASE("ParallelSort.object.2.100000") {
+  ps_object(2, 100000);
+}
+
+TEST_CASE("ParallelSort.object.3.100000") {
+  ps_object(3, 100000);
+}
+
+TEST_CASE("ParallelSort.object.4.100000") {
+  ps_object(4, 100000);
+}
+
+void move_only_ps(unsigned W) {
+  
+  std::vector<MoveOnly1> vec(1000000);
+  for(auto& i : vec) {
+    i.a = rand()%100;
+  }
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  taskflow.sort(vec.begin(), vec.end(),
+    [](const MoveOnly1& m1, const MoveOnly1&m2) {
+      return m1.a < m2.a;
+    }
+  );
+
+  executor.run(taskflow).wait();
+
+  for(size_t i=1; i<vec.size(); i++) {
+    REQUIRE(vec[i-1].a <= vec[i].a);
+  }
+
+}
+
+TEST_CASE("ParallelSort.MoveOnlyObject.1thread") {
+  move_only_ps(1);
+}
+
+TEST_CASE("ParallelSort.MoveOnlyObject.2threads") {
+  move_only_ps(2);
+}
+
+TEST_CASE("ParallelSort.MoveOnlyObject.3threads") {
+  move_only_ps(3);
+}
+
+TEST_CASE("ParallelSort.MoveOnlyObject.4threads") {
+  move_only_ps(4);
+}
+
 // --------------------------------------------------------
 // Testcase: BubbleSort
 // --------------------------------------------------------

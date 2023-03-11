@@ -5,20 +5,24 @@
 namespace tf {
 
 // ----------------------------------------------------------------------------
-// default parallel for
+// for_each
 // ----------------------------------------------------------------------------
 
-template <
-  typename B, typename E, typename C, typename P,
-  std::enable_if_t<is_partitioner_v<P>, void>*
->
-Task FlowBuilder::for_each(B beg, E end, C c, P part) {
+// Function: for_each
+template <typename B, typename E, typename C>
+Task FlowBuilder::for_each(B beg, E end, C c) {
+  return for_each(DefaultExecutionPolicy{}, beg, end, c);
+}
+
+// Function: for_each
+template <typename P, typename B, typename E, typename C>
+Task FlowBuilder::for_each(P&& policy, B beg, E end, C c) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  Task task = emplace([b=beg, e=end, c, part] (Subflow& sf) mutable {
+  Task task = emplace([b=beg, e=end, c, policy] (Subflow& sf) mutable {
 
     // fetch the stateful values
     B_t beg = b;
@@ -32,7 +36,7 @@ Task FlowBuilder::for_each(B beg, E end, C c, P part) {
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
-    if(W <= 1 || N <= part.chunk_size()) {
+    if(W <= 1 || N <= policy.chunk_size()) {
       std::for_each(beg, end, c);
       return;
     }
@@ -43,8 +47,8 @@ Task FlowBuilder::for_each(B beg, E end, C c, P part) {
 
     std::atomic<size_t> next(0);
 
-    auto loop = [=, &next, &part] () mutable {
-      part(N, W, next, 
+    auto loop = [=, &next, &policy] () mutable {
+      policy(N, W, next, 
         [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
           std::advance(beg, curr_b - prev_e);
           for(size_t x = curr_b; x<curr_e; x++) {
@@ -62,7 +66,7 @@ Task FlowBuilder::for_each(B beg, E end, C c, P part) {
         break;
       }
       // tail optimization
-      if(r <= part.chunk_size() || w == W-1) {
+      if(r <= policy.chunk_size() || w == W-1) {
         loop();
         break;
       }
@@ -79,12 +83,19 @@ Task FlowBuilder::for_each(B beg, E end, C c, P part) {
   return task;
 }
 
+// ----------------------------------------------------------------------------
+// for_each_index
+// ----------------------------------------------------------------------------
+
 // Function: for_each_index
-template <
-  typename B, typename E, typename S, typename C, typename P,
-  std::enable_if_t<is_partitioner_v<P>, void>*
->
-Task FlowBuilder::for_each_index(B beg, E end, S inc, C c, P part){
+template <typename B, typename E, typename S, typename C>
+Task FlowBuilder::for_each_index(B beg, E end, S inc, C c){
+  return for_each_index(DefaultExecutionPolicy{}, beg, end, inc, c);
+}
+
+// Function: for_each_index
+template <typename P, typename B, typename E, typename S, typename C>
+Task FlowBuilder::for_each_index(P&& policy, B beg, E end, S inc, C c){
 
   using namespace std::string_literals;
 
@@ -92,22 +103,18 @@ Task FlowBuilder::for_each_index(B beg, E end, S inc, C c, P part){
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using S_t = std::decay_t<unwrap_ref_decay_t<S>>;
 
-  Task task = emplace([b=beg, e=end, a=inc, c, part] (Subflow& sf) mutable {
+  Task task = emplace([b=beg, e=end, a=inc, c, policy] (Subflow& sf) mutable {
 
     // fetch the iterator values
     B_t beg = b;
     E_t end = e;
     S_t inc = a;
 
-    if(is_range_invalid(beg, end, inc)) {
-      TF_THROW("invalid range [", beg, ", ", end, ") with step size ", inc);
-    }
-
     size_t W = sf._executor.num_workers();
     size_t N = distance(beg, end, inc);
 
     // only myself - no need to spawn another graph
-    if(W <= 1 || N <= part.chunk_size()) {
+    if(W <= 1 || N <= policy.chunk_size()) {
       for(size_t x=0; x<N; x++, beg+=inc) {
         c(beg);
       }
@@ -120,8 +127,8 @@ Task FlowBuilder::for_each_index(B beg, E end, S inc, C c, P part){
 
     std::atomic<size_t> next(0);
     
-    auto loop = [=, &next, &part] () mutable {
-      part(N, W, next, 
+    auto loop = [=, &next, &policy] () mutable {
+      policy(N, W, next, 
         [&](size_t curr_b, size_t curr_e) {
           auto idx = static_cast<B_t>(curr_b) * inc + beg;
           for(size_t x=curr_b; x<curr_e; x++, idx += inc) {
@@ -138,7 +145,7 @@ Task FlowBuilder::for_each_index(B beg, E end, S inc, C c, P part){
         break;
       }
       // tail optimization
-      if(r <= part.chunk_size() || w == W-1) {
+      if(r <= policy.chunk_size() || w == W-1) {
         loop(); 
         break;
       }

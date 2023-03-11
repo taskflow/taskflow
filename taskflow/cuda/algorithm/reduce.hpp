@@ -82,6 +82,45 @@ __device__ T cudaBlockReduce<nt, T>::operator ()(
   return x;
 }
 
+// ----------------------------------------------------------------------------
+// cuda_reduce
+// ----------------------------------------------------------------------------
+
+/**
+@private 
+*/
+template <size_t nt, size_t vt, typename I, typename T, typename O>
+__global__ void cuda_reduce_kernel(
+  I input, unsigned count, T* res, O op, void* ptr
+) {
+  
+  using U = typename std::iterator_traits<I>::value_type;
+
+  __shared__ typename cudaBlockReduce<nt, U>::Storage shm;
+  
+  auto tid = threadIdx.x;
+  auto bid = blockIdx.x;
+  auto tile = cuda_get_tile(bid, nt*vt, count);
+  auto x = cuda_mem_to_reg_strided<nt, vt>(
+    input + tile.begin, tid, tile.count()
+  );
+
+  // reduce multiple values per thread into a scalar.
+  U s;
+  cuda_strided_iterate<nt, vt>(
+    [&] (auto i, auto) { s = i ? op(s, x[i]) : x[0]; }, tid, tile.count()
+  );
+  // reduce to a scalar per block.
+  s = cudaBlockReduce<nt, U>()(
+    tid, s, shm, (tile.count() < nt ? tile.count() : nt), op, false
+  );
+
+  if(!tid) {
+    auto buf = static_cast<U*>(ptr);
+    (count <= nt*vt) ? *res = op(*res, s) : buf[bid] = s;
+  }
+}
+
 /** @private */
 template <typename P, typename I, typename T, typename O>
 void cuda_reduce_loop(
@@ -92,34 +131,60 @@ void cuda_reduce_loop(
   using E = std::decay_t<P>;
 
   auto buf = static_cast<U*>(ptr);
-  auto B = (count + E::nv - 1) / E::nv;
+  auto B = E::num_blocks(count);
 
-  cuda_kernel<<<B, E::nt, 0, p.stream()>>>([=] __device__ (auto tid, auto bid) {
-    __shared__ typename cudaBlockReduce<E::nt, U>::Storage shm;
-    auto tile = cuda_get_tile(bid, E::nv, count);
-    auto x = cuda_mem_to_reg_strided<E::nt, E::vt>(
-      input + tile.begin, tid, tile.count()
-    );
-    // reduce multiple values per thread into a scalar.
-    U s;
-    cuda_strided_iterate<E::nt, E::vt>(
-      [&] (auto i, auto) { s = i ? op(s, x[i]) : x[0]; }, tid, tile.count()
-    );
-    // reduce to a scalar per block.
-    s = cudaBlockReduce<E::nt, U>()(
-      tid, s, shm, (tile.count() < E::nt ? tile.count() : E::nt), op, false
-    );
-    if(!tid) {
-      (1 == B) ? *res = op(*res, s) : buf[bid] = s;
-    }
-  });
+  cuda_reduce_kernel<E::nt, E::vt><<<B, E::nt, 0, p.stream()>>>(
+    input, count, res, op, ptr
+  );
 
   if(B > 1) {
     cuda_reduce_loop(p, buf, B, res, op, buf+B);
   }
 }
 
-/** @private */
+// ----------------------------------------------------------------------------
+// cuda_uninitialized_reduce
+// ----------------------------------------------------------------------------
+
+/**
+@private
+*/
+template <size_t nt, size_t vt, typename I, typename T, typename O>
+__global__ void cuda_uninitialized_reduce_kernel(
+  I input, unsigned count, T* res, O op, void* ptr
+) {
+
+  using U = typename std::iterator_traits<I>::value_type;
+
+  __shared__ typename cudaBlockReduce<nt, U>::Storage shm;
+
+  auto tid = threadIdx.x;
+  auto bid = blockIdx.x;
+  auto tile = cuda_get_tile(bid, nt*vt, count);
+  auto x = cuda_mem_to_reg_strided<nt, vt>(
+    input + tile.begin, tid, tile.count()
+  );
+
+  // reduce multiple values per thread into a scalar.
+  U s;
+  cuda_strided_iterate<nt, vt>(
+    [&] (auto i, auto) { s = i ? op(s, x[i]) : x[0]; }, tid, tile.count()
+  );
+
+  // reduce to a scalar per block.
+  s = cudaBlockReduce<nt, U>()(
+    tid, s, shm, (tile.count() < nt ? tile.count() : nt), op, false
+  );
+
+  if(!tid) {
+    auto buf = static_cast<U*>(ptr);
+    (count <= nt*vt) ? *res = s : buf[bid] = s;
+  }
+}
+
+/** 
+@private 
+*/
 template <typename P, typename I, typename T, typename O>
 void cuda_uninitialized_reduce_loop(
   P&& p, I input, unsigned count, T* res, O op, void* ptr
@@ -131,25 +196,9 @@ void cuda_uninitialized_reduce_loop(
   auto buf = static_cast<U*>(ptr);
   auto B = (count + E::nv - 1) / E::nv;
 
-  cuda_kernel<<<B, E::nt, 0, p.stream()>>>([=] __device__ (auto tid, auto bid) {
-    __shared__ typename cudaBlockReduce<E::nt, U>::Storage shm;
-    auto tile = cuda_get_tile(bid, E::nv, count);
-    auto x = cuda_mem_to_reg_strided<E::nt, E::vt>(
-      input + tile.begin, tid, tile.count()
-    );
-    // reduce multiple values per thread into a scalar.
-    U s;
-    cuda_strided_iterate<E::nt, E::vt>(
-      [&] (auto i, auto) { s = i ? op(s, x[i]) : x[0]; }, tid, tile.count()
-    );
-    // reduce to a scalar per block.
-    s = cudaBlockReduce<E::nt, U>()(
-      tid, s, shm, (tile.count() < E::nt ? tile.count() : E::nt), op, false
-    );
-    if(!tid) {
-      (1 == B) ? *res = s : buf[bid] = s;
-    }
-  });
+  cuda_uninitialized_reduce_kernel<E::nt, E:: vt><<<B, E::nt, 0, p.stream()>>>(
+    input, count, res, op, buf
+  );
 
   if(B > 1) {
     cuda_uninitialized_reduce_loop(p, buf, B, res, op, buf+B);
@@ -170,14 +219,17 @@ namespace tf {
 
 The function is used to allocate a buffer for calling tf::cuda_reduce,
 tf::cuda_uninitialized_reduce, tf::cuda_transform_reduce, and
-tf::cuda_transform_uninitialized_reduce.
+tf::cuda_uninitialized_transform_reduce.
 */
 template <typename P, typename T>
-unsigned cuda_reduce_buffer_size(unsigned count) {
+unsigned cuda_reduce_bufsz(unsigned count) {
   using E = std::decay_t<P>;
-  unsigned B = (count + E::nv - 1) / E::nv;
+  unsigned B = E::num_blocks(count);
   unsigned n = 0;
-  for(auto b=B; b>1; n += (b=(b+E::nv-1)/E::nv));
+  while(B > 1) {
+    n += B;
+    B = E::num_blocks(B);
+  }
   return n*sizeof(T);
 }
 
@@ -343,7 +395,7 @@ while (first != last) {
 @endcode
 */
 template<typename P, typename I, typename T, typename O, typename U>
-void cuda_transform_uninitialized_reduce(
+void cuda_uninitialized_transform_reduce(
   P&& p, I first, I last, T* res, O bop, U uop, void* buf
 ) {
 
@@ -353,10 +405,6 @@ void cuda_transform_uninitialized_reduce(
     return;
   }
 
-  // reduction loop
-  //detail::cuda_transform_reduce_loop(
-  //  p, first, count, res, bop, uop, false, s, buf
-  //);
   detail::cuda_uninitialized_reduce_loop(p,
     cuda_make_load_iterator<T>([=]__device__(auto i){ return uop(*(first+i)); }),
     count, res, bop, buf
@@ -417,241 +465,6 @@ void cuda_transform_uninitialized_reduce(
 //    }
 //  }
 //}
-
-// ----------------------------------------------------------------------------
-// cudaFlowCapturer
-// ----------------------------------------------------------------------------
-
-// Function: reduce
-template <typename I, typename T, typename C>
-cudaTask cudaFlowCapturer::reduce(I first, I last, T* result, C c) {
-
-  // TODO
-  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
-    std::distance(first, last)
-  );
-
-  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
-  (cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_reduce(p, first, last, result, c, buf.get().data());
-  });
-}
-
-// Function: uninitialized_reduce
-template <typename I, typename T, typename C>
-cudaTask cudaFlowCapturer::uninitialized_reduce(I first, I last, T* result, C c) {
-
-  // TODO
-  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
-    std::distance(first, last)
-  );
-
-  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
-  (cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_uninitialized_reduce(p, first, last, result, c, buf.get().data());
-  });
-}
-
-// Function: transform_reduce
-template <typename I, typename T, typename C, typename U>
-cudaTask cudaFlowCapturer::transform_reduce(
-  I first, I last, T* result, C bop, U uop
-) {
-
-  // TODO
-  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
-    std::distance(first, last)
-  );
-
-  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
-  (cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_transform_reduce(
-      p, first, last, result, bop, uop, buf.get().data()
-    );
-  });
-}
-
-// Function: transform_uninitialized_reduce
-template <typename I, typename T, typename C, typename U>
-cudaTask cudaFlowCapturer::transform_uninitialized_reduce(
-  I first, I last, T* result, C bop, U uop) {
-
-  // TODO
-  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
-    std::distance(first, last)
-  );
-
-  return on([=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
-  (cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_transform_uninitialized_reduce(
-      p, first, last, result, bop, uop, buf.get().data()
-    );
-  });
-}
-
-// Function: reduce
-template <typename I, typename T, typename C>
-void cudaFlowCapturer::reduce(
-  cudaTask task, I first, I last, T* result, C c
-) {
-
-  // TODO
-  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
-    std::distance(first, last)
-  );
-
-  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
-  (cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_reduce(p, first, last, result, c, buf.get().data());
-  });
-}
-
-// Function: uninitialized_reduce
-template <typename I, typename T, typename C>
-void cudaFlowCapturer::uninitialized_reduce(
-  cudaTask task, I first, I last, T* result, C c
-) {
-  // TODO
-  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
-    std::distance(first, last)
-  );
-
-  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
-  (cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_uninitialized_reduce(p, first, last, result, c, buf.get().data());
-  });
-}
-
-// Function: transform_reduce
-template <typename I, typename T, typename C, typename U>
-void cudaFlowCapturer::transform_reduce(
-  cudaTask task, I first, I last, T* result, C bop, U uop
-) {
-
-  // TODO
-  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
-    std::distance(first, last)
-  );
-
-  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
-  (cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_transform_reduce(
-      p, first, last, result, bop, uop, buf.get().data()
-    );
-  });
-}
-
-// Function: transform_uninitialized_reduce
-template <typename I, typename T, typename C, typename U>
-void cudaFlowCapturer::transform_uninitialized_reduce(
-  cudaTask task, I first, I last, T* result, C bop, U uop
-) {
-
-  // TODO
-  auto bufsz = cuda_reduce_buffer_size<cudaDefaultExecutionPolicy, T>(
-    std::distance(first, last)
-  );
-
-  on(task, [=, buf=MoC{cudaDeviceVector<std::byte>(bufsz)}] 
-  (cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_transform_uninitialized_reduce(
-      p, first, last, result, bop, uop, buf.get().data()
-    );
-  });
-}
-
-
-// ----------------------------------------------------------------------------
-// cudaFlow
-// ----------------------------------------------------------------------------
-
-// Function: reduce
-template <typename I, typename T, typename B>
-cudaTask cudaFlow::reduce(I first, I last, T* result, B bop) {
-  return capture([=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.reduce(first, last, result, bop);
-  });
-}
-
-// Function: uninitialized_reduce
-template <typename I, typename T, typename B>
-cudaTask cudaFlow::uninitialized_reduce(I first, I last, T* result, B bop) {
-  return capture([=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.uninitialized_reduce(first, last, result, bop);
-  });
-}
-
-// Function: transform_reduce
-template <typename I, typename T, typename B, typename U>
-cudaTask cudaFlow::transform_reduce(I first, I last, T* result, B bop, U uop) {
-  return capture([=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.transform_reduce(first, last, result, bop, uop);
-  });
-}
-
-// Function: transform_uninitialized_reduce
-template <typename I, typename T, typename B, typename U>
-cudaTask cudaFlow::transform_uninitialized_reduce(
-  I first, I last, T* result, B bop, U uop
-) {
-  return capture([=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.transform_uninitialized_reduce(first, last, result, bop, uop);
-  });
-}
-
-// Function: reduce
-template <typename I, typename T, typename C>
-void cudaFlow::reduce(cudaTask task, I first, I last, T* result, C op) {
-  capture(task, [=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.reduce(first, last, result, op);
-  });
-}
-
-// Function: uninitialized_reduce
-template <typename I, typename T, typename C>
-void cudaFlow::uninitialized_reduce(
-  cudaTask task, I first, I last, T* result, C op
-) {
-  capture(task, [=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.uninitialized_reduce(first, last, result, op);
-  });
-}
-
-// Function: transform_reduce
-template <typename I, typename T, typename B, typename U>
-void cudaFlow::transform_reduce(
-  cudaTask task, I first, I last, T* result, B bop, U uop
-) {
-  capture(task, [=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.transform_reduce(first, last, result, bop, uop);
-  });
-}
-
-// Function: transform_uninitialized_reduce
-template <typename I, typename T, typename B, typename U>
-void cudaFlow::transform_uninitialized_reduce(
-  cudaTask task, I first, I last, T* result, B bop, U uop
-) {
-  capture(task, [=](cudaFlowCapturer& cap){
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.transform_uninitialized_reduce(first, last, result, bop, uop);
-  });
-}
 
 
 }  // end of namespace tf -----------------------------------------------------

@@ -26,23 +26,24 @@ int main(int argc, char* argv[]) {
   std::iota(data1, data1 + N, 0);
   std::iota(data2, data2 + N, 0);
   
-  tf::cudaFlow cudaflow;
   tf::cudaStream stream;
+  tf::cudaDefaultExecutionPolicy policy(stream);
+
+  // declare the buffer
+  void* buff;
+  cudaMalloc(&buff, tf::cuda_scan_bufsz<tf::cudaDefaultExecutionPolicy, int>(N));
   
   // create inclusive and exclusive scan tasks
-  cudaflow.inclusive_scan(data1, data1+N, scan1, tf::cuda_plus<int>{});
-  cudaflow.exclusive_scan(data2, data2+N, scan2, tf::cuda_plus<int>{});
+  tf::cuda_inclusive_scan(policy, data1, data1+N, scan1, tf::cuda_plus<int>{}, buff);
+  tf::cuda_exclusive_scan(policy, data2, data2+N, scan2, tf::cuda_plus<int>{}, buff);
 
-  cudaflow.run(stream);
   stream.synchronize();
   
   // inspect 
   for(int i=1; i<N; i++) {
-    //printf("data1[%d]/scan1[%d]=%d/%d\n", i, i, data1[i], scan1[i]);
     if(scan1[i] != scan1[i-1] + data1[i]) {
       throw std::runtime_error("incorrect inclusive scan result");
     }
-    //printf("data2[%d]/scan2[%d]=%d/%d\n", i, i, data2[i], scan2[i]);
     if(scan2[i] != scan2[i-1] + data2[i-1]) {
       throw std::runtime_error("incorrect exclusive scan result");
     }
@@ -54,40 +55,44 @@ int main(int argc, char* argv[]) {
   // transform inclusive/exclusive scan
   // --------------------------------------------------------------------------
   
-  cudaflow.clear();
-
   // initialize the data
   std::iota(data1, data1 + N, 0);
   std::iota(data2, data2 + N, 0);
   
   // transform inclusive scan
-  cudaflow.transform_inclusive_scan(
+  tf::cuda_transform_inclusive_scan(policy,
     data1, data1+N, scan1, tf::cuda_plus<int>{},
-    [] __device__ (int a) { return a*10; }
+    [] __device__ (int a) { return a*10; },
+    buff
   );
 
   // transform exclusive scan
-  cudaflow.transform_exclusive_scan(
+  tf::cuda_transform_exclusive_scan(policy,
     data2, data2+N, scan2, tf::cuda_plus<int>{},
-    [] __device__ (int a) { return a*11; }
+    [] __device__ (int a) { return a*11; },
+    buff
   );
   
-  cudaflow.run(stream);
   stream.synchronize();
   
   // inspect 
   for(int i=1; i<N; i++) {
-    //printf("data1[%d]/scan1[%d]=%d/%d\n", i, i, data1[i], scan1[i]);
     if(scan1[i] != scan1[i-1] + data1[i] * 10) {
       throw std::runtime_error("incorrect transform inclusive scan result");
     }
-    //printf("data2[%d]/scan2[%d]=%d/%d\n", i, i, data2[i], scan2[i]);
     if(scan2[i] != scan2[i-1] + data2[i-1] * 11) {
       throw std::runtime_error("incorrect transform exclusive scan result");
     }
   }
 
   std::cout << "transform scan done - all results are correct\n";
+  
+  // deallocate the data
+  cudaFree(data1);
+  cudaFree(data2);
+  cudaFree(scan1);
+  cudaFree(scan2);
+  cudaFree(buff);
 
   return 0;
 }

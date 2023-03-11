@@ -1,14 +1,23 @@
 
 list(APPEND TF_CUDA_UNITTESTS 
-  cuda_device
-  cuda_memory
-  cuda_basics 
-  cuda_matrix 
-  cuda_kmeans 
+  test_cuda_objects
+  test_cuda_memory
+  test_cuda_basics 
+  test_cuda_matrix 
+  test_cuda_kmeans 
+  test_cuda_for_each
+  test_cuda_for_each_index
+  test_cuda_transform
+  test_cuda_reduce
+  test_cuda_scan
+  test_cuda_find
+  test_cuda_min_max_element
+  test_cuda_merge
+  test_cuda_basic_updates
+  test_cuda_capturer_optimizer
+  
   #cuda_algorithms
   #cuda_algorithm_updates
-  cuda_basic_updates
-  cuda_capturer_optimizer
 )
 
 foreach(cudatest IN LISTS TF_CUDA_UNITTESTS)

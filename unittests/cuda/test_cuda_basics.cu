@@ -79,9 +79,125 @@ TEST_CASE("EmptyCapture" * doctest::timeout(300)) {
   empty<tf::cudaFlowCapturer>();
 }
 
-// --------------------------------------------------------
+// ----------------------------------------------------------------------------
+// Move Semantics
+// ----------------------------------------------------------------------------
+
+template <typename F>
+void move_semantics() {
+
+  unsigned N = 1024;
+  
+  F rhs;
+
+  REQUIRE(rhs.num_tasks() == 0);
+  REQUIRE(rhs.empty());
+  REQUIRE(rhs.native_executable() == nullptr);
+
+  // construct a cudaflow of three tasks
+  auto cpu = static_cast<int*>(std::calloc(N, sizeof(int)));
+  auto gpu = tf::cuda_malloc_device<int>(N);
+  dim3 g = {(N+255)/256, 1, 1};
+  dim3 b = {256, 1, 1};
+  auto h2d = rhs.copy(gpu, cpu, N);
+  auto kernel = rhs.kernel(g, b, 0, k_add<int>, gpu, N, 17);
+  auto d2h = rhs.copy(cpu, gpu, N);
+  h2d.precede(kernel);
+  kernel.precede(d2h);
+
+  REQUIRE(rhs.num_tasks() == 3);
+  REQUIRE(rhs.empty() == false);
+  REQUIRE(rhs.native_executable() == nullptr);
+  
+  // construct a rhs
+  F lhs( std::move(rhs) );
+
+  REQUIRE(rhs.num_tasks() == 0);
+  REQUIRE(rhs.empty());
+  REQUIRE(rhs.native_executable() == nullptr);
+  
+  REQUIRE(lhs.num_tasks() == 3);
+  REQUIRE(lhs.empty() == false);
+  REQUIRE(lhs.native_executable() == nullptr);
+
+  // assign lhs to rhs using move semantics
+  rhs = std::move(lhs);
+  
+  REQUIRE(lhs.num_tasks() == 0);
+  REQUIRE(lhs.empty());
+  REQUIRE(lhs.native_executable() == nullptr);
+  
+  REQUIRE(rhs.num_tasks() == 3);
+  REQUIRE(rhs.empty() == false);
+  REQUIRE(rhs.native_executable() == nullptr);
+
+  // run
+  rhs.run(0);
+  cudaStreamSynchronize(0);
+
+  auto native_graph = rhs.native_graph();
+  auto native_executable = rhs.native_executable();
+
+  REQUIRE(native_graph != nullptr);
+  REQUIRE(native_executable != nullptr);
+  REQUIRE(rhs.num_tasks() == 3);
+  REQUIRE(rhs.empty() == false);
+  REQUIRE(rhs.native_graph() != nullptr);
+  REQUIRE(rhs.native_executable() != nullptr);
+  REQUIRE(tf::cuda_graph_get_num_nodes(rhs.native_graph()) == rhs.num_tasks());
+  
+  for(unsigned i=0; i<N; ++i) {
+    REQUIRE(cpu[i] == 17);
+  }
+
+  // assign rhs to lhs using move semantics
+  lhs = std::move(rhs);
+  
+  REQUIRE(lhs.num_tasks() == 3);
+  REQUIRE(lhs.empty() == false);
+  REQUIRE(lhs.native_graph() == native_graph);
+  REQUIRE(lhs.native_executable() == native_executable);
+  REQUIRE(tf::cuda_graph_get_num_nodes(lhs.native_graph()) == lhs.num_tasks());
+  
+  REQUIRE(rhs.num_tasks() == 0);
+  REQUIRE(rhs.empty());
+  REQUIRE(rhs.native_graph() == nullptr);
+  REQUIRE(rhs.native_executable() == nullptr);
+
+  // run the flow again
+  for(size_t j=2; j<=10; j++) {
+
+    lhs.run(0);
+    cudaStreamSynchronize(0);
+    
+    for(unsigned i=0; i<N; ++i) {
+      REQUIRE(cpu[i] == j*17);
+    }
+    
+    REQUIRE(lhs.num_tasks() == 3);
+    REQUIRE(lhs.empty() == false);
+    REQUIRE(lhs.native_graph() == native_graph);
+    REQUIRE(lhs.native_executable() == native_executable);
+    REQUIRE(tf::cuda_graph_get_num_nodes(lhs.native_graph()) == lhs.num_tasks());
+    
+    REQUIRE(rhs.num_tasks() == 0);
+    REQUIRE(rhs.empty());
+    REQUIRE(rhs.native_graph() == nullptr);
+    REQUIRE(rhs.native_executable() == nullptr);
+  }
+}
+
+TEST_CASE("cudaFlow.MoveSemantics" * doctest::timeout(300)) {
+  move_semantics<tf::cudaFlow>();
+}
+
+TEST_CASE("cudaFlowCapturer.MoveSemantics" * doctest::timeout(300)) {
+  move_semantics<tf::cudaFlowCapturer>();
+}
+
+// ----------------------------------------------------------------------------
 // Standalone
-// --------------------------------------------------------
+// ----------------------------------------------------------------------------
 template <typename T>
 void standalone() {
 
@@ -133,16 +249,20 @@ TEST_CASE("Standalone.cudaCapturer") {
   standalone<tf::cudaFlowCapturer>();
 }
 
+
+
 // --------------------------------------------------------
 // Testcase: Set
 // --------------------------------------------------------
 template <typename T>
 void set() {
+    
+  tf::Executor executor;
+  tf::Taskflow taskflow;
 
   for(unsigned n=1; n<=123456; n = n*2 + 1) {
 
-    tf::Taskflow taskflow;
-    tf::Executor executor;
+    taskflow.clear();
     
     T* cpu = nullptr;
     T* gpu = nullptr;
@@ -154,10 +274,8 @@ void set() {
 
     auto gputask = taskflow.emplace([&]() {
       tf::cudaFlow cf;
-      dim3 g = {(n+255)/256, 1, 1};
-      dim3 b = {256, 1, 1};
       auto h2d = cf.copy(gpu, cpu, n);
-      auto kernel = cf.kernel(g, b, 0, k_set<T>, gpu, n, (T)17);
+      auto kernel = cf.kernel((n+255)/256, 256, 0, k_set<T>, gpu, n, (T)17);
       auto d2h = cf.copy(cpu, gpu, n);
       h2d.precede(kernel);
       kernel.precede(d2h);

@@ -28,6 +28,14 @@ void verify(const T* a, const T* b, bool* check, size_t size) {
   }
 }
 
+template <typename T>
+__global__ void k_add(T* ptr, size_t N, T value) {
+  int i = blockIdx.x*blockDim.x + threadIdx.x;
+  if (i < N) {
+    ptr[i] += value;
+  }
+}
+
 //add
 template <typename T>
 __global__
@@ -46,6 +54,96 @@ void multiply(const T* a, const T* b, T* c, size_t size) {
   for(;tid < size; tid += gridDim.x * blockDim.x) {
     c[tid] = a[tid] * b[tid];
   }
+}
+
+// ----------------------------------------------------------------------------
+// Incrementality
+// ----------------------------------------------------------------------------
+TEST_CASE("cudaFlowCapturer.Incrementality") {
+
+  unsigned N = 1024;
+  
+  tf::cudaFlowCapturer cf;
+
+  // construct a cudaflow of three tasks
+  auto cpu = static_cast<int*>(std::calloc(N, sizeof(int)));
+  auto gpu = tf::cuda_malloc_device<int>(N);
+  dim3 g = {(N+255)/256, 1, 1};
+  dim3 b = {256, 1, 1};
+  auto h2d = cf.copy(gpu, cpu, N);
+  auto kernel = cf.kernel(g, b, 0, k_add<int>, gpu, N, 17);
+  auto d2h = cf.copy(cpu, gpu, N);
+  h2d.precede(kernel);
+  kernel.precede(d2h);
+
+  REQUIRE(cf.num_tasks() == 3);
+  REQUIRE(cf.empty() == false);
+  REQUIRE(cf.native_executable() == nullptr);
+  
+  // run
+  cf.run(0);
+  cudaStreamSynchronize(0);
+
+  auto native_graph = cf.native_graph();
+  auto native_executable = cf.native_executable();
+
+  REQUIRE(native_graph != nullptr);
+  REQUIRE(native_executable != nullptr);
+  REQUIRE(cf.num_tasks() == 3);
+  REQUIRE(cf.empty() == false);
+  REQUIRE(cf.native_graph() != nullptr);
+  REQUIRE(cf.native_executable() != nullptr);
+  REQUIRE(tf::cuda_graph_get_num_nodes(cf.native_graph()) == cf.num_tasks());
+
+  for(unsigned i=0; i<N; ++i) {
+    REQUIRE(cpu[i] == 17);
+  }
+  
+  // update task without changing topology and run
+  int sum = 17;
+  for(size_t j=0; j<10; j++) {
+    sum += j;
+    cf.kernel(kernel, g, b, 0, k_add<int>, gpu, N, j);
+    cf.run(0);
+    cudaStreamSynchronize(0);
+
+    auto updated_native_graph = cf.native_graph();
+    auto updated_native_executable = cf.native_executable();
+
+    REQUIRE(updated_native_graph != native_graph);
+    REQUIRE(updated_native_executable == native_executable);
+    REQUIRE(cf.num_tasks() == 3);
+    REQUIRE(cf.empty() == false);
+    REQUIRE(cf.native_graph() != nullptr);
+    REQUIRE(cf.native_executable() != nullptr);
+    REQUIRE(tf::cuda_graph_get_num_nodes(cf.native_graph()) == cf.num_tasks());
+    
+    for(unsigned i=0; i<N; ++i) {
+      REQUIRE(cpu[i] == sum);
+    }
+
+    native_graph = updated_native_graph;
+    native_executable = updated_native_executable;
+  }
+
+  // change topology and run
+  auto d2h2 = cf.copy(cpu, gpu, N);
+  d2h.precede(d2h2);
+
+  cf.run(0);
+  cudaStreamSynchronize(0);
+
+  auto updated_native_graph = cf.native_graph();
+  auto updated_native_executable = cf.native_executable();
+
+  REQUIRE(updated_native_graph != native_graph);
+  // CUDA runtime may reuse the previous executable
+  //REQUIRE(updated_native_executable == native_executable);
+  REQUIRE(cf.num_tasks() == 4);
+  REQUIRE(cf.empty() == false);
+  REQUIRE(cf.native_graph() != nullptr);
+  REQUIRE(cf.native_executable() != nullptr);
+  REQUIRE(tf::cuda_graph_get_num_nodes(cf.native_graph()) == cf.num_tasks());
 }
 
 //----------------------------------------------------------------------
@@ -727,30 +825,8 @@ TEST_CASE("cudaFlowCapturer.rebind.algorithms") {
   }
   REQUIRE(capturer.num_tasks() == 1);
 
-  // rebind to reduce
-  *res = 10;
-  capturer.reduce(task, data, data + 10000, res, 
-    []__device__(int a, int b){ return a + b; }
-  );
-
-  run_and_wait(capturer);
-
-  REQUIRE(*res == -229990);
-  REQUIRE(capturer.num_tasks() == 1);
-  
-  // rebind to uninitialized reduce
-  capturer.uninitialized_reduce(task, data, data + 10000, res, 
-    []__device__(int a, int b){ return a + b; }
-  );
-
-  run_and_wait(capturer);
-
-  REQUIRE(*res == -230000);
-  REQUIRE(capturer.num_tasks() == 1);
-  
   // rebind to single task
   capturer.single_task(task, [res]__device__(){ *res = 999; });
-  REQUIRE(*res == -230000);
 
   run_and_wait(capturer);
   REQUIRE(*res == 999);

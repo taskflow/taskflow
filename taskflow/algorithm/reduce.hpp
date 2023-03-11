@@ -1,6 +1,6 @@
 #pragma once
 
-#include "partitioner.hpp"
+#include "execution_policy.hpp"
 
 namespace tf {
 
@@ -8,17 +8,21 @@ namespace tf {
 // default reduction
 // ----------------------------------------------------------------------------
 
-template <
-  typename B, typename E, typename T, typename O, typename P,
-  std::enable_if_t<is_partitioner_v<P>, void>*
->
-Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P part) {
+// Function: reduce
+template <typename B, typename E, typename T, typename O>
+Task FlowBuilder::reduce(B beg, E end, T& init, O bop) {
+  return reduce(DefaultExecutionPolicy{}, beg, end, init, bop);
+}
+
+// Function: reduce
+template <typename P, typename B, typename E, typename T, typename O>
+Task FlowBuilder::reduce(P&& policy, B beg, E end, T& init, O bop) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  Task task = emplace([b=beg, e=end, &r=init, bop, part] (Subflow& sf) mutable {
+  Task task = emplace([b=beg, e=end, &r=init, bop, policy] (Subflow& sf) mutable {
 
     // fetch the iterator values
     B_t beg = b;
@@ -32,7 +36,7 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P part) {
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
-    if(W <= 1 || N <= part.chunk_size()) {
+    if(W <= 1 || N <= policy.chunk_size()) {
       for(; beg!=end; r = bop(r, *beg++));
       return;
     }
@@ -44,7 +48,7 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P part) {
     std::mutex mutex;
     std::atomic<size_t> next(0);
 
-    auto loop = [=, &mutex, &next, &r, &part] () mutable {
+    auto loop = [=, &mutex, &next, &r, &policy] () mutable {
       
       // pre-reduce
       size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
@@ -67,7 +71,7 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P part) {
       T sum = bop(*beg1, *beg2);
       
       // loop reduce
-      part(N, W, next, 
+      policy(N, W, next, 
         [&, prev_e=size_t{s0+2}](size_t curr_b, size_t curr_e) mutable {
           std::advance(beg, curr_b - prev_e);
           for(size_t x=curr_b; x<curr_e; x++, beg++) {
@@ -89,7 +93,7 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P part) {
         break;
       }
       // tail optimization
-      if(r <= part.chunk_size() || w == W-1) {
+      if(r <= policy.chunk_size() || w == W-1) {
         loop(); 
         break;
       }
@@ -108,19 +112,23 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P part) {
 // default transform and reduction
 // ----------------------------------------------------------------------------
 
-template <
-  typename B, typename E, typename T, typename BOP, typename UOP, typename P,
-  std::enable_if_t<is_partitioner_v<P>, void>*
->
+// Function: transform_reduce
+template <typename B, typename E, typename T, typename BOP, typename UOP>
+Task FlowBuilder::transform_reduce(B beg, E end, T& init, BOP bop, UOP uop) {
+  return transform_reduce(DefaultExecutionPolicy{}, beg, end, init, bop, uop);
+}
+
+// Function: transform_reduce
+template <typename P, typename B, typename E, typename T, typename BOP, typename UOP>
 Task FlowBuilder::transform_reduce(
-  B beg, E end, T& init, BOP bop, UOP uop, P part
+  P&& policy, B beg, E end, T& init, BOP bop, UOP uop
 ) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  Task task = emplace([b=beg, e=end, &r=init, bop, uop, part] (Subflow& sf) mutable {
+  Task task = emplace([b=beg, e=end, &r=init, bop, uop, policy] (Subflow& sf) mutable {
 
     // fetch the iterator values
     B_t beg = b;
@@ -134,7 +142,7 @@ Task FlowBuilder::transform_reduce(
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
-    if(W <= 1 || N <= part.chunk_size()) {
+    if(W <= 1 || N <= policy.chunk_size()) {
       for(; beg!=end; r = bop(std::move(r), uop(*beg++)));
       return;
     }
@@ -146,7 +154,7 @@ Task FlowBuilder::transform_reduce(
     std::mutex mutex;
     std::atomic<size_t> next(0);
       
-    auto loop = [=, &mutex, &next, &r, &part] () mutable {
+    auto loop = [=, &mutex, &next, &r, &policy] () mutable {
 
       // pre-reduce
       size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
@@ -169,7 +177,7 @@ Task FlowBuilder::transform_reduce(
       T sum = bop(uop(*beg1), uop(*beg2));
       
       // loop reduce
-      part(N, W, next, 
+      policy(N, W, next, 
         [&, prev_e=size_t{s0+2}](size_t curr_b, size_t curr_e) mutable {
           std::advance(beg, curr_b - prev_e);
           for(size_t x=curr_b; x<curr_e; x++, beg++) {
@@ -191,7 +199,7 @@ Task FlowBuilder::transform_reduce(
         break;
       }
       // tail optimization
-      if(r <= part.chunk_size() || w == W-1) {
+      if(r <= policy.chunk_size() || w == W-1) {
         loop(); 
         break;
       }

@@ -60,6 +60,11 @@ class cudaExecutionPolicy {
   @brief assigns a stream
    */
   void stream(cudaStream_t stream) noexcept { _stream = stream; }
+  
+  /**
+  @brief queries the number of blocks to accommodate N elements
+  */
+  static unsigned num_blocks(unsigned N) { return (N + nv - 1) / nv; } 
 
   private:
 
@@ -69,7 +74,7 @@ class cudaExecutionPolicy {
 /**
 @brief default execution policy
  */
-using cudaDefaultExecutionPolicy = cudaExecutionPolicy<512, 9>;
+using cudaDefaultExecutionPolicy = cudaExecutionPolicy<512, 7>;
 
 }  // end of namespace tf -----------------------------------------------------
 

@@ -11,40 +11,34 @@ namespace tf {
 
 namespace detail {
 
-/** @private */
-template <typename P, typename I, typename C>
-void cuda_for_each_loop(P&& p, I first, unsigned count, C c) {
-
-  using E = std::decay_t<P>;
-
-  unsigned B = (count + E::nv - 1) / E::nv;
-
-  cuda_kernel<<<B, E::nt, 0, p.stream()>>>(
-  [=] __device__ (auto tid, auto bid) {
-    auto tile = cuda_get_tile(bid, E::nv, count);
-    cuda_strided_iterate<E::nt, E::vt>([=](auto, auto j) {
+/**
+@private
+*/
+template <size_t nt, size_t vt, typename I, typename C>
+__global__ void cuda_for_each_kernel(I first, unsigned count, C c) {
+  auto tid = threadIdx.x;
+  auto bid = blockIdx.x;
+  auto tile = cuda_get_tile(bid, nt*vt, count);
+  cuda_strided_iterate<nt, vt>(
+    [=](auto, auto j) {
       c(*(first + tile.begin + j));
-    }, tid, tile.count());
-  });
+    }, 
+    tid, tile.count()
+  );
 }
 
 /** @private */
-template <typename P, typename I, typename C>
-void cuda_for_each_index_loop(
-  P&& p, I first, I inc, unsigned count, C c
-) {
-
-  using E = std::decay_t<P>;
-
-  unsigned B = (count + E::nv - 1) / E::nv;
-
-  cuda_kernel<<<B, E::nt, 0, p.stream()>>>(
-  [=]__device__(auto tid, auto bid) {
-    auto tile = cuda_get_tile(bid, E::nv, count);
-    cuda_strided_iterate<E::nt, E::vt>([=]__device__(auto, auto j) {
+template <size_t nt, size_t vt, typename I, typename C>
+__global__ void cuda_for_each_index_kernel(I first, I inc, unsigned count, C c) {
+  auto tid = threadIdx.x;
+  auto bid = blockIdx.x;
+  auto tile = cuda_get_tile(bid, nt*vt, count);
+  cuda_strided_iterate<nt, vt>(
+    [=]__device__(auto, auto j) {
       c(first + inc*(tile.begin+j));
-    }, tid, tile.count());
-  });
+    }, 
+    tid, tile.count()
+  );
 }
 
 }  // end of namespace detail -------------------------------------------------
@@ -95,6 +89,8 @@ for(auto itr = first; itr != last; itr++) {
 */
 template <typename P, typename I, typename C>
 void cuda_for_each(P&& p, I first, I last, C c) {
+  
+  using E = std::decay_t<P>;
 
   unsigned count = std::distance(first, last);
 
@@ -102,7 +98,9 @@ void cuda_for_each(P&& p, I first, I last, C c) {
     return;
   }
 
-  detail::cuda_for_each_loop(p, first, count, c);
+  detail::cuda_for_each_kernel<E::nt, E::vt, I, C><<<E::num_blocks(count), E::nt, 0, p.stream()>>>(
+    first, count, c
+  );
 }
 
 /**
@@ -136,10 +134,8 @@ for(auto i=first; i>last; i+=step) {
 */
 template <typename P, typename I, typename C>
 void cuda_for_each_index(P&& p, I first, I last, I inc, C c) {
-
-  if(is_range_invalid(first, last, inc)) {
-    TF_THROW("invalid range [", first, ", ", last, ") with inc size ", inc);
-  }
+  
+  using E = std::decay_t<P>;
 
   unsigned count = distance(first, last, inc);
 
@@ -147,7 +143,9 @@ void cuda_for_each_index(P&& p, I first, I last, I inc, C c) {
     return;
   }
 
-  detail::cuda_for_each_index_loop(p, first, inc, count, c);
+  detail::cuda_for_each_index_kernel<E::nt, E::vt, I, C><<<E::num_blocks(count), E::nt, 0, p.stream()>>>(
+    first, inc, count, c
+  );
 }
 
 // ----------------------------------------------------------------------------
@@ -172,56 +170,111 @@ void cudaFlow::single_task(cudaTask task, C c) {
   return kernel(task, 1, 1, 0, cuda_single_task<C>, c);
 }
 
+// Function: single_task
+template <typename C>
+cudaTask cudaFlowCapturer::single_task(C callable) {
+  return on([=] (cudaStream_t stream) mutable {
+    cuda_single_task(cudaDefaultExecutionPolicy(stream), callable);
+  });
+}
+
+// Function: single_task
+template <typename C>
+void cudaFlowCapturer::single_task(cudaTask task, C callable) {
+  on(task, [=] (cudaStream_t stream) mutable {
+    cuda_single_task(cudaDefaultExecutionPolicy(stream), callable);
+  });
+}
+
 // ----------------------------------------------------------------------------
-// cudaFlow
+// cudaFlow: for_each, for_each_index
 // ----------------------------------------------------------------------------
 
 // Function: for_each
 template <typename I, typename C>
 cudaTask cudaFlow::for_each(I first, I last, C c) {
-  return capture([=](cudaFlowCapturer& cap) mutable {
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.for_each(first, last, c);
-  });
-}
 
-// Function: for_each_index
-template <typename I, typename C>
-cudaTask cudaFlow::for_each_index(I first, I last, I inc, C c) {
-  return capture([=](cudaFlowCapturer& cap) mutable {
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.for_each_index(first, last, inc, c);
-  });
+  using E = cudaDefaultExecutionPolicy;
+  
+  unsigned count = std::distance(first, last);
+  
+  // TODO:
+  //if(count == 0) {
+  //  return;
+  //}
+
+  return kernel(
+    E::num_blocks(count), E::nt, 0, 
+    detail::cuda_for_each_kernel<E::nt, E::vt, I, C>, first, count, c
+  );
 }
 
 // Function: for_each
 template <typename I, typename C>
 void cudaFlow::for_each(cudaTask task, I first, I last, C c) {
-  capture(task, [=](cudaFlowCapturer& cap) mutable {
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.for_each(first, last, c);
-  });
+
+  using E = cudaDefaultExecutionPolicy;
+  
+  unsigned count = std::distance(first, last);
+
+  // TODO:
+  //if(count == 0) {
+  //  return;
+  //}
+  
+  kernel(task, 
+    E::num_blocks(count), E::nt, 0, 
+    detail::cuda_for_each_kernel<E::nt, E::vt, I, C>, first, count, c
+  );
+}
+
+// Function: for_each_index
+template <typename I, typename C>
+cudaTask cudaFlow::for_each_index(I first, I last, I inc, C c) {
+
+  using E = cudaDefaultExecutionPolicy;
+
+  unsigned count = distance(first, last, inc);
+
+  // TODO:
+  //if(count == 0) {
+  //  return;
+  //}
+
+  return kernel(
+    E::num_blocks(count), E::nt, 0, 
+    detail::cuda_for_each_index_kernel<E::nt, E::vt, I, C>, first, inc, count, c
+  );
 }
 
 // Function: for_each_index
 template <typename I, typename C>
 void cudaFlow::for_each_index(cudaTask task, I first, I last, I inc, C c) {
-  capture(task, [=](cudaFlowCapturer& cap) mutable {
-    cap.make_optimizer<cudaLinearCapturing>();
-    cap.for_each_index(first, last, inc, c);
-  });
+  
+  using E = cudaDefaultExecutionPolicy;
+
+  unsigned count = distance(first, last, inc);
+  
+  // TODO:
+  //if(count == 0) {
+  //  return;
+  //}
+
+  return kernel(task,
+    E::num_blocks(count), E::nt, 0, 
+    detail::cuda_for_each_index_kernel<E::nt, E::vt, I, C>, first, inc, count, c
+  );
 }
 
 // ----------------------------------------------------------------------------
-// cudaFlowCapturer
+// cudaFlowCapturer: for_each, for_each_index
 // ----------------------------------------------------------------------------
 
 // Function: for_each
 template <typename I, typename C>
 cudaTask cudaFlowCapturer::for_each(I first, I last, C c) {
   return on([=](cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_for_each(p, first, last, c);
+    cuda_for_each(cudaDefaultExecutionPolicy(stream), first, last, c);
   });
 }
 
@@ -229,8 +282,7 @@ cudaTask cudaFlowCapturer::for_each(I first, I last, C c) {
 template <typename I, typename C>
 cudaTask cudaFlowCapturer::for_each_index(I beg, I end, I inc, C c) {
   return on([=] (cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_for_each_index(p, beg, end, inc, c);
+    cuda_for_each_index(cudaDefaultExecutionPolicy(stream), beg, end, inc, c);
   });
 }
 
@@ -238,8 +290,7 @@ cudaTask cudaFlowCapturer::for_each_index(I beg, I end, I inc, C c) {
 template <typename I, typename C>
 void cudaFlowCapturer::for_each(cudaTask task, I first, I last, C c) {
   on(task, [=](cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_for_each(p, first, last, c);
+    cuda_for_each(cudaDefaultExecutionPolicy(stream), first, last, c);
   });
 }
 
@@ -249,28 +300,11 @@ void cudaFlowCapturer::for_each_index(
   cudaTask task, I beg, I end, I inc, C c
 ) {
   on(task, [=] (cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_for_each_index(p, beg, end, inc, c);
+    cuda_for_each_index(cudaDefaultExecutionPolicy(stream), beg, end, inc, c);
   });
 }
 
-// Function: single_task
-template <typename C>
-cudaTask cudaFlowCapturer::single_task(C callable) {
-  return on([=] (cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_single_task(p, callable);
-  });
-}
 
-// Function: single_task
-template <typename C>
-void cudaFlowCapturer::single_task(cudaTask task, C callable) {
-  on(task, [=] (cudaStream_t stream) mutable {
-    cudaDefaultExecutionPolicy p(stream);
-    cuda_single_task(p, callable);
-  });
-}
 
 }  // end of namespace tf -----------------------------------------------------
 

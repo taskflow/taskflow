@@ -322,6 +322,28 @@ void cuda_dump_graph(T& os, cudaGraph_t graph) {
 // ----------------------------------------------------------------------------
 // cudaGraph
 // ----------------------------------------------------------------------------
+  
+/**
+@private
+*/
+struct cudaGraphCreator {
+  cudaGraph_t operator () () const { 
+    cudaGraph_t g;
+    TF_CHECK_CUDA(cudaGraphCreate(&g, 0), "failed to create a CUDA native graph");
+    return g; 
+  }
+};
+
+/**
+@private
+*/
+struct cudaGraphDeleter {
+  void operator () (cudaGraph_t g) const {
+    if(g) {
+      cudaGraphDestroy(g);
+    }
+  }
+};
 
 /**
 @class cudaGraph
@@ -332,117 +354,45 @@ A cudaGraph object is an RAII-styled wrapper over
 a native CUDA graph (@c cudaGraph_t).
 A cudaGraph object is move-only.
 */
-class cudaGraph {
-
-  struct cudaGraphCreator {
-    cudaGraph_t operator () () const { 
-      cudaGraph_t g;
-      TF_CHECK_CUDA(cudaGraphCreate(&g, 0), "failed to create a CUDA native graph");
-      return g; 
-    }
-  };
-  
-  struct cudaGraphDeleter {
-    void operator () (cudaGraph_t g) const {
-      if(g) {
-        cudaGraphDestroy(g);
-      }
-    }
-  };
+class cudaGraph :
+  public cudaObject<cudaGraph_t, cudaGraphCreator, cudaGraphDeleter> {
 
   public:
 
-    /**
-    @brief constructs an RAII-styled object from the given CUDA exec
+  /**
+  @brief constructs an RAII-styled object from the given CUDA exec
 
-    Constructs a cudaGraph object which owns @c exec.
-    */
-    explicit cudaGraph(cudaGraph_t native) : _graph(native) {
-    }
-    
-    /**
-    @brief constructs an RAII-styled object for a new CUDA exec
-
-    Equivalently calling @c cudaGraphCreate to create a exec.
-    */
-    cudaGraph() : _graph{ cudaGraphCreator{}() } {
-    }
-    
-    /**
-    @brief disabled copy constructor
-    */
-    cudaGraph(const cudaGraph&) = delete;
-    
-    /**
-    @brief move constructor
-    */
-    cudaGraph(cudaGraph&& rhs) : _graph{rhs._graph} {
-      rhs._graph = nullptr;
-    }
-
-    /**
-    @brief destructs the CUDA exec
-    */
-    ~cudaGraph() {
-      cudaGraphDeleter {} (_graph);
-    }
-    
-    /**
-    @brief disabled copy assignment
-    */
-    cudaGraph& operator = (const cudaGraph&) = delete;
-
-    /**
-    @brief move assignment
-    */
-    cudaGraph& operator = (cudaGraph&& rhs) {
-      cudaGraphDeleter {} (_graph);
-      _graph = rhs._graph;
-      rhs._graph = nullptr;
-      return *this;
-    }
-    
-    /**
-    @brief deletes the current CUDA graph (if any) and creates a new CUDA graph
-    */
-    void create() {
-      cudaGraphDeleter {} (_graph);
-      _graph = cudaGraphCreator{}();
-    }
-    
-    /**
-    @brief deletes the current CUDA Graph
-    */
-    void clear() {
-      cudaGraphDeleter {} (_graph);
-      _graph = nullptr;
-    }
-    
-    /**
-    @brief resets this to the given CUDA graph
-    */
-    void reset(cudaGraph_t graph) {
-      cudaGraphDeleter {} (_graph);
-      _graph = graph;
-    }
+  Constructs a cudaGraph object from the given CUDA graph @c native.
+  */
+  explicit cudaGraph(cudaGraph_t native) : cudaObject(native) { }
   
-    /**
-    @brief implicit conversion to the native CUDA exec (cudaGraph_t)
-
-    Returns the underlying exec of type @c cudaGraph_t.
-    */
-    operator cudaGraph_t () const {
-      return _graph;
-    }
-    
-  private:
-
-    cudaGraph_t _graph {nullptr};
+  /**
+  @brief constructs a cudaGraph object with a new CUDA graph
+  */
+  cudaGraph() = default;
 };
 
 // ----------------------------------------------------------------------------
 // cudaGraphExec
 // ----------------------------------------------------------------------------
+  
+/**
+@private
+*/
+struct cudaGraphExecCreator {
+  cudaGraphExec_t operator () () const { return nullptr; }
+};
+
+/**
+@private
+*/
+struct cudaGraphExecDeleter {
+  void operator () (cudaGraphExec_t executable) const {
+    if(executable) {
+      cudaGraphExecDestroy(executable);
+    }
+  }
+};
 
 /**
 @class cudaGraphExec
@@ -453,140 +403,69 @@ A cudaGraphExec object is an RAII-styled wrapper over
 a native CUDA executable graph (@c cudaGraphExec_t).
 A cudaGraphExec object is move-only.
 */
-class cudaGraphExec {
-
-  struct cudaGraphExecCreator {
-    cudaGraphExec_t operator () () const { return nullptr; }
-  };
-  
-  struct cudaGraphExecDeleter {
-    void operator () (cudaGraphExec_t executable) const {
-      if(executable) {
-        cudaGraphExecDestroy(executable);
-      }
-    }
-  };
+class cudaGraphExec : 
+  public cudaObject<cudaGraphExec_t, cudaGraphExecCreator, cudaGraphExecDeleter> {
 
   public:
 
-    /**
-    @brief constructs an RAII-styled object from the given CUDA exec
+  /**
+  @brief constructs an RAII-styled object from the given CUDA exec
 
-    Constructs a cudaGraphExec object which owns @c exec.
-    */
-    explicit cudaGraphExec(cudaGraphExec_t exec) : _exec(exec) {
-    }
-    
-    /**
-    @brief constructs an RAII-styled object for a new CUDA exec
-
-    Equivalently calling @c cudaGraphExecCreate to create a exec.
-    */
-    cudaGraphExec() : _exec{ cudaGraphExecCreator{}() } {
-    }
-    
-    /**
-    @brief disabled copy constructor
-    */
-    cudaGraphExec(const cudaGraphExec&) = delete;
-    
-    /**
-    @brief move constructor
-    */
-    cudaGraphExec(cudaGraphExec&& rhs) : _exec{rhs._exec} {
-      rhs._exec = nullptr;
-    }
-
-    /**
-    @brief destructs the CUDA exec
-    */
-    ~cudaGraphExec() {
-      cudaGraphExecDeleter {} (_exec);
-    }
-    
-    /**
-    @brief disabled copy assignment
-    */
-    cudaGraphExec& operator = (const cudaGraphExec&) = delete;
-
-    /**
-    @brief move assignment
-    */
-    cudaGraphExec& operator = (cudaGraphExec&& rhs) {
-      cudaGraphExecDeleter {} (_exec);
-      _exec = rhs._exec;
-      rhs._exec = nullptr;
-      return *this;
-    }
-    
-    /**
-    @brief clears the underlying CUDA executable graph
-    */
-    void clear() {
-      cudaGraphExecDeleter {} (_exec);
-      _exec = nullptr;
-    }
-
-    /**
-    @brief instantiates the exexutable from the given CUDA graph
-    */
-    void instantiate(cudaGraph_t graph) {
-      cudaGraphExecDeleter {} (_exec);
-      TF_CHECK_CUDA(
-        cudaGraphInstantiate(&_exec, graph, nullptr, nullptr, 0),
-        "failed to create an executable graph"
-      );
-    }
-    
-    /**
-    @brief updates the exexutable from the given CUDA graph
-    */
-    cudaGraphExecUpdateResult update(cudaGraph_t graph) {
-      cudaGraphNode_t error_node;
-      cudaGraphExecUpdateResult error_result;
-      cudaGraphExecUpdate(_exec, graph, &error_node, &error_result);
-      return error_result;
-    }
-    
-    /**
-    @brief launchs the executable graph via the given stream
-    */
-    void launch(cudaStream_t stream) {
-      TF_CHECK_CUDA(
-        cudaGraphLaunch(_exec, stream), "failed to launch a CUDA executable graph"
-      );
-    }
+  Constructs a cudaGraphExec object which owns @c exec.
+  */
+  explicit cudaGraphExec(cudaGraphExec_t exec) : cudaObject(exec) { }
   
-    /**
-    @brief implicit conversion to the native CUDA exec (cudaGraphExec_t)
-
-    Returns the underlying exec of type @c cudaGraphExec_t.
-    */
-    operator cudaGraphExec_t () const {
-      return _exec;
-    }
-    
-  private:
-
-    cudaGraphExec_t _exec {nullptr};
+  /**
+  @brief default constructor
+  */
+  cudaGraphExec() = default;
+  
+  /**
+  @brief instantiates the exexutable from the given CUDA graph
+  */
+  void instantiate(cudaGraph_t graph) {
+    cudaGraphExecDeleter {} (object);
+    TF_CHECK_CUDA(
+      cudaGraphInstantiate(&object, graph, nullptr, nullptr, 0),
+      "failed to create an executable graph"
+    );
+  }
+  
+  /**
+  @brief updates the exexutable from the given CUDA graph
+  */
+  cudaGraphExecUpdateResult update(cudaGraph_t graph) {
+    cudaGraphNode_t error_node;
+    cudaGraphExecUpdateResult error_result;
+    cudaGraphExecUpdate(object, graph, &error_node, &error_result);
+    return error_result;
+  }
+  
+  /**
+  @brief launchs the executable graph via the given stream
+  */
+  void launch(cudaStream_t stream) {
+    TF_CHECK_CUDA(
+      cudaGraphLaunch(object, stream), "failed to launch a CUDA executable graph"
+    );
+  }
 };
 
 // ----------------------------------------------------------------------------
-// cudaGraph class
+// cudaFlowGraph class
 // ----------------------------------------------------------------------------
 
-// class: cudaGraph
+// class: cudaFlowGraph
 class cudaFlowGraph {
 
   friend class cudaFlowNode;
   friend class cudaTask;
-  friend class cudaFlowCapturerBase;
   friend class cudaFlowCapturer;
   friend class cudaFlow;
-  friend class cudaCapturingBase;
-  friend class cudaSequentialCapturing;
-  friend class cudaLinearCapturing;
-  friend class cudaRoundRobinCapturing;
+  friend class cudaFlowOptimizerBase;
+  friend class cudaFlowSequentialOptimizer;
+  friend class cudaFlowLinearOptimizer;
+  friend class cudaFlowRoundRobinOptimizer;
   friend class Taskflow;
   friend class Executor;
 
@@ -634,11 +513,10 @@ class cudaFlowNode {
   friend class cudaTask;
   friend class cudaFlow;
   friend class cudaFlowCapturer;
-  friend class cudaFlowCapturerBase;
-  friend class cudaCapturingBase;
-  friend class cudaSequentialCapturing;
-  friend class cudaLinearCapturing;
-  friend class cudaRoundRobinCapturing;
+  friend class cudaFlowOptimizerBase;
+  friend class cudaFlowSequentialOptimizer;
+  friend class cudaFlowLinearOptimizer;
+  friend class cudaFlowRoundRobinOptimizer;
   friend class Taskflow;
   friend class Executor;
 
@@ -676,7 +554,7 @@ class cudaFlowNode {
 
   // Subflow handle
   struct Subflow {
-    cudaFlowGraph graph;
+    cudaFlowGraph cfg;
   };
 
   // Capture
@@ -721,7 +599,7 @@ class cudaFlowNode {
 
   private:
 
-    cudaFlowGraph& _graph;
+    cudaFlowGraph& _cfg;
 
     std::string _name;
 
@@ -764,14 +642,14 @@ cudaFlowNode::Capture::Capture(C&& work) :
 // Constructor
 template <typename... ArgsT>
 cudaFlowNode::cudaFlowNode(cudaFlowGraph& graph, ArgsT&&... args) :
-  _graph {graph},
+  _cfg {graph},
   _handle {std::forward<ArgsT>(args)...} {
 }
 
 // Procedure: _precede
 inline void cudaFlowNode::_precede(cudaFlowNode* v) {
 
-  _graph._state |= cudaFlowGraph::CHANGED;
+  _cfg._state |= cudaFlowGraph::CHANGED;
 
   _successors.push_back(v);
   v->_dependents.push_back(this);
@@ -780,7 +658,7 @@ inline void cudaFlowNode::_precede(cudaFlowNode* v) {
   if(_handle.index() != cudaFlowNode::CAPTURE) {
     TF_CHECK_CUDA(
       cudaGraphAddDependencies(
-        _graph._native_handle, &_native_handle, &v->_native_handle, 1
+        _cfg._native_handle, &_native_handle, &v->_native_handle, 1
       ),
       "failed to add a preceding link ", this, "->", v
     );
@@ -798,7 +676,7 @@ inline bool cudaFlowGraph::empty() const {
 
 // Procedure: clear
 inline void cudaFlowGraph::clear() {
-  _state = cudaFlowGraph::CHANGED;
+  _state |= cudaFlowGraph::CHANGED;
   _nodes.clear();
   _native_handle.clear();
 }
@@ -879,7 +757,7 @@ inline void cudaFlowGraph::dump(
 
         case cudaFlowNode::SUBFLOW:
           stack.push(std::make_tuple(
-            &(std::get_if<cudaFlowNode::Subflow>(&v->_handle)->graph), v, l+1)
+            &(std::get_if<cudaFlowNode::Subflow>(&v->_handle)->cfg), v, l+1)
           );
           os << " style=\"filled\""
              << " color=\"black\" fillcolor=\"purple\""

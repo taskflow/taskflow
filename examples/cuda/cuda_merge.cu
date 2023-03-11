@@ -32,16 +32,20 @@ int main(int argc, char* argv[]) {
   // GPU merge
   // --------------------------------------------------------------------------
 
-  auto beg = std::chrono::steady_clock::now();
+  tf::cudaStream stream;
+  tf::cudaDefaultExecutionPolicy policy(stream);
 
   // allocate the buffer
-  auto bufsz = tf::cuda_merge_buffer_size<tf::cudaDefaultExecutionPolicy>(N, N);
-  tf::cudaDeviceVector<std::byte> buf(bufsz);
+  auto bufsz = tf::cuda_merge_bufsz<tf::cudaDefaultExecutionPolicy>(N, N);
 
-  tf::cuda_merge(tf::cudaDefaultExecutionPolicy{}, 
-    da, da+N, db, db+N, dc, tf::cuda_less<int>{}, buf.data()
+  void* buf;
+  cudaMalloc(&buf, bufsz);
+
+  auto beg = std::chrono::steady_clock::now();
+  tf::cuda_merge(policy, 
+    da, da+N, db, db+N, dc, tf::cuda_less<int>{}, buf
   );
-  cudaStreamSynchronize(0);
+  stream.synchronize();
   auto end = std::chrono::steady_clock::now();
 
   std::cout << "GPU merge: " 
@@ -70,7 +74,14 @@ int main(int argc, char* argv[]) {
   }
 
   std::cout << "correct result\n";
+  
+  // --------------------------------------------------------------------------
+  // deallocate the memory
+  // --------------------------------------------------------------------------
+  cudaFree(da);
+  cudaFree(db);
+  cudaFree(dc);
+  cudaFree(buf);
 
-  cudaDeviceSynchronize();
-
+  return 0;
 };

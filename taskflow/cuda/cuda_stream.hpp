@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cuda_pool.hpp"
+#include "cuda_object.hpp"
 
 /**
 @file cuda_stream.hpp
@@ -9,9 +9,33 @@
 
 namespace tf {
 
+
+
 // ----------------------------------------------------------------------------
 // cudaStream
 // ----------------------------------------------------------------------------
+
+/**
+@private
+*/
+struct cudaStreamCreator {
+  cudaStream_t operator () () const {
+    cudaStream_t stream;
+    TF_CHECK_CUDA(cudaStreamCreate(&stream), "failed to create a CUDA stream");
+    return stream;
+  }
+};
+
+/**
+@private
+*/
+struct cudaStreamDeleter {
+  void operator () (cudaStream_t stream) const {
+    if(stream) {
+      cudaStreamDestroy(stream);
+    }
+  }
+};
 
 /**
 @class cudaStream
@@ -22,23 +46,9 @@ A cudaStream object is an RAII-styled wrapper over a native CUDA stream
 (@c cudaStream_t).
 A cudaStream object is move-only.
 */
-class cudaStream {
+class cudaStream : 
 
-  struct cudaStreamCreator {
-    cudaStream_t operator () () const {
-      cudaStream_t stream;
-      TF_CHECK_CUDA(cudaStreamCreate(&stream), "failed to create a CUDA stream");
-      return stream;
-    }
-  };
-  
-  struct cudaStreamDeleter {
-    void operator () (cudaStream_t stream) const {
-      if(stream) {
-        cudaStreamDestroy(stream);
-      }
-    }
-  };
+  public cudaObject <cudaStream_t, cudaStreamCreator, cudaStreamDeleter> {
   
   public:
 
@@ -47,59 +57,13 @@ class cudaStream {
 
     Constructs a cudaStream object which owns @c stream.
     */
-    explicit cudaStream(cudaStream_t stream) : _stream(stream) {
+    explicit cudaStream(cudaStream_t stream) : cudaObject(stream) {
     }
     
     /**
-    @brief constructs an RAII-styled object for a new CUDA stream
-
-    Equivalently calling @c cudaStreamCreate to create a stream.
+    @brief default constructor
     */
-    cudaStream() : _stream{ cudaStreamCreator{}() } {
-    }
-    
-    /**
-    @brief disabled copy constructor
-    */
-    cudaStream(const cudaStream&) = delete;
-    
-    /**
-    @brief move constructor
-    */
-    cudaStream(cudaStream&& rhs) : _stream{rhs._stream} {
-      rhs._stream = nullptr;
-    }
-
-    /**
-    @brief destructs the CUDA stream
-    */
-    ~cudaStream() {
-      cudaStreamDeleter {} (_stream);
-    }
-    
-    /**
-    @brief disabled copy assignment
-    */
-    cudaStream& operator = (const cudaStream&) = delete;
-
-    /**
-    @brief move assignment
-    */
-    cudaStream& operator = (cudaStream&& rhs) {
-      cudaStreamDeleter {} (_stream);
-      _stream = rhs._stream;
-      rhs._stream = nullptr;
-      return *this;
-    }
-    
-    /**
-    @brief implicit conversion to the native CUDA stream (cudaStream_t)
-
-    Returns the underlying stream of type @c cudaStream_t.
-    */
-    operator cudaStream_t () const {
-      return _stream;
-    }
+    cudaStream() = default;
     
     /**
     @brief synchronizes the associated stream
@@ -109,7 +73,7 @@ class cudaStream {
     */
     void synchronize() const {
       TF_CHECK_CUDA(
-        cudaStreamSynchronize(_stream), "failed to synchronize a CUDA stream"
+        cudaStreamSynchronize(object), "failed to synchronize a CUDA stream"
       );
     }
     
@@ -141,8 +105,8 @@ class cudaStream {
     */
     void begin_capture(cudaStreamCaptureMode m = cudaStreamCaptureModeGlobal) const {
       TF_CHECK_CUDA(
-        cudaStreamBeginCapture(_stream, m), 
-        "failed to begin capture on stream ", _stream, " with thread mode ", m
+        cudaStreamBeginCapture(object, m), 
+        "failed to begin capture on stream ", object, " with thread mode ", m
       );
     }
 
@@ -158,8 +122,8 @@ class cudaStream {
     cudaGraph_t end_capture() const {
       cudaGraph_t native_g;
       TF_CHECK_CUDA(
-        cudaStreamEndCapture(_stream, &native_g), 
-        "failed to end capture on stream ", _stream
+        cudaStreamEndCapture(object, &native_g), 
+        "failed to end capture on stream ", object
       );
       return native_g;
     }
@@ -172,8 +136,8 @@ class cudaStream {
     */
     void record(cudaEvent_t event) const {
       TF_CHECK_CUDA(
-        cudaEventRecord(event, _stream), 
-        "failed to record event ", event, " on stream ", _stream
+        cudaEventRecord(event, object), 
+        "failed to record event ", event, " on stream ", object
       );
     }
     
@@ -185,19 +149,45 @@ class cudaStream {
     */
     void wait(cudaEvent_t event) const {
       TF_CHECK_CUDA(
-        cudaStreamWaitEvent(_stream, event, 0), 
-        "failed to wait for event ", event, " on stream ", _stream
+        cudaStreamWaitEvent(object, event, 0), 
+        "failed to wait for event ", event, " on stream ", object
       );
     }
-
-  private:
-
-    cudaStream_t _stream {nullptr};
 };
 
 // ----------------------------------------------------------------------------
 // cudaEvent
 // ----------------------------------------------------------------------------
+  
+/**
+@private
+*/
+struct cudaEventCreator {
+
+  cudaEvent_t operator () () const {
+    cudaEvent_t event;
+    TF_CHECK_CUDA(cudaEventCreate(&event), "failed to create a CUDA event");
+    return event;
+  }
+  
+  cudaEvent_t operator () (unsigned int flag) const {
+    cudaEvent_t event;
+    TF_CHECK_CUDA(
+      cudaEventCreateWithFlags(&event, flag),
+      "failed to create a CUDA event with flag=", flag
+    );
+    return event;
+  }
+};
+
+/**
+@private
+*/
+struct cudaEventDeleter {
+  void operator () (cudaEvent_t event) const {
+    cudaEventDestroy(event);
+  }
+};
 
 /**
 @class cudaEvent
@@ -208,95 +198,25 @@ A cudaEvent object is an RAII-styled wrapper over a native CUDA event
 (@c cudaEvent_t).
 A cudaEvent object is move-only.
 */
-class cudaEvent {
-
-  struct cudaEventCreator {
-  
-    cudaEvent_t operator () () const {
-      cudaEvent_t event;
-      TF_CHECK_CUDA(cudaEventCreate(&event), "failed to create a CUDA event");
-      return event;
-    }
-    
-    cudaEvent_t operator () (unsigned int flag) const {
-      cudaEvent_t event;
-      TF_CHECK_CUDA(
-        cudaEventCreateWithFlags(&event, flag),
-        "failed to create a CUDA event with flag=", flag
-      );
-      return event;
-    }
-  };
-  
-  struct cudaEventDeleter {
-    void operator () (cudaEvent_t event) const {
-      cudaEventDestroy(event);
-    }
-  };
+class cudaEvent :
+  public cudaObject<cudaEvent_t, cudaEventCreator, cudaEventDeleter> {
 
   public:
 
     /**
     @brief constructs an RAII-styled CUDA event object from the given CUDA event
     */
-    explicit cudaEvent(cudaEvent_t event) : _event(event) { }   
+    explicit cudaEvent(cudaEvent_t event) : cudaObject(event) { }   
 
     /**
     @brief constructs an RAII-styled CUDA event object
     */
-    cudaEvent() : _event{ cudaEventCreator{}() } { }
+    cudaEvent() = default;
     
     /**
     @brief constructs an RAII-styled CUDA event object with the given flag
     */
-    explicit cudaEvent(unsigned int flag) : _event{ cudaEventCreator{}(flag) } { }
-    
-    /**
-    @brief disabled copy constructor
-    */
-    cudaEvent(const cudaEvent&) = delete;
-    
-    /**
-    @brief move constructor
-    */
-    cudaEvent(cudaEvent&& rhs) : _event{rhs._event} {
-      rhs._event = nullptr;
-    }
-
-    /**
-    @brief destructs the CUDA event
-    */
-    ~cudaEvent() {
-      cudaEventDeleter {} (_event);
-    }
-    
-    /**
-    @brief disabled copy assignment
-    */
-    cudaEvent& operator = (const cudaEvent&) = delete;
-
-    /**
-    @brief move assignment
-    */
-    cudaEvent& operator = (cudaEvent&& rhs) {
-      cudaEventDeleter {} (_event);
-      _event = rhs._event;
-      rhs._event = nullptr;
-      return *this;
-    }
-  
-    /**
-    @brief implicit conversion to the native CUDA event (cudaEvent_t)
-
-    Returns the underlying event of type @c cudaEvent_t.
-    */
-    operator cudaEvent_t () const {
-      return _event;
-    }
-    
-  private:
-
-    cudaEvent_t _event {nullptr};
+    explicit cudaEvent(unsigned int flag) : cudaObject(cudaEventCreator{}(flag)) { }
 };
 
 

@@ -5,8 +5,8 @@
 #pragma once
 
 /**
-@file partitioner.hpp
-@brief partitioner include file
+@file execution_policy.hpp
+@brief execution_policy include file
 */
 
 namespace tf {
@@ -330,9 +330,21 @@ class RandomPartitioner : public PartitionerBase {
 
 };
 
+
+
 // ----------------------------------------------------------------------------
-// Utility
+// ExecutionPolicy
 // ----------------------------------------------------------------------------
+
+template <typename P>
+struct ExecutionPolicy : public P {
+  
+  template <typename... ArgsT>
+  ExecutionPolicy(ArgsT&&... args) : P{std::forward<ArgsT>(args) ...} {
+  }
+};
+
+using DefaultExecutionPolicy = ExecutionPolicy<GuidedPartitioner>;
 
 /**
 @brief determines if a type is a partitioner 
@@ -340,7 +352,7 @@ class RandomPartitioner : public PartitionerBase {
 A partitioner is a derived type from tf::PartitionerBase.
 */
 template <typename C>
-inline constexpr bool is_partitioner_v = std::is_base_of<PartitionerBase, C>::value;
+inline constexpr bool is_execution_policy_v = std::is_base_of<PartitionerBase, C>::value;
 
 }  // end of namespace tf -----------------------------------------------------
 

@@ -3,27 +3,29 @@ enable_testing()
 include(${TF_3RD_PARTY_DIR}/doctest/doctest.cmake)
 
 list(APPEND TF_UNITTESTS 
-  utility 
-  work_stealing 
-  #serializer 
-  priorities
-  basics 
-  asyncs
-  subflows
-  control_flow
-  semaphores
-  movable
-  cancellation
-  algorithms
-  compositions
-  traversals
-  sorting
-  pipelines
-  scalable_pipelines
-  deferred_pipelines
-  runtimes
-  data_pipelines
-  workers
+  test_utility 
+  test_work_stealing 
+  #test_serializer 
+  test_priorities
+  test_basics 
+  test_asyncs
+  test_subflows
+  test_control_flow
+  test_semaphores
+  test_movable
+  test_cancellation
+  test_for_each
+  test_reduce
+  test_transform
+  test_sort
+  test_compositions
+  test_traversals
+  test_pipelines
+  test_scalable_pipelines
+  test_deferred_pipelines
+  test_runtimes
+  test_data_pipelines
+  test_workers
 )
 
 foreach(unittest IN LISTS TF_UNITTESTS)
