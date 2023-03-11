@@ -35,6 +35,14 @@ list(APPEND TF_EXAMPLES
   cancel_async
 )
 
+if (MSVC)
+    if(MSVC_VERSION VERSION_LESS 1920)
+        message("visual studio 2017 can not compile example: parallel_data_pipeline, skip it")
+    endif()
+else()
+    list(append TF_EXAMPLES  parallel_data_pipeline)
+endif()
+
 foreach(example IN LISTS TF_EXAMPLES)
   add_executable(${example} ${example}.cpp)
   target_link_libraries(
