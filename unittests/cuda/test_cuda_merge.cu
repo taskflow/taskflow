@@ -48,10 +48,8 @@ void cuda_merge() {
         tf::cudaDefaultExecutionPolicy policy(stream);
 
         // allocate the buffer
-        auto bufsz = tf::cuda_merge_bufsz<tf::cudaDefaultExecutionPolicy>(n1, n2);
-
         void* buf;
-        REQUIRE(cudaMalloc(&buf, bufsz) == cudaSuccess);
+        REQUIRE(cudaMalloc(&buf, policy.merge_bufsz(n1, n2)) == cudaSuccess);
 
         tf::cuda_merge(policy, 
           da, da+n1, db, db+n2, dc, tf::cuda_less<T>{}, buf
@@ -136,10 +134,8 @@ void cuda_merge_by_key() {
         tf::cudaDefaultExecutionPolicy policy(stream);
 
         // allocate the buffer
-        auto bufsz = tf::cuda_merge_bufsz<tf::cudaDefaultExecutionPolicy>(n1, n2);
-
         void* buf;
-        REQUIRE(cudaMalloc(&buf, bufsz) == cudaSuccess);
+        REQUIRE(cudaMalloc(&buf, policy.merge_bufsz(n1, n2)) == cudaSuccess);
 
         tf::cuda_merge_by_key(
           policy, 

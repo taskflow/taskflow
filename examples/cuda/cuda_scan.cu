@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
 
   // declare the buffer
   void* buff;
-  cudaMalloc(&buff, tf::cuda_scan_bufsz<tf::cudaDefaultExecutionPolicy, int>(N));
+  cudaMalloc(&buff, policy.scan_bufsz<int>(N));
   
   // create inclusive and exclusive scan tasks
   tf::cuda_inclusive_scan(policy, data1, data1+N, scan1, tf::cuda_plus<int>{}, buff);

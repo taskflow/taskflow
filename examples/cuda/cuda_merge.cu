@@ -36,10 +36,8 @@ int main(int argc, char* argv[]) {
   tf::cudaDefaultExecutionPolicy policy(stream);
 
   // allocate the buffer
-  auto bufsz = tf::cuda_merge_bufsz<tf::cudaDefaultExecutionPolicy>(N, N);
-
   void* buf;
-  cudaMalloc(&buf, bufsz);
+  cudaMalloc(&buf, policy.merge_bufsz(N, N));
 
   auto beg = std::chrono::steady_clock::now();
   tf::cuda_merge(policy, 

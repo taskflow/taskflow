@@ -221,14 +221,14 @@ The function is used to allocate a buffer for calling tf::cuda_reduce,
 tf::cuda_uninitialized_reduce, tf::cuda_transform_reduce, and
 tf::cuda_uninitialized_transform_reduce.
 */
-template <typename P, typename T>
-unsigned cuda_reduce_bufsz(unsigned count) {
-  using E = std::decay_t<P>;
-  unsigned B = E::num_blocks(count);
+template <unsigned NT, unsigned VT>  
+template <typename T>
+unsigned cudaExecutionPolicy<NT, VT>::reduce_bufsz(unsigned count) {
+  unsigned B = num_blocks(count);
   unsigned n = 0;
   while(B > 1) {
     n += B;
-    B = E::num_blocks(B);
+    B = num_blocks(B);
   }
   return n*sizeof(T);
 }

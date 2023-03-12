@@ -65,6 +65,39 @@ class cudaExecutionPolicy {
   @brief queries the number of blocks to accommodate N elements
   */
   static unsigned num_blocks(unsigned N) { return (N + nv - 1) / nv; } 
+  
+  // --------------------------------------------------------------------------
+  // Buffer Sizes for Standard Algorithms
+  // --------------------------------------------------------------------------
+  
+  /**
+  @brief queries the buffer size in bytes needed for tf::cuda_reduce
+  */
+  template <typename T>
+  static unsigned reduce_bufsz(unsigned count);
+
+  /**
+  @brief queries the buffer size in bytes needed for tf::cuda_min_element
+  */
+  template <typename T>
+  static unsigned min_element_bufsz(unsigned count);
+
+  /**
+  @brief queries the buffer size in bytes needed for tf::cuda_max_element
+  */
+  template <typename T>
+  static unsigned max_element_bufsz(unsigned count);
+
+  /**
+  @brief queries the buffer size in bytes needed for CUDA scan algorithms
+  */
+  template <typename T>
+  static unsigned scan_bufsz(unsigned count);
+  
+  /**
+  @brief queries the buffer size in bytes needed for CUDA merge algorithms
+  */
+  inline static unsigned merge_bufsz(unsigned a_count, unsigned b_count);
 
   private:
 

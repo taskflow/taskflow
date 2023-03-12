@@ -29,7 +29,7 @@ void cuda_min_max_element() {
 
       // buffer
       void* buff;
-      cudaMalloc(&buff, tf::cuda_min_element_bufsz<tf::cudaDefaultExecutionPolicy, T>(n));
+      cudaMalloc(&buff, policy.min_element_bufsz<T>(n));
 
       for(int i=0; i<n; i++) {
         gdata[i] = rand() % 1000 - 500;

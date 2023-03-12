@@ -199,9 +199,10 @@ void cuda_find_if(
 The function is used to decide the buffer size in bytes for calling
 tf::cuda_min_element.
 */
-template <typename P, typename T>
-unsigned cuda_min_element_bufsz(unsigned count) {
-  return cuda_reduce_bufsz<P, detail::cudaFindPair<T>>(count);
+template <unsigned NT, unsigned VT>  
+template <typename T>
+unsigned cudaExecutionPolicy<NT, VT>::min_element_bufsz(unsigned count) {
+  return reduce_bufsz<detail::cudaFindPair<T>>(count);
 }
 
 /**
@@ -260,9 +261,10 @@ void cuda_min_element(P&& p, I first, I last, unsigned* idx, O op, void* buf) {
 The function is used to decide the buffer size in bytes for calling
 tf::cuda_max_element.
 */
-template <typename P, typename T>
-unsigned cuda_max_element_bufsz(unsigned count) {
-  return cuda_reduce_bufsz<P, detail::cudaFindPair<T>>(count);
+template <unsigned NT, unsigned VT>  
+template <typename T>
+unsigned cudaExecutionPolicy<NT, VT>::max_element_bufsz(unsigned count) {
+  return reduce_bufsz<detail::cudaFindPair<T>>(count);
 }
 
 /**

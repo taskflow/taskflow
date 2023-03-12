@@ -31,7 +31,13 @@ void taskflow(const Graph& g, unsigned num_cpus, unsigned num_gpus) {
       });
     }
     else {
-      tasks[v.v] = taskflow.emplace_on([&](tf::cudaFlow& cf){
+      tasks[v.v] = taskflow.emplace([&](){
+
+        tf::cudaScopedDevice device(v.g);
+
+        tf::cudaStream stream;
+        tf::cudaFlow cf;
+
         ++counter;
         auto sgx = cf.zero(gx, N);
         auto sgy = cf.zero(gy, N);
@@ -48,7 +54,11 @@ void taskflow(const Graph& g, unsigned num_cpus, unsigned num_gpus) {
         sgz.precede(h2d_gz);
         kernel.succeed(h2d_gx, h2d_gy, h2d_gz)
               .precede(d2h_gx, d2h_gy, d2h_gz);
-      }, v.g);
+
+        cf.run(stream);
+        stream.synchronize();
+
+      });
     }
   }
   for(const auto& e : g.edges) {

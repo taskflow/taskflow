@@ -15,29 +15,29 @@ TEST_CASE("cuda_reduce.BufferSize") {
   
   // within one block
   for(unsigned i=0; i<=P::nv; i++) {
-    REQUIRE(tf::cuda_reduce_bufsz<P, int>(i) == 0);
+    REQUIRE(P::reduce_bufsz<int>(i) == 0);
   }
 
   // two blocks
   for(unsigned i=P::nv+1; i<=2*P::nv; i++) {
-    REQUIRE(tf::cuda_reduce_bufsz<P, int>(i) == 2*sizeof(int));
+    REQUIRE(P::reduce_bufsz<int>(i) == 2*sizeof(int));
   }
   
   // three blocks
   for(unsigned i=2*P::nv+1; i<=3*P::nv; i++) {
-    REQUIRE(tf::cuda_reduce_bufsz<P, int>(i) == 3*sizeof(int));
+    REQUIRE(P::reduce_bufsz<int>(i) == 3*sizeof(int));
   }
 
   REQUIRE(
-    tf::cuda_reduce_bufsz<P, int>(P::nv*P::nv) == P::nv*sizeof(int)
+    P::reduce_bufsz<int>(P::nv*P::nv) == P::nv*sizeof(int)
   );
 
   REQUIRE(
-    tf::cuda_reduce_bufsz<P, int>(P::nv*P::nv+1) == (P::nv + 3)*sizeof(int)
+    P::reduce_bufsz<int>(P::nv*P::nv+1) == (P::nv + 3)*sizeof(int)
   );
 
   REQUIRE(
-    tf::cuda_reduce_bufsz<P, int>(P::nv*P::nv*2) == (2*P::nv + 2)*sizeof(int)
+    P::reduce_bufsz<int>(P::nv*P::nv*2) == (2*P::nv + 2)*sizeof(int)
   );
   
 }
@@ -57,7 +57,7 @@ void cuda_reduce() {
       tf::cudaStream stream;
       tf::cudaDefaultExecutionPolicy policy(stream);
       
-      unsigned bufsz = tf::cuda_reduce_bufsz<tf::cudaDefaultExecutionPolicy, T>(n);
+      unsigned bufsz = policy.reduce_bufsz<T>(n);
 
       T gold {1000};
 
@@ -119,7 +119,7 @@ void cuda_transform_reduce() {
       tf::cudaStream stream;
       tf::cudaDefaultExecutionPolicy policy(stream);
       
-      unsigned bufsz = tf::cuda_reduce_bufsz<tf::cudaDefaultExecutionPolicy, T>(n);
+      unsigned bufsz = policy.reduce_bufsz<T>(n);
 
       T gold {1000};
 

@@ -399,7 +399,7 @@ void cuda_merge_loop(
     p, a_keys, a_count, b_keys, b_count, E::nv, comp, buf
   );
 
-  unsigned B = (a_count + b_count + E::nv - 1)/ E::nv;
+  unsigned B = p.num_blocks(a_count + b_count);
 
   // we use small kernel
   cuda_kernel<<<B, E::nt, 0, p.stream()>>>([=] __device__ (auto tid, auto bid) {
@@ -457,12 +457,11 @@ namespace tf {
 The function is used to allocate a buffer for calling
 tf::cuda_merge.
 */
-template <typename P>
-unsigned cuda_merge_bufsz(unsigned a_count, unsigned b_count) {
-  using E = std::decay_t<P>;
-  unsigned sz = (a_count + b_count + E::nv - 1) / E::nv + 1;
-  return sz*sizeof(unsigned);
+template <unsigned NT, unsigned VT>  
+unsigned cudaExecutionPolicy<NT, VT>::merge_bufsz(unsigned a_count, unsigned b_count) {
+  return sizeof(unsigned) * (num_blocks(a_count + b_count + nv) + 1);
 }
+
 
 // ----------------------------------------------------------------------------
 // key-value merge

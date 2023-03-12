@@ -332,10 +332,6 @@ void merge_sort_loop(
     }
   });
 
-  if(R == 0) {
-    return;
-  }
-
   // merge passes
 
   if(1 & R) {

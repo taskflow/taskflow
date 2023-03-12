@@ -37,7 +37,7 @@ void cuda_scan() {
 
       // declare the buffer
       void* buff;
-      cudaMalloc(&buff, tf::cuda_scan_bufsz<tf::cudaDefaultExecutionPolicy, int>(n));
+      cudaMalloc(&buff, policy.scan_bufsz<int>(n));
       
       // create inclusive and exclusive scan tasks
       tf::cuda_inclusive_scan(policy, data1, data1+n, scan1, tf::cuda_plus<int>{}, buff);
@@ -95,7 +95,7 @@ void cuda_transform_scan() {
 
       // declare the buffer
       void* buff;
-      cudaMalloc(&buff, tf::cuda_scan_bufsz<tf::cudaDefaultExecutionPolicy, int>(n));
+      cudaMalloc(&buff, policy.scan_bufsz<int>(n));
       
       // initialize the data
       std::iota(data1, data1 + n, 0);

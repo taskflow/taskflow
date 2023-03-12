@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
 
   // get the buffer size needed for reduction
   void* buff;
-  cudaMalloc(&buff, tf::cuda_reduce_bufsz<tf::cudaDefaultExecutionPolicy, int>(N));
+  cudaMalloc(&buff, policy.reduce_bufsz<int>(N));
   
   // res1 = res1 + data[0] + data[1] + ... 
   tf::cuda_reduce(policy,

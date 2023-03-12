@@ -336,43 +336,17 @@ The function is used to allocate a buffer for calling
 tf::cuda_inclusive_scan, tf::cuda_exclusive_scan,
 tf::cuda_transform_inclusive_scan, and tf::cuda_transform_exclusive_scan.
 */
-template <typename P, typename T>
-unsigned cuda_scan_bufsz(unsigned count) {
-  using E = std::decay_t<P>;
-  unsigned B = (count + E::nv - 1) / E::nv;
+template <unsigned NT, unsigned VT>  
+template <typename T>
+unsigned cudaExecutionPolicy<NT, VT>::scan_bufsz(unsigned count) {
+  unsigned B = num_blocks(count);
   unsigned n = 0;
-  for(auto b=B; b>detail::cudaScanRecursionThreshold; b=(b+E::nv-1)/E::nv) {
+  for(auto b=B; b>detail::cudaScanRecursionThreshold; b=num_blocks(b)) {
     n += b;
   }
   return n*sizeof(T);
 }
 
-// ----------------------------------------------------------------------------
-// inclusive scan
-// ----------------------------------------------------------------------------
-
-//template<typename P, typename I, typename O, typename C>
-//void cuda_inclusive_scan(P&& p, I first, I last, O output, C op) {
-//
-//  unsigned count = std::distance(first, last);
-//
-//  if(count == 0) {
-//    return;
-//  }
-//
-//  using T = typename std::iterator_traits<O>::value_type;
-//
-//  // allocate temporary buffer
-//  cudaDeviceVector<std::byte> temp(cuda_scan_bufsz<P, T>(count));
-//  
-//  // launch the scan loop
-//  detail::cuda_scan_loop(
-//    p, detail::cudaScanType::INCLUSIVE, first, count, output, op, temp.data()
-//  );
-//
-//  // synchronize the execution
-//  p.synchronize();
-//}
 
 /**
 @brief performs asynchronous inclusive scan over a range of items
@@ -406,38 +380,6 @@ void cuda_inclusive_scan(
     p, detail::cudaScanType::INCLUSIVE, first, count, output, op, buf
   );
 }
-
-// ----------------------------------------------------------------------------
-// transform inclusive_scan
-// ----------------------------------------------------------------------------
-
-//template<typename P, typename I, typename O, typename C, typename U>
-//void cuda_transform_inclusive_scan(
-//  P&& p, I first, I last, O output, C bop, U uop
-//) {
-//
-//  unsigned count = std::distance(first, last);
-//
-//  if(count == 0) {
-//    return;
-//  }
-//
-//  using T = typename std::iterator_traits<O>::value_type;
-//
-//  // allocate temporary buffer
-//  cudaDeviceVector<std::byte> temp(cuda_scan_bufsz<P, T>(count));
-//  auto buf = temp.data();
-//
-//  // launch the scan loop
-//  detail::cuda_scan_loop(
-//    p, detail::cudaScanType::INCLUSIVE,
-//    cuda_make_load_iterator<T>([=]__device__(auto i){ return uop(*(first+i)); }),
-//    count, output, bop, buf
-//  );
-//
-//  // synchronize the execution
-//  p.synchronize();
-//}
 
 /**
 @brief performs asynchronous inclusive scan over a range of transformed items
@@ -478,34 +420,6 @@ void cuda_transform_inclusive_scan(
   );
 }
 
-// ----------------------------------------------------------------------------
-// exclusive scan
-// ----------------------------------------------------------------------------
-
-//template<typename P, typename I, typename O, typename C>
-//void cuda_exclusive_scan(P&& p, I first, I last, O output, C op) {
-//
-//  unsigned count = std::distance(first, last);
-//
-//  if(count == 0) {
-//    return;
-//  }
-//
-//  using T = typename std::iterator_traits<O>::value_type;
-//
-//  // allocate temporary buffer
-//  cudaDeviceVector<std::byte> temp(cuda_scan_bufsz<P, T>(count));
-//  auto buf = temp.data();
-//
-//  // launch the scan loop
-//  detail::cuda_scan_loop(
-//    p, detail::cudaScanType::EXCLUSIVE, first, count, output, op, buf
-//  );
-//
-//  // synchronize the execution
-//  p.synchronize();
-//}
-
 /**
 @brief performs asynchronous exclusive scan over a range of items
 
@@ -538,38 +452,6 @@ void cuda_exclusive_scan(
     p, detail::cudaScanType::EXCLUSIVE, first, count, output, op, buf
   );
 }
-
-// ----------------------------------------------------------------------------
-// transform exclusive scan
-// ----------------------------------------------------------------------------
-
-//template<typename P, typename I, typename O, typename C, typename U>
-//void cuda_transform_exclusive_scan(
-//  P&& p, I first, I last, O output, C bop, U uop
-//) {
-//
-//  unsigned count = std::distance(first, last);
-//
-//  if(count == 0) {
-//    return;
-//  }
-//
-//  using T = typename std::iterator_traits<O>::value_type;
-//
-//  // allocate temporary buffer
-//  cudaDeviceVector<std::byte> temp(cuda_scan_bufsz<P, T>(count));
-//  auto buf = temp.data();
-//
-//  // launch the scan loop
-//  detail::cuda_scan_loop(
-//    p, detail::cudaScanType::EXCLUSIVE,
-//    cuda_make_load_iterator<T>([=]__device__(auto i){ return uop(*(first+i)); }),
-//    count, output, bop, buf
-//  );
-//
-//  // synchronize the execution
-//  p.synchronize();
-//}
 
 /**
 @brief performs asynchronous exclusive scan over a range of items
