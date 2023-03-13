@@ -53,7 +53,8 @@ int main() {
                     .name("saxpy");
     kernel.succeed(h2d_x, h2d_y)
           .precede(d2h_x, d2h_y);
-
+    
+    std::cout << "launching cudaflow ...\n";
     tf::cudaStream stream;
     cf.run(stream);
     stream.synchronize();

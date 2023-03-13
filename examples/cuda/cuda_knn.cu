@@ -265,16 +265,10 @@ std::pair<std::vector<float>, std::vector<float>> gpu_predicate(
   }).name("allocate_c");
 
   auto h2d = taskflow.emplace([&](){
-    tf::cudaFlow cf;
-    cf.copy(d_px, h_px.data(), N).name("h2d_px");
-    cf.copy(d_py, h_py.data(), N).name("h2d_py");
-    cf.copy(d_mx, h_mx.data(), K).name("h2d_mx");
-    cf.copy(d_my, h_my.data(), K).name("h2d_my");
-
-    // execute the cudaflow
-    tf::cudaStream stream;
-    cf.run(stream);
-    stream.synchronize();
+    cudaMemcpy(d_px, h_px.data(), N*sizeof(float), cudaMemcpyDefault);
+    cudaMemcpy(d_py, h_py.data(), N*sizeof(float), cudaMemcpyDefault);
+    cudaMemcpy(d_mx, h_mx.data(), K*sizeof(float), cudaMemcpyDefault);
+    cudaMemcpy(d_my, h_my.data(), K*sizeof(float), cudaMemcpyDefault);
   }).name("h2d");
 
   auto kmeans = taskflow.emplace([&](){
@@ -298,6 +292,7 @@ std::pair<std::vector<float>, std::vector<float>> gpu_predicate(
     cluster.precede(new_centroid)
            .succeed(zero_c, zero_sx, zero_sy);
     
+    // Repeat the execution for M times
     tf::cudaStream stream;
     for(int i=0; i<M; i++) {
       cf.run(stream);
@@ -306,26 +301,18 @@ std::pair<std::vector<float>, std::vector<float>> gpu_predicate(
   }).name("update_means");
 
   auto stop = taskflow.emplace([&](){
-    
-    tf::cudaFlow cf;
-    
-    cf.copy(h_mx.data(), d_mx, K).name("d2h_mx");
-    cf.copy(h_my.data(), d_my, K).name("d2h_my");
-    
-    // execute the cudaflow
-    tf::cudaStream stream;
-    cf.run(stream);
-    stream.synchronize();
+    cudaMemcpy(h_mx.data(), d_mx, K*sizeof(float), cudaMemcpyDefault);
+    cudaMemcpy(h_my.data(), d_my, K*sizeof(float), cudaMemcpyDefault);
   }).name("d2h");
 
   auto free = taskflow.emplace([&](){
-    TF_CHECK_CUDA(cudaFree(d_px), "failed to free d_px");
-    TF_CHECK_CUDA(cudaFree(d_py), "failed to free d_py");
-    TF_CHECK_CUDA(cudaFree(d_mx), "failed to free d_mx");
-    TF_CHECK_CUDA(cudaFree(d_my), "failed to free d_my");
-    TF_CHECK_CUDA(cudaFree(d_sx), "failed to free d_sx");
-    TF_CHECK_CUDA(cudaFree(d_sy), "failed to free d_sy");
-    TF_CHECK_CUDA(cudaFree(d_c),  "failed to free d_c");
+    cudaFree(d_px);
+    cudaFree(d_py);
+    cudaFree(d_mx);
+    cudaFree(d_my);
+    cudaFree(d_sx);
+    cudaFree(d_sy);
+    cudaFree(d_c);
   }).name("free");
   
   // build up the dependency
@@ -336,13 +323,11 @@ std::pair<std::vector<float>, std::vector<float>> gpu_predicate(
 
   stop.precede(free);
   
-  //taskflow.dump(std::cout);
-
   // run the taskflow
   executor.run(taskflow).wait();
 
   //std::cout << "dumping kmeans graph ...\n";
-  //taskflow.dump(std::cout);
+  taskflow.dump(std::cout);
   return {h_mx, h_my};
 }
 
@@ -418,7 +403,7 @@ int main(int argc, const char* argv[]) {
             << std::chrono::duration_cast<std::chrono::milliseconds>(rend-rbeg).count()
             << " ms\n";
   
-  std::cout << "k centroids found by gpu (without conditional tasking)\n";
+  std::cout << "k centroids found by gpu\n";
   for(int k=0; k<K; ++k) {
     std::cout << "centroid " << k << ": " << std::setw(10) << mx[k] << ' ' 
                                           << std::setw(10) << my[k] << '\n';  
