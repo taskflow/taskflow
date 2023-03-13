@@ -324,18 +324,7 @@ void cuda_scan_loop(
 
 namespace tf {
 
-/**
-@brief queries the buffer size in bytes needed to call scan kernels
-
-@tparam P execution policy type
-@tparam T value type
-
-@param count number of elements to scan
-
-The function is used to allocate a buffer for calling
-tf::cuda_inclusive_scan, tf::cuda_exclusive_scan,
-tf::cuda_transform_inclusive_scan, and tf::cuda_transform_exclusive_scan.
-*/
+// Function: scan_bufsz
 template <unsigned NT, unsigned VT>  
 template <typename T>
 unsigned cudaExecutionPolicy<NT, VT>::scan_bufsz(unsigned count) {

@@ -4,7 +4,6 @@
     <compoundname>install</compoundname>
     <title>Building and Installing</title>
     <innerpage refid="CompileTaskflowWithCUDA">Compile Taskflow with CUDA</innerpage>
-    <innerpage refid="CompileTaskflowWithSYCL">Compile Taskflow with SYCL</innerpage>
     <innerpage refid="BenchmarkTaskflow">Benchmark Taskflow</innerpage>
     <tableofcontents>
       <tocsect>
@@ -22,10 +21,6 @@
       <tocsect>
         <name>Build CUDA Examples and Unit Tests</name>
         <reference>install_1BAIBuildCUDACode</reference>
-    </tocsect>
-      <tocsect>
-        <name>Build SYCL Code Examples and Unit Tests</name>
-        <reference>install_1BAIBuildSYCLCode</reference>
     </tocsect>
       <tocsect>
         <name>Build Sanitizers</name>
@@ -112,7 +107,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal">...<sp/>more<sp/>options</highlight></codeline>
 </programlisting></para>
 <para>Currently, our CMake script supports the following options:</para>
-<para> <table rows="6" cols="3"><row>
+<para> <table rows="5" cols="3"><row>
 <entry thead="yes" align='center'><para>CMake Option  </para>
 </entry><entry thead="yes" align='center'><para>Default  </para>
 </entry><entry thead="yes" align='center'><para>Usage   </para>
@@ -137,11 +132,6 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </entry><entry thead="no" align='center'><para>OFF  </para>
 </entry><entry thead="no" align='center'><para>enable/disable building CUDA code   </para>
 </entry></row>
-<row>
-<entry thead="no" align='center'><para>TF_BUILD_SYCL  </para>
-</entry><entry thead="no" align='center'><para>OFF  </para>
-</entry><entry thead="no" align='center'><para>enable/disable building SYCL code   </para>
-</entry></row>
 </table>
 </para>
 <para>To enable or disable a specific option, use <computeroutput>-D</computeroutput> in the CMake build. For example:</para>
@@ -156,20 +146,6 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal">~$<sp/>make</highlight></codeline>
 </programlisting></para>
 <para>Please visit the page <ref refid="CompileTaskflowWithCUDA" kindref="compound">Compile Taskflow with CUDA</ref> for details.</para>
-</sect1>
-<sect1 id="install_1BAIBuildSYCLCode">
-<title>Build SYCL Code Examples and Unit Tests</title>
-<para>To build SYCL code, including unit tests and examples, enable the CMake option <computeroutput>TF_BUILD_SYCL</computeroutput> to <computeroutput>ON</computeroutput> and direct the CMake compiler <computeroutput>CMAKE_CXX_COMPILER</computeroutput> to the location of DPC++ clang compiler. You can acquire the DPC++ clang compiler at the official page of <ulink url="https://intel.github.io/llvm-docs/GetStartedGuide.html">Getting Started with oneAPI DPC++</ulink>.</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>after<sp/>succesfully<sp/>build<sp/>Intel<sp/>DPCPP<sp/>clang:<sp/>https://intel.github.io/llvm-docs/</highlight></codeline>
-<codeline><highlight class="normal">~$<sp/>export<sp/>DPCPP_HOME=/path/to/your/dpcpp/workspace</highlight></codeline>
-<codeline><highlight class="normal">~$<sp/>export<sp/>PATH=$DPCPP_HOME/llvm/build/bin:$PATH</highlight></codeline>
-<codeline><highlight class="normal">~$<sp/>export<sp/>LD_LIBRARY_PATH=$DPCPP_HOME/llvm/build/lib:$LD_LIBRARY_PATH</highlight></codeline>
-<codeline></codeline>
-<codeline><highlight class="normal">#<sp/>build<sp/>Taskflow<sp/>SYCL<sp/>code<sp/>using<sp/>Intel<sp/>oneAPI<sp/>dpc++<sp/>clang<sp/>compiler</highlight></codeline>
-<codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_SYCL=ON<sp/>-DCMAKE_CXX_COMPILER=clang++</highlight></codeline>
-<codeline><highlight class="normal">~$<sp/>make</highlight></codeline>
-</programlisting></para>
-<para>Please visit the page <ref refid="CompileTaskflowWithSYCL" kindref="compound">Compile Taskflow with SYCL</ref> for details.</para>
 </sect1>
 <sect1 id="install_1BAIBuildSanitizers">
 <title>Build Sanitizers</title>

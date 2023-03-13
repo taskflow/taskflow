@@ -31,7 +31,6 @@ To use %Taskflow v3.1.0, you need a compiler that supports C++17:
 @subsection release-3-1-0_taskflow_core Taskflow Core
 
 @li optimized task node storage by using std::unique_ptr for semaphores
-@li introduced tf::syclFlow based on Intel DPC++ and SYCL 2020 spec
 @li merged the execution flow of %cudaFlow and %cudaFlow capturer 
 
 @subsection release-3-1-0_cudaflow cudaFlow
@@ -61,30 +60,6 @@ To use %Taskflow v3.1.0, you need a compiler that supports C++17:
   + parallel transform (examples/cuda/cuda_transform.cu)
   + rebind (examples/cuda/cuda_rebind.cu)
 
-@subsection release-3-1-0_syclflow syclFlow
-
-@li added a task graph-based programming model (see @ref GPUTaskingsyclFlow)
-@li added %syclFlow examples:
-  + device query (examples/sycl/sycl_device.cpp)
-  + range query (examples/sycl/sycl_ndrange.cpp)
-  + saxpy kernel (examples/sycl/sycl_saxpy.cpp)
-  + atomic operation using oneAPI atomic_ref (examples/sycl/sycl_atomic.cpp)
-  + vector addition (examples/sycl/sycl_vector_add.cpp)
-  + parallel reduction (examples/sycl/sycl_reduce.cpp)
-  + matrix multiplication (examples/sycl/sycl_matmul.cpp)
-  + parallel transform (examples/sycl/transform.cpp)
-  + rebind (examples/sycl/sycl_rebind.cpp)
-@li added %syclFlow algorithms
-  + tf::syclFlow::single_task for single-threaded kernel
-  + tf::syclFlow::for_each for parallel iterations
-  + tf::syclFlow::for_each_index for index-based parallel iterations
-  + tf::syclFlow::reduce for parallel reduction
-  + tf::syclFlow::uninitialized_reduce for uninitialized parallel reduction
-
-Please visit these pages, @ref GPUTaskingsyclFlow and @ref CompileTaskflowWithSYCL,
-to know more details about compiling and running
-%syclFlow programs.
-
 @subsection release-3-1-0_utilities Utilities
 
 @li resolved the compiler warning in serializer caused by <tt>constexpr if</tt>
@@ -92,7 +67,7 @@ to know more details about compiling and running
 
 @subsection release-3-1-0_profiler Taskflow Profiler (TFProf)
 
- + added support for syclflow task
+No update for TFProf in this release.
 
 @section release-3-1-0_bug_fixes Bug Fixes 
  + fixed the macro expansion issue with MSVC on @c TF_CUDA_CHECK
@@ -109,14 +84,7 @@ There are no deprecated or removed items in this release.
 
 @section release-3-1-0_documentation Documentation
 
-+ added @ref CompileTaskflowWithSYCL
-+ added SYCL example and tests to the page @ref install
 + added @ref QueryTheWorkerID to the cookbook page @ref ExecuteTaskflow
-+ added @ref syclFlowAlgorithms
-  + @ref SingleTaskSYCL
-  + @ref ForEachSYCL
-  + @ref SYCLReduce
-  + @ref ParallelTransformsSYCL
 + revised update methods in @ref GPUTaskingcudaFlow 
 + revised rebind methods in @ref GPUTaskingcudaFlowCapturer
 

@@ -1027,9 +1027,14 @@ class Subflow : public FlowBuilder {
     void named_silent_async(const std::string& name, F&& f, ArgsT&&... args);
 
     /**
-    @brief returns the executor that runs this subflow
+    @brief acquires a reference to the executor that runs this subflow
     */
     inline Executor& executor();
+
+    /**
+    @brief acquires a reference to the worker that runs this subflow
+    */
+    inline Worker& worker();
 
   private:
 
@@ -1066,6 +1071,11 @@ inline bool Subflow::joinable() const noexcept {
 // Function: executor
 inline Executor& Subflow::executor() {
   return _executor;
+}
+
+// Function: worker
+inline Worker& Subflow::worker() {
+  return _worker;
 }
 
 // Procedure: reset

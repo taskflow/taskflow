@@ -47,10 +47,6 @@
         <reference>release-3-6-0_1release-3-6-0_breaking_changes</reference>
     </tocsect>
       <tocsect>
-        <name>Deprecated and Removed Items</name>
-        <reference>release-3-6-0_1release-3-6-0_deprecated_items</reference>
-    </tocsect>
-      <tocsect>
         <name>Documentation</name>
         <reference>release-3-6-0_1release-3-6-0_documentation</reference>
     </tocsect>
@@ -96,7 +92,14 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <sect2 id="release-3-6-0_1release-3-6-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>Extended parallel algorithms to support different execution policies via <ref refid="structtf_1_1ExecutionPolicy" kindref="compound">tf::ExecutionPolicy</ref><itemizedlist>
+<listitem><para>Added a new <ref refid="structtf_1_1ExecutionPolicy" kindref="compound">tf::ExecutionPolicy</ref> interface to optimize parallel algorithms<itemizedlist>
+<listitem><para><ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1RandomPartitioner" kindref="compound">tf::RandomPartitioner</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Extended parallel algorithms to support different execution policies via <ref refid="structtf_1_1ExecutionPolicy" kindref="compound">tf::ExecutionPolicy</ref><itemizedlist>
 <listitem><para><ref refid="classtf_1_1FlowBuilder_1a977d8f7007f323eeaa81a37b4c6e6cd6" kindref="member">tf::Taskflow::for_each_index(P&amp;&amp; policy, B first, E last, S step, C callable)</ref></para>
 </listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1ad2299fddbd6165cc7f24f57a734d2839" kindref="member">tf::Taskflow::for_each(P&amp;&amp; policy, B first, E last, C callable)</ref></para>
 </listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a9f7befa968cf69ea0a20dc267f746f3e" kindref="member">tf::Taskflow::transform(P&amp;&amp; policy, B first1, E last1, O d_first, C c)</ref></para>
@@ -110,12 +113,24 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect2>
 <sect2 id="release-3-6-0_1release-3-6-0_cudaflow">
 <title>cudaFlow</title>
+<para><itemizedlist>
+<listitem><para>removed algorithms that require buffer from <ref refid="classtf_1_1cudaFlow" kindref="compound">cudaFlow</ref> due to update limitation</para>
+</listitem><listitem><para>removed support for a dedicated cudaFlow task in Taskflow<itemizedlist>
+<listitem><para>all usage of cudaFlow and cudaFlowCapturer are standalone now</para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
 </sect2>
 <sect2 id="release-3-6-0_1release-3-6-0_utilities">
 <title>Utilities</title>
 </sect2>
 <sect2 id="release-3-6-0_1release-3-6-0_profiler">
 <title>Taskflow Profiler (TFProf)</title>
+<para><itemizedlist>
+<listitem><para>removed cudaFlow and syclFlow tasks</para>
+</listitem></itemizedlist>
+</para>
 </sect2>
 </sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_bug_fixes">
@@ -171,7 +186,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>
-<listitem><para>Dropped in-place support for running tf::syclFlow from a dedicated task</para>
+<listitem><para>Dropped in-place support for running tf::syclFlow from a dedicated task<itemizedlist>
+<listitem><para>SYCL can just be used out of box together with Taskflow</para>
+</listitem></itemizedlist>
+</para>
 </listitem><listitem><para>Move all buffer query methods of CUDA standard algorithms inside execution policy</para>
 </listitem></itemizedlist>
 </para>
@@ -190,9 +208,6 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a31fe75c4b0765df3035e12be49af88aa" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::max_element_bufsz</ref></para>
 </listitem></itemizedlist>
 </para>
-</sect1>
-<sect1 id="release-3-6-0_1release-3-6-0_deprecated_items">
-<title>Deprecated and Removed Items</title>
 </sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_documentation">
 <title>Documentation</title>
