@@ -65,8 +65,10 @@ void matrix_multiplication(int* A, int* B, int* C, int M, int K, int N) {
     cudaMalloc(&dc, M*N*sizeof(int));
   }).name("allocate_c");
   
-  // create a cudaFlow to run the matrix multiplication
-  tf::Task cudaFlow = taskflow.emplace([&](tf::cudaFlow& cf){
+  // create a cudaFlow task to run the matrix multiplication
+  tf::Task cudaFlow = taskflow.emplace([&](){
+
+    tf::cudaFlow cf;
   
     // copy data to da, db, and dc
     tf::cudaTask copy_da = cf.copy(da, A, M*K).name("H2D_A");
@@ -81,6 +83,11 @@ void matrix_multiplication(int* A, int* B, int* C, int M, int K, int N) {
   
     kmatmul.succeed(copy_da, copy_db)
            .precede(copy_hc);
+
+    // launch the cudaFlow
+    tf::cudaStream stream;
+    cf.run(stream);
+    stream.synchronize();
   
   }).name("cudaFlow");
   

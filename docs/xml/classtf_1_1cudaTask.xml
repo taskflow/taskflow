@@ -67,9 +67,9 @@
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
-      <memberdef kind="variable" id="classtf_1_1cudaTask_1a7f77a40228b96cba9191c43ac6d851ad" prot="private" static="no" mutable="no">
-        <type>cudaNode *</type>
-        <definition>cudaNode* tf::cudaTask::_node</definition>
+      <memberdef kind="variable" id="classtf_1_1cudaTask_1ac34d9bd5a869051ee5c7bc7b0faf9e33" prot="private" static="no" mutable="no">
+        <type>cudaFlowNode *</type>
+        <definition>cudaFlowNode* tf::cudaTask::_node</definition>
         <argsstring></argsstring>
         <name>_node</name>
         <initializer>{nullptr}</initializer>
@@ -79,7 +79,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" line="173" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" bodystart="173" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" line="173" column="18" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" bodystart="173" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -301,7 +301,7 @@
         <argsstring>() const</argsstring>
         <name>empty</name>
         <briefdescription>
-<para>queries if the task is associated with a cudaNode </para>
+<para>queries if the task is associated with a cudaFlowNode </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
@@ -413,13 +413,13 @@
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
-      <memberdef kind="function" id="classtf_1_1cudaTask_1ada121035cb622722915be0cc860c9b29" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaTask_1a3087f0396df700ada2d56a81a2b18fcb" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::cudaTask::cudaTask</definition>
-        <argsstring>(cudaNode *)</argsstring>
+        <argsstring>(cudaFlowNode *)</argsstring>
         <name>cudaTask</name>
         <param>
-          <type>cudaNode *</type>
+          <type>cudaFlowNode *</type>
           <defname>node</defname>
         </param>
         <briefdescription>
@@ -438,13 +438,13 @@
     </detaileddescription>
     <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" line="65" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" bodystart="65" bodyend="174"/>
     <listofallmembers>
-      <member refid="classtf_1_1cudaTask_1a7f77a40228b96cba9191c43ac6d851ad" prot="private" virt="non-virtual"><scope>tf::cudaTask</scope><name>_node</name></member>
+      <member refid="classtf_1_1cudaTask_1ac34d9bd5a869051ee5c7bc7b0faf9e33" prot="private" virt="non-virtual"><scope>tf::cudaTask</scope><name>_node</name></member>
       <member refid="classtf_1_1cudaTask_1a9f64f729511a922781a59663ff1c6250" prot="private" virt="non-virtual"><scope>tf::cudaTask</scope><name>cudaFlow</name></member>
       <member refid="classtf_1_1cudaTask_1a672b45d300c57d726c203c62f950efbd" prot="private" virt="non-virtual"><scope>tf::cudaTask</scope><name>cudaFlowCapturer</name></member>
       <member refid="classtf_1_1cudaTask_1a8a72366cffc8beb57fb68b1591df56e4" prot="private" virt="non-virtual"><scope>tf::cudaTask</scope><name>cudaFlowCapturerBase</name></member>
       <member refid="classtf_1_1cudaTask_1a68942b759c0420da99b639a8de3cc3d1" prot="public" virt="non-virtual"><scope>tf::cudaTask</scope><name>cudaTask</name></member>
       <member refid="classtf_1_1cudaTask_1a367cf46c1ea828de4502a2ddc805c094" prot="public" virt="non-virtual"><scope>tf::cudaTask</scope><name>cudaTask</name></member>
-      <member refid="classtf_1_1cudaTask_1ada121035cb622722915be0cc860c9b29" prot="private" virt="non-virtual"><scope>tf::cudaTask</scope><name>cudaTask</name></member>
+      <member refid="classtf_1_1cudaTask_1a3087f0396df700ada2d56a81a2b18fcb" prot="private" virt="non-virtual"><scope>tf::cudaTask</scope><name>cudaTask</name></member>
       <member refid="classtf_1_1cudaTask_1af2ce580b0bfb771e463e66af64c2c571" prot="public" virt="non-virtual"><scope>tf::cudaTask</scope><name>dump</name></member>
       <member refid="classtf_1_1cudaTask_1a1b0da9e643b80008063406fe1bf207b9" prot="public" virt="non-virtual"><scope>tf::cudaTask</scope><name>empty</name></member>
       <member refid="classtf_1_1cudaTask_1afd23fdf190317e790e7fc35049b53fcf" prot="public" virt="non-virtual"><scope>tf::cudaTask</scope><name>for_each_dependent</name></member>

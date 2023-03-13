@@ -56,7 +56,6 @@
               Reference
               <ul>
                 <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
-                <li><a href="#pub-methods">Public functions</a></li>
               </ul>
             </li>
           </ul>
@@ -69,54 +68,15 @@
               <span class="m-doc-wrap-bumper"><a href="#ad0b23cb864f0c7acee306f7fe49a3c23" class="m-doc-self">cudaEvent</a>(</span><span class="m-doc-wrap">cudaEvent_t event) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
             <dd>constructs an RAII-styled CUDA event object from the given CUDA event</dd>
-            <dt id="a2865fd7388ef1725e1b59dd3a201f503">
-              <span class="m-doc-wrap-bumper"><a href="#a2865fd7388ef1725e1b59dd3a201f503" class="m-doc-self">cudaEvent</a>(</span><span class="m-doc-wrap">)</span>
+            <dt id="aef986b15a45d9992a31caa6e42e4e945">
+              <span class="m-doc-wrap-bumper"><a href="#aef986b15a45d9992a31caa6e42e4e945" class="m-doc-self">cudaEvent</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
             <dd>constructs an RAII-styled CUDA event object</dd>
             <dt id="af6d6a9c4f98ae85927985a1f89cdeee1">
               <span class="m-doc-wrap-bumper"><a href="#af6d6a9c4f98ae85927985a1f89cdeee1" class="m-doc-self">cudaEvent</a>(</span><span class="m-doc-wrap">unsigned int flag) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
             <dd>constructs an RAII-styled CUDA event object with the given flag</dd>
-            <dt id="ad76f10855d56f2706a3d9ed93e47a2e9">
-              <span class="m-doc-wrap-bumper"><a href="#ad76f10855d56f2706a3d9ed93e47a2e9" class="m-doc-self">cudaEvent</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a>&amp;) <span class="m-label m-flat m-danger">deleted</span></span>
-            </dt>
-            <dd>disabled copy constructor</dd>
-            <dt id="aa63d15089884744a802554352c50d2b9">
-              <span class="m-doc-wrap-bumper"><a href="#aa63d15089884744a802554352c50d2b9" class="m-doc-self">cudaEvent</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a>&amp;&amp; rhs)</span>
-            </dt>
-            <dd>move constructor</dd>
-            <dt id="ac1510f29e6a9cf57933c33feda99735a">
-              <span class="m-doc-wrap-bumper"><a href="#ac1510f29e6a9cf57933c33feda99735a" class="m-doc-self">~cudaEvent</a>(</span><span class="m-doc-wrap">)</span>
-            </dt>
-            <dd>destructs the CUDA event</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper"><a href="#a123fe336965738c7bd8027512c052de6" class="m-doc">operator cudaEvent_t</a>(</span><span class="m-doc-wrap">) const</span>
-            </dt>
-            <dd>implicit conversion to the native CUDA event (cudaEvent_t)</dd>
           </dl>
-        </section>
-        <section id="pub-methods">
-          <h2><a href="#pub-methods">Public functions</a></h2>
-          <dl class="m-doc">
-            <dt id="adfcc20681dd240a017a2fafe6cb4d4dd">
-              <span class="m-doc-wrap-bumper">auto <a href="#adfcc20681dd240a017a2fafe6cb4d4dd" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a>&amp;) -&gt; <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a>&amp; <span class="m-label m-flat m-danger">deleted</span></span>
-            </dt>
-            <dd>disabled copy assignment</dd>
-            <dt id="a15672eb08ad6647b84d69e399a9f7677">
-              <span class="m-doc-wrap-bumper">auto <a href="#a15672eb08ad6647b84d69e399a9f7677" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a>&amp;&amp; rhs) -&gt; <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a>&amp;</span>
-            </dt>
-            <dd>move assignment</dd>
-          </dl>
-        </section>
-        <section>
-          <h2>Function documentation</h2>
-          <section class="m-doc-details" id="a123fe336965738c7bd8027512c052de6"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"> tf::<wbr />cudaEvent::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a123fe336965738c7bd8027512c052de6" class="m-doc-self">operator cudaEvent_t</a>(</span><span class="m-doc-wrap">) const</span></span>
-            </h3>
-            <p>implicit conversion to the native CUDA event (cudaEvent_t)</p>
-<p>Returns the underlying event of type <code>cudaEvent_t</code>.</p>
-          </div></section>
         </section>
       </div>
     </div>

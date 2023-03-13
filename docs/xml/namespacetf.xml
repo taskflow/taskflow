@@ -4,17 +4,19 @@
     <compoundname>tf</compoundname>
     <innerclass refid="classtf_1_1ChromeObserver" prot="public">tf::ChromeObserver</innerclass>
     <innerclass refid="classtf_1_1CriticalSection" prot="public">tf::CriticalSection</innerclass>
-    <innerclass refid="classtf_1_1cudaCapturingBase" prot="private">tf::cudaCapturingBase</innerclass>
     <innerclass refid="classtf_1_1cudaDeviceAllocator" prot="public">tf::cudaDeviceAllocator</innerclass>
     <innerclass refid="classtf_1_1cudaDeviceVector" prot="private">tf::cudaDeviceVector</innerclass>
     <innerclass refid="classtf_1_1cudaEvent" prot="public">tf::cudaEvent</innerclass>
+    <innerclass refid="structtf_1_1cudaEventCreator" prot="private">tf::cudaEventCreator</innerclass>
+    <innerclass refid="structtf_1_1cudaEventDeleter" prot="private">tf::cudaEventDeleter</innerclass>
     <innerclass refid="classtf_1_1cudaExecutionPolicy" prot="public">tf::cudaExecutionPolicy</innerclass>
     <innerclass refid="classtf_1_1cudaFlow" prot="public">tf::cudaFlow</innerclass>
     <innerclass refid="classtf_1_1cudaFlowCapturer" prot="public">tf::cudaFlowCapturer</innerclass>
-    <innerclass refid="classtf_1_1cudaLinearCapturing" prot="public">tf::cudaLinearCapturing</innerclass>
-    <innerclass refid="classtf_1_1cudaRoundRobinCapturing" prot="public">tf::cudaRoundRobinCapturing</innerclass>
+    <innerclass refid="classtf_1_1cudaFlowLinearOptimizer" prot="public">tf::cudaFlowLinearOptimizer</innerclass>
+    <innerclass refid="classtf_1_1cudaFlowOptimizerBase" prot="private">tf::cudaFlowOptimizerBase</innerclass>
+    <innerclass refid="classtf_1_1cudaFlowRoundRobinOptimizer" prot="public">tf::cudaFlowRoundRobinOptimizer</innerclass>
+    <innerclass refid="classtf_1_1cudaFlowSequentialOptimizer" prot="public">tf::cudaFlowSequentialOptimizer</innerclass>
     <innerclass refid="classtf_1_1cudaScopedDevice" prot="public">tf::cudaScopedDevice</innerclass>
-    <innerclass refid="classtf_1_1cudaSequentialCapturing" prot="public">tf::cudaSequentialCapturing</innerclass>
     <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory</innerclass>
     <innerclass refid="structtf_1_1cudaSharedMemory_3_01bool_01_4" prot="private">tf::cudaSharedMemory&lt; bool &gt;</innerclass>
     <innerclass refid="structtf_1_1cudaSharedMemory_3_01char_01_4" prot="private">tf::cudaSharedMemory&lt; char &gt;</innerclass>
@@ -28,23 +30,30 @@
     <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01long_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned long &gt;</innerclass>
     <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01short_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned short &gt;</innerclass>
     <innerclass refid="classtf_1_1cudaStream" prot="public">tf::cudaStream</innerclass>
+    <innerclass refid="structtf_1_1cudaStreamCreator" prot="private">tf::cudaStreamCreator</innerclass>
+    <innerclass refid="structtf_1_1cudaStreamDeleter" prot="private">tf::cudaStreamDeleter</innerclass>
     <innerclass refid="classtf_1_1cudaTask" prot="public">tf::cudaTask</innerclass>
     <innerclass refid="classtf_1_1cudaUSMAllocator" prot="public">tf::cudaUSMAllocator</innerclass>
     <innerclass refid="classtf_1_1CustomGraphBase" prot="private">tf::CustomGraphBase</innerclass>
     <innerclass refid="classtf_1_1DataPipe" prot="public">tf::DataPipe</innerclass>
     <innerclass refid="classtf_1_1DataPipeline" prot="public">tf::DataPipeline</innerclass>
     <innerclass refid="classtf_1_1DeferredPipeflow" prot="private">tf::DeferredPipeflow</innerclass>
+    <innerclass refid="classtf_1_1DynamicPartitioner" prot="public">tf::DynamicPartitioner</innerclass>
+    <innerclass refid="structtf_1_1ExecutionPolicy" prot="public">tf::ExecutionPolicy</innerclass>
     <innerclass refid="classtf_1_1Executor" prot="public">tf::Executor</innerclass>
     <innerclass refid="classtf_1_1FlowBuilder" prot="public">tf::FlowBuilder</innerclass>
     <innerclass refid="classtf_1_1Future" prot="public">tf::Future</innerclass>
     <innerclass refid="classtf_1_1Graph" prot="public">tf::Graph</innerclass>
+    <innerclass refid="classtf_1_1GuidedPartitioner" prot="public">tf::GuidedPartitioner</innerclass>
     <innerclass refid="structtf_1_1IsPod" prot="private">tf::IsPod</innerclass>
     <innerclass refid="classtf_1_1Node" prot="private">tf::Node</innerclass>
     <innerclass refid="classtf_1_1ObserverInterface" prot="public">tf::ObserverInterface</innerclass>
+    <innerclass refid="classtf_1_1PartitionerBase" prot="public">tf::PartitionerBase</innerclass>
     <innerclass refid="classtf_1_1Pipe" prot="public">tf::Pipe</innerclass>
     <innerclass refid="classtf_1_1Pipeflow" prot="public">tf::Pipeflow</innerclass>
     <innerclass refid="classtf_1_1Pipeline" prot="public">tf::Pipeline</innerclass>
     <innerclass refid="structtf_1_1ProfileData" prot="private">tf::ProfileData</innerclass>
+    <innerclass refid="classtf_1_1RandomPartitioner" prot="public">tf::RandomPartitioner</innerclass>
     <innerclass refid="classtf_1_1Runtime" prot="public">tf::Runtime</innerclass>
     <innerclass refid="classtf_1_1ScalablePipeline" prot="public">tf::ScalablePipeline</innerclass>
     <innerclass refid="structtf_1_1Segment" prot="private">tf::Segment</innerclass>
@@ -58,9 +67,8 @@
     <innerclass refid="classtf_1_1SmallVectorTemplateBase" prot="private">tf::SmallVectorTemplateBase</innerclass>
     <innerclass refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4" prot="private">tf::SmallVectorTemplateBase&lt; T, true &gt;</innerclass>
     <innerclass refid="classtf_1_1SmallVectorTemplateCommon" prot="private">tf::SmallVectorTemplateCommon</innerclass>
+    <innerclass refid="classtf_1_1StaticPartitioner" prot="public">tf::StaticPartitioner</innerclass>
     <innerclass refid="classtf_1_1Subflow" prot="public">tf::Subflow</innerclass>
-    <innerclass refid="classtf_1_1syclFlow" prot="public">tf::syclFlow</innerclass>
-    <innerclass refid="classtf_1_1syclTask" prot="public">tf::syclTask</innerclass>
     <innerclass refid="classtf_1_1Task" prot="public">tf::Task</innerclass>
     <innerclass refid="classtf_1_1Taskflow" prot="public">tf::Taskflow</innerclass>
     <innerclass refid="classtf_1_1TaskQueue" prot="public">tf::TaskQueue</innerclass>
@@ -136,22 +144,6 @@
           <detaileddescription>
           </detaileddescription>
         </enumvalue>
-        <enumvalue id="namespacetf_1a1355048578785a80414707ff308b395aa1fbe66e2b3b8907e5b1e605191a1c225" prot="public">
-          <name>CUDAFLOW</name>
-          <briefdescription>
-<para><ref refid="classtf_1_1cudaFlow" kindref="compound">cudaFlow</ref> task type </para>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
-        <enumvalue id="namespacetf_1a1355048578785a80414707ff308b395aaacf7c94171844e1799b1cccf0144938c" prot="public">
-          <name>SYCLFLOW</name>
-          <briefdescription>
-<para><ref refid="classtf_1_1syclFlow" kindref="compound">syclFlow</ref> task type </para>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
         <enumvalue id="namespacetf_1a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" prot="public">
           <name>STATIC</name>
           <briefdescription>
@@ -215,7 +207,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="21" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="21" bodyend="42"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="21" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="21" bodyend="38"/>
       </memberdef>
       <memberdef kind="enum" id="namespacetf_1a192f7cb0fab2eb6f1c84f6046706435d" prot="public" static="no" strong="yes">
         <type>int</type>
@@ -374,9 +366,23 @@
         </inbodydescription>
         <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="20" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="20" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="typedef" id="namespacetf_1aa18f102977c3257b75e21fde05efdb68" prot="public" static="no">
-        <type><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">cudaExecutionPolicy</ref>&lt; 512, 9 &gt;</type>
-        <definition>using tf::cudaDefaultExecutionPolicy = typedef cudaExecutionPolicy&lt;512, 9&gt;</definition>
+      <memberdef kind="typedef" id="namespacetf_1a04cb73dba3a2101ed735b8e7122aca60" prot="public" static="no">
+        <type><ref refid="structtf_1_1ExecutionPolicy" kindref="compound">ExecutionPolicy</ref>&lt; <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">GuidedPartitioner</ref> &gt;</type>
+        <definition>using tf::DefaultExecutionPolicy = typedef ExecutionPolicy&lt;GuidedPartitioner&gt;</definition>
+        <argsstring></argsstring>
+        <name>DefaultExecutionPolicy</name>
+        <briefdescription>
+<para>default execution policy using <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref> algorithm </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="408" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="408" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacetf_1a0e267ab3e1baeb1962f3b3a374de9553" prot="public" static="no">
+        <type><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">cudaExecutionPolicy</ref>&lt; 512, 7 &gt;</type>
+        <definition>using tf::cudaDefaultExecutionPolicy = typedef cudaExecutionPolicy&lt;512, 7&gt;</definition>
         <argsstring></argsstring>
         <name>cudaDefaultExecutionPolicy</name>
         <briefdescription>
@@ -386,7 +392,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="72" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="72" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="110" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="110" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="var">
@@ -403,15 +409,13 @@
         </inbodydescription>
         <location file="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="469" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="469" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="namespacetf_1adb6a1cbed8eac9ee7bb67609142cbd9c" prot="private" static="no" constexpr="yes" mutable="no">
-        <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 9 &gt;</type>
-        <definition>constexpr std::array&lt;TaskType, 9&gt; tf::TASK_TYPES</definition>
+      <memberdef kind="variable" id="namespacetf_1a3d823d8776745f3348dc87bba2fcc91b" prot="private" static="no" constexpr="yes" mutable="no">
+        <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 7 &gt;</type>
+        <definition>constexpr std::array&lt;TaskType, 7&gt; tf::TASK_TYPES</definition>
         <argsstring></argsstring>
         <name>TASK_TYPES</name>
         <initializer>= {
   <ref refid="namespacetf_1a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" kindref="member">TaskType::PLACEHOLDER</ref>,
-  <ref refid="namespacetf_1a1355048578785a80414707ff308b395aa1fbe66e2b3b8907e5b1e605191a1c225" kindref="member">TaskType::CUDAFLOW</ref>,
-  <ref refid="namespacetf_1a1355048578785a80414707ff308b395aaacf7c94171844e1799b1cccf0144938c" kindref="member">TaskType::SYCLFLOW</ref>,
   <ref refid="namespacetf_1a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" kindref="member">TaskType::STATIC</ref>,
   <ref refid="namespacetf_1a1355048578785a80414707ff308b395aa0fcc90da4811c877ba9f9c12f7d60bc9" kindref="member">TaskType::DYNAMIC</ref>,
   <ref refid="namespacetf_1a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac" kindref="member">TaskType::CONDITION</ref>,
@@ -426,7 +430,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="48" column="29" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="48" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="44" column="29" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="44" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a11fc9c98eb3a0d3a9aa55598b1f4d614" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -450,7 +454,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="107" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="107" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="97" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="97" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a1eea7593f25ab348cfb656dbdf4e5b05" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -471,7 +475,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="118" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="118" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="108" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="108" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -492,7 +496,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="126" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="126" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="116" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="116" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a78c40dc8776735b0f2c27cd446481aff" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -514,50 +518,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="135" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="135" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="variable" id="namespacetf_1adb8433555d8cdc0b3c5d95e8d51a90f0" prot="public" static="no" constexpr="yes" mutable="no">
-        <templateparamlist>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>constexpr bool</type>
-        <definition>constexpr bool tf::is_cudaflow_task_v</definition>
-        <argsstring></argsstring>
-        <name>is_cudaflow_task_v</name>
-        <initializer>= std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1cudaFlow" kindref="compound">cudaFlow</ref>&amp;&gt; ||
-                                    std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">cudaFlowCapturer</ref>&amp;&gt;</initializer>
-        <briefdescription>
-<para>determines if a callable is a cudaFlow task </para>
-        </briefdescription>
-        <detaileddescription>
-<para>A <ref refid="classtf_1_1cudaFlow" kindref="compound">cudaFlow</ref> task is a callable object constructible from std::function&lt;void(tf::cudaFlow&amp;)&gt; or std::function&lt;void(tf::cudaFlowCapturer&amp;)&gt;. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="145" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="145" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="variable" id="namespacetf_1a574038aaa99e0220eedca4e8ea9389cf" prot="public" static="no" constexpr="yes" mutable="no">
-        <templateparamlist>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>constexpr bool</type>
-        <definition>constexpr bool tf::is_syclflow_task_v</definition>
-        <argsstring></argsstring>
-        <name>is_syclflow_task_v</name>
-        <initializer>= std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1syclFlow" kindref="compound">syclFlow</ref>&amp;&gt;</initializer>
-        <briefdescription>
-<para>determines if a callable is a syclFlow task </para>
-        </briefdescription>
-        <detaileddescription>
-<para>A <ref refid="classtf_1_1syclFlow" kindref="compound">syclFlow</ref> task is a callable object constructible from std::function&lt;void(tf::syclFlow&amp;)&gt;. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="155" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="155" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="125" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="125" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1af3d94f0be0f7b49e195c4e92737b1f85" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -578,7 +539,28 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="164" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="164" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="135" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="135" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacetf_1a6720c7fd9025a4c32898264dab03b8be" prot="public" static="no" constexpr="yes" mutable="no">
+        <templateparamlist>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type>constexpr bool</type>
+        <definition>constexpr bool tf::is_execution_policy_v</definition>
+        <argsstring></argsstring>
+        <name>is_execution_policy_v</name>
+        <initializer>= <ref refid="cpp/types/is_base_of" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_base_of</ref>&lt;<ref refid="classtf_1_1PartitionerBase" kindref="compound">PartitionerBase</ref>, C&gt;::value</initializer>
+        <briefdescription>
+<para>determines if a type is a partitioner </para>
+        </briefdescription>
+        <detaileddescription>
+<para>A partitioner is a derived type from <ref refid="classtf_1_1PartitionerBase" kindref="compound">tf::PartitionerBase</ref>. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="416" column="23" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="416" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
@@ -629,12 +611,40 @@
           <declname>args</declname>
         </param>
         <briefdescription>
+<para>helper function to create an instance derived from <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> </para>
         </briefdescription>
         <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>type derived from <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ArgsT</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>argument types to construct <computeroutput>T</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>arguments to forward to the constructor of <computeroutput>T</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="247" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="247" bodyend="253"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="249" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="249" bodyend="255"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
@@ -651,8 +661,6 @@
         <detaileddescription>
 <para>The name of each task type is the litte-case string of its characters.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="namespacetf_1a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" kindref="member">TaskType::PLACEHOLDER</ref><sp/><sp/><sp/><sp/><sp/>-&gt;<sp/><sp/></highlight><highlight class="stringliteral">&quot;placeholder&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1a1355048578785a80414707ff308b395aa1fbe66e2b3b8907e5b1e605191a1c225" kindref="member">TaskType::CUDAFLOW</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-&gt;<sp/><sp/></highlight><highlight class="stringliteral">&quot;cudaflow&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1a1355048578785a80414707ff308b395aaacf7c94171844e1799b1cccf0144938c" kindref="member">TaskType::SYCLFLOW</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-&gt;<sp/><sp/></highlight><highlight class="stringliteral">&quot;syclflow&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" kindref="member">TaskType::STATIC</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-&gt;<sp/><sp/></highlight><highlight class="stringliteral">&quot;static&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1a1355048578785a80414707ff308b395aa0fcc90da4811c877ba9f9c12f7d60bc9" kindref="member">TaskType::DYNAMIC</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-&gt;<sp/><sp/></highlight><highlight class="stringliteral">&quot;subflow&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac" kindref="member">TaskType::CONDITION</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-&gt;<sp/><sp/></highlight><highlight class="stringliteral">&quot;condition&quot;</highlight><highlight class="normal"></highlight></codeline>
@@ -663,7 +671,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="77" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="77" bodyend="95"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="69" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="69" bodyend="85"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ad216aea4d0f648e149e47374ad015b1f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
@@ -679,13 +687,13 @@
           <declname>task</declname>
         </param>
         <briefdescription>
-<para>overload of ostream inserter operator for <ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref> </para>
+<para>overload of ostream inserter operator for <ref refid="classtf_1_1Task" kindref="compound">Task</ref> </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="648" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="648" bodyend="651"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" line="613" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="613" bodyend="616"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aa3fc0699b2c2b8f2f76bb39f91be1acb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
@@ -1571,7 +1579,7 @@ The function launches a single kernel thread to run the given callable through t
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="69" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="69" bodyend="73"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="63" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="63" bodyend="67"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a7c449cec0b93503b8280d05add35e9f4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1675,7 +1683,7 @@ This function is equivalent to a parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="97" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="97" bodyend="106"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="91" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="91" bodyend="104"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a01ad7ce62fa6f42f2f2fbff3659b7884" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1797,7 +1805,7 @@ This function is equivalent to a parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="138" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="138" bodyend="151"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="136" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="136" bodyend="149"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a3075c7a1f4d08fefefb415b0e2ac58fb" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1819,7 +1827,7 @@ This function is equivalent to a parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="159" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="159" bodyend="161"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="157" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="157" bodyend="159"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1946,7 +1954,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" line="84" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="84" bodyend="93"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" line="86" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="86" bodyend="100"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1abdcb5b755f7ace2aa452541d5bf93b5f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2096,60 +2104,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" line="120" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="120" bodyend="131"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a1ca0bd68df882048e4b9b4d92efc3168" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-        </templateparamlist>
-        <type>unsigned</type>
-        <definition>unsigned tf::cuda_reduce_buffer_size</definition>
-        <argsstring>(unsigned count)</argsstring>
-        <name>cuda_reduce_buffer_size</name>
-        <param>
-          <type>unsigned</type>
-          <declname>count</declname>
-        </param>
-        <briefdescription>
-<para>queries the buffer size in bytes needed to call reduce kernels </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>T</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>value type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>count</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>number of elements to reduce</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-The function is used to allocate a buffer for calling <ref refid="namespacetf_1a8a872d2a0ac73a676713cb5be5aa688c" kindref="member">tf::cuda_reduce</ref>, <ref refid="namespacetf_1a492e8410db032a0273a99dd905486161" kindref="member">tf::cuda_uninitialized_reduce</ref>, <ref refid="namespacetf_1a4463d06240d608bc31d8b3546a851e4e" kindref="member">tf::cuda_transform_reduce</ref>, and <ref refid="namespacetf_1a747a41c0474fd34da370839b60ddc4ca" kindref="member">tf::cuda_transform_uninitialized_reduce</ref>. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="176" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="176" bodyend="182"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" line="127" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="127" bodyend="143"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a8a872d2a0ac73a676713cb5be5aa688c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2288,7 +2243,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="212" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="212" bodyend="220"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="264" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="264" bodyend="272"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a492e8410db032a0273a99dd905486161" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2428,7 +2383,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="253" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="253" bodyend="261"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="305" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="305" bodyend="313"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a4463d06240d608bc31d8b3546a851e4e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2590,9 +2545,9 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="294" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="294" bodyend="311"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="346" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="346" bodyend="363"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1a747a41c0474fd34da370839b60ddc4ca" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacetf_1aa451668b7a0a3abf385cf2abebed8962" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename P</type>
@@ -2611,9 +2566,9 @@ This method is equivalent to the parallel execution of the following loop on a G
           </param>
         </templateparamlist>
         <type>void</type>
-        <definition>void tf::cuda_transform_uninitialized_reduce</definition>
+        <definition>void tf::cuda_uninitialized_transform_reduce</definition>
         <argsstring>(P &amp;&amp;p, I first, I last, T *res, O bop, U uop, void *buf)</argsstring>
-        <name>cuda_transform_uninitialized_reduce</name>
+        <name>cuda_uninitialized_transform_reduce</name>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -2753,60 +2708,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="346" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="346" bodyend="364"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1afd7e7a0886352201cced5c55205f3229" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-        </templateparamlist>
-        <type>unsigned</type>
-        <definition>unsigned tf::cuda_scan_buffer_size</definition>
-        <argsstring>(unsigned count)</argsstring>
-        <name>cuda_scan_buffer_size</name>
-        <param>
-          <type>unsigned</type>
-          <declname>count</declname>
-        </param>
-        <briefdescription>
-<para>queries the buffer size in bytes needed to call scan kernels </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>T</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>value type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>count</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>number of elements to scan</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-The function is used to allocate a buffer for calling <ref refid="namespacetf_1a2e1b44c84a09e0a8495a611cb9a7ea40" kindref="member">tf::cuda_inclusive_scan</ref>, <ref refid="namespacetf_1aeb391c40120844318fd715b8c3a716bb" kindref="member">tf::cuda_exclusive_scan</ref>, <ref refid="namespacetf_1afa4aa760ddb6efbda1b9bab505ad5baf" kindref="member">tf::cuda_transform_inclusive_scan</ref>, and <ref refid="namespacetf_1a2e739895c1c73538967af060ca714366" kindref="member">tf::cuda_transform_exclusive_scan</ref>. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="340" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="340" bodyend="348"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="398" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="398" bodyend="412"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a2e1b44c84a09e0a8495a611cb9a7ea40" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2941,7 +2843,7 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="394" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="394" bodyend="408"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="368" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="368" bodyend="382"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1afa4aa760ddb6efbda1b9bab505ad5baf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3099,7 +3001,7 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="461" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="461" bodyend="479"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="403" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="403" bodyend="421"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aeb391c40120844318fd715b8c3a716bb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3234,7 +3136,7 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="526" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="526" bodyend="540"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="440" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="440" bodyend="454"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a2e739895c1c73538967af060ca714366" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3392,61 +3294,7 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="593" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="593" bodyend="611"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a3db5b8f718e7f6a6fa2da3a689bd8828" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-        </templateparamlist>
-        <type>unsigned</type>
-        <definition>unsigned tf::cuda_merge_buffer_size</definition>
-        <argsstring>(unsigned a_count, unsigned b_count)</argsstring>
-        <name>cuda_merge_buffer_size</name>
-        <param>
-          <type>unsigned</type>
-          <declname>a_count</declname>
-        </param>
-        <param>
-          <type>unsigned</type>
-          <declname>b_count</declname>
-        </param>
-        <briefdescription>
-<para>queries the buffer size in bytes needed to call merge kernels </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution polity type </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>a_count</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>number of elements in the first input array </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>b_count</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>number of elements in the second input array</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-The function is used to allocate a buffer for calling <ref refid="namespacetf_1a37ec481149c2f01669353033d75ed72a" kindref="member">tf::cuda_merge</ref>. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="460" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="460" bodyend="464"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="475" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="475" bodyend="493"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aa84d4c68d2cbe9f6efc4a1eb1a115458" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3684,8 +3532,8 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
 Performs a key-value merge that copies elements from <computeroutput>[a_keys_first, a_keys_last)</computeroutput> and <computeroutput>[b_keys_first, b_keys_last)</computeroutput> into a single range, <computeroutput>[c_keys_first, c_keys_last + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</computeroutput> such that the resulting range is in ascending key order.</para>
 <para>At the same time, the merge copies elements from the two associated ranges <computeroutput>[a_vals_first + (a_keys_last - a_keys_first))</computeroutput> and <computeroutput>[b_vals_first + (b_keys_last - b_keys_first))</computeroutput> into a single range, <computeroutput>[c_vals_first, c_vals_first + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</computeroutput> such that the resulting range is in ascending order implied by each input element&apos;s associated key.</para>
 <para>For example, assume:<itemizedlist>
-<listitem><para><computeroutput>a_keys</computeroutput> = {8, 1};</para>
-</listitem><listitem><para><computeroutput>a_vals</computeroutput> = {1, 2};</para>
+<listitem><para><computeroutput>a_keys</computeroutput> = {1, 8};</para>
+</listitem><listitem><para><computeroutput>a_vals</computeroutput> = {2, 1};</para>
 </listitem><listitem><para><computeroutput>b_keys</computeroutput> = {3, 7};</para>
 </listitem><listitem><para><computeroutput>b_vals</computeroutput> = {3, 4};</para>
 </listitem></itemizedlist>
@@ -3698,7 +3546,7 @@ Performs a key-value merge that copies elements from <computeroutput>[a_keys_fir
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="560" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="560" bodyend="581"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="524" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="524" bodyend="546"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a37ec481149c2f01669353033d75ed72a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3868,7 +3716,7 @@ This function is equivalent to <ref refid="namespacetf_1aa84d4c68d2cbe9f6efc4a1e
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="629" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="629" bodyend="644"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="576" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="576" bodyend="591"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9c69906a4dfd1e2d0cd7ed496d29dafd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3933,7 +3781,7 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="421" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="421" bodyend="432"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="417" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="417" bodyend="428"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a3461b9179221dd7230ce2a0e45156c7f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -4078,7 +3926,7 @@ Sorts key-value elements in <computeroutput>[k_first, k_last)</computeroutput> a
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="471" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="471" bodyend="482"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="467" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="467" bodyend="478"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a06804cb1598e965febc7bd35fc0fbbb0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -4190,7 +4038,7 @@ This method is equivalent to <ref refid="namespacetf_1a3461b9179221dd7230ce2a0e4
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="505" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="505" bodyend="507"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="501" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="501" bodyend="503"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a5f9dabd7c5d0fa5166cf76d9fa5a038e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -4312,59 +4160,6 @@ The function launches kernels asynchronously to find the index <computeroutput>i
         </inbodydescription>
         <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="181" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="181" bodyend="185"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1abe3b31aaf686b491e9000f0867934713" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-        </templateparamlist>
-        <type>unsigned</type>
-        <definition>unsigned tf::cuda_min_element_buffer_size</definition>
-        <argsstring>(unsigned count)</argsstring>
-        <name>cuda_min_element_buffer_size</name>
-        <param>
-          <type>unsigned</type>
-          <declname>count</declname>
-        </param>
-        <briefdescription>
-<para>queries the buffer size in bytes needed to call <ref refid="namespacetf_1a572c13198191c46765264f8afabe2e9f" kindref="member">tf::cuda_min_element</ref> </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>T</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>value type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>count</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>number of elements to search</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-The function is used to decide the buffer size in bytes for calling <ref refid="namespacetf_1a572c13198191c46765264f8afabe2e9f" kindref="member">tf::cuda_min_element</ref>. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="249" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="249" bodyend="251"/>
-      </memberdef>
       <memberdef kind="function" id="namespacetf_1a572c13198191c46765264f8afabe2e9f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
@@ -4483,7 +4278,7 @@ The function is used to decide the buffer size in bytes for calling <ref refid="
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-The function launches kernels asynchronously to find the smallest element in the range <computeroutput>[first, last)</computeroutput> using the given comparator <computeroutput>op</computeroutput>. You need to provide a buffer that holds at least <ref refid="namespacetf_1abe3b31aaf686b491e9000f0867934713" kindref="member">tf::cuda_min_element_buffer_size</ref> bytes for internal use. The function is equivalent to a parallel execution of the following loop:</para>
+The function launches kernels asynchronously to find the smallest element in the range <computeroutput>[first, last)</computeroutput> using the given comparator <computeroutput>op</computeroutput>. You need to provide a buffer that holds at least tf::cuda_min_element_bufsz bytes for internal use. The function is equivalent to a parallel execution of the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">if</highlight><highlight class="normal">(first<sp/>==<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -4498,60 +4293,7 @@ The function launches kernels asynchronously to find the smallest element in the
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="288" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="288" bodyend="292"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a04965f210cc6447c7c38206a28c3c3d4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-        </templateparamlist>
-        <type>unsigned</type>
-        <definition>unsigned tf::cuda_max_element_buffer_size</definition>
-        <argsstring>(unsigned count)</argsstring>
-        <name>cuda_max_element_buffer_size</name>
-        <param>
-          <type>unsigned</type>
-          <declname>count</declname>
-        </param>
-        <briefdescription>
-<para>queries the buffer size in bytes needed to call <ref refid="namespacetf_1a3fc577fd0a8f127770bcf68bc56c073e" kindref="member">tf::cuda_max_element</ref> </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>T</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>value type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>count</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>number of elements to search</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-The function is used to decide the buffer size in bytes for calling <ref refid="namespacetf_1a3fc577fd0a8f127770bcf68bc56c073e" kindref="member">tf::cuda_max_element</ref>. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="374" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="374" bodyend="376"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="243" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="243" bodyend="247"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a3fc577fd0a8f127770bcf68bc56c073e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -4671,7 +4413,7 @@ The function is used to decide the buffer size in bytes for calling <ref refid="
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-The function launches kernels asynchronously to find the largest element in the range <computeroutput>[first, last)</computeroutput> using the given comparator <computeroutput>op</computeroutput>. You need to provide a buffer that holds at least <ref refid="namespacetf_1a04965f210cc6447c7c38206a28c3c3d4" kindref="member">tf::cuda_max_element_buffer_size</ref> bytes for internal use. The function is equivalent to a parallel execution of the following loop:</para>
+The function launches kernels asynchronously to find the largest element in the range <computeroutput>[first, last)</computeroutput> using the given comparator <computeroutput>op</computeroutput>. You need to provide a buffer that holds at least tf::cuda_max_element_bufsz bytes for internal use. The function is equivalent to a parallel execution of the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">if</highlight><highlight class="normal">(first<sp/>==<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -4686,29 +4428,7 @@ The function launches kernels asynchronously to find the largest element in the 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="413" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="413" bodyend="417"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a160861c1c085842ecb0c56537199deaa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
-        <definition>std::ostream&amp; tf::operator&lt;&lt;</definition>
-        <argsstring>(std::ostream &amp;os, const syclTask &amp;ct)</argsstring>
-        <name>operator&lt;&lt;</name>
-        <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
-          <declname>os</declname>
-        </param>
-        <param>
-          <type>const <ref refid="classtf_1_1syclTask" kindref="compound">syclTask</ref> &amp;</type>
-          <declname>ct</declname>
-        </param>
-        <briefdescription>
-<para>overload of ostream inserter operator for <ref refid="classtf_1_1syclTask" kindref="compound">syclTask</ref> </para>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/sycl/sycl_task.hpp" line="201" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/sycl/sycl_task.hpp" bodystart="201" bodyend="204"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="305" column="6" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="305" bodyend="309"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a30fa078dcf625e9eada5a95af1467588" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>constexpr const char *</type>

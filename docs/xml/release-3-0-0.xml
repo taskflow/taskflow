@@ -152,15 +152,15 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlow_1a89c389fff64a16e5dd8c60875d3b514d" kindref="member">tf::cudaFlow::capture</ref> for capturing a cudaFlow within a parent cudaFlow </para>
 </listitem>
-<listitem><para>added <ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">tf::Taskflow::emplace_on</ref> to place a cudaFlow on a GPU </para>
+<listitem><para>added tf::Taskflow::emplace_on to place a cudaFlow on a GPU </para>
 </listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlow_1a7f97b68fa7c889db49b26aa71a46a7cf" kindref="member">tf::cudaFlow::dump</ref> and <ref refid="classtf_1_1cudaFlowCapturer_1a90d1265bcc27647906bed6e6876c9aa7" kindref="member">tf::cudaFlowCapturer::dump</ref> to visualize cudaFlow </para>
 </listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">tf::cudaFlow::offload</ref> and update methods to run and update a cudaFlow explicitly </para>
+<listitem><para>added tf::cudaFlow::offload and update methods to run and update a cudaFlow explicitly </para>
 </listitem>
-<listitem><para>supported standalone cudaFlow (see <ref refid="GPUTaskingcudaFlow_1UsecudaFlowInAStandaloneEnvironment" kindref="member">Use cudaFlow in a Standalone Environment</ref>) </para>
+<listitem><para>supported standalone cudaFlow </para>
 </listitem>
-<listitem><para>supported standalone cudaFlowCapturer (see <ref refid="GPUTaskingcudaFlowCapturer_1UsecudaFlowCapturerInAStandaloneEnvironment" kindref="member">Use cudaFlow Capturer in a Standalone Environment</ref>) </para>
+<listitem><para>supported standalone cudaFlowCapturer </para>
 </listitem>
 <listitem><para>added tf::cublasFlowCapturer to support <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> (see LinearAlgebracublasFlowCapturer)</para>
 </listitem>
@@ -211,9 +211,9 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem>
 <listitem><para>added parallel iterations (see <ref refid="ForEachCUDA" kindref="compound">Parallel Iterations</ref>) </para>
 </listitem>
-<listitem><para>added parallel transforms (see <ref refid="ParallelTransformsCUDA" kindref="compound">Parallel Transforms</ref>) </para>
+<listitem><para>added parallel transforms </para>
 </listitem>
-<listitem><para>added parallel reduction (see <ref refid="cudaFlowReduce" kindref="compound">Parallel Reduction</ref>)</para>
+<listitem><para>added parallel reduction</para>
 </listitem>
 </itemizedlist>
 </para>
@@ -240,9 +240,9 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <sect1 id="release-3-0-0_1release-3-0-0_deprecated_items">
 <title>Deprecated and Removed Items</title>
 <para><itemizedlist>
-<listitem><para>removed tf::cudaFlow::device; users may call <ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">tf::Taskflow::emplace_on</ref> to associate a cudaflow with a GPU device </para>
+<listitem><para>removed tf::cudaFlow::device; users may call tf::Taskflow::emplace_on to associate a cudaflow with a GPU device </para>
 </listitem>
-<listitem><para>removed tf::cudaFlow::join, use <ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">tf::cudaFlow::offload</ref> instead </para>
+<listitem><para>removed tf::cudaFlow::join, use tf::cudaFlow::offload instead </para>
 </listitem>
 <listitem><para>removed the legacy tf::Framework </para>
 </listitem>
@@ -271,8 +271,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <listitem><para>added <ref refid="cudaFlowAlgorithms" kindref="compound">cudaFlow Algorithms</ref><itemizedlist>
 <listitem><para><ref refid="SingleTaskCUDA" kindref="compound">Single Task</ref> to run a kernel function in just a single thread</para>
 </listitem><listitem><para><ref refid="ForEachCUDA" kindref="compound">Parallel Iterations</ref> to perform parallel iterations over a range of items</para>
-</listitem><listitem><para><ref refid="ParallelTransformsCUDA" kindref="compound">Parallel Transforms</ref> to perform parallel transforms over a range of items</para>
-</listitem><listitem><para><ref refid="cudaFlowReduce" kindref="compound">Parallel Reduction</ref> to perform parallel reduction over a range of items </para>
+</listitem><listitem><para><ref refid="ParallelTransformsCUDA" kindref="compound">Parallel Transforms</ref> to perform parallel transforms over a range of items </para>
 </listitem></itemizedlist>
 </para>
 </listitem>

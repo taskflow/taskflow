@@ -128,28 +128,6 @@
             </dt>
             <dd>creates a placeholder task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#adb8433555d8cdc0b3c5d95e8d51a90f0" class="m-doc">is_<wbr />cudaflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
-            </dt>
-            <dd>creates a cudaFlow task on the caller&#x27;s GPU device context</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename C, typename D, std::enable_if_t&lt;<a href="namespacetf.html#adb8433555d8cdc0b3c5d95e8d51a90f0" class="m-doc">is_<wbr />cudaflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#afdf47fd1a358fb64f8c1b89e2a393169" class="m-doc">emplace_on</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable,
-              D&amp;&amp; device) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
-            </dt>
-            <dd>creates a cudaFlow task on the given device</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#a574038aaa99e0220eedca4e8ea9389cf" class="m-doc">is_<wbr />syclflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
-            </dt>
-            <dd>creates a syclFlow task on the default queue</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename C, typename Q, std::enable_if_t&lt;<a href="namespacetf.html#a574038aaa99e0220eedca4e8ea9389cf" class="m-doc">is_<wbr />syclflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#af7c878fa6f0c4539ab88c0a85e6052d8" class="m-doc">emplace_on</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable,
-              Q&amp;&amp; queue) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
-            </dt>
-            <dd>creates a syclFlow task on the given queue</dd>
-            <dt>
               <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#af3d94f0be0f7b49e195c4e92737b1f85" class="m-doc">is_<wbr />runtime_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
@@ -163,54 +141,109 @@
             </dt>
             <dd>adds adjacent dependency links to a linear list of tasks</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename C&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#ab405d7b10040530d8b04c11767b4960d" class="m-doc">for_each</a>(</span><span class="m-doc-wrap">B first,
+              <div class="m-doc-template">template&lt;typename P, typename B, typename E, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ad2299fddbd6165cc7f24f57a734d2839" class="m-doc">for_each</a>(</span><span class="m-doc-wrap">P&amp;&amp; policy,
+              B first,
               E last,
               C callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
-            <dd>constructs a STL-styled parallel-for task</dd>
+            <dd>constructs an STL-styled parallel-for task</dd>
+            <dt id="ab405d7b10040530d8b04c11767b4960d">
+              <div class="m-doc-template">template&lt;typename B, typename E, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ab405d7b10040530d8b04c11767b4960d" class="m-doc-self">for_each</a>(</span><span class="m-doc-wrap">B first,
+              E last,
+              C callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+            </dt>
+            <dd>Constructs a <a href="classtf_1_1FlowBuilder.html#ad2299fddbd6165cc7f24f57a734d2839" class="m-doc">tf::<wbr />FlowBuilder::<wbr />for_each(P&amp;&amp;, B, E, C)</a> task using the default execution policy <a href="namespacetf.html#a04cb73dba3a2101ed735b8e7122aca60" class="m-doc">tf::<wbr />DefaultExecutionPolicy</a>.</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename S, typename C&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a38ffe176bc3ae1827b9964322e3769d4" class="m-doc">for_each_index</a>(</span><span class="m-doc-wrap">B first,
+              <div class="m-doc-template">template&lt;typename P, typename B, typename E, typename S, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a977d8f7007f323eeaa81a37b4c6e6cd6" class="m-doc">for_each_index</a>(</span><span class="m-doc-wrap">P&amp;&amp; policy,
+              B first,
               E last,
               S step,
               C callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
-            <dd>constructs a parallel-transform task</dd>
+            <dd>constructs an STL-styled index-based parallel-for task</dd>
+            <dt id="a38ffe176bc3ae1827b9964322e3769d4">
+              <div class="m-doc-template">template&lt;typename B, typename E, typename S, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a38ffe176bc3ae1827b9964322e3769d4" class="m-doc-self">for_each_index</a>(</span><span class="m-doc-wrap">B first,
+              E last,
+              S step,
+              C callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+            </dt>
+            <dd>constructs a <a href="classtf_1_1FlowBuilder.html#a977d8f7007f323eeaa81a37b4c6e6cd6" class="m-doc">tf::<wbr />FlowBuilder::<wbr />for_each_index(P&amp;&amp;, B, E, S, C)</a> task using the default execution policy <a href="namespacetf.html#a04cb73dba3a2101ed735b8e7122aca60" class="m-doc">tf::<wbr />DefaultExecutionPolicy</a></dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename O, typename C&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#abd813bd7afcbd8e6f56dc67883917d1a" class="m-doc">transform</a>(</span><span class="m-doc-wrap">B first1,
+              <div class="m-doc-template">template&lt;typename P, typename B, typename E, typename O, typename C, std::enable_if_t&lt;<a href="namespacetf.html#a6720c7fd9025a4c32898264dab03b8be" class="m-doc">is_<wbr />execution_<wbr />policy_<wbr />v</a>&lt;P&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a9f7befa968cf69ea0a20dc267f746f3e" class="m-doc">transform</a>(</span><span class="m-doc-wrap">P&amp;&amp; policy,
+              B first1,
               E last1,
               O d_first,
               C c) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs a parallel-transform task</dd>
+            <dt id="abd813bd7afcbd8e6f56dc67883917d1a">
+              <div class="m-doc-template">template&lt;typename B, typename E, typename O, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#abd813bd7afcbd8e6f56dc67883917d1a" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">B first1,
+              E last1,
+              O d_first,
+              C c) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+            </dt>
+            <dd>constructs a <a href="classtf_1_1FlowBuilder.html#a9f7befa968cf69ea0a20dc267f746f3e" class="m-doc">tf::<wbr />FlowBuilder::<wbr />transform(P&amp;&amp;, B, E, O, C)</a> task using the default execution policy <a href="namespacetf.html#a04cb73dba3a2101ed735b8e7122aca60" class="m-doc">tf::<wbr />DefaultExecutionPolicy</a></dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B1, typename E1, typename B2, typename O, typename C&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#aa0b3271b34317710a1e32053a9abc3cf" class="m-doc">transform</a>(</span><span class="m-doc-wrap">B1 first1,
+              <div class="m-doc-template">template&lt;typename P, typename B1, typename E1, typename B2, typename O, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a01edf4fdeee7d7e01483b6d2969bf115" class="m-doc">transform</a>(</span><span class="m-doc-wrap">P&amp;&amp; policy,
+              B1 first1,
               E1 last1,
               B2 first2,
               O d_first,
               C c) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs a parallel-transform task</dd>
+            <dt id="a7a1d63d0954709e0cfab06277bb60c66">
+              <div class="m-doc-template">template&lt;typename B1, typename E1, typename B2, typename O, typename C, std::enable_if_t&lt;!<a href="namespacetf.html#a6720c7fd9025a4c32898264dab03b8be" class="m-doc">is_<wbr />execution_<wbr />policy_<wbr />v</a>&lt;B1&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a7a1d63d0954709e0cfab06277bb60c66" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">B1 first1,
+              E1 last1,
+              B2 first2,
+              O d_first,
+              C c) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+            </dt>
+            <dd>constructs a <a href="classtf_1_1FlowBuilder.html#a01edf4fdeee7d7e01483b6d2969bf115" class="m-doc">tf::<wbr />FlowBuilder::<wbr />transform(P&amp;&amp;, B1, E1, B2, O, C)</a> task using the default execution policy <a href="namespacetf.html#a04cb73dba3a2101ed735b8e7122aca60" class="m-doc">tf::<wbr />DefaultExecutionPolicy</a></dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename O&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#aa9494fe7b862fc832884ce318e8a37f5" class="m-doc">reduce</a>(</span><span class="m-doc-wrap">B first,
+              <div class="m-doc-template">template&lt;typename P, typename B, typename E, typename T, typename O&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#afc7bd7a737febf30d5d1d706c4b65f84" class="m-doc">reduce</a>(</span><span class="m-doc-wrap">P&amp;&amp; policy,
+              B first,
               E last,
               T&amp; init,
               O bop) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs a STL-styled parallel-reduce task</dd>
+            <dt id="aa9494fe7b862fc832884ce318e8a37f5">
+              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename O&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#aa9494fe7b862fc832884ce318e8a37f5" class="m-doc-self">reduce</a>(</span><span class="m-doc-wrap">B first,
+              E last,
+              T&amp; init,
+              O bop) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+            </dt>
+            <dd>constructs a <a href="classtf_1_1FlowBuilder.html#afc7bd7a737febf30d5d1d706c4b65f84" class="m-doc">tf::<wbr />FlowBuilder::<wbr />reduce(P&amp;&amp;, B, E, T&amp;, O)</a> task using the default execution policy <a href="namespacetf.html#a04cb73dba3a2101ed735b8e7122aca60" class="m-doc">tf::<wbr />DefaultExecutionPolicy</a></dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename BOP, typename UOP&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a024a1e5b4f138b6caebb427411fb0a2d" class="m-doc">transform_reduce</a>(</span><span class="m-doc-wrap">B first,
+              <div class="m-doc-template">template&lt;typename P, typename B, typename E, typename T, typename BOP, typename UOP&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a4dc484abecf338574f46b38635d08e36" class="m-doc">transform_reduce</a>(</span><span class="m-doc-wrap">P&amp;&amp; policy,
+              B first,
               E last,
               T&amp; init,
               BOP bop,
               UOP uop) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs a STL-styled parallel transform-reduce task</dd>
+            <dt id="a024a1e5b4f138b6caebb427411fb0a2d">
+              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename BOP, typename UOP&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a024a1e5b4f138b6caebb427411fb0a2d" class="m-doc-self">transform_reduce</a>(</span><span class="m-doc-wrap">B first,
+              E last,
+              T&amp; init,
+              BOP bop,
+              UOP uop) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+            </dt>
+            <dd>constructs a <a href="classtf_1_1FlowBuilder.html#a4dc484abecf338574f46b38635d08e36" class="m-doc">tf::<wbr />FlowBuilder::<wbr />transform_reduce(P&amp;&amp;, B, E, T&amp;, BOP, UOP)</a> task using the default execution policy <a href="namespacetf.html#a04cb73dba3a2101ed735b8e7122aca60" class="m-doc">tf::<wbr />DefaultExecutionPolicy</a></dd>
             <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename C&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a35e180eb63de6c9f28e43185e837a4fa" class="m-doc">sort</a>(</span><span class="m-doc-wrap">B first,
@@ -556,174 +589,6 @@
           <section class="m-doc-details" id="a60d7a666cab71ecfa3010b2efb0d6b57"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#adb8433555d8cdc0b3c5d95e8d51a90f0" class="m-doc">is_<wbr />cudaflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc-self">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable)</span></span>
-            </h3>
-            <p>creates a cudaFlow task on the caller&#x27;s GPU device context</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">C</td>
-                  <td>callable type constructible from <code>std::function&lt;void(tf::cudaFlow&amp;)&gt;</code></td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
-                </tr>
-              </tfoot>
-            </table>
-<p>This method is equivalent to calling tf::FlowBuilder::emplace_on(callable, d) where <code>d</code> is the caller&#x27;s device context. The following example creates a cudaFlow of two kernel tasks, <code>task1</code> and <code>task2</code>, where <code>task1</code> runs before <code>task2</code>.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">cf</span><span class="p">){</span><span class="w"></span>
-<span class="w">  </span><span class="c1">// create two kernel tasks</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">task1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid1</span><span class="p">,</span><span class="w"> </span><span class="n">block1</span><span class="p">,</span><span class="w"> </span><span class="n">shm1</span><span class="p">,</span><span class="w"> </span><span class="n">kernel1</span><span class="p">,</span><span class="w"> </span><span class="n">args1</span><span class="p">);</span><span class="w"></span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">task2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid2</span><span class="p">,</span><span class="w"> </span><span class="n">block2</span><span class="p">,</span><span class="w"> </span><span class="n">shm2</span><span class="p">,</span><span class="w"> </span><span class="n">kernel2</span><span class="p">,</span><span class="w"> </span><span class="n">args2</span><span class="p">);</span><span class="w"></span>
-
-<span class="w">  </span><span class="c1">// kernel1 runs before kernel2</span>
-<span class="w">  </span><span class="n">task1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre><p>Please refer to <a href="GPUTaskingcudaFlow.html" class="m-doc">GPU Tasking (cudaFlow)</a> and <a href="GPUTaskingcudaFlowCapturer.html" class="m-doc">GPU Tasking (cudaFlowCapturer)</a> for details.</p>
-          </div></section>
-          <section class="m-doc-details" id="afdf47fd1a358fb64f8c1b89e2a393169"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename C, typename D, std::enable_if_t&lt;<a href="namespacetf.html#adb8433555d8cdc0b3c5d95e8d51a90f0" class="m-doc">is_<wbr />cudaflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#afdf47fd1a358fb64f8c1b89e2a393169" class="m-doc-self">emplace_on</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable,
-              D&amp;&amp; device)</span></span>
-            </h3>
-            <p>creates a cudaFlow task on the given device</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">C</td>
-                  <td>callable type constructible from std::function&lt;void(tf::cudaFlow&amp;)&gt;</td>
-                </tr>
-                <tr>
-                  <td>D</td>
-                  <td>device type, either <code>int</code> or <code>std::ref&lt;int&gt;</code> (stateful)</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
-                </tr>
-              </tfoot>
-            </table>
-<p>The following example creates a cudaFlow of two kernel tasks, <code>task1</code> and <code>task2</code> on GPU <code>2</code>, where <code>task1</code> runs before <code>task2</code></p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace_on</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">cf</span><span class="p">){</span><span class="w"></span>
-<span class="w">  </span><span class="c1">// create two kernel tasks</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">task1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid1</span><span class="p">,</span><span class="w"> </span><span class="n">block1</span><span class="p">,</span><span class="w"> </span><span class="n">shm1</span><span class="p">,</span><span class="w"> </span><span class="n">kernel1</span><span class="p">,</span><span class="w"> </span><span class="n">args1</span><span class="p">);</span><span class="w"></span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">task2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid2</span><span class="p">,</span><span class="w"> </span><span class="n">block2</span><span class="p">,</span><span class="w"> </span><span class="n">shm2</span><span class="p">,</span><span class="w"> </span><span class="n">kernel2</span><span class="p">,</span><span class="w"> </span><span class="n">args2</span><span class="p">);</span><span class="w"></span>
-
-<span class="w">  </span><span class="c1">// kernel1 runs before kernel2</span>
-<span class="w">  </span><span class="n">task1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span><span class="w"></span>
-<span class="p">},</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w"></span></pre>
-          </div></section>
-          <section class="m-doc-details" id="a60d7a666cab71ecfa3010b2efb0d6b57"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#a574038aaa99e0220eedca4e8ea9389cf" class="m-doc">is_<wbr />syclflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc-self">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable)</span></span>
-            </h3>
-            <p>creates a syclFlow task on the default queue</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">C</td>
-                  <td>callable type constructible from std::function&lt;void(tf::syclFlow&amp;)&gt;</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>callable</td>
-                  <td>a callable that takes a referenced <a href="classtf_1_1syclFlow.html" class="m-doc">tf::<wbr />syclFlow</a> object</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
-                </tr>
-              </tfoot>
-            </table>
-<p>The following example creates a syclFlow on the default queue to submit two kernel tasks, <code>task1</code> and <code>task2</code>, where <code>task1</code> runs before <code>task2</code>.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">syclFlow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">cf</span><span class="p">){</span><span class="w"></span>
-<span class="w">  </span><span class="c1">// create two single-thread kernel tasks</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span><span class="w"> </span><span class="n">task1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">single_task</span><span class="p">([](){});</span><span class="w"></span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span><span class="w"> </span><span class="n">task2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">single_task</span><span class="p">([](){});</span><span class="w"></span>
-
-<span class="w">  </span><span class="c1">// kernel1 runs before kernel2</span>
-<span class="w">  </span><span class="n">task1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre>
-          </div></section>
-          <section class="m-doc-details" id="af7c878fa6f0c4539ab88c0a85e6052d8"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename C, typename Q, std::enable_if_t&lt;<a href="namespacetf.html#a574038aaa99e0220eedca4e8ea9389cf" class="m-doc">is_<wbr />syclflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af7c878fa6f0c4539ab88c0a85e6052d8" class="m-doc-self">emplace_on</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable,
-              Q&amp;&amp; queue)</span></span>
-            </h3>
-            <p>creates a syclFlow task on the given queue</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">C</td>
-                  <td>callable type constructible from std::function&lt;void(tf::syclFlow&amp;)&gt;</td>
-                </tr>
-                <tr>
-                  <td>Q</td>
-                  <td>queue type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>callable</td>
-                  <td>a callable that takes a referenced <a href="classtf_1_1syclFlow.html" class="m-doc">tf::<wbr />syclFlow</a> object</td>
-                </tr>
-                <tr>
-                  <td>queue</td>
-                  <td>a queue of type sycl::queue</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
-                </tr>
-              </tfoot>
-            </table>
-<p>The following example creates a syclFlow on the given queue to submit two kernel tasks, <code>task1</code> and <code>task2</code>, where <code>task1</code> runs before <code>task2</code>.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace_on</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">syclFlow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">cf</span><span class="p">){</span><span class="w"></span>
-<span class="w">  </span><span class="c1">// create two single-thread kernel tasks</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span><span class="w"> </span><span class="n">task1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">single_task</span><span class="p">([](){});</span><span class="w"></span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">syclTask</span><span class="w"> </span><span class="n">task2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">single_task</span><span class="p">([](){});</span><span class="w"></span>
-
-<span class="w">  </span><span class="c1">// kernel1 runs before kernel2</span>
-<span class="w">  </span><span class="n">task1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span><span class="w"></span>
-<span class="p">},</span><span class="w"> </span><span class="n">queue</span><span class="p">);</span><span class="w"></span></pre>
-          </div></section>
-          <section class="m-doc-details" id="a60d7a666cab71ecfa3010b2efb0d6b57"><div>
-            <h3>
-              <div class="m-doc-template">
                 template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#af3d94f0be0f7b49e195c4e92737b1f85" class="m-doc">is_<wbr />runtime_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc-self">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable)</span></span>
@@ -805,23 +670,28 @@
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;D&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
 <span class="n">taskflow</span><span class="p">.</span><span class="n">linearize</span><span class="p">({</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">});</span><span class="w">  </span><span class="c1">// A-&gt;B-&gt;C-&gt;D</span></pre>
           </div></section>
-          <section class="m-doc-details" id="ab405d7b10040530d8b04c11767b4960d"><div>
+          <section class="m-doc-details" id="ad2299fddbd6165cc7f24f57a734d2839"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename C&gt;
+                template&lt;typename P, typename B, typename E, typename C&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab405d7b10040530d8b04c11767b4960d" class="m-doc-self">for_each</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad2299fddbd6165cc7f24f57a734d2839" class="m-doc-self">for_each</a>(</span><span class="m-doc-wrap">P&amp;&amp; policy,
+              B first,
               E last,
               C callable)</span></span>
             </h3>
-            <p>constructs a STL-styled parallel-for task</p>
+            <p>constructs an STL-styled parallel-for task</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
               </thead>
               <tbody>
                 <tr>
-                  <td style="width: 1%">B</td>
+                  <td style="width: 1%">P</td>
+                  <td>policy type</td>
+                </tr>
+                <tr>
+                  <td>B</td>
                   <td>beginning iterator type</td>
                 </tr>
                 <tr>
@@ -838,6 +708,10 @@
               </thead>
               <tbody>
                 <tr>
+                  <td>policy</td>
+                  <td>execution policy for scheduling parallel iterations</td>
+                </tr>
+                <tr>
                   <td>first</td>
                   <td>iterator to the beginning (inclusive)</td>
                 </tr>
@@ -847,7 +721,7 @@
                 </tr>
                 <tr>
                   <td>callable</td>
-                  <td>a callable object to apply to the dereferenced iterator</td>
+                  <td>callable object to apply to the dereferenced iterator</td>
                 </tr>
               </tbody>
               <tfoot>
@@ -861,24 +735,29 @@
 <span class="w">  </span><span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">);</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>Arguments templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the dereferenced iterator type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a38ffe176bc3ae1827b9964322e3769d4"><div>
+          <section class="m-doc-details" id="a977d8f7007f323eeaa81a37b4c6e6cd6"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename S, typename C&gt;
+                template&lt;typename P, typename B, typename E, typename S, typename C&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a38ffe176bc3ae1827b9964322e3769d4" class="m-doc-self">for_each_index</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a977d8f7007f323eeaa81a37b4c6e6cd6" class="m-doc-self">for_each_index</a>(</span><span class="m-doc-wrap">P&amp;&amp; policy,
+              B first,
               E last,
               S step,
               C callable)</span></span>
             </h3>
-            <p>constructs a parallel-transform task</p>
+            <p>constructs an STL-styled index-based parallel-for task</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
               </thead>
               <tbody>
                 <tr>
-                  <td style="width: 1%">B</td>
+                  <td style="width: 1%">P</td>
+                  <td>policy type</td>
+                </tr>
+                <tr>
+                  <td>B</td>
                   <td>beginning index type (must be integral)</td>
                 </tr>
                 <tr>
@@ -899,6 +778,10 @@
               </thead>
               <tbody>
                 <tr>
+                  <td>policy</td>
+                  <td>execution policy to schedule parallel iterations</td>
+                </tr>
+                <tr>
                   <td>first</td>
                   <td>index of the beginning (inclusive)</td>
                 </tr>
@@ -912,7 +795,7 @@
                 </tr>
                 <tr>
                   <td>callable</td>
-                  <td>a callable object to apply to each valid index</td>
+                  <td>callable object to apply to each valid index</td>
                 </tr>
               </tbody>
               <tfoot>
@@ -932,12 +815,13 @@
 <span class="w">  </span><span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>Arguments are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the integral index type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="abd813bd7afcbd8e6f56dc67883917d1a"><div>
+          <section class="m-doc-details" id="a9f7befa968cf69ea0a20dc267f746f3e"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename O, typename C&gt;
+                template&lt;typename P, typename B, typename E, typename O, typename C, std::enable_if_t&lt;<a href="namespacetf.html#a6720c7fd9025a4c32898264dab03b8be" class="m-doc">is_<wbr />execution_<wbr />policy_<wbr />v</a>&lt;P&gt;, void&gt;* = nullptr&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#abd813bd7afcbd8e6f56dc67883917d1a" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">B first1,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a9f7befa968cf69ea0a20dc267f746f3e" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">P&amp;&amp; policy,
+              B first1,
               E last1,
               O d_first,
               C c)</span></span>
@@ -949,7 +833,11 @@
               </thead>
               <tbody>
                 <tr>
-                  <td style="width: 1%">B</td>
+                  <td style="width: 1%">P</td>
+                  <td>policy type</td>
+                </tr>
+                <tr>
+                  <td>B</td>
                   <td>beginning input iterator type</td>
                 </tr>
                 <tr>
@@ -969,6 +857,10 @@
                 <tr><th colspan="2">Parameters</th></tr>
               </thead>
               <tbody>
+                <tr>
+                  <td>policy</td>
+                  <td>execution policy to schedule parallel iterations</td>
+                </tr>
                 <tr>
                   <td>first1</td>
                   <td>iterator to the beginning of the first range</td>
@@ -997,12 +889,13 @@
 <span class="w">  </span><span class="o">*</span><span class="n">d_first</span><span class="o">++</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="p">(</span><span class="o">*</span><span class="n">first1</span><span class="o">++</span><span class="p">);</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>Arguments are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the dereferenced iterator type.</p>
           </div></section>
-          <section class="m-doc-details" id="aa0b3271b34317710a1e32053a9abc3cf"><div>
+          <section class="m-doc-details" id="a01edf4fdeee7d7e01483b6d2969bf115"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B1, typename E1, typename B2, typename O, typename C&gt;
+                template&lt;typename P, typename B1, typename E1, typename B2, typename O, typename C&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa0b3271b34317710a1e32053a9abc3cf" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">B1 first1,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a01edf4fdeee7d7e01483b6d2969bf115" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">P&amp;&amp; policy,
+              B1 first1,
               E1 last1,
               B2 first2,
               O d_first,
@@ -1015,7 +908,11 @@
               </thead>
               <tbody>
                 <tr>
-                  <td style="width: 1%">B1</td>
+                  <td style="width: 1%">P</td>
+                  <td>policy</td>
+                </tr>
+                <tr>
+                  <td>B1</td>
                   <td>beginning input iterator type for the first input range</td>
                 </tr>
                 <tr>
@@ -1039,6 +936,10 @@
                 <tr><th colspan="2">Parameters</th></tr>
               </thead>
               <tbody>
+                <tr>
+                  <td>policy</td>
+                  <td>execution policy to schedule parallel iterations</td>
+                </tr>
                 <tr>
                   <td>first1</td>
                   <td>iterator to the beginning of the first input range</td>
@@ -1071,12 +972,13 @@
 <span class="w">  </span><span class="o">*</span><span class="n">d_first</span><span class="o">++</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="p">(</span><span class="o">*</span><span class="n">first1</span><span class="o">++</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">first2</span><span class="o">++</span><span class="p">);</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>Arguments are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take two arguments of dereferenced elements from the two input ranges.</p>
           </div></section>
-          <section class="m-doc-details" id="aa9494fe7b862fc832884ce318e8a37f5"><div>
+          <section class="m-doc-details" id="afc7bd7a737febf30d5d1d706c4b65f84"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename T, typename O&gt;
+                template&lt;typename P, typename B, typename E, typename T, typename O&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa9494fe7b862fc832884ce318e8a37f5" class="m-doc-self">reduce</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#afc7bd7a737febf30d5d1d706c4b65f84" class="m-doc-self">reduce</a>(</span><span class="m-doc-wrap">P&amp;&amp; policy,
+              B first,
               E last,
               T&amp; init,
               O bop)</span></span>
@@ -1088,7 +990,11 @@
               </thead>
               <tbody>
                 <tr>
-                  <td style="width: 1%">B</td>
+                  <td style="width: 1%">P</td>
+                  <td>policy type</td>
+                </tr>
+                <tr>
+                  <td>B</td>
                   <td>beginning iterator type</td>
                 </tr>
                 <tr>
@@ -1108,6 +1014,10 @@
                 <tr><th colspan="2">Parameters</th></tr>
               </thead>
               <tbody>
+                <tr>
+                  <td>policy</td>
+                  <td>execution policy to schedule parallel iterations</td>
+                </tr>
                 <tr>
                   <td>first</td>
                   <td>iterator to the beginning (inclusive)</td>
@@ -1136,12 +1046,13 @@
 <span class="w">  </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bop</span><span class="p">(</span><span class="n">init</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">itr</span><span class="p">);</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>Arguments are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a024a1e5b4f138b6caebb427411fb0a2d"><div>
+          <section class="m-doc-details" id="a4dc484abecf338574f46b38635d08e36"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename T, typename BOP, typename UOP&gt;
+                template&lt;typename P, typename B, typename E, typename T, typename BOP, typename UOP&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a024a1e5b4f138b6caebb427411fb0a2d" class="m-doc-self">transform_reduce</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4dc484abecf338574f46b38635d08e36" class="m-doc-self">transform_reduce</a>(</span><span class="m-doc-wrap">P&amp;&amp; policy,
+              B first,
               E last,
               T&amp; init,
               BOP bop,
@@ -1154,7 +1065,11 @@
               </thead>
               <tbody>
                 <tr>
-                  <td style="width: 1%">B</td>
+                  <td style="width: 1%">P</td>
+                  <td>policy type</td>
+                </tr>
+                <tr>
+                  <td>B</td>
                   <td>beginning iterator type</td>
                 </tr>
                 <tr>
@@ -1178,6 +1093,10 @@
                 <tr><th colspan="2">Parameters</th></tr>
               </thead>
               <tbody>
+                <tr>
+                  <td>policy</td>
+                  <td>execution policy to schedule parallel iterations</td>
+                </tr>
                 <tr>
                   <td>first</td>
                   <td>iterator to the beginning (inclusive)</td>

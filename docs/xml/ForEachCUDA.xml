@@ -28,6 +28,8 @@
 <sect1 id="ForEachCUDA_1CUDAForEachIncludeTheHeader">
 <title>Include the Header</title>
 <para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/for_each.hpp</computeroutput>, for creating a parallel-iteration task.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="for__each_8hpp" kindref="compound">taskflow/cuda/algorithm/for_each.hpp</ref>&gt;</highlight></codeline>
+</programlisting></para>
 </sect1>
 <sect1 id="ForEachCUDA_1ForEachCUDAIndexBasedParallelFor">
 <title>Index-based Parallel Iterations</title>
@@ -42,12 +44,9 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>Each iteration <computeroutput>i</computeroutput> is independent of each other and is assigned one kernel thread to run the callable. Since the callable runs on GPU, it must be declared with a <computeroutput>__device__</computeroutput> specifier. The following example creates a kernel that assigns each entry of <computeroutput>gpu_data</computeroutput> to 1 over the range <computeroutput></computeroutput>[0, 100) with step size 1.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...<sp/>create<sp/>other<sp/>gpu<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>assigns<sp/>each<sp/>element<sp/>in<sp/>gpu_data<sp/>to<sp/>1<sp/>over<sp/>the<sp/>range<sp/>[0,<sp/>100)<sp/>with<sp/>step<sp/>size<sp/>1</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1a34f1ea89e5651faa6e8af522a42556ac" kindref="member">for_each_index</ref>(0,<sp/>100,<sp/>1,<sp/>[gpu_data]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>idx)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>gpu_data[idx]<sp/>=<sp/>1;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>assigns<sp/>each<sp/>element<sp/>in<sp/>gpu_data<sp/>to<sp/>1<sp/>over<sp/>the<sp/>range<sp/>[0,<sp/>100)<sp/>with<sp/>step<sp/>size<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">cudaflow.<ref refid="classtf_1_1cudaFlow_1a34f1ea89e5651faa6e8af522a42556ac" kindref="member">for_each_index</ref>(0,<sp/>100,<sp/>1,<sp/>[gpu_data]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>idx)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>gpu_data[idx]<sp/>=<sp/>1;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting></para>
 </sect1>
@@ -59,13 +58,10 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>The two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>, are typically two raw pointers to the first element and the next to the last element in the range in GPU memory space. The following example creates a <computeroutput>for_each</computeroutput> kernel that assigns each element in <computeroutput>gpu_data</computeroutput> to 1 over the range <computeroutput>[gpu_data, gpu_data + 1000)</computeroutput>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...<sp/>create<sp/>gpu<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>assigns<sp/>each<sp/>element<sp/>to<sp/>1<sp/>over<sp/>the<sp/>range<sp/>[gpu_data,<sp/>gpu_data<sp/>+<sp/>1000)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1a1a681f6223853b6445dcfdad07e4d0fd" kindref="member">for_each</ref>(gpu_data,<sp/>gpu_data<sp/>+<sp/>1000,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>item)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>item<sp/>=<sp/>1;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>});<sp/></highlight></codeline>
-<codeline><highlight class="normal">});</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>assigns<sp/>each<sp/>element<sp/>to<sp/>1<sp/>over<sp/>the<sp/>range<sp/>[gpu_data,<sp/>gpu_data<sp/>+<sp/>1000)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">cudaflow.<ref refid="classtf_1_1cudaFlow_1a1a681f6223853b6445dcfdad07e4d0fd" kindref="member">for_each</ref>(gpu_data,<sp/>gpu_data<sp/>+<sp/>1000,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>item)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>item<sp/>=<sp/>1;</highlight></codeline>
+<codeline><highlight class="normal">});<sp/></highlight></codeline>
 </programlisting></para>
 <para>Each iteration is independent of each other and is assigned one kernel thread to run the callable. Since the callable runs on GPU, it must be declared with a <computeroutput>__device__</computeroutput> specifier.</para>
 </sect1>

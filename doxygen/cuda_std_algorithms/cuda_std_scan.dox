@@ -12,6 +12,10 @@ a CUDA GPU.
 You need to include the header file, `%taskflow/cuda/algorithm/scan.hpp`, 
 for using the parallel-scan algorithm.
 
+@code{.cpp}
+#include <taskflow/cuda/algorithm/find.hpp>
+@endcode
+
 @section CUDASTDScanItems Scan a Range of Items
 
 tf::cuda_inclusive_scan computes an inclusive prefix sum operation using
@@ -29,9 +33,12 @@ int* output = tf::cuda_malloc_shared<int>(N);  // output vector
 // initializes the data
 for(size_t i=0; i<N; input[i++] = rand()); 
 
+// create an execution policy
+tf::cudaStream stream;
+tf::cudaDefaultExecutionPolicy policy(stream);
+
 // queries the required buffer size to scan N elements using the given policy
-tf::cudaDefaultExecutionPolicy policy;
-auto bytes  = tf::cuda_scan_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto bytes  = policy.scan_bufsz<int>(N);
 auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
 
 // computes inclusive scan over input and stores the result in output
@@ -40,21 +47,24 @@ tf::cuda_inclusive_scan(policy,
 );
 
 // synchronizes and verifies the result
-policy.synchronize();
+stream.synchronize();
+
 for(size_t i=1; i<N; i++) {
   assert(output[i] == output[i-1] + input[i]);
 }
 
-// delete the buffer
-tf::cuda_free(buffer);
+// delete the device memory
+cudaFree(input);
+cudaFree(output);
+cudaFree(buffer);
 @endcode
 
 The scan algorithm runs @em asynchronously through the stream specified
 in the execution policy. You need to synchronize the stream to
 obtain correct results.
 Since the GPU scan algorithm may require extra buffer to store the 
-temporary results, you must provide a buffer of size at least bytes
-returned from tf::cuda_scan_buffer_size.
+temporary results, you need to provide a buffer of size at least larger or equal
+to the value returned from <tt>tf::cudaDefaultExecutionPolicy::scan_bufsz</tt>.
 
 @attention
 You must keep the buffer alive before the scan call completes.
@@ -70,7 +80,7 @@ tf::cuda_exclusive_scan(policy,
 );
 
 // synchronizes the execution and verifies the result
-policy.synchronize();
+stream.synchronize();
 for(size_t i=1; i<N; i++) {
   assert(output[i] == output[i-1] + input[i-1]);
 }
@@ -91,9 +101,12 @@ int* output = tf::cuda_malloc_shared<int>(N);  // output vector
 // initializes the data
 for(size_t i=0; i<N; input[i++] = rand()); 
 
+// create an execution policy
+tf::cudaStream stream;
+tf::cudaDefaultExecutionPolicy policy(stream);
+
 // queries the required buffer size to scan N elements using the given policy
-tf::cudaDefaultExecutionPolicy policy;
-auto bytes  = tf::cuda_scan_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto bytes  = policy.scan_bufsz<int>(N);
 auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
 
 // computes inclusive scan over transformed input and stores the result in output
@@ -103,12 +116,19 @@ tf::cuda_transform_inclusive_scan(policy,
   [] __device__ (int a) { return a*10; },          // unary transform operator
   buffer
 );
-policy.synchronize();
+
+// wait for the scan to complete
+stream.synchronize();
 
 // verifies the result
 for(size_t i=1; i<N; i++) {
   assert(output[i] == output[i-1] + input[i] * 10);
 }
+
+// delete the device memory
+cudaFree(input);
+cudaFree(output);
+cudaFree(buffer);
 @endcode
 
 Similarly, tf::cuda_transform_exclusive_scan performs an exclusive prefix sum
@@ -124,9 +144,12 @@ int* output = tf::cuda_malloc_shared<int>(N);  // output vector
 // initializes the data
 for(size_t i=0; i<N; input[i++] = rand()); 
 
+// create an execution policy
+tf::cudaStream stream;
+tf::cudaDefaultExecutionPolicy policy(stream);
+
 // queries the required buffer size to scan N elements using the given policy
-tf::cudaDefaultExecutionPolicy policy;
-auto bytes  = tf::cuda_scan_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto bytes  = policy.scan_bufsz<int>(N);
 auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
 
 // computes exclusive scan over transformed input and stores the result in output
@@ -136,12 +159,19 @@ tf::cuda_transform_exclusive_scan(policy,
   [] __device__ (int a) { return a*10; },          // unary transform operator
   buffer
 );
-policy.synchronize();
+
+// wait for the scan to complete
+stream.synchronize();
 
 // verifies the result
 for(size_t i=1; i<N; i++) {
   assert(output[i] == output[i-1] + input[i-1] * 10);
 }
+
+// delete the device memory
+cudaFree(input);
+cudaFree(output);
+cudaFree(buffer);
 @endcode
 
 */

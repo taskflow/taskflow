@@ -64,8 +64,10 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaMalloc(&amp;dc,<sp/>M*N*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;allocate_c&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>cudaFlow<sp/>to<sp/>run<sp/>the<sp/>matrix<sp/>multiplication</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>cudaFlow<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>cudaFlow<sp/>task<sp/>to<sp/>run<sp/>the<sp/>matrix<sp/>multiplication</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>cudaFlow<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>copy<sp/>data<sp/>to<sp/>da,<sp/>db,<sp/>and<sp/>dc</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>copy_da<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(da,<sp/>A,<sp/>M*K).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;H2D_A&quot;</highlight><highlight class="normal">);</highlight></codeline>
@@ -75,11 +77,16 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>dim3<sp/>grid<sp/><sp/>((K+16-1)/16,<sp/>(M+16-1)/16);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>dim3<sp/>block<sp/>(16,<sp/>16);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>kmatmul<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" kindref="member">kernel</ref>(grid,<sp/>block,<sp/>0,<sp/>matmul,<sp/>da,<sp/>db,<sp/>dc,<sp/>M,<sp/>K,<sp/>N)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>kmatmul<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a68f666503d13a7b80fb7399fb2f0c153" kindref="member">kernel</ref>(grid,<sp/>block,<sp/>0,<sp/>matmul,<sp/>da,<sp/>db,<sp/>dc,<sp/>M,<sp/>K,<sp/>N)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;matmul&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>kmatmul.<ref refid="classtf_1_1cudaTask_1a4a9ca1a34bac47e4c9b04eb4fb2f7775" kindref="member">succeed</ref>(copy_da,<sp/>copy_db)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(copy_hc);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>launch<sp/>the<sp/>cudaFlow</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1ae6810f7de27e5a347331aacfce67bea1" kindref="member">run</ref>(stream);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;cudaFlow&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>

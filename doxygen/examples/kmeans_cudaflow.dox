@@ -90,7 +90,6 @@ Based on the two kernels, we can define the %cudaFlow for the k-means workload b
 void kmeans_gpu(
   int N, int K, int M, cconst std::vector<float>& px, const std::vector<float>& py
 ) {
-
   std::vector<float> h_mx, h_my;
   float *d_px, *d_py, *d_mx, *d_my, *d_sx, *d_sy, *d_c;
 
@@ -102,73 +101,76 @@ void kmeans_gpu(
   // create a taskflow graph
   tf::Executor executor;
   tf::Taskflow taskflow("K-Means");
-  
-  // allocate GPU memory
-  tf::Task allocate_px = taskflow.emplace([&](){ 
-    cudaMalloc(&d_px, N*sizeof(float)); 
+
+  auto allocate_px = taskflow.emplace([&](){
+    TF_CHECK_CUDA(cudaMalloc(&d_px, N*sizeof(float)), "failed to allocate d_px");
   }).name("allocate_px");
 
-  tf::Task allocate_py = taskflow.emplace([&](){ 
-    cudaMalloc(&d_py, N*sizeof(float)); 
+  auto allocate_py = taskflow.emplace([&](){
+    TF_CHECK_CUDA(cudaMalloc(&d_py, N*sizeof(float)), "failed to allocate d_py");
   }).name("allocate_py");
 
-  tf::Task allocate_mx = taskflow.emplace([&](){ 
-    cudaMalloc(&d_mx, K*sizeof(float)); }
-  ).name("allocate_mx");
+  auto allocate_mx = taskflow.emplace([&](){
+    TF_CHECK_CUDA(cudaMalloc(&d_mx, K*sizeof(float)), "failed to allocate d_mx");
+  }).name("allocate_mx");
 
-  tf::Task allocate_my = taskflow.emplace([&](){ 
-    cudaMalloc(&d_my, K*sizeof(float)); 
+  auto allocate_my = taskflow.emplace([&](){
+    TF_CHECK_CUDA(cudaMalloc(&d_my, K*sizeof(float)), "failed to allocate d_my");
   }).name("allocate_my");
 
-  tf::Task allocate_sy = taskflow.emplace([&](){ 
-    cudaMalloc(&d_sy, K*sizeof(float)); 
+  auto allocate_sx = taskflow.emplace([&](){
+    TF_CHECK_CUDA(cudaMalloc(&d_sx, K*sizeof(float)), "failed to allocate d_sx");
+  }).name("allocate_sx");
+
+  auto allocate_sy = taskflow.emplace([&](){
+    TF_CHECK_CUDA(cudaMalloc(&d_sy, K*sizeof(float)), "failed to allocate d_sy");
   }).name("allocate_sy");
-
-  tf::Task allocate_c = taskflow.emplace([&](){ 
-    cudaMalloc(&d_c, K*sizeof(float)); 
+  auto allocate_c = taskflow.emplace([&](){
+    TF_CHECK_CUDA(cudaMalloc(&d_c, K*sizeof(float)), "failed to allocate dc");
   }).name("allocate_c");
-  
-  // transfer data from the host to the GPU
-  tf::Task h2d = taskflow.emplace([&](tf::cudaFlow& cf){
-    cf.copy(d_px, h_px.data(), N).name("h2d_px");
-    cf.copy(d_py, h_py.data(), N).name("h2d_py");
-    cf.copy(d_mx, h_mx.data(), K).name("h2d_mx");
-    cf.copy(d_my, h_my.data(), K).name("h2d_my");
+
+  auto h2d = taskflow.emplace([&](){
+    cudaMemcpy(d_px, h_px.data(), N*sizeof(float), cudaMemcpyDefault);
+    cudaMemcpy(d_py, h_py.data(), N*sizeof(float), cudaMemcpyDefault);
+    cudaMemcpy(d_mx, h_mx.data(), K*sizeof(float), cudaMemcpyDefault);
+    cudaMemcpy(d_my, h_my.data(), K*sizeof(float), cudaMemcpyDefault);
   }).name("h2d");
-  
-  // GPU task graph of the main k-means body
-  tf::Task kmeans = taskflow.emplace([&](tf::cudaFlow& cf){
 
-    tf::cudaTask zero_c = cf.zero(d_c, K).name("zero_c");
-    tf::cudaTask zero_sx = cf.zero(d_sx, K).name("zero_sx");
-    tf::cudaTask zero_sy = cf.zero(d_sy, K).name("zero_sy");
+  auto kmeans = taskflow.emplace([&](){
 
-    tf::cudaTask cluster = cf.kernel(
-      (N+1024-1) / 1024, 1024, 0, 
+    tf::cudaFlow cf;
+
+    auto zero_c = cf.zero(d_c, K).name("zero_c");
+    auto zero_sx = cf.zero(d_sx, K).name("zero_sx");
+    auto zero_sy = cf.zero(d_sy, K).name("zero_sy");
+
+    auto cluster = cf.kernel(
+      (N+512-1) / 512, 512, 0,
       assign_clusters, d_px, d_py, N, d_mx, d_my, d_sx, d_sy, K, d_c
     ).name("cluster");
 
-    tf::cudaTask new_centroid = cf.kernel(
-      1, K, 0, compute_new_means, d_mx, d_my, d_sx, d_sy, d_c
+    auto new_centroid = cf.kernel(
+      1, K, 0,
+      compute_new_means, d_mx, d_my, d_sx, d_sy, d_c
     ).name("new_centroid");
 
     cluster.precede(new_centroid)
            .succeed(zero_c, zero_sx, zero_sy);
+
+    // Repeat the execution for M times
+    tf::cudaStream stream;
+    for(int i=0; i<M; i++) {
+      cf.run(stream);
+    }
+    stream.synchronize();
   }).name("update_means");
-  
-  // condition task to check convergence
-  tf::Task condition = taskflow.emplace([i=0, M] () mutable {
-    return i++ < M ? 0 : 1;
-  }).name("converged?");
-  
-  // transfer the result of clusters from GPU to host
-  tf::Task stop = taskflow.emplace([&](tf::cudaFlow& cf){
-    cf.copy(h_mx.data(), d_mx, K).name("d2h_mx");
-    cf.copy(h_my.data(), d_my, K).name("d2h_my");
+
+  auto stop = taskflow.emplace([&](){
+    cudaMemcpy(h_mx.data(), d_mx, K*sizeof(float), cudaMemcpyDefault);
+    cudaMemcpy(h_my.data(), d_my, K*sizeof(float), cudaMemcpyDefault);
   }).name("d2h");
-  
-  // deallocated GPU memory
-  tf::Task free = taskflow.emplace([&](){
+
+  auto free = taskflow.emplace([&](){
     cudaFree(d_px);
     cudaFree(d_py);
     cudaFree(d_mx);
@@ -182,20 +184,16 @@ void kmeans_gpu(
   h2d.succeed(allocate_px, allocate_py, allocate_mx, allocate_my);
 
   kmeans.succeed(allocate_sx, allocate_sy, allocate_c, h2d)
-        .precede(condition);
-
-  condition.precede(kmeans, stop);
+        .precede(stop);
 
   stop.precede(free);
-  
-  // dump the taskflow without expanding GPU task graphs
-  taskflow.dump(std::cout);
 
   // run the taskflow
   executor.run(taskflow).wait();
-  
-  // dump the entire taskflow
+
+  //std::cout << "dumping kmeans graph ...\n";
   taskflow.dump(std::cout);
+  return {h_mx, h_my};
 }
 @endcode
 
@@ -207,68 +205,10 @@ parameters in the closure and offloaded to the GPU.
 <!-- @image html images/kmeans_3.svg width=80% -->
 @dotfile images/kmeans_3.dot
 
-The second dump after executing the taskflow produces the following diagram, with all cudaFlows expanded:
-
-<!-- @image html images/kmeans_4.svg width=100% -->
-
-@dotfile images/kmeans_4.dot
-
 The main %cudaFlow task, @c update_means, must not run before all required data has settled down.
 It precedes a condition task that circles back to itself until we reach @c M iterations.
 When iteration completes, the condition task directs the execution path to the %cudaFlow, @c h2d,
 to copy the results of clusters to @c h_mx and @c h_my and then deallocate all GPU memory.
-
-@section RepeatTheExecutionofTheKMeanscudaFlow Repeat the Execution of the k-means cudaFlow
-
-We observe the GPU task graph parameters remain @em unchanged across all k-means iterations.
-In this case, we can leverage tf::cudaFlow::offload_until or tf::cudaFlow::offload_n
-to run it repeatedly without conditional tasking.
-
-@code{.cpp}
-tf::Task kmeans = taskflow.emplace([&](tf::cudaFlow& cf){
-
-  tf::cudaTask zero_c = cf.zero(d_c, K).name("zero_c");
-  tf::cudaTask zero_sx = cf.zero(d_sx, K).name("zero_sx");
-  tf::cudaTask zero_sy = cf.zero(d_sy, K).name("zero_sy");
-
-  tf::cudaTask cluster = cf.kernel(
-    (N+1024-1) / 1024, 1024, 0,
-    assign_clusters, d_px, d_py, N, d_mx, d_my, d_sx, d_sy, K, d_c
-  ).name("cluster");
-
-  tf::cudaTask new_centroid = cf.kernel(
-    1, K, 0,
-    compute_new_means, d_mx, d_my, d_sx, d_sy, d_c
-  ).name("new_centroid");
-
-  cluster.precede(new_centroid)
-         .succeed(zero_c, zero_sx, zero_sy);
-  
-  // we ask the executor to launch the cudaFlow by M times
-  cf.offload_n(M);
-}).name("update_means");
-
-// ...
-
-// build up the dependency
-h2d.succeed(allocate_px, allocate_py, allocate_mx, allocate_my);
-
-kmeans.succeed(allocate_sx, allocate_sy, allocate_c, h2d)
-      .precede(stop);
-
-stop.precede(free);
-@endcode
-
-At the last line of the %cudaFlow closure, we call <tt>cf.offload_n(M)</tt> to ask the executor to 
-repeatedly run the %cudaFlow by @c M times.
-Compared with the version using conditional tasking, the %cudaFlow here is created only one time
-and thus the overhead is reduced.
-
-<!-- @image html images/kmeans_5.svg width=100% -->
-@dotfile images/kmeans_5.dot
-
-We can see from the above taskflow the condition task is removed.
-
 
 @section KMeanscudaFlowBenchmarking Benchmarking
 
@@ -278,13 +218,13 @@ on a machine of 12 Intel i7-8700 CPUs at 3.20 GHz and
 a Nvidia RTX 2080 GPU using various numbers of 2D point counts and iterations.
 
 <div align="center">
-| N        | K   | M       | CPU Sequential | CPU Parallel | GPU (conditional taksing) | GPU (using offload_n) |
-| :-:      | :-: | :-:     | :-:            | :-:          | :-:          | :-:                               |
-| 10       | 5   | 10      | 0.14 ms        | 77 ms        | 1 ms         | 1 ms   |
-| 100      | 10  | 100     | 0.56 ms        | 86 ms        | 7 ms         | 1 ms   |
-| 1000     | 10  | 1000    | 10 ms          | 98 ms        | 55 ms        | 13 ms  |
-| 10000    | 10  | 10000   | 1006 ms        | 713 ms       | 458 ms       | 183 ms |
-| 100000   | 10  | 100000  | 102483 ms      | 49966 ms     | 7952 ms      | 4725 ms |
+| N        | K   | M       | CPU Sequential | CPU Parallel | GPU     |
+| :-:      | :-: | :-:     | :-:            | :-:          | :-:     |
+| 10       | 5   | 10      | 0.14 ms        | 77 ms        | 1 ms    |
+| 100      | 10  | 100     | 0.56 ms        | 86 ms        | 7 ms    |
+| 1000     | 10  | 1000    | 10 ms          | 98 ms        | 55 ms   |
+| 10000    | 10  | 10000   | 1006 ms        | 713 ms       | 458 ms  |
+| 100000   | 10  | 100000  | 102483 ms      | 49966 ms     | 7952 ms |
 </div>
 
 When the number of points is larger than 10K, 

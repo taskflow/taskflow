@@ -3,9 +3,9 @@
   <compounddef id="structtf_1_1TaskQueue_1_1Array" kind="struct" language="C++" prot="private">
     <compoundname>tf::TaskQueue::Array</compoundname>
       <sectiondef kind="public-attrib">
-      <memberdef kind="variable" id="structtf_1_1TaskQueue_1_1Array_1a5896c1bac500d0f8118a51f65bf456ab" prot="public" static="no" mutable="no">
+      <memberdef kind="variable" id="structtf_1_1TaskQueue_1_1Array_1a59aae96cf602b0c89d16aec140a639b8" prot="public" static="no" mutable="no">
         <type>int64_t</type>
-        <definition>int64_t tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::Array::C</definition>
+        <definition>int64_t tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::Array::C</definition>
         <argsstring></argsstring>
         <name>C</name>
         <briefdescription>
@@ -16,9 +16,9 @@
         </inbodydescription>
         <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="117" column="13" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="117" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="structtf_1_1TaskQueue_1_1Array_1a76bb7d4826975b7d499de9862a18677d" prot="public" static="no" mutable="no">
+      <memberdef kind="variable" id="structtf_1_1TaskQueue_1_1Array_1a9669c115e1ca6040935a060e56286962" prot="public" static="no" mutable="no">
         <type>int64_t</type>
-        <definition>int64_t tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::Array::M</definition>
+        <definition>int64_t tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::Array::M</definition>
         <argsstring></argsstring>
         <name>M</name>
         <briefdescription>
@@ -29,9 +29,9 @@
         </inbodydescription>
         <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="118" column="13" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="118" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="structtf_1_1TaskQueue_1_1Array_1a6cf95cc0215a81dbe6ef744e282ace34" prot="public" static="no" mutable="no">
+      <memberdef kind="variable" id="structtf_1_1TaskQueue_1_1Array_1a25a3a80719755424001cfebe47555efe" prot="public" static="no" mutable="no">
         <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; T &gt; *</type>
-        <definition>std::atomic&lt;T&gt;* tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::Array::S</definition>
+        <definition>std::atomic&lt;T&gt;* tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::Array::S</definition>
         <argsstring></argsstring>
         <name>S</name>
         <briefdescription>
@@ -44,9 +44,9 @@
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
-      <memberdef kind="function" id="structtf_1_1TaskQueue_1_1Array_1a24e656099fce466ccf17440033687e3b" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="structtf_1_1TaskQueue_1_1Array_1a5c104a080a8bcbc069e39ef67215ce95" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
-        <definition>tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::Array::Array</definition>
+        <definition>tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::Array::Array</definition>
         <argsstring>(int64_t c)</argsstring>
         <name>Array</name>
         <param>
@@ -61,9 +61,9 @@
         </inbodydescription>
         <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="121" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="121" bodyend="125"/>
       </memberdef>
-      <memberdef kind="function" id="structtf_1_1TaskQueue_1_1Array_1a93228a997fdc97537f78d594aaa7739f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="structtf_1_1TaskQueue_1_1Array_1ab75932271a96bba9b058a62cb5a6c98e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
-        <definition>tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::Array::~Array</definition>
+        <definition>tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::Array::~Array</definition>
         <argsstring>()</argsstring>
         <name>~Array</name>
         <briefdescription>
@@ -74,9 +74,9 @@
         </inbodydescription>
         <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="127" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="127" bodyend="129"/>
       </memberdef>
-      <memberdef kind="function" id="structtf_1_1TaskQueue_1_1Array_1aa3be35be746c9bfe1fbd93aaad697a0f" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+      <memberdef kind="function" id="structtf_1_1TaskQueue_1_1Array_1afb19f3c093e6a2139bfaca183a97798e" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
         <type>int64_t</type>
-        <definition>int64_t tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::Array::capacity</definition>
+        <definition>int64_t tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::Array::capacity</definition>
         <argsstring>() const noexcept</argsstring>
         <name>capacity</name>
         <briefdescription>
@@ -87,9 +87,9 @@
         </inbodydescription>
         <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="131" column="13" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="131" bodyend="133"/>
       </memberdef>
-      <memberdef kind="function" id="structtf_1_1TaskQueue_1_1Array_1a5aa0ef4e3d998bf2e76769dd2ae29c81" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+      <memberdef kind="function" id="structtf_1_1TaskQueue_1_1Array_1a0a751690ca21c4d0cb5214bff3e7fd12" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
         <type>void</type>
-        <definition>void tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::Array::push</definition>
+        <definition>void tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::Array::push</definition>
         <argsstring>(int64_t i, T o) noexcept</argsstring>
         <name>push</name>
         <param>
@@ -108,9 +108,9 @@
         </inbodydescription>
         <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="135" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="135" bodyend="137"/>
       </memberdef>
-      <memberdef kind="function" id="structtf_1_1TaskQueue_1_1Array_1a0d561829f57dec5ea00939b05d88a0ca" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+      <memberdef kind="function" id="structtf_1_1TaskQueue_1_1Array_1a257d7c9ebedba9ed83019b0fb74060c8" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
         <type>T</type>
-        <definition>T tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::Array::pop</definition>
+        <definition>T tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::Array::pop</definition>
         <argsstring>(int64_t i) noexcept</argsstring>
         <name>pop</name>
         <param>
@@ -125,9 +125,9 @@
         </inbodydescription>
         <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="139" column="7" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="139" bodyend="141"/>
       </memberdef>
-      <memberdef kind="function" id="structtf_1_1TaskQueue_1_1Array_1ad3ba4560afe3bb69f4d94ea0ad9859d7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="structtf_1_1TaskQueue_1_1Array_1a89b8f1fdbff1fa4d794ce26d15fd12a8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>Array *</type>
-        <definition>Array* tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::Array::resize</definition>
+        <definition>Array* tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::Array::resize</definition>
         <argsstring>(int64_t b, int64_t t)</argsstring>
         <name>resize</name>
         <param>
@@ -153,7 +153,7 @@
     </detaileddescription>
     <collaborationgraph>
       <node id="1">
-        <label>tf::TaskQueue&lt; T, MAX_PRIORITY &gt;::Array</label>
+        <label>tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::Array</label>
         <childnode refid="2" relation="usage">
           <edgelabel>S</edgelabel>
         </childnode>
@@ -164,15 +164,15 @@
     </collaborationgraph>
     <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="115" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="115" bodyend="151"/>
     <listofallmembers>
-      <member refid="structtf_1_1TaskQueue_1_1Array_1a24e656099fce466ccf17440033687e3b" prot="public" virt="non-virtual"><scope>tf::TaskQueue::Array</scope><name>Array</name></member>
-      <member refid="structtf_1_1TaskQueue_1_1Array_1a5896c1bac500d0f8118a51f65bf456ab" prot="public" virt="non-virtual"><scope>tf::TaskQueue::Array</scope><name>C</name></member>
-      <member refid="structtf_1_1TaskQueue_1_1Array_1aa3be35be746c9bfe1fbd93aaad697a0f" prot="public" virt="non-virtual"><scope>tf::TaskQueue::Array</scope><name>capacity</name></member>
-      <member refid="structtf_1_1TaskQueue_1_1Array_1a76bb7d4826975b7d499de9862a18677d" prot="public" virt="non-virtual"><scope>tf::TaskQueue::Array</scope><name>M</name></member>
-      <member refid="structtf_1_1TaskQueue_1_1Array_1a0d561829f57dec5ea00939b05d88a0ca" prot="public" virt="non-virtual"><scope>tf::TaskQueue::Array</scope><name>pop</name></member>
-      <member refid="structtf_1_1TaskQueue_1_1Array_1a5aa0ef4e3d998bf2e76769dd2ae29c81" prot="public" virt="non-virtual"><scope>tf::TaskQueue::Array</scope><name>push</name></member>
-      <member refid="structtf_1_1TaskQueue_1_1Array_1ad3ba4560afe3bb69f4d94ea0ad9859d7" prot="public" virt="non-virtual"><scope>tf::TaskQueue::Array</scope><name>resize</name></member>
-      <member refid="structtf_1_1TaskQueue_1_1Array_1a6cf95cc0215a81dbe6ef744e282ace34" prot="public" virt="non-virtual"><scope>tf::TaskQueue::Array</scope><name>S</name></member>
-      <member refid="structtf_1_1TaskQueue_1_1Array_1a93228a997fdc97537f78d594aaa7739f" prot="public" virt="non-virtual"><scope>tf::TaskQueue::Array</scope><name>~Array</name></member>
+      <member refid="structtf_1_1TaskQueue_1_1Array_1a5c104a080a8bcbc069e39ef67215ce95" prot="public" virt="non-virtual"><scope>tf::TaskQueue::Array</scope><name>Array</name></member>
+      <member refid="structtf_1_1TaskQueue_1_1Array_1a59aae96cf602b0c89d16aec140a639b8" prot="public" virt="non-virtual"><scope>tf::TaskQueue::Array</scope><name>C</name></member>
+      <member refid="structtf_1_1TaskQueue_1_1Array_1afb19f3c093e6a2139bfaca183a97798e" prot="public" virt="non-virtual"><scope>tf::TaskQueue::Array</scope><name>capacity</name></member>
+      <member refid="structtf_1_1TaskQueue_1_1Array_1a9669c115e1ca6040935a060e56286962" prot="public" virt="non-virtual"><scope>tf::TaskQueue::Array</scope><name>M</name></member>
+      <member refid="structtf_1_1TaskQueue_1_1Array_1a257d7c9ebedba9ed83019b0fb74060c8" prot="public" virt="non-virtual"><scope>tf::TaskQueue::Array</scope><name>pop</name></member>
+      <member refid="structtf_1_1TaskQueue_1_1Array_1a0a751690ca21c4d0cb5214bff3e7fd12" prot="public" virt="non-virtual"><scope>tf::TaskQueue::Array</scope><name>push</name></member>
+      <member refid="structtf_1_1TaskQueue_1_1Array_1a89b8f1fdbff1fa4d794ce26d15fd12a8" prot="public" virt="non-virtual"><scope>tf::TaskQueue::Array</scope><name>resize</name></member>
+      <member refid="structtf_1_1TaskQueue_1_1Array_1a25a3a80719755424001cfebe47555efe" prot="public" virt="non-virtual"><scope>tf::TaskQueue::Array</scope><name>S</name></member>
+      <member refid="structtf_1_1TaskQueue_1_1Array_1ab75932271a96bba9b058a62cb5a6c98e" prot="public" virt="non-virtual"><scope>tf::TaskQueue::Array</scope><name>~Array</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

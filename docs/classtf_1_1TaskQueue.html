@@ -46,7 +46,7 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          <div class="m-doc-template">template&lt;typename T, unsigned MAX_PRIORITY = static_cast&lt;unsigned&gt;(<a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" class="m-doc">TaskPriority::<wbr />MAX</a>)&gt;</div>
+          <div class="m-doc-template">template&lt;typename T, unsigned TF_MAX_PRIORITY = static_cast&lt;unsigned&gt;(<a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" class="m-doc">TaskPriority::<wbr />MAX</a>)&gt;</div>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>TaskQueue <span class="m-thin">class</span>
         </h1>
         <p>class to create a lock-free unbounded single-producer multiple-consumer queue</p>
@@ -60,7 +60,7 @@
               <td>data type (must be a pointer type)</td>
             </tr>
             <tr>
-              <td>MAX_PRIORITY</td>
+              <td>TF_MAX_PRIORITY</td>
               <td>maximum level of the priority</td>
             </tr>
           </tbody>
@@ -77,7 +77,7 @@
             </li>
           </ul>
         </nav>
-<p>This class implements the work-stealing queue described in the paper, <a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</a>, and extends it to include priority.</p><p>Only the queue owner can perform pop and push operations, while others can steal data from the queue simultaneously. Priority starts from zero (highest priority) to the template value <code>MAX_PRIORITY-1</code> (lowest priority). All operations are associated with priority values to indicate the corresponding queues to which an operation is applied.</p><p>The default template value, <code>MAX_PRIORITY</code>, is <code><a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" class="m-doc">TaskPriority::<wbr />MAX</a></code> which applies only three priority levels to the task queue.</p><pre class="m-code"><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="w"></span>
+<p>This class implements the work-stealing queue described in the paper, <a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</a>, and extends it to include priority.</p><p>Only the queue owner can perform pop and push operations, while others can steal data from the queue simultaneously. Priority starts from zero (highest priority) to the template value <code>TF_MAX_PRIORITY-1</code> (lowest priority). All operations are associated with priority values to indicate the corresponding queues to which an operation is applied.</p><p>The default template value, <code>TF_MAX_PRIORITY</code>, is <code><a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" class="m-doc">TaskPriority::<wbr />MAX</a></code> which applies only three priority levels to the task queue.</p><pre class="m-code"><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="w"></span>
 <span class="w">  </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">},</span><span class="w"></span>
 <span class="w">  </span><span class="p">[</span><span class="o">&amp;</span><span class="p">]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
 <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Task B: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">  </span><span class="c1">// 0</span>
@@ -105,11 +105,11 @@
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper"><a href="#ae50476ad6d4b7e809de78c784ac7f60d" class="m-doc">TaskQueue</a>(</span><span class="m-doc-wrap">int64_t capacity = 512) <span class="m-label m-flat m-info">explicit</span> </span>
+              <span class="m-doc-wrap-bumper"><a href="#a715574f55d3a05ec4040fc390bfcd632" class="m-doc">TaskQueue</a>(</span><span class="m-doc-wrap">int64_t capacity = 512) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
             <dd>constructs the queue with a given capacity</dd>
-            <dt id="aee064c65b7bd4002fc6e1de3e138869f">
-              <span class="m-doc-wrap-bumper"><a href="#aee064c65b7bd4002fc6e1de3e138869f" class="m-doc-self">~TaskQueue</a>(</span><span class="m-doc-wrap">)</span>
+            <dt id="a15d5b45f482cba7383512a9c5bcbd7cf">
+              <span class="m-doc-wrap-bumper"><a href="#a15d5b45f482cba7383512a9c5bcbd7cf" class="m-doc-self">~TaskQueue</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
             <dd>destructs the queue</dd>
           </dl>
@@ -117,61 +117,61 @@
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="a0a88aa1d735d40abc62ec9fca5014702">
-              <span class="m-doc-wrap-bumper">auto <a href="#a0a88aa1d735d40abc62ec9fca5014702" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">) const -&gt; bool <span class="m-label m-flat m-success">noexcept</span></span>
+            <dt id="adfdf70255e24d62c46b31b09c47d78f7">
+              <span class="m-doc-wrap-bumper">auto <a href="#adfdf70255e24d62c46b31b09c47d78f7" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">) const -&gt; bool <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
             <dd>queries if the queue is empty at the time of this call</dd>
-            <dt id="ae90dab77a74edd8a32a3e2c02926c762">
-              <span class="m-doc-wrap-bumper">auto <a href="#ae90dab77a74edd8a32a3e2c02926c762" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">unsigned priority) const -&gt; bool <span class="m-label m-flat m-success">noexcept</span></span>
+            <dt id="af57eb2ebc4d92120d7eaf868ec57b524">
+              <span class="m-doc-wrap-bumper">auto <a href="#af57eb2ebc4d92120d7eaf868ec57b524" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">unsigned priority) const -&gt; bool <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
             <dd>queries if the queue is empty at a specific priority value</dd>
-            <dt id="aa22f59a8f86640e6fd2768710bfb8e51">
-              <span class="m-doc-wrap-bumper">auto <a href="#aa22f59a8f86640e6fd2768710bfb8e51" class="m-doc-self">size</a>(</span><span class="m-doc-wrap">) const -&gt; size_t <span class="m-label m-flat m-success">noexcept</span></span>
+            <dt id="ad598bef2211bf4cc99d66d80a12ebb6a">
+              <span class="m-doc-wrap-bumper">auto <a href="#ad598bef2211bf4cc99d66d80a12ebb6a" class="m-doc-self">size</a>(</span><span class="m-doc-wrap">) const -&gt; size_t <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
             <dd>queries the number of items at the time of this call</dd>
-            <dt id="ab7b645c2b47e212d91634811f62a1c2e">
-              <span class="m-doc-wrap-bumper">auto <a href="#ab7b645c2b47e212d91634811f62a1c2e" class="m-doc-self">size</a>(</span><span class="m-doc-wrap">unsigned priority) const -&gt; size_t <span class="m-label m-flat m-success">noexcept</span></span>
+            <dt id="a0386ad90ced931025d14ea955ce40d8c">
+              <span class="m-doc-wrap-bumper">auto <a href="#a0386ad90ced931025d14ea955ce40d8c" class="m-doc-self">size</a>(</span><span class="m-doc-wrap">unsigned priority) const -&gt; size_t <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
             <dd>queries the number of items with the given priority at the time of this call</dd>
-            <dt id="afe86fe65ceb7ee6261489f1f6173d2cf">
-              <span class="m-doc-wrap-bumper">auto <a href="#afe86fe65ceb7ee6261489f1f6173d2cf" class="m-doc-self">capacity</a>(</span><span class="m-doc-wrap">) const -&gt; int64_t <span class="m-label m-flat m-success">noexcept</span></span>
+            <dt id="ad47b2671aa5270bcd05605c4063280ff">
+              <span class="m-doc-wrap-bumper">auto <a href="#ad47b2671aa5270bcd05605c4063280ff" class="m-doc-self">capacity</a>(</span><span class="m-doc-wrap">) const -&gt; int64_t <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
             <dd>queries the capacity of the queue</dd>
-            <dt id="a1459ea94eb778334b8d596faead95bb1">
-              <span class="m-doc-wrap-bumper">auto <a href="#a1459ea94eb778334b8d596faead95bb1" class="m-doc-self">capacity</a>(</span><span class="m-doc-wrap">unsigned priority) const -&gt; int64_t <span class="m-label m-flat m-success">noexcept</span></span>
+            <dt id="ab868d17013212547d750267710037877">
+              <span class="m-doc-wrap-bumper">auto <a href="#ab868d17013212547d750267710037877" class="m-doc-self">capacity</a>(</span><span class="m-doc-wrap">unsigned priority) const -&gt; int64_t <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
             <dd>queries the capacity of the queue at a specific priority value</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#a50224ac56184cefc686c81966a67d765" class="m-doc">push</a>(</span><span class="m-doc-wrap">T item,
+              <span class="m-doc-wrap-bumper">auto <a href="#ab90cef7de0b45650b67971db0ccbef76" class="m-doc">push</a>(</span><span class="m-doc-wrap">T item,
               unsigned priority) -&gt; TF_FORCE_INLINE void</span>
             </dt>
             <dd>inserts an item to the queue</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#ab8a38274f9a056b81c18d9bf030b5025" class="m-doc">pop</a>(</span><span class="m-doc-wrap">) -&gt; T</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#a3df0b3554e814385d23ee603941391df" class="m-doc">pop</a>(</span><span class="m-doc-wrap">) -&gt; T</span>
             </dt>
             <dd>pops out an item from the queue</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#afea6d392cbc3b56c94708510bc1e813f" class="m-doc">pop</a>(</span><span class="m-doc-wrap">unsigned priority) -&gt; TF_FORCE_INLINE T</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#ab486c2b496bc5ebc84122924921e5632" class="m-doc">pop</a>(</span><span class="m-doc-wrap">unsigned priority) -&gt; TF_FORCE_INLINE T</span>
             </dt>
             <dd>pops out an item with a specific priority value from the queue</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#ab606d0aae898033208d10c7ef44fbcb2" class="m-doc">steal</a>(</span><span class="m-doc-wrap">) -&gt; T</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#a23e13cb9f98316b26c00ce494aa2f0c6" class="m-doc">steal</a>(</span><span class="m-doc-wrap">) -&gt; T</span>
             </dt>
             <dd>steals an item from the queue</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#a3529facba0cc44f75cb4a12c440ae073" class="m-doc">steal</a>(</span><span class="m-doc-wrap">unsigned priority) -&gt; T</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#aca896b5d59a78a018aeb313760ca735a" class="m-doc">steal</a>(</span><span class="m-doc-wrap">unsigned priority) -&gt; T</span>
             </dt>
             <dd>steals an item with a specific priority value from the queue</dd>
           </dl>
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="ae50476ad6d4b7e809de78c784ac7f60d"><div>
+          <section class="m-doc-details" id="a715574f55d3a05ec4040fc390bfcd632"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename T, unsigned MAX_PRIORITY&gt;
+                template&lt;typename T, unsigned TF_MAX_PRIORITY&gt;
               </div>
-              <span class="m-doc-wrap-bumper"> tf::<wbr />TaskQueue&lt;T, MAX_PRIORITY&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ae50476ad6d4b7e809de78c784ac7f60d" class="m-doc-self">TaskQueue</a>(</span><span class="m-doc-wrap">int64_t capacity = 512) <span class="m-label m-info">explicit</span> </span></span>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />TaskQueue&lt;T, TF_MAX_PRIORITY&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a715574f55d3a05ec4040fc390bfcd632" class="m-doc-self">TaskQueue</a>(</span><span class="m-doc-wrap">int64_t capacity = 512) <span class="m-label m-info">explicit</span> </span></span>
             </h3>
             <p>constructs the queue with a given capacity</p>
             <table class="m-table m-fullwidth m-flat">
@@ -186,12 +186,12 @@
               </tbody>
             </table>
           </div></section>
-          <section class="m-doc-details" id="a50224ac56184cefc686c81966a67d765"><div>
+          <section class="m-doc-details" id="ab90cef7de0b45650b67971db0ccbef76"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename T, unsigned MAX_PRIORITY&gt;
+                template&lt;typename T, unsigned TF_MAX_PRIORITY&gt;
               </div>
-              <span class="m-doc-wrap-bumper">TF_FORCE_INLINE void tf::<wbr />TaskQueue&lt;T, MAX_PRIORITY&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a50224ac56184cefc686c81966a67d765" class="m-doc-self">push</a>(</span><span class="m-doc-wrap">T item,
+              <span class="m-doc-wrap-bumper">TF_FORCE_INLINE void tf::<wbr />TaskQueue&lt;T, TF_MAX_PRIORITY&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab90cef7de0b45650b67971db0ccbef76" class="m-doc-self">push</a>(</span><span class="m-doc-wrap">T item,
               unsigned priority)</span></span>
             </h3>
             <p>inserts an item to the queue</p>
@@ -212,22 +212,22 @@
             </table>
 <p>Only the owner thread can insert an item to the queue. The operation can trigger the queue to resize its capacity if more space is required.</p>
           </div></section>
-          <section class="m-doc-details" id="ab8a38274f9a056b81c18d9bf030b5025"><div>
+          <section class="m-doc-details" id="a3df0b3554e814385d23ee603941391df"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename T, unsigned MAX_PRIORITY&gt;
+                template&lt;typename T, unsigned TF_MAX_PRIORITY&gt;
               </div>
-              <span class="m-doc-wrap-bumper">T tf::<wbr />TaskQueue&lt;T, MAX_PRIORITY&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab8a38274f9a056b81c18d9bf030b5025" class="m-doc-self">pop</a>(</span><span class="m-doc-wrap">)</span></span>
+              <span class="m-doc-wrap-bumper">T tf::<wbr />TaskQueue&lt;T, TF_MAX_PRIORITY&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3df0b3554e814385d23ee603941391df" class="m-doc-self">pop</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>pops out an item from the queue</p>
 <p>Only the owner thread can pop out an item from the queue. The return can be a <code>nullptr</code> if this operation failed (empty queue).</p>
           </div></section>
-          <section class="m-doc-details" id="afea6d392cbc3b56c94708510bc1e813f"><div>
+          <section class="m-doc-details" id="ab486c2b496bc5ebc84122924921e5632"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename T, unsigned MAX_PRIORITY&gt;
+                template&lt;typename T, unsigned TF_MAX_PRIORITY&gt;
               </div>
-              <span class="m-doc-wrap-bumper">TF_FORCE_INLINE T tf::<wbr />TaskQueue&lt;T, MAX_PRIORITY&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#afea6d392cbc3b56c94708510bc1e813f" class="m-doc-self">pop</a>(</span><span class="m-doc-wrap">unsigned priority)</span></span>
+              <span class="m-doc-wrap-bumper">TF_FORCE_INLINE T tf::<wbr />TaskQueue&lt;T, TF_MAX_PRIORITY&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab486c2b496bc5ebc84122924921e5632" class="m-doc-self">pop</a>(</span><span class="m-doc-wrap">unsigned priority)</span></span>
             </h3>
             <p>pops out an item with a specific priority value from the queue</p>
             <table class="m-table m-fullwidth m-flat">
@@ -243,22 +243,22 @@
             </table>
 <p>Only the owner thread can pop out an item from the queue. The return can be a <code>nullptr</code> if this operation failed (empty queue).</p>
           </div></section>
-          <section class="m-doc-details" id="ab606d0aae898033208d10c7ef44fbcb2"><div>
+          <section class="m-doc-details" id="a23e13cb9f98316b26c00ce494aa2f0c6"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename T, unsigned MAX_PRIORITY&gt;
+                template&lt;typename T, unsigned TF_MAX_PRIORITY&gt;
               </div>
-              <span class="m-doc-wrap-bumper">T tf::<wbr />TaskQueue&lt;T, MAX_PRIORITY&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab606d0aae898033208d10c7ef44fbcb2" class="m-doc-self">steal</a>(</span><span class="m-doc-wrap">)</span></span>
+              <span class="m-doc-wrap-bumper">T tf::<wbr />TaskQueue&lt;T, TF_MAX_PRIORITY&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a23e13cb9f98316b26c00ce494aa2f0c6" class="m-doc-self">steal</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>steals an item from the queue</p>
 <p>Any threads can try to steal an item from the queue. The return can be a <code>nullptr</code> if this operation failed (not necessary empty).</p>
           </div></section>
-          <section class="m-doc-details" id="a3529facba0cc44f75cb4a12c440ae073"><div>
+          <section class="m-doc-details" id="aca896b5d59a78a018aeb313760ca735a"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename T, unsigned MAX_PRIORITY&gt;
+                template&lt;typename T, unsigned TF_MAX_PRIORITY&gt;
               </div>
-              <span class="m-doc-wrap-bumper">T tf::<wbr />TaskQueue&lt;T, MAX_PRIORITY&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3529facba0cc44f75cb4a12c440ae073" class="m-doc-self">steal</a>(</span><span class="m-doc-wrap">unsigned priority)</span></span>
+              <span class="m-doc-wrap-bumper">T tf::<wbr />TaskQueue&lt;T, TF_MAX_PRIORITY&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aca896b5d59a78a018aeb313760ca735a" class="m-doc-self">steal</a>(</span><span class="m-doc-wrap">unsigned priority)</span></span>
             </h3>
             <p>steals an item with a specific priority value from the queue</p>
             <table class="m-table m-fullwidth m-flat">

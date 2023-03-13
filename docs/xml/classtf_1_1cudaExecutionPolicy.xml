@@ -75,7 +75,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="66" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="66" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="104" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="104" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -144,6 +144,280 @@
         <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="62" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="62" bodyend="62"/>
       </memberdef>
       </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1ab96c478964fcba935aa99efe91a64e5c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned</type>
+        <definition>static unsigned tf::cudaExecutionPolicy&lt; NT, VT &gt;::num_blocks</definition>
+        <argsstring>(unsigned N)</argsstring>
+        <name>num_blocks</name>
+        <param>
+          <type>unsigned</type>
+          <declname>N</declname>
+        </param>
+        <briefdescription>
+<para>queries the number of blocks to accommodate N elements </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="67" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="67" bodyend="67"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1a446cee95bb839ee180052059e2ad7fd6" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned</type>
+        <definition>unsigned tf::cudaExecutionPolicy&lt; NT, VT &gt;::reduce_bufsz</definition>
+        <argsstring>(unsigned count)</argsstring>
+        <name>reduce_bufsz</name>
+        <param>
+          <type>unsigned</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+<para>queries the buffer size in bytes needed for <ref refid="namespacetf_1a8a872d2a0ac73a676713cb5be5aa688c" kindref="member">tf::cuda_reduce</ref> </para>
+        </briefdescription>
+        <detaileddescription>
+<para>queries the buffer size in bytes needed to call reduce kernels</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>P</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>execution policy type </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>value type</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>count</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of elements to reduce</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+The function is used to allocate a buffer for calling <ref refid="namespacetf_1a8a872d2a0ac73a676713cb5be5aa688c" kindref="member">tf::cuda_reduce</ref>, <ref refid="namespacetf_1a492e8410db032a0273a99dd905486161" kindref="member">tf::cuda_uninitialized_reduce</ref>, <ref refid="namespacetf_1a4463d06240d608bc31d8b3546a851e4e" kindref="member">tf::cuda_transform_reduce</ref>, and <ref refid="namespacetf_1aa451668b7a0a3abf385cf2abebed8962" kindref="member">tf::cuda_uninitialized_transform_reduce</ref>. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="77" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="226" bodyend="234"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1abcafb001cd68c1135392f4bcda5a2a05" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned</type>
+        <definition>unsigned tf::cudaExecutionPolicy&lt; NT, VT &gt;::min_element_bufsz</definition>
+        <argsstring>(unsigned count)</argsstring>
+        <name>min_element_bufsz</name>
+        <param>
+          <type>unsigned</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+<para>queries the buffer size in bytes needed for <ref refid="namespacetf_1a572c13198191c46765264f8afabe2e9f" kindref="member">tf::cuda_min_element</ref> </para>
+        </briefdescription>
+        <detaileddescription>
+<para>queries the buffer size in bytes needed to call <ref refid="namespacetf_1a572c13198191c46765264f8afabe2e9f" kindref="member">tf::cuda_min_element</ref></para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>P</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>execution policy type </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>value type</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>count</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of elements to search</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+The function is used to decide the buffer size in bytes for calling <ref refid="namespacetf_1a572c13198191c46765264f8afabe2e9f" kindref="member">tf::cuda_min_element</ref>. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="83" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="204" bodyend="206"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1a31fe75c4b0765df3035e12be49af88aa" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned</type>
+        <definition>unsigned tf::cudaExecutionPolicy&lt; NT, VT &gt;::max_element_bufsz</definition>
+        <argsstring>(unsigned count)</argsstring>
+        <name>max_element_bufsz</name>
+        <param>
+          <type>unsigned</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+<para>queries the buffer size in bytes needed for <ref refid="namespacetf_1a3fc577fd0a8f127770bcf68bc56c073e" kindref="member">tf::cuda_max_element</ref> </para>
+        </briefdescription>
+        <detaileddescription>
+<para>queries the buffer size in bytes needed to call <ref refid="namespacetf_1a3fc577fd0a8f127770bcf68bc56c073e" kindref="member">tf::cuda_max_element</ref></para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>P</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>execution policy type </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>value type</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>count</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of elements to search</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+The function is used to decide the buffer size in bytes for calling <ref refid="namespacetf_1a3fc577fd0a8f127770bcf68bc56c073e" kindref="member">tf::cuda_max_element</ref>. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="89" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="266" bodyend="268"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>unsigned</type>
+        <definition>unsigned tf::cudaExecutionPolicy&lt; NT, VT &gt;::scan_bufsz</definition>
+        <argsstring>(unsigned count)</argsstring>
+        <name>scan_bufsz</name>
+        <param>
+          <type>unsigned</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+<para>queries the buffer size in bytes needed for CUDA scan algorithms </para>
+        </briefdescription>
+        <detaileddescription>
+<para>queries the buffer size in bytes needed to call scan kernels</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>P</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>execution policy type </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>value type</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>count</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of elements to scan</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+The function is used to allocate a buffer for calling <ref refid="namespacetf_1a2e1b44c84a09e0a8495a611cb9a7ea40" kindref="member">tf::cuda_inclusive_scan</ref>, <ref refid="namespacetf_1aeb391c40120844318fd715b8c3a716bb" kindref="member">tf::cuda_exclusive_scan</ref>, <ref refid="namespacetf_1afa4aa760ddb6efbda1b9bab505ad5baf" kindref="member">tf::cuda_transform_inclusive_scan</ref>, and <ref refid="namespacetf_1a2e739895c1c73538967af060ca714366" kindref="member">tf::cuda_transform_exclusive_scan</ref>. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="95" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="341" bodyend="348"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned</type>
+        <definition>unsigned tf::cudaExecutionPolicy&lt; NT, VT &gt;::merge_bufsz</definition>
+        <argsstring>(unsigned a_count, unsigned b_count)</argsstring>
+        <name>merge_bufsz</name>
+        <param>
+          <type>unsigned</type>
+          <declname>a_count</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>b_count</declname>
+        </param>
+        <briefdescription>
+<para>queries the buffer size in bytes needed for CUDA merge algorithms </para>
+        </briefdescription>
+        <detaileddescription>
+<para>queries the buffer size in bytes needed to call merge kernels</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>P</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>execution polity type </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>a_count</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of elements in the first input array </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>b_count</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of elements in the second input array</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+The function is used to allocate a buffer for calling <ref refid="namespacetf_1a37ec481149c2f01669353033d75ed72a" kindref="member">tf::cuda_merge</ref>. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="100" column="26" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="461" bodyend="463"/>
+      </memberdef>
+      </sectiondef>
     <briefdescription>
 <para>class to define execution policy for CUDA standard algorithms </para>
     </briefdescription>
@@ -168,13 +442,19 @@
 Execution policy configures the kernel execution parameters in CUDA algorithms. The first template argument, <computeroutput>NT</computeroutput>, the number of threads per block should always be a power-of-two number. The second template argument, <computeroutput>VT</computeroutput>, the number of work units per thread is recommended to be an odd number to avoid bank conflict.</para>
 <para>Details can be referred to <ref refid="CUDASTDExecutionPolicy" kindref="compound">Execution Policy</ref>. </para>
     </detaileddescription>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="29" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="29" bodyend="67"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="29" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="29" bodyend="105"/>
     <listofallmembers>
       <member refid="classtf_1_1cudaExecutionPolicy_1a1eaf3d45afdf53b4bf9927dd1bd7a02b" prot="private" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>_stream</name></member>
       <member refid="classtf_1_1cudaExecutionPolicy_1aea3b671f778bfb9eca5d7113636f63bf" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>cudaExecutionPolicy</name></member>
       <member refid="classtf_1_1cudaExecutionPolicy_1ac1c7784472394d4abcb6f6a2a80cc019" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>cudaExecutionPolicy</name></member>
+      <member refid="classtf_1_1cudaExecutionPolicy_1a31fe75c4b0765df3035e12be49af88aa" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>max_element_bufsz</name></member>
+      <member refid="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>merge_bufsz</name></member>
+      <member refid="classtf_1_1cudaExecutionPolicy_1abcafb001cd68c1135392f4bcda5a2a05" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>min_element_bufsz</name></member>
       <member refid="classtf_1_1cudaExecutionPolicy_1abb1050526f45873c967976a99e9a370d" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>nt</name></member>
+      <member refid="classtf_1_1cudaExecutionPolicy_1ab96c478964fcba935aa99efe91a64e5c" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>num_blocks</name></member>
       <member refid="classtf_1_1cudaExecutionPolicy_1a92ac5a32147584738f32a720ea08e3f4" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>nv</name></member>
+      <member refid="classtf_1_1cudaExecutionPolicy_1a446cee95bb839ee180052059e2ad7fd6" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>reduce_bufsz</name></member>
+      <member refid="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>scan_bufsz</name></member>
       <member refid="classtf_1_1cudaExecutionPolicy_1a5be1b273985800ab886665d28663c29b" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>stream</name></member>
       <member refid="classtf_1_1cudaExecutionPolicy_1a5f2a4d6b35af49403756ee2291264758" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>stream</name></member>
       <member refid="classtf_1_1cudaExecutionPolicy_1a9410f1b3a5cb9a3cc5e8d640bc7d3990" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>vt</name></member>

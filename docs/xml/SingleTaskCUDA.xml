@@ -24,24 +24,23 @@
 <sect1 id="SingleTaskCUDA_1CUDASingleTaskIncludeTheHeader">
 <title>Include the Header</title>
 <para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/for_each.hpp</computeroutput>, for creating a single-threaded task.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="for__each_8hpp" kindref="compound">taskflow/cuda/algorithm/for_each.hpp</ref>&gt;</highlight></codeline>
+</programlisting></para>
 </sect1>
 <sect1 id="SingleTaskCUDA_1SingleTaskCUDASingleTask">
 <title>Run a Task with a Single Thread</title>
-<para>You can create a task to run a kernel function just once, i.e., using one GPU thread. This is handy when you want to set up a single or a few global variables that do not need multiple threads and will be used by multiple kernels afterwards. The following example creates a single-task kernel that sets <computeroutput>gpu_variable</computeroutput> to 1.</para>
+<para>You can create a task to run a kernel function just once, i.e., using one GPU thread. This is handy when you want to set up a single or a few global variables that do not need multiple threads and will be used by multiple kernels afterwards. The following example creates a single-task kernel that sets a device variable to <computeroutput>1</computeroutput>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>gpu_variable;</highlight></codeline>
 <codeline><highlight class="normal">cudaMalloc(&amp;gpu_variable,<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">));</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;]<sp/>(<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>single<sp/>task<sp/>to<sp/>set<sp/>the<sp/>gpu_variable<sp/>to<sp/>1</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>set_par<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" kindref="member">single_task</ref>([gpu_variable]<sp/>__device__<sp/>()<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>*gpu_variable<sp/>=<sp/>1;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>})</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>two<sp/>kernel<sp/>tasks<sp/>that<sp/>need<sp/>access<sp/>to<sp/>gpu_variable</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>kernel1<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" kindref="member">kernel</ref>(grid1,<sp/>block1,<sp/>shm1,<sp/>my_kernel_1,<sp/>...);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>kernel2<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" kindref="member">kernel</ref>(grid2,<sp/>block2,<sp/>shm2,<sp/>my_kernel_2,<sp/>...);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>set_par.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(kernel1,<sp/>kernel2);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
+<codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" kindref="member">single_task</ref>([gpu_variable]<sp/>__device__<sp/>()<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>*gpu_Variable<sp/>=<sp/>1;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlow_1ae6810f7de27e5a347331aacfce67bea1" kindref="member">run</ref>(stream);</highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 </programlisting></para>
 <para>Since the callable runs on GPU, it must be declared with a <computeroutput>__device__</computeroutput> specifier.</para>
 </sect1>

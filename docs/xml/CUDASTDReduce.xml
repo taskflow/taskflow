@@ -32,6 +32,8 @@
 <sect1 id="CUDASTDReduce_1CUDASTDParallelReductionIncludeTheHeader">
 <title>Include the Header</title>
 <para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/reduce.hpp</computeroutput>, for using the parallel-reduction algorithm.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="reduce_8hpp" kindref="compound">taskflow/cuda/algorithm/reduce.hpp</ref>&gt;</highlight></codeline>
+</programlisting></para>
 </sect1>
 <sect1 id="CUDASTDReduce_1CUDASTDReduceItemsWithAnInitialValue">
 <title>Reduce a Range of Items with an Initial Value</title>
@@ -51,9 +53,12 @@
 <codeline><highlight class="normal"><sp/><sp/>vec[i]<sp/>=<sp/>i;</highlight></codeline>
 <codeline><highlight class="normal">}<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>reduce<sp/>N<sp/>elements<sp/>using<sp/>the<sp/>given<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>tf::cuda_reduce_buffer_size&lt;tf::cudaDefaultExecutionPolicy,<sp/>int&gt;(N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a446cee95bb839ee180052059e2ad7fd6" kindref="member">reduce_bufsz</ref>&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>*res<sp/>=<sp/>1000<sp/>+<sp/>(0<sp/>+<sp/>1<sp/>+<sp/>2<sp/>+<sp/>3<sp/>+<sp/>4<sp/>+<sp/>...<sp/>+<sp/>N-1)</highlight><highlight class="normal"></highlight></codeline>
@@ -62,15 +67,15 @@
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronize<sp/>the<sp/>execution</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(buffer);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(res);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(vec);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(buffer);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(res);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(vec);</highlight></codeline>
 </programlisting></para>
-<para>The reduce algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results. Since the GPU reduction algorithm may require extra buffer to store the temporary results, you must provide a buffer of size at least bytes returned from <ref refid="namespacetf_1a1ca0bd68df882048e4b9b4d92efc3168" kindref="member">tf::cuda_reduce_buffer_size</ref>.</para>
-<para><simplesect kind="attention"><para>You must keep the buffer alive before the reduction call completes.</para>
+<para>The reduce algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results. Since the GPU reduction algorithm may require extra buffer to store the temporary results, you need to provide a buffer of size at least larger or equal to the value returned from <computeroutput><ref refid="classtf_1_1cudaExecutionPolicy_1a446cee95bb839ee180052059e2ad7fd6" kindref="member">tf::cudaDefaultExecutionPolicy::reduce_bufsz</ref></computeroutput>.</para>
+<para><simplesect kind="attention"><para>You must keep the buffer alive before the reduction completes.</para>
 </simplesect>
 </para>
 </sect1>
@@ -92,9 +97,12 @@
 <codeline><highlight class="normal"><sp/><sp/>vec[i]<sp/>=<sp/>i;</highlight></codeline>
 <codeline><highlight class="normal">}<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>reduce<sp/>N<sp/>elements<sp/>using<sp/>the<sp/>given<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>tf::cuda_reduce_buffer_size&lt;tf::cudaDefaultExecutionPolicy,<sp/>int&gt;(N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a446cee95bb839ee180052059e2ad7fd6" kindref="member">reduce_bufsz</ref>&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>*res<sp/>=<sp/>0<sp/>+<sp/>1<sp/>+<sp/>2<sp/>+<sp/>3<sp/>+<sp/>4<sp/>+<sp/>...<sp/>+<sp/>N-1</highlight><highlight class="normal"></highlight></codeline>
@@ -103,10 +111,12 @@
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronize<sp/>the<sp/>execution</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(buffer);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(res);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(vec);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(buffer);</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="CUDASTDReduce_1CUDASTDReduceTransformedItemsWithAnInitialValue">
@@ -127,9 +137,12 @@
 <codeline><highlight class="normal"><sp/><sp/>vec[i]<sp/>=<sp/>i;</highlight></codeline>
 <codeline><highlight class="normal">}<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>reduce<sp/>N<sp/>elements<sp/>using<sp/>the<sp/>given<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>tf::cuda_reduce_buffer_size&lt;tf::cudaDefaultExecutionPolicy,<sp/>int&gt;(N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a446cee95bb839ee180052059e2ad7fd6" kindref="member">reduce_bufsz</ref>&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>*res<sp/>=<sp/>1000<sp/>+<sp/>(0*10<sp/>+<sp/>1*10<sp/>+<sp/>2*10<sp/>+<sp/>3*10<sp/>+<sp/>4*10<sp/>+<sp/>...<sp/>+<sp/>(N-1)*10)</highlight><highlight class="normal"></highlight></codeline>
@@ -141,15 +154,17 @@
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronize<sp/>the<sp/>execution</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(buffer);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(res);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(vec);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(buffer);</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="CUDASTDReduce_1CUDASTDReduceTransformedItemsWithoutAnInitialValue">
 <title>Reduce a Range of Transformed Items without an Initial Value</title>
-<para><ref refid="namespacetf_1a747a41c0474fd34da370839b60ddc4ca" kindref="member">tf::cuda_transform_uninitialized_reduce</ref> performs a parallel reduction over a range of transformed items without an initial value. This method represents a parallel execution of the following reduction loop on a GPU:</para>
+<para>tf::cuda_transform_uninitialized_reduce performs a parallel reduction over a range of transformed items without an initial value. This method represents a parallel execution of the following reduction loop on a GPU:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">*result<sp/>=<sp/>*first++;<sp/><sp/></highlight><highlight class="comment">//<sp/>no<sp/>initial<sp/>values<sp/>to<sp/>participate<sp/>in<sp/>the<sp/>reduction<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>bop(*result,<sp/>uop(*first++));</highlight></codeline>
@@ -165,9 +180,12 @@
 <codeline><highlight class="normal"><sp/><sp/>vec[i]<sp/>=<sp/>i;</highlight></codeline>
 <codeline><highlight class="normal">}<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>reduce<sp/>N<sp/>elements<sp/>using<sp/>the<sp/>given<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>tf::cuda_reduce_buffer_size&lt;tf::cudaDefaultExecutionPolicy,<sp/>int&gt;(N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a446cee95bb839ee180052059e2ad7fd6" kindref="member">reduce_bufsz</ref>&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>*res<sp/>=<sp/>0*10<sp/>+<sp/>1*10<sp/>+<sp/>2*10<sp/>+<sp/>3*10<sp/>+<sp/>4*10<sp/>+<sp/>...<sp/>+<sp/>(N-1)*10</highlight><highlight class="normal"></highlight></codeline>
@@ -179,12 +197,12 @@
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronize<sp/>the<sp/>execution</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(buffer);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(res);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(vec);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(res);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(vec);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(buffer);</highlight></codeline>
 </programlisting> </para>
 </sect1>
     </detaileddescription>

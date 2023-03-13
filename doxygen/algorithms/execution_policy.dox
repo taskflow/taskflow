@@ -1,0 +1,102 @@
+namespace tf {
+
+/** @page ExecutionPolicy Execution Policy
+
+An execution policy allows applications to optimize parallel algorithms
+using specific scheduling methods.
+
+@tableofcontents
+
+@section DefineAnExecutionPolicy Define an Execution Policy
+
+An execution policy defines how to partition and distribute iterations to different workers 
+when running parallel algorithms in %Taskflow,
+such as tf::Taskflow::for_each and tf::Taskflow::transform.
+The following example shows how to create parallel-iteration tasks
+with different execution policies:
+
+@code{.cpp}
+std::vector<int> data = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+
+// create execution policies with different partitioning algorithms
+tf::ExecutionPolicy<tf::GuidedPartitioner> guided_policy;
+tf::ExecutionPolicy<tf::StaticPartitioner> static_policy;
+tf::ExecutionPolicy<tf::RandomPartitioner> random_policy;
+tf::ExecutionPolicy<tf::DynamicPartitioner> dynamic_policy;
+
+// create four parallel-iteration tasks from the four execution policies
+taskflow.for_each(guided_policy, data.begin(), data.end(), [](int i){});
+taskflow.for_each(static_policy, data.begin(), data.end(), [](int i){});
+taskflow.for_each(random_policy, data.begin(), data.end(), [](int i){});
+taskflow.for_each(dynamic_policy, data.begin(), data.end(), [](int i){});
+@endcode
+
+Each partitioner has a specific algorithm to partition iterations
+into a set of @em chunks and distribute chunks to workers.
+A chunk is the basic unit of work that will be run by a worker
+during the execution of parallel iterations.
+The following figure illustrates the scheduling diagram for three major partitioners,
+tf::StaticPartitioner, tf::DynamicPartitioner, and tf::GuidedPartitioner:
+
+@image html images/parallel_for_partition_algorithms.png
+
+Depending on applications, partitioning algorithms can impact the performance a lot. 
+For example, if a parallel-iteration workload contains a regular work unit per iteration, 
+tf::StaticPartitioner may deliver the best performance. 
+On the other hand, if the work unit per iteration is irregular and unbalanced, 
+tf::GuidedPartitioner or tf::DynamicPartitioner can outperform tf::StaticPartitioner.
+
+@note
+By default, all parallel algorithms in %Taskflow use tf::DefaultExecutionPolicy,
+which is based on guided scheduling via tf::GuidedPartitioner.
+
+@section DefineAStaticExecutionPolicy Define a Static Execution Policy
+
+Static execution policy splits iterations into <tt>iter_size/chunk_size</tt> chunks
+and distribute chunks to workers in order.
+If no chunk size is given (@c chunk_size is @c 1), 
+%Taskflow will partition iterations into chunks that are approximately equal in size.
+The following code creates a static execution policy with chunk size equal to 100:
+
+@code{.cpp}
+tf::ExecutionPolicy<tf::StaticPartitioner> static_policy(100);
+@endcode
+
+@section DefineADynamicExecutionPolicy Define a Dynamic Execution Policy
+
+Dynamic execution policy splits iterations into <tt>iter_size/chunk_size</tt> chunks
+and distribute chunks to workers without any specific order.
+The default chunk size is @c 1, if not specified.
+The following code creates a dynamic execution policy with chunk size equal to 2:
+
+@code{.cpp}
+tf::ExecutionPolicy<tf::DynamicPartitioner> dynamic_policy(2);
+@endcode
+
+@section DefineAGuidedExecutionPolicy Define a Guided Execution Policy
+
+Guided execution policy dynamically decides the chunk size.
+The size of a chunk is proportional to the number of unassigned iterations divided
+by the number of the threads,
+and the size will gradually decrease to the specified chunk size (default @c 1).
+The last chunk may be smaller than the specified chunk size.
+The following code creates a guided execution policy with chunk size equal to 10:
+
+@code{.cpp}
+tf::ExecutionPolicy<tf::GuidedPartitioner> guided_policy(10);
+@endcode
+
+@note
+Guided execution policy can achieve decent
+performance for most parallel algorithms, especially those with irregular
+and unbalanced work per iteration.
+
+*/
+
+}
+
+
+
+
+
+

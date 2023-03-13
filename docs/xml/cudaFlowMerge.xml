@@ -31,7 +31,7 @@
 </sect1>
 <sect1 id="cudaFlowMerge_1cudaFlowMergeTwoRangesOfItems">
 <title>Merge two Sorted Ranges of Items</title>
-<para><ref refid="classtf_1_1cudaFlow_1af8fa5d69a57d010d7a3ee2756d85859c" kindref="member">tf::cudaFlow::merge</ref> performs a parallel merge over two ranges of elements into a sorted range of items. The following code merges two sorted arrays <computeroutput>input_1</computeroutput> and <computeroutput>input_2</computeroutput>, each of 1000 items, into a sorted array <computeroutput>output</computeroutput> of 2000 items.</para>
+<para>tf::cudaFlow::merge performs a parallel merge over two ranges of elements into a sorted range of items. The following code merges two sorted arrays <computeroutput>input_1</computeroutput> and <computeroutput>input_2</computeroutput>, each of 1000 items, into a sorted array <computeroutput>output</computeroutput> of 2000 items.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>input_1<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>input<sp/>vector<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>input_2<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>input<sp/>vector<sp/>2</highlight><highlight class="normal"></highlight></codeline>
@@ -47,16 +47,16 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>merge<sp/>input_1<sp/>and<sp/>input_2<sp/>to<sp/>output</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1af8fa5d69a57d010d7a3ee2756d85859c" kindref="member">merge</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task<sp/>=<sp/>cf.merge(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>input_1,<sp/>input_1<sp/>+<sp/>N,<sp/>input_2,<sp/>input_2<sp/>+<sp/>N,<sp/>output,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>&lt;<sp/>b;<sp/>}<sp/><sp/></highlight><highlight class="comment">//<sp/>comparator</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">offload</ref>();</highlight></codeline>
+<codeline><highlight class="normal">cf.offload();</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="cudaFlowMerge_1cudaFlowMergeTwoRangesOfKeyValueItems">
 <title>Merge two Sorted Ranges of Key-Value Items</title>
-<para><ref refid="classtf_1_1cudaFlow_1a9cdfde0bafee035c0075619d386a9a43" kindref="member">tf::cudaFlow::merge_by_key</ref> performs key-value merge over two sorted ranges in a similar way to <ref refid="namespacetf_1a37ec481149c2f01669353033d75ed72a" kindref="member">tf::cuda_merge</ref>; additionally, it copies elements from the two ranges of values associated with two input keys, respectively. The following code performs key-value merge over <computeroutput>a</computeroutput> and <computeroutput>b:</computeroutput> </para>
+<para>tf::cudaFlow::merge_by_key performs key-value merge over two sorted ranges in a similar way to <ref refid="namespacetf_1a37ec481149c2f01669353033d75ed72a" kindref="member">tf::cuda_merge</ref>; additionally, it copies elements from the two ranges of values associated with two input keys, respectively. The following code performs key-value merge over <computeroutput>a</computeroutput> and <computeroutput>b:</computeroutput> </para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>2;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>a_keys<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>a_vals<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);</highlight></codeline>
@@ -73,13 +73,13 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>performs<sp/>key-value<sp/>merge</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
-<codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlow_1a9cdfde0bafee035c0075619d386a9a43" kindref="member">merge_by_key</ref>(</highlight></codeline>
+<codeline><highlight class="normal">cf.merge_by_key(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>a_keys,<sp/>a_keys+N,<sp/>a_vals,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>b_keys,<sp/>b_keys+N,<sp/>b_vals,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>c_keys,<sp/>c_vals,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>&lt;<sp/>b;<sp/>},</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">offload</ref>();</highlight></codeline>
+<codeline><highlight class="normal">cf.offload();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now,<sp/>c_keys<sp/>=<sp/>{1,<sp/>3,<sp/>7,<sp/>8}</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now,<sp/>c_vals<sp/>=<sp/>{2,<sp/>3,<sp/>4,<sp/>1}</highlight><highlight class="normal"></highlight></codeline>

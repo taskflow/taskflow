@@ -28,6 +28,8 @@
 <sect1 id="CUDASTDFind_1CUDASTDFindIncludeTheHeader">
 <title>Include the Header</title>
 <para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/find.hpp</computeroutput>, for using the parallel-find algorithm.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="find_8hpp" kindref="compound">taskflow/cuda/algorithm/find.hpp</ref>&gt;</highlight></codeline>
+</programlisting></para>
 </sect1>
 <sect1 id="CUDASTDFind_1CUDASTDFindItems">
 <title>Find an Element in a Range</title>
@@ -48,12 +50,16 @@
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>vec[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>finds<sp/>the<sp/>index<sp/>of<sp/>the<sp/>first<sp/>element<sp/>that<sp/>is<sp/>a<sp/>multiple<sp/>of<sp/>17</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>finds<sp/>the<sp/>index<sp/>of<sp/>the<sp/>first<sp/>element<sp/>that<sp/>is<sp/>a<sp/>multiple<sp/>of<sp/>17</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1a5f9dabd7c5d0fa5166cf76d9fa5a038e" kindref="member">tf::cuda_find_if</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>policy,<sp/>vec,<sp/>vec+N,<sp/>idx,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>v)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>v%17<sp/>==<sp/>0;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>find<sp/>operation<sp/>to<sp/>complete</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(*idx<sp/>!=<sp/>N)<sp/>{</highlight></codeline>
@@ -61,8 +67,8 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>deletes<sp/>the<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(vec);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(idx);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(vec);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(idx);</highlight></codeline>
 </programlisting></para>
 <para>The find-if algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain the correct result.</para>
 </sect1>
@@ -80,7 +86,7 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>smallest);</highlight></codeline>
 </programlisting></para>
-<para>Since <ref refid="namespacetf_1a572c13198191c46765264f8afabe2e9f" kindref="member">tf::cuda_min_element</ref> may require extra buffer to store temporary results, you need to provide a buffer that holds at least <ref refid="namespacetf_1abe3b31aaf686b491e9000f0867934713" kindref="member">tf::cuda_min_element_buffer_size</ref> bytes. The following code finds the index of the minimum element in a range of one millions elements.</para>
+<para>The following code finds the index of the minimum element in a range of one millions elements using GPU computing:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>vec<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>idx<sp/>=<sp/>tf::cuda_malloc_shared&lt;unsigned&gt;(1);<sp/><sp/></highlight><highlight class="comment">//<sp/>index</highlight><highlight class="normal"></highlight></codeline>
@@ -88,25 +94,31 @@
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>vec[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>using<sp/>the<sp/>given<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>tf::cuda_min_element_buffer_size&lt;tf::cudaDefaultExecutionPolicy,<sp/>int&gt;(N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>find<sp/>the<sp/>minimum<sp/>element<sp/>over<sp/>N<sp/>element</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.<ref refid="classtf_1_1cudaExecutionPolicy_1abcafb001cd68c1135392f4bcda5a2a05" kindref="member">min_element_bufsz</ref>&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>finds<sp/>the<sp/>minimum<sp/>element<sp/>using<sp/>the<sp/>less<sp/>comparator</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1a572c13198191c46765264f8afabe2e9f" kindref="member">tf::cuda_min_element</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>policy,<sp/>vec,<sp/>vec+N,<sp/>idx,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a&lt;b;<sp/>},<sp/>buffer</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>min-element<sp/>operation<sp/>completes</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(vec[*idx]<sp/>==<sp/>*std::min_element(vec,<sp/>vec+N,<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>{}));</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>deletes<sp/>the<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(vec);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(idx);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(buffer);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(vec);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(idx);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(buffer);</highlight></codeline>
 </programlisting></para>
+<para>Since the GPU min-element algorithm may require extra buffer to store the temporary results, you need to provide a buffer of size at least larger or equal to the value returned from <computeroutput><ref refid="classtf_1_1cudaExecutionPolicy_1abcafb001cd68c1135392f4bcda5a2a05" kindref="member">tf::cudaDefaultExecutionPolicy::min_element_bufsz</ref></computeroutput>.</para>
 <para><simplesect kind="attention"><para>You must keep the buffer alive before the <ref refid="namespacetf_1a572c13198191c46765264f8afabe2e9f" kindref="member">tf::cuda_min_element</ref> completes.</para>
 </simplesect>
 </para>
@@ -125,7 +137,7 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>largest);</highlight></codeline>
 </programlisting></para>
-<para>Since <ref refid="namespacetf_1a3fc577fd0a8f127770bcf68bc56c073e" kindref="member">tf::cuda_max_element</ref> may require extra buffer to store temporary results, you need to provide a buffer that holds at least <ref refid="namespacetf_1a04965f210cc6447c7c38206a28c3c3d4" kindref="member">tf::cuda_max_element_buffer_size</ref> bytes. The following code finds the index of the maximum element in a range of one millions elements.</para>
+<para>The following code finds the index of the maximum element in a range of one millions elements using GPU computing:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>vec<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>idx<sp/>=<sp/>tf::cuda_malloc_shared&lt;unsigned&gt;(1);<sp/><sp/></highlight><highlight class="comment">//<sp/>index</highlight><highlight class="normal"></highlight></codeline>
@@ -133,25 +145,31 @@
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>vec[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>using<sp/>the<sp/>given<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>tf::cuda_max_element_buffer_size&lt;tf::cudaDefaultExecutionPolicy,<sp/>int&gt;(N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>find<sp/>the<sp/>maximum<sp/>element<sp/>over<sp/>N<sp/>element</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a31fe75c4b0765df3035e12be49af88aa" kindref="member">max_element_bufsz</ref>&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>finds<sp/>the<sp/>maximum<sp/>element<sp/>using<sp/>the<sp/>less<sp/>comparator</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1a3fc577fd0a8f127770bcf68bc56c073e" kindref="member">tf::cuda_max_element</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>policy,<sp/>vec,<sp/>vec+N,<sp/>idx,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a&lt;b;<sp/>},<sp/>buffer</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>max-element<sp/>operation<sp/>to<sp/>complete</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(vec[*idx]<sp/>==<sp/>*std::max_element(vec,<sp/>vec+N,<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>{}));</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>deletes<sp/>the<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(vec);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(idx);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(buffer);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(vec);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(idx);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(buffer);</highlight></codeline>
 </programlisting></para>
+<para>Since the GPU max-element algorithm may require extra buffer to store the temporary results, you need to provide a buffer of size at least larger or equal to the value returned from <computeroutput><ref refid="classtf_1_1cudaExecutionPolicy_1a31fe75c4b0765df3035e12be49af88aa" kindref="member">tf::cudaDefaultExecutionPolicy::max_element_bufsz</ref></computeroutput>.</para>
 <para><simplesect kind="attention"><para>You must keep the buffer alive before <ref refid="namespacetf_1a3fc577fd0a8f127770bcf68bc56c073e" kindref="member">tf::cuda_max_element</ref> completes. </para>
 </simplesect>
 </para>

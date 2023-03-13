@@ -24,6 +24,8 @@
 <sect1 id="CUDASTDScan_1CUDASTDParallelScanIncludeTheHeader">
 <title>Include the Header</title>
 <para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/scan.hpp</computeroutput>, for using the parallel-scan algorithm.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="find_8hpp" kindref="compound">taskflow/cuda/algorithm/find.hpp</ref>&gt;</highlight></codeline>
+</programlisting></para>
 </sect1>
 <sect1 id="CUDASTDScan_1CUDASTDScanItems">
 <title>Scan a Range of Items</title>
@@ -35,9 +37,12 @@
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>input[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>scan<sp/>N<sp/>elements<sp/>using<sp/>the<sp/>given<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>tf::cuda_scan_buffer_size&lt;tf::cudaDefaultExecutionPolicy,<sp/>int&gt;(N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.<ref refid="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" kindref="member">scan_bufsz</ref>&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>computes<sp/>inclusive<sp/>scan<sp/>over<sp/>input<sp/>and<sp/>stores<sp/>the<sp/>result<sp/>in<sp/>output</highlight><highlight class="normal"></highlight></codeline>
@@ -46,15 +51,18 @@
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronizes<sp/>and<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=1;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(output[i]<sp/>==<sp/>output[i-1]<sp/>+<sp/>input[i]);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(buffer);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>device<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">cudaFree(input);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(output);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(buffer);</highlight></codeline>
 </programlisting></para>
-<para>The scan algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results. Since the GPU scan algorithm may require extra buffer to store the temporary results, you must provide a buffer of size at least bytes returned from <ref refid="namespacetf_1afd7e7a0886352201cced5c55205f3229" kindref="member">tf::cuda_scan_buffer_size</ref>.</para>
+<para>The scan algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results. Since the GPU scan algorithm may require extra buffer to store the temporary results, you need to provide a buffer of size at least larger or equal to the value returned from <computeroutput><ref refid="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" kindref="member">tf::cudaDefaultExecutionPolicy::scan_bufsz</ref></computeroutput>.</para>
 <para><simplesect kind="attention"><para>You must keep the buffer alive before the scan call completes.</para>
 </simplesect>
 On the other hand, <ref refid="namespacetf_1aeb391c40120844318fd715b8c3a716bb" kindref="member">tf::cuda_exclusive_scan</ref> computes an exclusive prefix sum operation. The term "exclusive" means that the i-th input element is <emphasis>NOT</emphasis> included in the i-th sum.</para>
@@ -64,7 +72,7 @@ On the other hand, <ref refid="namespacetf_1aeb391c40120844318fd715b8c3a716bb" k
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronizes<sp/>the<sp/>execution<sp/>and<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=1;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(output[i]<sp/>==<sp/>output[i-1]<sp/>+<sp/>input[i-1]);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -80,9 +88,12 @@ On the other hand, <ref refid="namespacetf_1aeb391c40120844318fd715b8c3a716bb" k
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>input[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>scan<sp/>N<sp/>elements<sp/>using<sp/>the<sp/>given<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>tf::cuda_scan_buffer_size&lt;tf::cudaDefaultExecutionPolicy,<sp/>int&gt;(N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.<ref refid="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" kindref="member">scan_bufsz</ref>&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>computes<sp/>inclusive<sp/>scan<sp/>over<sp/>transformed<sp/>input<sp/>and<sp/>stores<sp/>the<sp/>result<sp/>in<sp/>output</highlight><highlight class="normal"></highlight></codeline>
@@ -92,12 +103,19 @@ On the other hand, <ref refid="namespacetf_1aeb391c40120844318fd715b8c3a716bb" k
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a*10;<sp/>},<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>unary<sp/>transform<sp/>operator</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>buffer</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>scan<sp/>to<sp/>complete</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=1;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(output[i]<sp/>==<sp/>output[i-1]<sp/>+<sp/>input[i]<sp/>*<sp/>10);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>device<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">cudaFree(input);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(output);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(buffer);</highlight></codeline>
 </programlisting></para>
 <para>Similarly, <ref refid="namespacetf_1a2e739895c1c73538967af060ca714366" kindref="member">tf::cuda_transform_exclusive_scan</ref> performs an exclusive prefix sum over a range of transformed items. The following code computes the exclusive prefix sum over 1000000 transformed items each multipled by 10.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
@@ -107,9 +125,12 @@ On the other hand, <ref refid="namespacetf_1aeb391c40120844318fd715b8c3a716bb" k
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>input[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>scan<sp/>N<sp/>elements<sp/>using<sp/>the<sp/>given<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>tf::cuda_scan_buffer_size&lt;tf::cudaDefaultExecutionPolicy,<sp/>int&gt;(N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.<ref refid="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" kindref="member">scan_bufsz</ref>&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>computes<sp/>exclusive<sp/>scan<sp/>over<sp/>transformed<sp/>input<sp/>and<sp/>stores<sp/>the<sp/>result<sp/>in<sp/>output</highlight><highlight class="normal"></highlight></codeline>
@@ -119,12 +140,19 @@ On the other hand, <ref refid="namespacetf_1aeb391c40120844318fd715b8c3a716bb" k
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a*10;<sp/>},<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>unary<sp/>transform<sp/>operator</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>buffer</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>scan<sp/>to<sp/>complete</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=1;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(output[i]<sp/>==<sp/>output[i-1]<sp/>+<sp/>input[i-1]<sp/>*<sp/>10);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>device<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">cudaFree(input);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(output);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(buffer);</highlight></codeline>
 </programlisting> </para>
 </sect1>
     </detaileddescription>

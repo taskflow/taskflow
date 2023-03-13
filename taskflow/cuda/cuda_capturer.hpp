@@ -82,8 +82,7 @@ class cudaFlowCapturer {
     @brief constrcts a standalone cudaFlowCapturer
 
     A standalone %cudaFlow capturer does not go through any taskflow and
-    can be run by the caller thread using explicit offload methods
-    (e.g., tf::cudaFlow::offload).
+    can be run by the caller thread using tf::cudaFlowCapturer::run.
     */
     cudaFlowCapturer() = default;
 
@@ -487,18 +486,16 @@ class cudaFlowCapturer {
     // ------------------------------------------------------------------------
 
     /**
-    @brief offloads the captured %cudaFlow onto a GPU and repeatedly runs it until
-    the predicate becomes true
+    @brief offloads the %cudaFlowCapturer onto a GPU asynchronously via a stream
 
-    @tparam P predicate type (a binary callable)
+    @param stream stream for performing this operation
 
-    @param predicate a binary predicate (returns @c true for stop)
+    Offloads the present %cudaFlowCapturer onto a GPU asynchronously via
+    the given stream.
 
-    Immediately offloads the %cudaFlow captured so far onto a GPU and
-    repeatedly runs it until the predicate returns @c true.
-
-    By default, if users do not offload the %cudaFlow capturer,
-    the executor will offload it once.
+    An offloaded %cudaFlowCapturer forces the underlying graph to be instantiated.
+    After the instantiation, you should not modify the graph topology
+    but update node parameters.
     */
     void run(cudaStream_t stream);
     

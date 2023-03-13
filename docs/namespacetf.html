@@ -98,21 +98,21 @@
             </dt>
             <dd>class to create a cudaFlow graph using stream capture</dd>
             <dt>
-              class <a href="classtf_1_1cudaLinearCapturing.html" class="m-doc">cudaLinearCapturing</a>
+              class <a href="classtf_1_1cudaFlowLinearOptimizer.html" class="m-doc">cudaFlowLinearOptimizer</a>
             </dt>
             <dd>class to capture a linear CUDA graph using a sequential stream</dd>
             <dt>
-              class <a href="classtf_1_1cudaRoundRobinCapturing.html" class="m-doc">cudaRoundRobinCapturing</a>
+              class <a href="classtf_1_1cudaFlowRoundRobinOptimizer.html" class="m-doc">cudaFlowRoundRobinOptimizer</a>
             </dt>
             <dd>class to capture a CUDA graph using a round-robin algorithm</dd>
+            <dt>
+              class <a href="classtf_1_1cudaFlowSequentialOptimizer.html" class="m-doc">cudaFlowSequentialOptimizer</a>
+            </dt>
+            <dd>class to capture a CUDA graph using a sequential stream</dd>
             <dt>
               class <a href="classtf_1_1cudaScopedDevice.html" class="m-doc">cudaScopedDevice</a>
             </dt>
             <dd>class to create an RAII-styled context switch</dd>
-            <dt>
-              class <a href="classtf_1_1cudaSequentialCapturing.html" class="m-doc">cudaSequentialCapturing</a>
-            </dt>
-            <dd>class to capture a CUDA graph using a sequential stream</dd>
             <dt>
               class <a href="classtf_1_1cudaStream.html" class="m-doc">cudaStream</a>
             </dt>
@@ -137,6 +137,15 @@
             </dt>
             <dd>class to create a data-parallel pipeline scheduling framework</dd>
             <dt>
+              class <a href="classtf_1_1DynamicPartitioner.html" class="m-doc">DynamicPartitioner</a>
+            </dt>
+            <dd>class to construct a dynamic partitioner for scheduling parallel algorithms</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename P&gt;</div>
+              struct <a href="structtf_1_1ExecutionPolicy.html" class="m-doc">ExecutionPolicy</a>
+            </dt>
+            <dd>struct to construct an execution policy for parallel algorithms</dd>
+            <dt>
               class <a href="classtf_1_1Executor.html" class="m-doc">Executor</a>
             </dt>
             <dd>class to create an executor for running a taskflow graph</dd>
@@ -154,9 +163,17 @@
             </dt>
             <dd>class to create a graph object</dd>
             <dt>
+              class <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>
+            </dt>
+            <dd>class to construct a guided partitioner for scheduling parallel algorithms</dd>
+            <dt>
               class <a href="classtf_1_1ObserverInterface.html" class="m-doc">ObserverInterface</a>
             </dt>
             <dd>class to derive an executor observer</dd>
+            <dt>
+              class <a href="classtf_1_1PartitionerBase.html" class="m-doc">PartitionerBase</a>
+            </dt>
+            <dd>class to derive a partitioner for scheduling parallel algorithms</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename C = <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function</a>&lt;void(<a href="classtf_1_1Pipeflow.html" class="m-doc">tf::<wbr />Pipeflow</a>&amp;)&gt;&gt;</div>
               class <a href="classtf_1_1Pipe.html" class="m-doc">Pipe</a>
@@ -171,6 +188,10 @@
               class <a href="classtf_1_1Pipeline.html" class="m-doc">Pipeline</a>
             </dt>
             <dd>class to create a pipeline scheduling framework</dd>
+            <dt>
+              class <a href="classtf_1_1RandomPartitioner.html" class="m-doc">RandomPartitioner</a>
+            </dt>
+            <dd>class to construct a random partitioner for scheduling parallel algorithms</dd>
             <dt>
               class <a href="classtf_1_1Runtime.html" class="m-doc">Runtime</a>
             </dt>
@@ -190,17 +211,13 @@
             </dt>
             <dd>class to define a vector optimized for small array</dd>
             <dt>
+              class <a href="classtf_1_1StaticPartitioner.html" class="m-doc">StaticPartitioner</a>
+            </dt>
+            <dd>class to construct a dynamic partitioner for scheduling parallel algorithms</dd>
+            <dt>
               class <a href="classtf_1_1Subflow.html" class="m-doc">Subflow</a>
             </dt>
             <dd>class to construct a subflow graph from the execution of a dynamic task</dd>
-            <dt>
-              class <a href="classtf_1_1syclFlow.html" class="m-doc">syclFlow</a>
-            </dt>
-            <dd>class for building a SYCL task dependency graph</dd>
-            <dt>
-              class <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a>
-            </dt>
-            <dd>handle to a node of the internal CUDA graph</dd>
             <dt>
               class <a href="classtf_1_1Task.html" class="m-doc">Task</a>
             </dt>
@@ -210,7 +227,7 @@
             </dt>
             <dd>class to create a taskflow object</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename T, unsigned MAX_PRIORITY = static_cast&lt;unsigned&gt;(<a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" class="m-doc">TaskPriority::<wbr />MAX</a>)&gt;</div>
+              <div class="m-doc-template">template&lt;typename T, unsigned TF_MAX_PRIORITY = static_cast&lt;unsigned&gt;(<a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" class="m-doc">TaskPriority::<wbr />MAX</a>)&gt;</div>
               class <a href="classtf_1_1TaskQueue.html" class="m-doc">TaskQueue</a>
             </dt>
             <dd>class to create a lock-free unbounded single-producer multiple-consumer queue</dd>
@@ -248,8 +265,6 @@
             <dd>enumeration of all task priority values</dd>
             <dt>
               <span class="m-doc-wrap-bumper">enum class <a href="#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>: int { </span><span class="m-doc-wrap"><a href="#a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" class="m-doc">PLACEHOLDER</a> = 0,
-              <a href="#a1355048578785a80414707ff308b395aa1fbe66e2b3b8907e5b1e605191a1c225" class="m-doc">CUDAFLOW</a>,
-              <a href="#a1355048578785a80414707ff308b395aaacf7c94171844e1799b1cccf0144938c" class="m-doc">SYCLFLOW</a>,
               <a href="#a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" class="m-doc">STATIC</a>,
               <a href="#a1355048578785a80414707ff308b395aa0fcc90da4811c877ba9f9c12f7d60bc9" class="m-doc">DYNAMIC</a>,
               <a href="#a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac" class="m-doc">CONDITION</a>,
@@ -290,8 +305,12 @@
               using <a href="#a8cff4bbd797dde4dfab096c3cc657833" class="m-doc-self">observer_stamp_t</a> = <a href="http://en.cppreference.com/w/cpp/chrono/time_point.html" class="m-doc-external">std::<wbr />chrono::<wbr />time_point</a>&lt;<a href="http://en.cppreference.com/w/cpp/chrono/steady_clock.html" class="m-doc-external">std::<wbr />chrono::<wbr />steady_clock</a>&gt;
             </dt>
             <dd>default time point type of observers</dd>
-            <dt id="aa18f102977c3257b75e21fde05efdb68">
-              using <a href="#aa18f102977c3257b75e21fde05efdb68" class="m-doc-self">cudaDefaultExecutionPolicy</a> = <a href="classtf_1_1cudaExecutionPolicy.html" class="m-doc">cudaExecutionPolicy</a>&lt;512, 9&gt;
+            <dt id="a04cb73dba3a2101ed735b8e7122aca60">
+              using <a href="#a04cb73dba3a2101ed735b8e7122aca60" class="m-doc-self">DefaultExecutionPolicy</a> = <a href="structtf_1_1ExecutionPolicy.html" class="m-doc">ExecutionPolicy</a>&lt;<a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&gt;
+            </dt>
+            <dd>default execution policy using <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">tf::<wbr />GuidedPartitioner</a> algorithm</dd>
+            <dt id="a0e267ab3e1baeb1962f3b3a374de9553">
+              using <a href="#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc-self">cudaDefaultExecutionPolicy</a> = <a href="classtf_1_1cudaExecutionPolicy.html" class="m-doc">cudaExecutionPolicy</a>&lt;512, 7&gt;
             </dt>
             <dd>default execution policy</dd>
           </dl>
@@ -300,6 +319,11 @@
           <h2><a href="#func-members">Functions</a></h2>
           <dl class="m-doc">
             <dt>
+              <div class="m-doc-template">template&lt;typename T, typename... ArgsT&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a6371ab1b1b0e57db6ca95cb4456ac5d3" class="m-doc">make_worker_interface</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) -&gt; <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a>&lt;T&gt;</span>
+            </dt>
+            <dd>helper function to create an instance derived from <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a></dd>
+            <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#a9ca58dc6c666698cc7373eb0262140ef" class="m-doc">to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a> type) -&gt; const char*</span>
             </dt>
             <dd>convert a task type to a human-readable string</dd>
@@ -307,7 +331,7 @@
               <span class="m-doc-wrap-bumper">auto <a href="#ad216aea4d0f648e149e47374ad015b1f" class="m-doc-self">operator&lt;&lt;</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os,
               const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; task) -&gt; <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp;</span>
             </dt>
-            <dd>overload of ostream inserter operator for <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></dd>
+            <dd>overload of ostream inserter operator for <a href="classtf_1_1Task.html" class="m-doc">Task</a></dd>
             <dt id="aa3fc0699b2c2b8f2f76bb39f91be1acb">
               <span class="m-doc-wrap-bumper">auto <a href="#aa3fc0699b2c2b8f2f76bb39f91be1acb" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#a192f7cb0fab2eb6f1c84f6046706435d" class="m-doc">ObserverType</a> type) -&gt; const char*</span>
             </dt>
@@ -501,11 +525,6 @@
             </dt>
             <dd>performs asynchronous parallel transforms over two ranges of items</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename P, typename T&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a1ca0bd68df882048e4b9b4d92efc3168" class="m-doc">cuda_reduce_buffer_size</a>(</span><span class="m-doc-wrap">unsigned count) -&gt; unsigned</span>
-            </dt>
-            <dd>queries the buffer size in bytes needed to call reduce kernels</dd>
-            <dt>
               <div class="m-doc-template">template&lt;typename P, typename I, typename T, typename O&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#a8a872d2a0ac73a676713cb5be5aa688c" class="m-doc">cuda_reduce</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
               I first,
@@ -538,7 +557,7 @@
             <dd>performs asynchronous parallel reduction over a range of transformed items without an initial value</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename P, typename I, typename T, typename O, typename U&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#a747a41c0474fd34da370839b60ddc4ca" class="m-doc">cuda_transform_uninitialized_reduce</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              <span class="m-doc-wrap-bumper">void <a href="#aa451668b7a0a3abf385cf2abebed8962" class="m-doc">cuda_uninitialized_transform_reduce</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
               I first,
               I last,
               T* res,
@@ -547,11 +566,6 @@
               void* buf)</span>
             </dt>
             <dd>performs asynchronous parallel reduction over a range of transformed items with an initial value</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename P, typename T&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#afd7e7a0886352201cced5c55205f3229" class="m-doc">cuda_scan_buffer_size</a>(</span><span class="m-doc-wrap">unsigned count) -&gt; unsigned</span>
-            </dt>
-            <dd>queries the buffer size in bytes needed to call scan kernels</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename P, typename I, typename O, typename C&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#a2e1b44c84a09e0a8495a611cb9a7ea40" class="m-doc">cuda_inclusive_scan</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
@@ -594,12 +608,6 @@
               void* buf)</span>
             </dt>
             <dd>performs asynchronous exclusive scan over a range of items</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename P&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a3db5b8f718e7f6a6fa2da3a689bd8828" class="m-doc">cuda_merge_buffer_size</a>(</span><span class="m-doc-wrap">unsigned a_count,
-              unsigned b_count) -&gt; unsigned</span>
-            </dt>
-            <dd>queries the buffer size in bytes needed to call merge kernels</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename P, typename a_keys_it, typename a_vals_it, typename b_keys_it, typename b_vals_it, typename c_keys_it, typename c_vals_it, typename C&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#aa84d4c68d2cbe9f6efc4a1eb1a115458" class="m-doc">cuda_merge_by_key</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
@@ -661,11 +669,6 @@
             </dt>
             <dd>finds the index of the first element that satisfies the given criteria</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename P, typename T&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#abe3b31aaf686b491e9000f0867934713" class="m-doc">cuda_min_element_buffer_size</a>(</span><span class="m-doc-wrap">unsigned count) -&gt; unsigned</span>
-            </dt>
-            <dd>queries the buffer size in bytes needed to call <a href="namespacetf.html#a572c13198191c46765264f8afabe2e9f" class="m-doc">tf::<wbr />cuda_min_element</a></dd>
-            <dt>
               <div class="m-doc-template">template&lt;typename P, typename I, typename O&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#a572c13198191c46765264f8afabe2e9f" class="m-doc">cuda_min_element</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
               I first,
@@ -676,11 +679,6 @@
             </dt>
             <dd>finds the index of the minimum element in a range</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename P, typename T&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a04965f210cc6447c7c38206a28c3c3d4" class="m-doc">cuda_max_element_buffer_size</a>(</span><span class="m-doc-wrap">unsigned count) -&gt; unsigned</span>
-            </dt>
-            <dd>queries the buffer size in bytes needed to call <a href="namespacetf.html#a3fc577fd0a8f127770bcf68bc56c073e" class="m-doc">tf::<wbr />cuda_max_element</a></dd>
-            <dt>
               <div class="m-doc-template">template&lt;typename P, typename I, typename O&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#a3fc577fd0a8f127770bcf68bc56c073e" class="m-doc">cuda_max_element</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
               I first,
@@ -690,11 +688,6 @@
               void* buf)</span>
             </dt>
             <dd>finds the index of the maximum element in a range</dd>
-            <dt id="a160861c1c085842ecb0c56537199deaa">
-              <span class="m-doc-wrap-bumper">auto <a href="#a160861c1c085842ecb0c56537199deaa" class="m-doc-self">operator&lt;&lt;</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os,
-              const <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a>&amp; ct) -&gt; <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp;</span>
-            </dt>
-            <dd>overload of ostream inserter operator for <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a></dd>
             <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#a30fa078dcf625e9eada5a95af1467588" class="m-doc">version</a>(</span><span class="m-doc-wrap">) -&gt; const char* <span class="m-label m-flat m-primary">constexpr</span></span>
             </dt>
@@ -704,8 +697,8 @@
         <section id="var-members">
           <h2><a href="#var-members">Variables</a></h2>
           <dl class="m-doc">
-            <dt id="adb6a1cbed8eac9ee7bb67609142cbd9c">
-              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>, 9&gt; <a href="#adb6a1cbed8eac9ee7bb67609142cbd9c" class="m-doc-self">TASK_TYPES</a> <span class="m-label m-flat m-primary">constexpr</span>
+            <dt id="a3d823d8776745f3348dc87bba2fcc91b">
+              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>, 7&gt; <a href="#a3d823d8776745f3348dc87bba2fcc91b" class="m-doc-self">TASK_TYPES</a> <span class="m-label m-flat m-primary">constexpr</span>
             </dt>
             <dd>array of all task types (used for iterating task types)</dd>
             <dt>
@@ -730,19 +723,14 @@
             <dd>determines if a callable is a multi-condition task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename C&gt;</div>
-              bool <a href="#adb8433555d8cdc0b3c5d95e8d51a90f0" class="m-doc">is_cudaflow_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
-            </dt>
-            <dd>determines if a callable is a cudaFlow task</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename C&gt;</div>
-              bool <a href="#a574038aaa99e0220eedca4e8ea9389cf" class="m-doc">is_syclflow_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
-            </dt>
-            <dd>determines if a callable is a syclFlow task</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename C&gt;</div>
               bool <a href="#af3d94f0be0f7b49e195c4e92737b1f85" class="m-doc">is_runtime_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
             </dt>
             <dd>determines if a callable is a runtime task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename C&gt;</div>
+              bool <a href="#a6720c7fd9025a4c32898264dab03b8be" class="m-doc">is_execution_policy_v</a> <span class="m-label m-flat m-primary">constexpr</span>
+            </dt>
+            <dd>determines if a type is a partitioner</dd>
           </dl>
         </section>
         <section>
@@ -795,18 +783,6 @@
                   <td><a href="#a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" class="m-doc-self" id="a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842">PLACEHOLDER</a></td>
                   <td>
                   <p>placeholder task type</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#a1355048578785a80414707ff308b395aa1fbe66e2b3b8907e5b1e605191a1c225" class="m-doc-self" id="a1355048578785a80414707ff308b395aa1fbe66e2b3b8907e5b1e605191a1c225">CUDAFLOW</a></td>
-                  <td>
-                  <p><a href="classtf_1_1cudaFlow.html" class="m-doc">cudaFlow</a> task type</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#a1355048578785a80414707ff308b395aaacf7c94171844e1799b1cccf0144938c" class="m-doc-self" id="a1355048578785a80414707ff308b395aaacf7c94171844e1799b1cccf0144938c">SYCLFLOW</a></td>
-                  <td>
-                  <p><a href="classtf_1_1syclFlow.html" class="m-doc">syclFlow</a> task type</p>
                   </td>
                 </tr>
                 <tr>
@@ -939,14 +915,45 @@
         </section>
         <section>
           <h2>Function documentation</h2>
+          <section class="m-doc-details" id="a6371ab1b1b0e57db6ca95cb4456ac5d3"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T, typename... ArgsT&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a>&lt;T&gt; tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6371ab1b1b0e57db6ca95cb4456ac5d3" class="m-doc-self">make_worker_interface</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args)</span></span>
+            </h3>
+            <p>helper function to create an instance derived from <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a></p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">T</td>
+                  <td>type derived from <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a></td>
+                </tr>
+                <tr>
+                  <td>ArgsT</td>
+                  <td>argument types to construct <code>T</code></td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>args</td>
+                  <td>arguments to forward to the constructor of <code>T</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div></section>
           <section class="m-doc-details" id="a9ca58dc6c666698cc7373eb0262140ef"><div>
             <h3>
               <span class="m-doc-wrap-bumper">const char* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a9ca58dc6c666698cc7373eb0262140ef" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a> type)</span></span>
             </h3>
             <p>convert a task type to a human-readable string</p>
 <p>The name of each task type is the litte-case string of its characters.</p><pre class="m-code"><span class="n">TaskType</span><span class="o">::</span><span class="n">PLACEHOLDER</span><span class="w">     </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;placeholder&quot;</span><span class="w"></span>
-<span class="n">TaskType</span><span class="o">::</span><span class="n">CUDAFLOW</span><span class="w">        </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;cudaflow&quot;</span><span class="w"></span>
-<span class="n">TaskType</span><span class="o">::</span><span class="n">SYCLFLOW</span><span class="w">        </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;syclflow&quot;</span><span class="w"></span>
 <span class="n">TaskType</span><span class="o">::</span><span class="n">STATIC</span><span class="w">          </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;static&quot;</span><span class="w"></span>
 <span class="n">TaskType</span><span class="o">::</span><span class="n">DYNAMIC</span><span class="w">         </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;subflow&quot;</span><span class="w"></span>
 <span class="n">TaskType</span><span class="o">::</span><span class="n">CONDITION</span><span class="w">       </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;condition&quot;</span><span class="w"></span>
@@ -1454,40 +1461,6 @@
 <span class="w">  </span><span class="o">*</span><span class="n">output</span><span class="o">++</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">first1</span><span class="o">++</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">first2</span><span class="o">++</span><span class="p">);</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre>
           </div></section>
-          <section class="m-doc-details" id="a1ca0bd68df882048e4b9b4d92efc3168"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename P, typename T&gt;
-              </div>
-              <span class="m-doc-wrap-bumper">unsigned tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1ca0bd68df882048e4b9b4d92efc3168" class="m-doc-self">cuda_reduce_buffer_size</a>(</span><span class="m-doc-wrap">unsigned count)</span></span>
-            </h3>
-            <p>queries the buffer size in bytes needed to call reduce kernels</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">P</td>
-                  <td>execution policy type</td>
-                </tr>
-                <tr>
-                  <td>T</td>
-                  <td>value type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>count</td>
-                  <td>number of elements to reduce</td>
-                </tr>
-              </tbody>
-            </table>
-<p>The function is used to allocate a buffer for calling <a href="namespacetf.html#a8a872d2a0ac73a676713cb5be5aa688c" class="m-doc">tf::<wbr />cuda_reduce</a>, <a href="namespacetf.html#a492e8410db032a0273a99dd905486161" class="m-doc">tf::<wbr />cuda_uninitialized_reduce</a>, <a href="namespacetf.html#a4463d06240d608bc31d8b3546a851e4e" class="m-doc">tf::<wbr />cuda_transform_reduce</a>, and <a href="namespacetf.html#a747a41c0474fd34da370839b60ddc4ca" class="m-doc">tf::<wbr />cuda_transform_uninitialized_reduce</a>.</p>
-          </div></section>
           <section class="m-doc-details" id="a8a872d2a0ac73a676713cb5be5aa688c"><div>
             <h3>
               <div class="m-doc-template">
@@ -1705,12 +1678,12 @@
 <span class="w">  </span><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bop</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">));</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre>
           </div></section>
-          <section class="m-doc-details" id="a747a41c0474fd34da370839b60ddc4ca"><div>
+          <section class="m-doc-details" id="aa451668b7a0a3abf385cf2abebed8962"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename P, typename I, typename T, typename O, typename U&gt;
               </div>
-              <span class="m-doc-wrap-bumper">void tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a747a41c0474fd34da370839b60ddc4ca" class="m-doc-self">cuda_transform_uninitialized_reduce</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
+              <span class="m-doc-wrap-bumper">void tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa451668b7a0a3abf385cf2abebed8962" class="m-doc-self">cuda_uninitialized_transform_reduce</a>(</span><span class="m-doc-wrap">P&amp;&amp; p,
               I first,
               I last,
               T* res,
@@ -1783,40 +1756,6 @@
 <span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bop</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">));</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre>
-          </div></section>
-          <section class="m-doc-details" id="afd7e7a0886352201cced5c55205f3229"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename P, typename T&gt;
-              </div>
-              <span class="m-doc-wrap-bumper">unsigned tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#afd7e7a0886352201cced5c55205f3229" class="m-doc-self">cuda_scan_buffer_size</a>(</span><span class="m-doc-wrap">unsigned count)</span></span>
-            </h3>
-            <p>queries the buffer size in bytes needed to call scan kernels</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">P</td>
-                  <td>execution policy type</td>
-                </tr>
-                <tr>
-                  <td>T</td>
-                  <td>value type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>count</td>
-                  <td>number of elements to scan</td>
-                </tr>
-              </tbody>
-            </table>
-<p>The function is used to allocate a buffer for calling <a href="namespacetf.html#a2e1b44c84a09e0a8495a611cb9a7ea40" class="m-doc">tf::<wbr />cuda_inclusive_scan</a>, <a href="namespacetf.html#aeb391c40120844318fd715b8c3a716bb" class="m-doc">tf::<wbr />cuda_exclusive_scan</a>, <a href="namespacetf.html#afa4aa760ddb6efbda1b9bab505ad5baf" class="m-doc">tf::<wbr />cuda_transform_inclusive_scan</a>, and <a href="namespacetf.html#a2e739895c1c73538967af060ca714366" class="m-doc">tf::<wbr />cuda_transform_exclusive_scan</a>.</p>
           </div></section>
           <section class="m-doc-details" id="a2e1b44c84a09e0a8495a611cb9a7ea40"><div>
             <h3>
@@ -2100,41 +2039,6 @@
               </tbody>
             </table>
           </div></section>
-          <section class="m-doc-details" id="a3db5b8f718e7f6a6fa2da3a689bd8828"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename P&gt;
-              </div>
-              <span class="m-doc-wrap-bumper">unsigned tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3db5b8f718e7f6a6fa2da3a689bd8828" class="m-doc-self">cuda_merge_buffer_size</a>(</span><span class="m-doc-wrap">unsigned a_count,
-              unsigned b_count)</span></span>
-            </h3>
-            <p>queries the buffer size in bytes needed to call merge kernels</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">P</td>
-                  <td>execution polity type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>a_count</td>
-                  <td>number of elements in the first input array</td>
-                </tr>
-                <tr>
-                  <td>b_count</td>
-                  <td>number of elements in the second input array</td>
-                </tr>
-              </tbody>
-            </table>
-<p>The function is used to allocate a buffer for calling <a href="namespacetf.html#a37ec481149c2f01669353033d75ed72a" class="m-doc">tf::<wbr />cuda_merge</a>.</p>
-          </div></section>
           <section class="m-doc-details" id="aa84d4c68d2cbe9f6efc4a1eb1a115458"><div>
             <h3>
               <div class="m-doc-template">
@@ -2241,7 +2145,7 @@
                 </tr>
               </tbody>
             </table>
-<p>Performs a key-value merge that copies elements from <code>[a_keys_first, a_keys_last)</code> and <code>[b_keys_first, b_keys_last)</code> into a single range, <code>[c_keys_first, c_keys_last + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</code> such that the resulting range is in ascending key order.</p><p>At the same time, the merge copies elements from the two associated ranges <code>[a_vals_first + (a_keys_last - a_keys_first))</code> and <code>[b_vals_first + (b_keys_last - b_keys_first))</code> into a single range, <code>[c_vals_first, c_vals_first + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</code> such that the resulting range is in ascending order implied by each input element&#x27;s associated key.</p><p>For example, assume:</p><ul><li><code>a_keys</code> = {8, 1};</li><li><code>a_vals</code> = {1, 2};</li><li><code>b_keys</code> = {3, 7};</li><li><code>b_vals</code> = {3, 4};</li></ul><p>After the merge, we have:</p><ul><li><code>c_keys</code> = {1, 3, 7, 8}</li><li><code>c_vals</code> = {2, 3, 4, 1}</li></ul>
+<p>Performs a key-value merge that copies elements from <code>[a_keys_first, a_keys_last)</code> and <code>[b_keys_first, b_keys_last)</code> into a single range, <code>[c_keys_first, c_keys_last + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</code> such that the resulting range is in ascending key order.</p><p>At the same time, the merge copies elements from the two associated ranges <code>[a_vals_first + (a_keys_last - a_keys_first))</code> and <code>[b_vals_first + (b_keys_last - b_keys_first))</code> into a single range, <code>[c_vals_first, c_vals_first + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</code> such that the resulting range is in ascending order implied by each input element&#x27;s associated key.</p><p>For example, assume:</p><ul><li><code>a_keys</code> = {1, 8};</li><li><code>a_vals</code> = {2, 1};</li><li><code>b_keys</code> = {3, 7};</li><li><code>b_vals</code> = {3, 4};</li></ul><p>After the merge, we have:</p><ul><li><code>c_keys</code> = {1, 3, 7, 8}</li><li><code>c_vals</code> = {2, 3, 4, 1}</li></ul>
           </div></section>
           <section class="m-doc-details" id="a37ec481149c2f01669353033d75ed72a"><div>
             <h3>
@@ -2551,40 +2455,6 @@
 <span class="p">}</span><span class="w"></span>
 <span class="k">return</span><span class="w"> </span><span class="n">idx</span><span class="p">;</span><span class="w"></span></pre>
           </div></section>
-          <section class="m-doc-details" id="abe3b31aaf686b491e9000f0867934713"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename P, typename T&gt;
-              </div>
-              <span class="m-doc-wrap-bumper">unsigned tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#abe3b31aaf686b491e9000f0867934713" class="m-doc-self">cuda_min_element_buffer_size</a>(</span><span class="m-doc-wrap">unsigned count)</span></span>
-            </h3>
-            <p>queries the buffer size in bytes needed to call <a href="namespacetf.html#a572c13198191c46765264f8afabe2e9f" class="m-doc">tf::<wbr />cuda_min_element</a></p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">P</td>
-                  <td>execution policy type</td>
-                </tr>
-                <tr>
-                  <td>T</td>
-                  <td>value type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>count</td>
-                  <td>number of elements to search</td>
-                </tr>
-              </tbody>
-            </table>
-<p>The function is used to decide the buffer size in bytes for calling <a href="namespacetf.html#a572c13198191c46765264f8afabe2e9f" class="m-doc">tf::<wbr />cuda_min_element</a>.</p>
-          </div></section>
           <section class="m-doc-details" id="a572c13198191c46765264f8afabe2e9f"><div>
             <h3>
               <div class="m-doc-template">
@@ -2646,7 +2516,7 @@
                 </tr>
               </tbody>
             </table>
-<p>The function launches kernels asynchronously to find the smallest element in the range <code>[first, last)</code> using the given comparator <code>op</code>. You need to provide a buffer that holds at least <a href="namespacetf.html#abe3b31aaf686b491e9000f0867934713" class="m-doc">tf::<wbr />cuda_min_element_buffer_size</a> bytes for internal use. The function is equivalent to a parallel execution of the following loop:</p><pre class="m-code"><span class="k">if</span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<p>The function launches kernels asynchronously to find the smallest element in the range <code>[first, last)</code> using the given comparator <code>op</code>. You need to provide a buffer that holds at least tf::cuda_min_element_bufsz bytes for internal use. The function is equivalent to a parallel execution of the following loop:</p><pre class="m-code"><span class="k">if</span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 <span class="k">auto</span><span class="w"> </span><span class="n">smallest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">first</span><span class="p">;</span><span class="w"></span>
@@ -2656,40 +2526,6 @@
 <span class="w">  </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 <span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">distance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">smallest</span><span class="p">);</span><span class="w"></span></pre>
-          </div></section>
-          <section class="m-doc-details" id="a04965f210cc6447c7c38206a28c3c3d4"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename P, typename T&gt;
-              </div>
-              <span class="m-doc-wrap-bumper">unsigned tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a04965f210cc6447c7c38206a28c3c3d4" class="m-doc-self">cuda_max_element_buffer_size</a>(</span><span class="m-doc-wrap">unsigned count)</span></span>
-            </h3>
-            <p>queries the buffer size in bytes needed to call <a href="namespacetf.html#a3fc577fd0a8f127770bcf68bc56c073e" class="m-doc">tf::<wbr />cuda_max_element</a></p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">P</td>
-                  <td>execution policy type</td>
-                </tr>
-                <tr>
-                  <td>T</td>
-                  <td>value type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>count</td>
-                  <td>number of elements to search</td>
-                </tr>
-              </tbody>
-            </table>
-<p>The function is used to decide the buffer size in bytes for calling <a href="namespacetf.html#a3fc577fd0a8f127770bcf68bc56c073e" class="m-doc">tf::<wbr />cuda_max_element</a>.</p>
           </div></section>
           <section class="m-doc-details" id="a3fc577fd0a8f127770bcf68bc56c073e"><div>
             <h3>
@@ -2752,7 +2588,7 @@
                 </tr>
               </tbody>
             </table>
-<p>The function launches kernels asynchronously to find the largest element in the range <code>[first, last)</code> using the given comparator <code>op</code>. You need to provide a buffer that holds at least <a href="namespacetf.html#a04965f210cc6447c7c38206a28c3c3d4" class="m-doc">tf::<wbr />cuda_max_element_buffer_size</a> bytes for internal use. The function is equivalent to a parallel execution of the following loop:</p><pre class="m-code"><span class="k">if</span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<p>The function launches kernels asynchronously to find the largest element in the range <code>[first, last)</code> using the given comparator <code>op</code>. You need to provide a buffer that holds at least tf::cuda_max_element_bufsz bytes for internal use. The function is equivalent to a parallel execution of the following loop:</p><pre class="m-code"><span class="k">if</span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 <span class="k">auto</span><span class="w"> </span><span class="n">largest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">first</span><span class="p">;</span><span class="w"></span>
@@ -2813,26 +2649,6 @@
             <p>determines if a callable is a multi-condition task</p>
 <p>A multi-condition task is a callable object constructible from <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function</a>&lt;tf::SmallVector&lt;int&gt;()&gt;.</p>
           </div></section>
-          <section class="m-doc-details" id="adb8433555d8cdc0b3c5d95e8d51a90f0"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename C&gt;
-              </div>
-              bool tf::<wbr /><a href="#adb8433555d8cdc0b3c5d95e8d51a90f0" class="m-doc-self">is_cudaflow_task_v</a> <span class="m-label m-primary">constexpr</span>
-            </h3>
-            <p>determines if a callable is a cudaFlow task</p>
-<p>A <a href="classtf_1_1cudaFlow.html" class="m-doc">cudaFlow</a> task is a callable object constructible from std::function&lt;void(tf::cudaFlow&amp;)&gt; or std::function&lt;void(tf::cudaFlowCapturer&amp;)&gt;.</p>
-          </div></section>
-          <section class="m-doc-details" id="a574038aaa99e0220eedca4e8ea9389cf"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename C&gt;
-              </div>
-              bool tf::<wbr /><a href="#a574038aaa99e0220eedca4e8ea9389cf" class="m-doc-self">is_syclflow_task_v</a> <span class="m-label m-primary">constexpr</span>
-            </h3>
-            <p>determines if a callable is a syclFlow task</p>
-<p>A <a href="classtf_1_1syclFlow.html" class="m-doc">syclFlow</a> task is a callable object constructible from std::function&lt;void(tf::syclFlow&amp;)&gt;.</p>
-          </div></section>
           <section class="m-doc-details" id="af3d94f0be0f7b49e195c4e92737b1f85"><div>
             <h3>
               <div class="m-doc-template">
@@ -2842,6 +2658,16 @@
             </h3>
             <p>determines if a callable is a runtime task</p>
 <p>A runtime task is a callable object constructible from std::function&lt;void(tf::Runtime&amp;)&gt;.</p>
+          </div></section>
+          <section class="m-doc-details" id="a6720c7fd9025a4c32898264dab03b8be"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename C&gt;
+              </div>
+              bool tf::<wbr /><a href="#a6720c7fd9025a4c32898264dab03b8be" class="m-doc-self">is_execution_policy_v</a> <span class="m-label m-primary">constexpr</span>
+            </h3>
+            <p>determines if a type is a partitioner</p>
+<p>A partitioner is a derived type from <a href="classtf_1_1PartitionerBase.html" class="m-doc">tf::<wbr />PartitionerBase</a>.</p>
           </div></section>
         </section>
       </div>

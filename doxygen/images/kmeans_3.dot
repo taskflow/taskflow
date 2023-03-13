@@ -1,27 +1,26 @@
 digraph Taskflow {
-rankdir="LR"
-p0x562f9807bcc0[label="allocate_px" ];
-p0x562f9807bcc0 -> p0x562f9807b550;
-p0x562f9807bbb0[label="allocate_py" ];
-p0x562f9807bbb0 -> p0x562f9807b550;
-p0x562f9807baa0[label="allocate_mx" ];
-p0x562f9807baa0 -> p0x562f9807b550;
-p0x562f9807b990[label="allocate_my" ];
-p0x562f9807b990 -> p0x562f9807b550;
-p0x562f9807b880[label="allocate_sx" ];
-p0x562f9807b880 -> p0x562f9807b440;
-p0x562f9807b770[label="allocate_sy" ];
-p0x562f9807b770 -> p0x562f9807b440;
-p0x562f9807b660[label="allocate_c" ];
-p0x562f9807b660 -> p0x562f9807b440;
-p0x562f9807b550[label="h2d" shape=folder fillcolor=cyan style=filled];
-p0x562f9807b550 -> p0x562f9807b440;
-p0x562f9807b440[label="update_means" shape=folder fillcolor=cyan style=filled];
-p0x562f9807b440 -> p0x562f9807b330;
-p0x562f9807b330[label="converged?" shape=diamond color=black fillcolor=aquamarine style=filled];
-p0x562f9807b330 -> p0x562f9807b440 [style=dashed label="0"];
-p0x562f9807b330 -> p0x562f9807b220 [style=dashed label="1"];
-p0x562f9807b220[label="d2h" shape=folder fillcolor=cyan style=filled];
-p0x562f9807b220 -> p0x562f9807b110;
-p0x562f9807b110[label="free" ];
+subgraph cluster_p0x7ffcc549dd00 {
+label="Taskflow: K-Means";
+p0x112f740[label="allocate_px" ];
+p0x112f740 -> p0x112fa10;
+p0x112f650[label="allocate_py" ];
+p0x112f650 -> p0x112fa10;
+p0x112f560[label="allocate_mx" ];
+p0x112f560 -> p0x112fa10;
+p0x112f470[label="allocate_my" ];
+p0x112f470 -> p0x112fa10;
+p0x112f380[label="allocate_sx" ];
+p0x112f380 -> p0x112fb00;
+p0x112f830[label="allocate_sy" ];
+p0x112f830 -> p0x112fb00;
+p0x112f920[label="allocate_c" ];
+p0x112f920 -> p0x112fb00;
+p0x112fa10[label="h2d" ];
+p0x112fa10 -> p0x112fb00;
+p0x112fb00[label="update_means" ];
+p0x112fb00 -> p0x112fbf0;
+p0x112fbf0[label="d2h" ];
+p0x112fbf0 -> p0x112fce0;
+p0x112fce0[label="free" ];
+}
 }

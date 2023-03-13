@@ -69,39 +69,15 @@
               <span class="m-doc-wrap-bumper"><a href="#ab29390d447e334d4945caf78b24d6ca6" class="m-doc">cudaStream</a>(</span><span class="m-doc-wrap">cudaStream_t stream) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
             <dd>constructs an RAII-styled object from the given CUDA stream</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper"><a href="#ada2ff649e58e8934ab521e5b436e7044" class="m-doc">cudaStream</a>(</span><span class="m-doc-wrap">)</span>
+            <dt id="a922ed633cf0670b22aca1430e7a810b1">
+              <span class="m-doc-wrap-bumper"><a href="#a922ed633cf0670b22aca1430e7a810b1" class="m-doc-self">cudaStream</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
-            <dd>constructs an RAII-styled object for a new CUDA stream</dd>
-            <dt id="af3dcddcb21c077f0b425aa9b699a27c9">
-              <span class="m-doc-wrap-bumper"><a href="#af3dcddcb21c077f0b425aa9b699a27c9" class="m-doc-self">cudaStream</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1cudaStream.html" class="m-doc">cudaStream</a>&amp;) <span class="m-label m-flat m-danger">deleted</span></span>
-            </dt>
-            <dd>disabled copy constructor</dd>
-            <dt id="af888fcab2b9b6e39a8270a4f6522f51c">
-              <span class="m-doc-wrap-bumper"><a href="#af888fcab2b9b6e39a8270a4f6522f51c" class="m-doc-self">cudaStream</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaStream.html" class="m-doc">cudaStream</a>&amp;&amp; rhs)</span>
-            </dt>
-            <dd>move constructor</dd>
-            <dt id="ac4b105d27894573adb41ff8b691499d9">
-              <span class="m-doc-wrap-bumper"><a href="#ac4b105d27894573adb41ff8b691499d9" class="m-doc-self">~cudaStream</a>(</span><span class="m-doc-wrap">)</span>
-            </dt>
-            <dd>destructs the CUDA stream</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper"><a href="#ae8b74e156e740ab2d1b3ba305a9eef45" class="m-doc">operator cudaStream_t</a>(</span><span class="m-doc-wrap">) const</span>
-            </dt>
-            <dd>implicit conversion to the native CUDA stream (cudaStream_t)</dd>
+            <dd>default constructor</dd>
           </dl>
         </section>
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="a0b9304ac4f5e088dfb4a77a08233c9d0">
-              <span class="m-doc-wrap-bumper">auto <a href="#a0b9304ac4f5e088dfb4a77a08233c9d0" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1cudaStream.html" class="m-doc">cudaStream</a>&amp;) -&gt; <a href="classtf_1_1cudaStream.html" class="m-doc">cudaStream</a>&amp; <span class="m-label m-flat m-danger">deleted</span></span>
-            </dt>
-            <dd>disabled copy assignment</dd>
-            <dt id="a4c3f85b9fe0e9a1504721b35a929650e">
-              <span class="m-doc-wrap-bumper">auto <a href="#a4c3f85b9fe0e9a1504721b35a929650e" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaStream.html" class="m-doc">cudaStream</a>&amp;&amp; rhs) -&gt; <a href="classtf_1_1cudaStream.html" class="m-doc">cudaStream</a>&amp;</span>
-            </dt>
-            <dd>move assignment</dd>
             <dt>
               <span class="m-doc-wrap-bumper">void <a href="#a1a81d6005e8d60ad082dba2303a8aa30" class="m-doc">synchronize</a>(</span><span class="m-doc-wrap">) const</span>
             </dt>
@@ -132,20 +108,6 @@
             </h3>
             <p>constructs an RAII-styled object from the given CUDA stream</p>
 <p>Constructs a <a href="classtf_1_1cudaStream.html" class="m-doc">cudaStream</a> object which owns <code>stream</code>.</p>
-          </div></section>
-          <section class="m-doc-details" id="ada2ff649e58e8934ab521e5b436e7044"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"> tf::<wbr />cudaStream::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ada2ff649e58e8934ab521e5b436e7044" class="m-doc-self">cudaStream</a>(</span><span class="m-doc-wrap">)</span></span>
-            </h3>
-            <p>constructs an RAII-styled object for a new CUDA stream</p>
-<p>Equivalently calling <code>cudaStreamCreate</code> to create a stream.</p>
-          </div></section>
-          <section class="m-doc-details" id="ae8b74e156e740ab2d1b3ba305a9eef45"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"> tf::<wbr />cudaStream::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ae8b74e156e740ab2d1b3ba305a9eef45" class="m-doc-self">operator cudaStream_t</a>(</span><span class="m-doc-wrap">) const</span></span>
-            </h3>
-            <p>implicit conversion to the native CUDA stream (cudaStream_t)</p>
-<p>Returns the underlying stream of type <code>cudaStream_t</code>.</p>
           </div></section>
           <section class="m-doc-details" id="a1a81d6005e8d60ad082dba2303a8aa30"><div>
             <h3>

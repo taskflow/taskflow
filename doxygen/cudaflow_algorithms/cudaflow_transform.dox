@@ -12,6 +12,10 @@ to different outputs.
 You need to include the header file, `%taskflow/cuda/algorithm/transform.hpp`, 
 for creating a parallel-transform task.
 
+@code{.cpp}
+#include <taskflow/cuda/algorithm/transform.hpp>
+@endcode
+
 @section cudaFlowTransformARangeOfItems Transform a Range of Items
 
 Iterator-based parallel-transform applies the given transform function to a range of items and store the result in another range specified 
@@ -29,12 +33,10 @@ The following example creates a transform kernel that transforms an input
 range of @c N items to an output range by multiplying each item by 10.
 
 @code{.cpp}
-taskflow.emplace([](tf::cudaFlow& cf){
-  // output[i] = input[i] * 10
-  tf::cudaTask task = cf.transform(
-    input, input + N, output, [] __device__ (int x) { return x * 10; }
-  ); 
-});
+// output[i] = input[i] * 10
+cudaflow.transform(
+  input, input + N, output, [] __device__ (int x) { return x * 10; }
+); 
 @endcode
 
 Each iteration is independent of each other and is assigned one kernel thread 
@@ -59,12 +61,10 @@ ranges of @c N items to an output range by summing each pair of items
 in the input ranges.
 
 @code{.cpp}
-taskflow.emplace([](tf::cudaFlow& cf){
-  // output[i] = input1[i] + inpu2[i]
-  tf::cudaTask task = cf.transform(
-    input1, input1+N, input2, output, []__device__(int a, int b) { return a+b; }
-  ); 
-});
+// output[i] = input1[i] + inpu2[i]
+cudaflow.transform(
+  input1, input1+N, input2, output, []__device__(int a, int b) { return a+b; }
+); 
 @endcode
 
 @section ParallelTransformCUDAMiscellaneousItems Miscellaneous Items

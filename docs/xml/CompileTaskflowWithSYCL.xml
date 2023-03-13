@@ -26,7 +26,7 @@
 </sect1>
 <sect1 id="CompileTaskflowWithSYCL_1CompileTaskflowWithSYCLDirectly">
 <title>Compile Source Code Directly</title>
-<para>Taskflow&apos;s GPU programming interface for SYCL is <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>. Consider the following <computeroutput>simple.cpp</computeroutput> program that performs the canonical saxpy (single-precision AX + Y) operation on a GPU:</para>
+<para>Taskflow&apos;s GPU programming interface for SYCL is tf::syclFlow. Consider the following <computeroutput>simple.cpp</computeroutput> program that performs the canonical saxpy (single-precision AX + Y) operation on a GPU:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>core<sp/>taskflow<sp/>routines</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;taskflow/syclflow.hpp&gt;</highlight><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>core<sp/>syclflow<sp/>routines</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -40,15 +40,15 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>X<sp/>=<sp/>sycl::malloc_shared&lt;float&gt;(N,<sp/>queue);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>Y<sp/>=<sp/>sycl::malloc_shared&lt;float&gt;(N,<sp/>queue);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([&amp;](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>sf){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>fillX<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1a628843c986d60bea61eca8c48028159e" kindref="member">fill</ref>(X,<sp/>1.0f,<sp/>N).name(</highlight><highlight class="stringliteral">&quot;fillX&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>fillY<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1a628843c986d60bea61eca8c48028159e" kindref="member">fill</ref>(Y,<sp/>2.0f,<sp/>N).name(</highlight><highlight class="stringliteral">&quot;fillY&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1syclTask" kindref="compound">tf::syclTask</ref><sp/>saxpy<sp/>=<sp/>sf.<ref refid="classtf_1_1syclFlow_1ae42b1da441d5696dc589ee9ee89b9deb" kindref="member">parallel_for</ref>(sycl::range&lt;1&gt;(N),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.emplace_on([&amp;](tf::syclFlow&amp;<sp/>sf){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tf::syclTask<sp/>fillX<sp/>=<sp/>sf.fill(X,<sp/>1.0f,<sp/>N).name(</highlight><highlight class="stringliteral">&quot;fillX&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tf::syclTask<sp/>fillY<sp/>=<sp/>sf.fill(Y,<sp/>2.0f,<sp/>N).name(</highlight><highlight class="stringliteral">&quot;fillY&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tf::syclTask<sp/>saxpy<sp/>=<sp/>sf.parallel_for(sycl::range&lt;1&gt;(N),<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>[=]<sp/>(sycl::id&lt;1&gt;<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>X[id]<sp/>=<sp/>3.0f<sp/>*<sp/>X[id]<sp/>+<sp/>Y[id];</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>).name(</highlight><highlight class="stringliteral">&quot;saxpy&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>saxpy.<ref refid="classtf_1_1syclTask_1a05f42a7fa26997193068ce6502eabe16" kindref="member">succeed</ref>(fillX,<sp/>fillY);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>saxpy.succeed(fillX,<sp/>fillY);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},<sp/>queue).name(</highlight><highlight class="stringliteral">&quot;syclFlow&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
@@ -68,7 +68,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-I<sp/>path/to/taskflow<sp/>-pthread<sp/>-std=c++17<sp/>simple.cpp<sp/>-o<sp/>simple</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./simple</highlight></codeline>
 </programlisting></para>
-<para><simplesect kind="attention"><para>You need to include <computeroutput>taskflow/syclflow.hpp</computeroutput> in order to use <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>.</para>
+<para><simplesect kind="attention"><para>You need to include <computeroutput>taskflow/syclflow.hpp</computeroutput> in order to use tf::syclFlow.</para>
 </simplesect>
 </para>
 </sect1>
@@ -103,9 +103,9 @@
 <codeline><highlight class="normal"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>sycl::queue<sp/>queue;<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>global<sp/>sycl<sp/>queue</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>make_syclflow(<ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref>&amp;<sp/>taskflow)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1afdf47fd1a358fb64f8c1b89e2a393169" kindref="member">emplace_on</ref>([](<ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref>&amp;<sp/>cf){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>taskflow.emplace_on([](tf::syclFlow&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;syclflow.cpp!\n&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" kindref="member">single_task</ref>([](){}).name(</highlight><highlight class="stringliteral">&quot;kernel&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.single_task([](){}).name(</highlight><highlight class="stringliteral">&quot;kernel&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},<sp/>queue).name(</highlight><highlight class="stringliteral">&quot;gpu<sp/>task&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>

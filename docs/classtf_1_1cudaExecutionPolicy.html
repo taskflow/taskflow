@@ -72,6 +72,7 @@
               Reference
               <ul>
                 <li><a href="#pub-static-attribs">Public static variables</a></li>
+                <li><a href="#pub-static-methods">Public static functions</a></li>
                 <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
                 <li><a href="#pub-methods">Public functions</a></li>
               </ul>
@@ -94,6 +95,40 @@
               static const unsigned <a href="#a92ac5a32147584738f32a720ea08e3f4" class="m-doc-self">nv</a>
             </dt>
             <dd>static constant for getting the number of elements to process per block</dd>
+          </dl>
+        </section>
+        <section id="pub-static-methods">
+          <h2><a href="#pub-static-methods">Public static functions</a></h2>
+          <dl class="m-doc">
+            <dt id="ab96c478964fcba935aa99efe91a64e5c">
+              <span class="m-doc-wrap-bumper">static auto <a href="#ab96c478964fcba935aa99efe91a64e5c" class="m-doc-self">num_blocks</a>(</span><span class="m-doc-wrap">unsigned N) -&gt; unsigned</span>
+            </dt>
+            <dd>queries the number of blocks to accommodate N elements</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">static auto <a href="#a446cee95bb839ee180052059e2ad7fd6" class="m-doc">reduce_bufsz</a>(</span><span class="m-doc-wrap">unsigned count) -&gt; unsigned</span>
+            </dt>
+            <dd>queries the buffer size in bytes needed for <a href="namespacetf.html#a8a872d2a0ac73a676713cb5be5aa688c" class="m-doc">tf::<wbr />cuda_reduce</a></dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">static auto <a href="#abcafb001cd68c1135392f4bcda5a2a05" class="m-doc">min_element_bufsz</a>(</span><span class="m-doc-wrap">unsigned count) -&gt; unsigned</span>
+            </dt>
+            <dd>queries the buffer size in bytes needed for <a href="namespacetf.html#a572c13198191c46765264f8afabe2e9f" class="m-doc">tf::<wbr />cuda_min_element</a></dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">static auto <a href="#a31fe75c4b0765df3035e12be49af88aa" class="m-doc">max_element_bufsz</a>(</span><span class="m-doc-wrap">unsigned count) -&gt; unsigned</span>
+            </dt>
+            <dd>queries the buffer size in bytes needed for <a href="namespacetf.html#a3fc577fd0a8f127770bcf68bc56c073e" class="m-doc">tf::<wbr />cuda_max_element</a></dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">static auto <a href="#af25648b3269902b333cfcd58665005e8" class="m-doc">scan_bufsz</a>(</span><span class="m-doc-wrap">unsigned count) -&gt; unsigned</span>
+            </dt>
+            <dd>queries the buffer size in bytes needed for CUDA scan algorithms</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">static auto <a href="#a1febbe549d9cbe4502a5b66167ab9553" class="m-doc">merge_bufsz</a>(</span><span class="m-doc-wrap">unsigned a_count,
+              unsigned b_count) -&gt; unsigned</span>
+            </dt>
+            <dd>queries the buffer size in bytes needed for CUDA merge algorithms</dd>
           </dl>
         </section>
         <section id="typeless-methods">
@@ -121,6 +156,159 @@
             </dt>
             <dd>assigns a stream</dd>
           </dl>
+        </section>
+        <section>
+          <h2>Function documentation</h2>
+          <section class="m-doc-details" id="a446cee95bb839ee180052059e2ad7fd6"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;unsigned NT, unsigned VT&gt;
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">static unsigned tf::<wbr />cudaExecutionPolicy&lt;NT, VT&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a446cee95bb839ee180052059e2ad7fd6" class="m-doc-self">reduce_bufsz</a>(</span><span class="m-doc-wrap">unsigned count)</span></span>
+            </h3>
+            <p>queries the buffer size in bytes needed for <a href="namespacetf.html#a8a872d2a0ac73a676713cb5be5aa688c" class="m-doc">tf::<wbr />cuda_reduce</a></p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">T</td>
+                  <td>value type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>count</td>
+                  <td>number of elements to reduce</td>
+                </tr>
+              </tbody>
+            </table>
+<p>queries the buffer size in bytes needed to call reduce kernels</p><p>The function is used to allocate a buffer for calling <a href="namespacetf.html#a8a872d2a0ac73a676713cb5be5aa688c" class="m-doc">tf::<wbr />cuda_reduce</a>, <a href="namespacetf.html#a492e8410db032a0273a99dd905486161" class="m-doc">tf::<wbr />cuda_uninitialized_reduce</a>, <a href="namespacetf.html#a4463d06240d608bc31d8b3546a851e4e" class="m-doc">tf::<wbr />cuda_transform_reduce</a>, and <a href="namespacetf.html#aa451668b7a0a3abf385cf2abebed8962" class="m-doc">tf::<wbr />cuda_uninitialized_transform_reduce</a>.</p>
+          </div></section>
+          <section class="m-doc-details" id="abcafb001cd68c1135392f4bcda5a2a05"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;unsigned NT, unsigned VT&gt;
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">static unsigned tf::<wbr />cudaExecutionPolicy&lt;NT, VT&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#abcafb001cd68c1135392f4bcda5a2a05" class="m-doc-self">min_element_bufsz</a>(</span><span class="m-doc-wrap">unsigned count)</span></span>
+            </h3>
+            <p>queries the buffer size in bytes needed for <a href="namespacetf.html#a572c13198191c46765264f8afabe2e9f" class="m-doc">tf::<wbr />cuda_min_element</a></p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">T</td>
+                  <td>value type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>count</td>
+                  <td>number of elements to search</td>
+                </tr>
+              </tbody>
+            </table>
+<p>queries the buffer size in bytes needed to call <a href="namespacetf.html#a572c13198191c46765264f8afabe2e9f" class="m-doc">tf::<wbr />cuda_min_element</a></p><p>The function is used to decide the buffer size in bytes for calling <a href="namespacetf.html#a572c13198191c46765264f8afabe2e9f" class="m-doc">tf::<wbr />cuda_min_element</a>.</p>
+          </div></section>
+          <section class="m-doc-details" id="a31fe75c4b0765df3035e12be49af88aa"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;unsigned NT, unsigned VT&gt;
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">static unsigned tf::<wbr />cudaExecutionPolicy&lt;NT, VT&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a31fe75c4b0765df3035e12be49af88aa" class="m-doc-self">max_element_bufsz</a>(</span><span class="m-doc-wrap">unsigned count)</span></span>
+            </h3>
+            <p>queries the buffer size in bytes needed for <a href="namespacetf.html#a3fc577fd0a8f127770bcf68bc56c073e" class="m-doc">tf::<wbr />cuda_max_element</a></p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">T</td>
+                  <td>value type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>count</td>
+                  <td>number of elements to search</td>
+                </tr>
+              </tbody>
+            </table>
+<p>queries the buffer size in bytes needed to call <a href="namespacetf.html#a3fc577fd0a8f127770bcf68bc56c073e" class="m-doc">tf::<wbr />cuda_max_element</a></p><p>The function is used to decide the buffer size in bytes for calling <a href="namespacetf.html#a3fc577fd0a8f127770bcf68bc56c073e" class="m-doc">tf::<wbr />cuda_max_element</a>.</p>
+          </div></section>
+          <section class="m-doc-details" id="af25648b3269902b333cfcd58665005e8"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;unsigned NT, unsigned VT&gt;
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">static unsigned tf::<wbr />cudaExecutionPolicy&lt;NT, VT&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af25648b3269902b333cfcd58665005e8" class="m-doc-self">scan_bufsz</a>(</span><span class="m-doc-wrap">unsigned count)</span></span>
+            </h3>
+            <p>queries the buffer size in bytes needed for CUDA scan algorithms</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">T</td>
+                  <td>value type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>count</td>
+                  <td>number of elements to scan</td>
+                </tr>
+              </tbody>
+            </table>
+<p>queries the buffer size in bytes needed to call scan kernels</p><p>The function is used to allocate a buffer for calling <a href="namespacetf.html#a2e1b44c84a09e0a8495a611cb9a7ea40" class="m-doc">tf::<wbr />cuda_inclusive_scan</a>, <a href="namespacetf.html#aeb391c40120844318fd715b8c3a716bb" class="m-doc">tf::<wbr />cuda_exclusive_scan</a>, <a href="namespacetf.html#afa4aa760ddb6efbda1b9bab505ad5baf" class="m-doc">tf::<wbr />cuda_transform_inclusive_scan</a>, and <a href="namespacetf.html#a2e739895c1c73538967af060ca714366" class="m-doc">tf::<wbr />cuda_transform_exclusive_scan</a>.</p>
+          </div></section>
+          <section class="m-doc-details" id="a1febbe549d9cbe4502a5b66167ab9553"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;unsigned NT, unsigned VT&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">static unsigned tf::<wbr />cudaExecutionPolicy&lt;NT, VT&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1febbe549d9cbe4502a5b66167ab9553" class="m-doc-self">merge_bufsz</a>(</span><span class="m-doc-wrap">unsigned a_count,
+              unsigned b_count)</span></span>
+            </h3>
+            <p>queries the buffer size in bytes needed for CUDA merge algorithms</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">a_count</td>
+                  <td>number of elements in the first input array</td>
+                </tr>
+                <tr>
+                  <td>b_count</td>
+                  <td>number of elements in the second input array</td>
+                </tr>
+              </tbody>
+            </table>
+<p>queries the buffer size in bytes needed to call merge kernels</p><p>The function is used to allocate a buffer for calling <a href="namespacetf.html#a37ec481149c2f01669353033d75ed72a" class="m-doc">tf::<wbr />cuda_merge</a>.</p>
+          </div></section>
         </section>
       </div>
     </div>

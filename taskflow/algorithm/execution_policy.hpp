@@ -48,7 +48,10 @@ class PartitionerBase {
   void chunk_size(size_t cz) { _chunk_size = cz; }
 
   protected:
-
+  
+  /**
+  @brief chunk size 
+  */
   size_t _chunk_size{0};
 };
 
@@ -280,12 +283,12 @@ class RandomPartitioner : public PartitionerBase {
   RandomPartitioner(float alpha, float beta) : _alpha {alpha}, _beta {beta} {}
 
   /**
-  @brief queries the @alpha value
+  @brief queries the @c alpha value
   */
   float alpha() const { return _alpha; }
   
   /**
-  @brief queries the @beta value
+  @brief queries the @c beta value
   */
   float beta() const { return _beta; }
   
@@ -336,14 +339,72 @@ class RandomPartitioner : public PartitionerBase {
 // ExecutionPolicy
 // ----------------------------------------------------------------------------
 
+/**
+@struct ExecutionPolicy
+
+@brief struct to construct an execution policy for parallel algorithms
+
+@tparam P partitioner type 
+
+An execution policy defines the scheduling method for running parallel algorithms,
+such tf::Taskflow::for_each, tf::Taskflow::reduce, and so on.
+The template type, @c P, specifies the partitioning algorithm that will be
+used by the scheduling method:
+
++ tf::GuidedPartitioner
++ tf::DynamicPartitioner
++ tf::StaticPartitioner
++ tf::RandomPartitioner
+
+Depending on applications, partitioning algorithms can impact the performance
+a lot. 
+For example, if a parallel-iteration workload contains a regular work unit per
+iteration, tf::StaticPartitioner can deliver the best performance.
+On the other hand, if the work unit per iteration is irregular and unbalanced,
+tf::GuidedPartitioner or tf::DynamicPartitioner can outperform tf::StaticPartitioner.
+
+The following example constructs a parallel-for task using 
+an execution policy with guided partitioning algorithm:
+
+@code{.cpp}
+std::vector<int> data = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+tf::ExecutionPolicy<tf::GuidedPartitioner> policy;
+taskflow.for_each(policy, data.begin(), data.end(), [](int i){});
+executor.run(taskflow).run();
+@endcode
+
+In most applications, tf::GuidedPartitioner can deliver decent performance
+and therefore is used as the default execution policy, tf::DefaultExecutionPolicy.
+
+@code{.cpp}
+std::vector<int> data = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+taskflow.for_each(tf::DefaultExecutionPolicy{}, data.begin(), data.end(), [](int i){});
+
+// the following for_each task is the same as above (with default execution policy)
+// taskflow.for_each(data.begin(), data.end(), [](int item){});
+
+executor.run(taskflow).run();
+@endcode
+
+*/
 template <typename P>
 struct ExecutionPolicy : public P {
   
+  /**
+  @brief constructs an execution policy 
+
+  @tparam ArgsT argument types to construct the underlying partitioner
+  @param args arguments to forward to construct the underlying partitioner
+
+  */
   template <typename... ArgsT>
   ExecutionPolicy(ArgsT&&... args) : P{std::forward<ArgsT>(args) ...} {
   }
 };
 
+/**
+@brief default execution policy using tf::GuidedPartitioner algorithm 
+*/
 using DefaultExecutionPolicy = ExecutionPolicy<GuidedPartitioner>;
 
 /**

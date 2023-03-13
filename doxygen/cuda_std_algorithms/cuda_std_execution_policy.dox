@@ -14,6 +14,10 @@ execution parameters.
 You need to include the header file, `%taskflow/cuda/cudaflow.hpp`, 
 for creating a CUDA execution policy object.
 
+@code{.cpp}
+#include <taskflow/cuda/cudaflow.hpp>
+@endcode
+
 @section CUDASTDParameterizePerformance Parameterize Performance
 
 %Taskflow parameterizes most CUDA algorithms in terms of <i>the number of threads per block</i>
@@ -41,14 +45,14 @@ Default stream can incur significant overhead due to the global synchronization.
 You can associate an execution policy with another stream as shown below:
 
 @code{.cpp}
-cudaStream_t my_stream;
-cudaStreamCreate(&my_stream);
+// create a RAII-styled stream object
+tf::cudaStream stream1, stream2;
 
 // assign a stream to a policy at construction time
-tf::cudaExecutionPolicy<512, 11> policy(my_stream);
+tf::cudaExecutionPolicy<512, 11> policy(stream1);
 
 // assign another stream to the policy
-policy.stream(another_stream);
+policy.stream(stream2);
 @endcode
 
 All the CUDA standard algorithms in %Taskflow are asynchronous

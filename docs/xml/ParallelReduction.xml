@@ -16,6 +16,10 @@
         <name>Create a Parallel-Transform-Reduction Task</name>
         <reference>ParallelReduction_1A2ParallelTransformationReduction</reference>
     </tocsect>
+      <tocsect>
+        <name>Configure an Execution Policy</name>
+        <reference>ParallelReduction_1ParallelReductionCfigureAnExecutionPolicy</reference>
+    </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
@@ -38,7 +42,7 @@
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>sum<sp/>=<sp/>100;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>vec<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5,<sp/>6,<sp/>7,<sp/>8,<sp/>9,<sp/>10};</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1aa9494fe7b862fc832884ce318e8a37f5" kindref="member">reduce</ref>(vec.begin(),<sp/>vec.end(),<sp/>sum,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1afc7bd7a737febf30d5d1d706c4b65f84" kindref="member">reduce</ref>(vec.begin(),<sp/>vec.end(),<sp/>sum,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>l,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>r)<sp/>{<sp/>return<sp/>l<sp/>+<sp/>r;<sp/>}<sp/><sp/></highlight><highlight class="comment">//<sp/>binary<sp/>reducer<sp/>operator</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
@@ -57,7 +61,7 @@
 <codeline><highlight class="normal"><sp/><sp/>last<sp/><sp/>=<sp/>vec.end();</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1aa9494fe7b862fc832884ce318e8a37f5" kindref="member">reduce</ref>(std::ref(first),<sp/>std::ref(last),<sp/>sum,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1afc7bd7a737febf30d5d1d706c4b65f84" kindref="member">reduce</ref>(std::ref(first),<sp/>std::ref(last),<sp/>sum,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>l,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>r)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>l<sp/>+<sp/>r;<sp/>}<sp/><sp/></highlight><highlight class="comment">//<sp/>binary<sp/>reducer<sp/>operator</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -84,7 +88,7 @@
 <para>The example below transforms each digit in a string to an integer number and then sums up all integers in parallel.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref><sp/>str<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;12345678&quot;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>sum<sp/>{0};</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a024a1e5b4f138b6caebb427411fb0a2d" kindref="member">transform_reduce</ref>(str.begin(),<sp/>str.end(),<sp/>sum,</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a4dc484abecf338574f46b38635d08e36" kindref="member">transform_reduce</ref>(str.begin(),<sp/>str.end(),<sp/>sum,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>binary<sp/>reduction<sp/>operator</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>return<sp/>a<sp/>+<sp/>b;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},<sp/><sp/></highlight></codeline>
@@ -95,7 +99,36 @@
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();<sp/></highlight></codeline>
 <codeline><highlight class="normal">assert(sum<sp/>==<sp/>1<sp/>+<sp/>2<sp/>+<sp/>3<sp/>+<sp/>4<sp/>+<sp/>5<sp/>+<sp/>6<sp/>+<sp/>7<sp/>+<sp/>8);<sp/><sp/></highlight><highlight class="comment">//<sp/>sum<sp/>will<sp/>be<sp/>36<sp/></highlight></codeline>
 </programlisting></para>
-<para>The order in which we apply the binary operator on the transformed elements is <emphasis>unspecified</emphasis>. It is possible that the binary operator will take <emphasis>r-value</emphasis> in both arguments, for example, <computeroutput>bop(uop(*itr1), uop(*itr2))</computeroutput>, due to the transformed temporaries. When data passing is expensive, you may define the result type <computeroutput>T</computeroutput> to be move-constructible. </para>
+<para>The order in which we apply the binary operator on the transformed elements is <emphasis>unspecified</emphasis>. It is possible that the binary operator will take <emphasis>r-value</emphasis> in both arguments, for example, <computeroutput>bop(uop(*itr1), uop(*itr2))</computeroutput>, due to the transformed temporaries. When data passing is expensive, you may define the result type <computeroutput>T</computeroutput> to be move-constructible.</para>
+</sect1>
+<sect1 id="ParallelReduction_1ParallelReductionCfigureAnExecutionPolicy">
+<title>Configure an Execution Policy</title>
+<para>You can configure an execution policy for parallel-reduction tasks to run with different scheduling methods, such as guided partitioning, dynamic partitioning, and static partitioning. Each parallel-reduction task has an overload that takes an execution policy in the first argument:</para>
+<para><itemizedlist>
+<listitem><para><ref refid="classtf_1_1FlowBuilder_1afc7bd7a737febf30d5d1d706c4b65f84" kindref="member">tf::Taskflow::reduce(P&amp;&amp; policy, B first, E last, T&amp; result, O bop)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a4dc484abecf338574f46b38635d08e36" kindref="member">tf::Taskflow::transform_reduce(P&amp;&amp; policy, B first, E last, T&amp; result, BOP bop, UOP uop)</ref></para>
+</listitem></itemizedlist>
+</para>
+<para>The following example create two parallel-reduction tasks using tow different execution policies, one with the static partitioning algorithm and another one with the guided partitioning algorithm:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="structtf_1_1ExecutionPolicy" kindref="compound">tf::ExecutionPolicy&lt;tf::StaticPartitioner&gt;</ref><sp/>static_policy;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="structtf_1_1ExecutionPolicy" kindref="compound">tf::ExecutionPolicy&lt;tf::GuidedPartitioner&gt;</ref><sp/>guided_policy;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>sum1<sp/>=<sp/>100,<sp/>sum2<sp/>=<sp/>100;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>vec<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5,<sp/>6,<sp/>7,<sp/>8,<sp/>9,<sp/>10};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>parallel-reduction<sp/>task<sp/>with<sp/>static<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1afc7bd7a737febf30d5d1d706c4b65f84" kindref="member">reduce</ref>(static_policy,<sp/>vec.begin(),<sp/>vec.end(),<sp/>sum1,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>l,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>r)<sp/>{<sp/>return<sp/>l<sp/>+<sp/>r;<sp/>}<sp/></highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>parallel-reduction<sp/>task<sp/>with<sp/>guided<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1afc7bd7a737febf30d5d1d706c4b65f84" kindref="member">reduce</ref>(guided_policy,<sp/>vec.begin(),<sp/>vec.end(),<sp/>sum2,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>l,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>r)<sp/>{<sp/>return<sp/>l<sp/>+<sp/>r;<sp/>}<sp/></highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+</programlisting></para>
+<para><simplesect kind="note"><para>By default, parallel-reduction tasks use <ref refid="namespacetf_1a04cb73dba3a2101ed735b8e7122aca60" kindref="member">tf::DefaultExecutionPolicy</ref> if no execution policy is specified. The default execution policy is based on the guided scheduling algorithm. </para>
+</simplesect>
+</para>
 </sect1>
     </detaileddescription>
   </compounddef>

@@ -95,7 +95,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <para><itemizedlist>
 <listitem><para>optimized task node storage by using <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> for semaphores </para>
 </listitem>
-<listitem><para>introduced <ref refid="classtf_1_1syclFlow" kindref="compound">tf::syclFlow</ref> based on Intel DPC++ and SYCL 2020 spec </para>
+<listitem><para>introduced tf::syclFlow based on Intel DPC++ and SYCL 2020 spec </para>
 </listitem>
 <listitem><para>merged the execution flow of cudaFlow and cudaFlow capturer</para>
 </listitem>
@@ -105,7 +105,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <sect2 id="release-3-1-0_1release-3-1-0_cudaflow">
 <title>cudaFlow</title>
 <para><itemizedlist>
-<listitem><para>optimized <ref refid="classtf_1_1cudaRoundRobinCapturing" kindref="compound">tf::cudaRoundRobinCapturing</ref> through an event-pruning heuristic </para>
+<listitem><para>optimized tf::cudaRoundRobinCapturing through an event-pruning heuristic </para>
 </listitem>
 <listitem><para>optimized the default block size used in cudaFlow algorithms </para>
 </listitem>
@@ -167,11 +167,11 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </listitem>
 <listitem><para>added syclFlow algorithms<itemizedlist>
-<listitem><para><ref refid="classtf_1_1syclFlow_1a05ff6f331b6cf48e21ae7f0d6aea9094" kindref="member">tf::syclFlow::single_task</ref> for single-threaded kernel</para>
-</listitem><listitem><para><ref refid="classtf_1_1syclFlow_1a30c3f7a279d1f88b6052f7ded1ee381a" kindref="member">tf::syclFlow::for_each</ref> for parallel iterations</para>
-</listitem><listitem><para><ref refid="classtf_1_1syclFlow_1a25e8aa7d7efbd05ef11353317174574a" kindref="member">tf::syclFlow::for_each_index</ref> for index-based parallel iterations</para>
-</listitem><listitem><para><ref refid="classtf_1_1syclFlow_1acddd05832e53597ae9d30dc913d422ca" kindref="member">tf::syclFlow::reduce</ref> for parallel reduction</para>
-</listitem><listitem><para><ref refid="classtf_1_1syclFlow_1a7a3af92f105114b1095a2cec2ccdffbf" kindref="member">tf::syclFlow::uninitialized_reduce</ref> for uninitialized parallel reduction</para>
+<listitem><para>tf::syclFlow::single_task for single-threaded kernel</para>
+</listitem><listitem><para>tf::syclFlow::for_each for parallel iterations</para>
+</listitem><listitem><para>tf::syclFlow::for_each_index for index-based parallel iterations</para>
+</listitem><listitem><para>tf::syclFlow::reduce for parallel reduction</para>
+</listitem><listitem><para>tf::syclFlow::uninitialized_reduce for uninitialized parallel reduction</para>
 </listitem></itemizedlist>
 </para>
 </listitem>

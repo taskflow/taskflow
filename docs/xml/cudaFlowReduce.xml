@@ -57,21 +57,21 @@
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>d2h<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(&amp;sol,<sp/>res,<sp/>1);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>h2d<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(gpu,<sp/>cpu.data(),<sp/>N);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>set<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" kindref="member">single_task</ref>([res]<sp/>__device__<sp/>()<sp/></highlight><highlight class="keyword">mutable</highlight><highlight class="normal"><sp/>{<sp/>*res<sp/>=<sp/>1000;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>kernel<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a931a0f99034bccf377aea35e221f50bc" kindref="member">reduce</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>kernel<sp/>=<sp/>cf.reduce(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>gpu,<sp/>gpu+N,<sp/>res,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>+<sp/>b;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">kernel.<ref refid="classtf_1_1cudaTask_1a4a9ca1a34bac47e4c9b04eb4fb2f7775" kindref="member">succeed</ref>(h2d,<sp/>set)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(d2h);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">offload</ref>();</highlight></codeline>
+<codeline><highlight class="normal">cf.offload();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(sol<sp/>==<sp/>N<sp/>+<sp/>1000);</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="cudaFlowReduce_1CUDAReduceItemsWithoutAnInitialValue">
 <title>Reduce Items without an Initial Value</title>
-<para>You can use <ref refid="classtf_1_1cudaFlow_1a3a5189b9c9494d2a63a983c32cf234f6" kindref="member">tf::cudaFlow::uninitialized_reduce</ref> to perform parallel reduction without an initial value. This method represents a parallel execution of the following reduction loop on a GPU, thus in no need of <ref refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" kindref="member">tf::cudaFlow::single_task</ref> to initialize the variable:</para>
+<para>You can use tf::cudaFlow::uninitialized_reduce to perform parallel reduction without an initial value. This method represents a parallel execution of the following reduction loop on a GPU, thus in no need of <ref refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" kindref="member">tf::cudaFlow::single_task</ref> to initialize the variable:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">*result<sp/>=<sp/>*first++;<sp/><sp/></highlight><highlight class="comment">//<sp/>no<sp/>initial<sp/>values<sp/>to<sp/>participate<sp/>in<sp/>the<sp/>reduction<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>bop(*result,<sp/>*first++);</highlight></codeline>
@@ -89,20 +89,20 @@
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>d2h<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(&amp;sol,<sp/>res,<sp/>1);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>h2d<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(gpu,<sp/>cpu.data(),<sp/>N);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>kernel<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a3a5189b9c9494d2a63a983c32cf234f6" kindref="member">uninitialized_reduce</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>kernel<sp/>=<sp/>cf.uninitialized_reduce(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>gpu,<sp/>gpu+N,<sp/>res,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>+<sp/>b;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">kernel.<ref refid="classtf_1_1cudaTask_1a4a9ca1a34bac47e4c9b04eb4fb2f7775" kindref="member">succeed</ref>(h2d)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(d2h);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">offload</ref>();</highlight></codeline>
+<codeline><highlight class="normal">cf.offload();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(sol<sp/>==<sp/>N);</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="cudaFlowReduce_1cudaFlowReduceTransformedItemsWithAnInitialValue">
 <title>Reduce a Range of Transformed Items with an Initial Value</title>
-<para><ref refid="classtf_1_1cudaFlow_1a1af5d4e8a3820f9b9d8abbe4f4f6c4a4" kindref="member">tf::cudaFlow::transform_reduce</ref> performs a parallel reduction over a range of <emphasis>transformed</emphasis> elements specified by <computeroutput>[first, last)</computeroutput> using a binary reduce operator <computeroutput>bop</computeroutput> and a unary transform operator <computeroutput>uop</computeroutput>. It represents the parallel execution of the following reduction loop on a GPU:</para>
+<para>tf::cudaFlow::transform_reduce performs a parallel reduction over a range of <emphasis>transformed</emphasis> elements specified by <computeroutput>[first, last)</computeroutput> using a binary reduce operator <computeroutput>bop</computeroutput> and a unary transform operator <computeroutput>uop</computeroutput>. It represents the parallel execution of the following reduction loop on a GPU:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>bop(*result,<sp/>uop(*first++));</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -117,18 +117,18 @@
 <codeline><highlight class="normal"><ref refid="cpp/algorithm/iota" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::iota</ref>(vec,<sp/>vec<sp/>+<sp/>N,<sp/>0);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
-<codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlow_1a1af5d4e8a3820f9b9d8abbe4f4f6c4a4" kindref="member">transform_reduce</ref>(</highlight></codeline>
+<codeline><highlight class="normal">cf.transform_reduce(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>vec,<sp/>vec<sp/>+<sp/>N,<sp/>res,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>+<sp/>b;<sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a*10;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">offload</ref>();</highlight></codeline>
+<codeline><highlight class="normal">cf.offload();</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>*res<sp/>=<sp/>1000<sp/>+<sp/>(0*10<sp/>+<sp/>1*10<sp/>+<sp/>2*10<sp/>+<sp/>3*10<sp/>+<sp/>4*10<sp/>+<sp/>...<sp/>+<sp/>(N-1)*10)</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="cudaFlowReduce_1cudaFlowReduceTransformedItemsWithoutAnInitialValue">
 <title>Reduce a Range of Transformed Items without an Initial Value</title>
-<para><ref refid="namespacetf_1a747a41c0474fd34da370839b60ddc4ca" kindref="member">tf::cuda_transform_uninitialized_reduce</ref> performs a parallel reduction over a range of transformed items without an initial value. This method represents a parallel execution of the following reduction loop on a GPU:</para>
+<para>tf::cuda_transform_uninitialized_reduce performs a parallel reduction over a range of transformed items without an initial value. This method represents a parallel execution of the following reduction loop on a GPU:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">*result<sp/>=<sp/>*first++;<sp/><sp/></highlight><highlight class="comment">//<sp/>no<sp/>initial<sp/>values<sp/>to<sp/>participate<sp/>in<sp/>the<sp/>reduction<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>bop(*result,<sp/>uop(*first++));</highlight></codeline>
@@ -144,12 +144,12 @@
 <codeline><highlight class="normal"><ref refid="cpp/algorithm/iota" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::iota</ref>(vec,<sp/>vec<sp/>+<sp/>N,<sp/>0);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
-<codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlow_1a1af5d4e8a3820f9b9d8abbe4f4f6c4a4" kindref="member">transform_reduce</ref>(</highlight></codeline>
+<codeline><highlight class="normal">cf.transform_reduce(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>vec,<sp/>vec<sp/>+<sp/>N,<sp/>res,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>+<sp/>b;<sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a*10;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">offload</ref>();</highlight></codeline>
+<codeline><highlight class="normal">cf.offload();</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>*res<sp/>=<sp/>0*10<sp/>+<sp/>1*10<sp/>+<sp/>2*10<sp/>+<sp/>3*10<sp/>+<sp/>4*10<sp/>+<sp/>...<sp/>+<sp/>(N-1)*10</highlight></codeline>
 </programlisting></para>
 </sect1>

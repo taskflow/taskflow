@@ -52,7 +52,6 @@
             <ul class="m-doc">
               <li>class <a href="classtf_1_1ChromeObserver.html" class="m-doc">ChromeObserver</a> <span class="m-doc">class to create an observer based on Chrome tracing format</span></li>
               <li>class <a href="classtf_1_1CriticalSection.html" class="m-doc">CriticalSection</a> <span class="m-doc">class to create a critical region of limited workers to run tasks</span></li>
-              <li>class <a href="classtf_1_1cudaCapturingBase.html" class="m-doc">cudaCapturingBase</a> <span class="m-doc">class to provide helper common methods for optimization algorithms</span></li>
               <li class="m-doc-collapsible collapsed">
                 <a href="#" onclick="return toggle(this)">class</a> <a href="classtf_1_1cudaDeviceAllocator.html" class="m-doc">cudaDeviceAllocator</a> <span class="m-doc">class to create a CUDA device allocator</span>
                 <ul class="m-doc">
@@ -63,10 +62,11 @@
               <li>class <a href="classtf_1_1cudaExecutionPolicy.html" class="m-doc">cudaExecutionPolicy</a> <span class="m-doc">class to define execution policy for CUDA standard algorithms</span></li>
               <li>class <a href="classtf_1_1cudaFlow.html" class="m-doc">cudaFlow</a> <span class="m-doc">class to create a cudaFlow task dependency graph</span></li>
               <li>class <a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">cudaFlowCapturer</a> <span class="m-doc">class to create a cudaFlow graph using stream capture</span></li>
-              <li>class <a href="classtf_1_1cudaLinearCapturing.html" class="m-doc">cudaLinearCapturing</a> <span class="m-doc">class to capture a linear CUDA graph using a sequential stream</span></li>
-              <li>class <a href="classtf_1_1cudaRoundRobinCapturing.html" class="m-doc">cudaRoundRobinCapturing</a> <span class="m-doc">class to capture a CUDA graph using a round-robin algorithm</span></li>
+              <li>class <a href="classtf_1_1cudaFlowLinearOptimizer.html" class="m-doc">cudaFlowLinearOptimizer</a> <span class="m-doc">class to capture a linear CUDA graph using a sequential stream</span></li>
+              <li>class <a href="classtf_1_1cudaFlowOptimizerBase.html" class="m-doc">cudaFlowOptimizerBase</a> <span class="m-doc">class to provide helper common methods for optimization algorithms</span></li>
+              <li>class <a href="classtf_1_1cudaFlowRoundRobinOptimizer.html" class="m-doc">cudaFlowRoundRobinOptimizer</a> <span class="m-doc">class to capture a CUDA graph using a round-robin algorithm</span></li>
+              <li>class <a href="classtf_1_1cudaFlowSequentialOptimizer.html" class="m-doc">cudaFlowSequentialOptimizer</a> <span class="m-doc">class to capture a CUDA graph using a sequential stream</span></li>
               <li>class <a href="classtf_1_1cudaScopedDevice.html" class="m-doc">cudaScopedDevice</a> <span class="m-doc">class to create an RAII-styled context switch</span></li>
-              <li>class <a href="classtf_1_1cudaSequentialCapturing.html" class="m-doc">cudaSequentialCapturing</a> <span class="m-doc">class to capture a CUDA graph using a sequential stream</span></li>
               <li>class <a href="classtf_1_1cudaStream.html" class="m-doc">cudaStream</a> <span class="m-doc">class to create an RAII-styled wrapper over a native CUDA stream</span></li>
               <li>class <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> <span class="m-doc">class to create a task handle over an internal node of a cudaFlow graph</span></li>
               <li class="m-doc-collapsible collapsed">
@@ -77,21 +77,25 @@
               </li>
               <li>class <a href="classtf_1_1DataPipe.html" class="m-doc">DataPipe</a> <span class="m-doc">class to create a stage in a data-parallel pipeline</span></li>
               <li>class <a href="classtf_1_1DataPipeline.html" class="m-doc">DataPipeline</a> <span class="m-doc">class to create a data-parallel pipeline scheduling framework</span></li>
+              <li>class <a href="classtf_1_1DynamicPartitioner.html" class="m-doc">DynamicPartitioner</a> <span class="m-doc">class to construct a dynamic partitioner for scheduling parallel algorithms</span></li>
+              <li>struct <a href="structtf_1_1ExecutionPolicy.html" class="m-doc">ExecutionPolicy</a> <span class="m-doc">struct to construct an execution policy for parallel algorithms</span></li>
               <li>class <a href="classtf_1_1Executor.html" class="m-doc">Executor</a> <span class="m-doc">class to create an executor for running a taskflow graph</span></li>
               <li>class <a href="classtf_1_1FlowBuilder.html" class="m-doc">FlowBuilder</a> <span class="m-doc">class to build a task dependency graph</span></li>
               <li>class <a href="classtf_1_1Future.html" class="m-doc">Future</a> <span class="m-doc">class to access the result of an execution</span></li>
               <li>class <a href="classtf_1_1Graph.html" class="m-doc">Graph</a> <span class="m-doc">class to create a graph object</span></li>
+              <li>class <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a> <span class="m-doc">class to construct a guided partitioner for scheduling parallel algorithms</span></li>
               <li>class <a href="classtf_1_1ObserverInterface.html" class="m-doc">ObserverInterface</a> <span class="m-doc">class to derive an executor observer</span></li>
+              <li>class <a href="classtf_1_1PartitionerBase.html" class="m-doc">PartitionerBase</a> <span class="m-doc">class to derive a partitioner for scheduling parallel algorithms</span></li>
               <li>class <a href="classtf_1_1Pipe.html" class="m-doc">Pipe</a> <span class="m-doc">class to create a pipe object for a pipeline stage</span></li>
               <li>class <a href="classtf_1_1Pipeflow.html" class="m-doc">Pipeflow</a> <span class="m-doc">class to create a pipeflow object used by the pipe callable</span></li>
               <li>class <a href="classtf_1_1Pipeline.html" class="m-doc">Pipeline</a> <span class="m-doc">class to create a pipeline scheduling framework</span></li>
+              <li>class <a href="classtf_1_1RandomPartitioner.html" class="m-doc">RandomPartitioner</a> <span class="m-doc">class to construct a random partitioner for scheduling parallel algorithms</span></li>
               <li>class <a href="classtf_1_1Runtime.html" class="m-doc">Runtime</a> <span class="m-doc">class to create a runtime object used by a runtime task</span></li>
               <li>class <a href="classtf_1_1ScalablePipeline.html" class="m-doc">ScalablePipeline</a> <span class="m-doc">class to create a scalable pipeline object</span></li>
               <li>class <a href="classtf_1_1Semaphore.html" class="m-doc">Semaphore</a> <span class="m-doc">class to create a semophore object for building a concurrency constraint</span></li>
               <li>class <a href="classtf_1_1SmallVector.html" class="m-doc">SmallVector</a> <span class="m-doc">class to define a vector optimized for small array</span></li>
+              <li>class <a href="classtf_1_1StaticPartitioner.html" class="m-doc">StaticPartitioner</a> <span class="m-doc">class to construct a dynamic partitioner for scheduling parallel algorithms</span></li>
               <li>class <a href="classtf_1_1Subflow.html" class="m-doc">Subflow</a> <span class="m-doc">class to construct a subflow graph from the execution of a dynamic task</span></li>
-              <li>class <a href="classtf_1_1syclFlow.html" class="m-doc">syclFlow</a> <span class="m-doc">class for building a SYCL task dependency graph</span></li>
-              <li>class <a href="classtf_1_1syclTask.html" class="m-doc">syclTask</a> <span class="m-doc">handle to a node of the internal CUDA graph</span></li>
               <li>class <a href="classtf_1_1Task.html" class="m-doc">Task</a> <span class="m-doc">class to create a task handle over a node in a taskflow graph</span></li>
               <li>class <a href="classtf_1_1Taskflow.html" class="m-doc">Taskflow</a> <span class="m-doc">class to create a taskflow object</span></li>
               <li>class <a href="classtf_1_1TaskQueue.html" class="m-doc">TaskQueue</a> <span class="m-doc">class to create a lock-free unbounded single-producer multiple-consumer queue</span></li>

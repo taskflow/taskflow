@@ -13,10 +13,6 @@
         <reference>kmeans_cudaflow_1DefineTheKMeanscudaFlow</reference>
     </tocsect>
       <tocsect>
-        <name>Repeat the Execution of the k-means cudaFlow</name>
-        <reference>kmeans_cudaflow_1RepeatTheExecutionofTheKMeanscudaFlow</reference>
-    </tocsect>
-      <tocsect>
         <name>Benchmarking</name>
         <reference>kmeans_cudaflow_1KMeanscudaFlowBenchmarking</reference>
     </tocsect>
@@ -110,7 +106,6 @@
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>kmeans_gpu(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>K,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>M,<sp/>cconst<sp/><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref>&amp;<sp/>px,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref>&amp;<sp/>py</highlight></codeline>
 <codeline><highlight class="normal">)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref><sp/>h_mx,<sp/>h_my;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>*d_px,<sp/>*d_py,<sp/>*d_mx,<sp/>*d_my,<sp/>*d_sx,<sp/>*d_sy,<sp/>*d_c;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -122,73 +117,76 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>taskflow<sp/>graph</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;K-Means&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>allocate<sp/>GPU<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>allocate_px<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaMalloc(&amp;d_px,<sp/>N*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">));<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>allocate_px<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>TF_CHECK_CUDA(cudaMalloc(&amp;d_px,<sp/>N*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">)),<sp/></highlight><highlight class="stringliteral">&quot;failed<sp/>to<sp/>allocate<sp/>d_px&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;allocate_px&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>allocate_py<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaMalloc(&amp;d_py,<sp/>N*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">));<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>allocate_py<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>TF_CHECK_CUDA(cudaMalloc(&amp;d_py,<sp/>N*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">)),<sp/></highlight><highlight class="stringliteral">&quot;failed<sp/>to<sp/>allocate<sp/>d_py&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;allocate_py&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>allocate_mx<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaMalloc(&amp;d_mx,<sp/>K*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">));<sp/>}</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>).name(</highlight><highlight class="stringliteral">&quot;allocate_mx&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>allocate_mx<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>TF_CHECK_CUDA(cudaMalloc(&amp;d_mx,<sp/>K*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">)),<sp/></highlight><highlight class="stringliteral">&quot;failed<sp/>to<sp/>allocate<sp/>d_mx&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;allocate_mx&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>allocate_my<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaMalloc(&amp;d_my,<sp/>K*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">));<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>allocate_my<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>TF_CHECK_CUDA(cudaMalloc(&amp;d_my,<sp/>K*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">)),<sp/></highlight><highlight class="stringliteral">&quot;failed<sp/>to<sp/>allocate<sp/>d_my&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;allocate_my&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>allocate_sy<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaMalloc(&amp;d_sy,<sp/>K*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">));<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>allocate_sx<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>TF_CHECK_CUDA(cudaMalloc(&amp;d_sx,<sp/>K*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">)),<sp/></highlight><highlight class="stringliteral">&quot;failed<sp/>to<sp/>allocate<sp/>d_sx&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;allocate_sx&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>allocate_sy<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>TF_CHECK_CUDA(cudaMalloc(&amp;d_sy,<sp/>K*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">)),<sp/></highlight><highlight class="stringliteral">&quot;failed<sp/>to<sp/>allocate<sp/>d_sy&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;allocate_sy&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>allocate_c<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaMalloc(&amp;d_c,<sp/>K*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">));<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>allocate_c<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>TF_CHECK_CUDA(cudaMalloc(&amp;d_c,<sp/>K*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">)),<sp/></highlight><highlight class="stringliteral">&quot;failed<sp/>to<sp/>allocate<sp/>dc&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;allocate_c&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>transfer<sp/>data<sp/>from<sp/>the<sp/>host<sp/>to<sp/>the<sp/>GPU</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>h2d<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(d_px,<sp/>h_px.data(),<sp/>N).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;h2d_px&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(d_py,<sp/>h_py.data(),<sp/>N).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;h2d_py&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(d_mx,<sp/>h_mx.data(),<sp/>K).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;h2d_mx&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(d_my,<sp/>h_my.data(),<sp/>K).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;h2d_my&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>h2d<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaMemcpy(d_px,<sp/>h_px.data(),<sp/>N*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">),<sp/>cudaMemcpyDefault);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaMemcpy(d_py,<sp/>h_py.data(),<sp/>N*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">),<sp/>cudaMemcpyDefault);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaMemcpy(d_mx,<sp/>h_mx.data(),<sp/>K*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">),<sp/>cudaMemcpyDefault);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaMemcpy(d_my,<sp/>h_my.data(),<sp/>K*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">),<sp/>cudaMemcpyDefault);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;h2d&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>GPU<sp/>task<sp/>graph<sp/>of<sp/>the<sp/>main<sp/>k-means<sp/>body</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>kmeans<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>zero_c<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a40172fac4464f6d805f75921ea3c2a3b" kindref="member">zero</ref>(d_c,<sp/>K).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;zero_c&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>zero_sx<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a40172fac4464f6d805f75921ea3c2a3b" kindref="member">zero</ref>(d_sx,<sp/>K).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;zero_sx&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>zero_sy<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a40172fac4464f6d805f75921ea3c2a3b" kindref="member">zero</ref>(d_sy,<sp/>K).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;zero_sy&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>kmeans<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>cluster<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" kindref="member">kernel</ref>(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>(N+1024-1)<sp/>/<sp/>1024,<sp/>1024,<sp/>0,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>zero_c<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a40172fac4464f6d805f75921ea3c2a3b" kindref="member">zero</ref>(d_c,<sp/>K).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;zero_c&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>zero_sx<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a40172fac4464f6d805f75921ea3c2a3b" kindref="member">zero</ref>(d_sx,<sp/>K).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;zero_sx&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>zero_sy<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a40172fac4464f6d805f75921ea3c2a3b" kindref="member">zero</ref>(d_sy,<sp/>K).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;zero_sy&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>cluster<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a68f666503d13a7b80fb7399fb2f0c153" kindref="member">kernel</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>(N+512-1)<sp/>/<sp/>512,<sp/>512,<sp/>0,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>assign_clusters,<sp/>d_px,<sp/>d_py,<sp/>N,<sp/>d_mx,<sp/>d_my,<sp/>d_sx,<sp/>d_sy,<sp/>K,<sp/>d_c</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;cluster&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>new_centroid<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" kindref="member">kernel</ref>(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>1,<sp/>K,<sp/>0,<sp/>compute_new_means,<sp/>d_mx,<sp/>d_my,<sp/>d_sx,<sp/>d_sy,<sp/>d_c</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>new_centroid<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a68f666503d13a7b80fb7399fb2f0c153" kindref="member">kernel</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>1,<sp/>K,<sp/>0,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>compute_new_means,<sp/>d_mx,<sp/>d_my,<sp/>d_sx,<sp/>d_sy,<sp/>d_c</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;new_centroid&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cluster.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(new_centroid)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1cudaTask_1a4a9ca1a34bac47e4c9b04eb4fb2f7775" kindref="member">succeed</ref>(zero_c,<sp/>zero_sx,<sp/>zero_sy);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Repeat<sp/>the<sp/>execution<sp/>for<sp/>M<sp/>times</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;M;<sp/>i++)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1ae6810f7de27e5a347331aacfce67bea1" kindref="member">run</ref>(stream);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;update_means&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>condition<sp/>task<sp/>to<sp/>check<sp/>convergence</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>condition<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([i=0,<sp/>M]<sp/>()<sp/></highlight><highlight class="keyword">mutable</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>i++<sp/>&lt;<sp/>M<sp/>?<sp/>0<sp/>:<sp/>1;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;converged?&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>transfer<sp/>the<sp/>result<sp/>of<sp/>clusters<sp/>from<sp/>GPU<sp/>to<sp/>host</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>stop<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(h_mx.data(),<sp/>d_mx,<sp/>K).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;d2h_mx&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(h_my.data(),<sp/>d_my,<sp/>K).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;d2h_my&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>stop<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaMemcpy(h_mx.data(),<sp/>d_mx,<sp/>K*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">),<sp/>cudaMemcpyDefault);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaMemcpy(h_my.data(),<sp/>d_my,<sp/>K*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">),<sp/>cudaMemcpyDefault);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;d2h&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>deallocated<sp/>GPU<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/><ref refid="cpp/memory/c/free" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">free</ref><sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="cpp/memory/c/free" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">free</ref><sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaFree(d_px);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaFree(d_py);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaFree(d_mx);</highlight></codeline>
@@ -199,85 +197,36 @@
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;free&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>build<sp/>up<sp/>the<sp/>dependency</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>h2d.<ref refid="classtf_1_1Task_1a331b1b726555072e7c7d10941257f664" kindref="member">succeed</ref>(allocate_px,<sp/>allocate_py,<sp/>allocate_mx,<sp/>allocate_my);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>h2d.<ref refid="classtf_1_1cudaTask_1a4a9ca1a34bac47e4c9b04eb4fb2f7775" kindref="member">succeed</ref>(allocate_px,<sp/>allocate_py,<sp/>allocate_mx,<sp/>allocate_my);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>kmeans.<ref refid="classtf_1_1Task_1a331b1b726555072e7c7d10941257f664" kindref="member">succeed</ref>(allocate_sx,<sp/>allocate_sy,<sp/>allocate_c,<sp/>h2d)</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(condition);</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>condition.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(kmeans,<sp/>stop);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>kmeans.<ref refid="classtf_1_1cudaTask_1a4a9ca1a34bac47e4c9b04eb4fb2f7775" kindref="member">succeed</ref>(allocate_sx,<sp/>allocate_sy,<sp/>allocate_c,<sp/>h2d)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(stop);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>stop.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(free);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>taskflow<sp/>without<sp/>expanding<sp/>GPU<sp/>task<sp/>graphs</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>entire<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//std::cout<sp/>&lt;&lt;<sp/>&quot;dumping<sp/>kmeans<sp/>graph<sp/>...\n&quot;;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>{h_mx,<sp/>h_my};</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>The first dump before executing the taskflow produces the following diagram. The condition tasks introduces a cycle between itself and <computeroutput>update_means</computeroutput>. Each time it goes back to <computeroutput>update_means</computeroutput>, the cudaFlow is reconstructed with captured parameters in the closure and offloaded to the GPU.</para>
 <para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/kmeans_3.dot"></dotfile>
 </para>
-<para>The second dump after executing the taskflow produces the following diagram, with all cudaFlows expanded:</para>
-<para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/kmeans_4.dot"></dotfile>
-</para>
 <para>The main cudaFlow task, <computeroutput>update_means</computeroutput>, must not run before all required data has settled down. It precedes a condition task that circles back to itself until we reach <computeroutput>M</computeroutput> iterations. When iteration completes, the condition task directs the execution path to the cudaFlow, <computeroutput>h2d</computeroutput>, to copy the results of clusters to <computeroutput>h_mx</computeroutput> and <computeroutput>h_my</computeroutput> and then deallocate all GPU memory.</para>
-</sect1>
-<sect1 id="kmeans_cudaflow_1RepeatTheExecutionofTheKMeanscudaFlow">
-<title>Repeat the Execution of the k-means cudaFlow</title>
-<para>We observe the GPU task graph parameters remain <emphasis>unchanged</emphasis> across all k-means iterations. In this case, we can leverage <ref refid="classtf_1_1cudaFlow_1a99358da15e3bdfa1faabb3e326130e1f" kindref="member">tf::cudaFlow::offload_until</ref> or <ref refid="classtf_1_1cudaFlow_1ac2269fd7dc8ca04a294a718204703dad" kindref="member">tf::cudaFlow::offload_n</ref> to run it repeatedly without conditional tasking.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>kmeans<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>zero_c<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a40172fac4464f6d805f75921ea3c2a3b" kindref="member">zero</ref>(d_c,<sp/>K).name(</highlight><highlight class="stringliteral">&quot;zero_c&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>zero_sx<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a40172fac4464f6d805f75921ea3c2a3b" kindref="member">zero</ref>(d_sx,<sp/>K).name(</highlight><highlight class="stringliteral">&quot;zero_sx&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>zero_sy<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a40172fac4464f6d805f75921ea3c2a3b" kindref="member">zero</ref>(d_sy,<sp/>K).name(</highlight><highlight class="stringliteral">&quot;zero_sy&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>cluster<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" kindref="member">kernel</ref>(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>(N+1024-1)<sp/>/<sp/>1024,<sp/>1024,<sp/>0,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>assign_clusters,<sp/>d_px,<sp/>d_py,<sp/>N,<sp/>d_mx,<sp/>d_my,<sp/>d_sx,<sp/>d_sy,<sp/>K,<sp/>d_c</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>).name(</highlight><highlight class="stringliteral">&quot;cluster&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>new_centroid<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" kindref="member">kernel</ref>(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>1,<sp/>K,<sp/>0,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>compute_new_means,<sp/>d_mx,<sp/>d_my,<sp/>d_sx,<sp/>d_sy,<sp/>d_c</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>).name(</highlight><highlight class="stringliteral">&quot;new_centroid&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>cluster.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(new_centroid)</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.succeed(zero_c,<sp/>zero_sx,<sp/>zero_sy);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>we<sp/>ask<sp/>the<sp/>executor<sp/>to<sp/>launch<sp/>the<sp/>cudaFlow<sp/>by<sp/>M<sp/>times</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1ac2269fd7dc8ca04a294a718204703dad" kindref="member">offload_n</ref>(M);</highlight></codeline>
-<codeline><highlight class="normal">}).name(</highlight><highlight class="stringliteral">&quot;update_means&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>build<sp/>up<sp/>the<sp/>dependency</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">h2d.<ref refid="classtf_1_1Task_1a331b1b726555072e7c7d10941257f664" kindref="member">succeed</ref>(allocate_px,<sp/>allocate_py,<sp/>allocate_mx,<sp/>allocate_my);</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">kmeans.<ref refid="classtf_1_1Task_1a331b1b726555072e7c7d10941257f664" kindref="member">succeed</ref>(allocate_sx,<sp/>allocate_sy,<sp/>allocate_c,<sp/>h2d)</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(stop);</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">stop.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(free);</highlight></codeline>
-</programlisting></para>
-<para>At the last line of the cudaFlow closure, we call <computeroutput>cf.offload_n(M)</computeroutput> to ask the executor to repeatedly run the cudaFlow by <computeroutput>M</computeroutput> times. Compared with the version using conditional tasking, the cudaFlow here is created only one time and thus the overhead is reduced.</para>
-<para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/kmeans_5.dot"></dotfile>
-</para>
-<para>We can see from the above taskflow the condition task is removed.</para>
 </sect1>
 <sect1 id="kmeans_cudaflow_1KMeanscudaFlowBenchmarking">
 <title>Benchmarking</title>
 <para>We run three versions of k-means, sequential CPU, parallel CPUs, and one GPU, on a machine of 12 Intel i7-8700 CPUs at 3.20 GHz and a Nvidia RTX 2080 GPU using various numbers of 2D point counts and iterations.</para>
-<para> <table rows="6" cols="7"><row>
+<para> <table rows="6" cols="6"><row>
 <entry thead="yes" align='center'><para>N  </para>
 </entry><entry thead="yes" align='center'><para>K  </para>
 </entry><entry thead="yes" align='center'><para>M  </para>
 </entry><entry thead="yes" align='center'><para>CPU Sequential  </para>
 </entry><entry thead="yes" align='center'><para>CPU Parallel  </para>
-</entry><entry thead="yes" align='center'><para>GPU (conditional taksing)  </para>
-</entry><entry thead="yes" align='center'><para>GPU (using offload_n)   </para>
+</entry><entry thead="yes" align='center'><para>GPU   </para>
 </entry></row>
 <row>
 <entry thead="no" align='center'><para>10  </para>
@@ -285,7 +234,6 @@
 </entry><entry thead="no" align='center'><para>10  </para>
 </entry><entry thead="no" align='center'><para>0.14 ms  </para>
 </entry><entry thead="no" align='center'><para>77 ms  </para>
-</entry><entry thead="no" align='center'><para>1 ms  </para>
 </entry><entry thead="no" align='center'><para>1 ms   </para>
 </entry></row>
 <row>
@@ -294,8 +242,7 @@
 </entry><entry thead="no" align='center'><para>100  </para>
 </entry><entry thead="no" align='center'><para>0.56 ms  </para>
 </entry><entry thead="no" align='center'><para>86 ms  </para>
-</entry><entry thead="no" align='center'><para>7 ms  </para>
-</entry><entry thead="no" align='center'><para>1 ms   </para>
+</entry><entry thead="no" align='center'><para>7 ms   </para>
 </entry></row>
 <row>
 <entry thead="no" align='center'><para>1000  </para>
@@ -303,8 +250,7 @@
 </entry><entry thead="no" align='center'><para>1000  </para>
 </entry><entry thead="no" align='center'><para>10 ms  </para>
 </entry><entry thead="no" align='center'><para>98 ms  </para>
-</entry><entry thead="no" align='center'><para>55 ms  </para>
-</entry><entry thead="no" align='center'><para>13 ms   </para>
+</entry><entry thead="no" align='center'><para>55 ms   </para>
 </entry></row>
 <row>
 <entry thead="no" align='center'><para>10000  </para>
@@ -312,8 +258,7 @@
 </entry><entry thead="no" align='center'><para>10000  </para>
 </entry><entry thead="no" align='center'><para>1006 ms  </para>
 </entry><entry thead="no" align='center'><para>713 ms  </para>
-</entry><entry thead="no" align='center'><para>458 ms  </para>
-</entry><entry thead="no" align='center'><para>183 ms   </para>
+</entry><entry thead="no" align='center'><para>458 ms   </para>
 </entry></row>
 <row>
 <entry thead="no" align='center'><para>100000  </para>
@@ -321,12 +266,11 @@
 </entry><entry thead="no" align='center'><para>100000  </para>
 </entry><entry thead="no" align='center'><para>102483 ms  </para>
 </entry><entry thead="no" align='center'><para>49966 ms  </para>
-</entry><entry thead="no" align='center'><para>7952 ms  </para>
-</entry><entry thead="no" align='center'><para>4725 ms   </para>
+</entry><entry thead="no" align='center'><para>7952 ms   </para>
 </entry></row>
 </table>
 </para>
-<para>When the number of points is larger than 10K, both parallel CPU and GPU implementations start to pick up the speed over than the sequential version. We can see that using the built-in predicate, <ref refid="classtf_1_1cudaFlow_1ac2269fd7dc8ca04a294a718204703dad" kindref="member">tf::cudaFlow::offload_n</ref>, can avoid repetitively creating the graph over and over, resulting in two times faster than conditional tasking. </para>
+<para>When the number of points is larger than 10K, both parallel CPU and GPU implementations start to pick up the speed over than the sequential version. We can see that using the built-in predicate, tf::cudaFlow::offload_n, can avoid repetitively creating the graph over and over, resulting in two times faster than conditional tasking. </para>
 </sect1>
     </detaileddescription>
   </compounddef>

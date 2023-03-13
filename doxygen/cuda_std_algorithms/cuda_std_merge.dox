@@ -12,6 +12,10 @@ into a sorted range of items.
 You need to include the header file, `%taskflow/cuda/algorithm/merge.hpp`, 
 for using the parallel-merge algorithm.
 
+@code{.cpp}
+#include <taskflow/cuda/algorithm/merge.hpp>
+@endcode
+
 @section CUDASTDMergeItems Merge Two Sorted Ranges of Items
 
 tf::cuda_merge merges two sorted ranges of items into a sorted range. 
@@ -31,9 +35,12 @@ for(size_t i=0; i<N; i++) {
 std::sort(input_1, input1 + N);
 std::sort(input_2, input2 + N);
 
-// queries the required buffer size to merge two N-element vectors 
-tf::cudaDefaultExecutionPolicy policy;
-auto bytes  = tf::cuda_merge_buffer_size<tf::cudaDefaultExecutionPolicy>(N, N);
+// create an execution policy
+tf::cudaStream stream;
+tf::cudaDefaultExecutionPolicy policy(stream);
+
+// queries the required buffer size to merge two N-element sorted vectors
+auto bytes  = policy.merge_bufsz(N, N);
 auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
 
 // merge input_1 and input_2 to output
@@ -44,19 +51,25 @@ tf::cuda_merge(policy,
 );
 
 // synchronizes the execution and verifies the result
-policy.synchronize();
+stream.synchronize();
+
+// verify the result
 assert(std::is_sorted(output, output + 2*N));
 
 // delete the buffer
-tf::cuda_free(buffer);
+cudaFree(input1);
+cudaFree(input2);
+cudaFree(output);
+cudaFree(buffer);
 @endcode
 
 The merge algorithm runs @em asynchronously through the stream specified
 in the execution policy. You need to synchronize the stream to
 obtain correct results.
 Since the GPU merge algorithm may require extra buffer to store the 
-temporary results, you must provide a buffer of size at least bytes
-returned from tf::cuda_merge_buffer_size.
+temporary results, you need to provide a buffer of size at least larger or equal
+to the value returned from <tt>tf::cudaDefaultExecutionPolicy::merge_bufsz</tt>.
+The buffer size depends only on the two input vector sizes.
 
 @attention
 You must keep the buffer alive before the merge call completes.
@@ -83,9 +96,12 @@ a_vals[0] = 1, a_vals[1] = 2;
 b_keys[0] = 3, b_keys[1] = 7;
 b_vals[0] = 3, b_vals[1] = 4;
 
-// queries the required buffer size to merge the two key-value items
-tf::cudaDefaultExecutionPolicy policy;
-auto bytes  = tf::cuda_merge_buffer_size<tf::cudaDefaultExecutionPolicy>(N, N);
+// create an execution policy
+tf::cudaStream stream;
+tf::cudaDefaultExecutionPolicy policy(stream);
+
+// queries the required buffer size to merge two N-element sorted vectors by keys
+auto bytes  = policy.merge_bufsz(N, N);
 auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
 
 // merge keys and values of a and b to c
@@ -97,24 +113,27 @@ tf::cuda_merge_by_key(
   []__device__ (int a, int b) { return a < b; },  // comparator
   buffer
 );
-policy.synchronize();
+
+// wait for the merge to complete
+stream.synchronize();
 
 // now, c_keys = {1, 3, 7, 8}
 // now, c_vals = {2, 3, 4, 1}
 
 // delete the device memory
-tf::cuda_free(buffer);
-tf::cuda_free(a_keys);
-tf::cuda_free(b_keys);
-tf::cuda_free(c_keys);
-tf::cuda_free(a_vals);
-tf::cuda_free(b_vals);
-tf::cuda_free(c_vals);
+cudaFree(buffer);
+cudaFree(a_keys);
+cudaFree(b_keys);
+cudaFree(c_keys);
+cudaFree(a_vals);
+cudaFree(b_vals);
+cudaFree(c_vals);
 @endcode
 
-The buffer size required by tf::cuda_merge_by_key is the same as tf::cuda_merge
-and must be at least equal to or larger than the value returned 
-by tf::cuda_merge_buffer_size.
+Since the GPU merge algorithm may require extra buffer to store the 
+temporary results, you need to provide a buffer of size at least larger or equal
+to the value returned from <tt>tf::cudaDefaultExecutionPolicy::merge_bufsz</tt>.
+The buffer size depends only on the two input vector sizes.
 
 */
 }

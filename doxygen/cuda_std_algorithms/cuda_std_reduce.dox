@@ -11,6 +11,10 @@ namespace tf {
 You need to include the header file, `%taskflow/cuda/algorithm/reduce.hpp`, 
 for using the parallel-reduction algorithm.
 
+@code{.cpp}
+#include <taskflow/cuda/algorithm/reduce.hpp>
+@endcode
+
 @section CUDASTDReduceItemsWithAnInitialValue Reduce a Range of Items with an Initial Value
 
 tf::cuda_reduce performs
@@ -40,9 +44,12 @@ for(size_t i=0; i<N; i++)
   vec[i] = i;
 } 
 
+// create an execution policy
+tf::cudaStream stream;
+tf::cudaDefaultExecutionPolicy policy(stream);
+
 // queries the required buffer size to reduce N elements using the given policy
-tf::cudaDefaultExecutionPolicy policy;
-auto bytes  = tf::cuda_reduce_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto bytes  = policy.reduce_bufsz<int>(N);
 auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
 
 // *res = 1000 + (0 + 1 + 2 + 3 + 4 + ... + N-1)
@@ -51,23 +58,23 @@ tf::cuda_reduce(policy,
 );
 
 // synchronize the execution
-policy.synchronize();
+stream.synchronize();
 
 // delete the memory
-tf::cuda_free(buffer);
-tf::cuda_free(res);
-tf::cuda_free(vec);
+cudaFree(buffer);
+cudaFree(res);
+cudaFree(vec);
 @endcode
 
 The reduce algorithm runs @em asynchronously through the stream specified
 in the execution policy. You need to synchronize the stream to
 obtain correct results.
 Since the GPU reduction algorithm may require extra buffer to store the 
-temporary results, you must provide a buffer of size at least bytes
-returned from tf::cuda_reduce_buffer_size.
+temporary results, you need to provide a buffer of size at least larger or equal
+to the value returned from <tt>tf::cudaDefaultExecutionPolicy::reduce_bufsz</tt>.
 
 @attention
-You must keep the buffer alive before the reduction call completes.
+You must keep the buffer alive before the reduction completes.
 
 @section CUDASTDReduceItemsWithoutAnInitialValue Reduce a Range of Items without an Initial Value
 
@@ -98,9 +105,12 @@ for(size_t i=0; i<N; i++)
   vec[i] = i;
 } 
 
+// create an execution policy
+tf::cudaStream stream;
+tf::cudaDefaultExecutionPolicy policy(stream);
+
 // queries the required buffer size to reduce N elements using the given policy
-tf::cudaDefaultExecutionPolicy policy;
-auto bytes  = tf::cuda_reduce_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto bytes  = policy.reduce_bufsz<int>(N);
 auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
 
 // *res = 0 + 1 + 2 + 3 + 4 + ... + N-1
@@ -109,10 +119,12 @@ tf::cuda_uninitialized_reduce(policy,
 );
 
 // synchronize the execution
-policy.synchronize();
+stream.synchronize();
 
 // delete the buffer
-tf::cuda_free(buffer);
+cudaFree(res);
+cudaFree(vec);
+cudaFree(buffer);
 @endcode
 
 
@@ -146,9 +158,12 @@ for(size_t i=0; i<N; i++) {
   vec[i] = i;
 } 
 
+// create an execution policy
+tf::cudaStream stream;
+tf::cudaDefaultExecutionPolicy policy(stream);
+
 // queries the required buffer size to reduce N elements using the given policy
-tf::cudaDefaultExecutionPolicy policy;
-auto bytes  = tf::cuda_reduce_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto bytes  = policy.reduce_bufsz<int>(N);
 auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
 
 // *res = 1000 + (0*10 + 1*10 + 2*10 + 3*10 + 4*10 + ... + (N-1)*10)
@@ -160,10 +175,12 @@ tf::cuda_transform_reduce(policy,
 );
 
 // synchronize the execution
-policy.synchronize();
+stream.synchronize();
 
 // delete the buffer
-tf::cuda_free(buffer);
+cudaFree(res);
+cudaFree(vec);
+cudaFree(buffer);
 @endcode
 
 
@@ -196,9 +213,12 @@ for(size_t i=0; i<N; i++) {
   vec[i] = i;
 } 
 
+// create an execution policy
+tf::cudaStream stream;
+tf::cudaDefaultExecutionPolicy policy(stream);
+
 // queries the required buffer size to reduce N elements using the given policy
-tf::cudaDefaultExecutionPolicy policy;
-auto bytes  = tf::cuda_reduce_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+auto bytes  = policy.reduce_bufsz<int>(N);
 auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
 
 // *res = 0*10 + 1*10 + 2*10 + 3*10 + 4*10 + ... + (N-1)*10
@@ -210,12 +230,12 @@ tf::cuda_uninitialized_reduce(policy,
 );
 
 // synchronize the execution
-policy.synchronize();
+stream.synchronize();
 
 // delete the data
-tf::cuda_free(buffer);
-tf::cuda_free(res);
-tf::cuda_free(vec);
+cudaFree(res);
+cudaFree(vec);
+cudaFree(buffer);
 @endcode
 
 

@@ -106,7 +106,7 @@ and stores the result in a target range:
 @code{.cpp}
 std::vector<int> src1 = {1, 2, 3, 4, 5};
 std::vector<int> src2 = {5, 4, 3, 2, 1};
-std::vector<int> tgt(src.size());
+std::vector<int> tgt(src1.size());
 taskflow.transform(
   src1.begin(), src1.end(), src2.begin(), tgt.begin(), 
   [](int i, int j){ 
@@ -114,6 +114,50 @@ taskflow.transform(
   }
 );
 @endcode
+
+@section ParallelTransformsCfigureAnExecutionPolicy Configure an Execution Policy
+
+You can configure an execution policy for parallel-transform tasks to run with different
+scheduling methods, such as guided partitioning, dynamic partitioning, and static partitioning.
+Each parallel-transform task has an overload that takes an execution policy in the first argument:
+
+  + tf::Taskflow::transform(P&& policy, B first1, E last1, O d_first, C c)
+  + tf::Taskflow::transform(P&& policy, B1 first1, E1 last1, B2 first2, O d_first, C c),
+
+The following example create two parallel-transform tasks using tow different
+execution policies, one with the static partitioning algorithm and 
+another one with the guided partitioning algorithm:
+
+@code{.cpp}
+tf::ExecutionPolicy<tf::StaticPartitioner> static_policy;
+tf::ExecutionPolicy<tf::GuidedPartitioner> guided_policy;
+
+std::vector<int> src1 = {1, 2, 3, 4, 5};
+std::vector<int> src2 = {5, 4, 3, 2, 1};
+std::vector<int> tgt1(src1.size());
+std::vector<int> tgt2(src2.size());
+
+// create a parallel-transform task with static execution policy
+taskflow.transform(static_policy,
+  src1.begin(), src1.end(), src2.begin(), tgt1.begin(), 
+  [](int i, int j){ 
+    return i + j;
+  }
+);
+
+// create a parallel-transform task with guided execution policy
+taskflow.transform(guided_policy,
+  src1.begin(), src1.end(), src2.begin(), tgt2.begin(), 
+  [](int i, int j){ 
+    return i + j;
+  }
+);
+@endcode
+
+@note
+By default, parallel-transform tasks use tf::DefaultExecutionPolicy 
+if no execution policy is specified. 
+The default execution policy is based on the guided scheduling algorithm.
 
 */
 

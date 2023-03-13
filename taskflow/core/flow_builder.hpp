@@ -349,7 +349,7 @@ class FlowBuilder {
   @tparam B beginning iterator type
   @tparam E ending iterator type
   @tparam C callable type
-  @tparam P policy type (default tf::GuidedPartitioner)
+  @tparam P policy type
 
   @param first iterator to the beginning (inclusive)
   @param last iterator to the end (exclusive)
@@ -377,6 +377,10 @@ class FlowBuilder {
   template <typename P, typename B, typename E, typename C>
   Task for_each(P&& policy, B first, E last, C callable);
   
+  /**
+  @brief Constructs a tf::FlowBuilder::for_each(P&&, B, E, C) task
+         using the default execution policy tf::DefaultExecutionPolicy
+  */
   template <typename B, typename E, typename C>
   Task for_each(B first, E last, C callable);
 
@@ -387,7 +391,7 @@ class FlowBuilder {
   @tparam E ending index type (must be integral)
   @tparam S step type (must be integral)
   @tparam C callable type
-  @tparam P policy type (default tf::GuidedPartitioner)
+  @tparam P policy type 
 
   @param first index of the beginning (inclusive)
   @param last index of the end (exclusive)
@@ -420,7 +424,11 @@ class FlowBuilder {
   */
   template <typename P, typename B, typename E, typename S, typename C>
   Task for_each_index(P&& policy, B first, E last, S step, C callable);
-
+  
+  /**
+  @brief constructs a tf::FlowBuilder::for_each_index(P&&, B, E, S, C) task 
+         using the default execution policy tf::DefaultExecutionPolicy
+  */
   template <typename B, typename E, typename S, typename C>
   Task for_each_index(B first, E last, S step, C callable);
 
@@ -464,7 +472,11 @@ class FlowBuilder {
     std::enable_if_t<is_execution_policy_v<P>, void> * = nullptr
   >
   Task transform(P&& policy, B first1, E last1, O d_first, C c);
-
+  
+  /**
+  @brief constructs a tf::FlowBuilder::transform(P&&, B, E, O, C) task
+         using the default execution policy tf::DefaultExecutionPolicy
+  */
   template <typename B, typename E, typename O, typename C>
   Task transform(B first1, E last1, O d_first, C c);
 
@@ -504,6 +516,10 @@ class FlowBuilder {
   template <typename P, typename B1, typename E1, typename B2, typename O, typename C>
   Task transform(P&& policy, B1 first1, E1 last1, B2 first2, O d_first, C c);
   
+  /**
+  @brief constructs a tf::FlowBuilder::transform(P&&, B1, E1, B2, O, C) task
+         using the default execution policy tf::DefaultExecutionPolicy
+  */
   template <
     typename B1, typename E1, typename B2, typename O, typename C,
     std::enable_if_t<!is_execution_policy_v<B1>, void> * = nullptr
@@ -549,6 +565,10 @@ class FlowBuilder {
   template <typename P, typename B, typename E, typename T, typename O>
   Task reduce(P&& policy, B first, E last, T& init, O bop);
   
+  /**
+  @brief constructs a tf::FlowBuilder::reduce(P&&, B, E, T&, O) task
+         using the default execution policy tf::DefaultExecutionPolicy
+  */
   template <typename B, typename E, typename T, typename O>
   Task reduce(B first, E last, T& init, O bop);
 
@@ -593,6 +613,10 @@ class FlowBuilder {
   template <typename P, typename B, typename E, typename T, typename BOP, typename UOP>
   Task transform_reduce(P&& policy, B first, E last, T& init, BOP bop, UOP uop);
   
+  /**
+  @brief constructs a tf::FlowBuilder::transform_reduce(P&&, B, E, T&, BOP, UOP) task
+         using the default execution policy tf::DefaultExecutionPolicy
+  */
   template <typename B, typename E, typename T, typename BOP, typename UOP>
   Task transform_reduce(B first, E last, T& init, BOP bop, UOP uop);
 

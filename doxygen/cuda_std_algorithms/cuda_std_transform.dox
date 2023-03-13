@@ -12,6 +12,10 @@ to different outputs.
 You need to include the header file, `%taskflow/cuda/algorithm/transform.hpp`, 
 for using the parallel-transform algorithm.
 
+@code{.cpp}
+#include <taskflow/cuda/algorithm/transform.hpp>
+@endcode
+
 @section CUDASTDTransformARangeOfItems Transform a Range of Items
 
 Parallel-transform algorithm applies the given transform function to a range of items and store the result in another range specified 

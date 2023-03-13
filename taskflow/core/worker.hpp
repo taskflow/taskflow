@@ -238,8 +238,10 @@ class WorkerInterface {
 };
 
 /**
-@fn make_worker_interface
 @brief helper function to create an instance derived from tf::WorkerInterface
+
+@tparam T type derived from tf::WorkerInterface
+@tparam ArgsT argument types to construct @c T
 
 @param args arguments to forward to the constructor of @c T
 */

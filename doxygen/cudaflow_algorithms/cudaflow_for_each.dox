@@ -13,6 +13,9 @@ parallel iterations over a range of items.
 You need to include the header file, `%taskflow/cuda/algorithm/for_each.hpp`, 
 for creating a parallel-iteration task.
 
+@code{.cpp}
+#include <taskflow/cuda/algorithm/for_each.hpp>
+@endcode
 
 @section ForEachCUDAIndexBasedParallelFor Index-based Parallel Iterations
 
@@ -39,12 +42,9 @@ The following example creates a kernel that assigns each entry of @c gpu_data
 to 1 over the range @c [0, 100) with step size 1.
 
 @code{.cpp}
-taskflow.emplace([&](tf::cudaFlow& cf){
-  // ... create other gpu tasks
-  // assigns each element in gpu_data to 1 over the range [0, 100) with step size 1
-  cf.for_each_index(0, 100, 1, [gpu_data] __device__ (int idx) {
-    gpu_data[idx] = 1;
-  });
+// assigns each element in gpu_data to 1 over the range [0, 100) with step size 1
+cudaflow.for_each_index(0, 100, 1, [gpu_data] __device__ (int idx) {
+  gpu_data[idx] = 1;
 });
 @endcode
 
@@ -67,13 +67,10 @@ The following example creates a @c for_each kernel that assigns each element in
 @c gpu_data to 1 over the range <tt>[gpu_data, gpu_data + 1000)</tt>.
 
 @code{.cpp}
-taskflow.emplace([&](tf::cudaFlow& cf){
-  // ... create gpu tasks
-  // assigns each element to 1 over the range [gpu_data, gpu_data + 1000)
-  cf.for_each(gpu_data, gpu_data + 1000, [] __device__ (int& item) {
-    item = 1;
-  }); 
-});
+// assigns each element to 1 over the range [gpu_data, gpu_data + 1000)
+cudaflow.for_each(gpu_data, gpu_data + 1000, [] __device__ (int& item) {
+  item = 1;
+}); 
 @endcode
 
 Each iteration is independent of each other and is assigned one kernel thread 

@@ -36,11 +36,13 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
 
 @subsection release-3-6-0_taskflow_core Taskflow Core
 
-+ Extended parallel algorithms with the following partitioning methods:
-  + tf::StaticPartitioner
-  + tf::GuidedPartitioner
-  + tf::DynamicPartitioner
-  + tf::RandomPartitioner
++ Extended parallel algorithms to support different execution policies via tf::ExecutionPolicy
+  + tf::Taskflow::for_each_index(P&& policy, B first, E last, S step, C callable)
+  + tf::Taskflow::for_each(P&& policy, B first, E last, C callable) 
+  + tf::Taskflow::transform(P&& policy, B first1, E last1, O d_first, C c)
+  + tf::Taskflow::transform(P&& policy, B1 first1, E1 last1, B2 first2, O d_first, C c)
+  + tf::Taskflow::reduce(P&& policy, B first, E last, T& result, O bop) 
+  + tf::Taskflow::transform_reduce(P&& policy, B first, E last, T& result, BOP bop, UOP uop)
 
 @subsection release-3-6-0_cudaflow cudaFlow
 
@@ -56,9 +58,80 @@ If you encounter any potential bugs, please submit an issue at @IssueTracker.
 
 @section release-3-6-0_breaking_changes Breaking Changes
 
++ Dropped in-place support for running tf::cudaFlow from a dedicated task
+
+@code{.cpp}
+// previous - no longer supported
+taskflow.emplace([](tf::cudaFlow& cf){
+  cf.offload();
+});
+
+// now - user to fully control tf::cudaFlow for maximum flexibility
+taskflow.emplace([](){
+  tf::cudaFlow cf;
+
+  // offload the cudaflow asynchronously through a stream
+  tf::cudaStream stream;
+  cf.run(stream);
+
+  // wait for the cudaflow completes
+  stream.synchronize();
+});
+@endcode
+
++ Dropped in-place support for running tf::cudaFlowCapturer from a dedicated task
+
+@code{.cpp}
+// previous - now longer supported
+taskflow.emplace([](tf::cudaFlowCapturer& cf){
+  cf.offload();
+});
+
+// now - user to fully control tf::cudaFlowCapturer for maximum flexibility
+taskflow.emplace([](){
+  tf::cudaFlowCapturer cf;
+
+  // offload the cudaflow asynchronously through a stream
+  tf::cudaStream stream;
+  cf.run(stream);
+
+  // wait for the cudaflow completes
+  stream.synchronize();
+});
+@endcode
+
++ Dropped in-place support for running tf::syclFlow from a dedicated task
++ Move all buffer query methods of CUDA standard algorithms inside execution policy
+
+@code{.cpp}
+// previous - no longer supported
+tf::cuda_reduce_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+
+// now (and similarly for other parallel algorithms)
+tf::cudaDefaultExecutionPolicy policy(stream);
+policy.reduce_bufsz<int>(N);
+@endcode
+
+  + tf::cudaExecutionPolicy<NT, VT>::reduce_bufsz
+  + tf::cudaExecutionPolicy<NT, VT>::scan_bufsz
+  + tf::cudaExecutionPolicy<NT, VT>::merge_bufsz
+  + tf::cudaExecutionPolicy<NT, VT>::min_element_bufsz
+  + tf::cudaExecutionPolicy<NT, VT>::max_element_bufsz
+
 @section release-3-6-0_deprecated_items Deprecated and Removed Items 
 
 @section release-3-6-0_documentation Documentation
+
++ Added @ref ExecutionPolicy 
++ Revised %Taskflow algorithms to include execution policy
+  + @ref ParallelIterations
+  + @ref ParallelTransforms
+  + @ref ParallelReduction
++ Revised CUDA standard algorithms to correct the use of buffer query methods
+  + @ref CUDASTDReduce
+  + @ref CUDASTDFind
+  + @ref CUDASTDMerge
+  + @ref CUDASTDScan
 
 @section release-3-6-0_miscellaneous_items Miscellaneous Items
 

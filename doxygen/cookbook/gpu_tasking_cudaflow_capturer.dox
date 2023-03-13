@@ -13,7 +13,11 @@ in building GPU task graphs.
 @section GPUTaskingcudaFlowCapturerIncludeTheHeader Include the Header
 
 You need to include the header file, `%taskflow/cuda/cudaflow.hpp`, 
-for creating a tf::cudaFlowCapturer task.
+for capturing a GPU task graph using tf::cudaFlowCapturer.
+
+@code{.cpp}
+#include <taskflow/cuda/cudaflow.hpp>
+@endcode
 
 @section Capture_a_cudaFlow Capture a cudaFlow
 
@@ -31,34 +35,29 @@ and
 where @c task_1 runs before @c task_2.
 
 @code{.cpp}
-#include <taskflow/cuda/cudaflow.hpp>
+// create a cudaFlow capturer to run a CUDA graph using stream capturing
+tf::cudaFlowCapturer capturer;
 
-int main() {
+// capture my_kernel_1 through a stream managed by capturer
+tf::cudaTask task_1 = capturer.on([&](cudaStream_t stream){ 
+  my_kernel_1<<<grid_1, block_1, shm_size_1, stream>>>(my_parameters_1);
+}).name("my_kernel_1");
 
-  tf::Executor executor;
-  tf::Taskflow taskflow;
+// capture my_kernel_2 through a stream managed by capturer
+tf::cudaTask task_2 = capturer.on([&](cudaStream_t stream){ 
+  my_kernel_2<<<grid_2, block_2, shm_size_2, stream>>>(my_parameters_2);
+}).name("my_kernel_2");
 
-  tf::Task task = taskflow.emplace([&](tf::cudaFlowCapturer& capturer){
-    // capture my_kernel_1 through a stream managed by capturer
-    tf::cudaTask task_1 = capturer.on([&](cudaStream_t stream){ 
-      my_kernel_1<<<grid_1, block_1, shm_size_1, stream>>>(my_parameters_1);
-    }).name("my_kernel_1");
-  
-    // capture my_kernel_2 through a stream managed by capturer
-    tf::cudaTask task_2 = capturer.on([&](cudaStream_t stream){ 
-      my_kernel_2<<<grid_2, block_2, shm_size_2, stream>>>(my_parameters_2);
-    }).name("my_kernel_2");
-  
-    // my_kernel_1 runs before my_kernel_2
-    task_1.precede(task_2);
-  }).name("capturer");
+// my_kernel_1 runs before my_kernel_2
+task_1.precede(task_2);
 
-  executor.run(taskflow).wait();
+// offload captured GPU tasks using the CUDA Graph execution model
+tf::cudaStream stream;
+capturer.run(stream);
+stream.synchronize();
 
-  taskflow.dump(std::cout);
-
-  return 0;
-}
+// dump the cudaFlow to a DOT format through std::cout
+capturer.dump(std::cout)
 @endcode
 
 @dotfile images/cudaflow_capturer_1.dot
@@ -67,6 +66,7 @@ int main() {
 Inside tf::cudaFlowCapturer::on, you should @em NOT modify the properties of 
 the stream argument but only use it to capture @em asynchronous GPU operations
 (e.g., @c kernel, @c cudaMemcpyAsync).
+The stream argument is internal to the capturer use only.
 
 @section CommonCaptureMethods Common Capture Methods
 
@@ -78,49 +78,58 @@ to construct a GPU task graph of one host-to-device copy, kernel,
 and one device-to-host copy, in this order of their dependencies.
 
 @code{.cpp}
-tf::Task task = taskflow.emplace([](tf::cudaFlowCapturer& capturer){
-  // copy data from host_data to gpu_data
-  tf::cudaTask h2d = capturer.memcpy(gpu_data, host_data, bytes).name("h2d");
+tf::cudaFlowCapturer capturer;
 
-  // capture my_kernel to do computation on gpu_data
-  tf::cudaTask kernel = capturer.on([&](cudaStream_t stream){  
-    my_kernel<<<grid, block, shm_size, stream>>>(gpu_data, arg1, arg2, ...);
-  }).name("my_kernel");
+// copy data from host_data to gpu_data
+tf::cudaTask h2d = capturer.memcpy(gpu_data, host_data, bytes)
+                           .name("h2d");
 
-  // copy data from gpu_data to host_data
-  tf::cudaTask d2h = capturer.memcpy(host_data, gpu_data, bytes).name("d2h");
-  
-  h2d.precede(kernel);
-  kernel.precede(d2h);
-}).name("capturer");
+// capture my_kernel to do computation on gpu_data
+tf::cudaTask kernel = capturer.kernel(grid, block, shm_size, kernel, kernel_args);
+                              .name("my_kernel");
+
+// copy data from gpu_data to host_data
+tf::cudaTask d2h = capturer.memcpy(host_data, gpu_data, bytes)
+                           .name("d2h");
+
+// build task dependencies
+h2d.precede(kernel);
+kernel.precede(d2h);
 @endcode
 
 @dotfile images/cudaflow_capturer_2.dot
 
 @section CreateACapturerOnASpecificGPU Create a Capturer on a Specific GPU
 
-You can capture a %cudaFlow on a specific GPU by calling tf::Taskflow::emplace_on.
-By default, a %cudaFlow runs on the current GPU associated with the caller, 
-which is typically 0.
-You can emplace a %cudaFlowCapturer on a specific GPU.
-The following example creates a capturer on GPU 2. 
-When the executor runs the callable, it switches to GPU 2 and scopes
-the callable under this GPU context.
+You can run a %cudaFlow capturer on a specific GPU by switching to the context 
+of that GPU using tf::cudaScopedDevice, following the CUDA convention of multi-GPU programming.
+The following example creates a %cudaFlow capturer on GPU @c 2:
 
 @code{.cpp}
-tf::Task task = taskflow.emplace_on([](tf::cudaFlowCapturer& capturer){
-  // here, capturer is under GPU device 2
+{
+  // create an RAII-styled switcher to the context of GPU 2
+  tf::cudaScopedDevice context(2);
+
+  // create a cudaFlow capturer under GPU 2
+  tf::cudaFlowCapturer capturer;
   // ...
-}, 2);
+
+  // create a stream under GPU 2 and offload the capturer to that GPU
+  tf::cudaStream stream;
+  capturer.run(stream);
+  stream.synchronize();
+}
 @endcode
 
+tf::cudaScopedDevice is an RAII-styled wrapper to perform @em scoped switch
+to the given GPU context.
+When the scope is destroyed, it switches back to the original context.
 
+@note
+By default, a %cudaFlow capturer runs on the current GPU associated with the caller, 
+which is typically @c 0.
 
-@attention
-It is your responsibility to allocate the GPU memory in the same
-GPU context as the capturer.
-
-@section CreateACapturerWithinAcudaFlow Create a Capturer within a cudaFlow
+@section CreateACapturerWithinAcudaFlow Create a Capturer from a cudaFlow
 
 Within a parent %cudaFlow, you can capture a %cudaFlow to form a subflow that 
 eventually becomes a @em child node in the underlying CUDA task graph.
@@ -128,30 +137,29 @@ The following example defines a captured flow @c task2 of two dependent tasks,
 @c task2_1 and @c task2_2, and @c task2 runs after @c task1.
 
 @code{.cpp}
-tf::Task task = taskflow.emplace([&](tf::cudaFlow& cf){
+tf::cudaFlow cudaflow;
 
-  tf::cudaTask task1 = cf.kernel(grid, block, shm, my_kernel, args...)
-                         .name("my_kernel");
+tf::cudaTask task1 = cudaflow.kernel(grid, block, shm, my_kernel, args...)
+                       .name("kernel");
+
+// task2 forms a subflow as a child node in the underlying CUDA graph
+tf::cudaTask task2 = cudaflow.capture([&](tf::cudaFlowCapturer& capturer){
   
-  // task2 forms a subflow in cf and becomes a child node in the underlying 
-  // CUDA graph
-  tf::cudaTask task2 = cf.capture([&](tf::cudaFlowCapturer& capturer){
-    
-    // capture my_kernel1 using the given stream
-    tf::cudaTask task2_1 = capturer.on([&](cudaStream_t stream){  
-      my_kernel2<<<grid1, block1, shm_size1, stream>>>(args1...);
-    }).name("my_kernel1");  
-    
-    // capture my_kernel2 using the given stream
-    tf::cudaTask task2_2 = capturer.on([&](cudaStream_t stream){  
-      my_kernel2<<<grid2, block2, shm_size2, stream>>>(args2...);
-    }).name("my_kernel2");   
+  // capture kernel_1 using the given stream
+  tf::cudaTask task2_1 = capturer.on([&](cudaStream_t stream){  
+    kernel_2<<<grid1, block1, shm_size1, stream>>>(args1...);
+  }).name("kernel_1");  
+  
+  // capture kernel_2 using the given stream
+  tf::cudaTask task2_2 = capturer.on([&](cudaStream_t stream){  
+    kernel_2<<<grid2, block2, shm_size2, stream>>>(args2...);
+  }).name("kernel_2");   
+  
+  // kernel_1 runs before kernel_2
+  task2_1.precede(task2_2);
+}).name("capturer");
 
-    task2_1.precede(task2_2);
-  }).name("capturer");
-
-  task1.precede(task2);
-}).name("cudaFlow");
+task1.precede(task2);
 @endcode
 
 @dotfile images/cudaflow_capturer_3.dot
@@ -159,114 +167,78 @@ tf::Task task = taskflow.emplace([&](tf::cudaFlow& cf){
 
 @section OffloadAcudaFlowCapturer Offload a cudaFlow Capturer
 
-By default, the executor offloads and executes the %cudaFlow capturer once.
-When you offload a %cudaFlow capturer, 
-the %Taskflow runtime transforms the user-described graph into an executable graph 
-that is optimized for maximum stream concurrency.
-Depending on the optimization algorithm, the user-described graph may be different
+When you offload a %cudaFlow capturer using tf::cudaFlowCapturer::run, 
+the runtime transforms that capturer (i.e., application GPU task graph) 
+into a native CUDA graph and an executable instance
+both optimized for maximum kernel concurrency.
+Depending on the optimization algorithm, 
+the application GPU task graph may be different 
 from the actual executable graph submitted to the CUDA runtime.
-Similar to tf::Executor, tf::cudaFlowCapturer provides several offload methods
-to run the GPU task graph:
 
 @code{.cpp}
-taskflow.emplace([](tf::cudaFlowCapturer& cf) {
-  // ... capture CUDA tasks
-  cf.offload();      // offload the cudaFlow capturer and run it once
-  cf.offload_n(10);  // offload the cudaFlow capturer and run it 10 times
-  cf.offload_until([repeat=5] () mutable { return repeat-- == 0; })  // five times
-});
+tf::cudaStream stream;
+// launch a cudaflow capturer asynchronously through a stream
+capturer.run(stream);
+// wait for the cudaflow to finish
+stream.synchronize();
 @endcode
-
-After you offload a %cudaFlow capturer, 
-it is considered executed, and the executor will @em not run an offloaded %cudaFlow
-after leaving the %cudaFlow capturer task callable.
-On the other hand, if a %cudaFlow capturer is not offloaded, 
-the executor runs it once.
-For example, the following two versions represent the same execution logic.
-
-@code{.cpp}
-// version 1: explicitly offload a cudaFlow capturer once
-taskflow.emplace([](tf::cudaFlowCapturer& cf) {
-  cf.single_task([] __device__ (){});
-  cf.offload();
-});
-
-// version 2 (same as version 1): executor offloads the cudaFlow capturer once
-taskflow.emplace([](tf::cudaFlowCapturer& sf) {
-  cf.single_task([] __device__ (){});
-});
-@endcode
-
 
 @section UpdateAcudaFlowCapturer Update a cudaFlow Capturer
 
 Between successive offloads (i.e., executions of a %cudaFlow capturer),
 you can update the captured task with a different set of parameters.
-For example, you can update a kernel task to a memory task from an offloaded 
-%cudaFlow capturer.
+Every task-creation method in tf::cudaFlowCapturer has an overload 
+to update the parameters of a created task by that method.
+The following example creates a kernel task and updates its parameter
+between successive runs:
 
 @code{.cpp}
-taskflow.emplace(tf::cudaFlowCapturer& cf) {
-  tf::cudaTask task = cf.kernel(grid1, block1, shm1, kernel1, kernel1_args);
-  cf.offload();
+tf::cudaStream stream;
+tf::cudaFlowCapturer cf;
 
-  // update task to another kernel with different parameters
-  cf.kernel(task, grid2, block2, shm2, kernel2, kernel2_args);
-  cf.offload();
+// create a kernel task
+tf::cudaTask task = cf.kernel(grid1, block1, shm1, kernel, kernel_args_1);
+cf.run(stream);
+stream.synchronize();
 
-  // update task to another task type is OK in a capturer
-  cf.memset(task, target, 0, num_bytes);
-  cf.offload();
-};
+// update the created kernel task with different parameters
+cf.kernel(task, grid2, block2, shm2, kernel, kernel_args_2);
+cf.run(stream);
+stream.synchronize();
 @endcode
 
-When you offload a updated %cudaFlow capturer,
-the runtime will try to update the underlying executable 
-with the new captured graph first, 
-or destroy the executable graph and replace it with a new one.
-Each method of task creation in tf::cudaFlowCapturer has an overload of 
-updating the parameters of the task created from the same creation method.
 
-@note
-Unlike tf::cudaFlow that is restrictive about the use of update methods,
-it is valid to alter the topology and change the type of a captured task 
-between successive execution of a %cudaFlow capturer.
+When you run a updated %cudaFlow capturer,
+%Taskflow will try to update the underlying executable 
+with the newly captured graph first.
+If that update is unsuccessful, 
+%Taskflow will destroy the executable graph and re-instantiate
+a new one from the newly captured graph.
 
-@section UsecudaFlowCapturerInAStandaloneEnvironment Use cudaFlow Capturer in a Standalone Environment
+@section IntegrateCudaFlowCapturerIntoTaskflow Integrate a cudaFlow Capturer into Taskflow
 
-You can use tf::cudaFlowCapturer in a standalone environment without going through
-tf::Taskflow and offloads it to a GPU from the caller thread.
-All the features we have discussed so far apply to the standalone use.
+You can create a task to enclose a %cudaFlow capturer and run it from a worker thread.
+The usage of the capturer remains the same except that the capturer is run by a worker thread
+from a taskflow task.
+The following example runs a %cudaFlow capturer from a static task:
 
 @code{.cpp}
-tf::cudaFlowCapturer cf;  // create a standalone cudaFlow capturer
+tf::Executor executor;
+tf::Taskflow taskflow;
 
-tf::cudaTask h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
-tf::cudaTask h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");
-tf::cudaTask d2h_x = cf.copy(hx.data(), dx, N).name("d2h_x");
-tf::cudaTask d2h_y = cf.copy(hy.data(), dy, N).name("d2h_y");
-tf::cudaTask saxpy = cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy)
-                       .name("saxpy");
+taskflow.emplace([](){
+  // create a cudaFlow capturer inside a static task
+  tf::cudaFlowCapturer capturer;
 
-saxpy.succeed(h2d_x, h2d_y)   // kernel runs after  host-to-device copy
-     .precede(d2h_x, d2h_y);  // kernel runs before device-to-host copy
-
-cf.offload();  // offload and run the standalone cudaFlow capturer once
+  // ... capture a GPU task graph
+  capturer.kernel(...);
+  
+  // run the capturer through a stream
+  tf::cudaStream stream;
+  capturer.run(stream);
+  stream.synchronize();
+});
 @endcode
-
-When using %cudaFlow Capturer in a standalone environment, it is your choice
-to decide its GPU context.
-The following example creates a %cudaFlow capturer and executes it on GPU 2.
-
-@code{.cpp}
-tf::cudaScopedDevice gpu(2);
-tf::cudaFlowCapturer cf;  // create a standalone cudaFlow capturer on GPU 2
-cf.offload();             // run the capturer once on GPU 2
-@endcode
-
-@note
-In the standalone mode, a written %cudaFlow capturer will not be executed until
-you explicitly call an offload method, as there is neither a taskflow nor an executor.
 
 
 */

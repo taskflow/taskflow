@@ -336,19 +336,14 @@ class cudaFlow {
     /**
     @brief offloads the %cudaFlow onto a GPU asynchronously via a stream
 
-    @tparam P predicate type (a binary callable)
+    @param stream stream for performing this operation
 
-    @param predicate a binary predicate (returns @c true for stop)
-
-    Immediately offloads the present %cudaFlow onto a GPU and
-    repeatedly runs it until the predicate returns @c true.
+    Offloads the present %cudaFlow onto a GPU asynchronously via
+    the given stream.
 
     An offloaded %cudaFlow forces the underlying graph to be instantiated.
     After the instantiation, you should not modify the graph topology
     but update node parameters.
-
-    By default, if users do not offload the %cudaFlow,
-    the executor will offload it once.
     */
     void run(cudaStream_t stream);
 

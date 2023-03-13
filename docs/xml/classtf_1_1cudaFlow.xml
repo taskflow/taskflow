@@ -3,100 +3,25 @@
   <compounddef id="classtf_1_1cudaFlow" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaFlow</compoundname>
     <includes refid="cudaflow_8hpp" local="no">cudaflow.hpp</includes>
-    <innerclass refid="structtf_1_1cudaFlow_1_1External" prot="private">tf::cudaFlow::External</innerclass>
-    <innerclass refid="structtf_1_1cudaFlow_1_1Internal" prot="private">tf::cudaFlow::Internal</innerclass>
-      <sectiondef kind="private-type">
-      <memberdef kind="typedef" id="classtf_1_1cudaFlow_1a424926b9d6ce538c8e6aa576cdb1583c" prot="private" static="no">
-        <type>std::variant&lt; External, Internal &gt;</type>
-        <definition>using tf::cudaFlow::handle_t =  std::variant&lt;External, Internal&gt;</definition>
-        <argsstring></argsstring>
-        <name>handle_t</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="71" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="71" bodyend="-1"/>
-      </memberdef>
-      </sectiondef>
-      <sectiondef kind="friend">
-      <memberdef kind="friend" id="classtf_1_1cudaFlow_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>friend class</type>
-        <definition>friend class Executor</definition>
-        <argsstring></argsstring>
-        <name>Executor</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="58" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="58" bodyend="-1"/>
-      </memberdef>
-      </sectiondef>
-      <sectiondef kind="private-static-attrib">
-      <memberdef kind="variable" id="classtf_1_1cudaFlow_1ab7f39edd0778b2946fb7be7f95daaf0e" prot="private" static="yes" constexpr="yes" mutable="no">
-        <type>constexpr static auto</type>
-        <definition>constexpr static auto tf::cudaFlow::EXTERNAL</definition>
-        <argsstring></argsstring>
-        <name>EXTERNAL</name>
-        <initializer>= get_index_v&lt;External, handle_t&gt;</initializer>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="74" column="25" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="74" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="variable" id="classtf_1_1cudaFlow_1af0c2f7df82c970719909e946d2a257ee" prot="private" static="yes" constexpr="yes" mutable="no">
-        <type>constexpr static auto</type>
-        <definition>constexpr static auto tf::cudaFlow::INTERNAL</definition>
-        <argsstring></argsstring>
-        <name>INTERNAL</name>
-        <initializer>= get_index_v&lt;Internal, handle_t&gt;</initializer>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="75" column="25" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="75" bodyend="-1"/>
-      </memberdef>
-      </sectiondef>
       <sectiondef kind="private-attrib">
-      <memberdef kind="variable" id="classtf_1_1cudaFlow_1a3301611d9ecd3795ec58b045ea7327f6" prot="private" static="no" mutable="no">
-        <type>handle_t</type>
-        <definition>handle_t tf::cudaFlow::_handle</definition>
+      <memberdef kind="variable" id="classtf_1_1cudaFlow_1a31c7ba8b8053d6ad95c7da5e5a9494f2" prot="private" static="no" mutable="no">
+        <type>cudaFlowGraph</type>
+        <definition>cudaFlowGraph tf::cudaFlow::_cfg</definition>
         <argsstring></argsstring>
-        <name>_handle</name>
+        <name>_cfg</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="1150" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1150" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="587" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="587" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classtf_1_1cudaFlow_1aa8b4d0cddb73fec80fd7ac2fd58cfefc" prot="private" static="no" mutable="no">
-        <type>cudaGraph &amp;</type>
-        <definition>cudaGraph&amp; tf::cudaFlow::_graph</definition>
-        <argsstring></argsstring>
-        <name>_graph</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="1151" column="15" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1151" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="variable" id="classtf_1_1cudaFlow_1a94245f76023eca97d6713073f0e614a4" prot="private" static="no" mutable="no">
+      <memberdef kind="variable" id="classtf_1_1cudaFlow_1a8e3255897f01f87dcd9ca506c314a125" prot="private" static="no" mutable="no">
         <type>cudaGraphExec</type>
-        <definition>cudaGraphExec tf::cudaFlow::_exec</definition>
+        <definition>cudaGraphExec tf::cudaFlow::_exe</definition>
         <argsstring></argsstring>
-        <name>_exec</name>
+        <name>_exe</name>
         <initializer>{nullptr}</initializer>
         <briefdescription>
         </briefdescription>
@@ -104,7 +29,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="1152" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1152" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="588" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="588" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -114,19 +39,18 @@
         <argsstring>()</argsstring>
         <name>cudaFlow</name>
         <briefdescription>
-<para>constructs a standalone cudaFlow </para>
+<para>constructs a cudaFlow </para>
         </briefdescription>
         <detaileddescription>
-<para>A standalone cudaFlow does not go through any taskflow and can be run by the caller thread using explicit offload methods (e.g., <ref refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" kindref="member">tf::cudaFlow::offload</ref>). </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="86" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1164" bodyend="1172"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="63" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="592" bodyend="594"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a19eda378f8c0ef4495e08996f63f5144" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaFlow_1a828c3ab275521672e4ec6c78d3a9ee62" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::cudaFlow::~cudaFlow</definition>
-        <argsstring>()</argsstring>
+        <argsstring>()=default</argsstring>
         <name>~cudaFlow</name>
         <briefdescription>
 <para>destroys the cudaFlow and its associated native CUDA graph and executable graph </para>
@@ -135,7 +59,41 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="92" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1188" bodyend="1191"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="69" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaFlow_1a677a4b510abee2ac665193389b20f725" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tf::cudaFlow::cudaFlow</definition>
+        <argsstring>(cudaFlow &amp;&amp;)=default</argsstring>
+        <name>cudaFlow</name>
+        <param>
+          <type><ref refid="classtf_1_1cudaFlow" kindref="compound">cudaFlow</ref> &amp;&amp;</type>
+        </param>
+        <briefdescription>
+<para>default move constructor </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="74" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaFlow_1a74beef874538193ac0df81a180faa742" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classtf_1_1cudaFlow" kindref="compound">cudaFlow</ref> &amp;</type>
+        <definition>cudaFlow&amp; tf::cudaFlow::operator=</definition>
+        <argsstring>(cudaFlow &amp;&amp;)=default</argsstring>
+        <name>operator=</name>
+        <param>
+          <type><ref refid="classtf_1_1cudaFlow" kindref="compound">cudaFlow</ref> &amp;&amp;</type>
+        </param>
+        <briefdescription>
+<para>default move assignment operator </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="79" column="14"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a1926f45a038d8faa9c1b1ee43fd29a93" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -149,7 +107,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="97" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1210" bodyend="1212"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="84" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="604" bodyend="606"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1ae6560c27d249af7e4b8b921388f5e1e2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -163,7 +121,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="102" column="12" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1215" bodyend="1217"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="89" column="12" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="609" bodyend="611"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1aad726dfe21e9719d96c65530a56d9951" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -177,7 +135,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="107" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1194" bodyend="1207"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="94" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="597" bodyend="601"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a7f97b68fa7c889db49b26aa71a46a7cf" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -195,7 +153,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="113" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1220" bodyend="1222"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="100" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="614" bodyend="616"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a43507f21eb9cb77667ffe0ac7e6ae635" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -214,7 +172,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="122" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1225" bodyend="1227"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="109" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="619" bodyend="621"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a30b2e107cb2c90a37f467b28d1b42a74" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
@@ -231,7 +189,7 @@ An empty node performs no operation during execution, but can be used for transi
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="140" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1234" bodyend="1248"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="127" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="628" bodyend="642"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a060e1c96111c2134ce0f896420a42cd0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -275,7 +233,7 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="156" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1252" bodyend="1272"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="143" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="646" bodyend="666"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a02e4e5cf7d03b9d087d6fbf54eb86bbf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -303,9 +261,9 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="165" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1414" bodyend="1423"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="152" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="808" bodyend="817"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaFlow_1a68f666503d13a7b80fb7399fb2f0c153" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename F</type>
@@ -318,7 +276,7 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
         </templateparamlist>
         <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
         <definition>cudaTask tf::cudaFlow::kernel</definition>
-        <argsstring>(dim3 g, dim3 b, size_t s, F f, ArgsT &amp;&amp;... args)</argsstring>
+        <argsstring>(dim3 g, dim3 b, size_t s, F f, ArgsT... args)</argsstring>
         <name>kernel</name>
         <param>
           <type>dim3</type>
@@ -337,7 +295,7 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
           <declname>f</declname>
         </param>
         <param>
-          <type>ArgsT &amp;&amp;...</type>
+          <type>ArgsT...</type>
           <declname>args</declname>
         </param>
         <briefdescription>
@@ -408,9 +366,9 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="182" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1276" bodyend="1301"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="169" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="670" bodyend="695"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a6ee746bd98fbb04326d1e76dab9b955c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaFlow_1a821117dd640807bb7ec114b46888dfb1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename F</type>
@@ -423,7 +381,7 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
         </templateparamlist>
         <type>void</type>
         <definition>void tf::cudaFlow::kernel</definition>
-        <argsstring>(cudaTask task, dim3 g, dim3 b, size_t shm, F f, ArgsT &amp;&amp;... args)</argsstring>
+        <argsstring>(cudaTask task, dim3 g, dim3 b, size_t shm, F f, ArgsT... args)</argsstring>
         <name>kernel</name>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
@@ -446,18 +404,18 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
           <declname>f</declname>
         </param>
         <param>
-          <type>ArgsT &amp;&amp;...</type>
+          <type>ArgsT...</type>
           <declname>args</declname>
         </param>
         <briefdescription>
 <para>updates parameters of a kernel task </para>
         </briefdescription>
         <detaileddescription>
-<para>The method is similar to <ref refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" kindref="member">tf::cudaFlow::kernel</ref> but operates on a task of type tf::cudaTaskType::KERNEL. The kernel function name must NOT change. </para>
+<para>The method is similar to <ref refid="classtf_1_1cudaFlow_1a68f666503d13a7b80fb7399fb2f0c153" kindref="member">tf::cudaFlow::kernel</ref> but operates on a task of type tf::cudaTaskType::KERNEL. The kernel function name must NOT change. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="192" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1427" bodyend="1449"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="179" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="821" bodyend="843"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a079ca65da35301e5aafd45878a19e9d2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
@@ -511,7 +469,7 @@ A memset task fills the first <computeroutput>count</computeroutput> bytes of de
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="208" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1371" bodyend="1387"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="195" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="765" bodyend="781"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a082505f0fec89f65808421cdc737fb17" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -542,7 +500,7 @@ A memset task fills the first <computeroutput>count</computeroutput> bytes of de
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="219" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1485" bodyend="1497"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="206" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="879" bodyend="891"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1ad37637606f0643f360e9eda1f9a6e559" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
@@ -596,7 +554,7 @@ A memcpy task transfers <computeroutput>bytes</computeroutput> of data from a so
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="233" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1390" bodyend="1406"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="220" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="784" bodyend="800"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1acf9e6cfa65cbfcd1d33c88e64b487ce6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -627,7 +585,7 @@ A memcpy task transfers <computeroutput>bytes</computeroutput> of data from a so
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="244" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1468" bodyend="1482"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="231" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="862" bodyend="876"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a40172fac4464f6d805f75921ea3c2a3b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -687,7 +645,7 @@ A zero task zeroes the first <computeroutput>count</computeroutput> elements of 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="261" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1307" bodyend="1323"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="248" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="701" bodyend="717"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a78c2a73243809e3cbd1955cc1ffe6477" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -724,7 +682,7 @@ A zero task zeroes the first <computeroutput>count</computeroutput> elements of 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="276" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1521" bodyend="1533"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="263" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="915" bodyend="927"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a21d4447bc834f4d3e1bb4772c850d090" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -796,7 +754,7 @@ A fill task fills the first <computeroutput>count</computeroutput> elements of t
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="296" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1329" bodyend="1345"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="283" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="723" bodyend="739"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a39ed97c9142959c73d4c25c34d71bd5e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -837,7 +795,7 @@ A fill task fills the first <computeroutput>count</computeroutput> elements of t
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="311" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1503" bodyend="1515"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="298" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="897" bodyend="909"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -909,7 +867,7 @@ A copy task transfers <computeroutput>num*sizeof(T)</computeroutput> bytes of da
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="330" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1352" bodyend="1368"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="317" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="746" bodyend="762"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a6cf6ec1e85172fa99c16bf0beffc0562" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -949,93 +907,64 @@ A copy task transfers <computeroutput>num*sizeof(T)</computeroutput> bytes of da
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="344" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1453" bodyend="1465"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="331" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="847" bodyend="859"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a99358da15e3bdfa1faabb3e326130e1f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-        </templateparamlist>
+      <memberdef kind="function" id="classtf_1_1cudaFlow_1ae6810f7de27e5a347331aacfce67bea1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
-        <definition>void tf::cudaFlow::offload_until</definition>
-        <argsstring>(P &amp;&amp;predicate)</argsstring>
-        <name>offload_until</name>
+        <definition>void tf::cudaFlow::run</definition>
+        <argsstring>(cudaStream_t stream)</argsstring>
+        <name>run</name>
         <param>
-          <type>P &amp;&amp;</type>
-          <declname>predicate</declname>
+          <type>cudaStream_t</type>
+          <declname>stream</declname>
         </param>
         <briefdescription>
-<para>offloads the cudaFlow onto a GPU and repeatedly runs it until the predicate becomes true </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>predicate type (a binary callable)</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>predicate</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>a binary predicate (returns <computeroutput>true</computeroutput> for stop)</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-Immediately offloads the present cudaFlow onto a GPU and repeatedly runs it until the predicate returns <computeroutput>true</computeroutput>.</para>
-<para>An offloaded cudaFlow forces the underlying graph to be instantiated. After the instantiation, you should not modify the graph topology but update node parameters.</para>
-<para>By default, if users do not offload the cudaFlow, the executor will offload it once. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="369" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1606" bodyend="1624"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1ac2269fd7dc8ca04a294a718204703dad" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>void</type>
-        <definition>void tf::cudaFlow::offload_n</definition>
-        <argsstring>(size_t N)</argsstring>
-        <name>offload_n</name>
-        <param>
-          <type>size_t</type>
-          <declname>N</declname>
-        </param>
-        <briefdescription>
-<para>offloads the cudaFlow and executes it by the given times </para>
+<para>offloads the cudaFlow onto a GPU asynchronously via a stream </para>
         </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
-<parametername>N</parametername>
+<parametername>stream</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>number of executions </para>
+<para>stream for performing this operation</para>
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>
+Offloads the present cudaFlow onto a GPU asynchronously via the given stream.</para>
+<para>An offloaded cudaFlow forces the underlying graph to be instantiated. After the instantiation, you should not modify the graph topology but update node parameters. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="376" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1663" bodyend="1665"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="348" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1004" bodyend="1010"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>void</type>
-        <definition>void tf::cudaFlow::offload</definition>
+      <memberdef kind="function" id="classtf_1_1cudaFlow_1acfbee67cff7dc7c6297c20c64f2e015c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>cudaGraph_t</type>
+        <definition>cudaGraph_t tf::cudaFlow::native_graph</definition>
         <argsstring>()</argsstring>
-        <name>offload</name>
+        <name>native_graph</name>
         <briefdescription>
-<para>offloads the cudaFlow and executes it once </para>
+<para>acquires a reference to the underlying CUDA graph </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="381" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1668" bodyend="1670"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="353" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1013" bodyend="1015"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaFlow_1a5bfdaf621ab617ab5f0ca63466570256" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>cudaGraphExec_t</type>
+        <definition>cudaGraphExec_t tf::cudaFlow::native_executable</definition>
+        <argsstring>()</argsstring>
+        <name>native_executable</name>
+        <briefdescription>
+<para>acquires a reference to the underlying CUDA graph executable </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="358" column="21" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1018" bodyend="1020"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1079,7 +1008,7 @@ Immediately offloads the present cudaFlow onto a GPU and repeatedly runs it unti
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="397" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="165" bodyend="167"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="374" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="163" bodyend="165"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1add2d364f38c72322d8e36bc0da0b98e4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1107,7 +1036,7 @@ Immediately offloads the present cudaFlow onto a GPU and repeatedly runs it unti
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="406" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="171" bodyend="173"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="383" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="169" bodyend="171"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a1a681f6223853b6445dcfdad07e4d0fd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1190,7 +1119,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="429" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="181" bodyend="186"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="406" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="195" bodyend="210"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1af9cc7ee16602754929bb9118a9d7f0b2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1229,7 +1158,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="439" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="199" bodyend="204"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="416" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="214" bodyend="229"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a34f1ea89e5651faa6e8af522a42556ac" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1330,7 +1259,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="469" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="190" bodyend="195"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="446" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="233" bodyend="248"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a3fa7f8e38b4da1fe0cbcfb265f9349a2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1373,7 +1302,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="479" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="208" bodyend="213"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="456" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="252" bodyend="267"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1af89a9bda182272462a0eda2581536cd8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1479,7 +1408,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="506" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="139" bodyend="144"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="483" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="151" bodyend="167"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a4a211b1f8562e10f9aae8b44fd6acdec" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1525,7 +1454,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="516" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="157" bodyend="162"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="493" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="191" bodyend="207"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1abab2bfdfc86ef3a764ece4743fdede76" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1654,7 +1583,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="544" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="148" bodyend="153"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="521" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="171" bodyend="187"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a7c6ca7be2b6908e8f71570c54303ba9e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1707,2250 +1636,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="554" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="166" bodyend="173"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a931a0f99034bccf377aea35e221f50bc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-          <param>
-            <type>typename B</type>
-          </param>
-        </templateparamlist>
-        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-        <definition>cudaTask tf::cudaFlow::reduce</definition>
-        <argsstring>(I first, I last, T *result, B bop)</argsstring>
-        <name>reduce</name>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>T *</type>
-          <declname>result</declname>
-        </param>
-        <param>
-          <type>B</type>
-          <declname>bop</declname>
-        </param>
-        <briefdescription>
-<para>performs parallel reduction over a range of items </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>T</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>value type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>B</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning (inclusive) </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end (exclusive) </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>result</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the result with an initialized value </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>bop</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator to apply to reduce items</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle</para>
-</simplesect>
-This method is equivalent to the parallel execution of the following loop on a GPU:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>bop(*result,<sp/>*first++);</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="581" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="578" bodyend="583"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a4b56bc5ec489f4ed0da2c2826f4e9345" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cudaFlow::reduce</definition>
-        <argsstring>(cudaTask task, I first, I last, T *result, C op)</argsstring>
-        <name>reduce</name>
-        <param>
-          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>T *</type>
-          <declname>result</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>op</declname>
-        </param>
-        <briefdescription>
-<para>updates parameters of a kernel task created from <ref refid="classtf_1_1cudaFlow_1a931a0f99034bccf377aea35e221f50bc" kindref="member">tf::cudaFlow::reduce</ref> </para>
-        </briefdescription>
-        <detaileddescription>
-<para>The type of the iterators, result, and callable must be the same as the task created from <ref refid="classtf_1_1cudaFlow_1a931a0f99034bccf377aea35e221f50bc" kindref="member">tf::cudaFlow::reduce</ref>. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="591" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="616" bodyend="621"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a3a5189b9c9494d2a63a983c32cf234f6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-          <param>
-            <type>typename B</type>
-          </param>
-        </templateparamlist>
-        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-        <definition>cudaTask tf::cudaFlow::uninitialized_reduce</definition>
-        <argsstring>(I first, I last, T *result, B bop)</argsstring>
-        <name>uninitialized_reduce</name>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>T *</type>
-          <declname>result</declname>
-        </param>
-        <param>
-          <type>B</type>
-          <declname>bop</declname>
-        </param>
-        <briefdescription>
-<para>similar to <ref refid="classtf_1_1cudaFlow_1a931a0f99034bccf377aea35e221f50bc" kindref="member">tf::cudaFlow::reduce</ref> but does not assume any initial value to reduce </para>
-        </briefdescription>
-        <detaileddescription>
-<para>This method is equivalent to the parallel execution of the following loop on a GPU:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">*result<sp/>=<sp/>*first++;<sp/><sp/></highlight><highlight class="comment">//<sp/>no<sp/>initial<sp/>values<sp/>partitipcate<sp/>in<sp/>the<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>op(*result,<sp/>*first++);</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="608" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="587" bodyend="592"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a096b655c4d8c9a4d5d250cdce6a49c59" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cudaFlow::uninitialized_reduce</definition>
-        <argsstring>(cudaTask task, I first, I last, T *result, C op)</argsstring>
-        <name>uninitialized_reduce</name>
-        <param>
-          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>T *</type>
-          <declname>result</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>op</declname>
-        </param>
-        <briefdescription>
-<para>updates parameters of a kernel task created from <ref refid="classtf_1_1cudaFlow_1a3a5189b9c9494d2a63a983c32cf234f6" kindref="member">tf::cudaFlow::uninitialized_reduce</ref> </para>
-        </briefdescription>
-        <detaileddescription>
-<para>The type of the iterators, result, and callable must be the same as the task created from <ref refid="classtf_1_1cudaFlow_1a3a5189b9c9494d2a63a983c32cf234f6" kindref="member">tf::cudaFlow::uninitialized_reduce</ref>. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="618" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="625" bodyend="632"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a1af5d4e8a3820f9b9d8abbe4f4f6c4a4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-          <param>
-            <type>typename B</type>
-          </param>
-          <param>
-            <type>typename U</type>
-          </param>
-        </templateparamlist>
-        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-        <definition>cudaTask tf::cudaFlow::transform_reduce</definition>
-        <argsstring>(I first, I last, T *result, B bop, U uop)</argsstring>
-        <name>transform_reduce</name>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>T *</type>
-          <declname>result</declname>
-        </param>
-        <param>
-          <type>B</type>
-          <declname>bop</declname>
-        </param>
-        <param>
-          <type>U</type>
-          <declname>uop</declname>
-        </param>
-        <briefdescription>
-<para>performs parallel reduction over a range of transformed items </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>T</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>value type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>B</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>U</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning (inclusive) </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end (exclusive) </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>result</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the result with an initialized value </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>bop</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator to apply to reduce items </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>uop</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator to transform each item before reduction</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle</para>
-</simplesect>
-This method is equivalent to the parallel execution of the following loop on a GPU:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>bop(*result,<sp/>uop(*first++));</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="647" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="596" bodyend="601"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1ac600a831b8bac389f2fbd1b384c6df5a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-          <param>
-            <type>typename B</type>
-          </param>
-          <param>
-            <type>typename U</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cudaFlow::transform_reduce</definition>
-        <argsstring>(cudaTask, I first, I last, T *result, B bop, U uop)</argsstring>
-        <name>transform_reduce</name>
-        <param>
-          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-          <defname>task</defname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>T *</type>
-          <declname>result</declname>
-        </param>
-        <param>
-          <type>B</type>
-          <declname>bop</declname>
-        </param>
-        <param>
-          <type>U</type>
-          <declname>uop</declname>
-        </param>
-        <briefdescription>
-<para>updates parameters of a kernel task created from <ref refid="classtf_1_1cudaFlow_1a1af5d4e8a3820f9b9d8abbe4f4f6c4a4" kindref="member">tf::cudaFlow::transform_reduce</ref> </para>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="654" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="636" bodyend="643"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a9716ae4016ac058b32becef119faaddd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-          <param>
-            <type>typename B</type>
-          </param>
-          <param>
-            <type>typename U</type>
-          </param>
-        </templateparamlist>
-        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-        <definition>cudaTask tf::cudaFlow::transform_uninitialized_reduce</definition>
-        <argsstring>(I first, I last, T *result, B bop, U uop)</argsstring>
-        <name>transform_uninitialized_reduce</name>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>T *</type>
-          <declname>result</declname>
-        </param>
-        <param>
-          <type>B</type>
-          <declname>bop</declname>
-        </param>
-        <param>
-          <type>U</type>
-          <declname>uop</declname>
-        </param>
-        <briefdescription>
-<para>similar to <ref refid="classtf_1_1cudaFlow_1a1af5d4e8a3820f9b9d8abbe4f4f6c4a4" kindref="member">tf::cudaFlow::transform_reduce</ref> but does not assume any initial value to reduce </para>
-        </briefdescription>
-        <detaileddescription>
-<para>This method is equivalent to the parallel execution of the following loop on a GPU:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">*result<sp/>=<sp/>uop(*first++);<sp/><sp/></highlight><highlight class="comment">//<sp/>no<sp/>initial<sp/>values<sp/>partitipcate<sp/>in<sp/>the<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>bop(*result,<sp/>uop(*first++));</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="671" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="605" bodyend="612"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a2d1ffcdcb56cdf9f4cb896b52d07a6c4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-          <param>
-            <type>typename B</type>
-          </param>
-          <param>
-            <type>typename U</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cudaFlow::transform_uninitialized_reduce</definition>
-        <argsstring>(cudaTask task, I first, I last, T *result, B bop, U uop)</argsstring>
-        <name>transform_uninitialized_reduce</name>
-        <param>
-          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>T *</type>
-          <declname>result</declname>
-        </param>
-        <param>
-          <type>B</type>
-          <declname>bop</declname>
-        </param>
-        <param>
-          <type>U</type>
-          <declname>uop</declname>
-        </param>
-        <briefdescription>
-<para>updates parameters of a kernel task created from <ref refid="classtf_1_1cudaFlow_1a9716ae4016ac058b32becef119faaddd" kindref="member">tf::cudaFlow::transform_uninitialized_reduce</ref> </para>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="680" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="647" bodyend="654"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a062cc98a0b2d2199b50c3cbad16f5fb8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-        <definition>cudaTask tf::cudaFlow::inclusive_scan</definition>
-        <argsstring>(I first, I last, O output, C op)</argsstring>
-        <name>inclusive_scan</name>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>output</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>op</declname>
-        </param>
-        <briefdescription>
-<para>creates a task to perform parallel inclusive scan over a range of items </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>O</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>output iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>C</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>output</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the output </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>op</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle</para>
-</simplesect>
-This method is equivalent to the parallel execution of the following loop on a GPU:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;<ref refid="cpp/iterator/distance" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>last);<sp/>i++)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>*(output<sp/>+<sp/>i)<sp/>=<sp/>i<sp/>?<sp/>op(*(first+i),<sp/>*(output+i-1))<sp/>:<sp/>*(first+i);</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="708" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="619" bodyend="624"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a98ceb9d36d7e0ceeeb2acfdd6a2e6084" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cudaFlow::inclusive_scan</definition>
-        <argsstring>(cudaTask task, I first, I last, O output, C op)</argsstring>
-        <name>inclusive_scan</name>
-        <param>
-          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>output</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>op</declname>
-        </param>
-        <briefdescription>
-<para>updates the parameters of a task created from <ref refid="classtf_1_1cudaFlow_1a062cc98a0b2d2199b50c3cbad16f5fb8" kindref="member">tf::cudaFlow::inclusive_scan</ref> </para>
-        </briefdescription>
-        <detaileddescription>
-<para>This method is similar to <ref refid="classtf_1_1cudaFlow_1a062cc98a0b2d2199b50c3cbad16f5fb8" kindref="member">tf::cudaFlow::inclusive_scan</ref> but operates on an existing task. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="718" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="628" bodyend="633"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a8d59da7369a8634fea307219c7eb17c4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-        <definition>cudaTask tf::cudaFlow::exclusive_scan</definition>
-        <argsstring>(I first, I last, O output, C op)</argsstring>
-        <name>exclusive_scan</name>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>output</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>op</declname>
-        </param>
-        <briefdescription>
-<para>similar to <ref refid="classtf_1_1cudaFlow_1a062cc98a0b2d2199b50c3cbad16f5fb8" kindref="member">cudaFlow::inclusive_scan</ref> but excludes the first value </para>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="724" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="637" bodyend="642"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a43ff7124017ae5bc74ed7c6dc57988ed" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cudaFlow::exclusive_scan</definition>
-        <argsstring>(cudaTask task, I first, I last, O output, C op)</argsstring>
-        <name>exclusive_scan</name>
-        <param>
-          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>output</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>op</declname>
-        </param>
-        <briefdescription>
-<para>updates the parameters of a task created from <ref refid="classtf_1_1cudaFlow_1a8d59da7369a8634fea307219c7eb17c4" kindref="member">tf::cudaFlow::exclusive_scan</ref> </para>
-        </briefdescription>
-        <detaileddescription>
-<para>This method is similar to <ref refid="classtf_1_1cudaFlow_1a8d59da7369a8634fea307219c7eb17c4" kindref="member">tf::cudaFlow::exclusive_scan</ref> but operates on an existing task. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="734" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="646" bodyend="651"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a5028579479a2393ce57ad37a7a809588" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-          <param>
-            <type>typename B</type>
-          </param>
-          <param>
-            <type>typename U</type>
-          </param>
-        </templateparamlist>
-        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-        <definition>cudaTask tf::cudaFlow::transform_inclusive_scan</definition>
-        <argsstring>(I first, I last, O output, B bop, U uop)</argsstring>
-        <name>transform_inclusive_scan</name>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>output</declname>
-        </param>
-        <param>
-          <type>B</type>
-          <declname>bop</declname>
-        </param>
-        <param>
-          <type>U</type>
-          <declname>uop</declname>
-        </param>
-        <briefdescription>
-<para>creates a task to perform parallel inclusive scan over a range of transformed items </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>O</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>output iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>B</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>U</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>output</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the output </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>bop</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>uop</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle</para>
-</simplesect>
-This method is equivalent to the parallel execution of the following loop on a GPU:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;<ref refid="cpp/iterator/distance" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>last);<sp/>i++)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>*(output<sp/>+<sp/>i)<sp/>=<sp/>i<sp/>?<sp/>op(uop(*(first+i)),<sp/>*(output+i-1))<sp/>:<sp/>uop(*(first+i));</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="763" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="655" bodyend="662"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1abc38ad73ae8cb09cc743e08ad3a35c5f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-          <param>
-            <type>typename B</type>
-          </param>
-          <param>
-            <type>typename U</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cudaFlow::transform_inclusive_scan</definition>
-        <argsstring>(cudaTask task, I first, I last, O output, B bop, U uop)</argsstring>
-        <name>transform_inclusive_scan</name>
-        <param>
-          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>output</declname>
-        </param>
-        <param>
-          <type>B</type>
-          <declname>bop</declname>
-        </param>
-        <param>
-          <type>U</type>
-          <declname>uop</declname>
-        </param>
-        <briefdescription>
-<para>updates the parameters of a task created from <ref refid="classtf_1_1cudaFlow_1a5028579479a2393ce57ad37a7a809588" kindref="member">tf::cudaFlow::transform_inclusive_scan</ref> </para>
-        </briefdescription>
-        <detaileddescription>
-<para>This method is similar to <ref refid="classtf_1_1cudaFlow_1a5028579479a2393ce57ad37a7a809588" kindref="member">tf::cudaFlow::transform_inclusive_scan</ref> but operates on an existing task. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="773" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="666" bodyend="673"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1ae80df494109b0dc6db77111917207e6b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-          <param>
-            <type>typename B</type>
-          </param>
-          <param>
-            <type>typename U</type>
-          </param>
-        </templateparamlist>
-        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-        <definition>cudaTask tf::cudaFlow::transform_exclusive_scan</definition>
-        <argsstring>(I first, I last, O output, B bop, U uop)</argsstring>
-        <name>transform_exclusive_scan</name>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>output</declname>
-        </param>
-        <param>
-          <type>B</type>
-          <declname>bop</declname>
-        </param>
-        <param>
-          <type>U</type>
-          <declname>uop</declname>
-        </param>
-        <briefdescription>
-<para>similar to <ref refid="classtf_1_1cudaFlow_1a5028579479a2393ce57ad37a7a809588" kindref="member">cudaFlow::transform_inclusive_scan</ref> but excludes the first value </para>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="782" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="677" bodyend="684"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a02568e834a18b703e9c8d0bc2dfd612c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-          <param>
-            <type>typename B</type>
-          </param>
-          <param>
-            <type>typename U</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cudaFlow::transform_exclusive_scan</definition>
-        <argsstring>(cudaTask task, I first, I last, O output, B bop, U uop)</argsstring>
-        <name>transform_exclusive_scan</name>
-        <param>
-          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>output</declname>
-        </param>
-        <param>
-          <type>B</type>
-          <declname>bop</declname>
-        </param>
-        <param>
-          <type>U</type>
-          <declname>uop</declname>
-        </param>
-        <briefdescription>
-<para>updates the parameters of a task created from <ref refid="classtf_1_1cudaFlow_1ae80df494109b0dc6db77111917207e6b" kindref="member">tf::cudaFlow::transform_exclusive_scan</ref> </para>
-        </briefdescription>
-        <detaileddescription>
-<para>This method is similar to <ref refid="classtf_1_1cudaFlow_1ae80df494109b0dc6db77111917207e6b" kindref="member">tf::cudaFlow::transform_exclusive_scan</ref> but operates on an existing task. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="792" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="688" bodyend="695"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1af8fa5d69a57d010d7a3ee2756d85859c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename A</type>
-          </param>
-          <param>
-            <type>typename B</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-          <param>
-            <type>typename Comp</type>
-          </param>
-        </templateparamlist>
-        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-        <definition>cudaTask tf::cudaFlow::merge</definition>
-        <argsstring>(A a_first, A a_last, B b_first, B b_last, C c_first, Comp comp)</argsstring>
-        <name>merge</name>
-        <param>
-          <type>A</type>
-          <declname>a_first</declname>
-        </param>
-        <param>
-          <type>A</type>
-          <declname>a_last</declname>
-        </param>
-        <param>
-          <type>B</type>
-          <declname>b_first</declname>
-        </param>
-        <param>
-          <type>B</type>
-          <declname>b_last</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>c_first</declname>
-        </param>
-        <param>
-          <type>Comp</type>
-          <declname>comp</declname>
-        </param>
-        <briefdescription>
-<para>creates a task to perform parallel merge on two sorted arrays </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>A</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator type of the first input array </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>B</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator type of the second input array </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>C</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator type of the output array </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>Comp</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>comparator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>a_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the first input array </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>a_last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the first input array </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>b_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the second input array </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>b_last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the second input array </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>c_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the output array </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>comp</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary comparator</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle</para>
-</simplesect>
-Merges two sorted ranges <computeroutput>[a_first, a_last)</computeroutput> and <computeroutput>[b_first, b_last)</computeroutput> into one sorted range beginning at <computeroutput>c_first</computeroutput>.</para>
-<para>A sequence is said to be sorted with respect to a comparator <computeroutput>comp</computeroutput> if for any iterator it pointing to the sequence and any non-negative integer <computeroutput>n</computeroutput> such that <computeroutput>it + n</computeroutput> is a valid iterator pointing to an element of the sequence, <computeroutput>comp(*(it + n), *it)</computeroutput> evaluates to false. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="823" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="652" bodyend="659"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a168006fd26cc40451978c6acd424504e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename A</type>
-          </param>
-          <param>
-            <type>typename B</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-          <param>
-            <type>typename Comp</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cudaFlow::merge</definition>
-        <argsstring>(cudaTask task, A a_first, A a_last, B b_first, B b_last, C c_first, Comp comp)</argsstring>
-        <name>merge</name>
-        <param>
-          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>A</type>
-          <declname>a_first</declname>
-        </param>
-        <param>
-          <type>A</type>
-          <declname>a_last</declname>
-        </param>
-        <param>
-          <type>B</type>
-          <declname>b_first</declname>
-        </param>
-        <param>
-          <type>B</type>
-          <declname>b_last</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>c_first</declname>
-        </param>
-        <param>
-          <type>Comp</type>
-          <declname>comp</declname>
-        </param>
-        <briefdescription>
-<para>updates the parameters of a task created from <ref refid="classtf_1_1cudaFlow_1af8fa5d69a57d010d7a3ee2756d85859c" kindref="member">tf::cudaFlow::merge</ref> </para>
-        </briefdescription>
-        <detaileddescription>
-<para>This method is similar to <ref refid="classtf_1_1cudaFlow_1af8fa5d69a57d010d7a3ee2756d85859c" kindref="member">tf::cudaFlow::merge</ref> but operates on an existing task. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="833" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="663" bodyend="670"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1ae462d455fed06dfcdbd1e25a2c9c5da6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-        <definition>cudaTask tf::cudaFlow::sort</definition>
-        <argsstring>(I first, I last, C comp)</argsstring>
-        <name>sort</name>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>comp</declname>
-        </param>
-        <briefdescription>
-<para>creates a task to perform parallel sort an array </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator type of the first input array </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>C</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>comparator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the input array </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the input array </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>comp</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary comparator</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle</para>
-</simplesect>
-Sorts elements in the range <computeroutput>[first, last)</computeroutput> with the given comparator <computeroutput>comp</computeroutput>. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="853" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="515" bodyend="520"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a63109604cb3df8644aa6db244dec3252" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cudaFlow::sort</definition>
-        <argsstring>(cudaTask task, I first, I last, C comp)</argsstring>
-        <name>sort</name>
-        <param>
-          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>comp</declname>
-        </param>
-        <briefdescription>
-<para>updates the parameters of the task created from <ref refid="classtf_1_1cudaFlow_1ae462d455fed06dfcdbd1e25a2c9c5da6" kindref="member">tf::cudaFlow::sort</ref> </para>
-        </briefdescription>
-        <detaileddescription>
-<para>This method is similar to <ref refid="classtf_1_1cudaFlow_1ae462d455fed06dfcdbd1e25a2c9c5da6" kindref="member">tf::cudaFlow::sort</ref> but operates on an existing task. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="863" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="524" bodyend="529"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a979739fcf70fbd760ad1a7682a8dfea8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename K_it</type>
-          </param>
-          <param>
-            <type>typename V_it</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-        <definition>cudaTask tf::cudaFlow::sort_by_key</definition>
-        <argsstring>(K_it k_first, K_it k_last, V_it v_first, C comp)</argsstring>
-        <name>sort_by_key</name>
-        <param>
-          <type>K_it</type>
-          <declname>k_first</declname>
-        </param>
-        <param>
-          <type>K_it</type>
-          <declname>k_last</declname>
-        </param>
-        <param>
-          <type>V_it</type>
-          <declname>v_first</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>comp</declname>
-        </param>
-        <briefdescription>
-<para>creates kernels that sort the given array </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>K_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator type of the key </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>V_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator type of the value </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>C</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>comparator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>k_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the key array </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>k_last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the key array </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>v_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the value array </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>comp</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary comparator</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle</para>
-</simplesect>
-Sorts key-value elements in <computeroutput>[k_first, k_last)</computeroutput> and <computeroutput>[v_first, v_first + (k_last - k_first))</computeroutput> into ascending key order using the given comparator <computeroutput>comp</computeroutput>. If <computeroutput>i</computeroutput> and <computeroutput>j</computeroutput> are any two valid iterators in <computeroutput>[k_first, k_last)</computeroutput> such that <computeroutput>i</computeroutput> precedes <computeroutput>j</computeroutput>, and <computeroutput>p</computeroutput> and <computeroutput>q</computeroutput> are iterators in <computeroutput>[v_first, v_first + (k_last - k_first))</computeroutput> corresponding to <computeroutput>i</computeroutput> and <computeroutput>j</computeroutput> respectively, then <computeroutput>comp(*j, *i)</computeroutput> evaluates to <computeroutput>false</computeroutput>.</para>
-<para>For example, assume:<itemizedlist>
-<listitem><para><computeroutput>keys</computeroutput> are <computeroutput>{1, 4, 2, 8, 5, 7}</computeroutput></para>
-</listitem><listitem><para><computeroutput>values</computeroutput> are <computeroutput>{&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;, &apos;f&apos;}</computeroutput></para>
-</listitem></itemizedlist>
-</para>
-<para>After sort:<itemizedlist>
-<listitem><para><computeroutput>keys</computeroutput> are <computeroutput>{1, 2, 4, 5, 7, 8}</computeroutput></para>
-</listitem><listitem><para><computeroutput>values</computeroutput> are <computeroutput>{&apos;a&apos;, &apos;c&apos;, &apos;b&apos;, &apos;e&apos;, &apos;f&apos;, &apos;d&apos;}</computeroutput> </para>
-</listitem></itemizedlist>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="896" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="533" bodyend="538"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1abca349d0eece79a507a1e046e22ddc4a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename K_it</type>
-          </param>
-          <param>
-            <type>typename V_it</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cudaFlow::sort_by_key</definition>
-        <argsstring>(cudaTask task, K_it k_first, K_it k_last, V_it v_first, C comp)</argsstring>
-        <name>sort_by_key</name>
-        <param>
-          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>K_it</type>
-          <declname>k_first</declname>
-        </param>
-        <param>
-          <type>K_it</type>
-          <declname>k_last</declname>
-        </param>
-        <param>
-          <type>V_it</type>
-          <declname>v_first</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>comp</declname>
-        </param>
-        <briefdescription>
-<para>updates the parameters of a task created from <ref refid="classtf_1_1cudaFlow_1a979739fcf70fbd760ad1a7682a8dfea8" kindref="member">tf::cudaFlow::sort_by_key</ref> </para>
-        </briefdescription>
-        <detaileddescription>
-<para>This method is similar to <ref refid="classtf_1_1cudaFlow_1a979739fcf70fbd760ad1a7682a8dfea8" kindref="member">tf::cudaFlow::sort_by_key</ref> but operates on an existing task. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="906" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="542" bodyend="549"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a9cdfde0bafee035c0075619d386a9a43" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename a_keys_it</type>
-          </param>
-          <param>
-            <type>typename a_vals_it</type>
-          </param>
-          <param>
-            <type>typename b_keys_it</type>
-          </param>
-          <param>
-            <type>typename b_vals_it</type>
-          </param>
-          <param>
-            <type>typename c_keys_it</type>
-          </param>
-          <param>
-            <type>typename c_vals_it</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-        <definition>cudaTask tf::cudaFlow::merge_by_key</definition>
-        <argsstring>(a_keys_it a_keys_first, a_keys_it a_keys_last, a_vals_it a_vals_first, b_keys_it b_keys_first, b_keys_it b_keys_last, b_vals_it b_vals_first, c_keys_it c_keys_first, c_vals_it c_vals_first, C comp)</argsstring>
-        <name>merge_by_key</name>
-        <param>
-          <type>a_keys_it</type>
-          <declname>a_keys_first</declname>
-        </param>
-        <param>
-          <type>a_keys_it</type>
-          <declname>a_keys_last</declname>
-        </param>
-        <param>
-          <type>a_vals_it</type>
-          <declname>a_vals_first</declname>
-        </param>
-        <param>
-          <type>b_keys_it</type>
-          <declname>b_keys_first</declname>
-        </param>
-        <param>
-          <type>b_keys_it</type>
-          <declname>b_keys_last</declname>
-        </param>
-        <param>
-          <type>b_vals_it</type>
-          <declname>b_vals_first</declname>
-        </param>
-        <param>
-          <type>c_keys_it</type>
-          <declname>c_keys_first</declname>
-        </param>
-        <param>
-          <type>c_vals_it</type>
-          <declname>c_vals_first</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>comp</declname>
-        </param>
-        <briefdescription>
-<para>creates a task to perform parallel key-value merge </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>a_keys_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>first key iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>a_vals_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>first value iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>b_keys_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>second key iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>b_vals_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>second value iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>c_keys_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>output key iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>c_vals_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>output value iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>C</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>comparator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>a_keys_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the first key range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>a_keys_last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the first key range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>a_vals_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the first value range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>b_keys_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the second key range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>b_keys_last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the second key range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>b_vals_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the second value range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>c_keys_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the output key range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>c_vals_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the output value range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>comp</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>comparator</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-Performs a key-value merge that copies elements from <computeroutput>[a_keys_first, a_keys_last)</computeroutput> and <computeroutput>[b_keys_first, b_keys_last)</computeroutput> into a single range, <computeroutput>[c_keys_first, c_keys_last + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</computeroutput> such that the resulting range is in ascending key order.</para>
-<para>At the same time, the merge copies elements from the two associated ranges <computeroutput>[a_vals_first + (a_keys_last - a_keys_first))</computeroutput> and <computeroutput>[b_vals_first + (b_keys_last - b_keys_first))</computeroutput> into a single range, <computeroutput>[c_vals_first, c_vals_first + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</computeroutput> such that the resulting range is in ascending order implied by each input element&apos;s associated key.</para>
-<para>For example, assume:<itemizedlist>
-<listitem><para><computeroutput>a_keys</computeroutput> = <computeroutput>{8, 1}</computeroutput></para>
-</listitem><listitem><para><computeroutput>a_vals</computeroutput> = <computeroutput>{1, 2}</computeroutput></para>
-</listitem><listitem><para><computeroutput>b_keys</computeroutput> = <computeroutput>{3, 7}</computeroutput></para>
-</listitem><listitem><para><computeroutput>b_vals</computeroutput> = <computeroutput>{3, 4}</computeroutput></para>
-</listitem></itemizedlist>
-</para>
-<para>After the merge, we have:<itemizedlist>
-<listitem><para><computeroutput>c_keys</computeroutput> = <computeroutput>{1, 3, 7, 8}</computeroutput></para>
-</listitem><listitem><para><computeroutput>c_vals</computeroutput> = <computeroutput>{2, 3, 4, 1}</computeroutput> </para>
-</listitem></itemizedlist>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="959" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="679" bodyend="693"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a1a7293eecb0bfffcd59ce64da19865c4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename a_keys_it</type>
-          </param>
-          <param>
-            <type>typename a_vals_it</type>
-          </param>
-          <param>
-            <type>typename b_keys_it</type>
-          </param>
-          <param>
-            <type>typename b_vals_it</type>
-          </param>
-          <param>
-            <type>typename c_keys_it</type>
-          </param>
-          <param>
-            <type>typename c_vals_it</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cudaFlow::merge_by_key</definition>
-        <argsstring>(cudaTask task, a_keys_it a_keys_first, a_keys_it a_keys_last, a_vals_it a_vals_first, b_keys_it b_keys_first, b_keys_it b_keys_last, b_vals_it b_vals_first, c_keys_it c_keys_first, c_vals_it c_vals_first, C comp)</argsstring>
-        <name>merge_by_key</name>
-        <param>
-          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>a_keys_it</type>
-          <declname>a_keys_first</declname>
-        </param>
-        <param>
-          <type>a_keys_it</type>
-          <declname>a_keys_last</declname>
-        </param>
-        <param>
-          <type>a_vals_it</type>
-          <declname>a_vals_first</declname>
-        </param>
-        <param>
-          <type>b_keys_it</type>
-          <declname>b_keys_first</declname>
-        </param>
-        <param>
-          <type>b_keys_it</type>
-          <declname>b_keys_last</declname>
-        </param>
-        <param>
-          <type>b_vals_it</type>
-          <declname>b_vals_first</declname>
-        </param>
-        <param>
-          <type>c_keys_it</type>
-          <declname>c_keys_first</declname>
-        </param>
-        <param>
-          <type>c_vals_it</type>
-          <declname>c_vals_first</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>comp</declname>
-        </param>
-        <briefdescription>
-<para>updates the parameters of a task created from <ref refid="classtf_1_1cudaFlow_1a9cdfde0bafee035c0075619d386a9a43" kindref="member">tf::cudaFlow::merge_by_key</ref> </para>
-        </briefdescription>
-        <detaileddescription>
-<para>This method is similar to <ref refid="classtf_1_1cudaFlow_1a9cdfde0bafee035c0075619d386a9a43" kindref="member">tf::cudaFlow::merge_by_key</ref> but operates on an existing task. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="978" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="702" bodyend="717"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a4812f4eccece9217da13dbc09992670c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename U</type>
-          </param>
-        </templateparamlist>
-        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-        <definition>cudaTask tf::cudaFlow::find_if</definition>
-        <argsstring>(I first, I last, unsigned *idx, U op)</argsstring>
-        <name>find_if</name>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>unsigned *</type>
-          <declname>idx</declname>
-        </param>
-        <param>
-          <type>U</type>
-          <declname>op</declname>
-        </param>
-        <briefdescription>
-<para>creates a task to find the index of the first element in a range </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>U</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>idx</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the index of the found element </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>op</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator which returns <computeroutput>true</computeroutput> for the required element</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-Finds the index <computeroutput>idx</computeroutput> of the first element in the range <computeroutput>[first, last)</computeroutput> such that <computeroutput>op(*(first+idx))</computeroutput> is true. This is equivalent to the parallel execution of the following loop:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>idx<sp/>=<sp/>0;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>first<sp/>!=<sp/>last;<sp/>++first,<sp/>++idx)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(p(*first))<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>idx;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>idx;</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="1011" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="193" bodyend="198"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a25ea1f440e929924a7137a85661b962d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename U</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cudaFlow::find_if</definition>
-        <argsstring>(cudaTask task, I first, I last, unsigned *idx, U op)</argsstring>
-        <name>find_if</name>
-        <param>
-          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>unsigned *</type>
-          <declname>idx</declname>
-        </param>
-        <param>
-          <type>U</type>
-          <declname>op</declname>
-        </param>
-        <briefdescription>
-<para>updates the parameters of the task created from <ref refid="classtf_1_1cudaFlow_1a4812f4eccece9217da13dbc09992670c" kindref="member">tf::cudaFlow::find_if</ref> </para>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="1018" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="202" bodyend="207"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a63d18c5a42bb351fda43305258f51262" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-        </templateparamlist>
-        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-        <definition>cudaTask tf::cudaFlow::min_element</definition>
-        <argsstring>(I first, I last, unsigned *idx, O op)</argsstring>
-        <name>min_element</name>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>unsigned *</type>
-          <declname>idx</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>op</declname>
-        </param>
-        <briefdescription>
-<para>finds the index of the minimum element in a range </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>O</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>comparator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>idx</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>solution index of the minimum element </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>op</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>comparison function object</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-The function launches kernels asynchronously to find the smallest element in the range <computeroutput>[first, last)</computeroutput> using the given comparator <computeroutput>op</computeroutput>. The function is equivalent to a parallel execution of the following loop:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">if</highlight><highlight class="normal">(first<sp/>==<sp/>last)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>smallest<sp/>=<sp/>first;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(++first;<sp/>first<sp/>!=<sp/>last;<sp/>++first)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(op(*first,<sp/>*smallest))<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>smallest<sp/>=<sp/>first;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>smallest);</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="1050" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="340" bodyend="345"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1ae880febb9f5928d42455707f13bd9e9e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cudaFlow::min_element</definition>
-        <argsstring>(cudaTask task, I first, I last, unsigned *idx, O op)</argsstring>
-        <name>min_element</name>
-        <param>
-          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>unsigned *</type>
-          <declname>idx</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>op</declname>
-        </param>
-        <briefdescription>
-<para>updates the parameters of the task created from <ref refid="classtf_1_1cudaFlow_1a63d18c5a42bb351fda43305258f51262" kindref="member">tf::cudaFlow::min_element</ref> </para>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="1057" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="349" bodyend="356"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a7c99f8f1a961a225e2ea708afaa34905" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-        </templateparamlist>
-        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-        <definition>cudaTask tf::cudaFlow::max_element</definition>
-        <argsstring>(I first, I last, unsigned *idx, O op)</argsstring>
-        <name>max_element</name>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>unsigned *</type>
-          <declname>idx</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>op</declname>
-        </param>
-        <briefdescription>
-<para>finds the index of the maximum element in a range </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>O</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>comparator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>idx</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>solution index of the maximum element </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>op</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>comparison function object</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-The function launches kernels asynchronously to find the largest element in the range <computeroutput>[first, last)</computeroutput> using the given comparator <computeroutput>op</computeroutput>. The function is equivalent to a parallel execution of the following loop:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">if</highlight><highlight class="normal">(first<sp/>==<sp/>last)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>largest<sp/>=<sp/>first;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(++first;<sp/>first<sp/>!=<sp/>last;<sp/>++first)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(op(*largest,<sp/>*first))<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>largest<sp/>=<sp/>first;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>largest);</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="1089" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="465" bodyend="470"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a05593150085596723ee87f9ed1c4bc3e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cudaFlow::max_element</definition>
-        <argsstring>(cudaTask task, I first, I last, unsigned *idx, O op)</argsstring>
-        <name>max_element</name>
-        <param>
-          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
-          <declname>task</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>unsigned *</type>
-          <declname>idx</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>op</declname>
-        </param>
-        <briefdescription>
-<para>updates the parameters of the task created from <ref refid="classtf_1_1cudaFlow_1a7c99f8f1a961a225e2ea708afaa34905" kindref="member">tf::cudaFlow::max_element</ref> </para>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="1096" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="474" bodyend="481"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="531" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="211" bodyend="228"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a89c389fff64a16e5dd8c60875d3b514d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3994,7 +1680,7 @@ A captured subflow forms a sub-graph to the cudaFlow and can be used to capture 
 <para>Example usage:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>my_kernel<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" kindref="member">kernel</ref>(my_arguments);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>my_kernel<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a68f666503d13a7b80fb7399fb2f0c153" kindref="member">kernel</ref>(my_arguments);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>flow<sp/>capturer<sp/>to<sp/>capture<sp/>custom<sp/>kernels</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>my_subflow<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a89c389fff64a16e5dd8c60875d3b514d" kindref="member">capture</ref>([&amp;](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>capturer){</highlight></codeline>
@@ -4009,7 +1695,7 @@ A captured subflow forms a sub-graph to the cudaFlow and can be used to capture 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="1135" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1570" bodyend="1598"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="572" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="965" bodyend="997"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlow_1aa0f182dc0fa99bcc9118311925fddca5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -4037,74 +1723,7 @@ A captured subflow forms a sub-graph to the cudaFlow and can be used to capture 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="1146" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1537" bodyend="1562"/>
-      </memberdef>
-      </sectiondef>
-      <sectiondef kind="private-func">
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a649094e2835001d1516b2503a1aca959" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>tf::cudaFlow::cudaFlow</definition>
-        <argsstring>(cudaGraph &amp;, Executor &amp;)</argsstring>
-        <name>cudaFlow</name>
-        <param>
-          <type>cudaGraph &amp;</type>
-          <defname>g</defname>
-        </param>
-        <param>
-          <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> &amp;</type>
-          <defname>executor</defname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="1154" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1175" bodyend="1185"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1a98f480aa800ecbc830c5e7debd2a3aee" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cudaFlow::_offload_until_external</definition>
-        <argsstring>(P &amp;&amp;)</argsstring>
-        <name>_offload_until_external</name>
-        <param>
-          <type>P &amp;&amp;</type>
-          <defname>predicate</defname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="1157" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1627" bodyend="1637"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlow_1ab1d4e5079d1b5cff8bc83c0fc63f7e0d" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cudaFlow::_offload_until_internal</definition>
-        <argsstring>(P &amp;&amp;)</argsstring>
-        <name>_offload_until_internal</name>
-        <param>
-          <type>P &amp;&amp;</type>
-          <defname>predicate</defname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="1160" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="1640" bodyend="1660"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="583" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="931" bodyend="957"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -4117,8 +1736,8 @@ A captured subflow forms a sub-graph to the cudaFlow and can be used to capture 
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>two<sp/>kernel<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task1<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" kindref="member">kernel</ref>(grid1,<sp/>block1,<sp/>shm_size1,<sp/>kernel1,<sp/>args1);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task2<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" kindref="member">kernel</ref>(grid2,<sp/>block2,<sp/>shm_size2,<sp/>kernel2,<sp/>args2);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task1<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a68f666503d13a7b80fb7399fb2f0c153" kindref="member">kernel</ref>(grid1,<sp/>block1,<sp/>shm_size1,<sp/>kernel1,<sp/>args1);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>task2<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1a68f666503d13a7b80fb7399fb2f0c153" kindref="member">kernel</ref>(grid2,<sp/>block2,<sp/>shm_size2,<sp/>kernel2,<sp/>args2);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>kernel1<sp/>runs<sp/>before<sp/>kernel2</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>task1.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(task2);</highlight></codeline>
@@ -4129,85 +1748,49 @@ A captured subflow forms a sub-graph to the cudaFlow and can be used to capture 
 <para>A cudaFlow is a task (<ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref>) created from <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> and will be run by <emphasis>one</emphasis> worker thread in the executor. That is, the callable that describes a cudaFlow will be executed sequentially. Inside a cudaFlow task, different GPU tasks (<ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref>) may run in parallel scheduled by the CUDA runtime.</para>
 <para>Please refer to <ref refid="GPUTaskingcudaFlow" kindref="compound">GPU Tasking (cudaFlow)</ref> for details. </para>
     </detaileddescription>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="56" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="56" bodyend="1161"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" line="56" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cudaflow.hpp" bodystart="56" bodyend="589"/>
     <listofallmembers>
-      <member refid="classtf_1_1cudaFlow_1a94245f76023eca97d6713073f0e614a4" prot="private" virt="non-virtual"><scope>tf::cudaFlow</scope><name>_exec</name></member>
-      <member refid="classtf_1_1cudaFlow_1aa8b4d0cddb73fec80fd7ac2fd58cfefc" prot="private" virt="non-virtual"><scope>tf::cudaFlow</scope><name>_graph</name></member>
-      <member refid="classtf_1_1cudaFlow_1a3301611d9ecd3795ec58b045ea7327f6" prot="private" virt="non-virtual"><scope>tf::cudaFlow</scope><name>_handle</name></member>
-      <member refid="classtf_1_1cudaFlow_1a98f480aa800ecbc830c5e7debd2a3aee" prot="private" virt="non-virtual"><scope>tf::cudaFlow</scope><name>_offload_until_external</name></member>
-      <member refid="classtf_1_1cudaFlow_1ab1d4e5079d1b5cff8bc83c0fc63f7e0d" prot="private" virt="non-virtual"><scope>tf::cudaFlow</scope><name>_offload_until_internal</name></member>
+      <member refid="classtf_1_1cudaFlow_1a31c7ba8b8053d6ad95c7da5e5a9494f2" prot="private" virt="non-virtual"><scope>tf::cudaFlow</scope><name>_cfg</name></member>
+      <member refid="classtf_1_1cudaFlow_1a8e3255897f01f87dcd9ca506c314a125" prot="private" virt="non-virtual"><scope>tf::cudaFlow</scope><name>_exe</name></member>
       <member refid="classtf_1_1cudaFlow_1a89c389fff64a16e5dd8c60875d3b514d" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>capture</name></member>
       <member refid="classtf_1_1cudaFlow_1aa0f182dc0fa99bcc9118311925fddca5" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>capture</name></member>
       <member refid="classtf_1_1cudaFlow_1aad726dfe21e9719d96c65530a56d9951" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>clear</name></member>
       <member refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>copy</name></member>
       <member refid="classtf_1_1cudaFlow_1a6cf6ec1e85172fa99c16bf0beffc0562" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>copy</name></member>
       <member refid="classtf_1_1cudaFlow_1ad4c3e001db151486c8479151a2108d37" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>cudaFlow</name></member>
-      <member refid="classtf_1_1cudaFlow_1a649094e2835001d1516b2503a1aca959" prot="private" virt="non-virtual"><scope>tf::cudaFlow</scope><name>cudaFlow</name></member>
+      <member refid="classtf_1_1cudaFlow_1a677a4b510abee2ac665193389b20f725" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>cudaFlow</name></member>
       <member refid="classtf_1_1cudaFlow_1a7f97b68fa7c889db49b26aa71a46a7cf" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>dump</name></member>
       <member refid="classtf_1_1cudaFlow_1a43507f21eb9cb77667ffe0ac7e6ae635" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>dump_native_graph</name></member>
       <member refid="classtf_1_1cudaFlow_1a1926f45a038d8faa9c1b1ee43fd29a93" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>empty</name></member>
-      <member refid="classtf_1_1cudaFlow_1a8d59da7369a8634fea307219c7eb17c4" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>exclusive_scan</name></member>
-      <member refid="classtf_1_1cudaFlow_1a43ff7124017ae5bc74ed7c6dc57988ed" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>exclusive_scan</name></member>
-      <member refid="classtf_1_1cudaFlow_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::cudaFlow</scope><name>Executor</name></member>
-      <member refid="classtf_1_1cudaFlow_1ab7f39edd0778b2946fb7be7f95daaf0e" prot="private" virt="non-virtual"><scope>tf::cudaFlow</scope><name>EXTERNAL</name></member>
       <member refid="classtf_1_1cudaFlow_1a21d4447bc834f4d3e1bb4772c850d090" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>fill</name></member>
       <member refid="classtf_1_1cudaFlow_1a39ed97c9142959c73d4c25c34d71bd5e" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>fill</name></member>
-      <member refid="classtf_1_1cudaFlow_1a4812f4eccece9217da13dbc09992670c" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>find_if</name></member>
-      <member refid="classtf_1_1cudaFlow_1a25ea1f440e929924a7137a85661b962d" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>find_if</name></member>
       <member refid="classtf_1_1cudaFlow_1a1a681f6223853b6445dcfdad07e4d0fd" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>for_each</name></member>
       <member refid="classtf_1_1cudaFlow_1af9cc7ee16602754929bb9118a9d7f0b2" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>for_each</name></member>
       <member refid="classtf_1_1cudaFlow_1a34f1ea89e5651faa6e8af522a42556ac" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>for_each_index</name></member>
       <member refid="classtf_1_1cudaFlow_1a3fa7f8e38b4da1fe0cbcfb265f9349a2" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>for_each_index</name></member>
-      <member refid="classtf_1_1cudaFlow_1a424926b9d6ce538c8e6aa576cdb1583c" prot="private" virt="non-virtual"><scope>tf::cudaFlow</scope><name>handle_t</name></member>
       <member refid="classtf_1_1cudaFlow_1a060e1c96111c2134ce0f896420a42cd0" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>host</name></member>
       <member refid="classtf_1_1cudaFlow_1a02e4e5cf7d03b9d087d6fbf54eb86bbf" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>host</name></member>
-      <member refid="classtf_1_1cudaFlow_1a062cc98a0b2d2199b50c3cbad16f5fb8" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>inclusive_scan</name></member>
-      <member refid="classtf_1_1cudaFlow_1a98ceb9d36d7e0ceeeb2acfdd6a2e6084" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>inclusive_scan</name></member>
-      <member refid="classtf_1_1cudaFlow_1af0c2f7df82c970719909e946d2a257ee" prot="private" virt="non-virtual"><scope>tf::cudaFlow</scope><name>INTERNAL</name></member>
-      <member refid="classtf_1_1cudaFlow_1aa6e734462c8b8d922f44e621f94b104c" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>kernel</name></member>
-      <member refid="classtf_1_1cudaFlow_1a6ee746bd98fbb04326d1e76dab9b955c" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>kernel</name></member>
-      <member refid="classtf_1_1cudaFlow_1a7c99f8f1a961a225e2ea708afaa34905" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>max_element</name></member>
-      <member refid="classtf_1_1cudaFlow_1a05593150085596723ee87f9ed1c4bc3e" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>max_element</name></member>
+      <member refid="classtf_1_1cudaFlow_1a68f666503d13a7b80fb7399fb2f0c153" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>kernel</name></member>
+      <member refid="classtf_1_1cudaFlow_1a821117dd640807bb7ec114b46888dfb1" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>kernel</name></member>
       <member refid="classtf_1_1cudaFlow_1ad37637606f0643f360e9eda1f9a6e559" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>memcpy</name></member>
       <member refid="classtf_1_1cudaFlow_1acf9e6cfa65cbfcd1d33c88e64b487ce6" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>memcpy</name></member>
       <member refid="classtf_1_1cudaFlow_1a079ca65da35301e5aafd45878a19e9d2" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>memset</name></member>
       <member refid="classtf_1_1cudaFlow_1a082505f0fec89f65808421cdc737fb17" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>memset</name></member>
-      <member refid="classtf_1_1cudaFlow_1af8fa5d69a57d010d7a3ee2756d85859c" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>merge</name></member>
-      <member refid="classtf_1_1cudaFlow_1a168006fd26cc40451978c6acd424504e" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>merge</name></member>
-      <member refid="classtf_1_1cudaFlow_1a9cdfde0bafee035c0075619d386a9a43" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>merge_by_key</name></member>
-      <member refid="classtf_1_1cudaFlow_1a1a7293eecb0bfffcd59ce64da19865c4" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>merge_by_key</name></member>
-      <member refid="classtf_1_1cudaFlow_1a63d18c5a42bb351fda43305258f51262" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>min_element</name></member>
-      <member refid="classtf_1_1cudaFlow_1ae880febb9f5928d42455707f13bd9e9e" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>min_element</name></member>
+      <member refid="classtf_1_1cudaFlow_1a5bfdaf621ab617ab5f0ca63466570256" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>native_executable</name></member>
+      <member refid="classtf_1_1cudaFlow_1acfbee67cff7dc7c6297c20c64f2e015c" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>native_graph</name></member>
       <member refid="classtf_1_1cudaFlow_1a30b2e107cb2c90a37f467b28d1b42a74" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>noop</name></member>
       <member refid="classtf_1_1cudaFlow_1ae6560c27d249af7e4b8b921388f5e1e2" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>num_tasks</name></member>
-      <member refid="classtf_1_1cudaFlow_1a85789ed8a1f47704cf1f1a2b98969444" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>offload</name></member>
-      <member refid="classtf_1_1cudaFlow_1ac2269fd7dc8ca04a294a718204703dad" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>offload_n</name></member>
-      <member refid="classtf_1_1cudaFlow_1a99358da15e3bdfa1faabb3e326130e1f" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>offload_until</name></member>
-      <member refid="classtf_1_1cudaFlow_1a931a0f99034bccf377aea35e221f50bc" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>reduce</name></member>
-      <member refid="classtf_1_1cudaFlow_1a4b56bc5ec489f4ed0da2c2826f4e9345" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>reduce</name></member>
+      <member refid="classtf_1_1cudaFlow_1a74beef874538193ac0df81a180faa742" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>operator=</name></member>
+      <member refid="classtf_1_1cudaFlow_1ae6810f7de27e5a347331aacfce67bea1" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>run</name></member>
       <member refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>single_task</name></member>
       <member refid="classtf_1_1cudaFlow_1add2d364f38c72322d8e36bc0da0b98e4" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>single_task</name></member>
-      <member refid="classtf_1_1cudaFlow_1ae462d455fed06dfcdbd1e25a2c9c5da6" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>sort</name></member>
-      <member refid="classtf_1_1cudaFlow_1a63109604cb3df8644aa6db244dec3252" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>sort</name></member>
-      <member refid="classtf_1_1cudaFlow_1a979739fcf70fbd760ad1a7682a8dfea8" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>sort_by_key</name></member>
-      <member refid="classtf_1_1cudaFlow_1abca349d0eece79a507a1e046e22ddc4a" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>sort_by_key</name></member>
       <member refid="classtf_1_1cudaFlow_1af89a9bda182272462a0eda2581536cd8" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>transform</name></member>
       <member refid="classtf_1_1cudaFlow_1a4a211b1f8562e10f9aae8b44fd6acdec" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>transform</name></member>
       <member refid="classtf_1_1cudaFlow_1abab2bfdfc86ef3a764ece4743fdede76" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>transform</name></member>
       <member refid="classtf_1_1cudaFlow_1a7c6ca7be2b6908e8f71570c54303ba9e" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>transform</name></member>
-      <member refid="classtf_1_1cudaFlow_1ae80df494109b0dc6db77111917207e6b" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>transform_exclusive_scan</name></member>
-      <member refid="classtf_1_1cudaFlow_1a02568e834a18b703e9c8d0bc2dfd612c" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>transform_exclusive_scan</name></member>
-      <member refid="classtf_1_1cudaFlow_1a5028579479a2393ce57ad37a7a809588" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>transform_inclusive_scan</name></member>
-      <member refid="classtf_1_1cudaFlow_1abc38ad73ae8cb09cc743e08ad3a35c5f" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>transform_inclusive_scan</name></member>
-      <member refid="classtf_1_1cudaFlow_1a1af5d4e8a3820f9b9d8abbe4f4f6c4a4" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>transform_reduce</name></member>
-      <member refid="classtf_1_1cudaFlow_1ac600a831b8bac389f2fbd1b384c6df5a" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>transform_reduce</name></member>
-      <member refid="classtf_1_1cudaFlow_1a9716ae4016ac058b32becef119faaddd" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>transform_uninitialized_reduce</name></member>
-      <member refid="classtf_1_1cudaFlow_1a2d1ffcdcb56cdf9f4cb896b52d07a6c4" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>transform_uninitialized_reduce</name></member>
-      <member refid="classtf_1_1cudaFlow_1a3a5189b9c9494d2a63a983c32cf234f6" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>uninitialized_reduce</name></member>
-      <member refid="classtf_1_1cudaFlow_1a096b655c4d8c9a4d5d250cdce6a49c59" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>uninitialized_reduce</name></member>
       <member refid="classtf_1_1cudaFlow_1a40172fac4464f6d805f75921ea3c2a3b" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>zero</name></member>
       <member refid="classtf_1_1cudaFlow_1a78c2a73243809e3cbd1955cc1ffe6477" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>zero</name></member>
-      <member refid="classtf_1_1cudaFlow_1a19eda378f8c0ef4495e08996f63f5144" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>~cudaFlow</name></member>
+      <member refid="classtf_1_1cudaFlow_1a828c3ab275521672e4ec6c78d3a9ee62" prot="public" virt="non-virtual"><scope>tf::cudaFlow</scope><name>~cudaFlow</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

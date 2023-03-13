@@ -899,6 +899,7 @@ INPUT                  = ../taskflow/utility/small_vector.hpp \
                          ../taskflow/core/semaphore.hpp \
                          ../taskflow/core/taskflow.hpp \
                          ../taskflow/core/observer.hpp \
+                         ../taskflow/algorithm/execution_policy.hpp \
                          ../taskflow/algorithm/critical.hpp \
                          ../taskflow/algorithm/pipeline.hpp \
                          ../taskflow/algorithm/data_pipeline.hpp \
@@ -910,7 +911,6 @@ INPUT                  = ../taskflow/utility/small_vector.hpp \
                          ../taskflow/cuda/cuda_optimizer.hpp \
                          ../taskflow/cuda/cuda_capturer.hpp \
                          ../taskflow/cuda/cuda_execution_policy.hpp \
-                         ../taskflow/cuda/algorithm/partitioner.hpp \
                          ../taskflow/cuda/algorithm/for_each.hpp \
                          ../taskflow/cuda/algorithm/transform.hpp \
                          ../taskflow/cuda/algorithm/reduce.hpp \
@@ -918,8 +918,6 @@ INPUT                  = ../taskflow/utility/small_vector.hpp \
                          ../taskflow/cuda/algorithm/merge.hpp \
                          ../taskflow/cuda/algorithm/sort.hpp \
                          ../taskflow/cuda/algorithm/find.hpp \
-                         ../taskflow/sycl/sycl_task.hpp \
-                         ../taskflow/sycl/syclflow.hpp \
                          ../taskflow/taskflow.hpp \
                          QuickStart.dox \
                          releases/releases.dox \
@@ -961,6 +959,7 @@ INPUT                  = ../taskflow/utility/small_vector.hpp \
                          cookbook/gpu_tasking_syclflow.dox \
                          cookbook/cancellation.dox \
                          cookbook/profiler.dox \
+                         algorithms/execution_policy.dox \
                          algorithms/algorithms.dox \
                          algorithms/for_each.dox \
                          algorithms/transform.dox \
@@ -973,11 +972,6 @@ INPUT                  = ../taskflow/utility/small_vector.hpp \
                          cudaflow_algorithms/cudaflow_single_task.dox \
                          cudaflow_algorithms/cudaflow_for_each.dox \
                          cudaflow_algorithms/cudaflow_transform.dox \
-                         cudaflow_algorithms/cudaflow_reduce.dox \
-                         cudaflow_algorithms/cudaflow_scan.dox \
-                         cudaflow_algorithms/cudaflow_merge.dox \
-                         cudaflow_algorithms/cudaflow_sort.dox \
-                         cudaflow_algorithms/cudaflow_find.dox \
                          sycl_algorithms/sycl_algorithms.dox \
                          sycl_algorithms/sycl_single_task.dox \
                          sycl_algorithms/sycl_for_each.dox \
@@ -985,12 +979,12 @@ INPUT                  = ../taskflow/utility/small_vector.hpp \
                          sycl_algorithms/sycl_reduce.dox \
                          cuda_std_algorithms/cuda_std_algorithms.dox \
                          cuda_std_algorithms/cuda_std_execution_policy.dox \
+                         cuda_std_algorithms/cuda_std_single_task.dox \
                          cuda_std_algorithms/cuda_std_for_each.dox \
                          cuda_std_algorithms/cuda_std_transform.dox \
                          cuda_std_algorithms/cuda_std_reduce.dox \
                          cuda_std_algorithms/cuda_std_scan.dox \
                          cuda_std_algorithms/cuda_std_merge.dox \
-                         cuda_std_algorithms/cuda_std_sort.dox \
                          cuda_std_algorithms/cuda_std_find.dox \
                          examples/examples.dox \
                          examples/wavefront.dox \

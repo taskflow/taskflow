@@ -12,6 +12,10 @@ the given ranges using CUDA.
 You need to include the header file, `%taskflow/cuda/algorithm/find.hpp`, 
 for using the parallel-find algorithm.
 
+@code{.cpp}
+#include <taskflow/cuda/algorithm/find.hpp>
+@endcode
+
 @section CUDASTDFindItems Find an Element in a Range
 
 tf::cuda_find_if finds the index of the first element 
@@ -40,12 +44,16 @@ auto idx = tf::cuda_malloc_shared<unsigned>(1);  // index
 // initializes the data
 for(size_t i=0; i<N; vec[i++] = rand());
 
-// finds the index of the first element that is a multiple of 17
+// create an execution policy
 tf::cudaDefaultExecutionPolicy policy;
+
+// finds the index of the first element that is a multiple of 17
 tf::cuda_find_if(
   policy, vec, vec+N, idx, [] __device__ (auto v) { return v%17 == 0; }
 );
-policy.synchronize();
+
+// wait for the find operation to complete
+stream.synchronize();
 
 // verifies the result
 if(*idx != N) {
@@ -53,8 +61,8 @@ if(*idx != N) {
 }
 
 // deletes the memory
-tf::cuda_free(vec);
-tf::cuda_free(idx);
+cudaFree(vec);
+cudaFree(idx);
 @endcode
 
 The find-if algorithm runs @em asynchronously through the stream specified
@@ -81,11 +89,8 @@ for (++first; first != last; ++first) {
 return std::distance(first, smallest);
 @endcode
 
-Since tf::cuda_min_element may require extra buffer to store 
-temporary results, you need to provide a buffer that holds at least
-tf::cuda_min_element_buffer_size bytes.
 The following code finds the index of the minimum element in a range
-of one millions elements.
+of one millions elements using GPU computing:
 
 @code{.cpp}
 const size_t N = 1000000;
@@ -95,25 +100,34 @@ auto idx = tf::cuda_malloc_shared<unsigned>(1);  // index
 // initializes the data
 for(size_t i=0; i<N; vec[i++] = rand());
 
-// queries the required buffer size using the given policy
-tf::cudaDefaultExecutionPolicy policy;
-auto bytes  = tf::cuda_min_element_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+// create an execution policy
+tf::cudaStream stream;
+tf::cudaDefaultExecutionPolicy policy(stream);
+
+// queries the required buffer size to find the minimum element over N element
+auto bytes  = policy.min_element_bufsz<int>(N);
 auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
 
 // finds the minimum element using the less comparator
 tf::cuda_min_element(
   policy, vec, vec+N, idx, [] __device__ (auto a, auto b) { return a<b; }, buffer
 );
-policy.synchronize();
+
+// wait for the min-element operation completes
+stream.synchronize();
 
 // verifies the result
 assert(vec[*idx] == *std::min_element(vec, vec+N, std::less<int>{}));
 
 // deletes the memory
-tf::cuda_free(vec);
-tf::cuda_free(idx);
-tf::cuda_free(buffer);
+cudaFree(vec);
+cudaFree(idx);
+cudaFree(buffer);
 @endcode
+
+Since the GPU min-element algorithm may require extra buffer to store the 
+temporary results, you need to provide a buffer of size at least larger or equal
+to the value returned from <tt>tf::cudaDefaultExecutionPolicy::min_element_bufsz</tt>.
 
 @attention
 You must keep the buffer alive before the tf::cuda_min_element completes.
@@ -139,11 +153,8 @@ for (++first; first != last; ++first) {
 return std::distance(first, largest);
 @endcode
 
-Since tf::cuda_max_element may require extra buffer to store 
-temporary results, you need to provide a buffer that holds at least
-tf::cuda_max_element_buffer_size bytes.
 The following code finds the index of the maximum element in a range
-of one millions elements.
+of one millions elements using GPU computing:
 
 @code{.cpp}
 const size_t N = 1000000;
@@ -153,25 +164,34 @@ auto idx = tf::cuda_malloc_shared<unsigned>(1);  // index
 // initializes the data
 for(size_t i=0; i<N; vec[i++] = rand());
 
-// queries the required buffer size using the given policy
-tf::cudaDefaultExecutionPolicy policy;
-auto bytes  = tf::cuda_max_element_buffer_size<tf::cudaDefaultExecutionPolicy, int>(N);
+// create an execution policy
+tf::cudaStream stream;
+tf::cudaDefaultExecutionPolicy policy(stream);
+
+// queries the required buffer size to find the maximum element over N element
+auto bytes  = policy.max_element_bufsz<int>(N);
 auto buffer = tf::cuda_malloc_device<std::byte>(bytes);
 
 // finds the maximum element using the less comparator
 tf::cuda_max_element(
   policy, vec, vec+N, idx, [] __device__ (auto a, auto b) { return a<b; }, buffer
 );
-policy.synchronize();
+
+// wait for the max-element operation to complete
+stream.synchronize();
 
 // verifies the result
 assert(vec[*idx] == *std::max_element(vec, vec+N, std::less<int>{}));
 
 // deletes the memory
-tf::cuda_free(vec);
-tf::cuda_free(idx);
-tf::cuda_free(buffer);
+cudaFree(vec);
+cudaFree(idx);
+cudaFree(buffer);
 @endcode
+
+Since the GPU max-element algorithm may require extra buffer to store the 
+temporary results, you need to provide a buffer of size at least larger or equal
+to the value returned from <tt>tf::cudaDefaultExecutionPolicy::max_element_bufsz</tt>.
 
 @attention
 You must keep the buffer alive before tf::cuda_max_element completes.

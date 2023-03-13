@@ -37,8 +37,9 @@
 <sect1 id="CompileTaskflowWithCUDA_1CompileTaskflowWithCUDADirectly">
 <title>Compile Source Code Directly</title>
 <para>Taskflow&apos;s GPU programming interface for CUDA is <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>. Consider the following <computeroutput>simple.cu</computeroutput> program that launches a single kernel function to output a message:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>core<sp/>taskflow<sp/>routines</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;taskflow/cudaflow.hpp&gt;</highlight><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>core<sp/>cudaflow<sp/>routines</highlight><highlight class="normal"></highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;taskflow/cudaflow.hpp&gt;</highlight><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;taskflow/cuda/for_each.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal">**<sp/>argv)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -46,10 +47,15 @@
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task1<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){}).name(</highlight><highlight class="stringliteral">&quot;cpu<sp/>task&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task2<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>cudaTask<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" kindref="member">single_task</ref>(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>[]<sp/>__device__<sp/>()<sp/>{<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;hello<sp/>cudaFlow!\n&quot;</highlight><highlight class="normal">);<sp/>}</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task2<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>cudaFlow<sp/>of<sp/>a<sp/>single-threaded<sp/>task</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" kindref="member">single_task</ref>([]<sp/>__device__<sp/>()<sp/>{<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;hello<sp/>cudaFlow!\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>launch<sp/>the<sp/>cudaflow<sp/>through<sp/>a<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1ae6810f7de27e5a347331aacfce67bea1" kindref="member">run</ref>(stream);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;gpu<sp/>task&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>task1.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(task2);</highlight></codeline>
@@ -63,9 +69,6 @@
 <codeline><highlight class="normal">~$<sp/>./simple</highlight></codeline>
 <codeline><highlight class="normal">hello<sp/>cudaFlow!</highlight></codeline>
 </programlisting></para>
-<para><simplesect kind="attention"><para>You need to include <computeroutput>taskflow/cudaflow.hpp</computeroutput> in order to use <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>.</para>
-</simplesect>
-</para>
 </sect1>
 <sect1 id="CompileTaskflowWithCUDA_1CompileTaskflowWithCUDASeparately">
 <title>Compile Source Code Separately</title>
@@ -96,9 +99,15 @@
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;taskflow/cudaflow.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>make_cudaflow(<ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref>&amp;<sp/>taskflow)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" kindref="member">single_task</ref>([]<sp/>__device__<sp/>()<sp/>{<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;cudaflow.cpp!\n&quot;</highlight><highlight class="normal">);<sp/>})</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;kernel&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>cudaFlow<sp/>of<sp/>a<sp/>single-threaded<sp/>task</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" kindref="member">single_task</ref>([]<sp/>__device__<sp/>()<sp/>{<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;cudaflow.cpp!\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>launch<sp/>the<sp/>cudaflow<sp/>through<sp/>a<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1ae6810f7de27e5a347331aacfce67bea1" kindref="member">run</ref>(stream);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;gpu<sp/>task&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>

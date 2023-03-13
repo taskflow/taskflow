@@ -24,6 +24,8 @@
 <sect1 id="CUDASTDMerge_1CUDASTDMergeIncludeTheHeader">
 <title>Include the Header</title>
 <para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/merge.hpp</computeroutput>, for using the parallel-merge algorithm.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="merge_8hpp" kindref="compound">taskflow/cuda/algorithm/merge.hpp</ref>&gt;</highlight></codeline>
+</programlisting></para>
 </sect1>
 <sect1 id="CUDASTDMerge_1CUDASTDMergeItems">
 <title>Merge Two Sorted Ranges of Items</title>
@@ -41,9 +43,12 @@
 <codeline><highlight class="normal"><ref refid="cpp/algorithm/sort" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::sort</ref>(input_1,<sp/>input1<sp/>+<sp/>N);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/algorithm/sort" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::sort</ref>(input_2,<sp/>input2<sp/>+<sp/>N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>merge<sp/>two<sp/>N-element<sp/>vectors<sp/></highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>tf::cuda_merge_buffer_size&lt;tf::cudaDefaultExecutionPolicy&gt;(N,<sp/>N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>merge<sp/>two<sp/>N-element<sp/>sorted<sp/>vectors</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" kindref="member">merge_bufsz</ref>(N,<sp/>N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>merge<sp/>input_1<sp/>and<sp/>input_2<sp/>to<sp/>output</highlight><highlight class="normal"></highlight></codeline>
@@ -54,13 +59,18 @@
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronizes<sp/>the<sp/>execution<sp/>and<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>verify<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(std::is_sorted(output,<sp/>output<sp/>+<sp/>2*N));</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(buffer);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(input1);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(input2);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(output);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(buffer);</highlight></codeline>
 </programlisting></para>
-<para>The merge algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results. Since the GPU merge algorithm may require extra buffer to store the temporary results, you must provide a buffer of size at least bytes returned from <ref refid="namespacetf_1a3db5b8f718e7f6a6fa2da3a689bd8828" kindref="member">tf::cuda_merge_buffer_size</ref>.</para>
+<para>The merge algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results. Since the GPU merge algorithm may require extra buffer to store the temporary results, you need to provide a buffer of size at least larger or equal to the value returned from <computeroutput><ref refid="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" kindref="member">tf::cudaDefaultExecutionPolicy::merge_bufsz</ref></computeroutput>. The buffer size depends only on the two input vector sizes.</para>
 <para><simplesect kind="attention"><para>You must keep the buffer alive before the merge call completes.</para>
 </simplesect>
 </para>
@@ -82,9 +92,12 @@
 <codeline><highlight class="normal">b_keys[0]<sp/>=<sp/>3,<sp/>b_keys[1]<sp/>=<sp/>7;</highlight></codeline>
 <codeline><highlight class="normal">b_vals[0]<sp/>=<sp/>3,<sp/>b_vals[1]<sp/>=<sp/>4;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>merge<sp/>the<sp/>two<sp/>key-value<sp/>items</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>tf::cuda_merge_buffer_size&lt;tf::cudaDefaultExecutionPolicy&gt;(N,<sp/>N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>merge<sp/>two<sp/>N-element<sp/>sorted<sp/>vectors<sp/>by<sp/>keys</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" kindref="member">merge_bufsz</ref>(N,<sp/>N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>merge<sp/>keys<sp/>and<sp/>values<sp/>of<sp/>a<sp/>and<sp/>b<sp/>to<sp/>c</highlight><highlight class="normal"></highlight></codeline>
@@ -96,21 +109,23 @@
 <codeline><highlight class="normal"><sp/><sp/>[]__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>&lt;<sp/>b;<sp/>},<sp/><sp/></highlight><highlight class="comment">//<sp/>comparator</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>buffer</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>merge<sp/>to<sp/>complete</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now,<sp/>c_keys<sp/>=<sp/>{1,<sp/>3,<sp/>7,<sp/>8}</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now,<sp/>c_vals<sp/>=<sp/>{2,<sp/>3,<sp/>4,<sp/>1}</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>device<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(buffer);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(a_keys);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(b_keys);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(c_keys);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(a_vals);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(b_vals);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" kindref="member">tf::cuda_free</ref>(c_vals);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(buffer);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(a_keys);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(b_keys);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(c_keys);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(a_vals);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(b_vals);</highlight></codeline>
+<codeline><highlight class="normal">cudaFree(c_vals);</highlight></codeline>
 </programlisting></para>
-<para>The buffer size required by <ref refid="namespacetf_1aa84d4c68d2cbe9f6efc4a1eb1a115458" kindref="member">tf::cuda_merge_by_key</ref> is the same as <ref refid="namespacetf_1a37ec481149c2f01669353033d75ed72a" kindref="member">tf::cuda_merge</ref> and must be at least equal to or larger than the value returned by <ref refid="namespacetf_1a3db5b8f718e7f6a6fa2da3a689bd8828" kindref="member">tf::cuda_merge_buffer_size</ref>. </para>
+<para>Since the GPU merge algorithm may require extra buffer to store the temporary results, you need to provide a buffer of size at least larger or equal to the value returned from <computeroutput><ref refid="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" kindref="member">tf::cudaDefaultExecutionPolicy::merge_bufsz</ref></computeroutput>. The buffer size depends only on the two input vector sizes. </para>
 </sect1>
     </detaileddescription>
   </compounddef>

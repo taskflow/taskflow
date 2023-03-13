@@ -17,8 +17,9 @@ Consider the following `simple.cu` program that launches a single kernel
 function to output a message:
 
 @code{.cpp}
-#include <taskflow/taskflow.hpp>  // core taskflow routines
-#include <taskflow/cudaflow.hpp>  // core cudaflow routines
+#include <taskflow/taskflow.hpp>
+#include <taskflow/cudaflow.hpp>  
+#include <taskflow/cuda/for_each.hpp>
 
 int main(int argc, const char** argv) {
 
@@ -26,10 +27,15 @@ int main(int argc, const char** argv) {
   tf::Taskflow taskflow;
 
   tf::Task task1 = taskflow.emplace([](){}).name("cpu task");
-  tf::Task task2 = taskflow.emplace([](tf::cudaFlow& cf){
-    tf::cudaTask cudaTask = cf.single_task(
-      [] __device__ () { printf("hello cudaFlow!\n"); }
-    );
+  tf::Task task2 = taskflow.emplace([](){
+    // create a cudaFlow of a single-threaded task
+    tf::cudaFlow cf;
+    cf.single_task([] __device__ () { printf("hello cudaFlow!\n"); });
+    
+    // launch the cudaflow through a stream
+    tf::cudaStream stream;
+    cf.run(stream);
+    stream.synchronize();
   }).name("gpu task");
 
   task1.precede(task2);
@@ -47,9 +53,6 @@ is to use @nvcc:
 ~$ ./simple
 hello cudaFlow!
 @endcode
-
-@attention
-You need to include @c taskflow/cudaflow.hpp in order to use tf::cudaFlow.
 
 
 @section CompileTaskflowWithCUDASeparately Compile Source Code Separately
@@ -90,9 +93,15 @@ int main() {
 #include <taskflow/cudaflow.hpp>
 
 tf::Task make_cudaflow(tf::Taskflow& taskflow) {
-  return taskflow.emplace([](tf::cudaFlow& cf){
-    cf.single_task([] __device__ () { printf("cudaflow.cpp!\n"); })
-      .name("kernel");
+  return taskflow.emplace([](){
+    // create a cudaFlow of a single-threaded task
+    tf::cudaFlow cf;
+    cf.single_task([] __device__ () { printf("cudaflow.cpp!\n"); });
+    
+    // launch the cudaflow through a stream
+    tf::cudaStream stream;
+    cf.run(stream);
+    stream.synchronize();
   }).name("gpu task");
 }
 @endcode
