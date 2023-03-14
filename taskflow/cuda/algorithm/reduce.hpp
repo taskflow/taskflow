@@ -209,18 +209,7 @@ void cuda_uninitialized_reduce_loop(
 
 namespace tf {
 
-/**
-@brief queries the buffer size in bytes needed to call reduce kernels
-
-@tparam P execution policy type
-@tparam T value type
-
-@param count number of elements to reduce
-
-The function is used to allocate a buffer for calling tf::cuda_reduce,
-tf::cuda_uninitialized_reduce, tf::cuda_transform_reduce, and
-tf::cuda_uninitialized_transform_reduce.
-*/
+// Function: reduce_bufsz
 template <unsigned NT, unsigned VT>  
 template <typename T>
 unsigned cudaExecutionPolicy<NT, VT>::reduce_bufsz(unsigned count) {

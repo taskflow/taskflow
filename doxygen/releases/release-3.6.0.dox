@@ -36,6 +36,11 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
 
 @subsection release-3-6-0_taskflow_core Taskflow Core
 
++ Added a new tf::ExecutionPolicy interface to optimize parallel algorithms
+  + tf::GuidedPartitioner
+  + tf::StaticPartitioner
+  + tf::DynamicPartitioner
+  + tf::RandomPartitioner
 + Extended parallel algorithms to support different execution policies via tf::ExecutionPolicy
   + tf::Taskflow::for_each_index(P&& policy, B first, E last, S step, C callable)
   + tf::Taskflow::for_each(P&& policy, B first, E last, C callable) 
@@ -46,9 +51,15 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
 
 @subsection release-3-6-0_cudaflow cudaFlow
 
+  + removed algorithms that require buffer from cudaFlow due to update limitation
+  + removed support for a dedicated %cudaFlow task in %Taskflow
+    + all usage of %cudaFlow and %cudaFlowCapturer are standalone now
+
 @subsection release-3-6-0_utilities Utilities
 
 @subsection release-3-6-0_profiler Taskflow Profiler (TFProf)
+
+  + removed %cudaFlow and %syclFlow tasks
 
 @section release-3-6-0_bug_fixes Bug Fixes 
 
@@ -102,6 +113,7 @@ taskflow.emplace([](){
 @endcode
 
 + Dropped in-place support for running tf::syclFlow from a dedicated task
+  + SYCL can just be used out of box together with %Taskflow
 + Move all buffer query methods of CUDA standard algorithms inside execution policy
   + tf::cudaExecutionPolicy<NT, VT>::reduce_bufsz
   + tf::cudaExecutionPolicy<NT, VT>::scan_bufsz
@@ -118,9 +130,17 @@ tf::cudaDefaultExecutionPolicy policy(stream);
 policy.reduce_bufsz<int>(N);
 @endcode
 
+<<<<<<< HEAD
 + Renamed tf::Executor::run_and_wait to tf::Executor::corun for expressiveness
 + Renamed tf::Executor::loop_until to tf::Executor::corun_until for expressiveness
 + Renamed tf::Runtime::run_and_wait to tf::Runtime::corun for expressiveness
+=======
+  + tf::cudaExecutionPolicy<NT, VT>::reduce_bufsz
+  + tf::cudaExecutionPolicy<NT, VT>::scan_bufsz
+  + tf::cudaExecutionPolicy<NT, VT>::merge_bufsz
+  + tf::cudaExecutionPolicy<NT, VT>::min_element_bufsz
+  + tf::cudaExecutionPolicy<NT, VT>::max_element_bufsz
+>>>>>>> 5b4ba4cca28de6abc879b03143df657d4a99b3ad
 
 @section release-3-6-0_documentation Documentation
 

@@ -188,17 +188,7 @@ void cuda_find_if(
 // cuda_min_element
 // ----------------------------------------------------------------------------
 
-/**
-@brief queries the buffer size in bytes needed to call tf::cuda_min_element
-
-@tparam P execution policy type
-@tparam T value type
-
-@param count number of elements to search
-
-The function is used to decide the buffer size in bytes for calling
-tf::cuda_min_element.
-*/
+// Function: min-element_bufsz
 template <unsigned NT, unsigned VT>  
 template <typename T>
 unsigned cudaExecutionPolicy<NT, VT>::min_element_bufsz(unsigned count) {
@@ -250,17 +240,7 @@ void cuda_min_element(P&& p, I first, I last, unsigned* idx, O op, void* buf) {
 // cuda_max_element
 // ----------------------------------------------------------------------------
 
-/**
-@brief queries the buffer size in bytes needed to call tf::cuda_max_element
-
-@tparam P execution policy type
-@tparam T value type
-
-@param count number of elements to search
-
-The function is used to decide the buffer size in bytes for calling
-tf::cuda_max_element.
-*/
+// Function: max_element_bufsz
 template <unsigned NT, unsigned VT>  
 template <typename T>
 unsigned cudaExecutionPolicy<NT, VT>::max_element_bufsz(unsigned count) {

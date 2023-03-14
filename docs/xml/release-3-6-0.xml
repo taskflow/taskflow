@@ -30,19 +30,27 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect2 id="release-3-6-0_1release-3-6-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>Extended parallel algorithms to support different execution policies via <ref refid="structtf_1_1ExecutionPolicy" kindref="compound">tf::ExecutionPolicy</ref><itemizedlist>
+<listitem><para>Added a new <ref refid="structtf_1_1ExecutionPolicy" kindref="compound">tf::ExecutionPolicy</ref> interface to optimize parallel algorithms<itemizedlist>
+<listitem><para><ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref></para></listitem><listitem><para><ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref></para></listitem><listitem><para><ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref></para></listitem><listitem><para><ref refid="classtf_1_1RandomPartitioner" kindref="compound">tf::RandomPartitioner</ref></para></listitem></itemizedlist>
+</para></listitem><listitem><para>Extended parallel algorithms to support different execution policies via <ref refid="structtf_1_1ExecutionPolicy" kindref="compound">tf::ExecutionPolicy</ref><itemizedlist>
 <listitem><para><ref refid="classtf_1_1FlowBuilder_1a977d8f7007f323eeaa81a37b4c6e6cd6" kindref="member">tf::Taskflow::for_each_index(P&amp;&amp; policy, B first, E last, S step, C callable)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1ad2299fddbd6165cc7f24f57a734d2839" kindref="member">tf::Taskflow::for_each(P&amp;&amp; policy, B first, E last, C callable)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a9f7befa968cf69ea0a20dc267f746f3e" kindref="member">tf::Taskflow::transform(P&amp;&amp; policy, B first1, E last1, O d_first, C c)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a01edf4fdeee7d7e01483b6d2969bf115" kindref="member">tf::Taskflow::transform(P&amp;&amp; policy, B1 first1, E1 last1, B2 first2, O d_first, C c)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1afc7bd7a737febf30d5d1d706c4b65f84" kindref="member">tf::Taskflow::reduce(P&amp;&amp; policy, B first, E last, T&amp; result, O bop)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a4dc484abecf338574f46b38635d08e36" kindref="member">tf::Taskflow::transform_reduce(P&amp;&amp; policy, B first, E last, T&amp; result, BOP bop, UOP uop)</ref></para></listitem></itemizedlist>
 </para></listitem></itemizedlist>
 </para></sect2>
 <sect2 id="release-3-6-0_1release-3-6-0_cudaflow">
 <title>cudaFlow</title>
-</sect2>
+<para><itemizedlist>
+<listitem><para>removed algorithms that require buffer from <ref refid="classtf_1_1cudaFlow" kindref="compound">cudaFlow</ref> due to update limitation</para></listitem><listitem><para>removed support for a dedicated cudaFlow task in Taskflow<itemizedlist>
+<listitem><para>all usage of cudaFlow and cudaFlowCapturer are standalone now</para></listitem></itemizedlist>
+</para></listitem></itemizedlist>
+</para></sect2>
 <sect2 id="release-3-6-0_1release-3-6-0_utilities">
 <title>Utilities</title>
 </sect2>
 <sect2 id="release-3-6-0_1release-3-6-0_profiler">
 <title>Taskflow Profiler (TFProf)</title>
-</sect2>
+<para><itemizedlist>
+<listitem><para>removed cudaFlow and syclFlow tasks</para></listitem></itemizedlist>
+</para></sect2>
 </sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_bug_fixes">
 <title>Bug Fixes</title>
@@ -88,7 +96,9 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <codeline><highlight class="normal"><sp/><sp/>stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting></para><para><itemizedlist>
-<listitem><para>Dropped in-place support for running tf::syclFlow from a dedicated task</para></listitem><listitem><para>Move all buffer query methods of CUDA standard algorithms inside execution policy<itemizedlist>
+<listitem><para>Dropped in-place support for running tf::syclFlow from a dedicated task<itemizedlist>
+<listitem><para>SYCL can just be used out of box together with Taskflow</para></listitem></itemizedlist>
+</para></listitem><listitem><para>Move all buffer query methods of CUDA standard algorithms inside execution policy<itemizedlist>
 <listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a446cee95bb839ee180052059e2ad7fd6" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::reduce_bufsz</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::scan_bufsz</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::merge_bufsz</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1abcafb001cd68c1135392f4bcda5a2a05" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::min_element_bufsz</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a31fe75c4b0765df3035e12be49af88aa" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::max_element_bufsz</ref></para></listitem></itemizedlist>
 </para></listitem></itemizedlist>
 </para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>no<sp/>longer<sp/>supported</highlight><highlight class="normal"></highlight></codeline>
@@ -97,8 +107,11 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>(and<sp/>similarly<sp/>for<sp/>other<sp/>parallel<sp/>algorithms)</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
 <codeline><highlight class="normal">policy.reduce_bufsz&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
-</programlisting></para><para><itemizedlist>
-<listitem><para>Renamed tf::Executor::run_and_wait to <ref refid="classtf_1_1Executor_1a8fcd9e0557922bb8194999f0cd433ea8" kindref="member">tf::Executor::corun</ref> for expressiveness</para></listitem><listitem><para>Renamed tf::Executor::loop_until to <ref refid="classtf_1_1Executor_1a0fc6eb19f168dc4a9cd0a7c6187c1d2d" kindref="member">tf::Executor::corun_until</ref> for expressiveness</para></listitem><listitem><para>Renamed tf::Runtime::run_and_wait to <ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">tf::Runtime::corun</ref> for expressiveness</para></listitem></itemizedlist>
+</programlisting></para><para>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD<itemizedlist>
+<listitem><para>Renamed tf::Executor::run_and_wait to <ref refid="classtf_1_1Executor_1a8fcd9e0557922bb8194999f0cd433ea8" kindref="member">tf::Executor::corun</ref> for expressiveness</para></listitem><listitem><para>Renamed tf::Executor::loop_until to <ref refid="classtf_1_1Executor_1a0fc6eb19f168dc4a9cd0a7c6187c1d2d" kindref="member">tf::Executor::corun_until</ref> for expressiveness <heading level="1">+ Renamed tf::Runtime::run_and_wait to <ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">tf::Runtime::corun</ref> for expressiveness </heading>
+</para></listitem></itemizedlist>
+</para><para><itemizedlist>
+<listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a446cee95bb839ee180052059e2ad7fd6" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::reduce_bufsz</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::scan_bufsz</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::merge_bufsz</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1abcafb001cd68c1135392f4bcda5a2a05" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::min_element_bufsz</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a31fe75c4b0765df3035e12be49af88aa" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::max_element_bufsz</ref> <blockquote><para><blockquote><para><blockquote><para><blockquote><para><blockquote><para><blockquote><para><blockquote><para>5b4ba4cca28de6abc879b03143df657d4a99b3ad </para></blockquote></para></blockquote></para></blockquote></para></blockquote></para></blockquote></para></blockquote></para></blockquote></para></listitem></itemizedlist>
 </para></sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_documentation">
 <title>Documentation</title>

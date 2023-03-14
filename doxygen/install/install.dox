@@ -98,7 +98,6 @@ Currently, our CMake script supports the following options:
 | TF_BUILD_TESTS      | ON        | enable/disable building unit tests |
 | TF_BUILD_BENCHMARKS | OFF       | enable/disable building benchmarks |
 | TF_BUILD_CUDA       | OFF       | enable/disable building CUDA code  |
-| TF_BUILD_SYCL       | OFF       | enable/disable building SYCL code  |
 </div>
 
 To enable or disable a specific option, use @c -D in the CMake build. 
@@ -124,28 +123,6 @@ and use it to compile and link @c .cu code.
 
 Please visit the page @subpage CompileTaskflowWithCUDA for details.
 
-
-@section BAIBuildSYCLCode Build SYCL Code Examples and Unit Tests
-
-To build SYCL code, including unit tests and examples, 
-enable the CMake option @c TF_BUILD_SYCL to @c ON and
-direct the CMake compiler @c CMAKE_CXX_COMPILER to the location of 
-DPC++ clang compiler.
-You can acquire the DPC++ clang compiler at the official page of 
-<a href="https://intel.github.io/llvm-docs/GetStartedGuide.html">Getting Started with oneAPI DPC++</a>.
-
-@code{.shell-session}
-# after succesfully build Intel DPCPP clang: https://intel.github.io/llvm-docs/
-~$ export DPCPP_HOME=/path/to/your/dpcpp/workspace
-~$ export PATH=$DPCPP_HOME/llvm/build/bin:$PATH
-~$ export LD_LIBRARY_PATH=$DPCPP_HOME/llvm/build/lib:$LD_LIBRARY_PATH
-
-# build Taskflow SYCL code using Intel oneAPI dpc++ clang compiler
-~$ cmake ../ -DTF_BUILD_SYCL=ON -DCMAKE_CXX_COMPILER=clang++
-~$ make
-@endcode
-
-Please visit the page @subpage CompileTaskflowWithSYCL for details.
 
 @section BAIBuildSanitizers Build Sanitizers
 

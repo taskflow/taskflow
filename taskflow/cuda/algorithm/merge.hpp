@@ -447,16 +447,7 @@ namespace tf {
 // standalone merge algorithms
 // ----------------------------------------------------------------------------
 
-/**
-@brief queries the buffer size in bytes needed to call merge kernels
-
-@tparam P execution polity type
-@param a_count number of elements in the first input array
-@param b_count number of elements in the second input array
-
-The function is used to allocate a buffer for calling
-tf::cuda_merge.
-*/
+// Function: merge_bufsz
 template <unsigned NT, unsigned VT>  
 unsigned cudaExecutionPolicy<NT, VT>::merge_bufsz(unsigned a_count, unsigned b_count) {
   return sizeof(unsigned) * (num_blocks(a_count + b_count + nv) + 1);
