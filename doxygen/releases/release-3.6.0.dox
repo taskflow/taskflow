@@ -130,17 +130,9 @@ tf::cudaDefaultExecutionPolicy policy(stream);
 policy.reduce_bufsz<int>(N);
 @endcode
 
-<<<<<<< HEAD
 + Renamed tf::Executor::run_and_wait to tf::Executor::corun for expressiveness
 + Renamed tf::Executor::loop_until to tf::Executor::corun_until for expressiveness
 + Renamed tf::Runtime::run_and_wait to tf::Runtime::corun for expressiveness
-=======
-  + tf::cudaExecutionPolicy<NT, VT>::reduce_bufsz
-  + tf::cudaExecutionPolicy<NT, VT>::scan_bufsz
-  + tf::cudaExecutionPolicy<NT, VT>::merge_bufsz
-  + tf::cudaExecutionPolicy<NT, VT>::min_element_bufsz
-  + tf::cudaExecutionPolicy<NT, VT>::max_element_bufsz
->>>>>>> 5b4ba4cca28de6abc879b03143df657d4a99b3ad
 
 @section release-3-6-0_documentation Documentation
 
