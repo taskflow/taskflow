@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+  <compounddef id="classtf_1_1PartitionerBase" kind="class" language="C++" prot="public">
+    <compoundname>tf::PartitionerBase</compoundname>
+    <derivedcompoundref refid="classtf_1_1DynamicPartitioner" prot="public" virt="non-virtual">tf::DynamicPartitioner</derivedcompoundref>
+    <derivedcompoundref refid="classtf_1_1GuidedPartitioner" prot="public" virt="non-virtual">tf::GuidedPartitioner</derivedcompoundref>
+    <derivedcompoundref refid="classtf_1_1RandomPartitioner" prot="public" virt="non-virtual">tf::RandomPartitioner</derivedcompoundref>
+    <derivedcompoundref refid="classtf_1_1StaticPartitioner" prot="public" virt="non-virtual">tf::StaticPartitioner</derivedcompoundref>
+    <includes refid="execution__policy_8hpp" local="no">execution_policy.hpp</includes>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classtf_1_1PartitionerBase_1a98a744284cfc726b1a597dae90e766f0" prot="protected" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t tf::PartitionerBase::_chunk_size</definition>
+        <argsstring></argsstring>
+        <name>_chunk_size</name>
+        <initializer>{0}</initializer>
+        <briefdescription>
+<para>chunk size </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="55" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1PartitionerBase_1a9dae31a2e61d1d64a913bd1d12cfcb20" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tf::PartitionerBase::PartitionerBase</definition>
+        <argsstring>()=default</argsstring>
+        <name>PartitionerBase</name>
+        <briefdescription>
+<para>default constructor </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="33" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1PartitionerBase_1a75ad9b40415d767ef368c20650958be0" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>tf::PartitionerBase::PartitionerBase</definition>
+        <argsstring>(size_t chunk_size)</argsstring>
+        <name>PartitionerBase</name>
+        <param>
+          <type>size_t</type>
+          <declname>chunk_size</declname>
+        </param>
+        <briefdescription>
+<para>construct a partitioner with the given chunk size </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="38" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1PartitionerBase_1a8445b917fca6384861898d46b81ec471" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::PartitionerBase::chunk_size</definition>
+        <argsstring>() const</argsstring>
+        <name>chunk_size</name>
+        <briefdescription>
+<para>query the chunk size of this partitioner </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="43" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="43" bodyend="43"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1PartitionerBase_1ad3aadb6b50b86eb0a679f714f07079cf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void tf::PartitionerBase::chunk_size</definition>
+        <argsstring>(size_t cz)</argsstring>
+        <name>chunk_size</name>
+        <param>
+          <type>size_t</type>
+          <declname>cz</declname>
+        </param>
+        <briefdescription>
+<para>update the chunk size of this partitioner </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="48" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="48" bodyend="48"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>class to derive a partitioner for scheduling parallel algorithms </para>    </briefdescription>
+    <detaileddescription>
+<para>The class provides base methods to derive a partitioner that can be used to schedule parallel iterations (e.g., <ref refid="classtf_1_1FlowBuilder_1ad2299fddbd6165cc7f24f57a734d2839" kindref="member">tf::Taskflow::for_each</ref>). </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="180">
+        <label>tf::RandomPartitioner</label>
+        <link refid="classtf_1_1RandomPartitioner"/>
+        <childnode refid="177" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="179">
+        <label>tf::GuidedPartitioner</label>
+        <link refid="classtf_1_1GuidedPartitioner"/>
+        <childnode refid="177" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="178">
+        <label>tf::DynamicPartitioner</label>
+        <link refid="classtf_1_1DynamicPartitioner"/>
+        <childnode refid="177" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="177">
+        <label>tf::PartitionerBase</label>
+        <link refid="classtf_1_1PartitionerBase"/>
+      </node>
+      <node id="181">
+        <label>tf::StaticPartitioner</label>
+        <link refid="classtf_1_1StaticPartitioner"/>
+        <childnode refid="177" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="26" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="26" bodyend="56"/>
+    <listofallmembers>
+      <member refid="classtf_1_1PartitionerBase_1a98a744284cfc726b1a597dae90e766f0" prot="protected" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>_chunk_size</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a8445b917fca6384861898d46b81ec471" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>chunk_size</name></member>
+      <member refid="classtf_1_1PartitionerBase_1ad3aadb6b50b86eb0a679f714f07079cf" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>chunk_size</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a9dae31a2e61d1d64a913bd1d12cfcb20" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>PartitionerBase</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a75ad9b40415d767ef368c20650958be0" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>PartitionerBase</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

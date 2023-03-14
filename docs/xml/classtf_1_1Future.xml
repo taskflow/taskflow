@@ -1,17 +1,19 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="classtf_1_1Future" kind="class" language="C++" prot="public">
     <compoundname>tf::Future</compoundname>
     <basecompoundref refid="cpp/thread/future" prot="public" virt="non-virtual">std::future&lt; T &gt;</basecompoundref>
     <includes refid="core_2taskflow_8hpp" local="no">taskflow.hpp</includes>
     <templateparamlist>
       <param>
-        <type>typename T</type>
+        <type>typename</type>
+        <declname>T</declname>
+        <defname>T</defname>
       </param>
     </templateparamlist>
       <sectiondef kind="private-type">
       <memberdef kind="typedef" id="classtf_1_1Future_1a680305aa8ac807796dabfaa82040f47d" prot="private" static="no">
-        <type>std::variant&lt; std::monostate, <ref refid="cpp/memory/weak_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::weak_ptr</ref>&lt; Topology &gt;, <ref refid="cpp/memory/weak_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::weak_ptr</ref>&lt; AsyncTopology &gt; &gt;</type>
+        <type>std::variant&lt; std::monostate, <ref refid="cpp/memory/weak_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::weak_ptr</ref>&lt; Topology &gt;, <ref refid="cpp/memory/weak_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::weak_ptr</ref>&lt; AsyncTopology &gt; &gt;</type>
         <definition>using tf::Future&lt; T &gt;::handle_t =  std::variant&lt; std::monostate, std::weak_ptr&lt;Topology&gt;, std::weak_ptr&lt;AsyncTopology&gt; &gt;</definition>
         <argsstring></argsstring>
         <name>handle_t</name>
@@ -21,7 +23,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="576" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="578" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="538" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="540" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="friend">
@@ -36,7 +38,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="573" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="573" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="535" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="535" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Future_1aa48945297ede77a161defc88033ce8a6" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>friend class</type>
@@ -49,37 +51,37 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="574" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="574" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="536" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="536" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-static-attrib">
-      <memberdef kind="variable" id="classtf_1_1Future_1a1c752286473736b4182de7ef7d2163eb" prot="private" static="yes" constexpr="yes" mutable="no">
-        <type>constexpr static auto</type>
-        <definition>constexpr static auto tf::Future&lt; T &gt;::ASYNC</definition>
+      <memberdef kind="variable" id="classtf_1_1Future_1ac1ce88887a135442eeac7b2eb29d8e23" prot="private" static="yes" mutable="no">
+        <type>constexpr auto</type>
+        <definition>constexpr auto tf::Future&lt; T &gt;::ASYNC</definition>
         <argsstring></argsstring>
         <name>ASYNC</name>
-        <initializer>= get_index_v&lt;<ref refid="cpp/memory/weak_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::weak_ptr</ref>&lt;AsyncTopology&gt;, handle_t&gt;</initializer>
+        <initializer>= get_index_v&lt;<ref refid="cpp/memory/weak_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::weak_ptr</ref>&lt;AsyncTopology&gt;, handle_t&gt;</initializer>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="581" column="25" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="581" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="543" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="543" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classtf_1_1Future_1ac730915f7451075781f77fd692b4b723" prot="private" static="yes" constexpr="yes" mutable="no">
-        <type>constexpr static auto</type>
-        <definition>constexpr static auto tf::Future&lt; T &gt;::TASKFLOW</definition>
+      <memberdef kind="variable" id="classtf_1_1Future_1abd23028958308b6895bbbefb0c93ea4a" prot="private" static="yes" mutable="no">
+        <type>constexpr auto</type>
+        <definition>constexpr auto tf::Future&lt; T &gt;::TASKFLOW</definition>
         <argsstring></argsstring>
         <name>TASKFLOW</name>
-        <initializer>= get_index_v&lt;<ref refid="cpp/memory/weak_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::weak_ptr</ref>&lt;Topology&gt;, handle_t&gt;</initializer>
+        <initializer>= get_index_v&lt;<ref refid="cpp/memory/weak_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::weak_ptr</ref>&lt;Topology&gt;, handle_t&gt;</initializer>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="582" column="25" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="582" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="544" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="544" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
@@ -94,7 +96,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="627" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="627" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="589" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="589" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -104,13 +106,12 @@
         <argsstring>()=default</argsstring>
         <name>Future</name>
         <briefdescription>
-<para>default constructor </para>
-        </briefdescription>
+<para>default constructor </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="589" column="5"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="551" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Future_1ad22645f2bcbd2af449cfcd36eace9a1b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -121,13 +122,12 @@
           <type>const <ref refid="classtf_1_1Future" kindref="compound">Future</ref> &amp;</type>
         </param>
         <briefdescription>
-<para>disabled copy constructor </para>
-        </briefdescription>
+<para>disabled copy constructor </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="594" column="5"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="556" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Future_1ae6c5f935a2062f58054b067d39f5e78a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -138,13 +138,12 @@
           <type><ref refid="classtf_1_1Future" kindref="compound">Future</ref> &amp;&amp;</type>
         </param>
         <briefdescription>
-<para>default move constructor </para>
-        </briefdescription>
+<para>default move constructor </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="599" column="5"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="561" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Future_1af33647f94075cbbacc260f36917e6ff2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1Future" kindref="compound">Future</ref> &amp;</type>
@@ -155,13 +154,12 @@
           <type>const <ref refid="classtf_1_1Future" kindref="compound">Future</ref> &amp;</type>
         </param>
         <briefdescription>
-<para>disabled copy assignment </para>
-        </briefdescription>
+<para>disabled copy assignment </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="604" column="12"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="566" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Future_1af3f3c745d9359478e12560ceb2157fc6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1Future" kindref="compound">Future</ref> &amp;</type>
@@ -172,13 +170,12 @@
           <type><ref refid="classtf_1_1Future" kindref="compound">Future</ref> &amp;&amp;</type>
         </param>
         <briefdescription>
-<para>default move assignment </para>
-        </briefdescription>
+<para>default move assignment </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="609" column="12"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="571" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>bool</type>
@@ -186,16 +183,13 @@
         <argsstring>()</argsstring>
         <name>cancel</name>
         <briefdescription>
-<para>cancels the execution of the running taskflow associated with this future object </para>
-        </briefdescription>
+<para>cancels the execution of the running taskflow associated with this future object </para>        </briefdescription>
         <detaileddescription>
-<para><simplesect kind="return"><para><computeroutput>true</computeroutput> if the execution can be cancelled or <computeroutput>false</computeroutput> if the execution has already completed</para>
-</simplesect>
-When you request a cancellation, the executor will stop scheduling any tasks onwards. Tasks that are already running will continue to finish (non-preemptive). You can call tf::Future::wait to wait for the cancellation to complete. </para>
-        </detaileddescription>
+<para><simplesect kind="return"><para><computeroutput>true</computeroutput> if the execution can be cancelled or <computeroutput>false</computeroutput> if the execution has already completed</para></simplesect>
+When you request a cancellation, the executor will stop scheduling any tasks onwards. Tasks that are already running will continue to finish (non-preemptive). You can call tf::Future::wait to wait for the cancellation to complete. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="623" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="642" bodyend="657"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="585" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="604" bodyend="619"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -210,7 +204,7 @@ When you request a cancellation, the executor will stop scheduling any tasks onw
         <argsstring>(std::future&lt; T &gt; &amp;&amp;, P &amp;&amp;)</argsstring>
         <name>Future</name>
         <param>
-          <type><ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>&lt; T &gt; &amp;&amp;</type>
+          <type><ref refid="cpp/thread/future" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>&lt; T &gt; &amp;&amp;</type>
           <defname>fu</defname>
         </param>
         <param>
@@ -223,20 +217,18 @@ When you request a cancellation, the executor will stop scheduling any tasks onw
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="630" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="635" bodyend="638"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="592" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="597" bodyend="600"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class to access the result of an execution </para>
-    </briefdescription>
+<para>class to access the result of an execution </para>    </briefdescription>
     <detaileddescription>
-<para><ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> is a derived class from <ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref> that will eventually hold the execution result of a submitted taskflow (<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">tf::Executor::run</ref>) or an asynchronous task (<ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">tf::Executor::async</ref>, <ref refid="classtf_1_1Executor_1abf71e7ec0026ddfce79c912264369bc9" kindref="member">tf::Executor::silent_async</ref>). In addition to the base methods inherited from <ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>, you can call <ref refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kindref="member">tf::Future::cancel</ref> to cancel the execution of the running taskflow associated with this future object. The following example cancels a submission of a taskflow that contains 1000 tasks each running one second.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<para><ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> is a derived class from <ref refid="cpp/thread/future" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref> that will eventually hold the execution result of a submitted taskflow (<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">tf::Executor::run</ref>) or an asynchronous task (<ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">tf::Executor::async</ref>, <ref refid="classtf_1_1Executor_1abf71e7ec0026ddfce79c912264369bc9" kindref="member">tf::Executor::silent_async</ref>). In addition to the base methods inherited from <ref refid="cpp/thread/future" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>, you can call <ref refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kindref="member">tf::Future::cancel</ref> to cancel the execution of the running taskflow associated with this future object. The following example cancels a submission of a taskflow that contains 1000 tasks each running one second.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;1000;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/thread/sleep_for" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::this_thread::sleep_for</ref>(<ref refid="cpp/chrono/duration" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::seconds</ref>(1));</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/thread/sleep_for" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::this_thread::sleep_for</ref>(<ref refid="cpp/chrono/duration" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::seconds</ref>(1));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -248,34 +240,33 @@ When you request a cancellation, the executor will stop scheduling any tasks onw
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>wait<sp/>until<sp/>the<sp/>cancellation<sp/>finishes</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">fu.get();</highlight></codeline>
-</programlisting> </para>
-    </detaileddescription>
+</programlisting> </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="2">
+      <node id="142">
         <label>std::future&lt; T &gt;</label>
       </node>
-      <node id="1">
+      <node id="141">
         <label>tf::Future&lt; T &gt;</label>
         <link refid="classtf_1_1Future"/>
-        <childnode refid="2" relation="public-inheritance">
+        <childnode refid="142" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="2">
+      <node id="144">
         <label>std::future&lt; T &gt;</label>
       </node>
-      <node id="1">
+      <node id="143">
         <label>tf::Future&lt; T &gt;</label>
         <link refid="classtf_1_1Future"/>
-        <childnode refid="2" relation="public-inheritance">
+        <childnode refid="144" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="571" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="571" bodyend="631"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="533" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="533" bodyend="593"/>
     <listofallmembers>
       <member refid="classtf_1_1Future_1a55bc4d50e32e28e8c904a75f9e7c7e9f" prot="private" virt="non-virtual"><scope>tf::Future</scope><name>_handle</name></member>
-      <member refid="classtf_1_1Future_1a1c752286473736b4182de7ef7d2163eb" prot="private" virt="non-virtual"><scope>tf::Future</scope><name>ASYNC</name></member>
+      <member refid="classtf_1_1Future_1ac1ce88887a135442eeac7b2eb29d8e23" prot="private" virt="non-virtual"><scope>tf::Future</scope><name>ASYNC</name></member>
       <member refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" prot="public" virt="non-virtual"><scope>tf::Future</scope><name>cancel</name></member>
       <member refid="classtf_1_1Future_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::Future</scope><name>Executor</name></member>
       <member refid="classtf_1_1Future_1a520785365a129094d7ecf11e217509db" prot="public" virt="non-virtual"><scope>tf::Future</scope><name>Future</name></member>
@@ -286,7 +277,7 @@ When you request a cancellation, the executor will stop scheduling any tasks onw
       <member refid="classtf_1_1Future_1af33647f94075cbbacc260f36917e6ff2" prot="public" virt="non-virtual"><scope>tf::Future</scope><name>operator=</name></member>
       <member refid="classtf_1_1Future_1af3f3c745d9359478e12560ceb2157fc6" prot="public" virt="non-virtual"><scope>tf::Future</scope><name>operator=</name></member>
       <member refid="classtf_1_1Future_1aa48945297ede77a161defc88033ce8a6" prot="private" virt="non-virtual"><scope>tf::Future</scope><name>Subflow</name></member>
-      <member refid="classtf_1_1Future_1ac730915f7451075781f77fd692b4b723" prot="private" virt="non-virtual"><scope>tf::Future</scope><name>TASKFLOW</name></member>
+      <member refid="classtf_1_1Future_1abd23028958308b6895bbbefb0c93ea4a" prot="private" virt="non-virtual"><scope>tf::Future</scope><name>TASKFLOW</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

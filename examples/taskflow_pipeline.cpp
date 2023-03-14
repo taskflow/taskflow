@@ -68,17 +68,17 @@ int main() {
         return;
       }
       printf("begin token %zu\n", pf.token());
-      executor.run_and_wait(taskflows[pf.pipe()]);
+      executor.corun(taskflows[pf.pipe()]);
     }},
 
     // second pipe runs taskflow2
     tf::Pipe{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) {
-      executor.run_and_wait(taskflows[pf.pipe()]);
+      executor.corun(taskflows[pf.pipe()]);
     }},
 
     // third pipe calls taskflow3
     tf::Pipe{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) {
-      executor.run_and_wait(taskflows[pf.pipe()]);
+      executor.corun(taskflows[pf.pipe()]);
     }}
   );
 

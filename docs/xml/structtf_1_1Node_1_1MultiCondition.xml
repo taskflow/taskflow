@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="structtf_1_1Node_1_1MultiCondition" kind="struct" language="C++" prot="private">
     <compoundname>tf::Node::MultiCondition</compoundname>
       <sectiondef kind="public-attrib">
-      <memberdef kind="variable" id="structtf_1_1Node_1_1MultiCondition_1a517860cf0ac79a6ac94c63e80b540971" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; <ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt; int &gt;)&gt;</type>
-        <definition>std::function&lt;SmallVector&lt;int&gt;)&gt; tf::Node::MultiCondition::work</definition>
+      <memberdef kind="variable" id="structtf_1_1Node_1_1MultiCondition_1ac1379c4b8b443c3f7a28c6b3544d19c8" prot="public" static="no" mutable="no">
+        <type>std::variant&lt; <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; <ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt; int &gt;)&gt;, <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; <ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt; int &gt;<ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref> &amp;)&gt; &gt;</type>
+        <definition>std::variant&lt; std::function&lt;SmallVector&lt;int&gt;)&gt;, std::function&lt;SmallVector&lt;int&gt;Runtime&amp;)&gt; &gt; tf::Node::MultiCondition::work</definition>
         <argsstring></argsstring>
         <name>work</name>
         <briefdescription>
@@ -14,7 +14,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="330" column="21" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="330" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="350" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="350" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -38,17 +38,17 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="328" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="504" bodyend="505"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="346" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="496" bodyend="497"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="325" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="325" bodyend="331"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="343" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="343" bodyend="351"/>
     <listofallmembers>
       <member refid="structtf_1_1Node_1_1MultiCondition_1a978a3094a70121066466fe382d15e471" prot="public" virt="non-virtual"><scope>tf::Node::MultiCondition</scope><name>MultiCondition</name></member>
-      <member refid="structtf_1_1Node_1_1MultiCondition_1a517860cf0ac79a6ac94c63e80b540971" prot="public" virt="non-virtual"><scope>tf::Node::MultiCondition</scope><name>work</name></member>
+      <member refid="structtf_1_1Node_1_1MultiCondition_1ac1379c4b8b443c3f7a28c6b3544d19c8" prot="public" virt="non-virtual"><scope>tf::Node::MultiCondition</scope><name>work</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

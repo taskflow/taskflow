@@ -1,260 +1,103 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="FAQ" kind="page">
     <compoundname>FAQ</compoundname>
     <title>Frequently Asked Questions</title>
-    <tableofcontents>
-      <tocsect>
-        <name>General Questions</name>
-        <reference>FAQ_1GeneralQuestions</reference>
-    <tableofcontents>
-      <tocsect>
-        <name>Q1: What&apos;s the goal of Taskflow?</name>
-        <reference>FAQ_1GeneralQuestion1</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q2: How do I use Taskflow in my projects?</name>
-        <reference>FAQ_1GeneralQuestion2</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q3: What is the difference between static tasking and dynamic tasking?</name>
-        <reference>FAQ_1GeneralQuestion3</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q4: How many tasks can Taskflow handle?</name>
-        <reference>FAQ_1GeneralQuestion4</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q5: What is the weird hex value, like 0x7fc39d402ab0, in the dumped graph?</name>
-        <reference>FAQ_1GeneralQuestion5</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q6: Does Taskflow have backward compatibility with C++03/98/11/14?</name>
-        <reference>FAQ_1GeneralQuestion6</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q7: How does Taskflow schedule tasks?</name>
-        <reference>FAQ_1GeneralQuestion7</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q8: What is the overhead of taskflow?</name>
-        <reference>FAQ_1GeneralQuestion8</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q9: How does it compare to existing task programming systems?</name>
-        <reference>FAQ_1GeneralQuestion9</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q10: Do you try to simplify the GPU kernel programming?</name>
-        <reference>FAQ_1GeneralQuestion10</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q11: Do you have any real use cases?</name>
-        <reference>FAQ_1GeneralQuestion11</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q12: Who is the Principal Investigator of Taskflow I can talk to?</name>
-        <reference>FAQ_1GeneralQuestion12</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q13: Who are developing and maintaining Taskflow?</name>
-        <reference>FAQ_1GeneralQuestion13</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q14: Is Taskflow just an another API or model?</name>
-        <reference>FAQ_1GeneralQuestion14</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q15: How can I contribute?</name>
-        <reference>FAQ_1GeneralQuestion15</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q16: Does Taskflow support pipeline parallelism?</name>
-        <reference>FAQ_1GeneralQuestion16</reference>
-    </tocsect>
-    </tableofcontents>
-    </tocsect>
-      <tocsect>
-        <name>Programming Questions</name>
-        <reference>FAQ_1ProgrammingQuestions</reference>
-    <tableofcontents>
-      <tocsect>
-        <name>Q1: What is the difference between Taskflow threads and workers?</name>
-        <reference>FAQ_1ProgrammingQuestions1</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q2: What is the Lifetime of a Task and a Graph?</name>
-        <reference>FAQ_1ProgrammingQuestions2</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q3: Is taskflow thread-safe?</name>
-        <reference>FAQ_1ProgrammingQuestions3</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q4: Is executor thread-safe?</name>
-        <reference>FAQ_1ProgrammingQuestions4</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q5: My program hangs and never returns after dispatching a taskflow graph. What&apos;s wrong?</name>
-        <reference>FAQ_1ProgrammingQuestions5</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q6: In the following example where B spawns a joined subflow of three tasks B1, B2, and B3, do they run concurrently with task A?</name>
-        <reference>FAQ_1ProgrammingQuestions6</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q7: What is the purpose of a condition task?</name>
-        <reference>FAQ_1ProgrammingQuestions7</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q8: Is the program master thread involved in running tasks?</name>
-        <reference>FAQ_1ProgrammingQuestions8</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q9: Are there any limits on the branches of conditional tasking?</name>
-        <reference>FAQ_1ProgrammingQuestions9</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q10: Why does Taskflow program GPU in a task graph?</name>
-        <reference>FAQ_1ProgrammingQuestions10</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q11: Can I limit the concurrency in certain sections of tasks?</name>
-        <reference>FAQ_1ProgrammingQuestions11</reference>
-    </tocsect>
-      <tocsect>
-        <name>Q12: How can I attach custom data to a task and access it?</name>
-        <reference>FAQ_1ProgrammingQuestions12</reference>
-    </tocsect>
-    </tableofcontents>
-    </tocsect>
-    </tableofcontents>
+    <tableofcontents/>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>This page summarizes a list of frequently asked questions about Taskflow. If you cannot find a solution here, please post an issue at <ulink url="https://github.com/taskflow/taskflow/issues">here</ulink>.</para>
-<sect1 id="FAQ_1GeneralQuestions">
+<para>This page summarizes a list of frequently asked questions about Taskflow. If you cannot find a solution here, please post an issue at <ulink url="https://github.com/taskflow/taskflow/issues">here</ulink>.</para><sect1 id="FAQ_1GeneralQuestions">
 <title>General Questions</title>
 <sect2 id="FAQ_1GeneralQuestion1">
 <title>Q1: What&apos;s the goal of Taskflow?</title>
-<para>Taskflow aims to help C++ developers quickly implement efficient parallel decomposition strategies using task-based approaches.</para>
-</sect2>
+<para>Taskflow aims to help C++ developers quickly implement efficient parallel decomposition strategies using task-based approaches.</para></sect2>
 <sect2 id="FAQ_1GeneralQuestion2">
 <title>Q2: How do I use Taskflow in my projects?</title>
-<para>Taskflow is a header-only library with zero dependencies. The only thing you need is a C++17 compiler. To use Taskflow, simply drop the folder <computeroutput>taskflow/</computeroutput> to your project and include taskflow.hpp.</para>
-</sect2>
+<para>Taskflow is a header-only library with zero dependencies. The only thing you need is a C++17 compiler. To use Taskflow, simply drop the folder <computeroutput>taskflow/</computeroutput> to your project and include taskflow.hpp.</para></sect2>
 <sect2 id="FAQ_1GeneralQuestion3">
 <title>Q3: What is the difference between static tasking and dynamic tasking?</title>
-<para>Static tasking refers to those tasks created before execution, while dynamic tasking refers to those tasks created during the execution of static tasks or dynamic tasks (nested). Dynamic tasks created by the same task node are grouped together to a subflow.</para>
-</sect2>
+<para>Static tasking refers to those tasks created before execution, while dynamic tasking refers to those tasks created during the execution of static tasks or dynamic tasks (nested). Dynamic tasks created by the same task node are grouped together to a subflow.</para></sect2>
 <sect2 id="FAQ_1GeneralQuestion4">
 <title>Q4: How many tasks can Taskflow handle?</title>
-<para>Benchmarks showed Taskflow can efficiently handle millions or billions of tasks (both large and small tasks) on a machine with up to 64 CPUs.</para>
-</sect2>
+<para>Benchmarks showed Taskflow can efficiently handle millions or billions of tasks (both large and small tasks) on a machine with up to 64 CPUs.</para></sect2>
 <sect2 id="FAQ_1GeneralQuestion5">
 <title>Q5: What is the weird hex value, like 0x7fc39d402ab0, in the dumped graph?</title>
-<para>The hex value represents the memory address of the task. Each task has a method <ref refid="classtf_1_1Task_1a9057ecd0f3833b717480e914f8568f02" kindref="member">tf::Task::name(const std::string&amp;)</ref> for user to assign a human readable string to ease the debugging process. If a task is not assigned a name or is an internal node, its address value in the memory is used instead.</para>
-</sect2>
+<para>The hex value represents the memory address of the task. Each task has a method <ref refid="classtf_1_1Task_1a9057ecd0f3833b717480e914f8568f02" kindref="member">tf::Task::name(const std::string&amp;)</ref> for user to assign a human readable string to ease the debugging process. If a task is not assigned a name or is an internal node, its address value in the memory is used instead.</para></sect2>
 <sect2 id="FAQ_1GeneralQuestion6">
 <title>Q6: Does Taskflow have backward compatibility with C++03/98/11/14?</title>
-<para>Unfortunately, Taskflow is heavily relying on modern C++17&apos;s features/idoms/STL and it is very difficult to provide a version that compiles under older C++ versions.</para>
-</sect2>
+<para>Unfortunately, Taskflow is heavily relying on modern C++17&apos;s features/idoms/STL and it is very difficult to provide a version that compiles under older C++ versions.</para></sect2>
 <sect2 id="FAQ_1GeneralQuestion7">
 <title>Q7: How does Taskflow schedule tasks?</title>
-<para>Taskflow implemented a very efficient <ulink url="https://en.wikipedia.org/wiki/Work_stealing">work-stealing scheduler</ulink> to execute task dependency graphs. The source code is available at <computeroutput><ref refid="executor_8hpp" kindref="compound">taskflow/core/executor.hpp</ref></computeroutput>.</para>
-</sect2>
+<para>Taskflow implemented a very efficient <ulink url="https://en.wikipedia.org/wiki/Work_stealing">work-stealing scheduler</ulink> to execute task dependency graphs. The source code is available at <computeroutput><ref refid="executor_8hpp" kindref="compound">taskflow/core/executor.hpp</ref></computeroutput>.</para></sect2>
 <sect2 id="FAQ_1GeneralQuestion8">
 <title>Q8: What is the overhead of taskflow?</title>
-<para>Creating a taskflow has certain overhead. For example, creating a task and a dependency takes about 61 and 14 nanoseconds in our system (Intel 4-core CPU at 2.00GHz). The time is amortized over 1M operations, since we have implemented an object pool to recycle tasks for minimal overhead.</para>
-</sect2>
+<para>Creating a taskflow has certain overhead. For example, creating a task and a dependency takes about 61 and 14 nanoseconds in our system (Intel 4-core CPU at 2.00GHz). The time is amortized over 1M operations, since we have implemented an object pool to recycle tasks for minimal overhead.</para></sect2>
 <sect2 id="FAQ_1GeneralQuestion9">
 <title>Q9: How does it compare to existing task programming systems?</title>
-<para>There is a large amount of work on programming systems (e.g., StarPU, Intel TBB, OpenMP, PaRSEC, Kokkos, HPX) in the interest of simplifying the programming complexity of parallel and heterogeneous computing. Each of these systems has its own pros and cons and deserves a reason to exist. However, they do have some problems, particularly from the standpoint of ease of use, static control flow, and scheduling efficiency. Taskflow addresses these limitations through a simple, expressive, and transparent graph programming model.</para>
-</sect2>
+<para>There is a large amount of work on programming systems (e.g., StarPU, Intel TBB, OpenMP, PaRSEC, Kokkos, HPX) in the interest of simplifying the programming complexity of parallel and heterogeneous computing. Each of these systems has its own pros and cons and deserves a reason to exist. However, they do have some problems, particularly from the standpoint of ease of use, static control flow, and scheduling efficiency. Taskflow addresses these limitations through a simple, expressive, and transparent graph programming model.</para></sect2>
 <sect2 id="FAQ_1GeneralQuestion10">
 <title>Q10: Do you try to simplify the GPU kernel programming?</title>
-<para>No, we do not develop new programming models to simplify the kernel programming. The rationale is simple: Writing efficient kernels requires domain-specific knowledge and developers often require direct access to the native GPU programming interface. High-level kernel programming models or abstractions all come with restricted applicability. Despite non-trivial kernel programming, we believe what makes heterogeneous computing difficult are surrounding tasks. A mistake made by task scheduling can outweigh all speed-up benefits from a highly optimized kernel. Therefore, Taskflow focuses on heterogeneous tasking that affects the overall system performance to a large extent.</para>
-</sect2>
+<para>No, we do not develop new programming models to simplify the kernel programming. The rationale is simple: Writing efficient kernels requires domain-specific knowledge and developers often require direct access to the native GPU programming interface. High-level kernel programming models or abstractions all come with restricted applicability. Despite non-trivial kernel programming, we believe what makes heterogeneous computing difficult are surrounding tasks. A mistake made by task scheduling can outweigh all speed-up benefits from a highly optimized kernel. Therefore, Taskflow focuses on heterogeneous tasking that affects the overall system performance to a large extent.</para></sect2>
 <sect2 id="FAQ_1GeneralQuestion11">
 <title>Q11: Do you have any real use cases?</title>
-<para>We have applied Taskflow to solve many realistic workloads and demonstrated promising performance scalability and programming productivity. Please refer to <ref refid="usecases" kindref="compound">Real Use Cases</ref> and <ref refid="References" kindref="compound">References</ref>.</para>
-</sect2>
+<para>We have applied Taskflow to solve many realistic workloads and demonstrated promising performance scalability and programming productivity. Please refer to <ref refid="usecases" kindref="compound">Real Use Cases</ref> and <ref refid="References" kindref="compound">References</ref>.</para></sect2>
 <sect2 id="FAQ_1GeneralQuestion12">
 <title>Q12: Who is the Principal Investigator of Taskflow I can talk to?</title>
-<para>Please visit this <ulink url="https://taskflow.github.io/#tag_contact">page</ulink> or email the investigator <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink>.</para>
-</sect2>
+<para>Please visit this <ulink url="https://taskflow.github.io/#tag_contact">page</ulink> or email the investigator <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink>.</para></sect2>
 <sect2 id="FAQ_1GeneralQuestion13">
 <title>Q13: Who are developing and maintaining Taskflow?</title>
-<para>Taskflow is in active development with core functionalities contributed by an academic group at the University of Utah, led by <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink>. While coming out of an academic lab, Taskflow aims to be industrial-strength and is committed to long-term support.</para>
-</sect2>
+<para>Taskflow is in active development with core functionalities contributed by an academic group at the University of Utah, led by <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink>. While coming out of an academic lab, Taskflow aims to be industrial-strength and is committed to long-term support.</para></sect2>
 <sect2 id="FAQ_1GeneralQuestion14">
 <title>Q14: Is Taskflow just an another API or model?</title>
-<para>OK, let me ask this first: <emphasis>Is your new car just another vehicle? Or, is your new home just another place to live?</emphasis></para>
-<para>The answer to this question is the question itself. As technology advances, we can always find new ways to solve computational problems and achieve new performance milestones that were previously out-of-reach.</para>
-</sect2>
+<para>OK, let me ask this first: <emphasis>Is your new car just another vehicle? Or, is your new home just another place to live?</emphasis></para><para>The answer to this question is the question itself. As technology advances, we can always find new ways to solve computational problems and achieve new performance milestones that were previously out-of-reach.</para></sect2>
 <sect2 id="FAQ_1GeneralQuestion15">
 <title>Q15: How can I contribute?</title>
-<para>New contributors are always welcome! Please visit <ref refid="Contributing" kindref="compound">Contributing</ref>.</para>
-</sect2>
+<para>New contributors are always welcome! Please visit <ref refid="Contributing" kindref="compound">Contributing</ref>.</para></sect2>
 <sect2 id="FAQ_1GeneralQuestion16">
 <title>Q16: Does Taskflow support pipeline parallelism?</title>
-<para>Yes, Taskflow has a specialized programming model to create a pipeline scheduling framework. Please visit <ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref> and <ref refid="DataParallelPipeline" kindref="compound">Data-parallel Pipeline</ref>.</para>
-<para><hruler/>
-</para>
-</sect2>
+<para>Yes, Taskflow has a specialized programming model to create a pipeline scheduling framework. Please visit <ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref> and <ref refid="DataParallelPipeline" kindref="compound">Data-parallel Pipeline</ref>.</para><para><hruler/>
+</para></sect2>
 </sect1>
 <sect1 id="FAQ_1ProgrammingQuestions">
 <title>Programming Questions</title>
 <sect2 id="FAQ_1ProgrammingQuestions1">
 <title>Q1: What is the difference between Taskflow threads and workers?</title>
-<para>The master thread owns the thread pool and can spawn workers to run tasks or shutdown the pool. Giving taskflow <computeroutput>N</computeroutput> threads means using <computeroutput>N</computeroutput> threads to do the works, and there is a total of <computeroutput>N+1</computeroutput> threads (including the master thread) in the program. Please refer to <ref refid="ExecuteTaskflow_1CreateAnExecutor" kindref="member">Create an Executor</ref> for more details.</para>
-</sect2>
+<para>The master thread owns the thread pool and can spawn workers to run tasks or shutdown the pool. Giving taskflow <computeroutput>N</computeroutput> threads means using <computeroutput>N</computeroutput> threads to do the works, and there is a total of <computeroutput>N+1</computeroutput> threads (including the master thread) in the program. Please refer to <ref refid="ExecuteTaskflow_1CreateAnExecutor" kindref="member">Create an Executor</ref> for more details.</para></sect2>
 <sect2 id="FAQ_1ProgrammingQuestions2">
 <title>Q2: What is the Lifetime of a Task and a Graph?</title>
-<para>The lifetime of a task sticks with its parent graph. A task is not destroyed until its parent graph is destroyed. Please refer to <ref refid="StaticTasking_1UnderstandTheLifetimeOfATask" kindref="member">Understand the Lifetime of a Task</ref> for more details.</para>
-</sect2>
+<para>The lifetime of a task sticks with its parent graph. A task is not destroyed until its parent graph is destroyed. Please refer to <ref refid="StaticTasking_1UnderstandTheLifetimeOfATask" kindref="member">Understand the Lifetime of a Task</ref> for more details.</para></sect2>
 <sect2 id="FAQ_1ProgrammingQuestions3">
 <title>Q3: Is taskflow thread-safe?</title>
-<para>No, the taskflow object is not thread-safe. Multiple threads cannot create tasks from the same taskflow at the same time.</para>
-</sect2>
+<para>No, the taskflow object is not thread-safe. Multiple threads cannot create tasks from the same taskflow at the same time.</para></sect2>
 <sect2 id="FAQ_1ProgrammingQuestions4">
 <title>Q4: Is executor thread-safe?</title>
-<para>Yes, the executor object is thread-safe. You can have multiple threads submit different taskflows to the same executor.</para>
-</sect2>
+<para>Yes, the executor object is thread-safe. You can have multiple threads submit different taskflows to the same executor.</para></sect2>
 <sect2 id="FAQ_1ProgrammingQuestions5">
 <title>Q5: My program hangs and never returns after dispatching a taskflow graph. What&apos;s wrong?</title>
-<para>When the program hangs forever it is very likely your taskflow graph has a cycle or not properly conditioned (see <ref refid="ConditionalTasking" kindref="compound">Conditional Tasking</ref>). Try the <ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">tf::Taskflow::dump</ref> method to debug the graph before dispatching your taskflow graph.</para>
-</sect2>
+<para>When the program hangs forever it is very likely your taskflow graph has a cycle or not properly conditioned (see <ref refid="ConditionalTasking" kindref="compound">Conditional Tasking</ref>). Try the <ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">tf::Taskflow::dump</ref> method to debug the graph before dispatching your taskflow graph.</para></sect2>
 <sect2 id="FAQ_1ProgrammingQuestions6">
 <title>Q6: In the following example where B spawns a joined subflow of three tasks B1, B2, and B3, do they run concurrently with task A?</title>
-<para><dotfile name="/Users/twhuang/Code/taskflow/doxygen/images/subflow-join.dot"></dotfile>
-</para>
-<para>No. The subflow is spawned during the execution of <computeroutput>B</computeroutput>, and at this point <computeroutput>A</computeroutput> must have finished because <computeroutput>A</computeroutput> precedes <computeroutput>B</computeroutput>. This gives rise to the fact <computeroutput>B1</computeroutput> and <computeroutput>B2</computeroutput> must run after <computeroutput>A</computeroutput>.</para>
-</sect2>
+<para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/subflow-join.dot"></dotfile>
+</para><para>No. The subflow is spawned during the execution of <computeroutput>B</computeroutput>, and at this point <computeroutput>A</computeroutput> must have finished because <computeroutput>A</computeroutput> precedes <computeroutput>B</computeroutput>. This gives rise to the fact <computeroutput>B1</computeroutput> and <computeroutput>B2</computeroutput> must run after <computeroutput>A</computeroutput>.</para></sect2>
 <sect2 id="FAQ_1ProgrammingQuestions7">
 <title>Q7: What is the purpose of a condition task?</title>
-<para>A condition task lets you perform <emphasis>in-task</emphasis> decision making so you can integrate control flow into a task graph with end-to-end parallelism without synchronizing or partitioning your parallelism across conditionals.</para>
-</sect2>
+<para>A condition task lets you perform <emphasis>in-task</emphasis> decision making so you can integrate control flow into a task graph with end-to-end parallelism without synchronizing or partitioning your parallelism across conditionals.</para></sect2>
 <sect2 id="FAQ_1ProgrammingQuestions8">
 <title>Q8: Is the program master thread involved in running tasks?</title>
-<para>No, the program master thread is not involved in running taskflows. The executor keeps a set of private worker threads spawned upon construction time to run tasks.</para>
-</sect2>
+<para>No, the program master thread is not involved in running taskflows. The executor keeps a set of private worker threads spawned upon construction time to run tasks.</para></sect2>
 <sect2 id="FAQ_1ProgrammingQuestions9">
 <title>Q9: Are there any limits on the branches of conditional tasking?</title>
-<para>No, as long as the return value points to a valid successors, your conditional tasking is valid.</para>
-</sect2>
+<para>No, as long as the return value points to a valid successors, your conditional tasking is valid.</para></sect2>
 <sect2 id="FAQ_1ProgrammingQuestions10">
 <title>Q10: Why does Taskflow program GPU in a task graph?</title>
-<para>We ask users to describe a GPU workload in a task graph and execute it in a second moment. This organization minimizes kernels launch overhead and allows the GPU runtime (e.g., CUDA) to optimize the whole workflow.</para>
-</sect2>
+<para>We ask users to describe a GPU workload in a task graph and execute it in a second moment. This organization minimizes kernels launch overhead and allows the GPU runtime (e.g., CUDA) to optimize the whole workflow.</para></sect2>
 <sect2 id="FAQ_1ProgrammingQuestions11">
 <title>Q11: Can I limit the concurrency in certain sections of tasks?</title>
-<para>Yes, Taskflow provides a lightweight mechanism, <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref>, for you to limit the maximum concurrency (i.e., the number of workers) in a section of tasks. Please refer to <ref refid="LimitTheMaximumConcurrency" kindref="compound">Limit the Maximum Concurrency</ref>.</para>
-</sect2>
+<para>Yes, Taskflow provides a lightweight mechanism, <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref>, for you to limit the maximum concurrency (i.e., the number of workers) in a section of tasks. Please refer to <ref refid="LimitTheMaximumConcurrency" kindref="compound">Limit the Maximum Concurrency</ref>.</para></sect2>
 <sect2 id="FAQ_1ProgrammingQuestions12">
 <title>Q12: How can I attach custom data to a task and access it?</title>
-<para>Each node in a taskflow is associated with a C-styled data pointer (i.e., <computeroutput>void*</computeroutput>) you can use to point to user data and access it in the body of a task callable. Please refer to <ref refid="StaticTasking_1AttachUserDataToATask" kindref="member">Attach User Data to a Task</ref>. </para>
-</sect2>
+<para>Each node in a taskflow is associated with a C-styled data pointer (i.e., <computeroutput>void*</computeroutput>) you can use to point to user data and access it in the body of a task callable. Please refer to <ref refid="StaticTasking_1AttachUserDataToATask" kindref="member">Attach User Data to a Task</ref>. </para></sect2>
 </sect1>
     </detaileddescription>
   </compounddef>

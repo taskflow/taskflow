@@ -53,6 +53,7 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
 @section release-3-6-0_bug_fixes Bug Fixes 
 
 + Fixed the compilation bugs caused by clashing `MAX_PRIORITY` wtih `winspool.h` ([#459](https://github.com/taskflow/taskflow/pull/459))
++ Fixed the infinite-loop bug when corunning a module task from tf::Runtime
 
 If you encounter any potential bugs, please submit an issue at @IssueTracker.
 
@@ -102,6 +103,11 @@ taskflow.emplace([](){
 
 + Dropped in-place support for running tf::syclFlow from a dedicated task
 + Move all buffer query methods of CUDA standard algorithms inside execution policy
+  + tf::cudaExecutionPolicy<NT, VT>::reduce_bufsz
+  + tf::cudaExecutionPolicy<NT, VT>::scan_bufsz
+  + tf::cudaExecutionPolicy<NT, VT>::merge_bufsz
+  + tf::cudaExecutionPolicy<NT, VT>::min_element_bufsz
+  + tf::cudaExecutionPolicy<NT, VT>::max_element_bufsz
 
 @code{.cpp}
 // previous - no longer supported
@@ -112,18 +118,14 @@ tf::cudaDefaultExecutionPolicy policy(stream);
 policy.reduce_bufsz<int>(N);
 @endcode
 
-  + tf::cudaExecutionPolicy<NT, VT>::reduce_bufsz
-  + tf::cudaExecutionPolicy<NT, VT>::scan_bufsz
-  + tf::cudaExecutionPolicy<NT, VT>::merge_bufsz
-  + tf::cudaExecutionPolicy<NT, VT>::min_element_bufsz
-  + tf::cudaExecutionPolicy<NT, VT>::max_element_bufsz
-
-@section release-3-6-0_deprecated_items Deprecated and Removed Items 
++ Renamed tf::Executor::run_and_wait to tf::Executor::corun for expressiveness
++ Renamed tf::Executor::loop_until to tf::Executor::corun_until for expressiveness
++ Renamed tf::Runtime::run_and_wait to tf::Runtime::corun for expressiveness
 
 @section release-3-6-0_documentation Documentation
 
-+ Added @ref ExecutionPolicy 
 + Revised %Taskflow algorithms to include execution policy
+  + @ref ExecutionPolicy
   + @ref ParallelIterations
   + @ref ParallelTransforms
   + @ref ParallelReduction

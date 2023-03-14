@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Taskflow Algorithms &raquo; Execution Policy | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="Algorithms.html">Taskflow Algorithms</a> &raquo;</span>
+          Execution Policy
+        </h1>
+        <nav class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li><a href="#DefineAnExecutionPolicy">Define an Execution Policy</a></li>
+            <li><a href="#DefineAStaticExecutionPolicy">Define a Static Execution Policy</a></li>
+            <li><a href="#DefineADynamicExecutionPolicy">Define a Dynamic Execution Policy</a></li>
+            <li><a href="#DefineAGuidedExecutionPolicy">Define a Guided Execution Policy</a></li>
+          </ul>
+        </nav>
+<p>An execution policy allows applications to optimize parallel algorithms using specific scheduling methods.</p><section id="DefineAnExecutionPolicy"><h2><a href="#DefineAnExecutionPolicy">Define an Execution Policy</a></h2><p>An execution policy defines how to partition and distribute iterations to different workers when running parallel algorithms in Taskflow, such as <a href="classtf_1_1FlowBuilder.html#ad2299fddbd6165cc7f24f57a734d2839" class="m-doc">tf::<wbr />Taskflow::<wbr />for_each</a> and <a href="classtf_1_1FlowBuilder.html#a9f7befa968cf69ea0a20dc267f746f3e" class="m-doc">tf::<wbr />Taskflow::<wbr />transform</a>. The following example shows how to create parallel-iteration tasks with different execution policies:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">}</span><span class="w"></span>
+
+<span class="c1">// create execution policies with different partitioning algorithms</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">ExecutionPolicy</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">GuidedPartitioner</span><span class="o">&gt;</span><span class="w"> </span><span class="n">guided_policy</span><span class="p">;</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">ExecutionPolicy</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">StaticPartitioner</span><span class="o">&gt;</span><span class="w"> </span><span class="n">static_policy</span><span class="p">;</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">ExecutionPolicy</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">RandomPartitioner</span><span class="o">&gt;</span><span class="w"> </span><span class="n">random_policy</span><span class="p">;</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">ExecutionPolicy</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">DynamicPartitioner</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dynamic_policy</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">// create four parallel-iteration tasks from the four execution policies</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">for_each</span><span class="p">(</span><span class="n">guided_policy</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="p">[](</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">){});</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">for_each</span><span class="p">(</span><span class="n">static_policy</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="p">[](</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">){});</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">for_each</span><span class="p">(</span><span class="n">random_policy</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="p">[](</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">){});</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">for_each</span><span class="p">(</span><span class="n">dynamic_policy</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="p">[](</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">){});</span><span class="w"></span></pre><p>Each partitioner has a specific algorithm to partition iterations into a set of <em>chunks</em> and distribute chunks to workers. A chunk is the basic unit of work that will be run by a worker during the execution of parallel iterations. The following figure illustrates the scheduling diagram for three major partitioners, <a href="classtf_1_1StaticPartitioner.html" class="m-doc">tf::<wbr />StaticPartitioner</a>, <a href="classtf_1_1DynamicPartitioner.html" class="m-doc">tf::<wbr />DynamicPartitioner</a>, and <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">tf::<wbr />GuidedPartitioner</a>:</p><img class="m-image" src="parallel_for_partition_algorithms.png" alt="Image" /><p>Depending on applications, partitioning algorithms can impact the performance a lot. For example, if a parallel-iteration workload contains a regular work unit per iteration, <a href="classtf_1_1StaticPartitioner.html" class="m-doc">tf::<wbr />StaticPartitioner</a> may deliver the best performance. On the other hand, if the work unit per iteration is irregular and unbalanced, <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">tf::<wbr />GuidedPartitioner</a> or <a href="classtf_1_1DynamicPartitioner.html" class="m-doc">tf::<wbr />DynamicPartitioner</a> can outperform <a href="classtf_1_1StaticPartitioner.html" class="m-doc">tf::<wbr />StaticPartitioner</a>.</p><aside class="m-note m-info"><h4>Note</h4><p>By default, all parallel algorithms in Taskflow use <a href="namespacetf.html#a04cb73dba3a2101ed735b8e7122aca60" class="m-doc">tf::<wbr />DefaultExecutionPolicy</a>, which is based on guided scheduling via <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">tf::<wbr />GuidedPartitioner</a>.</p></aside></section><section id="DefineAStaticExecutionPolicy"><h2><a href="#DefineAStaticExecutionPolicy">Define a Static Execution Policy</a></h2><p>Static execution policy splits iterations into <code>iter_size/chunk_size</code> chunks and distribute chunks to workers in order. If no chunk size is given (<code>chunk_size</code> is <code>1</code>), Taskflow will partition iterations into chunks that are approximately equal in size. The following code creates a static execution policy with chunk size equal to 100:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">ExecutionPolicy</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">StaticPartitioner</span><span class="o">&gt;</span><span class="w"> </span><span class="n">static_policy</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span><span class="w"></span></pre></section><section id="DefineADynamicExecutionPolicy"><h2><a href="#DefineADynamicExecutionPolicy">Define a Dynamic Execution Policy</a></h2><p>Dynamic execution policy splits iterations into <code>iter_size/chunk_size</code> chunks and distribute chunks to workers without any specific order. The default chunk size is <code>1</code>, if not specified. The following code creates a dynamic execution policy with chunk size equal to 2:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">ExecutionPolicy</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">DynamicPartitioner</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dynamic_policy</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span><span class="w"></span></pre></section><section id="DefineAGuidedExecutionPolicy"><h2><a href="#DefineAGuidedExecutionPolicy">Define a Guided Execution Policy</a></h2><p>Guided execution policy dynamically decides the chunk size. The size of a chunk is proportional to the number of unassigned iterations divided by the number of the threads, and the size will gradually decrease to the specified chunk size (default <code>1</code>). The last chunk may be smaller than the specified chunk size. The following code creates a guided execution policy with chunk size equal to 10:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">ExecutionPolicy</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">GuidedPartitioner</span><span class="o">&gt;</span><span class="w"> </span><span class="n">guided_policy</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span><span class="w"></span></pre><aside class="m-note m-info"><h4>Note</h4><p>Guided execution policy can achieve decent performance for most parallel algorithms, especially those with irregular and unbalanced work per iteration.</p></aside></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

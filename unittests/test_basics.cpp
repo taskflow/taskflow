@@ -17,13 +17,17 @@ TEST_CASE("Type" * doctest::timeout(300)) {
   auto t4 = taskflow.composed_of(taskflow2);
   auto t5 = taskflow.emplace([](){ return tf::SmallVector{1, 2}; });
   auto t6 = taskflow.emplace([](tf::Runtime&){});
+  auto t7 = taskflow.emplace([](tf::Runtime&){ return 1; });
+  auto t8 = taskflow.emplace([](tf::Runtime&){ return tf::SmallVector{1, 2}; });
 
   REQUIRE(t1.type() == tf::TaskType::STATIC);
   REQUIRE(t2.type() == tf::TaskType::CONDITION);
   REQUIRE(t3.type() == tf::TaskType::DYNAMIC);
   REQUIRE(t4.type() == tf::TaskType::MODULE);
   REQUIRE(t5.type() == tf::TaskType::CONDITION);
-  REQUIRE(t6.type() == tf::TaskType::RUNTIME);
+  REQUIRE(t6.type() == tf::TaskType::STATIC);
+  REQUIRE(t7.type() == tf::TaskType::CONDITION);
+  REQUIRE(t8.type() == tf::TaskType::CONDITION);
 }
 
 // --------------------------------------------------------
@@ -711,7 +715,7 @@ TEST_CASE("RunAndWait.Simple") {
   tf::Executor executor(2);
   tf::Taskflow taskflow("Demo");
 
-  REQUIRE_THROWS(executor.run_and_wait(taskflow));
+  REQUIRE_THROWS(executor.corun(taskflow));
 
   int counter{0};
   
@@ -723,11 +727,11 @@ TEST_CASE("RunAndWait.Simple") {
 
   // main taskflow
   tf::Task C = taskflow.emplace([&](){
-    executor.run_and_wait(others);
+    executor.corun(others);
     REQUIRE(counter == 2);
   });
   tf::Task D = taskflow.emplace([&](){
-    executor.run_and_wait(others);
+    executor.corun(others);
     REQUIRE(counter == 4);
   });
   C.precede(D);
@@ -758,7 +762,7 @@ TEST_CASE("RunAndWait.Complex") {
       taskflows[n].emplace([&](){ counter++; });
     }
     taskflow.emplace([&executor, &tf=taskflows[n]](){
-      executor.run_and_wait(tf);
+      executor.corun(tf);
       //executor.run(tf).wait();
     });
   }

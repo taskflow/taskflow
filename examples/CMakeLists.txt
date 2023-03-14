@@ -26,7 +26,7 @@ list(APPEND TF_EXAMPLES
   parallel_data_pipeline
   parallel_deferred_pipeline
   run 
-  run_and_wait
+  corun
   runtime
   worker_interface
   composition

@@ -130,24 +130,30 @@ class Graph {
 /**
 @class Runtime
 
-@brief class to create a runtime object used by a runtime task
+@brief class to include a runtime object in a task
 
-A runtime object is used by a runtime task for users to interact with the
-scheduling runtime, such as scheduling an active task and
-spawning a subflow.
+A runtime object allows users to interact with the
+scheduling runtime inside a task, such as scheduling an active task,
+spawning a subflow, and so on.
 
 @code{.cpp}
-taskflow.emplace([](tf::Runtime& rt){
-  rt.run([](tf::Subflow& sf){
-    tf::Task A = sf.emplace([](){});
-    tf::Task B = sf.emplace([](){});
-    A.precede(B);
-  });
-});
+tf::Task A, B, C, D;
+std::tie(A, B, C, D) = taskflow.emplace(
+  [] () { return 0; },
+  [&C] (tf::Runtime& rt) {  // C must be captured by reference
+    std::cout << "B\n";
+    rt.schedule(C);
+  },
+  [] () { std::cout << "C\n"; },
+  [] () { std::cout << "D\n"; }
+);
+A.precede(B, C, D);
+executor.run(taskflow).wait();
 @endcode
 
-A runtime task is associated with an executor and a worker that
-runs the runtime task.
+A runtime object is associated with the worker and the executor
+that runs the task.
+
 */
 class Runtime {
 
@@ -210,31 +216,43 @@ class Runtime {
   void schedule(Task task);
 
   /**
-  @brief runs the given target and waits until it completes
+  @brief co-runs the given target and waits until it completes
   
-  A target can be 
-  (1) a callable to spawn a subflow or
-  (2) a composable target with `tf::Graph& T::graph()` defined
+  A target can be one of the following forms:
+    + a dynamic task to spawn a subflow or
+    + a composable graph object with `tf::Graph& T::graph()` defined
 
   @code{.cpp}
-  // complete a subflow synchronously
+  // co-run a subflow and wait until all tasks complete
   taskflow.emplace([](tf::Runtime& rt){
-    rt.run_and_wait([](tf::Subflow& sf){
+    rt.corun([](tf::Subflow& sf){
       tf::Task A = sf.emplace([](){});
       tf::Task B = sf.emplace([](){});
     }); 
   });
   
-  // complete a custom graph synchronously
-  tf::Taskflow taskflow;
-  taskflow.emplace([](){});
-  taskflow.emplace([&](tf::Runtime& rt){
-    rt.run_and_wait(taskflow);
+  // co-run a taskflow and wait until all tasks complete
+  tf::Taskflow taskflow1, taskflow2;
+  taskflow1.emplace([](){ std::cout << "running taskflow1\n"; });
+  taskflow2.emplace([&](tf::Runtime& rt){
+    std::cout << "running taskflow2\n";
+    rt.corun(taskflow1);
   });
+  executor.run(taskflow2).wait();
   @endcode
+
+  Although tf::Runtime::corun blocks until the operation completes, 
+  the caller thread (worker) is not blocked (e.g., sleeping or holding any lock). 
+  Instead, the caller thread joins the work-stealing loop of the executor 
+  and returns when all tasks in the target completes.
   */
   template <typename T>
-  void run_and_wait(T&& target);
+  void corun(T&& target);
+
+  /**
+  @brief acquire a reference to the underlying worker
+  */
+  inline Worker& worker();
 
   private:
 
@@ -255,6 +273,11 @@ inline Runtime::Runtime(Executor& e, Worker& w, Node* p) :
 // Function: executor
 inline Executor& Runtime::executor() {
   return _executor;
+}
+
+// Function: worker
+inline Worker& Runtime::worker() {
+  return _worker;
 }
 
 // ----------------------------------------------------------------------------
@@ -290,16 +313,9 @@ class Node {
     template <typename C>
     Static(C&&);
 
-    std::function<void()> work;
-  };
-
-  // runtime work handle
-  struct Runtime {
-
-    template <typename C>
-    Runtime(C&&);
-
-    std::function<void(tf::Runtime&)> work;
+    std::variant<
+      std::function<void()>, std::function<void(Runtime&)>
+    > work;
   };
 
   // dynamic work handle
@@ -317,8 +333,10 @@ class Node {
 
     template <typename C>
     Condition(C&&);
-
-    std::function<int()> work;
+    
+    std::variant<
+      std::function<int()>, std::function<int(Runtime&)>
+    > work;
   };
 
   // multi-condition work handle
@@ -327,7 +345,9 @@ class Node {
     template <typename C>
     MultiCondition(C&&);
 
-    std::function<SmallVector<int>()> work;
+    std::variant<
+      std::function<SmallVector<int>()>, std::function<SmallVector<int>(Runtime&)>
+    > work;
   };
 
   // module work handle
@@ -359,28 +379,6 @@ class Node {
     std::function<void()> work;
   };
 
-  // cudaFlow work handle
-  struct cudaFlow {
-
-    template <typename C, typename G>
-    cudaFlow(C&& c, G&& g);
-
-    std::function<void(Executor&, Node*)> work;
-
-    std::unique_ptr<CustomGraphBase> graph;
-  };
-
-  // syclFlow work handle
-  struct syclFlow {
-
-    template <typename C, typename G>
-    syclFlow(C&& c, G&& g);
-
-    std::function<void(Executor&, Node*)> work;
-
-    std::unique_ptr<CustomGraphBase> graph;
-  };
-
   using handle_t = std::variant<
     std::monostate,  // placeholder
     Static,          // static tasking
@@ -389,10 +387,7 @@ class Node {
     MultiCondition,  // multi-conditional tasking
     Module,          // composable tasking
     Async,           // async tasking
-    SilentAsync,     // async tasking (no future)
-    cudaFlow,        // cudaFlow
-    syclFlow,        // syclFlow
-    Runtime          // runtime tasking
+    SilentAsync      // async tasking (no future)
   >;
 
   struct Semaphores {
@@ -411,9 +406,6 @@ class Node {
   constexpr static auto MODULE          = get_index_v<Module, handle_t>;
   constexpr static auto ASYNC           = get_index_v<Async, handle_t>;
   constexpr static auto SILENT_ASYNC    = get_index_v<SilentAsync, handle_t>;
-  constexpr static auto CUDAFLOW        = get_index_v<cudaFlow, handle_t>;
-  constexpr static auto SYCLFLOW        = get_index_v<syclFlow, handle_t>;
-  constexpr static auto RUNTIME         = get_index_v<Runtime, handle_t>;
 
   template <typename... Args>
   Node(Args&&... args);
@@ -505,26 +497,6 @@ Node::MultiCondition::MultiCondition(C&& c) : work {std::forward<C>(c)} {
 }
 
 // ----------------------------------------------------------------------------
-// Definition for Node::cudaFlow
-// ----------------------------------------------------------------------------
-
-template <typename C, typename G>
-Node::cudaFlow::cudaFlow(C&& c, G&& g) :
-  work  {std::forward<C>(c)},
-  graph {std::forward<G>(g)} {
-}
-
-// ----------------------------------------------------------------------------
-// Definition for Node::syclFlow
-// ----------------------------------------------------------------------------
-
-template <typename C, typename G>
-Node::syclFlow::syclFlow(C&& c, G&& g) :
-  work  {std::forward<C>(c)},
-  graph {std::forward<G>(g)} {
-}
-
-// ----------------------------------------------------------------------------
 // Definition for Node::Module
 // ----------------------------------------------------------------------------
 
@@ -551,16 +523,6 @@ Node::Async::Async(C&& c, std::shared_ptr<AsyncTopology>tpg) :
 // Constructor
 template <typename C>
 Node::SilentAsync::SilentAsync(C&& c) :
-  work {std::forward<C>(c)} {
-}
-
-// ----------------------------------------------------------------------------
-// Definition for Node::Runtime
-// ----------------------------------------------------------------------------
-
-// Constructor
-template <typename C>
-Node::Runtime::Runtime(C&& c) :
   work {std::forward<C>(c)} {
 }
 

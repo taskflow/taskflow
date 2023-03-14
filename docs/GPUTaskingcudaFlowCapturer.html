@@ -5,7 +5,7 @@
   <title>Cookbook &raquo; GPU Tasking (cudaFlowCapturer) | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -84,28 +84,28 @@
 <span class="n">stream</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span><span class="w"></span>
 
 <span class="c1">// dump the cudaFlow to a DOT format through std::cout</span>
-<span class="n">capturer</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">)</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 24.188rem; height: 6.375rem;" viewBox="0.00 0.00 387.13 102.00">
+<span class="n">capturer</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">)</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 25.250rem; height: 6.375rem;" viewBox="0.00 0.00 404.10 102.00">
 <g transform="scale(1 1) rotate(0) translate(4 98)">
 <title>cudaFlowCapturer</title>
 <g class="m-cluster">
 <title>cluster_capturer</title>
-<polygon points="8,-8 8,-86 371.13,-86 371.13,-8 8,-8"/>
-<text text-anchor="middle" x="189.56" y="-69.2">cudaFlow: capturer</text>
+<polygon points="8,-8 8,-86 388.0975,-86 388.0975,-8 8,-8"/>
+<text text-anchor="middle" x="198.0488" y="-69.2">cudaFlow: capturer</text>
 </g>
 <g class="m-node m-flat">
 <title>my_kernel_1</title>
-<ellipse cx="93.78" cy="-34" rx="77.56" ry="18.27"/>
-<text text-anchor="middle" x="93.78" y="-30.2">my_kernel_1</text>
+<ellipse cx="98.0244" cy="-34" rx="82.0488" ry="18.2703"/>
+<text text-anchor="middle" x="98.0244" y="-30.2">my_kernel_1</text>
 </g>
 <g class="m-node m-flat">
 <title>my_kernel_2</title>
-<ellipse cx="285.35" cy="-34" rx="77.56" ry="18.27"/>
-<text text-anchor="middle" x="285.35" y="-30.2">my_kernel_2</text>
+<ellipse cx="298.0732" cy="-34" rx="82.0488" ry="18.2703"/>
+<text text-anchor="middle" x="298.0732" y="-30.2">my_kernel_2</text>
 </g>
 <g class="m-edge">
 <title>my_kernel_1&#45;&gt;my_kernel_2</title>
-<path d="M171.61,-34C180.09,-34 188.78,-34 197.37,-34"/>
-<polygon points="197.41,-37.5 207.41,-34 197.41,-30.5 197.41,-37.5"/>
+<path d="M180.2579,-34C188.6089,-34 197.1309,-34 205.5808,-34"/>
+<polygon points="205.8357,-37.5001 215.8357,-34 205.8357,-30.5001 205.8357,-37.5001"/>
 </g>
 </g>
 </svg>
@@ -125,38 +125,38 @@
 
 <span class="c1">// build task dependencies</span>
 <span class="n">h2d</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">kernel</span><span class="p">);</span><span class="w"></span>
-<span class="n">kernel</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">d2h</span><span class="p">);</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 22.938rem; height: 6.375rem;" viewBox="0.00 0.00 366.56 102.00">
+<span class="n">kernel</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">d2h</span><span class="p">);</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 23.812rem; height: 6.375rem;" viewBox="0.00 0.00 380.70 102.00">
 <g transform="scale(1 1) rotate(0) translate(4 98)">
 <title>cudaFlowCapturer</title>
 <g class="m-cluster">
 <title>cluster_capturer</title>
-<polygon points="8,-8 8,-86 350.56,-86 350.56,-8 8,-8"/>
-<text text-anchor="middle" x="179.28" y="-69.2">cudaFlow: capturer</text>
+<polygon points="8,-8 8,-86 364.7006,-86 364.7006,-8 8,-8"/>
+<text text-anchor="middle" x="186.3503" y="-69.2">cudaFlow: capturer</text>
 </g>
 <g class="m-node m-flat">
 <title>h2d</title>
-<ellipse cx="47.11" cy="-34" rx="31.23" ry="18.27"/>
-<text text-anchor="middle" x="47.11" y="-30.2">h2d</text>
+<ellipse cx="48.5269" cy="-34" rx="32.5538" ry="18.2703"/>
+<text text-anchor="middle" x="48.5269" y="-30.2">h2d</text>
 </g>
 <g class="m-node m-flat">
 <title>my_kernel</title>
-<ellipse cx="179.28" cy="-34" rx="65.11" ry="18.27"/>
-<text text-anchor="middle" x="179.28" y="-30.2">my_kernel</text>
+<ellipse cx="186.3503" cy="-34" rx="69.0935" ry="18.2703"/>
+<text text-anchor="middle" x="186.3503" y="-30.2">my_kernel</text>
 </g>
 <g class="m-edge">
 <title>h2d&#45;&gt;my_kernel</title>
-<path d="M78.3,-34C86.11,-34 94.86,-34 103.86,-34"/>
-<polygon points="104.08,-37.5 114.08,-34 104.08,-30.5 104.08,-37.5"/>
+<path d="M81.1891,-34C89.0548,-34 97.8013,-34 106.7957,-34"/>
+<polygon points="107.0222,-37.5001 117.0222,-34 107.0222,-30.5001 107.0222,-37.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>dh2</title>
-<ellipse cx="311.45" cy="-34" rx="31.23" ry="18.27"/>
-<text text-anchor="middle" x="311.45" y="-30.2">dh2</text>
+<ellipse cx="324.1737" cy="-34" rx="32.5538" ry="18.2703"/>
+<text text-anchor="middle" x="324.1737" y="-30.2">dh2</text>
 </g>
 <g class="m-edge">
 <title>my_kernel&#45;&gt;dh2</title>
-<path d="M244.6,-34C253.24,-34 261.9,-34 269.96,-34"/>
-<polygon points="270.18,-37.5 280.18,-34 270.18,-30.5 270.18,-37.5"/>
+<path d="M255.6658,-34C264.4324,-34 273.1903,-34 281.3719,-34"/>
+<polygon points="281.3845,-37.5001 291.3845,-34 281.3844,-30.5001 281.3845,-37.5001"/>
 </g>
 </g>
 </svg>
@@ -194,51 +194,51 @@
 <span class="w">  </span><span class="n">task2_1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2_2</span><span class="p">);</span><span class="w"></span>
 <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;capturer&quot;</span><span class="p">);</span><span class="w"></span>
 
-<span class="n">task1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 25.688rem; height: 8.625rem;" viewBox="0.00 0.00 411.45 138.00">
+<span class="n">task1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 26.938rem; height: 8.625rem;" viewBox="0.00 0.00 430.76 138.00">
 <g transform="scale(1 1) rotate(0) translate(4 134)">
 <title>cudaFlow</title>
 <g class="m-cluster">
 <title>cluster_p0x28fd510</title>
-<polygon points="8,-8 8,-86 395.45,-86 395.45,-8 8,-8"/>
-<text text-anchor="middle" x="201.72" y="-69.2">cudaSubflow: capturer</text>
+<polygon points="8,-8 8,-86 414.7595,-86 414.7595,-8 8,-8"/>
+<text text-anchor="middle" x="211.3797" y="-69.2">cudaSubflow: capturer</text>
 </g>
 <g class="m-node">
 <title>p0x28fcca0</title>
-<polygon points="250.08,-130 193.08,-130 189.08,-126 189.08,-94 246.08,-94 250.08,-98 250.08,-130"/>
-<polyline points="246.08,-126 189.08,-126"/>
-<polyline points="246.08,-126 246.08,-94"/>
-<polyline points="246.08,-126 250.08,-130"/>
-<text text-anchor="middle" x="219.58" y="-108.2">kernel</text>
+<polygon points="260.5696,-130 199.5696,-130 195.5696,-126 195.5696,-94 256.5696,-94 260.5696,-98 260.5696,-130"/>
+<polyline points="256.5696,-126 195.5696,-126 "/>
+<polyline points="256.5696,-126 256.5696,-94 "/>
+<polyline points="256.5696,-126 260.5696,-130 "/>
+<text text-anchor="middle" x="228.0696" y="-108.2">kernel</text>
 </g>
 <g class="m-node">
 <title>p0x28fd510</title>
-<polygon points="387.45,-52 384.45,-56 363.45,-56 360.45,-52 311.45,-52 311.45,-16 387.45,-16 387.45,-52"/>
-<text text-anchor="middle" x="349.45" y="-30.2">capturer</text>
+<polygon points="406.7595,-52 403.7595,-56 382.7595,-56 379.7595,-52 322.7595,-52 322.7595,-16 406.7595,-16 406.7595,-52"/>
+<text text-anchor="middle" x="364.7595" y="-30.2">capturer</text>
 </g>
 <g class="m-edge">
 <title>p0x28fcca0&#45;&gt;p0x28fd510</title>
-<path d="M250.32,-101.79C258.66,-98.47 267.6,-94.47 275.45,-90 291.19,-81.03 307.32,-69.01 320.4,-58.41"/>
-<polygon points="322.64,-61.1 328.11,-52.03 318.18,-55.7 322.64,-61.1"/>
+<path d="M260.7253,-101.4994C269.3905,-98.2478 278.6013,-94.3583 286.7595,-90 303.4411,-81.0881 320.6566,-69.0766 334.6563,-58.4632"/>
+<polygon points="337.1504,-60.9592 342.924,-52.0757 332.8708,-55.4198 337.1504,-60.9592"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x28fd5e0</title>
-<ellipse cx="71.86" cy="-34" rx="55.72" ry="18.27"/>
-<text text-anchor="middle" x="71.86" y="-30.2">kernel_1</text>
+<ellipse cx="74.6899" cy="-34" rx="58.8803" ry="18.2703"/>
+<text text-anchor="middle" x="74.6899" y="-30.2">kernel_1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x28fd6b0</title>
-<ellipse cx="219.58" cy="-34" rx="55.72" ry="18.27"/>
-<text text-anchor="middle" x="219.58" y="-30.2">kernel_2</text>
+<ellipse cx="228.0696" cy="-34" rx="58.8803" ry="18.2703"/>
+<text text-anchor="middle" x="228.0696" y="-30.2">kernel_2</text>
 </g>
 <g class="m-edge">
 <title>p0x28fd5e0&#45;&gt;p0x28fd6b0</title>
-<path d="M127.95,-34C136.2,-34 144.78,-34 153.22,-34"/>
-<polygon points="153.41,-37.5 163.41,-34 153.41,-30.5 153.41,-37.5"/>
+<path d="M133.5518,-34C141.9919,-34 150.737,-34 159.3467,-34"/>
+<polygon points="159.3652,-37.5001 169.3651,-34 159.3651,-30.5001 159.3652,-37.5001"/>
 </g>
 <g class="m-edge">
 <title>p0x28fd6b0&#45;&gt;p0x28fd510</title>
-<path d="M275.55,-34C284.02,-34 292.71,-34 301,-34"/>
-<polygon points="301.24,-37.5 311.24,-34 301.24,-30.5 301.24,-37.5"/>
+<path d="M286.8317,-34C295.3711,-34 304.1142,-34 312.5133,-34"/>
+<polygon points="312.5511,-37.5001 322.551,-34 312.551,-30.5001 312.5511,-37.5001"/>
 </g>
 </g>
 </svg>
@@ -316,7 +316,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

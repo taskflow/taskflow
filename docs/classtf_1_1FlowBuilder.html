@@ -5,7 +5,7 @@
   <title>tf::FlowBuilder class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -110,7 +110,7 @@
             </dt>
             <dd>creates a multi-condition task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt;1), void&gt;* = nullptr&gt;</div>
+              <div class="m-doc-template">template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a1f6118326ad434f6c839007a1a79fe1b" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C &amp;&amp; ... callables) -&gt; auto</span>
             </dt>
             <dd>creates multiple tasks from a list of callable objects</dd>
@@ -127,11 +127,6 @@
               <span class="m-doc-wrap-bumper">auto <a href="#acab0b4ac82260f47fdb36a3244ee3aaf" class="m-doc">placeholder</a>(</span><span class="m-doc-wrap">) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>creates a placeholder task</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#af3d94f0be0f7b49e195c4e92737b1f85" class="m-doc">is_<wbr />runtime_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
-            </dt>
-            <dd>creates a runtime task</dd>
             <dt>
               <span class="m-doc-wrap-bumper">void <a href="#a90f3d9b9d6fcf4df8e7d7878dfdd130d" class="m-doc">linearize</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/container/vector.html" class="m-doc-external">std::<wbr />vector</a>&lt;<a href="classtf_1_1Task.html" class="m-doc">Task</a>&gt;&amp; tasks)</span>
             </dt>
@@ -443,7 +438,7 @@
           <section class="m-doc-details" id="a1f6118326ad434f6c839007a1a79fe1b"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt;1), void&gt;* = nullptr&gt;
+                template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt;
               </div>
               <span class="m-doc-wrap-bumper">auto tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1f6118326ad434f6c839007a1a79fe1b" class="m-doc-self">emplace</a>(</span><span class="m-doc-wrap">C &amp;&amp; ... callables)</span></span>
             </h3>
@@ -456,6 +451,10 @@
                 <tr>
                   <td style="width: 1%">C</td>
                   <td>callable types</td>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td></td>
                 </tr>
               </tbody>
               <thead>
@@ -585,45 +584,6 @@
 <span class="c1">// assign the task handle to the placeholder task</span>
 <span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">placeholder</span><span class="p">;</span><span class="w"></span>
 <span class="n">assert</span><span class="p">(</span><span class="n">task</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">false</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">task</span><span class="p">.</span><span class="n">has_work</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span><span class="w"></span></pre>
-          </div></section>
-          <section class="m-doc-details" id="a60d7a666cab71ecfa3010b2efb0d6b57"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#af3d94f0be0f7b49e195c4e92737b1f85" class="m-doc">is_<wbr />runtime_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc-self">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable)</span></span>
-            </h3>
-            <p>creates a runtime task</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">C</td>
-                  <td>callable type constructible from std::function&lt;void(tf::Runtime&amp;)&gt;</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>callable</td>
-                  <td>callable to construct a runtime task</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
-                </tr>
-              </tfoot>
-            </table>
-<p>The following example creates a runtime task that enables in-task control over the running executor.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">runtime_task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span><span class="w"></span>
-<span class="w">  </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">executor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">executor</span><span class="p">();</span><span class="w"></span>
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">num_workers</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre><p>Please refer to <a href="RuntimeTasking.html" class="m-doc">Runtime Tasking</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="a90f3d9b9d6fcf4df8e7d7878dfdd130d"><div>
             <h3>
@@ -1261,7 +1221,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

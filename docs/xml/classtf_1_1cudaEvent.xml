@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="classtf_1_1cudaEvent" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaEvent</compoundname>
     <basecompoundref prot="public" virt="non-virtual">cudaObject&lt; cudaEvent_t, cudaEventCreator, cudaEventDeleter &gt;</basecompoundref>
@@ -15,13 +15,12 @@
           <declname>event</declname>
         </param>
         <briefdescription>
-<para>constructs an RAII-styled CUDA event object from the given CUDA event </para>
-        </briefdescription>
+<para>constructs an RAII-styled CUDA event object from the given CUDA event </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="209" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="209" bodyend="209"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="209" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="209" bodyend="209"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaEvent_1aef986b15a45d9992a31caa6e42e4e945" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -29,13 +28,12 @@
         <argsstring>()=default</argsstring>
         <name>cudaEvent</name>
         <briefdescription>
-<para>constructs an RAII-styled CUDA event object </para>
-        </briefdescription>
+<para>constructs an RAII-styled CUDA event object </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="214" column="5"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="214" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaEvent_1af6d6a9c4f98ae85927985a1f89cdeee1" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
@@ -47,44 +45,41 @@
           <declname>flag</declname>
         </param>
         <briefdescription>
-<para>constructs an RAII-styled CUDA event object with the given flag </para>
-        </briefdescription>
+<para>constructs an RAII-styled CUDA event object with the given flag </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="219" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="219" bodyend="219"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="219" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="219" bodyend="219"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class to create an RAII-styled wrapper over a native CUDA event </para>
-    </briefdescription>
+<para>class to create an RAII-styled wrapper over a native CUDA event </para>    </briefdescription>
     <detaileddescription>
-<para>A <ref refid="classtf_1_1cudaEvent" kindref="compound">cudaEvent</ref> object is an RAII-styled wrapper over a native CUDA event (<computeroutput>cudaEvent_t</computeroutput>). A <ref refid="classtf_1_1cudaEvent" kindref="compound">cudaEvent</ref> object is move-only. </para>
-    </detaileddescription>
+<para>A <ref refid="classtf_1_1cudaEvent" kindref="compound">cudaEvent</ref> object is an RAII-styled wrapper over a native CUDA event (<computeroutput>cudaEvent_t</computeroutput>). A <ref refid="classtf_1_1cudaEvent" kindref="compound">cudaEvent</ref> object is move-only. </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="2">
+      <node id="30">
         <label>cudaObject&lt; cudaEvent_t, cudaEventCreator, cudaEventDeleter &gt;</label>
       </node>
-      <node id="1">
+      <node id="29">
         <label>tf::cudaEvent</label>
         <link refid="classtf_1_1cudaEvent"/>
-        <childnode refid="2" relation="public-inheritance">
+        <childnode refid="30" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="2">
+      <node id="32">
         <label>cudaObject&lt; cudaEvent_t, cudaEventCreator, cudaEventDeleter &gt;</label>
       </node>
-      <node id="1">
+      <node id="31">
         <label>tf::cudaEvent</label>
         <link refid="classtf_1_1cudaEvent"/>
-        <childnode refid="2" relation="public-inheritance">
+        <childnode refid="32" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="201" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="202" bodyend="220"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="202" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="201" bodyend="220"/>
     <listofallmembers>
       <member refid="classtf_1_1cudaEvent_1ad0b23cb864f0c7acee306f7fe49a3c23" prot="public" virt="non-virtual"><scope>tf::cudaEvent</scope><name>cudaEvent</name></member>
       <member refid="classtf_1_1cudaEvent_1aef986b15a45d9992a31caa6e42e4e945" prot="public" virt="non-virtual"><scope>tf::cudaEvent</scope><name>cudaEvent</name></member>

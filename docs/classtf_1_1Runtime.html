@@ -5,7 +5,7 @@
   <title>tf::Runtime class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -48,7 +48,7 @@
         <h1>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>Runtime <span class="m-thin">class</span>
         </h1>
-        <p>class to create a runtime object used by a runtime task</p>
+        <p>class to include a runtime object in a task</p>
         <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -60,13 +60,18 @@
             </li>
           </ul>
         </nav>
-<p>A runtime object is used by a runtime task for users to interact with the scheduling runtime, such as scheduling an active task and spawning a subflow.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span><span class="w"></span>
-<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">run</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span><span class="w"></span>
-<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span><span class="w"></span>
-<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span><span class="w"></span>
-<span class="w">    </span><span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">);</span><span class="w"></span>
-<span class="w">  </span><span class="p">});</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre><p>A runtime task is associated with an executor and a worker that runs the runtime task.</p>
+<p>A runtime object allows users to interact with the scheduling runtime inside a task, such as scheduling an active task, spawning a subflow, and so on.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">;</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">tie</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="p">[</span><span class="o">&amp;</span><span class="n">C</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="c1">// C must be captured by reference</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">C</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;C</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;D</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+<span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">);</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>A runtime object is associated with the worker and the executor that runs the task.</p>
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
@@ -80,9 +85,13 @@
             <dd>schedules an active task immediately to the worker&#x27;s queue</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#a479dc5dbf2b988bd166a2b6da089bb17" class="m-doc">run_and_wait</a>(</span><span class="m-doc-wrap">T&amp;&amp; target)</span>
+              <span class="m-doc-wrap-bumper">void <a href="#a1c772e90614302024cfa52fa86d75cac" class="m-doc">corun</a>(</span><span class="m-doc-wrap">T&amp;&amp; target)</span>
             </dt>
-            <dd>runs the given target and waits until it completes</dd>
+            <dd>co-runs the given target and waits until it completes</dd>
+            <dt id="ae1dbce75fd7375ae3bf38948638e34ec">
+              <span class="m-doc-wrap-bumper">auto <a href="#ae1dbce75fd7375ae3bf38948638e34ec" class="m-doc-self">worker</a>(</span><span class="m-doc-wrap">) -&gt; <a href="classtf_1_1Worker.html" class="m-doc">Worker</a>&amp;</span>
+            </dt>
+            <dd>acquire a reference to the underlying worker</dd>
           </dl>
         </section>
         <section>
@@ -128,28 +137,30 @@
 <span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">);</span><span class="w"></span>
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>The executor will first run the condition task <code>A</code> which returns <code>0</code> to inform the scheduler to go to the runtime task <code>B</code>. During the execution of <code>B</code>, it directly schedules task <code>C</code> without going through the normal taskflow graph scheduling process. At this moment, task <code>C</code> is active because its parent taskflow is running. When the taskflow finishes, we will see both <code>B</code> and <code>C</code> in the output.</p>
           </div></section>
-          <section class="m-doc-details" id="a479dc5dbf2b988bd166a2b6da089bb17"><div>
+          <section class="m-doc-details" id="a1c772e90614302024cfa52fa86d75cac"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename T&gt;
               </div>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a479dc5dbf2b988bd166a2b6da089bb17" class="m-doc-self">run_and_wait</a>(</span><span class="m-doc-wrap">T&amp;&amp; target)</span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1c772e90614302024cfa52fa86d75cac" class="m-doc-self">corun</a>(</span><span class="m-doc-wrap">T&amp;&amp; target)</span></span>
             </h3>
-            <p>runs the given target and waits until it completes</p>
-<p>A target can be (1) a callable to spawn a subflow or (2) a composable target with <code><a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a>&amp; T::graph()</code> defined</p><pre class="m-code"><span class="c1">// complete a subflow synchronously</span>
+            <p>co-runs the given target and waits until it completes</p>
+<p>A target can be one of the following forms:</p><ul><li>a dynamic task to spawn a subflow or</li><li>a composable graph object with <code><a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a>&amp; T::graph()</code> defined</li></ul><pre class="m-code"><span class="c1">// co-run a subflow and wait until all tasks complete</span>
 <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span><span class="w"></span>
-<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">run_and_wait</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span><span class="w"></span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span><span class="w"></span>
 <span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span><span class="w"></span>
 <span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span><span class="w"></span>
 <span class="w">  </span><span class="p">});</span><span class="w"> </span>
 <span class="p">});</span><span class="w"></span>
 
-<span class="c1">// complete a custom graph synchronously</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
-<span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span><span class="w"></span>
-<span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span><span class="w"></span>
-<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">run_and_wait</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre>
+<span class="c1">// co-run a taskflow and wait until all tasks complete</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow1</span><span class="p">,</span><span class="w"> </span><span class="n">taskflow2</span><span class="p">;</span><span class="w"></span>
+<span class="n">taskflow1</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;running taskflow1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="n">taskflow2</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span><span class="w"></span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;running taskflow2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun</span><span class="p">(</span><span class="n">taskflow1</span><span class="p">);</span><span class="w"></span>
+<span class="p">});</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow2</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>Although <a href="classtf_1_1Runtime.html#a1c772e90614302024cfa52fa86d75cac" class="m-doc">tf::<wbr />Runtime::<wbr />corun</a> blocks until the operation completes, the caller thread (worker) is not blocked (e.g., sleeping or holding any lock). Instead, the caller thread joins the work-stealing loop of the executor and returns when all tasks in the target completes.</p>
           </div></section>
         </section>
       </div>
@@ -196,7 +207,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

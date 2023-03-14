@@ -1,21 +1,22 @@
 namespace tf {
 
-/** @page RuntimeTasking Runtime Tasking
+/** @page RuntimeTasking Interact with the Runtime
 
 %Taskflow allows you to interact with the scheduling runtime
-from the execution context of a runtime task.
-%Runtime tasking is mostly used for designing specialized parallel algorithms
-that go beyond the default scheduling rules of taskflows.
+by taking a *runtime object* as an argument of a task.
+This is mostly useful for designing specialized parallel algorithms
+extended from the existing facility of %Taskflow.
 
 @tableofcontents
 
-@section CreateARuntimeTask Create a Runtime Task
+@section CreateARuntimeTask Create a Runtime Object
 
-A runtime task is a callable that takes a reference to a tf::Runtime object in its argument.
-A tf::Runtime object is created by the running executor
-and contains several methods for users to interact with the scheduling runtime.
-For instance, the following code creates a runtime task to @em forcefully schedule a 
-conditioned task that would never happens:
+%Taskflow allows a static task and a condition task to take a referenced
+tf::Runtime object that provides a set of methods to interact
+with the scheduling runtime.
+The following example creates a static task that leverages tf::Runtime to
+explicitly schedule a conditioned task which would never run under
+the normal scheduling circumstance:
 
 @code{.cpp}
 tf::Task A, B, C, D;
@@ -35,33 +36,33 @@ executor.run(taskflow).wait();
 @dotfile images/runtime_task_1.dot
 
 When the condition task @c A completes and returns @c 0,
-the scheduler moves on to the runtime task @c B.
+the scheduler moves on to task @c B.
 Under the normal circumstance, tasks @c C and @c D will not run because their 
 conditional dependencies never happen.
-This can be broken by forcefully scheduling @c C or/and @c D via a runtime task
-that resides in the same graph.
-Here, the runtime task @c B call tf::Runtime::schedule(tf::Task) to run task @c C
+This can be broken by forcefully scheduling @c C or/and @c D via a runtime
+object of a task that resides in the same graph.
+Here, task @c B call tf::Runtime::schedule(tf::Task) to run task @c C
 even though the weak dependency between @c A and @c C will never happen
 based on the graph structure itself.
 As a result, we will see both @c B and @c C in the output:
 
 @code{.shell-session}
-B    # B is a runtime task to schedule C out of its dependency constraint
+B    # B leverages a runtime object to schedule C out of its dependency constraint
 C
 @endcode
 
 @attention
-You should only schedule an @em active task from a runtime task.
+You should only schedule an @em active task from a runtime object.
 An active task is a task in a running taskflow. 
 The task may or may not be running, and scheduling that task 
-will immediately put the task into the task queue of the worker that
-is running the runtime task.
+will immediately put it into the task queue of the worker that
+is running the runtime object.
 
 @section AcquireTheRunningExecutor Acquire the Running Executor
 
 You can acquire the reference to the running executor using tf::Runtime::executor().
-The running executor of a runtime task is the executor that runs the parent taskflow 
-of that runtime task.
+The executor associated with a runtime object is the executor that runs the parent 
+task of that runtime object.
   
 @code{.cpp}
 tf::Executor executor;
@@ -74,25 +75,25 @@ executor.run(taskflow).wait();
 
 @section RuntimeTaskingRunATaskGraphSynchronously Run a Task Graph Synchronously
 
-A runtime task can spawn and run a task graph synchronously using tf::Runtime::run_and_wait.
+A runtime object can spawn and run a task graph synchronously using tf::Runtime::corun.
 This model allows you to leverage dynamic tasking to execute a parallel workload within
-a runtime task.
+a runtime object.
 The following code creates a subflow of two independent tasks and executes it synchronously
-via the given runtime task:
+via the given runtime object:
 
 @code{.cpp}
 taskflow.emplace([](tf::Runtime& rt){
-  rt.run_and_wait([](tf::Subflow& sf){
+  rt.corun([](tf::Subflow& sf){
     sf.emplace([](){ std::cout << "independent task 1\n"; });
     sf.emplace([](){ std::cout << "independent task 2\n"; });
   });
-  // subflow joins upon run_and_wait returns
+  // subflow joins upon corun returns
 });
 @endcode
 
-You can also create a task graph yourself and execute it through a runtime task.
+You can also create a task graph yourself and execute it through a runtime object.
 This organization avoids repetitive creation of a subflow with the same topology,
-such as running a runtime task repetitively.
+such as running a runtime object repetitively.
 The following code performs the same execution logic as the above example
 but using the given task graph to avoid repetitive creations of a subflow:
 
@@ -103,12 +104,12 @@ graph.emplace([](){ std::cout << "independent task 1\n"; });
 graph.emplace([](){ std::cout << "independent task 2\n"; });
 
 taskflow.emplace([&](tf::Runtime& rt){ 
-  rt.run_and_wait(graph);  // this worker thread continues the work-stealing loop
+  rt.corun(graph);  // this worker thread continues the work-stealing loop
 });
 executor.run_n(taskflow, 10000);
 @endcode
 
-Although tf::Runtime::run_and_wait blocks until the operation completes,
+Although tf::Runtime::corun blocks until the operation completes,
 the caller thread (worker) is not blocked (e.g., sleep or holding any lock).
 Instead, the caller thread joins the work-stealing loop of the executor
 and returns whenever the spawned task graph completes.
@@ -117,7 +118,7 @@ This is different from waiting for a submitted taskflow to finish
 which blocks the caller thread until the submitted taskflow completes.
 When multiple submitted taskflows are being waited,
 their executions can potentially lead to deadlock.
-Using tf::Runtime::run_and_wait avoids the deadlock problem.
+Using tf::Runtime::corun avoids the deadlock problem.
 
 */
 

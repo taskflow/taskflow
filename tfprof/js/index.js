@@ -66,8 +66,6 @@ const tfp = {
     ['subflow', '#F1A42B'],
     ['condition', '#42B649'],
     ['module', '#0000FF'],
-    ['syclflow', '#F35A1C'],
-    ['cudaflow', '#6A0DAD'],
     ['async', '#292b2c'],
     ['clustered', '#999DA0']
   ]),

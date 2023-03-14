@@ -415,7 +415,7 @@ class Executor {
   */
   template<typename P, typename C>
   tf::Future<void> run_until(Taskflow&& taskflow, P&& pred, C&& callable);
-  
+
   /**
   @brief runs a target graph and waits until it completes using 
          an internal worker of this executor
@@ -443,7 +443,7 @@ class Executor {
       others[n].emplace([&](){ counter++; });
     }
     taskflow.emplace([&executor, &tf=others[n]](){
-      executor.run_and_wait(tf);
+      executor.corun(tf);
       //executor.run(tf).wait();  <- blocking the worker without doing anything
       //                             will introduce deadlock
     });
@@ -455,11 +455,11 @@ class Executor {
   ran by two or more threads.
 
   @attention
-  You must call tf::Executor::run_and_wait from a worker of the calling executor
+  You must call tf::Executor::corun from a worker of the calling executor
   or an exception will be thrown.
   */
   template <typename T>
-  void run_and_wait(T& target);
+  void corun(T& target);
 
   /**
   @brief keeps running the work-stealing loop until the predicate becomes true
@@ -467,25 +467,24 @@ class Executor {
   @tparam P predicate type
   @param predicate a boolean predicate to indicate when to stop the loop
 
-  The method keeps the caller worker in the work-stealing loop such that it
-  does not block (e.g., causing deadlock with other blocking workers) 
+  The method keeps the caller worker running in the work-stealing loop
   until the stop predicate becomes true.
 
   @code{.cpp}
   taskflow.emplace([&](){
     std::future<void> fu = std::async([](){ std::sleep(100s); });
-    executor.loop_until([](){
+    executor.corun_until([](){
       return fu.wait_for(std::chrono::seconds(0)) == future_status::ready;
     });
   });
   @endcode
 
   @attention
-  You must call tf::Executor::loop_until from a worker of the calling executor
+  You must call tf::Executor::corun_until from a worker of the calling executor
   or an exception will be thrown.
   */
   template <typename P>
-  void loop_until(P&& predicate);
+  void corun_until(P&& predicate);
 
   /**
   @brief waits for all tasks to complete
@@ -745,10 +744,9 @@ class Executor {
   void _invoke_module_task(Worker&, Node*);
   void _invoke_async_task(Worker&, Node*);
   void _invoke_silent_async_task(Worker&, Node*);
-  void _invoke_runtime_task(Worker&, Node*);
   
   template <typename P>
-  void _loop_until(Worker&, P&&);
+  void _corun_until(Worker&, P&&);
 };
 
 // Constructor
@@ -973,10 +971,10 @@ inline void Executor::_spawn(size_t N) {
   cond.wait(lock, [&](){ return n==N; });
 }
 
-// Function: _loop_until
+// Function: _corun_until
 template <typename P>
-inline void Executor::_loop_until(Worker& w, P&& stop_predicate) {
-
+inline void Executor::_corun_until(Worker& w, P&& stop_predicate) {
+  
   std::uniform_int_distribution<size_t> rdvtm(0, _workers.size()-1);
 
   exploit:
@@ -1363,12 +1361,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     }
     break;
 
-    // runtime task
-    case Node::RUNTIME: {
-      _invoke_runtime_task(worker, node);
-    }
-    break;
-
     // monostate (placeholder)
     default:
     break;
@@ -1526,7 +1518,17 @@ inline void Executor::_observer_epilogue(Worker& worker, Node* node) {
 // Procedure: _invoke_static_task
 inline void Executor::_invoke_static_task(Worker& worker, Node* node) {
   _observer_prologue(worker, node);
-  std::get_if<Node::Static>(&node->_handle)->work();
+  auto& work = std::get_if<Node::Static>(&node->_handle)->work;
+  switch(work.index()) {
+    case 0:
+      std::get_if<0>(&work)->operator()();
+    break;
+
+    case 1:
+      Runtime rt(*this, worker, node);
+      std::get_if<1>(&work)->operator()(rt);
+    break;
+  }
   _observer_epilogue(worker, node);
 }
 
@@ -1603,8 +1605,9 @@ inline void Executor::_consume_graph(Worker& w, Node* p, Graph& g) {
     }
   }
   p->_join_counter.fetch_add(src.size());
+  
   _schedule(w, src);
-  _loop_until(w, [p] () -> bool { return p->_join_counter == 0; });
+  _corun_until(w, [p] () -> bool { return p->_join_counter == 0; });
 }
 
 // Procedure: _invoke_condition_task
@@ -1612,7 +1615,17 @@ inline void Executor::_invoke_condition_task(
   Worker& worker, Node* node, SmallVector<int>& conds
 ) {
   _observer_prologue(worker, node);
-  conds = { std::get_if<Node::Condition>(&node->_handle)->work() };
+  auto& work = std::get_if<Node::Condition>(&node->_handle)->work;
+  switch(work.index()) {
+    case 0:
+      conds = { std::get_if<0>(&work)->operator()() };
+    break;
+
+    case 1:
+      Runtime rt(*this, worker, node);
+      conds = { std::get_if<1>(&work)->operator()(rt) };
+    break;
+  }
   _observer_epilogue(worker, node);
 }
 
@@ -1621,7 +1634,17 @@ inline void Executor::_invoke_multi_condition_task(
   Worker& worker, Node* node, SmallVector<int>& conds
 ) {
   _observer_prologue(worker, node);
-  conds = std::get_if<Node::MultiCondition>(&node->_handle)->work();
+  auto& work = std::get_if<Node::MultiCondition>(&node->_handle)->work;
+  switch(work.index()) {
+    case 0:
+      conds = std::get_if<0>(&work)->operator()();
+    break;
+
+    case 1:
+      Runtime rt(*this, worker, node);
+      conds = std::get_if<1>(&work)->operator()(rt);
+    break;
+  }
   _observer_epilogue(worker, node);
 }
 
@@ -1645,14 +1668,6 @@ inline void Executor::_invoke_async_task(Worker& w, Node* node) {
 inline void Executor::_invoke_silent_async_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
   std::get_if<Node::SilentAsync>(&node->_handle)->work();
-  _observer_epilogue(w, node);
-}
-
-// Procedure: _invoke_runtime_task
-inline void Executor::_invoke_runtime_task(Worker& w, Node* node) {
-  _observer_prologue(w, node);
-  Runtime rt(*this, w, node);
-  std::get_if<Node::Runtime>(&node->_handle)->work(rt);
   _observer_epilogue(w, node);
 }
 
@@ -1772,31 +1787,31 @@ tf::Future<void> Executor::run_until(Taskflow&& f, P&& pred, C&& c) {
   return run_until(*itr, std::forward<P>(pred), std::forward<C>(c));
 }
 
-// Function: run_and_wait
+// Function: corun
 template <typename T>
-void Executor::run_and_wait(T& target) {
+void Executor::corun(T& target) {
   
   auto w = _this_worker();
 
   if(w == nullptr) {
-    TF_THROW("run_and_wait must be called by a worker of the executor");
+    TF_THROW("corun must be called by a worker of the executor");
   }
 
   Node parent;  // dummy parent
   _consume_graph(*w, &parent, target.graph());
 }
 
-// Function: loop_until
+// Function: corun_until
 template <typename P>
-void Executor::loop_until(P&& predicate) {
+void Executor::corun_until(P&& predicate) {
   
   auto w = _this_worker();
 
   if(w == nullptr) {
-    TF_THROW("loop_until must be called by a worker of the executor");
+    TF_THROW("corun_until must be called by a worker of the executor");
   }
 
-  _loop_until(*w, std::forward<P>(predicate));
+  _corun_until(*w, std::forward<P>(predicate));
 }
 
 // Procedure: _increment_topology
@@ -2065,7 +2080,13 @@ void Subflow::silent_async(F&& f, ArgsT&&... args) {
 
 // Procedure: schedule
 inline void Runtime::schedule(Task task) {
+  
   auto node = task._node;
+  // need to keep the invariant: when scheduling a task, the task must have
+  // zero dependency (join counter is 0)
+  // or we can encounter bug when inserting a nested flow (e.g., module task)
+  node->_join_counter.store(0, std::memory_order_relaxed);
+
   auto& j = node->_parent ? node->_parent->_join_counter :
                             node->_topology->_join_counter;
   j.fetch_add(1);
@@ -2074,7 +2095,7 @@ inline void Runtime::schedule(Task task) {
 
 // Procedure: emplace
 template <typename T>
-void Runtime::run_and_wait(T&& target) {
+void Runtime::corun(T&& target) {
 
   // dynamic task (subflow)
   if constexpr(is_dynamic_task_v<T>) {
@@ -2085,7 +2106,7 @@ void Runtime::run_and_wait(T&& target) {
       _executor._consume_graph(_worker, _parent, graph);
     }
   }
-  // graph object
+  // a composable graph object with `tf::Graph& T::graph()` defined
   else {
     _executor._consume_graph(_worker, _parent, target.graph());
   }

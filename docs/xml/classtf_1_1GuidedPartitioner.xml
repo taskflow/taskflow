@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+  <compounddef id="classtf_1_1GuidedPartitioner" kind="class" language="C++" prot="public">
+    <compoundname>tf::GuidedPartitioner</compoundname>
+    <basecompoundref refid="classtf_1_1PartitionerBase" prot="public" virt="non-virtual">tf::PartitionerBase</basecompoundref>
+    <includes refid="execution__policy_8hpp" local="no">execution_policy.hpp</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1GuidedPartitioner_1a6d54bc802ce765d5b2c7833d1d6f46ce" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>tf::GuidedPartitioner::GuidedPartitioner</definition>
+        <argsstring>()</argsstring>
+        <name>GuidedPartitioner</name>
+        <briefdescription>
+<para>default constructor </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="79" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="79" bodyend="79"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1GuidedPartitioner_1a8a44c5c770af9b6754afc502ced91b4c" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>tf::GuidedPartitioner::GuidedPartitioner</definition>
+        <argsstring>(size_t sz)</argsstring>
+        <name>GuidedPartitioner</name>
+        <param>
+          <type>size_t</type>
+          <declname>sz</declname>
+        </param>
+        <briefdescription>
+<para>construct a guided partitioner with the given chunk size </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="84" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="84" bodyend="84"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classtf_1_1GuidedPartitioner_1a33fcd8762b60883dacc2f0925eca4d5a" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename F</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::GuidedPartitioner::operator()</definition>
+        <argsstring>(size_t N, size_t W, std::atomic&lt; size_t &gt; &amp;next, F &amp;&amp;func) const</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>size_t</type>
+          <declname>N</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>W</declname>
+        </param>
+        <param>
+          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
+          <declname>next</declname>
+        </param>
+        <param>
+          <type>F &amp;&amp;</type>
+          <declname>func</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="90" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="90" bodyend="133"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>class to construct a guided partitioner for scheduling parallel algorithms </para>    </briefdescription>
+    <detaileddescription>
+<para>The size of a partition is proportional to the number of unassigned iterations divided by the number of workers, and the size will gradually decrease to the given chunk size. The last partition may be smaller than the chunk size. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="147">
+        <label>tf::GuidedPartitioner</label>
+        <link refid="classtf_1_1GuidedPartitioner"/>
+        <childnode refid="148" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="148">
+        <label>tf::PartitionerBase</label>
+        <link refid="classtf_1_1PartitionerBase"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="149">
+        <label>tf::GuidedPartitioner</label>
+        <link refid="classtf_1_1GuidedPartitioner"/>
+        <childnode refid="150" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="150">
+        <label>tf::PartitionerBase</label>
+        <link refid="classtf_1_1PartitionerBase"/>
+      </node>
+    </collaborationgraph>
+    <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="72" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="72" bodyend="134"/>
+    <listofallmembers>
+      <member refid="classtf_1_1PartitionerBase_1a98a744284cfc726b1a597dae90e766f0" prot="protected" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>_chunk_size</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a8445b917fca6384861898d46b81ec471" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>chunk_size</name></member>
+      <member refid="classtf_1_1PartitionerBase_1ad3aadb6b50b86eb0a679f714f07079cf" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>chunk_size</name></member>
+      <member refid="classtf_1_1GuidedPartitioner_1a6d54bc802ce765d5b2c7833d1d6f46ce" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>GuidedPartitioner</name></member>
+      <member refid="classtf_1_1GuidedPartitioner_1a8a44c5c770af9b6754afc502ced91b4c" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>GuidedPartitioner</name></member>
+      <member refid="classtf_1_1GuidedPartitioner_1a33fcd8762b60883dacc2f0925eca4d5a" prot="private" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>operator()</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a9dae31a2e61d1d64a913bd1d12cfcb20" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>PartitionerBase</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a75ad9b40415d767ef368c20650958be0" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>PartitionerBase</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

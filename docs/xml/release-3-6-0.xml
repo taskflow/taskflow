@@ -1,93 +1,27 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="release-3-6-0" kind="page">
     <compoundname>release-3-6-0</compoundname>
     <title>Release 3.6.0 (Master)</title>
-    <tableofcontents>
-      <tocsect>
-        <name>Download</name>
-        <reference>release-3-6-0_1release-3-6-0_download</reference>
-    </tocsect>
-      <tocsect>
-        <name>System Requirements</name>
-        <reference>release-3-6-0_1release-3-6-0_system_requirements</reference>
-    </tocsect>
-      <tocsect>
-        <name>Release Summary</name>
-        <reference>release-3-6-0_1release-3-6-0_summary</reference>
-    </tocsect>
-      <tocsect>
-        <name>New Features</name>
-        <reference>release-3-6-0_1release-3-6-0_new_features</reference>
-    <tableofcontents>
-      <tocsect>
-        <name>Taskflow Core</name>
-        <reference>release-3-6-0_1release-3-6-0_taskflow_core</reference>
-    </tocsect>
-      <tocsect>
-        <name>cudaFlow</name>
-        <reference>release-3-6-0_1release-3-6-0_cudaflow</reference>
-    </tocsect>
-      <tocsect>
-        <name>Utilities</name>
-        <reference>release-3-6-0_1release-3-6-0_utilities</reference>
-    </tocsect>
-      <tocsect>
-        <name>Taskflow Profiler (TFProf)</name>
-        <reference>release-3-6-0_1release-3-6-0_profiler</reference>
-    </tocsect>
-    </tableofcontents>
-    </tocsect>
-      <tocsect>
-        <name>Bug Fixes</name>
-        <reference>release-3-6-0_1release-3-6-0_bug_fixes</reference>
-    </tocsect>
-      <tocsect>
-        <name>Breaking Changes</name>
-        <reference>release-3-6-0_1release-3-6-0_breaking_changes</reference>
-    </tocsect>
-      <tocsect>
-        <name>Deprecated and Removed Items</name>
-        <reference>release-3-6-0_1release-3-6-0_deprecated_items</reference>
-    </tocsect>
-      <tocsect>
-        <name>Documentation</name>
-        <reference>release-3-6-0_1release-3-6-0_documentation</reference>
-    </tocsect>
-      <tocsect>
-        <name>Miscellaneous Items</name>
-        <reference>release-3-6-0_1release-3-6-0_miscellaneous_items</reference>
-    </tocsect>
-    </tableofcontents>
+    <tableofcontents/>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow 3.6.0 is the newest developing line to new features and improvements we continue to support. It is also where this documentation is generated. Many things are considered <emphasis>experimental</emphasis> and may change or break from time to time. While it may be difficult to be keep all things consistent when introducing new features, we continue to try our best to ensure backward compatibility.</para>
-<sect1 id="release-3-6-0_1release-3-6-0_download">
+<para>Taskflow 3.6.0 is the newest developing line to new features and improvements we continue to support. It is also where this documentation is generated. Many things are considered <emphasis>experimental</emphasis> and may change or break from time to time. While it may be difficult to be keep all things consistent when introducing new features, we continue to try our best to ensure backward compatibility.</para><sect1 id="release-3-6-0_1release-3-6-0_download">
 <title>Download</title>
-<para>To download the newest version of Taskflow, please clone the master branch from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para>
-</sect1>
+<para>To download the newest version of Taskflow, please clone the master branch from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para></sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_system_requirements">
 <title>System Requirements</title>
-<para>To use Taskflow v3.6.0, you need a compiler that supports C++17:</para>
-<para><itemizedlist>
-<listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para>
-</listitem>
-<listitem><para>Clang C++ Compiler at least v6.0 with -std=c++17 </para>
-</listitem>
-<listitem><para>Microsoft Visual Studio at least v19.27 with /std:c++17 </para>
-</listitem>
-<listitem><para>AppleClang Xode Version at least v12.0 with -std=c++17 </para>
-</listitem>
-<listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17 </para>
-</listitem>
-<listitem><para>Intel C++ Compiler at least v19.0.1 with -std=c++17 </para>
-</listitem>
-<listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</para>
-</listitem>
+<para>To use Taskflow v3.6.0, you need a compiler that supports C++17:</para><para><itemizedlist>
+<listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para></listitem>
+<listitem><para>Clang C++ Compiler at least v6.0 with -std=c++17 </para></listitem>
+<listitem><para>Microsoft Visual Studio at least v19.27 with /std:c++17 </para></listitem>
+<listitem><para>AppleClang Xode Version at least v12.0 with -std=c++17 </para></listitem>
+<listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17 </para></listitem>
+<listitem><para>Intel C++ Compiler at least v19.0.1 with -std=c++17 </para></listitem>
+<listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</para></listitem>
 </itemizedlist>
-Taskflow works on Linux, Windows, and Mac OS X.</para>
-</sect1>
+Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_summary">
 <title>Release Summary</title>
 </sect1>
@@ -97,17 +31,9 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <title>Taskflow Core</title>
 <para><itemizedlist>
 <listitem><para>Extended parallel algorithms to support different execution policies via <ref refid="structtf_1_1ExecutionPolicy" kindref="compound">tf::ExecutionPolicy</ref><itemizedlist>
-<listitem><para><ref refid="classtf_1_1FlowBuilder_1a977d8f7007f323eeaa81a37b4c6e6cd6" kindref="member">tf::Taskflow::for_each_index(P&amp;&amp; policy, B first, E last, S step, C callable)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1ad2299fddbd6165cc7f24f57a734d2839" kindref="member">tf::Taskflow::for_each(P&amp;&amp; policy, B first, E last, C callable)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a9f7befa968cf69ea0a20dc267f746f3e" kindref="member">tf::Taskflow::transform(P&amp;&amp; policy, B first1, E last1, O d_first, C c)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a01edf4fdeee7d7e01483b6d2969bf115" kindref="member">tf::Taskflow::transform(P&amp;&amp; policy, B1 first1, E1 last1, B2 first2, O d_first, C c)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1afc7bd7a737febf30d5d1d706c4b65f84" kindref="member">tf::Taskflow::reduce(P&amp;&amp; policy, B first, E last, T&amp; result, O bop)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a4dc484abecf338574f46b38635d08e36" kindref="member">tf::Taskflow::transform_reduce(P&amp;&amp; policy, B first, E last, T&amp; result, BOP bop, UOP uop)</ref></para>
-</listitem></itemizedlist>
-</para>
-</listitem></itemizedlist>
-</para>
-</sect2>
+<listitem><para><ref refid="classtf_1_1FlowBuilder_1a977d8f7007f323eeaa81a37b4c6e6cd6" kindref="member">tf::Taskflow::for_each_index(P&amp;&amp; policy, B first, E last, S step, C callable)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1ad2299fddbd6165cc7f24f57a734d2839" kindref="member">tf::Taskflow::for_each(P&amp;&amp; policy, B first, E last, C callable)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a9f7befa968cf69ea0a20dc267f746f3e" kindref="member">tf::Taskflow::transform(P&amp;&amp; policy, B first1, E last1, O d_first, C c)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a01edf4fdeee7d7e01483b6d2969bf115" kindref="member">tf::Taskflow::transform(P&amp;&amp; policy, B1 first1, E1 last1, B2 first2, O d_first, C c)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1afc7bd7a737febf30d5d1d706c4b65f84" kindref="member">tf::Taskflow::reduce(P&amp;&amp; policy, B first, E last, T&amp; result, O bop)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a4dc484abecf338574f46b38635d08e36" kindref="member">tf::Taskflow::transform_reduce(P&amp;&amp; policy, B first, E last, T&amp; result, BOP bop, UOP uop)</ref></para></listitem></itemizedlist>
+</para></listitem></itemizedlist>
+</para></sect2>
 <sect2 id="release-3-6-0_1release-3-6-0_cudaflow">
 <title>cudaFlow</title>
 </sect2>
@@ -121,18 +47,13 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <sect1 id="release-3-6-0_1release-3-6-0_bug_fixes">
 <title>Bug Fixes</title>
 <para><itemizedlist>
-<listitem><para>Fixed the compilation bugs caused by clashing <computeroutput>MAX_PRIORITY</computeroutput> wtih <computeroutput>winspool.h</computeroutput> (<ulink url="https://github.com/taskflow/taskflow/pull/459">#459</ulink>)</para>
-</listitem></itemizedlist>
-</para>
-<para>If you encounter any potential bugs, please submit an issue at <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>.</para>
-</sect1>
+<listitem><para>Fixed the compilation bugs caused by clashing <computeroutput>MAX_PRIORITY</computeroutput> wtih <computeroutput>winspool.h</computeroutput> (<ulink url="https://github.com/taskflow/taskflow/pull/459">#459</ulink>)</para></listitem><listitem><para>Fixed the infinite-loop bug when corunning a module task from <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref></para></listitem></itemizedlist>
+</para><para>If you encounter any potential bugs, please submit an issue at <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>.</para></sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_breaking_changes">
 <title>Breaking Changes</title>
 <para><itemizedlist>
-<listitem><para>Dropped in-place support for running <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> from a dedicated task</para>
-</listitem></itemizedlist>
-</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>no<sp/>longer<sp/>supported</highlight><highlight class="normal"></highlight></codeline>
+<listitem><para>Dropped in-place support for running <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> from a dedicated task</para></listitem></itemizedlist>
+</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>no<sp/>longer<sp/>supported</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cf.offload();</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
@@ -148,12 +69,9 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>cudaflow<sp/>completes</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-</programlisting></para>
-<para><itemizedlist>
-<listitem><para>Dropped in-place support for running <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> from a dedicated task</para>
-</listitem></itemizedlist>
-</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>now<sp/>longer<sp/>supported</highlight><highlight class="normal"></highlight></codeline>
+</programlisting></para><para><itemizedlist>
+<listitem><para>Dropped in-place support for running <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> from a dedicated task</para></listitem></itemizedlist>
+</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>now<sp/>longer<sp/>supported</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cf.offload();</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
@@ -169,55 +87,31 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>cudaflow<sp/>completes</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-</programlisting></para>
-<para><itemizedlist>
-<listitem><para>Dropped in-place support for running tf::syclFlow from a dedicated task</para>
-</listitem><listitem><para>Move all buffer query methods of CUDA standard algorithms inside execution policy</para>
-</listitem></itemizedlist>
-</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>no<sp/>longer<sp/>supported</highlight><highlight class="normal"></highlight></codeline>
+</programlisting></para><para><itemizedlist>
+<listitem><para>Dropped in-place support for running tf::syclFlow from a dedicated task</para></listitem><listitem><para>Move all buffer query methods of CUDA standard algorithms inside execution policy<itemizedlist>
+<listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a446cee95bb839ee180052059e2ad7fd6" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::reduce_bufsz</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::scan_bufsz</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::merge_bufsz</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1abcafb001cd68c1135392f4bcda5a2a05" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::min_element_bufsz</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a31fe75c4b0765df3035e12be49af88aa" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::max_element_bufsz</ref></para></listitem></itemizedlist>
+</para></listitem></itemizedlist>
+</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>no<sp/>longer<sp/>supported</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">tf::cuda_reduce_buffer_size&lt;tf::cudaDefaultExecutionPolicy,<sp/>int&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>(and<sp/>similarly<sp/>for<sp/>other<sp/>parallel<sp/>algorithms)</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
 <codeline><highlight class="normal">policy.reduce_bufsz&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
-</programlisting></para>
-<para><itemizedlist>
-<listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a446cee95bb839ee180052059e2ad7fd6" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::reduce_bufsz</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::scan_bufsz</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::merge_bufsz</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1abcafb001cd68c1135392f4bcda5a2a05" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::min_element_bufsz</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a31fe75c4b0765df3035e12be49af88aa" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::max_element_bufsz</ref></para>
-</listitem></itemizedlist>
-</para>
-</sect1>
-<sect1 id="release-3-6-0_1release-3-6-0_deprecated_items">
-<title>Deprecated and Removed Items</title>
-</sect1>
+</programlisting></para><para><itemizedlist>
+<listitem><para>Renamed tf::Executor::run_and_wait to <ref refid="classtf_1_1Executor_1a8fcd9e0557922bb8194999f0cd433ea8" kindref="member">tf::Executor::corun</ref> for expressiveness</para></listitem><listitem><para>Renamed tf::Executor::loop_until to <ref refid="classtf_1_1Executor_1a0fc6eb19f168dc4a9cd0a7c6187c1d2d" kindref="member">tf::Executor::corun_until</ref> for expressiveness</para></listitem><listitem><para>Renamed tf::Runtime::run_and_wait to <ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">tf::Runtime::corun</ref> for expressiveness</para></listitem></itemizedlist>
+</para></sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_documentation">
 <title>Documentation</title>
 <para><itemizedlist>
-<listitem><para>Added <ref refid="ExecutionPolicy" kindref="compound">Execution Policy</ref></para>
-</listitem><listitem><para>Revised Taskflow algorithms to include execution policy<itemizedlist>
-<listitem><para><ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref></para>
-</listitem><listitem><para><ref refid="ParallelTransforms" kindref="compound">Parallel Transforms</ref></para>
-</listitem><listitem><para><ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref></para>
-</listitem></itemizedlist>
-</para>
-</listitem><listitem><para>Revised CUDA standard algorithms to correct the use of buffer query methods<itemizedlist>
-<listitem><para><ref refid="CUDASTDReduce" kindref="compound">Parallel Reduction</ref></para>
-</listitem><listitem><para><ref refid="CUDASTDFind" kindref="compound">Parallel Find</ref></para>
-</listitem><listitem><para><ref refid="CUDASTDMerge" kindref="compound">Parallel Merge</ref></para>
-</listitem><listitem><para><ref refid="CUDASTDScan" kindref="compound">Parallel Scan</ref></para>
-</listitem></itemizedlist>
-</para>
-</listitem></itemizedlist>
-</para>
-</sect1>
+<listitem><para>Revised Taskflow algorithms to include execution policy<itemizedlist>
+<listitem><para><ref refid="ExecutionPolicy" kindref="compound">Execution Policy</ref></para></listitem><listitem><para><ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref></para></listitem><listitem><para><ref refid="ParallelTransforms" kindref="compound">Parallel Transforms</ref></para></listitem><listitem><para><ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref></para></listitem></itemizedlist>
+</para></listitem><listitem><para>Revised CUDA standard algorithms to correct the use of buffer query methods<itemizedlist>
+<listitem><para><ref refid="CUDASTDReduce" kindref="compound">Parallel Reduction</ref></para></listitem><listitem><para><ref refid="CUDASTDFind" kindref="compound">Parallel Find</ref></para></listitem><listitem><para><ref refid="CUDASTDMerge" kindref="compound">Parallel Merge</ref></para></listitem><listitem><para><ref refid="CUDASTDScan" kindref="compound">Parallel Scan</ref></para></listitem></itemizedlist>
+</para></listitem></itemizedlist>
+</para></sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_miscellaneous_items">
 <title>Miscellaneous Items</title>
-<para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you intend to collaborate with us on using Taskflow in your scientific computing projects. </para>
-</sect1>
+<para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you intend to collaborate with us on using Taskflow in your scientific computing projects. </para></sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

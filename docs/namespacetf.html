@@ -5,7 +5,7 @@
   <title>tf namespace | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -195,7 +195,7 @@
             <dt>
               class <a href="classtf_1_1Runtime.html" class="m-doc">Runtime</a>
             </dt>
-            <dd>class to create a runtime object used by a runtime task</dd>
+            <dd>class to include a runtime object in a task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename P&gt;</div>
               class <a href="classtf_1_1ScalablePipeline.html" class="m-doc">ScalablePipeline</a>
@@ -227,7 +227,7 @@
             </dt>
             <dd>class to create a taskflow object</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename T, unsigned TF_MAX_PRIORITY = static_cast&lt;unsigned&gt;(<a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" class="m-doc">TaskPriority::<wbr />MAX</a>)&gt;</div>
+              <div class="m-doc-template">template&lt;typename T, unsigned TF_MAX_PRIORITY = static_cast&lt;unsigned&gt;(<a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fa26a4b44a837bf97b972628509912b4a5" class="m-doc">TaskPriority::<wbr />MAX</a>)&gt;</div>
               class <a href="classtf_1_1TaskQueue.html" class="m-doc">TaskQueue</a>
             </dt>
             <dd>class to create a lock-free unbounded single-producer multiple-consumer queue</dd>
@@ -270,7 +270,6 @@
               <a href="#a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac" class="m-doc">CONDITION</a>,
               <a href="#a1355048578785a80414707ff308b395aa1cf5e1f5569acda3c4a88a91c5130a69" class="m-doc">MODULE</a>,
               <a href="#a1355048578785a80414707ff308b395aabe553330beb7b3d994656e0a4e66cd96" class="m-doc">ASYNC</a>,
-              <a href="#a1355048578785a80414707ff308b395aae5f5cd9fe71ac064a678f27c7d539ae8" class="m-doc">RUNTIME</a>,
               <a href="#a1355048578785a80414707ff308b395aa0db45d2a4141101bdfe48e3314cfbca3" class="m-doc">UNDEFINED</a> }</span>
             </dt>
             <dd>enumeration of all task types</dd>
@@ -697,8 +696,8 @@
         <section id="var-members">
           <h2><a href="#var-members">Variables</a></h2>
           <dl class="m-doc">
-            <dt id="a3d823d8776745f3348dc87bba2fcc91b">
-              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>, 7&gt; <a href="#a3d823d8776745f3348dc87bba2fcc91b" class="m-doc-self">TASK_TYPES</a> <span class="m-label m-flat m-primary">constexpr</span>
+            <dt id="a872cf263ab68abc7c3180710fb792528">
+              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>, 6&gt; <a href="#a872cf263ab68abc7c3180710fb792528" class="m-doc-self">TASK_TYPES</a> <span class="m-label m-flat m-primary">constexpr</span>
             </dt>
             <dd>array of all task types (used for iterating task types)</dd>
             <dt>
@@ -723,11 +722,6 @@
             <dd>determines if a callable is a multi-condition task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename C&gt;</div>
-              bool <a href="#af3d94f0be0f7b49e195c4e92737b1f85" class="m-doc">is_runtime_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
-            </dt>
-            <dd>determines if a callable is a runtime task</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename C&gt;</div>
               bool <a href="#a6720c7fd9025a4c32898264dab03b8be" class="m-doc">is_execution_policy_v</a> <span class="m-label m-flat m-primary">constexpr</span>
             </dt>
             <dd>determines if a type is a partitioner</dd>
@@ -747,13 +741,13 @@
                 <tr>
                   <td><a href="#ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" class="m-doc-self" id="ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c">HIGH</a></td>
                   <td>
-                  <p>value of the highest priority (i.e., 0)<br /></p>
+                  <p>value of the highest priority (i.e., 0)</p>
                   </td>
                 </tr>
                 <tr>
                   <td><a href="#ac9f4add8f716ed323b0bdbbc1d89346fa1e23852820b9154316c7c06e2b7ba051" class="m-doc-self" id="ac9f4add8f716ed323b0bdbbc1d89346fa1e23852820b9154316c7c06e2b7ba051">NORMAL</a></td>
                   <td>
-                  <p>value of the normal priority (i.e., 1)<br /></p>
+                  <p>value of the normal priority (i.e., 1)</p>
                   </td>
                 </tr>
                 <tr>
@@ -813,12 +807,6 @@
                   <td><a href="#a1355048578785a80414707ff308b395aabe553330beb7b3d994656e0a4e66cd96" class="m-doc-self" id="a1355048578785a80414707ff308b395aabe553330beb7b3d994656e0a4e66cd96">ASYNC</a></td>
                   <td>
                   <p>asynchronous task type</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#a1355048578785a80414707ff308b395aae5f5cd9fe71ac064a678f27c7d539ae8" class="m-doc-self" id="a1355048578785a80414707ff308b395aae5f5cd9fe71ac064a678f27c7d539ae8">RUNTIME</a></td>
-                  <td>
-                  <p>runtime task type</p>
                   </td>
                 </tr>
                 <tr>
@@ -958,8 +946,7 @@
 <span class="n">TaskType</span><span class="o">::</span><span class="n">DYNAMIC</span><span class="w">         </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;subflow&quot;</span><span class="w"></span>
 <span class="n">TaskType</span><span class="o">::</span><span class="n">CONDITION</span><span class="w">       </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;condition&quot;</span><span class="w"></span>
 <span class="n">TaskType</span><span class="o">::</span><span class="n">MODULE</span><span class="w">          </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;module&quot;</span><span class="w"></span>
-<span class="n">TaskType</span><span class="o">::</span><span class="n">ASYNC</span><span class="w">           </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;async&quot;</span><span class="w"></span>
-<span class="n">TaskType</span><span class="o">::</span><span class="n">RUNTIME</span><span class="w">         </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;runtime&quot;</span><span class="w"></span></pre>
+<span class="n">TaskType</span><span class="o">::</span><span class="n">ASYNC</span><span class="w">           </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;async&quot;</span><span class="w"></span></pre>
           </div></section>
           <section class="m-doc-details" id="a8975fa5762088789adb0b60f38208309"><div>
             <h3>
@@ -989,7 +976,7 @@
                 </tr>
               </tbody>
             </table>
-<p><a href="namespacetf.html#a8975fa5762088789adb0b60f38208309" class="m-doc">tf::<wbr />make_data_pipe</a> is a helper function to create a data pipe (<a href="classtf_1_1DataPipe.html" class="m-doc">tf::<wbr />DataPipe</a>) in a data-parallel pipeline (<a href="classtf_1_1DataPipeline.html" class="m-doc">tf::<wbr />DataPipeline</a>). The first argument specifies the direction of the data pipe, either <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a> or tf::PipeType::PARALLE, and the second argument is a callable to invoke by the pipeline scheduler. Input and output data types are specified via template parameters, which will always be decayed by the library to its original form for storage purpose. The callable must take the input data type in its first argument and returns a value of the output data type.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="w"></span>
+<p><a href="namespacetf.html#a8975fa5762088789adb0b60f38208309" class="m-doc">tf::<wbr />make_data_pipe</a> is a helper function to create a data pipe (<a href="classtf_1_1DataPipe.html" class="m-doc">tf::<wbr />DataPipe</a>) in a data-parallel pipeline (<a href="classtf_1_1DataPipeline.html" class="m-doc">tf::<wbr />DataPipeline</a>). The first argument specifies the direction of the data pipe, either <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a> or tf::PipeType::PARALLE, and the second argument is a callable to invoke by the pipeline scheduler. Input and output data types are specified via template parameters, which will always be decayed by the library to its original form for storage purpose. The callable must take the input data type in its first argument and returns a value of the output data type.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="w"></span>
 <span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span>
 <span class="w">  </span><span class="p">[](</span><span class="kt">int</span><span class="o">&amp;</span><span class="w"> </span><span class="n">input</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">input</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
@@ -2649,16 +2636,6 @@
             <p>determines if a callable is a multi-condition task</p>
 <p>A multi-condition task is a callable object constructible from <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function</a>&lt;tf::SmallVector&lt;int&gt;()&gt;.</p>
           </div></section>
-          <section class="m-doc-details" id="af3d94f0be0f7b49e195c4e92737b1f85"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename C&gt;
-              </div>
-              bool tf::<wbr /><a href="#af3d94f0be0f7b49e195c4e92737b1f85" class="m-doc-self">is_runtime_task_v</a> <span class="m-label m-primary">constexpr</span>
-            </h3>
-            <p>determines if a callable is a runtime task</p>
-<p>A runtime task is a callable object constructible from std::function&lt;void(tf::Runtime&amp;)&gt;.</p>
-          </div></section>
           <section class="m-doc-details" id="a6720c7fd9025a4c32898264dab03b8be"><div>
             <h3>
               <div class="m-doc-template">
@@ -2714,7 +2691,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

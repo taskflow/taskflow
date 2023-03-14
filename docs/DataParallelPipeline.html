@@ -5,7 +5,7 @@
   <title>Taskflow Algorithms &raquo; Data-parallel Pipeline | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -107,7 +107,7 @@
 <span class="w">  </span><span class="p">[](</span><span class="kt">int</span><span class="o">&amp;</span><span class="w"> </span><span class="n">input</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">input</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
 <span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">);</span><span class="w"></span></pre><p>The helper function starts with a pair of an input and an output types in its template arguments. Both types will always be decayed to their original form using <a href="http://en.cppreference.com/w/cpp/types/decay.html" class="m-doc-external">std::<wbr />decay</a> (e.g., <code>const int&amp;</code> becomes <code>int</code>) for storage purpose. In terms of function arguments, the first argument specifies the direction of this data pipe, which can be either <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a> or tf::PipeType::PARALLEL, and the second argument is a callable to invoke by the pipeline scheduler. The callable must take the input data type in its first argument and returns a value of the output data type. Additionally, the callable can take a <a href="classtf_1_1Pipeflow.html" class="m-doc">tf::<wbr />Pipeflow</a> reference in its second argument which allows you to query the runtime information of a stage task, such as its line number and token number.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span></pre><p>The helper function starts with a pair of an input and an output types in its template arguments. Both types will always be decayed to their original form using <a href="http://en.cppreference.com/w/cpp/types/decay.html" class="m-doc-external">std::<wbr />decay</a> (e.g., <code>const int&amp;</code> becomes <code>int</code>) for storage purpose. In terms of function arguments, the first argument specifies the direction of this data pipe, which can be either <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">tf::<wbr />PipeType::<wbr />SERIAL</a> or <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc">tf::<wbr />PipeType::<wbr />PARALLEL</a>, and the second argument is a callable to invoke by the pipeline scheduler. The callable must take the input data type in its first argument and returns a value of the output data type. Additionally, the callable can take a <a href="classtf_1_1Pipeflow.html" class="m-doc">tf::<wbr />Pipeflow</a> reference in its second argument which allows you to query the runtime information of a stage task, such as its line number and token number.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">make_data_pipe</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="w"></span>
 <span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span>
 <span class="w">  </span><span class="p">[](</span><span class="kt">int</span><span class="o">&amp;</span><span class="w"> </span><span class="n">input</span><span class="p">,</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;token=%lu, line=%lu</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">(),</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">());</span><span class="w"></span>
@@ -130,83 +130,83 @@
 <span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// run the pipeline</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre> <p><br /></p><div class="m-graph"><svg style="width: 27.750rem; height: 13.000rem;" viewBox="0.00 0.00 444.00 208.00">
-<g transform="scale(1 1) rotate(0) translate(4 204)">
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 28.500rem; height: 15.375rem;" viewBox="0.00 0.00 456.00 246.00">
+<g transform="scale(1 1) rotate(0) translate(4 242)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x7ffc47e53358</title>
-<polygon points="8,-106 8,-184 134,-184 134,-106 8,-106"/>
-<text text-anchor="middle" x="71" y="-167.2">Taskflow</text>
+<polygon points="8,-144 8,-222 146,-222 146,-144 8,-144"/>
+<text text-anchor="middle" x="77" y="-205.2">Taskflow</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7ffc47e53220</title>
-<polygon points="142,-8 142,-192 428,-192 428,-8 142,-8"/>
-<text text-anchor="middle" x="285" y="-175.2">m1</text>
+<polygon points="154,-8 154,-230 440,-230 440,-8 154,-8"/>
+<text text-anchor="middle" x="297" y="-213.2">m1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x1878a88</title>
-<polygon points="125.5,-150 20.5,-150 16.5,-146 16.5,-114 121.5,-114 125.5,-118 125.5,-150"/>
-<polyline points="121.5,-146 16.5,-146"/>
-<polyline points="121.5,-146 121.5,-114"/>
-<polyline points="121.5,-146 125.5,-150"/>
-<text text-anchor="middle" x="71" y="-128.2">pipeline [m1]</text>
+<polygon points="137.5,-188 20.5,-188 16.5,-184 16.5,-152 133.5,-152 137.5,-156 137.5,-188"/>
+<polyline points="133.5,-184 16.5,-184 "/>
+<polyline points="133.5,-184 133.5,-152 "/>
+<polyline points="133.5,-184 137.5,-188 "/>
+<text text-anchor="middle" x="77" y="-166.2">pipeline [m1]</text>
 </g>
 <g class="m-node">
 <title>p0x1878600</title>
-<polygon points="275,-158 223,-132 275,-106 327,-132 275,-158"/>
-<text text-anchor="middle" x="275" y="-128.2">cond</text>
+<polygon points="297,-196 242,-170 297,-144 352,-170 297,-196"/>
+<text text-anchor="middle" x="297" y="-166.2">cond</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x18786e8</title>
-<polygon points="204,-52 150,-52 150,-48 146,-48 146,-44 150,-44 150,-24 146,-24 146,-20 150,-20 150,-16 204,-16 204,-52"/>
-<polyline points="150,-48 154,-48 154,-44 150,-44"/>
-<polyline points="150,-24 154,-24 154,-20 150,-20"/>
-<text text-anchor="middle" x="177" y="-30.2">rt&#45;0</text>
+<polygon points="216,-52 162,-52 162,-48 158,-48 158,-44 162,-44 162,-24 158,-24 158,-20 162,-20 162,-16 216,-16 216,-52"/>
+<polyline points="162,-48 166,-48 166,-44 162,-44 "/>
+<polyline points="162,-24 166,-24 166,-20 162,-20 "/>
+<text text-anchor="middle" x="189" y="-30.2">rt&#45;0</text>
 </g>
 <g class="m-edge">
 <title>p0x1878600&#45;&gt;p0x18786e8</title>
-<path stroke-dasharray="5,2" d="M257.93,-114.28C242.38,-99.05 219.24,-76.38 201.68,-59.18"/>
-<polygon points="204.13,-56.67 194.53,-52.18 199.23,-61.67 204.13,-56.67"/>
-<text text-anchor="middle" x="233" y="-75.2">0</text>
+<path stroke-dasharray="5,2" d="M281.9831,-151.0898C263.2598,-127.5123 231.1482,-87.0755 209.996,-60.4394"/>
+<polygon points="212.5041,-57.9696 203.5443,-52.3151 207.0223,-62.3228 212.5041,-57.9696"/>
+<text text-anchor="middle" x="251" y="-94.2">0</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x18787d0</title>
-<polygon points="276,-52 222,-52 222,-48 218,-48 218,-44 222,-44 222,-24 218,-24 218,-20 222,-20 222,-16 276,-16 276,-52"/>
-<polyline points="222,-48 226,-48 226,-44 222,-44"/>
-<polyline points="222,-24 226,-24 226,-20 222,-20"/>
-<text text-anchor="middle" x="249" y="-30.2">rt&#45;1</text>
+<polygon points="288,-52 234,-52 234,-48 230,-48 230,-44 234,-44 234,-24 230,-24 230,-20 234,-20 234,-16 288,-16 288,-52"/>
+<polyline points="234,-48 238,-48 238,-44 234,-44 "/>
+<polyline points="234,-24 238,-24 238,-20 234,-20 "/>
+<text text-anchor="middle" x="261" y="-30.2">rt&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p0x1878600&#45;&gt;p0x18787d0</title>
-<path stroke-dasharray="5,2" d="M268.97,-108.73C265.2,-94.83 260.33,-76.83 256.34,-62.1"/>
-<polygon points="259.61,-60.79 253.62,-52.05 252.85,-62.62 259.61,-60.79"/>
-<text text-anchor="middle" x="267" y="-75.2">1</text>
+<path stroke-dasharray="5,2" d="M290.8114,-146.6208C284.6195,-123.2294 275.0892,-87.2258 268.4777,-62.249"/>
+<polygon points="271.7836,-61.06 265.8411,-52.2886 265.0166,-62.8513 271.7836,-61.06"/>
+<text text-anchor="middle" x="285" y="-94.2">1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x18788b8</title>
-<polygon points="348,-52 294,-52 294,-48 290,-48 290,-44 294,-44 294,-24 290,-24 290,-20 294,-20 294,-16 348,-16 348,-52"/>
-<polyline points="294,-48 298,-48 298,-44 294,-44"/>
-<polyline points="294,-24 298,-24 298,-20 294,-20"/>
-<text text-anchor="middle" x="321" y="-30.2">rt&#45;2</text>
+<polygon points="360,-52 306,-52 306,-48 302,-48 302,-44 306,-44 306,-24 302,-24 302,-20 306,-20 306,-16 360,-16 360,-52"/>
+<polyline points="306,-48 310,-48 310,-44 306,-44 "/>
+<polyline points="306,-24 310,-24 310,-20 306,-20 "/>
+<text text-anchor="middle" x="333" y="-30.2">rt&#45;2</text>
 </g>
 <g class="m-edge">
 <title>p0x1878600&#45;&gt;p0x18788b8</title>
-<path stroke-dasharray="5,2" d="M284.76,-110.64C291.66,-96.24 300.97,-76.8 308.43,-61.23"/>
-<polygon points="311.63,-62.65 312.8,-52.12 305.32,-59.63 311.63,-62.65"/>
-<text text-anchor="middle" x="308" y="-75.2">2</text>
+<path stroke-dasharray="5,2" d="M303.1886,-146.6208C309.3805,-123.2294 318.9108,-87.2258 325.5223,-62.249"/>
+<polygon points="328.9834,-62.8513 328.1589,-52.2886 322.2164,-61.06 328.9834,-62.8513"/>
+<text text-anchor="middle" x="323" y="-94.2">2</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x18789a0</title>
-<polygon points="420,-52 366,-52 366,-48 362,-48 362,-44 366,-44 366,-24 362,-24 362,-20 366,-20 366,-16 420,-16 420,-52"/>
-<polyline points="366,-48 370,-48 370,-44 366,-44"/>
-<polyline points="366,-24 370,-24 370,-20 366,-20"/>
-<text text-anchor="middle" x="393" y="-30.2">rt&#45;3</text>
+<polygon points="432,-52 378,-52 378,-48 374,-48 374,-44 378,-44 378,-24 374,-24 374,-20 378,-20 378,-16 432,-16 432,-52"/>
+<polyline points="378,-48 382,-48 382,-44 378,-44 "/>
+<polyline points="378,-24 382,-24 382,-20 378,-20 "/>
+<text text-anchor="middle" x="405" y="-30.2">rt&#45;3</text>
 </g>
 <g class="m-edge">
 <title>p0x1878600&#45;&gt;p0x18789a0</title>
-<path stroke-dasharray="5,2" d="M294.22,-115.36C313.1,-100 342.15,-76.37 363.86,-58.7"/>
-<polygon points="366.24,-61.28 371.79,-52.25 361.83,-55.85 366.24,-61.28"/>
-<text text-anchor="middle" x="353" y="-75.2">3</text>
+<path stroke-dasharray="5,2" d="M312.0169,-151.0898C330.7402,-127.5123 362.8518,-87.0755 384.004,-60.4394"/>
+<polygon points="386.9777,-62.3228 390.4557,-52.3151 381.4959,-57.9696 386.9777,-62.3228"/>
+<text text-anchor="middle" x="365" y="-94.2">3</text>
 </g>
 </g>
 </svg>
@@ -255,7 +255,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

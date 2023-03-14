@@ -5,7 +5,7 @@
   <title>tf::TaskQueue class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -46,7 +46,7 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          <div class="m-doc-template">template&lt;typename T, unsigned TF_MAX_PRIORITY = static_cast&lt;unsigned&gt;(<a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" class="m-doc">TaskPriority::<wbr />MAX</a>)&gt;</div>
+          <div class="m-doc-template">template&lt;typename T, unsigned TF_MAX_PRIORITY = static_cast&lt;unsigned&gt;(<a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fa26a4b44a837bf97b972628509912b4a5" class="m-doc">TaskPriority::<wbr />MAX</a>)&gt;</div>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>TaskQueue <span class="m-thin">class</span>
         </h1>
         <p>class to create a lock-free unbounded single-producer multiple-consumer queue</p>
@@ -77,7 +77,7 @@
             </li>
           </ul>
         </nav>
-<p>This class implements the work-stealing queue described in the paper, <a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</a>, and extends it to include priority.</p><p>Only the queue owner can perform pop and push operations, while others can steal data from the queue simultaneously. Priority starts from zero (highest priority) to the template value <code>TF_MAX_PRIORITY-1</code> (lowest priority). All operations are associated with priority values to indicate the corresponding queues to which an operation is applied.</p><p>The default template value, <code>TF_MAX_PRIORITY</code>, is <code><a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" class="m-doc">TaskPriority::<wbr />MAX</a></code> which applies only three priority levels to the task queue.</p><pre class="m-code"><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="w"></span>
+<p>This class implements the work-stealing queue described in the paper, <a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</a>, and extends it to include priority.</p><p>Only the queue owner can perform pop and push operations, while others can steal data from the queue simultaneously. Priority starts from zero (highest priority) to the template value <code>TF_MAX_PRIORITY-1</code> (lowest priority). All operations are associated with priority values to indicate the corresponding queues to which an operation is applied.</p><p>The default template value, <code>TF_MAX_PRIORITY</code>, is <code><a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fa26a4b44a837bf97b972628509912b4a5" class="m-doc">TaskPriority::<wbr />MAX</a></code> which applies only three priority levels to the task queue.</p><pre class="m-code"><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="w"></span>
 <span class="w">  </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">},</span><span class="w"></span>
 <span class="w">  </span><span class="p">[</span><span class="o">&amp;</span><span class="p">]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
 <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Task B: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">  </span><span class="c1">// 0</span>
@@ -319,7 +319,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

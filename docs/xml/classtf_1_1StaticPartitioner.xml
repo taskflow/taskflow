@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+  <compounddef id="classtf_1_1StaticPartitioner" kind="class" language="C++" prot="public">
+    <compoundname>tf::StaticPartitioner</compoundname>
+    <basecompoundref refid="classtf_1_1PartitionerBase" prot="public" virt="non-virtual">tf::PartitionerBase</basecompoundref>
+    <includes refid="execution__policy_8hpp" local="no">execution_policy.hpp</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1StaticPartitioner_1a656cc541cb3bb38a75b1935e077cb786" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>tf::StaticPartitioner::StaticPartitioner</definition>
+        <argsstring>()</argsstring>
+        <name>StaticPartitioner</name>
+        <briefdescription>
+<para>default constructor </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="206" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="206" bodyend="206"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1StaticPartitioner_1a1278d0818518789051cf0e199c4006ef" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>tf::StaticPartitioner::StaticPartitioner</definition>
+        <argsstring>(size_t sz)</argsstring>
+        <name>StaticPartitioner</name>
+        <param>
+          <type>size_t</type>
+          <declname>sz</declname>
+        </param>
+        <briefdescription>
+<para>construct a dynamic partitioner with the given chunk size </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="211" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="211" bodyend="211"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classtf_1_1StaticPartitioner_1a056482d032dee69d0a23ca8bb10b603a" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename F</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::StaticPartitioner::operator()</definition>
+        <argsstring>(size_t N, size_t W, std::atomic&lt; size_t &gt; &amp;next, F &amp;&amp;func) const</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>size_t</type>
+          <declname>N</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>W</declname>
+        </param>
+        <param>
+          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
+          <declname>next</declname>
+        </param>
+        <param>
+          <type>F &amp;&amp;</type>
+          <declname>func</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="217" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="217" bodyend="247"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>class to construct a dynamic partitioner for scheduling parallel algorithms </para>    </briefdescription>
+    <detaileddescription>
+<para>The partitioner divides iterations into chunks and distributes chunks to workers in order. If the chunk size is not specified (default <computeroutput>0</computeroutput>), the partitioner resorts to a chunk size that equally distributes iterations into workers. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="287">
+        <label>tf::PartitionerBase</label>
+        <link refid="classtf_1_1PartitionerBase"/>
+      </node>
+      <node id="286">
+        <label>tf::StaticPartitioner</label>
+        <link refid="classtf_1_1StaticPartitioner"/>
+        <childnode refid="287" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="289">
+        <label>tf::PartitionerBase</label>
+        <link refid="classtf_1_1PartitionerBase"/>
+      </node>
+      <node id="288">
+        <label>tf::StaticPartitioner</label>
+        <link refid="classtf_1_1StaticPartitioner"/>
+        <childnode refid="289" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="199" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="199" bodyend="249"/>
+    <listofallmembers>
+      <member refid="classtf_1_1PartitionerBase_1a98a744284cfc726b1a597dae90e766f0" prot="protected" virt="non-virtual"><scope>tf::StaticPartitioner</scope><name>_chunk_size</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a8445b917fca6384861898d46b81ec471" prot="public" virt="non-virtual"><scope>tf::StaticPartitioner</scope><name>chunk_size</name></member>
+      <member refid="classtf_1_1PartitionerBase_1ad3aadb6b50b86eb0a679f714f07079cf" prot="public" virt="non-virtual"><scope>tf::StaticPartitioner</scope><name>chunk_size</name></member>
+      <member refid="classtf_1_1StaticPartitioner_1a056482d032dee69d0a23ca8bb10b603a" prot="private" virt="non-virtual"><scope>tf::StaticPartitioner</scope><name>operator()</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a9dae31a2e61d1d64a913bd1d12cfcb20" prot="public" virt="non-virtual"><scope>tf::StaticPartitioner</scope><name>PartitionerBase</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a75ad9b40415d767ef368c20650958be0" prot="public" virt="non-virtual"><scope>tf::StaticPartitioner</scope><name>PartitionerBase</name></member>
+      <member refid="classtf_1_1StaticPartitioner_1a656cc541cb3bb38a75b1935e077cb786" prot="public" virt="non-virtual"><scope>tf::StaticPartitioner</scope><name>StaticPartitioner</name></member>
+      <member refid="classtf_1_1StaticPartitioner_1a1278d0818518789051cf0e199c4006ef" prot="public" virt="non-virtual"><scope>tf::StaticPartitioner</scope><name>StaticPartitioner</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

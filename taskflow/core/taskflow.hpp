@@ -29,13 +29,7 @@ dependency between two tasks. A task is one of the following types:
   4. multi-condition task: the callable constructible from
                            @c %std::function<tf::SmallVector<int>()>
   5. module task         : the task constructed from tf::Taskflow::composed_of
-  6. runtime task        : the callable constructible from
                            @c std::function<void(tf::Runtime&)>
-  7. %cudaFlow task      : the callable constructible from
-                           @c std::function<void(tf::cudaFlow&)> or
-                           @c std::function<void(tf::cudaFlowCapturer&)>
-  8. %syclFlow task      : the callable constructible from
-                           @c std::function<void(tf::syclFlow&)>
 
 Each task is a basic computation unit and is run by one worker thread
 from an executor.
@@ -418,24 +412,6 @@ inline void Taskflow::_dump(
       os << "shape=diamond color=black fillcolor=aquamarine style=filled";
     break;
 
-    case Node::RUNTIME:
-      os << "shape=component";
-    break;
-
-    case Node::CUDAFLOW:
-      os << " style=\"filled\""
-         << " color=\"black\" fillcolor=\"purple\""
-         << " fontcolor=\"white\""
-         << " shape=\"folder\"";
-    break;
-
-    case Node::SYCLFLOW:
-      os << " style=\"filled\""
-         << " color=\"black\" fillcolor=\"red\""
-         << " fontcolor=\"white\""
-         << " shape=\"folder\"";
-    break;
-
     default:
     break;
   }
@@ -473,20 +449,6 @@ inline void Taskflow::_dump(
         _dump(os, &sbg, dumper);
         os << "}\n";
       }
-    }
-    break;
-
-    case Node::CUDAFLOW: {
-      std::get_if<Node::cudaFlow>(&node->_handle)->graph->dump(
-        os, node, node->_name
-      );
-    }
-    break;
-
-    case Node::SYCLFLOW: {
-      std::get_if<Node::syclFlow>(&node->_handle)->graph->dump(
-        os, node, node->_name
-      );
     }
     break;
 

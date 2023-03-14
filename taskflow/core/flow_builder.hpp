@@ -278,32 +278,6 @@ class FlowBuilder {
   Task placeholder();
 
   /**
-  @brief creates a runtime task
-
-  @tparam C callable type constructible from std::function<void(tf::Runtime&)>
-
-  @param callable callable to construct a runtime task
-
-  @return a tf::Task handle
-
-  The following example creates a runtime task that enables in-task
-  control over the running executor.
-
-  @code{.cpp}
-  tf::Task runtime_task = taskflow.emplace([](tf::Runtime& rt){
-    auto& executor = rt.executor();
-    std::cout << executor.num_workers() << '\n';
-  });
-  @endcode
-
-  Please refer to @ref RuntimeTasking for details.
-  */
-  template <typename C,
-    std::enable_if_t<is_runtime_task_v<C>, void>* = nullptr
-  >
-  Task emplace(C&& callable);
-
-  /**
   @brief adds adjacent dependency links to a linear list of tasks
 
   @param tasks a vector of tasks
@@ -713,14 +687,6 @@ template <typename C, std::enable_if_t<is_multi_condition_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
   return Task(_graph._emplace_back(
     std::in_place_type_t<Node::MultiCondition>{}, std::forward<C>(c)
-  ));
-}
-
-// Function: emplace
-template <typename C, std::enable_if_t<is_runtime_task_v<C>, void>*>
-Task FlowBuilder::emplace(C&& c) {
-  return Task(_graph._emplace_back(
-    std::in_place_type_t<Node::Runtime>{}, std::forward<C>(c)
   ));
 }
 

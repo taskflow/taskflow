@@ -98,17 +98,17 @@ int main() {
         return;
       }
       printf("begin token %zu\n", pf.token());
-      executor.run_and_wait(taskflows[pf.pipe()]);
+      executor.corun(taskflows[pf.pipe()]);
     }},
     
     // second pipe runs taskflow2
     tf::Pipe{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) {
-      executor.run_and_wait(taskflows[pf.pipe()]);
+      executor.corun(taskflows[pf.pipe()]);
     }},
 
     // third pipe calls taskflow3
     tf::Pipe{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) {
-      executor.run_and_wait(taskflows[pf.pipe()]);
+      executor.corun(taskflows[pf.pipe()]);
     }}
   );
 
@@ -206,21 +206,21 @@ tf::Pipe{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) {
     return;
   }
   printf("begin token %zu\n", pf.token());
-  executor.run_and_wait(taskflows[pf.pipe()]);
+  executor.corun(taskflows[pf.pipe()]);
 }},
 
 // second pipe runs taskflow2
 tf::Pipe{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) {
-  executor.run_and_wait(taskflows[pf.pipe()]);
+  executor.corun(taskflows[pf.pipe()]);
 }},
 
 // third pipe calls taskflow3
 tf::Pipe{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) {
-  executor.run_and_wait(taskflows[pf.pipe()]);
+  executor.corun(taskflows[pf.pipe()]);
 }}
 @endcode
 
-At each pipe, we use tf::Executor::run_and_wait to execute the corresponding taskflow
+At each pipe, we use tf::Executor::corun to execute the corresponding taskflow
 and wait until the execution completes.
 This is important because we want te caller thread, which is the worker that invokes
 the pipe callable, to not block (i.e., `executor.run(taskflows[pf.pipe()]).wait()`) 

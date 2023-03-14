@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.20" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="structtf_1_1Node_1_1Static" kind="struct" language="C++" prot="private">
     <compoundname>tf::Node::Static</compoundname>
       <sectiondef kind="public-attrib">
-      <memberdef kind="variable" id="structtf_1_1Node_1_1Static_1a30c34caf3aa9406c70dbab295c082468" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void()&gt;</type>
-        <definition>std::function&lt;void()&gt; tf::Node::Static::work</definition>
+      <memberdef kind="variable" id="structtf_1_1Node_1_1Static_1ac29bd03ca625bafe5e4322a6eb2d88aa" prot="public" static="no" mutable="no">
+        <type>std::variant&lt; <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void()&gt;, <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(<ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref> &amp;)&gt; &gt;</type>
+        <definition>std::variant&lt; std::function&lt;void()&gt;, std::function&lt;void(Runtime&amp;)&gt; &gt; tf::Node::Static::work</definition>
         <argsstring></argsstring>
         <name>work</name>
         <briefdescription>
@@ -14,7 +14,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="293" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="293" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="318" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="318" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -38,28 +38,17 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="291" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="477" bodyend="478"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="314" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="469" bodyend="470"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <collaborationgraph>
-      <node id="1">
-        <label>tf::Node::Static</label>
-        <childnode refid="2" relation="usage">
-          <edgelabel>work</edgelabel>
-        </childnode>
-      </node>
-      <node id="2">
-        <label>std::function&lt; void()&gt;</label>
-      </node>
-    </collaborationgraph>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="288" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="288" bodyend="294"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="311" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="311" bodyend="319"/>
     <listofallmembers>
       <member refid="structtf_1_1Node_1_1Static_1a91ebe904215e44a81df97586f15b4e07" prot="public" virt="non-virtual"><scope>tf::Node::Static</scope><name>Static</name></member>
-      <member refid="structtf_1_1Node_1_1Static_1a30c34caf3aa9406c70dbab295c082468" prot="public" virt="non-virtual"><scope>tf::Node::Static</scope><name>work</name></member>
+      <member refid="structtf_1_1Node_1_1Static_1ac29bd03ca625bafe5e4322a6eb2d88aa" prot="public" virt="non-virtual"><scope>tf::Node::Static</scope><name>work</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>
