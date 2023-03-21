@@ -209,43 +209,25 @@ class StaticPartitioner : public PartitionerBase {
   @brief construct a dynamic partitioner with the given chunk size
   */
   explicit StaticPartitioner(size_t sz) : PartitionerBase{sz} {}
-  
+
   /**
   @private
   */
   template <typename F>
-  void operator () (
+  void operator ()(
     size_t N, 
     size_t W, 
-    std::atomic<size_t>& next, 
+    size_t curr_b, 
+    size_t chunk_size,
     F&& func
-  ) const {
-    
-    // TODO: strided version is not easy to work with reduce 
-    //       
-    //size_t chunk_size = (_chunk_size == 0) ? (N + W - 1) / W : _chunk_size;
-    //size_t curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
-    //size_t stride = W * chunk_size;
-    //while(curr_b < N) {
-    //  size_t curr_e = curr_b + chunk_size;
-    //  if(curr_e > N) {
-    //    curr_e = N;
-    //  }
-    //  func(curr_b, curr_e);
-    //  curr_b += stride;
-    //}
-    
-    // For now, implement something similar to dynamic partitioner but with
-    // a different initial chunk_size value
-    size_t chunk_size = (_chunk_size == 0) ? (N + W - 1) / W : _chunk_size;
-    size_t curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
-
+  ) {
+    size_t stride = W * chunk_size;
     while(curr_b < N) {
-      func(curr_b, std::min(curr_b + chunk_size, N));
-      curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
+      size_t curr_e = std::min(curr_b + chunk_size, N);
+      func(curr_b, curr_e);
+      curr_b += stride;
     }
   }
-
 };
 
 // ----------------------------------------------------------------------------
@@ -389,6 +371,11 @@ executor.run(taskflow).run();
 */
 template <typename P>
 struct ExecutionPolicy : public P {
+
+  /**
+  @brief queries if the execution policy is associated with a static partitioner
+  */
+  constexpr static bool is_static_partitioner = std::is_same_v<P, StaticPartitioner>;
   
   /**
   @brief constructs an execution policy 
@@ -400,6 +387,7 @@ struct ExecutionPolicy : public P {
   template <typename... ArgsT>
   ExecutionPolicy(ArgsT&&... args) : P{std::forward<ArgsT>(args) ...} {
   }
+
 };
 
 /**

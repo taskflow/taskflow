@@ -253,7 +253,7 @@ add_executable(
   ${TF_BENCHMARK_DIR}/graph_pipeline/tbb.cpp
   ${TF_BENCHMARK_DIR}/graph_pipeline/taskflow.cpp
   ${TF_BENCHMARK_DIR}/graph_pipeline/gold.cpp
-  ${TF_BENCHMARK_DIR}/graph_pipeline/fastflow.cpp
+  #${TF_BENCHMARK_DIR}/graph_pipeline/fastflow.cpp
 )
 target_include_directories(graph_pipeline PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_include_directories(graph_pipeline PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/)
@@ -313,6 +313,24 @@ target_link_libraries(
   tf::default_settings
 )
 set_target_properties(deferred_pipeline PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
+## benchmark 16: for_each
+add_executable(
+  for_each
+  ${TF_BENCHMARK_DIR}/for_each/main.cpp
+  ${TF_BENCHMARK_DIR}/for_each/omp.cpp
+  ${TF_BENCHMARK_DIR}/for_each/tbb.cpp
+  ${TF_BENCHMARK_DIR}/for_each/taskflow.cpp
+)
+target_include_directories(for_each PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  for_each 
+  ${PROJECT_NAME} 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
+)
+set_target_properties(for_each PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 
 ###############################################################################

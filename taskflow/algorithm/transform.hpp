@@ -52,34 +52,69 @@ Task FlowBuilder::transform(P&& policy, B first1, E last1, O d_first, C c) {
       W = N;
     }
 
-    std::atomic<size_t> next(0);
-      
-    auto loop = [=, &next, &policy] () mutable {
-      policy(N, W, next, 
-        [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
-          std::advance(beg, curr_b - prev_e);
-          std::advance(d_beg, curr_b - prev_e);
-          for(size_t x = curr_b; x<curr_e; x++) {
-            *d_beg++ = c(*beg++);
-          }
-          prev_e = curr_e;
-        }
-      ); 
-    };
+    // static partitioner
+    if constexpr(std::decay_t<P>::is_static_partitioner) {
 
-    for(size_t w=0; w<W; w++) {
-      auto r = N - next.load(std::memory_order_relaxed);
-      // no more loop work to do - finished by previous async tasks
-      if(!r) {
-        break;
+      size_t curr_b = 0;
+      size_t chunk_size;
+
+      for(size_t w=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
+      
+        chunk_size = policy.chunk_size() == 0 ? 
+                     N/W + (w < N%W) : policy.chunk_size();
+
+        auto loop = [=, &policy] () mutable {
+          policy(N, W, curr_b, chunk_size,
+            [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
+              std::advance(beg, curr_b - prev_e);
+              std::advance(d_beg, curr_b - prev_e);
+              for(size_t x = curr_b; x<curr_e; x++) {
+                *d_beg++ = c(*beg++);
+              }
+              prev_e = curr_e;
+            }
+          ); 
+        };
+
+        if(w == W-1) {
+          loop();
+        }
+        else {
+          sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+        }
       }
-      // tail optimization
-      if(r <= policy.chunk_size() || w == W-1) {
-        loop(); 
-        break;
-      }
-      else {
-        sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+    }
+    // dynamic partitioner
+    else {
+      std::atomic<size_t> next(0);
+        
+      auto loop = [=, &next, &policy] () mutable {
+        policy(N, W, next, 
+          [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
+            std::advance(beg, curr_b - prev_e);
+            std::advance(d_beg, curr_b - prev_e);
+            for(size_t x = curr_b; x<curr_e; x++) {
+              *d_beg++ = c(*beg++);
+            }
+            prev_e = curr_e;
+          }
+        ); 
+      };
+
+      for(size_t w=0; w<W; w++) {
+        auto r = N - next.load(std::memory_order_relaxed);
+        // no more loop work to do - finished by previous async tasks
+        if(!r) {
+          break;
+        }
+        // tail optimization
+        if(r <= policy.chunk_size() || w == W-1) {
+          loop(); 
+          break;
+        }
+        else {
+          sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+        }
       }
     }
 
@@ -141,35 +176,71 @@ Task FlowBuilder::transform(
       W = N;
     }
 
-    std::atomic<size_t> next(0);
-    
-    auto loop = [=, &next, &policy] () mutable {
-      policy(N, W, next, 
-        [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
-          std::advance(beg1, curr_b - prev_e);
-          std::advance(beg2, curr_b - prev_e);
-          std::advance(d_beg, curr_b - prev_e);
-          for(size_t x = curr_b; x<curr_e; x++) {
-            *d_beg++ = c(*beg1++, *beg2++);
-          }
-          prev_e = curr_e;
-        }
-      ); 
-    };
+    // static partitioner
+    if constexpr(std::decay_t<P>::is_static_partitioner) {
 
-    for(size_t w=0; w<W; w++) {
-      auto r = N - next.load(std::memory_order_relaxed);
-      // no more loop work to do - finished by previous async tasks
-      if(!r) {
-        break;
+      size_t curr_b = 0;
+      size_t chunk_size;
+
+      for(size_t w=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
+      
+        chunk_size = policy.chunk_size() == 0 ? 
+                     N/W + (w < N%W) : policy.chunk_size();
+
+        auto loop = [=, &policy] () mutable {
+          policy(N, W, curr_b, chunk_size,
+            [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
+              std::advance(beg1, curr_b - prev_e);
+              std::advance(beg2, curr_b - prev_e);
+              std::advance(d_beg, curr_b - prev_e);
+              for(size_t x = curr_b; x<curr_e; x++) {
+                *d_beg++ = c(*beg1++, *beg2++);
+              }
+              prev_e = curr_e;
+            }
+          ); 
+        };
+
+        if(w == W-1) {
+          loop();
+        }
+        else {
+          sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+        }
       }
-      // tail optimization
-      if(r <= policy.chunk_size() || w == W-1) {
-        loop(); 
-        break;
-      }
-      else {
-        sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+    }
+    // dynamic partitioner
+    else {
+      std::atomic<size_t> next(0);
+      
+      auto loop = [=, &next, &policy] () mutable {
+        policy(N, W, next, 
+          [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
+            std::advance(beg1, curr_b - prev_e);
+            std::advance(beg2, curr_b - prev_e);
+            std::advance(d_beg, curr_b - prev_e);
+            for(size_t x = curr_b; x<curr_e; x++) {
+              *d_beg++ = c(*beg1++, *beg2++);
+            }
+            prev_e = curr_e;
+          }
+        ); 
+      };
+
+      for(size_t w=0; w<W; w++) {
+        auto r = N - next.load(std::memory_order_relaxed);
+        // no more loop work to do - finished by previous async tasks
+        if(!r) {
+          break;
+        }
+        // tail optimization
+        if(r <= policy.chunk_size() || w == W-1) {
+          loop(); 
+          break;
+        }
+        else {
+          sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+        }
       }
     }
 

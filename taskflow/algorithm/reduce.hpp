@@ -46,59 +46,128 @@ Task FlowBuilder::reduce(P&& policy, B beg, E end, T& init, O bop) {
     }
 
     std::mutex mutex;
-    std::atomic<size_t> next(0);
 
-    auto loop = [=, &mutex, &next, &r, &policy] () mutable {
+    // static partitioner
+    if constexpr(std::decay_t<P>::is_static_partitioner) {
       
-      // pre-reduce
-      size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
+      size_t curr_b = 0;
+      size_t chunk_size;
 
-      if(s0 >= N) {
-        return;
-      }
+      for(size_t w=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
+        
+        // we force chunk size to be at least two because the temporary
+        // variable sum need to avoid copy at the first step
+        chunk_size = std::max(
+          size_t{2},
+          policy.chunk_size() == 0 ? N/W + (w < N%W) : policy.chunk_size()
+        );
+        
+        //chunk_size = policy.chunk_size() == 0 ? 
+        //             N/W + (w < N%W) : policy.chunk_size();
 
-      std::advance(beg, s0);
+        auto loop = [=, &mutex, &r, &policy] () mutable {
 
-      if(N - s0 == 1) {
-        std::lock_guard<std::mutex> lock(mutex);
-        r = bop(r, *beg);
-        return;
-      }
+          std::advance(beg, curr_b);
 
-      auto beg1 = beg++;
-      auto beg2 = beg++;
-
-      T sum = bop(*beg1, *beg2);
-      
-      // loop reduce
-      policy(N, W, next, 
-        [&, prev_e=size_t{s0+2}](size_t curr_b, size_t curr_e) mutable {
-          std::advance(beg, curr_b - prev_e);
-          for(size_t x=curr_b; x<curr_e; x++, beg++) {
-            sum = bop(sum, *beg);
+          if(N - curr_b == 1) {
+            std::lock_guard<std::mutex> lock(mutex);
+            r = bop(r, *beg);
+            return;
           }
-          prev_e = curr_e;
-        }
-      ); 
-      
-      // final reduce
-      std::lock_guard<std::mutex> lock(mutex);
-      r = bop(r, sum);
-    };
 
-    for(size_t w=0; w<W; w++) {
-      auto r = N - next.load(std::memory_order_relaxed);
-      // no more loop work to do - finished by previous async tasks
-      if(!r) {
-        break;
+          auto beg1 = beg++;
+          auto beg2 = beg++;
+          T sum = bop(*beg1, *beg2);
+        
+          // loop reduce
+          policy(N, W, curr_b, chunk_size,
+            [&, prev_e=curr_b+2](size_t curr_b, size_t curr_e) mutable {
+
+              if(curr_b > prev_e) {
+                std::advance(beg, curr_b - prev_e);
+              }
+              else {
+                curr_b = prev_e;
+              }
+
+              for(size_t x=curr_b; x<curr_e; x++, beg++) {
+                sum = bop(sum, *beg);
+              }
+              prev_e = curr_e;
+            }
+          ); 
+          
+          // final reduce
+          std::lock_guard<std::mutex> lock(mutex);
+          r = bop(r, sum);
+
+        };
+
+        if(w == W-1) {
+          loop();
+        }
+        else {
+          sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+        }
       }
-      // tail optimization
-      if(r <= policy.chunk_size() || w == W-1) {
-        loop(); 
-        break;
-      }
-      else {
-        sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+    }
+    // dynamic partitioner
+    else {
+
+      std::atomic<size_t> next(0);
+
+      auto loop = [=, &mutex, &next, &r, &policy] () mutable {
+        
+        // pre-reduce
+        size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
+
+        if(s0 >= N) {
+          return;
+        }
+
+        std::advance(beg, s0);
+
+        if(N - s0 == 1) {
+          std::lock_guard<std::mutex> lock(mutex);
+          r = bop(r, *beg);
+          return;
+        }
+
+        auto beg1 = beg++;
+        auto beg2 = beg++;
+
+        T sum = bop(*beg1, *beg2);
+        
+        // loop reduce
+        policy(N, W, next, 
+          [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
+            std::advance(beg, curr_b - prev_e);
+            for(size_t x=curr_b; x<curr_e; x++, beg++) {
+              sum = bop(sum, *beg);
+            }
+            prev_e = curr_e;
+          }
+        ); 
+        
+        // final reduce
+        std::lock_guard<std::mutex> lock(mutex);
+        r = bop(r, sum);
+      };
+
+      for(size_t w=0; w<W; w++) {
+        auto r = N - next.load(std::memory_order_relaxed);
+        // no more loop work to do - finished by previous async tasks
+        if(!r) {
+          break;
+        }
+        // tail optimization
+        if(r <= policy.chunk_size() || w == W-1) {
+          loop(); 
+          break;
+        }
+        else {
+          sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+        }
       }
     }
 
@@ -152,59 +221,126 @@ Task FlowBuilder::transform_reduce(
     }
 
     std::mutex mutex;
-    std::atomic<size_t> next(0);
+    
+    // static partitioner
+    if constexpr(std::decay_t<P>::is_static_partitioner) {
       
-    auto loop = [=, &mutex, &next, &r, &policy] () mutable {
+      size_t curr_b = 0;
+      size_t chunk_size;
 
-      // pre-reduce
-      size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
-
-      if(s0 >= N) {
-        return;
-      }
-
-      std::advance(beg, s0);
-
-      if(N - s0 == 1) {
-        std::lock_guard<std::mutex> lock(mutex);
-        r = bop(std::move(r), uop(*beg));
-        return;
-      }
-
-      auto beg1 = beg++;
-      auto beg2 = beg++;
-
-      T sum = bop(uop(*beg1), uop(*beg2));
+      for(size_t w=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
       
-      // loop reduce
-      policy(N, W, next, 
-        [&, prev_e=size_t{s0+2}](size_t curr_b, size_t curr_e) mutable {
-          std::advance(beg, curr_b - prev_e);
-          for(size_t x=curr_b; x<curr_e; x++, beg++) {
-            sum = bop(std::move(sum), uop(*beg));
+        //chunk_size = std::max(
+        //  size_t{2},
+        //  policy.chunk_size() == 0 ? N/W + (w < N%W) : policy.chunk_size()
+        //);
+        
+        chunk_size = policy.chunk_size() == 0 ? 
+                     N/W + (w < N%W) : policy.chunk_size();
+
+        auto loop = [=, &mutex, &r, &policy] () mutable {
+
+          std::advance(beg, curr_b);
+
+          if(N - curr_b == 1) {
+            std::lock_guard<std::mutex> lock(mutex);
+            r = bop(std::move(r), uop(*beg));
+            return;
           }
-          prev_e = curr_e;
-        }
-      ); 
-      
-      // final reduce
-      std::lock_guard<std::mutex> lock(mutex);
-      r = bop(std::move(r), std::move(sum));
-    };
 
-    for(size_t w=0; w<W; w++) {
-      auto r = N - next.load(std::memory_order_relaxed);
-      // no more loop work to do - finished by previous async tasks
-      if(!r) {
-        break;
+          //auto beg1 = beg++;
+          //auto beg2 = beg++;
+          //T sum = bop(uop(*beg1), uop(*beg2));
+
+          T sum = (chunk_size == 1) ? uop(*beg++) : bop(uop(*beg++), uop(*beg++));
+        
+          // loop reduce
+          policy(N, W, curr_b, chunk_size,
+            [&, prev_e=curr_b+(chunk_size == 1 ? 1 : 2)]
+            (size_t curr_b, size_t curr_e) mutable {
+              if(curr_b > prev_e) {
+                std::advance(beg, curr_b - prev_e);
+              }
+              else {
+                curr_b = prev_e;
+              }
+              for(size_t x=curr_b; x<curr_e; x++, beg++) {
+                sum = bop(std::move(sum), uop(*beg));
+              }
+              prev_e = curr_e;
+            }
+          ); 
+          
+          // final reduce
+          std::lock_guard<std::mutex> lock(mutex);
+          r = bop(std::move(r), std::move(sum));
+
+        };
+
+        if(w == W-1) {
+          loop();
+        }
+        else {
+          sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+        }
       }
-      // tail optimization
-      if(r <= policy.chunk_size() || w == W-1) {
-        loop(); 
-        break;
-      }
-      else {
-        sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+    }
+    // dynamic partitioner
+    else {
+      std::atomic<size_t> next(0);
+        
+      auto loop = [=, &mutex, &next, &r, &policy] () mutable {
+
+        // pre-reduce
+        size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
+
+        if(s0 >= N) {
+          return;
+        }
+
+        std::advance(beg, s0);
+
+        if(N - s0 == 1) {
+          std::lock_guard<std::mutex> lock(mutex);
+          r = bop(std::move(r), uop(*beg));
+          return;
+        }
+
+        auto beg1 = beg++;
+        auto beg2 = beg++;
+
+        T sum = bop(uop(*beg1), uop(*beg2));
+        
+        // loop reduce
+        policy(N, W, next, 
+          [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
+            std::advance(beg, curr_b - prev_e);
+            for(size_t x=curr_b; x<curr_e; x++, beg++) {
+              sum = bop(std::move(sum), uop(*beg));
+            }
+            prev_e = curr_e;
+          }
+        ); 
+        
+        // final reduce
+        std::lock_guard<std::mutex> lock(mutex);
+        r = bop(std::move(r), std::move(sum));
+      };
+
+      for(size_t w=0; w<W; w++) {
+        auto r = N - next.load(std::memory_order_relaxed);
+        // no more loop work to do - finished by previous async tasks
+        if(!r) {
+          break;
+        }
+        // tail optimization
+        if(r <= policy.chunk_size() || w == W-1) {
+          loop(); 
+          break;
+        }
+        else {
+          sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+        }
       }
     }
 

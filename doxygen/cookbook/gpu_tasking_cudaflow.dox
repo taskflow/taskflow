@@ -41,9 +41,6 @@ __global__ void saxpy(int n, float a, float *x, float *y) {
 // main function begins
 int main() {
 
-  tf::Taskflow taskflow;
-  tf::Executor executor;
- 
   const unsigned N = 1<<20;                            // size of the vector
 
   std::vector<float> hx(N, 1.0f);                      // x vector at host

@@ -295,7 +295,7 @@ std::chrono::microseconds measure_time_taskflow(LevelGraph&, size_t, unsigned, u
 std::chrono::microseconds measure_time_omp(LevelGraph&, size_t, unsigned, unsigned);
 std::chrono::microseconds measure_time_tbb(LevelGraph&, size_t, unsigned, unsigned);
 std::chrono::microseconds measure_time_gold(LevelGraph&, size_t);
-std::chrono::microseconds measure_time_fastflow(LevelGraph&, size_t);
+//std::chrono::microseconds measure_time_fastflow(LevelGraph&, size_t);
 
 
 inline int work(const int seed) {

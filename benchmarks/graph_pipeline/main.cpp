@@ -62,9 +62,9 @@ int main(int argc, char* argv[]) {
       else if(model == "gold") {
         runtime += measure_time_gold(graph, pipes).count();
       }
-      else if(model == "ff") {
-        runtime += measure_time_fastflow(graph, pipes).count();
-      }
+      //else if(model == "ff") {
+      //  runtime += measure_time_fastflow(graph, pipes).count();
+      //}
       graph.clear_graph();
     }
 

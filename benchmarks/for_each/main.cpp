@@ -1,4 +1,4 @@
-#include "sort.hpp"
+#include "for_each.hpp"
 #include <CLI11.hpp>
 
 void reduce_sum(
@@ -20,7 +20,7 @@ void reduce_sum(
     for(unsigned j=0; j<num_rounds; ++j) {
 
       for(auto& d : vec) {
-        d = std::to_string(::rand());
+        d = ::rand();
       }
 
       if(model == "tf") {

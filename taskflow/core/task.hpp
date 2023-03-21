@@ -86,7 +86,8 @@ inline const char* to_string(TaskType type) {
 /**
 @brief determines if a callable is a static task
 
-A static task is a callable object constructible from std::function<void()>.
+A static task is a callable object constructible from std::function<void()>
+or std::function<void(tf::Runtime&)>.
 */
 template <typename C>
 constexpr bool is_static_task_v =
@@ -106,7 +107,8 @@ constexpr bool is_dynamic_task_v = std::is_invocable_r_v<void, C, Subflow&>;
 /**
 @brief determines if a callable is a condition task
 
-A condition task is a callable object constructible from std::function<int()>.
+A condition task is a callable object constructible from std::function<int()>
+or std::function<int(tf::Runtime&)>.
 */
 template <typename C>
 constexpr bool is_condition_task_v = std::is_invocable_r_v<int, C> ||
@@ -116,7 +118,8 @@ constexpr bool is_condition_task_v = std::is_invocable_r_v<int, C> ||
 @brief determines if a callable is a multi-condition task
 
 A multi-condition task is a callable object constructible from
-std::function<tf::SmallVector<int>()>.
+std::function<tf::SmallVector<int>()> or
+std::function<tf::SmallVector<int>(tf::Runtime&)>.
 */
 template <typename C>
 constexpr bool is_multi_condition_task_v =
