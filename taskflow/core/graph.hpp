@@ -158,6 +158,7 @@ that runs the task.
 class Runtime {
 
   friend class Executor;
+  friend class FlowBuilder;
 
   public:
 
@@ -214,6 +215,28 @@ class Runtime {
   When the taskflow finishes, we will see both @c B and @c C in the output.
   */
   void schedule(Task task);
+    
+  /**
+  @brief runs the given function asynchronously without returning any future object
+
+  This member function is more efficient than tf::Subflow::async
+  and is encouraged to use when there is no data returned.
+
+  @code{.cpp}
+  std::atomic<int> counter(0);
+  taskflow.empalce([&](tf::Runtime& rt){
+    for(int i=0; i<100; i++) {
+      rt.silent_async([&](){ counter++; });
+    }
+    rt.wait_for_all();
+    assert(counter == 100);
+  });
+  @endcode
+
+  This member function is thread-safe.
+  */
+  template <typename F, typename... ArgsT>
+  void silent_async(F&& f, ArgsT&&... args);
 
   /**
   @brief co-runs the given target and waits until it completes
@@ -250,6 +273,44 @@ class Runtime {
   void corun(T&& target);
 
   /**
+  @brief keeps running the work-stealing loop until the predicate becomes true
+  
+  @tparam P predicate type
+  @param predicate a boolean predicate to indicate when to stop the loop
+
+  The method keeps the caller worker running in the work-stealing loop
+  until the stop predicate becomes true.
+  */
+  template <typename P>
+  void corun_until(P&& predicate);
+  
+  /**
+  @brief joins all tasks that pertain to this runtime
+    
+  @code{.cpp}
+  std::atomic<size_t> counter{0};
+  taskflow.empalce([&](tf::Runtime& rt){
+    // spawn 100 async tasks and join
+    for(int i=0; i<100; i++) {
+      rt.silent_async([&](){ counter++; });
+    }
+    rt.join();
+    assert(counter == 100);
+    
+    // spawn another 100 async tasks and join
+    for(int i=0; i<100; i++) {
+      rt.silent_async([&](){ counter++; });
+    }
+    rt.join();
+    assert(counter == 200);
+  });
+  @endcode
+
+  This member function is thread-safe.
+  */
+  inline void join();
+
+  /**
   @brief acquire a reference to the underlying worker
   */
   inline Worker& worker();
@@ -261,6 +322,9 @@ class Runtime {
   Executor& _executor;
   Worker& _worker;
   Node* _parent;
+  
+  template <typename F, typename... ArgsT>
+  void _silent_async(Worker& w, const std::string& name, F&& f, ArgsT&&... args);
 };
 
 // constructor

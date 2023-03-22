@@ -28,7 +28,7 @@ Task FlowBuilder::transform(P&& policy, B first1, E last1, O d_first, C c) {
   using O_t = std::decay_t<unwrap_ref_decay_t<O>>;
 
   Task task = emplace(
-  [first1, last1, d_first, c, policy] (Subflow& sf) mutable {
+  [first1, last1, d_first, c, policy] (Runtime& sf) mutable {
 
     // fetch the stateful values
     B_t beg   = first1;
@@ -80,9 +80,10 @@ Task FlowBuilder::transform(P&& policy, B first1, E last1, O d_first, C c) {
           loop();
         }
         else {
-          sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+          sf._silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
         }
       }
+      sf.join();
     }
     // dynamic partitioner
     else {
@@ -113,12 +114,12 @@ Task FlowBuilder::transform(P&& policy, B first1, E last1, O d_first, C c) {
           break;
         }
         else {
-          sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+          sf._silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
         }
       }
+      // need to join here in case next goes out of scope
+      sf.join();
     }
-
-    sf.join();
   });
 
   return task;
@@ -151,7 +152,7 @@ Task FlowBuilder::transform(
   using O_t = std::decay_t<unwrap_ref_decay_t<O>>;
 
   Task task = emplace(
-  [first1, last1, first2, d_first, c, policy] (Subflow& sf) mutable {
+  [first1, last1, first2, d_first, c, policy] (Runtime& sf) mutable {
 
     // fetch the stateful values
     B1_t beg1 = first1;
@@ -205,9 +206,10 @@ Task FlowBuilder::transform(
           loop();
         }
         else {
-          sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+          sf._silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
         }
       }
+      sf.join();
     }
     // dynamic partitioner
     else {
@@ -239,12 +241,12 @@ Task FlowBuilder::transform(
           break;
         }
         else {
-          sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+          sf._silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
         }
       }
+      // need to join here in case next goes out of scope
+      sf.join();
     }
-
-    sf.join();
   });
 
   return task;

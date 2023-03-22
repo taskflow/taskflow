@@ -21,10 +21,11 @@ private:
 	std::chrono::high_resolution_clock::time_point startTime;
 };
 
-void benchFunc(uint64_t loopLen){
+float benchFunc(uint64_t loopLen){
 	float acc = 0;
 	for (uint64_t k = 0; k < loopLen; ++k)
 		acc += k;
+  return acc;
 }
 
 void bench(uint32_t iter){

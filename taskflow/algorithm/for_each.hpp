@@ -22,7 +22,7 @@ Task FlowBuilder::for_each(P&& policy, B beg, E end, C c) {
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  Task task = emplace([b=beg, e=end, c, policy] (Subflow& sf) mutable {
+  Task task = emplace([b=beg, e=end, c, policy] (Runtime& sf) mutable {
 
     // fetch the stateful values
     B_t beg = b;
@@ -72,9 +72,11 @@ Task FlowBuilder::for_each(P&& policy, B beg, E end, C c) {
           loop();
         }
         else {
-          sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+          sf._silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
         }
       }
+
+      sf.join();
     }
     // dynamic partitioner
     else {
@@ -104,12 +106,12 @@ Task FlowBuilder::for_each(P&& policy, B beg, E end, C c) {
           break;
         }
         else {
-          sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+          sf._silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
         }
       }
+      // need to join here in case next goes out of scope
+      sf.join();
     }
-
-    sf.join();
   });
 
   return task;
@@ -135,7 +137,7 @@ Task FlowBuilder::for_each_index(P&& policy, B beg, E end, S inc, C c){
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using S_t = std::decay_t<unwrap_ref_decay_t<S>>;
 
-  Task task = emplace([b=beg, e=end, a=inc, c, policy] (Subflow& sf) mutable {
+  Task task = emplace([b=beg, e=end, a=inc, c, policy] (Runtime& sf) mutable {
 
     // fetch the iterator values
     B_t beg = b;
@@ -183,9 +185,11 @@ Task FlowBuilder::for_each_index(P&& policy, B beg, E end, S inc, C c){
           loop();
         }
         else {
-          sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+          sf._silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
         }
       }
+
+      sf.join();
     }
     // dynamic partitioner
     else {
@@ -214,12 +218,13 @@ Task FlowBuilder::for_each_index(P&& policy, B beg, E end, S inc, C c){
           break;
         }
         else {
-          sf._named_silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+          sf._silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
         }
       }
+
+      // need to join here in case next goes out of scope
+      sf.join();
     }
-      
-    sf.join();
   });
 
   return task;
