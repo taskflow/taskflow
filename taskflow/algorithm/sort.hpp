@@ -220,7 +220,7 @@ RandItr partition_left(RandItr begin, RandItr end, Compare comp) {
 
 template<typename Iter, typename Compare>
 void parallel_pdqsort(
-  tf::Subflow& sf,
+  tf::Runtime& rt,
   Iter begin, Iter end, Compare comp,
   int bad_allowed, bool leftmost = true
 ) {
@@ -343,9 +343,9 @@ void parallel_pdqsort(
 
     // Sort the left partition first using recursion and
     // do tail recursion elimination for the right-hand partition.
-    sf.silent_async(
-      [&sf, begin, pivot_pos, comp, bad_allowed, leftmost] () mutable {
-        parallel_pdqsort(sf, begin, pivot_pos, comp, bad_allowed, leftmost);
+    rt.silent_async(
+      [&rt, begin, pivot_pos, comp, bad_allowed, leftmost] () mutable {
+        parallel_pdqsort(rt, begin, pivot_pos, comp, bad_allowed, leftmost);
       }
     );
     begin = pivot_pos + 1;
@@ -359,7 +359,7 @@ void parallel_pdqsort(
 
 // 3-way quick sort
 template <typename RandItr, typename C>
-void parallel_3wqsort(tf::Subflow& sf, RandItr first, RandItr last, C compare) {
+void parallel_3wqsort(tf::Runtime& rt, RandItr first, RandItr last, C compare) {
 
   using namespace std::string_literals;
 
@@ -402,26 +402,26 @@ void parallel_3wqsort(tf::Subflow& sf, RandItr first, RandItr last, C compare) {
   }
 
   if(l - first > 1 && is_swapped_l) {
-    //sf.emplace([&](tf::Subflow& sfl) mutable {
-    //  parallel_3wqsort(sfl, first, l-1, compare);
+    //rt.emplace([&](tf::Runtime& rtl) mutable {
+    //  parallel_3wqsort(rtl, first, l-1, compare);
     //});
-    sf.silent_async([&sf, first, l, &compare] () mutable {
-      parallel_3wqsort(sf, first, l-1, compare);
+    rt.silent_async([&rt, first, l, &compare] () mutable {
+      parallel_3wqsort(rt, first, l-1, compare);
     });
   }
 
   if(last - r > 1 && is_swapped_r) {
-    //sf.emplace([&](tf::Subflow& sfr) mutable {
-    //  parallel_3wqsort(sfr, r+1, last, compare);
+    //rt.emplace([&](tf::Runtime& rtr) mutable {
+    //  parallel_3wqsort(rtr, r+1, last, compare);
     //});
-    //sf.silent_async([&sf, r, last, &compare] () mutable {
-    //  parallel_3wqsort(sf, r+1, last, compare);
+    //rt.silent_async([&rt, r, last, &compare] () mutable {
+    //  parallel_3wqsort(rt, r+1, last, compare);
     //});
     first = r+1;
     goto sort_partition;
   }
 
-  //sf.join();
+  //rt.join();
 }
 
 // ----------------------------------------------------------------------------
@@ -435,7 +435,7 @@ Task FlowBuilder::sort(B beg, E end, C cmp) {
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
 
-  Task task = emplace([b=beg, e=end, cmp] (Subflow& sf) mutable {
+  Task task = emplace([b=beg, e=end, cmp] (Runtime& rt) mutable {
 
     // fetch the iterator values
     B_t beg = b;
@@ -445,7 +445,7 @@ Task FlowBuilder::sort(B beg, E end, C cmp) {
       return;
     }
 
-    size_t W = sf._executor.num_workers();
+    size_t W = rt._executor.num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
@@ -454,10 +454,10 @@ Task FlowBuilder::sort(B beg, E end, C cmp) {
       return;
     }
 
-    //parallel_3wqsort(sf, beg, end-1, cmp);
-    parallel_pdqsort(sf, beg, end, cmp, log2(end - beg));
+    //parallel_3wqsort(rt, beg, end-1, cmp);
+    parallel_pdqsort(rt, beg, end, cmp, log2(end - beg));
 
-    sf.join();
+    rt.join();
   });
 
   return task;

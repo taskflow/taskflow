@@ -22,21 +22,6 @@
 namespace tf {
 
 // ----------------------------------------------------------------------------
-// Class: CustomGraphBase
-// ----------------------------------------------------------------------------
-
-/**
-@private
-*/
-class CustomGraphBase {
-
-  public:
-
-  virtual void dump(std::ostream&, const void*, const std::string&) const = 0;
-  virtual ~CustomGraphBase() = default;
-};
-
-// ----------------------------------------------------------------------------
 // Class: Graph
 // ----------------------------------------------------------------------------
 
@@ -285,7 +270,7 @@ class Runtime {
   void corun_until(P&& predicate);
   
   /**
-  @brief joins all tasks that pertain to this runtime
+  @brief joins all asynchronous tasks spawned by this runtime
     
   @code{.cpp}
   std::atomic<size_t> counter{0};
@@ -305,8 +290,6 @@ class Runtime {
     assert(counter == 200);
   });
   @endcode
-
-  This member function is thread-safe.
   */
   inline void join();
 
