@@ -702,11 +702,6 @@
             <dd>array of all task types (used for iterating task types)</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename C&gt;</div>
-              bool <a href="#a11fc9c98eb3a0d3a9aa55598b1f4d614" class="m-doc">is_static_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
-            </dt>
-            <dd>determines if a callable is a static task</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename C&gt;</div>
               bool <a href="#a1eea7593f25ab348cfb656dbdf4e5b05" class="m-doc">is_dynamic_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
             </dt>
             <dd>determines if a callable is a dynamic task</dd>
@@ -720,6 +715,11 @@
               bool <a href="#a78c40dc8776735b0f2c27cd446481aff" class="m-doc">is_multi_condition_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
             </dt>
             <dd>determines if a callable is a multi-condition task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename C&gt;</div>
+              bool <a href="#a11fc9c98eb3a0d3a9aa55598b1f4d614" class="m-doc">is_static_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
+            </dt>
+            <dd>determines if a callable is a static task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename C&gt;</div>
               bool <a href="#a6720c7fd9025a4c32898264dab03b8be" class="m-doc">is_execution_policy_v</a> <span class="m-label m-flat m-primary">constexpr</span>
@@ -2596,16 +2596,6 @@
         </section>
         <section>
           <h2>Variable documentation</h2>
-          <section class="m-doc-details" id="a11fc9c98eb3a0d3a9aa55598b1f4d614"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename C&gt;
-              </div>
-              bool tf::<wbr /><a href="#a11fc9c98eb3a0d3a9aa55598b1f4d614" class="m-doc-self">is_static_task_v</a> <span class="m-label m-primary">constexpr</span>
-            </h3>
-            <p>determines if a callable is a static task</p>
-<p>A static task is a callable object constructible from std::function&lt;void()&gt;.</p>
-          </div></section>
           <section class="m-doc-details" id="a1eea7593f25ab348cfb656dbdf4e5b05"><div>
             <h3>
               <div class="m-doc-template">
@@ -2624,7 +2614,7 @@
               bool tf::<wbr /><a href="#a00ca2fc2de0e679a7d9b8039340343df" class="m-doc-self">is_condition_task_v</a> <span class="m-label m-primary">constexpr</span>
             </h3>
             <p>determines if a callable is a condition task</p>
-<p>A condition task is a callable object constructible from std::function&lt;int()&gt;.</p>
+<p>A condition task is a callable object constructible from std::function&lt;int()&gt; or std::function&lt;int(tf::Runtime&amp;)&gt;.</p>
           </div></section>
           <section class="m-doc-details" id="a78c40dc8776735b0f2c27cd446481aff"><div>
             <h3>
@@ -2634,7 +2624,17 @@
               bool tf::<wbr /><a href="#a78c40dc8776735b0f2c27cd446481aff" class="m-doc-self">is_multi_condition_task_v</a> <span class="m-label m-primary">constexpr</span>
             </h3>
             <p>determines if a callable is a multi-condition task</p>
-<p>A multi-condition task is a callable object constructible from <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function</a>&lt;tf::SmallVector&lt;int&gt;()&gt;.</p>
+<p>A multi-condition task is a callable object constructible from <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function</a>&lt;tf::SmallVector&lt;int&gt;()&gt; or <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function</a>&lt;tf::SmallVector&lt;int&gt;(tf::Runtime&amp;)&gt;.</p>
+          </div></section>
+          <section class="m-doc-details" id="a11fc9c98eb3a0d3a9aa55598b1f4d614"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename C&gt;
+              </div>
+              bool tf::<wbr /><a href="#a11fc9c98eb3a0d3a9aa55598b1f4d614" class="m-doc-self">is_static_task_v</a> <span class="m-label m-primary">constexpr</span>
+            </h3>
+            <p>determines if a callable is a static task</p>
+<p>A static task is a callable object constructible from std::function&lt;void()&gt; or std::function&lt;void(tf::Runtime&amp;)&gt;.</p>
           </div></section>
           <section class="m-doc-details" id="a6720c7fd9025a4c32898264dab03b8be"><div>
             <h3>
@@ -2691,7 +2691,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

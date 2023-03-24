@@ -84,10 +84,45 @@
             </dt>
             <dd>schedules an active task immediately to the worker&#x27;s queue</dd>
             <dt>
+              <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a1c7c0aad74f3c7f6313ee29c28a2ae7a" class="m-doc">async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f,
+              ArgsT &amp;&amp; ... args) -&gt; auto</span>
+            </dt>
+            <dd>runs the given function asynchronously</dd>
+            <dt id="a55245068aa19c90aa153102f07bf81ff">
+              <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a55245068aa19c90aa153102f07bf81ff" class="m-doc-self">named_async</a>(</span><span class="m-doc-wrap">const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp; name,
+              F&amp;&amp; f,
+              ArgsT &amp;&amp; ... args) -&gt; auto</span>
+            </dt>
+            <dd>similar to <a href="classtf_1_1Runtime.html#a1c7c0aad74f3c7f6313ee29c28a2ae7a" class="m-doc">tf::<wbr />Runtime::<wbr />async</a> but assign the task a name</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#acd67ad597432143920260e0ec971056e" class="m-doc">silent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f,
+              ArgsT &amp;&amp; ... args)</span>
+            </dt>
+            <dd>runs the given function asynchronously without returning any future object</dd>
+            <dt id="ada04719dbf38823e8ce0754bb6c08c14">
+              <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#ada04719dbf38823e8ce0754bb6c08c14" class="m-doc-self">named_silent_async</a>(</span><span class="m-doc-wrap">const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp; name,
+              F&amp;&amp; f,
+              ArgsT &amp;&amp; ... args)</span>
+            </dt>
+            <dd>similar to <a href="classtf_1_1Runtime.html#acd67ad597432143920260e0ec971056e" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a> but assigns the task a name</dd>
+            <dt>
               <div class="m-doc-template">template&lt;typename T&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#a1c772e90614302024cfa52fa86d75cac" class="m-doc">corun</a>(</span><span class="m-doc-wrap">T&amp;&amp; target)</span>
             </dt>
             <dd>co-runs the given target and waits until it completes</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename P&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a078fc4e7202426221d45e44b08ad60e6" class="m-doc">corun_until</a>(</span><span class="m-doc-wrap">P&amp;&amp; predicate)</span>
+            </dt>
+            <dd>keeps running the work-stealing loop until the predicate becomes true</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#a67a1dba6462cc63b1142bcb19ad86df5" class="m-doc">join</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd>joins all asynchronous tasks spawned by this runtime</dd>
             <dt id="ae1dbce75fd7375ae3bf38948638e34ec">
               <span class="m-doc-wrap-bumper">auto <a href="#ae1dbce75fd7375ae3bf38948638e34ec" class="m-doc-self">worker</a>(</span><span class="m-doc-wrap">) -&gt; <a href="classtf_1_1Worker.html" class="m-doc">Worker</a>&amp;</span>
             </dt>
@@ -137,6 +172,49 @@
 <span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">);</span><span class="w"></span>
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>The executor will first run the condition task <code>A</code> which returns <code>0</code> to inform the scheduler to go to the runtime task <code>B</code>. During the execution of <code>B</code>, it directly schedules task <code>C</code> without going through the normal taskflow graph scheduling process. At this moment, task <code>C</code> is active because its parent taskflow is running. When the taskflow finishes, we will see both <code>B</code> and <code>C</code> in the output.</p>
           </div></section>
+          <section class="m-doc-details" id="a1c7c0aad74f3c7f6313ee29c28a2ae7a"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename F, typename... ArgsT&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">auto tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1c7c0aad74f3c7f6313ee29c28a2ae7a" class="m-doc-self">async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f,
+              ArgsT &amp;&amp; ... args)</span></span>
+            </h3>
+            <p>runs the given function asynchronously</p>
+<p>The method creates an asynchronous task to launch the given function on the given arguments. The difference to <a href="classtf_1_1Executor.html#a1e6866c8f1b6a2e932f06d0b4eb032c0" class="m-doc">tf::<wbr />Executor::<wbr />async</a> is that the created asynchronous task pertains to the runtime. When the runtime joins, all asynchronous tasks created from the runtime are guaranteed to finish after the join returns. For example:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">empalce</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span><span class="w"></span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">fu1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">fu2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="w">  </span><span class="n">fu1</span><span class="p">.</span><span class="n">get</span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span><span class="n">fu2</span><span class="p">.</span><span class="n">get</span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// explicit join 100 asynchronous tasks</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">join</span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">102</span><span class="p">);</span><span class="w"></span>
+<span class="p">});</span><span class="w"></span></pre><p>This method is thread-safe.</p>
+          </div></section>
+          <section class="m-doc-details" id="acd67ad597432143920260e0ec971056e"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename F, typename... ArgsT&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#acd67ad597432143920260e0ec971056e" class="m-doc-self">silent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f,
+              ArgsT &amp;&amp; ... args)</span></span>
+            </h3>
+            <p>runs the given function asynchronously without returning any future object</p>
+<p>This member function is more efficient than <a href="classtf_1_1Runtime.html#a1c7c0aad74f3c7f6313ee29c28a2ae7a" class="m-doc">tf::<wbr />Runtime::<wbr />async</a> and is encouraged to use when there is no data returned.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">empalce</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span><span class="w"></span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">join</span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
+<span class="p">});</span><span class="w"></span></pre><p>This member function is thread-safe.</p>
+          </div></section>
           <section class="m-doc-details" id="a1c772e90614302024cfa52fa86d75cac"><div>
             <h3>
               <div class="m-doc-template">
@@ -161,6 +239,58 @@
 <span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun</span><span class="p">(</span><span class="n">taskflow1</span><span class="p">);</span><span class="w"></span>
 <span class="p">});</span><span class="w"></span>
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow2</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>Although <a href="classtf_1_1Runtime.html#a1c772e90614302024cfa52fa86d75cac" class="m-doc">tf::<wbr />Runtime::<wbr />corun</a> blocks until the operation completes, the caller thread (worker) is not blocked (e.g., sleeping or holding any lock). Instead, the caller thread joins the work-stealing loop of the executor and returns when all tasks in the target completes.</p>
+          </div></section>
+          <section class="m-doc-details" id="a078fc4e7202426221d45e44b08ad60e6"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename P&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a078fc4e7202426221d45e44b08ad60e6" class="m-doc-self">corun_until</a>(</span><span class="m-doc-wrap">P&amp;&amp; predicate)</span></span>
+            </h3>
+            <p>keeps running the work-stealing loop until the predicate becomes true</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">P</td>
+                  <td>predicate type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>predicate</td>
+                  <td>a boolean predicate to indicate when to stop the loop</td>
+                </tr>
+              </tbody>
+            </table>
+<p>The method keeps the caller worker running in the work-stealing loop until the stop predicate becomes true.</p>
+          </div></section>
+          <section class="m-doc-details" id="a67a1dba6462cc63b1142bcb19ad86df5"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a67a1dba6462cc63b1142bcb19ad86df5" class="m-doc-self">join</a>(</span><span class="m-doc-wrap">)</span></span>
+            </h3>
+            <p>joins all asynchronous tasks spawned by this runtime</p>
+<p>Immediately joins all asynchronous tasks (<a href="classtf_1_1Runtime.html#a1c7c0aad74f3c7f6313ee29c28a2ae7a" class="m-doc">tf::<wbr />Runtime::<wbr />async</a>, <a href="classtf_1_1Runtime.html#acd67ad597432143920260e0ec971056e" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a>). Unlike <a href="classtf_1_1Subflow.html#a59fcac1323e70d920088dd37bd0be245" class="m-doc">tf::<wbr />Subflow::<wbr />join</a>, you can join multiples times from a <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a> object.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">empalce</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span><span class="w"></span>
+<span class="w">  </span><span class="c1">// spawn 100 async tasks and join</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">join</span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// spawn another 100 async tasks and join</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">join</span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">200</span><span class="p">);</span><span class="w"></span>
+<span class="p">});</span><span class="w"></span></pre>
           </div></section>
         </section>
       </div>
@@ -207,7 +337,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2022.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

@@ -84,19 +84,6 @@ inline const char* to_string(TaskType type) {
 // ----------------------------------------------------------------------------
 
 /**
-@brief determines if a callable is a static task
-
-A static task is a callable object constructible from std::function<void()>
-or std::function<void(tf::Runtime&)>.
-*/
-template <typename C>
-constexpr bool is_static_task_v =
-  (std::is_invocable_r_v<void, C> || std::is_invocable_r_v<void, C, Runtime&>) &&
-  !std::is_invocable_r_v<int, C> && !std::is_invocable_r_v<int, C, Runtime&> &&
-  !std::is_invocable_r_v<tf::SmallVector<int>, C> &&
-  !std::is_invocable_r_v<tf::SmallVector<int>, C, Runtime&>;
-
-/**
 @brief determines if a callable is a dynamic task
 
 A dynamic task is a callable object constructible from std::function<void(Subflow&)>.
@@ -125,6 +112,18 @@ template <typename C>
 constexpr bool is_multi_condition_task_v =
   std::is_invocable_r_v<SmallVector<int>, C> ||
   std::is_invocable_r_v<SmallVector<int>, C, Runtime&>;
+
+/**
+@brief determines if a callable is a static task
+
+A static task is a callable object constructible from std::function<void()>
+or std::function<void(tf::Runtime&)>.
+*/
+template <typename C>
+constexpr bool is_static_task_v =
+  (std::is_invocable_r_v<void, C> || std::is_invocable_r_v<void, C, Runtime&>) &&
+  !is_condition_task_v<C> &&
+  !is_multi_condition_task_v<C>;
 
 // ----------------------------------------------------------------------------
 // Task

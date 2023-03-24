@@ -9,6 +9,22 @@
         <type>typename P</type>
       </param>
     </templateparamlist>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structtf_1_1ExecutionPolicy_1a4dfcdc0ded93172d298fb489fe91cdf9" prot="public" static="yes" mutable="no">
+        <type>constexpr bool</type>
+        <definition>constexpr bool tf::ExecutionPolicy&lt; P &gt;::is_static_partitioner</definition>
+        <argsstring></argsstring>
+        <name>is_static_partitioner</name>
+        <initializer>= std::is_same_v&lt;P, <ref refid="classtf_1_1StaticPartitioner" kindref="compound">StaticPartitioner</ref>&gt;</initializer>
+        <briefdescription>
+<para>queries if the execution policy is associated with a static partitioner </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="378" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="378" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
       <sectiondef kind="public-func">
       <memberdef kind="function" id="structtf_1_1ExecutionPolicy_1aa17c2be569a937c9be16f4a23ad8adb0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -48,7 +64,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="401" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="401" bodyend="402"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="388" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="388" bodyend="389"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -77,6 +93,17 @@ An execution policy defines the scheduling method for running parallel algorithm
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).run();</highlight></codeline>
 </programlisting> </para>    </detaileddescription>
     <inheritancegraph>
+      <node id="127">
+        <label>P</label>
+      </node>
+      <node id="126">
+        <label>tf::ExecutionPolicy&lt; P &gt;</label>
+        <link refid="structtf_1_1ExecutionPolicy"/>
+        <childnode refid="127" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
       <node id="129">
         <label>P</label>
       </node>
@@ -86,21 +113,11 @@ An execution policy defines the scheduling method for running parallel algorithm
         <childnode refid="129" relation="public-inheritance">
         </childnode>
       </node>
-    </inheritancegraph>
-    <collaborationgraph>
-      <node id="131">
-        <label>P</label>
-      </node>
-      <node id="130">
-        <label>tf::ExecutionPolicy&lt; P &gt;</label>
-        <link refid="structtf_1_1ExecutionPolicy"/>
-        <childnode refid="131" relation="public-inheritance">
-        </childnode>
-      </node>
     </collaborationgraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="391" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="391" bodyend="403"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="373" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="373" bodyend="391"/>
     <listofallmembers>
       <member refid="structtf_1_1ExecutionPolicy_1aa17c2be569a937c9be16f4a23ad8adb0" prot="public" virt="non-virtual"><scope>tf::ExecutionPolicy</scope><name>ExecutionPolicy</name></member>
+      <member refid="structtf_1_1ExecutionPolicy_1a4dfcdc0ded93172d298fb489fe91cdf9" prot="public" virt="non-virtual"><scope>tf::ExecutionPolicy</scope><name>is_static_partitioner</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

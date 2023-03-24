@@ -34,7 +34,6 @@
     <innerclass refid="structtf_1_1cudaStreamDeleter" prot="private">tf::cudaStreamDeleter</innerclass>
     <innerclass refid="classtf_1_1cudaTask" prot="public">tf::cudaTask</innerclass>
     <innerclass refid="classtf_1_1cudaUSMAllocator" prot="public">tf::cudaUSMAllocator</innerclass>
-    <innerclass refid="classtf_1_1CustomGraphBase" prot="private">tf::CustomGraphBase</innerclass>
     <innerclass refid="classtf_1_1DataPipe" prot="public">tf::DataPipe</innerclass>
     <innerclass refid="classtf_1_1DataPipeline" prot="public">tf::DataPipeline</innerclass>
     <innerclass refid="classtf_1_1DeferredPipeflow" prot="private">tf::DeferredPipeflow</innerclass>
@@ -339,7 +338,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="408" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="408" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="396" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="396" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="namespacetf_1a0e267ab3e1baeb1962f3b3a374de9553" prot="public" static="no">
         <type><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">cudaExecutionPolicy</ref>&lt; 512, 7 &gt;</type>
@@ -367,7 +366,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="461" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="461" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="562" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="562" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a872cf263ab68abc7c3180710fb792528" prot="private" static="no" mutable="no">
         <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 6 &gt;</type>
@@ -390,29 +389,6 @@
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="42" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="42" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="namespacetf_1a11fc9c98eb3a0d3a9aa55598b1f4d614" prot="public" static="no" mutable="no">
-        <templateparamlist>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>constexpr bool</type>
-        <definition>constexpr bool tf::is_static_task_v</definition>
-        <argsstring></argsstring>
-        <name>is_static_task_v</name>
-        <initializer>=
-  (std::is_invocable_r_v&lt;void, C&gt; || std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;) &amp;&amp;
-  !std::is_invocable_r_v&lt;int, C&gt; &amp;&amp; !std::is_invocable_r_v&lt;int, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt; &amp;&amp;
-  !std::is_invocable_r_v&lt;<ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector</ref>&lt;int&gt;, C&gt; &amp;&amp;
-  !std::is_invocable_r_v&lt;<ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector</ref>&lt;int&gt;, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;</initializer>
-        <briefdescription>
-<para>determines if a callable is a static task </para>        </briefdescription>
-        <detaileddescription>
-<para>A static task is a callable object constructible from std::function&lt;void()&gt;. </para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="92" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="92" bodyend="-1"/>
-      </memberdef>
       <memberdef kind="variable" id="namespacetf_1a1eea7593f25ab348cfb656dbdf4e5b05" prot="public" static="no" mutable="no">
         <templateparamlist>
           <param>
@@ -430,7 +406,7 @@
 <para>A dynamic task is a callable object constructible from std::function&lt;void(Subflow&amp;)&gt;. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="104" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="104" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="92" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="92" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" prot="public" static="no" mutable="no">
         <templateparamlist>
@@ -447,10 +423,10 @@
         <briefdescription>
 <para>determines if a callable is a condition task </para>        </briefdescription>
         <detaileddescription>
-<para>A condition task is a callable object constructible from std::function&lt;int()&gt;. </para>        </detaileddescription>
+<para>A condition task is a callable object constructible from std::function&lt;int()&gt; or std::function&lt;int(tf::Runtime&amp;)&gt;. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="112" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="112" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="101" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="101" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a78c40dc8776735b0f2c27cd446481aff" prot="public" static="no" mutable="no">
         <templateparamlist>
@@ -468,10 +444,32 @@
         <briefdescription>
 <para>determines if a callable is a multi-condition task </para>        </briefdescription>
         <detaileddescription>
-<para>A multi-condition task is a callable object constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;()&gt;. </para>        </detaileddescription>
+<para>A multi-condition task is a callable object constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;()&gt; or <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;(tf::Runtime&amp;)&gt;. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="122" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="122" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="112" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="112" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacetf_1a11fc9c98eb3a0d3a9aa55598b1f4d614" prot="public" static="no" mutable="no">
+        <templateparamlist>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type>constexpr bool</type>
+        <definition>constexpr bool tf::is_static_task_v</definition>
+        <argsstring></argsstring>
+        <name>is_static_task_v</name>
+        <initializer>=
+  (std::is_invocable_r_v&lt;void, C&gt; || std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;) &amp;&amp;
+  !<ref refid="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" kindref="member">is_condition_task_v</ref>&lt;C&gt; &amp;&amp;
+  !<ref refid="namespacetf_1a78c40dc8776735b0f2c27cd446481aff" kindref="member">is_multi_condition_task_v</ref>&lt;C&gt;</initializer>
+        <briefdescription>
+<para>determines if a callable is a static task </para>        </briefdescription>
+        <detaileddescription>
+<para>A static task is a callable object constructible from std::function&lt;void()&gt; or std::function&lt;void(tf::Runtime&amp;)&gt;. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="123" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="123" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a6720c7fd9025a4c32898264dab03b8be" prot="public" static="no" mutable="no">
         <templateparamlist>
@@ -490,7 +488,7 @@
 <para>A partitioner is a derived type from <ref refid="classtf_1_1PartitionerBase" kindref="compound">tf::PartitionerBase</ref>. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="416" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="416" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="404" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="404" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
@@ -613,7 +611,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="598" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="598" bodyend="601"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="600" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="600" bodyend="603"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aa3fc0699b2c2b8f2f76bb39f91be1acb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>

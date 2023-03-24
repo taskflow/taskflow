@@ -7,9 +7,11 @@ void for_each_taskflow(size_t num_threads) {
   tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
-  taskflow.for_each(vec.begin(), vec.end(), [](double& v){
-    v = std::tan(v);
-  });
+  taskflow.for_each(tf::ExecutionPolicy<tf::StaticPartitioner>(),
+    vec.begin(), vec.end(), [](double& v){
+      v = std::tan(v);
+    }
+  );
 
   executor.run(taskflow).get();
 }

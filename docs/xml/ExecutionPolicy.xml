@@ -36,8 +36,7 @@
 <sect1 id="ExecutionPolicy_1DefineAGuidedExecutionPolicy">
 <title>Define a Guided Execution Policy</title>
 <para>Guided execution policy dynamically decides the chunk size. The size of a chunk is proportional to the number of unassigned iterations divided by the number of the threads, and the size will gradually decrease to the specified chunk size (default <computeroutput>1</computeroutput>). The last chunk may be smaller than the specified chunk size. The following code creates a guided execution policy with chunk size equal to 10:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="structtf_1_1ExecutionPolicy" kindref="compound">tf::ExecutionPolicy&lt;tf::GuidedPartitioner&gt;</ref><sp/>guided_policy(10);</highlight></codeline>
-</programlisting></para><para><simplesect kind="note"><para>Guided execution policy can achieve decent performance for most parallel algorithms, especially those with irregular and unbalanced work per iteration. </para></simplesect>
-</para></sect1>
+</programlisting></para><para>Guided execution policy can achieve decent performance for most parallel algorithms, especially those with irregular and unbalanced work per iteration. </para></sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

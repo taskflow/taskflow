@@ -76,6 +76,18 @@
     <detaileddescription>
 <para>The partitioner splits iterations into many partitions each of size equal to the given chunk size. Different partitions are distributed dynamically to workers without any specific order. </para>    </detaileddescription>
     <inheritancegraph>
+      <node id="122">
+        <label>tf::DynamicPartitioner</label>
+        <link refid="classtf_1_1DynamicPartitioner"/>
+        <childnode refid="123" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="123">
+        <label>tf::PartitionerBase</label>
+        <link refid="classtf_1_1PartitionerBase"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
       <node id="124">
         <label>tf::DynamicPartitioner</label>
         <link refid="classtf_1_1DynamicPartitioner"/>
@@ -83,18 +95,6 @@
         </childnode>
       </node>
       <node id="125">
-        <label>tf::PartitionerBase</label>
-        <link refid="classtf_1_1PartitionerBase"/>
-      </node>
-    </inheritancegraph>
-    <collaborationgraph>
-      <node id="126">
-        <label>tf::DynamicPartitioner</label>
-        <link refid="classtf_1_1DynamicPartitioner"/>
-        <childnode refid="127" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="127">
         <label>tf::PartitionerBase</label>
         <link refid="classtf_1_1PartitionerBase"/>
       </node>
