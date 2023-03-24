@@ -89,7 +89,9 @@ inline const char* to_string(TaskType type) {
 A dynamic task is a callable object constructible from std::function<void(Subflow&)>.
 */
 template <typename C>
-constexpr bool is_dynamic_task_v = std::is_invocable_r_v<void, C, Subflow&>;
+constexpr bool is_dynamic_task_v = 
+  std::is_invocable_r_v<void, C, Subflow&> &&
+  !std::is_invocable_r_v<void, C, Runtime&>;
 
 /**
 @brief determines if a callable is a condition task
@@ -98,8 +100,9 @@ A condition task is a callable object constructible from std::function<int()>
 or std::function<int(tf::Runtime&)>.
 */
 template <typename C>
-constexpr bool is_condition_task_v = std::is_invocable_r_v<int, C> ||
-                                     std::is_invocable_r_v<int, C, Runtime&>;
+constexpr bool is_condition_task_v = 
+  (std::is_invocable_r_v<int, C> || std::is_invocable_r_v<int, C, Runtime&>) &&
+  !is_dynamic_task_v<C>;
 
 /**
 @brief determines if a callable is a multi-condition task
@@ -110,8 +113,9 @@ std::function<tf::SmallVector<int>(tf::Runtime&)>.
 */
 template <typename C>
 constexpr bool is_multi_condition_task_v =
-  std::is_invocable_r_v<SmallVector<int>, C> ||
-  std::is_invocable_r_v<SmallVector<int>, C, Runtime&>;
+  (std::is_invocable_r_v<SmallVector<int>, C> ||
+  std::is_invocable_r_v<SmallVector<int>, C, Runtime&>) &&
+  !is_dynamic_task_v<C>;
 
 /**
 @brief determines if a callable is a static task
@@ -123,7 +127,8 @@ template <typename C>
 constexpr bool is_static_task_v =
   (std::is_invocable_r_v<void, C> || std::is_invocable_r_v<void, C, Runtime&>) &&
   !is_condition_task_v<C> &&
-  !is_multi_condition_task_v<C>;
+  !is_multi_condition_task_v<C> &&
+  !is_dynamic_task_v<C>;
 
 // ----------------------------------------------------------------------------
 // Task

@@ -155,7 +155,9 @@ and joins their executions explicitly using tf::Runtime::join.
 @code{.cpp}
 tf::Taskflow taskflow;
 tf::Executor executor;
+
 std::atomic<int> counter{0};
+
 taskflow.emplace([&] (tf::Runtime& rt){
   for(int i=0; i<100; i++) {
     rt.silent_async([&](){ ++counter; }));
@@ -172,7 +174,9 @@ to synchronize the execution of asynchronous tasks between different runs.
 @code{.cpp}
 tf::Taskflow taskflow;
 tf::Executor executor;
+
 std::atomic<int> counter{0};
+
 taskflow.emplace([&] (tf::Runtime& rt){
   // spawn 100 asynchronous tasks and join
   for(int i=0; i<100; i++) {

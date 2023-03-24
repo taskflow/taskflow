@@ -266,7 +266,15 @@ template <typename T>
 using unique_variant_t = typename unique_variant<T>::type;
 
 
+// ----------------------------------------------------------------------------
+// check if it is default compare
+// ----------------------------------------------------------------------------
+template <typename T> struct is_std_compare : std::false_type { };
+template <typename T> struct is_std_compare<std::less<T>> : std::true_type { };
+template <typename T> struct is_std_compare<std::greater<T>> : std::true_type { };
 
+template <typename T>
+constexpr static bool is_std_compare_v = is_std_compare<T>::value;
 
 
 }  // end of namespace tf. ----------------------------------------------------

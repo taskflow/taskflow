@@ -770,6 +770,8 @@ inline void FlowBuilder::linearize(std::initializer_list<Task> keys) {
 
 @brief class to construct a subflow graph from the execution of a dynamic task
 
+tf::Subflow is a derived class from tf::Runtime with a specialized mechanism
+to manage the execution of a child graph.
 By default, a subflow automatically @em joins its parent node.
 You may explicitly join or detach a subflow by calling tf::Subflow::join
 or tf::Subflow::detach, respectively.
@@ -799,7 +801,8 @@ C.precede(D);  // D runs after C
 @endcode
 
 */
-class Subflow : public FlowBuilder {
+class Subflow : public FlowBuilder,
+                public Runtime {
 
   friend class Executor;
   friend class FlowBuilder;
@@ -869,154 +872,11 @@ class Subflow : public FlowBuilder {
     */
     bool joinable() const noexcept;
 
-    /**
-    @brief runs a given function asynchronously
-
-    @tparam F callable type
-    @tparam ArgsT parameter types
-
-    @param f callable object to call
-    @param args parameters to pass to the callable
-
-    @return a tf::Future that will holds the result of the execution
-
-    The method creates an asynchronous task to launch the given
-    function on the given arguments.
-    The difference to tf::Executor::async is that the created asynchronous task
-    pertains to the subflow.
-    When the subflow joins, all asynchronous tasks created from the subflow
-    are guaranteed to finish after the join returns.
-    For example:
-
-    @code{.cpp}
-    std::atomic<int> counter(0);
-    taskflow.empalce([&](tf::Subflow& sf){
-      for(int i=0; i<100; i++) {
-        sf.async([&](){ counter++; });
-      }
-      sf.join();
-      assert(counter == 100);
-    });
-    @endcode
-
-    This method is thread-safe and can be called by multiple tasks in the
-    subflow at the same time.
-
-    @attention
-    You cannot create asynchronous tasks from a detached subflow.
-    Doing this results in undefined behavior.
-    */
-    template <typename F, typename... ArgsT>
-    auto async(F&& f, ArgsT&&... args);
-
-    /**
-    @brief runs the given function asynchronously and assigns the task a name
-
-    @tparam F callable type
-    @tparam ArgsT parameter types
-
-    @param name name of the asynchronous task
-    @param f callable object to call
-    @param args parameters to pass to the callable
-
-    @return a tf::Future that will holds the result of the execution
-
-    The method creates a named asynchronous task to launch the given
-    function on the given arguments.
-    The difference from tf::Executor::async is that the created asynchronous task
-    pertains to the subflow.
-    When the subflow joins, all asynchronous tasks created from the subflow
-    are guaranteed to finish before the join.
-    For example:
-
-    @code{.cpp}
-    std::atomic<int> counter(0);
-    taskflow.empalce([&](tf::Subflow& sf){
-      for(int i=0; i<100; i++) {
-        sf.named_async("name", [&](){ counter++; });
-      }
-      sf.join();
-      assert(counter == 100);
-    });
-    @endcode
-
-    This method is thread-safe and can be called by multiple tasks in the
-    subflow at the same time.
-
-    @attention
-    You cannot create named asynchronous tasks from a detached subflow.
-    Doing this results in undefined behavior.
-    */
-    template <typename F, typename... ArgsT>
-    auto named_async(const std::string& name, F&& f, ArgsT&&... args);
-
-    /**
-    @brief similar to tf::Subflow::async but does not return a future object
-
-    This member function is more efficient than tf::Subflow::async
-    and is encouraged to use when there is no data returned.
-
-    @code{.cpp}
-    std::atomic<size_t> counter{0};
-    taskflow.empalce([&](tf::Subflow& sf){
-      for(int i=0; i<100; i++) {
-        sf.silent_async([&](){ counter++; });
-      }
-      sf.join();
-      assert(counter == 100);
-    });
-    @endcode
-
-    This member function is thread-safe.
-    */
-    template <typename F, typename... ArgsT>
-    void silent_async(F&& f, ArgsT&&... args);
-
-    /**
-    @brief similar to tf::Subflow::named_async but does not return a future object
-
-    This member function is more efficient than tf::Subflow::named_async
-    and is encouraged to use when there is no data returned.
-
-    @code{.cpp}
-    taskflow.empalce([&](tf::Subflow& sf){
-      for(int i=0; i<100; i++) {
-        sf.named_silent_async("name", [&](){ counter++; });
-      }
-      sf.join();
-      assert(counter == 100);
-    });
-    @endcode
-
-    This member function is thread-safe.
-    */
-    template <typename F, typename... ArgsT>
-    void named_silent_async(const std::string& name, F&& f, ArgsT&&... args);
-
-    /**
-    @brief acquires a reference to the executor that runs this subflow
-    */
-    inline Executor& executor();
-
-    /**
-    @brief acquires a reference to the worker that runs this subflow
-    */
-    inline Worker& worker();
-
   private:
 
-    Executor& _executor;
-    Worker& _worker;
-    Node* _parent;
     bool _joinable {true};
 
     Subflow(Executor&, Worker&, Node*, Graph&);
-
-    template <typename F, typename... ArgsT>
-    auto _async(Worker& w, const std::string& name, F&& f, ArgsT&&... args);
-
-    template <typename F, typename... ArgsT>
-    void _silent_async(Worker& w, const std::string& name, F&& f, ArgsT&&... args);
 };
 
 // Constructor
@@ -1024,25 +884,13 @@ inline Subflow::Subflow(
   Executor& executor, Worker& worker, Node* parent, Graph& graph
 ) :
   FlowBuilder {graph},
-  _executor   {executor},
-  _worker     {worker},
-  _parent     {parent} {
+  Runtime {executor, worker, parent} {
   // assert(_parent != nullptr);
 }
 
 // Function: joined
 inline bool Subflow::joinable() const noexcept {
   return _joinable;
-}
-
-// Function: executor
-inline Executor& Subflow::executor() {
-  return _executor;
-}
-
-// Function: worker
-inline Worker& Subflow::worker() {
-  return _worker;
 }
 
 // Procedure: reset

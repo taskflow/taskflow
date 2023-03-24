@@ -37,14 +37,15 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
 @subsection release-3-6-0_taskflow_core Taskflow Core
 
 + Added new methods to tf::Runtime
-  + tf::async
-  + tf::silent_async
-  + tf::join
+  + tf::Runtime::async
+  + tf::Runtime::silent_async
+  + tf::Runtime::join
 + Added a new tf::ExecutionPolicy interface to optimize parallel algorithms
   + tf::GuidedPartitioner
   + tf::StaticPartitioner
   + tf::DynamicPartitioner
   + tf::RandomPartitioner
++ Modified tf::Subflow to a derived class from tf::Runtime
 + Extended parallel algorithms to support different execution policies via tf::ExecutionPolicy
   + tf::Taskflow::for_each_index(P&& policy, B first, E last, S step, C callable)
   + tf::Taskflow::for_each(P&& policy, B first, E last, C callable) 
@@ -52,6 +53,7 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
   + tf::Taskflow::transform(P&& policy, B1 first1, E1 last1, B2 first2, O d_first, C c)
   + tf::Taskflow::reduce(P&& policy, B first, E last, T& result, O bop) 
   + tf::Taskflow::transform_reduce(P&& policy, B first, E last, T& result, BOP bop, UOP uop)
++ Improved the performance of tf::Taskflow::sort for POD
 
 @subsection release-3-6-0_cudaflow cudaFlow
 

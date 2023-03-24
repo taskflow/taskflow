@@ -236,11 +236,11 @@ class Runtime {
   auto async(F&& f, ArgsT&&... args);
   
   /**
-  @brief similar to tf::Runtime::async but assign the task a name
+  @brief similar to tf::Runtime::async but assigns the task a name
   */
   template <typename F, typename... ArgsT>
   auto named_async(const std::string& name, F&& f, ArgsT&&... args);
-    
+
   /**
   @brief runs the given function asynchronously without returning any future object
 
@@ -341,6 +341,9 @@ class Runtime {
     assert(counter == 200);
   });
   @endcode
+
+  @attention
+  Only the worker of this tf::Runtime can issue join.
   */
   inline void join();
 
@@ -349,7 +352,7 @@ class Runtime {
   */
   inline Worker& worker();
 
-  private:
+  protected:
 
   explicit Runtime(Executor&, Worker&, Node*);
 
