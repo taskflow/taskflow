@@ -338,11 +338,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-<<<<<<< HEAD
         <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/execution_policy.hpp" line="396" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="396" bodyend="-1"/>
-=======
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="396" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="396" bodyend="-1"/>
->>>>>>> 78da7a8a112846993a5fee5a8f9ab2ac05d942ac
       </memberdef>
       <memberdef kind="typedef" id="namespacetf_1a0e267ab3e1baeb1962f3b3a374de9553" prot="public" static="no">
         <type><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">cudaExecutionPolicy</ref>&lt; 512, 7 &gt;</type>
@@ -370,11 +366,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-<<<<<<< HEAD
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/graph.hpp" line="508" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/graph.hpp" bodystart="508" bodyend="-1"/>
-=======
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="562" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="562" bodyend="-1"/>
->>>>>>> 78da7a8a112846993a5fee5a8f9ab2ac05d942ac
+        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/graph.hpp" line="562" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/graph.hpp" bodystart="562" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a872cf263ab68abc7c3180710fb792528" prot="private" static="no" mutable="no">
         <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 6 &gt;</type>
@@ -397,32 +389,6 @@
         </inbodydescription>
         <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" line="42" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" bodystart="42" bodyend="-1"/>
       </memberdef>
-<<<<<<< HEAD
-      <memberdef kind="variable" id="namespacetf_1a11fc9c98eb3a0d3a9aa55598b1f4d614" prot="public" static="no" mutable="no">
-        <templateparamlist>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>constexpr bool</type>
-        <definition>constexpr bool tf::is_static_task_v</definition>
-        <argsstring></argsstring>
-        <name>is_static_task_v</name>
-        <initializer>=
-  (std::is_invocable_r_v&lt;void, C&gt; || std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;) &amp;&amp;
-  !std::is_invocable_r_v&lt;int, C&gt; &amp;&amp; !std::is_invocable_r_v&lt;int, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt; &amp;&amp;
-  !std::is_invocable_r_v&lt;<ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector</ref>&lt;int&gt;, C&gt; &amp;&amp;
-  !std::is_invocable_r_v&lt;<ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector</ref>&lt;int&gt;, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;</initializer>
-        <briefdescription>
-<para>determines if a callable is a static task </para>        </briefdescription>
-        <detaileddescription>
-<para>A static task is a callable object constructible from std::function&lt;void()&gt; or std::function&lt;void(tf::Runtime&amp;)&gt;. </para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" line="93" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" bodystart="93" bodyend="-1"/>
-      </memberdef>
-=======
->>>>>>> 78da7a8a112846993a5fee5a8f9ab2ac05d942ac
       <memberdef kind="variable" id="namespacetf_1a1eea7593f25ab348cfb656dbdf4e5b05" prot="public" static="no" mutable="no">
         <templateparamlist>
           <param>
@@ -440,11 +406,7 @@
 <para>A dynamic task is a callable object constructible from std::function&lt;void(Subflow&amp;)&gt;. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-<<<<<<< HEAD
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" line="105" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" bodystart="105" bodyend="-1"/>
-=======
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="92" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="92" bodyend="-1"/>
->>>>>>> 78da7a8a112846993a5fee5a8f9ab2ac05d942ac
+        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" line="92" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" bodystart="92" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" prot="public" static="no" mutable="no">
         <templateparamlist>
@@ -464,11 +426,7 @@
 <para>A condition task is a callable object constructible from std::function&lt;int()&gt; or std::function&lt;int(tf::Runtime&amp;)&gt;. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-<<<<<<< HEAD
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" line="114" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" bodystart="114" bodyend="-1"/>
-=======
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="101" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="101" bodyend="-1"/>
->>>>>>> 78da7a8a112846993a5fee5a8f9ab2ac05d942ac
+        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" line="101" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" bodystart="101" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a78c40dc8776735b0f2c27cd446481aff" prot="public" static="no" mutable="no">
         <templateparamlist>
@@ -486,16 +444,10 @@
         <briefdescription>
 <para>determines if a callable is a multi-condition task </para>        </briefdescription>
         <detaileddescription>
-<<<<<<< HEAD
 <para>A multi-condition task is a callable object constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;()&gt; or <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;(tf::Runtime&amp;)&gt;. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" line="125" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" bodystart="125" bodyend="-1"/>
-=======
-<para>A multi-condition task is a callable object constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;()&gt; or <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;(tf::Runtime&amp;)&gt;. </para>        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="112" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="112" bodyend="-1"/>
+        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" line="112" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" bodystart="112" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a11fc9c98eb3a0d3a9aa55598b1f4d614" prot="public" static="no" mutable="no">
         <templateparamlist>
@@ -517,8 +469,7 @@
 <para>A static task is a callable object constructible from std::function&lt;void()&gt; or std::function&lt;void(tf::Runtime&amp;)&gt;. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="123" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="123" bodyend="-1"/>
->>>>>>> 78da7a8a112846993a5fee5a8f9ab2ac05d942ac
+        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" line="123" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" bodystart="123" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a6720c7fd9025a4c32898264dab03b8be" prot="public" static="no" mutable="no">
         <templateparamlist>
@@ -537,11 +488,7 @@
 <para>A partitioner is a derived type from <ref refid="classtf_1_1PartitionerBase" kindref="compound">tf::PartitionerBase</ref>. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-<<<<<<< HEAD
         <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/execution_policy.hpp" line="404" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="404" bodyend="-1"/>
-=======
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="404" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="404" bodyend="-1"/>
->>>>>>> 78da7a8a112846993a5fee5a8f9ab2ac05d942ac
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
@@ -664,11 +611,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-<<<<<<< HEAD
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" line="601" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" bodystart="601" bodyend="604"/>
-=======
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="600" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="600" bodyend="603"/>
->>>>>>> 78da7a8a112846993a5fee5a8f9ab2ac05d942ac
+        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" line="600" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" bodystart="600" bodyend="603"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aa3fc0699b2c2b8f2f76bb39f91be1acb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
