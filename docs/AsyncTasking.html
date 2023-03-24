@@ -49,14 +49,14 @@
           <span class="m-breadcrumb"><a href="Cookbook.html">Cookbook</a> &raquo;</span>
           Asynchronous Tasking
         </h1>
-        <nav class="m-block m-default">
+        <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#LaunchAsynchronousTasksFromAnExecutor">Launch Asynchronous Tasks from an Executor</a></li>
             <li><a href="#LaunchAsynchronousTasksFromAnSubflow">Launch Asynchronous Tasks from a Subflow</a></li>
             <li><a href="#LaunchAsynchronousTasksFromARuntime">Launch Asynchronous Tasks from a Runtime</a></li>
           </ul>
-        </nav>
+        </div>
 <p>This chapters discusses how to launch tasks asynchronously so that you can incorporate independent, dynamic parallelism in your taskflows.</p><section id="LaunchAsynchronousTasksFromAnExecutor"><h2><a href="#LaunchAsynchronousTasksFromAnExecutor">Launch Asynchronous Tasks from an Executor</a></h2><p>Taskflow executor provides a STL-styled method, <a href="classtf_1_1Executor.html#a1e6866c8f1b6a2e932f06d0b4eb032c0" class="m-doc">tf::<wbr />Executor::<wbr />async</a>, for you to run a callable object asynchronously. The method returns a <a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> object derived from <a href="https://en.cppreference.com/w/cpp/thread/future">std::<wbr />future</a> that will eventually hold the result of that function call. The result may be optional due to <a href="classtf_1_1Future.html#a3bf5f104864ab2590b6409712d3a469b" class="m-doc">tf::<wbr />Future::<wbr />cancel</a> (see <a href="RequestCancellation.html" class="m-doc">Request Cancellation</a> for details).</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">([](){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
 <span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span><span class="w"></span>
 <span class="n">assert</span><span class="p">(</span><span class="n">future</span><span class="p">.</span><span class="n">get</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
@@ -179,8 +179,8 @@
     </div>
   </div>
 </div>
-<script src="search-v2.js"></script>
-<script src="searchdata-v2.js" async="async"></script>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

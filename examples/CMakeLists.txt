@@ -20,6 +20,7 @@ list(APPEND TF_EXAMPLES
   parallel_sort
   pipeline
   scalable_pipeline
+  scalable_pipeline_tokens
   text_pipeline
   taskflow_pipeline
   parallel_graph_pipeline

@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="Cookbook.html">Cookbook</a> &raquo;</span>
           GPU Tasking (cudaFlow)
         </h1>
-        <nav class="m-block m-default">
+        <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#GPUTaskingcudaFlowIncludeTheHeader">Include the Header</a></li>
@@ -61,7 +61,7 @@
             <li><a href="#UpdateAcudaFlow">Update a cudaFlow</a></li>
             <li><a href="#IntegrateCudaFlowIntoTaskflow">Integrate a cudaFlow into Taskflow</a></li>
           </ul>
-        </nav>
+        </div>
 <p>Modern scientific computing typically leverages GPU-powered parallel processing cores to speed up large-scale applications. This chapter discusses how to implement CPU-GPU heterogeneous tasking algorithms with <a href="https://developer.nvidia.com/cuda-zone">Nvidia CUDA</a>.</p><section id="GPUTaskingcudaFlowIncludeTheHeader"><h2><a href="#GPUTaskingcudaFlowIncludeTheHeader">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/cuda/cudaflow.hpp</code>, for creating a GPU task graph using <a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a>.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/cuda/cudaflow.hpp&gt;</span><span class="cp"></span></pre></section><section id="Create_a_cudaFlow"><h2><a href="#Create_a_cudaFlow">Create a cudaFlow</a></h2><p>Taskflow leverages <a href="https://developer.nvidia.com/blog/cuda-graphs/">CUDA Graph</a> to enable concurrent CPU-GPU tasking using a task graph model, <a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a>. A cudaFlow is a task in a taskflow and is associated with a CUDA graph to execute multiple dependent GPU operations in a single CPU call. The following example implements the canonical saxpy (A·X Plus Y) task graph using <a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a>.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/cuda/cudaflow.hpp&gt;</span><span class="cp"></span>
 
 <span class="c1">// saxpy (single-precision A·X Plus Y) kernel</span>
@@ -250,8 +250,8 @@
     </div>
   </div>
 </div>
-<script src="search-v2.js"></script>
-<script src="searchdata-v2.js" async="async"></script>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

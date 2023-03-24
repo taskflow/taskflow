@@ -406,6 +406,7 @@
   </compound>
   <compound refid="classtf_1_1DeferredPipeflow" kind="class"><name>tf::DeferredPipeflow</name>
     <member refid="classtf_1_1DeferredPipeflow_1af65467c6cb27f4ef42522207f03ab9cf" kind="friend"><name>Pipeline</name></member>
+    <member refid="classtf_1_1DeferredPipeflow_1af64ddb98831b893b2388af2a2302acea" kind="friend"><name>ScalablePipeline</name></member>
     <member refid="classtf_1_1DeferredPipeflow_1a980f82b352812b6113679176ae86cd06" kind="variable"><name>_token</name></member>
     <member refid="classtf_1_1DeferredPipeflow_1af1c058902aa45aab8441df9ae6d3a8e8" kind="variable"><name>_num_deferrals</name></member>
     <member refid="classtf_1_1DeferredPipeflow_1ae6b4ab057aefe7b7dac6925f64026c9b" kind="variable"><name>_dependents</name></member>
@@ -789,6 +790,10 @@
     <member refid="classtf_1_1ScalablePipeline_1a66182f2b381be1f628da346b2e47c2ab" kind="variable"><name>_tasks</name></member>
     <member refid="classtf_1_1ScalablePipeline_1a879b367ce62ff667d00c16c18313021c" kind="variable"><name>_pipeflows</name></member>
     <member refid="classtf_1_1ScalablePipeline_1a2d6a310af9e3a69efaea0e8002960062" kind="variable"><name>_lines</name></member>
+    <member refid="classtf_1_1ScalablePipeline_1a18a2b6051521959ee807c4f1899ec2f3" kind="variable"><name>_ready_tokens</name></member>
+    <member refid="classtf_1_1ScalablePipeline_1a93c0b0ee2cff99ff3cdaabbb81592744" kind="variable"><name>_token_dependencies</name></member>
+    <member refid="classtf_1_1ScalablePipeline_1aadda92015e28c2545014f7576078bddb" kind="variable"><name>_deferred_tokens</name></member>
+    <member refid="classtf_1_1ScalablePipeline_1aaf2267b9dbb1173f533aee5a0a250cf3" kind="variable"><name>_longest_deferral</name></member>
     <member refid="classtf_1_1ScalablePipeline_1a26f5e7e768b77f9e95100c5d6467db71" kind="function"><name>ScalablePipeline</name></member>
     <member refid="classtf_1_1ScalablePipeline_1a0f99aa297a26b97d549b62722d91e8ca" kind="function"><name>ScalablePipeline</name></member>
     <member refid="classtf_1_1ScalablePipeline_1a884818f628bbd4ab876d566b1d2d62dc" kind="function"><name>ScalablePipeline</name></member>
@@ -803,6 +808,9 @@
     <member refid="classtf_1_1ScalablePipeline_1a8165894518d642ceaa0141e2a66d365a" kind="function"><name>reset</name></member>
     <member refid="classtf_1_1ScalablePipeline_1a693a2ea53cfac9c0b220d5b3a28e6313" kind="function"><name>num_tokens</name></member>
     <member refid="classtf_1_1ScalablePipeline_1a2f45a4cb7116fbe9bbc54305f13c52a8" kind="function"><name>graph</name></member>
+    <member refid="classtf_1_1ScalablePipeline_1a3cea771eaee545d4445114c824a3f6df" kind="function"><name>_check_dependents</name></member>
+    <member refid="classtf_1_1ScalablePipeline_1a4583da84f07196c55c636e3556a1e5e3" kind="function"><name>_construct_deferred_tokens</name></member>
+    <member refid="classtf_1_1ScalablePipeline_1ad210e4d59d58c79100a830df51d55b1f" kind="function"><name>_resolve_token_dependencies</name></member>
     <member refid="classtf_1_1ScalablePipeline_1aea457827353fe9d73ae069daec7fa512" kind="function"><name>_on_pipe</name></member>
     <member refid="classtf_1_1ScalablePipeline_1ae695c9b1bbe3a5f65a5bb4217087c356" kind="function"><name>_build</name></member>
     <member refid="classtf_1_1ScalablePipeline_1a81b18c25db2cba4c530d85c5ab413a6c" kind="function"><name>_line</name></member>
@@ -1959,6 +1967,8 @@
   </compound>
   <compound refid="data__pipeline_8hpp" kind="file"><name>data_pipeline.hpp</name>
   </compound>
+  <compound refid="deferred__pipeline_8dox" kind="file"><name>deferred_pipeline.dox</name>
+  </compound>
   <compound refid="dreamplace_8dox" kind="file"><name>dreamplace.dox</name>
   </compound>
   <compound refid="dynamic__tasking_8dox" kind="file"><name>dynamic_tasking.dox</name>
@@ -2210,6 +2220,8 @@
   <compound refid="TaskParallelScalablePipeline" kind="page"><name>TaskParallelScalablePipeline</name>
   </compound>
   <compound refid="DataParallelPipeline" kind="page"><name>DataParallelPipeline</name>
+  </compound>
+  <compound refid="DeferredPipeline" kind="page"><name>DeferredPipeline</name>
   </compound>
   <compound refid="cudaFlowAlgorithms" kind="page"><name>cudaFlowAlgorithms</name>
   </compound>

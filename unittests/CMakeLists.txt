@@ -23,6 +23,7 @@ list(APPEND TF_UNITTESTS
   test_pipelines
   test_scalable_pipelines
   test_deferred_pipelines
+  test_deferred_scalable_pipelines
   test_runtimes
   test_data_pipelines
   test_workers

@@ -20,7 +20,7 @@
 <para>Constructs a <ref refid="classtf_1_1cudaStream" kindref="compound">cudaStream</ref> object which owns <computeroutput>stream</computeroutput>. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="60" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="60" bodyend="61"/>
+        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_stream.hpp" line="60" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="60" bodyend="61"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1a922ed633cf0670b22aca1430e7a810b1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -33,7 +33,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="66" column="1"/>
+        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_stream.hpp" line="66" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -46,7 +46,7 @@
 <para>Equivalently calling <computeroutput>cudaStreamSynchronize</computeroutput> to block until this stream has completed all operations. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="74" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="74" bodyend="78"/>
+        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_stream.hpp" line="74" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="74" bodyend="78"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1ad98a025ff4306aa799e664a1e2aefd2e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -66,7 +66,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="106" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="106" bodyend="111"/>
+        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_stream.hpp" line="106" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="106" bodyend="111"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1a9c48388031655cc691b267de96516a66" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>cudaGraph_t</type>
@@ -79,7 +79,7 @@
 <para>Equivalently calling <computeroutput>cudaStreamEndCapture</computeroutput> to end capture on stream and returning the captured graph. Capture must have been initiated on stream via a call to <ref refid="classtf_1_1cudaStream_1ad98a025ff4306aa799e664a1e2aefd2e" kindref="member">cudaStream::begin_capture</ref>. If capture was invalidated, due to a violation of the rules of stream capture, then a NULL graph will be returned. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="122" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="122" bodyend="129"/>
+        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_stream.hpp" line="122" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="122" bodyend="129"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1a8343c234b4a3040b59626dc70e81d767" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -96,7 +96,7 @@
 <para>Equivalently calling <computeroutput>cudaEventRecord</computeroutput> to record an event on this stream, both of which must be on the same CUDA context. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="137" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="137" bodyend="142"/>
+        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_stream.hpp" line="137" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="137" bodyend="142"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1a6bb195945f7a580bec6105691c53c699" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -113,7 +113,7 @@
 <para>Equivalently calling <computeroutput>cudaStreamWaitEvent</computeroutput> to make all future work submitted to stream wait for all work captured in event. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="150" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="150" bodyend="155"/>
+        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_stream.hpp" line="150" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="150" bodyend="155"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -142,7 +142,7 @@
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="51" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="49" bodyend="156"/>
+    <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_stream.hpp" line="51" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="49" bodyend="156"/>
     <listofallmembers>
       <member refid="classtf_1_1cudaStream_1ad98a025ff4306aa799e664a1e2aefd2e" prot="public" virt="non-virtual"><scope>tf::cudaStream</scope><name>begin_capture</name></member>
       <member refid="classtf_1_1cudaStream_1ab29390d447e334d4945caf78b24d6ca6" prot="public" virt="non-virtual"><scope>tf::cudaStream</scope><name>cudaStream</name></member>
