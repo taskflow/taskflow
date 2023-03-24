@@ -885,7 +885,7 @@ class Subflow : public FlowBuilder {
     The difference to tf::Executor::async is that the created asynchronous task
     pertains to the subflow.
     When the subflow joins, all asynchronous tasks created from the subflow
-    are guaranteed to finish before the join.
+    are guaranteed to finish after the join returns.
     For example:
 
     @code{.cpp}
@@ -933,7 +933,7 @@ class Subflow : public FlowBuilder {
     std::atomic<int> counter(0);
     taskflow.empalce([&](tf::Subflow& sf){
       for(int i=0; i<100; i++) {
-        sf.async("name", [&](){ counter++; });
+        sf.named_async("name", [&](){ counter++; });
       }
       sf.join();
       assert(counter == 100);

@@ -18,6 +18,8 @@ void for_each(int N) {
   });
 
   executor.run(taskflow).get();
+
+  taskflow.dump(std::cout);
 }
 
 // Procedure: for_each_index
@@ -32,6 +34,8 @@ void for_each_index(int N) {
   });
 
   executor.run(taskflow).get();
+  
+  taskflow.dump(std::cout);
 }
 
 // ----------------------------------------------------------------------------

@@ -551,6 +551,7 @@
     <member refid="classtf_1_1Future_1a680305aa8ac807796dabfaa82040f47d" kind="typedef"><name>handle_t</name></member>
     <member refid="classtf_1_1Future_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
     <member refid="classtf_1_1Future_1aa48945297ede77a161defc88033ce8a6" kind="friend"><name>Subflow</name></member>
+    <member refid="classtf_1_1Future_1af3d14e26ba8af9e6cc5a32aad8446de7" kind="friend"><name>Runtime</name></member>
     <member refid="classtf_1_1Future_1ac1ce88887a135442eeac7b2eb29d8e23" kind="variable"><name>ASYNC</name></member>
     <member refid="classtf_1_1Future_1abd23028958308b6895bbbefb0c93ea4a" kind="variable"><name>TASKFLOW</name></member>
     <member refid="classtf_1_1Future_1a55bc4d50e32e28e8c904a75f9e7c7e9f" kind="variable"><name>_handle</name></member>
@@ -769,13 +770,24 @@
     <member refid="classtf_1_1Runtime_1ac040d7410fbb82703ac39ac3b1baf8fd" kind="variable"><name>_parent</name></member>
     <member refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kind="function"><name>executor</name></member>
     <member refid="classtf_1_1Runtime_1aa7e72cc0f298475195b252c8f1793343" kind="function"><name>schedule</name></member>
+<<<<<<< HEAD
     <member refid="classtf_1_1Runtime_1acd67ad597432143920260e0ec971056e" kind="function"><name>silent_async</name></member>
+=======
+    <member refid="classtf_1_1Runtime_1a1c7c0aad74f3c7f6313ee29c28a2ae7a" kind="function"><name>async</name></member>
+    <member refid="classtf_1_1Runtime_1a55245068aa19c90aa153102f07bf81ff" kind="function"><name>named_async</name></member>
+    <member refid="classtf_1_1Runtime_1acd67ad597432143920260e0ec971056e" kind="function"><name>silent_async</name></member>
+    <member refid="classtf_1_1Runtime_1ada04719dbf38823e8ce0754bb6c08c14" kind="function"><name>named_silent_async</name></member>
+>>>>>>> 78da7a8a112846993a5fee5a8f9ab2ac05d942ac
     <member refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kind="function"><name>corun</name></member>
     <member refid="classtf_1_1Runtime_1a078fc4e7202426221d45e44b08ad60e6" kind="function"><name>corun_until</name></member>
     <member refid="classtf_1_1Runtime_1a67a1dba6462cc63b1142bcb19ad86df5" kind="function"><name>join</name></member>
     <member refid="classtf_1_1Runtime_1ae1dbce75fd7375ae3bf38948638e34ec" kind="function"><name>worker</name></member>
     <member refid="classtf_1_1Runtime_1abe76e072e64f5d1b1fe09c7e7c22777e" kind="function"><name>Runtime</name></member>
     <member refid="classtf_1_1Runtime_1a97dc9e11183f79161323275f4f6df3e9" kind="function"><name>_silent_async</name></member>
+<<<<<<< HEAD
+=======
+    <member refid="classtf_1_1Runtime_1a7f604741119c2ad1213de6dc511d7f42" kind="function"><name>_async</name></member>
+>>>>>>> 78da7a8a112846993a5fee5a8f9ab2ac05d942ac
   </compound>
   <compound refid="classtf_1_1ScalablePipeline" kind="class"><name>tf::ScalablePipeline</name>
     <member refid="classtf_1_1ScalablePipeline_1af06cc645f8a7c4797ca53e274b0c7547" kind="typedef"><name>pipe_t</name></member>
@@ -1779,10 +1791,10 @@
     <member refid="namespacetf_1a0e267ab3e1baeb1962f3b3a374de9553" kind="typedef"><name>cudaDefaultExecutionPolicy</name></member>
     <member refid="namespacetf_1a6e7c9182ac3f60e339a7497c16633d28" kind="variable"><name>node_pool</name></member>
     <member refid="namespacetf_1a872cf263ab68abc7c3180710fb792528" kind="variable"><name>TASK_TYPES</name></member>
-    <member refid="namespacetf_1a11fc9c98eb3a0d3a9aa55598b1f4d614" kind="variable"><name>is_static_task_v</name></member>
     <member refid="namespacetf_1a1eea7593f25ab348cfb656dbdf4e5b05" kind="variable"><name>is_dynamic_task_v</name></member>
     <member refid="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" kind="variable"><name>is_condition_task_v</name></member>
     <member refid="namespacetf_1a78c40dc8776735b0f2c27cd446481aff" kind="variable"><name>is_multi_condition_task_v</name></member>
+    <member refid="namespacetf_1a11fc9c98eb3a0d3a9aa55598b1f4d614" kind="variable"><name>is_static_task_v</name></member>
     <member refid="namespacetf_1a6720c7fd9025a4c32898264dab03b8be" kind="variable"><name>is_execution_policy_v</name></member>
     <member refid="namespacetf_1aea9fe5c87d4439816239b5af6ebeec55" kind="function"><name>capacity_in_bytes</name></member>
     <member refid="namespacetf_1a6371ab1b1b0e57db6ca95cb4456ac5d3" kind="function"><name>make_worker_interface</name></member>

@@ -86,7 +86,6 @@ The following code creates a guided execution policy with chunk size equal to 10
 tf::ExecutionPolicy<tf::GuidedPartitioner> guided_policy(10);
 @endcode
 
-@note
 Guided execution policy can achieve decent
 performance for most parallel algorithms, especially those with irregular
 and unbalanced work per iteration.

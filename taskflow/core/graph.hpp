@@ -200,11 +200,51 @@ class Runtime {
   When the taskflow finishes, we will see both @c B and @c C in the output.
   */
   void schedule(Task task);
+  
+  /**
+  @brief runs the given function asynchronously
+    
+  The method creates an asynchronous task to launch the given
+  function on the given arguments.
+  The difference to tf::Executor::async is that the created asynchronous task
+  pertains to the runtime.
+  When the runtime joins, all asynchronous tasks created from the runtime
+  are guaranteed to finish after the join returns.
+  For example:
+
+  @code{.cpp}
+  std::atomic<int> counter(0);
+  taskflow.empalce([&](tf::Runtime& rt){
+    auto fu1 = rt.async([&](){ counter++; });
+    auto fu2 = rt.async([&](){ counter++; });
+    fu1.get();
+    fu2.get();
+    assert(counter == 2);
+    
+    // explicit join 100 asynchronous tasks
+    for(int i=0; i<100; i++) {
+      rt.async([&](){ counter++; });
+    }
+    rt.join();
+    assert(counter == 102);
+  });
+  @endcode
+
+  This method is thread-safe.
+  */
+  template <typename F, typename... ArgsT>
+  auto async(F&& f, ArgsT&&... args);
+  
+  /**
+  @brief similar to tf::Runtime::async but assign the task a name
+  */
+  template <typename F, typename... ArgsT>
+  auto named_async(const std::string& name, F&& f, ArgsT&&... args);
     
   /**
   @brief runs the given function asynchronously without returning any future object
 
-  This member function is more efficient than tf::Subflow::async
+  This member function is more efficient than tf::Runtime::async
   and is encouraged to use when there is no data returned.
 
   @code{.cpp}
@@ -213,7 +253,7 @@ class Runtime {
     for(int i=0; i<100; i++) {
       rt.silent_async([&](){ counter++; });
     }
-    rt.wait_for_all();
+    rt.join();
     assert(counter == 100);
   });
   @endcode
@@ -222,6 +262,12 @@ class Runtime {
   */
   template <typename F, typename... ArgsT>
   void silent_async(F&& f, ArgsT&&... args);
+  
+  /**
+  @brief similar to tf::Runtime::silent_async but assigns the task a name
+  */
+  template <typename F, typename... ArgsT>
+  void named_silent_async(const std::string& name, F&& f, ArgsT&&... args);
 
   /**
   @brief co-runs the given target and waits until it completes
@@ -271,6 +317,11 @@ class Runtime {
   
   /**
   @brief joins all asynchronous tasks spawned by this runtime
+
+  Immediately joins all asynchronous tasks (tf::Runtime::async,
+  tf::Runtime::silent_async).
+  Unlike tf::Subflow::join, you can join multiples times from
+  a tf::Runtime object.
     
   @code{.cpp}
   std::atomic<size_t> counter{0};
@@ -308,6 +359,9 @@ class Runtime {
   
   template <typename F, typename... ArgsT>
   void _silent_async(Worker& w, const std::string& name, F&& f, ArgsT&&... args);
+  
+  template <typename F, typename... ArgsT>
+  auto _async(Worker& w, const std::string& name, F&& f, ArgsT&&... args);
 };
 
 // constructor

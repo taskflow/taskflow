@@ -36,6 +36,10 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
 
 @subsection release-3-6-0_taskflow_core Taskflow Core
 
++ Added new methods to tf::Runtime
+  + tf::async
+  + tf::silent_async
+  + tf::join
 + Added a new tf::ExecutionPolicy interface to optimize parallel algorithms
   + tf::GuidedPartitioner
   + tf::StaticPartitioner
@@ -136,6 +140,8 @@ policy.reduce_bufsz<int>(N);
 
 @section release-3-6-0_documentation Documentation
 
++ Revised @ref AsyncTasking to include asynchronous tasking from tf::Runtime
+  + @ref LaunchAsynchronousTasksFromARuntime
 + Revised %Taskflow algorithms to include execution policy
   + @ref ExecutionPolicy
   + @ref ParallelIterations
