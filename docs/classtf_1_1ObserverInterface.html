@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>ObserverInterface <span class="m-thin">class</span>
         </h1>
         <p>class to derive an executor observer</p>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
@@ -61,8 +61,8 @@
               </ul>
             </li>
           </ul>
-        </div>
-<p>The <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> class allows users to define custom methods to monitor the behaviors of an executor. This is particularly useful when you want to inspect the performance of an executor and visualize when each thread participates in the execution of a task. To prevent users from direct access to the internal threads and tasks, <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> provides immutable wrappers, <a href="classtf_1_1WorkerView.html" class="m-doc">tf::<wbr />WorkerView</a> and <a href="classtf_1_1TaskView.html" class="m-doc">tf::<wbr />TaskView</a>, over workers and tasks.</p><p>Please refer to <a href="classtf_1_1WorkerView.html" class="m-doc">tf::<wbr />WorkerView</a> and <a href="classtf_1_1TaskView.html" class="m-doc">tf::<wbr />TaskView</a> for details.</p><p>Example usage:</p><pre class="m-code"><span class="k">struct</span> <span class="nc">MyObserver</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">ObserverInterface</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+        </nav>
+<p>The <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> class allows users to define custom methods to monitor the behaviors of an executor. This is particularly useful when you want to inspect the performance of an executor and visualize when each thread participates in the execution of a task. To prevent users from direct access to the internal threads and tasks, <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> provides immutable wrappers, <a href="classtf_1_1WorkerView.html" class="m-doc">tf::<wbr />WorkerView</a> and <a href="classtf_1_1TaskView.html" class="m-doc">tf::<wbr />TaskView</a>, over workers and tasks.</p><p>Please refer to <a href="classtf_1_1WorkerView.html" class="m-doc">tf::<wbr />WorkerView</a> and <a href="classtf_1_1TaskView.html" class="m-doc">tf::<wbr />TaskView</a> for details.</p><p>Example usage:</p><pre class="m-code"><span class="k">struct</span><span class="w"> </span><span class="nc">MyObserver</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">ObserverInterface</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
 <span class="w">  </span><span class="n">MyObserver</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;constructing observer &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w"></span>
@@ -239,8 +239,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

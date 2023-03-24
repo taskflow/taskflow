@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="Algorithms.html">Taskflow Algorithms</a> &raquo;</span>
           Data-parallel Pipeline
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#ParallelDataPipelineIncludeHeaderFile">Include the Header</a></li>
@@ -57,7 +57,7 @@
             <li><a href="#UnderstandInternalDataStorage">Understand Internal Data Storage</a></li>
             <li><a href="#DataParallelPipelineLearnMore">Learn More about Taskflow Pipeline</a></li>
           </ul>
-        </div>
+        </nav>
 <p>Taskflow provides another variant, <a href="classtf_1_1DataPipeline.html" class="m-doc">tf::<wbr />DataPipeline</a>, on top of <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> (see <a href="TaskParallelPipeline.html" class="m-doc">Task-parallel Pipeline</a>) to help you implement data-parallel pipeline algorithms while leaving data management to Taskflow. We recommend you finishing reading TaskParallelPipeline first before learning <a href="classtf_1_1DataPipeline.html" class="m-doc">tf::<wbr />DataPipeline</a>.</p><section id="ParallelDataPipelineIncludeHeaderFile"><h2><a href="#ParallelDataPipelineIncludeHeaderFile">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/algorithm/data_pipeline.hpp</code>, for implementing data-parallel pipeline algorithms.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/algorithm/data_pipeline.hpp&gt;</span><span class="cp"></span></pre></section><section id="CreateADataPipelineModuleTask"><h2><a href="#CreateADataPipelineModuleTask">Create a Data Pipeline Module Task</a></h2><p>Similar to creating a task-parallel pipeline (<a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a>), there are three steps to create a data-parallel pipeline application:</p><ol><li>Define the pipeline structure (e.g., pipe type, pipe callable, stopping rule, line count)</li><li>Define the data storage and layout, if needed for the application</li><li>Define the pipeline taskflow graph using composition</li></ol><p>The following example creates a data-parallel pipeline that generates a total of five dataflow tokens from <code>void</code> to <code>int</code> at the first stage, from <code>int</code> to <code>std::string</code> at the second stage, from <code>std::string</code> to <code>float</code> at the third stage, and <code>float</code> to <code>void</code> at the final stage. Data storage between stages is automatically managed by <a href="classtf_1_1DataPipeline.html" class="m-doc">tf::<wbr />DataPipeline</a>.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span><span class="cp"></span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/algorithm/data_pipeline.hpp&gt;</span><span class="cp"></span>
 
@@ -249,8 +249,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

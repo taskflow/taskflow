@@ -1,25 +1,24 @@
 namespace tf {
 
-/** @page DeferredPipeline Deferred Pipeline
+/** @page TaskParallelPipelineWithTokenDependencies Task-parallel Pipeline with Token Dependencies
 
 @tableofcontents
 
-%Taskflow provides a new interface for you to defer the executions of data tokens
-on top of tf::Pipeline (see @ref TaskParallelPipeline)
-and tf::ScalablePipeline (see @ref TaskParallelScalablePipeline).
-With this interface,
-you can explicitly define token dependencies in both forward and backward directions
-and defer the executions of tokens until its dependencies are resolved.
+%Taskflow pipeline allows you to defer the execution of a token
+to future tokens. 
+This deferral introduces a dependency from a future token to
+the current token, particularly suitable for many video encoding applications.
 We recommend reading @ref TaskParallelPipeline first 
 before learning this interface.
 
 @section DeferredPipelineTokenDependencies Understand Token Dependencies
 
-Token dependencies establish the order in which data tokens should execute in the task-parallel pipeline.
-When token t1 completes before t2 starts, there is a dependency connecting from t1 to t2.
-We categorize token dependencies into two types: forward token dependencies (FTD),
-which refer to dependencies connecting from earlier to future tokens,
-and backward token dependencies (BTD), which refer to dependencies in the opposite direction.
+Token dependencies establish the order in which data tokens should execute 
+in a task-parallel pipeline.
+When token @c t1 completes before @c t2 starts, there is a dependency from @c t1 to @c t2.
+We categorize token dependencies into two types:
+  + forward token dependencies (FTD): dependencies from earlier to future tokens
+  + backward token dependencies (BTD): dependencies from future to earlier tokens
 The following figure illustrates a sample token dependency diagram and its token execution sequence.
 Edge pointing from token 2 to 5 is FTD, and those from 8 to 2 and 5 and 9 to 5 are BTDs.
 Based on the dependencies, the tokens execute in the corresponding execution sequence.
@@ -42,7 +41,6 @@ dependencies and get the corresponding serial execution sequence
 exemplified in @ref DeferredPipelineTokenDependencies.
 
 \image html images/deferred_three_data_structures.png width=90%
-
 
 The whole process has the following steps:
 
@@ -246,7 +244,7 @@ stage 3: input token 10
 
 @note
 You can only specify the token dependencies at the first pipe
-to get the serial execution order of tokens.
+to get the serial execution of tokens.
 
 
 @section CreateADeferredScalablePipelineModuleTask Create a Deferred Scalable Pipeline Module Task
@@ -369,17 +367,16 @@ Debrief:
 @li Line  75    resets the pipes to three pipe callables
 @li Line  77    executes the taskflow for the second run
 
-
 @section ParalleliDeferredScalablePipelineLearnMore Learn More about Taskflow Pipeline
 
 Visit the following pages to learn more about pipeline:
 
-1. @ref TaskParallelPipeline
-2. @ref DataParallelPipeline
-3. @ref TaskParallelScalablePipeline 
-4. @ref TextProcessingPipeline
-5. @ref GraphProcessingPipeline
-6. @ref TaskflowProcessingPipeline
++ @ref TaskParallelPipeline
++ @ref DataParallelPipeline
++ @ref TaskParallelScalablePipeline 
++ @ref TextProcessingPipeline
++ @ref GraphProcessingPipeline
++ @ref TaskflowProcessingPipeline
 
 */
 }

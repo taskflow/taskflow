@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="Releases.html">Release Notes</a> &raquo;</span>
           Release 2.6.0 (2020/08/25)
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#release-2-6-0_download">Download</a></li>
@@ -58,7 +58,7 @@
             <li><a href="#release-2-6-0_deprecated_items">Deprecated Items</a></li>
             <li><a href="#release-2-6-0_miscellaneous_items">Miscellaneous Items</a></li>
           </ul>
-        </div>
+        </nav>
 <p>Taskflow 2.6.0 is the 8th release in the 2.x line! This release includes several new changes such as CPU-GPU tasking, algorithm collection, enhanced web-based profiler, documentation, and unit tests.</p><p>We have a new <a href="https://taskflow.github.io/">webpage</a> for Taskflow!</p><section id="release-2-6-0_download"><h2><a href="#release-2-6-0_download">Download</a></h2><p>Taskflow 2.6.0 can be downloaded from <a href="https://github.com/taskflow/taskflow/releases/tag/v2.6.0">here</a>.</p></section><section id="release-2-6-0_new_features"><h2><a href="#release-2-6-0_new_features">New Features</a></h2><ul><li>added explicit join behavior of <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> (see <a href="DynamicTasking.html#JoinASubflow" class="m-doc">Join a Subflow</a> and <a href="fibonacci.html" class="m-doc">Fibonacci Number</a>)</li><li>added version macro (<code>TF_VERSION</code>, <code>TF_MAJOR_VERSION</code>, <code>TF_MINOR_VERSION</code>, <code>TF_PATCH_VERSION</code>) to retrieve version info programmatically (<a href="namespacetf.html#a30fa078dcf625e9eada5a95af1467588" class="m-doc">tf::<wbr />version</a>)</li><li>added <code>TF_BUILD_TESTS</code> and <code>TF_BUILD_EXAMPLES</code> (default on) to let users disable the build of tests and examples (see <a href="install.html" class="m-doc">Building and Installing</a>)</li><li>renamed tf::Taskflkow::parallel_for to <a href="classtf_1_1FlowBuilder.html#ad2299fddbd6165cc7f24f57a734d2839" class="m-doc">tf::<wbr />Taskflow::<wbr />for_each</a> to follow the STL convention</li><li>redesigned <a href="classtf_1_1FlowBuilder.html#ad2299fddbd6165cc7f24f57a734d2839" class="m-doc">tf::<wbr />Taskflow::<wbr />for_each</a> and <a href="classtf_1_1FlowBuilder.html#a977d8f7007f323eeaa81a37b4c6e6cd6" class="m-doc">tf::<wbr />Taskflow::<wbr />for_each_index</a> using OpenMP-styled scheduling algorithms; this redesign largely improved the performance of parallel-for using a single dynamic task return, but it breaks the previous API that returned a <a href="http://en.cppreference.com/w/cpp/utility/pair.html" class="m-doc-external">std::<wbr />pair</a> of tasks to synchronize on a set of static parallel-for tasks. Yet, we believe adopting this change is not difficult (see <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a>).</li><li>added multiple unit tests for <a href="classtf_1_1FlowBuilder.html#ad2299fddbd6165cc7f24f57a734d2839" class="m-doc">tf::<wbr />Taskflow::<wbr />for_each</a> and <a href="classtf_1_1FlowBuilder.html#a977d8f7007f323eeaa81a37b4c6e6cd6" class="m-doc">tf::<wbr />Taskflow::<wbr />for_each_index</a> at different partition algorithms; we have implemented our partition algorithms based on the OpenMP library implementation of LLVM and GCC.</li><li>added Mandelbrot application in the benchmark to evaluate the performance of parallel-for</li><li>redesigned <a href="classtf_1_1FlowBuilder.html#afc7bd7a737febf30d5d1d706c4b65f84" class="m-doc">tf::<wbr />Taskflow::<wbr />reduce</a> and <a href="classtf_1_1FlowBuilder.html#a4dc484abecf338574f46b38635d08e36" class="m-doc">tf::<wbr />Taskflow::<wbr />transform_reduce</a> based on the parallel architecture of <a href="classtf_1_1FlowBuilder.html#ad2299fddbd6165cc7f24f57a734d2839" class="m-doc">tf::<wbr />Taskflow::<wbr />for_each</a> (see <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a>).</li></ul></section><section id="release-2-6-0_bug_fixes"><h2><a href="#release-2-6-0_bug_fixes">Bug Fixes</a></h2><ul><li>fixed the bug of iteratively detaching a subflow from a run loop or a condition loop (see <a href="DynamicTasking.html#DetachASubflow" class="m-doc">Detach a Subflow</a>)</li><li>fixed the bug of conflict macro with boost (<a href="https://github.com/taskflow/taskflow/issues/184">#184</a>)</li></ul></section><section id="release-2-6-0_deprecated_items"><h2><a href="#release-2-6-0_deprecated_items">Deprecated Items</a></h2><ul><li>removed two methods, tf::detached and tf::joined, due to the new join/detach behavior</li></ul></section><section id="release-2-6-0_miscellaneous_items"><h2><a href="#release-2-6-0_miscellaneous_items">Miscellaneous Items</a></h2><ul><li>improved the section <a href="ExecuteTaskflow.html#ObserveThreadActivities" class="m-doc">Observe Thread Activities</a></li></ul></section>
       </div>
     </div>
@@ -98,8 +98,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

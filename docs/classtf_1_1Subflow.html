@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>Subflow <span class="m-thin">class</span>
         </h1>
         <p>class to construct a subflow graph from the execution of a dynamic task</p>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
@@ -60,8 +60,8 @@
               </ul>
             </li>
           </ul>
-        </div>
-<p>By default, a subflow automatically <em>joins</em> its parent node. You may explicitly join or detach a subflow by calling <a href="classtf_1_1Subflow.html#a59fcac1323e70d920088dd37bd0be245" class="m-doc">tf::<wbr />Subflow::<wbr />join</a> or <a href="classtf_1_1Subflow.html#acfdedc7e9676126e9a38ecf7b5a37864" class="m-doc">tf::<wbr />Subflow::<wbr />detach</a>, respectively. The following example creates a taskflow graph that spawns a subflow from the execution of task <code>B</code>, and the subflow contains three tasks, <code>B1</code>, <code>B2</code>, and <code>B3</code>, where <code>B3</code> runs after <code>B1</code> and <code>B2</code>.</p><pre class="m-code"><span class="c1">// create three static tasks</span>
+        </nav>
+<p><a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> is a derived class from <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a> with a specialized mechanism to manage the execution of a child graph. By default, a subflow automatically <em>joins</em> its parent node. You may explicitly join or detach a subflow by calling <a href="classtf_1_1Subflow.html#a59fcac1323e70d920088dd37bd0be245" class="m-doc">tf::<wbr />Subflow::<wbr />join</a> or <a href="classtf_1_1Subflow.html#acfdedc7e9676126e9a38ecf7b5a37864" class="m-doc">tf::<wbr />Subflow::<wbr />detach</a>, respectively. The following example creates a taskflow graph that spawns a subflow from the execution of task <code>B</code>, and the subflow contains three tasks, <code>B1</code>, <code>B2</code>, and <code>B3</code>, where <code>B3</code> runs after <code>B1</code> and <code>B2</code>.</p><pre class="m-code"><span class="c1">// create three static tasks</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span><span class="w"></span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;C&quot;</span><span class="p">);</span><span class="w"></span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;D&quot;</span><span class="p">);</span><span class="w"></span>
@@ -86,6 +86,10 @@
               class <a href="classtf_1_1FlowBuilder.html" class="m-doc">FlowBuilder</a>
             </dt>
             <dd>class to build a task dependency graph</dd>
+            <dt>
+              class <a href="classtf_1_1Runtime.html" class="m-doc">Runtime</a>
+            </dt>
+            <dd>class to include a runtime object in a task</dd>
           </dl>
         </section>
         <section id="pub-methods">
@@ -107,40 +111,6 @@
               <span class="m-doc-wrap-bumper">auto <a href="#ac3805e898b6a55b6e5173c74c5555e57" class="m-doc">joinable</a>(</span><span class="m-doc-wrap">) const -&gt; bool <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
             <dd>queries if the subflow is joinable</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a70681068507b224a96df69cc1f3168f1" class="m-doc">async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f,
-              ArgsT &amp;&amp; ... args) -&gt; auto</span>
-            </dt>
-            <dd>runs a given function asynchronously</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#ae528c2de98ec89afc50b8815c0306b5e" class="m-doc">named_async</a>(</span><span class="m-doc-wrap">const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp; name,
-              F&amp;&amp; f,
-              ArgsT &amp;&amp; ... args) -&gt; auto</span>
-            </dt>
-            <dd>runs the given function asynchronously and assigns the task a name</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#af9671aa8548882b3425e5a1f10f7a868" class="m-doc">silent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f,
-              ArgsT &amp;&amp; ... args)</span>
-            </dt>
-            <dd>similar to <a href="classtf_1_1Subflow.html#a70681068507b224a96df69cc1f3168f1" class="m-doc">tf::<wbr />Subflow::<wbr />async</a> but does not return a future object</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#a3290b8f729c4511f2023199e4c067951" class="m-doc">named_silent_async</a>(</span><span class="m-doc-wrap">const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp; name,
-              F&amp;&amp; f,
-              ArgsT &amp;&amp; ... args)</span>
-            </dt>
-            <dd>similar to <a href="classtf_1_1Subflow.html#ae528c2de98ec89afc50b8815c0306b5e" class="m-doc">tf::<wbr />Subflow::<wbr />named_async</a> but does not return a future object</dd>
-            <dt id="ac513ebf8a73ef55f0ad480be869bd796">
-              <span class="m-doc-wrap-bumper">auto <a href="#ac513ebf8a73ef55f0ad480be869bd796" class="m-doc-self">executor</a>(</span><span class="m-doc-wrap">) -&gt; <a href="classtf_1_1Executor.html" class="m-doc">Executor</a>&amp;</span>
-            </dt>
-            <dd>acquires a reference to the executor that runs this subflow</dd>
-            <dt id="a53ba851cf62e0d5f2cd04989c9b0d3aa">
-              <span class="m-doc-wrap-bumper">auto <a href="#a53ba851cf62e0d5f2cd04989c9b0d3aa" class="m-doc-self">worker</a>(</span><span class="m-doc-wrap">) -&gt; <a href="classtf_1_1Worker.html" class="m-doc">Worker</a>&amp;</span>
-            </dt>
-            <dd>acquires a reference to the worker that runs this subflow</dd>
           </dl>
         </section>
         <section>
@@ -195,151 +165,6 @@
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">joinable</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">  </span><span class="c1">// false</span>
 <span class="p">});</span><span class="w"></span></pre>
           </div></section>
-          <section class="m-doc-details" id="a70681068507b224a96df69cc1f3168f1"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename F, typename... ArgsT&gt;
-              </div>
-              <span class="m-doc-wrap-bumper">auto tf::<wbr />Subflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a70681068507b224a96df69cc1f3168f1" class="m-doc-self">async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f,
-              ArgsT &amp;&amp; ... args)</span></span>
-            </h3>
-            <p>runs a given function asynchronously</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">F</td>
-                  <td>callable type</td>
-                </tr>
-                <tr>
-                  <td>ArgsT</td>
-                  <td>parameter types</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>f</td>
-                  <td>callable object to call</td>
-                </tr>
-                <tr>
-                  <td>args</td>
-                  <td>parameters to pass to the callable</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> that will holds the result of the execution</td>
-                </tr>
-              </tfoot>
-            </table>
-<p>The method creates an asynchronous task to launch the given function on the given arguments. The difference to <a href="classtf_1_1Executor.html#a1e6866c8f1b6a2e932f06d0b4eb032c0" class="m-doc">tf::<wbr />Executor::<wbr />async</a> is that the created asynchronous task pertains to the subflow. When the subflow joins, all asynchronous tasks created from the subflow are guaranteed to finish after the join returns. For example:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
-<span class="n">taskflow</span><span class="p">.</span><span class="n">empalce</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span><span class="w"></span>
-<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">sf</span><span class="p">.</span><span class="n">async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">join</span><span class="p">();</span><span class="w"></span>
-<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre><p>This method is thread-safe and can be called by multiple tasks in the subflow at the same time.</p><aside class="m-note m-warning"><h4>Attention</h4><p>You cannot create asynchronous tasks from a detached subflow. Doing this results in undefined behavior.</p></aside>
-          </div></section>
-          <section class="m-doc-details" id="ae528c2de98ec89afc50b8815c0306b5e"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename F, typename... ArgsT&gt;
-              </div>
-              <span class="m-doc-wrap-bumper">auto tf::<wbr />Subflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ae528c2de98ec89afc50b8815c0306b5e" class="m-doc-self">named_async</a>(</span><span class="m-doc-wrap">const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp; name,
-              F&amp;&amp; f,
-              ArgsT &amp;&amp; ... args)</span></span>
-            </h3>
-            <p>runs the given function asynchronously and assigns the task a name</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">F</td>
-                  <td>callable type</td>
-                </tr>
-                <tr>
-                  <td>ArgsT</td>
-                  <td>parameter types</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>name</td>
-                  <td>name of the asynchronous task</td>
-                </tr>
-                <tr>
-                  <td>f</td>
-                  <td>callable object to call</td>
-                </tr>
-                <tr>
-                  <td>args</td>
-                  <td>parameters to pass to the callable</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>a <a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> that will holds the result of the execution</td>
-                </tr>
-              </tfoot>
-            </table>
-<p>The method creates a named asynchronous task to launch the given function on the given arguments. The difference from <a href="classtf_1_1Executor.html#a1e6866c8f1b6a2e932f06d0b4eb032c0" class="m-doc">tf::<wbr />Executor::<wbr />async</a> is that the created asynchronous task pertains to the subflow. When the subflow joins, all asynchronous tasks created from the subflow are guaranteed to finish before the join. For example:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
-<span class="n">taskflow</span><span class="p">.</span><span class="n">empalce</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span><span class="w"></span>
-<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">sf</span><span class="p">.</span><span class="n">named_async</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">join</span><span class="p">();</span><span class="w"></span>
-<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre><p>This method is thread-safe and can be called by multiple tasks in the subflow at the same time.</p><aside class="m-note m-warning"><h4>Attention</h4><p>You cannot create named asynchronous tasks from a detached subflow. Doing this results in undefined behavior.</p></aside>
-          </div></section>
-          <section class="m-doc-details" id="af9671aa8548882b3425e5a1f10f7a868"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename F, typename... ArgsT&gt;
-              </div>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />Subflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af9671aa8548882b3425e5a1f10f7a868" class="m-doc-self">silent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f,
-              ArgsT &amp;&amp; ... args)</span></span>
-            </h3>
-            <p>similar to <a href="classtf_1_1Subflow.html#a70681068507b224a96df69cc1f3168f1" class="m-doc">tf::<wbr />Subflow::<wbr />async</a> but does not return a future object</p>
-<p>This member function is more efficient than <a href="classtf_1_1Subflow.html#a70681068507b224a96df69cc1f3168f1" class="m-doc">tf::<wbr />Subflow::<wbr />async</a> and is encouraged to use when there is no data returned.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span><span class="w"></span>
-<span class="n">taskflow</span><span class="p">.</span><span class="n">empalce</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span><span class="w"></span>
-<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">sf</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">join</span><span class="p">();</span><span class="w"></span>
-<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre><p>This member function is thread-safe.</p>
-          </div></section>
-          <section class="m-doc-details" id="a3290b8f729c4511f2023199e4c067951"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename F, typename... ArgsT&gt;
-              </div>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />Subflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3290b8f729c4511f2023199e4c067951" class="m-doc-self">named_silent_async</a>(</span><span class="m-doc-wrap">const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp; name,
-              F&amp;&amp; f,
-              ArgsT &amp;&amp; ... args)</span></span>
-            </h3>
-            <p>similar to <a href="classtf_1_1Subflow.html#ae528c2de98ec89afc50b8815c0306b5e" class="m-doc">tf::<wbr />Subflow::<wbr />named_async</a> but does not return a future object</p>
-<p>This member function is more efficient than <a href="classtf_1_1Subflow.html#ae528c2de98ec89afc50b8815c0306b5e" class="m-doc">tf::<wbr />Subflow::<wbr />named_async</a> and is encouraged to use when there is no data returned.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">empalce</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span><span class="w"></span>
-<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">sf</span><span class="p">.</span><span class="n">named_silent_async</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">join</span><span class="p">();</span><span class="w"></span>
-<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre><p>This member function is thread-safe.</p>
-          </div></section>
         </section>
       </div>
     </div>
@@ -379,8 +204,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

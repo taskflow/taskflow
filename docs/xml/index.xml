@@ -432,9 +432,9 @@
     <member refid="classtf_1_1DynamicPartitioner_1afec1c557cfa1b2b5b9c5c47f40bc1697" kind="function"><name>DynamicPartitioner</name></member>
     <member refid="classtf_1_1DynamicPartitioner_1ae63dab160448f6b9db3516f70650e5f6" kind="function"><name>operator()</name></member>
   </compound>
-  <compound refid="structtf_1_1ExecutionPolicy" kind="struct"><name>tf::ExecutionPolicy</name>
-    <member refid="structtf_1_1ExecutionPolicy_1a4dfcdc0ded93172d298fb489fe91cdf9" kind="variable"><name>is_static_partitioner</name></member>
-    <member refid="structtf_1_1ExecutionPolicy_1aa17c2be569a937c9be16f4a23ad8adb0" kind="function"><name>ExecutionPolicy</name></member>
+  <compound refid="classtf_1_1ExecutionPolicy" kind="class"><name>tf::ExecutionPolicy</name>
+    <member refid="classtf_1_1ExecutionPolicy_1a4dfcdc0ded93172d298fb489fe91cdf9" kind="variable"><name>is_static_partitioner</name></member>
+    <member refid="classtf_1_1ExecutionPolicy_1aa17c2be569a937c9be16f4a23ad8adb0" kind="function"><name>ExecutionPolicy</name></member>
   </compound>
   <compound refid="classtf_1_1Executor" kind="class"><name>tf::Executor</name>
     <member refid="classtf_1_1Executor_1a61184f9bd9c801d0a5eccecfdbddc641" kind="friend"><name>FlowBuilder</name></member>
@@ -1003,23 +1003,12 @@
     <member refid="classtf_1_1Subflow_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
     <member refid="classtf_1_1Subflow_1a61184f9bd9c801d0a5eccecfdbddc641" kind="friend"><name>FlowBuilder</name></member>
     <member refid="classtf_1_1Subflow_1af3d14e26ba8af9e6cc5a32aad8446de7" kind="friend"><name>Runtime</name></member>
-    <member refid="classtf_1_1Subflow_1a31a68355e05081fed16fff307b6b4e33" kind="variable"><name>_executor</name></member>
-    <member refid="classtf_1_1Subflow_1ac04dc0e5d4001c6d3f73ea867387b186" kind="variable"><name>_worker</name></member>
-    <member refid="classtf_1_1Subflow_1a350edd619ad0a3f28c8373b4ee937ebe" kind="variable"><name>_parent</name></member>
     <member refid="classtf_1_1Subflow_1ac8db48417a0777f3c00257689dc63695" kind="variable"><name>_joinable</name></member>
     <member refid="classtf_1_1Subflow_1a59fcac1323e70d920088dd37bd0be245" kind="function"><name>join</name></member>
     <member refid="classtf_1_1Subflow_1acfdedc7e9676126e9a38ecf7b5a37864" kind="function"><name>detach</name></member>
     <member refid="classtf_1_1Subflow_1a540be503df4621be3e8342b99b1729a0" kind="function"><name>reset</name></member>
     <member refid="classtf_1_1Subflow_1ac3805e898b6a55b6e5173c74c5555e57" kind="function"><name>joinable</name></member>
-    <member refid="classtf_1_1Subflow_1a70681068507b224a96df69cc1f3168f1" kind="function"><name>async</name></member>
-    <member refid="classtf_1_1Subflow_1ae528c2de98ec89afc50b8815c0306b5e" kind="function"><name>named_async</name></member>
-    <member refid="classtf_1_1Subflow_1af9671aa8548882b3425e5a1f10f7a868" kind="function"><name>silent_async</name></member>
-    <member refid="classtf_1_1Subflow_1a3290b8f729c4511f2023199e4c067951" kind="function"><name>named_silent_async</name></member>
-    <member refid="classtf_1_1Subflow_1ac513ebf8a73ef55f0ad480be869bd796" kind="function"><name>executor</name></member>
-    <member refid="classtf_1_1Subflow_1a53ba851cf62e0d5f2cd04989c9b0d3aa" kind="function"><name>worker</name></member>
     <member refid="classtf_1_1Subflow_1a84f5f8f179fd27d44ff6a02c7c482659" kind="function"><name>Subflow</name></member>
-    <member refid="classtf_1_1Subflow_1a5707fb005258f6e059b5e46561df42f1" kind="function"><name>_async</name></member>
-    <member refid="classtf_1_1Subflow_1a3ed8e1da0d58fb6b7f2108c286ba439a" kind="function"><name>_silent_async</name></member>
   </compound>
   <compound refid="structtf_1_1TFProfObserver_1_1Summary" kind="struct"><name>tf::TFProfObserver::Summary</name>
     <member refid="structtf_1_1TFProfObserver_1_1Summary_1ab19b2d75d9114064ea88c24b991e3b45" kind="variable"><name>tsum</name></member>
@@ -1967,8 +1956,6 @@
   </compound>
   <compound refid="data__pipeline_8hpp" kind="file"><name>data_pipeline.hpp</name>
   </compound>
-  <compound refid="deferred__pipeline_8dox" kind="file"><name>deferred_pipeline.dox</name>
-  </compound>
   <compound refid="dreamplace_8dox" kind="file"><name>dreamplace.dox</name>
   </compound>
   <compound refid="dynamic__tasking_8dox" kind="file"><name>dynamic_tasking.dox</name>
@@ -2034,6 +2021,8 @@
   <compound refid="pipeline_8dox" kind="file"><name>pipeline.dox</name>
   </compound>
   <compound refid="pipeline_8hpp" kind="file"><name>pipeline.hpp</name>
+  </compound>
+  <compound refid="pipeline__with__token__dependencies_8dox" kind="file"><name>pipeline_with_token_dependencies.dox</name>
   </compound>
   <compound refid="prioritized__tasking_8dox" kind="file"><name>prioritized_tasking.dox</name>
   </compound>
@@ -2221,7 +2210,7 @@
   </compound>
   <compound refid="DataParallelPipeline" kind="page"><name>DataParallelPipeline</name>
   </compound>
-  <compound refid="DeferredPipeline" kind="page"><name>DeferredPipeline</name>
+  <compound refid="TaskParallelPipelineWithTokenDependencies" kind="page"><name>TaskParallelPipelineWithTokenDependencies</name>
   </compound>
   <compound refid="cudaFlowAlgorithms" kind="page"><name>cudaFlowAlgorithms</name>
   </compound>

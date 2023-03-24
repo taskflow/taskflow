@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="cudaFlowAlgorithms.html">cudaFlow Algorithms</a> &raquo;</span>
           Parallel Transforms
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#CUDAParallelTransformsIncludeTheHeader">Include the Header</a></li>
@@ -57,7 +57,7 @@
             <li><a href="#cudaFlowTransformTwoRangesOfItems">Transform Two Ranges of Items</a></li>
             <li><a href="#ParallelTransformCUDAMiscellaneousItems">Miscellaneous Items</a></li>
           </ul>
-        </div>
+        </nav>
 <p><a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a> provides template methods for transforming ranges of items to different outputs.</p><section id="CUDAParallelTransformsIncludeTheHeader"><h2><a href="#CUDAParallelTransformsIncludeTheHeader">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/cuda/algorithm/transform.hpp</code>, for creating a parallel-transform task.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/cuda/algorithm/transform.hpp&gt;</span><span class="cp"></span></pre></section><section id="cudaFlowTransformARangeOfItems"><h2><a href="#cudaFlowTransformARangeOfItems">Transform a Range of Items</a></h2><p>Iterator-based parallel-transform applies the given transform function to a range of items and store the result in another range specified by two iterators, <code>first</code> and <code>last</code>. The task created by <a href="classtf_1_1cudaFlow.html#af89a9bda182272462a0eda2581536cd8" class="m-doc">tf::<wbr />cudaFlow::<wbr />transform(I first, I last, O output, C op)</a> represents a parallel execution for the following loop:</p><pre class="m-code"><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="o">*</span><span class="n">output</span><span class="o">++</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">op</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>The following example creates a transform kernel that transforms an input range of <code>N</code> items to an output range by multiplying each item by 10.</p><pre class="m-code"><span class="c1">// output[i] = input[i] * 10</span>
@@ -107,8 +107,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

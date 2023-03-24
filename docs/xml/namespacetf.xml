@@ -38,7 +38,7 @@
     <innerclass refid="classtf_1_1DataPipeline" prot="public">tf::DataPipeline</innerclass>
     <innerclass refid="classtf_1_1DeferredPipeflow" prot="private">tf::DeferredPipeflow</innerclass>
     <innerclass refid="classtf_1_1DynamicPartitioner" prot="public">tf::DynamicPartitioner</innerclass>
-    <innerclass refid="structtf_1_1ExecutionPolicy" prot="public">tf::ExecutionPolicy</innerclass>
+    <innerclass refid="classtf_1_1ExecutionPolicy" prot="public">tf::ExecutionPolicy</innerclass>
     <innerclass refid="classtf_1_1Executor" prot="public">tf::Executor</innerclass>
     <innerclass refid="classtf_1_1FlowBuilder" prot="public">tf::FlowBuilder</innerclass>
     <innerclass refid="classtf_1_1Future" prot="public">tf::Future</innerclass>
@@ -121,7 +121,7 @@
 <para>A priority is an enumerated value of type <computeroutput>unsigned</computeroutput>. Currently, Taskflow defines three priority levels, <computeroutput>HIGH</computeroutput>, <computeroutput>NORMAL</computeroutput>, and <computeroutput>LOW</computeroutput>, starting from 0, 1, to 2. That is, the lower the value, the higher the priority. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/tsq.hpp" line="29" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/tsq.hpp" bodystart="29" bodyend="38"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="29" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="29" bodyend="38"/>
       </memberdef>
       <memberdef kind="enum" id="namespacetf_1a1355048578785a80414707ff308b395a" prot="public" static="no" strong="yes">
         <type>int</type>
@@ -182,7 +182,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" line="21" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" bodystart="21" bodyend="36"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="21" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="21" bodyend="36"/>
       </memberdef>
       <memberdef kind="enum" id="namespacetf_1a192f7cb0fab2eb6f1c84f6046706435d" prot="public" static="no" strong="yes">
         <type>int</type>
@@ -215,7 +215,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/observer.hpp" line="1026" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/observer.hpp" bodystart="1026" bodyend="1030"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="1026" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="1026" bodyend="1030"/>
       </memberdef>
       <memberdef kind="enum" id="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" prot="public" static="no" strong="yes">
         <type>int</type>
@@ -242,7 +242,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/pipeline.hpp" line="196" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="196" bodyend="201"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="197" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="197" bodyend="202"/>
       </memberdef>
       <memberdef kind="enum" id="namespacetf_1afebc56ae6d5765010d0dd13a5f04132e" prot="public" static="no" strong="yes">
         <type>int</type>
@@ -310,12 +310,12 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_task.hpp" line="21" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_task.hpp" bodystart="21" bodyend="38"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" line="21" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" bodystart="21" bodyend="38"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="typedef">
       <memberdef kind="typedef" id="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" prot="public" static="no">
-        <type><ref refid="cpp/chrono/time_point" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::time_point</ref>&lt; <ref refid="cpp/chrono/steady_clock" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::steady_clock</ref> &gt;</type>
+        <type><ref refid="cpp/chrono/time_point" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::time_point</ref>&lt; <ref refid="cpp/chrono/steady_clock" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::steady_clock</ref> &gt;</type>
         <definition>using tf::observer_stamp_t = typedef std::chrono::time_point&lt;std::chrono::steady_clock&gt;</definition>
         <argsstring></argsstring>
         <name>observer_stamp_t</name>
@@ -325,10 +325,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/observer.hpp" line="20" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/observer.hpp" bodystart="20" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="20" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="20" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="namespacetf_1a04cb73dba3a2101ed735b8e7122aca60" prot="public" static="no">
-        <type><ref refid="structtf_1_1ExecutionPolicy" kindref="compound">ExecutionPolicy</ref>&lt; <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">GuidedPartitioner</ref> &gt;</type>
+        <type><ref refid="classtf_1_1ExecutionPolicy" kindref="compound">ExecutionPolicy</ref>&lt; <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">GuidedPartitioner</ref> &gt;</type>
         <definition>using tf::DefaultExecutionPolicy = typedef ExecutionPolicy&lt;GuidedPartitioner&gt;</definition>
         <argsstring></argsstring>
         <name>DefaultExecutionPolicy</name>
@@ -338,7 +338,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/execution_policy.hpp" line="396" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="396" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="398" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="398" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="namespacetf_1a0e267ab3e1baeb1962f3b3a374de9553" prot="public" static="no">
         <type><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">cudaExecutionPolicy</ref>&lt; 512, 7 &gt;</type>
@@ -351,7 +351,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="150" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="150" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" line="150" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_execution_policy.hpp" bodystart="150" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="var">
@@ -366,10 +366,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/graph.hpp" line="562" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/graph.hpp" bodystart="562" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="585" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="585" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a872cf263ab68abc7c3180710fb792528" prot="private" static="no" mutable="no">
-        <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 6 &gt;</type>
+        <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 6 &gt;</type>
         <definition>constexpr std::array&lt;TaskType, 6&gt; tf::TASK_TYPES</definition>
         <argsstring></argsstring>
         <name>TASK_TYPES</name>
@@ -387,7 +387,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" line="42" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" bodystart="42" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="42" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="42" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a1eea7593f25ab348cfb656dbdf4e5b05" prot="public" static="no" mutable="no">
         <templateparamlist>
@@ -399,14 +399,16 @@
         <definition>constexpr bool tf::is_dynamic_task_v</definition>
         <argsstring></argsstring>
         <name>is_dynamic_task_v</name>
-        <initializer>= std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1Subflow" kindref="compound">Subflow</ref>&amp;&gt;</initializer>
+        <initializer>= 
+  std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1Subflow" kindref="compound">Subflow</ref>&amp;&gt; &amp;&amp;
+  !std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;</initializer>
         <briefdescription>
 <para>determines if a callable is a dynamic task </para>        </briefdescription>
         <detaileddescription>
 <para>A dynamic task is a callable object constructible from std::function&lt;void(Subflow&amp;)&gt;. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" line="92" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" bodystart="92" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="92" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="92" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" prot="public" static="no" mutable="no">
         <templateparamlist>
@@ -418,15 +420,16 @@
         <definition>constexpr bool tf::is_condition_task_v</definition>
         <argsstring></argsstring>
         <name>is_condition_task_v</name>
-        <initializer>= std::is_invocable_r_v&lt;int, C&gt; ||
-                                     std::is_invocable_r_v&lt;int, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;</initializer>
+        <initializer>= 
+  (std::is_invocable_r_v&lt;int, C&gt; || std::is_invocable_r_v&lt;int, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;) &amp;&amp;
+  !<ref refid="namespacetf_1a1eea7593f25ab348cfb656dbdf4e5b05" kindref="member">is_dynamic_task_v</ref>&lt;C&gt;</initializer>
         <briefdescription>
 <para>determines if a callable is a condition task </para>        </briefdescription>
         <detaileddescription>
 <para>A condition task is a callable object constructible from std::function&lt;int()&gt; or std::function&lt;int(tf::Runtime&amp;)&gt;. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" line="101" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" bodystart="101" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="103" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="103" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a78c40dc8776735b0f2c27cd446481aff" prot="public" static="no" mutable="no">
         <templateparamlist>
@@ -439,15 +442,16 @@
         <argsstring></argsstring>
         <name>is_multi_condition_task_v</name>
         <initializer>=
-  std::is_invocable_r_v&lt;<ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt;int&gt;, C&gt; ||
-  std::is_invocable_r_v&lt;<ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt;int&gt;, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;</initializer>
+  (std::is_invocable_r_v&lt;<ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt;int&gt;, C&gt; ||
+  std::is_invocable_r_v&lt;<ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt;int&gt;, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;) &amp;&amp;
+  !<ref refid="namespacetf_1a1eea7593f25ab348cfb656dbdf4e5b05" kindref="member">is_dynamic_task_v</ref>&lt;C&gt;</initializer>
         <briefdescription>
 <para>determines if a callable is a multi-condition task </para>        </briefdescription>
         <detaileddescription>
-<para>A multi-condition task is a callable object constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;()&gt; or <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;(tf::Runtime&amp;)&gt;. </para>        </detaileddescription>
+<para>A multi-condition task is a callable object constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;()&gt; or <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;(tf::Runtime&amp;)&gt;. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" line="112" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" bodystart="112" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="115" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="115" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a11fc9c98eb3a0d3a9aa55598b1f4d614" prot="public" static="no" mutable="no">
         <templateparamlist>
@@ -462,14 +466,15 @@
         <initializer>=
   (std::is_invocable_r_v&lt;void, C&gt; || std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;) &amp;&amp;
   !<ref refid="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" kindref="member">is_condition_task_v</ref>&lt;C&gt; &amp;&amp;
-  !<ref refid="namespacetf_1a78c40dc8776735b0f2c27cd446481aff" kindref="member">is_multi_condition_task_v</ref>&lt;C&gt;</initializer>
+  !<ref refid="namespacetf_1a78c40dc8776735b0f2c27cd446481aff" kindref="member">is_multi_condition_task_v</ref>&lt;C&gt; &amp;&amp;
+  !<ref refid="namespacetf_1a1eea7593f25ab348cfb656dbdf4e5b05" kindref="member">is_dynamic_task_v</ref>&lt;C&gt;</initializer>
         <briefdescription>
 <para>determines if a callable is a static task </para>        </briefdescription>
         <detaileddescription>
 <para>A static task is a callable object constructible from std::function&lt;void()&gt; or std::function&lt;void(tf::Runtime&amp;)&gt;. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" line="123" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" bodystart="123" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="127" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="127" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a6720c7fd9025a4c32898264dab03b8be" prot="public" static="no" mutable="no">
         <templateparamlist>
@@ -481,14 +486,14 @@
         <definition>constexpr bool tf::is_execution_policy_v</definition>
         <argsstring></argsstring>
         <name>is_execution_policy_v</name>
-        <initializer>= <ref refid="cpp/types/is_base_of" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_base_of</ref>&lt;<ref refid="classtf_1_1PartitionerBase" kindref="compound">PartitionerBase</ref>, C&gt;::value</initializer>
+        <initializer>= <ref refid="cpp/types/is_base_of" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_base_of</ref>&lt;<ref refid="classtf_1_1PartitionerBase" kindref="compound">PartitionerBase</ref>, C&gt;::value</initializer>
         <briefdescription>
 <para>determines if a type is a partitioner </para>        </briefdescription>
         <detaileddescription>
 <para>A partitioner is a derived type from <ref refid="classtf_1_1PartitionerBase" kindref="compound">tf::PartitionerBase</ref>. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/execution_policy.hpp" line="404" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="404" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="406" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="406" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
@@ -517,7 +522,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/utility/small_vector.hpp" line="1026" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/utility/small_vector.hpp" bodystart="1026" bodyend="1028"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="1026" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="1026" bodyend="1028"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a6371ab1b1b0e57db6ca95cb4456ac5d3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -530,7 +535,7 @@
             <defname>ArgsT</defname>
           </param>
         </templateparamlist>
-        <type><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; T &gt;</type>
+        <type><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; T &gt;</type>
         <definition>std::shared_ptr&lt;T&gt; tf::make_worker_interface</definition>
         <argsstring>(ArgsT &amp;&amp;... args)</argsstring>
         <name>make_worker_interface</name>
@@ -567,7 +572,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/worker.hpp" line="249" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/worker.hpp" bodystart="249" bodyend="255"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="249" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="249" bodyend="255"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
@@ -590,15 +595,15 @@
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" line="65" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" bodystart="65" bodyend="80"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="65" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="65" bodyend="80"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ad216aea4d0f648e149e47374ad015b1f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+        <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
         <definition>std::ostream&amp; tf::operator&lt;&lt;</definition>
         <argsstring>(std::ostream &amp;os, const Task &amp;task)</argsstring>
         <name>operator&lt;&lt;</name>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>os</declname>
         </param>
         <param>
@@ -611,7 +616,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" line="600" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/task.hpp" bodystart="600" bodyend="603"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="605" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="605" bodyend="608"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aa3fc0699b2c2b8f2f76bb39f91be1acb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
@@ -628,7 +633,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/observer.hpp" line="1035" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/observer.hpp" bodystart="1035" bodyend="1041"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="1035" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="1035" bodyend="1041"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a8975fa5762088789adb0b60f38208309" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -688,14 +693,14 @@
 </programlisting></para><para>The callable can additionally take a reference of <ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>, which allows you to query the runtime information of a stage task, such as its line number and token number.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::make_data_pipe&lt;int,<sp/>std::string&gt;(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>input,<sp/><ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;token=%lu,<sp/>line=%lu\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>(),<sp/>pf.<ref refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kindref="member">line</ref>());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;token=%lu,<sp/>line=%lu\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>(),<sp/>pf.<ref refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kindref="member">line</ref>());</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kindref="member">std::to_string</ref>(input<sp/>+<sp/>100);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/data_pipeline.hpp" line="171" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="171" bodyend="173"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/data_pipeline.hpp" line="171" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/data_pipeline.hpp" bodystart="171" bodyend="173"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1abffa70155a5f160b7ceb86ee52ab2136" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -708,7 +713,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="15" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="15" bodyend="19"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="15" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="15" bodyend="19"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a235f5a9ce203d538eec1f4114221d473" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>int</type>
@@ -721,7 +726,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="24" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="24" bodyend="28"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="24" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="24" bodyend="28"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ade2938289fa49aafc9b2b7b090deaa22" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -738,7 +743,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="33" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="33" bodyend="35"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="33" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="33" bodyend="35"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a403b679694f4c85c857163b47e84d566" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -759,7 +764,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="40" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="40" bodyend="44"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="40" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="40" bodyend="44"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a0e82b8a929e12349240276e34ec9f8c8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>cudaDeviceProp</type>
@@ -776,7 +781,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="49" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="49" bodyend="55"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="49" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="49" bodyend="55"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aff8073c78daa741df76b530a0e602287" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -784,7 +789,7 @@
         <argsstring>(std::ostream &amp;os, const cudaDeviceProp &amp;p)</argsstring>
         <name>cuda_dump_device_property</name>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>os</declname>
         </param>
         <param>
@@ -797,7 +802,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="60" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="60" bodyend="97"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="60" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="60" bodyend="97"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1abf813f7ac4249d1b752d1b724f970deb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -814,7 +819,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="102" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="102" bodyend="109"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="102" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="102" bodyend="109"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1af8184bb128c446fe383315f3dc15acf6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -831,7 +836,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="114" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="114" bodyend="121"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="114" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="114" bodyend="121"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9aba5f29135b9da29015c2a367ab1d70" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -848,7 +853,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="126" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="126" bodyend="133"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="126" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="126" bodyend="133"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a5580f59e633625b2f344bbf477d17c2f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -865,7 +870,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="138" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="138" bodyend="145"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="138" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="138" bodyend="145"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a597579c8a9ab31244418e30a5aa74491" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -882,7 +887,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="150" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="150" bodyend="157"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="150" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="150" bodyend="157"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a91d5c1609a7542949dd56d08b7c4c645" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -899,7 +904,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="162" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="162" bodyend="169"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="162" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="162" bodyend="169"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a0373e32a20c7fc90c4f0461ee41bb918" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -916,7 +921,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="174" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="174" bodyend="181"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="174" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="174" bodyend="181"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aeca46ac171c4941a75aafddfe7546bfa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -933,7 +938,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="186" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="186" bodyend="193"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="186" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="186" bodyend="193"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aea1b2af1073496f047d6fb9984cff4f1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -950,7 +955,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="198" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="198" bodyend="205"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="198" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="198" bodyend="205"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a1fb03793a6b8705026b80ef87599d4d5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>int</type>
@@ -967,7 +972,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="210" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="210" bodyend="217"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="210" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="210" bodyend="217"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a71f5177665f4f7e18984ccc57d625602" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>int</type>
@@ -984,7 +989,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="222" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="222" bodyend="229"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="222" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="222" bodyend="229"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ad389294b4d1c14219d8d098f796e27c5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -1001,7 +1006,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="234" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="234" bodyend="241"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="234" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="234" bodyend="241"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a43ac57f0eca3aa83c04bec3c4da9ab82" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>int</type>
@@ -1014,7 +1019,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="250" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="250" bodyend="257"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="250" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="250" bodyend="257"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a31258ad089c6f847c8cd636cd72d6949" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>int</type>
@@ -1027,7 +1032,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" line="262" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="262" bodyend="268"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" line="262" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_device.hpp" bodystart="262" bodyend="268"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a1effcf929b7e488925f9e12d74c8c62b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -1044,7 +1049,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_memory.hpp" line="19" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="19" bodyend="26"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="19" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="19" bodyend="26"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a58bbc8d5d955582d6b5f7fdac51d010b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -1061,7 +1066,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_memory.hpp" line="31" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="31" bodyend="38"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="31" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="31" bodyend="38"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a6f04fd3168c45eeb2dffb223e5c81e45" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1087,7 +1092,7 @@
 <para>The function calls <computeroutput>cudaMalloc</computeroutput> to allocate <computeroutput>N*sizeof(T)</computeroutput> bytes of memory on the given device <computeroutput>d</computeroutput> and returns a pointer to the starting address of the device memory. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_memory.hpp" line="48" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="48" bodyend="56"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="48" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="48" bodyend="56"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ab9b68b8f4336f13b190d573969cb1cf7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1109,7 +1114,7 @@
 <para>The function calls malloc_device from the current device associated with the caller. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_memory.hpp" line="65" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="65" bodyend="72"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="65" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="65" bodyend="72"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a8eed05685b030fc44703213a4ef86f11" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1131,7 +1136,7 @@
 <para>The function calls <computeroutput>cudaMallocManaged</computeroutput> to allocate <computeroutput>N*sizeof(T)</computeroutput> bytes of memory and returns a pointer to the starting address of the shared memory. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_memory.hpp" line="81" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="81" bodyend="88"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="81" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="81" bodyend="88"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ac7a8fe7456b888d6072ba94783c5003c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1180,7 +1185,7 @@
 This methods call <computeroutput>cudaFree</computeroutput> to free the memory space pointed to by <computeroutput>ptr</computeroutput> using the given device context. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_memory.hpp" line="101" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="101" bodyend="104"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="101" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="101" bodyend="104"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ae174a3a49b91ef21554dac16806f0d72" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1218,7 +1223,7 @@ This methods call <computeroutput>cudaFree</computeroutput> to free the memory s
 This methods call <computeroutput>cudaFree</computeroutput> to free the memory space pointed to by <computeroutput>ptr</computeroutput> using the current device context of the caller. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_memory.hpp" line="116" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="116" bodyend="118"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="116" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="116" bodyend="118"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aa4266474b921f8ed7d9ec8071fded2a4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1276,7 +1281,7 @@ This methods call <computeroutput>cudaFree</computeroutput> to free the memory s
 The method calls <computeroutput>cudaMemcpyAsync</computeroutput> with the given <computeroutput>stream</computeroutput> using <computeroutput>cudaMemcpyDefault</computeroutput> to infer the memory space of the source and the destination pointers. The memory areas may not overlap. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_memory.hpp" line="132" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="132" bodyend="139"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="132" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="132" bodyend="139"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a6615554d2954e895755411ee444d9760" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1334,7 +1339,7 @@ The method calls <computeroutput>cudaMemcpyAsync</computeroutput> with the given
 The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given <computeroutput>stream</computeroutput> to fill the first <computeroutput>count</computeroutput> bytes of the memory area pointed to by <computeroutput>devPtr</computeroutput> with the constant byte value <computeroutput>value</computeroutput>. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_memory.hpp" line="153" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="153" bodyend="160"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="153" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="153" bodyend="160"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1af21fe1eaf680dbddc0503ef5d1a9a664" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>constexpr const char *</type>
@@ -1351,15 +1356,15 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_task.hpp" line="43" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_task.hpp" bodystart="43" bodyend="54"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" line="43" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" bodystart="43" bodyend="54"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9cca69f61d792afb3ad501b703d795c1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+        <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
         <definition>std::ostream&amp; tf::operator&lt;&lt;</definition>
         <argsstring>(std::ostream &amp;os, const cudaTask &amp;ct)</argsstring>
         <name>operator&lt;&lt;</name>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>os</declname>
         </param>
         <param>
@@ -1372,7 +1377,7 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_task.hpp" line="266" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/cuda_task.hpp" bodystart="266" bodyend="269"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" line="266" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_task.hpp" bodystart="266" bodyend="269"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a2ff1cf81426c856fc6db1f6ead47878f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1431,7 +1436,7 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
 The function launches a single kernel thread to run the given callable through the stream in the execution policy object. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="63" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="63" bodyend="67"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="63" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="63" bodyend="67"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a7c449cec0b93503b8280d05add35e9f4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1525,7 +1530,7 @@ This function is equivalent to a parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="91" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="91" bodyend="104"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="91" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="91" bodyend="104"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a01ad7ce62fa6f42f2f2fbff3659b7884" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1636,7 +1641,7 @@ This function is equivalent to a parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="136" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="136" bodyend="149"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="136" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="136" bodyend="149"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a3075c7a1f4d08fefefb415b0e2ac58fb" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1658,7 +1663,7 @@ This function is equivalent to a parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="157" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="157" bodyend="159"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="157" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="157" bodyend="159"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1773,7 +1778,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/transform.hpp" line="86" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="86" bodyend="100"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" line="86" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="86" bodyend="100"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1abdcb5b755f7ace2aa452541d5bf93b5f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1909,7 +1914,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/transform.hpp" line="127" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="127" bodyend="143"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" line="127" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="127" bodyend="143"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a8a872d2a0ac73a676713cb5be5aa688c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2035,7 +2040,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="253" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="253" bodyend="261"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="253" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="253" bodyend="261"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a492e8410db032a0273a99dd905486161" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2162,7 +2167,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="294" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="294" bodyend="302"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="294" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="294" bodyend="302"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a4463d06240d608bc31d8b3546a851e4e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2309,7 +2314,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="335" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="335" bodyend="352"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="335" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="335" bodyend="352"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aa451668b7a0a3abf385cf2abebed8962" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2457,7 +2462,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="387" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="387" bodyend="401"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="387" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="387" bodyend="401"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a2e1b44c84a09e0a8495a611cb9a7ea40" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2580,7 +2585,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/scan.hpp" line="357" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="357" bodyend="371"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="357" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="357" bodyend="371"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1afa4aa760ddb6efbda1b9bab505ad5baf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2724,7 +2729,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/scan.hpp" line="392" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="392" bodyend="410"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="392" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="392" bodyend="410"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aeb391c40120844318fd715b8c3a716bb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2847,7 +2852,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/scan.hpp" line="429" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="429" bodyend="443"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="429" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="429" bodyend="443"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a2e739895c1c73538967af060ca714366" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2991,7 +2996,7 @@ This method is equivalent to the parallel execution of the following loop on a G
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/scan.hpp" line="464" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="464" bodyend="482"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="464" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="464" bodyend="482"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aa84d4c68d2cbe9f6efc4a1eb1a115458" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3213,7 +3218,7 @@ Performs a key-value merge that copies elements from <computeroutput>[a_keys_fir
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/merge.hpp" line="515" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="515" bodyend="537"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="515" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="515" bodyend="537"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a37ec481149c2f01669353033d75ed72a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3368,7 +3373,7 @@ Performs a key-value merge that copies elements from <computeroutput>[a_keys_fir
 This function is equivalent to <ref refid="namespacetf_1aa84d4c68d2cbe9f6efc4a1eb1a115458" kindref="member">tf::cuda_merge_by_key</ref> without values. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/merge.hpp" line="567" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="567" bodyend="582"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="567" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="567" bodyend="582"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9c69906a4dfd1e2d0cd7ed496d29dafd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3427,7 +3432,7 @@ This function is equivalent to <ref refid="namespacetf_1aa84d4c68d2cbe9f6efc4a1e
 The function is used to allocate a buffer for calling <ref refid="namespacetf_1a06804cb1598e965febc7bd35fc0fbbb0" kindref="member">tf::cuda_sort</ref>. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/sort.hpp" line="417" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="417" bodyend="428"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="417" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="417" bodyend="428"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a3461b9179221dd7230ce2a0e45156c7f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3554,7 +3559,7 @@ Sorts key-value elements in <computeroutput>[k_first, k_last)</computeroutput> a
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/sort.hpp" line="467" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="467" bodyend="478"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="467" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="467" bodyend="478"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a06804cb1598e965febc7bd35fc0fbbb0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3656,7 +3661,7 @@ Sorts key-value elements in <computeroutput>[k_first, k_last)</computeroutput> a
 This method is equivalent to <ref refid="namespacetf_1a3461b9179221dd7230ce2a0e45156c7f" kindref="member">tf::cuda_sort_by_key</ref> without values. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/sort.hpp" line="501" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="501" bodyend="503"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="501" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="501" bodyend="503"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a5f9dabd7c5d0fa5166cf76d9fa5a038e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3765,7 +3770,7 @@ The function launches kernels asynchronously to find the index <computeroutput>i
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/find.hpp" line="181" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="181" bodyend="185"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="181" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="181" bodyend="185"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a572c13198191c46765264f8afabe2e9f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3884,11 +3889,11 @@ The function launches kernels asynchronously to find the smallest element in the
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>smallest<sp/>=<sp/>first;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>smallest);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>smallest);</highlight></codeline>
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/find.hpp" line="233" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="233" bodyend="237"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="233" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="233" bodyend="237"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a3fc577fd0a8f127770bcf68bc56c073e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -4007,11 +4012,11 @@ The function launches kernels asynchronously to find the largest element in the 
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>largest<sp/>=<sp/>first;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>largest);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>largest);</highlight></codeline>
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/find.hpp" line="285" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="285" bodyend="289"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="285" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="285" bodyend="289"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a30fa078dcf625e9eada5a95af1467588" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>constexpr const char *</type>
@@ -4024,13 +4029,13 @@ The function launches kernels asynchronously to find the largest element in the 
 <para>Release notes are available here: <ulink url="https://taskflow.github.io/taskflow/Releases.html">https://taskflow.github.io/taskflow/Releases.html</ulink> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/taskflow.hpp" line="59" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/taskflow.hpp" bodystart="59" bodyend="61"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/taskflow.hpp" line="59" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/taskflow.hpp" bodystart="59" bodyend="61"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
 <para>taskflow namespace </para>    </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/utility/small_vector.hpp" line="27" column="1"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="27" column="1"/>
   </compounddef>
 </doxygen>

@@ -49,14 +49,14 @@
           <span class="m-breadcrumb"><a href="Cookbook.html">Cookbook</a> &raquo;</span>
           Profile Taskflow Programs
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#ProfilerEnableTFProf">Enable Taskflow Profiler</a></li>
             <li><a href="#ProfilerEnableTFProfServer">Enable Taskflow Profiler on a HTTP Server</a></li>
             <li><a href="#ProfilerDisplayProfileSummary">Display Profile Summary</a></li>
           </ul>
-        </div>
+        </nav>
 <p>Taskflow comes with a built-in profiler, <em>TFProf</em>, for you to profile and visualize taskflow programs.</p><img class="m-image" src="tfprof.png" alt="Image" style="width: 100%;" /><section id="ProfilerEnableTFProf"><h2><a href="#ProfilerEnableTFProf">Enable Taskflow Profiler</a></h2><p>All taskflow programs come with a lightweight profiling module to observer worker activities in every executor. To enable the profiler, set the environment variable <code>TF_ENABLE_PROFILER</code> to a file name in which the profiling result will be stored.</p><pre class="m-console"><span class="go">~$ TF_ENABLE_PROFILER=result.json ./my_taskflow</span>
 <span class="go">~$ cat result.json</span>
 <span class="go">[</span>
@@ -121,8 +121,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

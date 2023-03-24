@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="cudaFlowAlgorithms.html">cudaFlow Algorithms</a> &raquo;</span>
           Parallel Iterations
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#CUDAForEachIncludeTheHeader">Include the Header</a></li>
@@ -57,7 +57,7 @@
             <li><a href="#ForEachCUDAIteratorBasedParallelIterations">Iterator-based Parallel Iterations</a></li>
             <li><a href="#ForEachCUDAMiscellaneousItems">Miscellaneous Items</a></li>
           </ul>
-        </div>
+        </nav>
 <p><a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a> provides two template methods, <a href="classtf_1_1cudaFlow.html#a1a681f6223853b6445dcfdad07e4d0fd" class="m-doc">tf::<wbr />cudaFlow::<wbr />for_each</a> and <a href="classtf_1_1cudaFlow.html#a34f1ea89e5651faa6e8af522a42556ac" class="m-doc">tf::<wbr />cudaFlow::<wbr />for_each_index</a>, for creating tasks to perform parallel iterations over a range of items.</p><section id="CUDAForEachIncludeTheHeader"><h2><a href="#CUDAForEachIncludeTheHeader">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/cuda/algorithm/for_each.hpp</code>, for creating a parallel-iteration task.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/cuda/algorithm/for_each.hpp&gt;</span><span class="cp"></span></pre></section><section id="ForEachCUDAIndexBasedParallelFor"><h2><a href="#ForEachCUDAIndexBasedParallelFor">Index-based Parallel Iterations</a></h2><p>Index-based parallel-for performs parallel iterations over a range <code>[first, last)</code> with the given <code>step</code> size. The task created by <a href="classtf_1_1cudaFlow.html#a34f1ea89e5651faa6e8af522a42556ac" class="m-doc">tf::<wbr />cudaFlow::<wbr />for_each_index(I first, I last, I step, C callable)</a> represents a kernel of parallel execution for the following loop:</p><pre class="m-code"><span class="c1">// positive step: first, first+step, first+2*step, ...</span>
 <span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w"></span>
@@ -112,8 +112,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

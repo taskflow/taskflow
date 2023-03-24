@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="Algorithms.html">Taskflow Algorithms</a> &raquo;</span>
           Parallel Iterations
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#ParallelIterationsIncludeTheHeader">Include the Header</a></li>
@@ -57,7 +57,7 @@
             <li><a href="#A1IteratorBasedParallelFor">Create an Iterator-based Parallel-Iteration Task</a></li>
             <li><a href="#ParallelIterationsConfigureAnExecutionPolicy">Configure an Execution Policy</a></li>
           </ul>
-        </div>
+        </nav>
 <p>Taskflow provides template functions for constructing tasks to perform parallel iterations over ranges of items.</p><section id="ParallelIterationsIncludeTheHeader"><h2><a href="#ParallelIterationsIncludeTheHeader">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/algorithm/for_each.hpp</code>, for using parallel-iteration algorithms.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/algorithm/for_each.hpp&gt;</span><span class="cp"></span></pre></section><section id="A1IndexBasedParallelFor"><h2><a href="#A1IndexBasedParallelFor">Create an Index-based Parallel-Iteration Task</a></h2><p>Index-based parallel-for performs parallel iterations over a range <code>[first, last)</code> with the given <code>step</code> size. The task created by <a href="classtf_1_1FlowBuilder.html#a38ffe176bc3ae1827b9964322e3769d4" class="m-doc">tf::<wbr />Taskflow::<wbr />for_each_index(B first, E last, S step, C callable)</a> represents parallel execution of the following loop:</p><pre class="m-code"><span class="c1">// positive step</span>
 <span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w"></span>
@@ -301,8 +301,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

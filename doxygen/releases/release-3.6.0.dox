@@ -54,6 +54,8 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
   + tf::Taskflow::reduce(P&& policy, B first, E last, T& result, O bop) 
   + tf::Taskflow::transform_reduce(P&& policy, B first, E last, T& result, BOP bop, UOP uop)
 + Improved the performance of tf::Taskflow::sort for POD
++ Extended task-parallel pipeline to handle token dependencies
+  + @ref TaskParallelPipelineWithTokenDependencies
 
 @subsection release-3-6-0_cudaflow cudaFlow
 
@@ -154,6 +156,7 @@ policy.reduce_bufsz<int>(N);
   + @ref CUDASTDFind
   + @ref CUDASTDMerge
   + @ref CUDASTDScan
++ Added @ref TaskParallelPipelineWithTokenDependencies
 
 @section release-3-6-0_miscellaneous_items Miscellaneous Items
 

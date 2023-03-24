@@ -49,13 +49,13 @@
           <span class="m-breadcrumb"><a href="cudaStandardAlgorithms.html">CUDA Standard Algorithms</a> &raquo;</span>
           Single Task
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#CUDASTDSingleTaskIncludeTheHeader">Include the Header</a></li>
             <li><a href="#CUDASTDSingleTaskRunATaskWithASingleThread">Run a Task with a Single Thread</a></li>
           </ul>
-        </div>
+        </nav>
 <p>Taskflow provides a standard template method for running a callable using a single GPU thread.</p><section id="CUDASTDSingleTaskIncludeTheHeader"><h2><a href="#CUDASTDSingleTaskIncludeTheHeader">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/cuda/algorithm/for_each.hpp</code>, for creating a single-threaded task.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/cuda/algorithm/for_each.hpp&gt;</span><span class="cp"></span></pre></section><section id="CUDASTDSingleTaskRunATaskWithASingleThread"><h2><a href="#CUDASTDSingleTaskRunATaskWithASingleThread">Run a Task with a Single Thread</a></h2><p>You can launch a kernel with only one GPU thread running it, which is handy when you want to set up a single or a few variables that do not need multiple threads. The following example creates a single-task kernel that sets a device variable to <code>1</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">cudaStream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span><span class="w"></span>
 <span class="n">tf</span><span class="o">::</span><span class="n">cudaDefaultExecutionPolicy</span><span class="w"> </span><span class="nf">policy</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span><span class="w"></span>
 
@@ -104,8 +104,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

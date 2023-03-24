@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="Cookbook.html">Cookbook</a> &raquo;</span>
           Static Tasking
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#CreateATaskDependencyGraph">Create a Task Dependency Graph</a></li>
@@ -60,7 +60,7 @@
             <li><a href="#UnderstandTheLifetimeOfATask">Understand the Lifetime of a Task</a></li>
             <li><a href="#MoveATaskflow">Move a Taskflow</a></li>
           </ul>
-        </div>
+        </nav>
 <p>This chapter demonstrates how to create a static task dependency graph. Static tasking captures the static parallel structure of a decomposition and is defined only by the program itself. It has a flat task hierarchy and cannot spawn new tasks from a running dependency graph.</p><section id="CreateATaskDependencyGraph"><h2><a href="#CreateATaskDependencyGraph">Create a Task Dependency Graph</a></h2><p>A task in Taskflow is a <em>callable</em> object for which the operation <a href="https://en.cppreference.com/w/cpp/utility/functional/invoke">std::<wbr />invoke</a> is applicable. It can be either a functor, a lambda expression, a bind expression, or a class objects with <code>operator()</code> overloaded. All tasks are created from <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a>, the class that manages a task dependency graph. Taskflow provides two methods, <a href="classtf_1_1FlowBuilder.html#acab0b4ac82260f47fdb36a3244ee3aaf" class="m-doc">tf::<wbr />Taskflow::<wbr />placeholder</a> and <a href="classtf_1_1FlowBuilder.html#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc">tf::<wbr />Taskflow::<wbr />emplace</a> to create a task.</p><pre class="m-code"><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
 <span class="mi">2</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">placeholder</span><span class="p">();</span><span class="w"></span>
 <span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;task B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
@@ -163,7 +163,7 @@
 <span class="mi">13</span><span class="o">:</span><span class="w">   </span><span class="n">tasks</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;This is Task 1&quot;</span><span class="p">);</span><span class="w"></span>
 <span class="mi">14</span><span class="o">:</span><span class="w">   </span><span class="n">tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">precede</span><span class="p">(</span><span class="n">tasks</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span><span class="w"></span>
 <span class="mi">15</span><span class="o">:</span><span class="w"></span>
-<span class="mi">16</span><span class="o">:</span><span class="w">   </span><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="nl">task</span> <span class="p">:</span><span class="w"> </span><span class="n">tasks</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">          </span><span class="c1">// print out each task&#39;s attributes</span>
+<span class="mi">16</span><span class="o">:</span><span class="w">   </span><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">tasks</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">          </span><span class="c1">// print out each task&#39;s attributes</span>
 <span class="mi">17</span><span class="o">:</span><span class="w">     </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">task</span><span class="p">.</span><span class="n">name</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;: &quot;</span><span class="w"></span>
 <span class="mi">18</span><span class="o">:</span><span class="w">               </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;num_dependents=&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">task</span><span class="p">.</span><span class="n">num_dependents</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;, &quot;</span><span class="w"></span>
 <span class="mi">19</span><span class="o">:</span><span class="w">               </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;num_successors=&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">task</span><span class="p">.</span><span class="n">num_successors</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w"></span>
@@ -244,8 +244,8 @@ digraph Taskflow <span class="o">{</span>
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

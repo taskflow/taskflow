@@ -353,16 +353,36 @@ class Runtime {
   inline Worker& worker();
 
   protected:
-
+  
+  /**
+  @private
+  */
   explicit Runtime(Executor&, Worker&, Node*);
-
+  
+  /**
+  @private
+  */
   Executor& _executor;
+  
+  /**
+  @private
+  */
   Worker& _worker;
+  
+  /**
+  @private
+  */
   Node* _parent;
   
+  /**
+  @private
+  */
   template <typename F, typename... ArgsT>
   void _silent_async(Worker& w, const std::string& name, F&& f, ArgsT&&... args);
   
+  /**
+  @private
+  */
   template <typename F, typename... ArgsT>
   auto _async(Worker& w, const std::string& name, F&& f, ArgsT&&... args);
 };

@@ -21,7 +21,7 @@
 <title>Improvements and Enhancements</title>
 <para><itemizedlist>
 <listitem><para>Improved the performance of tf::WorkStealingThreadpool (non-blocking notifier, work stealing strategy, etc.) </para></listitem>
-<listitem><para>Changed the data structure to store nodes and topologies to <ref refid="cpp/container/list" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::list</ref>. </para></listitem>
+<listitem><para>Changed the data structure to store nodes and topologies to <ref refid="cpp/container/list" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::list</ref>. </para></listitem>
 <listitem><para>Added memory pool and allocator to manage the memory allocation of nodes and topologies. </para></listitem>
 <listitem><para>Added a customized vector (PassiveVector) to hold POD data. </para></listitem>
 <listitem><para>Added a dependents vector to keep track of the predecessors, in addition to successors, of a node. </para></listitem>
@@ -33,7 +33,7 @@
 <sect1 id="release-2-1-0_1release-2-1-0_breaks_and_deprecated_features">
 <title>Breaks and Deprecated Features</title>
 <para><itemizedlist>
-<listitem><para><ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">tf::Taskflow::emplace</ref> is now merged with tf::Taskflow::silent_emplace (both are the same) and no longer returns <ref refid="cpp/thread/future" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref> in order to support tf::Framework</para></listitem>
+<listitem><para><ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">tf::Taskflow::emplace</ref> is now merged with tf::Taskflow::silent_emplace (both are the same) and no longer returns <ref refid="cpp/thread/future" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref> in order to support tf::Framework</para></listitem>
 </itemizedlist>
 </para></sect1>
 <sect1 id="release-2-1-0_1release-2-1-0_bug_fixes">

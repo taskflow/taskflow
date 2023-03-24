@@ -50,7 +50,7 @@
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>Future <span class="m-thin">class</span>
         </h1>
         <p>class to access the result of an execution</p>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
@@ -61,7 +61,7 @@
               </ul>
             </li>
           </ul>
-        </div>
+        </nav>
 <p><a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> is a derived class from <a href="http://en.cppreference.com/w/cpp/thread/future.html" class="m-doc-external">std::<wbr />future</a> that will eventually hold the execution result of a submitted taskflow (<a href="classtf_1_1Executor.html#a519777f5783981d534e9e53b99712069" class="m-doc">tf::<wbr />Executor::<wbr />run</a>) or an asynchronous task (<a href="classtf_1_1Executor.html#a1e6866c8f1b6a2e932f06d0b4eb032c0" class="m-doc">tf::<wbr />Executor::<wbr />async</a>, <a href="classtf_1_1Executor.html#abf71e7ec0026ddfce79c912264369bc9" class="m-doc">tf::<wbr />Executor::<wbr />silent_async</a>). In addition to the base methods inherited from <a href="http://en.cppreference.com/w/cpp/thread/future.html" class="m-doc-external">std::<wbr />future</a>, you can call <a href="classtf_1_1Future.html#a3bf5f104864ab2590b6409712d3a469b" class="m-doc">tf::<wbr />Future::<wbr />cancel</a> to cancel the execution of the running taskflow associated with this future object. The following example cancels a submission of a taskflow that contains 1000 tasks each running one second.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
 
@@ -172,8 +172,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

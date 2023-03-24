@@ -14,10 +14,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/observer.hpp" line="250" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/observer.hpp" bodystart="250" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="250" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="250" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1ChromeObserver_1_1Timeline_1a68e28885dc55ee0c4a910efb8e89919e" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/vector" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Segment &gt; &gt;</type>
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Segment &gt; &gt;</type>
         <definition>std::vector&lt;std::vector&lt;Segment&gt; &gt; tf::ChromeObserver::Timeline::segments</definition>
         <argsstring></argsstring>
         <name>segments</name>
@@ -27,10 +27,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/observer.hpp" line="251" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/observer.hpp" bodystart="251" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="251" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="251" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1ChromeObserver_1_1Timeline_1a9094de2f3a2857b6e0d8ccea358aaa0e" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/stack" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::stack</ref>&lt; <ref refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kindref="member">observer_stamp_t</ref> &gt; &gt;</type>
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/stack" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::stack</ref>&lt; <ref refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kindref="member">observer_stamp_t</ref> &gt; &gt;</type>
         <definition>std::vector&lt;std::stack&lt;observer_stamp_t&gt; &gt; tf::ChromeObserver::Timeline::stacks</definition>
         <argsstring></argsstring>
         <name>stacks</name>
@@ -40,7 +40,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/observer.hpp" line="252" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/observer.hpp" bodystart="252" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="252" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="252" bodyend="-1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -48,29 +48,29 @@
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
-      <node id="324">
+      <node id="327">
         <label>std::vector&lt; std::vector&lt; Segment &gt; &gt;</label>
       </node>
-      <node id="323">
+      <node id="326">
         <label>tf::ChromeObserver::Timeline</label>
-        <childnode refid="324" relation="usage">
+        <childnode refid="327" relation="usage">
           <edgelabel>segments</edgelabel>
         </childnode>
-        <childnode refid="325" relation="usage">
+        <childnode refid="328" relation="usage">
           <edgelabel>stacks</edgelabel>
         </childnode>
-        <childnode refid="326" relation="usage">
+        <childnode refid="329" relation="usage">
           <edgelabel>origin</edgelabel>
         </childnode>
       </node>
-      <node id="326">
+      <node id="329">
         <label>std::chrono::time_point&lt; std::chrono::steady_clock &gt;</label>
       </node>
-      <node id="325">
+      <node id="328">
         <label>std::vector&lt; std::stack&lt; time_point&lt; std::chrono::steady_clock &gt; &gt; &gt;</label>
       </node>
     </collaborationgraph>
-    <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/observer.hpp" line="249" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/core/observer.hpp" bodystart="249" bodyend="253"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="249" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="249" bodyend="253"/>
     <listofallmembers>
       <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a3b3761840cd96e8af15e35ba65093e3d" prot="public" virt="non-virtual"><scope>tf::ChromeObserver::Timeline</scope><name>origin</name></member>
       <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a68e28885dc55ee0c4a910efb8e89919e" prot="public" virt="non-virtual"><scope>tf::ChromeObserver::Timeline</scope><name>segments</name></member>

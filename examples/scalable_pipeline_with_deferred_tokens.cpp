@@ -47,9 +47,6 @@
 // 2 is deferred by 8
 // 5 is dieferred by 2, 7, and 9
 
-
-
-
 #include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/pipeline.hpp>
 
@@ -60,11 +57,8 @@ int main() {
 
   const size_t num_lines = 4;
 
-  // create data storage
-  std::array<int, num_lines> buffer;
-
   // define the pipe callable
-  auto pipe_callable = [&buffer] (tf::Pipeflow& pf) mutable {
+  auto pipe_callable = [] (tf::Pipeflow& pf) mutable {
     switch(pf.pipe()) {
       // first stage generates only 15 scheduling tokens
       // and describes the token dependencies

@@ -322,9 +322,9 @@ class RandomPartitioner : public PartitionerBase {
 // ----------------------------------------------------------------------------
 
 /**
-@struct ExecutionPolicy
+@class ExecutionPolicy
 
-@brief struct to construct an execution policy for parallel algorithms
+@brief class to construct an execution policy for parallel algorithms
 
 @tparam P partitioner type 
 
@@ -370,7 +370,9 @@ executor.run(taskflow).run();
 
 */
 template <typename P>
-struct ExecutionPolicy : public P {
+class ExecutionPolicy : public P {
+
+  public:
 
   /**
   @brief queries if the execution policy is associated with a static partitioner

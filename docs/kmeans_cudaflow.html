@@ -49,14 +49,14 @@
           <span class="m-breadcrumb"><a href="Examples.html">Learning from Examples</a> &raquo;</span>
           k-means Clustering (cudaFlow)
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#DefineTheKMeansKernels">Define the k-means Kernels</a></li>
             <li><a href="#DefineTheKMeanscudaFlow">Define the k-means cudaFlow</a></li>
             <li><a href="#KMeanscudaFlowBenchmarking">Benchmarking</a></li>
           </ul>
-        </div>
+        </nav>
 <p>Following up on <a href="kmeans.html" class="m-doc">k-means Clustering</a>, this page studies how to accelerate a k-means workload on a GPU using <a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a>.</p><section id="DefineTheKMeansKernels"><h2><a href="#DefineTheKMeansKernels">Define the k-means Kernels</a></h2><p>Recall that the k-means algorithm has the following steps:</p><ul><li>Step 1: initialize k random centroids</li><li>Step 2: for every data point, find the nearest centroid (L2 distance or other measurements) and assign the point to it</li><li>Step 3: for every centroid, move the centroid to the average of the points assigned to that centroid</li><li>Step 4: go to Step 2 until converged (no more changes in the last few iterations) or maximum iterations reached</li></ul><p>We observe Step 2 and Step 3 of the algorithm are parallelizable across individual points for use to harness the power of GPU:</p><ol><li>for every data point, find the nearest centroid (L2 distance or other measurements) and assign the point to it</li><li>for every centroid, move the centroid to the average of the points assigned to that centroid.</li></ol><p>At a fine-grained level, we request one GPU thread to work on one point for Step 2 and one GPU thread to work on one centroid for Step 3.</p><pre class="m-code"><span class="c1">// px/py: 2D points</span>
 <span class="c1">// N: number of points</span>
 <span class="c1">// mx/my: centroids</span>
@@ -364,8 +364,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

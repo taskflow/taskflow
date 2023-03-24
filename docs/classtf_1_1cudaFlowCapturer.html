@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>cudaFlowCapturer <span class="m-thin">class</span>
         </h1>
         <p>class to create a cudaFlow graph using stream capture</p>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
@@ -60,7 +60,7 @@
               </ul>
             </li>
           </ul>
-        </div>
+        </nav>
 <p>The usage of <a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">tf::<wbr />cudaFlowCapturer</a> is similar to <a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a>, except users can call the method <a href="classtf_1_1cudaFlowCapturer.html#ad0d937ae0d77239f148b66a77e35db41" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />on</a> to capture a sequence of asynchronous CUDA operations through the given stream. The following example creates a CUDA graph that captures two kernel tasks, <code>task_1</code> and <code>task_2</code>, where <code>task_1</code> runs before <code>task_2</code>.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlowCapturer</span><span class="o">&amp;</span><span class="w"> </span><span class="n">capturer</span><span class="p">){</span><span class="w"></span>
 
 <span class="w">  </span><span class="c1">// capture my_kernel_1 through the given stream managed by the capturer</span>
@@ -1020,8 +1020,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

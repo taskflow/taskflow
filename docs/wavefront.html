@@ -49,13 +49,13 @@
           <span class="m-breadcrumb"><a href="Examples.html">Learning from Examples</a> &raquo;</span>
           Wavefront Parallelism
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#WavefrontComputingFormulation">Problem Formulation</a></li>
             <li><a href="#WavefrontTaskGraph">Wavefront Task Graph</a></li>
           </ul>
-        </div>
+        </nav>
 <p>We study the wavefront parallelism, which is a common pattern in dynamic programming to sweep elements in a diagonal direction.</p><section id="WavefrontComputingFormulation"><h2><a href="#WavefrontComputingFormulation">Problem Formulation</a></h2><p>The computation starts at a singular point at a corner of a data plan (e.g., grid) and propagates its effect diagonally to other elements. This sweep of computation is known as <em>wavefront</em>. Each point in the wavefront can be computed in parallel. The following example shows a wavefront parallelism in a 2D matrix.</p><img class="m-image" src="wavefront_1.png" alt="Image" style="width: 70%;" /><p>We partition the 9x9 grid into a 3x3 block and assign a task to one block. The wavefront propagates task dependencies from the top-left block all the way to the bottom-right block. Each task precedes two tasks, one to the right and another below.</p></section><section id="WavefrontTaskGraph"><h2><a href="#WavefrontTaskGraph">Wavefront Task Graph</a></h2><p>We can describe the wavefront parallelism in a simple two-level loop. Since we need to address the two tasks upper and left to a task when creating its dependencies, we use a 2D vector to pre-allocate all tasks via <a href="classtf_1_1FlowBuilder.html#acab0b4ac82260f47fdb36a3244ee3aaf" class="m-doc">tf::<wbr />Taskflow::<wbr />placeholder</a>.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span><span class="cp"></span>
 
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -65,7 +65,7 @@
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">node</span><span class="p">(</span><span class="n">num_blocks</span><span class="p">);</span><span class="w"></span>
 <span class="w">  </span>
 <span class="w">  </span><span class="c1">// create num_blocks*num_blocks placeholder tasks</span>
-<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="nl">n</span> <span class="p">:</span><span class="w"> </span><span class="n">node</span><span class="p">){</span><span class="w"></span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">n</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">node</span><span class="p">){</span><span class="w"></span>
 <span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">num_blocks</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">){</span><span class="w"></span>
 <span class="w">      </span><span class="n">n</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">taskflow</span><span class="p">.</span><span class="n">placeholder</span><span class="p">());</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w">   </span>
@@ -331,8 +331,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

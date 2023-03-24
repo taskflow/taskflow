@@ -3,7 +3,8 @@
 /*
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+              Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -36,7 +37,7 @@ body { margin: 0; }
   margin-left: -1rem;
   margin-right: -1rem;
 }
-.m-row:after {
+.m-row::after {
   content: ' ';
   clear: both;
   display: table;
@@ -791,7 +792,7 @@ figure.m-figure {
   position: relative;
   display: table;
 }
-figure.m-figure:before {
+figure.m-figure::before {
   position: absolute;
   content: ' ';
   top: 0;
@@ -804,7 +805,7 @@ figure.m-figure:before {
   border-radius: 0.2rem;
   border-color: #405363;
 }
-figure.m-figure.m-flat:before {
+figure.m-figure.m-flat::before {
   border-color: transparent;
 }
 figure.m-figure > * {
@@ -845,7 +846,7 @@ figure.m-figure.m-fullwidth > *:first-child {
 figure.m-figure.m-fullwidth img, figure.m-figure.m-fullwidth svg {
   width: 100%;
 }
-figure.m-figure.m-fullwidth:after {
+figure.m-figure.m-fullwidth::after {
   content: ' ';
   display: block;
   margin-top: 1rem;
@@ -858,7 +859,7 @@ figure.m-figure.m-fullwidth:after {
   position: relative;
   padding: 1rem;
 }
-.m-code-figure:before, .m-console-figure:before {
+.m-code-figure::before, .m-console-figure::before {
   position: absolute;
   content: ' ';
   top: 0;
@@ -870,13 +871,13 @@ figure.m-figure.m-fullwidth:after {
   border-width: 0.125rem;
   border-radius: 0.2rem;
 }
-.m-code-figure:before {
+.m-code-figure::before {
   border-color: #282e36;
 }
-.m-console-figure:before {
+.m-console-figure::before {
   border-color: #1a1c1d;
 }
-.m-code-figure.m-flat:before, .m-console-figure.m-flat:before {
+.m-code-figure.m-flat::before, .m-console-figure.m-flat::before {
   border-color: transparent;
 }
 .m-code-figure > pre:first-child, .m-console-figure > pre:first-child {
@@ -900,6 +901,14 @@ figure.m-figure figcaption, .m-code-figure figcaption, .m-console-figure figcapt
 }
 figure.m-figure figcaption a, .m-code-figure figcaption a, .m-console-figure figcaption a {
   text-decoration: none;
+}
+figure.m-figure figcaption .m-figure-description {
+  margin-top: 0.5rem;
+  font-weight: normal;
+  font-size: 1rem;
+}
+figure.m-figure figcaption .m-figure-description a {
+  text-decoration: underline;
 }
 .m-imagegrid > div {
   background-color: #2f363f;
@@ -1489,19 +1498,24 @@ table.m-table tr.m-dim td a:active, table.m-table td.m-dim a:active,
 table.m-table tr.m-dim th a:active, table.m-table th.m-dim a:active {
   color: #747474;
 }
-figure.m-figure.m-default:before { border-color: #34424d; }
+figure.m-figure.m-default::before { border-color: #34424d; }
 figure.m-figure.m-default figcaption { color: #dcdcdc; }
-figure.m-figure.m-primary:before { border-color: #a5c2db; }
+figure.m-figure.m-primary::before { border-color: #a5c2db; }
 figure.m-figure.m-primary figcaption { color: #a5c9ea; }
-figure.m-figure.m-success:before { border-color: #2a703f; }
+figure.m-figure.m-primary figcaption .m-figure-description { color: #dcdcdc; }
+figure.m-figure.m-success::before { border-color: #2a703f; }
 figure.m-figure.m-success figcaption { color: #3bd267; }
-figure.m-figure.m-warning:before { border-color: #6d702a; }
+figure.m-figure.m-success figcaption .m-figure-description { color: #dcdcdc; }
+figure.m-figure.m-warning::before { border-color: #6d702a; }
 figure.m-figure.m-warning figcaption { color: #c7cf2f; }
-figure.m-figure.m-danger:before { border-color: #702b2a; }
+figure.m-figure.m-warning figcaption .m-figure-description { color: #dcdcdc; }
+figure.m-figure.m-danger::before { border-color: #702b2a; }
 figure.m-figure.m-danger figcaption { color: #cd3431; }
-figure.m-figure.m-info:before { border-color: #2a4f70; }
+figure.m-figure.m-danger figcaption .m-figure-description { color: #dcdcdc; }
+figure.m-figure.m-info::before { border-color: #2a4f70; }
 figure.m-figure.m-info figcaption { color: #2f83cc; }
-figure.m-figure.m-dim:before { border-color: #2d3236; }
+figure.m-figure.m-info figcaption .m-figure-description { color: #dcdcdc; }
+figure.m-figure.m-dim::before { border-color: #2d3236; }
 figure.m-figure.m-dim { color: #747474; }
 figure.m-figure.m-dim a { color: #acacac; }
 figure.m-figure.m-dim a:hover, figure.m-figure.m-dim a:focus, figure.m-figure.m-dim a:active {
@@ -1885,7 +1899,7 @@ body > header > nav #m-navbar-brand .m-thin {
 body > header > nav #m-navbar-brand .m-breadcrumb {
   color: #747474;
 }
-body > header > nav a#m-navbar-show:before, body > header > nav a#m-navbar-hide:before {
+body > header > nav a#m-navbar-show::before, body > header > nav a#m-navbar-hide::before {
   content:'\2630';
 }
 body > header > nav #m-navbar-collapse {
@@ -2166,11 +2180,11 @@ article#m-jumbo > header #m-jumbo-cover {
   padding-bottom: 5rem;
 }
 article#m-jumbo > header #m-jumbo-image {
-  font-size: 2.5vmin;
+  font-size: 2vmin;
   margin-bottom: -3rem;
 }
 article#m-jumbo > header h1 {
-  font-size: 10vmin;
+  font-size: 8vmin;
 }
 article#m-jumbo > header h2 {
   font-size: 3vmin;
@@ -2605,12 +2619,14 @@ article:last-child, article section:last-child { margin-bottom: 0; }
 .m-console .g-AnsiBrightCyan { color: #16a085; font-weight: bold }
 .m-console .g-AnsiBrightDefault { color: #ffffff; font-weight: bold }
 .m-console .g-AnsiBrightGreen { color: #1cdc9a; font-weight: bold }
+.m-console .g-AnsiBrightInvertedDefault { color: #1a1c1d; font-weight: bold }
 .m-console .g-AnsiBrightMagenta { color: #8e44ad; font-weight: bold }
 .m-console .g-AnsiBrightRed { color: #c0392b; font-weight: bold }
 .m-console .g-AnsiBrightWhite { color: #ffffff; font-weight: bold }
 .m-console .g-AnsiBrightYellow { color: #fdbc4b; font-weight: bold }
 .m-console .g-AnsiCyan { color: #1abc9c }
 .m-console .g-AnsiGreen { color: #11d116 }
+.m-console .g-AnsiInvertedDefault { color: #1a1c1d }
 .m-console .g-AnsiMagenta { color: #9b59b6 }
 .m-console .g-AnsiRed { color: #ed1515 }
 .m-console .g-AnsiWhite { color: #fcfcfc }
@@ -2641,8 +2657,8 @@ ul.m-doc li.m-doc-collapsible > a:first-child:active {
   color: #dcdcdc;
 }
 a.m-doc-self,
-ul.m-doc li.m-doc-expansible > a:first-child:before,
-ul.m-doc li.m-doc-collapsible > a:first-child:before {
+ul.m-doc li.m-doc-expansible > a:first-child::before,
+ul.m-doc li.m-doc-collapsible > a:first-child::before {
   color: #a5c9ea;
 }
 a.m-doc-self:hover, a.m-doc-self:focus, a.m-doc-self:active,
@@ -2703,14 +2719,14 @@ ul.m-doc li.m-doc-expansible, ul.m-doc li.m-doc-collapsible {
 ul.m-doc li.m-doc-expansible > ul.m-doc, ul.m-doc li.m-doc-collapsible > ul.m-doc {
   margin-left: 0.5rem;
 }
-ul.m-doc li.m-doc-expansible > a:first-child:before, ul.m-doc li.m-doc-collapsible > a:first-child:before {
+ul.m-doc li.m-doc-expansible > a:first-child::before, ul.m-doc li.m-doc-collapsible > a:first-child::before {
   background-color: #2f363f;
   display: inline-block;
   width: 0.4rem;
   font-weight: bold;
 }
-ul.m-doc li.m-doc-expansible > a:first-child:before { content: '⊕'; }
-ul.m-doc li.m-doc-collapsible > a:first-child:before { content: '⊖'; }
+ul.m-doc li.m-doc-expansible > a:first-child::before { content: '⊕'; }
+ul.m-doc li.m-doc-collapsible > a:first-child::before { content: '⊖'; }
 h1 .m-doc-template, h1 .m-doc-include {
   font-size: 1.3rem;
   font-weight: normal;

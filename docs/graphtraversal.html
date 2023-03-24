@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="Examples.html">Learning from Examples</a> &raquo;</span>
           Graph Traversal
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#GraphTraversalProblemFormulation">Problem Formulation</a></li>
@@ -57,7 +57,7 @@
             <li><a href="#GraphTraversalStaticTraversal">Static Traversal</a></li>
             <li><a href="#GraphTraversalDynamicTraversal">Dynamic Traversal</a></li>
           </ul>
-        </div>
+        </nav>
 <p>We study the graph traversal problem by visiting each vertex in parallel following their edge dependencies. Traversing a graph is a fundamental building block of many graph applications especially for large-scale graph analytics.</p><section id="GraphTraversalProblemFormulation"><h2><a href="#GraphTraversalProblemFormulation">Problem Formulation</a></h2><p>Given a directed acyclic graph (DAG), i.e., a graph that has no cycles, we would like to traverse each vertex in order without breaking dependency constraints defined by edges. The following figure shows a graph of six vertices and seven edges. Each vertex represents a particular task and each edge represents a task dependency between two tasks.</p><div class="m-graph"><svg style="width: 16.625rem; height: 16.438rem;" viewBox="0.00 0.00 265.85 263.08">
 <g transform="scale(1 1) rotate(0) translate(4 259.0782)">
 <title>Taskflow</title>
@@ -128,7 +128,7 @@
 </g>
 </g>
 </svg>
-</div><p>Traversing the above graph in parallel, the maximum parallelism we can acquire is three. When Task1 finishes, we can run Task2, Task3, and Task4 in parallel.</p></section><section id="GraphTraversalGraphRepresentation"><h2><a href="#GraphTraversalGraphRepresentation">Graph Representation</a></h2><p>We define the data structure of our graph. The graph is represented by an array of nodes of the following structure:</p><pre class="m-code"><span class="k">struct</span> <span class="nc">Node</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+</div><p>Traversing the above graph in parallel, the maximum parallelism we can acquire is three. When Task1 finishes, we can run Task2, Task3, and Task4 in parallel.</p></section><section id="GraphTraversalGraphRepresentation"><h2><a href="#GraphTraversalGraphRepresentation">Graph Representation</a></h2><p>We define the data structure of our graph. The graph is represented by an array of nodes of the following structure:</p><pre class="m-code"><span class="k">struct</span><span class="w"> </span><span class="nc">Node</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">idx</span><span class="p">;</span><span class="w">                          </span><span class="c1">// index of the node in a array</span>
 <span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">visited</span><span class="w"> </span><span class="p">{</span><span class="nb">false</span><span class="p">};</span><span class="w"></span>
@@ -1134,8 +1134,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

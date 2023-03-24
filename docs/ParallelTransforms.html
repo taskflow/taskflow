@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="Algorithms.html">Taskflow Algorithms</a> &raquo;</span>
           Parallel Transforms
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#ParallelTransformsInclude">Include the Header</a></li>
@@ -57,7 +57,7 @@
             <li><a href="#ParallelBinaryTransformsOverARange">Create a Binary Parallel-Transform Task</a></li>
             <li><a href="#ParallelTransformsCfigureAnExecutionPolicy">Configure an Execution Policy</a></li>
           </ul>
-        </div>
+        </nav>
 <p>Taskflow provides template functions for constructing tasks to perform parallel transforms over ranges of items.</p><section id="ParallelTransformsInclude"><h2><a href="#ParallelTransformsInclude">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/algorithm/transform.hpp</code>, for creating a parallel-transform task.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/algorithm/transform.hpp&gt;</span><span class="cp"></span></pre></section><section id="ParallelTransformsOverARange"><h2><a href="#ParallelTransformsOverARange">Create a Unary Parallel-Transform Task</a></h2><p>Parallel-transform transforms a range of items, possibly with a different type for the transformed data, and stores the result in another range. The task created by <a href="classtf_1_1FlowBuilder.html#abd813bd7afcbd8e6f56dc67883917d1a" class="m-doc">tf::<wbr />Taskflow::<wbr />transform(B first1, E last1, O d_first, C c)</a> is equivalent to a parallel execution of the following loop:</p><pre class="m-code"><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">first1</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="o">*</span><span class="n">d_first</span><span class="o">++</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="p">(</span><span class="o">*</span><span class="n">first1</span><span class="o">++</span><span class="p">);</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>By default, <a href="classtf_1_1FlowBuilder.html#abd813bd7afcbd8e6f56dc67883917d1a" class="m-doc">tf::<wbr />Taskflow::<wbr />transform(B first1, E last1, O d_first, C c)</a> creates a task to spawn a subflow (see <a href="DynamicTasking.html" class="m-doc">Dynamic Tasking</a>) that simultaneously applies the callable <code>c</code> to the object obtained by dereferencing every iterator in the range <code>[first1, last1)</code> and stores the result in another range beginning at <code>d_first</code>. It is user&#x27;s responsibility for ensuring the range is valid within the execution of the parallel-transform task. <a href="classtf_1_1Taskflow.html" class="m-doc">Taskflow</a>&#x27;s parallel-transform tasks work on all iterable STL containers.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span><span class="w"></span>
@@ -155,8 +155,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

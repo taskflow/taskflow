@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>Pipeflow <span class="m-thin">class</span>
         </h1>
         <p>class to create a pipeflow object used by the pipe callable</p>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
@@ -60,7 +60,7 @@
               </ul>
             </li>
           </ul>
-        </div>
+        </nav>
 <p><a href="classtf_1_1Pipeflow.html" class="m-doc">Pipeflow</a> represents a <em>scheduling token</em> in the pipeline scheduling framework. A pipeflow is created by the pipeline scheduler at runtime to pass to the pipe callable. Users can query the present statistics of that scheduling token, including the line identifier, pipe identifier, and token identifier, and build their application algorithms based on these statistics. At the first stage, users can explicitly call the stop method to stop the pipeline scheduler.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="p">[](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pf</span><span class="p">){</span><span class="w"></span>
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;token id=&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()</span><span class="w"></span>
 <span class="w">            </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; at line=&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()</span><span class="w"></span>
@@ -99,8 +99,8 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a2f909c75e15b6bdf83faf2c0b74c7a74" class="m-doc-self">num_deferrals</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>queries the number of deferrals</dd>
-            <dt id="a5fbd2326b68a69826423bf0528a7c961">
-              <span class="m-doc-wrap-bumper">void <a href="#a5fbd2326b68a69826423bf0528a7c961" class="m-doc-self">defer</a>(</span><span class="m-doc-wrap">size_t token)</span>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#a5fbd2326b68a69826423bf0528a7c961" class="m-doc">defer</a>(</span><span class="m-doc-wrap">size_t token)</span>
             </dt>
             <dd>pushes token in _dependents</dd>
           </dl>
@@ -112,7 +112,14 @@
               <span class="m-doc-wrap-bumper">void tf::<wbr />Pipeflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a830b7f204cb87fff17e8d424918d9453" class="m-doc-self">stop</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>stops the pipeline scheduling</p>
-<p>Only the first pipe can call this method to stop the pipeline. Others have no effect.</p>
+<p>Only the first pipe can call this method to stop the pipeline. Calling stop from other pipes will throw exception.</p>
+          </div></section>
+          <section class="m-doc-details" id="a5fbd2326b68a69826423bf0528a7c961"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Pipeflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a5fbd2326b68a69826423bf0528a7c961" class="m-doc-self">defer</a>(</span><span class="m-doc-wrap">size_t token)</span></span>
+            </h3>
+            <p>pushes token in _dependents</p>
+<p>Only the first pipe can call this method to defer the current scheduling token to the given token.</p>
           </div></section>
         </section>
       </div>
@@ -153,8 +160,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

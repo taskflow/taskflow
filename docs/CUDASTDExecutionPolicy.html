@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="cudaStandardAlgorithms.html">CUDA Standard Algorithms</a> &raquo;</span>
           Execution Policy
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#CUDASTDExecutionPolicyIncludeTheHeader">Include the Header</a></li>
@@ -57,7 +57,7 @@
             <li><a href="#CUDASTDDefineAnExecutionPolicy">Define an Execution Policy</a></li>
             <li><a href="#CUDASTDAllocateMemoryBufferForAlgorithms">Allocate Memory Buffer for Algorithms</a></li>
           </ul>
-        </div>
+        </nav>
 <p>Taskflow provides standalone template methods for expressing common parallel algorithms on a GPU. Each of these methods is governed by an <em>execution policy object</em> to configure the kernel execution parameters.</p><section id="CUDASTDExecutionPolicyIncludeTheHeader"><h2><a href="#CUDASTDExecutionPolicyIncludeTheHeader">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/cuda/cudaflow.hpp</code>, for creating a CUDA execution policy object.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/cuda/cudaflow.hpp&gt;</span><span class="cp"></span></pre></section><section id="CUDASTDParameterizePerformance"><h2><a href="#CUDASTDParameterizePerformance">Parameterize Performance</a></h2><p>Taskflow parameterizes most CUDA algorithms in terms of <em>the number of threads per block</em> and <em>units of work per thread</em>, which can be specified in the execution policy template type, <a href="classtf_1_1cudaExecutionPolicy.html" class="m-doc">tf::<wbr />cudaExecutionPolicy</a>. The design is inspired by <a href="https://moderngpu.github.io/">Modern GPU Programming</a> authored by Sean Baxter to achieve high-performance GPU computing.</p></section><section id="CUDASTDDefineAnExecutionPolicy"><h2><a href="#CUDASTDDefineAnExecutionPolicy">Define an Execution Policy</a></h2><p>The following example defines an execution policy object, <code>policy</code>, which configures (1) each block to invoke 512 threads and (2) each of these <code>512</code> threads to perform <code>11</code> units of work. Block size must be a power of two. It is always a good idea to specify an odd number in the second parameter to avoid bank conflicts.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">cudaExecutionPolicy</span><span class="o">&lt;</span><span class="mi">512</span><span class="p">,</span><span class="w"> </span><span class="mi">11</span><span class="o">&gt;</span><span class="w"> </span><span class="n">policy</span><span class="p">;</span><span class="w"></span></pre><p>By default, the execution policy object is associated with the CUDA <em>default stream</em> (i.e., 0). Default stream can incur significant overhead due to the global synchronization. You can associate an execution policy with another stream as shown below:</p><pre class="m-code"><span class="c1">// create a RAII-styled stream object</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">cudaStream</span><span class="w"> </span><span class="n">stream1</span><span class="p">,</span><span class="w"> </span><span class="n">stream2</span><span class="p">;</span><span class="w"></span>
 
@@ -104,8 +104,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

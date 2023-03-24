@@ -49,13 +49,13 @@
           <span class="m-breadcrumb"><a href="Examples.html">Learning from Examples</a> &raquo;</span>
           Fibonacci Number
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#FibonacciNumberProblem">Problem Formulation</a></li>
             <li><a href="#RecursiveFibonacciParallelism">Recursive Fibonacci Parallelism</a></li>
           </ul>
-        </div>
+        </nav>
 <p>We study the classic problem, <em>Fibonacci Number</em>, to demonstrate the use of recursive task parallelism.</p><section id="FibonacciNumberProblem"><h2><a href="#FibonacciNumberProblem">Problem Formulation</a></h2><p>In mathematics, the Fibonacci numbers, commonly denoted <code>F(n)</code>, form a sequence such that each number is the sum of the two preceding ones, starting from 0 and 1.</p><p><code>0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...</code></p><p>A common solution for computing fibonacci numbers is <em>recursion</em>.</p><pre class="m-code"><span class="kt">int</span><span class="w"> </span><span class="nf">fib</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="mi">-2</span><span class="p">);</span><span class="w"></span>
@@ -319,8 +319,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

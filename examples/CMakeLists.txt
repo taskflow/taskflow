@@ -20,12 +20,12 @@ list(APPEND TF_EXAMPLES
   parallel_sort
   pipeline
   scalable_pipeline
-  scalable_pipeline_tokens
+  scalable_pipeline_with_deferred_tokens
   text_pipeline
   taskflow_pipeline
   parallel_graph_pipeline
   parallel_data_pipeline
-  parallel_deferred_pipeline
+  pipeline_with_deferred_tokens
   run 
   corun
   runtime

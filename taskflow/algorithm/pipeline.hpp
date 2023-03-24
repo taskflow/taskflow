@@ -33,41 +33,38 @@ namespace tf {
 /** @private */
 class DeferredPipeflow {
 
-template <typename... Ps>
-friend class Pipeline;
-
-// chchiu
-template <typename P>
-friend class ScalablePipeline;
-// chchiu
-
-
-public:
-
-  DeferredPipeflow() = default;
-  DeferredPipeflow(const DeferredPipeflow&) = delete;
-  DeferredPipeflow(DeferredPipeflow&&) = delete;
-
-  DeferredPipeflow(size_t t, size_t n, std::unordered_set<size_t>&& dep) : 
-    _token{t}, _num_deferrals{n}, _dependents{std::move(dep)} {
-  }
-
-  DeferredPipeflow& operator = (const DeferredPipeflow&) = delete;
-  DeferredPipeflow& operator = (DeferredPipeflow&&) = delete;
-
-private:
-
-  // token id
-  size_t _token;
-
-  // number of deferrals
-  size_t _num_deferrals;  
-
-  // dependents
-  // For example,
-  // 12.defer(7); 12.defer(16)
-  // _dependents = {7, 16}
-  std::unordered_set<size_t> _dependents;
+  template <typename... Ps>
+  friend class Pipeline;
+  
+  template <typename P>
+  friend class ScalablePipeline;
+  
+  public:
+  
+    DeferredPipeflow() = default;
+    DeferredPipeflow(const DeferredPipeflow&) = delete;
+    DeferredPipeflow(DeferredPipeflow&&) = delete;
+  
+    DeferredPipeflow(size_t t, size_t n, std::unordered_set<size_t>&& dep) : 
+      _token{t}, _num_deferrals{n}, _dependents{std::move(dep)} {
+    }
+  
+    DeferredPipeflow& operator = (const DeferredPipeflow&) = delete;
+    DeferredPipeflow& operator = (DeferredPipeflow&&) = delete;
+  
+  private:
+  
+    // token id
+    size_t _token;
+  
+    // number of deferrals
+    size_t _num_deferrals;  
+  
+    // dependents
+    // For example,
+    // 12.defer(7); 12.defer(16)
+    // _dependents = {7, 16}
+    std::unordered_set<size_t> _dependents;
 };
 
 
@@ -145,7 +142,7 @@ class Pipeflow {
   @brief stops the pipeline scheduling
 
   Only the first pipe can call this method to stop the pipeline.
-  Others have no effect.
+  Calling stop from other pipes will throw exception.
   */
   void stop() {
     if(_pipe != 0) {
@@ -154,7 +151,6 @@ class Pipeflow {
     _stop = true;
   }
 
-  
   /**
   @brief queries the number of deferrals
   */
@@ -164,9 +160,14 @@ class Pipeflow {
 
   /**
   @brief pushes token in _dependents
+
+  Only the first pipe can call this method to defer the current
+  scheduling token to the given token.
   */
   void defer(size_t token) {
-    assert(_pipe == 0);
+    if(_pipe != 0) {
+      TF_THROW("only the first pipe can defer the current scheduling token");
+    }
     _dependents.insert(token);
   }
   
@@ -538,13 +539,9 @@ class Pipeline {
   auto _gen_meta(std::tuple<Ps...>&&, std::index_sequence<I...>);
 
   void _on_pipe(Pipeflow&, Runtime&);
-  
   void _build();
-
   void _check_dependents(Pipeflow&);
-  
   void _construct_deferred_tokens(Pipeflow&);
-  
   void _resolve_token_dependencies(Pipeflow&); 
 };
 
@@ -640,7 +637,6 @@ void Pipeline<Ps...>::reset() {
   assert(_ready_tokens.empty() == true);
   _token_dependencies.clear();
   _deferred_tokens.clear();
-
 
   _lines[0][0].join_counter.store(0, std::memory_order_relaxed);
 
@@ -1286,7 +1282,6 @@ ScalablePipeline<P>::ScalablePipeline(size_t num_lines, P first, P last) :
   _build();
 }
 
-// TODO: fix and add unittest
 // move constructor
 template <typename P>
 ScalablePipeline<P>::ScalablePipeline(ScalablePipeline&& rhs) :
@@ -1305,7 +1300,6 @@ ScalablePipeline<P>::ScalablePipeline(ScalablePipeline&& rhs) :
   rhs._num_tokens       = 0;
 }
 
-// TODO: fix and add unittest
 // move assignment operator
 template <typename P>
 ScalablePipeline<P>& ScalablePipeline<P>::operator = (ScalablePipeline&& rhs) {
@@ -1316,7 +1310,6 @@ ScalablePipeline<P>& ScalablePipeline<P>::operator = (ScalablePipeline&& rhs) {
   _pipeflows            = std::move(rhs._pipeflows);
   _lines                = std::move(rhs._lines);
   rhs._num_tokens       = 0;
-  
   _ready_tokens         = std::move(rhs._ready_tokens);
   _token_dependencies   = std::move(rhs._token_dependencies);
   _deferred_tokens      = std::move(rhs._deferred_tokens);
@@ -1406,12 +1399,8 @@ void ScalablePipeline<P>::reset() {
   for(size_t l = 0; l<num_lines(); l++) {
     _pipeflows[l]._pipe = 0;
     _pipeflows[l]._line = l;
-  
-    // chchiu
     _pipeflows[l]._num_deferrals = 0;
     _pipeflows[l]._dependents.clear();
-    // chchiu
-  
   }
 
   _line(0, 0).join_counter.store(0, std::memory_order_relaxed);
@@ -1434,11 +1423,9 @@ void ScalablePipeline<P>::reset() {
     );
   }
   
-  // chchiu  
   assert(_ready_tokens.empty() == true);
   _token_dependencies.clear();
   _deferred_tokens.clear();
-  // chchiu
 }
 
 // Procedure: _on_pipe
@@ -1458,7 +1445,6 @@ void ScalablePipeline<P>::_on_pipe(Pipeflow& pf, Runtime& rt) {
   }
 }
 
-// chchiu
 template <typename P>
 void ScalablePipeline<P>::_check_dependents(Pipeflow& pf) {
   ++pf._num_deferrals;
@@ -1531,8 +1517,6 @@ void ScalablePipeline<P>::_resolve_token_dependencies(Pipeflow& pf) {
     _token_dependencies.erase(it);
   }
 }
-// chchiu
-
 
 // Procedure: _build
 template <typename P>

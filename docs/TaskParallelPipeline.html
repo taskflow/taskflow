@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="Algorithms.html">Taskflow Algorithms</a> &raquo;</span>
           Task-parallel Pipeline
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#TaskParallelPipelineIncludeHeaderFile">Include the Header</a></li>
@@ -66,7 +66,7 @@
             <li><a href="#ResetPipeline">Reset a Pipeline</a></li>
             <li><a href="#TaskParallelPipelineLearnMore">Learn More about Taskflow Pipeline</a></li>
           </ul>
-        </div>
+        </nav>
 <p>Taskflow provides a <em>task-parallel</em> pipeline programming framework for you to implement a pipeline algorithm. Pipeline parallelism refers to a parallel execution of multiple data tokens through a linear chain of pipes or stages. Each stage processes the data token sent from the previous stage, applies the given callable to that data token, and then sends the result to the next stage. Multiple data tokens can be processed simultaneously across different stages.</p><section id="TaskParallelPipelineIncludeHeaderFile"><h2><a href="#TaskParallelPipelineIncludeHeaderFile">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/algorithm/pipeline.hpp</code>, for implementing task-parallel pipeline algorithms.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/algorithm/pipeline.hpp&gt;</span><span class="cp"></span></pre></section><section id="UnderstandPipelineScheduling"><h2><a href="#UnderstandPipelineScheduling">Understand the Pipeline Scheduling Framework</a></h2><p>A <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> object is a <em>composable</em> graph to create a <em>pipeline scheduling framework</em> through a module task in a taskflow (see <a href="ComposableTasking.html" class="m-doc">Composable Tasking</a>). Unlike the conventional pipeline programming frameworks (e.g., Intel TBB Parallel Pipeline), Taskflow&#x27;s pipeline algorithm does not provide any data abstraction, which often restricts users from optimizing data layouts in their applications, but a flexible framework for users to customize their application data atop an efficient pipeline scheduling framework.</p><div class="m-graph"><svg style="width: 22.250rem; height: 22.688rem;" viewBox="0.00 0.00 356.00 363.08">
 <g transform="scale(1 1) rotate(0) translate(4 359.0782)">
 <title>Taskflow</title>
@@ -1277,8 +1277,8 @@ stop</pre><p>The output can be different from run to run, since the second pipe 
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

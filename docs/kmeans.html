@@ -49,14 +49,14 @@
           <span class="m-breadcrumb"><a href="Examples.html">Learning from Examples</a> &raquo;</span>
           k-means Clustering
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#KMeansProblemFormulation">Problem Formulation</a></li>
             <li><a href="#ParallelKMeansUsingCPUs">Parallel k-means using CPUs</a></li>
             <li><a href="#KMeansBenchmarking">Benchmarking</a></li>
           </ul>
-        </div>
+        </nav>
 <p>We study a fundamental clustering problem in unsupervised learning, <em>k-means clustering</em>. We will begin by discussing the problem formulation and then learn how to write a parallel k-means algorithm.</p><section id="KMeansProblemFormulation"><h2><a href="#KMeansProblemFormulation">Problem Formulation</a></h2><p>k-means clustering uses <em>centroids</em>, k different randomly-initiated points in the data, and assigns every data point to the nearest centroid. After every point has been assigned, the centroid is moved to the average of all of the points assigned to it. We describe the k-means algorithm in the following steps:</p><ul><li>Step 1: initialize k random centroids</li><li>Step 2: for every data point, find the nearest centroid (L2 distance or other measurements) and assign the point to it</li><li>Step 3: for every centroid, move the centroid to the average of the points assigned to that centroid</li><li>Step 4: go to Step 2 until converged (no more changes in the last few iterations) or maximum iterations reached</li></ul><p>The algorithm is illustrated as follows:</p><img class="m-image" src="kmeans_1.png" alt="Image" /><p>A sequential implementation of k-means is described as follows:</p><pre class="m-code"><span class="c1">// sequential implementation of k-means on a CPU</span>
 <span class="c1">// N: number of points</span>
 <span class="c1">// K: number of clusters</span>
@@ -453,8 +453,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

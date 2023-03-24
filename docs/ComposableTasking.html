@@ -49,14 +49,14 @@
           <span class="m-breadcrumb"><a href="Cookbook.html">Cookbook</a> &raquo;</span>
           Composable Tasking
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#ComposeATaskflow">Compose a Taskflow</a></li>
             <li><a href="#CreateAModuleTask">Create a Module Task</a></li>
             <li><a href="#CreateACustomComposableGraph">Create a Custom Composable Graph</a></li>
           </ul>
-        </div>
+        </nav>
 <p>Composition is a key to improve the programmability of a complex workflow. This chapter describes how to create a large parallel graph through composition of modular and reusable blocks that are easier to optimize.</p><section id="ComposeATaskflow"><h2><a href="#ComposeATaskflow">Compose a Taskflow</a></h2><p>A powerful feature of <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> is its <em>composable</em> interface. You can break down a large parallel workload into smaller pieces each designed to run a specific task dependency graph. This largely facilitates the <em>modularity</em> of writing a parallel task program.</p><pre class="m-code"><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="c1">// f1 has three independent tasks</span>
 <span class="w"> </span><span class="mi">2</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">f1</span><span class="p">;</span><span class="w"></span>
 <span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="n">f1</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;F1&quot;</span><span class="p">);</span><span class="w"></span>
@@ -387,7 +387,7 @@
 </g>
 </g>
 </svg>
-</div></section><section id="CreateACustomComposableGraph"><h2><a href="#CreateACustomComposableGraph">Create a Custom Composable Graph</a></h2><p>Taskflow allows you to create a custom graph object that can participate in the scheduling using composition. To become a module task, your class <code>T</code> must define a method <code>T::graph()</code> that returns a reference to a <a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a> object. The following example defines a custom graph object that can be assembled in a taskflow throw composition:</p><pre class="m-code"><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="k">struct</span> <span class="nc">CustomGraph</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+</div></section><section id="CreateACustomComposableGraph"><h2><a href="#CreateACustomComposableGraph">Create a Custom Composable Graph</a></h2><p>Taskflow allows you to create a custom graph object that can participate in the scheduling using composition. To become a module task, your class <code>T</code> must define a method <code>T::graph()</code> that returns a reference to a <a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a> object. The following example defines a custom graph object that can be assembled in a taskflow throw composition:</p><pre class="m-code"><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">CustomGraph</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w"> </span><span class="mi">2</span><span class="o">:</span><span class="w">   </span><span class="n">tf</span><span class="o">::</span><span class="n">Graph</span><span class="w"> </span><span class="n">graph</span><span class="p">;</span><span class="w"></span>
 <span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w">   </span><span class="n">CustomGraph</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w"> </span><span class="mi">4</span><span class="o">:</span><span class="w">     </span><span class="n">tf</span><span class="o">::</span><span class="n">FlowBuilder</span><span class="w"> </span><span class="n">builder</span><span class="p">(</span><span class="n">graph</span><span class="p">);</span><span class="w"></span>
@@ -439,8 +439,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="cudaStandardAlgorithms.html">CUDA Standard Algorithms</a> &raquo;</span>
           Parallel Reduction
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#CUDASTDParallelReductionIncludeTheHeader">Include the Header</a></li>
@@ -58,7 +58,7 @@
             <li><a href="#CUDASTDReduceTransformedItemsWithAnInitialValue">Reduce a Range of Transformed Items with an Initial Value</a></li>
             <li><a href="#CUDASTDReduceTransformedItemsWithoutAnInitialValue">Reduce a Range of Transformed Items without an Initial Value</a></li>
           </ul>
-        </div>
+        </nav>
 <p>Taskflow provides standard template methods for reducing a range of items on a CUDA GPU.</p><section id="CUDASTDParallelReductionIncludeTheHeader"><h2><a href="#CUDASTDParallelReductionIncludeTheHeader">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/cuda/algorithm/reduce.hpp</code>, for using the parallel-reduction algorithm.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/cuda/algorithm/reduce.hpp&gt;</span><span class="cp"></span></pre></section><section id="CUDASTDReduceItemsWithAnInitialValue"><h2><a href="#CUDASTDReduceItemsWithAnInitialValue">Reduce a Range of Items with an Initial Value</a></h2><p><a href="namespacetf.html#a8a872d2a0ac73a676713cb5be5aa688c" class="m-doc">tf::<wbr />cuda_reduce</a> performs a parallel reduction over a range of elements specified by <code>[first, last)</code> using the binary operator <code>bop</code> and stores the reduced result in <code>result</code>. It represents the parallel execution of the following reduction loop on a GPU:</p><pre class="m-code"><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bop</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">first</span><span class="o">++</span><span class="p">);</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>The variable <code>result</code> participates in the reduction loop and must be initialized with an initial value. The following code performs a parallel reduction to sum all the numbers in the given range with an initial value <code>1000</code>:</p><pre class="m-code"><span class="k">const</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000000</span><span class="p">;</span><span class="w"></span>
@@ -228,8 +228,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

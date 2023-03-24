@@ -61,7 +61,7 @@
             </tr>
           </tbody>
         </table>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
@@ -73,7 +73,7 @@
               </ul>
             </li>
           </ul>
-        </div>
+        </nav>
 <p>A pipe represents a stage of a pipeline. A pipe can be either <em>parallel</em> direction or <em>serial</em> direction (specified by <a href="namespacetf.html#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">tf::<wbr />PipeType</a>) and is coupled with a callable to invoke by the pipeline scheduler. The callable must take a referenced <a href="classtf_1_1Pipeflow.html" class="m-doc">tf::<wbr />Pipeflow</a> object in the first argument:</p><pre class="m-code"><span class="n">Pipe</span><span class="p">{</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="p">[](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">){}}</span><span class="w"></span></pre><p>The pipeflow object is used to query the statistics of a scheduling token in the pipeline, such as pipe, line, and token numbers.</p>
         <section id="pub-types">
           <h2><a href="#pub-types">Public types</a></h2>
@@ -244,8 +244,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

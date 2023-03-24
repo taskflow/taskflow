@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>FlowBuilder <span class="m-thin">class</span>
         </h1>
         <p>class to build a task dependency graph</p>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
@@ -62,7 +62,7 @@
               </ul>
             </li>
           </ul>
-        </div>
+        </nav>
 <p>The class provides essential methods to construct a task dependency graph from which <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> and <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> are derived.</p>
         <section id="derived-classes">
           <h2><a href="#derived-classes">Derived classes</a></h2>
@@ -546,7 +546,7 @@
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">comp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t2</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">t1</span><span class="p">);</span><span class="w"></span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t2</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;t2&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
 <span class="n">init</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">comp</span><span class="p">);</span><span class="w"></span></pre><p>The taskflow object <code>t2</code> is composed of another taskflow object <code>t1</code>, preceded by another static task <code>init</code>. When taskflow <code>t2</code> is submitted to an executor, <code>init</code> will run first and then <code>comp</code> which spwans its definition in taskflow <code>t1</code>.</p><p>The target <code>object</code> being composed must define the method <code>T::graph()</code> that returns a reference to a graph object of type <a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a> such that it can interact with the executor. For example:</p><pre class="m-code"><span class="c1">// custom struct</span>
-<span class="k">struct</span> <span class="nc">MyObj</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">MyObj</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Graph</span><span class="w"> </span><span class="n">graph</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="n">MyObj</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">FlowBuilder</span><span class="w"> </span><span class="nf">builder</span><span class="p">(</span><span class="n">graph</span><span class="p">);</span><span class="w"></span>
@@ -1215,8 +1215,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

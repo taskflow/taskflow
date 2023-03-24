@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="Algorithms.html">Taskflow Algorithms</a> &raquo;</span>
           Parallel Sort
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#ParallelSortInclude">Include the Header</a></li>
@@ -57,7 +57,7 @@
             <li><a href="#SortARangeOfItemsWithACustomComparator">Sort a Range of Items with a Custom Comparator</a></li>
             <li><a href="#ParallelSortEnableStatefulDataPassing">Enable Stateful Data Passing</a></li>
           </ul>
-        </div>
+        </nav>
 <p>Taskflow provides template functions for constructing tasks to sort ranges of items in parallel.</p><section id="ParallelSortInclude"><h2><a href="#ParallelSortInclude">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/algorithm/sort.hpp</code>, for creating a parallel-sort task.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/algorithm/sort.hpp&gt;</span><span class="cp"></span></pre></section><section id="SortARangeOfItems"><h2><a href="#SortARangeOfItems">Sort a Range of Items</a></h2><p>The task created by <a href="classtf_1_1FlowBuilder.html#a7d844e9856c7c65b26ccdb83ffdab1d6" class="m-doc">tf::<wbr />Taskflow::<wbr />sort(B first, E last)</a> performs parallel sort to rank a range of elements specified by <code>[first, last)</code> in increasing order. The given iterators must be <em>random-accessible</em>. The following example creates a task to sort a data vector in increasing order.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
 
@@ -135,8 +135,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

@@ -48,7 +48,7 @@
         <h1>
           Building and Installing
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#BAISupportedCompilers">Supported Compilers</a></li>
@@ -59,7 +59,7 @@
             <li><a href="#BAIBuildBenchmarks">Build Benchmarks</a></li>
             <li><a href="#BAIBuildDocumentation">Build Documentation</a></li>
           </ul>
-        </div>
+        </nav>
 <p>This page describes how to set up Taskflow in your project. We will also go through the building process of unit tests and examples.</p><section id="BAISupportedCompilers"><h2><a href="#BAISupportedCompilers">Supported Compilers</a></h2><p>To use Taskflow, you only need a compiler that supports C++17:</p><ul><li>GNU C++ Compiler at least v8.4 with -std=c++17</li><li>Clang C++ Compiler at least v6.0 with -std=c++17</li><li>Microsoft Visual Studio at least v15.7 (MSVC++ 19.14)</li><li>AppleClang Xode Version at least v12.0 with -std=c++17</li><li>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17</li><li>Intel C++ Compiler (nvcc) at least v19.0.1 with -std=c++17</li><li>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</li></ul><p>Taskflow works on Linux, Windows, and Mac OS X.</p></section><section id="BAIIntegrateTaskflowToYourProject"><h2><a href="#BAIIntegrateTaskflowToYourProject">Integrate Taskflow to Your Project</a></h2><p>Taskflow is <em>header-only</em> and there is no need for installation. Simply download the source and copy the headers under the directory <code>taskflow/</code> to your project.</p><pre class="m-console"><span class="go">~$ git clone https://github.com/taskflow/taskflow.git</span>
 <span class="go">~$ cd taskflow/</span>
 <span class="go">~$ cp -r taskflow myproject/include/</span></pre><p>Taskflow is written in C++17 and is built on top of C++ standardized threading libraries to improve portability. To compile a Taskflow program, say <code>simple.cpp</code>, you need to tell the compiler where to find the Taskflow header files and link it through the system thread library (usually <a href="http://man7.org/linux/man-pages/man7/pthreads.7.html">POSIX threads</a> in Linux-like systems). Take gcc for an example:</p><pre class="m-console"><span class="go">~$ g++ simple.cpp -std=c++17 -I myproject/include/ -O2 -pthread -o simple</span></pre></section><section id="BAIBuildExamplesAndUnitTests"><h2><a href="#BAIBuildExamplesAndUnitTests">Build Examples and Unit Tests</a></h2><p>Taskflow uses CMake to build examples and unit tests. We recommend using out-of-source build.</p><pre class="m-console"><span class="go">~$ cd path/to/taskflow</span>
@@ -140,8 +140,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

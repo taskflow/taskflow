@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="Algorithms.html">Taskflow Algorithms</a> &raquo;</span>
           Parallel Reduction
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#ParallelReductionInclude">Include the Header</a></li>
@@ -57,7 +57,7 @@
             <li><a href="#A2ParallelTransformationReduction">Create a Parallel-Transform-Reduction Task</a></li>
             <li><a href="#ParallelReductionCfigureAnExecutionPolicy">Configure an Execution Policy</a></li>
           </ul>
-        </div>
+        </nav>
 <p>Taskflow provides template function that constructs a task to perform parallel reduction over a range of items.</p><section id="ParallelReductionInclude"><h2><a href="#ParallelReductionInclude">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/algorithm/reduce.hpp</code>, for creating a parallel-reduction task.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/algorithm/reduce.hpp&gt;</span><span class="cp"></span></pre></section><section id="A2ParallelReduction"><h2><a href="#A2ParallelReduction">Create a Parallel-Reduction Task</a></h2><p>The reduction task created by <a href="classtf_1_1FlowBuilder.html#aa9494fe7b862fc832884ce318e8a37f5" class="m-doc">tf::<wbr />Taskflow::<wbr />reduce(B first, E last, T&amp; result, O bop)</a> performs parallel reduction over a range of elements specified by <code>[first, last)</code> using the binary operator <code>bop</code> and stores the reduced result in <code>result</code>. It represents the parallel execution of the following reduction loop:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">itr</span><span class="o">=</span><span class="n">first</span><span class="p">;</span><span class="w"> </span><span class="n">itr</span><span class="o">&lt;</span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="n">itr</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bop</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">itr</span><span class="p">);</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>At runtime, the reduction task spawns a subflow to perform parallel reduction. The reduced result is stored in <code>result</code> that will be captured by reference in the reduction task. It is your responsibility to ensure <code>result</code> remains alive during the parallel execution.</p><pre class="m-code"><span class="kt">int</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span><span class="w"></span>
@@ -157,8 +157,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="Examples.html">Learning from Examples</a> &raquo;</span>
           Graph Processing Pipeline
         </h1>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li><a href="#FormulateTheGraphProcessingPipelineProblem">Formulate the Graph Processing Pipeline Problem</a></li>
@@ -65,7 +65,7 @@
             </li>
             <li><a href="#GraphPipelineReference">Reference</a></li>
           </ul>
-        </div>
+        </nav>
 <p>We study a graph processing pipeline that propagates a sequence of linearly dependent tasks over a dependency graph. In this particular workload, we will learn how to transform task graph parallelism into pipeline parallelism.</p><section id="FormulateTheGraphProcessingPipelineProblem"><h2><a href="#FormulateTheGraphProcessingPipelineProblem">Formulate the Graph Processing Pipeline Problem</a></h2><p>Given a directed acyclic graph (DAG), where each node encapsulates a sequence of linearly dependent tasks, namely <em>stage tasks</em>, and each edge represents a dependency between two tasks at the same stages of adjacent nodes. For example, assuming <code>fi(u)</code> represents the <code>i</code><sup>th</sup>-stage task of node <code>u</code>, a dependency from <code>u</code> to <code>v</code> requires <code>fi(u)</code> to run before <code>fi(v)</code>. The following figures shows an example of three stage tasks in a DAG of three nodes (<code>A</code>, <code>B</code>, and <code>C</code>) and two dependencies (<code>A-&gt;B</code> and <code>A-&gt;C</code>):</p><div class="m-graph"><svg style="width: 16.125rem; height: 12.750rem;" viewBox="0.00 0.00 257.50 204.00">
 <g transform="scale(1 1) rotate(0) translate(4 200)">
 <title>L</title>
@@ -573,8 +573,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

@@ -49,17 +49,18 @@
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>Runtime <span class="m-thin">class</span>
         </h1>
         <p>class to include a runtime object in a task</p>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
               Reference
               <ul>
+                <li><a href="#derived-classes">Derived classes</a></li>
                 <li><a href="#pub-methods">Public functions</a></li>
               </ul>
             </li>
           </ul>
-        </div>
+        </nav>
 <p>A runtime object allows users to interact with the scheduling runtime inside a task, such as scheduling an active task, spawning a subflow, and so on.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">;</span><span class="w"></span>
 <span class="n">std</span><span class="o">::</span><span class="n">tie</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="w"></span>
 <span class="w">  </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">},</span><span class="w"></span>
@@ -72,6 +73,15 @@
 <span class="p">);</span><span class="w"></span>
 <span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">);</span><span class="w"></span>
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>A runtime object is associated with the worker and the executor that runs the task.</p>
+        <section id="derived-classes">
+          <h2><a href="#derived-classes">Derived classes</a></h2>
+          <dl class="m-doc">
+            <dt>
+              class <a href="classtf_1_1Subflow.html" class="m-doc">Subflow</a>
+            </dt>
+            <dd>class to construct a subflow graph from the execution of a dynamic task</dd>
+          </dl>
+        </section>
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
@@ -95,7 +105,7 @@
               F&amp;&amp; f,
               ArgsT &amp;&amp; ... args) -&gt; auto</span>
             </dt>
-            <dd>similar to <a href="classtf_1_1Runtime.html#a1c7c0aad74f3c7f6313ee29c28a2ae7a" class="m-doc">tf::<wbr />Runtime::<wbr />async</a> but assign the task a name</dd>
+            <dd>similar to <a href="classtf_1_1Runtime.html#a1c7c0aad74f3c7f6313ee29c28a2ae7a" class="m-doc">tf::<wbr />Runtime::<wbr />async</a> but assigns the task a name</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#acd67ad597432143920260e0ec971056e" class="m-doc">silent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f,
@@ -290,7 +300,7 @@
 <span class="w">  </span><span class="p">}</span><span class="w"></span>
 <span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">join</span><span class="p">();</span><span class="w"></span>
 <span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">200</span><span class="p">);</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre>
+<span class="p">});</span><span class="w"></span></pre><aside class="m-note m-warning"><h4>Attention</h4><p>Only the worker of this <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a> can issue join.</p></aside>
           </div></section>
         </section>
       </div>
@@ -331,8 +341,8 @@
     </div>
   </div>
 </div>
-<script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">
