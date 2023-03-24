@@ -61,7 +61,7 @@
             </tr>
           </tbody>
         </table>
-        <nav class="m-block m-default">
+        <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
@@ -73,7 +73,7 @@
               </ul>
             </li>
           </ul>
-        </nav>
+        </div>
 <p>A scalable pipeline is a composable graph object for users to create a <em>pipeline scheduling framework</em> using a module task in a taskflow. Unlike <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> that instantiates all pipes upon the construction time, <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> allows variable assignments of pipes using range iterators. Users can also reset a scalable pipeline to a different range of pipes between runs. The following code creates a scalable pipeline of four parallel lines to schedule tokens through three serial pipes in a custom storage, then resetting the pipeline to a new range of five serial pipes:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="nf">taskflow</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span><span class="w"></span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
 
@@ -168,7 +168,7 @@
 <span class="go">o -&gt; o -&gt; o -&gt; o -&gt; o</span>
 <span class="go">|    |    |    |    |</span>
 <span class="go">v    v    v    v    v</span>
-<span class="go">o -&gt; o -&gt; o -&gt; o -&gt; o</span></pre><p>Each piPipeline.2P(SS).DeferNextToken.2L.1Wpe has the same type of <code>tf::Pipe&lt;std::function&lt;void(tf::Pipeflow&amp;)&gt;&gt;</code> and is kept in a vector that is amenable to change. We construct the scalable pipeline using two range iterators pointing to the beginning and the end of the vector. At each pipe stage, the program propagates the result to the next pipe by adding one to the result stored in a custom data storage, <code>buffer</code>. The pipeline scheduler will generate five scheduling tokens and then stop.</p><p>A scalable pipeline is move-only.</p>
+<span class="go">o -&gt; o -&gt; o -&gt; o -&gt; o</span></pre><p>Each pipe has the same type of <code>tf::Pipe&lt;std::function&lt;void(tf::Pipeflow&amp;)&gt;&gt;</code> and is kept in a vector that is amenable to change. We construct the scalable pipeline using two range iterators pointing to the beginning and the end of the vector. At each pipe stage, the program propagates the result to the next pipe by adding one to the result stored in a custom data storage, <code>buffer</code>. The pipeline scheduler will generate five scheduling tokens and then stop.</p><p>A scalable pipeline is move-only.</p>
         <section id="pub-types">
           <h2><a href="#pub-types">Public types</a></h2>
           <dl class="m-doc">
@@ -469,8 +469,8 @@
     </div>
   </div>
 </div>
-<script src="search-v2.js"></script>
-<script src="searchdata-v2.js" async="async"></script>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">

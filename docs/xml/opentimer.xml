@@ -20,7 +20,7 @@
 <row>
 <entry thead="no"><para>OpenTimer v2  </para></entry><entry thead="no"><para>Taskflow  </para></entry><entry thead="no"><para>4482  </para></entry><entry thead="no"><para>20  </para></entry><entry thead="no"><para>$130,523   </para></entry></row>
 </table>
-</para><para>OpenTimer v1 relied on a pipeline data structure to adtop loop parallelism with OpenMP. We found it very difficult to go beyond this paradigm because of the insufficient support for dynamic dependencies in OpenMP. With Taskflow in place, we can break this bottleneck and easily model both static and dynamic task dependencies at programming time and runtime. The task dependency graph flows computations naturally with the timing graph, providing improved asynchrony and performance. The following figure shows a task graph to carry one iteration of timing update.</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/opentimer_4.dot"></dotfile>
+</para><para>OpenTimer v1 relied on a pipeline data structure to adtop loop parallelism with OpenMP. We found it very difficult to go beyond this paradigm because of the insufficient support for dynamic dependencies in OpenMP. With Taskflow in place, we can break this bottleneck and easily model both static and dynamic task dependencies at programming time and runtime. The task dependency graph flows computations naturally with the timing graph, providing improved asynchrony and performance. The following figure shows a task graph to carry one iteration of timing update.</para><para><dotfile name="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/images/opentimer_4.dot"></dotfile>
 </para></sect1>
 <sect1 id="opentimer_1UseCaseOpenTimerPerformanceImprovement">
 <title>Performance Improvement</title>

@@ -16,7 +16,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="79" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="79" bodyend="79"/>
+        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/execution_policy.hpp" line="79" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="79" bodyend="79"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1GuidedPartitioner_1a8a44c5c770af9b6754afc502ced91b4c" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
@@ -33,7 +33,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="84" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="84" bodyend="84"/>
+        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/execution_policy.hpp" line="84" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="84" bodyend="84"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -56,7 +56,7 @@
           <declname>W</declname>
         </param>
         <param>
-          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
+          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
           <declname>next</declname>
         </param>
         <param>
@@ -69,7 +69,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="90" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="90" bodyend="133"/>
+        <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/execution_policy.hpp" line="90" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="90" bodyend="133"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -77,6 +77,18 @@
     <detaileddescription>
 <para>The size of a partition is proportional to the number of unassigned iterations divided by the number of workers, and the size will gradually decrease to the given chunk size. The last partition may be smaller than the chunk size. </para>    </detaileddescription>
     <inheritancegraph>
+      <node id="145">
+        <label>tf::GuidedPartitioner</label>
+        <link refid="classtf_1_1GuidedPartitioner"/>
+        <childnode refid="146" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="146">
+        <label>tf::PartitionerBase</label>
+        <link refid="classtf_1_1PartitionerBase"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
       <node id="147">
         <label>tf::GuidedPartitioner</label>
         <link refid="classtf_1_1GuidedPartitioner"/>
@@ -87,20 +99,8 @@
         <label>tf::PartitionerBase</label>
         <link refid="classtf_1_1PartitionerBase"/>
       </node>
-    </inheritancegraph>
-    <collaborationgraph>
-      <node id="149">
-        <label>tf::GuidedPartitioner</label>
-        <link refid="classtf_1_1GuidedPartitioner"/>
-        <childnode refid="150" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="150">
-        <label>tf::PartitionerBase</label>
-        <link refid="classtf_1_1PartitionerBase"/>
-      </node>
     </collaborationgraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="72" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="72" bodyend="134"/>
+    <location file="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/execution_policy.hpp" line="72" column="1" bodyfile="/home/chchiu/Documents/taskflow/scalable_defer_pipeline_0323/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="72" bodyend="134"/>
     <listofallmembers>
       <member refid="classtf_1_1PartitionerBase_1a98a744284cfc726b1a597dae90e766f0" prot="protected" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>_chunk_size</name></member>
       <member refid="classtf_1_1PartitionerBase_1a8445b917fca6384861898d46b81ec471" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>chunk_size</name></member>

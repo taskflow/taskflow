@@ -61,17 +61,18 @@
             </tr>
           </tbody>
         </table>
-        <nav class="m-block m-default">
+        <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
               Reference
               <ul>
+                <li><a href="#pub-static-attribs">Public static variables</a></li>
                 <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
               </ul>
             </li>
           </ul>
-        </nav>
+        </div>
 <p>An execution policy defines the scheduling method for running parallel algorithms, such <a href="classtf_1_1FlowBuilder.html#ad2299fddbd6165cc7f24f57a734d2839" class="m-doc">tf::<wbr />Taskflow::<wbr />for_each</a>, <a href="classtf_1_1FlowBuilder.html#afc7bd7a737febf30d5d1d706c4b65f84" class="m-doc">tf::<wbr />Taskflow::<wbr />reduce</a>, and so on. The template type, <code>P</code>, specifies the partitioning algorithm that will be used by the scheduling method:</p><ul><li><a href="classtf_1_1GuidedPartitioner.html" class="m-doc">tf::<wbr />GuidedPartitioner</a></li><li><a href="classtf_1_1DynamicPartitioner.html" class="m-doc">tf::<wbr />DynamicPartitioner</a></li><li><a href="classtf_1_1StaticPartitioner.html" class="m-doc">tf::<wbr />StaticPartitioner</a></li><li><a href="classtf_1_1RandomPartitioner.html" class="m-doc">tf::<wbr />RandomPartitioner</a></li></ul><p>Depending on applications, partitioning algorithms can impact the performance a lot. For example, if a parallel-iteration workload contains a regular work unit per iteration, <a href="classtf_1_1StaticPartitioner.html" class="m-doc">tf::<wbr />StaticPartitioner</a> can deliver the best performance. On the other hand, if the work unit per iteration is irregular and unbalanced, <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">tf::<wbr />GuidedPartitioner</a> or <a href="classtf_1_1DynamicPartitioner.html" class="m-doc">tf::<wbr />DynamicPartitioner</a> can outperform <a href="classtf_1_1StaticPartitioner.html" class="m-doc">tf::<wbr />StaticPartitioner</a>.</p><p>The following example constructs a parallel-for task using an execution policy with guided partitioning algorithm:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">}</span><span class="w"></span>
 <span class="n">tf</span><span class="o">::</span><span class="n">ExecutionPolicy</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">GuidedPartitioner</span><span class="o">&gt;</span><span class="w"> </span><span class="n">policy</span><span class="p">;</span><span class="w"></span>
 <span class="n">taskflow</span><span class="p">.</span><span class="n">for_each</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="p">[](</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">){});</span><span class="w"></span>
@@ -82,6 +83,15 @@
 <span class="c1">// taskflow.for_each(data.begin(), data.end(), [](int item){});</span>
 
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">run</span><span class="p">();</span><span class="w"></span></pre>
+        <section id="pub-static-attribs">
+          <h2><a href="#pub-static-attribs">Public static variables</a></h2>
+          <dl class="m-doc">
+            <dt id="a4dfcdc0ded93172d298fb489fe91cdf9">
+              static bool <a href="#a4dfcdc0ded93172d298fb489fe91cdf9" class="m-doc-self">is_static_partitioner</a> <span class="m-label m-flat m-primary">constexpr</span>
+            </dt>
+            <dd>queries if the execution policy is associated with a static partitioner</dd>
+          </dl>
+        </section>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
@@ -163,8 +173,8 @@
     </div>
   </div>
 </div>
-<script src="search-v2.js"></script>
-<script src="searchdata-v2.js" async="async"></script>
+<script src="search-v1.js"></script>
+<script src="searchdata-v1.js" async="async"></script>
 <footer><nav>
   <div class="m-container">
     <div class="m-row">
