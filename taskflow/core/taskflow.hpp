@@ -540,10 +540,6 @@ class Future : public std::future<T>  {
     std::monostate, std::weak_ptr<Topology>, std::weak_ptr<AsyncTopology>
   >;
 
-  // variant index
-  constexpr static auto ASYNC = get_index_v<std::weak_ptr<AsyncTopology>, handle_t>;
-  constexpr static auto TASKFLOW = get_index_v<std::weak_ptr<Topology>, handle_t>;
-
   public:
 
     /**

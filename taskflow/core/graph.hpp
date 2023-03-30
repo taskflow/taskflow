@@ -103,11 +103,12 @@ class Graph {
     void _clear_detached();
     void _merge(Graph&&);
     void _erase(Node*);
-
+    
+    /**
+    @private
+    */
     template <typename ...ArgsT>
-    Node* _emplace_back(ArgsT&&... args);
-
-    Node* _emplace_back();
+    Node* _emplace_back(ArgsT&&...);
 };
 
 // ----------------------------------------------------------------------------
@@ -202,7 +203,10 @@ class Runtime {
   void schedule(Task task);
   
   /**
-  @brief runs the given function asynchronously
+  @brief runs the given callable asynchronously
+
+  @tparam F callable type
+  @param f callable object
     
   The method creates an asynchronous task to launch the given
   function on the given arguments.
@@ -214,42 +218,82 @@ class Runtime {
 
   @code{.cpp}
   std::atomic<int> counter(0);
-  taskflow.empalce([&](tf::Runtime& rt){
+  taskflow.emplace([&](tf::Runtime& rt){
     auto fu1 = rt.async([&](){ counter++; });
     auto fu2 = rt.async([&](){ counter++; });
     fu1.get();
     fu2.get();
     assert(counter == 2);
     
-    // explicit join 100 asynchronous tasks
+    // spawn 100 asynchronous tasks from the worker of the runtime
     for(int i=0; i<100; i++) {
       rt.async([&](){ counter++; });
     }
+    
+    // explicit join 100 asynchronous tasks
     rt.join();
     assert(counter == 102);
   });
   @endcode
 
-  This method is thread-safe.
+  This method is thread-safe and can be called by multiple workers
+  that hold the reference to the runtime.
+  For example, the code below spawns 100 tasks from the worker of
+  a runtime, and each of the 100 tasks spawns another task
+  that will be run by another worker.
+  
+  @code{.cpp}
+  std::atomic<int> counter(0);
+  taskflow.emplace([&](tf::Runtime& rt){
+    // worker of the runtime spawns 100 tasks each spawning another task
+    // that will be run by another worker
+    for(int i=0; i<100; i++) {
+      rt.async([&](){ 
+        counter++; 
+        rt.async([](){ counter++; });
+      });
+    }
+    
+    // explicit join 100 asynchronous tasks
+    rt.join();
+    assert(counter == 200);
+  });
+  @endcode
   */
-  template <typename F, typename... ArgsT>
-  auto async(F&& f, ArgsT&&... args);
+  template <typename F>
+  auto async(F&& f);
   
   /**
   @brief similar to tf::Runtime::async but assigns the task a name
+
+  @tparam F callable type
+
+  @param name assigned name to the task
+  @param f callable
+
+  @code{.cpp}
+  taskflow.emplace([&](tf::Runtime& rt){
+    auto future = rt.async("my task", [](){});
+    future.get();
+  });
+  @endcode
+
   */
-  template <typename F, typename... ArgsT>
-  auto named_async(const std::string& name, F&& f, ArgsT&&... args);
+  template <typename F>
+  auto async(const std::string& name, F&& f);
 
   /**
   @brief runs the given function asynchronously without returning any future object
+
+  @tparam F callable type
+  @param f callable
 
   This member function is more efficient than tf::Runtime::async
   and is encouraged to use when there is no data returned.
 
   @code{.cpp}
   std::atomic<int> counter(0);
-  taskflow.empalce([&](tf::Runtime& rt){
+  taskflow.emplace([&](tf::Runtime& rt){
     for(int i=0; i<100; i++) {
       rt.silent_async([&](){ counter++; });
     }
@@ -260,14 +304,25 @@ class Runtime {
 
   This member function is thread-safe.
   */
-  template <typename F, typename... ArgsT>
-  void silent_async(F&& f, ArgsT&&... args);
+  template <typename F>
+  void silent_async(F&& f);
   
   /**
   @brief similar to tf::Runtime::silent_async but assigns the task a name
+
+  @tparam F callable type
+  @param name assigned name to the task
+  @param f callable
+  
+  @code{.cpp}
+  taskflow.emplace([&](tf::Runtime& rt){
+    rt.silent_async("my task", [](){});
+    rt.join();
+  });
+  @endcode
   */
-  template <typename F, typename... ArgsT>
-  void named_silent_async(const std::string& name, F&& f, ArgsT&&... args);
+  template <typename F>
+  void silent_async(const std::string& name, F&& f);
 
   /**
   @brief co-runs the given target and waits until it completes
@@ -325,7 +380,7 @@ class Runtime {
     
   @code{.cpp}
   std::atomic<size_t> counter{0};
-  taskflow.empalce([&](tf::Runtime& rt){
+  taskflow.emplace([&](tf::Runtime& rt){
     // spawn 100 async tasks and join
     for(int i=0; i<100; i++) {
       rt.silent_async([&](){ counter++; });
@@ -373,18 +428,18 @@ class Runtime {
   @private
   */
   Node* _parent;
+
+  /**
+  @private
+  */
+  template <typename F>
+  auto _async(Worker& w, const std::string& name, F&& f);
   
   /**
   @private
   */
-  template <typename F, typename... ArgsT>
-  void _silent_async(Worker& w, const std::string& name, F&& f, ArgsT&&... args);
-  
-  /**
-  @private
-  */
-  template <typename F, typename... ArgsT>
-  auto _async(Worker& w, const std::string& name, F&& f, ArgsT&&... args);
+  template <typename F>
+  void _silent_async(Worker& w, const std::string& name, F&& f);
 };
 
 // constructor
@@ -430,6 +485,8 @@ class Node {
   constexpr static int ACQUIRED    = 4;
   constexpr static int READY       = 8;
   constexpr static int DEFERRED    = 16;
+
+  using Placeholder = std::monostate;
 
   // static work handle
   struct Static {
@@ -504,7 +561,7 @@ class Node {
   };
 
   using handle_t = std::variant<
-    std::monostate,  // placeholder
+    Placeholder,     // placeholder
     Static,          // static tasking
     Dynamic,         // dynamic tasking
     Condition,       // conditional tasking
@@ -522,7 +579,7 @@ class Node {
   public:
 
   // variant index
-  constexpr static auto PLACEHOLDER     = get_index_v<std::monostate, handle_t>;
+  constexpr static auto PLACEHOLDER     = get_index_v<Placeholder, handle_t>;
   constexpr static auto STATIC          = get_index_v<Static, handle_t>;
   constexpr static auto DYNAMIC         = get_index_v<Dynamic, handle_t>;
   constexpr static auto CONDITION       = get_index_v<Condition, handle_t>;
@@ -531,8 +588,10 @@ class Node {
   constexpr static auto ASYNC           = get_index_v<Async, handle_t>;
   constexpr static auto SILENT_ASYNC    = get_index_v<SilentAsync, handle_t>;
 
+  Node() = default;
+
   template <typename... Args>
-  Node(Args&&... args);
+  Node(const std::string&, unsigned, Topology*, Node*, Args&&... args);
 
   ~Node();
 
@@ -548,6 +607,9 @@ class Node {
   std::string _name;
   
   unsigned _priority {0};
+  
+  Topology* _topology {nullptr};
+  Node* _parent {nullptr};
 
   void* _data {nullptr};
 
@@ -555,10 +617,6 @@ class Node {
 
   SmallVector<Node*> _successors;
   SmallVector<Node*> _dependents;
-
-  Topology* _topology {nullptr};
-
-  Node* _parent {nullptr};
 
   std::atomic<int> _state {0};
   std::atomic<size_t> _join_counter {0};
@@ -656,8 +714,22 @@ Node::SilentAsync::SilentAsync(C&& c) :
 
 // Constructor
 template <typename... Args>
-Node::Node(Args&&... args): _handle{std::forward<Args>(args)...} {
+Node::Node(
+  const std::string& name, 
+  unsigned priority,
+  Topology* topology, 
+  Node* parent, 
+  Args&&... args
+) :
+  _name     {name},
+  _priority {priority},
+  _topology {topology},
+  _parent   {parent},
+  _handle   {std::forward<Args>(args)...} {
 }
+
+//Node::Node(Args&&... args): _handle{std::forward<Args>(args)...} {
+//}
 
 // Destructor
 inline Node::~Node() {
@@ -882,18 +954,13 @@ inline bool Graph::empty() const {
   return _nodes.empty();
 }
 
-// Function: emplace_back
+/**
+@private
+*/
 template <typename ...ArgsT>
 Node* Graph::_emplace_back(ArgsT&&... args) {
   _nodes.push_back(node_pool.animate(std::forward<ArgsT>(args)...));
   return _nodes.back();
 }
-
-// Function: emplace_back
-inline Node* Graph::_emplace_back() {
-  _nodes.push_back(node_pool.animate());
-  return _nodes.back();
-}
-
 
 }  // end of namespace tf. ---------------------------------------------------

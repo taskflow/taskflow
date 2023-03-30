@@ -41,7 +41,7 @@ Under the normal circumstance, tasks @c C and @c D will not run because their
 conditional dependencies never happen.
 This can be broken by forcefully scheduling @c C or/and @c D via a runtime
 object of a task that resides in the same graph.
-Here, task @c B call tf::Runtime::schedule(tf::Task) to run task @c C
+Here, task @c B call tf::Runtime::schedule to forcefully run task @c C
 even though the weak dependency between @c A and @c C will never happen
 based on the graph structure itself.
 As a result, we will see both @c B and @c C in the output:
@@ -110,15 +110,14 @@ executor.run_n(taskflow, 10000);
 @endcode
 
 Although tf::Runtime::corun blocks until the operation completes,
-the caller thread (worker) is not blocked (e.g., sleep or holding any lock).
+the caller thread (worker) is not preempted (e.g., sleep or holding any lock).
 Instead, the caller thread joins the work-stealing loop of the executor
-and returns whenever the spawned task graph completes.
-This is different from waiting for a submitted taskflow to finish 
-(`executor.run(taskflow).wait()`)
+and leaves whenever the spawned task graph completes.
+This is different from waiting for a submitted taskflow using tf::Future::wait
 which blocks the caller thread until the submitted taskflow completes.
 When multiple submitted taskflows are being waited,
 their executions can potentially lead to deadlock.
-Using tf::Runtime::corun avoids the deadlock problem.
+Using tf::Runtime::corun avoids this deadlock problem.
 
 @section LearnMoreAboutRuntime Learn More About Runtime
 

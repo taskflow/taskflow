@@ -71,7 +71,8 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
 
 @section release-3-6-0_bug_fixes Bug Fixes 
 
-+ Fixed the compilation bugs caused by clashing `MAX_PRIORITY` wtih `winspool.h` ([#459](https://github.com/taskflow/taskflow/pull/459))
++ Fixed the compilation error caused by clashing `MAX_PRIORITY` wtih `winspool.h` ([#459](https://github.com/taskflow/taskflow/pull/459))
++ Fixed the compilation error caused by tf::TaskView::for_each_successor and tf::TaskView::for_each_dependent
 + Fixed the infinite-loop bug when corunning a module task from tf::Runtime
 
 If you encounter any potential bugs, please submit an issue at @IssueTracker.
@@ -141,6 +142,26 @@ policy.reduce_bufsz<int>(N);
 + Renamed tf::Executor::run_and_wait to tf::Executor::corun for expressiveness
 + Renamed tf::Executor::loop_until to tf::Executor::corun_until for expressiveness
 + Renamed tf::Runtime::run_and_wait to tf::Runtime::corun for expressiveness
++ Disabled argument support for all asynchronous tasking features
+  + users are responsible for creating their own wrapper to make the callable
+
+@code{.cpp}
+// previous - async allows passing arguments to the callable
+executor.async([](int i){ std::cout << i << std::endl; }, 4);  
+
+// now - users are responsible of wrapping the arumgnets into a callable
+executor.async([i=4]( std::cout << i << std::endl; ){});
+@endcode
+
++ Replaced `named_async` with overheads that take a string on the first argument
+
+@code{.cpp}
+// previous - explicitly calling named_async to assign a name to an async task
+executor.named_async("name", [](){});
+
+// now - overlaod
+executor.async("name", [](){});
+@endcode
 
 @section release-3-6-0_documentation Documentation
 

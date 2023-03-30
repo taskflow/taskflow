@@ -63,7 +63,7 @@ For instance, the following code results in undefined behavior:</para><para><pro
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>submit<sp/>10000<sp/>asynchronous<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;10000;<sp/>i++)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>futures.push_back(executor.<ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">async</ref>([i](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>futures.push_back(executor.<ref refid="classtf_1_1Executor_1ad2a3c0da0f2da54ea848c0be3180ce9a" kindref="member">async</ref>([i](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>printf(</highlight><highlight class="stringliteral">&quot;task<sp/>%d\n&quot;</highlight><highlight class="normal">,<sp/>i);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::this_thread::sleep_for(std::chrono::milliseconds(100));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}));</highlight></codeline>
@@ -90,7 +90,7 @@ For instance, the following code results in undefined behavior:</para><para><pro
 <codeline><highlight class="normal">task<sp/>11</highlight></codeline>
 </programlisting></para><para>Similar to cancelling a running taskflow, cancelling a submitted asynchronous task does not guarantee the execution will be cancelled. The result depends on the present available workers and whether the asynchronous task is being run by a worker. To wait for a cancellation to complete, you may explicitly call <computeroutput>tf::Future::get</computeroutput>. The result may be a <ulink url="https://en.cppreference.com/w/cpp/utility/optional/nullopt">std::nullopt</ulink> if that asynchronous task does not run.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Future" kindref="compound">tf::Future&lt;std::optional&lt;int&gt;</ref>&gt;<sp/>fu<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a1e6866c8f1b6a2e932f06d0b4eb032c0" kindref="member">async</ref>([](){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;<sp/>};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Future" kindref="compound">tf::Future&lt;std::optional&lt;int&gt;</ref>&gt;<sp/>fu<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1ad2a3c0da0f2da54ea848c0be3180ce9a" kindref="member">async</ref>([](){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;<sp/>};</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">fu.cancel();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>

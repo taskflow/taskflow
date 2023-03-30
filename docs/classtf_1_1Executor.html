@@ -199,31 +199,27 @@
             </dt>
             <dd>queries the id of the caller thread in this executor</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a1e6866c8f1b6a2e932f06d0b4eb032c0" class="m-doc">async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f,
-              ArgsT &amp;&amp; ... args) -&gt; auto</span>
+              <div class="m-doc-template">template&lt;typename F&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ad2a3c0da0f2da54ea848c0be3180ce9a" class="m-doc">async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f) -&gt; auto</span>
             </dt>
             <dd>runs a given function asynchronously</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a51acee1670e9f246c7ccd7f6a63f1524" class="m-doc">named_async</a>(</span><span class="m-doc-wrap">const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp; name,
-              F&amp;&amp; f,
-              ArgsT &amp;&amp; ... args) -&gt; auto</span>
+              <div class="m-doc-template">template&lt;typename F&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ac1ccdc3d364fb0778b342ec8a29e3e1f" class="m-doc">async</a>(</span><span class="m-doc-wrap">const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp; name,
+              F&amp;&amp; f) -&gt; auto</span>
             </dt>
             <dd>runs a given function asynchronously and gives a name to this task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#abf71e7ec0026ddfce79c912264369bc9" class="m-doc">silent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f,
-              ArgsT &amp;&amp; ... args)</span>
+              <div class="m-doc-template">template&lt;typename F&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a57967580443219e71490551fd362d221" class="m-doc">silent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f)</span>
             </dt>
-            <dd>similar to <a href="classtf_1_1Executor.html#a1e6866c8f1b6a2e932f06d0b4eb032c0" class="m-doc">tf::<wbr />Executor::<wbr />async</a> but does not return a future object</dd>
+            <dd>similar to <a href="classtf_1_1Executor.html#ad2a3c0da0f2da54ea848c0be3180ce9a" class="m-doc">tf::<wbr />Executor::<wbr />async</a> but does not return a future object</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#a1febfaa7a99cac8466263c58fd2a7c06" class="m-doc">named_silent_async</a>(</span><span class="m-doc-wrap">const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp; name,
-              F&amp;&amp; f,
-              ArgsT &amp;&amp; ... args)</span>
+              <div class="m-doc-template">template&lt;typename F&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#af4430b5c469bf5ad76308a773531a205" class="m-doc">silent_async</a>(</span><span class="m-doc-wrap">const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp; name,
+              F&amp;&amp; f)</span>
             </dt>
-            <dd>similar to <a href="classtf_1_1Executor.html#a51acee1670e9f246c7ccd7f6a63f1524" class="m-doc">tf::<wbr />Executor::<wbr />named_async</a> but does not return a future object</dd>
+            <dd>similar to tf::Executor::named_async but does not return a future object</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename Observer, typename... ArgsT&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#aff77def96ae740d648dd84e571237c83" class="m-doc">make_observer</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) -&gt; <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a>&lt;Observer&gt;</span>
@@ -825,13 +821,12 @@
 <span class="p">});</span><span class="w"></span>
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span><span class="w"></span></pre>
           </div></section>
-          <section class="m-doc-details" id="a1e6866c8f1b6a2e932f06d0b4eb032c0"><div>
+          <section class="m-doc-details" id="ad2a3c0da0f2da54ea848c0be3180ce9a"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename F, typename... ArgsT&gt;
+                template&lt;typename F&gt;
               </div>
-              <span class="m-doc-wrap-bumper">auto tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1e6866c8f1b6a2e932f06d0b4eb032c0" class="m-doc-self">async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f,
-              ArgsT &amp;&amp; ... args)</span></span>
+              <span class="m-doc-wrap-bumper">auto tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad2a3c0da0f2da54ea848c0be3180ce9a" class="m-doc-self">async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f)</span></span>
             </h3>
             <p>runs a given function asynchronously</p>
             <table class="m-table m-fullwidth m-flat">
@@ -843,10 +838,6 @@
                   <td style="width: 1%">F</td>
                   <td>callable type</td>
                 </tr>
-                <tr>
-                  <td>ArgsT</td>
-                  <td>parameter types</td>
-                </tr>
               </tbody>
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
@@ -855,10 +846,6 @@
                 <tr>
                   <td>f</td>
                   <td>callable object to call</td>
-                </tr>
-                <tr>
-                  <td>args</td>
-                  <td>parameters to pass to the callable</td>
                 </tr>
               </tbody>
               <tfoot>
@@ -871,16 +858,16 @@
 <p>The method creates an asynchronous task to launch the given function on the given arguments. Unlike std::async, the return here is a <em><a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a></em> that holds an optional object to the result. If the asynchronous task is cancelled before it runs, the return is a <code>std::nullopt</code>, or the value returned by the callable.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">([](){</span><span class="w"></span>
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;create an asynchronous task and returns 1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre><p>This member function is thread-safe.</p>
+<span class="p">});</span><span class="w"></span>
+<span class="n">future</span><span class="p">.</span><span class="n">get</span><span class="p">();</span><span class="w"></span></pre><p>This member function is thread-safe.</p>
           </div></section>
-          <section class="m-doc-details" id="a51acee1670e9f246c7ccd7f6a63f1524"><div>
+          <section class="m-doc-details" id="ac1ccdc3d364fb0778b342ec8a29e3e1f"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename F, typename... ArgsT&gt;
+                template&lt;typename F&gt;
               </div>
-              <span class="m-doc-wrap-bumper">auto tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a51acee1670e9f246c7ccd7f6a63f1524" class="m-doc-self">named_async</a>(</span><span class="m-doc-wrap">const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp; name,
-              F&amp;&amp; f,
-              ArgsT &amp;&amp; ... args)</span></span>
+              <span class="m-doc-wrap-bumper">auto tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac1ccdc3d364fb0778b342ec8a29e3e1f" class="m-doc-self">async</a>(</span><span class="m-doc-wrap">const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp; name,
+              F&amp;&amp; f)</span></span>
             </h3>
             <p>runs a given function asynchronously and gives a name to this task</p>
             <table class="m-table m-fullwidth m-flat">
@@ -891,10 +878,6 @@
                 <tr>
                   <td style="width: 1%">F</td>
                   <td>callable type</td>
-                </tr>
-                <tr>
-                  <td>ArgsT</td>
-                  <td>parameter types</td>
                 </tr>
               </tbody>
               <thead>
@@ -909,10 +892,6 @@
                   <td>f</td>
                   <td>callable object to call</td>
                 </tr>
-                <tr>
-                  <td>args</td>
-                  <td>parameters to pass to the callable</td>
-                </tr>
               </tbody>
               <tfoot>
                 <tr>
@@ -921,37 +900,38 @@
                 </tr>
               </tfoot>
             </table>
-<p>The method creates a named asynchronous task to launch the given function on the given arguments. Naming an asynchronous task is primarily used for profiling and visualizing the task execution timeline. Unlike std::async, the return here is a <a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> that holds an optional object to the result. If the asynchronous task is cancelled before it runs, the return is a <code>std::nullopt</code>, or the value returned by the callable.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">named_async</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"></span>
+<p>The method creates a named asynchronous task to launch the given function on the given arguments. Naming an asynchronous task is primarily used for profiling and visualizing the task execution timeline. Unlike std::async, the return here is a <a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> that holds an optional object to the result. If the asynchronous task is cancelled before it runs, the return is a <code>std::nullopt</code>, or the value returned by the callable.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"></span>
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;create an asynchronous task with a name and returns 1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre><p>This member function is thread-safe.</p>
+<span class="p">});</span><span class="w"></span>
+<span class="n">future</span><span class="p">.</span><span class="n">get</span><span class="p">();</span><span class="w"></span></pre><p>This member function is thread-safe.</p>
           </div></section>
-          <section class="m-doc-details" id="abf71e7ec0026ddfce79c912264369bc9"><div>
+          <section class="m-doc-details" id="a57967580443219e71490551fd362d221"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename F, typename... ArgsT&gt;
+                template&lt;typename F&gt;
               </div>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#abf71e7ec0026ddfce79c912264369bc9" class="m-doc-self">silent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f,
-              ArgsT &amp;&amp; ... args)</span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a57967580443219e71490551fd362d221" class="m-doc-self">silent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; f)</span></span>
             </h3>
-            <p>similar to <a href="classtf_1_1Executor.html#a1e6866c8f1b6a2e932f06d0b4eb032c0" class="m-doc">tf::<wbr />Executor::<wbr />async</a> but does not return a future object</p>
-<p>This member function is more efficient than <a href="classtf_1_1Executor.html#a1e6866c8f1b6a2e932f06d0b4eb032c0" class="m-doc">tf::<wbr />Executor::<wbr />async</a> and is encouraged to use when there is no data returned.</p><pre class="m-code"><span class="n">executor</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([](){</span><span class="w"></span>
+            <p>similar to <a href="classtf_1_1Executor.html#ad2a3c0da0f2da54ea848c0be3180ce9a" class="m-doc">tf::<wbr />Executor::<wbr />async</a> but does not return a future object</p>
+<p>This member function is more efficient than <a href="classtf_1_1Executor.html#ad2a3c0da0f2da54ea848c0be3180ce9a" class="m-doc">tf::<wbr />Executor::<wbr />async</a> and is encouraged to use when there is no data returned.</p><pre class="m-code"><span class="n">executor</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([](){</span><span class="w"></span>
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;create an asynchronous task with no return</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre><p>This member function is thread-safe.</p>
+<span class="p">});</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span><span class="w"></span></pre><p>This member function is thread-safe.</p>
           </div></section>
-          <section class="m-doc-details" id="a1febfaa7a99cac8466263c58fd2a7c06"><div>
+          <section class="m-doc-details" id="af4430b5c469bf5ad76308a773531a205"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename F, typename... ArgsT&gt;
+                template&lt;typename F&gt;
               </div>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1febfaa7a99cac8466263c58fd2a7c06" class="m-doc-self">named_silent_async</a>(</span><span class="m-doc-wrap">const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp; name,
-              F&amp;&amp; f,
-              ArgsT &amp;&amp; ... args)</span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af4430b5c469bf5ad76308a773531a205" class="m-doc-self">silent_async</a>(</span><span class="m-doc-wrap">const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp; name,
+              F&amp;&amp; f)</span></span>
             </h3>
-            <p>similar to <a href="classtf_1_1Executor.html#a51acee1670e9f246c7ccd7f6a63f1524" class="m-doc">tf::<wbr />Executor::<wbr />named_async</a> but does not return a future object</p>
-<p>This member function is more efficient than <a href="classtf_1_1Executor.html#a51acee1670e9f246c7ccd7f6a63f1524" class="m-doc">tf::<wbr />Executor::<wbr />named_async</a> and is encouraged to use when there is no data returned.</p><pre class="m-code"><span class="n">executor</span><span class="p">.</span><span class="n">named_silent_async</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"></span>
+            <p>similar to tf::Executor::named_async but does not return a future object</p>
+<p>This member function is more efficient than tf::Executor::named_async and is encouraged to use when there is no data returned.</p><pre class="m-code"><span class="n">executor</span><span class="p">.</span><span class="n">silent_async</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"></span>
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;create an asynchronous task with a name and no return</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre><p>This member function is thread-safe.</p>
+<span class="p">});</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span><span class="w"></span></pre><p>This member function is thread-safe.</p>
           </div></section>
           <section class="m-doc-details" id="aff77def96ae740d648dd84e571237c83"><div>
             <h3>

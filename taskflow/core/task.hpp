@@ -728,7 +728,7 @@ inline size_t TaskView::hash_value() const {
 template <typename V>
 void TaskView::for_each_successor(V&& visitor) const {
   for(size_t i=0; i<_node._successors.size(); ++i) {
-    visitor(TaskView(_node._successors[i]));
+    visitor(TaskView(*_node._successors[i]));
   }
 }
 
@@ -736,7 +736,7 @@ void TaskView::for_each_successor(V&& visitor) const {
 template <typename V>
 void TaskView::for_each_dependent(V&& visitor) const {
   for(size_t i=0; i<_node._dependents.size(); ++i) {
-    visitor(TaskView(_node._dependents[i]));
+    visitor(TaskView(*_node._dependents[i]));
   }
 }
 

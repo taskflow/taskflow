@@ -18,12 +18,12 @@ int main() {
   });
 
   // create asynchronous tasks with names (for profiling)
-  executor.named_async("async_task", [](){
+  executor.async("async_task", [](){
     std::cout << "named async task returns 1\n";
     return 1;
   });
 
-  executor.named_silent_async("silent_async_task", [](){
+  executor.silent_async("silent_async_task", [](){
     std::cout << "named silent async task does not return\n";
   });
 

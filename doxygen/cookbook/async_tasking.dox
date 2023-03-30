@@ -15,7 +15,7 @@ for you to run a callable object asynchronously.
 The method returns a tf::Future object derived from @std_future 
 that will eventually hold the result
 of that function call.
-The result may be optional due to tf::Future::cancel 
+The result may be optional due to tf::Future::cancel
 (see @ref RequestCancellation for details).
 
 @code{.cpp}
@@ -28,10 +28,11 @@ future_of_void_return.get();
 @endcode
 
 @note
-The future object returned from tf::Executor::async does not block on destruction.
+Unlike std::async, the future object returned from tf::Executor::async does not block on destruction
+until completing the function.
 
 If you do not need the return value or the future,
-you can use tf::Executor::silent_async which has less overhead of creating
+you can use tf::Executor::silent_async which has less overhead for creating
 an asynchronous task compared to tf::Executor::async.
 
 @code{.cpp}
@@ -41,8 +42,7 @@ executor.silent_async([](){
 @endcode
 
 Launching asynchronous tasks from an executor is 
-@em thread-safe and can be called from multiple threads
-or from the execution of a task.
+@em thread-safe and can be called by multiple worker threads.
 Our scheduler autonomously detects whether an asynchronous task is submitted 
 from an external thread or a worker thread and schedules its execution
 in an efficient work-stealing loop.
@@ -67,11 +67,12 @@ executor.wait_for_all();   // wait for all tasks to finish
 Asynchronous tasks created from an executor does not belong to any taskflows.
 
 You can name an asynchronous task to facilitate profiling by
-using the methods tf::Executor::named_async and tf::Executor::named_silent_async.
+using the overload tf::Executor::async(const std::string& name, F&& f) 
+and tf::Executor::silent_async(const std::string& name, F&& f).
 
 @code{.cpp}
-tf::Future<void> future = executor.named_async("name of the task", [](){});
-executor.silent_named_async("another name of the task", [](){});
+tf::Future<void> future = executor.async("name of the task", [](){});
+executor.silent_async("another name of the task", [](){});
 @endcode
 
 @section LaunchAsynchronousTasksFromAnSubflow Launch Asynchronous Tasks from a Subflow
@@ -132,22 +133,23 @@ You should only create asynchronous tasks from a joined subflow.
 Launching asynchronous tasks from a detached subflow results in
 undefined behavior.
 
-Similar to tf::Executor::named_async and tf::Executor::named_silent_async,
-you can name an asynchronous task created by tf::Subflow 
-using tf::Subflow::named_async and tf::Subflow::named_silent_async.
+You can assign an asynchronous task a name 
+using the overloads tf::Subflow::async(const std::string& name, F&& f) 
+and tf::Subflow::silent_async(concst std::string& name, F&& f).
 Both methods take an additional argument of `const std::string&`.
 
 @code{.cpp}
 taskflow.emplace([](tf::Subflow& sf){
-  tf::Future<void> future = sf.named_async("name of the task", [](){});
-  sf.silent_named_async("another name of the task", [](){});
+  tf::Future<void> future = sf.async("name of the task", [](){});
+  sf.silent_async("another name of the task", [](){});
   sf.join();
 });
 @endcode
 
 @section LaunchAsynchronousTasksFromARuntime Launch Asynchronous Tasks from a Runtime
 
-Similar to tf::Subflow, you can launch asynchronous tasks from tf::Runtime using
+The asynchronous tasking feature of tf::Subflow is indeed derived from tf::Runtime.
+You can launch asynchronous tasks from tf::Runtime using
 tf::Runtime::async or tf::Runtime::silent_async.
 The following code creates 100 asynchronous tasks from a runtime
 and joins their executions explicitly using tf::Runtime::join.
@@ -195,7 +197,6 @@ taskflow.emplace([&] (tf::Runtime& rt){
 executor.run(taskflow).wait();
 @endcode
 
-@attention
 By default, tf::Runtime does not join like tf::Subflow.
 All pending asynchronous tasks spawned by tf::Runtime 
 are no longer controllable when their parent runtime disappears.

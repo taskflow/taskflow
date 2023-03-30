@@ -21,8 +21,8 @@ for capturing a GPU task graph using tf::cudaFlowCapturer.
 
 @section Capture_a_cudaFlow Capture a cudaFlow
 
-When your program has no access to direct kernel calls but invoke
-it through a stream-based interface (e.g., @cuBLAS and @cuDNN library functions),
+When your program has no access to direct kernel calls but can only
+invoke them through a stream-based interface (e.g., @cuBLAS and @cuDNN library functions),
 you can use tf::cudaFlowCapturer to capture the hidden GPU operations into a CUDA graph.
 A %cudaFlowCapturer is similar to a %cudaFlow except it constructs a GPU task graph
 through <i>stream capture</i>.
@@ -70,7 +70,7 @@ The stream argument is internal to the capturer use only.
 
 @section CommonCaptureMethods Common Capture Methods
 
-%cudaFlowCapturer defines a set of methods for capturing common GPU operations,
+tf::cudaFlowCapturer defines a set of methods for capturing common GPU operations,
 such as tf::cudaFlowCapturer::kernel, tf::cudaFlowCapturer::memcpy,
 tf::cudaFlowCapturer::memset, and so on.
 For example, the following code snippet uses these pre-defined methods
@@ -103,7 +103,7 @@ kernel.precede(d2h);
 
 You can run a %cudaFlow capturer on a specific GPU by switching to the context 
 of that GPU using tf::cudaScopedDevice, following the CUDA convention of multi-GPU programming.
-The following example creates a %cudaFlow capturer on GPU @c 2:
+The example below creates a %cudaFlow capturer and runs it on GPU @c 2:
 
 @code{.cpp}
 {

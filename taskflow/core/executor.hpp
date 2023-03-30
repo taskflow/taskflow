@@ -562,10 +562,8 @@ class Executor {
   @brief runs a given function asynchronously
 
   @tparam F callable type
-  @tparam ArgsT parameter types
 
   @param f callable object to call
-  @param args parameters to pass to the callable
 
   @return a tf::Future that will holds the result of the execution
 
@@ -581,22 +579,21 @@ class Executor {
     std::cout << "create an asynchronous task and returns 1\n";
     return 1;
   });
+  future.get();
   @endcode
 
   This member function is thread-safe.
   */
-  template <typename F, typename... ArgsT>
-  auto async(F&& f, ArgsT&&... args);
+  template <typename F>
+  auto async(F&& f);
 
   /**
   @brief runs a given function asynchronously and gives a name to this task
 
   @tparam F callable type
-  @tparam ArgsT parameter types
 
   @param name name of the asynchronous task
   @param f callable object to call
-  @param args parameters to pass to the callable
 
   @return a tf::Future that will holds the result of the execution
 
@@ -610,16 +607,17 @@ class Executor {
   a @c std::nullopt, or the value returned by the callable.
 
   @code{.cpp}
-  tf::Future<std::optional<int>> future = executor.named_async("name", [](){
+  tf::Future<std::optional<int>> future = executor.async("name", [](){
     std::cout << "create an asynchronous task with a name and returns 1\n";
     return 1;
   });
+  future.get();
   @endcode
 
   This member function is thread-safe.
   */
-  template <typename F, typename... ArgsT>
-  auto named_async(const std::string& name, F&& f, ArgsT&&... args);
+  template <typename F>
+  auto async(const std::string& name, F&& f);
 
   /**
   @brief similar to tf::Executor::async but does not return a future object
@@ -631,12 +629,13 @@ class Executor {
   executor.silent_async([](){
     std::cout << "create an asynchronous task with no return\n";
   });
+  executor.wait_for_all();
   @endcode
 
   This member function is thread-safe.
   */
-  template <typename F, typename... ArgsT>
-  void silent_async(F&& f, ArgsT&&... args);
+  template <typename F>
+  void silent_async(F&& f);
 
   /**
   @brief similar to tf::Executor::named_async but does not return a future object
@@ -645,15 +644,16 @@ class Executor {
   and is encouraged to use when there is no data returned.
 
   @code{.cpp}
-  executor.named_silent_async("name", [](){
+  executor.silent_async("name", [](){
     std::cout << "create an asynchronous task with a name and no return\n";
   });
+  executor.wait_for_all();
   @endcode
 
   This member function is thread-safe.
   */
-  template <typename F, typename... ArgsT>
-  void named_silent_async(const std::string& name, F&& f, ArgsT&&... args);
+  template <typename F>
+  void silent_async(const std::string& name, F&& f);
 
   /**
   @brief constructs an observer to inspect the activities of worker threads
@@ -806,13 +806,13 @@ inline Worker* Executor::_this_worker() {
   return itr == _wids.end() ? nullptr : &_workers[itr->second];
 }
 
-// Function: named_async
-template <typename F, typename... ArgsT>
-auto Executor::named_async(const std::string& name, F&& f, ArgsT&&... args) {
+// Function: async
+template <typename F>
+auto Executor::async(const std::string& name, F&& f) {
 
   _increment_topology();
 
-  using T = std::invoke_result_t<F, ArgsT...>;
+  using T = std::invoke_result_t<std::decay_t<F>>;
   using R = std::conditional_t<std::is_same_v<T, void>, void, std::optional<T>>;
 
   std::promise<R> p;
@@ -822,23 +822,22 @@ auto Executor::named_async(const std::string& name, F&& f, ArgsT&&... args) {
   Future<R> fu(p.get_future(), tpg);
 
   auto node = node_pool.animate(
+    name, 0, nullptr, nullptr,
     std::in_place_type_t<Node::Async>{},
-    [p=make_moc(std::move(p)), f=std::forward<F>(f), args...]
+    [p=make_moc(std::move(p)), f=std::forward<F>(f)]
     (bool cancel) mutable {
       if constexpr(std::is_same_v<R, void>) {
         if(!cancel) {
-          f(args...);
+          f();
         }
         p.object.set_value();
       }
       else {
-        p.object.set_value(cancel ? std::nullopt : std::make_optional(f(args...)));
+        p.object.set_value(cancel ? std::nullopt : std::make_optional(f()));
       }
     },
     std::move(tpg)
   );
-
-  node->_name = name;
 
   if(auto w = _this_worker(); w) {
     _schedule(*w, node);
@@ -851,27 +850,24 @@ auto Executor::named_async(const std::string& name, F&& f, ArgsT&&... args) {
 }
 
 // Function: async
-template <typename F, typename... ArgsT>
-auto Executor::async(F&& f, ArgsT&&... args) {
-  return named_async("", std::forward<F>(f), std::forward<ArgsT>(args)...);
+template <typename F>
+auto Executor::async(F&& f) {
+  return async("", std::forward<F>(f));
 }
 
-// Function: named_silent_async
-template <typename F, typename... ArgsT>
-void Executor::named_silent_async(
-  const std::string& name, F&& f, ArgsT&&... args
-) {
+// Function: silent_async
+template <typename F>
+void Executor::silent_async(const std::string& name, F&& f) {
 
   _increment_topology();
 
-  Node* node = node_pool.animate(
+  auto node = node_pool.animate(
+    name, 0, nullptr, nullptr,
     std::in_place_type_t<Node::SilentAsync>{},
-    [f=std::forward<F>(f), args...] () mutable {
-      f(args...);
+    [f=std::forward<F>(f)] () mutable {
+      f();
     }
   );
-
-  node->_name = name;
 
   if(auto w = _this_worker(); w) {
     _schedule(*w, node);
@@ -882,9 +878,9 @@ void Executor::named_silent_async(
 }
 
 // Function: silent_async
-template <typename F, typename... ArgsT>
-void Executor::silent_async(F&& f, ArgsT&&... args) {
-  named_silent_async("", std::forward<F>(f), std::forward<ArgsT>(args)...);
+template <typename F>
+void Executor::silent_async(F&& f) {
+  silent_async("", std::forward<F>(f));
 }
 
 // Function: this_worker_id
@@ -2023,52 +2019,49 @@ void Runtime::corun_until(P&& predicate) {
 }
 
 // Function: _silent_async
-template <typename F, typename... ArgsT>
+template <typename F>
 void Runtime::_silent_async(
-  Worker& w, const std::string& name, F&& f, ArgsT&&... args
+  Worker& w, const std::string& name, F&& f
 ) {
 
   _parent->_join_counter.fetch_add(1);
 
   auto node = node_pool.animate(
+    name, 0, _parent->_topology, _parent,
     std::in_place_type_t<Node::SilentAsync>{},
-    [f=std::forward<F>(f), args...] () mutable {
-      f(args...);
+    [f=std::forward<F>(f)] () mutable {
+      f();
     }
   );
-
-  node->_name = name;
-  node->_topology = _parent->_topology;
-  node->_parent = _parent; 
 
   _executor._schedule(w, node);
 }
 
 // Function: silent_async
-template <typename F, typename... ArgsT>
-void Runtime::silent_async(F&& f, ArgsT&&... args) {
+template <typename F>
+void Runtime::silent_async(F&& f) {
   _silent_async(
-    *_executor._this_worker(), "", std::forward<F>(f), std::forward<ArgsT>(args)...
+    *_executor._this_worker(), "", std::forward<F>(f)
   );
 }
 
-// Function: named_silent_async
-template <typename F, typename... ArgsT>
-void Runtime::named_silent_async(const std::string& name, F&& f, ArgsT&&... args) {
+// Function: silent_async
+template <typename F>
+void Runtime::silent_async(const std::string& name, F&& f) {
   _silent_async(
-    *_executor._this_worker(), name, std::forward<F>(f), std::forward<ArgsT>(args)...
+    *_executor._this_worker(), name, std::forward<F>(f)
   );
 }
 
 // Function: _async
-template <typename F, typename... ArgsT>
+template <typename F>
 auto Runtime::_async(
-  Worker& w, const std::string& name, F&& f, ArgsT&&... args
+  Worker& w, const std::string& name, F&& f
 ) {
 
   _parent->_join_counter.fetch_add(1);
 
-  using T = std::invoke_result_t<F, ArgsT...>;
+  using T = std::invoke_result_t<std::decay_t<F>>;
   using R = std::conditional_t<std::is_same_v<T, void>, void, std::optional<T>>;
 
   std::promise<R> p;
@@ -2078,25 +2071,22 @@ auto Runtime::_async(
   Future<R> fu(p.get_future(), tpg);
 
   auto node = node_pool.animate(
+    name, 0, _parent->_topology, _parent,
     std::in_place_type_t<Node::Async>{},
-    [p=make_moc(std::move(p)), f=std::forward<F>(f), args...]
+    [p=make_moc(std::move(p)), f=std::forward<F>(f)]
     (bool cancel) mutable {
       if constexpr(std::is_same_v<R, void>) {
         if(!cancel) {
-          f(args...);
+          f();
         }
         p.object.set_value();
       }
       else {
-        p.object.set_value(cancel ? std::nullopt : std::make_optional(f(args...)));
+        p.object.set_value(cancel ? std::nullopt : std::make_optional(f()));
       }
     },
     std::move(tpg)
   );
-
-  node->_name = name;
-  node->_topology = _parent->_topology;
-  node->_parent = _parent;
 
   _executor._schedule(w, node);
 
@@ -2104,18 +2094,18 @@ auto Runtime::_async(
 }
 
 // Function: async
-template <typename F, typename... ArgsT>
-auto Runtime::async(F&& f, ArgsT&&... args) {
+template <typename F>
+auto Runtime::async(F&& f) {
   return _async(
-    *_executor._this_worker(), "", std::forward<F>(f), std::forward<ArgsT>(args)...
+    *_executor._this_worker(), "", std::forward<F>(f)
   );
 }
 
 // Function: async
-template <typename F, typename... ArgsT>
-auto Runtime::named_async(const std::string& name, F&& f, ArgsT&&... args) {
+template <typename F>
+auto Runtime::async(const std::string& name, F&& f) {
   return _async(
-    *_executor._this_worker(), name, std::forward<F>(f), std::forward<ArgsT>(args)...
+    *_executor._this_worker(), name, std::forward<F>(f)
   );
 }
 

@@ -1111,7 +1111,6 @@ void scalable_pipeline_1P_S_264VideoFormat(size_t L, unsigned w) {
     
     std::vector<size_t> collection1;
     std::vector<size_t> deferrals1(N);
-    std::mutex mutex;
 
     tf::Taskflow taskflow;
     
