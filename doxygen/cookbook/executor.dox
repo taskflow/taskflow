@@ -187,15 +187,14 @@ tf::Taskflow moved_taskflow(std::move(taskflow));
 
 @section ExecuteATaskflowFromAnInternalWorker Execute a Taskflow from an Internal Worker
 
-The typical `tf::Executor::run` series returns a tf::Future object which allows you 
+Each run variant of tf::Executor returns a tf::Future object which allows you 
 to wait for the result to complete.
 When calling `tf::Future::wait`, the caller blocks without doing anything until
-the associated state has indicated completion.
+the associated state is written to be ready.
 This design, however, can introduce deadlock problem especially when you need to run 
 multiple taskflows from the internal workers of an executor.
-To avoid this problem,
-the executor has a method, tf::Executor::corun, to execute
-a taskflow and wait until the execution finishes using an internal worker of the executor.
+For example, the code below creates a taskflow of 1000 tasks
+with each task running a taskflow of 500 tasks in a blocking fashion:
 
 @code{.cpp}
 tf::Executor executor(2);
@@ -205,17 +204,45 @@ std::array<tf::Taskflow, 1000> others;
 std::atomic<size_t> counter{0};
 
 for(size_t n=0; n<1000; n++) {
-  for(size_t i=0; i<1000; i++) {
+  for(size_t i=0; i<500; i++) {
     others[n].emplace([&](){ counter++; });
   }
   taskflow.emplace([&executor, &tf=others[n]](){
-    executor.corun(tf);
-    //executor.run(tf).wait();  <- blocking the worker without doing anything
-    //                             will introduce deadlock
+    // blocking the worker can introduce deadlock where
+    // all workers are waiting for their taskflows to finish
+    executor.run(tf).wait();
   });
 }
 executor.run(taskflow).wait();
 @endcode
+
+
+To avoid this problem,
+the executor has a method, tf::Executor::corun, to execute
+a taskflow from a worker of that executor.
+The worker will not block but co-run the taskflow with other tasks
+in its work-stealing loop.
+
+@code{.cpp}
+tf::Executor executor(2);
+tf::Taskflow taskflow;
+std::array<tf::Taskflow, 1000> others;
+
+std::atomic<size_t> counter{0};
+
+for(size_t n=0; n<1000; n++) {
+  for(size_t i=0; i<500; i++) {
+    others[n].emplace([&](){ counter++; });
+  }
+  taskflow.emplace([&executor, &tf=others[n]](){
+    // the caller worker will not block but corun these
+    // taskflows through its work-stealing loop
+    executor.corun(tf);
+  });
+}
+executor.run(taskflow).wait();
+@endcode
+
 
 Similar to tf::Executor::corun, the method tf::Executor::corun_until
 is another variant that keeps the calling worker in the work-stealing loop 
@@ -256,7 +283,7 @@ runtime.
 10: executor.wait_for_all();
 @endcode
 
-@section QueryTheWorkerID Query the Worker Identieir
+@section QueryTheWorkerID Query the Worker ID
 
 Each worker in an executor has an unique integer identifier in the range 
 <tt>[0, N)</tt> that can be queried by the caller thread using tf::Executor::this_worker_id.

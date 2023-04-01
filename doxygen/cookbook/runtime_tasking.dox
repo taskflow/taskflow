@@ -86,8 +86,8 @@ taskflow.emplace([](tf::Runtime& rt){
   rt.corun([](tf::Subflow& sf){
     sf.emplace([](){ std::cout << "independent task 1\n"; });
     sf.emplace([](){ std::cout << "independent task 2\n"; });
+    // subflow joins upon corun returns
   });
-  // subflow joins upon corun returns
 });
 @endcode
 
@@ -104,7 +104,8 @@ graph.emplace([](){ std::cout << "independent task 1\n"; });
 graph.emplace([](){ std::cout << "independent task 2\n"; });
 
 taskflow.emplace([&](tf::Runtime& rt){ 
-  rt.corun(graph);  // this worker thread continues the work-stealing loop
+  // this worker coruns the graph through its work-stealing loop
+  rt.corun(graph);
 });
 executor.run_n(taskflow, 10000);
 @endcode
@@ -113,15 +114,61 @@ Although tf::Runtime::corun blocks until the operation completes,
 the caller thread (worker) is not preempted (e.g., sleep or holding any lock).
 Instead, the caller thread joins the work-stealing loop of the executor
 and leaves whenever the spawned task graph completes.
-This is different from waiting for a submitted taskflow using tf::Future::wait
+This is different from waiting for a submitted taskflow using tf::Future<T>::wait
 which blocks the caller thread until the submitted taskflow completes.
 When multiple submitted taskflows are being waited,
 their executions can potentially lead to deadlock.
-Using tf::Runtime::corun avoids this deadlock problem.
+For example, the code below creates a taskflow of 1000 tasks
+with each task running a taskflow of 500 tasks 
+in a blocking fashion:
+
+@code{.cpp}
+tf::Executor executor(2);
+tf::Taskflow taskflow;
+std::array<tf::Taskflow, 1000> others;
+
+std::atomic<size_t> counter{0};
+
+for(size_t n=0; n<1000; n++) {
+  for(size_t i=0; i<500; i++) {
+    others[n].emplace([&](){ counter++; });
+  }
+  taskflow.emplace([&executor, &tf=others[n]](){
+    // blocking the worker can introduce deadlock where
+    // all workers are waiting for their taskflows to finish
+    executor.run(tf).wait();
+  });
+}
+executor.run(taskflow).wait();
+@endcode
+
+Using tf::Runtime::corun allows each worker to corun these
+taskflows through its work-stealing loop, thus avoiding
+deadlock problem caused by blocking wait.
+
+@code{.cpp}
+tf::Executor executor(2);
+tf::Taskflow taskflow;
+std::array<tf::Taskflow, 1000> others;
+
+std::atomic<size_t> counter{0};
+
+for(size_t n=0; n<1000; n++) {
+  for(size_t i=0; i<500; i++) {
+    others[n].emplace([&](){ counter++; });
+  }
+  taskflow.emplace([&tf=others[n]](tf::Runtime& rt){
+    // the caller worker will not block but corun these
+    // taskflows through its work-stealing loop
+    rt.corun(tf);
+  });
+}
+executor.run(taskflow).wait();
+@endcode
 
 @section LearnMoreAboutRuntime Learn More About Runtime
 
-Visit the following pages to learn more about tf::Runtime:
+t the following pages to learn more about tf::Runtime:
 
 + @ref LaunchAsynchronousTasksFromARuntime 
 
