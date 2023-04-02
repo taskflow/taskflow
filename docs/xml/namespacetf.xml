@@ -38,7 +38,6 @@
     <innerclass refid="classtf_1_1DataPipeline" prot="public">tf::DataPipeline</innerclass>
     <innerclass refid="classtf_1_1DeferredPipeflow" prot="private">tf::DeferredPipeflow</innerclass>
     <innerclass refid="classtf_1_1DynamicPartitioner" prot="public">tf::DynamicPartitioner</innerclass>
-    <innerclass refid="classtf_1_1ExecutionPolicy" prot="public">tf::ExecutionPolicy</innerclass>
     <innerclass refid="classtf_1_1Executor" prot="public">tf::Executor</innerclass>
     <innerclass refid="classtf_1_1FlowBuilder" prot="public">tf::FlowBuilder</innerclass>
     <innerclass refid="classtf_1_1Future" prot="public">tf::Future</innerclass>
@@ -327,18 +326,18 @@
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="20" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="20" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="typedef" id="namespacetf_1a04cb73dba3a2101ed735b8e7122aca60" prot="public" static="no">
-        <type><ref refid="classtf_1_1ExecutionPolicy" kindref="compound">ExecutionPolicy</ref>&lt; <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">GuidedPartitioner</ref> &gt;</type>
-        <definition>using tf::DefaultExecutionPolicy = typedef ExecutionPolicy&lt;GuidedPartitioner&gt;</definition>
+      <memberdef kind="typedef" id="namespacetf_1a77d193108ae375fdfc554e7f10bea23e" prot="public" static="no">
+        <type><ref refid="classtf_1_1GuidedPartitioner" kindref="compound">GuidedPartitioner</ref></type>
+        <definition>using tf::DefaultPartitioner = typedef GuidedPartitioner</definition>
         <argsstring></argsstring>
-        <name>DefaultExecutionPolicy</name>
+        <name>DefaultPartitioner</name>
         <briefdescription>
-<para>default execution policy using <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref> algorithm </para>        </briefdescription>
+<para>default partitioner set to <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref> </para>        </briefdescription>
         <detaileddescription>
-        </detaileddescription>
+<para>Guided partitioner can achieve decent performance for most parallel algorithms, especially for those with irregular and unbalanced workload per iteration. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="398" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="398" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="350" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="350" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="namespacetf_1a0e267ab3e1baeb1962f3b3a374de9553" prot="public" static="no">
         <type><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">cudaExecutionPolicy</ref>&lt; 512, 7 &gt;</type>
@@ -476,16 +475,16 @@
         </inbodydescription>
         <location file="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" line="127" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/task.hpp" bodystart="127" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="namespacetf_1a6720c7fd9025a4c32898264dab03b8be" prot="public" static="no" mutable="no">
+      <memberdef kind="variable" id="namespacetf_1a73c20705fc54763f195a00b6e626e301" prot="public" static="no" mutable="no">
         <templateparamlist>
           <param>
             <type>typename C</type>
           </param>
         </templateparamlist>
         <type>constexpr bool</type>
-        <definition>constexpr bool tf::is_execution_policy_v</definition>
+        <definition>constexpr bool tf::is_partitioner_v</definition>
         <argsstring></argsstring>
-        <name>is_execution_policy_v</name>
+        <name>is_partitioner_v</name>
         <initializer>= <ref refid="cpp/types/is_base_of" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_base_of</ref>&lt;<ref refid="classtf_1_1PartitionerBase" kindref="compound">PartitionerBase</ref>, C&gt;::value</initializer>
         <briefdescription>
 <para>determines if a type is a partitioner </para>        </briefdescription>
@@ -493,7 +492,7 @@
 <para>A partitioner is a derived type from <ref refid="classtf_1_1PartitionerBase" kindref="compound">tf::PartitionerBase</ref>. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="406" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="406" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="358" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="358" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">

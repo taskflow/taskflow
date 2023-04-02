@@ -5,8 +5,8 @@
 #pragma once
 
 /**
-@file execution_policy.hpp
-@brief execution_policy include file
+@file partitioner.hpp
+@brief partitioner include file
 */
 
 namespace tf {
@@ -22,6 +22,24 @@ namespace tf {
 
 The class provides base methods to derive a partitioner that can be used
 to schedule parallel iterations (e.g., tf::Taskflow::for_each).
+
+An partitioner defines the scheduling method for running parallel algorithms,
+such tf::Taskflow::for_each, tf::Taskflow::reduce, and so on.
+By default, we provide the following partitioners:
+
++ tf::GuidedPartitioner to enable guided scheduling algorithm of adaptive chunk size
++ tf::DynamicPartitioner to enable dynamic scheduling algorithm of equal chunk size
++ tf::StaticPartitioner to enable static scheduling algorithm of static chunk size
++ tf::RandomPartitioner to enable random scheduling algorithm of random chunk size
+
+Depending on applications, partitioning algorithms can impact the performance
+a lot. 
+For example, if a parallel-iteration workload contains a regular work unit per
+iteration, tf::StaticPartitioner can deliver the best performance.
+On the other hand, if the work unit per iteration is irregular and unbalanced,
+tf::GuidedPartitioner or tf::DynamicPartitioner can outperform tf::StaticPartitioner.
+In most situations, tf::GuidedPartitioner can deliver decent performance and
+is thus used as our default partitioner.
 */
 class PartitionerBase {
 
@@ -81,7 +99,7 @@ class GuidedPartitioner : public PartitionerBase {
   /**
   @brief construct a guided partitioner with the given chunk size
   */
-  explicit GuidedPartitioner(size_t sz) : PartitionerBase {sz} {}
+  explicit GuidedPartitioner(size_t sz) : PartitionerBase (sz) {}
   
   /**
   @private
@@ -159,7 +177,7 @@ class DynamicPartitioner : public PartitionerBase {
   /**
   @brief construct a dynamic partitioner with the given chunk size
   */
-  explicit DynamicPartitioner(size_t sz) : PartitionerBase {sz} {}
+  explicit DynamicPartitioner(size_t sz) : PartitionerBase (sz) {}
   
   /**
   @private
@@ -195,6 +213,14 @@ The partitioner divides iterations into chunks and distributes chunks
 to workers in order.
 If the chunk size is not specified (default @c 0), the partitioner resorts to a chunk size
 that equally distributes iterations into workers.
+
+@code{.cpp}
+std::vector<int> data = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+taskflow.for_each(
+  data.begin(), data.end(), [](int i){}, StaticPartitioner(0)
+);
+executor.run(taskflow).run();
+@endcode
 */
 class StaticPartitioner : public PartitionerBase {
 
@@ -208,7 +234,7 @@ class StaticPartitioner : public PartitionerBase {
   /**
   @brief construct a dynamic partitioner with the given chunk size
   */
-  explicit StaticPartitioner(size_t sz) : PartitionerBase{sz} {}
+  explicit StaticPartitioner(size_t sz) : PartitionerBase(sz) {}
 
   /**
   @private
@@ -257,7 +283,7 @@ class RandomPartitioner : public PartitionerBase {
   /**
   @brief constructs a random partitioner 
   */
-  RandomPartitioner(size_t cz) : PartitionerBase{cz} {}
+  RandomPartitioner(size_t cz) : PartitionerBase(cz) {}
   
   /**
   @brief constructs a random partitioner with the given parameters
@@ -315,87 +341,13 @@ class RandomPartitioner : public PartitionerBase {
 
 };
 
-
-
-// ----------------------------------------------------------------------------
-// ExecutionPolicy
-// ----------------------------------------------------------------------------
-
 /**
-@class ExecutionPolicy
+@brief default partitioner set to tf::GuidedPartitioner
 
-@brief class to construct an execution policy for parallel algorithms
-
-@tparam P partitioner type 
-
-An execution policy defines the scheduling method for running parallel algorithms,
-such tf::Taskflow::for_each, tf::Taskflow::reduce, and so on.
-The template type, @c P, specifies the partitioning algorithm that will be
-used by the scheduling method:
-
-+ tf::GuidedPartitioner
-+ tf::DynamicPartitioner
-+ tf::StaticPartitioner
-+ tf::RandomPartitioner
-
-Depending on applications, partitioning algorithms can impact the performance
-a lot. 
-For example, if a parallel-iteration workload contains a regular work unit per
-iteration, tf::StaticPartitioner can deliver the best performance.
-On the other hand, if the work unit per iteration is irregular and unbalanced,
-tf::GuidedPartitioner or tf::DynamicPartitioner can outperform tf::StaticPartitioner.
-
-The following example constructs a parallel-for task using 
-an execution policy with guided partitioning algorithm:
-
-@code{.cpp}
-std::vector<int> data = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-tf::ExecutionPolicy<tf::GuidedPartitioner> policy;
-taskflow.for_each(policy, data.begin(), data.end(), [](int i){});
-executor.run(taskflow).run();
-@endcode
-
-In most applications, tf::GuidedPartitioner can deliver decent performance
-and therefore is used as the default execution policy, tf::DefaultExecutionPolicy.
-
-@code{.cpp}
-std::vector<int> data = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-taskflow.for_each(tf::DefaultExecutionPolicy{}, data.begin(), data.end(), [](int i){});
-
-// the following for_each task is the same as above (with default execution policy)
-// taskflow.for_each(data.begin(), data.end(), [](int item){});
-
-executor.run(taskflow).run();
-@endcode
-
+Guided partitioner can achieve decent performance for most parallel algorithms,
+especially for those with irregular and unbalanced workload per iteration.
 */
-template <typename P>
-class ExecutionPolicy : public P {
-
-  public:
-
-  /**
-  @brief queries if the execution policy is associated with a static partitioner
-  */
-  constexpr static bool is_static_partitioner = std::is_same_v<P, StaticPartitioner>;
-  
-  /**
-  @brief constructs an execution policy 
-
-  @tparam ArgsT argument types to construct the underlying partitioner
-  @param args arguments to forward to construct the underlying partitioner
-
-  */
-  template <typename... ArgsT>
-  ExecutionPolicy(ArgsT&&... args) : P{std::forward<ArgsT>(args) ...} {
-  }
-
-};
-
-/**
-@brief default execution policy using tf::GuidedPartitioner algorithm 
-*/
-using DefaultExecutionPolicy = ExecutionPolicy<GuidedPartitioner>;
+using DefaultPartitioner = GuidedPartitioner;
 
 /**
 @brief determines if a type is a partitioner 
@@ -403,7 +355,7 @@ using DefaultExecutionPolicy = ExecutionPolicy<GuidedPartitioner>;
 A partitioner is a derived type from tf::PartitionerBase.
 */
 template <typename C>
-inline constexpr bool is_execution_policy_v = std::is_base_of<PartitionerBase, C>::value;
+inline constexpr bool is_partitioner_v = std::is_base_of<PartitionerBase, C>::value;
 
 }  // end of namespace tf -----------------------------------------------------
 

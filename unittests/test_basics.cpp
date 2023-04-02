@@ -31,17 +31,6 @@ TEST_CASE("Type" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
-// Testcase: ExecutionPolicy
-// --------------------------------------------------------
-TEST_CASE("ExecutionPolicy" * doctest::timeout(300)) {
-
-  REQUIRE(tf::ExecutionPolicy<tf::StaticPartitioner>::is_static_partitioner == 1);
-  REQUIRE(tf::ExecutionPolicy<tf::GuidedPartitioner>::is_static_partitioner == 0);
-  REQUIRE(tf::ExecutionPolicy<tf::RandomPartitioner>::is_static_partitioner == 0);
-  REQUIRE(tf::ExecutionPolicy<tf::DynamicPartitioner>::is_static_partitioner == 0);
-}
-
-// --------------------------------------------------------
 // Testcase: Builder
 // --------------------------------------------------------
 TEST_CASE("Builder" * doctest::timeout(300)) {

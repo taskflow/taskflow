@@ -332,6 +332,24 @@ target_link_libraries(
 )
 set_target_properties(for_each PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
+## benchmark 17: scan
+add_executable(
+  bench_scan
+  ${TF_BENCHMARK_DIR}/scan/main.cpp
+  ${TF_BENCHMARK_DIR}/scan/omp.cpp
+  ${TF_BENCHMARK_DIR}/scan/tbb.cpp
+  ${TF_BENCHMARK_DIR}/scan/taskflow.cpp
+)
+target_include_directories(bench_scan PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  bench_scan 
+  ${PROJECT_NAME} 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
+)
+set_target_properties(bench_scan PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
 
 ###############################################################################
 # CUDA benchmarks

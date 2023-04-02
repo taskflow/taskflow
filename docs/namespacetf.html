@@ -141,11 +141,6 @@
             </dt>
             <dd>class to construct a dynamic partitioner for scheduling parallel algorithms</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename P&gt;</div>
-              class <a href="classtf_1_1ExecutionPolicy.html" class="m-doc">ExecutionPolicy</a>
-            </dt>
-            <dd>class to construct an execution policy for parallel algorithms</dd>
-            <dt>
               class <a href="classtf_1_1Executor.html" class="m-doc">Executor</a>
             </dt>
             <dd>class to create an executor for running a taskflow graph</dd>
@@ -304,10 +299,10 @@
               using <a href="#a8cff4bbd797dde4dfab096c3cc657833" class="m-doc-self">observer_stamp_t</a> = <a href="http://en.cppreference.com/w/cpp/chrono/time_point.html" class="m-doc-external">std::<wbr />chrono::<wbr />time_point</a>&lt;<a href="http://en.cppreference.com/w/cpp/chrono/steady_clock.html" class="m-doc-external">std::<wbr />chrono::<wbr />steady_clock</a>&gt;
             </dt>
             <dd>default time point type of observers</dd>
-            <dt id="a04cb73dba3a2101ed735b8e7122aca60">
-              using <a href="#a04cb73dba3a2101ed735b8e7122aca60" class="m-doc-self">DefaultExecutionPolicy</a> = <a href="classtf_1_1ExecutionPolicy.html" class="m-doc">ExecutionPolicy</a>&lt;<a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&gt;
+            <dt>
+              using <a href="#a77d193108ae375fdfc554e7f10bea23e" class="m-doc">DefaultPartitioner</a> = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>
             </dt>
-            <dd>default execution policy using <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">tf::<wbr />GuidedPartitioner</a> algorithm</dd>
+            <dd>default partitioner set to <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">tf::<wbr />GuidedPartitioner</a></dd>
             <dt id="a0e267ab3e1baeb1962f3b3a374de9553">
               using <a href="#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc-self">cudaDefaultExecutionPolicy</a> = <a href="classtf_1_1cudaExecutionPolicy.html" class="m-doc">cudaExecutionPolicy</a>&lt;512, 7&gt;
             </dt>
@@ -722,7 +717,7 @@
             <dd>determines if a callable is a static task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename C&gt;</div>
-              bool <a href="#a6720c7fd9025a4c32898264dab03b8be" class="m-doc">is_execution_policy_v</a> <span class="m-label m-flat m-primary">constexpr</span>
+              bool <a href="#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_partitioner_v</a> <span class="m-label m-flat m-primary">constexpr</span>
             </dt>
             <dd>determines if a type is a partitioner</dd>
           </dl>
@@ -899,6 +894,16 @@
                 </tr>
               </tbody>
             </table>
+          </div></section>
+        </section>
+        <section>
+          <h2>Typedef documentation</h2>
+          <section class="m-doc-details" id="a77d193108ae375fdfc554e7f10bea23e"><div>
+            <h3>
+              using tf::<wbr /><a href="#a77d193108ae375fdfc554e7f10bea23e" class="m-doc-self">DefaultPartitioner</a> = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>
+            </h3>
+            <p>default partitioner set to <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">tf::<wbr />GuidedPartitioner</a></p>
+<p>Guided partitioner can achieve decent performance for most parallel algorithms, especially for those with irregular and unbalanced workload per iteration.</p>
           </div></section>
         </section>
         <section>
@@ -2636,12 +2641,12 @@
             <p>determines if a callable is a static task</p>
 <p>A static task is a callable object constructible from std::function&lt;void()&gt; or std::function&lt;void(tf::Runtime&amp;)&gt;.</p>
           </div></section>
-          <section class="m-doc-details" id="a6720c7fd9025a4c32898264dab03b8be"><div>
+          <section class="m-doc-details" id="a73c20705fc54763f195a00b6e626e301"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename C&gt;
               </div>
-              bool tf::<wbr /><a href="#a6720c7fd9025a4c32898264dab03b8be" class="m-doc-self">is_execution_policy_v</a> <span class="m-label m-primary">constexpr</span>
+              bool tf::<wbr /><a href="#a73c20705fc54763f195a00b6e626e301" class="m-doc-self">is_partitioner_v</a> <span class="m-label m-primary">constexpr</span>
             </h3>
             <p>determines if a type is a partitioner</p>
 <p>A partitioner is a derived type from <a href="classtf_1_1PartitionerBase.html" class="m-doc">tf::<wbr />PartitionerBase</a>.</p>

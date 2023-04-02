@@ -134,34 +134,34 @@ init.precede(pf);
 
 When @c init finishes, the parallel-for task @c pf will see @c first pointing to the beginning of @c vec and @c last pointing to the end of @c vec and performs parallel iterations over the 1000 items. The two tasks form an end-to-end task graph where the parameters of parallel-for are computed on the fly.
 
-@section ParallelIterationsConfigureAnExecutionPolicy Configure an Execution Policy
+@section ParallelIterationsConfigureAPartitioner Configure a Partitioner
 
-You can configure an execution policy for parallel-iteration tasks to run with different
+You can configure a partitioner for parallel-iteration tasks to run with different
 scheduling methods, such as guided partitioning, dynamic partitioning, and static partitioning.
-Each parallel-iteration task has an overload that takes an execution policy in the first argument:
+Each parallel-iteration task has an overload that takes a partitioner in the last argument:
 
-  + tf::Taskflow::for_each_index(P&& policy, B first, E last, S step, C callable)
-  + tf::Taskflow::for_each(P&& policy, B first, E last, C callable) 
+  + tf::Taskflow::for_each_index(B first, E last, S step, C callable, P&& part)
+  + tf::Taskflow::for_each(B first, E last, C callable, P&& part) 
 
 The following example create two parallel-iteration tasks using tow different
-execution policies, one with the static partitioning algorithm and 
+partitioners, one with the static partitioning algorithm and 
 another one with the guided partitioning algorithm:
 
 @code{.cpp}
 std::vector<int> vec(1024, 0);
 
-tf::ExecutionPolicy<tf::StaticPartitioner> static_policy;
-tf::ExecutionPolicy<tf::GuidedPartitioner> guided_policy;
+tf::ExecutionPolicy<tf::StaticPartitioner> static_partitioner;
+tf::ExecutionPolicy<tf::GuidedPartitioner> guided_partitioner;
 
-// create a parallel-iteration task with static policy
-taskflow.for_each(static_policy,
+// create a parallel-iteration task with static partitioner
+taskflow.for_each(static_partitioner,
   vec.begin(), vec.end(), [&](int i) {
     std::cout << "parallel iteration on item " << i << '\n';
   }
 );
 
-// create a parallel-iteration task with guided policy
-taskflow.for_each(guided_policy,
+// create a parallel-iteration task with guided partitioner
+taskflow.for_each(guided_partitioner,
   vec.begin(), vec.end(), [&](int i) {
     std::cout << "parallel iteration on item " << i << '\n';
   }
@@ -169,9 +169,8 @@ taskflow.for_each(guided_policy,
 @endcode
 
 @note
-By default, parallel-iteration tasks use tf::DefaultExecutionPolicy 
-if no execution policy is specified. 
-The default execution policy is based on the guided scheduling algorithm.
+By default, parallel-iteration tasks use tf::DefaultPartitioner
+if no partitioner is specified. 
 
 */
 

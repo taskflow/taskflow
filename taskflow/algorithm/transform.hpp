@@ -9,17 +9,8 @@ namespace tf {
 // ----------------------------------------------------------------------------
 
 // Function: transform
-template <typename B, typename E, typename O, typename C>
-Task FlowBuilder::transform(B first1, E last1, O d_first, C c) {
-  return transform(DefaultExecutionPolicy{}, first1, last1, d_first, c);
-}
-
-// Function: transform
-template <
-  typename P, typename B, typename E, typename O, typename C,
-  std::enable_if_t<is_execution_policy_v<P>, void> *
->
-Task FlowBuilder::transform(P&& policy, B first1, E last1, O d_first, C c) {
+template <typename B, typename E, typename O, typename C, typename P>
+Task FlowBuilder::transform(B first1, E last1, O d_first, C c, P&& part) {
 
   using namespace std::string_literals;
 
@@ -28,7 +19,7 @@ Task FlowBuilder::transform(P&& policy, B first1, E last1, O d_first, C c) {
   using O_t = std::decay_t<unwrap_ref_decay_t<O>>;
 
   Task task = emplace(
-  [first1, last1, d_first, c, policy] (Runtime& sf) mutable {
+  [first1, last1, d_first, c, part=std::forward<P>(part)] (Runtime& sf) mutable {
 
     // fetch the stateful values
     B_t beg   = first1;
@@ -43,7 +34,7 @@ Task FlowBuilder::transform(P&& policy, B first1, E last1, O d_first, C c) {
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
-    if(W <= 1 || N <= policy.chunk_size()) {
+    if(W <= 1 || N <= part.chunk_size()) {
       std::transform(beg, end, d_beg, c);
       return;
     }
@@ -53,18 +44,18 @@ Task FlowBuilder::transform(P&& policy, B first1, E last1, O d_first, C c) {
     }
 
     // static partitioner
-    if constexpr(std::decay_t<P>::is_static_partitioner) {
+    if constexpr(std::is_same_v<std::decay_t<P>, StaticPartitioner>) {
 
       size_t curr_b = 0;
       size_t chunk_size;
 
       for(size_t w=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
       
-        chunk_size = policy.chunk_size() == 0 ? 
-                     N/W + (w < N%W) : policy.chunk_size();
+        chunk_size = part.chunk_size() == 0 ? 
+                     N/W + (w < N%W) : part.chunk_size();
 
-        auto loop = [=, &policy] () mutable {
-          policy(N, W, curr_b, chunk_size,
+        auto loop = [=, &part] () mutable {
+          part(N, W, curr_b, chunk_size,
             [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
               std::advance(beg, curr_b - prev_e);
               std::advance(d_beg, curr_b - prev_e);
@@ -89,8 +80,8 @@ Task FlowBuilder::transform(P&& policy, B first1, E last1, O d_first, C c) {
     else {
       std::atomic<size_t> next(0);
         
-      auto loop = [=, &next, &policy] () mutable {
-        policy(N, W, next, 
+      auto loop = [=, &next, &part] () mutable {
+        part(N, W, next, 
           [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
             std::advance(beg, curr_b - prev_e);
             std::advance(d_beg, curr_b - prev_e);
@@ -109,7 +100,7 @@ Task FlowBuilder::transform(P&& policy, B first1, E last1, O d_first, C c) {
           break;
         }
         // tail optimization
-        if(r <= policy.chunk_size() || w == W-1) {
+        if(r <= part.chunk_size() || w == W-1) {
           loop(); 
           break;
         }
@@ -128,20 +119,14 @@ Task FlowBuilder::transform(P&& policy, B first1, E last1, O d_first, C c) {
 // ----------------------------------------------------------------------------
 // transform2
 // ----------------------------------------------------------------------------
-
+  
 // Function: transform
 template <
-  typename B1, typename E1, typename B2, typename O, typename C,
-  std::enable_if_t<!is_execution_policy_v<B1>, void> *
+  typename B1, typename E1, typename B2, typename O, typename C, typename P,
+  std::enable_if_t<!is_partitioner_v<std::decay_t<C>>, void>*
 >
-Task FlowBuilder::transform(B1 first1, E1 last1, B2 first2, O d_first, C c) {
-  return transform(DefaultExecutionPolicy{}, first1, last1, first2, d_first, c);
-}
-
-// Function: transform
-template <typename P, typename B1, typename E1, typename B2, typename O, typename C>
 Task FlowBuilder::transform(
-  P&& policy, B1 first1, E1 last1, B2 first2, O d_first, C c
+  B1 first1, E1 last1, B2 first2, O d_first, C c, P&& part
 ) {
 
   using namespace std::string_literals;
@@ -152,7 +137,7 @@ Task FlowBuilder::transform(
   using O_t = std::decay_t<unwrap_ref_decay_t<O>>;
 
   Task task = emplace(
-  [first1, last1, first2, d_first, c, policy] (Runtime& sf) mutable {
+  [first1, last1, first2, d_first, c, part=std::forward<P>(part)] (Runtime& sf) mutable {
 
     // fetch the stateful values
     B1_t beg1 = first1;
@@ -168,7 +153,7 @@ Task FlowBuilder::transform(
     size_t N = std::distance(beg1, end1);
 
     // only myself - no need to spawn another graph
-    if(W <= 1 || N <= policy.chunk_size()) {
+    if(W <= 1 || N <= part.chunk_size()) {
       std::transform(beg1, end1, beg2, d_beg, c);
       return;
     }
@@ -178,18 +163,18 @@ Task FlowBuilder::transform(
     }
 
     // static partitioner
-    if constexpr(std::decay_t<P>::is_static_partitioner) {
+    if constexpr(std::is_same_v<std::decay_t<P>, StaticPartitioner>) {
 
       size_t curr_b = 0;
       size_t chunk_size;
 
       for(size_t w=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
       
-        chunk_size = policy.chunk_size() == 0 ? 
-                     N/W + (w < N%W) : policy.chunk_size();
+        chunk_size = part.chunk_size() == 0 ? 
+                     N/W + (w < N%W) : part.chunk_size();
 
-        auto loop = [=, &policy] () mutable {
-          policy(N, W, curr_b, chunk_size,
+        auto loop = [=, &part] () mutable {
+          part(N, W, curr_b, chunk_size,
             [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
               std::advance(beg1, curr_b - prev_e);
               std::advance(beg2, curr_b - prev_e);
@@ -215,8 +200,8 @@ Task FlowBuilder::transform(
     else {
       std::atomic<size_t> next(0);
       
-      auto loop = [=, &next, &policy] () mutable {
-        policy(N, W, next, 
+      auto loop = [=, &next, &part] () mutable {
+        part(N, W, next, 
           [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
             std::advance(beg1, curr_b - prev_e);
             std::advance(beg2, curr_b - prev_e);
@@ -236,7 +221,7 @@ Task FlowBuilder::transform(
           break;
         }
         // tail optimization
-        if(r <= policy.chunk_size() || w == W-1) {
+        if(r <= part.chunk_size() || w == W-1) {
           loop(); 
           break;
         }

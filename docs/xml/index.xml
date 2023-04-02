@@ -432,10 +432,6 @@
     <member refid="classtf_1_1DynamicPartitioner_1afec1c557cfa1b2b5b9c5c47f40bc1697" kind="function"><name>DynamicPartitioner</name></member>
     <member refid="classtf_1_1DynamicPartitioner_1ae63dab160448f6b9db3516f70650e5f6" kind="function"><name>operator()</name></member>
   </compound>
-  <compound refid="classtf_1_1ExecutionPolicy" kind="class"><name>tf::ExecutionPolicy</name>
-    <member refid="classtf_1_1ExecutionPolicy_1a4dfcdc0ded93172d298fb489fe91cdf9" kind="variable"><name>is_static_partitioner</name></member>
-    <member refid="classtf_1_1ExecutionPolicy_1aa17c2be569a937c9be16f4a23ad8adb0" kind="function"><name>ExecutionPolicy</name></member>
-  </compound>
   <compound refid="classtf_1_1Executor" kind="class"><name>tf::Executor</name>
     <member refid="classtf_1_1Executor_1a61184f9bd9c801d0a5eccecfdbddc641" kind="friend"><name>FlowBuilder</name></member>
     <member refid="classtf_1_1Executor_1aa48945297ede77a161defc88033ce8a6" kind="friend"><name>Subflow</name></member>
@@ -531,18 +527,13 @@
     <member refid="classtf_1_1FlowBuilder_1acab0b4ac82260f47fdb36a3244ee3aaf" kind="function"><name>placeholder</name></member>
     <member refid="classtf_1_1FlowBuilder_1a90f3d9b9d6fcf4df8e7d7878dfdd130d" kind="function"><name>linearize</name></member>
     <member refid="classtf_1_1FlowBuilder_1a4ec89b554d15ad5fb96f4fdb10dbbb16" kind="function"><name>linearize</name></member>
-    <member refid="classtf_1_1FlowBuilder_1ad2299fddbd6165cc7f24f57a734d2839" kind="function"><name>for_each</name></member>
-    <member refid="classtf_1_1FlowBuilder_1ab405d7b10040530d8b04c11767b4960d" kind="function"><name>for_each</name></member>
-    <member refid="classtf_1_1FlowBuilder_1a977d8f7007f323eeaa81a37b4c6e6cd6" kind="function"><name>for_each_index</name></member>
-    <member refid="classtf_1_1FlowBuilder_1a38ffe176bc3ae1827b9964322e3769d4" kind="function"><name>for_each_index</name></member>
-    <member refid="classtf_1_1FlowBuilder_1a9f7befa968cf69ea0a20dc267f746f3e" kind="function"><name>transform</name></member>
-    <member refid="classtf_1_1FlowBuilder_1abd813bd7afcbd8e6f56dc67883917d1a" kind="function"><name>transform</name></member>
-    <member refid="classtf_1_1FlowBuilder_1a01edf4fdeee7d7e01483b6d2969bf115" kind="function"><name>transform</name></member>
-    <member refid="classtf_1_1FlowBuilder_1a7a1d63d0954709e0cfab06277bb60c66" kind="function"><name>transform</name></member>
-    <member refid="classtf_1_1FlowBuilder_1afc7bd7a737febf30d5d1d706c4b65f84" kind="function"><name>reduce</name></member>
-    <member refid="classtf_1_1FlowBuilder_1aa9494fe7b862fc832884ce318e8a37f5" kind="function"><name>reduce</name></member>
-    <member refid="classtf_1_1FlowBuilder_1a4dc484abecf338574f46b38635d08e36" kind="function"><name>transform_reduce</name></member>
-    <member refid="classtf_1_1FlowBuilder_1a024a1e5b4f138b6caebb427411fb0a2d" kind="function"><name>transform_reduce</name></member>
+    <member refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kind="function"><name>for_each</name></member>
+    <member refid="classtf_1_1FlowBuilder_1a47ea2b35d0ec18afb35b45316939dc67" kind="function"><name>for_each_index</name></member>
+    <member refid="classtf_1_1FlowBuilder_1a822a75c597ae42cacc28d6f8cefb8c7c" kind="function"><name>transform</name></member>
+    <member refid="classtf_1_1FlowBuilder_1a519ca8f909c86efdc70fa01f28156219" kind="function"><name>transform</name></member>
+    <member refid="classtf_1_1FlowBuilder_1a97f345ee90bdeb8c0c95120752e32dcb" kind="function"><name>reduce</name></member>
+    <member refid="classtf_1_1FlowBuilder_1a3451d6d69aceb775450e41ebe169e4b7" kind="function"><name>transform_reduce</name></member>
+    <member refid="classtf_1_1FlowBuilder_1a1c2ace9290d83c2a006614a4d66ad588" kind="function"><name>inclusive_scan</name></member>
     <member refid="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" kind="function"><name>sort</name></member>
     <member refid="classtf_1_1FlowBuilder_1a7d844e9856c7c65b26ccdb83ffdab1d6" kind="function"><name>sort</name></member>
     <member refid="classtf_1_1FlowBuilder_1a04115519f61efc42d018ea697054135d" kind="function"><name>_linearize</name></member>
@@ -1155,11 +1146,6 @@
     <member refid="classtf_1_1TFProfObserver_1a5debfce27f7e012d22872c134b261c63" kind="function"><name>on_entry</name></member>
     <member refid="classtf_1_1TFProfObserver_1af3a1630b5b1db5341a239a5d4c12c891" kind="function"><name>on_exit</name></member>
   </compound>
-  <compound refid="structtf_1_1ChromeObserver_1_1Timeline" kind="struct"><name>tf::ChromeObserver::Timeline</name>
-    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a3b3761840cd96e8af15e35ba65093e3d" kind="variable"><name>origin</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a68e28885dc55ee0c4a910efb8e89919e" kind="variable"><name>segments</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a9094de2f3a2857b6e0d8ccea358aaa0e" kind="variable"><name>stacks</name></member>
-  </compound>
   <compound refid="structtf_1_1Timeline" kind="struct"><name>tf::Timeline</name>
     <member refid="structtf_1_1Timeline_1ad2de68d870637ec1fccd98c2c8973c9f" kind="variable"><name>uid</name></member>
     <member refid="structtf_1_1Timeline_1ad38c8a527bc603571c53cfce08ccbab7" kind="variable"><name>origin</name></member>
@@ -1171,6 +1157,11 @@
     <member refid="structtf_1_1Timeline_1a9f315578cf84dd0ddfa4bff43762eebb" kind="function"><name>operator=</name></member>
     <member refid="structtf_1_1Timeline_1a435fff911fa14d75c7000f1a908cee57" kind="function"><name>save</name></member>
     <member refid="structtf_1_1Timeline_1af08d956eca1550dcbe161eb53a11fe46" kind="function"><name>load</name></member>
+  </compound>
+  <compound refid="structtf_1_1ChromeObserver_1_1Timeline" kind="struct"><name>tf::ChromeObserver::Timeline</name>
+    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a3b3761840cd96e8af15e35ba65093e3d" kind="variable"><name>origin</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a68e28885dc55ee0c4a910efb8e89919e" kind="variable"><name>segments</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Timeline_1a9094de2f3a2857b6e0d8ccea358aaa0e" kind="variable"><name>stacks</name></member>
   </compound>
   <compound refid="classtf_1_1Worker" kind="class"><name>tf::Worker</name>
     <member refid="classtf_1_1Worker_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -1769,7 +1760,7 @@
     <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132eab72f08e0732365cac9599b5c42157bf9" kind="enumvalue"><name>CAPTURE</name></member>
     <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea0db45d2a4141101bdfe48e3314cfbca3" kind="enumvalue"><name>UNDEFINED</name></member>
     <member refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kind="typedef"><name>observer_stamp_t</name></member>
-    <member refid="namespacetf_1a04cb73dba3a2101ed735b8e7122aca60" kind="typedef"><name>DefaultExecutionPolicy</name></member>
+    <member refid="namespacetf_1a77d193108ae375fdfc554e7f10bea23e" kind="typedef"><name>DefaultPartitioner</name></member>
     <member refid="namespacetf_1a0e267ab3e1baeb1962f3b3a374de9553" kind="typedef"><name>cudaDefaultExecutionPolicy</name></member>
     <member refid="namespacetf_1a6e7c9182ac3f60e339a7497c16633d28" kind="variable"><name>node_pool</name></member>
     <member refid="namespacetf_1a872cf263ab68abc7c3180710fb792528" kind="variable"><name>TASK_TYPES</name></member>
@@ -1777,7 +1768,7 @@
     <member refid="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" kind="variable"><name>is_condition_task_v</name></member>
     <member refid="namespacetf_1a78c40dc8776735b0f2c27cd446481aff" kind="variable"><name>is_multi_condition_task_v</name></member>
     <member refid="namespacetf_1a11fc9c98eb3a0d3a9aa55598b1f4d614" kind="variable"><name>is_static_task_v</name></member>
-    <member refid="namespacetf_1a6720c7fd9025a4c32898264dab03b8be" kind="variable"><name>is_execution_policy_v</name></member>
+    <member refid="namespacetf_1a73c20705fc54763f195a00b6e626e301" kind="variable"><name>is_partitioner_v</name></member>
     <member refid="namespacetf_1aea9fe5c87d4439816239b5af6ebeec55" kind="function"><name>capacity_in_bytes</name></member>
     <member refid="namespacetf_1a6371ab1b1b0e57db6ca95cb4456ac5d3" kind="function"><name>make_worker_interface</name></member>
     <member refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kind="function"><name>to_string</name></member>
@@ -1962,10 +1953,6 @@
   </compound>
   <compound refid="examples_8dox" kind="file"><name>examples.dox</name>
   </compound>
-  <compound refid="execution__policy_8dox" kind="file"><name>execution_policy.dox</name>
-  </compound>
-  <compound refid="execution__policy_8hpp" kind="file"><name>execution_policy.hpp</name>
-  </compound>
   <compound refid="executor_8dox" kind="file"><name>executor.dox</name>
   </compound>
   <compound refid="executor_8hpp" kind="file"><name>executor.hpp</name>
@@ -2017,6 +2004,10 @@
   <compound refid="observer_8hpp" kind="file"><name>observer.hpp</name>
   </compound>
   <compound refid="opentimer_8dox" kind="file"><name>opentimer.dox</name>
+  </compound>
+  <compound refid="partitioner_8dox" kind="file"><name>partitioner.dox</name>
+  </compound>
+  <compound refid="partitioner_8hpp" kind="file"><name>partitioner.hpp</name>
   </compound>
   <compound refid="pipeline_8dox" kind="file"><name>pipeline.dox</name>
   </compound>
@@ -2192,7 +2183,7 @@
   </compound>
   <compound refid="Profiler" kind="page"><name>Profiler</name>
   </compound>
-  <compound refid="ExecutionPolicy" kind="page"><name>ExecutionPolicy</name>
+  <compound refid="PartitioningAlgorithm" kind="page"><name>PartitioningAlgorithm</name>
   </compound>
   <compound refid="Algorithms" kind="page"><name>Algorithms</name>
   </compound>

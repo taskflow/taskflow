@@ -41,11 +41,12 @@ void parallel_transform(size_t W) {
         tgt_beg = tgt.begin();
       });
 
-      auto to = taskflow.transform(tf::ExecutionPolicy<P>(c),
+      auto to = taskflow.transform(
         std::ref(src_beg), std::ref(src_end), std::ref(tgt_beg),
         [] (const auto& in) {
           return std::to_string(in+10);
-        }
+        },
+        P(c)
       );
 
       from.precede(to);
@@ -161,11 +162,12 @@ void parallel_transform2(size_t W) {
         tgt_beg = tgt.begin();
       });
 
-      auto to = taskflow.transform(tf::ExecutionPolicy<P>(c),
+      auto to = taskflow.transform(
         std::ref(src_beg), std::ref(src_end), std::ref(src_beg), std::ref(tgt_beg),
         [] (const auto& in1, const auto& in2) {
           return std::to_string(in1 + in2 + 10);
-        }
+        },
+        P(c)
       );
 
       from.precede(to);
@@ -339,11 +341,11 @@ void parallel_transform3(size_t W) {
       const size_t n_matching = std::distance(src_beg, src_end);
       tgt.resize(n_matching);
 
-      subflow.transform(tf::ExecutionPolicy<P>(1u),
+      subflow.transform(
         std::ref(src_beg), std::ref(src_end), std::ref(tgt_beg),
         [&] (const auto& x) -> string {
           return myFunction(x.second);
-      });
+      }, P());
 
       subflow.join();
     });

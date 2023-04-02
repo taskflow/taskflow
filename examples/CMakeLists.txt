@@ -15,9 +15,10 @@ list(APPEND TF_EXAMPLES
   nested_if_else
   priority
   visualization 
-  reduce 
   parallel_for 
   parallel_sort
+  reduce 
+  inclusive_scan
   pipeline
   scalable_pipeline
   scalable_pipeline_with_deferred_tokens

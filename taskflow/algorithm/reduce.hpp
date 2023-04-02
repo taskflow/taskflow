@@ -1,6 +1,6 @@
 #pragma once
 
-#include "execution_policy.hpp"
+#include "../core/executor.hpp"
 
 namespace tf {
 
@@ -9,20 +9,15 @@ namespace tf {
 // ----------------------------------------------------------------------------
 
 // Function: reduce
-template <typename B, typename E, typename T, typename O>
-Task FlowBuilder::reduce(B beg, E end, T& init, O bop) {
-  return reduce(DefaultExecutionPolicy{}, beg, end, init, bop);
-}
-
-// Function: reduce
-template <typename P, typename B, typename E, typename T, typename O>
-Task FlowBuilder::reduce(P&& policy, B beg, E end, T& init, O bop) {
+template <typename B, typename E, typename T, typename O, typename P>
+Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P&& part) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  Task task = emplace([b=beg, e=end, &r=init, bop, policy] (Runtime& sf) mutable {
+  Task task = emplace([b=beg, e=end, &r=init, bop, part=std::forward<P>(part)] 
+  (Runtime& sf) mutable {
 
     // fetch the iterator values
     B_t beg = b;
@@ -36,7 +31,7 @@ Task FlowBuilder::reduce(P&& policy, B beg, E end, T& init, O bop) {
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
-    if(W <= 1 || N <= policy.chunk_size()) {
+    if(W <= 1 || N <= part.chunk_size()) {
       for(; beg!=end; r = bop(r, *beg++));
       return;
     }
@@ -48,7 +43,7 @@ Task FlowBuilder::reduce(P&& policy, B beg, E end, T& init, O bop) {
     std::mutex mutex;
 
     // static partitioner
-    if constexpr(std::decay_t<P>::is_static_partitioner) {
+    if constexpr(std::is_same_v<std::decay_t<P>, StaticPartitioner>) {
       
       size_t curr_b = 0;
       size_t chunk_size;
@@ -59,13 +54,13 @@ Task FlowBuilder::reduce(P&& policy, B beg, E end, T& init, O bop) {
         // variable sum need to avoid copy at the first step
         chunk_size = std::max(
           size_t{2},
-          policy.chunk_size() == 0 ? N/W + (w < N%W) : policy.chunk_size()
+          part.chunk_size() == 0 ? N/W + (w < N%W) : part.chunk_size()
         );
         
-        //chunk_size = policy.chunk_size() == 0 ? 
-        //             N/W + (w < N%W) : policy.chunk_size();
+        //chunk_size = part.chunk_size() == 0 ? 
+        //             N/W + (w < N%W) : part.chunk_size();
 
-        auto loop = [=, &mutex, &r, &policy] () mutable {
+        auto loop = [=, &mutex, &r, &part] () mutable {
 
           std::advance(beg, curr_b);
 
@@ -80,7 +75,7 @@ Task FlowBuilder::reduce(P&& policy, B beg, E end, T& init, O bop) {
           T sum = bop(*beg1, *beg2);
         
           // loop reduce
-          policy(N, W, curr_b, chunk_size,
+          part(N, W, curr_b, chunk_size,
             [&, prev_e=curr_b+2](size_t curr_b, size_t curr_e) mutable {
 
               if(curr_b > prev_e) {
@@ -117,7 +112,7 @@ Task FlowBuilder::reduce(P&& policy, B beg, E end, T& init, O bop) {
 
       std::atomic<size_t> next(0);
 
-      auto loop = [=, &mutex, &next, &r, &policy] () mutable {
+      auto loop = [=, &mutex, &next, &r, &part] () mutable {
         
         // pre-reduce
         size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
@@ -140,7 +135,7 @@ Task FlowBuilder::reduce(P&& policy, B beg, E end, T& init, O bop) {
         T sum = bop(*beg1, *beg2);
         
         // loop reduce
-        policy(N, W, next, 
+        part(N, W, next, 
           [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
             std::advance(beg, curr_b - prev_e);
             for(size_t x=curr_b; x<curr_e; x++, beg++) {
@@ -162,7 +157,7 @@ Task FlowBuilder::reduce(P&& policy, B beg, E end, T& init, O bop) {
           break;
         }
         // tail optimization
-        if(r <= policy.chunk_size() || w == W-1) {
+        if(r <= part.chunk_size() || w == W-1) {
           loop(); 
           break;
         }
@@ -183,22 +178,18 @@ Task FlowBuilder::reduce(P&& policy, B beg, E end, T& init, O bop) {
 // ----------------------------------------------------------------------------
 
 // Function: transform_reduce
-template <typename B, typename E, typename T, typename BOP, typename UOP>
-Task FlowBuilder::transform_reduce(B beg, E end, T& init, BOP bop, UOP uop) {
-  return transform_reduce(DefaultExecutionPolicy{}, beg, end, init, bop, uop);
-}
-
-// Function: transform_reduce
-template <typename P, typename B, typename E, typename T, typename BOP, typename UOP>
+template <typename B, typename E, typename T, typename BOP, typename UOP, typename P>
 Task FlowBuilder::transform_reduce(
-  P&& policy, B beg, E end, T& init, BOP bop, UOP uop
+  B beg, E end, T& init, BOP bop, UOP uop, P&& part
 ) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  Task task = emplace([b=beg, e=end, &r=init, bop, uop, policy] (Runtime& sf) mutable {
+  Task task = emplace(
+  [b=beg, e=end, &r=init, bop, uop, part=std::forward<P>(part)] 
+  (Runtime& sf) mutable {
 
     // fetch the iterator values
     B_t beg = b;
@@ -212,7 +203,7 @@ Task FlowBuilder::transform_reduce(
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
-    if(W <= 1 || N <= policy.chunk_size()) {
+    if(W <= 1 || N <= part.chunk_size()) {
       for(; beg!=end; r = bop(std::move(r), uop(*beg++)));
       return;
     }
@@ -224,7 +215,7 @@ Task FlowBuilder::transform_reduce(
     std::mutex mutex;
     
     // static partitioner
-    if constexpr(std::decay_t<P>::is_static_partitioner) {
+    if constexpr(std::is_same_v<std::decay_t<P>, StaticPartitioner>) {
       
       size_t curr_b = 0;
       size_t chunk_size;
@@ -233,13 +224,13 @@ Task FlowBuilder::transform_reduce(
       
         //chunk_size = std::max(
         //  size_t{2},
-        //  policy.chunk_size() == 0 ? N/W + (w < N%W) : policy.chunk_size()
+        //  part.chunk_size() == 0 ? N/W + (w < N%W) : part.chunk_size()
         //);
         
-        chunk_size = policy.chunk_size() == 0 ? 
-                     N/W + (w < N%W) : policy.chunk_size();
+        chunk_size = part.chunk_size() == 0 ? 
+                     N/W + (w < N%W) : part.chunk_size();
 
-        auto loop = [=, &mutex, &r, &policy] () mutable {
+        auto loop = [=, &mutex, &r, &part] () mutable {
 
           std::advance(beg, curr_b);
 
@@ -256,7 +247,7 @@ Task FlowBuilder::transform_reduce(
           T sum = (chunk_size == 1) ? uop(*beg++) : bop(uop(*beg++), uop(*beg++));
         
           // loop reduce
-          policy(N, W, curr_b, chunk_size,
+          part(N, W, curr_b, chunk_size,
             [&, prev_e=curr_b+(chunk_size == 1 ? 1 : 2)]
             (size_t curr_b, size_t curr_e) mutable {
               if(curr_b > prev_e) {
@@ -292,7 +283,7 @@ Task FlowBuilder::transform_reduce(
     else {
       std::atomic<size_t> next(0);
         
-      auto loop = [=, &mutex, &next, &r, &policy] () mutable {
+      auto loop = [=, &mutex, &next, &r, &part] () mutable {
 
         // pre-reduce
         size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
@@ -315,7 +306,7 @@ Task FlowBuilder::transform_reduce(
         T sum = bop(uop(*beg1), uop(*beg2));
         
         // loop reduce
-        policy(N, W, next, 
+        part(N, W, next, 
           [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
             std::advance(beg, curr_b - prev_e);
             for(size_t x=curr_b; x<curr_e; x++, beg++) {
@@ -337,7 +328,7 @@ Task FlowBuilder::transform_reduce(
           break;
         }
         // tail optimization
-        if(r <= policy.chunk_size() || w == W-1) {
+        if(r <= part.chunk_size() || w == W-1) {
           loop(); 
           break;
         }

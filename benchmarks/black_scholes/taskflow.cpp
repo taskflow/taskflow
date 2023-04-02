@@ -10,7 +10,6 @@ void bs_taskflow(unsigned num_threads) {
   auto init = taskflow.placeholder();
 
   auto loop = taskflow.for_each_index(
-    tf::ExecutionPolicy<tf::StaticPartitioner>(),
     0, numOptions, 1, [&](int i) {
     auto price = BlkSchlsEqEuroNoDiv(
       sptprice[i], strike[i],
@@ -22,7 +21,7 @@ void bs_taskflow(unsigned num_threads) {
 #ifdef ERR_CHK
     check_error(i, price);
 #endif
-  });
+  }, tf::StaticPartitioner());
 
   auto cond = taskflow.emplace([i=0] () mutable{
     return ++i == NUM_RUNS ? -1 : 0;

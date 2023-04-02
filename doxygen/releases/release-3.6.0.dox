@@ -40,19 +40,19 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
   + tf::Runtime::async
   + tf::Runtime::silent_async
   + tf::Runtime::join
-+ Added a new tf::ExecutionPolicy interface to optimize parallel algorithms
++ Added a new partitioner interface to optimize parallel algorithms
   + tf::GuidedPartitioner
   + tf::StaticPartitioner
   + tf::DynamicPartitioner
   + tf::RandomPartitioner
 + Modified tf::Subflow to a derived class from tf::Runtime
-+ Extended parallel algorithms to support different execution policies via tf::ExecutionPolicy
-  + tf::Taskflow::for_each_index(P&& policy, B first, E last, S step, C callable)
-  + tf::Taskflow::for_each(P&& policy, B first, E last, C callable) 
-  + tf::Taskflow::transform(P&& policy, B first1, E last1, O d_first, C c)
-  + tf::Taskflow::transform(P&& policy, B1 first1, E1 last1, B2 first2, O d_first, C c)
-  + tf::Taskflow::reduce(P&& policy, B first, E last, T& result, O bop) 
-  + tf::Taskflow::transform_reduce(P&& policy, B first, E last, T& result, BOP bop, UOP uop)
++ Extended parallel algorithms to support different partitioner algorithms
+  + tf::Taskflow::for_each_index(B first, E last, S step, C callable, P&& part)
+  + tf::Taskflow::for_each(B first, E last, C callable, P&& part) 
+  + tf::Taskflow::transform(B first1, E last1, O d_first, C c, P&& part)
+  + tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P&& part)
+  + tf::Taskflow::reduce(B first, E last, T& result, O bop, P&& part) 
+  + tf::Taskflow::transform_reduce(B first, E last, T& result, BOP bop, UOP uop, P&& part)
 + Improved the performance of tf::Taskflow::sort for POD
 + Extended task-parallel pipeline to handle token dependencies
   + @ref TaskParallelPipelineWithTokenDependencies
@@ -168,7 +168,7 @@ executor.async("name", [](){});
 + Revised @ref AsyncTasking to include asynchronous tasking from tf::Runtime
   + @ref LaunchAsynchronousTasksFromARuntime
 + Revised %Taskflow algorithms to include execution policy
-  + @ref ExecutionPolicy
+  + @ref PartitioningAlgorithm
   + @ref ParallelIterations
   + @ref ParallelTransforms
   + @ref ParallelReduction

@@ -69,10 +69,10 @@ void reduce(unsigned W) {
 
       tf::Task ptask;
 
-      ptask = taskflow.reduce(tf::ExecutionPolicy<P>{c},
+      ptask = taskflow.reduce(
         std::ref(beg), std::ref(end), pmin, [](int& l, int& r){
         return std::min(l, r);
-      });
+      }, P(c));
 
       stask.precede(ptask);
 
@@ -315,10 +315,10 @@ void reduce_sum(unsigned W) {
 
       tf::Task ptask;
 
-      ptask = taskflow.reduce(tf::ExecutionPolicy<P>{c},
+      ptask = taskflow.reduce(
         std::ref(beg), std::ref(end), sol, [](int l, int r){
         return l + r;
-      });
+      }, P(c));
 
       stask.precede(ptask);
 
@@ -568,10 +568,11 @@ void transform_reduce(unsigned W) {
 
       tf::Task ptask;
 
-      ptask = taskflow.transform_reduce(tf::ExecutionPolicy<P>(c),
+      ptask = taskflow.transform_reduce(
         std::ref(beg), std::ref(end), pmin,
         [] (int l, int r)   { return std::min(l, r); },
-        [] (const Data& data) { return data.get(); }
+        [] (const Data& data) { return data.get(); },
+        P(c)
       );
 
       stask.precede(ptask);
@@ -793,7 +794,7 @@ void move_only_transform_reduce(unsigned W) {
 
   for(size_t c : {0, 1, 3, 7, 99}) {
 
-    tf::ExecutionPolicy<P> policy(c);
+    P partitioner(c);
   
     taskflow.clear();
 
@@ -805,7 +806,7 @@ void move_only_transform_reduce(unsigned W) {
     MoveOnly2 res;
     res.b = 100;
 
-    taskflow.transform_reduce(policy, vec.begin(), vec.end(), res,
+    taskflow.transform_reduce(vec.begin(), vec.end(), res,
       [](MoveOnly2 m1, MoveOnly2 m2) {
         MoveOnly2 res;
         res.b = m1.b + m2.b;
@@ -815,7 +816,8 @@ void move_only_transform_reduce(unsigned W) {
         MoveOnly2 n;
         n.b = m.a;
         return n;
-      }
+      },
+      partitioner
     );
 
     executor.run(taskflow).wait();
@@ -826,7 +828,7 @@ void move_only_transform_reduce(unsigned W) {
     taskflow.clear();
     res.b = 0;
     
-    taskflow.transform_reduce(policy, vec.begin(), vec.end(), res,
+    taskflow.transform_reduce(vec.begin(), vec.end(), res,
       [](MoveOnly2&& m1, MoveOnly2&& m2) {
         MoveOnly2 res;
         res.b = m1.b + m2.b;
@@ -837,7 +839,8 @@ void move_only_transform_reduce(unsigned W) {
         n.b = m.a;
         m.a = -7;
         return n;
-      }
+      },
+      partitioner
     );
 
     executor.run(taskflow).wait();
@@ -852,12 +855,13 @@ void move_only_transform_reduce(unsigned W) {
     MoveOnly1 red;
     red.a = 0;
 
-    taskflow.reduce(policy, vec.begin(), vec.end(), red,
+    taskflow.reduce(vec.begin(), vec.end(), red,
       [](MoveOnly1& m1, MoveOnly1& m2){
         MoveOnly1 res;
         res.a = m1.a + m2.a;
         return res;
-      }
+      },
+      partitioner
     );  
 
     executor.run(taskflow).wait();
@@ -866,12 +870,13 @@ void move_only_transform_reduce(unsigned W) {
     taskflow.clear();
     red.a = 0;
 
-    taskflow.reduce(policy, vec.begin(), vec.end(), red,
+    taskflow.reduce(vec.begin(), vec.end(), red,
       [](const MoveOnly1& m1, const MoveOnly1& m2){
         MoveOnly1 res;
         res.a = m1.a + m2.a;
         return res;
-      }
+      },
+      partitioner
     );  
 
     executor.run(taskflow).wait();
@@ -978,10 +983,11 @@ void transform_reduce_sum(unsigned W) {
 
       tf::Task ptask;
 
-      ptask = taskflow.transform_reduce(tf::ExecutionPolicy<P>(c),
+      ptask = taskflow.transform_reduce(
         std::ref(beg), std::ref(end), sol,
         [] (int l, int r)   { return  l + r; },
-        [] (const Data& data) { return data.get(); }
+        [] (const Data& data) { return data.get(); },
+        P(c)
       );
 
       stask.precede(ptask);

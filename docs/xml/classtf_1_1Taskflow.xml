@@ -447,33 +447,33 @@
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para><para>The taskflow object itself is NOT thread-safe. You should not modifying the graph while it is running, such as adding new tasks, adding new dependencies, and moving the taskflow to another. To minimize the overhead of task creation, our runtime leverages a global object pool to recycle tasks in a thread-safe manner.</para><para>Please refer to <ref refid="Cookbook" kindref="compound">Cookbook</ref> to learn more about each task type and how to submit a taskflow to an executor. </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="309">
+      <node id="305">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
       </node>
-      <node id="308">
+      <node id="304">
         <label>tf::Taskflow</label>
         <link refid="classtf_1_1Taskflow"/>
-        <childnode refid="309" relation="public-inheritance">
+        <childnode refid="305" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="311">
+      <node id="307">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
-        <childnode refid="312" relation="usage">
+        <childnode refid="308" relation="usage">
           <edgelabel>_graph</edgelabel>
         </childnode>
       </node>
-      <node id="312">
+      <node id="308">
         <label>tf::Graph</label>
         <link refid="classtf_1_1Graph"/>
       </node>
-      <node id="310">
+      <node id="306">
         <label>tf::Taskflow</label>
         <link refid="classtf_1_1Taskflow"/>
-        <childnode refid="311" relation="public-inheritance">
+        <childnode refid="307" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>
@@ -501,12 +501,11 @@
       <member refid="classtf_1_1Taskflow_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::Taskflow</scope><name>Executor</name></member>
       <member refid="classtf_1_1Taskflow_1a61184f9bd9c801d0a5eccecfdbddc641" prot="private" virt="non-virtual"><scope>tf::Taskflow</scope><name>FlowBuilder</name></member>
       <member refid="classtf_1_1FlowBuilder_1a67d023d5493da1594a1d2eaea89da179" prot="public" virt="non-virtual" ambiguityscope="tf::FlowBuilder::"><scope>tf::Taskflow</scope><name>FlowBuilder</name></member>
-      <member refid="classtf_1_1FlowBuilder_1ad2299fddbd6165cc7f24f57a734d2839" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>for_each</name></member>
-      <member refid="classtf_1_1FlowBuilder_1ab405d7b10040530d8b04c11767b4960d" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>for_each</name></member>
-      <member refid="classtf_1_1FlowBuilder_1a977d8f7007f323eeaa81a37b4c6e6cd6" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>for_each_index</name></member>
-      <member refid="classtf_1_1FlowBuilder_1a38ffe176bc3ae1827b9964322e3769d4" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>for_each_index</name></member>
+      <member refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>for_each</name></member>
+      <member refid="classtf_1_1FlowBuilder_1a47ea2b35d0ec18afb35b45316939dc67" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>for_each_index</name></member>
       <member refid="classtf_1_1Taskflow_1a6350d0d6653ae9ae7b94c35e42fffe07" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>for_each_task</name></member>
       <member refid="classtf_1_1Taskflow_1a8da984d149b439e88468bf26e02ecf27" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>graph</name></member>
+      <member refid="classtf_1_1FlowBuilder_1a1c2ace9290d83c2a006614a4d66ad588" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>inclusive_scan</name></member>
       <member refid="classtf_1_1FlowBuilder_1a90f3d9b9d6fcf4df8e7d7878dfdd130d" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>linearize</name></member>
       <member refid="classtf_1_1FlowBuilder_1a4ec89b554d15ad5fb96f4fdb10dbbb16" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>linearize</name></member>
       <member refid="classtf_1_1Taskflow_1ad5706e5819aa01a63c4aa2e3485546b9" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>name</name></member>
@@ -514,20 +513,16 @@
       <member refid="classtf_1_1Taskflow_1af4f03bca084deb5c2228ac8936d33649" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>num_tasks</name></member>
       <member refid="classtf_1_1Taskflow_1aa4957a41e63e1d1a6f77c540d70d04fa" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>operator=</name></member>
       <member refid="classtf_1_1FlowBuilder_1acab0b4ac82260f47fdb36a3244ee3aaf" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>placeholder</name></member>
-      <member refid="classtf_1_1FlowBuilder_1afc7bd7a737febf30d5d1d706c4b65f84" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>reduce</name></member>
-      <member refid="classtf_1_1FlowBuilder_1aa9494fe7b862fc832884ce318e8a37f5" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>reduce</name></member>
+      <member refid="classtf_1_1FlowBuilder_1a97f345ee90bdeb8c0c95120752e32dcb" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>reduce</name></member>
       <member refid="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>sort</name></member>
       <member refid="classtf_1_1FlowBuilder_1a7d844e9856c7c65b26ccdb83ffdab1d6" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>sort</name></member>
       <member refid="classtf_1_1Taskflow_1a7242a74dcb16731b4e40816647b93305" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>Taskflow</name></member>
       <member refid="classtf_1_1Taskflow_1ade7fc641d136a3f8c96682c08040626a" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>Taskflow</name></member>
       <member refid="classtf_1_1Taskflow_1afd790de6db6d16ddf4729967c1edebb5" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>Taskflow</name></member>
       <member refid="classtf_1_1Taskflow_1acd2b8699ab7559c0da687cd775e2c778" prot="private" virt="non-virtual"><scope>tf::Taskflow</scope><name>Topology</name></member>
-      <member refid="classtf_1_1FlowBuilder_1a9f7befa968cf69ea0a20dc267f746f3e" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>transform</name></member>
-      <member refid="classtf_1_1FlowBuilder_1abd813bd7afcbd8e6f56dc67883917d1a" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>transform</name></member>
-      <member refid="classtf_1_1FlowBuilder_1a01edf4fdeee7d7e01483b6d2969bf115" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>transform</name></member>
-      <member refid="classtf_1_1FlowBuilder_1a7a1d63d0954709e0cfab06277bb60c66" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>transform</name></member>
-      <member refid="classtf_1_1FlowBuilder_1a4dc484abecf338574f46b38635d08e36" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>transform_reduce</name></member>
-      <member refid="classtf_1_1FlowBuilder_1a024a1e5b4f138b6caebb427411fb0a2d" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>transform_reduce</name></member>
+      <member refid="classtf_1_1FlowBuilder_1a822a75c597ae42cacc28d6f8cefb8c7c" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>transform</name></member>
+      <member refid="classtf_1_1FlowBuilder_1a519ca8f909c86efdc70fa01f28156219" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>transform</name></member>
+      <member refid="classtf_1_1FlowBuilder_1a3451d6d69aceb775450e41ebe169e4b7" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>transform_reduce</name></member>
       <member refid="classtf_1_1Taskflow_1aa966a69493ecc8ecb9131ef3c5354b8e" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>~Taskflow</name></member>
     </listofallmembers>
   </compounddef>

@@ -115,49 +115,51 @@ taskflow.transform(
 );
 @endcode
 
-@section ParallelTransformsCfigureAnExecutionPolicy Configure an Execution Policy
+@section ParallelTransformsCfigureAPartitioner Configure a Partitioner
 
-You can configure an execution policy for parallel-transform tasks to run with different
+You can configure a partitioner for parallel-transform tasks to run with different
 scheduling methods, such as guided partitioning, dynamic partitioning, and static partitioning.
-Each parallel-transform task has an overload that takes an execution policy in the first argument:
+Each parallel-transform task has an overload 
+that takes a partitioner in the last argument:
 
-  + tf::Taskflow::transform(P&& policy, B first1, E last1, O d_first, C c)
-  + tf::Taskflow::transform(P&& policy, B1 first1, E1 last1, B2 first2, O d_first, C c),
+  + tf::Taskflow::transform(B first1, E last1, O d_first, C c, P&& part)
+  + tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P&& part),
 
 The following example create two parallel-transform tasks using tow different
-execution policies, one with the static partitioning algorithm and 
+partitioners, one with the static partitioning algorithm and 
 another one with the guided partitioning algorithm:
 
 @code{.cpp}
-tf::ExecutionPolicy<tf::StaticPartitioner> static_policy;
-tf::ExecutionPolicy<tf::GuidedPartitioner> guided_policy;
+tf::StaticPartitioner static_partitioner;
+tf::GuidedPartitioner guided_partitioner;
 
 std::vector<int> src1 = {1, 2, 3, 4, 5};
 std::vector<int> src2 = {5, 4, 3, 2, 1};
 std::vector<int> tgt1(src1.size());
 std::vector<int> tgt2(src2.size());
 
-// create a parallel-transform task with static execution policy
-taskflow.transform(static_policy,
+// create a parallel-transform task with static execution partitioner
+taskflow.transform(
   src1.begin(), src1.end(), src2.begin(), tgt1.begin(), 
   [](int i, int j){ 
     return i + j;
-  }
+  },
+  static_partitioner
 );
 
-// create a parallel-transform task with guided execution policy
-taskflow.transform(guided_policy,
+// create a parallel-transform task with guided execution partitioner
+taskflow.transform(
   src1.begin(), src1.end(), src2.begin(), tgt2.begin(), 
   [](int i, int j){ 
     return i + j;
-  }
+  },
+  guided_partitioner
 );
 @endcode
 
 @note
-By default, parallel-transform tasks use tf::DefaultExecutionPolicy 
-if no execution policy is specified. 
-The default execution policy is based on the guided scheduling algorithm.
+By default, parallel-transform tasks use tf::DefaultPartitioner
+if no partitioner is specified. 
 
 */
 

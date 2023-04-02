@@ -3,7 +3,7 @@
   <compounddef id="classtf_1_1GuidedPartitioner" kind="class" language="C++" prot="public">
     <compoundname>tf::GuidedPartitioner</compoundname>
     <basecompoundref refid="classtf_1_1PartitionerBase" prot="public" virt="non-virtual">tf::PartitionerBase</basecompoundref>
-    <includes refid="execution__policy_8hpp" local="no">execution_policy.hpp</includes>
+    <includes refid="partitioner_8hpp" local="no">partitioner.hpp</includes>
       <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1GuidedPartitioner_1a6d54bc802ce765d5b2c7833d1d6f46ce" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -16,7 +16,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="79" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="79" bodyend="79"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="97" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="97" bodyend="97"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1GuidedPartitioner_1a8a44c5c770af9b6754afc502ced91b4c" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
@@ -33,7 +33,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="84" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="84" bodyend="84"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="102" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="102" bodyend="102"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -69,7 +69,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="90" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="90" bodyend="133"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="108" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="108" bodyend="151"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -77,30 +77,30 @@
     <detaileddescription>
 <para>The size of a partition is proportional to the number of unassigned iterations divided by the number of workers, and the size will gradually decrease to the given chunk size. The last partition may be smaller than the chunk size. </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="145">
+      <node id="141">
         <label>tf::GuidedPartitioner</label>
         <link refid="classtf_1_1GuidedPartitioner"/>
-        <childnode refid="146" relation="public-inheritance">
+        <childnode refid="142" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="146">
+      <node id="142">
         <label>tf::PartitionerBase</label>
         <link refid="classtf_1_1PartitionerBase"/>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="147">
+      <node id="143">
         <label>tf::GuidedPartitioner</label>
         <link refid="classtf_1_1GuidedPartitioner"/>
-        <childnode refid="148" relation="public-inheritance">
+        <childnode refid="144" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="148">
+      <node id="144">
         <label>tf::PartitionerBase</label>
         <link refid="classtf_1_1PartitionerBase"/>
       </node>
     </collaborationgraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="72" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="72" bodyend="134"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="90" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="90" bodyend="152"/>
     <listofallmembers>
       <member refid="classtf_1_1PartitionerBase_1a98a744284cfc726b1a597dae90e766f0" prot="protected" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>_chunk_size</name></member>
       <member refid="classtf_1_1PartitionerBase_1a8445b917fca6384861898d46b81ec471" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>chunk_size</name></member>

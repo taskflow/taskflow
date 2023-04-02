@@ -27,8 +27,8 @@ void for_each(unsigned W) {
         taskflow.clear();
         std::atomic<int> counter {0};
 
-        taskflow.for_each_index(tf::ExecutionPolicy<P>(c),
-          beg, end, s, [&](int i){ counter++; vec[i-beg] = i;}
+        taskflow.for_each_index(
+          beg, end, s, [&](int i){ counter++; vec[i-beg] = i;}, P(c)
         );
 
         executor.run(taskflow).wait();
@@ -54,11 +54,11 @@ void for_each(unsigned W) {
       taskflow.clear();
       std::atomic<int> counter {0};
 
-      taskflow.for_each(tf::ExecutionPolicy<P>(c),
+      taskflow.for_each(
         vec.begin(), vec.begin() + n, [&](int& i){
         counter++;
         i = 1;
-      });
+      }, P(c));
 
       executor.run(taskflow).wait();
       REQUIRE(counter == n);
@@ -306,17 +306,17 @@ void stateful_for_each(unsigned W) {
 
       tf::Task pf1, pf2;
 
-      pf1 = taskflow.for_each(tf::ExecutionPolicy<P>(c),
+      pf1 = taskflow.for_each(
         std::ref(beg), std::ref(end), [&](int& i){
         counter++;
         i = 8;
-      });
+      }, P(c));
 
-      pf2 = taskflow.for_each_index(tf::ExecutionPolicy<P>(c),
+      pf2 = taskflow.for_each_index(
         std::ref(ibeg), std::ref(iend), size_t{1}, [&] (size_t i) {
           counter++;
           vec[i] = -8;
-      });
+      }, P(c));
 
       init.precede(pf1, pf2);
 

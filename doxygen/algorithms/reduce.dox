@@ -124,41 +124,43 @@ It is possible that the binary operator will take @em r-value in both arguments,
 When data passing is expensive, 
 you may define the result type @c T to be move-constructible.
 
-@section ParallelReductionCfigureAnExecutionPolicy Configure an Execution Policy
+@section ParallelReductionCfigureAPartitioner Configure a Partitioner
 
-You can configure an execution policy for parallel-reduction tasks to run with different
+You can configure a partitioner for parallel-reduction tasks to run with different
 scheduling methods, such as guided partitioning, dynamic partitioning, and static partitioning.
-Each parallel-reduction task has an overload that takes an execution policy in the first argument:
+Each parallel-reduction task has an overload 
+that takes a pattitioner in the last argument:
 
-  + tf::Taskflow::reduce(P&& policy, B first, E last, T& result, O bop)
-  + tf::Taskflow::transform_reduce(P&& policy, B first, E last, T& result, BOP bop, UOP uop)
+  + tf::Taskflow::reduce(B first, E last, T& result, O bop, P&& part)
+  + tf::Taskflow::transform_reduce(B first, E last, T& result, BOP bop, UOP uop, P&& part)
 
 The following example create two parallel-reduction tasks using tow different
-execution policies, one with the static partitioning algorithm and 
+partitioners, one with the static partitioning algorithm and 
 another one with the guided partitioning algorithm:
 
 @code{.cpp}
-tf::ExecutionPolicy<tf::StaticPartitioner> static_policy;
-tf::ExecutionPolicy<tf::GuidedPartitioner> guided_policy;
+tf::StaticPartitioner static_partitioner;
+tf::GuidedPartitioner guided_partitioner;
 
 int sum1 = 100, sum2 = 100;
 std::vector<int> vec = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
-// create a parallel-reduction task with static policy
-taskflow.reduce(static_policy, vec.begin(), vec.end(), sum1, 
-  [] (int l, int r) { return l + r; } 
+// create a parallel-reduction task with static partitioner
+taskflow.reduce(vec.begin(), vec.end(), sum1, 
+  [] (int l, int r) { return l + r; },
+  static_partitioner
 );
 
-// create a parallel-reduction task with guided policy
-taskflow.reduce(guided_policy, vec.begin(), vec.end(), sum2, 
-  [] (int l, int r) { return l + r; } 
+// create a parallel-reduction task with guided partitioner
+taskflow.reduce(vec.begin(), vec.end(), sum2, 
+  [] (int l, int r) { return l + r; },
+  guided_partitioner
 );
 @endcode
 
 @note
-By default, parallel-reduction tasks use tf::DefaultExecutionPolicy 
-if no execution policy is specified. 
-The default execution policy is based on the guided scheduling algorithm.
+By default, parallel-reduction tasks use tf::DefaultPartitioner
+if no partitioner is specified. 
 
 */
 

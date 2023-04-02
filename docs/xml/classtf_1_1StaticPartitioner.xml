@@ -3,7 +3,7 @@
   <compounddef id="classtf_1_1StaticPartitioner" kind="class" language="C++" prot="public">
     <compoundname>tf::StaticPartitioner</compoundname>
     <basecompoundref refid="classtf_1_1PartitionerBase" prot="public" virt="non-virtual">tf::PartitionerBase</basecompoundref>
-    <includes refid="execution__policy_8hpp" local="no">execution_policy.hpp</includes>
+    <includes refid="partitioner_8hpp" local="no">partitioner.hpp</includes>
       <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1StaticPartitioner_1a656cc541cb3bb38a75b1935e077cb786" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -16,7 +16,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="206" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="206" bodyend="206"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="232" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="232" bodyend="232"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1StaticPartitioner_1a1278d0818518789051cf0e199c4006ef" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
@@ -33,7 +33,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="211" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="211" bodyend="211"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="237" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="237" bodyend="237"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -73,38 +73,43 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="217" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="217" bodyend="230"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="243" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="243" bodyend="256"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
 <para>class to construct a dynamic partitioner for scheduling parallel algorithms </para>    </briefdescription>
     <detaileddescription>
-<para>The partitioner divides iterations into chunks and distributes chunks to workers in order. If the chunk size is not specified (default <computeroutput>0</computeroutput>), the partitioner resorts to a chunk size that equally distributes iterations into workers. </para>    </detaileddescription>
+<para>The partitioner divides iterations into chunks and distributes chunks to workers in order. If the chunk size is not specified (default <computeroutput>0</computeroutput>), the partitioner resorts to a chunk size that equally distributes iterations into workers.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>data<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5,<sp/>6,<sp/>7,<sp/>8,<sp/>9,<sp/>10}</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">for_each</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>data.begin(),<sp/>data.end(),<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){},<sp/><ref refid="classtf_1_1StaticPartitioner_1a656cc541cb3bb38a75b1935e077cb786" kindref="member">StaticPartitioner</ref>(0)</highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).run();</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="286">
+      <node id="282">
         <label>tf::PartitionerBase</label>
         <link refid="classtf_1_1PartitionerBase"/>
       </node>
-      <node id="285">
+      <node id="281">
         <label>tf::StaticPartitioner</label>
         <link refid="classtf_1_1StaticPartitioner"/>
-        <childnode refid="286" relation="public-inheritance">
+        <childnode refid="282" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="288">
+      <node id="284">
         <label>tf::PartitionerBase</label>
         <link refid="classtf_1_1PartitionerBase"/>
       </node>
-      <node id="287">
+      <node id="283">
         <label>tf::StaticPartitioner</label>
         <link refid="classtf_1_1StaticPartitioner"/>
-        <childnode refid="288" relation="public-inheritance">
+        <childnode refid="284" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" line="199" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/execution_policy.hpp" bodystart="199" bodyend="231"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="225" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="225" bodyend="257"/>
     <listofallmembers>
       <member refid="classtf_1_1PartitionerBase_1a98a744284cfc726b1a597dae90e766f0" prot="protected" virt="non-virtual"><scope>tf::StaticPartitioner</scope><name>_chunk_size</name></member>
       <member refid="classtf_1_1PartitionerBase_1a8445b917fca6384861898d46b81ec471" prot="public" virt="non-virtual"><scope>tf::StaticPartitioner</scope><name>chunk_size</name></member>
