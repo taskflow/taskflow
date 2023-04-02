@@ -5,6 +5,7 @@ namespace tf {
   template <typename InputIt, typename OutputIt>
   OutputIt inclusive_scan(InputIt first, InputIt last, OutputIt dest) {
     if (first == last) {
+    *dest = *first;
     return dest;
   }
   
@@ -30,7 +31,8 @@ namespace tf {
   template <typename InputIt, typename OutputIt, typename T>
   OutputIt exclusive_scan(InputIt first, InputIt last, OutputIt dest, T initialVal) {
     if (first == last) {
-    return dest;
+      *dest = initialVal;
+      return dest;
     }
 
     tf::Taskflow taskflow;
