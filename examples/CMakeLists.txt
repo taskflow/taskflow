@@ -19,6 +19,7 @@ list(APPEND TF_EXAMPLES
   parallel_sort
   reduce 
   inclusive_scan
+  exclusive_scan
   pipeline
   scalable_pipeline
   scalable_pipeline_with_deferred_tokens

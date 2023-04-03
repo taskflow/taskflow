@@ -51,7 +51,7 @@ void scan_tbb(size_t num_threads) {
   tbb::global_control c(
     tbb::global_control::max_allowed_parallelism, num_threads
   );
-  inclusive_scan(input, 0, output, std::plus<int>{});
+  inclusive_scan(input, 0, output, std::multiplies<int>{});
 }
 
 std::chrono::microseconds measure_time_tbb(size_t num_threads) {

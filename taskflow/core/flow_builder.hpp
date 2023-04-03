@@ -393,7 +393,6 @@ class FlowBuilder {
   Task for_each_index(
     B first, E last, S step, C callable, P&& part = P()
   );
-  
 
   // ------------------------------------------------------------------------
   // transform
@@ -563,6 +562,11 @@ class FlowBuilder {
   /**
   @brief creates an STL-styled parallel inclusive-scan task
 
+  @tparam B beginning iterator type
+  @tparam E ending iterator type
+  @tparam D destination iterator type
+  @tparam BOP summation operator type
+
   @param first start of input range
   @param last end of input range
   @param d_first start of output range (may be the same as input range)
@@ -574,11 +578,11 @@ class FlowBuilder {
   running total of all earlier elements using the given binary operator
   for summation.
   
-  This function generates an @em inclusive scan, meaning the @c N-th element
-  of the output range is the sum of the first @c N input elements,
-  so the @c N-th input element is included.
+  This function generates an @em inclusive scan, meaning that the N-th element
+  of the output range is the sum of the first N input elements,
+  so the N-th input element is included.
 
-  @code{cpp}
+  @code{.cpp}
   std::vector<int> input = {1, 2, 3, 4, 5};
   taskflow.inclusive_scan(
     input.begin(), input.end(), input.begin(), std::plus<int>{}
@@ -590,6 +594,209 @@ class FlowBuilder {
   */
   template <typename B, typename E, typename D, typename BOP>
   Task inclusive_scan(B first, E last, D d_first, BOP bop);
+  
+  /**
+  @brief creates an STL-styled parallel inclusive-scan task with an initial value
+
+  @tparam B beginning iterator type
+  @tparam E ending iterator type
+  @tparam D destination iterator type
+  @tparam BOP summation operator type
+  @tparam T initial value type
+
+  @param first start of input range
+  @param last end of input range
+  @param d_first start of output range (may be the same as input range)
+  @param bop function to perform summation
+  @param init initial value
+
+  Performs the cumulative sum (aka prefix sum, aka scan) of the input range
+  and writes the result to the output range. 
+  Each element of the output range contains the
+  running total of all earlier elements (and the initial value)
+  using the given binary operator for summation.
+  
+  This function generates an @em inclusive scan, meaning the N-th element
+  of the output range is the sum of the first N input elements,
+  so the N-th input element is included.
+
+  @code{.cpp}
+  std::vector<int> input = {1, 2, 3, 4, 5};
+  taskflow.inclusive_scan(
+    input.begin(), input.end(), input.begin(), std::plus<int>{}, -1
+  );
+  executor.run(taskflow).wait();
+  
+  // input is {0, 2, 5, 9, 14}
+  @endcode
+
+  */
+  template <typename B, typename E, typename D, typename BOP, typename T>
+  Task inclusive_scan(B first, E last, D d_first, BOP bop, T init);
+  
+  /**
+  @brief creates an STL-styled parallel exclusive-scan task
+
+  @tparam B beginning iterator type
+  @tparam E ending iterator type
+  @tparam D destination iterator type
+  @tparam T initial value type
+  @tparam BOP summation operator type
+
+  @param first start of input range
+  @param last end of input range
+  @param d_first start of output range (may be the same as input range)
+  @param init initial value
+  @param bop function to perform summation
+
+  Performs the cumulative sum (aka prefix sum, aka scan) of the input range
+  and writes the result to the output range. 
+  Each element of the output range contains the
+  running total of all earlier elements (and the initial value)
+  using the given binary operator for summation.
+  
+  This function generates an @em exclusive scan, meaning the N-th element
+  of the output range is the sum of the first N-1 input elements,
+  so the N-th input element is not included.
+
+  @code{.cpp}
+  std::vector<int> input = {1, 2, 3, 4, 5};
+  taskflow.exclusive_scan(
+    input.begin(), input.end(), input.begin(), -1, std::plus<int>{}
+  );
+  executor.run(taskflow).wait();
+  
+  // input is {-1, 0, 2, 5, 9}
+  @endcode
+  */
+  template <typename B, typename E, typename D, typename T, typename BOP>
+  Task exclusive_scan(B first, E last, D d_first, T init, BOP bop);
+  
+  // ------------------------------------------------------------------------
+  // transform scan
+  // ------------------------------------------------------------------------
+  
+  /**
+  @brief creates an STL-styled parallel transform-inclusive scan task
+
+  @tparam B beginning iterator type
+  @tparam E ending iterator type
+  @tparam D destination iterator type
+  @tparam BOP summation operator type
+  @tparam UOP transform operator type
+
+  @param first start of input range
+  @param last end of input range
+  @param d_first start of output range (may be the same as input range)
+  @param bop function to perform summation
+  @param uop function to transform elements of the input range
+
+  Write the cumulative sum (aka prefix sum, aka scan) of the input range
+  to the output range. Each element of the output range contains the
+  running total of all earlier elements
+  using @c uop to transform the input elements
+  and using @c bop for summation.
+  
+  This function generates an @em inclusive scan, meaning the Nth element
+  of the output range is the sum of the first N input elements,
+  so the Nth input element is included.
+
+  @code{.cpp}
+  std::vector<int> input = {1, 2, 3, 4, 5};
+  taskflow.transform_inclusive_scan(
+    input.begin(), input.end(), input.begin(), std::plus<int>{}, 
+    [] (int item) { return -item; }
+  );
+  executor.run(taskflow).wait();
+  
+  // input is {-1, -3, -6, -10, -15}
+  @endcode
+  */
+  template <typename B, typename E, typename D, typename BOP, typename UOP>
+  Task transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop);
+  
+  /**
+  @brief creates an STL-styled parallel transform-inclusive scan task
+
+  @tparam B beginning iterator type
+  @tparam E ending iterator type
+  @tparam D destination iterator type
+  @tparam BOP summation operator type
+  @tparam UOP transform operator type
+  @tparam T initial value type
+
+  @param first start of input range
+  @param last end of input range
+  @param d_first start of output range (may be the same as input range)
+  @param bop function to perform summation
+  @param uop function to transform elements of the input range
+  @param init initial value
+
+  Write the cumulative sum (aka prefix sum, aka scan) of the input range
+  to the output range. Each element of the output range contains the
+  running total of all earlier elements (including an initial value)
+  using @c uop to transform the input elements
+  and using @c bop for summation.
+  
+  This function generates an @em inclusive scan, meaning the Nth element
+  of the output range is the sum of the first N input elements,
+  so the Nth input element is included.
+
+  @code{.cpp}
+  std::vector<int> input = {1, 2, 3, 4, 5};
+  taskflow.transform_inclusive_scan(
+    input.begin(), input.end(), input.begin(), std::plus<int>{}, 
+    [] (int item) { return -item; },
+    -1
+  );
+  executor.run(taskflow).wait();
+  
+  // input is {-2, -4, -7, -11, -16}
+  @endcode
+  */
+  template <typename B, typename E, typename D, typename BOP, typename UOP, typename T>
+  Task transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init);
+  
+  /**
+  @brief creates an STL-styled parallel transform-exclusive scan task
+
+  @tparam B beginning iterator type
+  @tparam E ending iterator type
+  @tparam D destination iterator type
+  @tparam BOP summation operator type
+  @tparam UOP transform operator type
+  @tparam T initial value type
+
+  @param first start of input range
+  @param last end of input range
+  @param d_first start of output range (may be the same as input range)
+  @param bop function to perform summation
+  @param uop function to transform elements of the input range
+  @param init initial value
+
+  Write the cumulative sum (aka prefix sum, aka scan) of the input range
+  to the output range. Each element of the output range contains the
+  running total of all earlier elements (including an initial value)
+  using @c uop to transform the input elements
+  and using @c bop for summation.
+  
+  This function generates an @em exclusive scan, meaning the Nth element
+  of the output range is the sum of the first N-1 input elements,
+  so the Nth input element is not included.
+
+  @code{.cpp}
+  std::vector<int> input = {1, 2, 3, 4, 5};
+  taskflow.transform_exclusive_scan(
+    input.begin(), input.end(), input.begin(), -1, std::plus<int>{},
+    [](int item) { return -item; }
+  );
+  executor.run(taskflow).wait();
+  
+  // input is {-1, -2, -4, -7, -11}
+  @endcode
+  */
+  template <typename B, typename E, typename D, typename T, typename BOP, typename UOP>
+  Task transform_exclusive_scan(B first, E last, D d_first, T init, BOP bop, UOP uop);
 
   // ------------------------------------------------------------------------
   // sort
@@ -604,10 +811,10 @@ class FlowBuilder {
 
   @param first iterator to the beginning (inclusive)
   @param last iterator to the end (exclusive)
-  @param cmp comparison function object
+  @param cmp comparison operator
 
-  The task spawns asynchronous tasks to parallelly sort elements in the range
-  <tt>[first, last)</tt>.
+  The task spawns asynchronous tasks to sort elements in the range
+  <tt>[first, last)</tt> in parallel.
 
   Arguments are templated to enable stateful range using std::reference_wrapper.
 

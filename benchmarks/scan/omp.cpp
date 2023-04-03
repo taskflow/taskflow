@@ -34,25 +34,31 @@ void omp_scan(int n, const T* in, T* out, Op op, unsigned nthreads) {
           operation = op(operation, in[i]);
       }
     }
-    /* For region ends */
-    last_value_chunk_array[idthread+1] = operation;         // Assigning sums of all chunks in last_chunk_value array
 
-    #pragma omp barrier                                     // Syncing all the threads
+    // Assigning sums of all chunks in last_chunk_value array
+    last_value_chunk_array[idthread+1] = operation;         
 
-    int balance = last_value_chunk_array[1];                // Initialising with index 1 value as for thread 0, result has already been calculated
+    // synchronize all threads
+    #pragma omp barrier 
+
+    // Initialising with index 1 value as for thread 0
+    // result has already been calculated
+    int balance = last_value_chunk_array[1];                
     if(idthread == 1)
     {
-      balance = last_value_chunk_array[1];                // For thread ID 1
+      balance = last_value_chunk_array[1];  // For thread ID 1
     }
 
+    // Creating balance for every thread
     for(int i=2; i<(idthread+1); i++)
-      balance = op(balance,last_value_chunk_array[i]);    // Creating balance for every thread
+      balance = op(balance,last_value_chunk_array[i]);    
 
-    #pragma omp for schedule(static, chunk)                 // To calculate the sum of all chunks
+    // To calculate the sum of all chunks
+    #pragma omp for schedule(static, chunk)                
     for(int i=0; i<n; i++) {
       if(idthread != 0)
       {
-          out[i] = op(out[i], balance);                   // For thread IDs other than 0
+          out[i] = op(out[i], balance);
       }
     }
   }
@@ -62,7 +68,7 @@ void omp_scan(int n, const T* in, T* out, Op op, unsigned nthreads) {
 
 // scan_omp
 void scan_omp(size_t nthreads) {
-  omp_scan(input.size(), input.data(), output.data(), std::plus<int>{}, nthreads);
+  omp_scan(input.size(), input.data(), output.data(), std::multiplies<int>{}, nthreads);
 }
 
 std::chrono::microseconds measure_time_omp(size_t num_threads) {

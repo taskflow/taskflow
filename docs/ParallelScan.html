@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Taskflow Algorithms &raquo; Parallel Scan | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="Algorithms.html">Taskflow Algorithms</a> &raquo;</span>
+          Parallel Scan
+        </h1>
+        <nav class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li><a href="#ParallelScanInclude">Include the Header</a></li>
+            <li><a href="#WhatIsAScanOperation">What is a Scan Operation?</a></li>
+            <li><a href="#CreateAParallelInclusiveScanTask">Create a Parallel Inclusive Scan Task</a></li>
+            <li><a href="#CreateAParallelTransformInclusiveScanTask">Create a Parallel Transform-Inclusive Scan Task</a></li>
+            <li><a href="#CreateAParallelExclusiveScanTask">Create a Parallel Exclusive Scan Task</a></li>
+            <li><a href="#CreateAParallelTransformExclusiveScanTask">Create a Parallel Transform-Exclusive Scan Task</a></li>
+          </ul>
+        </nav>
+<p>Taskflow provide template methods that construct tasks to perform parallel scan over a range of items.</p><section id="ParallelScanInclude"><h2><a href="#ParallelScanInclude">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/algorithm/scan.hpp</code>, for creating a parallel-scan task.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/algorithm/scan.hpp&gt;</span><span class="cp"></span></pre></section><section id="WhatIsAScanOperation"><h2><a href="#WhatIsAScanOperation">What is a Scan Operation?</a></h2><p>A parallel scan task performs the cumulative sum, also known as <em>prefix sum</em> or <em>scan</em>, of the input range and writes the result to the output range. Each element of the output range contains the running total of all earlier elements using the given binary operator for summation.</p><img class="m-image" src="scan.png" alt="Image" /></section><section id="CreateAParallelInclusiveScanTask"><h2><a href="#CreateAParallelInclusiveScanTask">Create a Parallel Inclusive Scan Task</a></h2><p><a href="classtf_1_1FlowBuilder.html#a1c2ace9290d83c2a006614a4d66ad588" class="m-doc">tf::<wbr />Taskflow::<wbr />inclusive_scan(B first, E last, D d_first, BOP bop)</a> generates an <em>inclusive</em> scan, meaning that the N-th element of the output range is the sum of the first N input elements, so the N-th input element is included. For example, the code below performs an inclusive scan over five elements:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">output</span><span class="p">(</span><span class="n">input</span><span class="p">.</span><span class="n">size</span><span class="p">())</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">inclusive_scan</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">input</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">input</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">output</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">plus</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">{}</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+
+<span class="c1">// output is {1, 3, 6, 10, 15}</span></pre><p>The output range may be the same as the input range, in which the scan operation is <em>in-place</em> with results written to the input range. For example, the code below performs an in-place inclusive scan over five elements:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">inclusive_scan</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">input</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">input</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">input</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">plus</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">{}</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="c1">// input is {1, 3, 6, 10, 15}</span></pre><p>Similar to <a href="classtf_1_1FlowBuilder.html#a1c2ace9290d83c2a006614a4d66ad588" class="m-doc">tf::<wbr />Taskflow::<wbr />inclusive_scan(B first, E last, D d_first, BOP bop)</a>, <a href="classtf_1_1FlowBuilder.html#a0b589a5bbf9b18e6484fa9e554d39a39" class="m-doc">tf::<wbr />Taskflow::<wbr />inclusive_scan(B first, E last, D d_first, BOP bop, T init)</a> performs an inclusive scan but with an additional initial value <code>init</code>. For example, the code below performs an inclusive scan over five elements plus an initial value:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">output</span><span class="p">(</span><span class="n">input</span><span class="p">.</span><span class="n">size</span><span class="p">());</span><span class="w"></span>
+<span class="c1">// performs inclusive scan with an initial value</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">inclusive_scan</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">input</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">input</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">output</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">plus</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">{},</span><span class="w"> </span><span class="mi">-1</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="c1">// output is {0, 2, 5, 9, 14}</span></pre></section><section id="CreateAParallelTransformInclusiveScanTask"><h2><a href="#CreateAParallelTransformInclusiveScanTask">Create a Parallel Transform-Inclusive Scan Task</a></h2><p>You can transform elements in the input range before running inclusive scan using <a href="classtf_1_1FlowBuilder.html#a82f3c3f49a2d52cd52f6eac07a659e9c" class="m-doc">tf::<wbr />Taskflow::<wbr />transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop)</a> and <a href="classtf_1_1FlowBuilder.html#a49f7e17d02c708035b9134d8c6c89f90" class="m-doc">tf::<wbr />Taskflow::<wbr />transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init)</a>. For example, the code below performs an inclusive scan over five transformed elements:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">output</span><span class="p">(</span><span class="n">input</span><span class="p">.</span><span class="n">size</span><span class="p">());</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">transform_inclusive_scan</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">input</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">input</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">output</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">plus</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">{},</span><span class="w"> </span>
+<span class="w">  </span><span class="p">[]</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">item</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">item</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="c1">// output is {-1, -3, -6, -10, -15}</span></pre><p>You can also associate the transform-inclusive scan with an initial value using <a href="classtf_1_1FlowBuilder.html#a49f7e17d02c708035b9134d8c6c89f90" class="m-doc">tf::<wbr />Taskflow::<wbr />transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init)</a>. Only elements in the input range will be transformed using <code>uop</code>, i.e., the initial value <code>init</code> does not participate in <code>uop</code>.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">output</span><span class="p">(</span><span class="n">input</span><span class="p">.</span><span class="n">size</span><span class="p">());</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">transform_inclusive_scan</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">input</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">input</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">output</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">plus</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">{},</span><span class="w"> </span>
+<span class="w">  </span><span class="p">[]</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">item</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">item</span><span class="p">;</span><span class="w"> </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="mi">-1</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="c1">// output is {-2, -4, -7, -11, -16}</span></pre></section><section id="CreateAParallelExclusiveScanTask"><h2><a href="#CreateAParallelExclusiveScanTask">Create a Parallel Exclusive Scan Task</a></h2><p><a href="classtf_1_1FlowBuilder.html#a4e0d618d8eb0b3b2e5e00443a10bf512" class="m-doc">tf::<wbr />Taskflow::<wbr />exclusive_scan(B first, E last, D d_first, T init, BOP bop)</a> generates an <em>exclusive</em> scan with the given initial value. The N-th element of the output range is the sum of the first N-1 input elements, so the N-th input element is included. For example, the code below performs an exclusive scan over five elements with an initial value -1:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">output</span><span class="p">(</span><span class="n">input</span><span class="p">.</span><span class="n">size</span><span class="p">())</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">exclusive_scan</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">input</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">input</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">output</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">plus</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">{}</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+
+<span class="c1">// output is {-1, 0, 2, 5, 9}</span></pre><p>The output range may be the same as the input range, in which the scan operation is <em>in-place</em> with results written to the input range. For example, the code below performs an in-place exclusive scan over five elements with an initial -1:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">output</span><span class="p">(</span><span class="n">input</span><span class="p">.</span><span class="n">size</span><span class="p">());</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">exclusive_scan</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">input</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">input</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">output</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">plus</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">{}</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="c1">// output is {-1, 0, 2, 5, 9}</span></pre></section><section id="CreateAParallelTransformExclusiveScanTask"><h2><a href="#CreateAParallelTransformExclusiveScanTask">Create a Parallel Transform-Exclusive Scan Task</a></h2><p>You can transform elements in the input range before running exclusive scan using <a href="classtf_1_1FlowBuilder.html#a8549478ef819699b30f8daf88f04d577" class="m-doc">tf::<wbr />Taskflow::<wbr />transform_exclusive_scan(B first, E last, D d_first, T init, BOP bop, UOP uop)</a>. For example, the code below performs an exclusive scan over five transformed elements:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">output</span><span class="p">(</span><span class="n">input</span><span class="p">.</span><span class="n">size</span><span class="p">());</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">transform_exclusive_scan</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">input</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">input</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">input</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">plus</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">{},</span><span class="w"></span>
+<span class="w">  </span><span class="p">[](</span><span class="kt">int</span><span class="w"> </span><span class="n">item</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">item</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+
+<span class="c1">// output is {-1, -2, -4, -7, -11}</span></pre></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

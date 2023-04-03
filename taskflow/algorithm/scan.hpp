@@ -2,8 +2,53 @@
 
 #include "../core/executor.hpp"
 
-namespace tf{
+namespace tf {
 
+namespace detail {
+
+// Function: block_scan
+template <typename Iterator, typename BufferT, typename B>
+TF_FORCE_INLINE void block_scan(
+  tf::Runtime& rt,
+  std::atomic<size_t>& counter, 
+  BufferT& buf, 
+  B bop, 
+  Iterator d_beg, 
+  size_t W,
+  size_t w, 
+  size_t chunk_size
+){
+  // whoever finishes the last performs global scan
+  if(counter.fetch_add(1, std::memory_order_acq_rel) == W-1) {
+    for(size_t i=1; i<buf.size(); i++) {
+      buf[i].data = bop(buf[i-1].data, buf[i].data);
+    }
+    counter.store(0, std::memory_order_release);
+  }
+
+  // first worker no need to do any work
+  if(w==0) {
+    return;
+  } 
+
+  // need to do public corun because multiple workers can call this
+  rt.executor().corun_until([&counter](){
+    return counter.load(std::memory_order_acquire) == 0;
+  });
+  
+  // block addup
+  for(size_t i=0; i<chunk_size; i++) {
+    *d_beg++ = bop(buf[w-1].data, *d_beg);
+  }
+}
+
+}  // end of namespace tf::detail ---------------------------------------------
+
+// ----------------------------------------------------------------------------
+// Inclusive Scan
+// ----------------------------------------------------------------------------
+
+// Function: inclusive_scan
 template <typename B, typename E, typename D, typename BOP>
 Task FlowBuilder::inclusive_scan(B first, E last, D d_first, BOP bop) {
   
@@ -37,9 +82,6 @@ Task FlowBuilder::inclusive_scan(B first, E last, D d_first, BOP bop) {
       W = N;
     }
     
-    size_t curr_b = 0;
-    size_t chunk_size;
-    
     std::vector<CachelineAligned<value_type>> buf(W);
     std::atomic<size_t> counter(0);
 
@@ -49,47 +91,25 @@ Task FlowBuilder::inclusive_scan(B first, E last, D d_first, BOP bop) {
     //auto orig_d_beg = d_beg;
     //ExecutionPolicy<StaticPartitioner> policy;
 
-    for(size_t w=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
+    for(size_t w=0, curr_b=0, chunk_size; w<W && curr_b < N; ++w) {
 
       chunk_size = std::min(Q + (w < R), N - curr_b);
 
       // block scan
       auto partial_scan = [=, &buf, &counter] () mutable {
 
-        auto res_d_beg = d_beg;
+        auto result = d_beg;
 
         // local scan per worker
         auto& init = buf[w].data;
-        init = *s_beg++;
-        *d_beg++ = init;
+        *d_beg++ = init = *s_beg++;
 
         for(size_t i=1; i<chunk_size; i++){
           *d_beg++ = init = bop(init, *s_beg++); 
         }
 
-        // whoever finishes the last performs global scan
-        if(counter.fetch_add(1, std::memory_order_acq_rel) == W-1) {
-          for(size_t i=1; i<buf.size(); i++) {
-            buf[i].data = bop(buf[i-1].data, buf[i].data);
-          }
-          counter.store(0, std::memory_order_release);
-        }
-        
-        // first partition is done 
-        if(w == 0) {
-          return;
-        }
-        
-        // synchronize without blocking
-        rt._executor.corun_until([&counter](){
-          return counter.load(std::memory_order_acquire) == 0;
-        });
-
-        
-        // local scan based on the global scanned value
-        for(size_t i=0; i<chunk_size; i++) {
-          *res_d_beg++ = bop(buf[w-1].data, *res_d_beg);
-        }
+        // block scan
+        detail::block_scan(rt, counter, buf, bop, result, W, w, chunk_size);
         
         //size_t offset = R ? Q + 1 : Q;
         //size_t rest   = N - offset;
@@ -124,6 +144,453 @@ Task FlowBuilder::inclusive_scan(B first, E last, D d_first, BOP bop) {
       
       std::advance(s_beg, chunk_size);
       std::advance(d_beg, chunk_size);
+      curr_b += chunk_size;
+    }
+
+    rt.join();
+    
+  });
+  
+  return task;
+}
+
+// Function: inclusive_scan
+template <typename B, typename E, typename D, typename BOP, typename T>
+Task FlowBuilder::inclusive_scan(B first, E last, D d_first, BOP bop, T init) {
+  
+  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
+  using value_type = typename std::iterator_traits<B_t>::value_type;
+  using namespace std::string_literals;
+  
+  Task task = emplace([=] (Runtime& rt) mutable {
+
+    // fetch the stateful values
+    B_t s_beg = first;
+    E_t s_end = last;
+    D_t d_beg = d_first;
+
+    if(s_beg == s_end) {
+      return;
+    }
+
+    size_t W = rt._executor.num_workers();
+    size_t N = std::distance(s_beg, s_end);
+
+    // only myself - no need to spawn another graph
+    if(W <= 1 || N <= 2) {
+      std::inclusive_scan(s_beg, s_end, d_beg, bop, init);
+      return;
+    }
+
+    if(N < W) {
+      W = N;
+    }
+    
+    std::vector<CachelineAligned<value_type>> buf(W);
+    std::atomic<size_t> counter(0);
+    
+    // set up the initial value for the first worker
+    buf[0].data = std::move(init);
+
+    size_t Q = N/W;
+    size_t R = N%W;
+
+    for(size_t w=0, curr_b=0, chunk_size; w<W && curr_b < N; ++w) {
+
+      chunk_size = std::min(Q + (w < R), N - curr_b);
+
+      // block scan
+      auto partial_scan = [=, &buf, &counter] () mutable {
+
+        auto result = d_beg;
+
+        // local scan per worker
+        auto& init = buf[w].data;
+        *d_beg++ = init = (w == 0) ? bop(init, *s_beg++) : *s_beg++;
+
+        for(size_t i=1; i<chunk_size; i++){
+          *d_beg++ = init = bop(init, *s_beg++); 
+        }
+        
+        // block scan
+        detail::block_scan(rt, counter, buf, bop, result, W, w, chunk_size);
+      };
+
+      if(w == W-1) {
+        partial_scan();
+      }
+      else {
+        rt._silent_async(rt._worker, "loop-"s + std::to_string(w), partial_scan);
+      }
+      
+      std::advance(s_beg, chunk_size);
+      std::advance(d_beg, chunk_size);
+      curr_b += chunk_size;
+    }
+
+    rt.join();
+    
+  });
+  
+  return task;
+}
+
+// ----------------------------------------------------------------------------
+// Transform Inclusive Scan
+// ----------------------------------------------------------------------------
+
+// Function: transform_inclusive_scan
+template <typename B, typename E, typename D, typename BOP, typename UOP>
+Task FlowBuilder::transform_inclusive_scan(
+  B first, E last, D d_first, BOP bop, UOP uop
+) {
+  
+  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
+  using value_type = typename std::iterator_traits<B_t>::value_type;
+  using namespace std::string_literals;
+  
+  Task task = emplace([=] (Runtime& rt) mutable {
+
+    // fetch the stateful values
+    B_t s_beg = first;
+    E_t s_end = last;
+    D_t d_beg = d_first;
+
+    if(s_beg == s_end) {
+      return;
+    }
+
+    size_t W = rt._executor.num_workers();
+    size_t N = std::distance(s_beg, s_end);
+
+    // only myself - no need to spawn another graph
+    if(W <= 1 || N <= 2) {
+      std::transform_inclusive_scan(s_beg, s_end, d_beg, bop, uop);
+      return;
+    }
+
+    if(N < W) {
+      W = N;
+    }
+    
+    std::vector<CachelineAligned<value_type>> buf(W);
+    std::atomic<size_t> counter(0);
+
+    size_t Q = N/W;
+    size_t R = N%W;
+    
+    for(size_t w=0, curr_b=0, chunk_size; w<W && curr_b < N; ++w) {
+
+      chunk_size = std::min(Q + (w < R), N - curr_b);
+
+      // block scan
+      auto partial_scan = [=, &buf, &counter] () mutable {
+
+        auto result = d_beg;
+
+        // local scan per worker
+        auto& init = buf[w].data;
+        *d_beg++ = init = uop(*s_beg++);
+
+        for(size_t i=1; i<chunk_size; i++){
+          *d_beg++ = init = bop(init, uop(*s_beg++)); 
+        }
+
+        // block scan
+        detail::block_scan(rt, counter, buf, bop, result, W, w, chunk_size);
+      };
+
+      if(w == W-1) {
+        partial_scan();
+      }
+      else {
+        rt._silent_async(rt._worker, "loop-"s + std::to_string(w), partial_scan);
+      }
+      
+      std::advance(s_beg, chunk_size);
+      std::advance(d_beg, chunk_size);
+      curr_b += chunk_size;
+    }
+
+    rt.join();
+    
+  });
+  
+  return task;
+}
+
+// Function: transform_inclusive_scan
+template <typename B, typename E, typename D, typename BOP, typename UOP, typename T>
+Task FlowBuilder::transform_inclusive_scan(
+  B first, E last, D d_first, BOP bop, UOP uop, T init
+) {
+  
+  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
+  using value_type = typename std::iterator_traits<B_t>::value_type;
+  using namespace std::string_literals;
+  
+  Task task = emplace([=] (Runtime& rt) mutable {
+
+    // fetch the stateful values
+    B_t s_beg = first;
+    E_t s_end = last;
+    D_t d_beg = d_first;
+
+    if(s_beg == s_end) {
+      return;
+    }
+
+    size_t W = rt._executor.num_workers();
+    size_t N = std::distance(s_beg, s_end);
+
+    // only myself - no need to spawn another graph
+    if(W <= 1 || N <= 2) {
+      std::transform_inclusive_scan(s_beg, s_end, d_beg, bop, uop, init);
+      return;
+    }
+
+    if(N < W) {
+      W = N;
+    }
+    
+    std::vector<CachelineAligned<value_type>> buf(W);
+    std::atomic<size_t> counter(0);
+    
+    // set up the initial value for the first worker
+    buf[0].data = std::move(init);
+
+    size_t Q = N/W;
+    size_t R = N%W;
+
+    for(size_t w=0, curr_b=0, chunk_size; w<W && curr_b < N; ++w) {
+
+      chunk_size = std::min(Q + (w < R), N - curr_b);
+
+      // block scan
+      auto partial_scan = [=, &buf, &counter] () mutable {
+
+        auto result = d_beg;
+
+        // local scan per worker
+        auto& init = buf[w].data;
+        *d_beg++ = init = (w == 0) ? bop(init, uop(*s_beg++)) : uop(*s_beg++);
+
+        for(size_t i=1; i<chunk_size; i++){
+          *d_beg++ = init = bop(init, uop(*s_beg++)); 
+        }
+        
+        // block scan
+        detail::block_scan(rt, counter, buf, bop, result, W, w, chunk_size);
+      };
+
+      if(w == W-1) {
+        partial_scan();
+      }
+      else {
+        rt._silent_async(rt._worker, "loop-"s + std::to_string(w), partial_scan);
+      }
+      
+      std::advance(s_beg, chunk_size);
+      std::advance(d_beg, chunk_size);
+      curr_b += chunk_size;
+    }
+
+    rt.join();
+    
+  });
+  
+  return task;
+}
+
+// ----------------------------------------------------------------------------
+// Exclusive Scan
+// ----------------------------------------------------------------------------
+
+// Function: exclusive_scan
+template <typename B, typename E, typename D, typename T, typename BOP>
+Task FlowBuilder::exclusive_scan(B first, E last, D d_first, T init, BOP bop) {
+  
+  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
+  using value_type = typename std::iterator_traits<B_t>::value_type;
+  using namespace std::string_literals;
+  
+  Task task = emplace([=] (Runtime& rt) mutable {
+
+    // fetch the stateful values
+    B_t s_beg = first;
+    E_t s_end = last;
+    D_t d_beg = d_first;
+
+    if(s_beg == s_end) {
+      return;
+    }
+
+    size_t W = rt._executor.num_workers();
+    size_t N = std::distance(s_beg, s_end);
+
+    // only myself - no need to spawn another graph
+    if(W <= 1 || N <= 2) {
+      std::exclusive_scan(s_beg, s_end, d_beg, init, bop);
+      return;
+    }
+
+    if(N < W) {
+      W = N;
+    }
+    
+    std::vector<CachelineAligned<value_type>> buf(W);
+    std::atomic<size_t> counter(0);
+
+    size_t Q = N/W;
+    size_t R = N%W;
+
+    // fetch the init value
+    auto s_beg_temp = s_beg;
+    for(size_t w=0, curr_b=0, chunk_size; w<W && curr_b < N; ++w) {
+      chunk_size = std::min(Q + (w<R), N - curr_b);  
+      buf[w].data = w ? *s_beg_temp : std::move(init);
+      std::advance(s_beg_temp, chunk_size - !w);
+      curr_b += chunk_size;
+    }
+    
+    for(size_t w=0, curr_b=0, chunk_size; w<W && curr_b < N; ++w) {
+
+      chunk_size = std::min(Q + (w < R), N - curr_b);
+
+      // block scan
+      auto partial_scan = [=, &buf, &counter] () mutable {
+
+        auto result = d_beg;
+
+        // local scan per worker
+        auto& init = buf[w].data;
+
+        for(size_t i=1; i<chunk_size; i++) {
+          auto v = init;
+          init = bop(init, *s_beg++);
+          *d_beg++ = std::move(v);
+        }
+        *d_beg++ = init;
+        
+        // block scan
+        detail::block_scan(rt, counter, buf, bop, result, W, w, chunk_size);
+      };
+
+      if(w == W-1) {
+        partial_scan();
+      }
+      else {
+        rt._silent_async(rt._worker, "loop-"s + std::to_string(w), partial_scan);
+      }
+      
+      std::advance(s_beg, chunk_size);
+      std::advance(d_beg, chunk_size);
+      curr_b += chunk_size;
+    }
+
+    rt.join();
+    
+  });
+  
+  return task;
+}
+
+// ----------------------------------------------------------------------------
+// Transform Exclusive Scan
+// ----------------------------------------------------------------------------
+
+// Function: 
+template <typename B, typename E, typename D, typename T, typename BOP, typename UOP>
+Task FlowBuilder::transform_exclusive_scan(
+  B first, E last, D d_first, T init, BOP bop, UOP uop
+) {
+  
+  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
+  using value_type = typename std::iterator_traits<B_t>::value_type;
+  using namespace std::string_literals;
+  
+  Task task = emplace([=] (Runtime& rt) mutable {
+
+    // fetch the stateful values
+    B_t s_beg = first;
+    E_t s_end = last;
+    D_t d_beg = d_first;
+
+    if(s_beg == s_end) {
+      return;
+    }
+
+    size_t W = rt._executor.num_workers();
+    size_t N = std::distance(s_beg, s_end);
+
+    // only myself - no need to spawn another graph
+    if(W <= 1 || N <= 2) {
+      std::transform_exclusive_scan(s_beg, s_end, d_beg, init, bop, uop);
+      return;
+    }
+
+    if(N < W) {
+      W = N;
+    }
+    
+    std::vector<CachelineAligned<value_type>> buf(W);
+    std::atomic<size_t> counter(0);
+
+    size_t Q = N/W;
+    size_t R = N%W;
+
+    // fetch the init value
+    auto s_beg_temp = s_beg;
+    for(size_t w=0, curr_b=0, chunk_size; w<W && curr_b < N; ++w) {
+      chunk_size = std::min(Q + (w<R), N - curr_b);  
+      buf[w].data = w ? uop(*s_beg_temp) : std::move(init);
+      std::advance(s_beg_temp, chunk_size - !w);
+      curr_b += chunk_size;
+    }
+    
+    for(size_t w=0, curr_b=0, chunk_size; w<W && curr_b < N; ++w) {
+
+      chunk_size = std::min(Q + (w < R), N - curr_b);
+
+      // block scan
+      auto partial_scan = [=, &buf, &counter] () mutable {
+
+        auto result = d_beg;
+
+        // local scan per worker
+        auto& init = buf[w].data;
+
+        for(size_t i=1; i<chunk_size; i++) {
+          auto v = init;
+          init = bop(init, uop(*s_beg++));
+          *d_beg++ = std::move(v);
+        }
+        *d_beg++ = init;
+        
+        // block scan
+        detail::block_scan(rt, counter, buf, bop, result, W, w, chunk_size);
+      };
+
+      if(w == W-1) {
+        partial_scan();
+      }
+      else {
+        rt._silent_async(rt._worker, "loop-"s + std::to_string(w), partial_scan);
+      }
+      
+      std::advance(s_beg, chunk_size);
+      std::advance(d_beg, chunk_size);
+      curr_b += chunk_size;
     }
 
     rt.join();

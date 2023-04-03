@@ -1,4 +1,4 @@
-// This program demonstrates how to perform parallel inclusive scan.
+// This program demonstrates how to perform parallel exclusive scan.
 
 #include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/scan.hpp>
@@ -6,7 +6,7 @@
 int main(int argc, char* argv[]) {
 
   if(argc != 3) {
-    std::cerr << "usage: ./inclusive_scan num_workers num_elements\n"; 
+    std::cerr << "usage: ./exclusive_scan num_workers num_elements\n"; 
     std::exit(EXIT_FAILURE);
   }
 
@@ -21,24 +21,24 @@ int main(int argc, char* argv[]) {
     elements[i] = i;
   }
   
-  // sequential inclusive scan
+  // sequential exclusive scan
   {
-    std::cout << "sequential inclusive scan ... ";
+    std::cout << "sequential exclusive scan ... ";
     auto beg = std::chrono::steady_clock::now();
-    std::inclusive_scan(
-      elements.begin(), elements.end(), scan_seq.begin(), std::multiplies<int>{}
+    std::exclusive_scan(
+      elements.begin(), elements.end(), scan_seq.begin(), -1, std::plus<int>{}
     );
     auto end = std::chrono::steady_clock::now();
     std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(end-beg).count()
               << "ns\n";
   }
 
-  // create a parallel inclusive scan task
+  // create a parallel exclusive scan task
   {
-    std::cout << "parallel   inclusive scan ... ";
+    std::cout << "parallel   exclusive scan ... ";
     auto beg = std::chrono::steady_clock::now();
-    taskflow.inclusive_scan(
-      elements.begin(), elements.end(), scan_par.begin(), std::multiplies<int>{}
+    taskflow.exclusive_scan(
+      elements.begin(), elements.end(), scan_par.begin(), -1, std::plus<int>{}
     );
     executor.run(taskflow).wait();
     auto end = std::chrono::steady_clock::now();

@@ -23,7 +23,7 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
 @li GNU C++ Compiler at least v8.4 with -std=c++17
 @li Clang C++ Compiler at least v6.0 with -std=c++17
 @li Microsoft Visual Studio at least v19.27 with /std:c++17
-@li AppleClang Xode Version at least v12.0 with -std=c++17
+@li AppleClang Xcode Version at least v12.0 with -std=c++17
 @li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
 @li Intel C++ Compiler at least v19.0.1 with -std=c++17
 @li Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20
@@ -45,6 +45,13 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
   + tf::StaticPartitioner
   + tf::DynamicPartitioner
   + tf::RandomPartitioner
++ Added parallel-scan algorithms to %Taskflow
+  + tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop)
+  + tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop, T init)
+  + tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop)
+  + tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init)
+  + tf::Taskflow::exclusive_scan(B first, E last, D d_first, T init, BOP bop)
+  + tf::Taskflow::transform_exclusive_scan(B first, E last, D d_first, T init, BOP bop, UOP uop)
 + Modified tf::Subflow to a derived class from tf::Runtime
 + Extended parallel algorithms to support different partitioner algorithms
   + tf::Taskflow::for_each_index(B first, E last, S step, C callable, P&& part)
@@ -59,15 +66,15 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
 
 @subsection release-3-6-0_cudaflow cudaFlow
 
-  + removed algorithms that require buffer from tf::cudaFlow due to update limitation
-  + removed support for a dedicated %cudaFlow task in %Taskflow
-    + all usage of tf::cudaFlow and tf::cudaFlowCapturer are standalone now
++ removed algorithms that require buffer from tf::cudaFlow due to update limitation
++ removed support for a dedicated %cudaFlow task in %Taskflow
+  + all usage of tf::cudaFlow and tf::cudaFlowCapturer are standalone now
 
 @subsection release-3-6-0_utilities Utilities
 
 @subsection release-3-6-0_profiler Taskflow Profiler (TFProf)
 
-  + removed %cudaFlow and %syclFlow tasks
++ removed %cudaFlow and %syclFlow tasks
 
 @section release-3-6-0_bug_fixes Bug Fixes 
 
@@ -153,7 +160,7 @@ executor.async([](int i){ std::cout << i << std::endl; }, 4);
 executor.async([i=4]( std::cout << i << std::endl; ){});
 @endcode
 
-+ Replaced `named_async` with overheads that take a string on the first argument
++ Replaced `named_async` with an overload that takes the name string on the first argument
 
 @code{.cpp}
 // previous - explicitly calling named_async to assign a name to an async task
@@ -178,6 +185,7 @@ executor.async("name", [](){});
   + @ref CUDASTDMerge
   + @ref CUDASTDScan
 + Added @ref TaskParallelPipelineWithTokenDependencies
++ Added @ref ParallelScan
 
 @section release-3-6-0_miscellaneous_items Miscellaneous Items
 

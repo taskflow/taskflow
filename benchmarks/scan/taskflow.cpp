@@ -8,7 +8,7 @@ void scan_taskflow(size_t num_threads) {
   tf::Taskflow taskflow;
 
   taskflow.inclusive_scan(
-    input.begin(), input.end(), output.begin(), std::plus<int>{}
+    input.begin(), input.end(), output.begin(), std::multiplies<int>{}
   );
 
   executor.run(taskflow).get();

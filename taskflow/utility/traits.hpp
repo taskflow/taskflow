@@ -276,6 +276,10 @@ template <typename T> struct is_std_compare<std::greater<T>> : std::true_type { 
 template <typename T>
 constexpr static bool is_std_compare_v = is_std_compare<T>::value;
 
+// ----------------------------------------------------------------------------
+// is_invocable_r_on_value
+// ----------------------------------------------------------------------------
+
 
 }  // end of namespace tf. ----------------------------------------------------
 

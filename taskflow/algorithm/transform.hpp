@@ -19,7 +19,8 @@ Task FlowBuilder::transform(B first1, E last1, O d_first, C c, P&& part) {
   using O_t = std::decay_t<unwrap_ref_decay_t<O>>;
 
   Task task = emplace(
-  [first1, last1, d_first, c, part=std::forward<P>(part)] (Runtime& sf) mutable {
+  [first1, last1, d_first, c, part=std::forward<P>(part)] 
+  (Runtime& sf) mutable {
 
     // fetch the stateful values
     B_t beg   = first1;
@@ -137,7 +138,8 @@ Task FlowBuilder::transform(
   using O_t = std::decay_t<unwrap_ref_decay_t<O>>;
 
   Task task = emplace(
-  [first1, last1, first2, d_first, c, part=std::forward<P>(part)] (Runtime& sf) mutable {
+  [first1, last1, first2, d_first, c, part=std::forward<P>(part)] 
+  (Runtime& sf) mutable {
 
     // fetch the stateful values
     B1_t beg1 = first1;
