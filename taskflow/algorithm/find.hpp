@@ -32,9 +32,6 @@ TF_FORCE_INLINE bool find_if_loop(
 
 }  // namespace detail --------------------------------------------------------
 
-
-
-
 // Function: find_if
 template <typename B, typename E, typename UOP, typename T, typename P>
 Task tf::FlowBuilder::find_if(B first, E last, UOP predicate, T& result, P&& part) {
@@ -154,7 +151,8 @@ Task tf::FlowBuilder::find_if(B first, E last, UOP predicate, T& result, P&& par
     }
 
     // update the result iterator by the offset
-    result = std::next(beg, offset.load(std::memory_order_relaxed));
+    auto loaded_offset = offset.load(std::memory_order_relaxed);
+    result = (loaded_offset == N) ? end : std::next(beg, loaded_offset);
   });
 
   return task;

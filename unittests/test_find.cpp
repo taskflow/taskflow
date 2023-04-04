@@ -9,13 +9,14 @@ void test_find_if(unsigned W) {
   
   tf::Executor executor(W);
   tf::Taskflow taskflow;
+  std::vector<int> input;
   
   for(size_t n = 0; n <= 65536; n <= 256 ? n++ : n=2*n+1) {
     for(size_t c : {0, 1, 3, 7, 99}) {
 
       taskflow.clear();
 
-      std::vector<int> input(n);
+      input.resize(n);
 
       for(auto& i : input) {
         i = ::rand() % (2 * n) + 1;
