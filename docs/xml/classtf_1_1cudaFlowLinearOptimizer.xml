@@ -1,22 +1,26 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaFlowLinearOptimizer" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaFlowLinearOptimizer</compoundname>
     <basecompoundref prot="public" virt="non-virtual">tf::cudaFlowOptimizerBase</basecompoundref>
     <includes refid="cuda__optimizer_8hpp" local="no">cuda_optimizer.hpp</includes>
       <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1cudaFlowLinearOptimizer_1a672b45d300c57d726c203c62f950efbd" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>friend class</type>
+        <type>class</type>
         <definition>friend class cudaFlowCapturer</definition>
         <argsstring></argsstring>
         <name>cudaFlowCapturer</name>
+        <qualifiedname>tf::cudaFlowLinearOptimizer::cudaFlowCapturer</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">cudaFlowCapturer</ref></type>
+        </param>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="184" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="184" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="184" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="184" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -25,13 +29,15 @@
         <definition>tf::cudaFlowLinearOptimizer::cudaFlowLinearOptimizer</definition>
         <argsstring>()=default</argsstring>
         <name>cudaFlowLinearOptimizer</name>
+        <qualifiedname>tf::cudaFlowLinearOptimizer::cudaFlowLinearOptimizer</qualifiedname>
         <briefdescription>
-<para>constructs a linear optimizer </para>        </briefdescription>
+<para>constructs a linear optimizer </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="191" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="191" column="5"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -40,6 +46,7 @@
         <definition>cudaGraph_t tf::cudaFlowLinearOptimizer::_optimize</definition>
         <argsstring>(cudaFlowGraph &amp;graph)</argsstring>
         <name>_optimize</name>
+        <qualifiedname>tf::cudaFlowLinearOptimizer::_optimize</qualifiedname>
         <param>
           <type>cudaFlowGraph &amp;</type>
           <declname>graph</declname>
@@ -50,36 +57,38 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="195" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="198" bodyend="221"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="195" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="198" bodyend="221"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class to capture a linear CUDA graph using a sequential stream </para>    </briefdescription>
+<para>class to capture a linear CUDA graph using a sequential stream </para>
+    </briefdescription>
     <detaileddescription>
-<para>A linear capturing algorithm is a special case of <ref refid="classtf_1_1cudaFlowSequentialOptimizer" kindref="compound">tf::cudaFlowSequentialOptimizer</ref> and assumes the input task graph to be a single linear chain of tasks (i.e., a straight line). This assumption allows faster optimization during the capturing process. If the input task graph is not a linear chain, the behavior is undefined. </para>    </detaileddescription>
+<para>A linear capturing algorithm is a special case of <ref refid="classtf_1_1cudaFlowSequentialOptimizer" kindref="compound">tf::cudaFlowSequentialOptimizer</ref> and assumes the input task graph to be a single linear chain of tasks (i.e., a straight line). This assumption allows faster optimization during the capturing process. If the input task graph is not a linear chain, the behavior is undefined. </para>
+    </detaileddescription>
     <inheritancegraph>
-      <node id="46">
-        <label>tf::cudaFlowOptimizerBase</label>
-      </node>
-      <node id="45">
+      <node id="1">
         <label>tf::cudaFlowLinearOptimizer</label>
         <link refid="classtf_1_1cudaFlowLinearOptimizer"/>
-        <childnode refid="46" relation="public-inheritance">
+        <childnode refid="2" relation="public-inheritance">
         </childnode>
+      </node>
+      <node id="2">
+        <label>tf::cudaFlowOptimizerBase</label>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="48">
-        <label>tf::cudaFlowOptimizerBase</label>
-      </node>
-      <node id="47">
+      <node id="1">
         <label>tf::cudaFlowLinearOptimizer</label>
         <link refid="classtf_1_1cudaFlowLinearOptimizer"/>
-        <childnode refid="48" relation="public-inheritance">
+        <childnode refid="2" relation="public-inheritance">
         </childnode>
       </node>
+      <node id="2">
+        <label>tf::cudaFlowOptimizerBase</label>
+      </node>
     </collaborationgraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="182" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="182" bodyend="196"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="182" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="182" bodyend="196"/>
     <listofallmembers>
       <member refid="classtf_1_1cudaFlowOptimizerBase_1ae20d9b88a98439f8d8ee5f6280b15744" prot="protected" virt="non-virtual"><scope>tf::cudaFlowLinearOptimizer</scope><name>_levelize</name></member>
       <member refid="classtf_1_1cudaFlowLinearOptimizer_1a272177ccabb376ad862f4afd0c87d2b2" prot="private" virt="non-virtual"><scope>tf::cudaFlowLinearOptimizer</scope><name>_optimize</name></member>

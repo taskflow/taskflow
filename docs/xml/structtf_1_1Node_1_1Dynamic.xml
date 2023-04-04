@@ -1,33 +1,35 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="structtf_1_1Node_1_1Dynamic" kind="struct" language="C++" prot="private">
     <compoundname>tf::Node::Dynamic</compoundname>
       <sectiondef kind="public-attrib">
       <memberdef kind="variable" id="structtf_1_1Node_1_1Dynamic_1a8ff8b752a24882d5db8615ae2bf1ecd8" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/utility/functional/function" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(<ref refid="classtf_1_1Subflow" kindref="compound">Subflow</ref> &amp;)&gt;</type>
+        <type><ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(<ref refid="classtf_1_1Subflow" kindref="compound">Subflow</ref> &amp;)&gt;</type>
         <definition>std::function&lt;void(Subflow&amp;)&gt; tf::Node::Dynamic::work</definition>
         <argsstring></argsstring>
         <name>work</name>
+        <qualifiedname>tf::Node::Dynamic::work</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="508" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="508" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="508" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="508" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1Node_1_1Dynamic_1a3c96842a0b1b483a175f266a6fb79b95" prot="public" static="no" mutable="no">
         <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref></type>
         <definition>Graph tf::Node::Dynamic::subgraph</definition>
         <argsstring></argsstring>
         <name>subgraph</name>
+        <qualifiedname>tf::Node::Dynamic::subgraph</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="509" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="509" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="509" column="11" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="509" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -41,6 +43,7 @@
         <definition>tf::Node::Dynamic::Dynamic</definition>
         <argsstring>(C &amp;&amp;)</argsstring>
         <name>Dynamic</name>
+        <qualifiedname>tf::Node::Dynamic::Dynamic</qualifiedname>
         <param>
           <type>C &amp;&amp;</type>
           <defname>c</defname>
@@ -51,7 +54,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="506" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="660" bodyend="661"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="506" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="660" bodyend="661"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -59,24 +62,24 @@
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
-      <node id="119">
-        <label>tf::Node::Dynamic</label>
-        <childnode refid="120" relation="usage">
-          <edgelabel>work</edgelabel>
-        </childnode>
-        <childnode refid="121" relation="usage">
-          <edgelabel>subgraph</edgelabel>
-        </childnode>
+      <node id="2">
+        <label>std::function&lt; void(tf::Subflow &amp;)&gt;</label>
       </node>
-      <node id="121">
+      <node id="3">
         <label>tf::Graph</label>
         <link refid="classtf_1_1Graph"/>
       </node>
-      <node id="120">
-        <label>std::function&lt; void(tf::Subflow &amp;)&gt;</label>
+      <node id="1">
+        <label>tf::Node::Dynamic</label>
+        <childnode refid="2" relation="usage">
+          <edgelabel>work</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>subgraph</edgelabel>
+        </childnode>
       </node>
     </collaborationgraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="503" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="503" bodyend="510"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="503" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="503" bodyend="510"/>
     <listofallmembers>
       <member refid="structtf_1_1Node_1_1Dynamic_1a7f31bfe9a2e00cc52f766a3df91dbb1a" prot="public" virt="non-virtual"><scope>tf::Node::Dynamic</scope><name>Dynamic</name></member>
       <member refid="structtf_1_1Node_1_1Dynamic_1a3c96842a0b1b483a175f266a6fb79b95" prot="public" virt="non-virtual"><scope>tf::Node::Dynamic</scope><name>subgraph</name></member>

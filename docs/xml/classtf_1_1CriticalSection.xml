@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="classtf_1_1CriticalSection" kind="class" language="C++" prot="public">
     <compoundname>tf::CriticalSection</compoundname>
     <basecompoundref refid="classtf_1_1Semaphore" prot="public" virt="non-virtual">tf::Semaphore</basecompoundref>
@@ -10,18 +10,20 @@
         <definition>tf::CriticalSection::CriticalSection</definition>
         <argsstring>(size_t max_workers=1)</argsstring>
         <name>CriticalSection</name>
+        <qualifiedname>tf::CriticalSection::CriticalSection</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>max_workers</declname>
           <defval>1</defval>
         </param>
         <briefdescription>
-<para>constructs a critical region of a limited number of workers </para>        </briefdescription>
+<para>constructs a critical region of a limited number of workers </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/critical.hpp" line="56" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/critical.hpp" bodystart="65" bodyend="67"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/critical.hpp" line="56" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/critical.hpp" bodystart="65" bodyend="67"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1CriticalSection_1abf9cbde9354a06e0fee5fee2ea2bfc45" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -35,63 +37,68 @@
         <definition>void tf::CriticalSection::add</definition>
         <argsstring>(Tasks...tasks)</argsstring>
         <name>add</name>
+        <qualifiedname>tf::CriticalSection::add</qualifiedname>
         <param>
           <type>Tasks...</type>
           <declname>tasks</declname>
         </param>
         <briefdescription>
-<para>adds a task into the critical region </para>        </briefdescription>
+<para>adds a task into the critical region </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/critical.hpp" line="62" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/critical.hpp" bodystart="70" bodyend="73"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/critical.hpp" line="62" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/critical.hpp" bodystart="70" bodyend="73"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class to create a critical region of limited workers to run tasks </para>    </briefdescription>
+<para>class to create a critical region of limited workers to run tasks </para>
+    </briefdescription>
     <detaileddescription>
-<para><ref refid="classtf_1_1CriticalSection" kindref="compound">tf::CriticalSection</ref> is a warpper over <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> and is specialized for limiting the maximum concurrency over a set of tasks. A critical section starts with an initial count representing that limit. When a task is added to the critical section, the task acquires and releases the semaphore internal to the critical section. This design avoids explicit call of <ref refid="classtf_1_1Task_1a076ab9c6f3a0346e16cfb5fee7dc4ce8" kindref="member">tf::Task::acquire</ref> and <ref refid="classtf_1_1Task_1a26709523eb112f2d024f4c0e9d2f0019" kindref="member">tf::Task::release</ref>. The following example creates a critical section of one worker and adds the five tasks to the critical section.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(8);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>executor<sp/>of<sp/>8<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
+<para><ref refid="classtf_1_1CriticalSection" kindref="compound">tf::CriticalSection</ref> is a warpper over <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> and is specialized for limiting the maximum concurrency over a set of tasks. A critical section starts with an initial count representing that limit. When a task is added to the critical section, the task acquires and releases the semaphore internal to the critical section. This design avoids explicit call of <ref refid="classtf_1_1Task_1a076ab9c6f3a0346e16cfb5fee7dc4ce8" kindref="member">tf::Task::acquire</ref> and <ref refid="classtf_1_1Task_1a26709523eb112f2d024f4c0e9d2f0019" kindref="member">tf::Task::release</ref>. The following example creates a critical section of one worker and adds the five tasks to the critical section.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(8);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>executor<sp/>of<sp/>8<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>critical<sp/>section<sp/>of<sp/>1<sp/>worker</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1CriticalSection" kindref="compound">tf::CriticalSection</ref><sp/>critical_section(1);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>C<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>D<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>E<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;E&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>C<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>D<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>E<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;E&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">critical_section.add(A,<sp/>B,<sp/>C,<sp/>D,<sp/>E);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
-</programlisting> </para>    </detaileddescription>
+<codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
+</programlisting> </para>
+    </detaileddescription>
     <inheritancegraph>
-      <node id="15">
+      <node id="1">
         <label>tf::CriticalSection</label>
         <link refid="classtf_1_1CriticalSection"/>
-        <childnode refid="16" relation="public-inheritance">
+        <childnode refid="2" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="16">
+      <node id="2">
         <label>tf::Semaphore</label>
         <link refid="classtf_1_1Semaphore"/>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="17">
+      <node id="1">
         <label>tf::CriticalSection</label>
         <link refid="classtf_1_1CriticalSection"/>
-        <childnode refid="18" relation="public-inheritance">
+        <childnode refid="2" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="18">
+      <node id="2">
         <label>tf::Semaphore</label>
         <link refid="classtf_1_1Semaphore"/>
       </node>
     </collaborationgraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/critical.hpp" line="49" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/critical.hpp" bodystart="49" bodyend="63"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/critical.hpp" line="49" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/critical.hpp" bodystart="49" bodyend="63"/>
     <listofallmembers>
       <member refid="classtf_1_1CriticalSection_1abf9cbde9354a06e0fee5fee2ea2bfc45" prot="public" virt="non-virtual"><scope>tf::CriticalSection</scope><name>add</name></member>
       <member refid="classtf_1_1Semaphore_1a8e4236750edd903ec0492231076ba2ba" prot="public" virt="non-virtual"><scope>tf::CriticalSection</scope><name>count</name></member>

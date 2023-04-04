@@ -52,14 +52,8 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P&& part) {
         
         // we force chunk size to be at least two because the temporary
         // variable sum need to avoid copy at the first step
-        chunk_size = std::max(
-          size_t{2},
-          part.chunk_size() == 0 ? N/W + (w < N%W) : part.chunk_size()
-        );
+        chunk_size = std::max(size_t{2}, part.adjusted_chunk_size(N, W, w));
         
-        //chunk_size = part.chunk_size() == 0 ? 
-        //             N/W + (w < N%W) : part.chunk_size();
-
         auto loop = [=, &mutex, &r, &part] () mutable {
 
           std::advance(beg, curr_b);
@@ -75,7 +69,7 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P&& part) {
           T sum = bop(*beg1, *beg2);
         
           // loop reduce
-          part(N, W, curr_b, chunk_size,
+          part.loop(N, W, curr_b, chunk_size,
             [&, prev_e=curr_b+2](size_t curr_b, size_t curr_e) mutable {
 
               if(curr_b > prev_e) {
@@ -135,7 +129,7 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P&& part) {
         T sum = bop(*beg1, *beg2);
         
         // loop reduce
-        part(N, W, next, 
+        part.loop(N, W, next, 
           [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
             std::advance(beg, curr_b - prev_e);
             for(size_t x=curr_b; x<curr_e; x++, beg++) {
@@ -222,13 +216,7 @@ Task FlowBuilder::transform_reduce(
 
       for(size_t w=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
       
-        //chunk_size = std::max(
-        //  size_t{2},
-        //  part.chunk_size() == 0 ? N/W + (w < N%W) : part.chunk_size()
-        //);
-        
-        chunk_size = part.chunk_size() == 0 ? 
-                     N/W + (w < N%W) : part.chunk_size();
+        chunk_size = part.adjusted_chunk_size(N, W, w);
 
         auto loop = [=, &mutex, &r, &part] () mutable {
 
@@ -247,7 +235,7 @@ Task FlowBuilder::transform_reduce(
           T sum = (chunk_size == 1) ? uop(*beg++) : bop(uop(*beg++), uop(*beg++));
         
           // loop reduce
-          part(N, W, curr_b, chunk_size,
+          part.loop(N, W, curr_b, chunk_size,
             [&, prev_e=curr_b+(chunk_size == 1 ? 1 : 2)]
             (size_t curr_b, size_t curr_e) mutable {
               if(curr_b > prev_e) {
@@ -306,7 +294,7 @@ Task FlowBuilder::transform_reduce(
         T sum = bop(uop(*beg1), uop(*beg2));
         
         // loop reduce
-        part(N, W, next, 
+        part.loop(N, W, next, 
           [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
             std::advance(beg, curr_b - prev_e);
             for(size_t x=curr_b; x<curr_e; x++, beg++) {

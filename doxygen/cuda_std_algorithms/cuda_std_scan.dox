@@ -16,6 +16,17 @@ for using the parallel-scan algorithm.
 #include <taskflow/cuda/algorithm/find.hpp>
 @endcode
 
+@section CUDASTDWhatIsAScanOperation What is a Scan Operation?
+
+A parallel scan task
+performs the cumulative sum, also known as <i>prefix sum</i> or @em scan, 
+of the input range and writes the result to the output range.
+Each element of the output range contains the
+running total of all earlier elements using the given binary operator
+for summation.
+
+@image html images/scan.png
+
 @section CUDASTDScanItems Scan a Range of Items
 
 tf::cuda_inclusive_scan computes an inclusive prefix sum operation using

@@ -1,88 +1,234 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="release-3-3-0" kind="page">
     <compoundname>release-3-3-0</compoundname>
     <title>Release 3.3.0 (2022/01/03)</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Download</name>
+        <reference>release-3-3-0_1release-3-3-0_download</reference>
+    </tocsect>
+      <tocsect>
+        <name>System Requirements</name>
+        <reference>release-3-3-0_1release-3-3-0_system_requirements</reference>
+    </tocsect>
+      <tocsect>
+        <name>Release Summary</name>
+        <reference>release-3-3-0_1release-3-3-0_summary</reference>
+    </tocsect>
+      <tocsect>
+        <name>New Features</name>
+        <reference>release-3-3-0_1release-3-3-0_new_features</reference>
+    <tableofcontents>
+      <tocsect>
+        <name>Taskflow Core</name>
+        <reference>release-3-3-0_1release-3-3-0_taskflow_core</reference>
+    </tocsect>
+      <tocsect>
+        <name>cudaFlow</name>
+        <reference>release-3-3-0_1release-3-3-0_cudaflow</reference>
+    </tocsect>
+      <tocsect>
+        <name>syclFlow</name>
+        <reference>release-3-3-0_1release-3-3-0_syclflow</reference>
+    </tocsect>
+      <tocsect>
+        <name>Utilities</name>
+        <reference>release-3-3-0_1release-3-3-0_utilities</reference>
+    </tocsect>
+      <tocsect>
+        <name>Taskflow Profiler (TFProf)</name>
+        <reference>release-3-3-0_1release-3-3-0_profiler</reference>
+    </tocsect>
+    </tableofcontents>
+    </tocsect>
+      <tocsect>
+        <name>Bug Fixes</name>
+        <reference>release-3-3-0_1release-3-3-0_bug_fixes</reference>
+    </tocsect>
+      <tocsect>
+        <name>Breaking Changes</name>
+        <reference>release-3-3-0_1release-3-3-0_breaking_changes</reference>
+    </tocsect>
+      <tocsect>
+        <name>Deprecated and Removed Items</name>
+        <reference>release-3-3-0_1release-3-3-0_deprecated_items</reference>
+    </tocsect>
+      <tocsect>
+        <name>Documentation</name>
+        <reference>release-3-3-0_1release-3-3-0_documentation</reference>
+    </tocsect>
+      <tocsect>
+        <name>Miscellaneous Items</name>
+        <reference>release-3-3-0_1release-3-3-0_miscellaneous_items</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow 3.3.0 is the 4th release in the 3.x line! This release includes several new changes, such as sanitized data race, pipeline parallelism, documentation, and unit tests.</para><para><simplesect kind="note"><para>We highly recommend that adopting Taskflow v3.3 in your projects if possible. This release has resolved pretty much all the potential data-race issues induced by incorrect memory order.</para></simplesect>
-</para><sect1 id="release-3-3-0_1release-3-3-0_download">
+<para>Taskflow 3.3.0 is the 4th release in the 3.x line! This release includes several new changes, such as sanitized data race, pipeline parallelism, documentation, and unit tests.</para>
+<para><simplesect kind="note"><para>We highly recommend that adopting Taskflow v3.3 in your projects if possible. This release has resolved pretty much all the potential data-race issues induced by incorrect memory order.</para>
+</simplesect>
+</para>
+<sect1 id="release-3-3-0_1release-3-3-0_download">
 <title>Download</title>
-<para>Taskflow 3.3.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.3.0">here</ulink>.</para></sect1>
+<para>Taskflow 3.3.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.3.0">here</ulink>.</para>
+</sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_system_requirements">
 <title>System Requirements</title>
-<para>To use Taskflow v3.3.0, you need a compiler that supports C++17:</para><para><itemizedlist>
-<listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para></listitem>
-<listitem><para>Clang C++ Compiler at least v6.0 with -std=c++17 </para></listitem>
-<listitem><para>Microsoft Visual Studio at least v19.27 with /std:c++17 </para></listitem>
-<listitem><para>AppleClang Xcode Version at least v12.0 with -std=c++17 </para></listitem>
-<listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17 </para></listitem>
-<listitem><para>Intel C++ Compiler at least v19.0.1 with -std=c++17 </para></listitem>
-<listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</para></listitem>
+<para>To use Taskflow v3.3.0, you need a compiler that supports C++17:</para>
+<para><itemizedlist>
+<listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para>
+</listitem>
+<listitem><para>Clang C++ Compiler at least v6.0 with -std=c++17 </para>
+</listitem>
+<listitem><para>Microsoft Visual Studio at least v19.27 with /std:c++17 </para>
+</listitem>
+<listitem><para>AppleClang Xcode Version at least v12.0 with -std=c++17 </para>
+</listitem>
+<listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17 </para>
+</listitem>
+<listitem><para>Intel C++ Compiler at least v19.0.1 with -std=c++17 </para>
+</listitem>
+<listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</para>
+</listitem>
 </itemizedlist>
-Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
+Taskflow works on Linux, Windows, and Mac OS X.</para>
+</sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_summary">
 <title>Release Summary</title>
 <para><orderedlist>
-<listitem><para>This release has resolved data race issues reported by <ulink url="https://github.com/google/sanitizers">tsan</ulink> and has incorporated essential sanitizers into the <ulink url="https://github.com/taskflow/taskflow/actions">continuous integration workflows</ulink> for detecting data race, illegal memory access, and memory leak of the Taskflow codebase.</para></listitem><listitem><para>This release has introduced a new pipeline interface (<ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref>) that allow users to create a pipeline scheduling framework for implementing pipeline algorithms.</para></listitem><listitem><para>This release has introduced a new thread-id mapping algorithm to resolve unexpected thread-local storage (TLS) errors when building Taskflow projects in a shared library environment.</para></listitem></orderedlist>
-</para></sect1>
+<listitem><para>This release has resolved data race issues reported by <ulink url="https://github.com/google/sanitizers">tsan</ulink> and has incorporated essential sanitizers into the <ulink url="https://github.com/taskflow/taskflow/actions">continuous integration workflows</ulink> for detecting data race, illegal memory access, and memory leak of the Taskflow codebase.</para>
+</listitem><listitem><para>This release has introduced a new pipeline interface (<ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref>) that allow users to create a pipeline scheduling framework for implementing pipeline algorithms.</para>
+</listitem><listitem><para>This release has introduced a new thread-id mapping algorithm to resolve unexpected thread-local storage (TLS) errors when building Taskflow projects in a shared library environment.</para>
+</listitem></orderedlist>
+</para>
+</sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_new_features">
 <title>New Features</title>
 <sect2 id="release-3-3-0_1release-3-3-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>Changed all lambda operators in parallel algorithms to copy by default</para></listitem><listitem><para>Cleaned up data race errors in <ulink url="https://github.com/google/sanitizers">tsan</ulink> caused by incorrect memory order</para></listitem><listitem><para>Enhanced scheduling performance by caching tasks in the invoke loop</para></listitem><listitem><para>Added <ref refid="classtf_1_1Task_1afd82ab6d6518d1142a72c4d2c97ff114" kindref="member">tf::Task::data</ref> to allow associating a task with user-level data</para></listitem><listitem><para>Added tf::Executor::named_async to allow associating an asynchronous task a name</para></listitem><listitem><para>Added tf::Executor::named_silent_async to allow associating a silent asynchronous task a name</para></listitem><listitem><para>Added tf::Subflow::named_async to allow associating an asynchronous task a name</para></listitem><listitem><para>Added tf::Subflow::named_silent_async to allow associating a silent asynchronous task a name</para></listitem><listitem><para>Added multi-conditional tasking to allow a task to jump to multiple successors</para></listitem><listitem><para>Added <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> tasking interface to enable in-task scheduling control</para></listitem><listitem><para>Added <ref refid="classtf_1_1FlowBuilder_1a822a75c597ae42cacc28d6f8cefb8c7c" kindref="member">tf::Taskflow::transform</ref> to perform parallel-transform algorithms</para></listitem><listitem><para>Added <ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref> interface to allow users to create custom module tasks</para></listitem><listitem><para>Added <ref refid="classtf_1_1FlowBuilder_1a5627f7962099ac7c4986993cffa7b909" kindref="member">tf::FlowBuilder::erase</ref> to remove a task from the associated graph</para></listitem></itemizedlist>
-</para></sect2>
+<listitem><para>Changed all lambda operators in parallel algorithms to copy by default</para>
+</listitem><listitem><para>Cleaned up data race errors in <ulink url="https://github.com/google/sanitizers">tsan</ulink> caused by incorrect memory order</para>
+</listitem><listitem><para>Enhanced scheduling performance by caching tasks in the invoke loop</para>
+</listitem><listitem><para>Added <ref refid="classtf_1_1Task_1afd82ab6d6518d1142a72c4d2c97ff114" kindref="member">tf::Task::data</ref> to allow associating a task with user-level data</para>
+</listitem><listitem><para>Added tf::Executor::named_async to allow associating an asynchronous task a name</para>
+</listitem><listitem><para>Added tf::Executor::named_silent_async to allow associating a silent asynchronous task a name</para>
+</listitem><listitem><para>Added tf::Subflow::named_async to allow associating an asynchronous task a name</para>
+</listitem><listitem><para>Added tf::Subflow::named_silent_async to allow associating a silent asynchronous task a name</para>
+</listitem><listitem><para>Added multi-conditional tasking to allow a task to jump to multiple successors</para>
+</listitem><listitem><para>Added <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> tasking interface to enable in-task scheduling control</para>
+</listitem><listitem><para>Added <ref refid="classtf_1_1FlowBuilder_1a822a75c597ae42cacc28d6f8cefb8c7c" kindref="member">tf::Taskflow::transform</ref> to perform parallel-transform algorithms</para>
+</listitem><listitem><para>Added <ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref> interface to allow users to create custom module tasks</para>
+</listitem><listitem><para>Added <ref refid="classtf_1_1FlowBuilder_1a5627f7962099ac7c4986993cffa7b909" kindref="member">tf::FlowBuilder::erase</ref> to remove a task from the associated graph</para>
+</listitem></itemizedlist>
+</para>
+</sect2>
 <sect2 id="release-3-3-0_1release-3-3-0_cudaflow">
 <title>cudaFlow</title>
-<para>Starting from v3.3, using <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> needs to include the header, <computeroutput>taskflow/cuda/cudaflow.hpp</computeroutput>. See <ref refid="release-3-3-0_1release-3-3-0_breaking_changes" kindref="member">Breaking Changes</ref>.</para></sect2>
+<para>Starting from v3.3, using <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> needs to include the header, <computeroutput>taskflow/cuda/cudaflow.hpp</computeroutput>. See <ref refid="release-3-3-0_1release-3-3-0_breaking_changes" kindref="member">Breaking Changes</ref>.</para>
+</sect2>
 <sect2 id="release-3-3-0_1release-3-3-0_syclflow">
 <title>syclFlow</title>
-<para>This release does not have any update on syclFlow.</para></sect2>
+<para>This release does not have any update on syclFlow.</para>
+</sect2>
 <sect2 id="release-3-3-0_1release-3-3-0_utilities">
 <title>Utilities</title>
 <para><itemizedlist>
-<listitem><para>Added <ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector</ref> to the documentation</para></listitem><listitem><para>Added relax_cpu call to optimize the work-stealing loop</para></listitem></itemizedlist>
-</para></sect2>
+<listitem><para>Added <ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector</ref> to the documentation</para>
+</listitem><listitem><para>Added relax_cpu call to optimize the work-stealing loop</para>
+</listitem></itemizedlist>
+</para>
+</sect2>
 <sect2 id="release-3-3-0_1release-3-3-0_profiler">
 <title>Taskflow Profiler (TFProf)</title>
-<para>This release does not have any update on the profiler.</para></sect2>
+<para>This release does not have any update on the profiler.</para>
+</sect2>
 </sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_bug_fixes">
 <title>Bug Fixes</title>
 <para><itemizedlist>
-<listitem><para>Fixed incorrect static TLS access when building Taskflow in a shared lib</para></listitem><listitem><para>Fixed memory leak in updating <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> of undestroyed graph</para></listitem><listitem><para>Fixed data race in the object-pool when accessing the heap pointer</para></listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" kindref="member">tf::Taskflow::sort</ref></para></listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a97f345ee90bdeb8c0c95120752e32dcb" kindref="member">tf::Taskflow::reduce</ref></para></listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a3451d6d69aceb775450e41ebe169e4b7" kindref="member">tf::Taskflow::transform_reduce</ref></para></listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each</ref></para></listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a47ea2b35d0ec18afb35b45316939dc67" kindref="member">tf::Taskflow::for_each_index</ref></para></listitem></itemizedlist>
-</para><para>If you encounter any potential bugs, please submit an issue at <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>.</para></sect1>
+<listitem><para>Fixed incorrect static TLS access when building Taskflow in a shared lib</para>
+</listitem><listitem><para>Fixed memory leak in updating <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> of undestroyed graph</para>
+</listitem><listitem><para>Fixed data race in the object-pool when accessing the heap pointer</para>
+</listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" kindref="member">tf::Taskflow::sort</ref></para>
+</listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a97f345ee90bdeb8c0c95120752e32dcb" kindref="member">tf::Taskflow::reduce</ref></para>
+</listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a3451d6d69aceb775450e41ebe169e4b7" kindref="member">tf::Taskflow::transform_reduce</ref></para>
+</listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each</ref></para>
+</listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a47ea2b35d0ec18afb35b45316939dc67" kindref="member">tf::Taskflow::for_each_index</ref></para>
+</listitem></itemizedlist>
+</para>
+<para>If you encounter any potential bugs, please submit an issue at <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>.</para>
+</sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_breaking_changes">
 <title>Breaking Changes</title>
 <para>For the purpose of compilation speed, you will need to separately include the follwoing files for using specific features and algorithms:<itemizedlist>
-<listitem><para><computeroutput>taskflow/algorithm/reduce.hpp</computeroutput> for creating a parallel-reduction task</para></listitem><listitem><para><computeroutput>taskflow/algorithm/sort.hpp</computeroutput> for creating a parallel-sort task</para></listitem><listitem><para><computeroutput>taskflow/algorithm/transform.hpp</computeroutput> for creating a parallel-transform task</para></listitem><listitem><para><computeroutput>taskflow/algorithm/pipeline.hpp</computeroutput> for creating a parallel-pipeline task</para></listitem><listitem><para><computeroutput>taskflow/cuda/cudaflow.hpp</computeroutput> for creating a <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> and a <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> tasks</para></listitem><listitem><para><computeroutput>taskflow/cuda/algorithm/for_each.hpp</computeroutput> for creating a single-threaded task on a CUDA GPU</para></listitem><listitem><para><computeroutput>taskflow/cuda/algorithm/for_each.hpp</computeroutput> for creating a parallel-iteration task on a CUDA GPU</para></listitem><listitem><para><computeroutput>taskflow/cuda/algorithm/transform.hpp</computeroutput> for creating a parallel-transform task on a CUDA GPU</para></listitem><listitem><para><computeroutput>taskflow/cuda/algorithm/reduce.hpp</computeroutput> for creating a parallel-reduce task on a CUDA GPU</para></listitem><listitem><para><computeroutput>taskflow/cuda/algorithm/scan.hpp</computeroutput> for creating a parallel-scan task on a CUDA GPU</para></listitem><listitem><para><computeroutput>taskflow/cuda/algorithm/merge.hpp</computeroutput> for creating a parallel-merge task on a CUDA GPU</para></listitem><listitem><para><computeroutput>taskflow/cuda/algorithm/sort.hpp</computeroutput> for creating a parallel-sort task on a CUDA GPU</para></listitem><listitem><para><computeroutput>taskflow/cuda/algorithm/find.hpp</computeroutput> for creating a parallel-find task on a CUDA GPU</para></listitem></itemizedlist>
-</para></sect1>
+<listitem><para><computeroutput>taskflow/algorithm/reduce.hpp</computeroutput> for creating a parallel-reduction task</para>
+</listitem><listitem><para><computeroutput>taskflow/algorithm/sort.hpp</computeroutput> for creating a parallel-sort task</para>
+</listitem><listitem><para><computeroutput>taskflow/algorithm/transform.hpp</computeroutput> for creating a parallel-transform task</para>
+</listitem><listitem><para><computeroutput>taskflow/algorithm/pipeline.hpp</computeroutput> for creating a parallel-pipeline task</para>
+</listitem><listitem><para><computeroutput>taskflow/cuda/cudaflow.hpp</computeroutput> for creating a <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> and a <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> tasks</para>
+</listitem><listitem><para><computeroutput>taskflow/cuda/algorithm/for_each.hpp</computeroutput> for creating a single-threaded task on a CUDA GPU</para>
+</listitem><listitem><para><computeroutput>taskflow/cuda/algorithm/for_each.hpp</computeroutput> for creating a parallel-iteration task on a CUDA GPU</para>
+</listitem><listitem><para><computeroutput>taskflow/cuda/algorithm/transform.hpp</computeroutput> for creating a parallel-transform task on a CUDA GPU</para>
+</listitem><listitem><para><computeroutput>taskflow/cuda/algorithm/reduce.hpp</computeroutput> for creating a parallel-reduce task on a CUDA GPU</para>
+</listitem><listitem><para><computeroutput>taskflow/cuda/algorithm/scan.hpp</computeroutput> for creating a parallel-scan task on a CUDA GPU</para>
+</listitem><listitem><para><computeroutput>taskflow/cuda/algorithm/merge.hpp</computeroutput> for creating a parallel-merge task on a CUDA GPU</para>
+</listitem><listitem><para><computeroutput>taskflow/cuda/algorithm/sort.hpp</computeroutput> for creating a parallel-sort task on a CUDA GPU</para>
+</listitem><listitem><para><computeroutput>taskflow/cuda/algorithm/find.hpp</computeroutput> for creating a parallel-find task on a CUDA GPU</para>
+</listitem></itemizedlist>
+</para>
+</sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_deprecated_items">
 <title>Deprecated and Removed Items</title>
-<para>This release does not have any deprecated and removed items.</para></sect1>
+<para>This release does not have any deprecated and removed items.</para>
+</sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_documentation">
 <title>Documentation</title>
 <para><itemizedlist>
 <listitem><para>Revised <ref refid="install" kindref="compound">Building and Installing</ref><itemizedlist>
-<listitem><para><ref refid="install_1BAIBuildSanitizers" kindref="member">Build Sanitizers</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Revised <ref refid="StaticTasking" kindref="compound">Static Tasking</ref><itemizedlist>
-<listitem><para><ref refid="StaticTasking_1AttachUserDataToATask" kindref="member">Attach User Data to a Task</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Revised <ref refid="ComposableTasking" kindref="compound">Composable Tasking</ref><itemizedlist>
-<listitem><para><ref refid="ComposableTasking_1CreateACustomComposableGraph" kindref="member">Create a Custom Composable Graph</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Revised <ref refid="ConditionalTasking" kindref="compound">Conditional Tasking</ref><itemizedlist>
-<listitem><para><ref refid="ConditionalTasking_1CreateAMultiConditionTask" kindref="member">Create a Multi-condition Task</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Revised <ref refid="GPUTaskingcudaFlow" kindref="compound">GPU Tasking (cudaFlow)</ref></para></listitem><listitem><para>Revised <ref refid="GPUTaskingcudaFlowCapturer" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref></para></listitem><listitem><para>Revised <ref refid="LimitTheMaximumConcurrency" kindref="compound">Limit the Maximum Concurrency</ref><itemizedlist>
-<listitem><para><ref refid="LimitTheMaximumConcurrency_1DefineAConflictGraph" kindref="member">Define a Conflict Graph</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Revised <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref> to add header-include information</para></listitem><listitem><para>Revised <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> to add header-include information</para></listitem><listitem><para>Revised <ref refid="cudaFlowAlgorithms" kindref="compound">cudaFlow Algorithms</ref> to add header-include information</para></listitem><listitem><para>Revised <ref refid="cudaStandardAlgorithms" kindref="compound">CUDA Standard Algorithms</ref> to add header-include information</para></listitem><listitem><para>Added <ref refid="RuntimeTasking" kindref="compound">Interact with the Runtime</ref></para></listitem><listitem><para>Added <ref refid="ParallelTransforms" kindref="compound">Parallel Transforms</ref></para></listitem><listitem><para>Added <ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref></para></listitem></itemizedlist>
-</para></sect1>
+<listitem><para><ref refid="install_1BAIBuildSanitizers" kindref="member">Build Sanitizers</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Revised <ref refid="StaticTasking" kindref="compound">Static Tasking</ref><itemizedlist>
+<listitem><para><ref refid="StaticTasking_1AttachUserDataToATask" kindref="member">Attach User Data to a Task</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Revised <ref refid="ComposableTasking" kindref="compound">Composable Tasking</ref><itemizedlist>
+<listitem><para><ref refid="ComposableTasking_1CreateACustomComposableGraph" kindref="member">Create a Custom Composable Graph</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Revised <ref refid="ConditionalTasking" kindref="compound">Conditional Tasking</ref><itemizedlist>
+<listitem><para><ref refid="ConditionalTasking_1CreateAMultiConditionTask" kindref="member">Create a Multi-condition Task</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Revised <ref refid="GPUTaskingcudaFlow" kindref="compound">GPU Tasking (cudaFlow)</ref></para>
+</listitem><listitem><para>Revised <ref refid="GPUTaskingcudaFlowCapturer" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref></para>
+</listitem><listitem><para>Revised <ref refid="LimitTheMaximumConcurrency" kindref="compound">Limit the Maximum Concurrency</ref><itemizedlist>
+<listitem><para><ref refid="LimitTheMaximumConcurrency_1DefineAConflictGraph" kindref="member">Define a Conflict Graph</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Revised <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref> to add header-include information</para>
+</listitem><listitem><para>Revised <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> to add header-include information</para>
+</listitem><listitem><para>Revised <ref refid="cudaFlowAlgorithms" kindref="compound">cudaFlow Algorithms</ref> to add header-include information</para>
+</listitem><listitem><para>Revised <ref refid="cudaStandardAlgorithms" kindref="compound">CUDA Standard Algorithms</ref> to add header-include information</para>
+</listitem><listitem><para>Added <ref refid="RuntimeTasking" kindref="compound">Interact with the Runtime</ref></para>
+</listitem><listitem><para>Added <ref refid="ParallelTransforms" kindref="compound">Parallel Transforms</ref></para>
+</listitem><listitem><para>Added <ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref></para>
+</listitem></itemizedlist>
+</para>
+</sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_miscellaneous_items">
 <title>Miscellaneous Items</title>
 <para>We have published Taskflow in the following venues:<orderedlist>
-<listitem><para>Tsung-Wei Huang, Dian-Lun Lin, Chun-Xun Lin, and Yibo Lin, "<ulink url="https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf">Taskflow: A Lightweight Parallel and Heterogeneous Task Graph Computing System</ulink>," <emphasis>IEEE Transactions on Parallel and Distributed Systems (TPDS)</emphasis>, vol. 33, no. 6, pp. 1303-1320, June 2022</para></listitem><listitem><para>Tsung-Wei Huang, "<ulink url="https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf">TFProf: Profiling Large Taskflow Programs with Modern D3 and C++</ulink>," <emphasis>IEEE International Workshop on Programming and Performance Visualization Tools (ProTools)</emphasis>, St. Louis, Missouri, 2021</para></listitem></orderedlist>
-</para><para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you intend to collaborate with us on using Taskflow in your scientific computing projects. </para></sect1>
+<listitem><para>Tsung-Wei Huang, Dian-Lun Lin, Chun-Xun Lin, and Yibo Lin, "<ulink url="https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf">Taskflow: A Lightweight Parallel and Heterogeneous Task Graph Computing System</ulink>," <emphasis>IEEE Transactions on Parallel and Distributed Systems (TPDS)</emphasis>, vol. 33, no. 6, pp. 1303-1320, June 2022</para>
+</listitem><listitem><para>Tsung-Wei Huang, "<ulink url="https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf">TFProf: Profiling Large Taskflow Programs with Modern D3 and C++</ulink>," <emphasis>IEEE International Workshop on Programming and Performance Visualization Tools (ProTools)</emphasis>, St. Louis, Missouri, 2021</para>
+</listitem></orderedlist>
+</para>
+<para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you intend to collaborate with us on using Taskflow in your scientific computing projects. </para>
+</sect1>
     </detaileddescription>
+    <location file="releases/release-3.3.0.dox"/>
   </compounddef>
 </doxygen>

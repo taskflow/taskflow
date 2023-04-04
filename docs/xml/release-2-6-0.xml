@@ -1,47 +1,88 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="release-2-6-0" kind="page">
     <compoundname>release-2-6-0</compoundname>
     <title>Release 2.6.0 (2020/08/25)</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Download</name>
+        <reference>release-2-6-0_1release-2-6-0_download</reference>
+    </tocsect>
+      <tocsect>
+        <name>New Features</name>
+        <reference>release-2-6-0_1release-2-6-0_new_features</reference>
+    </tocsect>
+      <tocsect>
+        <name>Bug Fixes</name>
+        <reference>release-2-6-0_1release-2-6-0_bug_fixes</reference>
+    </tocsect>
+      <tocsect>
+        <name>Deprecated Items</name>
+        <reference>release-2-6-0_1release-2-6-0_deprecated_items</reference>
+    </tocsect>
+      <tocsect>
+        <name>Miscellaneous Items</name>
+        <reference>release-2-6-0_1release-2-6-0_miscellaneous_items</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow 2.6.0 is the 8th release in the 2.x line! This release includes several new changes such as CPU-GPU tasking, algorithm collection, enhanced web-based profiler, documentation, and unit tests.</para><para>We have a new <ulink url="https://taskflow.github.io/">webpage</ulink> for Taskflow!</para><sect1 id="release-2-6-0_1release-2-6-0_download">
+<para>Taskflow 2.6.0 is the 8th release in the 2.x line! This release includes several new changes such as CPU-GPU tasking, algorithm collection, enhanced web-based profiler, documentation, and unit tests.</para>
+<para>We have a new <ulink url="https://taskflow.github.io/">webpage</ulink> for Taskflow!</para>
+<sect1 id="release-2-6-0_1release-2-6-0_download">
 <title>Download</title>
-<para>Taskflow 2.6.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v2.6.0">here</ulink>.</para></sect1>
+<para>Taskflow 2.6.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v2.6.0">here</ulink>.</para>
+</sect1>
 <sect1 id="release-2-6-0_1release-2-6-0_new_features">
 <title>New Features</title>
 <para><itemizedlist>
-<listitem><para>added explicit join behavior of <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> (see <ref refid="DynamicTasking_1JoinASubflow" kindref="member">Join a Subflow</ref> and <ref refid="fibonacci" kindref="compound">Fibonacci Number</ref>) </para></listitem>
-<listitem><para>added version macro (<computeroutput>TF_VERSION</computeroutput>, <computeroutput>TF_MAJOR_VERSION</computeroutput>, <computeroutput>TF_MINOR_VERSION</computeroutput>, <computeroutput>TF_PATCH_VERSION</computeroutput>) to retrieve version info programmatically (<ref refid="namespacetf_1a30fa078dcf625e9eada5a95af1467588" kindref="member">tf::version</ref>) </para></listitem>
-<listitem><para>added <computeroutput>TF_BUILD_TESTS</computeroutput> and <computeroutput>TF_BUILD_EXAMPLES</computeroutput> (default on) to let users disable the build of tests and examples (see <ref refid="install" kindref="compound">Building and Installing</ref>) </para></listitem>
-<listitem><para>renamed tf::Taskflkow::parallel_for to <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each</ref> to follow the STL convention </para></listitem>
-<listitem><para>redesigned <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each</ref> and <ref refid="classtf_1_1FlowBuilder_1a47ea2b35d0ec18afb35b45316939dc67" kindref="member">tf::Taskflow::for_each_index</ref> using OpenMP-styled scheduling algorithms; this redesign largely improved the performance of parallel-for using a single dynamic task return, but it breaks the previous API that returned a <ref refid="cpp/utility/pair" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::pair</ref> of tasks to synchronize on a set of static parallel-for tasks. Yet, we believe adopting this change is not difficult (see <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref>). </para></listitem>
-<listitem><para>added multiple unit tests for <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each</ref> and <ref refid="classtf_1_1FlowBuilder_1a47ea2b35d0ec18afb35b45316939dc67" kindref="member">tf::Taskflow::for_each_index</ref> at different partition algorithms; we have implemented our partition algorithms based on the OpenMP library implementation of LLVM and GCC. </para></listitem>
-<listitem><para>added Mandelbrot application in the benchmark to evaluate the performance of parallel-for </para></listitem>
-<listitem><para>redesigned <ref refid="classtf_1_1FlowBuilder_1a97f345ee90bdeb8c0c95120752e32dcb" kindref="member">tf::Taskflow::reduce</ref> and <ref refid="classtf_1_1FlowBuilder_1a3451d6d69aceb775450e41ebe169e4b7" kindref="member">tf::Taskflow::transform_reduce</ref> based on the parallel architecture of <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each</ref> (see <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref>).</para></listitem>
+<listitem><para>added explicit join behavior of <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> (see <ref refid="DynamicTasking_1JoinASubflow" kindref="member">Join a Subflow</ref> and <ref refid="fibonacci" kindref="compound">Fibonacci Number</ref>) </para>
+</listitem>
+<listitem><para>added version macro (<computeroutput>TF_VERSION</computeroutput>, <computeroutput>TF_MAJOR_VERSION</computeroutput>, <computeroutput>TF_MINOR_VERSION</computeroutput>, <computeroutput>TF_PATCH_VERSION</computeroutput>) to retrieve version info programmatically (<ref refid="namespacetf_1a06790e5f6898894392f247309626e1b4" kindref="member">tf::version</ref>) </para>
+</listitem>
+<listitem><para>added <computeroutput>TF_BUILD_TESTS</computeroutput> and <computeroutput>TF_BUILD_EXAMPLES</computeroutput> (default on) to let users disable the build of tests and examples (see <ref refid="install" kindref="compound">Building and Installing</ref>) </para>
+</listitem>
+<listitem><para>renamed tf::Taskflkow::parallel_for to <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each</ref> to follow the STL convention </para>
+</listitem>
+<listitem><para>redesigned <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each</ref> and <ref refid="classtf_1_1FlowBuilder_1a47ea2b35d0ec18afb35b45316939dc67" kindref="member">tf::Taskflow::for_each_index</ref> using OpenMP-styled scheduling algorithms; this redesign largely improved the performance of parallel-for using a single dynamic task return, but it breaks the previous API that returned a <ref refid="cpp/utility/pair" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::pair</ref> of tasks to synchronize on a set of static parallel-for tasks. Yet, we believe adopting this change is not difficult (see <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref>). </para>
+</listitem>
+<listitem><para>added multiple unit tests for <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each</ref> and <ref refid="classtf_1_1FlowBuilder_1a47ea2b35d0ec18afb35b45316939dc67" kindref="member">tf::Taskflow::for_each_index</ref> at different partition algorithms; we have implemented our partition algorithms based on the OpenMP library implementation of LLVM and GCC. </para>
+</listitem>
+<listitem><para>added Mandelbrot application in the benchmark to evaluate the performance of parallel-for </para>
+</listitem>
+<listitem><para>redesigned <ref refid="classtf_1_1FlowBuilder_1a97f345ee90bdeb8c0c95120752e32dcb" kindref="member">tf::Taskflow::reduce</ref> and <ref refid="classtf_1_1FlowBuilder_1a3451d6d69aceb775450e41ebe169e4b7" kindref="member">tf::Taskflow::transform_reduce</ref> based on the parallel architecture of <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each</ref> (see <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref>).</para>
+</listitem>
 </itemizedlist>
-</para></sect1>
+</para>
+</sect1>
 <sect1 id="release-2-6-0_1release-2-6-0_bug_fixes">
 <title>Bug Fixes</title>
 <para><itemizedlist>
-<listitem><para>fixed the bug of iteratively detaching a subflow from a run loop or a condition loop (see <ref refid="DynamicTasking_1DetachASubflow" kindref="member">Detach a Subflow</ref>) </para></listitem>
-<listitem><para>fixed the bug of conflict macro with boost (<ulink url="https://github.com/taskflow/taskflow/issues/184">#184</ulink>)</para></listitem>
+<listitem><para>fixed the bug of iteratively detaching a subflow from a run loop or a condition loop (see <ref refid="DynamicTasking_1DetachASubflow" kindref="member">Detach a Subflow</ref>) </para>
+</listitem>
+<listitem><para>fixed the bug of conflict macro with boost (<ulink url="https://github.com/taskflow/taskflow/issues/184">#184</ulink>)</para>
+</listitem>
 </itemizedlist>
-</para></sect1>
+</para>
+</sect1>
 <sect1 id="release-2-6-0_1release-2-6-0_deprecated_items">
 <title>Deprecated Items</title>
 <para><itemizedlist>
-<listitem><para>removed two methods, tf::detached and tf::joined, due to the new join/detach behavior</para></listitem>
+<listitem><para>removed two methods, tf::detached and tf::joined, due to the new join/detach behavior</para>
+</listitem>
 </itemizedlist>
-</para></sect1>
+</para>
+</sect1>
 <sect1 id="release-2-6-0_1release-2-6-0_miscellaneous_items">
 <title>Miscellaneous Items</title>
 <para><itemizedlist>
-<listitem><para>improved the section <ref refid="ExecuteTaskflow_1ObserveThreadActivities" kindref="member">Observe Thread Activities</ref> </para></listitem>
+<listitem><para>improved the section <ref refid="ExecuteTaskflow_1ObserveThreadActivities" kindref="member">Observe Thread Activities</ref> </para>
+</listitem>
 </itemizedlist>
-</para></sect1>
+</para>
+</sect1>
     </detaileddescription>
+    <location file="releases/release-2.6.0.dox"/>
   </compounddef>
 </doxygen>

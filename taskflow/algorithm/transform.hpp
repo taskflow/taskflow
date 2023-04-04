@@ -52,11 +52,10 @@ Task FlowBuilder::transform(B first1, E last1, O d_first, C c, P&& part) {
 
       for(size_t w=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
       
-        chunk_size = part.chunk_size() == 0 ? 
-                     N/W + (w < N%W) : part.chunk_size();
+        chunk_size = part.adjusted_chunk_size(N, W, w);
 
         auto loop = [=, &part] () mutable {
-          part(N, W, curr_b, chunk_size,
+          part.loop(N, W, curr_b, chunk_size,
             [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
               std::advance(beg, curr_b - prev_e);
               std::advance(d_beg, curr_b - prev_e);
@@ -82,7 +81,7 @@ Task FlowBuilder::transform(B first1, E last1, O d_first, C c, P&& part) {
       std::atomic<size_t> next(0);
         
       auto loop = [=, &next, &part] () mutable {
-        part(N, W, next, 
+        part.loop(N, W, next, 
           [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
             std::advance(beg, curr_b - prev_e);
             std::advance(d_beg, curr_b - prev_e);
@@ -172,11 +171,10 @@ Task FlowBuilder::transform(
 
       for(size_t w=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
       
-        chunk_size = part.chunk_size() == 0 ? 
-                     N/W + (w < N%W) : part.chunk_size();
+        chunk_size = part.adjusted_chunk_size(N, W, w);
 
         auto loop = [=, &part] () mutable {
-          part(N, W, curr_b, chunk_size,
+          part.loop(N, W, curr_b, chunk_size,
             [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
               std::advance(beg1, curr_b - prev_e);
               std::advance(beg2, curr_b - prev_e);
@@ -203,7 +201,7 @@ Task FlowBuilder::transform(
       std::atomic<size_t> next(0);
       
       auto loop = [=, &next, &part] () mutable {
-        part(N, W, next, 
+        part.loop(N, W, next, 
           [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
             std::advance(beg1, curr_b - prev_e);
             std::advance(beg2, curr_b - prev_e);

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaFlowOptimizerBase" kind="class" language="C++" prot="private">
     <compoundname>tf::cudaFlowOptimizerBase</compoundname>
     <derivedcompoundref refid="classtf_1_1cudaFlowLinearOptimizer" prot="public" virt="non-virtual">tf::cudaFlowLinearOptimizer</derivedcompoundref>
@@ -7,10 +7,11 @@
     <derivedcompoundref refid="classtf_1_1cudaFlowSequentialOptimizer" prot="public" virt="non-virtual">tf::cudaFlowSequentialOptimizer</derivedcompoundref>
       <sectiondef kind="protected-func">
       <memberdef kind="function" id="classtf_1_1cudaFlowOptimizerBase_1a25bb1274b6ab2279e261690a5fe46007" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; cudaFlowNode * &gt;</type>
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; cudaFlowNode * &gt;</type>
         <definition>std::vector&lt; cudaFlowNode * &gt; tf::cudaFlowOptimizerBase::_toposort</definition>
         <argsstring>(cudaFlowGraph &amp;)</argsstring>
         <name>_toposort</name>
+        <qualifiedname>tf::cudaFlowOptimizerBase::_toposort</qualifiedname>
         <param>
           <type>cudaFlowGraph &amp;</type>
           <defname>graph</defname>
@@ -21,13 +22,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="25" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="30" bodyend="65"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="25" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="30" bodyend="65"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowOptimizerBase_1ae20d9b88a98439f8d8ee5f6280b15744" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; cudaFlowNode * &gt; &gt;</type>
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; cudaFlowNode * &gt; &gt;</type>
         <definition>std::vector&lt; std::vector&lt; cudaFlowNode * &gt; &gt; tf::cudaFlowOptimizerBase::_levelize</definition>
         <argsstring>(cudaFlowGraph &amp;)</argsstring>
         <name>_levelize</name>
+        <qualifiedname>tf::cudaFlowOptimizerBase::_levelize</qualifiedname>
         <param>
           <type>cudaFlowGraph &amp;</type>
           <defname>graph</defname>
@@ -38,37 +40,38 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="26" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="69" bodyend="119"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="26" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="69" bodyend="119"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class to provide helper common methods for optimization algorithms </para>    </briefdescription>
+<para>class to provide helper common methods for optimization algorithms </para>
+    </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="51">
-        <label>tf::cudaFlowRoundRobinOptimizer</label>
-        <link refid="classtf_1_1cudaFlowRoundRobinOptimizer"/>
-        <childnode refid="49" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="49">
-        <label>tf::cudaFlowOptimizerBase</label>
-      </node>
-      <node id="52">
-        <label>tf::cudaFlowSequentialOptimizer</label>
-        <link refid="classtf_1_1cudaFlowSequentialOptimizer"/>
-        <childnode refid="49" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="50">
+      <node id="2">
         <label>tf::cudaFlowLinearOptimizer</label>
         <link refid="classtf_1_1cudaFlowLinearOptimizer"/>
-        <childnode refid="49" relation="public-inheritance">
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>tf::cudaFlowOptimizerBase</label>
+      </node>
+      <node id="3">
+        <label>tf::cudaFlowRoundRobinOptimizer</label>
+        <link refid="classtf_1_1cudaFlowRoundRobinOptimizer"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>tf::cudaFlowSequentialOptimizer</label>
+        <link refid="classtf_1_1cudaFlowSequentialOptimizer"/>
+        <childnode refid="1" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="21" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="21" bodyend="27"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="21" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="21" bodyend="27"/>
     <listofallmembers>
       <member refid="classtf_1_1cudaFlowOptimizerBase_1ae20d9b88a98439f8d8ee5f6280b15744" prot="protected" virt="non-virtual"><scope>tf::cudaFlowOptimizerBase</scope><name>_levelize</name></member>
       <member refid="classtf_1_1cudaFlowOptimizerBase_1a25bb1274b6ab2279e261690a5fe46007" prot="protected" virt="non-virtual"><scope>tf::cudaFlowOptimizerBase</scope><name>_toposort</name></member>

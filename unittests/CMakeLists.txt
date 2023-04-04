@@ -19,6 +19,7 @@ list(APPEND TF_UNITTESTS
   test_transform
   test_sort
   test_scan
+  test_find
   test_compositions
   test_traversals
   test_pipelines

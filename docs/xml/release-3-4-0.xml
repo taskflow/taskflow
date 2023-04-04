@@ -1,80 +1,188 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="release-3-4-0" kind="page">
     <compoundname>release-3-4-0</compoundname>
     <title>Release 3.4.0 (2022/05/23)</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Download</name>
+        <reference>release-3-4-0_1release-3-4-0_download</reference>
+    </tocsect>
+      <tocsect>
+        <name>System Requirements</name>
+        <reference>release-3-4-0_1release-3-4-0_system_requirements</reference>
+    </tocsect>
+      <tocsect>
+        <name>Release Summary</name>
+        <reference>release-3-4-0_1release-3-4-0_summary</reference>
+    </tocsect>
+      <tocsect>
+        <name>New Features</name>
+        <reference>release-3-4-0_1release-3-4-0_new_features</reference>
+    <tableofcontents>
+      <tocsect>
+        <name>Taskflow Core</name>
+        <reference>release-3-4-0_1release-3-4-0_taskflow_core</reference>
+    </tocsect>
+      <tocsect>
+        <name>cudaFlow</name>
+        <reference>release-3-4-0_1release-3-4-0_cudaflow</reference>
+    </tocsect>
+      <tocsect>
+        <name>syclFlow</name>
+        <reference>release-3-4-0_1release-3-4-0_syclflow</reference>
+    </tocsect>
+      <tocsect>
+        <name>Utilities</name>
+        <reference>release-3-4-0_1release-3-4-0_utilities</reference>
+    </tocsect>
+    </tableofcontents>
+    </tocsect>
+      <tocsect>
+        <name>Bug Fixes</name>
+        <reference>release-3-4-0_1release-3-4-0_bug_fixes</reference>
+    </tocsect>
+      <tocsect>
+        <name>Breaking Changes</name>
+        <reference>release-3-4-0_1release-3-4-0_breaking_changes</reference>
+    </tocsect>
+      <tocsect>
+        <name>Deprecated and Removed Items</name>
+        <reference>release-3-4-0_1release-3-4-0_deprecated_items</reference>
+    </tocsect>
+      <tocsect>
+        <name>Documentation</name>
+        <reference>release-3-4-0_1release-3-4-0_documentation</reference>
+    </tocsect>
+      <tocsect>
+        <name>Miscellaneous Items</name>
+        <reference>release-3-4-0_1release-3-4-0_miscellaneous_items</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow 3.4.0 is the 5th release in the 3.x line! This release includes several new changes, such as pipeline parallelism, deadlock-free execution methods, documentation, examples, and unit tests.</para><sect1 id="release-3-4-0_1release-3-4-0_download">
+<para>Taskflow 3.4.0 is the 5th release in the 3.x line! This release includes several new changes, such as pipeline parallelism, deadlock-free execution methods, documentation, examples, and unit tests.</para>
+<sect1 id="release-3-4-0_1release-3-4-0_download">
 <title>Download</title>
-<para>Taskflow 3.4.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.4.0">here</ulink>.</para></sect1>
+<para>Taskflow 3.4.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.4.0">here</ulink>.</para>
+</sect1>
 <sect1 id="release-3-4-0_1release-3-4-0_system_requirements">
 <title>System Requirements</title>
-<para>To use Taskflow v3.4.0, you need a compiler that supports C++17:</para><para><itemizedlist>
-<listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para></listitem>
-<listitem><para>Clang C++ Compiler at least v6.0 with -std=c++17 </para></listitem>
-<listitem><para>Microsoft Visual Studio at least v19.27 with /std:c++17 </para></listitem>
-<listitem><para>AppleClang Xcode Version at least v12.0 with -std=c++17 </para></listitem>
-<listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17 </para></listitem>
-<listitem><para>Intel C++ Compiler at least v19.0.1 with -std=c++17 </para></listitem>
-<listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</para></listitem>
+<para>To use Taskflow v3.4.0, you need a compiler that supports C++17:</para>
+<para><itemizedlist>
+<listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para>
+</listitem>
+<listitem><para>Clang C++ Compiler at least v6.0 with -std=c++17 </para>
+</listitem>
+<listitem><para>Microsoft Visual Studio at least v19.27 with /std:c++17 </para>
+</listitem>
+<listitem><para>AppleClang Xcode Version at least v12.0 with -std=c++17 </para>
+</listitem>
+<listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17 </para>
+</listitem>
+<listitem><para>Intel C++ Compiler at least v19.0.1 with -std=c++17 </para>
+</listitem>
+<listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</para>
+</listitem>
 </itemizedlist>
-Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
+Taskflow works on Linux, Windows, and Mac OS X.</para>
+</sect1>
 <sect1 id="release-3-4-0_1release-3-4-0_summary">
 <title>Release Summary</title>
-<para>This release enhances our task-parallel pipeline programming model and executor methods, supplied with several new examples and unit tests.</para></sect1>
+<para>This release enhances our task-parallel pipeline programming model and executor methods, supplied with several new examples and unit tests.</para>
+</sect1>
 <sect1 id="release-3-4-0_1release-3-4-0_new_features">
 <title>New Features</title>
 <sect2 id="release-3-4-0_1release-3-4-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>Improved the pipeline performance using vertical stack optimization</para></listitem><listitem><para>Added <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref> to allow programming variable lengths of pipes</para></listitem><listitem><para>Added tf::Runtime::run_and_wait to allow spawning a subflow</para></listitem><listitem><para>Added tf::Executor::run_and_wait to allow running taskflows from a worker</para></listitem><listitem><para>Added an example of attaching data to a task (examples/attach_data.cpp)</para></listitem><listitem><para>Added an example of text processing pipeline (examples/parallel_text_pipeline.cpp)</para></listitem><listitem><para>Added an example of graph processing pipeline (examples/parallel_graph_pipeline.cpp)</para></listitem><listitem><para>Added an example of taskflow processing pipeline (examples/parallel_taskflow_pipeline.cpp)</para></listitem><listitem><para>Added an example of running a task graph from a worker (examples/run_and_wait.cpp)</para></listitem></itemizedlist>
-</para></sect2>
+<listitem><para>Improved the pipeline performance using vertical stack optimization</para>
+</listitem><listitem><para>Added <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref> to allow programming variable lengths of pipes</para>
+</listitem><listitem><para>Added tf::Runtime::run_and_wait to allow spawning a subflow</para>
+</listitem><listitem><para>Added tf::Executor::run_and_wait to allow running taskflows from a worker</para>
+</listitem><listitem><para>Added an example of attaching data to a task (examples/attach_data.cpp)</para>
+</listitem><listitem><para>Added an example of text processing pipeline (examples/parallel_text_pipeline.cpp)</para>
+</listitem><listitem><para>Added an example of graph processing pipeline (examples/parallel_graph_pipeline.cpp)</para>
+</listitem><listitem><para>Added an example of taskflow processing pipeline (examples/parallel_taskflow_pipeline.cpp)</para>
+</listitem><listitem><para>Added an example of running a task graph from a worker (examples/run_and_wait.cpp)</para>
+</listitem></itemizedlist>
+</para>
+</sect2>
 <sect2 id="release-3-4-0_1release-3-4-0_cudaflow">
 <title>cudaFlow</title>
 <para><itemizedlist>
-<listitem><para>Added <ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref> as a move-only, RAII-styled wrapper over a native CUDA stream</para></listitem><listitem><para>Added <ref refid="classtf_1_1cudaEvent" kindref="compound">tf::cudaEvent</ref> as a move-only, RAII-styled wrapper over a native CUDA event</para></listitem></itemizedlist>
-</para></sect2>
+<listitem><para>Added <ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref> as a move-only, RAII-styled wrapper over a native CUDA stream</para>
+</listitem><listitem><para>Added <ref refid="classtf_1_1cudaEvent" kindref="compound">tf::cudaEvent</ref> as a move-only, RAII-styled wrapper over a native CUDA event</para>
+</listitem></itemizedlist>
+</para>
+</sect2>
 <sect2 id="release-3-4-0_1release-3-4-0_syclflow">
 <title>syclFlow</title>
-<para>There is no update on syclFlow in this release.</para></sect2>
+<para>There is no update on syclFlow in this release.</para>
+</sect2>
 <sect2 id="release-3-4-0_1release-3-4-0_utilities">
 <title>Utilities</title>
 <para><itemizedlist>
-<listitem><para>Removed serializer to improve compilation speed</para></listitem></itemizedlist>
-</para></sect2>
+<listitem><para>Removed serializer to improve compilation speed</para>
+</listitem></itemizedlist>
+</para>
+</sect2>
 </sect1>
 <sect1 id="release-3-4-0_1release-3-4-0_bug_fixes">
 <title>Bug Fixes</title>
 <para><itemizedlist>
-<listitem><para>Fixed the compilation error due to non-portable include of <computeroutput>immintrin.h</computeroutput> (<ulink url="https://github.com/taskflow/taskflow/issues/371">#371</ulink>)</para></listitem><listitem><para>Fixed the compilation error due to using old version of doctest (<ulink url="https://github.com/taskflow/taskflow/issues/372">#372</ulink>)</para></listitem><listitem><para>Fixed the infinite loop bug due to unexpected share states in pipeline (<ulink url="https://github.com/taskflow/taskflow/issues/402">#402</ulink>)</para></listitem></itemizedlist>
-</para><para>If you encounter any potential bugs, please submit an issue at <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>.</para></sect1>
+<listitem><para>Fixed the compilation error due to non-portable include of <computeroutput>immintrin.h</computeroutput> (<ulink url="https://github.com/taskflow/taskflow/issues/371">#371</ulink>)</para>
+</listitem><listitem><para>Fixed the compilation error due to using old version of doctest (<ulink url="https://github.com/taskflow/taskflow/issues/372">#372</ulink>)</para>
+</listitem><listitem><para>Fixed the infinite loop bug due to unexpected share states in pipeline (<ulink url="https://github.com/taskflow/taskflow/issues/402">#402</ulink>)</para>
+</listitem></itemizedlist>
+</para>
+<para>If you encounter any potential bugs, please submit an issue at <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>.</para>
+</sect1>
 <sect1 id="release-3-4-0_1release-3-4-0_breaking_changes">
 <title>Breaking Changes</title>
 <para><itemizedlist>
-<listitem><para>Replaced tf::Runtime::run with tf::Runtime::run_and_wait to comply with tf::Executor::run_and_wait</para></listitem></itemizedlist>
-</para></sect1>
+<listitem><para>Replaced tf::Runtime::run with tf::Runtime::run_and_wait to comply with tf::Executor::run_and_wait</para>
+</listitem></itemizedlist>
+</para>
+</sect1>
 <sect1 id="release-3-4-0_1release-3-4-0_deprecated_items">
 <title>Deprecated and Removed Items</title>
-<para>There are no deprecated items in this release.</para></sect1>
+<para>There are no deprecated items in this release.</para>
+</sect1>
 <sect1 id="release-3-4-0_1release-3-4-0_documentation">
 <title>Documentation</title>
 <para><itemizedlist>
 <listitem><para>Revised <ref refid="ExecuteTaskflow" kindref="compound">Executor</ref><itemizedlist>
-<listitem><para>Added <ref refid="ExecuteTaskflow_1ExecuteATaskflowFromAnInternalWorker" kindref="member">Execute a Taskflow from an Internal Worker</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Revised <ref refid="CUDASTDExecutionPolicy" kindref="compound">Execution Policy</ref></para></listitem><listitem><para>Revised <ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref><itemizedlist>
-<listitem><para>Added <ref refid="TaskParallelPipeline_1TaskParallelPipelineLearnMore" kindref="member">Learn More about Taskflow Pipeline</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Revised <ref refid="Examples" kindref="compound">Learning from Examples</ref><itemizedlist>
-<listitem><para>Added <ref refid="TextProcessingPipeline" kindref="compound">Text Processing Pipeline</ref></para></listitem><listitem><para>Added <ref refid="GraphProcessingPipeline" kindref="compound">Graph Processing Pipeline</ref></para></listitem><listitem><para>Added <ref refid="TaskflowProcessingPipeline" kindref="compound">Taskflow Processing Pipeline</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Added <ref refid="TaskParallelScalablePipeline" kindref="compound">Task-parallel Scalable Pipeline</ref></para></listitem></itemizedlist>
-</para></sect1>
+<listitem><para>Added <ref refid="ExecuteTaskflow_1ExecuteATaskflowFromAnInternalWorker" kindref="member">Execute a Taskflow from an Internal Worker</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Revised <ref refid="CUDASTDExecutionPolicy" kindref="compound">Execution Policy</ref></para>
+</listitem><listitem><para>Revised <ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref><itemizedlist>
+<listitem><para>Added <ref refid="TaskParallelPipeline_1TaskParallelPipelineLearnMore" kindref="member">Learn More about Taskflow Pipeline</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Revised <ref refid="Examples" kindref="compound">Learning from Examples</ref><itemizedlist>
+<listitem><para>Added <ref refid="TextProcessingPipeline" kindref="compound">Text Processing Pipeline</ref></para>
+</listitem><listitem><para>Added <ref refid="GraphProcessingPipeline" kindref="compound">Graph Processing Pipeline</ref></para>
+</listitem><listitem><para>Added <ref refid="TaskflowProcessingPipeline" kindref="compound">Taskflow Processing Pipeline</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Added <ref refid="TaskParallelScalablePipeline" kindref="compound">Task-parallel Scalable Pipeline</ref></para>
+</listitem></itemizedlist>
+</para>
+</sect1>
 <sect1 id="release-3-4-0_1release-3-4-0_miscellaneous_items">
 <title>Miscellaneous Items</title>
 <para>We have published Taskflow in the following venues:<itemizedlist>
-<listitem><para>Dian-Lun Lin and Tsung-Wei Huang, "<ulink url="https://ieeexplore.ieee.org/document/9664223">Accelerating Large Sparse Neural Network Inference using GPU Task Graph Parallelism</ulink>," <emphasis>IEEE Transactions on Parallel and Distributed Systems (TPDS)</emphasis>, 2022</para></listitem><listitem><para>Cheng-Hsiang Chiu and Tsung-Wei Huang, "<ulink url="https://doi.org/10.1145/3502181.3533714">Composing Pipeline Parallelism using Control Taskflow Graph</ulink>," <emphasis>ACM International Symposium on High-Performance Parallel and Distributed Computing (HPDC)</emphasis>, Minneapolis, Minnesota, 2022</para></listitem><listitem><para>Cheng-Hsiang Chiu and Tsung-Wei Huang, "<ulink url="https://tsung-wei-huang.github.io/papers/dac2022.pdf">Efficient Timing Propagation with Simultaneous Structural and Pipeline Parallelisms</ulink>," <emphasis>ACM/IEEE Design Automation Conference (DAC)</emphasis>, San Francisco, CA, 2022</para></listitem></itemizedlist>
-</para><para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you intend to collaborate with us on using Taskflow in your scientific computing projects. </para></sect1>
+<listitem><para>Dian-Lun Lin and Tsung-Wei Huang, "<ulink url="https://ieeexplore.ieee.org/document/9664223">Accelerating Large Sparse Neural Network Inference using GPU Task Graph Parallelism</ulink>," <emphasis>IEEE Transactions on Parallel and Distributed Systems (TPDS)</emphasis>, 2022</para>
+</listitem><listitem><para>Cheng-Hsiang Chiu and Tsung-Wei Huang, "<ulink url="https://doi.org/10.1145/3502181.3533714">Composing Pipeline Parallelism using Control Taskflow Graph</ulink>," <emphasis>ACM International Symposium on High-Performance Parallel and Distributed Computing (HPDC)</emphasis>, Minneapolis, Minnesota, 2022</para>
+</listitem><listitem><para>Cheng-Hsiang Chiu and Tsung-Wei Huang, "<ulink url="https://tsung-wei-huang.github.io/papers/dac2022.pdf">Efficient Timing Propagation with Simultaneous Structural and Pipeline Parallelisms</ulink>," <emphasis>ACM/IEEE Design Automation Conference (DAC)</emphasis>, San Francisco, CA, 2022</para>
+</listitem></itemizedlist>
+</para>
+<para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you intend to collaborate with us on using Taskflow in your scientific computing projects. </para>
+</sect1>
     </detaileddescription>
+    <location file="releases/release-3.4.0.dox"/>
   </compounddef>
 </doxygen>

@@ -49,11 +49,10 @@ Task FlowBuilder::for_each(B beg, E end, C c, P&& part) {
 
       for(size_t w=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
       
-        chunk_size = part.chunk_size() == 0 ? 
-                     N/W + (w < N%W) : part.chunk_size();
+        chunk_size = part.adjusted_chunk_size(N, W, w);
 
         auto loop = [=, &part] () mutable {
-          part(N, W, curr_b, chunk_size,
+          part.loop(N, W, curr_b, chunk_size,
             [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
               std::advance(beg, curr_b - prev_e);
               for(size_t x = curr_b; x<curr_e; x++) {
@@ -79,7 +78,7 @@ Task FlowBuilder::for_each(B beg, E end, C c, P&& part) {
       std::atomic<size_t> next(0);
 
       auto loop = [=, &next, &part] () mutable {
-        part(N, W, next, 
+        part.loop(N, W, next, 
           [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
             std::advance(beg, curr_b - prev_e);
             for(size_t x = curr_b; x<curr_e; x++) {
@@ -159,11 +158,10 @@ Task FlowBuilder::for_each_index(B beg, E end, S inc, C c, P&& part){
 
       for(size_t w=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
       
-        chunk_size = part.chunk_size() == 0 ? 
-                     N/W + (w < N%W) : part.chunk_size();
+        chunk_size = part.adjusted_chunk_size(N, W, w);
 
         auto loop = [=, &part] () mutable {
-          part(N, W, curr_b, chunk_size,
+          part.loop(N, W, curr_b, chunk_size,
             [&](size_t curr_b, size_t curr_e) {
               auto idx = static_cast<B_t>(curr_b) * inc + beg;
               for(size_t x=curr_b; x<curr_e; x++, idx += inc) {
@@ -188,7 +186,7 @@ Task FlowBuilder::for_each_index(B beg, E end, S inc, C c, P&& part){
       std::atomic<size_t> next(0);
       
       auto loop = [=, &next, &part] () mutable {
-        part(N, W, next, 
+        part.loop(N, W, next, 
           [&](size_t curr_b, size_t curr_e) {
             auto idx = static_cast<B_t>(curr_b) * inc + beg;
             for(size_t x=curr_b; x<curr_e; x++, idx += inc) {

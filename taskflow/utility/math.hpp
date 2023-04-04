@@ -121,6 +121,30 @@ T unique_id() {
   return counter.fetch_add(1, std::memory_order_relaxed);
 }
 
+/**
+@brief updates an atomic variable with a maximum value
+*/
+template <typename T>
+inline void atomic_max(std::atomic<T>& v, const T& max_v) noexcept {
+  T prev = v.load(std::memory_order_relaxed);
+  while(prev < max_v && 
+        !v.compare_exchange_weak(prev, max_v, std::memory_order_relaxed,
+                                              std::memory_order_relaxed)) {
+  }
+}
+
+/**
+@brief updates an atomic variable with a minimum value
+*/
+template <typename T>
+inline void atomic_min(std::atomic<T>& v, const T& min_v) noexcept {
+  T prev = v.load(std::memory_order_relaxed);
+  while(prev > min_v && 
+        !v.compare_exchange_weak(prev, min_v, std::memory_order_relaxed,
+                                              std::memory_order_relaxed)) {
+  }
+}
+
 }  // end of namespace tf -----------------------------------------------------
 
 

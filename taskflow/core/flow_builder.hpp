@@ -342,7 +342,7 @@ class FlowBuilder {
   }
   @endcode
 
-  Arguments templated to enable stateful range using std::reference_wrapper.
+  Iterators are templated to enable stateful range using std::reference_wrapper.
   The callable needs to take a single argument of
   the dereferenced iterator type.
 
@@ -384,7 +384,7 @@ class FlowBuilder {
   }
   @endcode
 
-  Arguments are templated to enable stateful range using std::reference_wrapper.
+  Iterators are templated to enable stateful range using std::reference_wrapper.
   The callable needs to take a single argument of the integral index type.
 
   Please refer to @ref ParallelIterations for details.
@@ -425,9 +425,11 @@ class FlowBuilder {
   }
   @endcode
 
-  Arguments are templated to enable stateful range using std::reference_wrapper.
+  Iterators are templated to enable stateful range using std::reference_wrapper.
   The callable needs to take a single argument of the dereferenced
   iterator type.
+  
+  Please refer to @ref ParallelTransforms for details.
   */
   template <
     typename B, typename E, typename O, typename C, typename P = GuidedPartitioner
@@ -463,9 +465,11 @@ class FlowBuilder {
   }
   @endcode
 
-  Arguments are templated to enable stateful range using std::reference_wrapper.
+  Iterators are templated to enable stateful range using std::reference_wrapper.
   The callable needs to take two arguments of dereferenced elements
   from the two input ranges.
+  
+  Please refer to @ref ParallelTransforms for details.
   */
   template <
     typename B1, typename E1, typename B2, typename O, typename C, typename P=GuidedPartitioner,
@@ -505,7 +509,7 @@ class FlowBuilder {
   }
   @endcode
 
-  Arguments are templated to enable stateful range using std::reference_wrapper.
+  Iterators are templated to enable stateful range using std::reference_wrapper.
 
   Please refer to @ref ParallelReduction for details.
   */
@@ -546,7 +550,7 @@ class FlowBuilder {
   }
   @endcode
 
-  Arguments are templated to enable stateful range using std::reference_wrapper.
+  Iterators are templated to enable stateful range using std::reference_wrapper.
 
   Please refer to @ref ParallelReduction for details.
   */
@@ -591,6 +595,10 @@ class FlowBuilder {
   
   // input is {1, 3, 6, 10, 15}
   @endcode
+  
+  Iterators are templated to enable stateful range using std::reference_wrapper.
+  
+  Please refer to @ref ParallelScan for details.
   */
   template <typename B, typename E, typename D, typename BOP>
   Task inclusive_scan(B first, E last, D d_first, BOP bop);
@@ -629,6 +637,10 @@ class FlowBuilder {
   
   // input is {0, 2, 5, 9, 14}
   @endcode
+  
+  Iterators are templated to enable stateful range using std::reference_wrapper.
+ 
+  Please refer to @ref ParallelScan for details.
 
   */
   template <typename B, typename E, typename D, typename BOP, typename T>
@@ -668,6 +680,10 @@ class FlowBuilder {
   
   // input is {-1, 0, 2, 5, 9}
   @endcode
+  
+  Iterators are templated to enable stateful range using std::reference_wrapper.
+  
+  Please refer to @ref ParallelScan for details.
   */
   template <typename B, typename E, typename D, typename T, typename BOP>
   Task exclusive_scan(B first, E last, D d_first, T init, BOP bop);
@@ -711,6 +727,10 @@ class FlowBuilder {
   
   // input is {-1, -3, -6, -10, -15}
   @endcode
+  
+  Iterators are templated to enable stateful range using std::reference_wrapper.
+  
+  Please refer to @ref ParallelScan for details.
   */
   template <typename B, typename E, typename D, typename BOP, typename UOP>
   Task transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop);
@@ -753,6 +773,10 @@ class FlowBuilder {
   
   // input is {-2, -4, -7, -11, -16}
   @endcode
+  
+  Iterators are templated to enable stateful range using std::reference_wrapper.
+  
+  Please refer to @ref ParallelScan for details.
   */
   template <typename B, typename E, typename D, typename BOP, typename UOP, typename T>
   Task transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init);
@@ -794,9 +818,66 @@ class FlowBuilder {
   
   // input is {-1, -2, -4, -7, -11}
   @endcode
+  
+  Iterators are templated to enable stateful range using std::reference_wrapper.
+  
+  Please refer to @ref ParallelScan for details.
   */
   template <typename B, typename E, typename D, typename T, typename BOP, typename UOP>
   Task transform_exclusive_scan(B first, E last, D d_first, T init, BOP bop, UOP uop);
+  
+  // ------------------------------------------------------------------------
+  // find
+  // ------------------------------------------------------------------------
+ 
+  /**
+  @brief constructs a task to perform STL-styled find-if algorithm
+
+  @tparam B beginning iterator type
+  @tparam E ending iterator type
+  @tparam UOP unary predicate type
+  @tparam T resulting iterator type
+  @tparam P partitioner type
+  
+  @param first start of the input range
+  @param last end of the input range
+  @param predicate unary predicate which returns @c true for the required element
+  @param result resulting iterator to the found element in the input range
+  @param part partitioning algorithm (default tf::GuidedPartitioner)
+
+  Returns an iterator to the first element in the range <tt>[first, last)</tt> 
+  that satisfies the given criteria (or last if there is no such iterator).
+  This method is equivalent to the parallel execution of the following loop:
+
+  @code{.cpp}
+  auto find_if(InputIt first, InputIt last, UnaryPredicate p) {
+    for (; first != last; ++first) {
+      if (p(*first)){
+        return first;
+      }
+    }
+    return last;
+  }
+  @endcode
+
+  For example, the code below find the element that satisfies the given 
+  criteria (value plus one is equal to 23) from an input range of 10 elements:
+
+  @code{.cpp}
+  std::vector<int> input = {1, 6, 9, 10, 22, 5, 7, 8, 9, 11};
+  std::vector<int>::iterator result;
+  taskflow.find_if(
+    input.begin(), input.end(), [](int i){ return i+1 = 23; }, result
+  );
+  executor.run(taskflow).wait();
+  assert(*result == 22);
+  @endcode
+  
+  Iterators are templated to enable stateful range using std::reference_wrapper.
+
+  */
+  template <typename B, typename E, typename UOP, typename T, typename P = GuidedPartitioner>
+  Task find_if(B first, E last, UOP predicate, T& result, P&& part = P());
 
   // ------------------------------------------------------------------------
   // sort
@@ -816,7 +897,7 @@ class FlowBuilder {
   The task spawns asynchronous tasks to sort elements in the range
   <tt>[first, last)</tt> in parallel.
 
-  Arguments are templated to enable stateful range using std::reference_wrapper.
+  Iterators are templated to enable stateful range using std::reference_wrapper.
 
   Please refer to @ref ParallelSort for details.
   */
@@ -837,7 +918,7 @@ class FlowBuilder {
   <tt>[first, last)</tt> using the @c std::less<T> comparator,
   where @c T is the dereferenced iterator type.
 
-  Arguments are templated to enable stateful range using std::reference_wrapper.
+  Iterators are templated to enable stateful range using std::reference_wrapper.
 
   Please refer to @ref ParallelSort for details.
    */

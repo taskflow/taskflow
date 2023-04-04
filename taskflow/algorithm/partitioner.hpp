@@ -101,11 +101,17 @@ class GuidedPartitioner : public PartitionerBase {
   */
   explicit GuidedPartitioner(size_t sz) : PartitionerBase (sz) {}
   
+  // --------------------------------------------------------------------------
+  // scheduling methods
+  // --------------------------------------------------------------------------
+  
   /**
   @private
   */
-  template <typename F>
-  void operator () (
+  template <typename F, 
+    std::enable_if_t<std::is_invocable_r_v<void, F, size_t, size_t>, void>* = nullptr
+  >
+  void loop(
     size_t N, 
     size_t W, 
     std::atomic<size_t>& next, 
@@ -149,6 +155,61 @@ class GuidedPartitioner : public PartitionerBase {
       }
     }
   }
+  
+  /**
+  @private
+  */
+  template <typename F, 
+    std::enable_if_t<std::is_invocable_r_v<bool, F, size_t, size_t>, void>* = nullptr
+  >
+  void loop_until(
+    size_t N, 
+    size_t W, 
+    std::atomic<size_t>& next, 
+    F&& func
+  ) const {
+
+    size_t chunk_size = (_chunk_size == 0) ? size_t{1} : _chunk_size;
+
+    size_t p1 = 2 * W * (chunk_size + 1);
+    float  p2 = 0.5f / static_cast<float>(W);
+    size_t curr_b = next.load(std::memory_order_relaxed);
+
+    while(curr_b < N) {
+
+      size_t r = N - curr_b;
+
+      // fine-grained
+      if(r < p1) {
+        while(1) {
+          curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
+          if(curr_b >= N) {
+            return;
+          }
+          if(func(curr_b, std::min(curr_b + chunk_size, N))) {
+            return;
+          }
+        }
+        break;
+      }
+      // coarse-grained
+      else {
+        size_t q = static_cast<size_t>(p2 * r);
+        if(q < chunk_size) {
+          q = chunk_size;
+        }
+        //size_t curr_e = (q <= r) ? curr_b + q : N;
+        size_t curr_e = std::min(curr_b + q, N);
+        if(next.compare_exchange_strong(curr_b, curr_e, std::memory_order_relaxed,
+                                                        std::memory_order_relaxed)) {
+          if(func(curr_b, curr_e)) {
+            return;
+          }
+          curr_b = next.load(std::memory_order_relaxed);
+        }
+      }
+    }
+  }
 };
 
 // ----------------------------------------------------------------------------
@@ -179,11 +240,17 @@ class DynamicPartitioner : public PartitionerBase {
   */
   explicit DynamicPartitioner(size_t sz) : PartitionerBase (sz) {}
   
+  // --------------------------------------------------------------------------
+  // scheduling methods
+  // --------------------------------------------------------------------------
+  
   /**
   @private
   */
-  template <typename F>
-  void operator () (
+  template <typename F, 
+    std::enable_if_t<std::is_invocable_r_v<void, F, size_t, size_t>, void>* = nullptr
+  >
+  void loop(
     size_t N, 
     size_t, 
     std::atomic<size_t>& next, 
@@ -195,6 +262,30 @@ class DynamicPartitioner : public PartitionerBase {
 
     while(curr_b < N) {
       func(curr_b, std::min(curr_b + chunk_size, N));
+      curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
+    }
+  }
+  
+  /**
+  @private
+  */
+  template <typename F, 
+    std::enable_if_t<std::is_invocable_r_v<bool, F, size_t, size_t>, void>* = nullptr
+  >
+  void loop_until(
+    size_t N, 
+    size_t, 
+    std::atomic<size_t>& next, 
+    F&& func
+  ) const {
+
+    size_t chunk_size = (_chunk_size == 0) ? size_t{1} : _chunk_size;
+    size_t curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
+
+    while(curr_b < N) {
+      if(func(curr_b, std::min(curr_b + chunk_size, N))) {
+        return;
+      }
       curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
     }
   }
@@ -235,12 +326,29 @@ class StaticPartitioner : public PartitionerBase {
   @brief construct a dynamic partitioner with the given chunk size
   */
   explicit StaticPartitioner(size_t sz) : PartitionerBase(sz) {}
+  
+  /**
+  @brief queries the adjusted chunk size
+  
+  Returns the given chunk size if it is not zero, or returns
+  <tt>N/W + (w < N%W)</tt>, where @c N is the number of iterations,
+  @c W is the number of workers, and @c w is the worker ID.
+  */
+  size_t adjusted_chunk_size(size_t N, size_t W, size_t w) const {
+    return _chunk_size ? _chunk_size : N/W + (w < N%W);
+  }
+  
+  // --------------------------------------------------------------------------
+  // scheduling methods
+  // --------------------------------------------------------------------------
 
   /**
   @private
   */
-  template <typename F>
-  void operator ()(
+  template <typename F, 
+    std::enable_if_t<std::is_invocable_r_v<void, F, size_t, size_t>, void>* = nullptr
+  >
+  void loop(
     size_t N, 
     size_t W, 
     size_t curr_b, 
@@ -251,6 +359,29 @@ class StaticPartitioner : public PartitionerBase {
     while(curr_b < N) {
       size_t curr_e = std::min(curr_b + chunk_size, N);
       func(curr_b, curr_e);
+      curr_b += stride;
+    }
+  }
+  
+  /**
+  @private
+  */
+  template <typename F, 
+    std::enable_if_t<std::is_invocable_r_v<bool, F, size_t, size_t>, void>* = nullptr
+  >
+  void loop_until(
+    size_t N, 
+    size_t W, 
+    size_t curr_b, 
+    size_t chunk_size,
+    F&& func
+  ) {
+    size_t stride = W * chunk_size;
+    while(curr_b < N) {
+      size_t curr_e = std::min(curr_b + chunk_size, N);
+      if(func(curr_b, curr_e)) {
+        return;
+      }
       curr_b += stride;
     }
   }
@@ -301,16 +432,13 @@ class RandomPartitioner : public PartitionerBase {
   float beta() const { return _beta; }
   
   /**
-  @private
+  @brief queries the range of chunk size
+  
+  @param N number of iterations
+  @param W number of workers
   */
-  template <typename F>
-  void operator () (
-    size_t N, 
-    size_t W, 
-    std::atomic<size_t>& next, 
-    F&& func
-  ) const {
-
+  std::pair<size_t, size_t> chunk_size_range(size_t N, size_t W) const {
+    
     size_t b1 = static_cast<size_t>(_alpha * N * W);
     size_t b2 = static_cast<size_t>(_beta  * N * W);
 
@@ -320,6 +448,28 @@ class RandomPartitioner : public PartitionerBase {
 
     b1 = std::max(b1, size_t{1});
     b2 = std::max(b2, b1 + 1);
+
+    return {b1, b2};
+  }
+
+  // --------------------------------------------------------------------------
+  // scheduling methods
+  // --------------------------------------------------------------------------
+  
+  /**
+  @private
+  */
+  template <typename F, 
+    std::enable_if_t<std::is_invocable_r_v<void, F, size_t, size_t>, void>* = nullptr
+  >
+  void loop(
+    size_t N, 
+    size_t W, 
+    std::atomic<size_t>& next, 
+    F&& func
+  ) const {
+
+    auto [b1, b2] = chunk_size_range(N, W); 
     
     std::default_random_engine engine {std::random_device{}()};
     std::uniform_int_distribution<size_t> dist(b1, b2);
@@ -329,6 +479,36 @@ class RandomPartitioner : public PartitionerBase {
 
     while(curr_b < N) {
       func(curr_b, std::min(curr_b + chunk_size, N));
+      chunk_size = dist(engine);
+      curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
+    }
+  }
+
+  /**
+  @private
+  */
+  template <typename F, 
+    std::enable_if_t<std::is_invocable_r_v<bool, F, size_t, size_t>, void>* = nullptr
+  >
+  void loop_until(
+    size_t N, 
+    size_t W, 
+    std::atomic<size_t>& next, 
+    F&& func
+  ) const {
+
+    auto [b1, b2] = chunk_size_range(N, W); 
+    
+    std::default_random_engine engine {std::random_device{}()};
+    std::uniform_int_distribution<size_t> dist(b1, b2);
+    
+    size_t chunk_size = dist(engine);
+    size_t curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
+
+    while(curr_b < N) {
+      if(func(curr_b, std::min(curr_b + chunk_size, N))){
+        return;
+      }
       chunk_size = dist(engine);
       curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
     }

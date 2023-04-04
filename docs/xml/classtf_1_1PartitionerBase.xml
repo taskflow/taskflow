@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="classtf_1_1PartitionerBase" kind="class" language="C++" prot="public">
     <compoundname>tf::PartitionerBase</compoundname>
     <derivedcompoundref refid="classtf_1_1DynamicPartitioner" prot="public" virt="non-virtual">tf::DynamicPartitioner</derivedcompoundref>
@@ -13,14 +13,16 @@
         <definition>size_t tf::PartitionerBase::_chunk_size</definition>
         <argsstring></argsstring>
         <name>_chunk_size</name>
+        <qualifiedname>tf::PartitionerBase::_chunk_size</qualifiedname>
         <initializer>{0}</initializer>
         <briefdescription>
-<para>chunk size </para>        </briefdescription>
+<para>chunk size </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="73" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="73" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="73" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="73" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -29,99 +31,116 @@
         <definition>tf::PartitionerBase::PartitionerBase</definition>
         <argsstring>()=default</argsstring>
         <name>PartitionerBase</name>
+        <qualifiedname>tf::PartitionerBase::PartitionerBase</qualifiedname>
         <briefdescription>
-<para>default constructor </para>        </briefdescription>
+<para>default constructor </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="51" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="51" column="3"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1PartitionerBase_1a75ad9b40415d767ef368c20650958be0" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::PartitionerBase::PartitionerBase</definition>
         <argsstring>(size_t chunk_size)</argsstring>
         <name>PartitionerBase</name>
+        <qualifiedname>tf::PartitionerBase::PartitionerBase</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>chunk_size</declname>
         </param>
         <briefdescription>
-<para>construct a partitioner with the given chunk size </para>        </briefdescription>
+<para>construct a partitioner with the given chunk size </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="56" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="56" bodyend="56"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="56" column="12" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="56" bodyend="56"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1PartitionerBase_1a8445b917fca6384861898d46b81ec471" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::PartitionerBase::chunk_size</definition>
         <argsstring>() const</argsstring>
         <name>chunk_size</name>
+        <qualifiedname>tf::PartitionerBase::chunk_size</qualifiedname>
         <briefdescription>
-<para>query the chunk size of this partitioner </para>        </briefdescription>
+<para>query the chunk size of this partitioner </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="61" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="61" bodyend="61"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="61" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="61" bodyend="61"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1PartitionerBase_1ad3aadb6b50b86eb0a679f714f07079cf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::PartitionerBase::chunk_size</definition>
         <argsstring>(size_t cz)</argsstring>
         <name>chunk_size</name>
+        <qualifiedname>tf::PartitionerBase::chunk_size</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>cz</declname>
         </param>
         <briefdescription>
-<para>update the chunk size of this partitioner </para>        </briefdescription>
+<para>update the chunk size of this partitioner </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="66" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="66" bodyend="66"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="66" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="66" bodyend="66"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class to derive a partitioner for scheduling parallel algorithms </para>    </briefdescription>
+<para>class to derive a partitioner for scheduling parallel algorithms </para>
+    </briefdescription>
     <detaileddescription>
-<para>The class provides base methods to derive a partitioner that can be used to schedule parallel iterations (e.g., <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each</ref>).</para><para>An partitioner defines the scheduling method for running parallel algorithms, such <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each</ref>, <ref refid="classtf_1_1FlowBuilder_1a97f345ee90bdeb8c0c95120752e32dcb" kindref="member">tf::Taskflow::reduce</ref>, and so on. By default, we provide the following partitioners:</para><para><itemizedlist>
-<listitem><para><ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref> to enable guided scheduling algorithm of adaptive chunk size</para></listitem><listitem><para><ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref> to enable dynamic scheduling algorithm of equal chunk size</para></listitem><listitem><para><ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref> to enable static scheduling algorithm of static chunk size</para></listitem><listitem><para><ref refid="classtf_1_1RandomPartitioner" kindref="compound">tf::RandomPartitioner</ref> to enable random scheduling algorithm of random chunk size</para></listitem></itemizedlist>
-</para><para>Depending on applications, partitioning algorithms can impact the performance a lot. For example, if a parallel-iteration workload contains a regular work unit per iteration, <ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref> can deliver the best performance. On the other hand, if the work unit per iteration is irregular and unbalanced, <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref> or <ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref> can outperform <ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref>. In most situations, <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref> can deliver decent performance and is thus used as our default partitioner. </para>    </detaileddescription>
+<para>The class provides base methods to derive a partitioner that can be used to schedule parallel iterations (e.g., <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each</ref>).</para>
+<para>An partitioner defines the scheduling method for running parallel algorithms, such <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each</ref>, <ref refid="classtf_1_1FlowBuilder_1a97f345ee90bdeb8c0c95120752e32dcb" kindref="member">tf::Taskflow::reduce</ref>, and so on. By default, we provide the following partitioners:</para>
+<para><itemizedlist>
+<listitem><para><ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref> to enable guided scheduling algorithm of adaptive chunk size</para>
+</listitem><listitem><para><ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref> to enable dynamic scheduling algorithm of equal chunk size</para>
+</listitem><listitem><para><ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref> to enable static scheduling algorithm of static chunk size</para>
+</listitem><listitem><para><ref refid="classtf_1_1RandomPartitioner" kindref="compound">tf::RandomPartitioner</ref> to enable random scheduling algorithm of random chunk size</para>
+</listitem></itemizedlist>
+</para>
+<para>Depending on applications, partitioning algorithms can impact the performance a lot. For example, if a parallel-iteration workload contains a regular work unit per iteration, <ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref> can deliver the best performance. On the other hand, if the work unit per iteration is irregular and unbalanced, <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref> or <ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref> can outperform <ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref>. In most situations, <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref> can deliver decent performance and is thus used as our default partitioner. </para>
+    </detaileddescription>
     <inheritancegraph>
-      <node id="174">
-        <label>tf::RandomPartitioner</label>
-        <link refid="classtf_1_1RandomPartitioner"/>
-        <childnode refid="171" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="173">
-        <label>tf::GuidedPartitioner</label>
-        <link refid="classtf_1_1GuidedPartitioner"/>
-        <childnode refid="171" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="172">
+      <node id="2">
         <label>tf::DynamicPartitioner</label>
         <link refid="classtf_1_1DynamicPartitioner"/>
-        <childnode refid="171" relation="public-inheritance">
+        <childnode refid="1" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="171">
+      <node id="3">
+        <label>tf::GuidedPartitioner</label>
+        <link refid="classtf_1_1GuidedPartitioner"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
         <label>tf::PartitionerBase</label>
         <link refid="classtf_1_1PartitionerBase"/>
       </node>
-      <node id="175">
+      <node id="4">
+        <label>tf::RandomPartitioner</label>
+        <link refid="classtf_1_1RandomPartitioner"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
         <label>tf::StaticPartitioner</label>
         <link refid="classtf_1_1StaticPartitioner"/>
-        <childnode refid="171" relation="public-inheritance">
+        <childnode refid="1" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="44" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="44" bodyend="74"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="44" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="44" bodyend="74"/>
     <listofallmembers>
       <member refid="classtf_1_1PartitionerBase_1a98a744284cfc726b1a597dae90e766f0" prot="protected" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>_chunk_size</name></member>
       <member refid="classtf_1_1PartitionerBase_1a8445b917fca6384861898d46b81ec471" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>chunk_size</name></member>
