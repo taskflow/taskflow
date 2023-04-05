@@ -18,7 +18,7 @@ for creating a parallel-reduction task.
 @section A2ParallelReduction Create a Parallel-Reduction Task
 
 The reduction task created by 
-tf::Taskflow::reduce(B first, E last, T& result, O bop) performs
+tf::Taskflow::reduce(B first, E last, T& result, O bop, P&& part) performs
 parallel reduction over a range of elements specified by <tt>[first, last)</tt> using the binary operator @c bop and stores the reduced result in @c result.
 It represents the parallel execution of the following reduction loop:
 
@@ -46,11 +46,13 @@ assert(sum == 100 + 55);
 
 The order in which the binary operator is applied to pairs of elements is @em unspecified.
 In other words, the elements of the range may be grouped and rearranged in arbitrary order.
-The result and the argument types of the binary operator must be consistent with the input data type .
+The result and the argument types of the binary operator must be consistent with the input data type.
 
-Similar to @ref ParallelIterations, 
-you can use std::reference_wrapper to enable stateful parameter passing 
-between the reduction task and others.
+You can pass iterators by reference using std::ref
+to marshal parameter update between dependent tasks.
+This is especially useful when the range is unknown
+at the time of creating a parallel-transform task,
+but is initialized from another task.
 
 @code{.cpp}
 int sum = 100;
@@ -80,16 +82,16 @@ assert(sum == 100 + 55);
 @endcode
 
 In the above example, when @c init finishes, @c vec has been initialized to 10 elements with
-@c first pointing to the first element and @c last pointing to the next of the last element
-(i.e., end of the range).
-These changes are visible to the execution context of the reduction task.
+@c first and @c last pointing to the data range of @c vec.
+The reduction task will then work on this initialized range
+as a result of passing iterators by reference.
 
 @section A2ParallelTransformationReduction Create a Parallel-Transform-Reduction Task
 
 It is common to transform each element into a new data type and
 then perform reduction on the transformed elements.
 %Taskflow provides a method, 
-tf::Taskflow::transform_reduce(B first, E last, T& result, BOP bop, UOP uop), 
+tf::Taskflow::transform_reduce(B first, E last, T& result, BOP bop, UOP uop, P&& part), 
 that applies @c uop to transform each element in the specified range 
 and then perform parallel reduction over @c result and transformed elements.
 It represents the parallel execution of the following reduction loop:
@@ -128,13 +130,7 @@ you may define the result type @c T to be move-constructible.
 
 You can configure a partitioner for parallel-reduction tasks to run with different
 scheduling methods, such as guided partitioning, dynamic partitioning, and static partitioning.
-Each parallel-reduction task has an overload 
-that takes a pattitioner in the last argument:
-
-  + tf::Taskflow::reduce(B first, E last, T& result, O bop, P&& part)
-  + tf::Taskflow::transform_reduce(B first, E last, T& result, BOP bop, UOP uop, P&& part)
-
-The following example create two parallel-reduction tasks using tow different
+The following example create two parallel-reduction tasks using two different
 partitioners, one with the static partitioning algorithm and 
 another one with the guided partitioning algorithm:
 

@@ -5,7 +5,7 @@
   <title>Learning from Examples &raquo; Graph Traversal | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -58,1040 +58,1040 @@
             <li><a href="#GraphTraversalDynamicTraversal">Dynamic Traversal</a></li>
           </ul>
         </nav>
-<p>We study the graph traversal problem by visiting each vertex in parallel following their edge dependencies. Traversing a graph is a fundamental building block of many graph applications especially for large-scale graph analytics.</p><section id="GraphTraversalProblemFormulation"><h2><a href="#GraphTraversalProblemFormulation">Problem Formulation</a></h2><p>Given a directed acyclic graph (DAG), i.e., a graph that has no cycles, we would like to traverse each vertex in order without breaking dependency constraints defined by edges. The following figure shows a graph of six vertices and seven edges. Each vertex represents a particular task and each edge represents a task dependency between two tasks.</p><div class="m-graph"><svg style="width: 16.375rem; height: 16.438rem;" viewBox="0.00 0.00 262.44 263.08">
-<g transform="scale(1 1) rotate(0) translate(4 259.08)">
+<p>We study the graph traversal problem by visiting each vertex in parallel following their edge dependencies. Traversing a graph is a fundamental building block of many graph applications especially for large-scale graph analytics.</p><section id="GraphTraversalProblemFormulation"><h2><a href="#GraphTraversalProblemFormulation">Problem Formulation</a></h2><p>Given a directed acyclic graph (DAG), i.e., a graph that has no cycles, we would like to traverse each vertex in order without breaking dependency constraints defined by edges. The following figure shows a graph of six vertices and seven edges. Each vertex represents a particular task and each edge represents a task dependency between two tasks.</p><div class="m-graph"><svg style="width: 16.625rem; height: 16.438rem;" viewBox="0.00 0.00 265.85 263.08">
+<g transform="scale(1 1) rotate(0) translate(4 259.0782)">
 <title>Taskflow</title>
 <g class="m-node m-flat">
 <title>Task1</title>
-<ellipse cx="142.72" cy="-236.69" rx="41.94" ry="18.27"/>
-<text text-anchor="middle" x="142.72" y="-232.89">Task1</text>
+<ellipse cx="145.4264" cy="-236.6934" rx="42.3529" ry="18.2703"/>
+<text text-anchor="middle" x="145.4264" y="-232.8934">Task1</text>
 </g>
 <g class="m-node m-flat">
 <title>Task2</title>
-<ellipse cx="41.72" cy="-163.92" rx="41.94" ry="18.27"/>
-<text text-anchor="middle" x="41.72" y="-160.12">Task2</text>
+<ellipse cx="42.4264" cy="-163.9239" rx="42.3529" ry="18.2703"/>
+<text text-anchor="middle" x="42.4264" y="-160.1239">Task2</text>
 </g>
 <g class="m-edge">
 <title>Task1&#45;&gt;Task2</title>
-<path d="M121.3,-220.69C106.97,-210.65 87.91,-197.29 72.03,-186.16"/>
-<polygon points="74.31,-182.78 64.11,-179.91 70.29,-188.52 74.31,-182.78"/>
+<path d="M123.0769,-220.9035C108.4999,-210.6048 89.2768,-197.0237 73.2544,-185.7039"/>
+<polygon points="74.9192,-182.5947 64.7323,-179.683 70.88,-188.3118 74.9192,-182.5947"/>
 </g>
 <g class="m-node m-flat">
 <title>Task3</title>
-<ellipse cx="142.72" cy="-163.92" rx="41.94" ry="18.27"/>
-<text text-anchor="middle" x="142.72" y="-160.12">Task3</text>
+<ellipse cx="145.4264" cy="-163.9239" rx="42.3529" ry="18.2703"/>
+<text text-anchor="middle" x="145.4264" y="-160.1239">Task3</text>
 </g>
 <g class="m-edge">
 <title>Task1&#45;&gt;Task3</title>
-<path d="M142.72,-218.2C142.72,-210.66 142.72,-201.65 142.72,-193.2"/>
-<polygon points="146.22,-193.22 142.72,-183.22 139.22,-193.22 146.22,-193.22"/>
+<path d="M145.4264,-217.9535C145.4264,-210.1694 145.4264,-200.9637 145.4264,-192.3774"/>
+<polygon points="148.9265,-192.3484 145.4264,-182.3484 141.9265,-192.3485 148.9265,-192.3484"/>
 </g>
 <g class="m-node m-flat">
 <title>Task4</title>
-<ellipse cx="212.72" cy="-91.15" rx="41.94" ry="18.27"/>
-<text text-anchor="middle" x="212.72" y="-87.35">Task4</text>
+<ellipse cx="215.4264" cy="-91.1543" rx="42.3529" ry="18.2703"/>
+<text text-anchor="middle" x="215.4264" y="-87.3543">Task4</text>
 </g>
 <g class="m-edge">
 <title>Task1&#45;&gt;Task4</title>
-<path d="M162.23,-220.11C173.12,-210.38 186.01,-196.94 193.72,-182.31 203.8,-163.18 208.53,-139.12 210.76,-120.66"/>
-<polygon points="214.34,-121.03 211.86,-110.72 207.37,-120.32 214.34,-121.03"/>
+<path d="M165.4494,-220.2932C176.2334,-210.3929 188.8442,-196.8943 196.4264,-182.3087 206.5709,-162.794 211.2992,-138.2751 213.5029,-119.5831"/>
+<polygon points="216.9885,-119.9008 214.5083,-109.6004 210.0238,-119.1993 216.9885,-119.9008"/>
 </g>
 <g class="m-node m-flat">
 <title>Task5</title>
-<ellipse cx="111.72" cy="-91.15" rx="41.94" ry="18.27"/>
-<text text-anchor="middle" x="111.72" y="-87.35">Task5</text>
+<ellipse cx="112.4264" cy="-91.1543" rx="42.3529" ry="18.2703"/>
+<text text-anchor="middle" x="112.4264" y="-87.3543">Task5</text>
 </g>
 <g class="m-edge">
 <title>Task2&#45;&gt;Task5</title>
-<path d="M57.6,-146.87C66.64,-137.73 78.14,-126.11 88.2,-115.93"/>
-<polygon points="90.35,-118.72 94.9,-109.15 85.38,-113.8 90.35,-118.72"/>
+<path d="M59.0154,-146.6785C67.9074,-137.4347 79.0158,-125.8869 88.7955,-115.7202"/>
+<polygon points="91.5463,-117.9092 95.9565,-108.2759 86.5014,-113.0564 91.5463,-117.9092"/>
 </g>
 <g class="m-edge">
 <title>Task3&#45;&gt;Task5</title>
-<path d="M135.22,-145.79C131.71,-137.8 127.46,-128.08 123.54,-119.14"/>
-<polygon points="126.37,-117.88 119.15,-110.13 119.96,-120.69 126.37,-117.88"/>
+<path d="M137.0991,-145.5611C133.3973,-137.3981 128.9613,-127.616 124.8779,-118.6115"/>
+<polygon points="127.9544,-116.921 120.6367,-109.2592 121.5793,-119.812 127.9544,-116.921"/>
 </g>
 <g class="m-node m-flat">
 <title>Task6</title>
-<ellipse cx="161.72" cy="-18.38" rx="41.94" ry="18.27"/>
-<text text-anchor="middle" x="161.72" y="-14.58">Task6</text>
+<ellipse cx="163.4264" cy="-18.3848" rx="42.3529" ry="18.2703"/>
+<text text-anchor="middle" x="163.4264" y="-14.5848">Task6</text>
 </g>
 <g class="m-edge">
 <title>Task4&#45;&gt;Task6</title>
-<path d="M200.63,-73.38C194.47,-64.83 186.85,-54.26 179.99,-44.74"/>
-<polygon points="182.4,-43.1 173.72,-37.04 176.73,-47.19 182.4,-43.1"/>
+<path d="M202.8387,-73.5389C196.5618,-64.7549 188.8487,-53.9611 181.9152,-44.2582"/>
+<polygon points="184.7402,-42.1915 176.0785,-36.0903 179.0448,-46.2614 184.7402,-42.1915"/>
 </g>
 <g class="m-edge">
 <title>Task5&#45;&gt;Task6</title>
-<path d="M123.57,-73.38C129.61,-64.83 137.08,-54.26 143.81,-44.74"/>
-<polygon points="147.04,-47.22 149.96,-37.04 141.33,-43.18 147.04,-47.22"/>
+<path d="M124.7721,-73.5389C130.8661,-64.8436 138.3403,-54.1789 145.0869,-44.5526"/>
+<polygon points="148.1445,-46.2881 151.0177,-36.0903 142.4122,-42.2706 148.1445,-46.2881"/>
 </g>
 </g>
 </svg>
-</div><p>Traversing the above graph in parallel, the maximum parallelism we can acquire is three. When Task1 finishes, we can run Task2, Task3, and Task4 in parallel.</p></section><section id="GraphTraversalGraphRepresentation"><h2><a href="#GraphTraversalGraphRepresentation">Graph Representation</a></h2><p>We define the data structure of our graph. The graph is represented by an array of nodes of the following structure:</p><pre class="m-code"><span class="k">struct</span><span class="w"> </span><span class="nc">Node</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+</div><p>Traversing the above graph in parallel, the maximum parallelism we can acquire is three. When Task1 finishes, we can run Task2, Task3, and Task4 in parallel.</p></section><section id="GraphTraversalGraphRepresentation"><h2><a href="#GraphTraversalGraphRepresentation">Graph Representation</a></h2><p>We define the data structure of our graph. The graph is represented by an array of nodes of the following structure:</p><pre class="m-code"><span class="k">struct</span><span class="w"> </span><span class="nc">Node</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">idx</span><span class="p">;</span><span class="w">                          </span><span class="c1">// index of the node in a array</span>
-<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">visited</span><span class="w"> </span><span class="p">{</span><span class="nb">false</span><span class="p">};</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">visited</span><span class="w"> </span><span class="p">{</span><span class="nb">false</span><span class="p">};</span><span class="w"></span>
 
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dependents</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span><span class="w">  </span><span class="c1">// number of incoming edges</span>
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">successors</span><span class="p">;</span><span class="w">       </span><span class="c1">// number of outgoing edges</span>
 
-<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">precede</span><span class="p">(</span><span class="n">Node</span><span class="o">&amp;</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">successors</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="o">&amp;</span><span class="n">n</span><span class="p">);</span>
-<span class="w">    </span><span class="n">n</span><span class="p">.</span><span class="n">dependents</span><span class="w"> </span><span class="o">++</span><span class="p">;</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">};</span></pre><p>Based on the data structure, we randomly generate a DAG using ordered edges.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Node</span><span class="p">[]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">make_dag</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">num_nodes</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">max_degree</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">precede</span><span class="p">(</span><span class="n">Node</span><span class="o">&amp;</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">successors</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="o">&amp;</span><span class="n">n</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">n</span><span class="p">.</span><span class="n">dependents</span><span class="w"> </span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span></pre><p>Based on the data structure, we randomly generate a DAG using ordered edges.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Node</span><span class="p">[]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">make_dag</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">num_nodes</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">max_degree</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span>
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Node</span><span class="p">[]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">nodes</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Node</span><span class="p">[</span><span class="n">num_nodes</span><span class="p">]);</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Node</span><span class="p">[]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">nodes</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Node</span><span class="p">[</span><span class="n">num_nodes</span><span class="p">]);</span><span class="w"></span>
 <span class="w">  </span>
 <span class="w">  </span><span class="c1">// Make sure nodes are in clean state</span>
-<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">num_nodes</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
-<span class="w">    </span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
-<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">num_nodes</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
 <span class="w">  </span><span class="c1">// Create a DAG by randomly insert ordered edges</span>
-<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">num_nodes</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">degree</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
-<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">j</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="o">&lt;</span><span class="n">num_nodes</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">degree</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">max_degree</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">rand</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">precede</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">j</span><span class="p">]);</span>
-<span class="w">        </span><span class="n">degree</span><span class="w"> </span><span class="o">++</span><span class="p">;</span>
-<span class="w">      </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">num_nodes</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">degree</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">j</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="o">&lt;</span><span class="n">num_nodes</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">degree</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">max_degree</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">rand</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">precede</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">j</span><span class="p">]);</span><span class="w"></span>
+<span class="w">        </span><span class="n">degree</span><span class="w"> </span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">nodes</span><span class="p">;</span>
-<span class="p">}</span></pre><p>The function, <code>make_dag</code>, accepts two arguments, <code>num_nodes</code> and <code>max_degree</code>, to restrict the number of nodes in the graph and the maximum number of outgoing edges of every node.</p></section><section id="GraphTraversalStaticTraversal"><h2><a href="#GraphTraversalStaticTraversal">Static Traversal</a></h2><p>We create a taskflow to traverse the graph using static tasks (see <a href="StaticTasking.html" class="m-doc">Static Tasking</a>). Each task does nothing but marks <code>visited</code> to <code>true</code> and subtracts <code>dependents</code> from one, both of which are used for validation after the graph is traversed. In practice, this computation may be replaced with a heavy function.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">nodes</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre><p>The function, <code>make_dag</code>, accepts two arguments, <code>num_nodes</code> and <code>max_degree</code>, to restrict the number of nodes in the graph and the maximum number of outgoing edges of every node.</p></section><section id="GraphTraversalStaticTraversal"><h2><a href="#GraphTraversalStaticTraversal">Static Traversal</a></h2><p>We create a taskflow to traverse the graph using static tasks (see <a href="StaticTasking.html" class="m-doc">Static Tasking</a>). Each task does nothing but marks <code>visited</code> to <code>true</code> and subtracts <code>dependents</code> from one, both of which are used for validation after the graph is traversed. In practice, this computation may be replaced with a heavy function.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
 
-<span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Node</span><span class="p">[]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">nodes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">make_dag</span><span class="p">(</span><span class="mi">100000</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">);</span>
-<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="o">&gt;</span><span class="w"> </span><span class="n">tasks</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Node</span><span class="p">[]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">nodes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">make_dag</span><span class="p">(</span><span class="mi">100000</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">);</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="o">&gt;</span><span class="w"> </span><span class="n">tasks</span><span class="p">;</span><span class="w"></span>
 
 <span class="c1">// create the traversal task for each node</span>
-<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">num_nodes</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="n">v</span><span class="o">=&amp;</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">])](){</span>
-<span class="w">    </span><span class="n">v</span><span class="o">-&gt;</span><span class="n">visited</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
-<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="o">&lt;</span><span class="n">v</span><span class="o">-&gt;</span><span class="n">successors</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="n">v</span><span class="o">-&gt;</span><span class="n">successors</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">dependents</span><span class="p">.</span><span class="n">fetch_sub</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">name</span><span class="p">);</span>
+<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">num_nodes</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="n">v</span><span class="o">=&amp;</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">])](){</span><span class="w"></span>
+<span class="w">    </span><span class="n">v</span><span class="o">-&gt;</span><span class="n">visited</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="o">&lt;</span><span class="n">v</span><span class="o">-&gt;</span><span class="n">successors</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">v</span><span class="o">-&gt;</span><span class="n">successors</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">dependents</span><span class="p">.</span><span class="n">fetch_sub</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">name</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">  </span><span class="n">tasks</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">task</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="w">  </span><span class="n">tasks</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">task</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
 <span class="c1">// create the dependency between nodes on top of the graph structure</span>
-<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">num_nodes</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="o">&lt;</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">successors</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">tasks</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">precede</span><span class="p">(</span><span class="n">tasks</span><span class="p">[</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">successors</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">idx</span><span class="p">]);</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
+<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">num_nodes</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="o">&lt;</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">successors</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">tasks</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">precede</span><span class="p">(</span><span class="n">tasks</span><span class="p">[</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">successors</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">idx</span><span class="p">]);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
 
 <span class="c1">// after the graph is traversed, all nodes must be visited with no dependents</span>
-<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">num_nodes</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">visited</span><span class="p">);</span>
-<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">dependents</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
-<span class="p">}</span></pre><p>The code above has two parts to construct the parallel graph traversal. First, it iterates each node and constructs a traversal task for that node. Second, it iterates each outgoing edge of a node and creates a dependency between the node and the other end (successor) of that edge. The resulting taskflow structure is topologically equivalent to the given graph.</p><div class="m-graph"><svg style="width: 99.500rem; height: 39.500rem;" viewBox="0.00 0.00 1592.00 632.00">
+<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">num_nodes</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">visited</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">dependents</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre><p>The code above has two parts to construct the parallel graph traversal. First, it iterates each node and constructs a traversal task for that node. Second, it iterates each outgoing edge of a node and creates a dependency between the node and the other end (successor) of that edge. The resulting taskflow structure is topologically equivalent to the given graph.</p><div class="m-graph"><svg style="width: 99.500rem; height: 39.500rem;" viewBox="0.00 0.00 1592.00 632.00">
 <g transform="scale(1 1) rotate(0) translate(4 628)">
 <title>Taskflow</title>
 <g class="m-node m-flat">
 <title>p0x7f95e780b0d0</title>
-<ellipse cx="27" cy="-137" rx="27" ry="18.27"/>
+<ellipse cx="27" cy="-137" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="27" y="-133.2">0</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e780ac50</title>
-<ellipse cx="117" cy="-257" rx="27" ry="18.27"/>
+<ellipse cx="117" cy="-257" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="117" y="-253.2">4</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780b0d0&#45;&gt;p0x7f95e780ac50</title>
-<path d="M39.87,-153.18C54.7,-173.4 80.23,-208.22 97.6,-231.9"/>
-<polygon points="95.3,-233.7 104.04,-239.69 100.95,-229.56 95.3,-233.7"/>
+<path d="M39.5141,-153.6855C54.8282,-174.1043 80.8902,-208.8536 98.5158,-232.3544"/>
+<polygon points="95.7921,-234.5562 104.5922,-240.4562 101.3921,-230.3562 95.7921,-234.5562"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e780ab30</title>
-<ellipse cx="117" cy="-312" rx="27" ry="18.27"/>
+<ellipse cx="117" cy="-312" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="117" y="-308.2">5</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780b0d0&#45;&gt;p0x7f95e780ab30</title>
-<path d="M36.83,-154C42.06,-164.31 48.68,-177.79 54,-190 71.87,-231.01 66.35,-246.03 90,-284 91.08,-285.73 92.27,-287.45 93.54,-289.14"/>
-<polygon points="91.17,-290.76 100.28,-296.18 96.54,-286.26 91.17,-290.76"/>
+<path d="M36.4716,-154.4419C41.8788,-164.6725 48.6288,-177.9225 54,-190 72.1788,-230.8768 65.9912,-246.2514 90,-284 91.2073,-285.8982 92.5576,-287.7765 93.9932,-289.608"/>
+<polygon points="91.4466,-292.0131 100.6546,-297.2537 96.7244,-287.4148 91.4466,-292.0131"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e780a8f0</title>
-<ellipse cx="207" cy="-173" rx="27" ry="18.27"/>
+<ellipse cx="207" cy="-173" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="207" y="-169.2">7</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780b0d0&#45;&gt;p0x7f95e780a8f0</title>
-<path d="M50.47,-127.71C74.35,-119.25 112.86,-109.67 144,-121 159.83,-126.76 174.43,-138.53 185.48,-149.42"/>
-<polygon points="182.41,-151.31 191.87,-156.09 187.46,-146.46 182.41,-151.31"/>
+<path d="M50.5453,-127.4132C74.6697,-119.0429 112.9377,-109.8364 144,-121 160.0489,-126.7679 174.9211,-138.5905 186.181,-149.5071"/>
+<polygon points="183.8678,-152.147 193.3693,-156.8345 188.8647,-147.2449 183.8678,-152.147"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e780a7d0</title>
-<ellipse cx="297" cy="-181" rx="27" ry="18.27"/>
+<ellipse cx="297" cy="-181" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="297" y="-177.2">8</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780b0d0&#45;&gt;p0x7f95e780a7d0</title>
-<path d="M52.42,-130.19C91.98,-120.43 171.9,-106.02 234,-129 249.8,-134.85 264.4,-146.62 275.46,-157.49"/>
-<polygon points="272.38,-159.39 281.85,-164.15 277.42,-154.52 272.38,-159.39"/>
+<path d="M52.1633,-130.0644C92.1045,-120.3491 171.8506,-106.2733 234,-129 250.0166,-134.8569 264.8869,-146.685 276.1538,-157.5823"/>
+<polygon points="273.8393,-160.2203 283.3481,-164.893 278.8286,-155.3105 273.8393,-160.2203"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780ac50&#45;&gt;p0x7f95e780a8f0</title>
-<path d="M133.33,-242.37C147,-229.32 167.21,-210.03 182.85,-195.1"/>
-<polygon points="184.74,-198.18 189.55,-188.75 179.9,-193.12 184.74,-198.18"/>
+<path d="M133.0902,-241.9825C147.1683,-228.843 167.7927,-209.5935 183.6799,-194.7654"/>
+<polygon points="186.1267,-197.2694 191.0491,-187.8875 181.3504,-192.152 186.1267,-197.2694"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780ac50&#45;&gt;p0x7f95e780a7d0</title>
-<path d="M140.54,-247.37C171.71,-234.07 228.12,-209.98 263.74,-194.77"/>
-<polygon points="264.82,-197.69 272.64,-190.55 262.07,-191.26 264.82,-197.69"/>
+<path d="M140.1634,-247.2199C171.7555,-233.881 228.519,-209.9142 264.3979,-194.7653"/>
+<polygon points="266.0745,-197.8567 273.9255,-190.7425 263.3516,-191.4079 266.0745,-197.8567"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e780aa10</title>
-<ellipse cx="207" cy="-388" rx="27" ry="18.27"/>
+<ellipse cx="207" cy="-388" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="207" y="-384.2">6</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780ac50&#45;&gt;p0x7f95e780aa10</title>
-<path d="M132.9,-271.9C136.7,-276 140.65,-280.55 144,-285 162.42,-309.47 180.09,-339.74 191.83,-361.11"/>
-<polygon points="189.09,-362.41 196.93,-369.54 195.25,-359.08 189.09,-362.41"/>
+<path d="M132.7703,-272.1502C136.626,-276.1717 140.6133,-280.6189 144,-285 162.9848,-309.5589 181.0866,-340.1706 192.9742,-361.6147"/>
+<polygon points="189.956,-363.3901 197.8262,-370.4831 196.097,-360.0303 189.956,-363.3901"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e780a6b0</title>
-<ellipse cx="297" cy="-333" rx="27" ry="18.27"/>
+<ellipse cx="297" cy="-333" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="297" y="-329.2">9</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780ac50&#45;&gt;p0x7f95e780a6b0</title>
-<path d="M140.54,-266.63C171.71,-279.93 228.12,-304.02 263.74,-319.23"/>
-<polygon points="262.07,-322.74 272.64,-323.45 264.82,-316.31 262.07,-322.74"/>
+<path d="M140.1634,-266.7801C171.7555,-280.119 228.519,-304.0858 264.3979,-319.2347"/>
+<polygon points="263.3516,-322.5921 273.9255,-323.2575 266.0745,-316.1433 263.3516,-322.5921"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780ab30&#45;&gt;p0x7f95e780a8f0</title>
-<path d="M133.27,-296.87C136.98,-292.85 140.8,-288.4 144,-284 163.59,-257.07 181.63,-223.32 193.14,-200.15"/>
-<polygon points="196.7,-201.83 197.95,-191.31 190.41,-198.76 196.7,-201.83"/>
+<path d="M132.8703,-296.9258C136.724,-292.9028 140.6854,-288.4359 144,-284 164.0776,-257.1305 182.4388,-223.2266 194.0934,-200.0022"/>
+<polygon points="197.3708,-201.2701 198.663,-190.7543 191.0951,-198.169 197.3708,-201.2701"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780ab30&#45;&gt;p0x7f95e780a6b0</title>
-<path d="M143.88,-315.05C174.33,-318.65 225.1,-324.64 259.53,-328.7"/>
-<polygon points="258.74,-332.25 269.09,-329.94 259.57,-325.3 258.74,-332.25"/>
+<path d="M143.9478,-315.1439C174.7891,-318.7421 225.4822,-324.6563 260.0068,-328.6841"/>
+<polygon points="259.8241,-332.1865 270.1623,-329.8689 260.6353,-325.2336 259.8241,-332.1865"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e780a470</title>
-<ellipse cx="387" cy="-236" rx="27" ry="18.27"/>
+<ellipse cx="387" cy="-236" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="387" y="-232.2">11</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780ab30&#45;&gt;p0x7f95e780a470</title>
-<path d="M142.26,-305.12C189.97,-291.59 296.17,-261.47 351.29,-245.84"/>
-<polygon points="351.94,-249.01 360.61,-242.92 350.03,-242.28 351.94,-249.01"/>
+<path d="M142.4009,-304.8501C190.9691,-291.1791 297.0649,-261.3151 352.1889,-245.7987"/>
+<polygon points="353.1857,-249.1542 361.8632,-243.0755 351.289,-242.416 353.1857,-249.1542"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e780a110</title>
-<ellipse cx="657" cy="-342" rx="27" ry="18.27"/>
+<ellipse cx="657" cy="-342" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="657" y="-338.2">14</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780ab30&#45;&gt;p0x7f95e780a110</title>
-<path d="M124.16,-329.92C142.16,-378.66 199.62,-510 296,-510 296,-510 296,-510 478,-510 535.64,-510 552.24,-491.73 594,-452 618.35,-428.83 635.77,-393.96 645.83,-369.71"/>
-<polygon points="649.36,-371.31 649.81,-360.72 642.86,-368.72 649.36,-371.31"/>
+<path d="M123.2871,-329.9204C141.6551,-378.6599 200.1383,-510 297,-510 297,-510 297,-510 477,-510 535.0387,-510 551.7498,-491.7922 594,-452 618.6413,-428.7923 636.4145,-393.764 646.6776,-369.4966"/>
+<polygon points="649.9586,-370.7194 650.4903,-360.138 643.476,-368.0784 649.9586,-370.7194"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a8f0&#45;&gt;p0x7f95e780a7d0</title>
-<path d="M233.93,-175.36C241.82,-176.07 250.66,-176.88 259.13,-177.65"/>
-<polygon points="258.68,-181.21 268.95,-178.63 259.31,-174.24 258.68,-181.21"/>
+<path d="M234.003,-175.4003C242.1903,-176.128 251.3292,-176.9404 260.051,-177.7156"/>
+<polygon points="259.7454,-181.2022 270.0161,-178.6014 260.3653,-174.2297 259.7454,-181.2022"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a8f0&#45;&gt;p0x7f95e780a6b0</title>
-<path d="M217.42,-190.12C232.77,-218.03 263.29,-273.52 281.44,-306.53"/>
-<polygon points="278.76,-307.92 286.65,-315 284.9,-304.55 278.76,-307.92"/>
+<path d="M216.8029,-190.4274C232.5598,-218.4396 263.6236,-273.6641 282.1244,-306.5546"/>
+<polygon points="279.256,-308.5943 287.2092,-315.5941 285.357,-305.1624 279.256,-308.5943"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e780a590</title>
-<ellipse cx="297" cy="-120" rx="27" ry="18.27"/>
+<ellipse cx="297" cy="-120" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="297" y="-116.2">10</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a8f0&#45;&gt;p0x7f95e780a590</title>
-<path d="M227.97,-160.97C239.44,-154.06 254.07,-145.25 266.81,-137.58"/>
-<polygon points="268.35,-140.14 275.11,-131.98 264.74,-134.14 268.35,-140.14"/>
+<path d="M227.4224,-160.9735C239.3055,-153.9757 254.4869,-145.0355 267.6349,-137.2928"/>
+<polygon points="269.506,-140.2527 276.3469,-132.1624 265.9539,-134.2209 269.506,-140.2527"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e780a230</title>
-<ellipse cx="567" cy="-152" rx="27" ry="18.27"/>
+<ellipse cx="567" cy="-152" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="567" y="-148.2">13</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a8f0&#45;&gt;p0x7f95e780a230</title>
-<path d="M215.72,-155.4C225.29,-136.02 243.65,-105.92 270,-93 360.36,-48.71 481.73,-104.07 536.73,-134.5"/>
-<polygon points="534.78,-137.98 545.2,-139.86 538.22,-131.89 534.78,-137.98"/>
+<path d="M214.9185,-155.3898C224.7227,-136.0075 243.4399,-105.891 270,-93 360.9798,-48.8426 482.935,-104.3652 537.9386,-134.6935"/>
+<polygon points="536.3627,-137.8228 546.7935,-139.68 539.7975,-131.7234 536.3627,-137.8228"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a7d0&#45;&gt;p0x7f95e780a470</title>
-<path d="M317.53,-193.21C329.26,-200.54 344.4,-210 357.46,-218.16"/>
-<polygon points="355.19,-221.5 365.52,-223.83 358.9,-215.56 355.19,-221.5"/>
+<path d="M317.4224,-193.4804C329.3897,-200.7937 344.7024,-210.1515 357.9143,-218.2254"/>
+<polygon points="356.3005,-221.341 366.6584,-223.569 359.9507,-215.368 356.3005,-221.341"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a7d0&#45;&gt;p0x7f95e780a110</title>
-<path d="M323.51,-185.06C347.43,-189.35 383.93,-197.16 414,-209 473.81,-232.54 483.65,-249.07 540,-280 568.9,-295.86 602.1,-313.55 625.55,-325.96"/>
-<polygon points="623.49,-329.36 633.97,-330.94 626.76,-323.17 623.49,-329.36"/>
+<path d="M323.6614,-185.1962C347.8012,-189.5028 384.0591,-197.2483 414,-209 473.8349,-232.4849 483.5968,-249.1709 540,-280 569.2048,-295.9629 602.7983,-313.7007 626.4752,-326.1002"/>
+<polygon points="624.863,-329.2067 635.3464,-330.7391 628.1068,-323.0036 624.863,-329.2067"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e780a350</title>
-<ellipse cx="477" cy="-388" rx="27" ry="18.27"/>
+<ellipse cx="477" cy="-388" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="477" y="-384.2">12</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a7d0&#45;&gt;p0x7f95e780a350</title>
-<path d="M309.65,-197.4C321.78,-214.22 341.54,-240.98 360,-263 391.1,-300.1 429.8,-340.8 453.7,-365.37"/>
-<polygon points="450.71,-367.35 460.2,-372.05 455.72,-362.46 450.71,-367.35"/>
+<path d="M309.0925,-197.7061C321.4508,-214.5435 341.4136,-241.0997 360,-263 391.4133,-300.0142 430.3661,-340.6775 454.4522,-365.2681"/>
+<polygon points="452.2151,-367.985 461.7216,-372.6623 457.2068,-363.0775 452.2151,-367.985"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a7d0&#45;&gt;p0x7f95e780a230</title>
-<path d="M323.7,-178.22C371.5,-173.05 474.22,-161.93 529.31,-155.97"/>
-<polygon points="529.42,-159.37 538.99,-154.81 528.67,-152.41 529.42,-159.37"/>
+<path d="M323.8757,-178.1133C372.4958,-172.8912 475.1137,-161.8693 530.2014,-155.9524"/>
+<polygon points="530.6639,-159.423 540.233,-154.875 529.9163,-152.463 530.6639,-159.423"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e780afb0</title>
-<ellipse cx="27" cy="-400" rx="27" ry="18.27"/>
+<ellipse cx="27" cy="-400" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="27" y="-396.2">1</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780afb0&#45;&gt;p0x7f95e780ab30</title>
-<path d="M42.93,-385.07C56.83,-371.17 77.75,-350.25 93.65,-334.35"/>
-<polygon points="95.4,-337.55 100,-328 90.45,-332.6 95.4,-337.55"/>
+<path d="M42.6768,-384.6716C56.8727,-370.7911 77.9646,-350.168 94.0568,-334.4334"/>
+<polygon points="96.7997,-336.6465 101.5028,-327.1528 91.9058,-331.6414 96.7997,-336.6465"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780afb0&#45;&gt;p0x7f95e780a8f0</title>
-<path d="M33.7,-382.07C46.92,-340.82 79.4,-241.8 90,-230 101.8,-216.86 142.96,-198.32 172.9,-186"/>
-<polygon points="174.01,-188.92 181.96,-181.92 171.38,-182.43 174.01,-188.92"/>
+<path d="M32.9026,-381.7637C46.4358,-340.3248 79.3535,-241.7497 90,-230 101.9787,-216.78 143.6966,-198.1814 173.9075,-185.8697"/>
+<polygon points="175.2881,-189.0869 183.2597,-182.108 172.6759,-182.5926 175.2881,-189.0869"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780afb0&#45;&gt;p0x7f95e780aa10</title>
-<path d="M53.05,-405.83C76.65,-410.47 112.92,-415.35 144,-410 153.9,-408.3 164.31,-405.17 173.71,-401.8"/>
-<polygon points="174.72,-404.77 182.82,-397.95 172.23,-398.23 174.72,-404.77"/>
+<path d="M52.7168,-405.9085C76.5259,-410.5029 112.8456,-415.2832 144,-410 154.1728,-408.2749 164.8926,-405.0873 174.5475,-401.6637"/>
+<polygon points="176.0206,-404.8494 184.1558,-398.0619 173.5635,-398.2948 176.0206,-404.8494"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780afb0&#45;&gt;p0x7f95e780a6b0</title>
-<path d="M49.18,-410.9C60.88,-416.31 75.87,-422.26 90,-425 152.98,-437.22 178.23,-446.71 234,-415 255.96,-402.51 272.59,-378.76 283.07,-360.02"/>
-<polygon points="286.53,-361.97 288.12,-351.5 280.35,-358.69 286.53,-361.97"/>
+<path d="M48.8333,-411.0315C60.6849,-416.405 75.7838,-422.2824 90,-425 153.0131,-437.0457 178.1095,-446.4961 234,-415 256.2102,-402.4838 273.1655,-378.6211 283.8615,-359.8516"/>
+<polygon points="287.0507,-361.3126 288.7419,-350.8536 280.8975,-357.9752 287.0507,-361.3126"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780aa10&#45;&gt;p0x7f95e780a6b0</title>
-<path d="M227.53,-375.79C239.26,-368.46 254.4,-359 267.46,-350.84"/>
-<polygon points="268.9,-353.44 275.52,-345.17 265.19,-347.5 268.9,-353.44"/>
+<path d="M227.4224,-375.5196C239.3897,-368.2063 254.7024,-358.8485 267.9143,-350.7746"/>
+<polygon points="269.9507,-353.632 276.6584,-345.431 266.3005,-347.659 269.9507,-353.632"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780aa10&#45;&gt;p0x7f95e780a110</title>
-<path d="M224.45,-401.87C254.47,-425.73 321.08,-472 386,-472 386,-472 386,-472 478,-472 534.68,-472 549.25,-453.79 594,-419 612.24,-404.82 628.44,-384.27 639.7,-367.97"/>
-<polygon points="643.09,-370.19 645.74,-359.94 637.27,-366.3 643.09,-370.19"/>
+<path d="M224.1413,-402.2495C254.7731,-426.215 321.8228,-472 387,-472 387,-472 387,-472 477,-472 534.0865,-472 548.7348,-453.7839 594,-419 612.4891,-404.7921 628.9978,-384.156 640.473,-367.8226"/>
+<polygon points="643.5699,-369.4935 646.311,-359.2593 637.7861,-365.5504 643.5699,-369.4935"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780aa10&#45;&gt;p0x7f95e780a590</title>
-<path d="M210.38,-369.53C216.14,-328.84 233.18,-229.09 270,-154 271.65,-150.63 273.67,-147.26 275.83,-144.03"/>
-<polygon points="279.08,-146.53 282.18,-136.4 273.44,-142.38 279.08,-146.53"/>
+<path d="M209.3723,-369.4819C215.1441,-328.687 232.3022,-228.7551 270,-154 271.7309,-150.5676 273.8438,-147.1533 276.1176,-143.8863"/>
+<polygon points="279.0972,-145.7502 282.3612,-135.6706 273.5239,-141.5147 279.0972,-145.7502"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780aa10&#45;&gt;p0x7f95e780a350</title>
-<path d="M234.18,-388C282.12,-388 384.08,-388 439.05,-388"/>
-<polygon points="438.71,-391.5 448.71,-388 438.71,-384.5 438.71,-391.5"/>
+<path d="M234.1248,-388C282.7438,-388 384.7806,-388 439.8565,-388"/>
+<polygon points="439.8932,-391.5001 449.8932,-388 439.8932,-384.5001 439.8932,-391.5001"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a6b0&#45;&gt;p0x7f95e780a470</title>
-<path d="M312.14,-317.42C326.38,-301.72 348.52,-277.31 364.85,-259.31"/>
-<polygon points="366.77,-262.3 370.9,-252.55 361.58,-257.6 366.77,-262.3"/>
+<path d="M311.4601,-317.4153C326.0245,-301.7181 348.6701,-277.3111 365.3711,-259.3111"/>
+<polygon points="368.3399,-261.2573 372.5758,-251.5461 363.2085,-256.4961 368.3399,-261.2573"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a6b0&#45;&gt;p0x7f95e780a110</title>
-<path d="M315.39,-346.69C342.34,-366.86 396.67,-403.43 450,-415 513.21,-428.72 536.15,-422.92 594,-394 608.62,-386.69 622.76,-375.29 633.83,-365.02"/>
-<polygon points="635.89,-367.93 640.66,-358.47 631.03,-362.89 635.89,-367.93"/>
+<path d="M314.9757,-347.0113C342.282,-367.2294 396.6934,-403.4299 450,-415 513.2053,-428.7185 536.0355,-422.692 594,-394 609.0774,-386.5368 623.7091,-374.8247 635.0707,-364.404"/>
+<polygon points="637.5377,-366.8879 642.3792,-357.464 632.7176,-361.8118 637.5377,-366.8879"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a6b0&#45;&gt;p0x7f95e780a350</title>
-<path d="M322.01,-340.42C352.79,-349.93 406.4,-366.49 441.54,-377.35"/>
-<polygon points="440.22,-380.92 450.81,-380.52 442.28,-374.23 440.22,-380.92"/>
+<path d="M321.6508,-340.5322C352.936,-350.0916 407.0786,-366.6351 442.4671,-377.4483"/>
+<polygon points="441.7724,-380.8957 452.3587,-380.4707 443.818,-374.2012 441.7724,-380.8957"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a6b0&#45;&gt;p0x7f95e780a230</title>
-<path d="M319.02,-322C357.26,-301.62 440.15,-255.69 504,-208 517.65,-197.8 531.83,-185.17 543.18,-174.49"/>
-<polygon points="545.08,-177.55 549.89,-168.11 540.25,-172.49 545.08,-177.55"/>
+<path d="M318.7065,-321.6644C357.364,-301.0965 440.0751,-255.3564 504,-208 517.8533,-197.7373 532.2985,-185.0603 543.857,-174.3647"/>
+<polygon points="546.4565,-176.7251 551.355,-167.3306 541.6672,-171.6199 546.4565,-176.7251"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e780ae90</title>
-<ellipse cx="27" cy="-217" rx="27" ry="18.27"/>
+<ellipse cx="27" cy="-217" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="27" y="-213.2">2</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780ae90&#45;&gt;p0x7f95e780ab30</title>
-<path d="M42.28,-232.44C54.84,-246.03 73.62,-266.33 90,-284 91.42,-285.53 92.89,-287.11 94.36,-288.7"/>
-<polygon points="91.32,-290.65 100.69,-295.6 96.45,-285.89 91.32,-290.65"/>
+<path d="M41.7104,-232.7561C54.443,-246.367 73.3742,-266.54 90,-284 91.5891,-285.6689 93.2344,-287.3904 94.8925,-289.1208"/>
+<polygon points="92.657,-291.8457 102.1107,-296.6289 97.7033,-286.9943 92.657,-291.8457"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780ae90&#45;&gt;p0x7f95e780a8f0</title>
-<path d="M39.85,-200.41C50.98,-186.38 69.02,-167.28 90,-159 116.67,-148.47 149.25,-153.84 173.09,-160.76"/>
-<polygon points="171.78,-164.33 182.37,-163.99 173.88,-157.65 171.78,-164.33"/>
+<path d="M39.0981,-200.4038C50.4455,-186.371 68.81,-167.2688 90,-159 116.8477,-148.5234 149.5774,-153.8167 173.5854,-160.6964"/>
+<polygon points="172.7103,-164.0892 183.298,-163.7005 174.7788,-157.4018 172.7103,-164.0892"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780ae90&#45;&gt;p0x7f95e780a7d0</title>
-<path d="M37.83,-200C48.37,-183.6 66.79,-159.71 90,-149 148.12,-122.17 172.09,-129.73 234,-146 246.26,-149.22 258.66,-155.48 269.1,-161.83"/>
-<polygon points="266.79,-165.14 277.09,-167.6 270.57,-159.25 266.79,-165.14"/>
+<path d="M37.2552,-199.6888C48.0585,-183.2876 66.7241,-159.6307 90,-149 148.2281,-122.4056 172.0328,-129.9427 234,-146 246.5851,-149.2611 259.3328,-155.6409 270.0377,-162.0705"/>
+<polygon points="268.1771,-165.035 278.5011,-167.4158 271.9151,-159.1166 268.1771,-165.035"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780ae90&#45;&gt;p0x7f95e780aa10</title>
-<path d="M39.5,-233.37C44.26,-240.47 49.67,-248.98 54,-257 72.91,-292.02 61.66,-311.05 90,-339 111.97,-360.66 144.96,-373.33 170.16,-380.34"/>
-<polygon points="169.21,-383.97 179.77,-383.09 170.96,-377.19 169.21,-383.97"/>
+<path d="M39.2589,-233.7033C44.1444,-240.7178 49.6323,-249.0752 54,-257 73.2119,-291.8583 61.6164,-311.0971 90,-339 112.0841,-360.7101 145.2105,-373.3545 170.5839,-380.342"/>
+<polygon points="170.0239,-383.812 180.5808,-382.917 171.77,-377.0332 170.0239,-383.812"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e780ad70</title>
-<ellipse cx="27" cy="-284" rx="27" ry="18.27"/>
+<ellipse cx="27" cy="-284" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="27" y="-280.2">3</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780ad70&#45;&gt;p0x7f95e780ac50</title>
-<path d="M52.05,-276.62C61.17,-273.82 71.73,-270.58 81.62,-267.55"/>
-<polygon points="82.45,-270.65 90.98,-264.37 80.4,-263.96 82.45,-270.65"/>
+<path d="M52.07,-276.479C61.4322,-273.6703 72.2367,-270.429 82.3123,-267.4063"/>
+<polygon points="83.4919,-270.7066 92.0644,-264.4807 81.4804,-264.0018 83.4919,-270.7066"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780ad70&#45;&gt;p0x7f95e780ab30</title>
-<path d="M52.05,-291.65C61.17,-294.55 71.73,-297.92 81.62,-301.06"/>
-<polygon points="80.39,-304.66 90.98,-304.36 82.51,-297.99 80.39,-304.66"/>
+<path d="M51.5929,-291.6511C61.2164,-294.6451 72.4198,-298.1306 82.8067,-301.3621"/>
+<polygon points="81.8485,-304.7294 92.4368,-304.3581 83.928,-298.0454 81.8485,-304.7294"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780ad70&#45;&gt;p0x7f95e780a8f0</title>
-<path d="M39.04,-267.15C54.89,-243.18 82.97,-201.58 90,-197 113.35,-181.78 144.49,-175.94 168.63,-173.83"/>
-<polygon points="168.77,-177.26 178.51,-173.08 168.29,-170.27 168.77,-177.26"/>
+<path d="M38.2281,-267.1519C54.3526,-243.1721 82.9102,-201.5763 90,-197 113.6741,-181.719 145.1821,-175.8984 169.5365,-173.8005"/>
+<polygon points="170.0927,-177.2707 179.83,-173.0951 169.6141,-170.287 170.0927,-177.2707"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780ad70&#45;&gt;p0x7f95e780aa10</title>
-<path d="M35.27,-301.89C44.65,-322.48 63.03,-355.57 90,-372 113.68,-386.42 145.06,-390.02 169.21,-390.23"/>
-<polygon points="169.12,-393.72 179.08,-390.11 169.04,-386.72 169.12,-393.72"/>
+<path d="M34.4614,-301.9004C44.0624,-322.5028 62.8084,-355.6009 90,-372 113.8569,-386.3879 145.3536,-390.0093 169.6572,-390.2403"/>
+<polygon points="169.9593,-393.7377 179.926,-390.144 169.8936,-386.7381 169.9593,-393.7377"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a470&#45;&gt;p0x7f95e780a110</title>
-<path d="M405.21,-249.91C408.3,-252.76 411.37,-255.86 414,-259 433.72,-282.55 424.13,-301.44 450,-318 501.61,-351.04 575.64,-350.76 619.47,-346.86"/>
-<polygon points="619.6,-350.26 629.2,-345.77 618.9,-343.29 619.6,-350.26"/>
+<path d="M404.8988,-249.8409C408.1023,-252.6995 411.2816,-255.8152 414,-259 433.9425,-282.3645 424.1248,-301.4447 450,-318 501.9114,-351.2135 576.3907,-350.8525 620.4199,-346.8925"/>
+<polygon points="620.7966,-350.3724 630.3947,-345.8862 620.0939,-343.4077 620.7966,-350.3724"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a470&#45;&gt;p0x7f95e780a350</title>
-<path d="M402.2,-251.6C406.34,-256.61 410.64,-262.34 414,-268 435.56,-304.35 428.44,-319.65 450,-356 451.57,-358.66 453.36,-361.32 455.23,-363.93"/>
-<polygon points="452.91,-365.64 461.8,-371.4 458.44,-361.35 452.91,-365.64"/>
+<path d="M401.7797,-251.5296C406.0741,-256.5384 410.5355,-262.28 414,-268 435.892,-304.1444 428.108,-319.8556 450,-356 451.7322,-358.86 453.7137,-361.7254 455.799,-364.5019"/>
+<polygon points="453.2204,-366.8801 462.2203,-372.4704 458.6709,-362.4878 453.2204,-366.8801"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a470&#45;&gt;p0x7f95e780a230</title>
-<path d="M409.83,-225.7C441,-210.99 498.48,-183.86 534.33,-166.94"/>
-<polygon points="535.72,-169.69 543.27,-162.25 532.74,-163.36 535.72,-169.69"/>
+<path d="M409.4332,-225.5312C441.183,-210.7146 499.3704,-183.5605 535.4573,-166.7199"/>
+<polygon points="536.9858,-169.869 544.5675,-162.4685 534.0256,-163.5258 536.9858,-169.869"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e7809ed0</title>
-<ellipse cx="747" cy="-198" rx="27" ry="18.27"/>
+<ellipse cx="747" cy="-198" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="747" y="-194.2">16</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a470&#45;&gt;p0x7f95e7809ed0</title>
-<path d="M414.03,-233.24C476.81,-226.57 636.66,-209.61 709.2,-201.91"/>
-<polygon points="709.49,-205.29 719.06,-200.75 708.75,-198.33 709.49,-205.29"/>
+<path d="M413.7644,-233.1749C477.2873,-226.4697 637.2577,-209.5839 709.9842,-201.9072"/>
+<polygon points="710.4821,-205.3742 720.0594,-200.8437 709.7472,-198.4129 710.4821,-205.3742"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a110&#45;&gt;p0x7f95e7809ed0</title>
-<path d="M667.49,-325.09C672.46,-316.17 678.61,-305.02 684,-295 700.37,-264.53 700.05,-254.26 720,-226 721.18,-224.33 722.45,-222.66 723.77,-221.01"/>
-<polygon points="726.75,-223.92 730.64,-214.06 721.45,-219.34 726.75,-223.92"/>
+<path d="M667.1704,-324.685C672.303,-315.8498 678.5747,-304.9037 684,-295 700.6184,-264.664 699.7883,-254.0701 720,-226 721.3145,-224.1744 722.7441,-222.3498 724.2366,-220.5569"/>
+<polygon points="726.9485,-222.7751 731.0204,-212.994 721.7377,-218.101 726.9485,-222.7751"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e7809db0</title>
-<ellipse cx="837" cy="-72" rx="27" ry="18.27"/>
+<ellipse cx="837" cy="-72" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="837" y="-68.2">17</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a110&#45;&gt;p0x7f95e7809db0</title>
-<path d="M668.58,-325.05C673.72,-316.31 679.71,-305.33 684,-295 706.03,-242.01 688.05,-218.67 720,-171 737.08,-145.51 750.61,-147.85 774,-128 786.91,-117.05 800.93,-104.45 812.37,-93.98"/>
-<polygon points="814.2,-97.13 819.18,-87.78 809.46,-91.98 814.2,-97.13"/>
+<path d="M668.0232,-325.0986C673.3731,-316.3688 679.5818,-305.3922 684,-295 706.4528,-242.188 688.0515,-218.671 720,-171 737.08,-145.5146 750.5263,-147.754 774,-128 787.1002,-116.9757 801.3853,-104.3311 813.0359,-93.8501"/>
+<polygon points="815.5596,-96.2869 820.6338,-86.9861 810.8671,-91.0926 815.5596,-96.2869"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e7809810</title>
-<ellipse cx="1107" cy="-381" rx="27" ry="18.27"/>
+<ellipse cx="1107" cy="-381" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="1107" y="-377.2">22</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a110&#45;&gt;p0x7f95e7809810</title>
-<path d="M678.93,-352.81C707.6,-366.95 761.11,-390.99 810,-400 902.86,-417.11 1014.56,-399.96 1070.46,-388.85"/>
-<polygon points="1071.1,-392.09 1080.2,-386.66 1069.7,-385.23 1071.1,-392.09"/>
+<path d="M679.072,-353.2989C708.1711,-367.4999 761.3807,-391.0938 810,-400 903.103,-417.0548 1015.0455,-399.9713 1071.1881,-388.8746"/>
+<polygon points="1072.2249,-392.2356 1081.3278,-386.8145 1070.8311,-385.3757 1072.2249,-392.2356"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e7809930</title>
-<ellipse cx="1107" cy="-549" rx="27" ry="18.27"/>
+<ellipse cx="1107" cy="-549" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="1107" y="-545.2">21</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a110&#45;&gt;p0x7f95e7809930</title>
-<path d="M673.97,-356.73C719.19,-397.29 853.69,-510.01 990,-547 1015.89,-554.03 1046.25,-554.28 1069.41,-552.91"/>
-<polygon points="1069.43,-556.35 1079.15,-552.13 1068.92,-549.36 1069.43,-556.35"/>
+<path d="M673.3573,-357.019C719.0617,-397.8032 853.7165,-510.0272 990,-547 1016.0142,-554.0575 1046.491,-554.3367 1069.8168,-552.968"/>
+<polygon points="1070.2639,-556.445 1079.9892,-552.2416 1069.7652,-549.4628 1070.2639,-556.445"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a590&#45;&gt;p0x7f95e780a470</title>
-<path d="M310.45,-136.24C314.75,-141.86 319.59,-148.2 324,-154 338.58,-173.18 355.03,-194.93 367.31,-211.21"/>
-<polygon points="364.86,-212.77 373.67,-218.64 370.45,-208.55 364.86,-212.77"/>
+<path d="M309.9628,-136.2147C314.4303,-141.8317 319.4528,-148.1786 324,-154 339.0574,-173.2766 355.9326,-195.2619 368.4254,-211.6122"/>
+<polygon points="365.6764,-213.7792 374.526,-219.6046 371.2406,-209.532 365.6764,-213.7792"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a590&#45;&gt;p0x7f95e780a110</title>
-<path d="M320.89,-128.88C373.03,-149.81 503.14,-206.1 594,-280 608.39,-291.71 623.13,-306.32 634.63,-318.42"/>
-<polygon points="631.64,-320.41 641.02,-325.32 636.75,-315.63 631.64,-320.41"/>
+<path d="M320.7256,-129.2198C373.489,-150.4476 503.0592,-206.6349 594,-280 608.6963,-291.856 623.8196,-306.6384 635.5642,-318.795"/>
+<polygon points="633.3251,-321.519 642.7558,-326.3473 638.3945,-316.6918 633.3251,-321.519"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a590&#45;&gt;p0x7f95e7809ed0</title>
-<path d="M314.98,-106.09C345.32,-82.69 411.69,-38 476,-38 476,-38 476,-38 568,-38 646.61,-38 706.25,-125.39 732.02,-171"/>
-<polygon points="729.4,-172.49 737.28,-179.57 735.53,-169.12 729.4,-172.49"/>
+<path d="M314.6884,-105.7167C345.6278,-82.2231 412.441,-38 477,-38 477,-38 477,-38 567,-38 646.4354,-38 707.1047,-126.1221 733.1117,-171.5694"/>
+<polygon points="730.2039,-173.5416 738.1295,-180.5726 736.3184,-170.1337 730.2039,-173.5416"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a590&#45;&gt;p0x7f95e7809db0</title>
-<path d="M308.45,-103.21C319.48,-86.68 338.26,-61.7 360,-46 404.96,-13.53 420.54,0 476,0 476,0 476,0 658,0 714.83,0 774.9,-31.93 808.7,-53.26"/>
-<polygon points="806.21,-56.47 816.51,-58.96 810.02,-50.59 806.21,-56.47"/>
+<path d="M308.2428,-103.1342C319.6567,-87.1112 338.651,-63.2619 360,-48 405.7239,-15.313 420.794,0 477,0 477,0 477,0 657,0 714.4672,0 775.3484,-32.0283 809.526,-53.3616"/>
+<polygon points="807.7161,-56.3587 818.0272,-58.7941 811.4854,-50.4601 807.7161,-56.3587"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a350&#45;&gt;p0x7f95e780a230</title>
-<path d="M484.61,-370.26C499.78,-329.6 537.14,-229.39 555.49,-180.19"/>
-<polygon points="559.09,-181.54 559.31,-170.94 552.54,-179.09 559.09,-181.54"/>
+<path d="M483.9127,-369.8733C499.5913,-328.7605 537.928,-228.2331 556.5319,-179.4498"/>
+<polygon points="559.8939,-180.4562 560.1869,-169.8654 553.3534,-177.9618 559.8939,-180.4562"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a350&#45;&gt;p0x7f95e7809db0</title>
-<path d="M489.68,-371.72C521.99,-327.6 617.02,-203.95 720,-128 727.35,-122.58 772.54,-101.28 804.29,-86.57"/>
-<polygon points="805.45,-89.43 813.06,-82.06 802.52,-83.07 805.45,-89.43"/>
+<path d="M488.9649,-371.3832C521.6412,-326.9488 616.8695,-203.6364 720,-128 727.4055,-122.5688 772.8792,-101.3213 804.8995,-86.6194"/>
+<polygon points="806.7138,-89.6381 814.3479,-82.2916 803.7987,-83.2739 806.7138,-89.6381"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e7809a50</title>
-<ellipse cx="1017" cy="-465" rx="27" ry="18.27"/>
+<ellipse cx="1017" cy="-465" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="1017" y="-461.2">20</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a350&#45;&gt;p0x7f95e7809a50</title>
-<path d="M480.15,-406.44C485.03,-440.8 499.81,-515.35 540,-562 578.15,-606.29 597.54,-624 656,-624 656,-624 656,-624 838,-624 896.46,-624 911.09,-601.7 954,-562 975.43,-542.17 992.6,-513.39 1003.38,-492.32"/>
-<polygon points="1006.86,-494.19 1008.15,-483.67 1000.58,-491.09 1006.86,-494.19"/>
+<path d="M479.2571,-406.4576C484.3314,-440.8452 499.5377,-515.4403 540,-562 578.6028,-606.42 598.1501,-624 657,-624 657,-624 657,-624 837,-624 895.8499,-624 910.5824,-601.7268 954,-562 975.8401,-542.0164 993.4185,-512.8812 1004.4008,-491.7616"/>
+<polygon points="1007.6006,-493.1892 1008.9742,-482.6837 1001.3492,-490.0397 1007.6006,-493.1892"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a350&#45;&gt;p0x7f95e7809810</title>
-<path d="M486.72,-405.43C508.84,-446.9 571.44,-548 656,-548 656,-548 656,-548 838,-548 921.39,-548 918.54,-480.99 990,-438 1017.3,-421.58 1050,-405.84 1073.71,-395.07"/>
-<polygon points="1074.91,-397.92 1082.6,-390.64 1072.05,-391.54 1074.91,-397.92"/>
+<path d="M485.8705,-405.4274C508.3595,-446.8959 571.9144,-548 657,-548 657,-548 657,-548 837,-548 920.7504,-548 918.095,-480.9395 990,-438 1017.6209,-421.5056 1050.71,-405.7267 1074.6404,-394.9697"/>
+<polygon points="1076.2562,-398.0817 1083.9718,-390.8207 1073.4123,-391.6854 1076.2562,-398.0817"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a230&#45;&gt;p0x7f95e780a110</title>
-<path d="M576.12,-169.53C591.51,-202.76 625.02,-275.11 643.37,-314.72"/>
-<polygon points="640.52,-315.91 647.9,-323.51 646.87,-312.96 640.52,-315.91"/>
+<path d="M575.3057,-169.5342C591.0714,-202.8175 625.4306,-275.3535 644.1752,-314.9255"/>
+<polygon points="641.1396,-316.6929 648.5836,-324.232 647.4657,-313.6963 641.1396,-316.6929"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a230&#45;&gt;p0x7f95e7809ed0</title>
-<path d="M593.58,-156.25C617.25,-160.43 653.3,-167.42 684,-176 693.41,-178.63 703.45,-181.96 712.65,-185.22"/>
-<polygon points="711.39,-188.85 721.98,-188.98 713.78,-182.27 711.39,-188.85"/>
+<path d="M593.2603,-156.3501C617.1302,-160.5486 653.217,-167.5089 684,-176 693.7808,-178.6979 704.2427,-182.1247 713.775,-185.4658"/>
+<polygon points="712.71,-188.8021 723.3046,-188.8825 715.0726,-182.2128 712.71,-188.8021"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a230&#45;&gt;p0x7f95e7809db0</title>
-<path d="M591.22,-143.3C620.85,-132.38 673.81,-113.45 720,-100 746.67,-92.24 777.22,-84.93 800.27,-79.72"/>
-<polygon points="800.93,-82.94 809.93,-77.34 799.41,-76.11 800.93,-82.94"/>
+<path d="M590.8959,-143.1087C620.8197,-132.1536 673.7767,-113.3548 720,-100 746.9174,-92.2231 777.752,-84.908 801.007,-79.7062"/>
+<polygon points="801.7876,-83.1182 810.7958,-77.5411 800.2758,-76.2834 801.7876,-83.1182"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e7809c90</title>
-<ellipse cx="837" cy="-373" rx="27" ry="18.27"/>
+<ellipse cx="837" cy="-373" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="837" y="-369.2">18</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e780a230&#45;&gt;p0x7f95e7809c90</title>
-<path d="M584.31,-165.96C612.03,-189.62 670.16,-239.04 720,-280 750.77,-305.28 786.59,-333.87 810.19,-352.6"/>
-<polygon points="807.59,-355.8 817.6,-359.26 811.94,-350.31 807.59,-355.8"/>
+<path d="M584.3205,-166.7319C612.5572,-190.6938 670.3482,-239.5078 720,-280 751.1189,-305.3782 787.3698,-334.0587 811.1763,-352.775"/>
+<polygon points="809.0228,-355.5341 819.0491,-358.9579 813.3463,-350.0288 809.0228,-355.5341"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809ed0&#45;&gt;p0x7f95e7809db0</title>
-<path d="M761.47,-182.43C765.66,-177.32 770.18,-171.54 774,-166 792.1,-139.78 791.9,-130.22 810,-104 811.79,-101.4 813.74,-98.75 815.73,-96.15"/>
-<polygon points="819.06,-98.58 822.53,-88.57 813.58,-94.23 819.06,-98.58"/>
+<path d="M761.3051,-182.1602C765.5802,-177.1387 770.1501,-171.468 774,-166 792.3441,-139.9461 791.6559,-130.0539 810,-104 811.925,-101.266 814.0299,-98.4813 816.188,-95.7525"/>
+<polygon points="819.0466,-97.7867 822.6949,-87.8398 813.6399,-93.3406 819.0466,-97.7867"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809ed0&#45;&gt;p0x7f95e7809810</title>
-<path d="M772.31,-190.85C812.4,-180.48 893.92,-165.41 954,-194 1023.8,-227.21 1072.02,-309.89 1093.46,-353.34"/>
-<polygon points="1090.72,-354.73 1098.21,-362.23 1097.03,-351.7 1090.72,-354.73"/>
+<path d="M772.0686,-190.6766C812.5662,-180.2937 893.9089,-165.5241 954,-194 1024.4821,-227.4 1073.2927,-310.9316 1094.7306,-354.152"/>
+<polygon points="1091.6159,-355.7507 1099.1225,-363.2275 1097.9169,-352.7015 1091.6159,-355.7507"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e7809b70</title>
-<ellipse cx="927" cy="-221" rx="27" ry="18.27"/>
+<ellipse cx="927" cy="-221" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="927" y="-217.2">19</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809ed0&#45;&gt;p0x7f95e7809b70</title>
-<path d="M773.88,-201.34C804.33,-205.28 855.1,-211.84 889.53,-216.29"/>
-<polygon points="888.72,-219.84 899.09,-217.65 889.62,-212.9 888.72,-219.84"/>
+<path d="M773.5596,-201.3937C804.4011,-205.3346 855.4655,-211.8595 890.1378,-216.2898"/>
+<polygon points="889.9684,-219.7966 900.3314,-217.5923 890.8557,-212.853 889.9684,-219.7966"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e78096f0</title>
-<ellipse cx="1197" cy="-221" rx="27" ry="18.27"/>
+<ellipse cx="1197" cy="-221" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="1197" y="-217.2">23</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809ed0&#45;&gt;p0x7f95e78096f0</title>
-<path d="M769.18,-187.1C780.88,-181.69 795.87,-175.74 810,-173 833.56,-168.43 840,-172.73 864,-173 904.01,-173.44 914.2,-170.94 954,-175 1034.91,-183.26 1054.19,-192.32 1134,-208 1142.4,-209.65 1151.43,-211.5 1159.93,-213.28"/>
-<polygon points="1159.18,-216.91 1169.69,-215.54 1160.63,-210.06 1159.18,-216.91"/>
+<path d="M768.8333,-186.9685C780.6849,-181.595 795.7838,-175.7176 810,-173 833.5731,-168.4937 840.0015,-172.7334 864,-173 904.0074,-173.4445 914.1971,-170.9353 954,-175 1034.9125,-183.2629 1054.1675,-192.4473 1134,-208 1142.7455,-209.7038 1152.1588,-211.6082 1160.9742,-213.4227"/>
+<polygon points="1160.4701,-216.8926 1170.9722,-215.4941 1161.8903,-210.0381 1160.4701,-216.8926"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809db0&#45;&gt;p0x7f95e7809a50</title>
-<path d="M843.37,-90.08C853.17,-122.37 875.26,-191.82 900,-248 931.27,-319 976.55,-398.47 1000.23,-438.66"/>
-<polygon points="997.65,-440.19 1005.76,-447.01 1003.68,-436.62 997.65,-440.19"/>
+<path d="M842.4783,-90.0862C852.4766,-122.3753 874.9721,-191.8224 900,-248 931.7666,-319.3033 977.6531,-399.1471 1001.4181,-439.1734"/>
+<polygon points="998.5593,-441.2128 1006.6886,-448.0073 1004.5707,-437.6263 998.5593,-441.2128"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809db0&#45;&gt;p0x7f95e7809b70</title>
-<path d="M848.09,-89.09C863.41,-115.03 892.64,-164.51 910.61,-194.95"/>
-<polygon points="907.92,-196.28 916.02,-203.11 913.95,-192.72 907.92,-196.28"/>
+<path d="M847.3241,-89.0922C862.9736,-115.0007 892.8197,-164.4126 911.2084,-194.8562"/>
+<polygon points="908.3528,-196.8981 916.519,-203.6482 914.3446,-193.2789 908.3528,-196.8981"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809db0&#45;&gt;p0x7f95e78096f0</title>
-<path d="M863.25,-67.03C917.93,-57.73 1049.16,-43.48 1134,-101 1165.19,-122.14 1181.65,-164.02 1189.58,-192.27"/>
-<polygon points="1186.4,-192.93 1192.31,-201.72 1193.17,-191.16 1186.4,-192.93"/>
+<path d="M863.1408,-66.9017C918.4324,-57.6312 1049.1115,-43.874 1134,-101 1165.6427,-122.2941 1182.4721,-164.7321 1190.5611,-193.0011"/>
+<polygon points="1187.1926,-193.9531 1193.157,-202.7095 1193.955,-192.1448 1187.1926,-193.9531"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e7809150</title>
-<ellipse cx="1467" cy="-259" rx="27" ry="18.27"/>
+<ellipse cx="1467" cy="-259" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="1467" y="-255.2">28</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809db0&#45;&gt;p0x7f95e7809150</title>
-<path d="M862.21,-64.59C896.21,-54.86 960.21,-39 1016,-39 1016,-39 1016,-39 1288,-39 1385.59,-39 1438.9,-171.45 1457.89,-230.81"/>
-<polygon points="1454.74,-231.48 1461.04,-240 1461.43,-229.41 1454.74,-231.48"/>
+<path d="M861.7792,-64.5118C896.2452,-54.7754 960.7656,-39 1017,-39 1017,-39 1017,-39 1287,-39 1384.9969,-39 1439.2686,-171.3736 1458.6852,-230.7585"/>
+<polygon points="1455.4525,-232.144 1461.8075,-240.6213 1462.1261,-230.0313 1455.4525,-232.144"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809a50&#45;&gt;p0x7f95e7809810</title>
-<path d="M1033.33,-450.37C1047,-437.32 1067.21,-418.03 1082.85,-403.1"/>
-<polygon points="1084.74,-406.18 1089.55,-396.75 1079.9,-401.12 1084.74,-406.18"/>
+<path d="M1033.0902,-449.9825C1047.1683,-436.843 1067.7927,-417.5935 1083.6799,-402.7654"/>
+<polygon points="1086.1267,-405.2694 1091.0491,-395.8875 1081.3504,-400.152 1086.1267,-405.2694"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809a50&#45;&gt;p0x7f95e7809930</title>
-<path d="M1033.33,-479.63C1047,-492.68 1067.21,-511.97 1082.85,-526.9"/>
-<polygon points="1079.9,-528.88 1089.55,-533.25 1084.74,-523.82 1079.9,-528.88"/>
+<path d="M1033.0902,-480.0175C1047.1683,-493.157 1067.7927,-512.4065 1083.6799,-527.2346"/>
+<polygon points="1081.3504,-529.848 1091.0491,-534.1125 1086.1267,-524.7306 1081.3504,-529.848"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809a50&#45;&gt;p0x7f95e78096f0</title>
-<path d="M1041.1,-456.14C1071.06,-444.24 1121.02,-422.88 1134,-408 1173.79,-362.36 1188.2,-290.42 1193.3,-250.38"/>
-<polygon points="1196.89,-250.85 1194.55,-240.51 1189.93,-250.04 1196.89,-250.85"/>
+<path d="M1040.8067,-455.9512C1071.065,-444.032 1120.9457,-422.8478 1134,-408 1174.3016,-362.1613 1189.0213,-289.5515 1194.2465,-249.6359"/>
+<polygon points="1197.7431,-249.8725 1195.4567,-239.5274 1190.7928,-249.0404 1197.7431,-249.8725"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e78095d0</title>
-<ellipse cx="1197" cy="-427" rx="27" ry="18.27"/>
+<ellipse cx="1197" cy="-427" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="1197" y="-423.2">24</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809a50&#45;&gt;p0x7f95e78095d0</title>
-<path d="M1043.37,-459.89C1066.89,-455.12 1102.84,-447.74 1134,-441 1142.57,-439.15 1151.79,-437.09 1160.44,-435.15"/>
-<polygon points="1161,-438.38 1169.98,-432.76 1159.46,-431.55 1161,-438.38"/>
+<path d="M1043.0485,-459.7836C1066.7757,-455.0019 1102.7722,-447.6721 1134,-441 1142.9163,-439.0949 1152.5297,-436.9864 1161.4962,-434.9963"/>
+<polygon points="1162.2743,-438.4088 1171.2732,-432.8168 1160.7512,-431.5765 1162.2743,-438.4088"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809810&#45;&gt;p0x7f95e78096f0</title>
-<path d="M1117.42,-363.88C1132.77,-335.97 1163.29,-280.48 1181.44,-247.47"/>
-<polygon points="1184.9,-249.45 1186.65,-239 1178.76,-246.08 1184.9,-249.45"/>
+<path d="M1116.8029,-363.5726C1132.5598,-335.5604 1163.6236,-280.3359 1182.1244,-247.4454"/>
+<polygon points="1185.357,-248.8376 1187.2092,-238.4059 1179.256,-245.4057 1185.357,-248.8376"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809810&#45;&gt;p0x7f95e7809150</title>
-<path d="M1134.25,-378.51C1187.55,-372.63 1311.29,-354.78 1404,-309 1418.23,-301.98 1432.16,-291.2 1443.2,-281.45"/>
-<polygon points="1445.02,-284.61 1450.03,-275.27 1440.3,-279.45 1445.02,-284.61"/>
+<path d="M1134.1322,-378.3719C1188.0073,-372.3216 1311.2753,-354.2893 1404,-309 1418.5388,-301.8989 1432.8234,-290.9822 1444.1053,-281.159"/>
+<polygon points="1446.6646,-283.5641 1451.7502,-274.2696 1441.9785,-278.364 1446.6646,-283.5641"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809810&#45;&gt;p0x7f95e78095d0</title>
-<path d="M1128.85,-391.9C1139.73,-397.59 1153.25,-404.66 1165.3,-410.95"/>
-<polygon points="1163.51,-414.49 1173.99,-416.02 1166.75,-408.28 1163.51,-414.49"/>
+<path d="M1128.7865,-392.1353C1139.9796,-397.8562 1153.8112,-404.9257 1166.0873,-411.2002"/>
+<polygon points="1164.6049,-414.3732 1175.1022,-415.8078 1167.7908,-408.1401 1164.6049,-414.3732"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e7809390</title>
-<ellipse cx="1287" cy="-385" rx="27" ry="18.27"/>
+<ellipse cx="1287" cy="-385" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="1287" y="-381.2">26</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809810&#45;&gt;p0x7f95e7809390</title>
-<path d="M1134.26,-381.59C1164.5,-382.27 1214.39,-383.39 1248.66,-384.16"/>
-<polygon points="1248.55,-387.68 1258.63,-384.41 1248.71,-380.68 1248.55,-387.68"/>
+<path d="M1134.3381,-381.6075C1165.1765,-382.2928 1215.5008,-383.4111 1249.8771,-384.175"/>
+<polygon points="1249.9191,-387.6767 1259.9944,-384.3999 1250.0746,-380.6785 1249.9191,-387.6767"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809c90&#45;&gt;p0x7f95e7809930</title>
-<path d="M849.22,-389.38C871.85,-421.06 926.28,-490.63 990,-525 1014.38,-538.15 1045.21,-544.11 1068.96,-546.8"/>
-<polygon points="1068.36,-550.35 1078.65,-547.85 1069.04,-543.39 1068.36,-550.35"/>
+<path d="M848.6667,-389.8808C871.6936,-421.7985 926.3148,-490.8492 990,-525 1014.6733,-538.2309 1045.8663,-544.1814 1069.8384,-546.8508"/>
+<polygon points="1069.6704,-550.3508 1079.9618,-547.8332 1070.3466,-543.3836 1069.6704,-550.3508"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809c90&#45;&gt;p0x7f95e7809b70</title>
-<path d="M845.76,-355.28C856.57,-331.3 877.4,-287.53 900,-253 901.73,-250.36 903.63,-247.68 905.6,-245.06"/>
-<polygon points="908.93,-247.48 912.37,-237.46 903.43,-243.15 908.93,-247.48"/>
+<path d="M844.84,-355.2349C855.7762,-331.1949 876.8857,-287.3618 900,-253 901.8663,-250.2256 903.9336,-247.415 906.0695,-244.6709"/>
+<polygon points="908.9327,-246.6984 912.5504,-236.7403 903.5124,-242.2689 908.9327,-246.6984"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809c90&#45;&gt;p0x7f95e78096f0</title>
-<path d="M860.39,-363.49C921.67,-337.47 1092.29,-265.03 1163.81,-234.67"/>
-<polygon points="1164.78,-237.63 1172.61,-230.5 1162.04,-231.19 1164.78,-237.63"/>
+<path d="M860.0673,-363.2605C922.0215,-337.1021 1092.2093,-265.245 1164.1773,-234.8585"/>
+<polygon points="1165.8079,-237.9693 1173.6589,-230.8551 1163.085,-231.5205 1165.8079,-237.9693"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809c90&#45;&gt;p0x7f95e78095d0</title>
-<path d="M859.11,-383.71C883.52,-396.69 924.15,-420.18 954,-447 973.05,-464.12 966.92,-480.9 990,-492 1051.65,-521.63 1130.01,-476.05 1169.98,-447.39"/>
-<polygon points="1171.86,-449.62 1177.83,-440.87 1167.7,-443.98 1171.86,-449.62"/>
+<path d="M858.1035,-384.4685C882.5365,-398.2749 923.3442,-422.9978 954,-450 972.4491,-466.2503 967.6638,-481.7268 990,-492 1052.489,-520.7409 1131.15,-475.4101 1171.1193,-447.0537"/>
+<polygon points="1173.2446,-449.8358 1179.271,-441.1219 1169.1258,-444.1758 1173.2446,-449.8358"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809930&#45;&gt;p0x7f95e78095d0</title>
-<path d="M1121.37,-533.36C1125.55,-528.25 1130.1,-522.48 1134,-517 1151.6,-492.29 1152.4,-483.71 1170,-459 1171.83,-456.43 1173.8,-453.8 1175.81,-451.2"/>
-<polygon points="1179.13,-453.64 1182.63,-443.64 1173.66,-449.28 1179.13,-453.64"/>
+<path d="M1121.2066,-533.0897C1125.4777,-528.0654 1130.07,-522.4108 1134,-517 1151.8296,-492.4521 1152.1704,-483.5479 1170,-459 1171.965,-456.2946 1174.0956,-453.5283 1176.2688,-450.8102"/>
+<polygon points="1179.124,-452.8494 1182.7934,-442.9103 1173.7268,-448.3918 1179.124,-452.8494"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809930&#45;&gt;p0x7f95e7809390</title>
-<path d="M1124.75,-534.76C1137.17,-524.24 1154.55,-509.62 1170,-497 1193.76,-477.59 1201.67,-475.04 1224,-454 1238.95,-439.92 1254.39,-422.74 1266.12,-409.05"/>
-<polygon points="1269.12,-411.93 1272.91,-402.03 1263.78,-407.4 1269.12,-411.93"/>
+<path d="M1124.3141,-534.5712C1136.9329,-524.089 1154.467,-509.5933 1170,-497 1193.8313,-477.6789 1201.5867,-474.9494 1224,-454 1239.2559,-439.7406 1255.0996,-422.3739 1267.0821,-408.6309"/>
+<polygon points="1269.7755,-410.867 1273.6574,-401.0089 1264.4752,-406.2945 1269.7755,-410.867"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e78094b0</title>
-<ellipse cx="1377" cy="-190" rx="27" ry="18.27"/>
+<ellipse cx="1377" cy="-190" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="1377" y="-186.2">25</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809930&#45;&gt;p0x7f95e78094b0</title>
-<path d="M1131.83,-540.95C1176.28,-524.56 1271.19,-482.73 1314,-412 1351.07,-350.75 1328.64,-323.33 1350,-255 1353.91,-242.48 1359.15,-228.96 1363.9,-217.51"/>
-<polygon points="1367.39,-219.24 1368.07,-208.66 1360.95,-216.51 1367.39,-219.24"/>
+<path d="M1131.3109,-540.8666C1176.1414,-524.4567 1271.1579,-482.7884 1314,-412 1351.0666,-350.7545 1328.1919,-323.1861 1350,-255 1354.0595,-242.3074 1359.5601,-228.6331 1364.5373,-217.1168"/>
+<polygon points="1367.8883,-218.1925 1368.7271,-207.631 1361.4851,-215.3643 1367.8883,-218.1925"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e7809030</title>
-<ellipse cx="1557" cy="-259" rx="27" ry="18.27"/>
+<ellipse cx="1557" cy="-259" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="1557" y="-255.2">29</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809930&#45;&gt;p0x7f95e7809030</title>
-<path d="M1134.24,-549C1168.96,-549 1232.07,-549 1286,-549 1286,-549 1286,-549 1378,-549 1499.4,-549 1540.6,-362.12 1552.13,-288.4"/>
-<polygon points="1555.72,-288.99 1553.73,-278.58 1548.8,-287.96 1555.72,-288.99"/>
+<path d="M1134.1403,-549C1169.376,-549 1232.7813,-549 1287,-549 1287,-549 1287,-549 1377,-549 1499.278,-549 1541.3811,-360.5771 1553.1128,-287.492"/>
+<polygon points="1556.5763,-287.9963 1554.6293,-277.582 1549.6569,-286.9375 1556.5763,-287.9963"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e7809ff0</title>
-<ellipse cx="747" cy="-253" rx="27" ry="18.27"/>
+<ellipse cx="747" cy="-253" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="747" y="-249.2">15</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809ff0&#45;&gt;p0x7f95e7809db0</title>
-<path d="M763.66,-238.14C767.36,-234.11 771.08,-229.59 774,-225 799.6,-184.77 818.11,-132.2 827.94,-100.33"/>
-<polygon points="831.52,-101.56 831.05,-90.97 824.82,-99.55 831.52,-101.56"/>
+<path d="M763.2652,-238.202C767.1114,-234.1737 770.9704,-229.6352 774,-225 800.2361,-184.86 819.0444,-132.0116 828.956,-100.0968"/>
+<polygon points="832.3096,-101.0983 831.8596,-90.513 825.6104,-99.0686 832.3096,-101.0983"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809ff0&#45;&gt;p0x7f95e7809810</title>
-<path d="M771.49,-261.4C833.34,-283.51 1000.85,-343.4 1072.62,-369.07"/>
-<polygon points="1071.29,-372.67 1081.89,-372.74 1073.65,-366.07 1071.29,-372.67"/>
+<path d="M771.1796,-261.5972C833.8157,-283.8678 1001.4639,-343.4761 1073.4272,-369.063"/>
+<polygon points="1072.3309,-372.3878 1082.9256,-372.4402 1074.676,-365.7923 1072.3309,-372.3878"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809ff0&#45;&gt;p0x7f95e7809c90</title>
-<path d="M761.32,-268.68C765.5,-273.79 770.05,-279.55 774,-285 791.36,-308.96 792.64,-317.04 810,-341 811.85,-343.55 813.83,-346.18 815.85,-348.77"/>
-<polygon points="813.71,-350.69 822.68,-356.32 819.18,-346.32 813.71,-350.69"/>
+<path d="M761.1539,-268.9488C765.4229,-273.9747 770.0273,-279.6205 774,-285 791.5771,-308.8013 792.4229,-317.1987 810,-341 811.9864,-343.6897 814.1306,-346.4461 816.3119,-349.1582"/>
+<polygon points="813.7731,-351.5801 822.8461,-357.0512 819.1653,-347.1163 813.7731,-351.5801"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809ff0&#45;&gt;p0x7f95e7809b70</title>
-<path d="M773.5,-248.42C804.04,-242.93 855.37,-233.7 889.95,-227.48"/>
-<polygon points="890.32,-230.79 899.54,-225.58 889.08,-223.9 890.32,-230.79"/>
+<path d="M773.1735,-248.3469C804.1009,-242.8487 855.7457,-233.6674 890.5692,-227.4766"/>
+<polygon points="891.5619,-230.8551 900.7949,-225.6587 890.3366,-223.9631 891.5619,-230.8551"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809b70&#45;&gt;p0x7f95e7809a50</title>
-<path d="M934.69,-238.81C939.98,-252.95 947.53,-273.21 954,-291 972.7,-342.39 994,-402.53 1006.14,-436.96"/>
-<polygon points="1003.12,-437.92 1009.74,-446.19 1009.72,-435.59 1003.12,-437.92"/>
+<path d="M933.9825,-238.7993C939.4952,-252.9239 947.3407,-273.1869 954,-291 973.1676,-342.2714 994.7265,-402.367 1007.0038,-436.8318"/>
+<polygon points="1003.8534,-438.4187 1010.5032,-446.6668 1010.4484,-436.0721 1003.8534,-438.4187"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809b70&#45;&gt;p0x7f95e78096f0</title>
-<path d="M953.9,-217.93C965,-216.76 978.12,-215.57 990,-215 1053.93,-211.91 1070.07,-211.91 1134,-215 1142.17,-215.39 1150.92,-216.08 1159.2,-216.85"/>
-<polygon points="1158.8,-220.43 1169.1,-217.93 1159.49,-213.46 1158.8,-220.43"/>
+<path d="M953.6292,-217.8991C964.8408,-216.7405 978.0377,-215.5683 990,-215 1053.9279,-211.9627 1070.0721,-211.9627 1134,-215 1142.5045,-215.4041 1151.6329,-216.1133 1160.2284,-216.9059"/>
+<polygon points="1160.0772,-220.4077 1170.3708,-217.8991 1160.7595,-213.4411 1160.0772,-220.4077"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809b70&#45;&gt;p0x7f95e7809390</title>
-<path d="M950.12,-231.14C1011.3,-259.16 1182.89,-337.76 1254.25,-370.45"/>
-<polygon points="1252.47,-373.95 1263.02,-374.93 1255.39,-367.59 1252.47,-373.95"/>
+<path d="M949.5196,-231.2589C1011.2665,-259.3881 1183.4107,-337.8093 1255.0668,-370.4526"/>
+<polygon points="1253.9377,-373.7843 1264.4889,-374.7449 1256.8397,-367.4142 1253.9377,-373.7843"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f95e7809270</title>
-<ellipse cx="1377" cy="-282" rx="27" ry="18.27"/>
+<ellipse cx="1377" cy="-282" rx="27" ry="18.2703"/>
 <text text-anchor="middle" x="1377" y="-278.2">27</text>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809b70&#45;&gt;p0x7f95e7809270</title>
-<path d="M953.7,-224.5C1029.31,-234.79 1251.23,-265.01 1339.34,-277.01"/>
-<polygon points="1338.75,-280.6 1349.13,-278.48 1339.69,-273.66 1338.75,-280.6"/>
+<path d="M953.8019,-224.6331C1030.7123,-235.0588 1252.2362,-265.0876 1340.2817,-277.0226"/>
+<polygon points="1339.959,-280.5108 1350.3385,-278.3859 1340.8993,-273.5743 1339.959,-280.5108"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e78096f0&#45;&gt;p0x7f95e7809150</title>
-<path d="M1223.7,-224.64C1271.62,-231.44 1374.75,-246.06 1429.74,-253.86"/>
-<polygon points="1428.99,-257.43 1439.38,-255.37 1429.97,-250.5 1428.99,-257.43"/>
+<path d="M1223.8757,-224.7825C1272.4958,-231.6253 1375.1137,-246.0678 1430.2014,-253.8209"/>
+<polygon points="1429.8427,-257.3049 1440.233,-255.2328 1430.8184,-250.3732 1429.8427,-257.3049"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e78096f0&#45;&gt;p0x7f95e7809390</title>
-<path d="M1207.25,-238.24C1222.67,-266.98 1253.74,-324.87 1271.9,-358.72"/>
-<polygon points="1269.06,-359.83 1276.87,-366.99 1275.23,-356.52 1269.06,-359.83"/>
+<path d="M1206.4615,-238.2409C1222.22,-266.9565 1253.9424,-324.7618 1272.5256,-358.6245"/>
+<polygon points="1269.515,-360.4137 1277.3944,-367.4965 1275.6517,-357.046 1269.515,-360.4137"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e78096f0&#45;&gt;p0x7f95e78094b0</title>
-<path d="M1223.5,-216.56C1254.04,-211.24 1305.37,-202.3 1339.95,-196.28"/>
-<polygon points="1340.29,-199.6 1349.54,-194.43 1339.09,-192.7 1340.29,-199.6"/>
+<path d="M1223.5596,-216.4258C1254.4897,-211.099 1305.7592,-202.2693 1340.4363,-196.2971"/>
+<polygon points="1341.3638,-199.689 1350.6246,-194.5424 1340.1757,-192.7905 1341.3638,-199.689"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809150&#45;&gt;p0x7f95e7809030</title>
-<path d="M1494.4,-259C1502.06,-259 1510.57,-259 1518.76,-259"/>
-<polygon points="1518.62,-262.5 1528.62,-259 1518.62,-255.5 1518.62,-262.5"/>
+<path d="M1494.003,-259C1502.0277,-259 1510.9665,-259 1519.5309,-259"/>
+<polygon points="1519.7051,-262.5001 1529.705,-259 1519.705,-255.5001 1519.7051,-262.5001"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e78095d0&#45;&gt;p0x7f95e7809390</title>
-<path d="M1219.75,-416.62C1230.22,-411.62 1242.98,-405.53 1254.49,-400.04"/>
-<polygon points="1255.68,-402.87 1263.19,-395.41 1252.66,-396.56 1255.68,-402.87"/>
+<path d="M1219.7108,-416.4016C1230.5584,-411.3394 1243.7178,-405.1983 1255.5122,-399.6943"/>
+<polygon points="1257.0265,-402.85 1264.6082,-395.4495 1254.0663,-396.5068 1257.0265,-402.85"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809390&#45;&gt;p0x7f95e7809150</title>
-<path d="M1314.24,-383.05C1339.37,-380.05 1377.3,-372.4 1404,-353 1427.24,-336.11 1444.23,-307.64 1454.49,-286.44"/>
-<polygon points="1457.97,-288.25 1458.98,-277.71 1451.61,-285.32 1457.97,-288.25"/>
+<path d="M1313.9184,-383.0073C1339.2372,-379.9695 1377.1621,-372.3085 1404,-353 1427.6481,-335.9864 1445.0384,-307.1429 1455.4859,-285.8832"/>
+<polygon points="1458.7073,-287.2574 1459.795,-276.7186 1452.3726,-284.2788 1458.7073,-287.2574"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809390&#45;&gt;p0x7f95e7809270</title>
-<path d="M1301.37,-369.36C1315.77,-352.49 1338.88,-325.45 1355.57,-305.91"/>
-<polygon points="1358.67,-308.67 1362.51,-298.79 1353.35,-304.12 1358.67,-308.67"/>
+<path d="M1301.0625,-368.9063C1315.923,-351.8992 1339.5079,-324.9077 1356.4513,-305.5168"/>
+<polygon points="1359.092,-307.814 1363.0362,-297.9807 1353.8207,-303.2081 1359.092,-307.814"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e7809270&#45;&gt;p0x7f95e7809150</title>
-<path d="M1402.51,-275.59C1411.31,-273.29 1421.4,-270.66 1430.92,-268.17"/>
-<polygon points="1431.52,-271.37 1440.31,-265.45 1429.75,-264.59 1431.52,-271.37"/>
+<path d="M1402.5497,-275.4706C1411.6523,-273.1444 1422.0697,-270.4822 1431.8371,-267.9861"/>
+<polygon points="1432.876,-271.3332 1441.698,-265.4661 1431.1427,-264.5511 1432.876,-271.3332"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e78094b0&#45;&gt;p0x7f95e7809150</title>
-<path d="M1395.39,-203.63C1408.16,-213.65 1425.73,-227.43 1440.15,-238.73"/>
-<polygon points="1437.62,-241.98 1447.65,-245.4 1441.94,-236.47 1437.62,-241.98"/>
+<path d="M1395.2128,-203.9632C1408.2657,-213.9703 1426.0461,-227.602 1440.6456,-238.795"/>
+<polygon points="1438.7486,-241.7509 1448.8142,-245.0576 1443.0077,-236.1956 1438.7486,-241.7509"/>
 </g>
 <g class="m-edge">
 <title>p0x7f95e78094b0&#45;&gt;p0x7f95e7809030</title>
-<path d="M1401.71,-198.09C1425.28,-206.25 1462.36,-219.4 1494,-232 1503.85,-235.92 1514.47,-240.44 1524.09,-244.64"/>
-<polygon points="1522.49,-248.2 1533.05,-249.04 1525.31,-241.8 1522.49,-248.2"/>
+<path d="M1401.3595,-198.2647C1425.1373,-206.4447 1462.2678,-219.5178 1494,-232 1504.1324,-235.9857 1515.0701,-240.5715 1524.9428,-244.8193"/>
+<polygon points="1523.8246,-248.1493 1534.3914,-248.9196 1526.6113,-241.7279 1523.8246,-248.1493"/>
 </g>
 </g>
 </svg>
-</div><p>With task parallelism, we flow computation naturally with the graph structure. The runtime autonomously distributes tasks across processor cores to obtain maximum task parallelism. You do not need to worry about details of scheduling.</p></section><section id="GraphTraversalDynamicTraversal"><h2><a href="#GraphTraversalDynamicTraversal">Dynamic Traversal</a></h2><p>We can traverse the graph dynamically using <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> (see <a href="DynamicTasking.html" class="m-doc">Dynamic Tasking</a>). We start from the source nodes of zero incoming edges and recursively spawn subflows whenever the dependency of a node is meet. Since we are creating tasks from the execution context of another task, we need to store the task callable in advance.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
+</div><p>With task parallelism, we flow computation naturally with the graph structure. The runtime autonomously distributes tasks across processor cores to obtain maximum task parallelism. You do not need to worry about details of scheduling.</p></section><section id="GraphTraversalDynamicTraversal"><h2><a href="#GraphTraversalDynamicTraversal">Dynamic Traversal</a></h2><p>We can traverse the graph dynamically using <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> (see <a href="DynamicTasking.html" class="m-doc">Dynamic Tasking</a>). We start from the source nodes of zero incoming edges and recursively spawn subflows whenever the dependency of a node is meet. Since we are creating tasks from the execution context of another task, we need to store the task callable in advance.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
 
 <span class="c1">// task callable of traversing a node using subflow</span>
-<span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">Node</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="n">traverse</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">Node</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="n">traverse</span><span class="p">;</span><span class="w"></span>
 
-<span class="n">traverse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">Node</span><span class="o">*</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">subflow</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="o">!</span><span class="n">n</span><span class="o">-&gt;</span><span class="n">visited</span><span class="p">);</span>
-<span class="w">  </span><span class="n">n</span><span class="o">-&gt;</span><span class="n">visited</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
-<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="o">-&gt;</span><span class="n">successors</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="o">-&gt;</span><span class="n">successors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">dependents</span><span class="p">.</span><span class="n">fetch_sub</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="n">traverse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">Node</span><span class="o">*</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">subflow</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="o">!</span><span class="n">n</span><span class="o">-&gt;</span><span class="n">visited</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">n</span><span class="o">-&gt;</span><span class="n">visited</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="o">-&gt;</span><span class="n">successors</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="o">-&gt;</span><span class="n">successors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">dependents</span><span class="p">.</span><span class="n">fetch_sub</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">      </span><span class="n">subflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="n">s</span><span class="o">=</span><span class="n">n</span><span class="o">-&gt;</span><span class="n">successors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="o">&amp;</span><span class="n">traverse</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="w"> </span><span class="o">&amp;</span><span class="n">subflow</span><span class="p">){</span><span class="w"> </span>
 <span class="w">        </span><span class="n">traverse</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">subflow</span><span class="p">);</span><span class="w"> </span>
-<span class="w">      </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="n">n</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">);</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">};</span>
+<span class="w">      </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="n">n</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
 <span class="c1">// create a graph</span>
-<span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Node</span><span class="p">[]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">nodes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">make_dag</span><span class="p">(</span><span class="mi">100000</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">);</span>
+<span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Node</span><span class="p">[]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">nodes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">make_dag</span><span class="p">(</span><span class="mi">100000</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// find the source nodes (no incoming edges)</span>
-<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">src</span><span class="p">;</span>
-<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">num_nodes</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">src</span><span class="p">;</span><span class="w"></span>
+<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">num_nodes</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">dependents</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
-<span class="w">    </span><span class="n">src</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">]));</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="n">src</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">]));</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
 <span class="c1">// create only tasks for source nodes</span>
-<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">src</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">src</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="n">s</span><span class="o">=</span><span class="n">src</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="o">&amp;</span><span class="n">traverse</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">subflow</span><span class="p">){</span><span class="w"> </span>
 <span class="w">    </span><span class="n">traverse</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">subflow</span><span class="p">);</span><span class="w"> </span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">name</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">name</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
 
 <span class="c1">// after the graph is traversed, all nodes must be visited with no dependents</span>
-<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">num_nodes</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">visited</span><span class="p">);</span>
-<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">dependents</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
-<span class="p">}</span></pre><p>A partial graph is shown as follows:</p><div class="m-graph"><svg style="width: 54.375rem; height: 47.062rem;" viewBox="0.00 0.00 870.00 752.77">
-<g transform="scale(1 1) rotate(0) translate(4 748.77)">
+<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">num_nodes</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">visited</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">dependents</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre><p>A partial graph is shown as follows:</p><div class="m-graph"><svg style="width: 54.375rem; height: 47.062rem;" viewBox="0.00 0.00 870.00 752.77">
+<g transform="scale(1 1) rotate(0) translate(4 748.7696)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x7fd36b804d90</title>
-<polygon points="8,-154.38 8,-700.38 854,-700.38 854,-154.38 8,-154.38"/>
-<text text-anchor="middle" x="431" y="-683.58">Subflow: 3</text>
+<polygon points="8,-154.3848 8,-700.3848 854,-700.3848 854,-154.3848 8,-154.3848"/>
+<text text-anchor="middle" x="431" y="-683.5848">Subflow: 3</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fd36c005e90</title>
-<polygon points="16,-206.38 16,-666.38 764,-666.38 764,-206.38 16,-206.38"/>
-<text text-anchor="middle" x="390" y="-649.58">Subflow: 3</text>
+<polygon points="16,-206.3848 16,-666.3848 764,-666.3848 764,-206.3848 16,-206.3848"/>
+<text text-anchor="middle" x="390" y="-649.5848">Subflow: 3</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fd36c005c50</title>
-<polygon points="24,-300.38 24,-632.38 674,-632.38 674,-300.38 24,-300.38"/>
-<text text-anchor="middle" x="349" y="-615.58">Subflow: 4</text>
+<polygon points="24,-300.3848 24,-632.3848 674,-632.3848 674,-300.3848 24,-300.3848"/>
+<text text-anchor="middle" x="349" y="-615.5848">Subflow: 4</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fd36c005a10</title>
-<polygon points="32,-352.38 32,-598.38 584,-598.38 584,-352.38 32,-352.38"/>
-<text text-anchor="middle" x="308" y="-581.58">Subflow: 6</text>
+<polygon points="32,-352.3848 32,-598.3848 584,-598.3848 584,-352.3848 32,-352.3848"/>
+<text text-anchor="middle" x="308" y="-581.5848">Subflow: 6</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fd36c005470</title>
-<polygon points="40,-360.38 40,-564.38 494,-564.38 494,-360.38 40,-360.38"/>
-<text text-anchor="middle" x="267" y="-547.58">Subflow: 9</text>
+<polygon points="40,-360.3848 40,-564.3848 494,-564.3848 494,-360.3848 40,-360.3848"/>
+<text text-anchor="middle" x="267" y="-547.5848">Subflow: 9</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fd36c005590</title>
-<polygon points="48,-368.38 48,-530.38 404,-530.38 404,-368.38 48,-368.38"/>
-<text text-anchor="middle" x="226" y="-513.58">Subflow: 11</text>
+<polygon points="48,-368.3848 48,-530.3848 404,-530.3848 404,-368.3848 48,-368.3848"/>
+<text text-anchor="middle" x="226" y="-513.5848">Subflow: 11</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fd36c0057d0</title>
-<polygon points="56,-376.38 56,-496.38 314,-496.38 314,-376.38 56,-376.38"/>
-<text text-anchor="middle" x="185" y="-479.58">Subflow: 12</text>
+<polygon points="56,-376.3848 56,-496.3848 314,-496.3848 314,-376.3848 56,-376.3848"/>
+<text text-anchor="middle" x="185" y="-479.5848">Subflow: 12</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fd36c005350</title>
-<polygon points="64,-384.38 64,-462.38 224,-462.38 224,-384.38 64,-384.38"/>
-<text text-anchor="middle" x="144" y="-445.58">Subflow: 13</text>
+<polygon points="64,-384.3848 64,-462.3848 224,-462.3848 224,-384.3848 64,-384.3848"/>
+<text text-anchor="middle" x="144" y="-445.5848">Subflow: 13</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fd36c005b30</title>
-<polygon points="514,-214.38 514,-292.38 674,-292.38 674,-214.38 514,-214.38"/>
-<text text-anchor="middle" x="594" y="-275.58">Subflow: 4</text>
+<polygon points="514,-214.3848 514,-292.3848 674,-292.3848 674,-214.3848 514,-214.3848"/>
+<text text-anchor="middle" x="594" y="-275.5848">Subflow: 4</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd36b804c70</title>
-<ellipse cx="99" cy="-18.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="99" y="-14.58">0</text>
+<ellipse cx="99" cy="-18.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="99" y="-14.5848">0</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd36b804a30</title>
-<ellipse cx="99" cy="-73.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="99" y="-69.58">1</text>
+<ellipse cx="99" cy="-73.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="99" y="-69.5848">1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd36b804b50</title>
-<ellipse cx="99" cy="-128.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="99" y="-124.58">2</text>
+<ellipse cx="99" cy="-128.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="99" y="-124.5848">2</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd36b804d90</title>
-<ellipse cx="819" cy="-210.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="819" y="-206.58">3</text>
+<ellipse cx="819" cy="-210.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="819" y="-206.5848">3</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd36c005e90</title>
-<ellipse cx="729" cy="-240.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="729" y="-236.58">3</text>
+<ellipse cx="729" cy="-240.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="729" y="-236.5848">3</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd36c005e90&#45;&gt;p0x7fd36b804d90</title>
-<path d="M753.58,-232.35C762.95,-229.15 773.91,-225.41 784.11,-221.94"/>
-<polygon points="785.02,-224.99 793.35,-218.45 782.76,-218.36 785.02,-224.99"/>
+<path d="M753.5929,-232.1871C763.2953,-228.953 774.6035,-225.1836 785.0619,-221.6975"/>
+<polygon points="786.3684,-224.9514 794.7484,-218.4686 784.1548,-218.3106 786.3684,-224.9514"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd36c005c50</title>
-<ellipse cx="639" cy="-326.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="639" y="-322.58">4</text>
+<ellipse cx="639" cy="-326.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="639" y="-322.5848">4</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd36c005c50&#45;&gt;p0x7fd36c005e90</title>
-<path d="M656.5,-312.3C662.14,-307.36 668.43,-301.72 674,-296.38 684.93,-285.92 696.64,-273.89 706.35,-263.67"/>
-<polygon points="708.34,-266.6 712.66,-256.92 703.25,-261.8 708.34,-266.6"/>
+<path d="M656.3474,-312.0241C662.0611,-307.1604 668.3864,-301.6303 674,-296.3848 685.2666,-285.8569 697.319,-273.6948 707.2612,-263.4001"/>
+<polygon points="710.0103,-265.5902 714.4049,-255.9497 704.9576,-260.7455 710.0103,-265.5902"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd36c005a10</title>
-<ellipse cx="549" cy="-383.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="549" y="-379.58">6</text>
+<ellipse cx="549" cy="-383.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="549" y="-379.5848">6</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd36c005a10&#45;&gt;p0x7fd36c005c50</title>
-<path d="M569.42,-370.82C574.19,-367.74 579.28,-364.44 584,-361.38 592.29,-356.02 601.29,-350.18 609.53,-344.84"/>
-<polygon points="611.27,-347.24 617.76,-338.86 607.46,-341.36 611.27,-347.24"/>
+<path d="M569.0015,-370.8392C573.9097,-367.7532 579.1474,-364.4538 584,-361.3848 592.6612,-355.9069 602.0762,-349.9254 610.6282,-344.482"/>
+<polygon points="612.6059,-347.372 619.16,-339.0477 608.8453,-341.4679 612.6059,-347.372"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd36c005470</title>
-<ellipse cx="459" cy="-390.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="459" y="-386.58">9</text>
+<ellipse cx="459" cy="-390.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="459" y="-386.5848">9</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd36c005470&#45;&gt;p0x7fd36c005a10</title>
-<path d="M485.93,-388.32C493.82,-387.69 502.66,-386.99 511.13,-386.32"/>
-<polygon points="511.26,-389.74 520.95,-385.46 510.71,-382.76 511.26,-389.74"/>
+<path d="M486.003,-388.2845C494.1013,-387.6547 503.1306,-386.9524 511.7665,-386.2807"/>
+<polygon points="512.3176,-389.7485 522.0161,-385.4835 511.7748,-382.7696 512.3176,-389.7485"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd36c005590</title>
-<ellipse cx="369" cy="-398.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="369" y="-394.58">11</text>
+<ellipse cx="369" cy="-398.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="369" y="-394.5848">11</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd36c005590&#45;&gt;p0x7fd36c005470</title>
-<path d="M395.93,-396.03C403.82,-395.31 412.66,-394.51 421.13,-393.74"/>
-<polygon points="421.31,-397.14 430.95,-392.75 420.68,-390.17 421.31,-397.14"/>
+<path d="M396.003,-395.9845C404.1903,-395.2568 413.3292,-394.4444 422.051,-393.6691"/>
+<polygon points="422.3653,-397.1551 432.0161,-392.7833 421.7454,-390.1826 422.3653,-397.1551"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd36c0057d0</title>
-<ellipse cx="279" cy="-406.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="279" y="-402.58">12</text>
+<ellipse cx="279" cy="-406.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="279" y="-402.5848">12</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd36c0057d0&#45;&gt;p0x7fd36c005590</title>
-<path d="M305.93,-404.03C313.82,-403.31 322.66,-402.51 331.13,-401.74"/>
-<polygon points="331.31,-405.14 340.95,-400.75 330.68,-398.17 331.31,-405.14"/>
+<path d="M306.003,-403.9845C314.1903,-403.2568 323.3292,-402.4444 332.051,-401.6691"/>
+<polygon points="332.3653,-405.1551 342.0161,-400.7833 331.7454,-398.1826 332.3653,-405.1551"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd36c005350</title>
-<ellipse cx="189" cy="-410.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="189" y="-406.58">13</text>
+<ellipse cx="189" cy="-410.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="189" y="-406.5848">13</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd36c005350&#45;&gt;p0x7fd36c0057d0</title>
-<path d="M216.4,-409.18C224.06,-408.84 232.57,-408.45 240.76,-408.08"/>
-<polygon points="240.79,-411.53 250.62,-407.58 240.47,-404.54 240.79,-411.53"/>
+<path d="M216.003,-409.1846C224.1013,-408.8247 233.1306,-408.4234 241.7665,-408.0396"/>
+<polygon points="242.1814,-411.5247 252.0161,-407.5841 241.8705,-404.5316 242.1814,-411.5247"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd36c005230</title>
-<ellipse cx="99" cy="-410.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="99" y="-406.58">14</text>
+<ellipse cx="99" cy="-410.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="99" y="-406.5848">14</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd36c005230&#45;&gt;p0x7fd36c005350</title>
-<path d="M126.4,-410.38C134.06,-410.38 142.57,-410.38 150.76,-410.38"/>
-<polygon points="150.62,-413.88 160.62,-410.38 150.62,-406.88 150.62,-413.88"/>
+<path d="M126.003,-410.3848C134.0277,-410.3848 142.9665,-410.3848 151.5309,-410.3848"/>
+<polygon points="151.7051,-413.8849 161.705,-410.3848 151.705,-406.8849 151.7051,-413.8849"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd36c0058f0</title>
-<ellipse cx="549" cy="-326.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="549" y="-322.58">6</text>
+<ellipse cx="549" cy="-326.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="549" y="-322.5848">6</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd36c0058f0&#45;&gt;p0x7fd36c005c50</title>
-<path d="M576.4,-326.38C584.06,-326.38 592.57,-326.38 600.76,-326.38"/>
-<polygon points="600.62,-329.88 610.62,-326.38 600.62,-322.88 600.62,-329.88"/>
+<path d="M576.003,-326.3848C584.0277,-326.3848 592.9665,-326.3848 601.5309,-326.3848"/>
+<polygon points="601.7051,-329.8849 611.705,-326.3848 601.705,-322.8849 601.7051,-329.8849"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd36c005b30</title>
-<ellipse cx="639" cy="-240.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="639" y="-236.58">4</text>
+<ellipse cx="639" cy="-240.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="639" y="-236.5848">4</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd36c005b30&#45;&gt;p0x7fd36c005e90</title>
-<path d="M666.4,-240.38C674.06,-240.38 682.57,-240.38 690.76,-240.38"/>
-<polygon points="690.62,-243.88 700.62,-240.38 690.62,-236.88 690.62,-243.88"/>
+<path d="M666.003,-240.3848C674.0277,-240.3848 682.9665,-240.3848 691.5309,-240.3848"/>
+<polygon points="691.7051,-243.8849 701.705,-240.3848 691.705,-236.8849 691.7051,-243.8849"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd36c0056b0</title>
-<ellipse cx="549" cy="-240.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="549" y="-236.58">7</text>
+<ellipse cx="549" cy="-240.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="549" y="-236.5848">7</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd36c0056b0&#45;&gt;p0x7fd36c005b30</title>
-<path d="M576.4,-240.38C584.06,-240.38 592.57,-240.38 600.76,-240.38"/>
-<polygon points="600.62,-243.88 610.62,-240.38 600.62,-236.88 600.62,-243.88"/>
+<path d="M576.003,-240.3848C584.0277,-240.3848 592.9665,-240.3848 601.5309,-240.3848"/>
+<polygon points="601.7051,-243.8849 611.705,-240.3848 601.705,-236.8849 601.7051,-243.8849"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd36c005d70</title>
-<ellipse cx="729" cy="-180.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="729" y="-176.58">3</text>
+<ellipse cx="729" cy="-180.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="729" y="-176.5848">3</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd36c005d70&#45;&gt;p0x7fd36b804d90</title>
-<path d="M753.58,-188.42C762.95,-191.62 773.91,-195.35 784.11,-198.83"/>
-<polygon points="782.76,-202.41 793.35,-202.32 785.02,-195.78 782.76,-202.41"/>
+<path d="M753.5929,-188.5824C763.2953,-191.8166 774.6035,-195.586 785.0619,-199.0721"/>
+<polygon points="784.1548,-202.459 794.7484,-202.3009 786.3684,-195.8182 784.1548,-202.459"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd36b804eb0</title>
-<ellipse cx="99" cy="-726.38" rx="27" ry="18.27"/>
-<text text-anchor="middle" x="99" y="-722.58">4</text>
+<ellipse cx="99" cy="-726.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="99" y="-722.5848">4</text>
 </g>
 </g>
 </svg>
@@ -1140,7 +1140,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

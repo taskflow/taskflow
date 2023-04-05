@@ -1,15 +1,17 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="classtf_1_1SmallVectorTemplateCommon" kind="class" language="C++" prot="private">
     <compoundname>tf::SmallVectorTemplateCommon</compoundname>
     <basecompoundref prot="public" virt="non-virtual">tf::SmallVectorBase</basecompoundref>
-    <derivedcompoundref refid="classtf_1_1SmallVectorTemplateBase" prot="public" virt="non-virtual">tf::SmallVectorTemplateBase&lt; T, IsPod&lt; T &gt;::value &gt;</derivedcompoundref>
     <derivedcompoundref refid="classtf_1_1SmallVectorTemplateBase" prot="public" virt="non-virtual">tf::SmallVectorTemplateBase&lt; Node *, IsPod&lt; Node * &gt;::value &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classtf_1_1SmallVectorTemplateBase" prot="public" virt="non-virtual">tf::SmallVectorTemplateBase&lt; T, IsPod&lt; T &gt;::value &gt;</derivedcompoundref>
     <derivedcompoundref refid="classtf_1_1SmallVectorTemplateBase" prot="public" virt="non-virtual">tf::SmallVectorTemplateBase&lt; tf::Semaphore *, IsPod&lt; tf::Semaphore * &gt;::value &gt;</derivedcompoundref>
     <innerclass refid="structtf_1_1SmallVectorTemplateCommon_1_1AlignedUnionType" prot="private">tf::SmallVectorTemplateCommon::AlignedUnionType</innerclass>
     <templateparamlist>
       <param>
-        <type>typename T</type>
+        <type>typename</type>
+        <declname>T</declname>
+        <defname>T</defname>
       </param>
       <param>
         <type>typename</type>
@@ -22,14 +24,13 @@
         <definition>typedef AlignedUnionType&lt;T&gt; tf::SmallVectorTemplateCommon&lt; T, typename &gt;::U</definition>
         <argsstring></argsstring>
         <name>U</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::U</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="133" column="28" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="133" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="133" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="133" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-type">
@@ -38,154 +39,143 @@
         <definition>typedef size_t tf::SmallVectorTemplateCommon&lt; T, typename &gt;::size_type</definition>
         <argsstring></argsstring>
         <name>size_type</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::size_type</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="159" column="18" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="159" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="159" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="159" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1SmallVectorTemplateCommon_1adbfcf9d6ec0b239d48567a420a43b6f6" prot="public" static="no">
         <type>ptrdiff_t</type>
         <definition>typedef ptrdiff_t tf::SmallVectorTemplateCommon&lt; T, typename &gt;::difference_type</definition>
         <argsstring></argsstring>
         <name>difference_type</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::difference_type</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="160" column="21" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="160" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="160" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="160" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1SmallVectorTemplateCommon_1ad92ebf3b12a1cd9a7a80d5161cc4449b" prot="public" static="no">
         <type>T</type>
         <definition>typedef T tf::SmallVectorTemplateCommon&lt; T, typename &gt;::value_type</definition>
         <argsstring></argsstring>
         <name>value_type</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::value_type</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="161" column="13" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="161" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="161" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="161" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1SmallVectorTemplateCommon_1acee58895a98d40868ce8f1a1ff284ab7" prot="public" static="no">
         <type>T *</type>
         <definition>typedef T* tf::SmallVectorTemplateCommon&lt; T, typename &gt;::iterator</definition>
         <argsstring></argsstring>
         <name>iterator</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::iterator</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="162" column="13" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="162" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="162" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="162" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1SmallVectorTemplateCommon_1a39c4f2406153fd86003f67136e096bf1" prot="public" static="no">
         <type>const T *</type>
         <definition>typedef const T* tf::SmallVectorTemplateCommon&lt; T, typename &gt;::const_iterator</definition>
         <argsstring></argsstring>
         <name>const_iterator</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::const_iterator</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="163" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="163" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="163" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="163" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1SmallVectorTemplateCommon_1ae8618ae79998e522734cf4b15fa7956e" prot="public" static="no">
-        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reverse_iterator</ref>&lt; const_iterator &gt;</type>
+        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reverse_iterator</ref>&lt; const_iterator &gt;</type>
         <definition>typedef std::reverse_iterator&lt;const_iterator&gt; tf::SmallVectorTemplateCommon&lt; T, typename &gt;::const_reverse_iterator</definition>
         <argsstring></argsstring>
         <name>const_reverse_iterator</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::const_reverse_iterator</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="165" column="33" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="165" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="165" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="165" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1SmallVectorTemplateCommon_1a20b7a8544e963fe20fd8a139bddce658" prot="public" static="no">
-        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reverse_iterator</ref>&lt; iterator &gt;</type>
+        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reverse_iterator</ref>&lt; iterator &gt;</type>
         <definition>typedef std::reverse_iterator&lt;iterator&gt; tf::SmallVectorTemplateCommon&lt; T, typename &gt;::reverse_iterator</definition>
         <argsstring></argsstring>
         <name>reverse_iterator</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::reverse_iterator</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="166" column="33" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="166" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="166" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="166" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1SmallVectorTemplateCommon_1a4b9db31beb2fe6aef612cd8ce248eb4a" prot="public" static="no">
         <type>T &amp;</type>
         <definition>typedef T&amp; tf::SmallVectorTemplateCommon&lt; T, typename &gt;::reference</definition>
         <argsstring></argsstring>
         <name>reference</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::reference</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="168" column="13" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="168" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="168" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="168" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1SmallVectorTemplateCommon_1ac60fb9e83232f170a2f1af419054b30d" prot="public" static="no">
         <type>const T &amp;</type>
         <definition>typedef const T&amp; tf::SmallVectorTemplateCommon&lt; T, typename &gt;::const_reference</definition>
         <argsstring></argsstring>
         <name>const_reference</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::const_reference</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="169" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="169" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="169" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="169" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1SmallVectorTemplateCommon_1a4762cde1bfad65cb37752b4df255ddab" prot="public" static="no">
         <type>T *</type>
         <definition>typedef T* tf::SmallVectorTemplateCommon&lt; T, typename &gt;::pointer</definition>
         <argsstring></argsstring>
         <name>pointer</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::pointer</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="170" column="13" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="170" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="170" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="170" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1SmallVectorTemplateCommon_1ab2ca1203dec28f3d9c626c85b4f36448" prot="public" static="no">
         <type>const T *</type>
         <definition>typedef const T* tf::SmallVectorTemplateCommon&lt; T, typename &gt;::const_pointer</definition>
         <argsstring></argsstring>
         <name>const_pointer</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::const_pointer</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="171" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="171" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="171" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="171" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="friend">
@@ -198,21 +188,17 @@
             <type>unsigned</type>
           </param>
         </templateparamlist>
-        <type>struct</type>
+        <type>friend struct</type>
         <definition>friend struct SmallVectorStorage</definition>
         <argsstring></argsstring>
         <name>SmallVectorStorage</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::SmallVectorStorage</qualifiedname>
-        <param>
-          <type>SmallVectorStorage</type>
-        </param>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="120" column="29" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="120" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="120" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="120" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
@@ -221,14 +207,13 @@
         <definition>U tf::SmallVectorTemplateCommon&lt; T, typename &gt;::FirstEl</definition>
         <argsstring></argsstring>
         <name>FirstEl</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::FirstEl</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="135" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="135" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="135" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="135" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="protected-func">
@@ -237,7 +222,6 @@
         <definition>tf::SmallVectorTemplateCommon&lt; T, typename &gt;::SmallVectorTemplateCommon</definition>
         <argsstring>(size_t Size)</argsstring>
         <name>SmallVectorTemplateCommon</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::SmallVectorTemplateCommon</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>Size</declname>
@@ -248,14 +232,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="139" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="139" bodyend="139"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="139" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="139" bodyend="139"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a607fabb915c09ab97b1d80fb463e91fc" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::SmallVectorTemplateCommon&lt; T, typename &gt;::grow_pod</definition>
         <argsstring>(size_t MinSizeInBytes, size_t TSize)</argsstring>
         <name>grow_pod</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::grow_pod</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>MinSizeInBytes</declname>
@@ -270,44 +253,39 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="141" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="141" bodyend="143"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="141" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="141" bodyend="143"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1ad541b208571c7244efc8fbe42b90d608" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
         <definition>bool tf::SmallVectorTemplateCommon&lt; T, typename &gt;::isSmall</definition>
         <argsstring>() const</argsstring>
         <name>isSmall</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::isSmall</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Return true if this is a smallvector which has not had dynamic memory allocated for it. </para>
-        </detaileddescription>
+<para>Return true if this is a smallvector which has not had dynamic memory allocated for it. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="147" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="147" bodyend="149"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="147" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="147" bodyend="149"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1aed80eb722677292606f4c4e3b14d9639" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::SmallVectorTemplateCommon&lt; T, typename &gt;::resetToSmall</definition>
         <argsstring>()</argsstring>
         <name>resetToSmall</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::resetToSmall</qualifiedname>
         <briefdescription>
-<para>Put this vector in a state of being small. </para>
-        </briefdescription>
+<para>Put this vector in a state of being small. </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="152" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="152" bodyend="154"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="152" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="152" bodyend="154"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1ae5fa1f3af9c829c120fd6ee9be5cf562" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::SmallVectorTemplateCommon&lt; T, typename &gt;::setEnd</definition>
         <argsstring>(T *P)</argsstring>
         <name>setEnd</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::setEnd</qualifiedname>
         <param>
           <type>T *</type>
           <declname>P</declname>
@@ -318,35 +296,33 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="156" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="156" bodyend="156"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="156" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="156" bodyend="156"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1ae101bcc51df9f276a517b7634cc885d0" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>iterator</type>
         <definition>iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::capacity_ptr</definition>
         <argsstring>()</argsstring>
         <name>capacity_ptr</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::capacity_ptr</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="181" column="12" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="181" bodyend="181"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="181" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="181" bodyend="181"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a6785a26fc28425df3fab4e06ccf436e3" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>const_iterator</type>
         <definition>const_iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::capacity_ptr</definition>
         <argsstring>() const</argsstring>
         <name>capacity_ptr</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::capacity_ptr</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="182" column="18" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="182" bodyend="182"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="182" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="182" bodyend="182"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -355,192 +331,175 @@
         <definition>iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::begin</definition>
         <argsstring>()</argsstring>
         <name>begin</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::begin</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="174" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="174" bodyend="174"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="174" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="174" bodyend="174"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1af41e27410f801a6aef0e61173ed8c18d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>const_iterator</type>
         <definition>const_iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::begin</definition>
         <argsstring>() const</argsstring>
         <name>begin</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::begin</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="175" column="25" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="175" bodyend="175"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="175" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="175" bodyend="175"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a59e18797630dc06cef6c2ae5acf591a0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>iterator</type>
         <definition>iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::end</definition>
         <argsstring>()</argsstring>
         <name>end</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::end</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="176" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="176" bodyend="176"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="176" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="176" bodyend="176"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a0a34e20e970dce1f4e61893982886d49" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>const_iterator</type>
         <definition>const_iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::end</definition>
         <argsstring>() const</argsstring>
         <name>end</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::end</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="177" column="25" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="177" bodyend="177"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="177" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="177" bodyend="177"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a83f50a1376ad1b3c828e89b9fa34b56d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">reverse_iterator</ref></type>
+        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">reverse_iterator</ref></type>
         <definition>reverse_iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::rbegin</definition>
         <argsstring>()</argsstring>
         <name>rbegin</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::rbegin</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="187" column="20" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="187" bodyend="187"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="187" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="187" bodyend="187"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a96c2d2979402cc76f84a76ff08720933" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">const_reverse_iterator</ref></type>
+        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">const_reverse_iterator</ref></type>
         <definition>const_reverse_iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::rbegin</definition>
         <argsstring>() const</argsstring>
         <name>rbegin</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::rbegin</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="188" column="26" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="188" bodyend="188"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="188" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="188" bodyend="188"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1ae26b374c3ca4f75054eb17ec85b26cf0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">reverse_iterator</ref></type>
+        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">reverse_iterator</ref></type>
         <definition>reverse_iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::rend</definition>
         <argsstring>()</argsstring>
         <name>rend</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::rend</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="189" column="20" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="189" bodyend="189"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="189" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="189" bodyend="189"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a411820e49d8ab402ac29c7537cd22049" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">const_reverse_iterator</ref></type>
+        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">const_reverse_iterator</ref></type>
         <definition>const_reverse_iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::rend</definition>
         <argsstring>() const</argsstring>
         <name>rend</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::rend</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="190" column="26" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="190" bodyend="190"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="190" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="190" bodyend="190"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a4416437b41cf9d57a6ed6b061e1cc1e8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_type</type>
         <definition>size_type tf::SmallVectorTemplateCommon&lt; T, typename &gt;::size</definition>
         <argsstring>() const</argsstring>
         <name>size</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::size</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="192" column="20" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="192" bodyend="192"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="192" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="192" bodyend="192"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1ab79607f378fcf2fa8772f02c95a73073" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_type</type>
         <definition>size_type tf::SmallVectorTemplateCommon&lt; T, typename &gt;::max_size</definition>
         <argsstring>() const</argsstring>
         <name>max_size</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::max_size</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="193" column="20" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="193" bodyend="193"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="193" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="193" bodyend="193"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a82d552c39834d18a03a5a7f62031aac3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::SmallVectorTemplateCommon&lt; T, typename &gt;::capacity</definition>
         <argsstring>() const</argsstring>
         <name>capacity</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::capacity</qualifiedname>
         <briefdescription>
-<para>Return the total number of elements in the currently allocated buffer. </para>
-        </briefdescription>
+<para>Return the total number of elements in the currently allocated buffer. </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="196" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="196" bodyend="196"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="196" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="196" bodyend="196"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a65c0541a7bf64e1ac4ae2a326d103cee" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>pointer</type>
         <definition>pointer tf::SmallVectorTemplateCommon&lt; T, typename &gt;::data</definition>
         <argsstring>()</argsstring>
         <name>data</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::data</qualifiedname>
         <briefdescription>
-<para>Return a pointer to the vector&apos;s buffer, even if empty(). </para>
-        </briefdescription>
+<para>Return a pointer to the vector&apos;s buffer, even if empty(). </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="199" column="11" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="199" bodyend="199"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="199" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="199" bodyend="199"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a6d3b04be0f7fef50e88269934c4f95cd" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>const_pointer</type>
         <definition>const_pointer tf::SmallVectorTemplateCommon&lt; T, typename &gt;::data</definition>
         <argsstring>() const</argsstring>
         <name>data</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::data</qualifiedname>
         <briefdescription>
-<para>Return a pointer to the vector&apos;s buffer, even if empty(). </para>
-        </briefdescription>
+<para>Return a pointer to the vector&apos;s buffer, even if empty(). </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="201" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="201" bodyend="201"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="201" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="201" bodyend="201"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a42143086f104cda6e3d2ed2a4f7f9a29" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>reference</type>
         <definition>reference tf::SmallVectorTemplateCommon&lt; T, typename &gt;::operator[]</definition>
         <argsstring>(size_type idx)</argsstring>
         <name>operator[]</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::operator[]</qualifiedname>
         <param>
           <type>size_type</type>
           <declname>idx</declname>
@@ -551,14 +510,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="203" column="20" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="203" bodyend="206"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="203" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="203" bodyend="206"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1af77ae362f96acd803ed7577fb48b5efd" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>const_reference</type>
         <definition>const_reference tf::SmallVectorTemplateCommon&lt; T, typename &gt;::operator[]</definition>
         <argsstring>(size_type idx) const</argsstring>
         <name>operator[]</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::operator[]</qualifiedname>
         <param>
           <type>size_type</type>
           <declname>idx</declname>
@@ -569,63 +527,59 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="208" column="26" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="208" bodyend="211"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="208" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="208" bodyend="211"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a2a1b3b20ba44906c4df269f6033c1f36" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>reference</type>
         <definition>reference tf::SmallVectorTemplateCommon&lt; T, typename &gt;::front</definition>
         <argsstring>()</argsstring>
         <name>front</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::front</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="213" column="13" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="213" bodyend="216"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="213" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="213" bodyend="216"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a0d17587a21aeba5f1230d183be131252" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>const_reference</type>
         <definition>const_reference tf::SmallVectorTemplateCommon&lt; T, typename &gt;::front</definition>
         <argsstring>() const</argsstring>
         <name>front</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::front</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="218" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="218" bodyend="221"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="218" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="218" bodyend="221"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a009d8ff154f5ce94202db6c0591ce9e2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>reference</type>
         <definition>reference tf::SmallVectorTemplateCommon&lt; T, typename &gt;::back</definition>
         <argsstring>()</argsstring>
         <name>back</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::back</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="223" column="13" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="223" bodyend="226"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="223" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="223" bodyend="226"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a14a2f4a352c7ea71bea641125fa64c19" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>const_reference</type>
         <definition>const_reference tf::SmallVectorTemplateCommon&lt; T, typename &gt;::back</definition>
         <argsstring>() const</argsstring>
         <name>back</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::back</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="228" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="228" bodyend="231"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="228" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="228" bodyend="231"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -633,41 +587,41 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="4">
-        <label>tf::SmallVectorTemplateBase&lt; Node *, IsPod&lt; Node * &gt;::value &gt;</label>
-        <childnode refid="1" relation="public-inheritance">
+      <node id="274">
+        <label>SmallVectorTemplateBase&lt; Node *, IsPod&lt; Node * &gt;::value &gt;</label>
+        <childnode refid="272" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="3">
-        <label>tf::SmallVectorTemplateBase&lt; T, IsPod&lt; T &gt;::value &gt;</label>
-        <childnode refid="1" relation="public-inheritance">
+      <node id="272">
+        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
+        <childnode refid="273" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="5">
-        <label>tf::SmallVectorTemplateBase&lt; tf::Semaphore *, IsPod&lt; tf::Semaphore * &gt;::value &gt;</label>
-        <childnode refid="1" relation="public-inheritance">
+      <node id="276">
+        <label>SmallVectorTemplateBase&lt; tf::Semaphore *, IsPod&lt; tf::Semaphore * &gt;::value &gt;</label>
+        <childnode refid="272" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="2">
+      <node id="273">
         <label>tf::SmallVectorBase</label>
       </node>
-      <node id="1">
-        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
-        <childnode refid="2" relation="public-inheritance">
+      <node id="275">
+        <label>SmallVectorTemplateBase&lt; T, IsPod&lt; T &gt;::value &gt;</label>
+        <childnode refid="272" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="2">
-        <label>tf::SmallVectorBase</label>
-      </node>
-      <node id="1">
+      <node id="277">
         <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
-        <childnode refid="2" relation="public-inheritance">
+        <childnode refid="278" relation="public-inheritance">
         </childnode>
       </node>
+      <node id="278">
+        <label>tf::SmallVectorBase</label>
+      </node>
     </collaborationgraph>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="117" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="117" bodyend="232"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="117" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="117" bodyend="232"/>
     <listofallmembers>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a009d8ff154f5ce94202db6c0591ce9e2" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateCommon</scope><name>back</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a14a2f4a352c7ea71bea641125fa64c19" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateCommon</scope><name>back</name></member>

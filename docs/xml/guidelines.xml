@@ -1,103 +1,39 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="guidelines" kind="page">
     <compoundname>guidelines</compoundname>
     <title>Guidelines</title>
-    <tableofcontents>
-      <tocsect>
-        <name>How Can I Contribute?</name>
-        <reference>guidelines_1HowCanIContribute</reference>
-    </tocsect>
-      <tocsect>
-        <name>How Can I Get Credit?</name>
-        <reference>guidelines_1HowCanIGetCredit</reference>
-    </tocsect>
-      <tocsect>
-        <name>How Can I Get Started?</name>
-        <reference>guidelines_1HowCanIGetStarted</reference>
-    <tableofcontents>
-      <tocsect>
-        <name>Step 1: Look around</name>
-        <reference>guidelines_1Step1LookAround</reference>
-    </tocsect>
-      <tocsect>
-        <name>Step 2: Write a Taskflow program</name>
-        <reference>guidelines_1Step2WriteATaskflowProgram</reference>
-    </tocsect>
-      <tocsect>
-        <name>Step 3: Dive in</name>
-        <reference>guidelines_1Step3WriteATaskflowProgram</reference>
-    </tocsect>
-    </tableofcontents>
-    </tocsect>
-      <tocsect>
-        <name>How Can I Report Issues?</name>
-        <reference>guidelines_1HowCanIReportAnIssue</reference>
-    </tocsect>
-      <tocsect>
-        <name>How Can I Edit the Documentation?</name>
-        <reference>guidelines_1HowCanIEditTheDocumentation</reference>
-    </tocsect>
-      <tocsect>
-        <name>How Can I Submit a Patch?</name>
-        <reference>guidelines_1HowCanISubmitAPatch</reference>
-    </tocsect>
-      <tocsect>
-        <name>How Can I Lead a Project?</name>
-        <reference>guidelines_1HowCanILeadAProject</reference>
-    </tocsect>
-      <tocsect>
-        <name>Your Voice Matters!</name>
-        <reference>guidelines_1YourVoiceMatters</reference>
-    </tocsect>
-    </tableofcontents>
+    <tableofcontents/>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>This pages outlines the process that you will need to follow to get a patch merged.</para>
-<sect1 id="guidelines_1HowCanIContribute">
+<para>This pages outlines the process that you will need to follow to get a patch merged.</para><sect1 id="guidelines_1HowCanIContribute">
 <title>How Can I Contribute?</title>
-<para>There are multiple ways in which you can contribute to Taskflow:</para>
-<para><itemizedlist>
-<listitem><para>Use it! Let us know what you think and how it helps your jobs! </para>
-</listitem>
-<listitem><para>Catch a typo in documentation or want to make it better to understand? Edit the <ulink url="https://github.com/taskflow/taskflow/tree/master/doxygen">doc source</ulink> and visit <ref refid="install_1BAIBuildDocumentation" kindref="member">Build Documentation</ref>! </para>
-</listitem>
-<listitem><para>Ask questions, request new features, and catch bugs? Report it at <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>! </para>
-</listitem>
-<listitem><para>Know how to fix an issue, bug, or add new features? Make a <ulink url="https://github.com/taskflow/taskflow/pulls">pull request</ulink>! </para>
-</listitem>
-<listitem><para>Share Taskflow with others. The more people use it, the more solid Taskflow becomes!</para>
-</listitem>
+<para>There are multiple ways in which you can contribute to Taskflow:</para><para><itemizedlist>
+<listitem><para>Use it! Let us know what you think and how it helps your jobs! </para></listitem>
+<listitem><para>Catch a typo in documentation or want to make it better to understand? Edit the <ulink url="https://github.com/taskflow/taskflow/tree/master/doxygen">doc source</ulink> and visit <ref refid="install_1BAIBuildDocumentation" kindref="member">Build Documentation</ref>! </para></listitem>
+<listitem><para>Ask questions, request new features, and catch bugs? Report it at <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>! </para></listitem>
+<listitem><para>Know how to fix an issue, bug, or add new features? Make a <ulink url="https://github.com/taskflow/taskflow/pulls">pull request</ulink>! </para></listitem>
+<listitem><para>Share Taskflow with others. The more people use it, the more solid Taskflow becomes!</para></listitem>
 </itemizedlist>
-Your contributions are always welcome. Every contribution regardless of its size is significant to keep Taskflow thrive.</para>
-</sect1>
+Your contributions are always welcome. Every contribution regardless of its size is significant to keep Taskflow thrive.</para></sect1>
 <sect1 id="guidelines_1HowCanIGetCredit">
 <title>How Can I Get Credit?</title>
-<para>Your contribution is an undeniably important piece of the Taskflow project, and we want to make sure you always get credit for your work. Depending on the technical innovation and engineering effort, we credit your contributions as follows:</para>
-<para><itemizedlist>
-<listitem><para>We document your commit or pull request at the <ref refid="contributors" kindref="compound">Contributors</ref> page </para>
-</listitem>
-<listitem><para>We advertise your organization as either users or sponsors at the <ulink url="https://taskflow.github.io/">Project Website</ulink> </para>
-</listitem>
-<listitem><para>We highlight your names in our technical presentations (e.g., <ulink url="https://www.youtube.com/user/CppCon">CppCon</ulink>) from time to time </para>
-</listitem>
-<listitem><para>We co-author you in our research publications if you introduce significant innovation (see <ref refid="References" kindref="compound">References</ref>)</para>
-</listitem>
+<para>Your contribution is an undeniably important piece of the Taskflow project, and we want to make sure you always get credit for your work. Depending on the technical innovation and engineering effort, we credit your contributions as follows:</para><para><itemizedlist>
+<listitem><para>We document your commit or pull request at the <ref refid="contributors" kindref="compound">Contributors</ref> page </para></listitem>
+<listitem><para>We advertise your organization as either users or sponsors at the <ulink url="https://taskflow.github.io/">Project Website</ulink> </para></listitem>
+<listitem><para>We highlight your names in our technical presentations (e.g., <ulink url="https://www.youtube.com/user/CppCon">CppCon</ulink>) from time to time </para></listitem>
+<listitem><para>We co-author you in our research publications if you introduce significant innovation (see <ref refid="References" kindref="compound">References</ref>)</para></listitem>
 </itemizedlist>
-Your effort really matters to us and we are eater to acknowledge your contributions! As such, we would welcome any advice and recommendations that can improve our credit system. Please <ulink url="https://taskflow.github.io/#tag_contact">contact us</ulink>.</para>
-</sect1>
+Your effort really matters to us and we are eater to acknowledge your contributions! As such, we would welcome any advice and recommendations that can improve our credit system. Please <ulink url="https://taskflow.github.io/#tag_contact">contact us</ulink>.</para></sect1>
 <sect1 id="guidelines_1HowCanIGetStarted">
 <title>How Can I Get Started?</title>
-<para>There are no better ways other than trying out Taskflow before you want to contribute. We summarize a few steps below for you to follow.</para>
-<sect2 id="guidelines_1Step1LookAround">
+<para>There are no better ways other than trying out Taskflow before you want to contribute. We summarize a few steps below for you to follow.</para><sect2 id="guidelines_1Step1LookAround">
 <title>Step 1: Look around</title>
-<para>Visit the <ulink url="https://taskflow.github.io/">Project Website</ulink> and get an 1000-feet overview of Taskflow, in which you shall find recent news, releases, use cases, and other useful information of Taskflow. We also provided a <ulink url="https://taskflow.github.io/showcase/index.html">showcase presentation</ulink> for you to quickly understand the technical work of Taskflow. Then, check out our <ref refid="usecases" kindref="compound">Real Use Cases</ref> and get a sense about the problems Taskflow is good at.</para>
-</sect2>
+<para>Visit the <ulink url="https://taskflow.github.io/">Project Website</ulink> and get an 1000-feet overview of Taskflow, in which you shall find recent news, releases, use cases, and other useful information of Taskflow. We also provided a <ulink url="https://taskflow.github.io/showcase/index.html">showcase presentation</ulink> for you to quickly understand the technical work of Taskflow. Then, check out our <ref refid="usecases" kindref="compound">Real Use Cases</ref> and get a sense about the problems Taskflow is good at.</para></sect2>
 <sect2 id="guidelines_1Step2WriteATaskflowProgram">
 <title>Step 2: Write a Taskflow program</title>
-<para>Taskflow is a programming system. We believe it is impossible to understand what Taskflow is doing without writing real code. Visit the quick-start page and program your first hello-world with Taskflow!</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Taskflow<sp/>is<sp/>header-only</highlight><highlight class="normal"></highlight></codeline>
+<para>Taskflow is a programming system. We believe it is impossible to understand what Taskflow is doing without writing real code. Visit the quick-start page and program your first hello-world with Taskflow!</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Taskflow<sp/>is<sp/>header-only</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
@@ -105,10 +41,10 @@ Your effort really matters to us and we are eater to acknowledge your contributi
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[A,<sp/>B,<sp/>C,<sp/>D]<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;TaskA\n&quot;</highlight><highlight class="normal">;<sp/>},<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/>task<sp/>dependency<sp/>graph</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;TaskB\n&quot;</highlight><highlight class="normal">;<sp/>},<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/></highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;TaskC\n&quot;</highlight><highlight class="normal">;<sp/>},<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>+---+<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;TaskD\n&quot;</highlight><highlight class="normal">;<sp/>}<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/>+----&gt;|<sp/>B<sp/>|-----+<sp/><sp/><sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;TaskA\n&quot;</highlight><highlight class="normal">;<sp/>},<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/>task<sp/>dependency<sp/>graph</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;TaskB\n&quot;</highlight><highlight class="normal">;<sp/>},<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;TaskC\n&quot;</highlight><highlight class="normal">;<sp/>},<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>+---+<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;TaskD\n&quot;</highlight><highlight class="normal">;<sp/>}<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/>+----&gt;|<sp/>B<sp/>|-----+<sp/><sp/><sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/>|<sp/><sp/><sp/><sp/><sp/>+---+<sp/><sp/><sp/><sp/><sp/>|</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/>+---+<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>+-v-+<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B);<sp/><sp/></highlight><highlight class="comment">//<sp/>A<sp/>runs<sp/>before<sp/>B<sp/><sp/><sp/><sp/><sp/><sp/>//<sp/><sp/>|<sp/>A<sp/>|<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>|<sp/>D<sp/>|<sp/></highlight><highlight class="normal"></highlight></codeline>
@@ -120,100 +56,54 @@ Your effort really matters to us and we are eater to acknowledge your contributi
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para>
-<para>The hello-world program creates four tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput>, where <computeroutput>A</computeroutput> runs before <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput> runs after <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput>. When <computeroutput>A</computeroutput> finishes, <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> can run in parallel, and then <computeroutput>D</computeroutput>.</para>
-</sect2>
+</programlisting></para><para>The hello-world program creates four tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput>, where <computeroutput>A</computeroutput> runs before <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput> runs after <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput>. When <computeroutput>A</computeroutput> finishes, <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> can run in parallel, and then <computeroutput>D</computeroutput>.</para></sect2>
 <sect2 id="guidelines_1Step3WriteATaskflowProgram">
 <title>Step 3: Dive in</title>
-<para>After you successfully finish the hello-world example, give a deep dive-in to the technical details by visiting <ref refid="Cookbook" kindref="compound">Cookbook</ref>, <ref refid="Algorithms" kindref="compound">Taskflow Algorithms</ref>, and <ref refid="Examples" kindref="compound">Learning from Examples</ref>. These pages provides you step-by-step tutorials about the fundamental syntaxes and tasking models in Taskflow that you need to fully take advantage of task graph parallelism to boost your application performance.</para>
-<para>At this stage, you may encounter issues, features requests, and questions. Then, start your first contribution by posting them in our <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>!</para>
-</sect2>
+<para>After you successfully finish the hello-world example, give a deep dive-in to the technical details by visiting <ref refid="Cookbook" kindref="compound">Cookbook</ref>, <ref refid="Algorithms" kindref="compound">Taskflow Algorithms</ref>, and <ref refid="Examples" kindref="compound">Learning from Examples</ref>. These pages provides you step-by-step tutorials about the fundamental syntaxes and tasking models in Taskflow that you need to fully take advantage of task graph parallelism to boost your application performance.</para><para>At this stage, you may encounter issues, features requests, and questions. Then, start your first contribution by posting them in our <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>!</para></sect2>
 </sect1>
 <sect1 id="guidelines_1HowCanIReportAnIssue">
 <title>How Can I Report Issues?</title>
-<para>Taskflow is in active development. We are not surprised that you encounter something that needs improvement or fixes to work for your use cases. Or you want to suggest something that can improve Taskflow&apos;s functionality. Please do not hesitate to share any of these issues with by by opening an post at our <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>!</para>
-<para>Please make sure that you provide all the necessary information in the issue body to communicate your problem clearly so we can work on it efficiently.</para>
-</sect1>
+<para>Taskflow is in active development. We are not surprised that you encounter something that needs improvement or fixes to work for your use cases. Or you want to suggest something that can improve Taskflow&apos;s functionality. Please do not hesitate to share any of these issues with by by opening an post at our <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>!</para><para>Please make sure that you provide all the necessary information in the issue body to communicate your problem clearly so we can work on it efficiently.</para></sect1>
 <sect1 id="guidelines_1HowCanIEditTheDocumentation">
 <title>How Can I Edit the Documentation?</title>
-<para>Documentation is just as important as the codebase! There is always a scope of improvement in documentation to add some missing information or to make it easier to read. We use the famous <ulink url="https://www.doxygen.nl/index.html">Doxygen</ulink> to compile our documentation. You can edit the <ulink url="https://github.com/taskflow/taskflow/tree/master/doxygen">documentation source</ulink> which is stored as a text file in the <computeroutput>doxygen</computeroutput> directory of Taskflow. After editing the file locally, you can submit your changes to us by making a patch.</para>
-</sect1>
+<para>Documentation is just as important as the codebase! There is always a scope of improvement in documentation to add some missing information or to make it easier to read. We use the famous <ulink url="https://www.doxygen.nl/index.html">Doxygen</ulink> to compile our documentation. You can edit the <ulink url="https://github.com/taskflow/taskflow/tree/master/doxygen">documentation source</ulink> which is stored as a text file in the <computeroutput>doxygen</computeroutput> directory of Taskflow. After editing the file locally, you can submit your changes to us by making a patch.</para></sect1>
 <sect1 id="guidelines_1HowCanISubmitAPatch">
 <title>How Can I Submit a Patch?</title>
-<para>To contribute your code to Taskflow, you need to make a <ulink url="https://github.com/taskflow/taskflow/pulls">pull request</ulink> from your <ulink url="https://github.com/taskflow/taskflow/network/members">fork of Taskflow</ulink>. GitHub makes the development flow of <ulink url="https://docs.github.com/en/enterprise/2.13/user/articles/about-pull-requests">submitting pull requests</ulink> extremely handy as long as you follow the standard fork process.</para>
-<para>When you make a pull request, please provide all the necessary information requested by prompts in the pull request body. In addition, make sure the code you are submitting always accounts for the following three guidelines:</para>
-<para><itemizedlist>
-<listitem><para><bold>Run the tests:</bold> You must pass through our unit tests (see <ref refid="install" kindref="compound">Building and Installing</ref>) before submitting the pull request. Our unit tests have accumulated many corner cases over the past years that can detect defects in the newly developed features or bugs when changing the existing functionality.</para>
-</listitem>
+<para>To contribute your code to Taskflow, you need to make a <ulink url="https://github.com/taskflow/taskflow/pulls">pull request</ulink> from your <ulink url="https://github.com/taskflow/taskflow/network/members">fork of Taskflow</ulink>. GitHub makes the development flow of <ulink url="https://docs.github.com/en/enterprise/2.13/user/articles/about-pull-requests">submitting pull requests</ulink> extremely handy as long as you follow the standard fork process.</para><para>When you make a pull request, please provide all the necessary information requested by prompts in the pull request body. In addition, make sure the code you are submitting always accounts for the following three guidelines:</para><para><itemizedlist>
+<listitem><para><bold>Run the tests:</bold> You must pass through our unit tests (see <ref refid="install" kindref="compound">Building and Installing</ref>) before submitting the pull request. Our unit tests have accumulated many corner cases over the past years that can detect defects in the newly developed features or bugs when changing the existing functionality.</para></listitem>
 </itemizedlist>
 <itemizedlist>
-<listitem><para><bold>Profile the change:</bold> You must inspect any performance hit caused by your changes. There are multiple ways to profile Taskflow but we recommend you try to record the runtime of completing all unit tests <emphasis>before</emphasis> and <emphasis>after</emphasis> your changes.</para>
-</listitem>
+<listitem><para><bold>Profile the change:</bold> You must inspect any performance hit caused by your changes. There are multiple ways to profile Taskflow but we recommend you try to record the runtime of completing all unit tests <emphasis>before</emphasis> and <emphasis>after</emphasis> your changes.</para></listitem>
 </itemizedlist>
 <itemizedlist>
-<listitem><para><bold>Document the code:</bold> You must document the code or provide a clear explanation about your pull request. You may also provide <ulink url="https://github.com/taskflow/taskflow/tree/master/examples">examples</ulink> specific to your new changes and include them in our cmake script.</para>
-</listitem>
+<listitem><para><bold>Document the code:</bold> You must document the code or provide a clear explanation about your pull request. You may also provide <ulink url="https://github.com/taskflow/taskflow/tree/master/examples">examples</ulink> specific to your new changes and include them in our cmake script.</para></listitem>
 </itemizedlist>
-Please let us know all people who are involved in the pull request so that we can appropriately acknowledge everyone&apos;s effort at the <ref refid="contributors" kindref="compound">Contributors</ref> page. If there are any issues that you would like to communicate offline, please <ulink url="https://taskflow.github.io/#tag_contact">contact us</ulink>.</para>
-</sect1>
+Please let us know all people who are involved in the pull request so that we can appropriately acknowledge everyone&apos;s effort at the <ref refid="contributors" kindref="compound">Contributors</ref> page. If there are any issues that you would like to communicate offline, please <ulink url="https://taskflow.github.io/#tag_contact">contact us</ulink>.</para></sect1>
 <sect1 id="guidelines_1HowCanILeadAProject">
 <title>How Can I Lead a Project?</title>
-<para>There are many on-going and future projects that interest us and the Taskflow community. Given the tremendous amount of work, we welcome organizations or individuals to take lead on these projects. The table below summarizes a list of projects that need you to either take lead or contribute:</para>
-<para><table rows="9" cols="3"><row>
-<entry thead="yes" align='center'><para>Item   </para>
-</entry><entry thead="yes" align='center'><para>Status   </para>
-</entry><entry thead="yes" align='left'><para>Description    </para>
-</entry></row>
+<para>There are many on-going and future projects that interest us and the Taskflow community. Given the tremendous amount of work, we welcome organizations or individuals to take lead on these projects. The table below summarizes a list of projects that need you to either take lead or contribute:</para><para><table rows="9" cols="3"><row>
+<entry thead="yes"><para>Item  </para></entry><entry thead="yes"><para>Status  </para></entry><entry thead="yes"><para>Description   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Visualizing Taskflow   </para>
-</entry><entry thead="no" align='center'><para>need contributors   </para>
-</entry><entry thead="no" align='left'><para>enhance <ulink url="https://taskflow.github.io/tfprof/">tfprof</ulink> in various aspects, including visualizing critical paths along the taskflow graphs, handling large profile data to overcome, improving the user interface, and embedding WebAssembly to speed up the data query    </para>
-</entry></row>
+<entry thead="no"><para>Visualizing Taskflow  </para></entry><entry thead="no"><para>need contributors  </para></entry><entry thead="no"><para>enhance <ulink url="https://taskflow.github.io/tfprof/">tfprof</ulink> in various aspects, including visualizing critical paths along the taskflow graphs, handling large profile data to overcome, improving the user interface, and embedding WebAssembly to speed up the data query   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Binding Python   </para>
-</entry><entry thead="no" align='center'><para>need leaders   </para>
-</entry><entry thead="no" align='left'><para>provide a python binding with a programming model to allow Taskflow to contribute to the python scientific computing communities    </para>
-</entry></row>
+<entry thead="no"><para>Binding Python  </para></entry><entry thead="no"><para>need leaders  </para></entry><entry thead="no"><para>provide a python binding with a programming model to allow Taskflow to contribute to the python scientific computing communities   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Adding Benchmarks   </para>
-</entry><entry thead="no" align='center'><para>need contributors   </para>
-</entry><entry thead="no" align='left'><para>enhance the <ulink url="https://github.com/taskflow/taskflow/tree/master/benchmarks">benchmark pool</ulink> to provide more parallel computing instances that can help profile Taskflow    </para>
-</entry></row>
+<entry thead="no"><para>Adding Benchmarks  </para></entry><entry thead="no"><para>need contributors  </para></entry><entry thead="no"><para>enhance the <ulink url="https://github.com/taskflow/taskflow/tree/master/benchmarks">benchmark pool</ulink> to provide more parallel computing instances that can help profile Taskflow   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Developing Algorithms   </para>
-</entry><entry thead="no" align='center'><para>need contributors   </para>
-</entry><entry thead="no" align='left'><para>enhance our generic <ref refid="Algorithms" kindref="compound">Taskflow Algorithms</ref> collection by adding more parallel algorithm skeletons that can help developers quickly describe common parallel workloads (e.g., C++ 17/20 parallel algorithms)    </para>
-</entry></row>
+<entry thead="no"><para>Developing Algorithms  </para></entry><entry thead="no"><para>need contributors  </para></entry><entry thead="no"><para>enhance our generic <ref refid="Algorithms" kindref="compound">Taskflow Algorithms</ref> collection by adding more parallel algorithm skeletons that can help developers quickly describe common parallel workloads (e.g., C++ 17/20 parallel algorithms)   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Developing Kernels Algorithms   </para>
-</entry><entry thead="no" align='center'><para>need contributors   </para>
-</entry><entry thead="no" align='left'><para>enhance our cudaFlow by providing common GPU kernels (e.g., reduce, sort, scan, prefix_sum, etc.) that developers can quickly leverage when describing GPU work using cudaFlows    </para>
-</entry></row>
+<entry thead="no"><para>Developing Kernels Algorithms  </para></entry><entry thead="no"><para>need contributors  </para></entry><entry thead="no"><para>enhance our cudaFlow by providing common GPU kernels (e.g., reduce, sort, scan, prefix_sum, etc.) that developers can quickly leverage when describing GPU work using cudaFlows   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Integrating OpenCL   </para>
-</entry><entry thead="no" align='center'><para>need leaders   </para>
-</entry><entry thead="no" align='left'><para>design another task type, <emphasis>clFlow</emphasis>, to support OpenCL in a task-graph fasion and schedule OpenCL tasks using graph parallelism    </para>
-</entry></row>
+<entry thead="no"><para>Integrating OpenCL  </para></entry><entry thead="no"><para>need leaders  </para></entry><entry thead="no"><para>design another task type, <emphasis>clFlow</emphasis>, to support OpenCL in a task-graph fasion and schedule OpenCL tasks using graph parallelism   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Supporting pipeline   </para>
-</entry><entry thead="no" align='center'><para>need leaders   </para>
-</entry><entry thead="no" align='left'><para>design a tasking interface to support pipeline of a data stream over a taskflow graph, where we may resemble <ulink url="https://www.threadingbuildingblocks.org/docs/help/tbb_userguide/Working_on_the_Assembly_Line_pipeline.html">tbb::parallel_pipeline</ulink>    </para>
-</entry></row>
+<entry thead="no"><para>Supporting pipeline  </para></entry><entry thead="no"><para>need leaders  </para></entry><entry thead="no"><para>design a tasking interface to support pipeline of a data stream over a taskflow graph, where we may resemble <ulink url="https://www.threadingbuildingblocks.org/docs/help/tbb_userguide/Working_on_the_Assembly_Line_pipeline.html">tbb::parallel_pipeline</ulink>   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Diagnosing Taskflow   </para>
-</entry><entry thead="no" align='center'><para>need contributors   </para>
-</entry><entry thead="no" align='left'><para>devise API and algorithms to diagnose if the given taskflow is properly conditioned under our <ref refid="ConditionalTasking_1TaskSchedulingPolicy" kindref="member">Understand our Task-level Scheduling</ref>, for example, tf::Taskflow::diagnose, under two modes, before running and on the running   </para>
-</entry></row>
+<entry thead="no"><para>Diagnosing Taskflow  </para></entry><entry thead="no"><para>need contributors  </para></entry><entry thead="no"><para>devise API and algorithms to diagnose if the given taskflow is properly conditioned under our <ref refid="ConditionalTasking_1TaskSchedulingPolicy" kindref="member">Understand our Task-level Scheduling</ref>, for example, tf::Taskflow::diagnose, under two modes, before running and on the running   </para></entry></row>
 </table>
-</para>
-<para>If you have identified any other projects that can be included to the list, please make a post at our <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink> or <ulink url="https://taskflow.github.io/#tag_contact">contact us</ulink>.</para>
-</sect1>
+</para><para>If you have identified any other projects that can be included to the list, please make a post at our <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink> or <ulink url="https://taskflow.github.io/#tag_contact">contact us</ulink>.</para></sect1>
 <sect1 id="guidelines_1YourVoiceMatters">
 <title>Your Voice Matters!</title>
-<para>If you find Taskflow helpful, please share it with your peers, colleagues, and anyone who can benefit from Taskflow. By telling other people about how Taskflow helped you, you will help us in turn and broaden our impact.</para>
-<para>Thank you very much for contributing! </para>
-</sect1>
+<para>If you find Taskflow helpful, please share it with your peers, colleagues, and anyone who can benefit from Taskflow. By telling other people about how Taskflow helped you, you will help us in turn and broaden our impact.</para><para>Thank you very much for contributing! </para></sect1>
     </detaileddescription>
-    <location file="contributing/guidelines.dox"/>
   </compounddef>
 </doxygen>

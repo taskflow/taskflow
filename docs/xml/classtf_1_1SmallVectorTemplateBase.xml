@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="classtf_1_1SmallVectorTemplateBase" kind="class" language="C++" prot="private">
     <compoundname>tf::SmallVectorTemplateBase</compoundname>
     <basecompoundref prot="public" virt="non-virtual">tf::SmallVectorTemplateCommon&lt; T &gt;</basecompoundref>
@@ -7,7 +7,9 @@
     <derivedcompoundref refid="classtf_1_1SmallVectorImpl" prot="public" virt="non-virtual">tf::SmallVectorImpl&lt; tf::Semaphore * &gt;</derivedcompoundref>
     <templateparamlist>
       <param>
-        <type>typename T</type>
+        <type>typename</type>
+        <declname>T</declname>
+        <defname>T</defname>
       </param>
       <param>
         <type>bool</type>
@@ -21,7 +23,6 @@
         <definition>tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::SmallVectorTemplateBase</definition>
         <argsstring>(size_t Size)</argsstring>
         <name>SmallVectorTemplateBase</name>
-        <qualifiedname>tf::SmallVectorTemplateBase::SmallVectorTemplateBase</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>Size</declname>
@@ -32,14 +33,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="241" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="241" bodyend="241"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="241" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="241" bodyend="241"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateBase_1ab804c48d808741a114c698847860d64c" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::grow</definition>
         <argsstring>(size_t MinSize=0)</argsstring>
         <name>grow</name>
-        <qualifiedname>tf::SmallVectorTemplateBase::grow</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>MinSize</declname>
@@ -48,11 +48,10 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Grow the allocated memory (without initializing new elements), doubling the size of the allocated memory. Guarantees space for at least one more element, or MinSize more elements if specified. </para>
-        </detaileddescription>
+<para>Grow the allocated memory (without initializing new elements), doubling the size of the allocated memory. Guarantees space for at least one more element, or MinSize more elements if specified. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="268" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="295" bodyend="317"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="268" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="295" bodyend="317"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="protected-static-func">
@@ -61,7 +60,6 @@
         <definition>static void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::destroy_range</definition>
         <argsstring>(T *S, T *E)</argsstring>
         <name>destroy_range</name>
-        <qualifiedname>tf::SmallVectorTemplateBase::destroy_range</qualifiedname>
         <param>
           <type>T *</type>
           <declname>S</declname>
@@ -76,7 +74,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="243" column="15" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="243" bodyend="248"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="243" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="243" bodyend="248"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateBase_1adf1b336ce5b5f404de1bb43c354fe1dd" prot="protected" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -91,7 +89,6 @@
         <definition>static void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::uninitialized_move</definition>
         <argsstring>(It1 I, It1 E, It2 Dest)</argsstring>
         <name>uninitialized_move</name>
-        <qualifiedname>tf::SmallVectorTemplateBase::uninitialized_move</qualifiedname>
         <param>
           <type>It1</type>
           <declname>I</declname>
@@ -107,11 +104,10 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Move the range [I, E) into the uninitialized memory starting with &quot;Dest&quot;, constructing elements as needed. </para>
-        </detaileddescription>
+<para>Move the range [I, E) into the uninitialized memory starting with &quot;Dest&quot;, constructing elements as needed. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="253" column="15" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="253" bodyend="256"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="253" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="253" bodyend="256"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateBase_1ab8738fe3287f4ef437fe7363e8ae2d60" prot="protected" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -126,7 +122,6 @@
         <definition>static void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::uninitialized_copy</definition>
         <argsstring>(It1 I, It1 E, It2 Dest)</argsstring>
         <name>uninitialized_copy</name>
-        <qualifiedname>tf::SmallVectorTemplateBase::uninitialized_copy</qualifiedname>
         <param>
           <type>It1</type>
           <declname>I</declname>
@@ -142,11 +137,10 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Copy the range [I, E) onto the uninitialized memory starting with &quot;Dest&quot;, constructing elements as needed. </para>
-        </detaileddescription>
+<para>Copy the range [I, E) onto the uninitialized memory starting with &quot;Dest&quot;, constructing elements as needed. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="261" column="15" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="261" bodyend="263"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="261" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="261" bodyend="263"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -155,7 +149,6 @@
         <definition>void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::push_back</definition>
         <argsstring>(const T &amp;Elt)</argsstring>
         <name>push_back</name>
-        <qualifiedname>tf::SmallVectorTemplateBase::push_back</qualifiedname>
         <param>
           <type>const T &amp;</type>
           <declname>Elt</declname>
@@ -166,14 +159,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="271" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="271" bodyend="276"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="271" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="271" bodyend="276"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateBase_1a6509b362398934d6ceed4a74ad0e6547" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::push_back</definition>
         <argsstring>(T &amp;&amp;Elt)</argsstring>
         <name>push_back</name>
-        <qualifiedname>tf::SmallVectorTemplateBase::push_back</qualifiedname>
         <param>
           <type>T &amp;&amp;</type>
           <declname>Elt</declname>
@@ -184,21 +176,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="278" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="278" bodyend="283"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="278" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="278" bodyend="283"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateBase_1aaa3d3554c2ae0be47eed43c324e5e73b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::pop_back</definition>
         <argsstring>()</argsstring>
         <name>pop_back</name>
-        <qualifiedname>tf::SmallVectorTemplateBase::pop_back</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="285" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="285" bodyend="288"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="285" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="285" bodyend="288"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -206,46 +197,46 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="4">
-        <label>tf::SmallVectorImpl&lt; Node * &gt;</label>
-        <childnode refid="1" relation="public-inheritance">
+      <node id="259">
+        <label>tf::SmallVectorTemplateCommon&lt; T &gt;</label>
+        <childnode refid="260" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="5">
-        <label>tf::SmallVectorImpl&lt; tf::Semaphore * &gt;</label>
-        <childnode refid="1" relation="public-inheritance">
+      <node id="261">
+        <label>SmallVectorImpl&lt; Node * &gt;</label>
+        <childnode refid="258" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="3">
+      <node id="262">
+        <label>SmallVectorImpl&lt; tf::Semaphore * &gt;</label>
+        <childnode refid="258" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="260">
         <label>tf::SmallVectorBase</label>
       </node>
-      <node id="1">
+      <node id="258">
         <label>tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;</label>
-        <childnode refid="2" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="2">
-        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
-        <childnode refid="3" relation="public-inheritance">
+        <childnode refid="259" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="3">
-        <label>tf::SmallVectorBase</label>
-      </node>
-      <node id="1">
-        <label>tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;</label>
-        <childnode refid="2" relation="public-inheritance">
+      <node id="264">
+        <label>tf::SmallVectorTemplateCommon&lt; T &gt;</label>
+        <childnode refid="265" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="2">
-        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
-        <childnode refid="3" relation="public-inheritance">
+      <node id="265">
+        <label>tf::SmallVectorBase</label>
+      </node>
+      <node id="263">
+        <label>tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;</label>
+        <childnode refid="264" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="238" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="238" bodyend="289"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="238" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="238" bodyend="289"/>
     <listofallmembers>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a009d8ff154f5ce94202db6c0591ce9e2" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase</scope><name>back</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a14a2f4a352c7ea71bea641125fa64c19" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase</scope><name>back</name></member>

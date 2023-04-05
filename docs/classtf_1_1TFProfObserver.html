@@ -5,7 +5,7 @@
   <title>tf::TFProfObserver class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -62,20 +62,20 @@
             </li>
           </ul>
         </nav>
-<p>A <a href="classtf_1_1TFProfObserver.html" class="m-doc">tf::<wbr />TFProfObserver</a> inherits <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> and defines methods to dump the observed thread activities into a format that can be visualized through <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
+<p>A <a href="classtf_1_1TFProfObserver.html" class="m-doc">tf::<wbr />TFProfObserver</a> inherits <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> and defines methods to dump the observed thread activities into a format that can be visualized through <a href="https://taskflow.github.io/tfprof/">Taskflow Profiler</a>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
 
 <span class="c1">// insert tasks into taskflow</span>
 <span class="c1">// ...</span>
 <span class="w">  </span>
 <span class="c1">// create a custom observer</span>
-<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">TFProfObserver</span><span class="o">&gt;</span><span class="w"> </span><span class="n">observer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">make_observer</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">TFProfObserver</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">TFProfObserver</span><span class="o">&gt;</span><span class="w"> </span><span class="n">observer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">make_observer</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">TFProfObserver</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
 
 <span class="c1">// run the taskflow</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
 
 <span class="c1">// dump the thread activities to Taskflow Profiler format.</span>
-<span class="n">observer</span><span class="o">-&gt;</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre>
+<span class="n">observer</span><span class="o">-&gt;</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span></pre>
         <section id="base-classes">
           <h2><a href="#base-classes">Base classes</a></h2>
           <dl class="m-doc">
@@ -245,7 +245,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

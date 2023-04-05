@@ -19,7 +19,8 @@ for using parallel-iteration algorithms.
 @section A1IndexBasedParallelFor Create an Index-based Parallel-Iteration Task
 
 Index-based parallel-for performs parallel iterations over a range <tt>[first, last)</tt> with the given @c step size.
-The task created by tf::Taskflow::for_each_index(B first, E last, S step, C callable) represents parallel execution of the following loop:
+The task created by tf::Taskflow::for_each_index(B first, E last, S step, C callable, P&& part) 
+represents parallel execution of the following loop:
 
 @code{.cpp}
 // positive step
@@ -49,8 +50,11 @@ An example of the %Taskflow graph for the positive case under 12 workers is depi
 <!-- @image html images/parallel_for_1.svg width=100% -->
 @dotfile images/parallel_for_1.dot
 
-The index types, @c B, @c E, and @c S, are templates to preserve the variable types and their underlying types must be of the same @em integral type (e.g., @c int, @c size_t, @c unsigned).
-By default, tf::Taskflow::for_each_index creates a task that spawns a subflow (see @ref DynamicTasking) to run iterations in parallel. The subflow closure captures all input arguments through perfect forwarding to form a stateful closure such that any changes on the arguments will be visible to the execution context of the subflow. For example:
+You can pass indices by reference using std::ref
+to marshal parameter update between dependent tasks.
+This is especially useful when the range indices are unknown
+at the time of creating a for-each-index task,
+but is initialized from another task.
 
 @code{.cpp}
 int* vec;
@@ -77,13 +81,12 @@ init.precede(pf);
 @endcode
 
 When @c init finishes, the parallel-for task @c pf will see @c first as 0 and @c last as 1000 and performs parallel iterations over the 1000 items.
-This property is especially important for task graph parallelism, because users can define end-to-end parallelism through stateful closures that marshal parameter exchange between dependent tasks.
 
 
 @section A1IteratorBasedParallelFor Create an Iterator-based Parallel-Iteration Task
 
 Iterator-based parallel-for performs parallel iterations over a range specified by two <a href="https://en.cppreference.com/w/cpp/iterator/iterator">STL-styled iterators</a>, @c first and @c last. 
-The task created by tf::Taskflow::for_each(B first, E last, C callable) represents 
+The task created by tf::Taskflow::for_each(B first, E last, C callable, P&& part) represents 
 a parallel execution of the following loop:
 
 @code{.cpp}
@@ -92,8 +95,10 @@ for(auto i=first; i<last; i++) {
 }
 @endcode
 
-By default, tf::Taskflow::for_each(B first, E last, C callable) creates a task that spawns a subflow (see @ref DynamicTasking) that applies the callable to the object obtained by dereferencing every iterator in the range <tt>[first, last)</tt>.
-It is user's responsibility for ensuring the range is valid within the execution of the parallel-for task. Iterators must have the post-increment operator @++ defined. This version of parallel-for applies to all iterable STL containers.
+tf::Taskflow::for_each(B first, E last, C callable, P&& part) 
+simultaneously applies the callable to the object obtained by dereferencing every iterator 
+in the range <tt>[first, last)</tt>.
+It is user's responsibility for ensuring the range is valid within the execution of the parallel-for task. Iterators must have the post-increment operator @++ defined. 
 
 @code{.cpp}
 std::vector<int> vec = {1, 2, 3, 4, 5};
@@ -108,7 +113,10 @@ taskflow.for_each(list.begin(), list.end(), [](const std::string& str){
 @endcode
 
 
-Similar to index-based parallel-for, the iterator types are templates to enable users to leverage the property of stateful closure. For example:
+Similar to tf::Taskflow::for_each_index, iterators of tf::Taskflow::for_each 
+are templated to allow passing range iterators by reference, such that one task can
+set up the range before another task performs the parallel-for algorithm.
+For example:
 
 @code{.cpp}
 std::vector<int> vec;
@@ -136,14 +144,10 @@ When @c init finishes, the parallel-for task @c pf will see @c first pointing to
 
 @section ParallelIterationsConfigureAPartitioner Configure a Partitioner
 
-You can configure a partitioner for parallel-iteration tasks to run with different
-scheduling methods, such as guided partitioning, dynamic partitioning, and static partitioning.
-Each parallel-iteration task has an overload that takes a partitioner in the last argument:
-
-  + tf::Taskflow::for_each_index(B first, E last, S step, C callable, P&& part)
-  + tf::Taskflow::for_each(B first, E last, C callable, P&& part) 
-
-The following example create two parallel-iteration tasks using tow different
+You can configure a partitioner for parallel-iteration tasks
+to run with different scheduling methods, 
+such as guided partitioning, dynamic partitioning, and static partitioning.
+The following example create two parallel-iteration tasks using two different
 partitioners, one with the static partitioning algorithm and 
 another one with the guided partitioning algorithm:
 
@@ -154,17 +158,19 @@ tf::ExecutionPolicy<tf::StaticPartitioner> static_partitioner;
 tf::ExecutionPolicy<tf::GuidedPartitioner> guided_partitioner;
 
 // create a parallel-iteration task with static partitioner
-taskflow.for_each(static_partitioner,
+taskflow.for_each(
   vec.begin(), vec.end(), [&](int i) {
     std::cout << "parallel iteration on item " << i << '\n';
-  }
+  },
+  static_partitioner
 );
 
 // create a parallel-iteration task with guided partitioner
-taskflow.for_each(guided_partitioner,
+taskflow.for_each(
   vec.begin(), vec.end(), [&](int i) {
     std::cout << "parallel iteration on item " << i << '\n';
-  }
+  },
+  guided_partitioner
 );
 @endcode
 

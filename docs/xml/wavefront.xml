@@ -1,39 +1,25 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="wavefront" kind="page">
     <compoundname>wavefront</compoundname>
     <title>Wavefront Parallelism</title>
-    <tableofcontents>
-      <tocsect>
-        <name>Problem Formulation</name>
-        <reference>wavefront_1WavefrontComputingFormulation</reference>
-    </tocsect>
-      <tocsect>
-        <name>Wavefront Task Graph</name>
-        <reference>wavefront_1WavefrontTaskGraph</reference>
-    </tocsect>
-    </tableofcontents>
+    <tableofcontents/>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>We study the wavefront parallelism, which is a common pattern in dynamic programming to sweep elements in a diagonal direction.</para>
-<sect1 id="wavefront_1WavefrontComputingFormulation">
+<para>We study the wavefront parallelism, which is a common pattern in dynamic programming to sweep elements in a diagonal direction.</para><sect1 id="wavefront_1WavefrontComputingFormulation">
 <title>Problem Formulation</title>
-<para>The computation starts at a singular point at a corner of a data plan (e.g., grid) and propagates its effect diagonally to other elements. This sweep of computation is known as <emphasis>wavefront</emphasis>. Each point in the wavefront can be computed in parallel. The following example shows a wavefront parallelism in a 2D matrix.</para>
-<para><image type="html" name="wavefront_1.png" width="70%"></image>
-</para>
-<para>We partition the 9x9 grid into a 3x3 block and assign a task to one block. The wavefront propagates task dependencies from the top-left block all the way to the bottom-right block. Each task precedes two tasks, one to the right and another below.</para>
-</sect1>
+<para>The computation starts at a singular point at a corner of a data plan (e.g., grid) and propagates its effect diagonally to other elements. This sweep of computation is known as <emphasis>wavefront</emphasis>. Each point in the wavefront can be computed in parallel. The following example shows a wavefront parallelism in a 2D matrix.</para><para><image type="html" name="wavefront_1.png" width="70%"></image>
+</para><para>We partition the 9x9 grid into a 3x3 block and assign a task to one block. The wavefront propagates task dependencies from the top-left block all the way to the bottom-right block. Each task precedes two tasks, one to the right and another below.</para></sect1>
 <sect1 id="wavefront_1WavefrontTaskGraph">
 <title>Wavefront Task Graph</title>
-<para>We can describe the wavefront parallelism in a simple two-level loop. Since we need to address the two tasks upper and left to a task when creating its dependencies, we use a 2D vector to pre-allocate all tasks via <ref refid="classtf_1_1FlowBuilder_1acab0b4ac82260f47fdb36a3244ee3aaf" kindref="member">tf::Taskflow::placeholder</ref>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<para>We can describe the wavefront parallelism in a simple two-level loop. Since we need to address the two tasks upper and left to a task when creating its dependencies, we use a 2D vector to pre-allocate all tasks via <ref refid="classtf_1_1FlowBuilder_1acab0b4ac82260f47fdb36a3244ee3aaf" kindref="member">tf::Taskflow::placeholder</ref>.</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>num_blocks<sp/>=<sp/>3;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;std::vector&lt;tf::Task&gt;</ref>&gt;<sp/>node(num_blocks);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;std::vector&lt;tf::Task&gt;</ref>&gt;<sp/>node(num_blocks);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>num_blocks*num_blocks<sp/>placeholder<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;n<sp/>:<sp/>node){</highlight></codeline>
@@ -46,7 +32,7 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=num_blocks;<sp/>--i&gt;=0;<sp/>)<sp/>{<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>j=num_blocks;<sp/>--j&gt;=0;<sp/>)<sp/>{<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>deferred<sp/>task<sp/>assignment</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>node[i][j].work([=]()<sp/>{<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;compute<sp/>block<sp/>(%d,<sp/>%d)&quot;</highlight><highlight class="normal">,<sp/>i,<sp/>j);<sp/>});<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>node[i][j].work([=]()<sp/>{<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;compute<sp/>block<sp/>(%d,<sp/>%d)&quot;</highlight><highlight class="normal">,<sp/>i,<sp/>j);<sp/>});<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>wavefront<sp/>dependency</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(j+1<sp/>&lt;<sp/>num_blocks)<sp/>node[i][j].precede(node[i][j+1]);</highlight></codeline>
@@ -57,15 +43,10 @@
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para>
-<para>The figure below shows the wavefront parallelism in a 3x3 grid:</para>
-<para><dotfile name="wavefront_2.dot"></dotfile>
-</para>
-<para>Wavefront parallelism has many variations in different applications, for instance, Smith-Waterman sequencing, video encoding algorithms, image analysis, and pipeline parallelism. The parallel pattern exhibits in a diagonal direction. </para>
-</sect1>
+</programlisting></para><para>The figure below shows the wavefront parallelism in a 3x3 grid:</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/wavefront_2.dot"></dotfile>
+</para><para>Wavefront parallelism has many variations in different applications, for instance, Smith-Waterman sequencing, video encoding algorithms, image analysis, and pipeline parallelism. The parallel pattern exhibits in a diagonal direction. </para></sect1>
     </detaileddescription>
-    <location file="examples/wavefront.dox"/>
   </compounddef>
 </doxygen>

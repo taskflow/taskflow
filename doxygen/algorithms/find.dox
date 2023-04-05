@@ -1,0 +1,136 @@
+namespace tf {
+
+/** @page ParallelFind Parallel Find
+
+%Taskflow provides template functions for constructing
+tasks to perform parallel iterations over ranges of items.
+
+@tableofcontents
+
+@section ParallelFindIncludeTheHeader Include the Header
+
+You need to include the header file, `%taskflow/algorithm/find.hpp`, 
+for using parallel-find algorithms.
+
+@code{.cpp}
+#include <taskflow/algorithm/find.hpp>
+@endcode
+
+@section WhatIsAFindAlgorithm What is a Find Algorithm?
+
+A find algorithm allows you to find an element in a range 
+<tt>[first, last)</tt>
+that satisfies a specific criteria.
+The algorithm returns an iterator to the first found element in the range
+or returns @c last if there is no such iterator.
+%Taskflow provides the following parallel-find algorithms:
+
++ tf::Taskflow::find_if(B first, E last, UOP predicate, T& result, P&& part)
+
+@section CreateAParallelFindIfTask Create a Parallel Find-If Task
+
+tf::Taskflow::find_if
+performs parallel iterations to find the first element 
+in the range <tt>[first, last)</tt> at which the given predicate return
+@c true.
+It resembles a parallel implementation of the following loop:
+
+@code{.cpp}
+template<typename InputIt, typename UnaryPredicate>
+InputIt find_if(InputIt first, InputIt last, UnaryPredicate predicate) {
+  for(; first != last; ++first) {
+    if(predicate(*first)) {
+      return first;
+    }
+  }
+  return last;
+}
+@endcode
+
+The example below creates a task to find the element that is equal
+to 22 from an input range of 10 elements, and the result
+will be stored in the forth argument passed by reference:
+
+@code{.cpp}
+std::vector<int> input = {1, 9, 22, 3, -6, 13, 12, 0, 9, 11};
+std::vector<int>::iterator result;
+taskflow.find_if(
+  input.begin(), input.end(), [](int i){ return i == 22; }, result
+);
+executor.run(taskflow);
+assert(*result == 22);
+@endcode
+
+You can pass iterators by reference using std::ref
+to marshal parameters update between dependent tasks.
+This is especially useful when the range iterators are not known
+at the time of creating a for-each-index task,
+but is initialized from another task.
+
+@code{.cpp}
+std::vector<int> input;
+std::vector<int>::iterator result, first, last;
+
+// task to set up the range iterators
+tf::Task init = taskflow.emplace([&](){
+  input = {1, 9, 22, 3, -6, 13, 12, 0, 9, 11};
+  first = input.begin(),
+  last  = input.end();
+});
+
+// task to perform parallel find
+tf::Task task = taskflow.find_if(
+  std::ref(first), std::ref(last), [](int i){ return i == 22; }, result
+);
+
+init.precede(task);
+
+executor.run(taskflow);
+assert(*result == 22);
+@endcode
+
+In the above example, when @c init finishes, @c input has been initialized to 10 elements with
+@c first and @c last pointing to the data range of @c input.
+The find-if task will then work on this initialized range as a result of
+passing iterators by reference.
+
+@section ParallelFindConfigureAPartitioner Configure a Partitioner
+
+You can configure a partitioner for parallel-find tasks
+to run with different scheduling methods, 
+such as guided partitioning, dynamic partitioning, and static partitioning.
+The following example create two parallel-find tasks using two different
+partitioners, one with the static partitioning algorithm and 
+another one with the guided partitioning algorithm:
+
+@code{.cpp}
+std::vector<int> vec(1024, -1);
+std::vector<int>::iterator result;
+
+tf::ExecutionPolicy<tf::StaticPartitioner> static_partitioner;
+tf::ExecutionPolicy<tf::GuidedPartitioner> guided_partitioner;
+
+// create a parallel-find task with a static partitioner
+taskflow.find_if(
+  vec.begin(), vec.end(), [&](int i) { return i == -1; }, result, static_partitioner
+);
+
+// create a parallel-find task with a guided partitioner
+taskflow.find_if(
+  vec.begin(), vec.end(), [&](int i) { return i == -1; }, result, guided_partitioner
+);
+@endcode
+
+@note
+By default, parallel-find tasks use tf::DefaultPartitioner
+if no partitioner is specified. 
+
+*/
+
+}
+
+
+
+
+
+

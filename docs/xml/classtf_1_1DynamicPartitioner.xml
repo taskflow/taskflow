@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="classtf_1_1DynamicPartitioner" kind="class" language="C++" prot="public">
     <compoundname>tf::DynamicPartitioner</compoundname>
     <basecompoundref refid="classtf_1_1PartitionerBase" prot="public" virt="non-virtual">tf::PartitionerBase</basecompoundref>
@@ -10,34 +10,30 @@
         <definition>tf::DynamicPartitioner::DynamicPartitioner</definition>
         <argsstring>()</argsstring>
         <name>DynamicPartitioner</name>
-        <qualifiedname>tf::DynamicPartitioner::DynamicPartitioner</qualifiedname>
         <briefdescription>
-<para>default constructor </para>
-        </briefdescription>
+<para>default constructor </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="236" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="236" bodyend="236"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="236" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="236" bodyend="236"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1DynamicPartitioner_1afec1c557cfa1b2b5b9c5c47f40bc1697" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::DynamicPartitioner::DynamicPartitioner</definition>
         <argsstring>(size_t sz)</argsstring>
         <name>DynamicPartitioner</name>
-        <qualifiedname>tf::DynamicPartitioner::DynamicPartitioner</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>sz</declname>
         </param>
         <briefdescription>
-<para>construct a dynamic partitioner with the given chunk size </para>
-        </briefdescription>
+<para>construct a dynamic partitioner with the given chunk size </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="241" column="12" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="241" bodyend="241"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="241" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="241" bodyend="241"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -55,7 +51,6 @@
         <definition>void tf::DynamicPartitioner::loop</definition>
         <argsstring>(size_t N, size_t, std::atomic&lt; size_t &gt; &amp;next, F &amp;&amp;func) const</argsstring>
         <name>loop</name>
-        <qualifiedname>tf::DynamicPartitioner::loop</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>N</declname>
@@ -64,7 +59,7 @@
           <type>size_t</type>
         </param>
         <param>
-          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
+          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
           <declname>next</declname>
         </param>
         <param>
@@ -77,7 +72,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="253" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="253" bodyend="267"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="253" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="253" bodyend="267"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1DynamicPartitioner_1a1cb42e80e153127db83cc0833e6f65cb" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -93,7 +88,6 @@
         <definition>void tf::DynamicPartitioner::loop_until</definition>
         <argsstring>(size_t N, size_t, std::atomic&lt; size_t &gt; &amp;next, F &amp;&amp;func) const</argsstring>
         <name>loop_until</name>
-        <qualifiedname>tf::DynamicPartitioner::loop_until</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>N</declname>
@@ -102,7 +96,7 @@
           <type>size_t</type>
         </param>
         <param>
-          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
+          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
           <declname>next</declname>
         </param>
         <param>
@@ -115,40 +109,38 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="275" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="275" bodyend="291"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="275" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="275" bodyend="291"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class to construct a dynamic partitioner for scheduling parallel algorithms </para>
-    </briefdescription>
+<para>class to construct a dynamic partitioner for scheduling parallel algorithms </para>    </briefdescription>
     <detaileddescription>
-<para>The partitioner splits iterations into many partitions each of size equal to the given chunk size. Different partitions are distributed dynamically to workers without any specific order. </para>
-    </detaileddescription>
+<para>The partitioner splits iterations into many partitions each of size equal to the given chunk size. Different partitions are distributed dynamically to workers without any specific order. </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="1">
+      <node id="122">
         <label>tf::DynamicPartitioner</label>
         <link refid="classtf_1_1DynamicPartitioner"/>
-        <childnode refid="2" relation="public-inheritance">
+        <childnode refid="123" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="2">
+      <node id="123">
         <label>tf::PartitionerBase</label>
         <link refid="classtf_1_1PartitionerBase"/>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="1">
+      <node id="124">
         <label>tf::DynamicPartitioner</label>
         <link refid="classtf_1_1DynamicPartitioner"/>
-        <childnode refid="2" relation="public-inheritance">
+        <childnode refid="125" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="2">
+      <node id="125">
         <label>tf::PartitionerBase</label>
         <link refid="classtf_1_1PartitionerBase"/>
       </node>
     </collaborationgraph>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="229" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="229" bodyend="292"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="229" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="229" bodyend="292"/>
     <listofallmembers>
       <member refid="classtf_1_1PartitionerBase_1a98a744284cfc726b1a597dae90e766f0" prot="protected" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>_chunk_size</name></member>
       <member refid="classtf_1_1PartitionerBase_1a8445b917fca6384861898d46b81ec471" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>chunk_size</name></member>

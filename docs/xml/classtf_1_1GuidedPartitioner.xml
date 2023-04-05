@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="classtf_1_1GuidedPartitioner" kind="class" language="C++" prot="public">
     <compoundname>tf::GuidedPartitioner</compoundname>
     <basecompoundref refid="classtf_1_1PartitionerBase" prot="public" virt="non-virtual">tf::PartitionerBase</basecompoundref>
@@ -10,34 +10,30 @@
         <definition>tf::GuidedPartitioner::GuidedPartitioner</definition>
         <argsstring>()</argsstring>
         <name>GuidedPartitioner</name>
-        <qualifiedname>tf::GuidedPartitioner::GuidedPartitioner</qualifiedname>
         <briefdescription>
-<para>default constructor </para>
-        </briefdescription>
+<para>default constructor </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="97" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="97" bodyend="97"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="97" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="97" bodyend="97"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1GuidedPartitioner_1a8a44c5c770af9b6754afc502ced91b4c" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::GuidedPartitioner::GuidedPartitioner</definition>
         <argsstring>(size_t sz)</argsstring>
         <name>GuidedPartitioner</name>
-        <qualifiedname>tf::GuidedPartitioner::GuidedPartitioner</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>sz</declname>
         </param>
         <briefdescription>
-<para>construct a guided partitioner with the given chunk size </para>
-        </briefdescription>
+<para>construct a guided partitioner with the given chunk size </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="102" column="12" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="102" bodyend="102"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="102" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="102" bodyend="102"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -55,7 +51,6 @@
         <definition>void tf::GuidedPartitioner::loop</definition>
         <argsstring>(size_t N, size_t W, std::atomic&lt; size_t &gt; &amp;next, F &amp;&amp;func) const</argsstring>
         <name>loop</name>
-        <qualifiedname>tf::GuidedPartitioner::loop</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>N</declname>
@@ -65,7 +60,7 @@
           <declname>W</declname>
         </param>
         <param>
-          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
+          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
           <declname>next</declname>
         </param>
         <param>
@@ -78,7 +73,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="114" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="114" bodyend="157"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="114" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="114" bodyend="157"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1GuidedPartitioner_1a1489de5050e9f223114c74356c5a2618" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -94,7 +89,6 @@
         <definition>void tf::GuidedPartitioner::loop_until</definition>
         <argsstring>(size_t N, size_t W, std::atomic&lt; size_t &gt; &amp;next, F &amp;&amp;func) const</argsstring>
         <name>loop_until</name>
-        <qualifiedname>tf::GuidedPartitioner::loop_until</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>N</declname>
@@ -104,7 +98,7 @@
           <declname>W</declname>
         </param>
         <param>
-          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
+          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
           <declname>next</declname>
         </param>
         <param>
@@ -117,40 +111,38 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="165" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="165" bodyend="212"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="165" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="165" bodyend="212"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class to construct a guided partitioner for scheduling parallel algorithms </para>
-    </briefdescription>
+<para>class to construct a guided partitioner for scheduling parallel algorithms </para>    </briefdescription>
     <detaileddescription>
-<para>The size of a partition is proportional to the number of unassigned iterations divided by the number of workers, and the size will gradually decrease to the given chunk size. The last partition may be smaller than the chunk size. </para>
-    </detaileddescription>
+<para>The size of a partition is proportional to the number of unassigned iterations divided by the number of workers, and the size will gradually decrease to the given chunk size. The last partition may be smaller than the chunk size. </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="1">
+      <node id="141">
         <label>tf::GuidedPartitioner</label>
         <link refid="classtf_1_1GuidedPartitioner"/>
-        <childnode refid="2" relation="public-inheritance">
+        <childnode refid="142" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="2">
+      <node id="142">
         <label>tf::PartitionerBase</label>
         <link refid="classtf_1_1PartitionerBase"/>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="1">
+      <node id="143">
         <label>tf::GuidedPartitioner</label>
         <link refid="classtf_1_1GuidedPartitioner"/>
-        <childnode refid="2" relation="public-inheritance">
+        <childnode refid="144" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="2">
+      <node id="144">
         <label>tf::PartitionerBase</label>
         <link refid="classtf_1_1PartitionerBase"/>
       </node>
     </collaborationgraph>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="90" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="90" bodyend="213"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="90" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="90" bodyend="213"/>
     <listofallmembers>
       <member refid="classtf_1_1PartitionerBase_1a98a744284cfc726b1a597dae90e766f0" prot="protected" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>_chunk_size</name></member>
       <member refid="classtf_1_1PartitionerBase_1a8445b917fca6384861898d46b81ec471" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>chunk_size</name></member>

@@ -20,7 +20,7 @@ for creating a parallel-transform task.
 
 Parallel-transform transforms a range of items, possibly
 with a different type for the transformed data, and stores the result in another range.
-The task created by tf::Taskflow::transform(B first1, E last1, O d_first, C c)
+The task created by tf::Taskflow::transform(B first1, E last1, O d_first, C c, P&& part)
 is equivalent to a parallel execution of the following loop:
 
 @code{.cpp}
@@ -29,14 +29,12 @@ while (first1 != last1) {
 }
 @endcode
 
-By default, tf::Taskflow::transform(B first1, E last1, O d_first, C c)
-creates a task to spawn a subflow (see @ref DynamicTasking) 
-that simultaneously applies the callable @c c to the object obtained by dereferencing 
+tf::Taskflow::transform
+simultaneously applies the callable @c c to the object obtained by dereferencing 
 every iterator in the range <tt>[first1, last1)</tt> and stores
 the result in another range beginning at @c d_first.
 It is user's responsibility for ensuring the range is valid 
 within the execution of the parallel-transform task. 
-Taskflow's parallel-transform tasks work on all iterable STL containers.
 
 @code{.cpp}
 std::vector<int> src = {1, 2, 3, 4, 5};
@@ -47,11 +45,11 @@ taskflow.transform(src.begin(), src.end(), [](int i){
 });
 @endcode
 
-You can enable stateful iterators by creating a reference wrapper
-and pass the wrapped iterator to the argument of tf::Taskflow::transform.
-This is especially useful when the range is not known
+You can pass iterators by reference using std::ref
+to marshal parameter update between dependent tasks.
+This is especially useful when the range is unknown
 at the time of creating a parallel-transform task,
-but through another task.
+but is initialized from another task.
 
 @code{.cpp}
 std::vector<int> src, tgt;
@@ -86,7 +84,7 @@ in another range starting at @c d_first.
 @section ParallelBinaryTransformsOverARange Create a Binary Parallel-Transform Task
 
 You can use the overload, 
-tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c),
+tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P&& part),
 to perform parallel transforms on two source ranges pointed by
 @c first1 and @c first2 using the binary
 operator @c c
@@ -119,13 +117,7 @@ taskflow.transform(
 
 You can configure a partitioner for parallel-transform tasks to run with different
 scheduling methods, such as guided partitioning, dynamic partitioning, and static partitioning.
-Each parallel-transform task has an overload 
-that takes a partitioner in the last argument:
-
-  + tf::Taskflow::transform(B first1, E last1, O d_first, C c, P&& part)
-  + tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P&& part),
-
-The following example create two parallel-transform tasks using tow different
+The following example create two parallel-transform tasks using two different
 partitioners, one with the static partitioning algorithm and 
 another one with the guided partitioning algorithm:
 

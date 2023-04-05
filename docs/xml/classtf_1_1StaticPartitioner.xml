@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="classtf_1_1StaticPartitioner" kind="class" language="C++" prot="public">
     <compoundname>tf::StaticPartitioner</compoundname>
     <basecompoundref refid="classtf_1_1PartitionerBase" prot="public" virt="non-virtual">tf::PartitionerBase</basecompoundref>
@@ -10,41 +10,36 @@
         <definition>tf::StaticPartitioner::StaticPartitioner</definition>
         <argsstring>()</argsstring>
         <name>StaticPartitioner</name>
-        <qualifiedname>tf::StaticPartitioner::StaticPartitioner</qualifiedname>
         <briefdescription>
-<para>default constructor </para>
-        </briefdescription>
+<para>default constructor </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="323" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="323" bodyend="323"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="323" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="323" bodyend="323"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1StaticPartitioner_1a1278d0818518789051cf0e199c4006ef" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::StaticPartitioner::StaticPartitioner</definition>
         <argsstring>(size_t sz)</argsstring>
         <name>StaticPartitioner</name>
-        <qualifiedname>tf::StaticPartitioner::StaticPartitioner</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>sz</declname>
         </param>
         <briefdescription>
-<para>construct a dynamic partitioner with the given chunk size </para>
-        </briefdescription>
+<para>construct a dynamic partitioner with the given chunk size </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="328" column="12" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="328" bodyend="328"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="328" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="328" bodyend="328"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1StaticPartitioner_1a6d2a6533f5de5066449884cfe5f34cfb" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::StaticPartitioner::adjusted_chunk_size</definition>
         <argsstring>(size_t N, size_t W, size_t w) const</argsstring>
         <name>adjusted_chunk_size</name>
-        <qualifiedname>tf::StaticPartitioner::adjusted_chunk_size</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>N</declname>
@@ -58,14 +53,12 @@
           <declname>w</declname>
         </param>
         <briefdescription>
-<para>queries the adjusted chunk size </para>
-        </briefdescription>
+<para>queries the adjusted chunk size </para>        </briefdescription>
         <detaileddescription>
-<para>Returns the given chunk size if it is not zero, or returns <computeroutput>N/W + (w &lt; NW)</computeroutput>, where <computeroutput>N</computeroutput> is the number of iterations, <computeroutput>W</computeroutput> is the number of workers, and <computeroutput>w</computeroutput> is the worker ID. </para>
-        </detaileddescription>
+<para>Returns the given chunk size if it is not zero, or returns <computeroutput>N/W + (w &lt; NW)</computeroutput>, where <computeroutput>N</computeroutput> is the number of iterations, <computeroutput>W</computeroutput> is the number of workers, and <computeroutput>w</computeroutput> is the worker ID. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="337" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="337" bodyend="339"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="337" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="337" bodyend="339"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -83,7 +76,6 @@
         <definition>void tf::StaticPartitioner::loop</definition>
         <argsstring>(size_t N, size_t W, size_t curr_b, size_t chunk_size, F &amp;&amp;func)</argsstring>
         <name>loop</name>
-        <qualifiedname>tf::StaticPartitioner::loop</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>N</declname>
@@ -110,7 +102,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="351" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="351" bodyend="364"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="351" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="351" bodyend="364"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1StaticPartitioner_1a876aab19cb5e7a345289c2a5d2ac0c9b" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -126,7 +118,6 @@
         <definition>void tf::StaticPartitioner::loop_until</definition>
         <argsstring>(size_t N, size_t W, size_t curr_b, size_t chunk_size, F &amp;&amp;func)</argsstring>
         <name>loop_until</name>
-        <qualifiedname>tf::StaticPartitioner::loop_until</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>N</declname>
@@ -153,46 +144,43 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="372" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="372" bodyend="387"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="372" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="372" bodyend="387"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class to construct a dynamic partitioner for scheduling parallel algorithms </para>
-    </briefdescription>
+<para>class to construct a dynamic partitioner for scheduling parallel algorithms </para>    </briefdescription>
     <detaileddescription>
-<para>The partitioner divides iterations into chunks and distributes chunks to workers in order. If the chunk size is not specified (default <computeroutput>0</computeroutput>), the partitioner resorts to a chunk size that equally distributes iterations into workers.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>data<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5,<sp/>6,<sp/>7,<sp/>8,<sp/>9,<sp/>10}</highlight></codeline>
-<codeline><highlight class="normal">taskflow.for_each(</highlight></codeline>
+<para>The partitioner divides iterations into chunks and distributes chunks to workers in order. If the chunk size is not specified (default <computeroutput>0</computeroutput>), the partitioner resorts to a chunk size that equally distributes iterations into workers.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>data<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5,<sp/>6,<sp/>7,<sp/>8,<sp/>9,<sp/>10}</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">for_each</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>data.begin(),<sp/>data.end(),<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){},<sp/><ref refid="classtf_1_1StaticPartitioner_1a656cc541cb3bb38a75b1935e077cb786" kindref="member">StaticPartitioner</ref>(0)</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow).run();</highlight></codeline>
-</programlisting> </para>
-    </detaileddescription>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).run();</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="2">
+      <node id="282">
         <label>tf::PartitionerBase</label>
         <link refid="classtf_1_1PartitionerBase"/>
       </node>
-      <node id="1">
+      <node id="281">
         <label>tf::StaticPartitioner</label>
         <link refid="classtf_1_1StaticPartitioner"/>
-        <childnode refid="2" relation="public-inheritance">
+        <childnode refid="282" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="2">
+      <node id="284">
         <label>tf::PartitionerBase</label>
         <link refid="classtf_1_1PartitionerBase"/>
       </node>
-      <node id="1">
+      <node id="283">
         <label>tf::StaticPartitioner</label>
         <link refid="classtf_1_1StaticPartitioner"/>
-        <childnode refid="2" relation="public-inheritance">
+        <childnode refid="284" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="316" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="316" bodyend="388"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="316" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="316" bodyend="388"/>
     <listofallmembers>
       <member refid="classtf_1_1PartitionerBase_1a98a744284cfc726b1a597dae90e766f0" prot="protected" virt="non-virtual"><scope>tf::StaticPartitioner</scope><name>_chunk_size</name></member>
       <member refid="classtf_1_1StaticPartitioner_1a6d2a6533f5de5066449884cfe5f34cfb" prot="public" virt="non-virtual"><scope>tf::StaticPartitioner</scope><name>adjusted_chunk_size</name></member>
