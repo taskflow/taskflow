@@ -49,6 +49,7 @@ Task tf::FlowBuilder::find_if(B first, E last, UOP predicate, T& result, P&& par
     E_t end = e;
 
     if(beg == end) {
+      result = end;
       return;
     }
 
@@ -151,8 +152,7 @@ Task tf::FlowBuilder::find_if(B first, E last, UOP predicate, T& result, P&& par
     }
 
     // update the result iterator by the offset
-    auto loaded_offset = offset.load(std::memory_order_relaxed);
-    result = (loaded_offset == N) ? end : std::next(beg, loaded_offset);
+    result = std::next(beg, offset.load(std::memory_order_relaxed));
   });
 
   return task;
