@@ -50,7 +50,9 @@ An example of the %Taskflow graph for the positive case under 12 workers is depi
 <!-- @image html images/parallel_for_1.svg width=100% -->
 @dotfile images/parallel_for_1.dot
 
-You can pass indices by reference using std::ref
+@section ParallelForEachCaptureIndicesByReference Capture Indices by Reference
+
+You can pass indices by reference using @std_ref
 to marshal parameter update between dependent tasks.
 This is especially useful when the range indices are unknown
 at the time of creating a for-each-index task,
@@ -112,9 +114,10 @@ taskflow.for_each(list.begin(), list.end(), [](const std::string& str){
 });
 @endcode
 
+@section ParallelForEachCaptureIteratorsByReference Capture Iterators by Reference
 
 Similar to tf::Taskflow::for_each_index, iterators of tf::Taskflow::for_each 
-are templated to allow passing range iterators by reference, such that one task can
+are templated to allow capturing range parameters by reference, such that one task can
 set up the range before another task performs the parallel-for algorithm.
 For example:
 

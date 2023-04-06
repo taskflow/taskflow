@@ -12,7 +12,7 @@ TF_FORCE_INLINE void block_scan(
   tf::Runtime& rt,
   std::atomic<size_t>& counter, 
   BufferT& buf, 
-  B bop, 
+  B&& bop, 
   Iterator d_beg, 
   size_t W,
   size_t w, 

@@ -45,11 +45,13 @@ taskflow.transform(src.begin(), src.end(), [](int i){
 });
 @endcode
 
-You can pass iterators by reference using std::ref
+@section ParallelTransformsCaptureIteratorsByReference Capture Iterators by Reference
+
+You can pass iterators by reference using @std_ref
 to marshal parameter update between dependent tasks.
 This is especially useful when the range is unknown
 at the time of creating a parallel-transform task,
-but is initialized from another task.
+but needs initialization from another task.
 
 @code{.cpp}
 std::vector<int> src, tgt;

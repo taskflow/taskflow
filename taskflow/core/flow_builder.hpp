@@ -825,7 +825,7 @@ class FlowBuilder {
   */
   template <typename B, typename E, typename D, typename T, typename BOP, typename UOP>
   Task transform_exclusive_scan(B first, E last, D d_first, T init, BOP bop, UOP uop);
-  
+
   // ------------------------------------------------------------------------
   // find
   // ------------------------------------------------------------------------
@@ -852,7 +852,7 @@ class FlowBuilder {
   @code{.cpp}
   auto find_if(InputIt first, InputIt last, UnaryPredicate p) {
     for (; first != last; ++first) {
-      if (p(*first)){
+      if (predicate(*first)){
         return first;
       }
     }
@@ -874,10 +874,57 @@ class FlowBuilder {
   @endcode
   
   Iterators are templated to enable stateful range using std::reference_wrapper.
-
   */
   template <typename B, typename E, typename UOP, typename T, typename P = GuidedPartitioner>
   Task find_if(B first, E last, UOP predicate, T& result, P&& part = P());
+  
+  /**
+  @brief constructs a task to perform STL-styled find-if-not algorithm
+
+  @tparam B beginning iterator type
+  @tparam E ending iterator type
+  @tparam UOP unary predicate type
+  @tparam T resulting iterator type
+  @tparam P partitioner type
+  
+  @param first start of the input range
+  @param last end of the input range
+  @param predicate unary predicate which returns @c false for the required element
+  @param result resulting iterator to the found element in the input range
+  @param part partitioning algorithm (default tf::GuidedPartitioner)
+
+  Returns an iterator to the first element in the range <tt>[first, last)</tt> 
+  that satisfies the given criteria (or last if there is no such iterator).
+  This method is equivalent to the parallel execution of the following loop:
+
+  @code{.cpp}
+  auto find_if(InputIt first, InputIt last, UnaryPredicate p) {
+    for (; first != last; ++first) {
+      if (!predicate(*first)){
+        return first;
+      }
+    }
+    return last;
+  }
+  @endcode
+
+  For example, the code below find the element that satisfies the given 
+  criteria (value is not equal to 1) from an input range of 10 elements:
+
+  @code{.cpp}
+  std::vector<int> input = {1, 1, 1, 1, 22, 1, 1, 1, 1, 1};
+  std::vector<int>::iterator result;
+  taskflow.find_if_not(
+    input.begin(), input.end(), [](int i){ return i == 1; }, result
+  );
+  executor.run(taskflow).wait();
+  assert(*result == 22);
+  @endcode
+  
+  Iterators are templated to enable stateful range using std::reference_wrapper.
+  */
+  template <typename B, typename E, typename UOP, typename T, typename P = GuidedPartitioner>
+  Task find_if_not(B first, E last, UOP predicate, T& result, P&& part = P());
 
   // ------------------------------------------------------------------------
   // sort

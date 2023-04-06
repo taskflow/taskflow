@@ -26,12 +26,13 @@ or returns @c last if there is no such iterator.
 %Taskflow provides the following parallel-find algorithms:
 
 + tf::Taskflow::find_if(B first, E last, UOP predicate, T& result, P&& part)
++ tf::Taskflow::find_if_not(B first, E last, UOP predicate, T& result, P&& part)
 
 @section CreateAParallelFindIfTask Create a Parallel Find-If Task
 
 tf::Taskflow::find_if
 performs parallel iterations to find the first element 
-in the range <tt>[first, last)</tt> at which the given predicate return
+in the range <tt>[first, last)</tt> that makes the given predicate return
 @c true.
 It resembles a parallel implementation of the following loop:
 
@@ -48,8 +49,8 @@ InputIt find_if(InputIt first, InputIt last, UnaryPredicate predicate) {
 @endcode
 
 The example below creates a task to find the element that is equal
-to 22 from an input range of 10 elements, and the result
-will be stored in the forth argument passed by reference:
+to 22 from an input range of 10 elements.
+The result will be stored in the forth argument passed by reference:
 
 @code{.cpp}
 std::vector<int> input = {1, 9, 22, 3, -6, 13, 12, 0, 9, 11};
@@ -61,11 +62,13 @@ executor.run(taskflow);
 assert(*result == 22);
 @endcode
 
-You can pass iterators by reference using std::ref
+@section ParallelFindCaptureIteratorsByReference Capture Iterators by Reference
+
+You can pass iterators by reference using @std_ref
 to marshal parameters update between dependent tasks.
 This is especially useful when the range iterators are not known
-at the time of creating a for-each-index task,
-but is initialized from another task.
+at the time of creating a find-if task,
+but need initialization from another task.
 
 @code{.cpp}
 std::vector<int> input;
@@ -93,6 +96,47 @@ In the above example, when @c init finishes, @c input has been initialized to 10
 @c first and @c last pointing to the data range of @c input.
 The find-if task will then work on this initialized range as a result of
 passing iterators by reference.
+
+@section CreateAParallelFindIfNotTask Create a Parallel Find-If-Not Task
+
+tf::Taskflow::find_if_not
+performs parallel iterations to find the first element 
+in the range <tt>[first, last)</tt> that makes the given predicate return
+@c false.
+It resembles a parallel implementation of the following loop:
+
+@code{.cpp}
+template<typename InputIt, typename UnaryPredicate>
+InputIt find_if(InputIt first, InputIt last, UnaryPredicate predicate) {
+  for(; first != last; ++first) {
+    if(!predicate(*first)) {
+      return first;
+    }
+  }
+  return last;
+}
+@endcode
+
+The example below creates a task to find the element that is @em NOT equal
+to 22 from an input range of 10 elements. The result
+will be stored in the forth argument passed by reference:
+
+@code{.cpp}
+std::vector<int> input = {1, 1, 22, 1, 1, 1, 1, 1, 1, 1};
+std::vector<int>::iterator result;
+taskflow.find_if_not(
+  input.begin(), input.end(), [](int i){ return i == 1; }, result
+);
+executor.run(taskflow);
+assert(*result == 22);
+@endcode
+
+Similar to @ref ParallelFindCaptureIteratorsByReference,
+iterators of tf::Taskflow::find_if_not are templated to 
+allow passing iterators by reference using @std_ref.
+This is especially useful when the range iterators are not known
+at the time of creating a find-if-not task,
+but need initialization from another task.
 
 @section ParallelFindConfigureAPartitioner Configure a Partitioner
 

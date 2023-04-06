@@ -48,11 +48,13 @@ The order in which the binary operator is applied to pairs of elements is @em un
 In other words, the elements of the range may be grouped and rearranged in arbitrary order.
 The result and the argument types of the binary operator must be consistent with the input data type.
 
-You can pass iterators by reference using std::ref
+@section ParallelReductionCaptureIteratorsByReference Capture Iterators by Reference
+
+You can pass iterators by reference using @std_ref
 to marshal parameter update between dependent tasks.
 This is especially useful when the range is unknown
-at the time of creating a parallel-transform task,
-but is initialized from another task.
+at the time of creating a parallel-reduction task,
+but needs initialization from another task.
 
 @code{.cpp}
 int sum = 100;
