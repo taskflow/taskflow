@@ -25,8 +25,10 @@ The algorithm returns an iterator to the first found element in the range
 or returns @c last if there is no such iterator.
 %Taskflow provides the following parallel-find algorithms:
 
-+ tf::Taskflow::find_if(B first, E last, UOP predicate, T& result, P&& part)
-+ tf::Taskflow::find_if_not(B first, E last, UOP predicate, T& result, P&& part)
++ tf::Taskflow::find_if(B first, E last, T& result, UOP predicate, P&& part)
++ tf::Taskflow::find_if_not(B first, E last, T& result, UOP predicate, P&& part)
++ tf::Taskflow::min_element(B first, E last, T& result, C comp, P&& part)
++ tf::Taskflow::max_element(B first, E last, T& result, C comp, P&& part)
 
 @section CreateAParallelFindIfTask Create a Parallel Find-If Task
 
@@ -83,7 +85,7 @@ tf::Task init = taskflow.emplace([&](){
 
 // task to perform parallel find
 tf::Task task = taskflow.find_if(
-  std::ref(first), std::ref(last), [](int i){ return i == 22; }, result
+  std::ref(first), std::ref(last), result, [](int i){ return i == 22; }
 );
 
 init.precede(task);
@@ -125,7 +127,7 @@ will be stored in the forth argument passed by reference:
 std::vector<int> input = {1, 1, 22, 1, 1, 1, 1, 1, 1, 1};
 std::vector<int>::iterator result;
 taskflow.find_if_not(
-  input.begin(), input.end(), [](int i){ return i == 1; }, result
+  input.begin(), input.end(), result, [](int i){ return i == 1; }
 );
 executor.run(taskflow);
 assert(*result == 22);
@@ -138,12 +140,53 @@ This is especially useful when the range iterators are not known
 at the time of creating a find-if-not task,
 but need initialization from another task.
 
+@section ParallelFindMinMaxElement Find the Smallest and the Largest Elements
+
+tf::Taskflow::min_element finds the smallest element in a range
+<tt>[first, last)</tt> using the given comparison function object.
+The example below finds the smallest element, i.e., -1, 
+from an input range of 10 elements and stores the iterator
+to that smallest element in @c result:
+
+@code{.cpp}
+std::vector<int> input = {1, 1, 1, 1, 1, -1, 1, 1, 1, 1};
+std::vector<int>::iterator result;
+taskflow.min_element(
+  input.begin(), input.end(), std::less<int>(), result
+);
+executor.run(taskflow).wait();
+assert(*result == -1);
+@endcode
+
+Similarly, tf::Taskflow::max_element finds the largest element
+in a range <tt>[first, last)</tt> using the given comparison function object.
+The example below finds the largest element, i.e., 2,
+from an input range of 10 elements and stores the iterator
+to that largest element in @c result:
+
+@code{.cpp}
+std::vector<int> input = {1, 1, 1, 1, 1, 2, 1, 1, 1, 1};
+std::vector<int>::iterator result;
+taskflow.max_element(
+  input.begin(), input.end(), std::less<int>(), result
+);
+executor.run(taskflow).wait();
+assert(*result == 2);
+@endcode
+
+@note
+When using tf::Taskflow::max_element to find the large element,
+we will still need to use std::less as our comparison function.
+Details can be referred to std::max_element.
+
 @section ParallelFindConfigureAPartitioner Configure a Partitioner
 
 You can configure a partitioner for parallel-find tasks
+(tf::Taskflow::find_if, tf::Taskflow::find_if_not, 
+tf::Taskflow::min_element, tf::Taskflow::max_element)
 to run with different scheduling methods, 
 such as guided partitioning, dynamic partitioning, and static partitioning.
-The following example create two parallel-find tasks using two different
+The following example creates two parallel-find tasks using two different
 partitioners, one with the static partitioning algorithm and 
 another one with the guided partitioning algorithm:
 
@@ -156,12 +199,12 @@ tf::ExecutionPolicy<tf::GuidedPartitioner> guided_partitioner;
 
 // create a parallel-find task with a static partitioner
 taskflow.find_if(
-  vec.begin(), vec.end(), [&](int i) { return i == -1; }, result, static_partitioner
+  vec.begin(), vec.end(), result, [&](int i) { return i == -1; }, static_partitioner
 );
 
 // create a parallel-find task with a guided partitioner
 taskflow.find_if(
-  vec.begin(), vec.end(), [&](int i) { return i == -1; }, result, guided_partitioner
+  vec.begin(), vec.end(), result, [&](int i) { return i == -1; }, guided_partitioner
 );
 @endcode
 

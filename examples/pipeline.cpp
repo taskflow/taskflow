@@ -26,7 +26,7 @@ int main() {
   const size_t num_lines = 4;
 
   // custom data storage
-  std::array<int, num_lines> buffer;
+  std::array<size_t, num_lines> buffer;
 
   // the pipeline consists of three pipes (serial-parallel-serial)
   // and up to four concurrent scheduling tokens
@@ -45,7 +45,7 @@ int main() {
 
     tf::Pipe{tf::PipeType::PARALLEL, [&buffer](tf::Pipeflow& pf) {
       printf(
-        "stage 2: input buffer[%zu] = %d\n", pf.line(), buffer[pf.line()]
+        "stage 2: input buffer[%zu] = %zu\n", pf.line(), buffer[pf.line()]
       );
       // propagate the previous result to this pipe and increment
       // it by one
@@ -54,7 +54,7 @@ int main() {
 
     tf::Pipe{tf::PipeType::SERIAL, [&buffer](tf::Pipeflow& pf) {
       printf(
-        "stage 3: input buffer[%zu] = %d\n", pf.line(), buffer[pf.line()]
+        "stage 3: input buffer[%zu] = %zu\n", pf.line(), buffer[pf.line()]
       );
       // propagate the previous result to this pipe and increment
       // it by one

@@ -17,17 +17,13 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P&& part) {
   using namespace std::string_literals;
 
   Task task = emplace([b=beg, e=end, &r=init, bop, part=std::forward<P>(part)] 
-  (Runtime& sf) mutable {
+  (Runtime& rt) mutable {
 
     // fetch the iterator values
     B_t beg = b;
     E_t end = e;
 
-    if(beg == end) {
-      return;
-    }
-
-    size_t W = sf._executor.num_workers();
+    size_t W = rt._executor.num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
@@ -54,7 +50,7 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P&& part) {
         // variable sum need to avoid copy at the first step
         chunk_size = std::max(size_t{2}, part.adjusted_chunk_size(N, W, w));
         
-        auto loop = [=, &mutex, &r, &part] () mutable {
+        auto loop = [N, W, curr_b, chunk_size, beg, &bop, &mutex, &r, &part] () mutable {
 
           std::advance(beg, curr_b);
 
@@ -96,17 +92,17 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P&& part) {
           loop();
         }
         else {
-          sf._silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+          rt._silent_async(rt._worker, "loop-"s + std::to_string(w), loop);
         }
       }
-      sf.join();
+      rt.join();
     }
     // dynamic partitioner
     else {
 
       std::atomic<size_t> next(0);
 
-      auto loop = [=, &mutex, &next, &r, &part] () mutable {
+      auto loop = [N, W, beg, &bop, &mutex, &next, &r, &part] () mutable {
         
         // pre-reduce
         size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
@@ -156,11 +152,11 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P&& part) {
           break;
         }
         else {
-          sf._silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+          rt._silent_async(rt._worker, "loop-"s + std::to_string(w), loop);
         }
       }
       // need to join here in case next goes out of scope
-      sf.join();
+      rt.join();
     }
   });
 
@@ -183,17 +179,13 @@ Task FlowBuilder::transform_reduce(
 
   Task task = emplace(
   [b=beg, e=end, &r=init, bop, uop, part=std::forward<P>(part)] 
-  (Runtime& sf) mutable {
+  (Runtime& rt) mutable {
 
     // fetch the iterator values
     B_t beg = b;
     E_t end = e;
 
-    if(beg == end) {
-      return;
-    }
-
-    size_t W = sf._executor.num_workers();
+    size_t W = rt._executor.num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
@@ -218,7 +210,7 @@ Task FlowBuilder::transform_reduce(
       
         chunk_size = part.adjusted_chunk_size(N, W, w);
 
-        auto loop = [=, &mutex, &r, &part] () mutable {
+        auto loop = [N, W, curr_b, chunk_size, beg, &bop, &uop, &mutex, &r, &part] () mutable {
 
           std::advance(beg, curr_b);
 
@@ -261,17 +253,17 @@ Task FlowBuilder::transform_reduce(
           loop();
         }
         else {
-          sf._silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+          rt._silent_async(rt._worker, "loop-"s + std::to_string(w), loop);
         }
       }
       
-      sf.join();
+      rt.join();
     }
     // dynamic partitioner
     else {
       std::atomic<size_t> next(0);
         
-      auto loop = [=, &mutex, &next, &r, &part] () mutable {
+      auto loop = [N, W, beg, &bop, &uop, &mutex, &next, &r, &part] () mutable {
 
         // pre-reduce
         size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
@@ -321,12 +313,12 @@ Task FlowBuilder::transform_reduce(
           break;
         }
         else {
-          sf._silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+          rt._silent_async(rt._worker, "loop-"s + std::to_string(w), loop);
         }
       }
       
       // need to join here in case next goes out of scope
-      sf.join();
+      rt.join();
     }
   });
 

@@ -53,7 +53,10 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
   + tf::Taskflow::exclusive_scan(B first, E last, D d_first, T init, BOP bop)
   + tf::Taskflow::transform_exclusive_scan(B first, E last, D d_first, T init, BOP bop, UOP uop)
 + Added parallel-find algorithms to %Taskflow
-  + tf::Taskflow::find_if(B first, E last, UOP predicate, T& result, P&& part)
+  + tf::Taskflow::find_if(B first, E last, T& result, UOP predicate, P&& part)
+  + tf::Taskflow::find_if_not(B first, E last, T& result, UOP predicate, P&& part)
+  + tf::Taskflow::min_element(B first, E last, T& result, C comp, P&& part)
+  + tf::Taskflow::max_element(B first, E last, T& result, C comp, P&& part)
 + Modified tf::Subflow to a derived class from tf::Runtime
 + Extended parallel algorithms to support different partitioner algorithms
   + tf::Taskflow::for_each_index(B first, E last, S step, C callable, P&& part)

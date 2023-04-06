@@ -15,14 +15,14 @@ int main() {
   
   // create a pipeline graph
   tf::DataPipeline pl(num_lines,
-    tf::make_data_pipe<void, int>(tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) -> int{
+    tf::make_data_pipe<void, int>(tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) {
       if(pf.token() == 5) {
         pf.stop();
         return 0;
       }
       else {
-        printf("first pipe returns %lu\n", pf.token());
-        return pf.token();
+        printf("first pipe returns %zu\n", pf.token());
+        return static_cast<int>(pf.token());
       }
     }),
 

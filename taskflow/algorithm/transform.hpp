@@ -20,18 +20,14 @@ Task FlowBuilder::transform(B first1, E last1, O d_first, C c, P&& part) {
 
   Task task = emplace(
   [first1, last1, d_first, c, part=std::forward<P>(part)] 
-  (Runtime& sf) mutable {
+  (Runtime& rt) mutable {
 
     // fetch the stateful values
     B_t beg   = first1;
     E_t end   = last1;
     O_t d_beg = d_first;
 
-    if(beg == end) {
-      return;
-    }
-
-    size_t W = sf._executor.num_workers();
+    size_t W = rt._executor.num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
@@ -71,10 +67,10 @@ Task FlowBuilder::transform(B first1, E last1, O d_first, C c, P&& part) {
           loop();
         }
         else {
-          sf._silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+          rt._silent_async(rt._worker, "loop-"s + std::to_string(w), loop);
         }
       }
-      sf.join();
+      rt.join();
     }
     // dynamic partitioner
     else {
@@ -105,11 +101,11 @@ Task FlowBuilder::transform(B first1, E last1, O d_first, C c, P&& part) {
           break;
         }
         else {
-          sf._silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+          rt._silent_async(rt._worker, "loop-"s + std::to_string(w), loop);
         }
       }
       // need to join here in case next goes out of scope
-      sf.join();
+      rt.join();
     }
   });
 
@@ -138,7 +134,7 @@ Task FlowBuilder::transform(
 
   Task task = emplace(
   [first1, last1, first2, d_first, c, part=std::forward<P>(part)] 
-  (Runtime& sf) mutable {
+  (Runtime& rt) mutable {
 
     // fetch the stateful values
     B1_t beg1 = first1;
@@ -146,11 +142,7 @@ Task FlowBuilder::transform(
     B2_t beg2 = first2;
     O_t d_beg = d_first;
 
-    if(beg1 == end1) {
-      return;
-    }
-
-    size_t W = sf._executor.num_workers();
+    size_t W = rt._executor.num_workers();
     size_t N = std::distance(beg1, end1);
 
     // only myself - no need to spawn another graph
@@ -173,7 +165,7 @@ Task FlowBuilder::transform(
       
         chunk_size = part.adjusted_chunk_size(N, W, w);
 
-        auto loop = [=, &part] () mutable {
+        auto loop = [N, W, curr_b, chunk_size, beg1, beg2, d_beg, &c, &part] () mutable {
           part.loop(N, W, curr_b, chunk_size,
             [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
               std::advance(beg1, curr_b - prev_e);
@@ -191,16 +183,16 @@ Task FlowBuilder::transform(
           loop();
         }
         else {
-          sf._silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+          rt._silent_async(rt._worker, "loop-"s + std::to_string(w), loop);
         }
       }
-      sf.join();
+      rt.join();
     }
     // dynamic partitioner
     else {
       std::atomic<size_t> next(0);
       
-      auto loop = [=, &next, &part] () mutable {
+      auto loop = [N, W, beg1, beg2, d_beg, &c, &next, &part] () mutable {
         part.loop(N, W, next, 
           [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
             std::advance(beg1, curr_b - prev_e);
@@ -226,11 +218,11 @@ Task FlowBuilder::transform(
           break;
         }
         else {
-          sf._silent_async(sf._worker, "loop-"s + std::to_string(w), loop);
+          rt._silent_async(rt._worker, "loop-"s + std::to_string(w), loop);
         }
       }
       // need to join here in case next goes out of scope
-      sf.join();
+      rt.join();
     }
   });
 

@@ -333,6 +333,7 @@ struct cudaLoadStoreIterator : std::iterator_traits<const T*> {
   __device__ assign_t operator[](I index) const {
     return assign_t { load, store, base + index };
   }
+
   __device__ assign_t operator*() const {
     return assign_t { load, store, base };
   }

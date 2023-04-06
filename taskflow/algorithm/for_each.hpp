@@ -51,7 +51,7 @@ Task FlowBuilder::for_each(B beg, E end, C c, P&& part) {
       
         chunk_size = part.adjusted_chunk_size(N, W, w);
 
-        auto loop = [=, &part] () mutable {
+        auto loop = [N, W, curr_b, chunk_size, beg, &c, &part] () mutable {
           part.loop(N, W, curr_b, chunk_size,
             [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
               std::advance(beg, curr_b - prev_e);
@@ -77,7 +77,7 @@ Task FlowBuilder::for_each(B beg, E end, C c, P&& part) {
     else {
       std::atomic<size_t> next(0);
 
-      auto loop = [=, &next, &part] () mutable {
+      auto loop = [N, W, beg, &c, &next, &part] () mutable {
         part.loop(N, W, next, 
           [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
             std::advance(beg, curr_b - prev_e);
@@ -160,7 +160,7 @@ Task FlowBuilder::for_each_index(B beg, E end, S inc, C c, P&& part){
       
         chunk_size = part.adjusted_chunk_size(N, W, w);
 
-        auto loop = [=, &part] () mutable {
+        auto loop = [N, W, curr_b, chunk_size, beg, inc, &c, &part] () mutable {
           part.loop(N, W, curr_b, chunk_size,
             [&](size_t curr_b, size_t curr_e) {
               auto idx = static_cast<B_t>(curr_b) * inc + beg;
@@ -185,7 +185,7 @@ Task FlowBuilder::for_each_index(B beg, E end, S inc, C c, P&& part){
     else {
       std::atomic<size_t> next(0);
       
-      auto loop = [=, &next, &part] () mutable {
+      auto loop = [N, W, beg, inc, &c, &next, &part] () mutable {
         part.loop(N, W, next, 
           [&](size_t curr_b, size_t curr_e) {
             auto idx = static_cast<B_t>(curr_b) * inc + beg;

@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
 
   std::vector<int> elements(N), scan_seq(N), scan_par(N);
   for(size_t i=0; i<N; i++) {
-    elements[i] = i;
+    elements[i] = static_cast<int>(i);
   }
   
   // sequential exclusive scan
@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
   for(size_t i=0; i<N; i++) {
     if(scan_seq[i] != scan_par[i]) {
       printf(
-        "scan_seq[%lu]=%d..., scan_par[%lu]=%d...\n",
+        "scan_seq[%zu]=%d..., scan_par[%zu]=%d...\n",
         i, scan_seq[i], i, scan_par[i]
       );
       throw std::runtime_error("incorrect result");

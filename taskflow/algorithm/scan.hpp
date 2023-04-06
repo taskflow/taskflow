@@ -96,7 +96,8 @@ Task FlowBuilder::inclusive_scan(B first, E last, D d_first, BOP bop) {
       chunk_size = std::min(Q + (w < R), N - curr_b);
 
       // block scan
-      auto partial_scan = [=, &buf, &counter] () mutable {
+      auto loop = 
+      [W, w, s_beg, d_beg, chunk_size, &rt, &bop, &buf, &counter] () mutable {
 
         auto result = d_beg;
 
@@ -136,10 +137,10 @@ Task FlowBuilder::inclusive_scan(B first, E last, D d_first, BOP bop) {
       };
 
       if(w == W-1) {
-        partial_scan();
+        loop();
       }
       else {
-        rt._silent_async(rt._worker, "loop-"s + std::to_string(w), partial_scan);
+        rt._silent_async(rt._worker, "loop-"s + std::to_string(w), loop);
       }
       
       std::advance(s_beg, chunk_size);
@@ -202,7 +203,7 @@ Task FlowBuilder::inclusive_scan(B first, E last, D d_first, BOP bop, T init) {
       chunk_size = std::min(Q + (w < R), N - curr_b);
 
       // block scan
-      auto partial_scan = [=, &buf, &counter] () mutable {
+      auto loop = [W, w, d_beg, s_beg, chunk_size, &rt, &bop, &buf, &counter] () mutable {
 
         auto result = d_beg;
 
@@ -219,10 +220,10 @@ Task FlowBuilder::inclusive_scan(B first, E last, D d_first, BOP bop, T init) {
       };
 
       if(w == W-1) {
-        partial_scan();
+        loop();
       }
       else {
-        rt._silent_async(rt._worker, "loop-"s + std::to_string(w), partial_scan);
+        rt._silent_async(rt._worker, "loop-"s + std::to_string(w), loop);
       }
       
       std::advance(s_beg, chunk_size);
@@ -288,7 +289,7 @@ Task FlowBuilder::transform_inclusive_scan(
       chunk_size = std::min(Q + (w < R), N - curr_b);
 
       // block scan
-      auto partial_scan = [=, &buf, &counter] () mutable {
+      auto loop = [W, w, d_beg, s_beg, chunk_size, &rt, &bop, &uop, &buf, &counter] () mutable {
 
         auto result = d_beg;
 
@@ -305,10 +306,10 @@ Task FlowBuilder::transform_inclusive_scan(
       };
 
       if(w == W-1) {
-        partial_scan();
+        loop();
       }
       else {
-        rt._silent_async(rt._worker, "loop-"s + std::to_string(w), partial_scan);
+        rt._silent_async(rt._worker, "loop-"s + std::to_string(w), loop);
       }
       
       std::advance(s_beg, chunk_size);
@@ -373,7 +374,7 @@ Task FlowBuilder::transform_inclusive_scan(
       chunk_size = std::min(Q + (w < R), N - curr_b);
 
       // block scan
-      auto partial_scan = [=, &buf, &counter] () mutable {
+      auto loop = [W, w, d_beg, s_beg, chunk_size, &rt, &bop, &uop, &buf, &counter] () mutable {
 
         auto result = d_beg;
 
@@ -390,10 +391,10 @@ Task FlowBuilder::transform_inclusive_scan(
       };
 
       if(w == W-1) {
-        partial_scan();
+        loop();
       }
       else {
-        rt._silent_async(rt._worker, "loop-"s + std::to_string(w), partial_scan);
+        rt._silent_async(rt._worker, "loop-"s + std::to_string(w), loop);
       }
       
       std::advance(s_beg, chunk_size);
@@ -466,7 +467,7 @@ Task FlowBuilder::exclusive_scan(B first, E last, D d_first, T init, BOP bop) {
       chunk_size = std::min(Q + (w < R), N - curr_b);
 
       // block scan
-      auto partial_scan = [=, &buf, &counter] () mutable {
+      auto loop = [W, w, d_beg, s_beg, chunk_size, &rt, &bop, &buf, &counter] () mutable {
 
         auto result = d_beg;
 
@@ -485,10 +486,10 @@ Task FlowBuilder::exclusive_scan(B first, E last, D d_first, T init, BOP bop) {
       };
 
       if(w == W-1) {
-        partial_scan();
+        loop();
       }
       else {
-        rt._silent_async(rt._worker, "loop-"s + std::to_string(w), partial_scan);
+        rt._silent_async(rt._worker, "loop-"s + std::to_string(w), loop);
       }
       
       std::advance(s_beg, chunk_size);
@@ -563,7 +564,7 @@ Task FlowBuilder::transform_exclusive_scan(
       chunk_size = std::min(Q + (w < R), N - curr_b);
 
       // block scan
-      auto partial_scan = [=, &buf, &counter] () mutable {
+      auto loop = [W, w, d_beg, s_beg, chunk_size, &rt, &bop, &uop, &buf, &counter] () mutable {
 
         auto result = d_beg;
 
@@ -582,10 +583,10 @@ Task FlowBuilder::transform_exclusive_scan(
       };
 
       if(w == W-1) {
-        partial_scan();
+        loop();
       }
       else {
-        rt._silent_async(rt._worker, "loop-"s + std::to_string(w), partial_scan);
+        rt._silent_async(rt._worker, "loop-"s + std::to_string(w), loop);
       }
       
       std::advance(s_beg, chunk_size);

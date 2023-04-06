@@ -246,23 +246,41 @@
             </dt>
             <dd>creates an STL-styled parallel transform-exclusive scan task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename UOP, typename T, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a02e9e33b2d1a1ae1cb0f6105f908ce15" class="m-doc">find_if</a>(</span><span class="m-doc-wrap">B first,
+              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename UOP, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a94e70e5f7a459a7762cc312b6d6dec79" class="m-doc">find_if</a>(</span><span class="m-doc-wrap">B first,
               E last,
-              UOP predicate,
               T&amp; result,
+              UOP predicate,
               P&amp;&amp; part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs a task to perform STL-styled find-if algorithm</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename UOP, typename T, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#ab304cd489580c744248fce5b863301dc" class="m-doc">find_if_not</a>(</span><span class="m-doc-wrap">B first,
+              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename UOP, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#aae268c9763df9323dc349fb1b35988cf" class="m-doc">find_if_not</a>(</span><span class="m-doc-wrap">B first,
               E last,
-              UOP predicate,
               T&amp; result,
+              UOP predicate,
               P&amp;&amp; part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs a task to perform STL-styled find-if-not algorithm</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename C, typename P&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ad6a7caf3cfc8d1887bd211be307a3eb0" class="m-doc">min_element</a>(</span><span class="m-doc-wrap">B first,
+              E last,
+              T&amp; result,
+              C comp,
+              P&amp;&amp; part) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+            </dt>
+            <dd>constructs a task to perform STL-styled min-element algorithm</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename C, typename P&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#af0415d1fa5f36fee2405b0fcbf592fe0" class="m-doc">max_element</a>(</span><span class="m-doc-wrap">B first,
+              E last,
+              T&amp; result,
+              C comp,
+              P&amp;&amp; part) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+            </dt>
+            <dd>constructs a task to perform STL-styled max-element algorithm</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename C&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a35e180eb63de6c9f28e43185e837a4fa" class="m-doc">sort</a>(</span><span class="m-doc-wrap">B first,
@@ -1558,15 +1576,15 @@
 
 <span class="c1">// input is {-1, -2, -4, -7, -11}</span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelScan.html" class="m-doc">Parallel Scan</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a02e9e33b2d1a1ae1cb0f6105f908ce15"><div>
+          <section class="m-doc-details" id="a94e70e5f7a459a7762cc312b6d6dec79"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename UOP, typename T, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&gt;
+                template&lt;typename B, typename E, typename T, typename UOP, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a02e9e33b2d1a1ae1cb0f6105f908ce15" class="m-doc-self">find_if</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a94e70e5f7a459a7762cc312b6d6dec79" class="m-doc-self">find_if</a>(</span><span class="m-doc-wrap">B first,
               E last,
-              UOP predicate,
               T&amp; result,
+              UOP predicate,
               P&amp;&amp; part = P())</span></span>
             </h3>
             <p>constructs a task to perform STL-styled find-if algorithm</p>
@@ -1584,12 +1602,12 @@
                   <td>ending iterator type</td>
                 </tr>
                 <tr>
-                  <td>UOP</td>
-                  <td>unary predicate type</td>
-                </tr>
-                <tr>
                   <td>T</td>
                   <td>resulting iterator type</td>
+                </tr>
+                <tr>
+                  <td>UOP</td>
+                  <td>unary predicate type</td>
                 </tr>
                 <tr>
                   <td>P</td>
@@ -1609,12 +1627,12 @@
                   <td>end of the input range</td>
                 </tr>
                 <tr>
-                  <td>predicate</td>
-                  <td>unary predicate which returns <code>true</code> for the required element</td>
-                </tr>
-                <tr>
                   <td>result</td>
                   <td>resulting iterator to the found element in the input range</td>
+                </tr>
+                <tr>
+                  <td>predicate</td>
+                  <td>unary predicate which returns <code>true</code> for the required element</td>
                 </tr>
                 <tr>
                   <td>part</td>
@@ -1637,15 +1655,15 @@
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
 <span class="n">assert</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">22</span><span class="p">);</span><span class="w"></span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p>
           </div></section>
-          <section class="m-doc-details" id="ab304cd489580c744248fce5b863301dc"><div>
+          <section class="m-doc-details" id="aae268c9763df9323dc349fb1b35988cf"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename UOP, typename T, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&gt;
+                template&lt;typename B, typename E, typename T, typename UOP, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab304cd489580c744248fce5b863301dc" class="m-doc-self">find_if_not</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aae268c9763df9323dc349fb1b35988cf" class="m-doc-self">find_if_not</a>(</span><span class="m-doc-wrap">B first,
               E last,
-              UOP predicate,
               T&amp; result,
+              UOP predicate,
               P&amp;&amp; part = P())</span></span>
             </h3>
             <p>constructs a task to perform STL-styled find-if-not algorithm</p>
@@ -1663,12 +1681,12 @@
                   <td>ending iterator type</td>
                 </tr>
                 <tr>
-                  <td>UOP</td>
-                  <td>unary predicate type</td>
-                </tr>
-                <tr>
                   <td>T</td>
                   <td>resulting iterator type</td>
+                </tr>
+                <tr>
+                  <td>UOP</td>
+                  <td>unary predicate type</td>
                 </tr>
                 <tr>
                   <td>P</td>
@@ -1688,12 +1706,12 @@
                   <td>end of the input range</td>
                 </tr>
                 <tr>
-                  <td>predicate</td>
-                  <td>unary predicate which returns <code>false</code> for the required element</td>
-                </tr>
-                <tr>
                   <td>result</td>
                   <td>resulting iterator to the found element in the input range</td>
+                </tr>
+                <tr>
+                  <td>predicate</td>
+                  <td>unary predicate which returns <code>false</code> for the required element</td>
                 </tr>
                 <tr>
                   <td>part</td>
@@ -1715,6 +1733,170 @@
 <span class="p">);</span><span class="w"></span>
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
 <span class="n">assert</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">22</span><span class="p">);</span><span class="w"></span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p>
+          </div></section>
+          <section class="m-doc-details" id="ad6a7caf3cfc8d1887bd211be307a3eb0"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename B, typename E, typename T, typename C, typename P&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad6a7caf3cfc8d1887bd211be307a3eb0" class="m-doc-self">min_element</a>(</span><span class="m-doc-wrap">B first,
+              E last,
+              T&amp; result,
+              C comp,
+              P&amp;&amp; part)</span></span>
+            </h3>
+            <p>constructs a task to perform STL-styled min-element algorithm</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">B</td>
+                  <td>beginning iterator type</td>
+                </tr>
+                <tr>
+                  <td>E</td>
+                  <td>ending iterator type</td>
+                </tr>
+                <tr>
+                  <td>T</td>
+                  <td>resulting iterator type</td>
+                </tr>
+                <tr>
+                  <td>C</td>
+                  <td>comparator type</td>
+                </tr>
+                <tr>
+                  <td>P</td>
+                  <td>partitioner type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first</td>
+                  <td>start of the input range</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>end of the input range</td>
+                </tr>
+                <tr>
+                  <td>result</td>
+                  <td>resulting iterator to the found element in the input range</td>
+                </tr>
+                <tr>
+                  <td>comp</td>
+                  <td>comparison function object</td>
+                </tr>
+                <tr>
+                  <td>part</td>
+                  <td>partitioning algorithm (default <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">tf::<wbr />GuidedPartitioner</a>)</td>
+                </tr>
+              </tbody>
+            </table>
+<p>Finds the smallest element in the <code>[first, last)</code> using the given comparison function object. The iterator to that smallest element is stored in <code>result</code>. This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">last</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+<span class="k">auto</span><span class="w"> </span><span class="n">smallest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">first</span><span class="p">;</span><span class="w"></span>
+<span class="o">++</span><span class="n">first</span><span class="p">;</span><span class="w"></span>
+<span class="k">for</span><span class="w"> </span><span class="p">(;</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">first</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">comp</span><span class="p">(</span><span class="o">*</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">smallest</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">smallest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">first</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+<span class="k">return</span><span class="w"> </span><span class="n">smallest</span><span class="p">;</span><span class="w"></span></pre><p>For example, the code below find the smallest element from an input range of 10 elements.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">};</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">iterator</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">min_element</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">input</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">input</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">less</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(),</span><span class="w"> </span><span class="n">result</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="n">assert</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span><span class="w"></span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p>
+          </div></section>
+          <section class="m-doc-details" id="af0415d1fa5f36fee2405b0fcbf592fe0"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename B, typename E, typename T, typename C, typename P&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af0415d1fa5f36fee2405b0fcbf592fe0" class="m-doc-self">max_element</a>(</span><span class="m-doc-wrap">B first,
+              E last,
+              T&amp; result,
+              C comp,
+              P&amp;&amp; part)</span></span>
+            </h3>
+            <p>constructs a task to perform STL-styled max-element algorithm</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">B</td>
+                  <td>beginning iterator type</td>
+                </tr>
+                <tr>
+                  <td>E</td>
+                  <td>ending iterator type</td>
+                </tr>
+                <tr>
+                  <td>T</td>
+                  <td>resulting iterator type</td>
+                </tr>
+                <tr>
+                  <td>C</td>
+                  <td>comparator type</td>
+                </tr>
+                <tr>
+                  <td>P</td>
+                  <td>partitioner type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first</td>
+                  <td>start of the input range</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>end of the input range</td>
+                </tr>
+                <tr>
+                  <td>result</td>
+                  <td>resulting iterator to the found element in the input range</td>
+                </tr>
+                <tr>
+                  <td>comp</td>
+                  <td>comparison function object</td>
+                </tr>
+                <tr>
+                  <td>part</td>
+                  <td>partitioning algorithm (default <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">tf::<wbr />GuidedPartitioner</a>)</td>
+                </tr>
+              </tbody>
+            </table>
+<p>Finds the largest element in the <code>[first, last)</code> using the given comparison function object. The iterator to that largest element is stored in <code>result</code>. This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">first</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">last</span><span class="p">){</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">last</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+<span class="k">auto</span><span class="w"> </span><span class="n">largest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">first</span><span class="p">;</span><span class="w"></span>
+<span class="o">++</span><span class="n">first</span><span class="p">;</span><span class="w"></span>
+<span class="k">for</span><span class="w"> </span><span class="p">(;</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">first</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">comp</span><span class="p">(</span><span class="o">*</span><span class="n">largest</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">first</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">largest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">first</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+<span class="k">return</span><span class="w"> </span><span class="n">largest</span><span class="p">;</span><span class="w"></span></pre><p>For example, the code below find the largest element from an input range of 10 elements.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">};</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">iterator</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">max_element</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">input</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">input</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">less</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(),</span><span class="w"> </span><span class="n">result</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="n">assert</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w"></span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p>
           </div></section>
           <section class="m-doc-details" id="a35e180eb63de6c9f28e43185e837a4fa"><div>
             <h3>
