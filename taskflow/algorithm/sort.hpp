@@ -43,7 +43,7 @@ inline T* align_cacheline(T* p) {
   return reinterpret_cast<T*>(ip);
 }
 
-template<class Iter>
+template<typename Iter>
 inline void swap_offsets(
   Iter first, Iter last,
   unsigned char* offsets_l, unsigned char* offsets_r,
@@ -173,7 +173,7 @@ bool partial_insertion_sort(RandItr begin, RandItr end, Compare comp) {
 // partitioning and whether the passed sequence already was correctly partitioned. Assumes the
 // pivot is a median of at least 3 elements and that [begin, end) is at least
 // insertion_sort_threshold long. Uses branchless partitioning.
-template<class Iter, class Compare>
+template<typename Iter, typename Compare>
 std::pair<Iter, bool> partition_right_branchless(Iter begin, Iter end, Compare comp) {
 
   typedef typename std::iterator_traits<Iter>::value_type T;

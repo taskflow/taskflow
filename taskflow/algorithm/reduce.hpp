@@ -4,26 +4,25 @@
 
 namespace tf {
 
-// ----------------------------------------------------------------------------
-// default reduction
-// ----------------------------------------------------------------------------
+namespace detail {
 
-// Function: reduce
+// Function: make_reduce_task
 template <typename B, typename E, typename T, typename O, typename P>
-Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P&& part) {
+TF_FORCE_INLINE auto make_reduce_task(B beg, E end, T& init, O bop, P&& part) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  Task task = emplace([b=beg, e=end, &r=init, bop, part=std::forward<P>(part)] 
+  return 
+  [b=beg, e=end, &r=init, bop, part=std::forward<P>(part)] 
   (Runtime& rt) mutable {
 
     // fetch the iterator values
     B_t beg = b;
     E_t end = e;
 
-    size_t W = rt._executor.num_workers();
+    size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
@@ -92,84 +91,59 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P&& part) {
           loop();
         }
         else {
-          rt._silent_async(rt._worker, "loop-"s + std::to_string(w), loop);
+          rt.silent_async_unchecked("loop-"s + std::to_string(w), loop);
         }
       }
       rt.join();
     }
     // dynamic partitioner
     else {
-
       std::atomic<size_t> next(0);
+      launch_loop(N, W, rt, next, part, 
+        [N, W, beg, &bop, &mutex, &next, &r, &part] () mutable {
+          // pre-reduce
+          size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
-      auto loop = [N, W, beg, &bop, &mutex, &next, &r, &part] () mutable {
-        
-        // pre-reduce
-        size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
-
-        if(s0 >= N) {
-          return;
-        }
-
-        std::advance(beg, s0);
-
-        if(N - s0 == 1) {
-          std::lock_guard<std::mutex> lock(mutex);
-          r = bop(r, *beg);
-          return;
-        }
-
-        auto beg1 = beg++;
-        auto beg2 = beg++;
-
-        T sum = bop(*beg1, *beg2);
-        
-        // loop reduce
-        part.loop(N, W, next, 
-          [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
-            std::advance(beg, curr_b - prev_e);
-            for(size_t x=curr_b; x<curr_e; x++, beg++) {
-              sum = bop(sum, *beg);
-            }
-            prev_e = curr_e;
+          if(s0 >= N) {
+            return;
           }
-        ); 
-        
-        // final reduce
-        std::lock_guard<std::mutex> lock(mutex);
-        r = bop(r, sum);
-      };
 
-      for(size_t w=0; w<W; w++) {
-        auto r = N - next.load(std::memory_order_relaxed);
-        // no more loop work to do - finished by previous async tasks
-        if(!r) {
-          break;
+          std::advance(beg, s0);
+
+          if(N - s0 == 1) {
+            std::lock_guard<std::mutex> lock(mutex);
+            r = bop(r, *beg);
+            return;
+          }
+
+          auto beg1 = beg++;
+          auto beg2 = beg++;
+
+          T sum = bop(*beg1, *beg2);
+          
+          // loop reduce
+          part.loop(N, W, next, 
+            [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
+              std::advance(beg, curr_b - prev_e);
+              for(size_t x=curr_b; x<curr_e; x++, beg++) {
+                sum = bop(sum, *beg);
+              }
+              prev_e = curr_e;
+            }
+          ); 
+          
+          // final reduce
+          std::lock_guard<std::mutex> lock(mutex);
+          r = bop(r, sum);
         }
-        // tail optimization
-        if(r <= part.chunk_size() || w == W-1) {
-          loop(); 
-          break;
-        }
-        else {
-          rt._silent_async(rt._worker, "loop-"s + std::to_string(w), loop);
-        }
-      }
-      // need to join here in case next goes out of scope
-      rt.join();
+      );
     }
-  });
-
-  return task;
+  };
 }
 
-// ----------------------------------------------------------------------------
-// default transform and reduction
-// ----------------------------------------------------------------------------
-
-// Function: transform_reduce
+// Function: make_transform_reduce_task
 template <typename B, typename E, typename T, typename BOP, typename UOP, typename P>
-Task FlowBuilder::transform_reduce(
+TF_FORCE_INLINE auto make_transform_reduce_task(
   B beg, E end, T& init, BOP bop, UOP uop, P&& part
 ) {
 
@@ -177,7 +151,7 @@ Task FlowBuilder::transform_reduce(
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  Task task = emplace(
+  return 
   [b=beg, e=end, &r=init, bop, uop, part=std::forward<P>(part)] 
   (Runtime& rt) mutable {
 
@@ -185,7 +159,7 @@ Task FlowBuilder::transform_reduce(
     B_t beg = b;
     E_t end = e;
 
-    size_t W = rt._executor.num_workers();
+    size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
@@ -253,7 +227,7 @@ Task FlowBuilder::transform_reduce(
           loop();
         }
         else {
-          rt._silent_async(rt._worker, "loop-"s + std::to_string(w), loop);
+          rt.silent_async_unchecked("loop-"s + std::to_string(w), loop);
         }
       }
       
@@ -263,66 +237,76 @@ Task FlowBuilder::transform_reduce(
     else {
       std::atomic<size_t> next(0);
         
-      auto loop = [N, W, beg, &bop, &uop, &mutex, &next, &r, &part] () mutable {
+      launch_loop(N, W, rt, next, part,
+        [N, W, beg, &bop, &uop, &mutex, &next, &r, &part] () mutable {
 
-        // pre-reduce
-        size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
+          // pre-reduce
+          size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
-        if(s0 >= N) {
-          return;
-        }
-
-        std::advance(beg, s0);
-
-        if(N - s0 == 1) {
-          std::lock_guard<std::mutex> lock(mutex);
-          r = bop(std::move(r), uop(*beg));
-          return;
-        }
-
-        auto beg1 = beg++;
-        auto beg2 = beg++;
-
-        T sum = bop(uop(*beg1), uop(*beg2));
-        
-        // loop reduce
-        part.loop(N, W, next, 
-          [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
-            std::advance(beg, curr_b - prev_e);
-            for(size_t x=curr_b; x<curr_e; x++, beg++) {
-              sum = bop(std::move(sum), uop(*beg));
-            }
-            prev_e = curr_e;
+          if(s0 >= N) {
+            return;
           }
-        ); 
-        
-        // final reduce
-        std::lock_guard<std::mutex> lock(mutex);
-        r = bop(std::move(r), std::move(sum));
-      };
 
-      for(size_t w=0; w<W; w++) {
-        auto r = N - next.load(std::memory_order_relaxed);
-        // no more loop work to do - finished by previous async tasks
-        if(!r) {
-          break;
+          std::advance(beg, s0);
+
+          if(N - s0 == 1) {
+            std::lock_guard<std::mutex> lock(mutex);
+            r = bop(std::move(r), uop(*beg));
+            return;
+          }
+
+          auto beg1 = beg++;
+          auto beg2 = beg++;
+
+          T sum = bop(uop(*beg1), uop(*beg2));
+          
+          // loop reduce
+          part.loop(N, W, next, 
+            [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
+              std::advance(beg, curr_b - prev_e);
+              for(size_t x=curr_b; x<curr_e; x++, beg++) {
+                sum = bop(std::move(sum), uop(*beg));
+              }
+              prev_e = curr_e;
+            }
+          ); 
+          
+          // final reduce
+          std::lock_guard<std::mutex> lock(mutex);
+          r = bop(std::move(r), std::move(sum));
         }
-        // tail optimization
-        if(r <= part.chunk_size() || w == W-1) {
-          loop(); 
-          break;
-        }
-        else {
-          rt._silent_async(rt._worker, "loop-"s + std::to_string(w), loop);
-        }
-      }
-      
-      // need to join here in case next goes out of scope
-      rt.join();
+      );
+
     }
-  });
+  };
+}
 
-  return task;
+}  // end of namespace detail -------------------------------------------------
+
+// ----------------------------------------------------------------------------
+// default reduction
+// ----------------------------------------------------------------------------
+
+// Function: reduce
+template <typename B, typename E, typename T, typename O, typename P>
+Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P&& part) {
+  return emplace(detail::make_reduce_task(
+    beg, end, init, bop, std::forward<P>(part)
+  ));
+}
+
+// ----------------------------------------------------------------------------
+// default transform and reduction
+// ----------------------------------------------------------------------------
+
+// Function: transform_reduce
+template <typename B, typename E, typename T, typename BOP, typename UOP, typename P>
+Task FlowBuilder::transform_reduce(
+  B beg, E end, T& init, BOP bop, UOP uop, P&& part
+) {
+  return emplace(detail::make_transform_reduce_task(
+    beg, end, init, bop, uop, std::forward<P>(part)
+  ));
 }
 
 }  // end of namespace tf -----------------------------------------------------

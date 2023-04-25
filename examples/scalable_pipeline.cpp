@@ -39,7 +39,7 @@ int main() {
   const size_t num_lines = 4;
 
   // create data storage
-  std::array<int, num_lines> buffer;
+  std::array<size_t, num_lines> buffer;
 
   // define the pipe callable
   auto pipe_callable = [&buffer] (tf::Pipeflow& pf) mutable {
@@ -62,7 +62,7 @@ int main() {
       // increment it by one
       default: {
         printf(
-          "stage %zu: input buffer[%zu] = %d\n", pf.pipe(), pf.line(), buffer[pf.line()]
+          "stage %zu: input buffer[%zu] = %zu\n", pf.pipe(), pf.line(), buffer[pf.line()]
         );
         buffer[pf.line()] = buffer[pf.line()] + 1;
       }

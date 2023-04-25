@@ -2040,24 +2040,24 @@ void Runtime::_silent_async(
 // Function: silent_async
 template <typename F>
 void Runtime::silent_async(F&& f) {
-  _silent_async(
-    *_executor._this_worker(), "", std::forward<F>(f)
-  );
+  _silent_async(*_executor._this_worker(), "", std::forward<F>(f));
 }
 
 // Function: silent_async
 template <typename F>
 void Runtime::silent_async(const std::string& name, F&& f) {
-  _silent_async(
-    *_executor._this_worker(), name, std::forward<F>(f)
-  );
+  _silent_async(*_executor._this_worker(), name, std::forward<F>(f));
+}
+
+// Function: silent_async_unchecked
+template <typename F>
+void Runtime::silent_async_unchecked(const std::string& name, F&& f) {
+  _silent_async(_worker, name, std::forward<F>(f));
 }
 
 // Function: _async
 template <typename F>
-auto Runtime::_async(
-  Worker& w, const std::string& name, F&& f
-) {
+auto Runtime::_async(Worker& w, const std::string& name, F&& f) {
 
   _parent->_join_counter.fetch_add(1);
 
@@ -2096,17 +2096,13 @@ auto Runtime::_async(
 // Function: async
 template <typename F>
 auto Runtime::async(F&& f) {
-  return _async(
-    *_executor._this_worker(), "", std::forward<F>(f)
-  );
+  return _async(*_executor._this_worker(), "", std::forward<F>(f));
 }
 
 // Function: async
 template <typename F>
 auto Runtime::async(const std::string& name, F&& f) {
-  return _async(
-    *_executor._this_worker(), name, std::forward<F>(f)
-  );
+  return _async(*_executor._this_worker(), name, std::forward<F>(f));
 }
 
 // Function: join

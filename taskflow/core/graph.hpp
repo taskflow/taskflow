@@ -323,6 +323,28 @@ class Runtime {
   */
   template <typename F>
   void silent_async(const std::string& name, F&& f);
+  
+  /**
+  @brief similar to tf::Runtime::silent_async but the caller must be the worker of the runtime
+
+  @tparam F callable type
+
+  @param name assigned name to the task
+  @param f callable
+
+  The method bypass the check of the caller worker from the executor 
+  and thus can only called by the worker of this runtime.
+
+  @code{.cpp}
+  taskflow.emplace([&](tf::Runtime& rt){
+    // running by the worker of this runtime
+    rt.silent_async_unchecked("my task", [](){});
+    rt.join();
+  });
+  @endcode
+  */
+  template <typename F>
+  void silent_async_unchecked(const std::string& name, F&& f);
 
   /**
   @brief co-runs the given target and waits until it completes
