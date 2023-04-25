@@ -45,20 +45,18 @@ TF_FORCE_INLINE auto make_transform_task(
       size_t chunk_size;
       for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
         chunk_size = part.adjusted_chunk_size(N, W, w);
-        launch_loop(W, w, rt, 
-          [=, &part] () mutable {
-            part.loop(N, W, curr_b, chunk_size,
-              [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
-                std::advance(beg, curr_b - prev_e);
-                std::advance(d_beg, curr_b - prev_e);
-                for(size_t x = curr_b; x<curr_e; x++) {
-                  *d_beg++ = c(*beg++);
-                }
-                prev_e = curr_e;
+        launch_loop(W, w, rt, [=, &part] () mutable {
+          part.loop(N, W, curr_b, chunk_size,
+            [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
+              std::advance(beg, curr_b - prev_e);
+              std::advance(d_beg, curr_b - prev_e);
+              for(size_t x = curr_b; x<curr_e; x++) {
+                *d_beg++ = c(*beg++);
               }
-            ); 
-          }
-        );
+              prev_e = curr_e;
+            }
+          ); 
+        });
       }
       rt.join();
     }
@@ -126,30 +124,8 @@ TF_FORCE_INLINE auto make_transform_task(
       size_t chunk_size;
       for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
         chunk_size = part.adjusted_chunk_size(N, W, w);
-        launch_loop(W, w, rt,
-          [N, W, curr_b, chunk_size, beg1, beg2, d_beg, &c, &part] () mutable {
-            part.loop(N, W, curr_b, chunk_size,
-              [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
-                std::advance(beg1, curr_b - prev_e);
-                std::advance(beg2, curr_b - prev_e);
-                std::advance(d_beg, curr_b - prev_e);
-                for(size_t x = curr_b; x<curr_e; x++) {
-                  *d_beg++ = c(*beg1++, *beg2++);
-                }
-                prev_e = curr_e;
-              }
-            ); 
-          }
-        );
-      }
-      rt.join();
-    }
-    // dynamic partitioner
-    else {
-      std::atomic<size_t> next(0);
-      launch_loop(N, W, rt, next, part,
-        [N, W, beg1, beg2, d_beg, &c, &next, &part] () mutable {
-          part.loop(N, W, next, 
+        launch_loop(W, w, rt, [=, &c, &part] () mutable {
+          part.loop(N, W, curr_b, chunk_size,
             [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
               std::advance(beg1, curr_b - prev_e);
               std::advance(beg2, curr_b - prev_e);
@@ -160,8 +136,26 @@ TF_FORCE_INLINE auto make_transform_task(
               prev_e = curr_e;
             }
           ); 
-        }
-      );
+        });
+      }
+      rt.join();
+    }
+    // dynamic partitioner
+    else {
+      std::atomic<size_t> next(0);
+      launch_loop(N, W, rt, next, part, [=, &c, &next, &part] () mutable {
+        part.loop(N, W, next, 
+          [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
+            std::advance(beg1, curr_b - prev_e);
+            std::advance(beg2, curr_b - prev_e);
+            std::advance(d_beg, curr_b - prev_e);
+            for(size_t x = curr_b; x<curr_e; x++) {
+              *d_beg++ = c(*beg1++, *beg2++);
+            }
+            prev_e = curr_e;
+          }
+        ); 
+      });
     }
   };
 }

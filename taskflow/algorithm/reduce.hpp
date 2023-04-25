@@ -35,26 +35,25 @@ TF_FORCE_INLINE auto make_reduce_task(B beg, E end, T& init, O bop, P&& part) {
       W = N;
     }
 
-    std::mutex mutex;
+    std::mutex mtx;
 
     // static partitioner
     if constexpr(std::is_same_v<std::decay_t<P>, StaticPartitioner>) {
       
-      size_t curr_b = 0;
       size_t chunk_size;
 
-      for(size_t w=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
+      for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
         
         // we force chunk size to be at least two because the temporary
         // variable sum need to avoid copy at the first step
         chunk_size = std::max(size_t{2}, part.adjusted_chunk_size(N, W, w));
         
-        auto loop = [N, W, curr_b, chunk_size, beg, &bop, &mutex, &r, &part] () mutable {
+        launch_loop(W, w, rt, [=, &bop, &mtx, &r, &part] () mutable {
 
           std::advance(beg, curr_b);
 
           if(N - curr_b == 1) {
-            std::lock_guard<std::mutex> lock(mutex);
+            std::lock_guard<std::mutex> lock(mtx);
             r = bop(r, *beg);
             return;
           }
@@ -82,61 +81,52 @@ TF_FORCE_INLINE auto make_reduce_task(B beg, E end, T& init, O bop, P&& part) {
           ); 
           
           // final reduce
-          std::lock_guard<std::mutex> lock(mutex);
+          std::lock_guard<std::mutex> lock(mtx);
           r = bop(r, sum);
 
-        };
-
-        if(w == W-1) {
-          loop();
-        }
-        else {
-          rt.silent_async_unchecked("loop-"s + std::to_string(w), loop);
-        }
+        });
       }
       rt.join();
     }
     // dynamic partitioner
     else {
       std::atomic<size_t> next(0);
-      launch_loop(N, W, rt, next, part, 
-        [N, W, beg, &bop, &mutex, &next, &r, &part] () mutable {
-          // pre-reduce
-          size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
+      launch_loop(N, W, rt, next, part, [=, &bop, &mtx, &next, &r, &part] () mutable {
+        // pre-reduce
+        size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
-          if(s0 >= N) {
-            return;
-          }
-
-          std::advance(beg, s0);
-
-          if(N - s0 == 1) {
-            std::lock_guard<std::mutex> lock(mutex);
-            r = bop(r, *beg);
-            return;
-          }
-
-          auto beg1 = beg++;
-          auto beg2 = beg++;
-
-          T sum = bop(*beg1, *beg2);
-          
-          // loop reduce
-          part.loop(N, W, next, 
-            [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
-              std::advance(beg, curr_b - prev_e);
-              for(size_t x=curr_b; x<curr_e; x++, beg++) {
-                sum = bop(sum, *beg);
-              }
-              prev_e = curr_e;
-            }
-          ); 
-          
-          // final reduce
-          std::lock_guard<std::mutex> lock(mutex);
-          r = bop(r, sum);
+        if(s0 >= N) {
+          return;
         }
-      );
+
+        std::advance(beg, s0);
+
+        if(N - s0 == 1) {
+          std::lock_guard<std::mutex> lock(mtx);
+          r = bop(r, *beg);
+          return;
+        }
+
+        auto beg1 = beg++;
+        auto beg2 = beg++;
+
+        T sum = bop(*beg1, *beg2);
+        
+        // loop reduce
+        part.loop(N, W, next, 
+          [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
+            std::advance(beg, curr_b - prev_e);
+            for(size_t x=curr_b; x<curr_e; x++, beg++) {
+              sum = bop(sum, *beg);
+            }
+            prev_e = curr_e;
+          }
+        ); 
+        
+        // final reduce
+        std::lock_guard<std::mutex> lock(mtx);
+        r = bop(r, sum);
+      });
     }
   };
 }
@@ -172,24 +162,23 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
       W = N;
     }
 
-    std::mutex mutex;
+    std::mutex mtx;
     
     // static partitioner
     if constexpr(std::is_same_v<std::decay_t<P>, StaticPartitioner>) {
       
-      size_t curr_b = 0;
       size_t chunk_size;
 
-      for(size_t w=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
+      for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
       
         chunk_size = part.adjusted_chunk_size(N, W, w);
 
-        auto loop = [N, W, curr_b, chunk_size, beg, &bop, &uop, &mutex, &r, &part] () mutable {
+        launch_loop(W, w, rt, [=, &bop, &uop, &mtx, &r, &part] () mutable {
 
           std::advance(beg, curr_b);
 
           if(N - curr_b == 1) {
-            std::lock_guard<std::mutex> lock(mutex);
+            std::lock_guard<std::mutex> lock(mtx);
             r = bop(std::move(r), uop(*beg));
             return;
           }
@@ -218,17 +207,10 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
           ); 
           
           // final reduce
-          std::lock_guard<std::mutex> lock(mutex);
+          std::lock_guard<std::mutex> lock(mtx);
           r = bop(std::move(r), std::move(sum));
 
-        };
-
-        if(w == W-1) {
-          loop();
-        }
-        else {
-          rt.silent_async_unchecked("loop-"s + std::to_string(w), loop);
-        }
+        });
       }
       
       rt.join();
@@ -237,46 +219,43 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
     else {
       std::atomic<size_t> next(0);
         
-      launch_loop(N, W, rt, next, part,
-        [N, W, beg, &bop, &uop, &mutex, &next, &r, &part] () mutable {
+      launch_loop(N, W, rt, next, part, [=, &bop, &uop, &mtx, &next, &r, &part] () mutable {
 
-          // pre-reduce
-          size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
+        // pre-reduce
+        size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
-          if(s0 >= N) {
-            return;
-          }
-
-          std::advance(beg, s0);
-
-          if(N - s0 == 1) {
-            std::lock_guard<std::mutex> lock(mutex);
-            r = bop(std::move(r), uop(*beg));
-            return;
-          }
-
-          auto beg1 = beg++;
-          auto beg2 = beg++;
-
-          T sum = bop(uop(*beg1), uop(*beg2));
-          
-          // loop reduce
-          part.loop(N, W, next, 
-            [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
-              std::advance(beg, curr_b - prev_e);
-              for(size_t x=curr_b; x<curr_e; x++, beg++) {
-                sum = bop(std::move(sum), uop(*beg));
-              }
-              prev_e = curr_e;
-            }
-          ); 
-          
-          // final reduce
-          std::lock_guard<std::mutex> lock(mutex);
-          r = bop(std::move(r), std::move(sum));
+        if(s0 >= N) {
+          return;
         }
-      );
 
+        std::advance(beg, s0);
+
+        if(N - s0 == 1) {
+          std::lock_guard<std::mutex> lock(mtx);
+          r = bop(std::move(r), uop(*beg));
+          return;
+        }
+
+        auto beg1 = beg++;
+        auto beg2 = beg++;
+
+        T sum = bop(uop(*beg1), uop(*beg2));
+        
+        // loop reduce
+        part.loop(N, W, next, 
+          [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
+            std::advance(beg, curr_b - prev_e);
+            for(size_t x=curr_b; x<curr_e; x++, beg++) {
+              sum = bop(std::move(sum), uop(*beg));
+            }
+            prev_e = curr_e;
+          }
+        ); 
+        
+        // final reduce
+        std::lock_guard<std::mutex> lock(mtx);
+        r = bop(std::move(r), std::move(sum));
+      });
     }
   };
 }
