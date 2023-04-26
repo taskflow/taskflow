@@ -499,6 +499,12 @@ class Node {
   friend class Subflow;
   friend class Runtime;
 
+  enum class AsyncState : int {
+    UNFINISHED = 0,
+    LOCKED = 1,
+    FINISHED = 2
+  };
+
   TF_ENABLE_POOLABLE_ON_THIS;
 
   // state bit flag
@@ -506,7 +512,6 @@ class Node {
   constexpr static int DETACHED    = 2;
   constexpr static int ACQUIRED    = 4;
   constexpr static int READY       = 8;
-  constexpr static int DEFERRED    = 16;
 
   using Placeholder = std::monostate;
 
@@ -582,15 +587,27 @@ class Node {
     std::function<void()> work;
   };
 
+  // silent dependent async
+  struct SilentDependentAsync {
+    
+    template <typename C>
+    SilentDependentAsync(C&&);
+    
+    std::atomic<AsyncState> state {AsyncState::UNFINISHED};
+
+    std::function<void()> work;
+  };
+
   using handle_t = std::variant<
-    Placeholder,     // placeholder
-    Static,          // static tasking
-    Dynamic,         // dynamic tasking
-    Condition,       // conditional tasking
-    MultiCondition,  // multi-conditional tasking
-    Module,          // composable tasking
-    Async,           // async tasking
-    SilentAsync      // async tasking (no future)
+    Placeholder,            // placeholder
+    Static,                 // static tasking
+    Dynamic,                // dynamic tasking
+    Condition,              // conditional tasking
+    MultiCondition,         // multi-conditional tasking
+    Module,                 // composable tasking
+    Async,                  // async tasking
+    SilentAsync,            // async tasking (no future)
+    SilentDependentAsync
   >;
 
   struct Semaphores {
@@ -609,6 +626,7 @@ class Node {
   constexpr static auto MODULE          = get_index_v<Module, handle_t>;
   constexpr static auto ASYNC           = get_index_v<Async, handle_t>;
   constexpr static auto SILENT_ASYNC    = get_index_v<SilentAsync, handle_t>;
+  constexpr static auto SILENT_DEPENDENT_ASYNC = get_index_v<SilentDependentAsync, handle_t>;
 
   Node() = default;
 
@@ -727,6 +745,16 @@ Node::Async::Async(C&& c, std::shared_ptr<AsyncTopology>tpg) :
 // Constructor
 template <typename C>
 Node::SilentAsync::SilentAsync(C&& c) :
+  work {std::forward<C>(c)} {
+}
+
+// ----------------------------------------------------------------------------
+// Definition for Node::SilentDependentAsync
+// ----------------------------------------------------------------------------
+
+// Constructor
+template <typename C>
+Node::SilentDependentAsync::SilentDependentAsync(C&& c) :
   work {std::forward<C>(c)} {
 }
 
@@ -902,6 +930,19 @@ inline SmallVector<Node*> Node::_release_all() {
 
   return nodes;
 }
+
+// ----------------------------------------------------------------------------
+// Node Deleter
+// ----------------------------------------------------------------------------
+
+/**
+@private
+*/
+struct NodeDeleter {
+  void operator ()(Node* ptr) {
+    node_pool.recycle(ptr);
+  }
+};
 
 // ----------------------------------------------------------------------------
 // Graph definition

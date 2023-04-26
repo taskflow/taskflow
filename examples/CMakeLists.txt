@@ -3,6 +3,7 @@ list(APPEND TF_EXAMPLES
   attach_data
   async
   subflow_async
+  dependent_async
   observer 
   subflow 
   fibonacci 

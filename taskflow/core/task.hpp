@@ -608,6 +608,38 @@ inline std::ostream& operator << (std::ostream& os, const Task& task) {
 }
 
 // ----------------------------------------------------------------------------
+// AsyncTask
+// ----------------------------------------------------------------------------
+
+class AsyncTask {
+  
+  friend class FlowBuilder;
+  friend class Runtime;
+  friend class Taskflow;
+  friend class TaskView;
+  friend class Executor;
+  
+  public:
+
+    bool empty() const;
+
+  private:
+
+    AsyncTask(std::shared_ptr<Node>);
+
+    std::shared_ptr<Node> _node;
+};
+
+// Constructor
+inline AsyncTask::AsyncTask(std::shared_ptr<Node> ptr) : _node {std::move(ptr)} {
+}
+
+// Function: empty
+inline bool AsyncTask::empty() const {
+  return _node == nullptr;
+}
+
+// ----------------------------------------------------------------------------
 
 /**
 @class TaskView
