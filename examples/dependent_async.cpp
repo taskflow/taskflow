@@ -6,13 +6,9 @@ int main(){
 
   std::vector<tf::AsyncTask> range;
 
-  auto A = executor.silent_dependent_async(
-    "A", [](){ std::cout << "A\n"; }, range.begin(), range.end()
-  );
+  auto A = executor.silent_dependent_async("A", [](){ std::cout << "A\n"; });
   
-  auto B = executor.silent_dependent_async(
-    "B", [](){ std::cout << "B\n"; }, range.begin(), range.end()
-  );
+  auto B = executor.silent_dependent_async("B", [](){ std::cout << "B\n"; });
 
   range.push_back(A);
   range.push_back(B);

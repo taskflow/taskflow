@@ -631,7 +631,7 @@ class Node {
   Node() = default;
 
   template <typename... Args>
-  Node(const std::string&, unsigned, Topology*, Node*, Args&&... args);
+  Node(const std::string&, unsigned, Topology*, Node*, size_t, Args&&... args);
 
   ~Node();
 
@@ -653,8 +653,6 @@ class Node {
 
   void* _data {nullptr};
 
-  handle_t _handle;
-
   SmallVector<Node*> _successors;
   SmallVector<Node*> _dependents;
 
@@ -662,6 +660,8 @@ class Node {
   std::atomic<size_t> _join_counter {0};
 
   std::unique_ptr<Semaphores> _semaphores;
+  
+  handle_t _handle;
 
   void _precede(Node*);
   void _set_up_join_counter();
@@ -769,13 +769,15 @@ Node::Node(
   unsigned priority,
   Topology* topology, 
   Node* parent, 
+  size_t join_counter,
   Args&&... args
 ) :
-  _name     {name},
-  _priority {priority},
-  _topology {topology},
-  _parent   {parent},
-  _handle   {std::forward<Args>(args)...} {
+  _name         {name},
+  _priority     {priority},
+  _topology     {topology},
+  _parent       {parent},
+  _join_counter {join_counter},
+  _handle       {std::forward<Args>(args)...} {
 }
 
 //Node::Node(Args&&... args): _handle{std::forward<Args>(args)...} {
