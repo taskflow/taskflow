@@ -1,8 +1,8 @@
 #pragma once
 
 #include "core/executor.hpp"
+#include "core/async.hpp"
 #include "algorithm/critical.hpp"
-#include "algorithm/for_each.hpp"
 
 /**
 @dir taskflow

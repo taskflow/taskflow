@@ -621,6 +621,16 @@ class AsyncTask {
   
   public:
 
+    AsyncTask() = default;
+
+    ~AsyncTask() = default;
+
+    AsyncTask(const AsyncTask&) = default;
+    AsyncTask(AsyncTask&&) = default;
+
+    AsyncTask& operator = (const AsyncTask&) = default;
+    AsyncTask& operator = (AsyncTask&&) = default;
+
     bool empty() const;
 
   private:

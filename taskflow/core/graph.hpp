@@ -586,16 +586,28 @@ class Node {
 
     std::function<void()> work;
   };
-
+  
+  // silent dependent async
+  struct DependentAsync {
+    
+    template <typename C>
+    DependentAsync(C&&, std::shared_ptr<AsyncTopology>);
+    
+    std::function<void()> work;
+    
+    std::shared_ptr<AsyncTopology> topology;
+    std::atomic<AsyncState> state {AsyncState::UNFINISHED};
+  };
+  
   // silent dependent async
   struct SilentDependentAsync {
     
     template <typename C>
     SilentDependentAsync(C&&);
     
-    std::atomic<AsyncState> state {AsyncState::UNFINISHED};
-
     std::function<void()> work;
+    
+    std::atomic<AsyncState> state {AsyncState::UNFINISHED};
   };
 
   using handle_t = std::variant<
@@ -607,7 +619,8 @@ class Node {
     Module,                 // composable tasking
     Async,                  // async tasking
     SilentAsync,            // async tasking (no future)
-    SilentDependentAsync
+    DependentAsync,         // dependent async tasking
+    SilentDependentAsync    // dependent async tasking (no future)
   >;
 
   struct Semaphores {
@@ -626,6 +639,7 @@ class Node {
   constexpr static auto MODULE          = get_index_v<Module, handle_t>;
   constexpr static auto ASYNC           = get_index_v<Async, handle_t>;
   constexpr static auto SILENT_ASYNC    = get_index_v<SilentAsync, handle_t>;
+  constexpr static auto DEPENDENT_ASYNC = get_index_v<DependentAsync, handle_t>;
   constexpr static auto SILENT_DEPENDENT_ASYNC = get_index_v<SilentDependentAsync, handle_t>;
 
   Node() = default;
@@ -746,6 +760,13 @@ Node::Async::Async(C&& c, std::shared_ptr<AsyncTopology>tpg) :
 template <typename C>
 Node::SilentAsync::SilentAsync(C&& c) :
   work {std::forward<C>(c)} {
+}
+
+// Constructor
+template <typename C>
+Node::DependentAsync::DependentAsync(C&& c, std::shared_ptr<AsyncTopology>tpg) :
+  work     {std::forward<C>(c)},
+  topology {std::move(tpg)} {
 }
 
 // ----------------------------------------------------------------------------

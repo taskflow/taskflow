@@ -9,6 +9,7 @@ list(APPEND TF_UNITTESTS
   test_priorities
   test_basics 
   test_asyncs
+  test_dependent_asyncs
   test_subflows
   test_control_flow
   test_semaphores
