@@ -1,5 +1,6 @@
 #include "mandel.hpp"
 #include <taskflow/taskflow.hpp>
+#include <taskflow/algorithm/for_each.hpp>
 
 void mandelbrot_taskflow(unsigned num_threads, int d = D) {
 

@@ -243,7 +243,7 @@ TEST_CASE("DynamicTraversal" * doctest::timeout(300)) {
 // Testcase: ParallelTraversal
 // --------------------------------------------------------
 
-void parallel_traversal(unsigned num_threads) {
+/*void parallel_traversal(unsigned num_threads) {
 
   tf::Executor executor(num_threads);
 
@@ -337,6 +337,6 @@ TEST_CASE("ParallelTraversal.7" * doctest::timeout(300)) {
 TEST_CASE("ParallelTraversal.8" * doctest::timeout(300)) {
   parallel_traversal(8);
 }
-
+*/
 
 

@@ -1,6 +1,6 @@
 #include "common.hpp"
 #include <taskflow/taskflow.hpp>
-
+#include <taskflow/algorithm/for_each.hpp>
 
 void bs_taskflow(unsigned num_threads) {
 

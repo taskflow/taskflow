@@ -688,14 +688,28 @@ class Executor {
   */
   size_t num_observers() const noexcept;
   
+  /**
+  @brief TODO
+  */
+  template <typename F, typename I, 
+    std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
+  >
+  tf::AsyncTask silent_dependent_async(const std::string& name, F&& func, I first, I last);
 
-  template <typename F>
-  tf::AsyncTask silent_dependent_async(const std::string& name, F&& func);
-
-  template <typename F, typename R>
-  tf::AsyncTask silent_dependent_async(const std::string& name, F&& func, R first, R last);
+  /**
+  @brief TODO
+  */
+  template <typename F, typename... Tasks,
+    std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
+  >
+  tf::AsyncTask silent_dependent_async(const std::string& name, F&& func, Tasks&&... tasks);
   
-  template <typename F, typename I>
+  /**
+  @brief TODO
+  */
+  template <typename F, typename I,
+    std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
+  >
   auto dependent_async(const std::string& name, F&& func, I first, I last);
 
   private:
@@ -759,6 +773,7 @@ class Executor {
   void _invoke_async_task(Worker&, Node*);
   void _invoke_silent_async_task(Worker&, Node*);
   void _invoke_silent_dependent_async_task(Worker&, Node*);
+  void _process_async_dependent(Node*, tf::AsyncTask&, size_t&);
   
   template <typename P>
   void _corun_until(Worker&, P&&);
@@ -893,96 +908,6 @@ void Executor::silent_async(const std::string& name, F&& f) {
 template <typename F>
 void Executor::silent_async(F&& f) {
   silent_async("", std::forward<F>(f));
-}
-
-
-// Function: dependent_async
-template <typename F, typename I>
-auto Executor::dependent_async(
-  const std::string& name, F&& f, I first, I last
-) {
-  
-  _increment_topology();
-  
-  using T = std::invoke_result_t<std::decay_t<F>>;
-  using R = std::conditional_t<std::is_same_v<T, void>, void, std::optional<T>>;
-
-  std::promise<R> p;
-
-  auto tpg = std::make_shared<AsyncTopology>();
-
-  Future<R> fu(p.get_future(), tpg);
-
-  size_t num_dependents = std::distance(first, last);
-
-  std::shared_ptr<Node> node(
-    node_pool.animate(
-      name, 0, nullptr, nullptr, num_dependents,
-      std::in_place_type_t<Node::DependentAsync>{},
-      [p=make_moc(std::move(p)), f=std::forward<F>(f)]
-      (bool cancel) mutable {
-        if constexpr(std::is_same_v<R, void>) {
-          if(!cancel) {
-            f();
-          }
-          p.object.set_value();
-        }
-        else {
-          p.object.set_value(cancel ? std::nullopt : std::make_optional(f()));
-        }
-      },
-      std::move(tpg)
-    ),
-    [&](Node* ptr){ node_pool.recycle(ptr); }
-  );
-  
-  {
-    std::scoped_lock lock(_asyncs_mutex);
-    _asyncs.insert(node);
-  }
-  
-  for(; first != last; first++){
-    std::shared_ptr<Node> dep;
-    {
-      std::scoped_lock lock(_asyncs_mutex);
-      if(auto itr = _asyncs.find(first->_node); itr != _asyncs.end()){
-        dep = *itr;
-      }
-    }
-    
-    // if the dependent task exists
-    if(dep) {
-      auto& state = std::get_if<Node::DependentAsync>(&(dep->_handle))->state;
-      auto target = Node::AsyncState::UNFINISHED;
-      if(state.compare_exchange_strong(target, Node::AsyncState::LOCKED,
-                                       std::memory_order_relaxed,
-                                       std::memory_order_relaxed)) {
-        dep->_successors.push_back(node.get());
-        state.store(Node::AsyncState::UNFINISHED, std::memory_order_release);
-      }
-      // dep's state is FINISHED, which means dep finished its callable already
-      // thus decrement the node's join counter by 1
-      else {
-        num_dependents = node->_join_counter.fetch_sub(1) - 1;
-      }
-    }
-    // dep is removed from the queue - since there is a lock, we do not care
-    // the oerder and can be memory-relaxed
-    else {
-      num_dependents = node->_join_counter.fetch_sub(1, std::memory_order_relaxed) - 1;
-    }
-  }
-
-  if(num_dependents == 0) {
-    if(auto w = _this_worker(); w) {
-      _schedule(*w, node.get());
-    }
-    else {
-      _schedule(node.get());
-    }
-  }
-
-  return std::make_pair(AsyncTask(std::move(node)), std::move(fu));
 }
 
 // Function: this_worker_id

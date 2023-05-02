@@ -1,5 +1,6 @@
 #include "matrix_multiplication.hpp"
 #include <taskflow/taskflow.hpp>
+#include <taskflow/algorithm/for_each.hpp>
 
 // matrix_multiplication_taskflow
 void matrix_multiplication_taskflow(unsigned num_threads) {
