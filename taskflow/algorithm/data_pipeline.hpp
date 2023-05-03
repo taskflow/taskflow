@@ -501,7 +501,7 @@ void DataPipeline<Ps...>::_on_pipe(Pipeflow& pf, Runtime&) {
       }
     }
     // other pipes without pipeflow in the second argument
-    else if constexpr (std::is_invocable_v<callable_t, input_t&>) {
+    else if constexpr (std::is_invocable_v<callable_t, std::add_lvalue_reference_t<input_t> >) {
       // [](input_t&) -> void {}, i.e., the last pipe
       if constexpr (std::is_void_v<output_t>) {
         pipe._callable(std::get<input_t>(_buffer[pf._line].data));
