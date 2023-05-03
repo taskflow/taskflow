@@ -293,7 +293,7 @@ void parallel_transform3(size_t W) {
     /** Target implementation with Subflow::transform */
     std::vector<string> tgt;
 
-    std::vector<string>::iterator tgt_beg;
+    typename std::vector<string>::iterator tgt_beg;
 
     /** A generic function to cast integers to string */
     const auto myFunction = [](const size_t x) -> string {
