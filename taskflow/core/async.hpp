@@ -177,15 +177,13 @@ inline void Executor::_process_async_dependent(
     // dep's state is FINISHED, which means dep finished its callable already
     // thus decrement the node's join counter by 1
     else {
-      // Here, we use release to ensure this node's creation is seen by other worker
-      // that will invoke this node
-      num_dependents = node->_join_counter.fetch_sub(1, std::memory_order_release) - 1;
+      // decrement the counter needs to be the order of acquire and release
+      // to synchronize with the worker
+      num_dependents = node->_join_counter.fetch_sub(1, std::memory_order_acq_rel) - 1;
     }
   }
-  // dep is removed from the queue - since there is a lock, we do not care
-  // the oerder and can be memory-relaxed
   else {
-    num_dependents = node->_join_counter.fetch_sub(1, std::memory_order_relaxed) - 1;
+    num_dependents = node->_join_counter.fetch_sub(1, std::memory_order_acq_rel) - 1;
   }
 }
 
