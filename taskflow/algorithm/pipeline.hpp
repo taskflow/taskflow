@@ -505,7 +505,7 @@ class Pipeline {
   
   // queue of ready tokens (paired with their deferral times)
   // For example,
-  // when 12 does not have any dependetns,
+  // when 12 does not have any dependents,
   // we put 12 in _ready_tokens queue
   // Assume num_deferrals of 12 is 1,
   // we push pair{12, 1} in the queue 
@@ -846,7 +846,7 @@ void Pipeline<Ps...>::_build() {
         }
       
         if (pf->_dependents.empty() == false){ 
-          // check if the pf->_depdendents have valid dependents
+          // check if the pf->_dependents have valid dependents
           _check_dependents(*pf); 
           
           // tokens in pf->_dependents are all valid dependents 
@@ -1571,7 +1571,7 @@ void ScalablePipeline<P>::_build() {
         }
       
         if (pf->_dependents.empty() == false){ 
-          // check if the pf->_depdendents have valid dependents
+          // check if the pf->_dependents have valid dependents
           _check_dependents(*pf); 
           
           // tokens in pf->_dependents are all valid dependents 

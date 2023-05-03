@@ -135,7 +135,7 @@ class DataPipe {
 tf::make_data_pipe is a helper function to create a data pipe (tf::DataPipe)
 in a data-parallel pipeline (tf::DataPipeline).
 The first argument specifies the direction of the data pipe,
-either tf::PipeType::SERIAL or tf::PipeType::PARALLE,
+either tf::PipeType::SERIAL or tf::PipeType::PARALLEL,
 and the second argument is a callable to invoke by the pipeline scheduler.
 Input and output data types are specified via template parameters,
 which will always be decayed by the library to its original form
@@ -186,7 +186,7 @@ auto make_data_pipe(PipeType d, C&& callable) {
 Similar to tf::Pipeline, a tf::DataPipeline is a composable graph object
 for users to create a <i>data-parallel pipeline scheduling framework</i> 
 using a module task in a taskflow.
-The only difference is that tf::DataPipline provides a data abstraction
+The only difference is that tf::DataPipeline provides a data abstraction
 for users to quickly express dataflow in a pipeline.
 The following example creates a data-parallel pipeline of three stages
 that generate dataflow from `void` to `int`, `std::string`, `float`, and `void`.
