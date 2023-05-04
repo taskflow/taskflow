@@ -14,6 +14,14 @@ namespace tf {
 template <typename F, typename... Tasks,
   std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
 >
+tf::AsyncTask Executor::silent_dependent_async(F&& func, Tasks&&... tasks) {
+  return silent_dependent_async("", std::forward<F>(func), std::forward<Tasks>(tasks)...);
+}
+
+// Function: silent_dependent_async
+template <typename F, typename... Tasks,
+  std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
+>
 tf::AsyncTask Executor::silent_dependent_async(
   const std::string& name, F&& func, Tasks&&... tasks 
 ){
@@ -49,6 +57,14 @@ tf::AsyncTask Executor::silent_dependent_async(
   }
 
   return AsyncTask(std::move(node));
+}
+
+// Function: silent_dependent_async
+template <typename F, typename I,
+  std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
+>
+tf::AsyncTask Executor::silent_dependent_async(F&& func, I first, I last) {
+  return silent_dependent_async("", std::forward<F>(func), first, last);
 }
 
 // Function: silent_dependent_async
@@ -95,6 +111,14 @@ tf::AsyncTask Executor::silent_dependent_async(
 // ----------------------------------------------------------------------------
 // Dependent Async
 // ----------------------------------------------------------------------------
+
+// Function: dependent_async
+template <typename F, typename... Tasks,
+  std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
+>
+auto Executor::dependent_async(F&& func, Tasks&&... tasks) {
+  return dependent_async("", std::forward<F>(func), std::forward<Tasks>(tasks)...);
+}
 
 // Function: dependent_async
 template <typename F, typename... Tasks,
@@ -149,6 +173,14 @@ auto Executor::dependent_async(
   }
 
   return std::make_pair(AsyncTask(std::move(node)), std::move(fu));
+}
+
+// Function: dependent_async
+template <typename F, typename I,
+  std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
+>
+auto Executor::dependent_async(F&& func, I first, I last) {
+  return dependent_async("", std::forward<F>(func), first, last);
 }
 
 // Function: dependent_async

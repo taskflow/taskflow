@@ -239,10 +239,6 @@ TEST_CASE("SilentDependentAsync.SimpleGraph.16threads" * doctest::timeout(300)) 
 // Simple Graph 2
 // ----------------------------------------------------------------------------
 
-// --------------------------------------------------------------------
-// Graph 2
-// --------------------------------------------------------------------
-//
 // task dependence :
 //        ----------------------------
 //       |        |--> 3 --|          |
@@ -418,6 +414,195 @@ TEST_CASE("SilentDependentAsync.SimpleGraph2.16threads" * doctest::timeout(300))
   silent_dependent_async_simple_graph_2(16);
 }
 
+// task dependence :
+//        ----------------------------
+//       |        |--> 3 --|          |
+//       |        |         --> 7 --->|
+//  0 ---|        |--> 4 --|          |
+//       v        ^                   v
+//        --> 2 --| ---------------------> 9
+//       ^        v                   ^
+//  1 ---|        |--> 5 --|          |
+//       |        |         --> 8 --->|
+//       |        |--> 6 --|          |
+//       -----------------------------
+void dependent_async_simple_graph_2(unsigned W) {
+
+  tf::Executor executor(W);
+
+  size_t count = 10;
+  std::vector<tf::CachelineAligned<int>> results(count);
+  std::vector<tf::AsyncTask> tasks1;
+  std::vector<tf::AsyncTask> tasks2;
+  std::vector<tf::AsyncTask> tasks3;
+  std::vector<tf::AsyncTask> tasks4;
+
+  for (int id = 0; id < 100; ++id) {
+
+    results.resize(count);
+
+    auto t0 = executor.silent_dependent_async(
+      "t0", [&](){
+        results[0].data = 100 + id;
+      }
+    );
+
+    auto t1 = executor.silent_dependent_async(
+      "t1", [&](){
+        results[1].data = 6 * id;
+      }
+    );
+    
+    auto t2 = executor.silent_dependent_async(
+      "t2", [&](){
+        results[2].data = results[0].data + results[1].data + id;
+      }, t0, t1
+    );
+
+    tasks1.push_back(t2);
+
+    auto [t3, fu3] = executor.dependent_async(
+      "t3", [&](){
+        results[3].data = results[2].data + id;
+        return results[3].data;
+      }, tasks1.begin(), tasks1.end()
+    );
+
+    auto t4 = executor.silent_dependent_async(
+      "t4", [&](){
+        results[4].data = results[2].data + id;
+      }, tasks1.begin(), tasks1.end()
+    );
+
+    auto [t5, fu5] = executor.dependent_async(
+      "t5", [&](){
+        results[5].data = results[2].data + id;
+        return results[5].data;
+      }, tasks1.begin(), tasks1.end()
+    );
+
+    auto t6 = executor.silent_dependent_async(
+      "t6", [&](){
+        results[6].data = results[2].data + id;
+      }, tasks1.begin(), tasks1.end()
+    );
+
+    tasks2.push_back(t3);
+    tasks2.push_back(t4);
+    tasks3.push_back(t5);
+    tasks3.push_back(t6);
+
+    auto [t7, fu7] = executor.dependent_async(
+      "t7", [&](){
+        results[7].data = results[3].data + results[4].data + id;
+        return results[7].data;
+      }, tasks2.begin(), tasks2.end()
+    );
+
+    auto t8 = executor.silent_dependent_async(
+      "t8", [&](){
+        results[8].data = results[5].data + results[6].data + id;
+      }, tasks3.begin(), tasks3.end()
+    );
+    
+    tasks4.push_back(t0);
+    tasks4.push_back(t1);
+    tasks4.push_back(t2);
+    tasks4.push_back(t7);
+    tasks4.push_back(t8);
+
+    auto [t9, fu9] = executor.dependent_async(
+      "t9", [&](){
+        results[9].data = results[0].data + results[1].data +  
+          results[2].data + results[7].data + results[8].data + id;
+        return results[9].data;
+      }, tasks4.begin(), tasks4.end()
+    );
+    
+
+    REQUIRE(fu9.get() == results[9].data);
+    
+    REQUIRE(fu3.wait_for(std::chrono::microseconds(1)) == std::future_status::ready);
+    REQUIRE(fu3.get() == results[3].data);
+    
+    REQUIRE(fu5.wait_for(std::chrono::microseconds(1)) == std::future_status::ready);
+    REQUIRE(fu5.get() == results[5].data);
+    
+    REQUIRE(fu7.wait_for(std::chrono::microseconds(1)) == std::future_status::ready);
+    REQUIRE(fu7.get() == results[7].data);
+
+    for (size_t i = 0; i < count; ++i) {
+      switch (i) {
+        case 0:
+          REQUIRE(results[i].data == 100 + id);
+        break;
+
+        case 1:
+          REQUIRE(results[i].data == 6 * id);
+        break;
+
+        case 2:
+          REQUIRE(results[i].data == results[0].data + results[1].data + id);
+        break;
+
+        case 3:
+          REQUIRE(results[i].data == results[2].data + id);
+        break;
+
+        case 4:
+          REQUIRE(results[i].data == results[2].data+ id);
+        break;
+
+        case 5:
+          REQUIRE(results[i].data == results[2].data + id);
+        break;
+
+        case 6:
+          REQUIRE(results[i].data == results[2].data + id);
+        break;
+        
+        case 7:
+          REQUIRE(results[i].data == results[3].data + results[4].data + id);
+        break;
+
+        case 8:
+          REQUIRE(results[i].data == results[5].data + results[5].data + id);
+        break;
+
+        case 9:
+          REQUIRE(results[i].data == results[0].data + results[1].data + 
+            results[2].data + results[7].data + results[8].data + id);
+        break;
+      }
+    }
+
+    results.clear();
+    tasks1.clear();
+    tasks2.clear();
+    tasks3.clear();
+    tasks4.clear();
+  }
+}
+
+TEST_CASE("DependentAsync.SimpleGraph2.1thread" * doctest::timeout(300)) {
+  dependent_async_simple_graph_2(1);
+}
+
+TEST_CASE("DependentAsync.SimpleGraph2.2threads" * doctest::timeout(300)) {
+  dependent_async_simple_graph_2(2);
+}
+
+TEST_CASE("DependentAsync.SimpleGraph2.4threads" * doctest::timeout(300)) {
+  dependent_async_simple_graph_2(4);
+}
+
+TEST_CASE("DependentAsync.SimpleGraph2.8threads" * doctest::timeout(300)) {
+  dependent_async_simple_graph_2(8);
+}
+
+TEST_CASE("DependentAsync.SimpleGraph2.16threads" * doctest::timeout(300)) {
+  dependent_async_simple_graph_2(16);
+}
 
 // ----------------------------------------------------------------------------
 // Binary Tree

@@ -654,6 +654,10 @@ class Executor {
   */
   template <typename F>
   void silent_async(const std::string& name, F&& f);
+  
+  // --------------------------------------------------------------------------
+  // Observer methods
+  // --------------------------------------------------------------------------
 
   /**
   @brief constructs an observer to inspect the activities of worker threads
@@ -689,8 +693,16 @@ class Executor {
   size_t num_observers() const noexcept;
 
   // --------------------------------------------------------------------------
-  // asynchronous tasking with dependents
+  // Silent Dependent Async Methods
   // --------------------------------------------------------------------------
+  
+  /**
+  @brief TODO
+  */
+  template <typename F, typename... Tasks,
+    std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
+  >
+  tf::AsyncTask silent_dependent_async(F&& func, Tasks&&... tasks);
   
   /**
   @brief TODO
@@ -706,7 +718,27 @@ class Executor {
   template <typename F, typename I, 
     std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
   >
+  tf::AsyncTask silent_dependent_async(F&& func, I first, I last);
+  
+  /**
+  @brief TODO
+  */
+  template <typename F, typename I, 
+    std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
+  >
   tf::AsyncTask silent_dependent_async(const std::string& name, F&& func, I first, I last);
+  
+  // --------------------------------------------------------------------------
+  // Dependent Async Methods
+  // --------------------------------------------------------------------------
+  
+  /**
+  @brief TODO
+  */
+  template <typename F, typename... Tasks,
+    std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
+  >
+  auto dependent_async(F&& func, Tasks&&... tasks);
   
   /**
   @brief TODO
@@ -715,6 +747,14 @@ class Executor {
     std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
   >
   auto dependent_async(const std::string& name, F&& func, Tasks&&... tasks);
+  
+  /**
+  @brief TODO
+  */
+  template <typename F, typename I,
+    std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
+  >
+  auto dependent_async(F&& func, I first, I last);
   
   /**
   @brief TODO
