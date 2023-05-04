@@ -3,12 +3,28 @@
 int main(){
 
   tf::Executor executor;
+  
+  // demonstration of dependent async (with future)
+  printf("Dependent Async\n");
+  auto [A, fuA] = executor.dependent_async("A", [](){ printf("A\n"); });
+  auto [B, fuB] = executor.dependent_async("B", [](){ printf("B\n"); }, A);
+  auto [C, fuC] = executor.dependent_async("C", [](){ printf("C\n"); }, A);
+  auto [D, fuD] = executor.dependent_async("D", [](){ printf("D\n"); }, B, C);
 
-  auto A = executor.silent_dependent_async("A", [](){ std::cout << "A\n"; });
-  auto B = executor.silent_dependent_async("B", [](){ std::cout << "B\n"; });
-  executor.silent_dependent_async("C", [](){ std::cout << "C\n"; }, A, B);
+  fuD.get();
+
+  // demonstration of silent dependent async (without future)
+  printf("Silent Dependent Async\n");
+  A = executor.silent_dependent_async("A", [](){ printf("A\n"); });
+  B = executor.silent_dependent_async("B", [](){ printf("B\n"); }, A);
+  C = executor.silent_dependent_async("C", [](){ printf("C\n"); }, A);
+  D = executor.silent_dependent_async("D", [](){ printf("D\n"); }, B, C);
 
   executor.wait_for_all();
 
   return 0;
 }
+
+
+
+

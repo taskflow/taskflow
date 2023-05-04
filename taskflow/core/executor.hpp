@@ -687,6 +687,18 @@ class Executor {
   @brief queries the number of observers
   */
   size_t num_observers() const noexcept;
+
+  // --------------------------------------------------------------------------
+  // asynchronous tasking with dependents
+  // --------------------------------------------------------------------------
+  
+  /**
+  @brief TODO
+  */
+  template <typename F, typename... Tasks,
+    std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
+  >
+  tf::AsyncTask silent_dependent_async(const std::string& name, F&& func, Tasks&&... tasks);
   
   /**
   @brief TODO
@@ -695,14 +707,14 @@ class Executor {
     std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
   >
   tf::AsyncTask silent_dependent_async(const std::string& name, F&& func, I first, I last);
-
+  
   /**
   @brief TODO
   */
   template <typename F, typename... Tasks,
     std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
   >
-  tf::AsyncTask silent_dependent_async(const std::string& name, F&& func, Tasks&&... tasks);
+  auto dependent_async(const std::string& name, F&& func, Tasks&&... tasks);
   
   /**
   @brief TODO
@@ -772,7 +784,7 @@ class Executor {
   void _invoke_module_task(Worker&, Node*);
   void _invoke_async_task(Worker&, Node*);
   void _invoke_silent_async_task(Worker&, Node*);
-  void _invoke_silent_dependent_async_task(Worker&, Node*);
+  void _invoke_dependent_async_task(Worker&, Node*);
   void _process_async_dependent(Node*, tf::AsyncTask&, size_t&);
   
   template <typename P>
@@ -1385,8 +1397,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     break;
 
     // silent dependent async task
-    case Node::SILENT_DEPENDENT_ASYNC: {
-      _invoke_silent_dependent_async_task(worker, node);
+    case Node::DEPENDENT_ASYNC: {
+      _invoke_dependent_async_task(worker, node);
       _tear_down_dependent_async(worker, node);
       return;
     }
@@ -1706,10 +1718,10 @@ inline void Executor::_invoke_silent_async_task(Worker& w, Node* node) {
   _observer_epilogue(w, node);
 }
 
-// Procedure: _invoke_silent_dependent_async_task
-inline void Executor::_invoke_silent_dependent_async_task(Worker& w, Node* node) {
+// Procedure: _invoke_dependent_async_task
+inline void Executor::_invoke_dependent_async_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
-  std::get_if<Node::SilentDependentAsync>(&node->_handle)->work();
+  std::get_if<Node::DependentAsync>(&node->_handle)->work();
   _observer_epilogue(w, node);
 }
 
