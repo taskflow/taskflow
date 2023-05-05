@@ -36,7 +36,6 @@ list(APPEND TF_EXAMPLES
   composition
   limited_concurrency
   cancel
-  cancel_async
 )
 
 foreach(example IN LISTS TF_EXAMPLES)

@@ -557,104 +557,7 @@ class Executor {
   @endcode
   */
   int this_worker_id() const;
-
-  /**
-  @brief runs a given function asynchronously
-
-  @tparam F callable type
-
-  @param f callable object to call
-
-  @return a tf::Future that will holds the result of the execution
-
-  The method creates an asynchronous task to launch the given
-  function on the given arguments.
-  Unlike std::async, the return here is a @em tf::Future that holds
-  an optional object to the result.
-  If the asynchronous task is cancelled before it runs, the return is
-  a @c std::nullopt, or the value returned by the callable.
-
-  @code{.cpp}
-  tf::Future<std::optional<int>> future = executor.async([](){
-    std::cout << "create an asynchronous task and returns 1\n";
-    return 1;
-  });
-  future.get();
-  @endcode
-
-  This member function is thread-safe.
-  */
-  template <typename F>
-  auto async(F&& f);
-
-  /**
-  @brief runs a given function asynchronously and gives a name to this task
-
-  @tparam F callable type
-
-  @param name name of the asynchronous task
-  @param f callable object to call
-
-  @return a tf::Future that will holds the result of the execution
-
-  The method creates a named asynchronous task to launch the given
-  function on the given arguments.
-  Naming an asynchronous task is primarily used for profiling and visualizing
-  the task execution timeline.
-  Unlike std::async, the return here is a tf::Future that holds
-  an optional object to the result.
-  If the asynchronous task is cancelled before it runs, the return is
-  a @c std::nullopt, or the value returned by the callable.
-
-  @code{.cpp}
-  tf::Future<std::optional<int>> future = executor.async("name", [](){
-    std::cout << "create an asynchronous task with a name and returns 1\n";
-    return 1;
-  });
-  future.get();
-  @endcode
-
-  This member function is thread-safe.
-  */
-  template <typename F>
-  auto async(const std::string& name, F&& f);
-
-  /**
-  @brief similar to tf::Executor::async but does not return a future object
-
-  This member function is more efficient than tf::Executor::async
-  and is encouraged to use when there is no data returned.
-
-  @code{.cpp}
-  executor.silent_async([](){
-    std::cout << "create an asynchronous task with no return\n";
-  });
-  executor.wait_for_all();
-  @endcode
-
-  This member function is thread-safe.
-  */
-  template <typename F>
-  void silent_async(F&& f);
-
-  /**
-  @brief similar to tf::Executor::named_async but does not return a future object
-
-  This member function is more efficient than tf::Executor::named_async
-  and is encouraged to use when there is no data returned.
-
-  @code{.cpp}
-  executor.silent_async("name", [](){
-    std::cout << "create an asynchronous task with a name and no return\n";
-  });
-  executor.wait_for_all();
-  @endcode
-
-  This member function is thread-safe.
-  */
-  template <typename F>
-  void silent_async(const std::string& name, F&& f);
-  
+ 
   // --------------------------------------------------------------------------
   // Observer methods
   // --------------------------------------------------------------------------
@@ -693,11 +596,141 @@ class Executor {
   size_t num_observers() const noexcept;
 
   // --------------------------------------------------------------------------
+  // Async Task Methods
+  // --------------------------------------------------------------------------
+
+  /**
+  @brief runs a given function asynchronously
+
+  @tparam F callable type
+
+  @param func callable object
+
+  @return a @std_future that will hold the result of the execution
+
+  The method creates an asynchronous task to run the given function
+  and return a @std_future object that eventually will hold the result
+  of the return value.
+
+  @code{.cpp}
+  std::future<int> future = executor.async([](){
+    std::cout << "create an asynchronous task and returns 1\n";
+    return 1;
+  });
+  future.get();
+  @endcode
+
+  This member function is thread-safe.
+  */
+  template <typename F>
+  auto async(F&& func);
+
+  /**
+  @brief runs a given function asynchronously and gives a name to this task
+
+  @tparam F callable type
+
+  @param name name of the asynchronous task
+  @param func callable object
+
+  @return a @std_future that will hold the result of the execution
+  
+  The method creates and assigns a name to an asynchronous task 
+  to run the given function, 
+  returning @std_future object that eventually will hold the result
+  Assigned task names will appear in the observers of the executor.
+
+  @code{.cpp}
+  std::future<int> future = executor.async("name", [](){
+    std::cout << "create an asynchronous task with a name and returns 1\n";
+    return 1;
+  });
+  future.get();
+  @endcode
+
+  This member function is thread-safe.
+  */
+  template <typename F>
+  auto async(const std::string& name, F&& func);
+
+  /**
+  @brief similar to tf::Executor::async but does not return a future object
+  
+  @tparam F callable type
+  
+  @param func callable object
+
+  This member function is more efficient than tf::Executor::async
+  and is encouraged to use when you do not want a @std_future to
+  acquire the result or synchronize the execution.
+
+  @code{.cpp}
+  executor.silent_async([](){
+    std::cout << "create an asynchronous task with no return\n";
+  });
+  executor.wait_for_all();
+  @endcode
+
+  This member function is thread-safe.
+  */
+  template <typename F>
+  void silent_async(F&& func);
+
+  /**
+  @brief similar to tf::Executor::async but does not return a future object
+
+  @tparam F callable type
+
+  @param name assigned name to the task
+  @param func callable object
+
+  This member function is more efficient than tf::Executor::async
+  and is encouraged to use when you do not want a @std_future to
+  acquire the result or synchronize the execution.
+  Assigned task names will appear in the observers of the executor.
+
+  @code{.cpp}
+  executor.silent_async("name", [](){
+    std::cout << "create an asynchronous task with a name and no return\n";
+  });
+  executor.wait_for_all();
+  @endcode
+
+  This member function is thread-safe.
+  */
+  template <typename F>
+  void silent_async(const std::string& name, F&& func);
+
+  // --------------------------------------------------------------------------
   // Silent Dependent Async Methods
   // --------------------------------------------------------------------------
   
   /**
-  @brief TODO
+  @brief runs the given function asynchronously 
+         when the given dependents finish
+
+  @tparam F callable type
+  @tparam Tasks task types convertible to tf::AsyncTask
+
+  @param func callable object
+  @param tasks asynchronous tasks on which this execution depends
+  
+  @return a tf::AsyncTask handle 
+  
+  This member function is more efficient than tf::Executor::dependent_async
+  and is encouraged to use when you do not want a @std_future to
+  acquire the result or synchronize the execution.
+  The example below creates three asynchronous tasks, @c A, @c B, and @c C,
+  in which task @c C runs after task @c A and task @c B.
+
+  @code{.cpp}
+  tf::AsyncTask A = executor.silent_dependent_async([](){ printf("A\n"); });
+  tf::AsyncTask B = executor.silent_dependent_async([](){ printf("B\n"); });
+  executor.silent_dependent_async([](){ printf("C runs after A and B\n"); }, A, B);
+  executor.wait_for_all();
+  @endcode
+
+  This member function is thread-safe.
   */
   template <typename F, typename... Tasks,
     std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
@@ -705,7 +738,35 @@ class Executor {
   tf::AsyncTask silent_dependent_async(F&& func, Tasks&&... tasks);
   
   /**
-  @brief TODO
+  @brief names and runs the given function asynchronously 
+         when the given dependents finish
+  
+  @tparam F callable type
+  @tparam Tasks task types convertible to tf::AsyncTask
+
+  @param name assigned name to the task
+  @param func callable object
+  @param tasks asynchronous tasks on which this execution depends
+  
+  @return a tf::AsyncTask handle 
+  
+  This member function is more efficient than tf::Executor::dependent_async
+  and is encouraged to use when you do not want a @std_future to
+  acquire the result or synchronize the execution.
+  The example below creates three asynchronous tasks, @c A, @c B, and @c C,
+  in which task @c C runs after task @c A and task @c B.
+  Assigned task names will appear in the observers of the executor.
+
+  @code{.cpp}
+  tf::AsyncTask A = executor.silent_dependent_async("A", [](){ printf("A\n"); });
+  tf::AsyncTask B = executor.silent_dependent_async("B", [](){ printf("B\n"); });
+  executor.silent_dependent_async(
+    "C", [](){ printf("C runs after A and B\n"); }, A, B
+  );
+  executor.wait_for_all();
+  @endcode
+
+  This member function is thread-safe.
   */
   template <typename F, typename... Tasks,
     std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
@@ -713,7 +774,36 @@ class Executor {
   tf::AsyncTask silent_dependent_async(const std::string& name, F&& func, Tasks&&... tasks);
   
   /**
-  @brief TODO
+  @brief runs the given function asynchronously 
+         when the given range of dependents finish
+  
+  @tparam F callable type
+  @tparam I iterator type 
+
+  @param func callable object
+  @param first iterator to the beginning (inclusive)
+  @param last iterator to the end (exclusive)
+  
+  @return a tf::AsyncTask handle 
+  
+  This member function is more efficient than tf::Executor::dependent_async
+  and is encouraged to use when you do not want a @std_future to
+  acquire the result or synchronize the execution.
+  The example below creates three asynchronous tasks, @c A, @c B, and @c C,
+  in which task @c C runs after task @c A and task @c B.
+
+  @code{.cpp}
+  std::array<tf::AsyncTask, 2> array {
+    executor.silent_dependent_async([](){ printf("A\n"); }),
+    executor.silent_dependent_async([](){ printf("B\n"); })
+  };
+  executor.silent_dependent_async(
+    [](){ printf("C runs after A and B\n"); }, array.begin(), array.end()
+  );
+  executor.wait_for_all();
+  @endcode
+
+  This member function is thread-safe.
   */
   template <typename F, typename I, 
     std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
@@ -721,7 +811,38 @@ class Executor {
   tf::AsyncTask silent_dependent_async(F&& func, I first, I last);
   
   /**
-  @brief TODO
+  @brief names and runs the given function asynchronously 
+         when the given range of dependents finish
+  
+  @tparam F callable type
+  @tparam I iterator type 
+
+  @param name assigned name to the task
+  @param func callable object
+  @param first iterator to the beginning (inclusive)
+  @param last iterator to the end (exclusive)
+
+  @return a tf::AsyncTask handle 
+  
+  This member function is more efficient than tf::Executor::dependent_async
+  and is encouraged to use when you do not want a @std_future to
+  acquire the result or synchronize the execution.
+  The example below creates three asynchronous tasks, @c A, @c B, and @c C,
+  in which task @c C runs after task @c A and task @c B.
+  Assigned task names will appear in the observers of the executor.
+
+  @code{.cpp}
+  std::array<tf::AsyncTask, 2> array {
+    executor.silent_dependent_async("A", [](){ printf("A\n"); }),
+    executor.silent_dependent_async("B", [](){ printf("B\n"); })
+  };
+  executor.silent_dependent_async(
+    "C", [](){ printf("C runs after A and B\n"); }, array.begin(), array.end()
+  );
+  executor.wait_for_all();
+  @endcode
+
+  This member function is thread-safe.
   */
   template <typename F, typename I, 
     std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
@@ -733,7 +854,41 @@ class Executor {
   // --------------------------------------------------------------------------
   
   /**
-  @brief TODO
+  @brief runs the given function asynchronously 
+         when the given dependents finish
+  
+  @tparam F callable type
+  @tparam Tasks task types convertible to tf::AsyncTask
+
+  @param func callable object
+  @param tasks asynchronous tasks on which this execution depends
+  
+  @return a pair of a tf::AsyncTask handle and 
+                    a @std_future that holds the result of the execution
+  
+  The example below creates three asynchronous tasks, @c A, @c B, and @c C,
+  in which task @c C runs after task @c A and task @c B.
+  Task @c C returns a pair of its tf::AsyncTask handle and a std::future<int>
+  that eventually will hold the result of the execution.
+
+  @code{.cpp}
+  tf::AsyncTask A = executor.silent_dependent_async([](){ printf("A\n"); });
+  tf::AsyncTask B = executor.silent_dependent_async([](){ printf("B\n"); });
+  auto [C, fuC] = executor.dependent_async(
+    [](){ 
+      printf("C runs after A and B\n"); 
+      return 1;
+    }, 
+    A, B
+  );
+  fuC.get();  // C finishes, which in turns means both A and B finish
+  @endcode
+
+  You can mixed the use of tf::AsyncTask handles 
+  returned by Executor::dependent_async and Executor::silent_dependent_async
+  when specifying task dependencies.
+
+  This member function is thread-safe.
   */
   template <typename F, typename... Tasks,
     std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
@@ -741,7 +896,44 @@ class Executor {
   auto dependent_async(F&& func, Tasks&&... tasks);
   
   /**
-  @brief TODO
+  @brief names and runs the given function asynchronously
+         when the given dependents finish
+  
+  @tparam F callable type
+  @tparam Tasks task types convertible to tf::AsyncTask
+  
+  @param name assigned name to the task
+  @param func callable object
+  @param tasks asynchronous tasks on which this execution depends
+  
+  @return a pair of a tf::AsyncTask handle and 
+                    a @std_future that holds the result of the execution
+  
+  The example below creates three named asynchronous tasks, @c A, @c B, and @c C,
+  in which task @c C runs after task @c A and task @c B.
+  Task @c C returns a pair of its tf::AsyncTask handle and a std::future<int>
+  that eventually will hold the result of the execution.
+  Assigned task names will appear in the observers of the executor.
+
+  @code{.cpp}
+  tf::AsyncTask A = executor.silent_dependent_async("A", [](){ printf("A\n"); });
+  tf::AsyncTask B = executor.silent_dependent_async("B", [](){ printf("B\n"); });
+  auto [C, fuC] = executor.dependent_async(
+    "C",
+    [](){ 
+      printf("C runs after A and B\n"); 
+      return 1;
+    }, 
+    A, B
+  );
+  assert(fuC.get()==1);  // C finishes, which in turns means both A and B finish
+  @endcode
+
+  You can mixed the use of tf::AsyncTask handles 
+  returned by Executor::dependent_async and Executor::silent_dependent_async
+  when specifying task dependencies.
+
+  This member function is thread-safe.
   */
   template <typename F, typename... Tasks,
     std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
@@ -749,7 +941,44 @@ class Executor {
   auto dependent_async(const std::string& name, F&& func, Tasks&&... tasks);
   
   /**
-  @brief TODO
+  @brief runs the given function asynchronously 
+         when the given range of dependents finish
+  
+  @tparam F callable type
+  @tparam I iterator type 
+
+  @param func callable object
+  @param first iterator to the beginning (inclusive)
+  @param last iterator to the end (exclusive)
+  
+  @return a pair of a tf::AsyncTask handle and 
+                    a @std_future that holds the result of the execution
+  
+  The example below creates three asynchronous tasks, @c A, @c B, and @c C,
+  in which task @c C runs after task @c A and task @c B.
+  Task @c C returns a pair of its tf::AsyncTask handle and a std::future<int>
+  that eventually will hold the result of the execution.
+
+  @code{.cpp}
+  std::array<tf::AsyncTask, 2> array {
+    executor.silent_dependent_async([](){ printf("A\n"); }),
+    executor.silent_dependent_async([](){ printf("B\n"); })
+  };
+  auto [C, fuC] = executor.dependent_async(
+    [](){ 
+      printf("C runs after A and B\n"); 
+      return 1;
+    }, 
+    array.begin(), array.end()
+  );
+  assert(fuC.get()==1);  // C finishes, which in turns means both A and B finish
+  @endcode
+
+  You can mixed the use of tf::AsyncTask handles 
+  returned by Executor::dependent_async and Executor::silent_dependent_async
+  when specifying task dependencies.
+
+  This member function is thread-safe.
   */
   template <typename F, typename I,
     std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
@@ -757,7 +986,47 @@ class Executor {
   auto dependent_async(F&& func, I first, I last);
   
   /**
-  @brief TODO
+  @brief names and runs the given function asynchronously 
+         when the given range of dependents finish
+  
+  @tparam F callable type
+  @tparam I iterator type 
+  
+  @param name assigned name to the task
+  @param func callable object
+  @param first iterator to the beginning (inclusive)
+  @param last iterator to the end (exclusive)
+  
+  @return a pair of a tf::AsyncTask handle and 
+                    a @std_future that holds the result of the execution
+  
+  The example below creates three named asynchronous tasks, @c A, @c B, and @c C,
+  in which task @c C runs after task @c A and task @c B.
+  Task @c C returns a pair of its tf::AsyncTask handle and a std::future<int>
+  that eventually will hold the result of the execution.
+  Assigned task names will appear in the observers of the executor.
+
+  @code{.cpp}
+  std::array<tf::AsyncTask, 2> array {
+    executor.silent_dependent_async("A", [](){ printf("A\n"); }),
+    executor.silent_dependent_async("B", [](){ printf("B\n"); })
+  };
+  auto [C, fuC] = executor.dependent_async(
+    "C",
+    [](){ 
+      printf("C runs after A and B\n"); 
+      return 1;
+    }, 
+    array.begin(), array.end()
+  );
+  assert(fuC.get()==1);  // C finishes, which in turns means both A and B finish
+  @endcode
+
+  You can mixed the use of tf::AsyncTask handles 
+  returned by Executor::dependent_async and Executor::silent_dependent_async
+  when specifying task dependencies.
+
+  This member function is thread-safe.
   */
   template <typename F, typename I,
     std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
@@ -810,7 +1079,6 @@ class Executor {
   void _tear_down_async(Node*);
   void _tear_down_dependent_async(Worker&, Node*);
   void _tear_down_invoke(Worker&, Node*);
-  void _cancel_invoke(Worker&, Node*);
   void _increment_topology();
   void _decrement_topology();
   void _decrement_topology_and_notify();
@@ -823,12 +1091,15 @@ class Executor {
   void _invoke_multi_condition_task(Worker&, Node*, SmallVector<int>&);
   void _invoke_module_task(Worker&, Node*);
   void _invoke_async_task(Worker&, Node*);
-  void _invoke_silent_async_task(Worker&, Node*);
   void _invoke_dependent_async_task(Worker&, Node*);
   void _process_async_dependent(Node*, tf::AsyncTask&, size_t&);
+  void _schedule_async_task(Node*);
   
   template <typename P>
   void _corun_until(Worker&, P&&);
+  
+  template <typename R, typename F>
+  auto _make_promised_async(std::promise<R>&&, F&&);
 };
 
 // Constructor
@@ -886,80 +1157,6 @@ inline size_t Executor::num_taskflows() const {
 inline Worker* Executor::_this_worker() {
   auto itr = _wids.find(std::this_thread::get_id());
   return itr == _wids.end() ? nullptr : &_workers[itr->second];
-}
-
-// Function: async
-template <typename F>
-auto Executor::async(const std::string& name, F&& f) {
-
-  _increment_topology();
-
-  using T = std::invoke_result_t<std::decay_t<F>>;
-  using R = std::conditional_t<std::is_same_v<T, void>, void, std::optional<T>>;
-
-  std::promise<R> p;
-
-  auto tpg = std::make_shared<AsyncTopology>();
-
-  Future<R> fu(p.get_future(), tpg);
-
-  auto node = node_pool.animate(
-    name, 0, nullptr, nullptr, 0,
-    std::in_place_type_t<Node::Async>{},
-    [p=make_moc(std::move(p)), f=std::forward<F>(f)]
-    (bool cancel) mutable {
-      if constexpr(std::is_same_v<R, void>) {
-        if(!cancel) {
-          f();
-        }
-        p.object.set_value();
-      }
-      else {
-        p.object.set_value(cancel ? std::nullopt : std::make_optional(f()));
-      }
-    },
-    std::move(tpg)
-  );
-
-  if(auto w = _this_worker(); w) {
-    _schedule(*w, node);
-  }
-  else{
-    _schedule(node);
-  }
-
-  return fu;
-}
-
-// Function: async
-template <typename F>
-auto Executor::async(F&& f) {
-  return async("", std::forward<F>(f));
-}
-
-// Function: silent_async
-template <typename F>
-void Executor::silent_async(const std::string& name, F&& f) {
-
-  _increment_topology();
-
-  auto node = node_pool.animate(
-    name, 0, nullptr, nullptr, 0,
-    std::in_place_type_t<Node::SilentAsync>{}, std::forward<F>(f)
-  );
-
-  if(auto w = _this_worker(); w) {
-    _schedule(*w, node);
-  }
-  else {
-    _schedule(node);
-  }
-}
-
-// Function: silent_async
-template <typename F>
-void Executor::silent_async(F&& f) {
-  silent_async("", std::forward<F>(f));
 }
 
 // Function: this_worker_id
@@ -1165,50 +1362,6 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
     }
   }
   
-  //--_num_thieves;
-  //_num_thieves.fetch_sub(1, std::memory_order_release);
-  
-  /*//if(auto vtm = _find_vtm(me); vtm != _workers.size()) {
-  if(!_wsq.empty()) {
-
-    _notifier.cancel_wait(worker._waiter);
-    //t = (vtm == me) ? _wsq.steal() : _workers[vtm].wsq.steal();
-
-    t = _wsq.steal();  // must steal here
-    if(t) {
-      if(_num_thieves.fetch_sub(1) == 1) {
-        _notifier.notify(false);
-      }
-      return true;
-    }
-    else {
-      worker._vtm = worker._id;
-      goto explore_task;
-    }
-  }
-
-  if(_done) {
-    _notifier.cancel_wait(worker._waiter);
-    _notifier.notify(true);
-    --_num_thieves;
-    return false;
-  }
-
-  if(_num_thieves.fetch_sub(1) == 1) {
-    if(_num_actives) {
-      _notifier.cancel_wait(worker._waiter);
-      goto wait_for_task;
-    }
-    // check all queues again
-    for(auto& w : _workers) {
-      if(!w._wsq.empty()) {
-        worker._vtm = w._id;
-        _notifier.cancel_wait(worker._waiter);
-        goto wait_for_task;
-      }
-    }
-  }*/
-
   // Now I really need to relinguish my self to others
   _notifier.commit_wait(worker._waiter);
 
@@ -1370,7 +1523,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
   // no need to do other things if the topology is cancelled
   if(node->_is_cancelled()) {
-    _cancel_invoke(worker, node);
+    _tear_down_invoke(worker, node);
     return;
   }
 
@@ -1428,18 +1581,14 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     }
     break;
 
-    // silent async task
-    case Node::SILENT_ASYNC: {
-      _invoke_silent_async_task(worker, node);
-      _tear_down_async(node);
-      return ;
-    }
-    break;
-
-    // silent dependent async task
+    // dependent async task
     case Node::DEPENDENT_ASYNC: {
       _invoke_dependent_async_task(worker, node);
       _tear_down_dependent_async(worker, node);
+      if(worker._cache) {
+        node = worker._cache;
+        goto begin_invoke;
+      }
       return;
     }
     break;
@@ -1472,7 +1621,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
                               node->_topology->_join_counter;
 
   // Here, we want to cache the latest successor with the highest priority
-  Node* cache {nullptr};
+  worker._cache = nullptr;
   auto max_p = static_cast<unsigned>(TaskPriority::MAX);
 
   // Invoke the task based on the corresponding type
@@ -1488,10 +1637,10 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
           s->_join_counter.store(0, std::memory_order_relaxed);
           j.fetch_add(1, std::memory_order_relaxed);
           if(s->_priority <= max_p) {
-            if(cache) {
-              _schedule(worker, cache);
+            if(worker._cache) {
+              _schedule(worker, worker._cache);
             }
-            cache = s;
+            worker._cache = s;
             max_p = s->_priority;
           }
           else {
@@ -1510,10 +1659,10 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
           s->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
           j.fetch_add(1, std::memory_order_relaxed);
           if(s->_priority <= max_p) {
-            if(cache) {
-              _schedule(worker, cache);
+            if(worker._cache) {
+              _schedule(worker, worker._cache);
             }
-            cache = s;
+            worker._cache = s;
             max_p = s->_priority;
           }
           else {
@@ -1530,24 +1679,11 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
   // perform tail recursion elimination for the right-most child to reduce
   // the number of expensive pop/push operations through the task queue
-  if(cache) {
-    node = cache;
+  if(worker._cache) {
+    node = worker._cache;
     //node->_state.fetch_or(Node::READY, std::memory_order_release);
     goto begin_invoke;
   }
-}
-
-// Procedure: _tear_down_async
-inline void Executor::_tear_down_async(Node* node) {
-  // from runtime
-  if(node->_parent) {
-    node->_parent->_join_counter.fetch_sub(1, std::memory_order_release);
-  }
-  // from executor
-  else {
-    _decrement_topology_and_notify();
-  }
-  node_pool.recycle(node);
 }
 
 // Proecdure: _tear_down_invoke
@@ -1562,29 +1698,6 @@ inline void Executor::_tear_down_invoke(Worker& worker, Node* node) {
   // joined subflow
   else {  
     node->_parent->_join_counter.fetch_sub(1, std::memory_order_release);
-  }
-}
-
-// Procedure: _cancel_invoke
-inline void Executor::_cancel_invoke(Worker& worker, Node* node) {
-
-  switch(node->_handle.index()) {
-    // async task needs to carry out the promise
-    case Node::ASYNC:
-      std::get_if<Node::Async>(&(node->_handle))->work(true);
-      _tear_down_async(node);
-    break;
-
-    // silent async doesn't need to carry out the promise
-    case Node::SILENT_ASYNC:
-      _tear_down_async(node);
-    break;
-
-    // tear down topology if the node is the last leaf
-    default: {
-      _tear_down_invoke(worker, node);
-    }
-    break;
   }
 }
 
@@ -1747,14 +1860,7 @@ inline void Executor::_invoke_module_task(Worker& w, Node* node) {
 // Procedure: _invoke_async_task
 inline void Executor::_invoke_async_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
-  std::get_if<Node::Async>(&node->_handle)->work(false);
-  _observer_epilogue(w, node);
-}
-
-// Procedure: _invoke_silent_async_task
-inline void Executor::_invoke_silent_async_task(Worker& w, Node* node) {
-  _observer_prologue(w, node);
-  std::get_if<Node::SilentAsync>(&node->_handle)->work();
+  std::get_if<Node::Async>(&node->_handle)->work();
   _observer_epilogue(w, node);
 }
 
@@ -2118,15 +2224,13 @@ void Runtime::corun_until(P&& predicate) {
 
 // Function: _silent_async
 template <typename F>
-void Runtime::_silent_async(
-  Worker& w, const std::string& name, F&& f
-) {
+void Runtime::_silent_async(Worker& w, const std::string& name, F&& f) {
 
   _parent->_join_counter.fetch_add(1, std::memory_order_relaxed);
 
   auto node = node_pool.animate(
     name, 0, _parent->_topology, _parent, 0,
-    std::in_place_type_t<Node::SilentAsync>{}, std::forward<F>(f)
+    std::in_place_type_t<Node::Async>{}, std::forward<F>(f)
   );
 
   _executor._schedule(w, node);
@@ -2156,31 +2260,23 @@ auto Runtime::_async(Worker& w, const std::string& name, F&& f) {
 
   _parent->_join_counter.fetch_add(1, std::memory_order_relaxed);
 
-  using T = std::invoke_result_t<std::decay_t<F>>;
-  using R = std::conditional_t<std::is_same_v<T, void>, void, std::optional<T>>;
+  using R = std::invoke_result_t<std::decay_t<F>>;
 
   std::promise<R> p;
-
-  auto tpg = std::make_shared<AsyncTopology>();
-
-  Future<R> fu(p.get_future(), tpg);
+  auto fu{p.get_future()};
 
   auto node = node_pool.animate(
     name, 0, _parent->_topology, _parent, 0,
     std::in_place_type_t<Node::Async>{},
-    [p=make_moc(std::move(p)), f=std::forward<F>(f)]
-    (bool cancel) mutable {
+    [p=make_moc(std::move(p)), f=std::forward<F>(f)] () mutable {
       if constexpr(std::is_same_v<R, void>) {
-        if(!cancel) {
-          f();
-        }
+        f();
         p.object.set_value();
       }
       else {
-        p.object.set_value(cancel ? std::nullopt : std::make_optional(f()));
+        p.object.set_value(f());
       }
-    },
-    std::move(tpg)
+    }
   );
 
   _executor._schedule(w, node);

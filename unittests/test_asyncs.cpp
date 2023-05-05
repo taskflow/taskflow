@@ -11,7 +11,7 @@ void async(unsigned W) {
 
   tf::Executor executor(W);
 
-  std::vector<tf::Future<std::optional<int>>> fus;
+  std::vector<std::future<int>> fus;
 
   std::atomic<int> counter(0);
 
@@ -30,7 +30,7 @@ void async(unsigned W) {
 
   int c = 0;
   for(auto& fu : fus) {
-    c += fu.get().value();
+    c += fu.get();
   }
 
   REQUIRE(-c == 2*N);
@@ -64,7 +64,7 @@ void nested_async(unsigned W) {
 
   tf::Executor executor(W);
 
-  std::vector<tf::Future<std::optional<int>>> fus;
+  std::vector<std::future<int>> fus;
 
   std::atomic<int> counter(0);
 
@@ -92,7 +92,7 @@ void nested_async(unsigned W) {
 
   int c = 0;
   for(auto& fu : fus) {
-    c += fu.get().value();
+    c += fu.get();
   }
 
   REQUIRE(-c == 2*N);

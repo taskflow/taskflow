@@ -571,18 +571,7 @@ class Node {
   struct Async {
 
     template <typename T>
-    Async(T&&, std::shared_ptr<AsyncTopology>);
-
-    std::function<void(bool)> work;
-
-    std::shared_ptr<AsyncTopology> topology;
-  };
-
-  // Silent async work
-  struct SilentAsync {
-
-    template <typename C>
-    SilentAsync(C&&);
+    Async(T&&);
 
     std::function<void()> work;
   };
@@ -599,14 +588,13 @@ class Node {
   };
 
   using handle_t = std::variant<
-    Placeholder,            // placeholder
-    Static,                 // static tasking
-    Dynamic,                // dynamic tasking
-    Condition,              // conditional tasking
-    MultiCondition,         // multi-conditional tasking
-    Module,                 // composable tasking
-    Async,                  // async tasking
-    SilentAsync,            // async tasking (no future)
+    Placeholder,      // placeholder
+    Static,           // static tasking
+    Dynamic,          // dynamic tasking
+    Condition,        // conditional tasking
+    MultiCondition,   // multi-conditional tasking
+    Module,           // composable tasking
+    Async,            // async tasking
     DependentAsync    // dependent async tasking (no future)
   >;
 
@@ -625,7 +613,6 @@ class Node {
   constexpr static auto MULTI_CONDITION = get_index_v<MultiCondition, handle_t>;
   constexpr static auto MODULE          = get_index_v<Module, handle_t>;
   constexpr static auto ASYNC           = get_index_v<Async, handle_t>;
-  constexpr static auto SILENT_ASYNC    = get_index_v<SilentAsync, handle_t>;
   constexpr static auto DEPENDENT_ASYNC = get_index_v<DependentAsync, handle_t>;
 
   Node() = default;
@@ -733,19 +720,7 @@ inline Node::Module::Module(T& obj) : graph{ obj.graph() } {
 
 // Constructor
 template <typename C>
-Node::Async::Async(C&& c, std::shared_ptr<AsyncTopology>tpg) :
-  work     {std::forward<C>(c)},
-  topology {std::move(tpg)} {
-}
-
-// ----------------------------------------------------------------------------
-// Definition for Node::SilentAsync
-// ----------------------------------------------------------------------------
-
-// Constructor
-template <typename C>
-Node::SilentAsync::SilentAsync(C&& c) :
-  work {std::forward<C>(c)} {
+Node::Async::Async(C&& c) : work {std::forward<C>(c)} {
 }
 
 // ----------------------------------------------------------------------------
@@ -754,8 +729,7 @@ Node::SilentAsync::SilentAsync(C&& c) :
 
 // Constructor
 template <typename C>
-Node::DependentAsync::DependentAsync(C&& c) :
-  work {std::forward<C>(c)} {
+Node::DependentAsync::DependentAsync(C&& c) : work {std::forward<C>(c)} {
 }
 
 // ----------------------------------------------------------------------------
@@ -876,13 +850,6 @@ inline bool Node::_is_conditioner() const {
 
 // Function: _is_cancelled
 inline bool Node::_is_cancelled() const {
-  if(_handle.index() == Node::ASYNC) {
-    auto h = std::get_if<Node::Async>(&_handle);
-    if(h->topology && h->topology->_is_cancelled.load(std::memory_order_relaxed)) {
-      return true;
-    }
-    // async tasks spawned from subflow does not have topology
-  }
   return _topology && _topology->_is_cancelled.load(std::memory_order_relaxed);
 }
 

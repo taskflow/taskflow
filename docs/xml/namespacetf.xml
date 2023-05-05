@@ -2,6 +2,7 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="namespacetf" kind="namespace" language="C++">
     <compoundname>tf</compoundname>
+    <innerclass refid="classtf_1_1AsyncTask" prot="public">tf::AsyncTask</innerclass>
     <innerclass refid="classtf_1_1ChromeObserver" prot="public">tf::ChromeObserver</innerclass>
     <innerclass refid="classtf_1_1CriticalSection" prot="public">tf::CriticalSection</innerclass>
     <innerclass refid="classtf_1_1cudaDeviceAllocator" prot="public">tf::cudaDeviceAllocator</innerclass>
@@ -45,6 +46,7 @@
     <innerclass refid="classtf_1_1GuidedPartitioner" prot="public">tf::GuidedPartitioner</innerclass>
     <innerclass refid="structtf_1_1IsPod" prot="private">tf::IsPod</innerclass>
     <innerclass refid="classtf_1_1Node" prot="private">tf::Node</innerclass>
+    <innerclass refid="structtf_1_1NodeDeleter" prot="private">tf::NodeDeleter</innerclass>
     <innerclass refid="classtf_1_1ObserverInterface" prot="public">tf::ObserverInterface</innerclass>
     <innerclass refid="classtf_1_1PartitionerBase" prot="public">tf::PartitionerBase</innerclass>
     <innerclass refid="classtf_1_1Pipe" prot="public">tf::Pipe</innerclass>
@@ -365,7 +367,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="643" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="643" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="670" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="670" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a872cf263ab68abc7c3180710fb792528" prot="private" static="no" mutable="no">
         <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 6 &gt;</type>
@@ -571,7 +573,7 @@
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="249" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="249" bodyend="255"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="250" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="250" bodyend="256"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
@@ -683,7 +685,7 @@
 <para>callable type</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-<ref refid="namespacetf_1a8975fa5762088789adb0b60f38208309" kindref="member">tf::make_data_pipe</ref> is a helper function to create a data pipe (<ref refid="classtf_1_1DataPipe" kindref="compound">tf::DataPipe</ref>) in a data-parallel pipeline (<ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref>). The first argument specifies the direction of the data pipe, either <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref> or tf::PipeType::PARALLE, and the second argument is a callable to invoke by the pipeline scheduler. Input and output data types are specified via template parameters, which will always be decayed by the library to its original form for storage purpose. The callable must take the input data type in its first argument and returns a value of the output data type.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::make_data_pipe&lt;int,<sp/>std::string&gt;(</highlight></codeline>
+<ref refid="namespacetf_1a8975fa5762088789adb0b60f38208309" kindref="member">tf::make_data_pipe</ref> is a helper function to create a data pipe (<ref refid="classtf_1_1DataPipe" kindref="compound">tf::DataPipe</ref>) in a data-parallel pipeline (<ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref>). The first argument specifies the direction of the data pipe, either <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref> or <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::PARALLEL</ref>, and the second argument is a callable to invoke by the pipeline scheduler. Input and output data types are specified via template parameters, which will always be decayed by the library to its original form for storage purpose. The callable must take the input data type in its first argument and returns a value of the output data type.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::make_data_pipe&lt;int,<sp/>std::string&gt;(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>input)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kindref="member">std::to_string</ref>(input<sp/>+<sp/>100);</highlight></codeline>
@@ -3769,7 +3771,7 @@ The function launches kernels asynchronously to find the index <computeroutput>i
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="181" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="181" bodyend="185"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="182" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="182" bodyend="186"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a572c13198191c46765264f8afabe2e9f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3892,7 +3894,7 @@ The function launches kernels asynchronously to find the smallest element in the
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="233" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="233" bodyend="237"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="234" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="234" bodyend="238"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a3fc577fd0a8f127770bcf68bc56c073e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -4015,7 +4017,7 @@ The function launches kernels asynchronously to find the largest element in the 
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="285" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="285" bodyend="289"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="286" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="286" bodyend="290"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a30fa078dcf625e9eada5a95af1467588" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>constexpr const char *</type>

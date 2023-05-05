@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cookbook &raquo; Asynchronous Tasking with Dependencies | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="Cookbook.html">Cookbook</a> &raquo;</span>
+          Asynchronous Tasking with Dependencies
+        </h1>
+        <nav class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li><a href="#CreateATaskGraphDynamically">Create a Task Graph Dynamically</a></li>
+          </ul>
+        </nav>
+<p>This chapters discusses how to create a task graph dynamically using asynchronous tasks, which is extremely beneficial for workloads that want to (1) explore task graph parallelism out of dynamic control flow or (2) overlap task graph creation time with individual task execution time. We recommend that you first read <a href="AsyncTasking.html" class="m-doc">Asynchronous Tasking</a> before this chapter.</p><section id="CreateATaskGraphDynamically"><h2><a href="#CreateATaskGraphDynamically">Create a Task Graph Dynamically</a></h2><p>When the construct-and-run model of a task graph is not possible in your application, you can leverage <a href="classtf_1_1Executor.html#aee02b63d3a91ad5ca5a1c0e71f3e128f" class="m-doc">tf::<wbr />Executor::<wbr />dependent_async</a> and <a href="classtf_1_1Executor.html#a0e2d792f28136b8227b413d0c27d5c7f" class="m-doc">tf::<wbr />Executor::<wbr />silent_dependent_async</a> to create a task graph dynamically. This type of parallelism is also known as <em>on-the-fly task graph parallelism</em>, which offers great flexibility for expressing task parallelism under complex control flow. The example below dynamically creates a task graph of four dependent tasks, <code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code>, where <code>A</code> runs before <code>B</code> and <code>C</code> and <code>D</code> runs after <code>B</code> and <code>C:</code></p><div class="m-graph"><svg style="width: 15.125rem; height: 6.250rem;" viewBox="0.00 0.00 242.00 99.77">
+<g transform="scale(1 1) rotate(0) translate(4 95.7696)">
+<title>G</title>
+<g class="m-node m-flat">
+<title>A</title>
+<ellipse cx="27" cy="-45.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="27" y="-41.5848">A</text>
+</g>
+<g class="m-node m-flat">
+<title>B</title>
+<ellipse cx="117" cy="-73.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="117" y="-69.5848">B</text>
+</g>
+<g class="m-edge">
+<title>A&#45;&gt;B</title>
+<path d="M51.5929,-53.0359C61.2164,-56.0299 72.4198,-59.5154 82.8067,-62.7468"/>
+<polygon points="81.8485,-66.1142 92.4368,-65.7429 83.928,-59.4302 81.8485,-66.1142"/>
+</g>
+<g class="m-node m-flat">
+<title>C</title>
+<ellipse cx="117" cy="-18.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="117" y="-14.5848">C</text>
+</g>
+<g class="m-edge">
+<title>A&#45;&gt;C</title>
+<path d="M52.07,-37.8638C61.4322,-35.0551 72.2367,-31.8138 82.3123,-28.7911"/>
+<polygon points="83.4919,-32.0914 92.0644,-25.8654 81.4804,-25.3866 83.4919,-32.0914"/>
+</g>
+<g class="m-node m-flat">
+<title>D</title>
+<ellipse cx="207" cy="-45.3848" rx="27" ry="18.2703"/>
+<text text-anchor="middle" x="207" y="-41.5848">D</text>
+</g>
+<g class="m-edge">
+<title>B&#45;&gt;D</title>
+<path d="M141.5929,-65.7337C151.2164,-62.7397 162.4198,-59.2542 172.8067,-56.0227"/>
+<polygon points="173.928,-59.3394 182.4368,-53.0266 171.8485,-52.6554 173.928,-59.3394"/>
+</g>
+<g class="m-edge">
+<title>C&#45;&gt;D</title>
+<path d="M142.07,-25.9058C151.4322,-28.7144 162.2367,-31.9558 172.3123,-34.9785"/>
+<polygon points="171.4804,-38.3829 182.0644,-37.9041 173.4919,-31.6782 171.4804,-38.3829"/>
+</g>
+</g>
+</svg>
+</div><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;A</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">A</span><span class="p">);</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;C</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">A</span><span class="p">);</span><span class="w"></span>
+<span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">D</span><span class="p">,</span><span class="w"> </span><span class="n">fuD</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;D</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">);</span><span class="w"></span>
+<span class="n">D</span><span class="p">.</span><span class="n">get</span><span class="p">();</span><span class="w">  </span><span class="c1">// wait for D to finish, which in turns means A, B, C finish</span></pre><p>Calling both <a href="classtf_1_1Executor.html#aee02b63d3a91ad5ca5a1c0e71f3e128f" class="m-doc">tf::<wbr />Executor::<wbr />dependent_async</a> and <a href="classtf_1_1Executor.html#a0e2d792f28136b8227b413d0c27d5c7f" class="m-doc">tf::<wbr />Executor::<wbr />silent_dependent_async</a> creates a task of type <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> to run the given function asynchronously, while the former returns an additional <a href="https://en.cppreference.com/w/cpp/thread/future">std::<wbr />future</a> that eventually holds the result of the execution. When returning from the call, the executor has scheduled a worker to run the created task whenever its dependencies are met. That is, task execution happens <em>simultaneously</em> with the creation of its task graph, which is different from constructing a Taskflow and running it from an executor. Since this model only allows relating a dependency from the current task to a previously created task, you need a correct topological order of graph expression. For example, the code below shows another feasible order where <code>C</code> is created before <code>B:</code></p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;A</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;C</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">A</span><span class="p">);</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">A</span><span class="p">);</span><span class="w"></span>
+<span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">D</span><span class="p">,</span><span class="w"> </span><span class="n">fuD</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;D</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">);</span><span class="w"></span>
+<span class="n">D</span><span class="p">.</span><span class="n">get</span><span class="p">();</span><span class="w">  </span><span class="c1">// wait for D to finish, which in turns means A, B, C finish</span></pre><p>In our task graph, there are only two possible topological orderings, <code>ABCD</code> or <code>ACBD</code>.</p></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

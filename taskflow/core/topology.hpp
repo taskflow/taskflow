@@ -20,12 +20,6 @@ class TopologyBase {
 
 // ----------------------------------------------------------------------------
 
-// class: AsyncTopology
-class AsyncTopology : public TopologyBase {
-};
-
-// ----------------------------------------------------------------------------
-
 // class: Topology
 class Topology : public TopologyBase {
 

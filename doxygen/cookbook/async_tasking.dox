@@ -12,28 +12,21 @@ so that you can incorporate independent, dynamic parallelism in your taskflows.
 %Taskflow executor provides a STL-styled method, 
 tf::Executor::async,
 for you to run a callable object asynchronously.
-The method returns a tf::Future object derived from @std_future 
-that will eventually hold the result
+The method returns a @std_future that will eventually hold the result
 of that function call.
-The result may be optional due to tf::Future::cancel
-(see @ref RequestCancellation for details).
 
 @code{.cpp}
-tf::Future<std::optional<int>> future = executor.async([](){ return 1; });
-executor.wait_for_all();
-assert(*future.get() == 1);
-
-tf::Future<void> future_of_void_return = executor.async([](){});
-future_of_void_return.get();
+std::future<int> future = executor.async([](){ return 1; });
+assert(future.get() == 1);
 @endcode
 
 @note
 Unlike std::async, the future object returned from tf::Executor::async does not block on destruction
 until completing the function.
 
-If you do not need the return value or the future,
-you can use tf::Executor::silent_async which has less overhead for creating
-an asynchronous task compared to tf::Executor::async.
+If you do not need the return value or use a future to synchronize the execution,
+you are encouraged to use tf::Executor::silent_async which returns nothing and thus
+has less overhead (i.e., no shared state management) compared to tf::Executor::async.
 
 @code{.cpp}
 executor.silent_async([](){
@@ -42,10 +35,11 @@ executor.silent_async([](){
 @endcode
 
 Launching asynchronous tasks from an executor is 
-@em thread-safe and can be called by multiple worker threads.
+@em thread-safe and can be called by multiple threads both inside (i.e., worker) 
+and outside the executor.
 Our scheduler autonomously detects whether an asynchronous task is submitted 
 from an external thread or a worker thread and schedules its execution
-in an efficient work-stealing loop.
+using work stealing.
 
 @code{.cpp}
 tf::Task my_task = taskflow.emplace([&](){
@@ -61,15 +55,18 @@ executor.wait_for_all();   // wait for all tasks to finish
 
 @note
 Asynchronous tasks created from an executor does not belong to any taskflows.
+The lifetime of an asynchronous task is managed automatically by the
+executor that creates the task.
 
-You can name an asynchronous task to facilitate profiling by
-using the overloads, tf::Executor::async(const std::string& name, F&& f) 
-and tf::Executor::silent_async(const std::string& name, F&& f),
-that take an additional argument of a string.
+You can name an asynchronous task using the overloads, 
+tf::Executor::async(const std::string& name, F&& f) and
+tf::Executor::silent_async(const std::string& name, F&& f),
+that take a string in the first argument.
+Assigned names will appear in the observers of the executor.
 
 @code{.cpp}
-tf::Future<void> future = executor.async("name of the task", [](){});
-executor.silent_async("name of another task", [](){});
+std::future<void> fu = executor.async("async task", [](){});
+executor.silent_async("sileng async task", [](){});
 @endcode
 
 @section LaunchAsynchronousTasksFromAnSubflow Launch Asynchronous Tasks from a Subflow
@@ -89,7 +86,7 @@ tf::Executor executor;
 std::atomic<int> counter{0};
 
 taskflow.emplace([&] (tf::Subflow& sf){
-  std::vector<tf::Future<void>> futures;
+  std::vector<std::future<void>> futures;
   for(int i=0; i<100; i++) {
     futures.emplace_back(sf.async([&](){ ++counter; }));
   }
@@ -100,9 +97,9 @@ taskflow.emplace([&] (tf::Subflow& sf){
 executor.run(taskflow).wait();
 @endcode
 
-If you do not need the return value or the future, 
+If you do not need the return value or the future to synchronize the execution, 
 you can use tf::Subflow::silent_async which has less overhead 
-of creating an asynchronous task compared to tf::Subflow::async.
+when creating an asynchronous task compared to tf::Subflow::async.
 
 @code{.cpp}
 tf::Taskflow taskflow;
@@ -133,7 +130,7 @@ Both methods take an additional argument of a string.
 
 @code{.cpp}
 taskflow.emplace([](tf::Subflow& sf){
-  tf::Future<void> future = sf.async("name of the task", [](){});
+  std::future<void> future = sf.async("name of the task", [](){});
   sf.silent_async("another name of the task", [](){});
   sf.join();
 });

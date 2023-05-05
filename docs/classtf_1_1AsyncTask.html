@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>taskflow/core/task.hpp file | Taskflow QuickStart</title>
+  <title>tf::AsyncTask class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
@@ -46,43 +46,58 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          <span class="m-breadcrumb"><a href="dir_88dad41ea55ca2177e141d32a93e931c.html">taskflow</a>/</span><span class="m-breadcrumb"><a href="dir_220cd4d9b8cb38c840b455d5d75c25bb.html">core</a>/</span>task.hpp <span class="m-thin">file</span>
+          <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>AsyncTask <span class="m-thin">class</span>
         </h1>
-        <p>task include file</p>
+        <p>class to create a dependent asynchronous task</p>
         <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
               Reference
               <ul>
-                <li><a href="#namespaces">Namespaces</a></li>
-                <li><a href="#nested-classes">Classes</a></li>
+                <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
+                <li><a href="#pub-methods">Public functions</a></li>
               </ul>
             </li>
           </ul>
         </nav>
-        <section id="namespaces">
-          <h2><a href="#namespaces">Namespaces</a></h2>
+<p>An async-task is a lightweight handle that leverages <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a> to retain shared ownership of a dependent asynchronous task created by an executor (e.g., <a href="classtf_1_1Executor.html#aee02b63d3a91ad5ca5a1c0e71f3e128f" class="m-doc">tf::<wbr />Executor::<wbr />dependent_async</a>). The purpose of shared ownership is to avoid potential ABA problem when creating asynchronous tasks with dependents that already vanished.</p>
+        <section id="typeless-methods">
+          <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
-            <dt>namespace <a href="namespacetf.html" class="m-doc">tf</a></dt>
-            <dd>taskflow namespace</dd>
+            <dt id="a68689c79c7d794a8be2e1c181c818001">
+              <span class="m-doc-wrap-bumper"><a href="#a68689c79c7d794a8be2e1c181c818001" class="m-doc-self">AsyncTask</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
+            </dt>
+            <dd>constructs an empty async-task handle</dd>
+            <dt id="af7d74066d5df4107c585a0a64451a34c">
+              <span class="m-doc-wrap-bumper"><a href="#af7d74066d5df4107c585a0a64451a34c" class="m-doc-self">~AsyncTask</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
+            </dt>
+            <dd>destroys the managed asynchronous task if this is the last owner</dd>
+            <dt id="a52e155d7ea91649028bb28dc56351ee3">
+              <span class="m-doc-wrap-bumper"><a href="#a52e155d7ea91649028bb28dc56351ee3" class="m-doc-self">AsyncTask</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; rhs) <span class="m-label m-flat m-info">defaulted</span></span>
+            </dt>
+            <dd>constructs an async-task that shares ownership of <code>rhs</code></dd>
+            <dt id="a48138b02dd808a8cfa1c9ef194a57b88">
+              <span class="m-doc-wrap-bumper"><a href="#a48138b02dd808a8cfa1c9ef194a57b88" class="m-doc-self">AsyncTask</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp;&amp; rhs) <span class="m-label m-flat m-info">defaulted</span></span>
+            </dt>
+            <dd>move-constructs an async-task from <code>rhs</code></dd>
           </dl>
         </section>
-        <section id="nested-classes">
-          <h2><a href="#nested-classes">Classes</a></h2>
+        <section id="pub-methods">
+          <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt>
-              class <a href="classtf_1_1Task.html" class="m-doc">tf::Task</a>
+            <dt id="a435361b705546188d4dedcaf607bacd5">
+              <span class="m-doc-wrap-bumper">auto <a href="#a435361b705546188d4dedcaf607bacd5" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; rhs) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
-            <dd>class to create a task handle over a node in a taskflow graph</dd>
-            <dt>
-              class <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::AsyncTask</a>
+            <dd>shares ownership of the async-task managed by <code>rhs</code></dd>
+            <dt id="a72b76bc1d2eb5ff70788706d2b4e8160">
+              <span class="m-doc-wrap-bumper">auto <a href="#a72b76bc1d2eb5ff70788706d2b4e8160" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp;&amp; rhs) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
-            <dd>class to create a dependent asynchronous task</dd>
-            <dt>
-              class <a href="classtf_1_1TaskView.html" class="m-doc">tf::TaskView</a>
+            <dd>move-assigns the async-task from <code>rhs</code></dd>
+            <dt id="ae42c70dc0c5edc6d58f47b346125fca3">
+              <span class="m-doc-wrap-bumper">auto <a href="#ae42c70dc0c5edc6d58f47b346125fca3" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
             </dt>
-            <dd>class to access task information from the observer interface</dd>
+            <dd>checks if the async-task stores a non-null shared pointer</dd>
           </dl>
         </section>
       </div>

@@ -57,7 +57,7 @@ namespace detail { }
 Release notes are available here: https://taskflow.github.io/taskflow/Releases.html
 */
 constexpr const char* version() {
-  return "3.5.0";
+  return "3.6.0";
 }
 
 

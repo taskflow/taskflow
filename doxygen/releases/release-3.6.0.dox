@@ -36,7 +36,12 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
 
 @subsection release-3-6-0_taskflow_core Taskflow Core
 
-+ Added new methods to tf::Runtime
++ Added new async methods to tf::Executor that support dynamic task graph creation
+  + tf::Executor::dependent_async(F&& func, Tasks&&... tasks)
+  + tf::Executor::dependent_async(F&& func, I first, I last)
+  + tf::Executor::silent_dependent_async(F&& func, Tasks&&... tasks)
+  + tf::Executor::silent_dependent_async(F&& func, I first, I last)
++ Added new async and join methods to tf::Runtime
   + tf::Runtime::async
   + tf::Runtime::silent_async
   + tf::Runtime::join
@@ -90,6 +95,23 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
 If you encounter any potential bugs, please submit an issue at @IssueTracker.
 
 @section release-3-6-0_breaking_changes Breaking Changes
+
++ Dropped support for cancelling asynchronous tasks
+
+@code{.cpp}
+// previous - no longer supported
+tf::Future<int> fu = executor.async([](){
+  return 1;
+});
+fu.cancel();
+std::optional<int> res = fu.get();  // res may be std::nullopt or 1
+
+// now - use std::future instead
+std::future<int> fu = executor.async([](){
+  return 1;
+});
+int res = fu.get();
+@endcode
 
 + Dropped in-place support for running tf::cudaFlow from a dedicated task
 
@@ -177,6 +199,7 @@ executor.async("name", [](){});
 
 @section release-3-6-0_documentation Documentation
 
++ Revised @ref RequestCancellation to remove support of cancelling async tasks
 + Revised @ref AsyncTasking to include asynchronous tasking from tf::Runtime
   + @ref LaunchAsynchronousTasksFromARuntime
 + Revised %Taskflow algorithms to include execution policy
@@ -191,6 +214,7 @@ executor.async("name", [](){});
   + @ref CUDASTDScan
 + Added @ref TaskParallelPipelineWithTokenDependencies
 + Added @ref ParallelScan
++ Added @ref DependentAsyncTasking
 
 @section release-3-6-0_miscellaneous_items Miscellaneous Items
 

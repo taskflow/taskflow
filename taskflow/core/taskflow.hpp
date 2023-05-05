@@ -537,7 +537,7 @@ class Future : public std::future<T>  {
   friend class Runtime;
 
   using handle_t = std::variant<
-    std::monostate, std::weak_ptr<Topology>, std::weak_ptr<AsyncTopology>
+    std::monostate, std::weak_ptr<Topology>
   >;
 
   public:

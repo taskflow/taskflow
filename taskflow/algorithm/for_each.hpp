@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../core/executor.hpp"
 #include "launch.hpp"
 
 namespace tf {

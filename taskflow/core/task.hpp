@@ -517,7 +517,7 @@ inline TaskType Task::type() const {
     case Node::MULTI_CONDITION: return TaskType::CONDITION;
     case Node::MODULE:          return TaskType::MODULE;
     case Node::ASYNC:           return TaskType::ASYNC;
-    case Node::SILENT_ASYNC:    return TaskType::ASYNC;
+    case Node::DEPENDENT_ASYNC: return TaskType::ASYNC;
     default:                    return TaskType::UNDEFINED;
   }
 }
@@ -611,6 +611,15 @@ inline std::ostream& operator << (std::ostream& os, const Task& task) {
 // AsyncTask
 // ----------------------------------------------------------------------------
 
+/**
+@brief class to create a dependent asynchronous task
+
+An async-task is a lightweight handle that leverages std::shared_ptr to retain
+shared ownership of a dependent asynchronous task created by an executor 
+(e.g., tf::Executor::dependent_async).
+The purpose of shared ownership is to avoid potential ABA problem when
+creating asynchronous tasks with dependents that already vanished.
+*/
 class AsyncTask {
   
   friend class FlowBuilder;
@@ -620,17 +629,40 @@ class AsyncTask {
   friend class Executor;
   
   public:
-
+    
+    /**
+    @brief constructs an empty async-task handle
+    */
     AsyncTask() = default;
-
+    
+    /**
+    @brief destroys the managed asynchronous task if this is the last owner
+    */
     ~AsyncTask() = default;
+    
+    /**
+    @brief constructs an async-task that shares ownership of @c rhs
+    */
+    AsyncTask(const AsyncTask& rhs) = default;
 
-    AsyncTask(const AsyncTask&) = default;
-    AsyncTask(AsyncTask&&) = default;
+    /**
+    @brief move-constructs an async-task from @c rhs
+    */
+    AsyncTask(AsyncTask&& rhs) = default;
+    
+    /**
+    @brief shares ownership of the async-task managed by @c rhs
+    */
+    AsyncTask& operator = (const AsyncTask& rhs) = default;
 
-    AsyncTask& operator = (const AsyncTask&) = default;
-    AsyncTask& operator = (AsyncTask&&) = default;
-
+    /**
+    @brief move-assigns the async-task from @c rhs
+    */
+    AsyncTask& operator = (AsyncTask&& rhs) = default;
+    
+    /**
+    @brief checks if the async-task stores a non-null shared pointer
+    */
     bool empty() const;
 
   private:
@@ -758,7 +790,7 @@ inline TaskType TaskView::type() const {
     case Node::MULTI_CONDITION: return TaskType::CONDITION;
     case Node::MODULE:          return TaskType::MODULE;
     case Node::ASYNC:           return TaskType::ASYNC;
-    case Node::SILENT_ASYNC:    return TaskType::ASYNC;
+    case Node::DEPENDENT_ASYNC: return TaskType::ASYNC;
     default:                    return TaskType::UNDEFINED;
   }
 }

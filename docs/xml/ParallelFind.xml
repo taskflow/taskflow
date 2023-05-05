@@ -92,7 +92,7 @@
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">assert(*result<sp/>==<sp/>2);</highlight></codeline>
-</programlisting></para><para><simplesect kind="note"><para>When using <ref refid="classtf_1_1FlowBuilder_1af0415d1fa5f36fee2405b0fcbf592fe0" kindref="member">tf::Taskflow::max_element</ref> to find the large element, we will still need to use <ref refid="cpp/utility/functional/less" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less</ref> as our comparison function. Details can be referred to std::max_element.</para></simplesect>
+</programlisting></para><para><simplesect kind="note"><para>When using <ref refid="classtf_1_1FlowBuilder_1af0415d1fa5f36fee2405b0fcbf592fe0" kindref="member">tf::Taskflow::max_element</ref> to find the large element, we will still need to use <ref refid="cpp/utility/functional/less" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less</ref> as our comparison function. Details can be referred to <ulink url="https://en.cppreference.com/w/cpp/algorithm/max_element">std::max_element</ulink>.</para></simplesect>
 </para></sect1>
 <sect1 id="ParallelFind_1ParallelFindConfigureAPartitioner">
 <title>Configure a Partitioner</title>

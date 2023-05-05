@@ -3,9 +3,9 @@
   <compounddef id="structtf_1_1Node_1_1Async" kind="struct" language="C++" prot="private">
     <compoundname>tf::Node::Async</compoundname>
       <sectiondef kind="public-attrib">
-      <memberdef kind="variable" id="structtf_1_1Node_1_1Async_1a30f60a220f185b716b8794b09b3774cb" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/utility/functional/function" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(bool)&gt;</type>
-        <definition>std::function&lt;void(bool)&gt; tf::Node::Async::work</definition>
+      <memberdef kind="variable" id="structtf_1_1Node_1_1Async_1a43c08eb7c9072dbfee5a97945311425a" prot="public" static="no" mutable="no">
+        <type><ref refid="cpp/utility/functional/function" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void()&gt;</type>
+        <definition>std::function&lt;void()&gt; tf::Node::Async::work</definition>
         <argsstring></argsstring>
         <name>work</name>
         <briefdescription>
@@ -14,24 +14,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="549" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="549" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="variable" id="structtf_1_1Node_1_1Async_1af77ca9af9f28c7377428f5f91deb2347" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; AsyncTopology &gt;</type>
-        <definition>std::shared_ptr&lt;AsyncTopology&gt; tf::Node::Async::topology</definition>
-        <argsstring></argsstring>
-        <name>topology</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="551" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="551" bodyend="-1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="576" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="576" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
-      <memberdef kind="function" id="structtf_1_1Node_1_1Async_1a4f10710d80c1630961bf796ae9058661" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="structtf_1_1Node_1_1Async_1a368fa43e2d7715828da6f3459b5dbcbf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename T</type>
@@ -39,13 +26,10 @@
         </templateparamlist>
         <type></type>
         <definition>tf::Node::Async::Async</definition>
-        <argsstring>(T &amp;&amp;, std::shared_ptr&lt; AsyncTopology &gt;)</argsstring>
+        <argsstring>(T &amp;&amp;)</argsstring>
         <name>Async</name>
         <param>
           <type>T &amp;&amp;</type>
-        </param>
-        <param>
-          <type><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; AsyncTopology &gt;</type>
         </param>
         <briefdescription>
         </briefdescription>
@@ -53,9 +37,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="547" column="1"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="574" column="1"/>
       </memberdef>
-      <memberdef kind="function" id="structtf_1_1Node_1_1Async_1ad7d3a34562e1bdd0e58fd552a8ffed33" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="structtf_1_1Node_1_1Async_1a6fae56cffa17e20ff0e99eafd4670e07" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename C</type>
@@ -63,15 +47,11 @@
         </templateparamlist>
         <type></type>
         <definition>tf::Node::Async::Async</definition>
-        <argsstring>(C &amp;&amp;c, std::shared_ptr&lt; AsyncTopology &gt;tpg)</argsstring>
+        <argsstring>(C &amp;&amp;c)</argsstring>
         <name>Async</name>
         <param>
           <type>C &amp;&amp;</type>
           <declname>c</declname>
-        </param>
-        <param>
-          <type><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; AsyncTopology &gt;</type>
-          <declname>tpg</declname>
         </param>
         <briefdescription>
         </briefdescription>
@@ -79,7 +59,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="696" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="696" bodyend="699"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="723" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="723" bodyend="724"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -92,23 +72,16 @@
         <childnode refid="7" relation="usage">
           <edgelabel>work</edgelabel>
         </childnode>
-        <childnode refid="8" relation="usage">
-          <edgelabel>topology</edgelabel>
-        </childnode>
       </node>
       <node id="7">
-        <label>std::function&lt; void(bool)&gt;</label>
-      </node>
-      <node id="8">
-        <label>std::shared_ptr&lt; AsyncTopology &gt;</label>
+        <label>std::function&lt; void()&gt;</label>
       </node>
     </collaborationgraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="544" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="544" bodyend="552"/>
+    <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="571" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="571" bodyend="577"/>
     <listofallmembers>
-      <member refid="structtf_1_1Node_1_1Async_1a4f10710d80c1630961bf796ae9058661" prot="public" virt="non-virtual"><scope>tf::Node::Async</scope><name>Async</name></member>
-      <member refid="structtf_1_1Node_1_1Async_1ad7d3a34562e1bdd0e58fd552a8ffed33" prot="public" virt="non-virtual"><scope>tf::Node::Async</scope><name>Async</name></member>
-      <member refid="structtf_1_1Node_1_1Async_1af77ca9af9f28c7377428f5f91deb2347" prot="public" virt="non-virtual"><scope>tf::Node::Async</scope><name>topology</name></member>
-      <member refid="structtf_1_1Node_1_1Async_1a30f60a220f185b716b8794b09b3774cb" prot="public" virt="non-virtual"><scope>tf::Node::Async</scope><name>work</name></member>
+      <member refid="structtf_1_1Node_1_1Async_1a368fa43e2d7715828da6f3459b5dbcbf" prot="public" virt="non-virtual"><scope>tf::Node::Async</scope><name>Async</name></member>
+      <member refid="structtf_1_1Node_1_1Async_1a6fae56cffa17e20ff0e99eafd4670e07" prot="public" virt="non-virtual"><scope>tf::Node::Async</scope><name>Async</name></member>
+      <member refid="structtf_1_1Node_1_1Async_1a43c08eb7c9072dbfee5a97945311425a" prot="public" virt="non-virtual"><scope>tf::Node::Async</scope><name>work</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>
