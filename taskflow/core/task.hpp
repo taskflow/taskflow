@@ -614,11 +614,27 @@ inline std::ostream& operator << (std::ostream& os, const Task& task) {
 /**
 @brief class to create a dependent asynchronous task
 
-An async-task is a lightweight handle that leverages std::shared_ptr to retain
-shared ownership of a dependent asynchronous task created by an executor 
-(e.g., tf::Executor::dependent_async).
-The purpose of shared ownership is to avoid potential ABA problem when
-creating asynchronous tasks with dependents that already vanished.
+A tf::AsyncTask is a lightweight handle that retains @em shared ownership
+of a dependent async task created by an executor.
+This shared ownership ensures that the async task remains alive when
+adding it to the dependency list of another async task, 
+thus avoiding the classical [ABA problem](https://en.wikipedia.org/wiki/ABA_problem).
+
+@code{.cpp}
+// main thread retains shared ownership of async task A
+tf::AsyncTask A = executor.silent_dependent_async([](){});
+
+// task A remains alive (i.e., at least one ref count by the main thread) 
+// when being added to the dependency list of async task B
+tf::AsyncTask B = executor.silent_dependent_async([](){}, A);
+@endcode
+
+Currently, tf::AsyncTask is implemented based on C++ smart pointer std::shared_ptr and 
+is considered cheap to copy or move as long as only a handful of objects
+own it.
+When a worker completes an async task, it will remove the task from the executor,
+decrementing the number of shared owners by one.
+If that counter reaches zero, the task is destroyed.
 */
 class AsyncTask {
   
