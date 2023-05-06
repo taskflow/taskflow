@@ -1,89 +1,200 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="release-3-1-0" kind="page">
     <compoundname>release-3-1-0</compoundname>
     <title>Release 3.1.0 (2021/04/14)</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Download</name>
+        <reference>release-3-1-0_1release-3-1-0_download</reference>
+    </tocsect>
+      <tocsect>
+        <name>System Requirements</name>
+        <reference>release-3-1-0_1release-3-1-0_system_requirements</reference>
+    </tocsect>
+      <tocsect>
+        <name>New Features</name>
+        <reference>release-3-1-0_1release-3-1-0_new_features</reference>
+    <tableofcontents>
+      <tocsect>
+        <name>Taskflow Core</name>
+        <reference>release-3-1-0_1release-3-1-0_taskflow_core</reference>
+    </tocsect>
+      <tocsect>
+        <name>cudaFlow</name>
+        <reference>release-3-1-0_1release-3-1-0_cudaflow</reference>
+    </tocsect>
+      <tocsect>
+        <name>Utilities</name>
+        <reference>release-3-1-0_1release-3-1-0_utilities</reference>
+    </tocsect>
+      <tocsect>
+        <name>Taskflow Profiler (TFProf)</name>
+        <reference>release-3-1-0_1release-3-1-0_profiler</reference>
+    </tocsect>
+    </tableofcontents>
+    </tocsect>
+      <tocsect>
+        <name>Bug Fixes</name>
+        <reference>release-3-1-0_1release-3-1-0_bug_fixes</reference>
+    </tocsect>
+      <tocsect>
+        <name>Breaking Changes</name>
+        <reference>release-3-1-0_1release-3-1-0_breaking_changes</reference>
+    </tocsect>
+      <tocsect>
+        <name>Deprecated and Removed Items</name>
+        <reference>release-3-1-0_1release-3-1-0_deprecated_items</reference>
+    </tocsect>
+      <tocsect>
+        <name>Documentation</name>
+        <reference>release-3-1-0_1release-3-1-0_documentation</reference>
+    </tocsect>
+      <tocsect>
+        <name>Miscellaneous Items</name>
+        <reference>release-3-1-0_1release-3-1-0_miscellaneous_items</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow 3.1.0 is the 2nd release in the 3.x line! This release includes several new changes such as CPU-GPU tasking, algorithm collection, enhanced web-based profiler, documentation, and unit tests.</para><sect1 id="release-3-1-0_1release-3-1-0_download">
+<para>Taskflow 3.1.0 is the 2nd release in the 3.x line! This release includes several new changes such as CPU-GPU tasking, algorithm collection, enhanced web-based profiler, documentation, and unit tests.</para>
+<sect1 id="release-3-1-0_1release-3-1-0_download">
 <title>Download</title>
-<para>Taskflow 3.1.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.1.0">here</ulink>.</para></sect1>
+<para>Taskflow 3.1.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.1.0">here</ulink>.</para>
+</sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_system_requirements">
 <title>System Requirements</title>
-<para>To use Taskflow v3.1.0, you need a compiler that supports C++17:</para><para><itemizedlist>
-<listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para></listitem>
-<listitem><para>Clang C++ Compiler at least v6.0 with -std=c++17 </para></listitem>
-<listitem><para>Microsoft Visual Studio at least v19.27 with /std:c++17 </para></listitem>
-<listitem><para>AppleClang Xcode Version at least v12.0 with -std=c++17 </para></listitem>
-<listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17 </para></listitem>
-<listitem><para>Intel C++ Compiler at least v19.0.1 with -std=c++17 </para></listitem>
-<listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</para></listitem>
+<para>To use Taskflow v3.1.0, you need a compiler that supports C++17:</para>
+<para><itemizedlist>
+<listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para>
+</listitem>
+<listitem><para>Clang C++ Compiler at least v6.0 with -std=c++17 </para>
+</listitem>
+<listitem><para>Microsoft Visual Studio at least v19.27 with /std:c++17 </para>
+</listitem>
+<listitem><para>AppleClang Xcode Version at least v12.0 with -std=c++17 </para>
+</listitem>
+<listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17 </para>
+</listitem>
+<listitem><para>Intel C++ Compiler at least v19.0.1 with -std=c++17 </para>
+</listitem>
+<listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</para>
+</listitem>
 </itemizedlist>
-Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
+Taskflow works on Linux, Windows, and Mac OS X.</para>
+</sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_new_features">
 <title>New Features</title>
 <sect2 id="release-3-1-0_1release-3-1-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>optimized task node storage by using <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> for semaphores </para></listitem>
-<listitem><para>merged the execution flow of cudaFlow and cudaFlow capturer</para></listitem>
+<listitem><para>optimized task node storage by using <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> for semaphores </para>
+</listitem>
+<listitem><para>merged the execution flow of cudaFlow and cudaFlow capturer</para>
+</listitem>
 </itemizedlist>
-</para></sect2>
+</para>
+</sect2>
 <sect2 id="release-3-1-0_1release-3-1-0_cudaflow">
 <title>cudaFlow</title>
 <para><itemizedlist>
-<listitem><para>optimized tf::cudaRoundRobinCapturing through an event-pruning heuristic </para></listitem>
-<listitem><para>optimized the default block size used in cudaFlow algorithms </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1aad726dfe21e9719d96c65530a56d9951" kindref="member">tf::cudaFlow::clear()</ref> to clean up a cudaFlow </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow_1ae6560c27d249af7e4b8b921388f5e1e2" kindref="member">tf::cudaFlow::num_tasks()</ref> to query the task count in a cudaFlow </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaTask_1afe21933815619b8f51f0efa2706aa16e" kindref="member">tf::cudaTask::num_dependents()</ref> to query the dependent count in a cudaTask </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a06f1176b6a5590832f0e09a049f8a622" kindref="member">tf::cudaFlowCapturer::clear()</ref> to clean up a cudaFlow capturer </para></listitem>
-<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1aeb826786f1580bae1335d94ffbeb7e02" kindref="member">tf::cudaFlowCapturer::num_tasks()</ref> to query the task count in a cudaFlow capturer </para></listitem>
+<listitem><para>optimized tf::cudaRoundRobinCapturing through an event-pruning heuristic </para>
+</listitem>
+<listitem><para>optimized the default block size used in cudaFlow algorithms </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1aad726dfe21e9719d96c65530a56d9951" kindref="member">tf::cudaFlow::clear()</ref> to clean up a cudaFlow </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow_1ae6560c27d249af7e4b8b921388f5e1e2" kindref="member">tf::cudaFlow::num_tasks()</ref> to query the task count in a cudaFlow </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaTask_1afe21933815619b8f51f0efa2706aa16e" kindref="member">tf::cudaTask::num_dependents()</ref> to query the dependent count in a cudaTask </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1a06f1176b6a5590832f0e09a049f8a622" kindref="member">tf::cudaFlowCapturer::clear()</ref> to clean up a cudaFlow capturer </para>
+</listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer_1aeb826786f1580bae1335d94ffbeb7e02" kindref="member">tf::cudaFlowCapturer::num_tasks()</ref> to query the task count in a cudaFlow capturer </para>
+</listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> rebind methods:<itemizedlist>
-<listitem><para>tf::cudaFlowCapturer::rebind_single_task</para></listitem><listitem><para>tf::cudaFlowCapturer::rebind_for_each</para></listitem><listitem><para>tf::cudaFlowCapturer::rebind_for_each_index</para></listitem><listitem><para>tf::cudaFlowCapturer::rebind_transform</para></listitem><listitem><para>tf::cudaFlowCapturer::rebind_reduce</para></listitem><listitem><para>tf::cudaFlowCapturer::rebind_uninitialized_reduce </para></listitem></itemizedlist>
-</para></listitem>
+<listitem><para>tf::cudaFlowCapturer::rebind_single_task</para>
+</listitem><listitem><para>tf::cudaFlowCapturer::rebind_for_each</para>
+</listitem><listitem><para>tf::cudaFlowCapturer::rebind_for_each_index</para>
+</listitem><listitem><para>tf::cudaFlowCapturer::rebind_transform</para>
+</listitem><listitem><para>tf::cudaFlowCapturer::rebind_reduce</para>
+</listitem><listitem><para>tf::cudaFlowCapturer::rebind_uninitialized_reduce </para>
+</listitem></itemizedlist>
+</para>
+</listitem>
 <listitem><para>added <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> update methods:<itemizedlist>
-<listitem><para>tf::cudaFlow::update_for_each</para></listitem><listitem><para>tf::cudaFlow::update_for_each_index</para></listitem><listitem><para>tf::cudaFlow::update_transform</para></listitem><listitem><para>tf::cudaFlow::update_reduce</para></listitem><listitem><para>tf::cudaFlow::update_uninitialized_reduce </para></listitem></itemizedlist>
-</para></listitem>
+<listitem><para>tf::cudaFlow::update_for_each</para>
+</listitem><listitem><para>tf::cudaFlow::update_for_each_index</para>
+</listitem><listitem><para>tf::cudaFlow::update_transform</para>
+</listitem><listitem><para>tf::cudaFlow::update_reduce</para>
+</listitem><listitem><para>tf::cudaFlow::update_uninitialized_reduce </para>
+</listitem></itemizedlist>
+</para>
+</listitem>
 <listitem><para>added cudaFlow examples:<itemizedlist>
-<listitem><para>parallel reduction (examples/cuda/cuda_reduce.cu)</para></listitem><listitem><para>parallel transform (examples/cuda/cuda_transform.cu)</para></listitem><listitem><para>rebind (examples/cuda/cuda_rebind.cu)</para></listitem></itemizedlist>
-</para></listitem>
+<listitem><para>parallel reduction (examples/cuda/cuda_reduce.cu)</para>
+</listitem><listitem><para>parallel transform (examples/cuda/cuda_transform.cu)</para>
+</listitem><listitem><para>rebind (examples/cuda/cuda_rebind.cu)</para>
+</listitem></itemizedlist>
+</para>
+</listitem>
 </itemizedlist>
-</para></sect2>
+</para>
+</sect2>
 <sect2 id="release-3-1-0_1release-3-1-0_utilities">
 <title>Utilities</title>
 <para><itemizedlist>
-<listitem><para>resolved the compiler warning in serializer caused by <computeroutput>constexpr if</computeroutput> </para></listitem>
-<listitem><para>resolved the compiler error of nvcc when parsin variadic namespace</para></listitem>
+<listitem><para>resolved the compiler warning in serializer caused by <computeroutput>constexpr if</computeroutput> </para>
+</listitem>
+<listitem><para>resolved the compiler error of nvcc when parsin variadic namespace</para>
+</listitem>
 </itemizedlist>
-</para></sect2>
+</para>
+</sect2>
 <sect2 id="release-3-1-0_1release-3-1-0_profiler">
 <title>Taskflow Profiler (TFProf)</title>
-<para>No update for TFProf in this release.</para></sect2>
+<para>No update for TFProf in this release.</para>
+</sect2>
 </sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_bug_fixes">
 <title>Bug Fixes</title>
 <para><itemizedlist>
-<listitem><para>fixed the macro expansion issue with MSVC on <computeroutput>TF_CUDA_CHECK</computeroutput> </para></listitem><listitem><para>fixed the serializer compile error (<ulink url="https://github.com/taskflow/taskflow/issues/288">#288</ulink>)</para></listitem><listitem><para>fixed the <ref refid="classtf_1_1cudaTask_1a7eab02ec6633a5cf17cc15898db2d648" kindref="member">tf::cudaTask::type</ref> bug in mixing host and empty task types</para></listitem></itemizedlist>
-</para></sect1>
+<listitem><para>fixed the macro expansion issue with MSVC on <computeroutput>TF_CUDA_CHECK</computeroutput> </para>
+</listitem><listitem><para>fixed the serializer compile error (<ulink url="https://github.com/taskflow/taskflow/issues/288">#288</ulink>)</para>
+</listitem><listitem><para>fixed the <ref refid="classtf_1_1cudaTask_1a7eab02ec6633a5cf17cc15898db2d648" kindref="member">tf::cudaTask::type</ref> bug in mixing host and empty task types</para>
+</listitem></itemizedlist>
+</para>
+</sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_breaking_changes">
 <title>Breaking Changes</title>
-<para>There are no breaking changes in this release.</para></sect1>
+<para>There are no breaking changes in this release.</para>
+</sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_deprecated_items">
 <title>Deprecated and Removed Items</title>
-<para>There are no deprecated or removed items in this release.</para></sect1>
+<para>There are no deprecated or removed items in this release.</para>
+</sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_documentation">
 <title>Documentation</title>
 <para><itemizedlist>
-<listitem><para>added <ref refid="ExecuteTaskflow_1QueryTheWorkerID" kindref="member">Query the Worker ID</ref> to the cookbook page <ref refid="ExecuteTaskflow" kindref="compound">Executor</ref></para></listitem><listitem><para>revised update methods in <ref refid="GPUTaskingcudaFlow" kindref="compound">GPU Tasking (cudaFlow)</ref></para></listitem><listitem><para>revised rebind methods in <ref refid="GPUTaskingcudaFlowCapturer" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref></para></listitem></itemizedlist>
-</para></sect1>
+<listitem><para>added <ref refid="ExecuteTaskflow_1QueryTheWorkerID" kindref="member">Query the Worker ID</ref> to the cookbook page <ref refid="ExecuteTaskflow" kindref="compound">Executor</ref></para>
+</listitem><listitem><para>revised update methods in <ref refid="GPUTaskingcudaFlow" kindref="compound">GPU Tasking (cudaFlow)</ref></para>
+</listitem><listitem><para>revised rebind methods in <ref refid="GPUTaskingcudaFlowCapturer" kindref="compound">GPU Tasking (cudaFlowCapturer)</ref></para>
+</listitem></itemizedlist>
+</para>
+</sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_miscellaneous_items">
 <title>Miscellaneous Items</title>
 <para><itemizedlist>
-<listitem><para>removed Circle-CI from the continuous integration</para></listitem><listitem><para>updated <ulink url="https://github.com/GrokImageCompression/grok">grok</ulink> to the user list</para></listitem><listitem><para>updated <ulink url="https://github.com/Ravbug/RavEngine">RavEngine</ulink> to the user list</para></listitem><listitem><para>updated <ulink url="https://github.com/erri120/rpgmpacker">RPGMPacker</ulink> to the user list</para></listitem><listitem><para>updated <ulink url="https://github.com/JayXon/Leanify">Leanify</ulink> to the user list </para></listitem></itemizedlist>
-</para></sect1>
+<listitem><para>removed Circle-CI from the continuous integration</para>
+</listitem><listitem><para>updated <ulink url="https://github.com/GrokImageCompression/grok">grok</ulink> to the user list</para>
+</listitem><listitem><para>updated <ulink url="https://github.com/Ravbug/RavEngine">RavEngine</ulink> to the user list</para>
+</listitem><listitem><para>updated <ulink url="https://github.com/erri120/rpgmpacker">RPGMPacker</ulink> to the user list</para>
+</listitem><listitem><para>updated <ulink url="https://github.com/JayXon/Leanify">Leanify</ulink> to the user list </para>
+</listitem></itemizedlist>
+</para>
+</sect1>
     </detaileddescription>
+    <location file="releases/release-3.1.0.dox"/>
   </compounddef>
 </doxygen>

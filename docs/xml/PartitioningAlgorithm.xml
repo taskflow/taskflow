@@ -1,15 +1,34 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="PartitioningAlgorithm" kind="page">
     <compoundname>PartitioningAlgorithm</compoundname>
     <title>Partitioning Algorithm</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Define a Partitioner for Parallel Algorithms</name>
+        <reference>PartitioningAlgorithm_1DefineAPartitionerForParallelAlgorithms</reference>
+    </tocsect>
+      <tocsect>
+        <name>Define a Static Partitioner</name>
+        <reference>PartitioningAlgorithm_1DefineAStaticPartitioner</reference>
+    </tocsect>
+      <tocsect>
+        <name>Define a Dynamic Partitioner</name>
+        <reference>PartitioningAlgorithm_1DefineADynamicPartitioner</reference>
+    </tocsect>
+      <tocsect>
+        <name>Define a Guided Partitioner</name>
+        <reference>PartitioningAlgorithm_1DefineAGuidedPartitioner</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>A partitioning algorithm allows applications to optimize parallel algorithms using different scheduling methods, such as static partitioning, dynamic partitioning, and guided partitioning.</para><sect1 id="PartitioningAlgorithm_1DefineAPartitionerForParallelAlgorithms">
+<para>A partitioning algorithm allows applications to optimize parallel algorithms using different scheduling methods, such as static partitioning, dynamic partitioning, and guided partitioning.</para>
+<sect1 id="PartitioningAlgorithm_1DefineAPartitionerForParallelAlgorithms">
 <title>Define a Partitioner for Parallel Algorithms</title>
-<para>A partitioner defines how to partition and distribute iterations to different workers when running parallel algorithms in Taskflow, such as <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each</ref> and <ref refid="classtf_1_1FlowBuilder_1a822a75c597ae42cacc28d6f8cefb8c7c" kindref="member">tf::Taskflow::transform</ref>. The following example shows how to create parallel-iteration tasks with different execution policies:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>data<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5,<sp/>6,<sp/>7,<sp/>8,<sp/>9,<sp/>10}</highlight></codeline>
+<para>A partitioner defines how to partition and distribute iterations to different workers when running parallel algorithms in Taskflow, such as <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each</ref> and <ref refid="classtf_1_1FlowBuilder_1a822a75c597ae42cacc28d6f8cefb8c7c" kindref="member">tf::Taskflow::transform</ref>. The following example shows how to create parallel-iteration tasks with different execution policies:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>data<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5,<sp/>6,<sp/>7,<sp/>8,<sp/>9,<sp/>10}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>different<sp/>partitioners</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref><sp/>guided_partitioner;</highlight></codeline>
@@ -18,25 +37,39 @@
 <codeline><highlight class="normal"><ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref><sp/>dynamic_partitioner;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>four<sp/>parallel-iteration<sp/>tasks<sp/>from<sp/>the<sp/>four<sp/>execution<sp/>policies</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">for_each</ref>(data.begin(),<sp/>data.end(),<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){},<sp/>guided_partitioner);</highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">for_each</ref>(data.begin(),<sp/>data.end(),<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){},<sp/>static_partitioner);</highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">for_each</ref>(data.begin(),<sp/>data.end(),<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){},<sp/>random_partitioner);</highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">for_each</ref>(data.begin(),<sp/>data.end(),<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){},<sp/>dynamic_partitioner);</highlight></codeline>
-</programlisting></para><para>Each partitioner has a specific algorithm to partition iterations into a set of <emphasis>chunks</emphasis> and distribute chunks to workers. A chunk is the basic unit of work that will be run by a worker during the execution of parallel iterations. The following figure illustrates the scheduling diagram for three major partitioners, <ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref>, <ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref>, and <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref>:</para><para><image type="html" name="parallel_for_partition_algorithms.png"></image>
-</para><para>Depending on applications, partitioning algorithms can impact the performance a lot. For example, if a parallel-iteration workload contains a regular work unit per iteration, <ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref> may deliver the best performance. On the other hand, if the work unit per iteration is irregular and unbalanced, <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref> or <ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref> can outperform <ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref>.</para><para><simplesect kind="note"><para>By default, all parallel algorithms in Taskflow use tf::DefaultExecutionPolicy, which is based on guided scheduling via <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref>.</para></simplesect>
-</para></sect1>
+<codeline><highlight class="normal">taskflow.for_each(data.begin(),<sp/>data.end(),<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){},<sp/>guided_partitioner);</highlight></codeline>
+<codeline><highlight class="normal">taskflow.for_each(data.begin(),<sp/>data.end(),<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){},<sp/>static_partitioner);</highlight></codeline>
+<codeline><highlight class="normal">taskflow.for_each(data.begin(),<sp/>data.end(),<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){},<sp/>random_partitioner);</highlight></codeline>
+<codeline><highlight class="normal">taskflow.for_each(data.begin(),<sp/>data.end(),<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){},<sp/>dynamic_partitioner);</highlight></codeline>
+</programlisting></para>
+<para>Each partitioner has a specific algorithm to partition iterations into a set of <emphasis>chunks</emphasis> and distribute chunks to workers. A chunk is the basic unit of work that will be run by a worker during the execution of parallel iterations. The following figure illustrates the scheduling diagram for three major partitioners, <ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref>, <ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref>, and <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref>:</para>
+<para><image type="html" name="parallel_for_partition_algorithms.png"></image>
+</para>
+<para>Depending on applications, partitioning algorithms can impact the performance a lot. For example, if a parallel-iteration workload contains a regular work unit per iteration, <ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref> may deliver the best performance. On the other hand, if the work unit per iteration is irregular and unbalanced, <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref> or <ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref> can outperform <ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref>.</para>
+<para><simplesect kind="note"><para>By default, all parallel algorithms in Taskflow use tf::DefaultExecutionPolicy, which is based on guided scheduling via <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref>.</para>
+</simplesect>
+</para>
+</sect1>
 <sect1 id="PartitioningAlgorithm_1DefineAStaticPartitioner">
 <title>Define a Static Partitioner</title>
-<para>Static partitioner splits iterations into <computeroutput>iter_size/chunk_size</computeroutput> chunks and distribute chunks to workers in order. If no chunk size is given (<computeroutput>chunk_size</computeroutput> is <computeroutput>1</computeroutput>), Taskflow will partition iterations into chunks that are approximately equal in size. The following code creates a static partitioner with chunk size equal to 100:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref><sp/>static_partitioner(100);</highlight></codeline>
-</programlisting></para></sect1>
+<para>Static partitioner splits iterations into <computeroutput>iter_size/chunk_size</computeroutput> chunks and distribute chunks to workers in order. If no chunk size is given (<computeroutput>chunk_size</computeroutput> is <computeroutput>1</computeroutput>), Taskflow will partition iterations into chunks that are approximately equal in size. The following code creates a static partitioner with chunk size equal to 100:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref><sp/>static_partitioner(100);</highlight></codeline>
+</programlisting></para>
+</sect1>
 <sect1 id="PartitioningAlgorithm_1DefineADynamicPartitioner">
 <title>Define a Dynamic Partitioner</title>
-<para>Dynamic partitioner splits iterations into <computeroutput>iter_size/chunk_size</computeroutput> chunks and distribute chunks to workers without any specific order. The default chunk size is <computeroutput>1</computeroutput>, if not specified. The following code creates a dynamic partitioner with chunk size equal to 2:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref><sp/>dynamic_partitioner(2);</highlight></codeline>
-</programlisting></para></sect1>
+<para>Dynamic partitioner splits iterations into <computeroutput>iter_size/chunk_size</computeroutput> chunks and distribute chunks to workers without any specific order. The default chunk size is <computeroutput>1</computeroutput>, if not specified. The following code creates a dynamic partitioner with chunk size equal to 2:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref><sp/>dynamic_partitioner(2);</highlight></codeline>
+</programlisting></para>
+</sect1>
 <sect1 id="PartitioningAlgorithm_1DefineAGuidedPartitioner">
 <title>Define a Guided Partitioner</title>
-<para>Guided partitioner dynamically decides the chunk size. The size of a chunk is proportional to the number of unassigned iterations divided by the number of the threads, and the size will gradually decrease to the specified chunk size (default <computeroutput>1</computeroutput>). The last chunk may be smaller than the specified chunk size. The following code creates a guided partitioner with chunk size equal to 10:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref><sp/>guided_partitioner(10);</highlight></codeline>
-</programlisting></para><para>In most situations, guided partitioner can achieve decent performance due to adaptive parallelism, especially for those with irregular and unbalanced workload per iteration. As a result, guided partitioner is used as the default partitioner for our parallel algorithms. </para></sect1>
+<para>Guided partitioner dynamically decides the chunk size. The size of a chunk is proportional to the number of unassigned iterations divided by the number of the threads, and the size will gradually decrease to the specified chunk size (default <computeroutput>1</computeroutput>). The last chunk may be smaller than the specified chunk size. The following code creates a guided partitioner with chunk size equal to 10:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref><sp/>guided_partitioner(10);</highlight></codeline>
+</programlisting></para>
+<para>In most situations, guided partitioner can achieve decent performance due to adaptive parallelism, especially for those with irregular and unbalanced workload per iteration. As a result, guided partitioner is used as the default partitioner for our parallel algorithms. </para>
+</sect1>
     </detaileddescription>
+    <location file="algorithms/partitioner.dox"/>
   </compounddef>
 </doxygen>

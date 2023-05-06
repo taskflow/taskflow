@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="classtf_1_1Pipeline" kind="class" language="C++" prot="public">
     <compoundname>tf::Pipeline</compoundname>
     <includes refid="pipeline_8hpp" local="no">pipeline.hpp</includes>
@@ -18,136 +18,147 @@
         <definition>Graph tf::Pipeline&lt; Ps &gt;::_graph</definition>
         <argsstring></argsstring>
         <name>_graph</name>
+        <qualifiedname>tf::Pipeline::_graph</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="496" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="496" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="496" column="9" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="496" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Pipeline_1a9d9fe0c2e30331b1f7e40d2dc3c5a76f" prot="private" static="no" mutable="no">
         <type>size_t</type>
         <definition>size_t tf::Pipeline&lt; Ps &gt;::_num_tokens</definition>
         <argsstring></argsstring>
         <name>_num_tokens</name>
+        <qualifiedname>tf::Pipeline::_num_tokens</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="498" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="498" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="498" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="498" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Pipeline_1a442f95439871ed72fd67edab10fc77a0" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/utility/tuple" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::tuple</ref>&lt; Ps... &gt;</type>
+        <type><ref refid="cpp/utility/tuple" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::tuple</ref>&lt; Ps... &gt;</type>
         <definition>std::tuple&lt;Ps...&gt; tf::Pipeline&lt; Ps &gt;::_pipes</definition>
         <argsstring></argsstring>
         <name>_pipes</name>
+        <qualifiedname>tf::Pipeline::_pipes</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="500" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="500" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="500" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="500" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Pipeline_1a836ee5a9505f07fc032ea69563063378" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/container/array" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; PipeMeta, sizeof...(Ps)&gt;</type>
+        <type><ref refid="cpp/container/array" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; PipeMeta, sizeof...(Ps)&gt;</type>
         <definition>std::array&lt;PipeMeta, sizeof...(Ps)&gt; tf::Pipeline&lt; Ps &gt;::_meta</definition>
         <argsstring></argsstring>
         <name>_meta</name>
+        <qualifiedname>tf::Pipeline::_meta</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="501" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="501" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="501" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="501" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Pipeline_1a21eaa8e9904e9ebb9a1b1ea4a1e183de" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/array" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; Line, sizeof...(Ps)&gt; &gt;</type>
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/array" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; Line, sizeof...(Ps)&gt; &gt;</type>
         <definition>std::vector&lt;std::array&lt;Line, sizeof...(Ps)&gt; &gt; tf::Pipeline&lt; Ps &gt;::_lines</definition>
         <argsstring></argsstring>
         <name>_lines</name>
+        <qualifiedname>tf::Pipeline::_lines</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="502" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="502" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="502" column="15" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="502" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Pipeline_1aba0c750fa328b21fcda5cb44801d6289" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt;</type>
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt;</type>
         <definition>std::vector&lt;Task&gt; tf::Pipeline&lt; Ps &gt;::_tasks</definition>
         <argsstring></argsstring>
         <name>_tasks</name>
+        <qualifiedname>tf::Pipeline::_tasks</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="503" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="503" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="503" column="15" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="503" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Pipeline_1a8d0536148e5fdd373b4ed81965498749" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="classtf_1_1Pipeflow" kindref="compound">Pipeflow</ref> &gt;</type>
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="classtf_1_1Pipeflow" kindref="compound">Pipeflow</ref> &gt;</type>
         <definition>std::vector&lt;Pipeflow&gt; tf::Pipeline&lt; Ps &gt;::_pipeflows</definition>
         <argsstring></argsstring>
         <name>_pipeflows</name>
+        <qualifiedname>tf::Pipeline::_pipeflows</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="504" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="504" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="504" column="15" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="504" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Pipeline_1a10499ef31797d4db31243e6f73fb2ee8" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/container/queue" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::queue</ref>&lt; <ref refid="cpp/utility/pair" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::pair</ref>&lt; size_t, size_t &gt; &gt;</type>
+        <type><ref refid="cpp/container/queue" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::queue</ref>&lt; <ref refid="cpp/utility/pair" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::pair</ref>&lt; size_t, size_t &gt; &gt;</type>
         <definition>std::queue&lt;std::pair&lt;size_t, size_t&gt; &gt; tf::Pipeline&lt; Ps &gt;::_ready_tokens</definition>
         <argsstring></argsstring>
         <name>_ready_tokens</name>
+        <qualifiedname>tf::Pipeline::_ready_tokens</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="512" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="512" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="512" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="512" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Pipeline_1ab19a3164e7584ce1d16ecbff975421a7" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/container/unordered_map" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_map</ref>&lt; size_t, <ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; size_t &gt; &gt;</type>
+        <type><ref refid="cpp/container/unordered_map" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_map</ref>&lt; size_t, <ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; size_t &gt; &gt;</type>
         <definition>std::unordered_map&lt;size_t, std::vector&lt;size_t&gt; &gt; tf::Pipeline&lt; Ps &gt;::_token_dependencies</definition>
         <argsstring></argsstring>
         <name>_token_dependencies</name>
+        <qualifiedname>tf::Pipeline::_token_dependencies</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="519" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="519" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="519" column="22" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="519" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Pipeline_1a7ff727cd8c130fc9b606c01dbfa12f9d" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/container/unordered_map" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_map</ref>&lt; size_t, DeferredPipeflow &gt;</type>
+        <type><ref refid="cpp/container/unordered_map" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_map</ref>&lt; size_t, DeferredPipeflow &gt;</type>
         <definition>std::unordered_map&lt;size_t, DeferredPipeflow&gt; tf::Pipeline&lt; Ps &gt;::_deferred_tokens</definition>
         <argsstring></argsstring>
         <name>_deferred_tokens</name>
+        <qualifiedname>tf::Pipeline::_deferred_tokens</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="527" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="527" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="527" column="22" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="527" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Pipeline_1aaee01340ac6e941a949931b7e478d83e" prot="private" static="no" mutable="no">
         <type>size_t</type>
         <definition>size_t tf::Pipeline&lt; Ps &gt;::_longest_deferral</definition>
         <argsstring></argsstring>
         <name>_longest_deferral</name>
+        <qualifiedname>tf::Pipeline::_longest_deferral</qualifiedname>
         <initializer>= 0</initializer>
         <briefdescription>
         </briefdescription>
@@ -155,7 +166,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="536" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="536" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="536" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="536" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -164,6 +175,7 @@
         <definition>tf::Pipeline&lt; Ps &gt;::Pipeline</definition>
         <argsstring>(size_t num_lines, Ps &amp;&amp;... ps)</argsstring>
         <name>Pipeline</name>
+        <qualifiedname>tf::Pipeline::Pipeline</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>num_lines</declname>
@@ -173,128 +185,152 @@
           <declname>ps</declname>
         </param>
         <briefdescription>
-<para>constructs a pipeline object </para>        </briefdescription>
+<para>constructs a pipeline object </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>num_lines</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the number of parallel lines </para></parameterdescription>
+<para>the number of parallel lines </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>ps</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a list of pipes</para></parameterdescription>
+<para>a list of pipes</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>) or an exception will be thrown. </para>        </detaileddescription>
+Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>) or an exception will be thrown. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="435" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="550" bodyend="567"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="435" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="550" bodyend="567"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Pipeline_1a879a54b37af5db33e5768e5b3c135ba6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::Pipeline&lt; Ps &gt;::Pipeline</definition>
         <argsstring>(size_t num_lines, std::tuple&lt; Ps... &gt; &amp;&amp;ps)</argsstring>
         <name>Pipeline</name>
+        <qualifiedname>tf::Pipeline::Pipeline</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>num_lines</declname>
         </param>
         <param>
-          <type><ref refid="cpp/utility/tuple" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::tuple</ref>&lt; Ps... &gt; &amp;&amp;</type>
+          <type><ref refid="cpp/utility/tuple" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::tuple</ref>&lt; Ps... &gt; &amp;&amp;</type>
           <declname>ps</declname>
         </param>
         <briefdescription>
-<para>constructs a pipeline object </para>        </briefdescription>
+<para>constructs a pipeline object </para>
+        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>num_lines</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the number of parallel lines </para></parameterdescription>
+<para>the number of parallel lines </para>
+</parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>ps</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a tuple of pipes</para></parameterdescription>
+<para>a tuple of pipes</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>) or an exception will be thrown. </para>        </detaileddescription>
+Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parallel lines to schedule tokens through the given linear chain of pipes. The first pipe must define a serial direction (<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>) or an exception will be thrown. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="448" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="571" bodyend="590"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="448" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="571" bodyend="590"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Pipeline_1a79f066bacd6c1abd28c26d8196955e95" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Pipeline_1a79f066bacd6c1abd28c26d8196955e95" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::Pipeline&lt; Ps &gt;::num_lines</definition>
         <argsstring>() const noexcept</argsstring>
         <name>num_lines</name>
+        <qualifiedname>tf::Pipeline::num_lines</qualifiedname>
         <briefdescription>
-<para>queries the number of parallel lines </para>        </briefdescription>
+<para>queries the number of parallel lines </para>
+        </briefdescription>
         <detaileddescription>
-<para>The function returns the number of parallel lines given by the user upon the construction of the pipeline. The number of lines represents the maximum parallelism this pipeline can achieve. </para>        </detaileddescription>
+<para>The function returns the number of parallel lines given by the user upon the construction of the pipeline. The number of lines represents the maximum parallelism this pipeline can achieve. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="458" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="601" bodyend="603"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="458" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="601" bodyend="603"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Pipeline_1adfef0c60f8f8ace267d7cd8548457ff3" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Pipeline_1adfef0c60f8f8ace267d7cd8548457ff3" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
         <type>constexpr size_t</type>
         <definition>constexpr size_t tf::Pipeline&lt; Ps &gt;::num_pipes</definition>
         <argsstring>() const noexcept</argsstring>
         <name>num_pipes</name>
+        <qualifiedname>tf::Pipeline::num_pipes</qualifiedname>
         <briefdescription>
-<para>queries the number of pipes </para>        </briefdescription>
+<para>queries the number of pipes </para>
+        </briefdescription>
         <detaileddescription>
-<para>The Function returns the number of pipes given by the user upon the construction of the pipeline. </para>        </detaileddescription>
+<para>The Function returns the number of pipes given by the user upon the construction of the pipeline. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="466" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="607" bodyend="609"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="466" column="20" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="607" bodyend="609"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Pipeline_1a311d874b98de6f0def8a7d869e8d15bd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void tf::Pipeline&lt; Ps &gt;::reset</definition>
         <argsstring>()</argsstring>
         <name>reset</name>
+        <qualifiedname>tf::Pipeline::reset</qualifiedname>
         <briefdescription>
-<para>resets the pipeline </para>        </briefdescription>
+<para>resets the pipeline </para>
+        </briefdescription>
         <detaileddescription>
-<para>Resetting the pipeline to the initial state. After resetting a pipeline, its token identifier will start from zero as if the pipeline was just constructed. </para>        </detaileddescription>
+<para>Resetting the pipeline to the initial state. After resetting a pipeline, its token identifier will start from zero as if the pipeline was just constructed. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="475" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="625" bodyend="660"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="475" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="625" bodyend="660"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Pipeline_1a89af6714b661ded59970cac4c73b3ef9" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Pipeline_1a89af6714b661ded59970cac4c73b3ef9" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::Pipeline&lt; Ps &gt;::num_tokens</definition>
         <argsstring>() const noexcept</argsstring>
         <name>num_tokens</name>
+        <qualifiedname>tf::Pipeline::num_tokens</qualifiedname>
         <briefdescription>
-<para>queries the number of generated tokens in the pipeline </para>        </briefdescription>
+<para>queries the number of generated tokens in the pipeline </para>
+        </briefdescription>
         <detaileddescription>
-<para>The number represents the total scheduling tokens that has been generated by the pipeline so far. </para>        </detaileddescription>
+<para>The number represents the total scheduling tokens that has been generated by the pipeline so far. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="483" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="613" bodyend="615"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="483" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="613" bodyend="615"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Pipeline_1a4320bdd8b8cf05c9aac1b9fa000e4a35" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> &amp;</type>
         <definition>Graph &amp; tf::Pipeline&lt; Ps &gt;::graph</definition>
         <argsstring>()</argsstring>
         <name>graph</name>
+        <qualifiedname>tf::Pipeline::graph</qualifiedname>
         <briefdescription>
-<para>obtains the graph object associated with the pipeline construct </para>        </briefdescription>
+<para>obtains the graph object associated with the pipeline construct </para>
+        </briefdescription>
         <detaileddescription>
-<para>This method is primarily used as an opaque data structure for creating a module task of the this pipeline. </para>        </detaileddescription>
+<para>This method is primarily used as an opaque data structure for creating a module task of the this pipeline. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="491" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="619" bodyend="621"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="491" column="9" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="619" bodyend="621"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -310,8 +346,9 @@ Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parall
         <definition>auto tf::Pipeline&lt; Ps &gt;::_gen_meta</definition>
         <argsstring>(std::tuple&lt; Ps... &gt; &amp;&amp;, std::index_sequence&lt; I... &gt;)</argsstring>
         <name>_gen_meta</name>
+        <qualifiedname>tf::Pipeline::_gen_meta</qualifiedname>
         <param>
-          <type><ref refid="cpp/utility/tuple" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::tuple</ref>&lt; Ps... &gt; &amp;&amp;</type>
+          <type><ref refid="cpp/utility/tuple" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::tuple</ref>&lt; Ps... &gt; &amp;&amp;</type>
           <defname>ps</defname>
         </param>
         <param>
@@ -323,13 +360,14 @@ Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parall
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="539" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="595" bodyend="597"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="539" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="595" bodyend="597"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Pipeline_1aa2e4a635ac4469754f2d922ea67151f9" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void tf::Pipeline&lt; Ps &gt;::_on_pipe</definition>
         <argsstring>(Pipeflow &amp;, Runtime &amp;)</argsstring>
         <name>_on_pipe</name>
+        <qualifiedname>tf::Pipeline::_on_pipe</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Pipeflow" kindref="compound">Pipeflow</ref> &amp;</type>
           <defname>pf</defname>
@@ -344,26 +382,28 @@ Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parall
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="541" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="664" bodyend="677"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="541" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="664" bodyend="677"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Pipeline_1ad091bbd38c1538884aa83d488fdf40f2" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void tf::Pipeline&lt; Ps &gt;::_build</definition>
         <argsstring>()</argsstring>
         <name>_build</name>
+        <qualifiedname>tf::Pipeline::_build</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="542" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="798" bodyend="933"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="542" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="798" bodyend="933"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Pipeline_1afb16e7472b979f81a8d997eae134e1c9" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void tf::Pipeline&lt; Ps &gt;::_check_dependents</definition>
         <argsstring>(Pipeflow &amp;)</argsstring>
         <name>_check_dependents</name>
+        <qualifiedname>tf::Pipeline::_check_dependents</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Pipeflow" kindref="compound">Pipeflow</ref> &amp;</type>
           <defname>pf</defname>
@@ -374,13 +414,14 @@ Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parall
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="543" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="686" bodyend="714"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="543" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="686" bodyend="714"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Pipeline_1a2d90bf386da24e7913b021febbcb6809" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void tf::Pipeline&lt; Ps &gt;::_construct_deferred_tokens</definition>
         <argsstring>(Pipeflow &amp;)</argsstring>
         <name>_construct_deferred_tokens</name>
+        <qualifiedname>tf::Pipeline::_construct_deferred_tokens</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Pipeflow" kindref="compound">Pipeflow</ref> &amp;</type>
           <defname>pf</defname>
@@ -391,13 +432,14 @@ Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parall
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="544" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="725" bodyend="742"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="544" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="725" bodyend="742"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Pipeline_1aa69993288e9ceefed489ff0c71ed1aca" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void tf::Pipeline&lt; Ps &gt;::_resolve_token_dependencies</definition>
         <argsstring>(Pipeflow &amp;)</argsstring>
         <name>_resolve_token_dependencies</name>
+        <qualifiedname>tf::Pipeline::_resolve_token_dependencies</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Pipeflow" kindref="compound">Pipeflow</ref> &amp;</type>
           <defname>pf</defname>
@@ -408,58 +450,61 @@ Constructs a pipeline of up to <computeroutput>num_lines</computeroutput> parall
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="545" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="756" bodyend="794"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="545" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="756" bodyend="794"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class to create a pipeline scheduling framework </para>    </briefdescription>
+<para>class to create a pipeline scheduling framework </para>
+    </briefdescription>
     <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>Ps</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pipe types</para></parameterdescription>
+<para>pipe types</para>
+</parameterdescription>
 </parameteritem>
 </parameterlist>
-A pipeline is a composable graph object for users to create a <emphasis>pipeline scheduling framework</emphasis> using a module task in a taskflow. Unlike the conventional pipeline programming frameworks (e.g., Intel TBB), Taskflow&apos;s pipeline algorithm does not provide any data abstraction, which often restricts users from optimizing data layouts in their applications, but a flexible framework for users to customize their application data atop our pipeline scheduling. The following code creates a pipeline of four parallel lines to schedule tokens through three serial pipes:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+A pipeline is a composable graph object for users to create a <emphasis>pipeline scheduling framework</emphasis> using a module task in a taskflow. Unlike the conventional pipeline programming frameworks (e.g., Intel TBB), Taskflow&apos;s pipeline algorithm does not provide any data abstraction, which often restricts users from optimizing data layouts in their applications, but a flexible framework for users to customize their application data atop our pipeline scheduling. The following code creates a pipeline of four parallel lines to schedule tokens through three serial pipes:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/><ref refid="classtf_1_1Pipeline_1a79f066bacd6c1abd28c26d8196955e95" kindref="member">num_lines</ref><sp/>=<sp/>4;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/><ref refid="classtf_1_1Pipeline_1adfef0c60f8f8ace267d7cd8548457ff3" kindref="member">num_pipes</ref><sp/>=<sp/>3;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>custom<sp/>data<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/array" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;std::array&lt;int, num_pipes&gt;</ref>,<sp/><ref refid="classtf_1_1Pipeline_1a79f066bacd6c1abd28c26d8196955e95" kindref="member">num_lines</ref>&gt;<sp/>buffer;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/array" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;std::array&lt;int, num_pipes&gt;</ref>,<sp/><ref refid="classtf_1_1Pipeline_1a79f066bacd6c1abd28c26d8196955e95" kindref="member">num_lines</ref>&gt;<sp/>buffer;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>pipeline<sp/>graph<sp/>of<sp/>four<sp/>concurrent<sp/>lines<sp/>and<sp/>three<sp/>serial<sp/>pipes</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref><sp/>pipeline(<ref refid="classtf_1_1Pipeline_1a79f066bacd6c1abd28c26d8196955e95" kindref="member">num_lines</ref>,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>first<sp/>pipe<sp/>must<sp/>define<sp/>a<sp/>serial<sp/>direction</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;buffer](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>generate<sp/>only<sp/>5<sp/>scheduling<sp/>tokens</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>()<sp/>==<sp/>5)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a830b7f204cb87fff17e8d424918d9453" kindref="member">stop</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(pf.token()<sp/>==<sp/>5)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>pf.stop();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>save<sp/>the<sp/>token<sp/>id<sp/>into<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>buffer[pf.<ref refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kindref="member">line</ref>()][pf.<ref refid="classtf_1_1Pipeflow_1a4914c1f381a3016e98285b019cf60d6d" kindref="member">pipe</ref>()]<sp/>=<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>buffer[pf.line()][pf.pipe()]<sp/>=<sp/>pf.token();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;buffer]<sp/>(<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>propagate<sp/>the<sp/>previous<sp/>result<sp/>to<sp/>this<sp/>pipe<sp/>by<sp/>adding<sp/>one</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>buffer[pf.<ref refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kindref="member">line</ref>()][pf.<ref refid="classtf_1_1Pipeflow_1a4914c1f381a3016e98285b019cf60d6d" kindref="member">pipe</ref>()]<sp/>=<sp/>buffer[pf.<ref refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kindref="member">line</ref>()][pf.<ref refid="classtf_1_1Pipeflow_1a4914c1f381a3016e98285b019cf60d6d" kindref="member">pipe</ref>()-1]<sp/>+<sp/>1;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>buffer[pf.line()][pf.pipe()]<sp/>=<sp/>buffer[pf.line()][pf.pipe()-1]<sp/>+<sp/>1;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;buffer](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>propagate<sp/>the<sp/>previous<sp/>result<sp/>to<sp/>this<sp/>pipe<sp/>by<sp/>adding<sp/>one</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>buffer[pf.<ref refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kindref="member">line</ref>()][pf.<ref refid="classtf_1_1Pipeflow_1a4914c1f381a3016e98285b019cf60d6d" kindref="member">pipe</ref>()]<sp/>=<sp/>buffer[pf.<ref refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kindref="member">line</ref>()][pf.<ref refid="classtf_1_1Pipeflow_1a4914c1f381a3016e98285b019cf60d6d" kindref="member">pipe</ref>()-1]<sp/>+<sp/>1;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>buffer[pf.line()][pf.pipe()]<sp/>=<sp/>buffer[pf.line()][pf.pipe()-1]<sp/>+<sp/>1;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>build<sp/>the<sp/>pipeline<sp/>graph<sp/>using<sp/>composition</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;ready\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;ready\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;starting<sp/>pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">composed_of</ref>(pipeline)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>stop<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;stopped\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>stop<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;stopped\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;pipeline<sp/>stopped&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>task<sp/>dependency</highlight><highlight class="normal"></highlight></codeline>
@@ -468,7 +513,9 @@ A pipeline is a composable graph object for users to create a <emphasis>pipeline
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>pipeline</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
-</programlisting></para><para>The above example creates a pipeline graph that schedules five tokens over four parallel lines in a circular fashion, as depicted below:</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">o<sp/>-&gt;<sp/>o<sp/>-&gt;<sp/>o</highlight></codeline>
+</programlisting></para>
+<para>The above example creates a pipeline graph that schedules five tokens over four parallel lines in a circular fashion, as depicted below:</para>
+<para><programlisting filename=".shell-session"><codeline><highlight class="normal">o<sp/>-&gt;<sp/>o<sp/>-&gt;<sp/>o</highlight></codeline>
 <codeline><highlight class="normal">|<sp/><sp/><sp/><sp/>|<sp/><sp/><sp/><sp/>|</highlight></codeline>
 <codeline><highlight class="normal">v<sp/><sp/><sp/><sp/>v<sp/><sp/><sp/><sp/>v</highlight></codeline>
 <codeline><highlight class="normal">o<sp/>-&gt;<sp/>o<sp/>-&gt;<sp/>o</highlight></codeline>
@@ -478,8 +525,11 @@ A pipeline is a composable graph object for users to create a <emphasis>pipeline
 <codeline><highlight class="normal">|<sp/><sp/><sp/><sp/>|<sp/><sp/><sp/><sp/>|</highlight></codeline>
 <codeline><highlight class="normal">v<sp/><sp/><sp/><sp/>v<sp/><sp/><sp/><sp/>v</highlight></codeline>
 <codeline><highlight class="normal">o<sp/>-&gt;<sp/>o<sp/>-&gt;<sp/>o</highlight></codeline>
-</programlisting></para><para>At each pipe stage, the program propagates the result to the next pipe by adding one to the result stored in a custom data storage, <computeroutput>buffer</computeroutput>. The pipeline scheduler will generate five scheduling tokens and then stop.</para><para>Internally, <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref> uses <ref refid="cpp/utility/tuple" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::tuple</ref> to store the given sequence of pipes. The definition of each pipe can be different, completely decided by the compiler to optimize the object layout. After a pipeline is constructed, it is not possible to change its pipes. If applications need to change these pipes, please use <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref>. </para>    </detaileddescription>
-    <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="404" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="404" bodyend="546"/>
+</programlisting></para>
+<para>At each pipe stage, the program propagates the result to the next pipe by adding one to the result stored in a custom data storage, <computeroutput>buffer</computeroutput>. The pipeline scheduler will generate five scheduling tokens and then stop.</para>
+<para>Internally, <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref> uses <ref refid="cpp/utility/tuple" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::tuple</ref> to store the given sequence of pipes. The definition of each pipe can be different, completely decided by the compiler to optimize the object layout. After a pipeline is constructed, it is not possible to change its pipes. If applications need to change these pipes, please use <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref>. </para>
+    </detaileddescription>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="404" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="404" bodyend="546"/>
     <listofallmembers>
       <member refid="classtf_1_1Pipeline_1ad091bbd38c1538884aa83d488fdf40f2" prot="private" virt="non-virtual"><scope>tf::Pipeline</scope><name>_build</name></member>
       <member refid="classtf_1_1Pipeline_1afb16e7472b979f81a8d997eae134e1c9" prot="private" virt="non-virtual"><scope>tf::Pipeline</scope><name>_check_dependents</name></member>

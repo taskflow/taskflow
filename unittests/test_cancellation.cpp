@@ -157,47 +157,6 @@ TEST_CASE("CancelSubflow" * doctest::timeout(300)) {
   REQUIRE(counter < 10000);
 }
 
-// cancel asynchronous tasks in subflow
-TEST_CASE("CancelSubflowAsyncTasks" * doctest::timeout(300)) {
-
-  tf::Taskflow taskflow;
-  tf::Executor executor(4);
-
-  std::atomic<int> counter{0};
-
-  // artificially long (possible larger than 300 seconds)
-  for(int i=0; i<100; i++) {
-    taskflow.emplace([&](tf::Subflow& sf){
-      for(int j=0; j<100; j++) {
-        auto a = sf.emplace([&](){
-          std::this_thread::sleep_for(std::chrono::milliseconds(100));
-          counter.fetch_add(1, std::memory_order_relaxed);
-        });
-        auto b = sf.emplace([&](){
-          std::this_thread::sleep_for(std::chrono::milliseconds(100));
-          counter.fetch_add(1, std::memory_order_relaxed);
-        });
-        a.precede(b);
-        sf.async([&](){
-          std::this_thread::sleep_for(std::chrono::milliseconds(100));
-          counter.fetch_add(1, std::memory_order_relaxed);
-        });
-        sf.silent_async([&](){
-          std::this_thread::sleep_for(std::chrono::milliseconds(100));
-          counter.fetch_add(1, std::memory_order_relaxed);
-        });
-      }
-    });
-  }
-
-  // a new round
-  counter = 0;
-  auto fu = executor.run(taskflow);
-  REQUIRE(fu.cancel() == true);
-  fu.get();
-  REQUIRE(counter < 10000);
-}
-
 // cancel infinite loop
 TEST_CASE("CancelInfiniteLoop" * doctest::timeout(300)) {
 

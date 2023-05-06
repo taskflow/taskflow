@@ -1,20 +1,21 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="structtf_1_1Node_1_1Async" kind="struct" language="C++" prot="private">
     <compoundname>tf::Node::Async</compoundname>
       <sectiondef kind="public-attrib">
       <memberdef kind="variable" id="structtf_1_1Node_1_1Async_1a43c08eb7c9072dbfee5a97945311425a" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/utility/functional/function" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void()&gt;</type>
+        <type><ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void()&gt;</type>
         <definition>std::function&lt;void()&gt; tf::Node::Async::work</definition>
         <argsstring></argsstring>
         <name>work</name>
+        <qualifiedname>tf::Node::Async::work</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="576" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="576" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="576" column="19" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="576" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -28,6 +29,7 @@
         <definition>tf::Node::Async::Async</definition>
         <argsstring>(T &amp;&amp;)</argsstring>
         <name>Async</name>
+        <qualifiedname>tf::Node::Async::Async</qualifiedname>
         <param>
           <type>T &amp;&amp;</type>
         </param>
@@ -37,7 +39,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="574" column="1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="574" column="5"/>
       </memberdef>
       <memberdef kind="function" id="structtf_1_1Node_1_1Async_1a6fae56cffa17e20ff0e99eafd4670e07" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -49,6 +51,7 @@
         <definition>tf::Node::Async::Async</definition>
         <argsstring>(C &amp;&amp;c)</argsstring>
         <name>Async</name>
+        <qualifiedname>tf::Node::Async::Async</qualifiedname>
         <param>
           <type>C &amp;&amp;</type>
           <declname>c</declname>
@@ -59,7 +62,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="723" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="723" bodyend="724"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="723" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="723" bodyend="724"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -67,17 +70,17 @@
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
-      <node id="6">
+      <node id="2">
+        <label>std::function&lt; void()&gt;</label>
+      </node>
+      <node id="1">
         <label>tf::Node::Async</label>
-        <childnode refid="7" relation="usage">
+        <childnode refid="2" relation="usage">
           <edgelabel>work</edgelabel>
         </childnode>
       </node>
-      <node id="7">
-        <label>std::function&lt; void()&gt;</label>
-      </node>
     </collaborationgraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="571" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="571" bodyend="577"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="571" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="571" bodyend="577"/>
     <listofallmembers>
       <member refid="structtf_1_1Node_1_1Async_1a368fa43e2d7715828da6f3459b5dbcbf" prot="public" virt="non-virtual"><scope>tf::Node::Async</scope><name>Async</name></member>
       <member refid="structtf_1_1Node_1_1Async_1a6fae56cffa17e20ff0e99eafd4670e07" prot="public" virt="non-virtual"><scope>tf::Node::Async</scope><name>Async</name></member>

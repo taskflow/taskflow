@@ -15,10 +15,10 @@ We recommend that you first read @ref AsyncTasking before this chapter.
 @section CreateATaskGraphDynamically Create a Task Graph Dynamically
 
 When the construct-and-run model of a task graph is not possible in your application,
-you can leverage tf::Executor::dependent_async and tf::Executor::silent_dependent_async
+you can use tf::Executor::dependent_async and tf::Executor::silent_dependent_async
 to create a task graph dynamically.
 This type of parallelism is also known as <i>on-the-fly task graph parallelism</i>,
-which offers great flexibility for expressing task parallelism under complex control flow.
+which offers great flexibility for expressing dynamic task parallelism.
 The example below dynamically creates a task graph of
 four dependent tasks, @c A, @c B, @c C, and @c D, where @c A runs before @c B and @c C
 and @c D runs after @c B and @c C:
@@ -34,20 +34,24 @@ auto [D, fuD] = executor.dependent_async([](){ printf("D\n"); }, B, C);
 D.get();  // wait for D to finish, which in turns means A, B, C finish
 @endcode
 
-Calling both tf::Executor::dependent_async and tf::Executor::silent_dependent_async 
-creates a task of type tf::AsyncTask to run the given function asynchronously,
-while the former returns an additional @std_future that eventually holds the 
-result of the execution.
-When returning from the call, the executor has scheduled a worker 
-to run the created task whenever its dependencies are met.
+Both tf::Executor::dependent_async and tf::Executor::silent_dependent_async 
+create a task of type tf::AsyncTask to run the given function asynchronously.
+Additionally, tf::Executor::dependent_async returns a @std_future 
+that eventually holds the result of the execution.
+When returning from both calls, the executor has scheduled a worker 
+to run the task whenever its dependencies are met.
 That is, task execution happens @em simultaneously 
-with the creation of its task graph, which is different from constructing a %Taskflow
+with the creation of the task graph, which is different from constructing a %Taskflow
 and running it from an executor.
+
+
 Since this model only allows relating a dependency from the current task 
 to a previously created task,
 you need a correct topological order of graph expression.
-For example, the code below shows another feasible 
-order where @c C is created before @c B:
+In our example, there are only two possible topological orderings,
+either @c ABCD or @c ACBD.
+The code below shows another feasible order of expressing this 
+dynamic task graph parallelism.
 
 @code{.cpp}
 tf::Executor executor;
@@ -58,8 +62,7 @@ auto [D, fuD] = executor.dependent_async([](){ printf("D\n"); }, B, C);
 D.get();  // wait for D to finish, which in turns means A, B, C finish
 @endcode
 
-In our task graph, there are only two possible topological orderings,
-@c ABCD or @c ACBD.
+
 
 */
 

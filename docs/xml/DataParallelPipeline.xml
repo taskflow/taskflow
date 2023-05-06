@@ -1,21 +1,47 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="DataParallelPipeline" kind="page">
     <compoundname>DataParallelPipeline</compoundname>
     <title>Data-parallel Pipeline</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Include the Header</name>
+        <reference>DataParallelPipeline_1ParallelDataPipelineIncludeHeaderFile</reference>
+    </tocsect>
+      <tocsect>
+        <name>Create a Data Pipeline Module Task</name>
+        <reference>DataParallelPipeline_1CreateADataPipelineModuleTask</reference>
+    </tocsect>
+      <tocsect>
+        <name>Understand Internal Data Storage</name>
+        <reference>DataParallelPipeline_1UnderstandInternalDataStorage</reference>
+    </tocsect>
+      <tocsect>
+        <name>Learn More about Taskflow Pipeline</name>
+        <reference>DataParallelPipeline_1DataParallelPipelineLearnMore</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow provides another variant, <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref>, on top of <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref> (see <ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref>) to help you implement data-parallel pipeline algorithms while leaving data management to Taskflow. We recommend you finishing reading TaskParallelPipeline first before learning <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref>.</para><sect1 id="DataParallelPipeline_1ParallelDataPipelineIncludeHeaderFile">
+<para>Taskflow provides another variant, <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref>, on top of <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref> (see <ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref>) to help you implement data-parallel pipeline algorithms while leaving data management to Taskflow. We recommend you finishing reading TaskParallelPipeline first before learning <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref>.</para>
+<sect1 id="DataParallelPipeline_1ParallelDataPipelineIncludeHeaderFile">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/algorithm/data_pipeline.hpp</computeroutput>, for implementing data-parallel pipeline algorithms.</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;taskflow/algorithm/data_pipeline.hpp&gt;</highlight></codeline>
-</programlisting></para></sect1>
+<para>You need to include the header file, <computeroutput>taskflow/algorithm/data_pipeline.hpp</computeroutput>, for implementing data-parallel pipeline algorithms.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;taskflow/algorithm/data_pipeline.hpp&gt;</highlight></codeline>
+</programlisting></para>
+</sect1>
 <sect1 id="DataParallelPipeline_1CreateADataPipelineModuleTask">
 <title>Create a Data Pipeline Module Task</title>
-<para>Similar to creating a task-parallel pipeline (<ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref>), there are three steps to create a data-parallel pipeline application:</para><para><orderedlist>
-<listitem><para>Define the pipeline structure (e.g., pipe type, pipe callable, stopping rule, line count)</para></listitem><listitem><para>Define the data storage and layout, if needed for the application</para></listitem><listitem><para>Define the pipeline taskflow graph using composition</para></listitem></orderedlist>
-</para><para>The following example creates a data-parallel pipeline that generates a total of five dataflow tokens from <computeroutput>void</computeroutput> to <computeroutput>int</computeroutput> at the first stage, from <computeroutput>int</computeroutput> to <computeroutput>std::string</computeroutput> at the second stage, from <computeroutput>std::string</computeroutput> to <computeroutput>float</computeroutput> at the third stage, and <computeroutput>float</computeroutput> to <computeroutput>void</computeroutput> at the final stage. Data storage between stages is automatically managed by <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref>.</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<para>Similar to creating a task-parallel pipeline (<ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref>), there are three steps to create a data-parallel pipeline application:</para>
+<para><orderedlist>
+<listitem><para>Define the pipeline structure (e.g., pipe type, pipe callable, stopping rule, line count)</para>
+</listitem><listitem><para>Define the data storage and layout, if needed for the application</para>
+</listitem><listitem><para>Define the pipeline taskflow graph using composition</para>
+</listitem></orderedlist>
+</para>
+<para>The following example creates a data-parallel pipeline that generates a total of five dataflow tokens from <computeroutput>void</computeroutput> to <computeroutput>int</computeroutput> at the first stage, from <computeroutput>int</computeroutput> to <computeroutput>std::string</computeroutput> at the second stage, from <computeroutput>std::string</computeroutput> to <computeroutput>float</computeroutput> at the third stage, and <computeroutput>float</computeroutput> to <computeroutput>void</computeroutput> at the final stage. Data storage between stages is automatically managed by <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref>.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;taskflow/algorithm/data_pipeline.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()<sp/>{</highlight></codeline>
@@ -30,80 +56,102 @@
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref><sp/>pl(num_lines,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tf::make_data_pipe&lt;void,<sp/>int&gt;(<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>-&gt;<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>()<sp/>==<sp/>5)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a830b7f204cb87fff17e8d424918d9453" kindref="member">stop</ref>();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.stop();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>return<sp/>0;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;first<sp/>pipe<sp/>returns<sp/>%lu\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>());</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>printf(</highlight><highlight class="stringliteral">&quot;first<sp/>pipe<sp/>returns<sp/>%lu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>return<sp/>pf.token();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}),</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tf::make_data_pipe&lt;int,<sp/>std::string&gt;(<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>input)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;second<sp/>pipe<sp/>returns<sp/>a<sp/>strong<sp/>of<sp/>%d\n&quot;</highlight><highlight class="normal">,<sp/>input<sp/>+<sp/>100);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kindref="member">std::to_string</ref>(input<sp/>+<sp/>100);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>printf(</highlight><highlight class="stringliteral">&quot;second<sp/>pipe<sp/>returns<sp/>a<sp/>strong<sp/>of<sp/>%d\n&quot;</highlight><highlight class="normal">,<sp/>input<sp/>+<sp/>100);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string/to_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::to_string</ref>(input<sp/>+<sp/>100);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}),</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tf::make_data_pipe&lt;std::string,<sp/>void&gt;(<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[](<ref refid="cpp/string/basic_string" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>&amp;<sp/>input)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;third<sp/>pipe<sp/>receives<sp/>the<sp/>input<sp/>string<sp/>%s\n&quot;</highlight><highlight class="normal">,<sp/>input.c_str());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tf::make_data_pipe&lt;std::string,<sp/>void&gt;(<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[](<ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>&amp;<sp/>input)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;third<sp/>pipe<sp/>receives<sp/>the<sp/>input<sp/>string<sp/>%s\n&quot;</highlight><highlight class="normal">,<sp/>input.c_str());</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>build<sp/>the<sp/>pipeline<sp/>graph<sp/>using<sp/>composition</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">composed_of</ref>(pl).<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.composed_of(pl).name(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>pipeline<sp/>graph<sp/>structure<sp/>(with<sp/>composition)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>pipeline</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>The interface of <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref> is very similar to <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref>, except that the library transparently manages the dataflow between pipes. To create a stage in a data-parallel pipeline, you should always use the helper function <ref refid="namespacetf_1a8975fa5762088789adb0b60f38208309" kindref="member">tf::make_data_pipe</ref>:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::make_data_pipe&lt;int,<sp/>std::string&gt;(</highlight></codeline>
+</programlisting></para>
+<para>The interface of <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref> is very similar to <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref>, except that the library transparently manages the dataflow between pipes. To create a stage in a data-parallel pipeline, you should always use the helper function <ref refid="namespacetf_1a8975fa5762088789adb0b60f38208309" kindref="member">tf::make_data_pipe</ref>:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::make_data_pipe&lt;int,<sp/>std::string&gt;(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>input)<sp/>{<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kindref="member">std::to_string</ref>(input<sp/>+<sp/>100);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string/to_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::to_string</ref>(input<sp/>+<sp/>100);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-</programlisting></para><para>The helper function starts with a pair of an input and an output types in its template arguments. Both types will always be decayed to their original form using <ref refid="cpp/types/decay" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::decay</ref> (e.g., <computeroutput>const int&amp;</computeroutput> becomes <computeroutput>int</computeroutput>) for storage purpose. In terms of function arguments, the first argument specifies the direction of this data pipe, which can be either <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref> or <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::PARALLEL</ref>, and the second argument is a callable to invoke by the pipeline scheduler. The callable must take the input data type in its first argument and returns a value of the output data type. Additionally, the callable can take a <ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref> reference in its second argument which allows you to query the runtime information of a stage task, such as its line number and token number.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::make_data_pipe&lt;int,<sp/>std::string&gt;(</highlight></codeline>
+</programlisting></para>
+<para>The helper function starts with a pair of an input and an output types in its template arguments. Both types will always be decayed to their original form using <ref refid="cpp/types/decay" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::decay</ref> (e.g., <computeroutput>const int&amp;</computeroutput> becomes <computeroutput>int</computeroutput>) for storage purpose. In terms of function arguments, the first argument specifies the direction of this data pipe, which can be either <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref> or <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::PARALLEL</ref>, and the second argument is a callable to invoke by the pipeline scheduler. The callable must take the input data type in its first argument and returns a value of the output data type. Additionally, the callable can take a <ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref> reference in its second argument which allows you to query the runtime information of a stage task, such as its line number and token number.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::make_data_pipe&lt;int,<sp/>std::string&gt;(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>input,<sp/><ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;token=%lu,<sp/>line=%lu\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>(),<sp/>pf.<ref refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kindref="member">line</ref>());</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kindref="member">std::to_string</ref>(input<sp/>+<sp/>100);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>printf(</highlight><highlight class="stringliteral">&quot;token=%lu,<sp/>line=%lu\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>(),<sp/>pf.<ref refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kindref="member">line</ref>());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string/to_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::to_string</ref>(input<sp/>+<sp/>100);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">)</highlight></codeline>
-</programlisting></para><para><simplesect kind="note"><para>By default, <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref> passes the data in reference to your callable at which you can take it in copy or in reference depending on application needs.</para></simplesect>
-For the first pipe, the input type should always be <computeroutput>void</computeroutput> and the callable must take a <ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref> reference in its argument. In this example, we will stop the pipeline when processing five tokens.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::make_data_pipe&lt;void,<sp/>int&gt;(<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>-&gt;<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">{</highlight></codeline>
+</programlisting></para>
+<para><simplesect kind="note"><para>By default, <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref> passes the data in reference to your callable at which you can take it in copy or in reference depending on application needs.</para>
+</simplesect>
+For the first pipe, the input type should always be <computeroutput>void</computeroutput> and the callable must take a <ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref> reference in its argument. In this example, we will stop the pipeline when processing five tokens.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::make_data_pipe&lt;void,<sp/>int&gt;(<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>-&gt;<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>()<sp/>==<sp/>5)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a830b7f204cb87fff17e8d424918d9453" kindref="member">stop</ref>();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>returns<sp/>a<sp/>dummy<sp/>value</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>pf.stop();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>return<sp/>0;<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>returns<sp/>a<sp/>dummy<sp/>value</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>return<sp/>pf.token();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}),</highlight></codeline>
-</programlisting></para><para>Similarly, the output type of the last pipe should be <computeroutput>void</computeroutput> as no more data will go out of the final pipe.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::make_data_pipe&lt;std::string,<sp/>void&gt;(<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[](<ref refid="cpp/string/basic_string" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>&amp;<sp/>input)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>input<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
+</programlisting></para>
+<para>Similarly, the output type of the last pipe should be <computeroutput>void</computeroutput> as no more data will go out of the final pipe.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::make_data_pipe&lt;std::string,<sp/>void&gt;(<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[](<ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>&amp;<sp/>input)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>input<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
 <codeline><highlight class="normal">})</highlight></codeline>
-</programlisting></para><para>Finally, you need to compose the pipeline graph by creating a module task (i.e., tf::Taskflow::compoased_of).</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>build<sp/>the<sp/>pipeline<sp/>graph<sp/>using<sp/>composition</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">composed_of</ref>(pl).<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting></para>
+<para>Finally, you need to compose the pipeline graph by creating a module task (i.e., tf::Taskflow::compoased_of).</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>build<sp/>the<sp/>pipeline<sp/>graph<sp/>using<sp/>composition</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">taskflow.composed_of(pl).name(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>pipeline<sp/>graph<sp/>structure<sp/>(with<sp/>composition)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal">taskflow.dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>pipeline</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
-</programlisting></para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/pipeline_basic_dependency_graph.dot"></dotfile>
-</para></sect1>
+</programlisting></para>
+<para><dotfile name="pipeline_basic_dependency_graph.dot"></dotfile>
+</para>
+</sect1>
 <sect1 id="DataParallelPipeline_1UnderstandInternalDataStorage">
 <title>Understand Internal Data Storage</title>
-<para>By default, <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref> uses <ulink url="https://en.cppreference.com/w/cpp/utility/variant">std::variant</ulink> to store a type-safe union of all input and output data types extracted from the given data pipes. To avoid false sharing, each line keeps a variant that is aligned with the cacheline size. When invoking a pipe callable, the input data is acquired in reference from the variant using <ulink url="https://en.cppreference.com/w/cpp/utility/variant/get">std::get</ulink>. When returning from a pipe callable, the output data is stored back to the variant using assignment operator.</para></sect1>
+<para>By default, <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref> uses <ulink url="https://en.cppreference.com/w/cpp/utility/variant">std::variant</ulink> to store a type-safe union of all input and output data types extracted from the given data pipes. To avoid false sharing, each line keeps a variant that is aligned with the cacheline size. When invoking a pipe callable, the input data is acquired in reference from the variant using <ulink url="https://en.cppreference.com/w/cpp/utility/variant/get">std::get</ulink>. When returning from a pipe callable, the output data is stored back to the variant using assignment operator.</para>
+</sect1>
 <sect1 id="DataParallelPipeline_1DataParallelPipelineLearnMore">
 <title>Learn More about Taskflow Pipeline</title>
-<para>Visit the following pages to learn more about pipeline:</para><para><orderedlist>
-<listitem><para><ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref></para></listitem><listitem><para><ref refid="TaskParallelScalablePipeline" kindref="compound">Task-parallel Scalable Pipeline</ref></para></listitem><listitem><para><ref refid="TextProcessingPipeline" kindref="compound">Text Processing Pipeline</ref></para></listitem><listitem><para><ref refid="GraphProcessingPipeline" kindref="compound">Graph Processing Pipeline</ref></para></listitem><listitem><para><ref refid="TaskflowProcessingPipeline" kindref="compound">Taskflow Processing Pipeline</ref> </para></listitem></orderedlist>
-</para></sect1>
+<para>Visit the following pages to learn more about pipeline:</para>
+<para><orderedlist>
+<listitem><para><ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref></para>
+</listitem><listitem><para><ref refid="TaskParallelScalablePipeline" kindref="compound">Task-parallel Scalable Pipeline</ref></para>
+</listitem><listitem><para><ref refid="TextProcessingPipeline" kindref="compound">Text Processing Pipeline</ref></para>
+</listitem><listitem><para><ref refid="GraphProcessingPipeline" kindref="compound">Graph Processing Pipeline</ref></para>
+</listitem><listitem><para><ref refid="TaskflowProcessingPipeline" kindref="compound">Taskflow Processing Pipeline</ref> </para>
+</listitem></orderedlist>
+</para>
+</sect1>
     </detaileddescription>
+    <location file="algorithms/data_pipeline.dox"/>
   </compounddef>
 </doxygen>
