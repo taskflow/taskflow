@@ -2,6 +2,7 @@
 
 #include "observer.hpp"
 #include "taskflow.hpp"
+#include "async_task.hpp"
 
 /**
 @file executor.hpp

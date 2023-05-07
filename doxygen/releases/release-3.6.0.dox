@@ -1,20 +1,16 @@
 namespace tf {
 
-/** @page release-3-6-0 Release 3.6.0 (Master)
+/** @page release-3-6-0 Release 3.6.0 (2023/05/07)
 
-%Taskflow 3.6.0 is the newest developing line to new features and improvements 
-we continue to support.
-It is also where this documentation is generated.
-Many things are considered @em experimental and may change or break from time to time.
-While it may be difficult to be keep all things consistent when introducing new features, 
-we continue to try our best to ensure backward compatibility.
+%Taskflow 3.6.0 is the 7th release in the 3.x line! 
+This release includes several new changes, such as dynamic task graph parallelism,
+improved parallel algorithms, modified GPU tasking interface, documentation, examples, and unit tests.
 
 @tableofcontents
 
 @section release-3-6-0_download Download
 
-To download the newest version of %Taskflow, please clone the master branch 
-from <a href="https://github.com/taskflow/taskflow">%Taskflow's GitHub</a>.
+%Taskflow 3.6.0 can be downloaded from <a href="https://github.com/taskflow/taskflow/releases/tag/v3.6.0">here</a>.
 
 @section release-3-6-0_system_requirements System Requirements
 
@@ -32,11 +28,16 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
 
 @section release-3-6-0_summary Release Summary
 
+This release contains several changes to largely enhance the programmability
+of GPU tasking and standard parallel algorithms. 
+More importantly, we have introduced a new dependent asynchronous tasking 
+model that offers great flexibility for expressing dynamic task graph parallelism.
+
 @section release-3-6-0_new_features New Features
 
 @subsection release-3-6-0_taskflow_core Taskflow Core
 
-+ Added new async methods to tf::Executor that support dynamic task graph creation
++ Added new async methods to support dynamic task graph creation
   + tf::Executor::dependent_async(F&& func, Tasks&&... tasks)
   + tf::Executor::dependent_async(F&& func, I first, I last)
   + tf::Executor::silent_dependent_async(F&& func, Tasks&&... tasks)
@@ -62,15 +63,15 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
   + tf::Taskflow::find_if_not(B first, E last, T& result, UOP predicate, P&& part)
   + tf::Taskflow::min_element(B first, E last, T& result, C comp, P&& part)
   + tf::Taskflow::max_element(B first, E last, T& result, C comp, P&& part)
-+ Modified tf::Subflow to a derived class from tf::Runtime
-+ Extended parallel algorithms to support different partitioner algorithms
++ Modified tf::Subflow as a derived class from tf::Runtime
++ Extended parallel algorithms to support different partitioning algorithms
   + tf::Taskflow::for_each_index(B first, E last, S step, C callable, P&& part)
   + tf::Taskflow::for_each(B first, E last, C callable, P&& part) 
   + tf::Taskflow::transform(B first1, E last1, O d_first, C c, P&& part)
   + tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P&& part)
   + tf::Taskflow::reduce(B first, E last, T& result, O bop, P&& part) 
   + tf::Taskflow::transform_reduce(B first, E last, T& result, BOP bop, UOP uop, P&& part)
-+ Improved the performance of tf::Taskflow::sort for POD
++ Improved the performance of tf::Taskflow::sort for plain-old-data (POD) type
 + Extended task-parallel pipeline to handle token dependencies
   + @ref TaskParallelPipelineWithTokenDependencies
 
@@ -82,9 +83,11 @@ To use %Taskflow v3.6.0, you need a compiler that supports C++17:
 
 @subsection release-3-6-0_utilities Utilities
 
++ Added all_same templates to check if a parameter pack has the same type 
+
 @subsection release-3-6-0_profiler Taskflow Profiler (TFProf)
 
-+ removed %cudaFlow and %syclFlow tasks
++ Removed %cudaFlow and %syclFlow tasks
 
 @section release-3-6-0_bug_fixes Bug Fixes 
 
@@ -217,6 +220,13 @@ executor.async("name", [](){});
 + Added @ref DependentAsyncTasking
 
 @section release-3-6-0_miscellaneous_items Miscellaneous Items
+
+We have published %Taskflow in the following venues:
+
++ Dian-Lun Lin, Yanqing Zhang, Haoxing Ren, Shih-Hsin Wang, Brucek Khailany and Tsung-Wei Huang, &quot;[GenFuzz: GPU-accelerated Hardware Fuzzing using Genetic Algorithm with Multiple Inputs](https://tsung-wei-huang.github.io/papers/2023-dac.pdf),&quot; <em>ACM/IEEE Design Automation Conference (DAC)</em>, San Francisco, CA, 2023
++ Tsung-Wei Huang, &quot;[qTask: Task-parallel Quantum Circuit Simulation with Incrementality](https://tsung-wei-huang.github.io/papers/ipdps23.pdf),&quot; <em>IEEE International Parallel and Distributed Processing Symposium (IPDPS)</em>, St. Petersburg, Florida, 2023
++ Elmir Dzaka, Dian-Lun Lin, and Tsung-Wei Huang, &quot;[Parallel And-Inverter Graph Simulation Using a Task-graph Computing System](https://tsung-wei-huang.github.io/papers/pdco-23.pdf),&quot; <em>IEEE International Parallel and Distributed Processing Symposium Workshop (IPDPSW)</em>, St. Petersburg, Florida, 2023
+
 
 Please do not hesitate to contact @twhuang if you intend to collaborate with us 
 on using %Taskflow in your scientific computing projects.

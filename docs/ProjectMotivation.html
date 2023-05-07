@@ -59,73 +59,73 @@
             <li><a href="#TheProjectMantra">The Project Mantra</a></li>
           </ul>
         </nav>
-<p>Taskflow addresses a long-standing problem, <em>how can we make it easier for C++ developers to quickly write parallel and heterogeneous programs with high performance scalability and simultaneous high productivity?</em></p><section id="TheEraOfMulticore"><h2><a href="#TheEraOfMulticore">The Era of Multicore</a></h2><p>In the past, we embrace <em>free</em> performance scaling on our software thanks to advances in manufacturing technologies and micro-architectural innovations. Approximately for every 1.5 year we can speed up our programs by simply switching to new hardware and compiler vendors that brings 2x more transistors, faster clock rates, and higher instruction-level parallelism. However, this paradigm was challenged by the power wall and increasing difficulties in exploiting instruction-level parallelism. The boost to computing performance has stemmed from changes to multicore chip designs.</p><img class="m-image" src="era_multicore.jpg" alt="Image" style="width: 60%;" /><p>The above sweeping visualization (thanks to Prof. Mark Horowitz and his group) shows the evolution of computer architectures is moving toward multicore designs. Today, multicore processors and multiprocessor systems are common in many electronic products such as mobiles, laptops, desktops, and servers. In order to keep up with the performance scaling, it is becoming necessary for software developers to write parallel programs that utilize the number of available cores.</p></section><section id="C0HeterogeneousComputing"><h2><a href="#C0HeterogeneousComputing">Heterogeneous Computing</a></h2><p>With the influence of artificial intelligence (AI) through new and merged workloads, heterogeneous computing becomes demanding and will continue to be heard for years to come. We have not just CPUs but GPUs, TPUs, FPGAs, and ASICs to accelerator a wide variety of scientific computing problems.</p><img class="m-image" src="CPU-vs-TPU-vs-GPU.png" alt="Image" style="width: 60%;" /><p>The question is: <em>How are we going to program these beasts?</em> Writing a high-performance sequential program is hard. Parallel programming is harder. Parallel programming of heterogeneous devices is extremely challenging if we care about performance and power efficiency. Programming models need to deal with productivity versus performance.</p></section><section id="LoopLevelParallelism"><h2><a href="#LoopLevelParallelism">Loop-level Parallelism</a></h2><p>The most basic and simplest concept of parallel programming is <em>loop-level parallelism</em>, exploiting parallelism that exists among the iterations of a loop. The program typically partitions a loop of iterations into a set of of blocks, either fixed or dynamic, and run each block in parallel. Below the figure illustrates this pattern.</p><img class="m-image" src="loop-level-parallelism.jpeg" alt="Image" style="width: 50%;" /><p>The main advantage of the loop-based approach is its simplicity in speeding up a regular workload in line with Amdahl&#x27;s Law. Programmers only need to discover independence of each iteration within a loop and, once possible, the parallel decomposition strategy can be easily implemented. Many existing libraries have built-in support to write a parallel-for loop.</p></section><section id="TaskBasedParallelism"><h2><a href="#TaskBasedParallelism">Task-based Parallelism</a></h2><p>The traditional loop-level parallelism is simple but hardly allows users to exploit parallelism in more irregular applications such as graph algorithms, incremental flows, recursion, and dynamically-allocated data structures. To address these challenges, parallel programming and libraries are evolving from the tradition loop-based parallelism to the <em>task-based</em> model.</p><div class="m-graph"><svg style="width: 16.375rem; height: 16.438rem;" viewBox="0.00 0.00 262.44 263.08">
-<g transform="scale(1 1) rotate(0) translate(4 259.08)">
+<p>Taskflow addresses a long-standing problem, <em>how can we make it easier for C++ developers to quickly write parallel and heterogeneous programs with high performance scalability and simultaneous high productivity?</em></p><section id="TheEraOfMulticore"><h2><a href="#TheEraOfMulticore">The Era of Multicore</a></h2><p>In the past, we embrace <em>free</em> performance scaling on our software thanks to advances in manufacturing technologies and micro-architectural innovations. Approximately for every 1.5 year we can speed up our programs by simply switching to new hardware and compiler vendors that brings 2x more transistors, faster clock rates, and higher instruction-level parallelism. However, this paradigm was challenged by the power wall and increasing difficulties in exploiting instruction-level parallelism. The boost to computing performance has stemmed from changes to multicore chip designs.</p><img class="m-image" src="era_multicore.jpg" alt="Image" style="width: 60%;" /><p>The above sweeping visualization (thanks to Prof. Mark Horowitz and his group) shows the evolution of computer architectures is moving toward multicore designs. Today, multicore processors and multiprocessor systems are common in many electronic products such as mobiles, laptops, desktops, and servers. In order to keep up with the performance scaling, it is becoming necessary for software developers to write parallel programs that utilize the number of available cores.</p></section><section id="C0HeterogeneousComputing"><h2><a href="#C0HeterogeneousComputing">Heterogeneous Computing</a></h2><p>With the influence of artificial intelligence (AI) through new and merged workloads, heterogeneous computing becomes demanding and will continue to be heard for years to come. We have not just CPUs but GPUs, TPUs, FPGAs, and ASICs to accelerator a wide variety of scientific computing problems.</p><img class="m-image" src="CPU-vs-TPU-vs-GPU.png" alt="Image" style="width: 60%;" /><p>The question is: <em>How are we going to program these beasts?</em> Writing a high-performance sequential program is hard. Parallel programming is harder. Parallel programming of heterogeneous devices is extremely challenging if we care about performance and power efficiency. Programming models need to deal with productivity versus performance.</p></section><section id="LoopLevelParallelism"><h2><a href="#LoopLevelParallelism">Loop-level Parallelism</a></h2><p>The most basic and simplest concept of parallel programming is <em>loop-level parallelism</em>, exploiting parallelism that exists among the iterations of a loop. The program typically partitions a loop of iterations into a set of of blocks, either fixed or dynamic, and run each block in parallel. Below the figure illustrates this pattern.</p><img class="m-image" src="loop-level-parallelism.jpeg" alt="Image" style="width: 50%;" /><p>The main advantage of the loop-based approach is its simplicity in speeding up a regular workload in line with Amdahl&#x27;s Law. Programmers only need to discover independence of each iteration within a loop and, once possible, the parallel decomposition strategy can be easily implemented. Many existing libraries have built-in support to write a parallel-for loop.</p></section><section id="TaskBasedParallelism"><h2><a href="#TaskBasedParallelism">Task-based Parallelism</a></h2><p>The traditional loop-level parallelism is simple but hardly allows users to exploit parallelism in more irregular applications such as graph algorithms, incremental flows, recursion, and dynamically-allocated data structures. To address these challenges, parallel programming and libraries are evolving from the tradition loop-based parallelism to the <em>task-based</em> model.</p><div class="m-graph"><svg style="width: 18.900rem; height: 26.000rem;" viewBox="0.00 0.00 189.00 260.00">
+<g transform="scale(1 1) rotate(0) translate(4 256)">
 <title>Taskflow</title>
 <g class="m-node m-flat">
 <title>Task1</title>
-<ellipse cx="142.72" cy="-236.69" rx="41.94" ry="18.27"/>
-<text text-anchor="middle" x="142.72" y="-232.89">Task1</text>
+<ellipse cx="99" cy="-234" rx="27" ry="18"/>
+<text text-anchor="middle" x="99" y="-230.12" font-family="Helvetica,sans-Serif" font-size="10.00">Task1</text>
 </g>
 <g class="m-node m-flat">
 <title>Task2</title>
-<ellipse cx="41.72" cy="-163.92" rx="41.94" ry="18.27"/>
-<text text-anchor="middle" x="41.72" y="-160.12">Task2</text>
+<ellipse cx="27" cy="-162" rx="27" ry="18"/>
+<text text-anchor="middle" x="27" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">Task2</text>
 </g>
 <g class="m-edge">
 <title>Task1&#45;&gt;Task2</title>
-<path d="M121.3,-220.69C106.97,-210.65 87.91,-197.29 72.03,-186.16"/>
-<polygon points="74.31,-182.78 64.11,-179.91 70.29,-188.52 74.31,-182.78"/>
+<path d="M84.08,-218.5C74.14,-208.83 60.88,-195.94 49.65,-185.02"/>
+<polygon points="52.51,-182.95 42.9,-178.49 47.63,-187.97 52.51,-182.95"/>
 </g>
 <g class="m-node m-flat">
 <title>Task3</title>
-<ellipse cx="142.72" cy="-163.92" rx="41.94" ry="18.27"/>
-<text text-anchor="middle" x="142.72" y="-160.12">Task3</text>
+<ellipse cx="99" cy="-162" rx="27" ry="18"/>
+<text text-anchor="middle" x="99" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">Task3</text>
 </g>
 <g class="m-edge">
 <title>Task1&#45;&gt;Task3</title>
-<path d="M142.72,-218.2C142.72,-210.66 142.72,-201.65 142.72,-193.2"/>
-<polygon points="146.22,-193.22 142.72,-183.22 139.22,-193.22 146.22,-193.22"/>
+<path d="M99,-215.7C99,-208.24 99,-199.32 99,-190.97"/>
+<polygon points="102.5,-191.1 99,-181.1 95.5,-191.1 102.5,-191.1"/>
 </g>
 <g class="m-node m-flat">
 <title>Task4</title>
-<ellipse cx="212.72" cy="-91.15" rx="41.94" ry="18.27"/>
-<text text-anchor="middle" x="212.72" y="-87.35">Task4</text>
+<ellipse cx="154" cy="-90" rx="27" ry="18"/>
+<text text-anchor="middle" x="154" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">Task4</text>
 </g>
 <g class="m-edge">
 <title>Task1&#45;&gt;Task4</title>
-<path d="M162.23,-220.11C173.12,-210.38 186.01,-196.94 193.72,-182.31 203.8,-163.18 208.53,-139.12 210.76,-120.66"/>
-<polygon points="214.34,-121.03 211.86,-110.72 207.37,-120.32 214.34,-121.03"/>
+<path d="M111.75,-217.7C119.56,-207.59 129.15,-193.71 135,-180 143.29,-160.57 148.11,-137.16 150.81,-119.22"/>
+<polygon points="154.42,-119.71 152.3,-109.33 147.48,-118.76 154.42,-119.71"/>
 </g>
 <g class="m-node m-flat">
 <title>Task5</title>
-<ellipse cx="111.72" cy="-91.15" rx="41.94" ry="18.27"/>
-<text text-anchor="middle" x="111.72" y="-87.35">Task5</text>
+<ellipse cx="82" cy="-90" rx="27" ry="18"/>
+<text text-anchor="middle" x="82" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">Task5</text>
 </g>
 <g class="m-edge">
 <title>Task2&#45;&gt;Task5</title>
-<path d="M57.6,-146.87C66.64,-137.73 78.14,-126.11 88.2,-115.93"/>
-<polygon points="90.35,-118.72 94.9,-109.15 85.38,-113.8 90.35,-118.72"/>
+<path d="M39.21,-145.46C46.26,-136.49 55.27,-125.02 63.21,-114.92"/>
+<polygon points="66.4,-117.52 69.83,-107.49 60.9,-113.19 66.4,-117.52"/>
 </g>
 <g class="m-edge">
 <title>Task3&#45;&gt;Task5</title>
-<path d="M135.22,-145.79C131.71,-137.8 127.46,-128.08 123.54,-119.14"/>
-<polygon points="126.37,-117.88 119.15,-110.13 119.96,-120.69 126.37,-117.88"/>
+<path d="M94.88,-144.05C93.05,-136.52 90.85,-127.44 88.78,-118.94"/>
+<polygon points="91.96,-118.17 86.2,-109.28 85.15,-119.82 91.96,-118.17"/>
 </g>
 <g class="m-node m-flat">
 <title>Task6</title>
-<ellipse cx="161.72" cy="-18.38" rx="41.94" ry="18.27"/>
-<text text-anchor="middle" x="161.72" y="-14.58">Task6</text>
+<ellipse cx="118" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="118" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">Task6</text>
 </g>
 <g class="m-edge">
 <title>Task4&#45;&gt;Task6</title>
-<path d="M200.63,-73.38C194.47,-64.83 186.85,-54.26 179.99,-44.74"/>
-<polygon points="182.4,-43.1 173.72,-37.04 176.73,-47.19 182.4,-43.1"/>
+<path d="M145.65,-72.76C141.38,-64.46 136.08,-54.15 131.27,-44.79"/>
+<polygon points="133.99,-43.44 126.3,-36.15 127.77,-46.64 133.99,-43.44"/>
 </g>
 <g class="m-edge">
 <title>Task5&#45;&gt;Task6</title>
-<path d="M123.57,-73.38C129.61,-64.83 137.08,-54.26 143.81,-44.74"/>
-<polygon points="147.04,-47.22 149.96,-37.04 141.33,-43.18 147.04,-47.22"/>
+<path d="M90.35,-72.76C94.62,-64.46 99.92,-54.15 104.73,-44.79"/>
+<polygon points="108.23,-46.64 109.7,-36.15 102.01,-43.44 108.23,-46.64"/>
 </g>
 </g>
 </svg>

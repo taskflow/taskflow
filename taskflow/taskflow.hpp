@@ -33,8 +33,8 @@
 // TF_VERSION / 100 % 1000 is the minor version
 // TF_VERSION / 100000 is the major version
 
-// current version: 3.5.0
-#define TF_VERSION 300500
+// current version: 3.6.0
+#define TF_VERSION 300600
 
 #define TF_MAJOR_VERSION TF_VERSION/100000
 #define TF_MINOR_VERSION TF_VERSION/100%1000

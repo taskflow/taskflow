@@ -73,7 +73,7 @@
             <dt id="a68689c79c7d794a8be2e1c181c818001">
               <span class="m-doc-wrap-bumper"><a href="#a68689c79c7d794a8be2e1c181c818001" class="m-doc-self">AsyncTask</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
-            <dd>constructs an empty async-task handle</dd>
+            <dd>constructs an empty task handle</dd>
             <dt id="af7d74066d5df4107c585a0a64451a34c">
               <span class="m-doc-wrap-bumper"><a href="#af7d74066d5df4107c585a0a64451a34c" class="m-doc-self">~AsyncTask</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
@@ -81,11 +81,11 @@
             <dt id="a52e155d7ea91649028bb28dc56351ee3">
               <span class="m-doc-wrap-bumper"><a href="#a52e155d7ea91649028bb28dc56351ee3" class="m-doc-self">AsyncTask</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; rhs) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
-            <dd>constructs an async-task that shares ownership of <code>rhs</code></dd>
+            <dd>constructs an task that shares ownership of <code>rhs</code></dd>
             <dt id="a48138b02dd808a8cfa1c9ef194a57b88">
               <span class="m-doc-wrap-bumper"><a href="#a48138b02dd808a8cfa1c9ef194a57b88" class="m-doc-self">AsyncTask</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp;&amp; rhs) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
-            <dd>move-constructs an async-task from <code>rhs</code></dd>
+            <dd>move-constructs an task from <code>rhs</code></dd>
           </dl>
         </section>
         <section id="pub-methods">
@@ -94,15 +94,23 @@
             <dt id="a48436c648bde656d4e5c6c7deac7b367">
               <span class="m-doc-wrap-bumper">auto <a href="#a48436c648bde656d4e5c6c7deac7b367" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; rhs) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
-            <dd>shares ownership of the async-task managed by <code>rhs</code></dd>
+            <dd>shares ownership of the task managed by <code>rhs</code></dd>
             <dt id="a1597b2cd541086c04da1854db9708bbc">
               <span class="m-doc-wrap-bumper">auto <a href="#a1597b2cd541086c04da1854db9708bbc" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp;&amp; rhs) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
-            <dd>move-assigns the async-task from <code>rhs</code></dd>
+            <dd>move-assigns the task from <code>rhs</code></dd>
             <dt id="ae42c70dc0c5edc6d58f47b346125fca3">
               <span class="m-doc-wrap-bumper">auto <a href="#ae42c70dc0c5edc6d58f47b346125fca3" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
             </dt>
-            <dd>checks if the async-task stores a non-null shared pointer</dd>
+            <dd>checks if the task stores a non-null shared pointer</dd>
+            <dt id="a7c12835577fbdc1bca3190cf92c78088">
+              <span class="m-doc-wrap-bumper">void <a href="#a7c12835577fbdc1bca3190cf92c78088" class="m-doc-self">reset</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd>release the ownership</dd>
+            <dt id="a826a2ea909094f5a26c2df876de58056">
+              <span class="m-doc-wrap-bumper">auto <a href="#a826a2ea909094f5a26c2df876de58056" class="m-doc-self">hash_value</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            </dt>
+            <dd>obtains a hash value of the underlying node</dd>
           </dl>
         </section>
       </div>

@@ -18,7 +18,7 @@ When the construct-and-run model of a task graph is not possible in your applica
 you can use tf::Executor::dependent_async and tf::Executor::silent_dependent_async
 to create a task graph dynamically.
 This type of parallelism is also known as <i>on-the-fly</i> task graph parallelism,
-which offers great flexibility for expressing dynamic task parallelism.
+which offers great flexibility for expressing dynamic task graph parallelism.
 The example below dynamically creates a task graph of
 four dependent async tasks, @c A, @c B, @c C, and @c D, where @c A runs before @c B and @c C
 and @c D runs after @c B and @c C:
@@ -79,6 +79,9 @@ executor.wait_for_all();
 
 @section SpecifyARagneOfDependentTasks Specify a Range of Dependent Tasks
 
+Both tf::Executor::dependent_async(F&& func, Tasks&&... tasks) and 
+tf::Executor::silent_dependent_async(F&& func, Tasks&&... tasks)
+accept an arbitrary number of tasks in the dependency list.
 If the number of dependent tasks is unknown at programming time,
 such as those relying on runtime variables,
 you can use the following two overloads 
@@ -139,12 +142,12 @@ tf::Executor executor;
 // main thread creates a dependent async task A
 tf::AsyncTask A = executor.silent_dependent_async([](){});
 
-// spawn a new thread to create an async task B depending on A
+// spawn a new thread to create an async task B that runs after A
 std::thread t1([&](){
   tf::AsyncTask B = executor.silent_dependent_async([](){}, A);
 });
 
-// spawn a new thread to create an async task C depending on A
+// spawn a new thread to create an async task C that runs after A
 std::thread t2([&](){
   tf::AsyncTask C = executor.silent_dependent_async([](){}, A);
 });
@@ -157,6 +160,7 @@ t2.join();
 Regardless of @c t1 runs before or after @c t2,
 the resulting topological order is always correct with the graph definition,
 either @c ABC or @c ACB.
+
 
 */
 

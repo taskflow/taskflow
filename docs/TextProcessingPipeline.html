@@ -225,77 +225,77 @@
 <span class="go">stage 3: i:4</span>
 <span class="go">stage 2: map = j:1 k:3 i:1 </span>
 <span class="go">stage 3: k:3</span>
-<span class="go">stopped</span></pre><p>We can see seven outputs at the third stage that show the most frequent character for each of the seven strings in order (<code>a:2</code>, <code>d:4</code>, <code>e:3</code>, <code>z:2</code>, <code>j:4</code>, <code>i:4</code>, <code>k:3</code>). The taskflow graph of this pipeline workload is shown below:</p><div class="m-graph"><svg style="width: 23.750rem; height: 17.625rem;" viewBox="0.00 0.00 380.00 281.77">
-<g transform="scale(1 1) rotate(0) translate(4 277.77)">
+<span class="go">stopped</span></pre><p>We can see seven outputs at the third stage that show the most frequent character for each of the seven strings in order (<code>a:2</code>, <code>d:4</code>, <code>e:3</code>, <code>z:2</code>, <code>j:4</code>, <code>i:4</code>, <code>k:3</code>). The taskflow graph of this pipeline workload is shown below:</p><div class="m-graph"><svg style="width: 29.800rem; height: 25.200rem;" viewBox="0.00 0.00 298.00 251.50">
+<g transform="scale(1 1) rotate(0) translate(4 247.5)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x7ffd7418c200</title>
-<polygon points="8,-8 8,-258.15 214,-258.15 214,-8 8,-8"/>
-<text text-anchor="middle" x="111" y="-241.35">Text Processing Pipeline</text>
+<polygon points="8,-8 8,-235.5 132,-235.5 132,-8 8,-8"/>
+<text text-anchor="middle" x="70" y="-222" font-family="Helvetica,sans-Serif" font-size="10.00">Text Processing Pipeline</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7ffd7418c110</title>
-<polygon points="222,-81.77 222,-265.77 364,-265.77 364,-81.77 222,-81.77"/>
-<text text-anchor="middle" x="293" y="-248.97">m1</text>
+<polygon points="140,-81 140,-235.5 282,-235.5 282,-81 140,-81"/>
+<text text-anchor="middle" x="211" y="-222" font-family="Helvetica,sans-Serif" font-size="10.00">m1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7bc4000142e8</title>
-<ellipse cx="111" cy="-205.77" rx="92.76" ry="18.27"/>
-<text text-anchor="middle" x="111" y="-201.97">starting pipeline</text>
+<ellipse cx="70" cy="-190.25" rx="49.85" ry="18"/>
+<text text-anchor="middle" x="70" y="-186.38" font-family="Helvetica,sans-Serif" font-size="10.00">starting pipeline</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7bc4000143d0</title>
-<polygon points="165.5,-125.77 60.5,-125.77 56.5,-121.77 56.5,-89.77 161.5,-89.77 165.5,-93.77 165.5,-125.77"/>
-<polyline points="161.5,-121.77 56.5,-121.77"/>
-<polyline points="161.5,-121.77 161.5,-89.77"/>
-<polyline points="161.5,-121.77 165.5,-125.77"/>
-<text text-anchor="middle" x="111" y="-103.97">pipeline [m1]</text>
+<polygon points="105.75,-125 38.25,-125 34.25,-121 34.25,-89 101.75,-89 105.75,-93 105.75,-125"/>
+<polyline points="101.75,-121 34.25,-121"/>
+<polyline points="101.75,-121 101.75,-89"/>
+<polyline points="101.75,-121 105.75,-125"/>
+<text text-anchor="middle" x="70" y="-103.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipeline [m1]</text>
 </g>
 <g class="m-edge">
 <title>p0x7bc4000142e8&#45;&gt;p0x7bc4000143d0</title>
-<path d="M111,-187.16C111,-173.09 111,-153.09 111,-136.82"/>
-<polygon points="114.5,-137.27 111,-127.27 107.5,-137.27 114.5,-137.27"/>
+<path d="M70,-172.02C70,-161.64 70,-148.17 70,-136.27"/>
+<polygon points="73.5,-136.49 70,-126.49 66.5,-136.49 73.5,-136.49"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7bc4000144b8</title>
-<ellipse cx="111" cy="-34.38" rx="95.42" ry="18.27"/>
-<text text-anchor="middle" x="111" y="-30.58">pipeline stopped</text>
+<ellipse cx="70" cy="-34" rx="51.18" ry="18"/>
+<text text-anchor="middle" x="70" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipeline stopped</text>
 </g>
 <g class="m-edge">
 <title>p0x7bc4000143d0&#45;&gt;p0x7bc4000144b8</title>
-<path d="M111,-89.49C111,-81.8 111,-72.54 111,-63.87"/>
-<polygon points="114.5,-64 111,-54 107.5,-64 114.5,-64"/>
+<path d="M70,-88.81C70,-81.05 70,-71.68 70,-62.95"/>
+<polygon points="73.5,-63.03 70,-53.03 66.5,-63.03 73.5,-63.03"/>
 </g>
 <g class="m-node">
 <title>p0x7bc400014030</title>
-<polygon points="291,-231.77 239,-205.77 291,-179.77 343,-205.77 291,-231.77"/>
-<text text-anchor="middle" x="291" y="-201.97">cond</text>
+<polygon points="191,-208.25 160.04,-190.25 191,-172.25 221.96,-190.25 191,-208.25"/>
+<text text-anchor="middle" x="191" y="-186.38" font-family="Helvetica,sans-Serif" font-size="10.00">cond</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7bc400014118</title>
-<polygon points="284,-125.77 230,-125.77 230,-121.77 226,-121.77 226,-117.77 230,-117.77 230,-97.77 226,-97.77 226,-93.77 230,-93.77 230,-89.77 284,-89.77 284,-125.77"/>
-<polyline points="230,-121.77 234,-121.77 234,-117.77 230,-117.77"/>
-<polyline points="230,-97.77 234,-97.77 234,-93.77 230,-93.77"/>
-<text text-anchor="middle" x="257" y="-103.97">rt&#45;0</text>
+<polygon points="202,-125 148,-125 148,-121 144,-121 144,-117 148,-117 148,-97 144,-97 144,-93 148,-93 148,-89 202,-89 202,-125"/>
+<polyline points="148,-121 152,-121 152,-117 148,-117"/>
+<polyline points="148,-97 152,-97 152,-93 148,-93"/>
+<text text-anchor="middle" x="175" y="-103.12" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;0</text>
 </g>
 <g class="m-edge">
 <title>p0x7bc400014030&#45;&gt;p0x7bc400014118</title>
-<path stroke-dasharray="5,2" d="M279.24,-185.62C275.19,-178.36 270.94,-169.89 268,-161.77 265.09,-153.75 262.86,-144.76 261.2,-136.49"/>
-<polygon points="264.49,-136.04 259.27,-126.82 257.6,-137.28 264.49,-136.04"/>
-<text text-anchor="middle" x="273" y="-148.97">0</text>
+<path stroke-dasharray="5,2" d="M187.92,-173.58C185.81,-162.88 182.96,-148.41 180.47,-135.79"/>
+<polygon points="183.77,-135.44 178.41,-126.31 176.91,-136.79 183.77,-135.44"/>
+<text text-anchor="middle" x="185.62" y="-144.75" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7bc400014200</title>
-<polygon points="356,-125.77 302,-125.77 302,-121.77 298,-121.77 298,-117.77 302,-117.77 302,-97.77 298,-97.77 298,-93.77 302,-93.77 302,-89.77 356,-89.77 356,-125.77"/>
-<polyline points="302,-121.77 306,-121.77 306,-117.77 302,-117.77"/>
-<polyline points="302,-97.77 306,-97.77 306,-93.77 302,-93.77"/>
-<text text-anchor="middle" x="329" y="-103.97">rt&#45;1</text>
+<polygon points="274,-125 220,-125 220,-121 216,-121 216,-117 220,-117 220,-97 216,-97 216,-93 220,-93 220,-89 274,-89 274,-125"/>
+<polyline points="220,-121 224,-121 224,-117 220,-117"/>
+<polyline points="220,-97 224,-97 224,-93 220,-93"/>
+<text text-anchor="middle" x="247" y="-103.12" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p0x7bc400014030&#45;&gt;p0x7bc400014200</title>
-<path stroke-dasharray="5,2" d="M299.43,-183.46C304.92,-169.6 312.14,-151.37 318.07,-136.39"/>
-<polygon points="321.69,-137.75 322.11,-127.17 315.18,-135.18 321.69,-137.75"/>
-<text text-anchor="middle" x="319" y="-148.97">1</text>
+<path stroke-dasharray="5,2" d="M199.51,-176.91C207.29,-165.62 219.05,-148.55 228.93,-134.22"/>
+<polygon points="232.29,-136.51 235.08,-126.29 226.53,-132.54 232.29,-136.51"/>
+<text text-anchor="middle" x="224.62" y="-144.75" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
 </g>
 </g>
 </svg>

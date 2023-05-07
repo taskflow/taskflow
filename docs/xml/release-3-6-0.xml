@@ -2,7 +2,7 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="release-3-6-0" kind="page">
     <compoundname>release-3-6-0</compoundname>
-    <title>Release 3.6.0 (Master)</title>
+    <title>Release 3.6.0 (2023/05/07)</title>
     <tableofcontents>
       <tocsect>
         <name>Download</name>
@@ -58,10 +58,10 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow 3.6.0 is the newest developing line to new features and improvements we continue to support. It is also where this documentation is generated. Many things are considered <emphasis>experimental</emphasis> and may change or break from time to time. While it may be difficult to be keep all things consistent when introducing new features, we continue to try our best to ensure backward compatibility.</para>
+<para>Taskflow 3.6.0 is the 7th release in the 3.x line! This release includes several new changes, such as dynamic task graph parallelism, improved parallel algorithms, modified GPU tasking interface, documentation, examples, and unit tests.</para>
 <sect1 id="release-3-6-0_1release-3-6-0_download">
 <title>Download</title>
-<para>To download the newest version of Taskflow, please clone the master branch from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para>
+<para>Taskflow 3.6.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.6.0">here</ulink>.</para>
 </sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_system_requirements">
 <title>System Requirements</title>
@@ -86,13 +86,14 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_summary">
 <title>Release Summary</title>
+<para>This release contains several changes to largely enhance the programmability of GPU tasking and standard parallel algorithms. More importantly, we have introduced a new dependent asynchronous tasking model that offers great flexibility for expressing dynamic task graph parallelism.</para>
 </sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_new_features">
 <title>New Features</title>
 <sect2 id="release-3-6-0_1release-3-6-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>Added new async methods to <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> that support dynamic task graph creation<itemizedlist>
+<listitem><para>Added new async methods to support dynamic task graph creation<itemizedlist>
 <listitem><para><ref refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kindref="member">tf::Executor::dependent_async(F&amp;&amp; func, Tasks&amp;&amp;... tasks)</ref></para>
 </listitem><listitem><para><ref refid="classtf_1_1Executor_1a01e51e564f5def845506bcf6b4bb1664" kindref="member">tf::Executor::dependent_async(F&amp;&amp; func, I first, I last)</ref></para>
 </listitem><listitem><para><ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">tf::Executor::silent_dependent_async(F&amp;&amp; func, Tasks&amp;&amp;... tasks)</ref></para>
@@ -128,8 +129,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1af0415d1fa5f36fee2405b0fcbf592fe0" kindref="member">tf::Taskflow::max_element(B first, E last, T&amp; result, C comp, P&amp;&amp; part)</ref></para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para>Modified <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> to a derived class from <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref></para>
-</listitem><listitem><para>Extended parallel algorithms to support different partitioner algorithms<itemizedlist>
+</listitem><listitem><para>Modified <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> as a derived class from <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref></para>
+</listitem><listitem><para>Extended parallel algorithms to support different partitioning algorithms<itemizedlist>
 <listitem><para><ref refid="classtf_1_1FlowBuilder_1a47ea2b35d0ec18afb35b45316939dc67" kindref="member">tf::Taskflow::for_each_index(B first, E last, S step, C callable, P&amp;&amp; part)</ref></para>
 </listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each(B first, E last, C callable, P&amp;&amp; part)</ref></para>
 </listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a822a75c597ae42cacc28d6f8cefb8c7c" kindref="member">tf::Taskflow::transform(B first1, E last1, O d_first, C c, P&amp;&amp; part)</ref></para>
@@ -138,7 +139,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a3451d6d69aceb775450e41ebe169e4b7" kindref="member">tf::Taskflow::transform_reduce(B first, E last, T&amp; result, BOP bop, UOP uop, P&amp;&amp; part)</ref></para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para>Improved the performance of <ref refid="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" kindref="member">tf::Taskflow::sort</ref> for POD</para>
+</listitem><listitem><para>Improved the performance of <ref refid="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" kindref="member">tf::Taskflow::sort</ref> for plain-old-data (POD) type</para>
 </listitem><listitem><para>Extended task-parallel pipeline to handle token dependencies<itemizedlist>
 <listitem><para><ref refid="TaskParallelPipelineWithTokenDependencies" kindref="compound">Task-parallel Pipeline with Token Dependencies</ref></para>
 </listitem></itemizedlist>
@@ -159,11 +160,15 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect2>
 <sect2 id="release-3-6-0_1release-3-6-0_utilities">
 <title>Utilities</title>
+<para><itemizedlist>
+<listitem><para>Added all_same templates to check if a parameter pack has the same type</para>
+</listitem></itemizedlist>
+</para>
 </sect2>
 <sect2 id="release-3-6-0_1release-3-6-0_profiler">
 <title>Taskflow Profiler (TFProf)</title>
 <para><itemizedlist>
-<listitem><para>removed cudaFlow and syclFlow tasks</para>
+<listitem><para>Removed cudaFlow and syclFlow tasks</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
@@ -318,6 +323,13 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_miscellaneous_items">
 <title>Miscellaneous Items</title>
+<para>We have published Taskflow in the following venues:</para>
+<para><itemizedlist>
+<listitem><para>Dian-Lun Lin, Yanqing Zhang, Haoxing Ren, Shih-Hsin Wang, Brucek Khailany and Tsung-Wei Huang, "<ulink url="https://tsung-wei-huang.github.io/papers/2023-dac.pdf">GenFuzz: GPU-accelerated Hardware Fuzzing using Genetic Algorithm with Multiple Inputs</ulink>," <emphasis>ACM/IEEE Design Automation Conference (DAC)</emphasis>, San Francisco, CA, 2023</para>
+</listitem><listitem><para>Tsung-Wei Huang, "<ulink url="https://tsung-wei-huang.github.io/papers/ipdps23.pdf">qTask: Task-parallel Quantum Circuit Simulation with Incrementality</ulink>," <emphasis>IEEE International Parallel and Distributed Processing Symposium (IPDPS)</emphasis>, St. Petersburg, Florida, 2023</para>
+</listitem><listitem><para>Elmir Dzaka, Dian-Lun Lin, and Tsung-Wei Huang, "<ulink url="https://tsung-wei-huang.github.io/papers/pdco-23.pdf">Parallel And-Inverter Graph Simulation Using a Task-graph Computing System</ulink>," <emphasis>IEEE International Parallel and Distributed Processing Symposium Workshop (IPDPSW)</emphasis>, St. Petersburg, Florida, 2023</para>
+</listitem></itemizedlist>
+</para>
 <para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you intend to collaborate with us on using Taskflow in your scientific computing projects. </para>
 </sect1>
     </detaileddescription>
