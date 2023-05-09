@@ -1,225 +1,117 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="contributors" kind="page">
     <compoundname>contributors</compoundname>
     <title>Contributors</title>
-    <tableofcontents>
-      <tocsect>
-        <name>Thank You for Developing Taskflow</name>
-        <reference>contributors_1ThankYouForDevelopingTaskflow</reference>
-    </tocsect>
-      <tocsect>
-        <name>Thank You for Using Taskflow</name>
-        <reference>contributors_1ThankYouForUsingTaskflow</reference>
-    </tocsect>
-    </tableofcontents>
+    <tableofcontents/>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <sect1 id="contributors_1ThankYouForDevelopingTaskflow">
 <title>Thank You for Developing Taskflow</title>
-<para>We are grateful for the following contributors (alphabetic order) to the Taskflow project:</para>
-<para><itemizedlist>
-<listitem><para><ulink url="https://github.com/Neumann-A">Alexander Neumann</ulink>: made Taskflow importable from external CMake projects </para>
-</listitem>
-<listitem><para><ulink url="https://antonysigma.github.io/">Antony Chan</ulink>: added unit tests for parallel-transform algorithms </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/aolofsson">Andreas Olofsson</ulink>: supported the Taskflow project through the DARPA IDEA program </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/boxerab">Aaron Boxer</ulink>: fixed compiler warning caused by unsigned-signed conversion </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/bkmgit">Benson Muite</ulink>: fixed compilation errors of the wavefront benchmark </para>
-</listitem>
-<listitem><para><ulink url="https://cheng-hsiang-chiu.github.io/">Cheng-Hsiang Chiu</ulink>: improved the documentation, fixes typos, and test code examples </para>
-</listitem>
-<listitem><para><ulink url="https://www.linkedin.com/in/chandrahas-pundru-04552916a/">Chandrahas Pundru</ulink>: implemented cancellation of submitted taskflows </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/clin99">Chun-Xun Lin</ulink>: co-created the Taskflow project and designed the core functionalities </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/craffael">Craffael</ulink>: improved the CMake to allow relocatable installation </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/danielytics">Dan Kersten</ulink>: designed an interface to allow customizing worker behaviors upon their creation in an executor </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/musteresel">Daniel Jour</ulink>: improved cmake through out-of-tree builds and designed the semaphore interface </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/dian-lun-lin">Dian-Lun Lin</ulink>: applied Taskflow to win the champion award of the IEEE HPEC 2020 Graph Challenge </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/fstrugar">Filip Strugar</ulink>: fixed the bugs in fire-and-get taskflow execution and parallel algorithms </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/ForgeMistress">Foge Mistress</ulink>: helped design the executor interface to avoid over-subscribed threads </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/largerock">George Price</ulink>: improved the documentation pages and fixed several typos </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/totalgee">Glen Fraser</ulink>: contributed to the design of executor and threadpool </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/guannan-git">Guannan Guo</ulink>: benchmarked different scheduling algorithms and architectures </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/hjxy2012">Hjxy2012</ulink>: fixed the compilation error in nvcc due to removed features in C++17 </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/xq114">Hoildkv</ulink>: fixed documentation errors in explaining the observer interface of executor </para>
-</listitem>
-<listitem><para><ulink url="https://ossia.io/">Jean Michael</ulink>: integrated Taskflow to the OSSIA project and reported feedback in comparison to TBB </para>
-</listitem>
-<listitem><para><ulink url="https://jw-liu.xyz/">Jiawei Liu</ulink>: fixed typos in the documentation </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/junlinmessi">Junlin Huang</ulink>: fixed the erroneous template argument in serializer and deserializer </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/KingDuckZ">KingDuckZ</ulink>: helped discover memory leak in the object pool </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/Levi-Armstrong">Levi Armstrong</ulink>: added threads target to the CMake file as an interface library </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/LilyWangL">Lily</ulink>: helped added Taskflow to the MS vcpkg project </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/burgholzer">Lukas Burgholzer</ulink>: improved the MAC OS compatibility with the standard variant library </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/lrm77">Luke Majors</ulink>: implemented a sanitizer algorithm to sanitize deadlock control-flow tasks </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/McKayMower">McKay Mower</ulink>: implemented a sanitizer algorithm to sanitize non-reachable control-flow tasks </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/mratsim">Mamy Ratsimbazafy</ulink>: fixed the reference link error in the documentation </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/Croolman">Martin Krutak</ulink>: fixed min/max macros expansion error when windows.h header is included </para>
-</listitem>
-<listitem><para><ulink url="https://ece.illinois.edu/about/directory/faculty/mdfwong">Martin Wong</ulink>: supported the Taskflow project development through NSF and DARPA grant </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/mpowelson">Matthew Powelson:</ulink> fixed the installation error in the cmake script </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/Maxi-git">Maxi-git:</ulink> improved the scheduler by removing redundant iterations in the busy stealing loop </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/Notallthatevil">Nate</ulink>: fixec the compilation error of priority task queue on MS platforms </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/netcan">Netcan</ulink>: designed a domain-specific graph language to simplify the creation of taskflows </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/NanXiao">Nan Xiao</ulink>: fixed compilation error of unit tests on the Arch platform </para>
-</listitem>
-<listitem><para><ulink url="https://www.linkedin.com/in/ojassm25/">Ojas Mithbavkar</ulink>: implemented cancellation of submitted taskflows </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/pancpp">Pancpp</ulink>: removed hard-coded installation prefix with relative install path </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/paolobolzoni">Paolo Bolzoni</ulink>: helped remove extraneous semicolons to suppress extra warning </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/patrikhuber">Patrik Huber</ulink>: fixed the typos of documentation </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/p12tic">Povilas Kanapickas</ulink>: helped design a new scheduling invariant to avoid busy stealing </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/PhrygianGates">Zizheng Xiong</ulink>: added data-parallel programming models through GSoC 2022 </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/Pursche">Pursche</ulink>: fixed compilation warning on MSVC </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/remz1337">Remi Bedard-Couture</ulink>: added big object compilation support on MSVC </para>
-</listitem>
-<listitem><para><ulink url="https://soonhokong.github.io/">Soonho Kong</ulink>: fixed the compilation warning of unused lambda variables </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/Milerius">Sztergbaum Roman</ulink>: improved the CMake file to remove global setting </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/tjhei">Timo Heister</ulink>: fixed documentation typos and integrated Taskflow to the deal.ii project </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/trevor-vincent">Trevor Vincent</ulink>: added support for the Intel C++ compiler (v19+) </para>
-</listitem>
-<listitem><para><ulink url="https://tsung-wei-huang.github.io/">Tsung-Wei Huang</ulink>: created the Taskflow project and designed the core functionalities </para>
-</listitem>
-<listitem><para><ulink url="https://www.linkedin.com/in/vedanta-krishna-bhutani-96035317a/">Vedanta Krishna Bhutani</ulink>: implemented cancellation of submitted taskflows </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/Endilll">Vlad Serebrennikov</ulink>: implemented the interface to attach user data in a task </para>
-</listitem>
-<listitem><para><ulink url="https://vedran.miletic.net/">Vedran Miletic</ulink>: patched the OS detection utility to include Solaris and illumos </para>
-</listitem>
-<listitem><para><ulink url="http://blog.mosra.cz/">Vladimir Von­drus</ulink>: helped modernize Taskflow handbook using m.css and make pages mobile-friendly </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/innermous">Vladyslav</ulink>: fixed comment errors in README.md and examples </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/Ya-Za">Yasin Zamani</ulink>: benchmarked the parallel sort with the TBB baseline </para>
-</listitem>
-<listitem><para><ulink url="http://yibolin.com/">Yibo Lin</ulink>: helped design the interface of conditional tasking </para>
-</listitem>
-<listitem><para><ulink url="https://guozz.cn/">Zizheng Guo</ulink>: applied Taskflow to speed up VLSI timing analysis and shared his feedback</para>
-</listitem>
+<para>We are grateful for the following contributors (alphabetic order) to the Taskflow project:</para><para><itemizedlist>
+<listitem><para><ulink url="https://github.com/Neumann-A">Alexander Neumann</ulink>: made Taskflow importable from external CMake projects </para></listitem>
+<listitem><para><ulink url="https://antonysigma.github.io/">Antony Chan</ulink>: added unit tests for parallel-transform algorithms </para></listitem>
+<listitem><para><ulink url="https://github.com/aolofsson">Andreas Olofsson</ulink>: supported the Taskflow project through the DARPA IDEA program </para></listitem>
+<listitem><para><ulink url="https://github.com/boxerab">Aaron Boxer</ulink>: fixed compiler warning caused by unsigned-signed conversion </para></listitem>
+<listitem><para><ulink url="https://github.com/bkmgit">Benson Muite</ulink>: fixed compilation errors of the wavefront benchmark </para></listitem>
+<listitem><para><ulink url="https://cheng-hsiang-chiu.github.io/">Cheng-Hsiang Chiu</ulink>: improved the documentation, fixes typos, and test code examples </para></listitem>
+<listitem><para><ulink url="https://www.linkedin.com/in/chandrahas-pundru-04552916a/">Chandrahas Pundru</ulink>: implemented cancellation of submitted taskflows </para></listitem>
+<listitem><para><ulink url="https://github.com/clin99">Chun-Xun Lin</ulink>: co-created the Taskflow project and designed the core functionalities </para></listitem>
+<listitem><para><ulink url="https://github.com/craffael">Craffael</ulink>: improved the CMake to allow relocatable installation </para></listitem>
+<listitem><para><ulink url="https://github.com/danielytics">Dan Kersten</ulink>: designed an interface to allow customizing worker behaviors upon their creation in an executor </para></listitem>
+<listitem><para><ulink url="https://github.com/musteresel">Daniel Jour</ulink>: improved cmake through out-of-tree builds and designed the semaphore interface </para></listitem>
+<listitem><para><ulink url="https://github.com/dian-lun-lin">Dian-Lun Lin</ulink>: applied Taskflow to win the champion award of the IEEE HPEC 2020 Graph Challenge </para></listitem>
+<listitem><para><ulink url="https://github.com/fstrugar">Filip Strugar</ulink>: fixed the bugs in fire-and-get taskflow execution and parallel algorithms </para></listitem>
+<listitem><para><ulink url="https://github.com/ForgeMistress">Foge Mistress</ulink>: helped design the executor interface to avoid over-subscribed threads </para></listitem>
+<listitem><para><ulink url="https://github.com/largerock">George Price</ulink>: improved the documentation pages and fixed several typos </para></listitem>
+<listitem><para><ulink url="https://github.com/totalgee">Glen Fraser</ulink>: contributed to the design of executor and threadpool </para></listitem>
+<listitem><para><ulink url="https://github.com/guannan-git">Guannan Guo</ulink>: benchmarked different scheduling algorithms and architectures </para></listitem>
+<listitem><para><ulink url="https://github.com/hjxy2012">Hjxy2012</ulink>: fixed the compilation error in nvcc due to removed features in C++17 </para></listitem>
+<listitem><para><ulink url="https://github.com/xq114">Hoildkv</ulink>: fixed documentation errors in explaining the observer interface of executor </para></listitem>
+<listitem><para><ulink url="https://ossia.io/">Jean Michael</ulink>: integrated Taskflow to the OSSIA project and reported feedback in comparison to TBB </para></listitem>
+<listitem><para><ulink url="https://jw-liu.xyz/">Jiawei Liu</ulink>: fixed typos in the documentation </para></listitem>
+<listitem><para><ulink url="https://github.com/junlinmessi">Junlin Huang</ulink>: fixed the erroneous template argument in serializer and deserializer </para></listitem>
+<listitem><para><ulink url="https://github.com/KingDuckZ">KingDuckZ</ulink>: helped discover memory leak in the object pool </para></listitem>
+<listitem><para><ulink url="https://github.com/Levi-Armstrong">Levi Armstrong</ulink>: added threads target to the CMake file as an interface library </para></listitem>
+<listitem><para><ulink url="https://github.com/LilyWangL">Lily</ulink>: helped added Taskflow to the MS vcpkg project </para></listitem>
+<listitem><para><ulink url="https://github.com/burgholzer">Lukas Burgholzer</ulink>: improved the MAC OS compatibility with the standard variant library </para></listitem>
+<listitem><para><ulink url="https://github.com/lrm77">Luke Majors</ulink>: implemented a sanitizer algorithm to sanitize deadlock control-flow tasks </para></listitem>
+<listitem><para><ulink url="https://github.com/McKayMower">McKay Mower</ulink>: implemented a sanitizer algorithm to sanitize non-reachable control-flow tasks </para></listitem>
+<listitem><para><ulink url="https://github.com/mratsim">Mamy Ratsimbazafy</ulink>: fixed the reference link error in the documentation </para></listitem>
+<listitem><para><ulink url="https://github.com/Croolman">Martin Krutak</ulink>: fixed min/max macros expansion error when windows.h header is included </para></listitem>
+<listitem><para><ulink url="https://ece.illinois.edu/about/directory/faculty/mdfwong">Martin Wong</ulink>: supported the Taskflow project development through NSF and DARPA grant </para></listitem>
+<listitem><para><ulink url="https://github.com/mpowelson">Matthew Powelson:</ulink> fixed the installation error in the cmake script </para></listitem>
+<listitem><para><ulink url="https://github.com/Maxi-git">Maxi-git:</ulink> improved the scheduler by removing redundant iterations in the busy stealing loop </para></listitem>
+<listitem><para><ulink url="https://github.com/Notallthatevil">Nate</ulink>: fixec the compilation error of priority task queue on MS platforms </para></listitem>
+<listitem><para><ulink url="https://github.com/netcan">Netcan</ulink>: designed a domain-specific graph language to simplify the creation of taskflows </para></listitem>
+<listitem><para><ulink url="https://github.com/NanXiao">Nan Xiao</ulink>: fixed compilation error of unit tests on the Arch platform </para></listitem>
+<listitem><para><ulink url="https://www.linkedin.com/in/ojassm25/">Ojas Mithbavkar</ulink>: implemented cancellation of submitted taskflows </para></listitem>
+<listitem><para><ulink url="https://github.com/pancpp">Pancpp</ulink>: removed hard-coded installation prefix with relative install path </para></listitem>
+<listitem><para><ulink url="https://github.com/paolobolzoni">Paolo Bolzoni</ulink>: helped remove extraneous semicolons to suppress extra warning </para></listitem>
+<listitem><para><ulink url="https://github.com/patrikhuber">Patrik Huber</ulink>: fixed the typos of documentation </para></listitem>
+<listitem><para><ulink url="https://github.com/p12tic">Povilas Kanapickas</ulink>: helped design a new scheduling invariant to avoid busy stealing </para></listitem>
+<listitem><para><ulink url="https://github.com/qbojj">qbojj</ulink>: helped fixed documentation errors related to dependent asynchronous tasking </para></listitem>
+<listitem><para><ulink url="https://github.com/PhrygianGates">Zizheng Xiong</ulink>: added data-parallel programming models through GSoC 2022 </para></listitem>
+<listitem><para><ulink url="https://github.com/Pursche">Pursche</ulink>: fixed compilation warning on MSVC </para></listitem>
+<listitem><para><ulink url="https://github.com/remz1337">Remi Bedard-Couture</ulink>: added big object compilation support on MSVC </para></listitem>
+<listitem><para><ulink url="https://soonhokong.github.io/">Soonho Kong</ulink>: fixed the compilation warning of unused lambda variables </para></listitem>
+<listitem><para><ulink url="https://github.com/Milerius">Sztergbaum Roman</ulink>: improved the CMake file to remove global setting </para></listitem>
+<listitem><para><ulink url="https://github.com/tjhei">Timo Heister</ulink>: fixed documentation typos and integrated Taskflow to the deal.ii project </para></listitem>
+<listitem><para><ulink url="https://github.com/trevor-vincent">Trevor Vincent</ulink>: added support for the Intel C++ compiler (v19+) </para></listitem>
+<listitem><para><ulink url="https://tsung-wei-huang.github.io/">Tsung-Wei Huang</ulink>: created the Taskflow project and designed the core functionalities </para></listitem>
+<listitem><para><ulink url="https://www.linkedin.com/in/vedanta-krishna-bhutani-96035317a/">Vedanta Krishna Bhutani</ulink>: implemented cancellation of submitted taskflows </para></listitem>
+<listitem><para><ulink url="https://github.com/Endilll">Vlad Serebrennikov</ulink>: implemented the interface to attach user data in a task </para></listitem>
+<listitem><para><ulink url="https://vedran.miletic.net/">Vedran Miletic</ulink>: patched the OS detection utility to include Solaris and illumos </para></listitem>
+<listitem><para><ulink url="http://blog.mosra.cz/">Vladimir Von­drus</ulink>: helped modernize Taskflow handbook using m.css and make pages mobile-friendly </para></listitem>
+<listitem><para><ulink url="https://github.com/innermous">Vladyslav</ulink>: fixed comment errors in README.md and examples </para></listitem>
+<listitem><para><ulink url="https://github.com/Ya-Za">Yasin Zamani</ulink>: benchmarked the parallel sort with the TBB baseline </para></listitem>
+<listitem><para><ulink url="http://yibolin.com/">Yibo Lin</ulink>: helped design the interface of conditional tasking </para></listitem>
+<listitem><para><ulink url="https://guozz.cn/">Zizheng Guo</ulink>: applied Taskflow to speed up VLSI timing analysis and shared his feedback</para></listitem>
 </itemizedlist>
-Please <ulink url="https://taskflow.github.io/#tag_contact">contact us</ulink> if we forgot your name!</para>
-</sect1>
+Please <ulink url="https://taskflow.github.io/#tag_contact">contact us</ulink> if we forgot your name!</para></sect1>
 <sect1 id="contributors_1ThankYouForUsingTaskflow">
 <title>Thank You for Using Taskflow</title>
-<para>We are grateful for the following organizations and projects that are using Taskflow:</para>
-<para><itemizedlist>
-<listitem><para><ulink url="https://github.com/OpenTimer/OpenTimer">OpenTimer</ulink>: A high-performance timing analysis tool for VLSI designs </para>
-</listitem>
-<listitem><para><ulink url="https://ossia.io/">OSSIA</ulink>: An open-source software system for interactive applications </para>
-</listitem>
-<listitem><para><ulink url="https://novuscore.org/">NovousCore</ulink>: An emulating project for World of Warcraft (Wrath of the Lich King) </para>
-</listitem>
-<listitem><para><ulink url="https://www.dealii.org/">deal.II</ulink>: A C++ software library to support the creation of finite element code </para>
-</listitem>
-<listitem><para><ulink url="https://www.mydatamodels.com/">MyDataModels</ulink>: An online platform for self-service machine learning for small data </para>
-</listitem>
-<listitem><para><ulink url="https://www.vlsisystemdesign.com/">VSD</ulink>: An online education platform for VLSI system design using open-source software </para>
-</listitem>
-<listitem><para><ulink url="https://theopenroadproject.org/">OpenRoad</ulink>: A 24-hour Fully Automatic Layout Generation Flow </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/open-ephys">Open Ephys</ulink>: Open-source tools for neuroscience researchw </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/masc-ucsc/livehd">LiveHD</ulink>: An infrastructure designed for Live Hardware Development </para>
-</listitem>
-<listitem><para><ulink url="https://rosindustrial.org/ric">ROS-Industrial Consortium</ulink>: Organization for advanced factory automation </para>
-</listitem>
-<listitem><para><ulink url="http://www.revealtech.ai/">revealtech.ai</ulink>: Mobile application with focused and intelligent analytics on the edge </para>
-</listitem>
-<listitem><para><ulink url="https://intsights.com/">PyRepScan</ulink>: A Git Repository Leaks Scanner Python Library written in C++ </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/dian-lun-lin/SNIG">SNIG</ulink>: An open-source inference engine for large sparse deep neural network </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/The-OpenROAD-Project/OpenPhySyn">OpenPhySyn</ulink>: A plugin-based physical synthesis optimization kit as part of the OpenRoad flow </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/LPMP/LPMP">LPMP</ulink>: A C++ framework for developing scalable Lagrangian decomposition solvers </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/GrokImageCompression/grok">GROK</ulink>: World&apos;s Leading Open Source JPEG 2000 Codec </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/Ravbug/RavEngine">RavEngine</ulink>: A fast, easy to use C++17 3D game library for modern computers </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/erri120/rpgmpacker">RPGMPacker</ulink>: CLI program for packaging RPG Maker games in an automated build/deploy pipeline. </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/JayXon/Leanify">Leanify</ulink>: A lightweight lossless file minifier and optimizer </para>
-</listitem>
-<listitem><para><ulink url="https://www.xanadu.ai/">Xanadu AI</ulink>: Accelerate simulation using quantum computing </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/heal-research/operon">Operon</ulink>: Modern C++ framework for Symbolic Regression using Genetic Programming </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/ExplosionEngine/Explosion">Explosion</ulink>: A modern cross-platform game engine </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/coder137/build_in_cpp">BuildCC</ulink>: An alternative to Makefiles while using the feature rich C++ language. </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/JetBrains-Research/spla">SPLA</ulink>: Generalized sparse linear algebra framework for multi-GPU computations. </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/egorodet/MethaneKit">MethaneKit</ulink>: Modern 3D graphics rendering abstraction API and cross-platform application framework </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/GameTechDev/XeGTAO">XeGTAO</ulink>: Implementation of the Practical Realtime Strategies for Accurate Indirect Occlusion </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/fragcolor-xyz/chainblocks">ChainBlocks</ulink>: A scripting tool to build tools </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/maxbachmann/RapidFuzz">RapidFuxx</ulink>: Rapid fuzzy string matching in Python using various string metrics </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/KomodoPlatform/atomicDEX-Desktop">AtomicDEX</ulink>: Secure wallet and decentralized exchange rolled into one application </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/intel-ai/oox">OOX</ulink>: Out-of-order task execution library in modern C++ </para>
-</listitem>
-<listitem><para><ulink url="https://reagent.ai/">ReAgent</ulink>: An open end-to-end platform for applied reinforcement learning developed and used at Facebook </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/GauravDawra/Beast">Beast-Build</ulink>: A build system built for speed and power </para>
-</listitem>
-<listitem><para><ulink url="https://gdimitrak.github.io/papers/taskflow-tcad22.pdf">Gate Sizing</ulink>: A task-parallel gate sizing algorithm for VLSI design automation </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/fragcolor-xyz/shards">Shards</ulink>: A scripting tool to build tools </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/rapidsai/cucim">RAPIDS CuCim</ulink>: An open-source, accelerated computer vision and image processing software library </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/tesseract-robotics/tesseract">Tesseract Robotics</ulink>: Lightweight robotics motion planning environment </para>
-</listitem>
-<listitem><para><ulink url="https://github.com/NcStudios/NcEngine">NcEngine</ulink>: 3D game engine written in C++20 targeting Windows</para>
-</listitem>
+<para>We are grateful for the following organizations and projects that are using Taskflow:</para><para><itemizedlist>
+<listitem><para><ulink url="https://github.com/OpenTimer/OpenTimer">OpenTimer</ulink>: A high-performance timing analysis tool for VLSI designs </para></listitem>
+<listitem><para><ulink url="https://ossia.io/">OSSIA</ulink>: An open-source software system for interactive applications </para></listitem>
+<listitem><para><ulink url="https://novuscore.org/">NovousCore</ulink>: An emulating project for World of Warcraft (Wrath of the Lich King) </para></listitem>
+<listitem><para><ulink url="https://www.dealii.org/">deal.II</ulink>: A C++ software library to support the creation of finite element code </para></listitem>
+<listitem><para><ulink url="https://www.mydatamodels.com/">MyDataModels</ulink>: An online platform for self-service machine learning for small data </para></listitem>
+<listitem><para><ulink url="https://www.vlsisystemdesign.com/">VSD</ulink>: An online education platform for VLSI system design using open-source software </para></listitem>
+<listitem><para><ulink url="https://theopenroadproject.org/">OpenRoad</ulink>: A 24-hour Fully Automatic Layout Generation Flow </para></listitem>
+<listitem><para><ulink url="https://github.com/open-ephys">Open Ephys</ulink>: Open-source tools for neuroscience researchw </para></listitem>
+<listitem><para><ulink url="https://github.com/masc-ucsc/livehd">LiveHD</ulink>: An infrastructure designed for Live Hardware Development </para></listitem>
+<listitem><para><ulink url="https://rosindustrial.org/ric">ROS-Industrial Consortium</ulink>: Organization for advanced factory automation </para></listitem>
+<listitem><para><ulink url="http://www.revealtech.ai/">revealtech.ai</ulink>: Mobile application with focused and intelligent analytics on the edge </para></listitem>
+<listitem><para><ulink url="https://intsights.com/">PyRepScan</ulink>: A Git Repository Leaks Scanner Python Library written in C++ </para></listitem>
+<listitem><para><ulink url="https://github.com/dian-lun-lin/SNIG">SNIG</ulink>: An open-source inference engine for large sparse deep neural network </para></listitem>
+<listitem><para><ulink url="https://github.com/The-OpenROAD-Project/OpenPhySyn">OpenPhySyn</ulink>: A plugin-based physical synthesis optimization kit as part of the OpenRoad flow </para></listitem>
+<listitem><para><ulink url="https://github.com/LPMP/LPMP">LPMP</ulink>: A C++ framework for developing scalable Lagrangian decomposition solvers </para></listitem>
+<listitem><para><ulink url="https://github.com/GrokImageCompression/grok">GROK</ulink>: World&apos;s Leading Open Source JPEG 2000 Codec </para></listitem>
+<listitem><para><ulink url="https://github.com/Ravbug/RavEngine">RavEngine</ulink>: A fast, easy to use C++17 3D game library for modern computers </para></listitem>
+<listitem><para><ulink url="https://github.com/erri120/rpgmpacker">RPGMPacker</ulink>: CLI program for packaging RPG Maker games in an automated build/deploy pipeline. </para></listitem>
+<listitem><para><ulink url="https://github.com/JayXon/Leanify">Leanify</ulink>: A lightweight lossless file minifier and optimizer </para></listitem>
+<listitem><para><ulink url="https://www.xanadu.ai/">Xanadu AI</ulink>: Accelerate simulation using quantum computing </para></listitem>
+<listitem><para><ulink url="https://github.com/heal-research/operon">Operon</ulink>: Modern C++ framework for Symbolic Regression using Genetic Programming </para></listitem>
+<listitem><para><ulink url="https://github.com/ExplosionEngine/Explosion">Explosion</ulink>: A modern cross-platform game engine </para></listitem>
+<listitem><para><ulink url="https://github.com/coder137/build_in_cpp">BuildCC</ulink>: An alternative to Makefiles while using the feature rich C++ language. </para></listitem>
+<listitem><para><ulink url="https://github.com/JetBrains-Research/spla">SPLA</ulink>: Generalized sparse linear algebra framework for multi-GPU computations. </para></listitem>
+<listitem><para><ulink url="https://github.com/egorodet/MethaneKit">MethaneKit</ulink>: Modern 3D graphics rendering abstraction API and cross-platform application framework </para></listitem>
+<listitem><para><ulink url="https://github.com/GameTechDev/XeGTAO">XeGTAO</ulink>: Implementation of the Practical Realtime Strategies for Accurate Indirect Occlusion </para></listitem>
+<listitem><para><ulink url="https://github.com/fragcolor-xyz/chainblocks">ChainBlocks</ulink>: A scripting tool to build tools </para></listitem>
+<listitem><para><ulink url="https://github.com/maxbachmann/RapidFuzz">RapidFuxx</ulink>: Rapid fuzzy string matching in Python using various string metrics </para></listitem>
+<listitem><para><ulink url="https://github.com/KomodoPlatform/atomicDEX-Desktop">AtomicDEX</ulink>: Secure wallet and decentralized exchange rolled into one application </para></listitem>
+<listitem><para><ulink url="https://github.com/intel-ai/oox">OOX</ulink>: Out-of-order task execution library in modern C++ </para></listitem>
+<listitem><para><ulink url="https://reagent.ai/">ReAgent</ulink>: An open end-to-end platform for applied reinforcement learning developed and used at Facebook </para></listitem>
+<listitem><para><ulink url="https://github.com/GauravDawra/Beast">Beast-Build</ulink>: A build system built for speed and power </para></listitem>
+<listitem><para><ulink url="https://gdimitrak.github.io/papers/taskflow-tcad22.pdf">Gate Sizing</ulink>: A task-parallel gate sizing algorithm for VLSI design automation </para></listitem>
+<listitem><para><ulink url="https://github.com/fragcolor-xyz/shards">Shards</ulink>: A scripting tool to build tools </para></listitem>
+<listitem><para><ulink url="https://github.com/rapidsai/cucim">RAPIDS CuCim</ulink>: An open-source, accelerated computer vision and image processing software library </para></listitem>
+<listitem><para><ulink url="https://github.com/tesseract-robotics/tesseract">Tesseract Robotics</ulink>: Lightweight robotics motion planning environment </para></listitem>
+<listitem><para><ulink url="https://github.com/NcStudios/NcEngine">NcEngine</ulink>: 3D game engine written in C++20 targeting Windows</para></listitem>
 </itemizedlist>
-... more at <ulink url="https://github.com/search?q=taskflow&amp;type=Code">GitHub</ulink>.</para>
-<para>Please <ulink url="https://taskflow.github.io/#tag_contact">contact us</ulink> if we forgot your name! </para>
-</sect1>
+... more at <ulink url="https://github.com/search?q=taskflow&amp;type=Code">GitHub</ulink>.</para><para>Please <ulink url="https://taskflow.github.io/#tag_contact">contact us</ulink> if we forgot your name! </para></sect1>
     </detaileddescription>
-    <location file="contributing/contributors.dox"/>
   </compounddef>
 </doxygen>

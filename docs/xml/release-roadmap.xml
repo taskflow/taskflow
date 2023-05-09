@@ -1,103 +1,47 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="release-roadmap" kind="page">
     <compoundname>release-roadmap</compoundname>
     <title>Release Roadmap</title>
-    <tableofcontents>
-      <tocsect>
-        <name>Milestone Summary</name>
-        <reference>release-roadmap_1MilestoneSummary</reference>
-    </tocsect>
-    </tableofcontents>
+    <tableofcontents/>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>This page describes the upcoming milestones of the Taskflow project.</para>
-<para><image type="html" name="roadmap.png"></image>
-</para>
-<sect1 id="release-roadmap_1MilestoneSummary">
+<para>This page describes the upcoming milestones of the Taskflow project.</para><para><image type="html" name="roadmap.png"></image>
+</para><sect1 id="release-roadmap_1MilestoneSummary">
 <title>Milestone Summary</title>
-<para>The table below summarizes the milestones of Taskflow we plan to achieve by the end of 2021. Each milestone releases technical items that significantly enhances the capability of Taskflow.</para>
-<para> <table rows="15" cols="3"><row>
-<entry thead="yes" align='center'><para>Milestone   </para>
-</entry><entry thead="yes" align='center'><para>Release   </para>
-</entry><entry thead="yes" align='center'><para>Time of Arrival    </para>
-</entry></row>
+<para>The table below summarizes the milestones of Taskflow we plan to achieve by the end of 2021. Each milestone releases technical items that significantly enhances the capability of Taskflow.</para><para> <table rows="15" cols="3"><row>
+<entry thead="yes"><para>Milestone  </para></entry><entry thead="yes"><para>Release  </para></entry><entry thead="yes"><para>Time of Arrival   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Migrate the codebase to C++20   </para>
-</entry><entry thead="no" align='center'><para>v4.x   </para>
-</entry><entry thead="no" align='center'><para>(under progress)    </para>
-</entry></row>
+<entry thead="no"><para>Migrate the codebase to C++20  </para></entry><entry thead="no"><para>v4.x  </para></entry><entry thead="no"><para>(under progress)   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Design a custom thread-creation interface   </para>
-</entry><entry thead="no" align='center'><para>TBD   </para>
-</entry><entry thead="no" align='center'><para>(under progress)    </para>
-</entry></row>
+<entry thead="no"><para>Design a custom thread-creation interface  </para></entry><entry thead="no"><para>TBD  </para></entry><entry thead="no"><para>(under progress)   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Design a distributed tasking interface with scheduling   </para>
-</entry><entry thead="no" align='center'><para>TBD   </para>
-</entry><entry thead="no" align='center'><para>(under progress)    </para>
-</entry></row>
+<entry thead="no"><para>Design a distributed tasking interface with scheduling  </para></entry><entry thead="no"><para>TBD  </para></entry><entry thead="no"><para>(under progress)   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Design a pipeline scheduling framework with token dependency   </para>
-</entry><entry thead="no" align='center'><para>v3.x   </para>
-</entry><entry thead="no" align='center'><para>(under progress)    </para>
-</entry></row>
+<entry thead="no"><para>Design a pipeline scheduling framework with token dependency  </para></entry><entry thead="no"><para>v3.x  </para></entry><entry thead="no"><para>(under progress)   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Design a dynamic task graph model   </para>
-</entry><entry thead="no" align='center'><para>v3.6   </para>
-</entry><entry thead="no" align='center'><para>2023/05/08 (done)    </para>
-</entry></row>
+<entry thead="no"><para>Design a dynamic task graph model  </para></entry><entry thead="no"><para>v3.6  </para></entry><entry thead="no"><para>2023/05/08 (done)   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Design a pipeline scheduling framework   </para>
-</entry><entry thead="no" align='center'><para>v3.3   </para>
-</entry><entry thead="no" align='center'><para>2022/01/03 (done)    </para>
-</entry></row>
+<entry thead="no"><para>Design a pipeline scheduling framework  </para></entry><entry thead="no"><para>v3.3  </para></entry><entry thead="no"><para>2022/01/03 (done)   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Integrate thread sanitizer into the CI   </para>
-</entry><entry thead="no" align='center'><para>v3.3   </para>
-</entry><entry thead="no" align='center'><para>2022/01/03 (done)    </para>
-</entry></row>
+<entry thead="no"><para>Integrate thread sanitizer into the CI  </para></entry><entry thead="no"><para>v3.3  </para></entry><entry thead="no"><para>2022/01/03 (done)   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Integrate OpenCL and SYCL to tf::syclFlow   </para>
-</entry><entry thead="no" align='center'><para>v3.1   </para>
-</entry><entry thead="no" align='center'><para>2021/04/14 (done)    </para>
-</entry></row>
+<entry thead="no"><para>Integrate OpenCL and SYCL to tf::syclFlow  </para></entry><entry thead="no"><para>v3.1  </para></entry><entry thead="no"><para>2021/04/14 (done)   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Integrate <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> into <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>   </para>
-</entry><entry thead="no" align='center'><para>v3.0   </para>
-</entry><entry thead="no" align='center'><para>2020/01/01 (done)    </para>
-</entry></row>
+<entry thead="no"><para>Integrate <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> into <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>  </para></entry><entry thead="no"><para>v3.0  </para></entry><entry thead="no"><para>2020/01/01 (done)   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Support building cudaFlow through stream capture   </para>
-</entry><entry thead="no" align='center'><para>v3.0   </para>
-</entry><entry thead="no" align='center'><para>2021/01/01 (done)    </para>
-</entry></row>
+<entry thead="no"><para>Support building cudaFlow through stream capture  </para></entry><entry thead="no"><para>v3.0  </para></entry><entry thead="no"><para>2021/01/01 (done)   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Support profiling large data in tfprof   </para>
-</entry><entry thead="no" align='center'><para>v3.0   </para>
-</entry><entry thead="no" align='center'><para>2021/01/01 (done)    </para>
-</entry></row>
+<entry thead="no"><para>Support profiling large data in tfprof  </para></entry><entry thead="no"><para>v3.0  </para></entry><entry thead="no"><para>2021/01/01 (done)   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Support cancelling Taskflow   </para>
-</entry><entry thead="no" align='center'><para>v3.0   </para>
-</entry><entry thead="no" align='center'><para>2021/01/01 (done)    </para>
-</entry></row>
+<entry thead="no"><para>Support cancelling Taskflow  </para></entry><entry thead="no"><para>v3.0  </para></entry><entry thead="no"><para>2021/01/01 (done)   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Support limiting maximum concurrency   </para>
-</entry><entry thead="no" align='center'><para>v3.0   </para>
-</entry><entry thead="no" align='center'><para>2021/01/01 (done)    </para>
-</entry></row>
+<entry thead="no"><para>Support limiting maximum concurrency  </para></entry><entry thead="no"><para>v3.0  </para></entry><entry thead="no"><para>2021/01/01 (done)   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>Migrate the codebase to C++17   </para>
-</entry><entry thead="no" align='center'><para>v3.0   </para>
-</entry><entry thead="no" align='center'><para>2021/01/01 (done)   </para>
-</entry></row>
+<entry thead="no"><para>Migrate the codebase to C++17  </para></entry><entry thead="no"><para>v3.0  </para></entry><entry thead="no"><para>2021/01/01 (done)   </para></entry></row>
 </table>
-</para>
-<para>Along with the project development, we expect to have multiple releases for feature requests, bug fixes, and technical improvement. </para>
-</sect1>
+</para><para>Along with the project development, we expect to have multiple releases for feature requests, bug fixes, and technical improvement. </para></sect1>
     </detaileddescription>
-    <location file="releases/release-roadmap.dox"/>
   </compounddef>
 </doxygen>

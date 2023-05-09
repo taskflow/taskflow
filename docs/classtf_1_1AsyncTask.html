@@ -5,7 +5,7 @@
   <title>tf::AsyncTask class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -62,11 +62,11 @@
           </ul>
         </nav>
 <p>A <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> is a lightweight handle that retains <em>shared</em> ownership of a dependent async task created by an executor. This shared ownership ensures that the async task remains alive when adding it to the dependency list of another async task, thus avoiding the classical <a href="https://en.wikipedia.org/wiki/ABA_problem">ABA problem</a>.</p><pre class="m-code"><span class="c1">// main thread retains shared ownership of async task A</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){});</span><span class="w"></span>
 
 <span class="c1">// task A remains alive (i.e., at least one ref count by the main thread) </span>
 <span class="c1">// when being added to the dependency list of async task B</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){},</span><span class="w"> </span><span class="n">A</span><span class="p">);</span></pre><p>Currently, <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> is implemented based on C++ smart pointer <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a> and is considered cheap to copy or move as long as only a handful of objects own it. When a worker completes an async task, it will remove the task from the executor, decrementing the number of shared owners by one. If that counter reaches zero, the task is destroyed.</p>
+<span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){},</span><span class="w"> </span><span class="n">A</span><span class="p">);</span><span class="w"></span></pre><p>Currently, <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> is implemented based on C++ smart pointer <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a> and is considered cheap to copy or move as long as only a handful of objects own it. When a worker completes an async task, it will remove the task from the executor, decrementing the number of shared owners by one. If that counter reaches zero, the task is destroyed.</p>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
@@ -91,12 +91,12 @@
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="a48436c648bde656d4e5c6c7deac7b367">
-              <span class="m-doc-wrap-bumper">auto <a href="#a48436c648bde656d4e5c6c7deac7b367" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; rhs) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
+            <dt id="a435361b705546188d4dedcaf607bacd5">
+              <span class="m-doc-wrap-bumper">auto <a href="#a435361b705546188d4dedcaf607bacd5" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; rhs) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
             <dd>shares ownership of the task managed by <code>rhs</code></dd>
-            <dt id="a1597b2cd541086c04da1854db9708bbc">
-              <span class="m-doc-wrap-bumper">auto <a href="#a1597b2cd541086c04da1854db9708bbc" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp;&amp; rhs) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
+            <dt id="a72b76bc1d2eb5ff70788706d2b4e8160">
+              <span class="m-doc-wrap-bumper">auto <a href="#a72b76bc1d2eb5ff70788706d2b4e8160" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp;&amp; rhs) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
             <dd>move-assigns the task from <code>rhs</code></dd>
             <dt id="ae42c70dc0c5edc6d58f47b346125fca3">
@@ -157,7 +157,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

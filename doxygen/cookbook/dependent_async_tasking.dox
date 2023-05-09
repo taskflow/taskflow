@@ -31,7 +31,7 @@ tf::AsyncTask A = executor.silent_dependent_async([](){ printf("A\n"); });
 tf::AsyncTask B = executor.silent_dependent_async([](){ printf("B\n"); }, A);
 tf::AsyncTask C = executor.silent_dependent_async([](){ printf("C\n"); }, A);
 auto [D, fuD] = executor.dependent_async([](){ printf("D\n"); }, B, C);
-D.get();  // wait for D to finish, which in turns means A, B, C finish
+fuD.get();  // wait for D to finish, which in turns means A, B, C finish
 @endcode
 
 Both tf::Executor::dependent_async and tf::Executor::silent_dependent_async 
@@ -61,7 +61,7 @@ tf::AsyncTask A = executor.silent_dependent_async([](){ printf("A\n"); });
 tf::AsyncTask C = executor.silent_dependent_async([](){ printf("C\n"); }, A);
 tf::AsyncTask B = executor.silent_dependent_async([](){ printf("B\n"); }, A);
 auto [D, fuD] = executor.dependent_async([](){ printf("D\n"); }, B, C);
-D.get();  // wait for D to finish, which in turns means A, B, C finish
+fuD.get();  // wait for D to finish, which in turns means A, B, C finish
 @endcode
 
 In addition to using @std_future to synchronize the execution,

@@ -275,26 +275,25 @@ f1_module_task.succeed(f2A, f2B)
 ## Launch Asynchronous Tasks
 
 Taskflow supports *asynchronous* tasking.
-You can launch tasks asynchronously to incorporate independent, dynamic 
-parallelism in your taskflows.
+You can launch tasks asynchronously to dynamically explore task graph parallelism.
 
 ```cpp
 tf::Executor executor;
-tf::Taskflow taskflow;
 
 // create asynchronous tasks directly from an executor
-tf::Future<std::optional<int>> future = executor.async([](){ 
+std::future<int> future = executor.async([](){ 
   std::cout << "async task returns 1\n";
   return 1;
 }); 
-executor.silent_async([](){ std::cout << "async task of no return\n"; });
+executor.silent_async([](){ std::cout << "async task does not return\n"; });
 
-// launch an asynchronous task from a running task
-taskflow.emplace([&](){
-  executor.async([](){ std::cout << "async task within a task\n"; });
-});
+// create asynchronous tasks with dynamic dependencies
+tf::AsyncTask A = executor.silent_dependent_async([](){ printf("A\n"); });
+tf::AsyncTask B = executor.silent_dependent_async([](){ printf("B\n"); }, A);
+tf::AsyncTask C = executor.silent_dependent_async([](){ printf("C\n"); }, A);
+tf::AsyncTask D = executor.silent_dependent_async([](){ printf("D\n"); }, B, C);
 
-executor.run(taskflow).wait();
+executor.wait_for_all();
 ```
 
 ## Execute a Taskflow

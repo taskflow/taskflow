@@ -5,7 +5,7 @@
   <title>Real Use Cases &raquo; Standard Cell Placement | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -59,303 +59,303 @@
             <li><a href="#UseCasesDreamPlaceReferences">References</a></li>
           </ul>
         </nav>
-<p>We applied Taskflow to solve a VLSI placement problem. The goal is to determine the physical locations of cells (logic gates) in a fixed layout region using minimal interconnect wirelength.</p><section id="UseCasesDreamPlace"><h2><a href="#UseCasesDreamPlace">DreamPlace: GPU-accelerated Placement Engine</a></h2><p>Placement is an important step in the layout generation stage of a circuit design. It places each cell of synthesized netlists in a region and optimizes their interconnect. The following figure shows a placement layout of an industrial design, adaptec1.</p><img class="m-image" src="dreamplace_1.png" alt="Image" /><p>Modern placement typically incorporates hundreds of millions of cells and takes several hours to finish. To reduce the long runtime, recent work started investigating new CPU-GPU algorithms. We consider matching-based hybrid CPU-GPU placement refinement algorithm developed by <a href="https://github.com/limbo018/DREAMPlace">DREAMPlace</a>. The algorithm iterates the following:</p><ul><li>A GPU-based maximal independent set algorithm to identify cell candidates</li><li>A CPU-based partition algorithm to cluster adjacent cells</li><li>A CPU-based bipartite matching algorithm to find the best permutation of cell locations.</li></ul><p>Each iteration contains overlapped CPU and GPU tasks with nested conditions to decide the convergence.</p><img class="m-image" src="dreamplace_2.png" alt="Image" /></section><section id="UseCasesDreamPlaceProgrammingEffort"><h2><a href="#UseCasesDreamPlaceProgrammingEffort">Programming Effort</a></h2><p>We implemented the hybrid CPU-GPU placement algorithm using Taskflow, <a href="https://github.com/oneapi-src/oneTBB">Intel TBB</a>, and <a href="http://starpu.gforge.inria.fr/">StarPU</a>. The algorithm is crafted on one GPU and many CPUs. Since TBB and StarPU have no support for nested conditions, we unroll their task graphs across fixed-length iterations found in hindsight. The figure below shows a partial taskflow of 4 cudaFlows, 1 conditioned cycle, and 12 static tasks for one placement iteration.</p><div class="m-graph"><svg style="width: 104.400rem; height: 67.100rem;" viewBox="0.00 0.00 1043.80 670.97">
-<g transform="scale(1 1) rotate(0) translate(4 666.97)">
+<p>We applied Taskflow to solve a VLSI placement problem. The goal is to determine the physical locations of cells (logic gates) in a fixed layout region using minimal interconnect wirelength.</p><section id="UseCasesDreamPlace"><h2><a href="#UseCasesDreamPlace">DreamPlace: GPU-accelerated Placement Engine</a></h2><p>Placement is an important step in the layout generation stage of a circuit design. It places each cell of synthesized netlists in a region and optimizes their interconnect. The following figure shows a placement layout of an industrial design, adaptec1.</p><img class="m-image" src="dreamplace_1.png" alt="Image" /><p>Modern placement typically incorporates hundreds of millions of cells and takes several hours to finish. To reduce the long runtime, recent work started investigating new CPU-GPU algorithms. We consider matching-based hybrid CPU-GPU placement refinement algorithm developed by <a href="https://github.com/limbo018/DREAMPlace">DREAMPlace</a>. The algorithm iterates the following:</p><ul><li>A GPU-based maximal independent set algorithm to identify cell candidates</li><li>A CPU-based partition algorithm to cluster adjacent cells</li><li>A CPU-based bipartite matching algorithm to find the best permutation of cell locations.</li></ul><p>Each iteration contains overlapped CPU and GPU tasks with nested conditions to decide the convergence.</p><img class="m-image" src="dreamplace_2.png" alt="Image" /></section><section id="UseCasesDreamPlaceProgrammingEffort"><h2><a href="#UseCasesDreamPlaceProgrammingEffort">Programming Effort</a></h2><p>We implemented the hybrid CPU-GPU placement algorithm using Taskflow, <a href="https://github.com/oneapi-src/oneTBB">Intel TBB</a>, and <a href="http://starpu.gforge.inria.fr/">StarPU</a>. The algorithm is crafted on one GPU and many CPUs. Since TBB and StarPU have no support for nested conditions, we unroll their task graphs across fixed-length iterations found in hindsight. The figure below shows a partial taskflow of 4 cudaFlows, 1 conditioned cycle, and 12 static tasks for one placement iteration.</p><div class="m-graph"><svg style="width: 132.000rem; height: 74.300rem;" viewBox="0.00 0.00 1319.86 743.00">
+<g transform="scale(1 1) rotate(0) translate(4 739)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x55f824e16950</title>
-<polygon points="394.14,-358 394.14,-537 642.48,-537 642.48,-358 394.14,-358"/>
-<text text-anchor="middle" x="518.31" y="-523.5" font-family="Helvetica,sans-Serif" font-size="10.00">cudaFlow: h2d_constant</text>
+<polygon points="448.9768,-315 448.9768,-494 885.4308,-494 885.4308,-315 448.9768,-315"/>
+<text text-anchor="middle" x="667.2038" y="-482" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">cudaFlow: h2d_constant</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x55f824e16ea0</title>
-<polygon points="377.72,-125 377.72,-304 637.23,-304 637.23,-125 377.72,-125"/>
-<text text-anchor="middle" x="507.48" y="-290.5" font-family="Helvetica,sans-Serif" font-size="10.00">cudaFlow: [0]mis_h2d</text>
+<polygon points="431.3169,-548 431.3169,-727 879.9308,-727 879.9308,-548 431.3169,-548"/>
+<text text-anchor="middle" x="655.6238" y="-715" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">cudaFlow: [0]mis_h2d</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x55f824e170c0</title>
-<polygon points="8,-379 8,-504 346.58,-504 346.58,-379 8,-379"/>
-<text text-anchor="middle" x="177.29" y="-490.5" font-family="Helvetica,sans-Serif" font-size="10.00">cudaFlow: [0]mis_loop_k</text>
+<polygon points="8,-120 8,-245 553.3039,-245 553.3039,-120 8,-120"/>
+<text text-anchor="middle" x="280.6519" y="-233" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">cudaFlow: [0]mis_loop_k</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x55f824e173f0</title>
-<polygon points="534.5,-46 534.5,-117 793.02,-117 793.02,-46 534.5,-46"/>
-<text text-anchor="middle" x="663.76" y="-103.5" font-family="Helvetica,sans-Serif" font-size="10.00">cudaFlow: [0]mis_loop_end</text>
+<polygon points="599.5888,-46 599.5888,-117 1049.9806,-117 1049.9806,-46 599.5888,-46"/>
+<text text-anchor="middle" x="824.7847" y="-105" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">cudaFlow: [0]mis_loop_end</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x55f824e15da0</title>
-<ellipse cx="442.67" cy="-617" rx="48.52" ry="18"/>
-<text text-anchor="middle" x="442.67" y="-613.12" font-family="Helvetica,sans-Serif" font-size="10.00">new_net_mask</text>
+<ellipse cx="668.8097" cy="-235" rx="52.9593" ry="18"/>
+<text text-anchor="middle" x="668.8097" y="-232.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">new_net_mask</text>
 </g>
 <g class="m-node">
 <title>p0x55f824e16950</title>
-<polygon points="634.48,-497 631.48,-501 610.48,-501 607.48,-497 559.98,-497 559.98,-461 634.48,-461 634.48,-497"/>
-<text text-anchor="middle" x="597.23" y="-475.12" font-family="Helvetica,sans-Serif" font-size="10.00">h2d_constant</text>
+<polygon points="877.4308,-359 874.4308,-363 853.4308,-363 850.4308,-359 795.4308,-359 795.4308,-323 877.4308,-323 877.4308,-359"/>
+<text text-anchor="middle" x="836.4308" y="-338.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">h2d_constant</text>
 </g>
 <g class="m-edge">
 <title>p0x55f824e15da0&#45;&gt;p0x55f824e16950</title>
-<path d="M477.96,-604.24C486.33,-600.33 494.97,-595.56 502.28,-590 533.47,-566.29 561.37,-530.54 578.5,-506.06"/>
-<polygon points="581.76,-508.5 584.53,-498.27 575.99,-504.54 581.76,-508.5"/>
+<path d="M705.9236,-247.9463C715.7444,-251.9367 726.1584,-256.6953 735.3286,-262 762.1047,-277.4891 789.581,-299.42 809.1188,-316.2462"/>
+<polygon points="806.8842,-318.9415 816.7198,-322.8802 811.4872,-313.6677 806.8842,-318.9415"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x55f824e16fb0</title>
-<ellipse cx="741.4" cy="-423" rx="44.97" ry="18"/>
-<text text-anchor="middle" x="741.4" y="-419.12" font-family="Helvetica,sans-Serif" font-size="10.00">mis_loop_beg</text>
+<ellipse cx="992.9806" cy="-233" rx="49.3954" ry="18"/>
+<text text-anchor="middle" x="992.9806" y="-230.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">mis_loop_beg</text>
 </g>
 <g class="m-edge">
 <title>p0x55f824e16950&#45;&gt;p0x55f824e16fb0</title>
-<path d="M634.84,-464.58C654.18,-456.96 678.01,-447.58 698.12,-439.65"/>
-<polygon points="699.24,-442.58 707.27,-435.66 696.68,-436.07 699.24,-442.58"/>
+<path d="M862.6337,-322.9232C889.7693,-304.203 932.1851,-274.9414 961.2129,-254.9158"/>
+<polygon points="963.5162,-257.5789 969.76,-249.0193 959.5412,-251.817 963.5162,-257.5789"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x55f824e160d0</title>
-<ellipse cx="442.67" cy="-563" rx="41.86" ry="18"/>
-<text text-anchor="middle" x="442.67" y="-559.12" font-family="Helvetica,sans-Serif" font-size="10.00">new_pin2net</text>
+<ellipse cx="668.8097" cy="-289" rx="46.5087" ry="18"/>
+<text text-anchor="middle" x="668.8097" y="-286.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">new_pin2net</text>
 </g>
 <g class="m-edge">
 <title>p0x55f824e160d0&#45;&gt;p0x55f824e16950</title>
-<path d="M476.78,-552.05C485.26,-548.85 494.25,-545.1 502.28,-541 523.34,-530.27 545.46,-515.85 562.95,-503.61"/>
-<polygon points="564.51,-506.08 570.64,-497.44 560.46,-500.37 564.51,-506.08"/>
+<path d="M705.181,-300.2832C728.7456,-307.5935 759.7707,-317.2182 785.74,-325.2745"/>
+<polygon points="784.8313,-328.6571 795.4193,-328.2773 786.9054,-321.9714 784.8313,-328.6571"/>
 </g>
 <g class="m-node">
 <title>p0x55f824e170c0</title>
-<polygon points="338.58,-450 335.58,-454 314.58,-454 311.58,-450 261.83,-450 261.83,-414 338.58,-414 338.58,-450"/>
-<text text-anchor="middle" x="300.2" y="-428.12" font-family="Helvetica,sans-Serif" font-size="10.00">[0]mis_loop_k</text>
+<polygon points="545.3039,-190 542.3039,-194 521.3039,-194 518.3039,-190 459.3039,-190 459.3039,-154 545.3039,-154 545.3039,-190"/>
+<text text-anchor="middle" x="502.3039" y="-169.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">[0]mis_loop_k</text>
 </g>
 <g class="m-edge">
 <title>p0x55f824e16fb0&#45;&gt;p0x55f824e170c0</title>
-<path d="M730.24,-440.89C715.75,-465.39 687.32,-509.89 655.18,-541 596.3,-597.98 580.64,-620.07 502.28,-644 449.34,-660.17 423.03,-675.81 377.72,-644 317.96,-602.04 304.66,-508.6 301.85,-461.03"/>
-<polygon points="305.31,-461.08 301.34,-451.26 298.31,-461.41 305.31,-461.08"/>
+<path d="M945.8559,-227.1416C854.0859,-215.7329 651.9655,-190.6057 555.5284,-178.6168"/>
+<polygon points="555.7735,-175.1204 545.4181,-177.3599 554.9099,-182.0669 555.7735,-175.1204"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f4ad8000e70</title>
-<ellipse cx="442.67" cy="-438" rx="40.53" ry="18"/>
-<text text-anchor="middle" x="442.67" y="-434.12" font-family="Helvetica,sans-Serif" font-size="10.00">h2d_pin2net</text>
+<ellipse cx="502.3039" cy="-449" rx="45.1548" ry="18"/>
+<text text-anchor="middle" x="502.3039" y="-446.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">h2d_pin2net</text>
 </g>
 <g class="m-edge">
 <title>p0x7f4ad8000e70&#45;&gt;p0x55f824e16950</title>
-<path d="M477.91,-447.2C498.92,-452.85 526.11,-460.16 549.13,-466.34"/>
-<polygon points="548.15,-469.97 558.71,-469.19 549.96,-463.21 548.15,-469.97"/>
+<path d="M537.745,-437.5444C597.2145,-418.322 717.2827,-379.5123 785.6899,-357.401"/>
+<polygon points="786.9558,-360.6702 795.3945,-354.2642 784.8028,-354.0095 786.9558,-360.6702"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f4ad8000f30</title>
-<ellipse cx="442.67" cy="-384" rx="37.42" ry="18"/>
-<text text-anchor="middle" x="442.67" y="-380.12" font-family="Helvetica,sans-Serif" font-size="10.00">h2d_fv2pin</text>
+<ellipse cx="502.3039" cy="-395" rx="41.5911" ry="18"/>
+<text text-anchor="middle" x="502.3039" y="-392.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">h2d_fv2pin</text>
 </g>
 <g class="m-edge">
 <title>p0x7f4ad8000f30&#45;&gt;p0x55f824e16950</title>
-<path d="M471.96,-395.69C481.77,-400.1 492.71,-405.4 502.28,-411 524.24,-423.84 547.41,-440.57 565.24,-454.22"/>
-<polygon points="562.49,-457.29 572.54,-460.64 566.77,-451.75 562.49,-457.29"/>
+<path d="M541.615,-388.6467C602.162,-378.8614 718.2396,-360.1015 785.2612,-349.2698"/>
+<polygon points="785.8674,-352.7173 795.1808,-347.6666 784.7505,-345.807 785.8674,-352.7173"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f4ad8001140</title>
-<ellipse cx="442.67" cy="-492" rx="35.65" ry="18"/>
-<text text-anchor="middle" x="442.67" y="-488.12" font-family="Helvetica,sans-Serif" font-size="10.00">h2d_pin2v</text>
+<ellipse cx="502.3039" cy="-341" rx="39.3809" ry="18"/>
+<text text-anchor="middle" x="502.3039" y="-338.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">h2d_pin2v</text>
 </g>
 <g class="m-edge">
 <title>p0x7f4ad8001140&#45;&gt;p0x55f824e16950</title>
-<path d="M478.29,-489.05C499.14,-487.27 525.98,-484.99 548.79,-483.04"/>
-<polygon points="548.96,-486.46 558.62,-482.12 548.36,-479.48 548.96,-486.46"/>
+<path d="M541.9447,-341C602.4926,-341 718.0176,-341 784.9631,-341"/>
+<polygon points="785.2745,-344.5001 795.2745,-341 785.2745,-337.5001 785.2745,-344.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x55f824e16a60</title>
-<ellipse cx="55.2" cy="-97" rx="45.86" ry="18"/>
-<text text-anchor="middle" x="55.2" y="-93.12" font-family="Helvetica,sans-Serif" font-size="10.00">[0]shuffle_beg</text>
+<ellipse cx="227.5698" cy="-520" rx="50.7503" ry="18"/>
+<text text-anchor="middle" x="227.5698" y="-517.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">[0]shuffle_beg</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x55f824e16b70</title>
-<ellipse cx="177.7" cy="-97" rx="39.64" ry="18"/>
-<text text-anchor="middle" x="177.7" y="-93.12" font-family="Helvetica,sans-Serif" font-size="10.00">[0]shuffle_k</text>
+<ellipse cx="358.7559" cy="-520" rx="43.6222" ry="18"/>
+<text text-anchor="middle" x="358.7559" y="-517.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">[0]shuffle_k</text>
 </g>
 <g class="m-edge">
 <title>p0x55f824e16a60&#45;&gt;p0x55f824e16b70</title>
-<path d="M101.41,-97C109.68,-97 118.35,-97 126.74,-97"/>
-<polygon points="126.56,-100.5 136.56,-97 126.56,-93.5 126.56,-100.5"/>
+<path d="M278.2898,-520C286.996,-520 296.0712,-520 304.8571,-520"/>
+<polygon points="304.9988,-523.5001 314.9987,-520 304.9987,-516.5001 304.9988,-523.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x55f824e16c80</title>
-<ellipse cx="300.2" cy="-97" rx="45.86" ry="18"/>
-<text text-anchor="middle" x="300.2" y="-93.12" font-family="Helvetica,sans-Serif" font-size="10.00">[0]shuffle_end</text>
+<ellipse cx="502.3039" cy="-520" rx="50.7503" ry="18"/>
+<text text-anchor="middle" x="502.3039" y="-517.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">[0]shuffle_end</text>
 </g>
 <g class="m-edge">
 <title>p0x55f824e16b70&#45;&gt;p0x55f824e16c80</title>
-<path d="M217.82,-97C225.94,-97 234.64,-97 243.23,-97"/>
-<polygon points="242.99,-100.5 252.99,-97 242.99,-93.5 242.99,-100.5"/>
+<path d="M402.605,-520C414.771,-520 428.2052,-520 441.1662,-520"/>
+<polygon points="441.4259,-523.5001 451.4259,-520 441.4258,-516.5001 441.4259,-523.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x55f824e16d90</title>
-<ellipse cx="442.67" cy="-97" rx="59.17" ry="18"/>
-<text text-anchor="middle" x="442.67" y="-93.12" font-family="Helvetica,sans-Serif" font-size="10.00">[0]mis_parallel_beg</text>
+<ellipse cx="668.8097" cy="-521" rx="66.5378" ry="18"/>
+<text text-anchor="middle" x="668.8097" y="-518.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">[0]mis_parallel_beg</text>
 </g>
 <g class="m-edge">
 <title>p0x55f824e16c80&#45;&gt;p0x55f824e16d90</title>
-<path d="M346.42,-97C354.74,-97 363.61,-97 372.45,-97"/>
-<polygon points="372.19,-100.5 382.19,-97 372.19,-93.5 372.19,-100.5"/>
+<path d="M553.1659,-520.3055C565.512,-520.3796 578.9842,-520.4605 592.2296,-520.5401"/>
+<polygon points="592.271,-524.0403 602.2918,-520.6005 592.3131,-517.0404 592.271,-524.0403"/>
 </g>
 <g class="m-node">
 <title>p0x55f824e16ea0</title>
-<polygon points="629.23,-223 626.23,-227 605.23,-227 602.23,-223 565.23,-223 565.23,-187 629.23,-187 629.23,-223"/>
-<text text-anchor="middle" x="597.23" y="-201.12" font-family="Helvetica,sans-Serif" font-size="10.00">[0]mis_h2d</text>
+<polygon points="871.9308,-592 868.9308,-596 847.9308,-596 844.9308,-592 800.9308,-592 800.9308,-556 871.9308,-556 871.9308,-592"/>
+<text text-anchor="middle" x="836.4308" y="-571.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">[0]mis_h2d</text>
 </g>
 <g class="m-edge">
 <title>p0x55f824e16d90&#45;&gt;p0x55f824e16ea0</title>
-<path d="M482.44,-110.68C489.26,-113.69 496.13,-117.15 502.28,-121 528.18,-137.2 553.77,-160.72 571.69,-178.75"/>
-<polygon points="568.87,-180.89 578.36,-185.6 573.88,-176 568.87,-180.89"/>
+<path d="M712.4126,-534.7868C736.5401,-542.4156 766.4939,-551.8867 790.919,-559.6097"/>
+<polygon points="790.0803,-563.0152 800.6702,-562.6929 792.1907,-556.3409 790.0803,-563.0152"/>
 </g>
 <g class="m-edge">
 <title>p0x55f824e16ea0&#45;&gt;p0x55f824e16fb0</title>
-<path d="M620.53,-223.22C638,-238.36 662,-261.21 678.43,-285 702.51,-319.88 720.86,-365.62 731.13,-394.67"/>
-<polygon points="728.1,-395.62 734.67,-403.93 734.72,-393.34 728.1,-395.62"/>
+<path d="M855.1425,-555.7891C869.2179,-541.2373 888.1365,-519.743 900.5329,-498 946.2874,-417.7474 974.976,-311.0199 986.7815,-261.0465"/>
+<polygon points="990.2626,-261.5273 989.1075,-250.9956 983.4429,-259.9489 990.2626,-261.5273"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f4ad8004530</title>
-<ellipse cx="442.67" cy="-205" rx="56.95" ry="18"/>
-<text text-anchor="middle" x="442.67" y="-201.12" font-family="Helvetica,sans-Serif" font-size="10.00">[0]h2d_ordered_vs</text>
+<ellipse cx="502.3039" cy="-682" rx="62.9739" ry="18"/>
+<text text-anchor="middle" x="502.3039" y="-679.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">[0]h2d_ordered_vs</text>
 </g>
 <g class="m-edge">
 <title>p0x7f4ad8004530&#45;&gt;p0x55f824e16ea0</title>
-<path d="M500.04,-205C518.01,-205 537.56,-205 554.31,-205"/>
-<polygon points="553.87,-208.5 563.87,-205 553.87,-201.5 553.87,-208.5"/>
+<path d="M544.2829,-668.4311C607.301,-648.0617 725.8793,-609.7336 790.9094,-588.7139"/>
+<polygon points="792.0474,-592.0244 800.4862,-585.6184 789.8944,-585.3637 792.0474,-592.0244"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f4ad8006d10</title>
-<ellipse cx="442.67" cy="-151" rx="55.18" ry="18"/>
-<text text-anchor="middle" x="442.67" y="-147.12" font-family="Helvetica,sans-Serif" font-size="10.00">[0]h2d_dependent</text>
+<ellipse cx="502.3039" cy="-628" rx="61.6198" ry="18"/>
+<text text-anchor="middle" x="502.3039" y="-625.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">[0]h2d_dependent</text>
 </g>
 <g class="m-edge">
 <title>p0x7f4ad8006d10&#45;&gt;p0x55f824e16ea0</title>
-<path d="M480.99,-164.21C503.33,-172.12 531.76,-182.18 554.79,-190.33"/>
-<polygon points="553.36,-193.89 563.95,-193.93 555.69,-187.29 553.36,-193.89"/>
+<path d="M556.3585,-619.264C621.3085,-608.767 729.159,-591.3368 790.3402,-581.4489"/>
+<polygon points="791.1591,-584.8621 800.4726,-579.8114 790.0422,-577.9518 791.1591,-584.8621"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f4ad8006df0</title>
-<ellipse cx="442.67" cy="-259" rx="50.29" ry="18"/>
-<text text-anchor="middle" x="442.67" y="-255.12" font-family="Helvetica,sans-Serif" font-size="10.00">[0]h2d_selected</text>
+<ellipse cx="502.3039" cy="-574" rx="55.8461" ry="18"/>
+<text text-anchor="middle" x="502.3039" y="-571.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">[0]h2d_selected</text>
 </g>
 <g class="m-edge">
 <title>p0x7f4ad8006df0&#45;&gt;p0x55f824e16ea0</title>
-<path d="M479.44,-246.34C501.89,-238.39 530.94,-228.11 554.46,-219.79"/>
-<polygon points="555.56,-222.75 563.82,-216.12 553.23,-216.15 555.56,-222.75"/>
+<path d="M558.2292,-574C623.5588,-574 730.3849,-574 790.8874,-574"/>
+<polygon points="790.9058,-577.5001 800.9057,-574 790.9057,-570.5001 790.9058,-577.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x55f824e171d0</title>
-<ellipse cx="442.67" cy="-330" rx="59.61" ry="18"/>
-<text text-anchor="middle" x="442.67" y="-326.12" font-family="Helvetica,sans-Serif" font-size="10.00">[0]mis_loop_update</text>
+<ellipse cx="668.8097" cy="-143" rx="66.5378" ry="18"/>
+<text text-anchor="middle" x="668.8097" y="-140.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">[0]mis_loop_update</text>
 </g>
 <g class="m-edge">
 <title>p0x55f824e170c0&#45;&gt;p0x55f824e171d0</title>
-<path d="M315.21,-413.65C329.34,-396.23 352.6,-370.35 377.72,-354 381.46,-351.56 385.49,-349.32 389.64,-347.27"/>
-<polygon points="390.78,-350.15 398.46,-342.84 387.9,-343.77 390.78,-350.15"/>
+<path d="M545.6167,-164.4563C563.0942,-161.4123 583.6495,-157.8322 602.9084,-154.4779"/>
+<polygon points="603.5871,-157.9125 612.8382,-152.7485 602.3859,-151.0163 603.5871,-157.9125"/>
 </g>
 <g class="m-node">
 <title>p0x55f824e172e0</title>
-<polygon points="597.23,-348 539.28,-330 597.23,-312 655.18,-330 597.23,-348"/>
-<text text-anchor="middle" x="597.23" y="-326.12" font-family="Helvetica,sans-Serif" font-size="10.00">[0]mis_cond</text>
+<polygon points="836.4308,-161 772.2263,-143 836.4308,-125 900.6352,-143 836.4308,-161"/>
+<text text-anchor="middle" x="836.4308" y="-140.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">[0]mis_cond</text>
 </g>
 <g class="m-edge">
 <title>p0x55f824e171d0&#45;&gt;p0x55f824e172e0</title>
-<path d="M502.65,-330C510.55,-330 518.71,-330 526.77,-330"/>
-<polygon points="526.66,-333.5 536.66,-330 526.66,-326.5 526.66,-333.5"/>
+<path d="M735.5396,-143C744.2014,-143 753.1174,-143 761.896,-143"/>
+<polygon points="762.1147,-146.5001 772.1147,-143 762.1147,-139.5001 762.1147,-146.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f4ad8007e00</title>
-<ellipse cx="55.2" cy="-459" rx="39.2" ry="18"/>
-<text text-anchor="middle" x="55.2" y="-455.12" font-family="Helvetica,sans-Serif" font-size="10.00">[0]h2d_size</text>
+<ellipse cx="58.9724" cy="-200" rx="42.9448" ry="18"/>
+<text text-anchor="middle" x="58.9724" y="-197.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">[0]h2d_size</text>
 </g>
 <g class="m-node">
 <title>p0x7f4ad8007d00</title>
-<polygon points="204.7,-477 154.7,-477 150.7,-473 150.7,-441 200.7,-441 204.7,-445 204.7,-477"/>
-<polyline points="200.7,-473 150.7,-473"/>
-<polyline points="200.7,-473 200.7,-441"/>
-<polyline points="200.7,-473 204.7,-477"/>
-<text text-anchor="middle" x="177.7" y="-455.12" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">[0]mis_k</text>
+<polygon points="257.0698,-218 202.0698,-218 198.0698,-214 198.0698,-182 253.0698,-182 257.0698,-186 257.0698,-218"/>
+<polyline points="253.0698,-214 198.0698,-214 "/>
+<polyline points="253.0698,-214 253.0698,-182 "/>
+<polyline points="253.0698,-214 257.0698,-218 "/>
+<text text-anchor="middle" x="227.5698" y="-197.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#ffffff">[0]mis_k</text>
 </g>
 <g class="m-edge">
 <title>p0x7f4ad8007e00&#45;&gt;p0x7f4ad8007d00</title>
-<path d="M94.66,-459C109.01,-459 125.26,-459 139.49,-459"/>
-<polygon points="139.4,-462.5 149.4,-459 139.4,-455.5 139.4,-462.5"/>
+<path d="M101.9529,-200C128.3629,-200 161.9613,-200 187.764,-200"/>
+<polygon points="187.9461,-203.5001 197.946,-200 187.946,-196.5001 187.9461,-203.5001"/>
 </g>
 <g class="m-edge">
 <title>p0x7f4ad8007d00&#45;&gt;p0x55f824e170c0</title>
-<path d="M205.14,-453.07C218.54,-450.07 235.24,-446.33 250.82,-442.84"/>
-<polygon points="251.39,-446.07 260.39,-440.47 249.86,-439.24 251.39,-446.07"/>
+<path d="M257.2322,-196.9769C303.08,-192.3042 391.825,-183.2596 449.0011,-177.4324"/>
+<polygon points="449.6988,-180.8796 459.2923,-176.3836 448.989,-173.9156 449.6988,-180.8796"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f4ad8007b80</title>
-<ellipse cx="177.7" cy="-405" rx="39.2" ry="18"/>
-<text text-anchor="middle" x="177.7" y="-401.12" font-family="Helvetica,sans-Serif" font-size="10.00">[0]d2h_size</text>
+<ellipse cx="227.5698" cy="-146" rx="42.9448" ry="18"/>
+<text text-anchor="middle" x="227.5698" y="-143.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">[0]d2h_size</text>
 </g>
 <g class="m-edge">
 <title>p0x7f4ad8007b80&#45;&gt;p0x55f824e170c0</title>
-<path d="M213.55,-412.81C225.17,-415.41 238.32,-418.36 250.77,-421.15"/>
-<polygon points="249.95,-424.78 260.48,-423.55 251.48,-417.95 249.95,-424.78"/>
+<path d="M269.5951,-149.9771C317.6488,-154.5248 396.4185,-161.9793 448.8123,-166.9377"/>
+<polygon points="448.6371,-170.4367 458.9224,-167.8945 449.2967,-163.4678 448.6371,-170.4367"/>
 </g>
 <g class="m-edge">
 <title>p0x55f824e172e0&#45;&gt;p0x55f824e16fb0</title>
-<path stroke-dasharray="5,2" d="M625.36,-339.62C635.06,-343.52 645.88,-348.43 655.18,-354 676.73,-366.91 698.72,-384.85 714.95,-399.2"/>
-<polygon points="712.11,-401.25 721.89,-405.34 716.79,-396.05 712.11,-401.25"/>
-<text text-anchor="middle" x="675.8" y="-369.75" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
+<path stroke-dasharray="5,2" d="M881.3156,-148.4664C896.0663,-151.5678 912.1096,-156.4188 925.5329,-164 944.7318,-174.8431 962.0186,-192.7769 974.2841,-207.6434"/>
+<polygon points="971.593,-209.8826 980.5619,-215.5225 977.0677,-205.5205 971.593,-209.8826"/>
+<text text-anchor="middle" x="922.0329" y="-167" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">0</text>
 </g>
 <g class="m-node">
 <title>p0x55f824e173f0</title>
-<polygon points="785.02,-90 782.02,-94 761.02,-94 758.02,-90 697.77,-90 697.77,-54 785.02,-54 785.02,-90"/>
-<text text-anchor="middle" x="741.4" y="-68.12" font-family="Helvetica,sans-Serif" font-size="10.00">[0]mis_loop_end</text>
+<polygon points="1041.9806,-90 1038.9806,-94 1017.9806,-94 1014.9806,-90 943.9806,-90 943.9806,-54 1041.9806,-54 1041.9806,-90"/>
+<text text-anchor="middle" x="992.9806" y="-69.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">[0]mis_loop_end</text>
 </g>
 <g class="m-edge">
 <title>p0x55f824e172e0&#45;&gt;p0x55f824e173f0</title>
-<path stroke-dasharray="5,2" d="M631.78,-322.4C640.29,-319.14 648.8,-314.52 655.18,-308 712.28,-249.62 731.45,-150.18 737.62,-101.13"/>
-<polygon points="741.2,-101.69 738.87,-91.35 734.24,-100.88 741.2,-101.69"/>
-<text text-anchor="middle" x="675.8" y="-283.75" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+<path stroke-dasharray="5,2" d="M867.1285,-133.5526C877.8373,-129.9721 889.8453,-125.6324 900.5329,-121 918.0877,-113.3911 936.8468,-103.7486 952.8474,-95.034"/>
+<polygon points="954.852,-97.9255 961.9196,-90.0325 951.4725,-91.7953 954.852,-97.9255"/>
+<text text-anchor="middle" x="922.0329" y="-116" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x55f824e1aa20</title>
-<ellipse cx="857.68" cy="-72" rx="34.32" ry="18"/>
-<text text-anchor="middle" x="857.68" y="-68.12" font-family="Helvetica,sans-Serif" font-size="10.00">[0]hpwl_k</text>
+<ellipse cx="1117.6913" cy="-72" rx="38.0276" ry="18"/>
+<text text-anchor="middle" x="1117.6913" y="-69.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">[0]hpwl_k</text>
 </g>
 <g class="m-edge">
 <title>p0x55f824e173f0&#45;&gt;p0x55f824e1aa20</title>
-<path d="M785.28,-72C794.1,-72 803.4,-72 812.27,-72"/>
-<polygon points="812.21,-75.5 822.21,-72 812.21,-68.5 812.21,-75.5"/>
+<path d="M1042.2696,-72C1051.0779,-72 1060.2504,-72 1069.0407,-72"/>
+<polygon points="1069.1394,-75.5001 1079.1394,-72 1069.1393,-68.5001 1069.1394,-75.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x55f824e1ab30</title>
-<ellipse cx="982.4" cy="-126" rx="45.41" ry="18"/>
-<text text-anchor="middle" x="982.4" y="-122.12" font-family="Helvetica,sans-Serif" font-size="10.00">del_net_mask</text>
+<ellipse cx="1252.4094" cy="-126" rx="50.0727" ry="18"/>
+<text text-anchor="middle" x="1252.4094" y="-123.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">del_net_mask</text>
 </g>
 <g class="m-edge">
 <title>p0x55f824e1aa20&#45;&gt;p0x55f824e1ab30</title>
-<path d="M884.71,-83.45C901.09,-90.66 922.58,-100.12 941.13,-108.28"/>
-<polygon points="939.53,-111.84 950.09,-112.66 942.34,-105.43 939.53,-111.84"/>
+<path d="M1146.9232,-83.7172C1165.228,-91.0544 1189.134,-100.6369 1209.5589,-108.8239"/>
+<polygon points="1208.3807,-112.1223 1218.965,-112.5942 1210.9851,-105.6248 1208.3807,-112.1223"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x55f824e1ac40</title>
-<ellipse cx="982.4" cy="-72" rx="40.53" ry="18"/>
-<text text-anchor="middle" x="982.4" y="-68.12" font-family="Helvetica,sans-Serif" font-size="10.00">del_fnet2pin</text>
+<ellipse cx="1252.4094" cy="-72" rx="45.1548" ry="18"/>
+<text text-anchor="middle" x="1252.4094" y="-69.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">del_fnet2pin</text>
 </g>
 <g class="m-edge">
 <title>p0x55f824e1aa20&#45;&gt;p0x55f824e1ac40</title>
-<path d="M892.22,-72C904.19,-72 917.96,-72 931.04,-72"/>
-<polygon points="930.81,-75.5 940.81,-72 930.81,-68.5 930.81,-75.5"/>
+<path d="M1156.2961,-72C1168.8117,-72 1182.9578,-72 1196.472,-72"/>
+<polygon points="1196.6459,-75.5001 1206.6458,-72 1196.6458,-68.5001 1196.6459,-75.5001"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x55f824e1ad50</title>
-<ellipse cx="982.4" cy="-18" rx="53.4" ry="18"/>
-<text text-anchor="middle" x="982.4" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">del_fnet2pin_ofst</text>
+<ellipse cx="1252.4094" cy="-18" rx="59.4099" ry="18"/>
+<text text-anchor="middle" x="1252.4094" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">del_fnet2pin_ofst</text>
 </g>
 <g class="m-edge">
 <title>p0x55f824e1aa20&#45;&gt;p0x55f824e1ad50</title>
-<path d="M884.71,-60.55C900.43,-53.63 920.84,-44.65 938.85,-36.72"/>
-<polygon points="940.11,-39.56 947.85,-32.32 937.29,-33.15 940.11,-39.56"/>
+<path d="M1146.9232,-60.2828C1164.4801,-53.2453 1187.1899,-44.1424 1207.0386,-36.1863"/>
+<polygon points="1208.5377,-39.3562 1216.5176,-32.3868 1205.9332,-32.8587 1208.5377,-39.3562"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f4ad8008470</title>
-<ellipse cx="597.23" cy="-72" rx="54.73" ry="18"/>
-<text text-anchor="middle" x="597.23" y="-68.12" font-family="Helvetica,sans-Serif" font-size="10.00">p0x7f4ad8008470</text>
+<ellipse cx="668.8097" cy="-72" rx="61.4427" ry="18"/>
+<text text-anchor="middle" x="668.8097" y="-69.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">p0x7f4ad8008470</text>
 </g>
 <g class="m-edge">
 <title>p0x7f4ad8008470&#45;&gt;p0x55f824e173f0</title>
-<path d="M652.38,-72C663.57,-72 675.34,-72 686.51,-72"/>
-<polygon points="686.44,-75.5 696.44,-72 686.44,-68.5 686.44,-75.5"/>
+<path d="M730.1649,-72C788.606,-72 875.9927,-72 933.7271,-72"/>
+<polygon points="933.7932,-75.5001 943.7931,-72 933.7931,-68.5001 933.7932,-75.5001"/>
 </g>
 </g>
 </svg>
@@ -404,7 +404,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

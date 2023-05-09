@@ -1,74 +1,46 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="release-2-2-0" kind="page">
     <compoundname>release-2-2-0</compoundname>
     <title>Release 2.2.0 (2019/06/15)</title>
-    <tableofcontents>
-      <tocsect>
-        <name>Download</name>
-        <reference>release-2-2-0_1release-2-2-0_download</reference>
-    </tocsect>
-      <tocsect>
-        <name>New Features</name>
-        <reference>release-2-2-0_1release-2-2-0_new_features</reference>
-    </tocsect>
-      <tocsect>
-        <name>Breaks and Deprecated Features</name>
-        <reference>release-2-2-0_1release-2-2-0_breaks_and_deprecated_features</reference>
-    </tocsect>
-    </tableofcontents>
+    <tableofcontents/>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Cpp-Taskflow 2.2.0 is the 3rd release in the 2.x line! This release includes several new changes such as tf::ExecutorObserverInterface, <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref>, isolation of taskflow graph and executor, benchmarks, and so forth. In particular, this release improve the performance of the work stealing scheduler.</para>
-<sect1 id="release-2-2-0_1release-2-2-0_download">
+<para>Cpp-Taskflow 2.2.0 is the 3rd release in the 2.x line! This release includes several new changes such as tf::ExecutorObserverInterface, <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref>, isolation of taskflow graph and executor, benchmarks, and so forth. In particular, this release improve the performance of the work stealing scheduler.</para><sect1 id="release-2-2-0_1release-2-2-0_download">
 <title>Download</title>
-<para>Cpp-Taskflow 2.2.0 can be downloaded from <ulink url="https://github.com/cpp-taskflow/cpp-taskflow/releases/tag/v2.2.0">here</ulink>.</para>
-</sect1>
+<para>Cpp-Taskflow 2.2.0 can be downloaded from <ulink url="https://github.com/cpp-taskflow/cpp-taskflow/releases/tag/v2.2.0">here</ulink>.</para></sect1>
 <sect1 id="release-2-2-0_1release-2-2-0_new_features">
 <title>New Features</title>
 <para><itemizedlist>
-<listitem><para>A new executor class to isolate the execution module from a taskflow </para>
-</listitem>
-<listitem><para>A new observer interface to inspect the activities of an executor </para>
-</listitem>
-<listitem><para>A decomposable taskflow construction interface </para>
-</listitem>
-<listitem><para>A new work-stealing algorithm to improve the performance</para>
-</listitem>
+<listitem><para>A new executor class to isolate the execution module from a taskflow </para></listitem>
+<listitem><para>A new observer interface to inspect the activities of an executor </para></listitem>
+<listitem><para>A decomposable taskflow construction interface </para></listitem>
+<listitem><para>A new work-stealing algorithm to improve the performance</para></listitem>
 </itemizedlist>
-</para>
-</sect1>
+</para></sect1>
 <sect1 id="release-2-2-0_1release-2-2-0_breaks_and_deprecated_features">
 <title>Breaks and Deprecated Features</title>
-<para>In this release, we isolated the executor interface from <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref>, and merge tf::Framework with <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref>. This change largely improved the modularity and composability of Cpp-Taskflow in creating clean task dependency graphs and execution flows. Performance is also better. While this introduced some breaks in <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref>, we have managed to make it as less painful as possible for users to adapt to the new change.</para>
-<para>Previously, <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> is a hero class that manages both a task dependency graph and the execution of all graphs including frameworks. For example:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>before<sp/>v2.2.0,<sp/>tf::Taskflow<sp/>manages<sp/>both<sp/>graph<sp/>and<sp/>execution</highlight><highlight class="normal"></highlight></codeline>
+<para>In this release, we isolated the executor interface from <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref>, and merge tf::Framework with <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref>. This change largely improved the modularity and composability of Cpp-Taskflow in creating clean task dependency graphs and execution flows. Performance is also better. While this introduced some breaks in <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref>, we have managed to make it as less painful as possible for users to adapt to the new change.</para><para>Previously, <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> is a hero class that manages both a task dependency graph and the execution of all graphs including frameworks. For example:</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>before<sp/>v2.2.0,<sp/>tf::Taskflow<sp/>manages<sp/>both<sp/>graph<sp/>and<sp/>execution</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(4);<sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>taskflow<sp/>object<sp/>with<sp/>4<sp/>threads</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.emplace([]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">taskflow.wait_for_all();<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>dispatch<sp/>the<sp/>present<sp/>graph</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">tf::Framework<sp/>framework;<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>framework<sp/>object</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">framework.emplace([]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>B\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal">framework.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>B\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">taskflow.run(framework);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>framework<sp/>once</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.wait_for_all();<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>wait<sp/>until<sp/>the<sp/>framework<sp/>finishes</highlight></codeline>
-</programlisting></para>
-<para>However, this design is awkward in many aspects. For instance, calling <computeroutput>wait_for_all</computeroutput> dispatches the present graph and the graph vanishes when the execution completes. To reuse a graph, users have to create another special graph called framework and mix its execution with the one in a taskflow object. Given the user feedback and lessons we have learned so far, we decided to isolate the executor interface out of <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> and merge tf::Framework with <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref>. All execution methods such as <computeroutput>dispatch</computeroutput> and <computeroutput>wait_for_all</computeroutput> have been moved from <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> to <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>starting<sp/>from<sp/>v2.2.0,<sp/>tf::Executor<sp/>manages<sp/>the<sp/>execution<sp/>of<sp/>graphs</highlight><highlight class="normal"></highlight></codeline>
+</programlisting></para><para>However, this design is awkward in many aspects. For instance, calling <computeroutput>wait_for_all</computeroutput> dispatches the present graph and the graph vanishes when the execution completes. To reuse a graph, users have to create another special graph called framework and mix its execution with the one in a taskflow object. Given the user feedback and lessons we have learned so far, we decided to isolate the executor interface out of <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> and merge tf::Framework with <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref>. All execution methods such as <computeroutput>dispatch</computeroutput> and <computeroutput>wait_for_all</computeroutput> have been moved from <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> to <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref>.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>starting<sp/>from<sp/>v2.2.0,<sp/>tf::Executor<sp/>manages<sp/>the<sp/>execution<sp/>of<sp/>graphs</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>taskflow<sp/>to<sp/>build<sp/>dependent<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>B\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>B\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(4);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>executor<sp/>of<sp/>4<sp/>threads</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow);<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow<sp/>once</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow,<sp/>2);<sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow<sp/>twice</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.wait_for_all();<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>three<sp/>runs<sp/>to<sp/>finish</highlight></codeline>
-</programlisting></para>
-<para>The new design has a clean separation between a task dependency graph builder <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> and the execution of graphs <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref>. Users are fully responsible for the lifetime of a taskflow, and need to ensure a taskflow is alive during its execution. Besides, all task constructs remain unchanged in <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref>. In most situations, you will just need to add an executor to your program to run your taskflow graphs.</para>
-<para>Again, we apologize this breaking change! I hope you can understand what we did is to make Cpp-Taskflow provide good performance scaling and user experience. </para>
-</sect1>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow);<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow,<sp/>2);<sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow<sp/>twice</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>three<sp/>runs<sp/>to<sp/>finish</highlight></codeline>
+</programlisting></para><para>The new design has a clean separation between a task dependency graph builder <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> and the execution of graphs <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref>. Users are fully responsible for the lifetime of a taskflow, and need to ensure a taskflow is alive during its execution. Besides, all task constructs remain unchanged in <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref>. In most situations, you will just need to add an executor to your program to run your taskflow graphs.</para><para>Again, we apologize this breaking change! I hope you can understand what we did is to make Cpp-Taskflow provide good performance scaling and user experience. </para></sect1>
     </detaileddescription>
-    <location file="releases/release-2.2.0.dox"/>
   </compounddef>
 </doxygen>

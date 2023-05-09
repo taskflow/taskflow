@@ -5,7 +5,7 @@
   <title>Learning from Examples &raquo; k-means Clustering (cudaFlow) | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -62,266 +62,266 @@
 <span class="c1">// mx/my: centroids</span>
 <span class="c1">// K: number of clusters</span>
 <span class="c1">// sx/sy/c: storage to compute the average</span>
-<span class="n">__global__</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">assign_clusters</span><span class="p">(</span>
+<span class="n">__global__</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">assign_clusters</span><span class="p">(</span><span class="w"></span>
 <span class="w">  </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">px</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">py</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span>
-<span class="w">  </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">mx</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">my</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">sx</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">sy</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">c</span>
-<span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">blockDim</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">mx</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">my</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">sx</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">sy</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">c</span><span class="w"></span>
+<span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">blockDim</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">index</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">return</span><span class="p">;</span>
-<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">index</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
 <span class="w">  </span><span class="c1">// Make global loads once.</span>
-<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">px</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
-<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">py</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">px</span><span class="p">[</span><span class="n">index</span><span class="p">];</span><span class="w"></span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">py</span><span class="p">[</span><span class="n">index</span><span class="p">];</span><span class="w"></span>
 
-<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">best_dance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FLT_MAX</span><span class="p">;</span>
-<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">best_k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">K</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">L2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">],</span><span class="w"> </span><span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">d</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">best_d</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="n">best_d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="p">;</span>
-<span class="w">      </span><span class="n">best_k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">best_dance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FLT_MAX</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">best_k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">K</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">L2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">],</span><span class="w"> </span><span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">d</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">best_d</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">best_d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">best_k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k</span><span class="p">;</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w">   </span>
-<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
 <span class="w">  </span><span class="n">atomicAdd</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sx</span><span class="p">[</span><span class="n">best_k</span><span class="p">],</span><span class="w"> </span><span class="n">x</span><span class="p">);</span><span class="w"> </span>
 <span class="w">  </span><span class="n">atomicAdd</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sy</span><span class="p">[</span><span class="n">best_k</span><span class="p">],</span><span class="w"> </span><span class="n">y</span><span class="p">);</span><span class="w"> </span>
 <span class="w">  </span><span class="n">atomicAdd</span><span class="p">(</span><span class="o">&amp;</span><span class="n">c</span><span class="w"> </span><span class="p">[</span><span class="n">best_k</span><span class="p">],</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"> </span>
-<span class="p">}</span>
+<span class="p">}</span><span class="w"></span>
 
 <span class="c1">// mx/my: centroids, sx/sy/c: storage to compute the average</span>
-<span class="n">__global__</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">compute_new_means</span><span class="p">(</span>
-<span class="w">  </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">mx</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">my</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">sx</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">sy</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">c</span>
-<span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+<span class="n">__global__</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">compute_new_means</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">mx</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">my</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">sx</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">sy</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">c</span><span class="w"></span>
+<span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span><span class="w">  </span><span class="c1">// turn 0/0 to 0/1</span>
-<span class="w">  </span><span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">count</span><span class="p">;</span>
-<span class="w">  </span><span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">count</span><span class="p">;</span>
-<span class="p">}</span></pre><p>When we recompute the cluster centroids to be the mean of all points assigned to a particular centroid, multiple GPU threads may access the sum arrays, <code>sx</code> and <code>sy</code>, and the count array, <code>c</code>. To avoid data race, we use a simple <code>atomicAdd</code> method.</p></section><section id="DefineTheKMeanscudaFlow"><h2><a href="#DefineTheKMeanscudaFlow">Define the k-means cudaFlow</a></h2><p>Based on the two kernels, we can define the cudaFlow for the k-means workload below:</p><pre class="m-code"><span class="c1">// N: number of points</span>
+<span class="w">  </span><span class="n">mx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">my</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre><p>When we recompute the cluster centroids to be the mean of all points assigned to a particular centroid, multiple GPU threads may access the sum arrays, <code>sx</code> and <code>sy</code>, and the count array, <code>c</code>. To avoid data race, we use a simple <code>atomicAdd</code> method.</p></section><section id="DefineTheKMeanscudaFlow"><h2><a href="#DefineTheKMeanscudaFlow">Define the k-means cudaFlow</a></h2><p>Based on the two kernels, we can define the cudaFlow for the k-means workload below:</p><pre class="m-code"><span class="c1">// N: number of points</span>
 <span class="c1">// K: number of clusters</span>
 <span class="c1">// M: number of iterations</span>
 <span class="c1">// px/py: 2D point vector </span>
-<span class="kt">void</span><span class="w"> </span><span class="nf">kmeans_gpu</span><span class="p">(</span>
-<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">cconst</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">px</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">py</span>
-<span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">h_mx</span><span class="p">,</span><span class="w"> </span><span class="n">h_my</span><span class="p">;</span>
-<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">d_px</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_py</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_sx</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_sy</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_c</span><span class="p">;</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">kmeans_gpu</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">cconst</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">px</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">py</span><span class="w"></span>
+<span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">h_mx</span><span class="p">,</span><span class="w"> </span><span class="n">h_my</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">d_px</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_py</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_sx</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_sy</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">d_c</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">K</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">h_mx</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">h_px</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-<span class="w">    </span><span class="n">h_my</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">h_py</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">K</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">h_mx</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">h_px</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span><span class="w"></span>
+<span class="w">    </span><span class="n">h_my</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">h_py</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
 <span class="w">  </span><span class="c1">// create a taskflow graph</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;K-Means&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;K-Means&quot;</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">allocate_px</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
-<span class="w">    </span><span class="n">TF_CHECK_CUDA</span><span class="p">(</span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_px</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)),</span><span class="w"> </span><span class="s">&quot;failed to allocate d_px&quot;</span><span class="p">);</span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_px&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">allocate_px</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
+<span class="w">    </span><span class="n">TF_CHECK_CUDA</span><span class="p">(</span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_px</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)),</span><span class="w"> </span><span class="s">&quot;failed to allocate d_px&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_px&quot;</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">allocate_py</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
-<span class="w">    </span><span class="n">TF_CHECK_CUDA</span><span class="p">(</span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_py</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)),</span><span class="w"> </span><span class="s">&quot;failed to allocate d_py&quot;</span><span class="p">);</span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_py&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">allocate_py</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
+<span class="w">    </span><span class="n">TF_CHECK_CUDA</span><span class="p">(</span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_py</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)),</span><span class="w"> </span><span class="s">&quot;failed to allocate d_py&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_py&quot;</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">allocate_mx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
-<span class="w">    </span><span class="n">TF_CHECK_CUDA</span><span class="p">(</span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)),</span><span class="w"> </span><span class="s">&quot;failed to allocate d_mx&quot;</span><span class="p">);</span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_mx&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">allocate_mx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
+<span class="w">    </span><span class="n">TF_CHECK_CUDA</span><span class="p">(</span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)),</span><span class="w"> </span><span class="s">&quot;failed to allocate d_mx&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_mx&quot;</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">allocate_my</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
-<span class="w">    </span><span class="n">TF_CHECK_CUDA</span><span class="p">(</span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)),</span><span class="w"> </span><span class="s">&quot;failed to allocate d_my&quot;</span><span class="p">);</span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_my&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">allocate_my</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
+<span class="w">    </span><span class="n">TF_CHECK_CUDA</span><span class="p">(</span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)),</span><span class="w"> </span><span class="s">&quot;failed to allocate d_my&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_my&quot;</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">allocate_sx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
-<span class="w">    </span><span class="n">TF_CHECK_CUDA</span><span class="p">(</span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_sx</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)),</span><span class="w"> </span><span class="s">&quot;failed to allocate d_sx&quot;</span><span class="p">);</span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_sx&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">allocate_sx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
+<span class="w">    </span><span class="n">TF_CHECK_CUDA</span><span class="p">(</span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_sx</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)),</span><span class="w"> </span><span class="s">&quot;failed to allocate d_sx&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_sx&quot;</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">allocate_sy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
-<span class="w">    </span><span class="n">TF_CHECK_CUDA</span><span class="p">(</span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_sy</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)),</span><span class="w"> </span><span class="s">&quot;failed to allocate d_sy&quot;</span><span class="p">);</span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_sy&quot;</span><span class="p">);</span>
-<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">allocate_c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
-<span class="w">    </span><span class="n">TF_CHECK_CUDA</span><span class="p">(</span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_c</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)),</span><span class="w"> </span><span class="s">&quot;failed to allocate dc&quot;</span><span class="p">);</span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_c&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">allocate_sy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
+<span class="w">    </span><span class="n">TF_CHECK_CUDA</span><span class="p">(</span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_sy</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)),</span><span class="w"> </span><span class="s">&quot;failed to allocate d_sy&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_sy&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">allocate_c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
+<span class="w">    </span><span class="n">TF_CHECK_CUDA</span><span class="p">(</span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_c</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)),</span><span class="w"> </span><span class="s">&quot;failed to allocate dc&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_c&quot;</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">h2d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
-<span class="w">    </span><span class="n">cudaMemcpy</span><span class="p">(</span><span class="n">d_px</span><span class="p">,</span><span class="w"> </span><span class="n">h_px</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">),</span><span class="w"> </span><span class="n">cudaMemcpyDefault</span><span class="p">);</span>
-<span class="w">    </span><span class="n">cudaMemcpy</span><span class="p">(</span><span class="n">d_py</span><span class="p">,</span><span class="w"> </span><span class="n">h_py</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">),</span><span class="w"> </span><span class="n">cudaMemcpyDefault</span><span class="p">);</span>
-<span class="w">    </span><span class="n">cudaMemcpy</span><span class="p">(</span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="n">h_mx</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">),</span><span class="w"> </span><span class="n">cudaMemcpyDefault</span><span class="p">);</span>
-<span class="w">    </span><span class="n">cudaMemcpy</span><span class="p">(</span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="n">h_my</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">),</span><span class="w"> </span><span class="n">cudaMemcpyDefault</span><span class="p">);</span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;h2d&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">h2d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaMemcpy</span><span class="p">(</span><span class="n">d_px</span><span class="p">,</span><span class="w"> </span><span class="n">h_px</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">),</span><span class="w"> </span><span class="n">cudaMemcpyDefault</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaMemcpy</span><span class="p">(</span><span class="n">d_py</span><span class="p">,</span><span class="w"> </span><span class="n">h_py</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">),</span><span class="w"> </span><span class="n">cudaMemcpyDefault</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaMemcpy</span><span class="p">(</span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="n">h_mx</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">),</span><span class="w"> </span><span class="n">cudaMemcpyDefault</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaMemcpy</span><span class="p">(</span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="n">h_my</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">),</span><span class="w"> </span><span class="n">cudaMemcpyDefault</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;h2d&quot;</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">kmeans</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">kmeans</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="w"> </span><span class="n">cf</span><span class="p">;</span>
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="w"> </span><span class="n">cf</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">zero_c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">zero</span><span class="p">(</span><span class="n">d_c</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;zero_c&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">zero_sx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">zero</span><span class="p">(</span><span class="n">d_sx</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;zero_sx&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">zero_sy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">zero</span><span class="p">(</span><span class="n">d_sy</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;zero_sy&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">zero_c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">zero</span><span class="p">(</span><span class="n">d_c</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;zero_c&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">zero_sx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">zero</span><span class="p">(</span><span class="n">d_sx</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;zero_sx&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">zero_sy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">zero</span><span class="p">(</span><span class="n">d_sy</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;zero_sy&quot;</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">cluster</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span>
-<span class="w">      </span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">512-1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">512</span><span class="p">,</span><span class="w"> </span><span class="mi">512</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">      </span><span class="n">assign_clusters</span><span class="p">,</span><span class="w"> </span><span class="n">d_px</span><span class="p">,</span><span class="w"> </span><span class="n">d_py</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="n">d_sx</span><span class="p">,</span><span class="w"> </span><span class="n">d_sy</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="n">d_c</span>
-<span class="w">    </span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;cluster&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">cluster</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">512-1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">512</span><span class="p">,</span><span class="w"> </span><span class="mi">512</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">assign_clusters</span><span class="p">,</span><span class="w"> </span><span class="n">d_px</span><span class="p">,</span><span class="w"> </span><span class="n">d_py</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="n">d_sx</span><span class="p">,</span><span class="w"> </span><span class="n">d_sy</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="n">d_c</span><span class="w"></span>
+<span class="w">    </span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;cluster&quot;</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">new_centroid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span>
-<span class="w">      </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">      </span><span class="n">compute_new_means</span><span class="p">,</span><span class="w"> </span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="n">d_sx</span><span class="p">,</span><span class="w"> </span><span class="n">d_sy</span><span class="p">,</span><span class="w"> </span><span class="n">d_c</span>
-<span class="w">    </span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;new_centroid&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">new_centroid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">compute_new_means</span><span class="p">,</span><span class="w"> </span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="n">d_sx</span><span class="p">,</span><span class="w"> </span><span class="n">d_sy</span><span class="p">,</span><span class="w"> </span><span class="n">d_c</span><span class="w"></span>
+<span class="w">    </span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;new_centroid&quot;</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">cluster</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">new_centroid</span><span class="p">)</span>
-<span class="w">           </span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">zero_c</span><span class="p">,</span><span class="w"> </span><span class="n">zero_sx</span><span class="p">,</span><span class="w"> </span><span class="n">zero_sy</span><span class="p">);</span>
+<span class="w">    </span><span class="n">cluster</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">new_centroid</span><span class="p">)</span><span class="w"></span>
+<span class="w">           </span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">zero_c</span><span class="p">,</span><span class="w"> </span><span class="n">zero_sx</span><span class="p">,</span><span class="w"> </span><span class="n">zero_sy</span><span class="p">);</span><span class="w"></span>
 
 <span class="w">    </span><span class="c1">// Repeat the execution for M times</span>
-<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaStream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span>
-<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">M</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="n">cf</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">    </span><span class="n">stream</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;update_means&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaStream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">M</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">cf</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">stream</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;update_means&quot;</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">stop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
-<span class="w">    </span><span class="n">cudaMemcpy</span><span class="p">(</span><span class="n">h_mx</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">),</span><span class="w"> </span><span class="n">cudaMemcpyDefault</span><span class="p">);</span>
-<span class="w">    </span><span class="n">cudaMemcpy</span><span class="p">(</span><span class="n">h_my</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">),</span><span class="w"> </span><span class="n">cudaMemcpyDefault</span><span class="p">);</span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;d2h&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">stop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaMemcpy</span><span class="p">(</span><span class="n">h_mx</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">d_mx</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">),</span><span class="w"> </span><span class="n">cudaMemcpyDefault</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaMemcpy</span><span class="p">(</span><span class="n">h_my</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">d_my</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">),</span><span class="w"> </span><span class="n">cudaMemcpyDefault</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;d2h&quot;</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">free</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
-<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_px</span><span class="p">);</span>
-<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_py</span><span class="p">);</span>
-<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_mx</span><span class="p">);</span>
-<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_my</span><span class="p">);</span>
-<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_sx</span><span class="p">);</span>
-<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_sy</span><span class="p">);</span>
-<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_c</span><span class="p">);</span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;free&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">free</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_px</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_py</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_mx</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_my</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_sx</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_sy</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">d_c</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;free&quot;</span><span class="p">);</span><span class="w"></span>
 
 <span class="w">  </span><span class="c1">// build up the dependency</span>
-<span class="w">  </span><span class="n">h2d</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">allocate_px</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_py</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_mx</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_my</span><span class="p">);</span>
+<span class="w">  </span><span class="n">h2d</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">allocate_px</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_py</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_mx</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_my</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">  </span><span class="n">kmeans</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">allocate_sx</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_sy</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_c</span><span class="p">,</span><span class="w"> </span><span class="n">h2d</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">stop</span><span class="p">);</span>
+<span class="w">  </span><span class="n">kmeans</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">allocate_sx</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_sy</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_c</span><span class="p">,</span><span class="w"> </span><span class="n">h2d</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">stop</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">  </span><span class="n">stop</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">free</span><span class="p">);</span>
+<span class="w">  </span><span class="n">stop</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">free</span><span class="p">);</span><span class="w"></span>
 
 <span class="w">  </span><span class="c1">// run the taskflow</span>
-<span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
+<span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
 
 <span class="w">  </span><span class="c1">//std::cout &lt;&lt; &quot;dumping kmeans graph ...\n&quot;;</span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="n">h_mx</span><span class="p">,</span><span class="w"> </span><span class="n">h_my</span><span class="p">};</span>
-<span class="p">}</span></pre><p>The first dump before executing the taskflow produces the following diagram. The condition tasks introduces a cycle between itself and <code>update_means</code>. Each time it goes back to <code>update_means</code>, the cudaFlow is reconstructed with captured parameters in the closure and offloaded to the GPU.</p><div class="m-graph"><svg style="width: 41.200rem; height: 38.300rem;" viewBox="0.00 0.00 412.00 383.25">
-<g transform="scale(1 1) rotate(0) translate(4 379.25)">
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="n">h_mx</span><span class="p">,</span><span class="w"> </span><span class="n">h_my</span><span class="p">};</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre><p>The first dump before executing the taskflow produces the following diagram. The condition tasks introduces a cycle between itself and <code>update_means</code>. Each time it goes back to <code>update_means</code>, the cudaFlow is reconstructed with captured parameters in the closure and offloaded to the GPU.</p><div class="m-graph"><svg style="width: 44.700rem; height: 38.300rem;" viewBox="0.00 0.00 447.00 383.00">
+<g transform="scale(1 1) rotate(0) translate(4 379)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x7ffcc549dd00</title>
-<polygon points="8,-8 8,-367.25 396,-367.25 396,-8 8,-8"/>
-<text text-anchor="middle" x="202" y="-353.75" font-family="Helvetica,sans-Serif" font-size="10.00">Taskflow: K&#45;Means</text>
+<polygon points="8,-8 8,-367 431,-367 431,-8 8,-8"/>
+<text text-anchor="middle" x="219.5" y="-355" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">Taskflow: K&#45;Means</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x112f740</title>
-<ellipse cx="349" cy="-322" rx="38.76" ry="18"/>
-<text text-anchor="middle" x="349" y="-318.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_px</text>
+<ellipse cx="380" cy="-322" rx="42.9448" ry="18"/>
+<text text-anchor="middle" x="380" y="-319.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">allocate_px</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x112fa10</title>
-<ellipse cx="324" cy="-250" rx="27" ry="18"/>
-<text text-anchor="middle" x="324" y="-246.12" font-family="Helvetica,sans-Serif" font-size="10.00">h2d</text>
+<ellipse cx="344" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="344" y="-247.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">h2d</text>
 </g>
 <g class="m-edge">
 <title>p0x112f740&#45;&gt;p0x112fa10</title>
-<path d="M342.95,-304.05C340.15,-296.23 336.77,-286.75 333.63,-277.98"/>
-<polygon points="336.66,-277.03 330,-268.79 330.06,-279.38 336.66,-277.03"/>
+<path d="M371.1011,-304.2022C366.8978,-295.7955 361.7959,-285.5917 357.1575,-276.3149"/>
+<polygon points="360.1513,-274.4762 352.5486,-267.0972 353.8903,-277.6068 360.1513,-274.4762"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x112fb00</title>
-<ellipse cx="192" cy="-178" rx="47.19" ry="18"/>
-<text text-anchor="middle" x="192" y="-174.12" font-family="Helvetica,sans-Serif" font-size="10.00">update_means</text>
+<ellipse cx="205" cy="-178" rx="52.2822" ry="18"/>
+<text text-anchor="middle" x="205" y="-175.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">update_means</text>
 </g>
 <g class="m-edge">
 <title>p0x112fa10&#45;&gt;p0x112fb00</title>
-<path d="M303.38,-238.06C283.36,-227.45 252.57,-211.12 228.43,-198.32"/>
-<polygon points="230.35,-194.84 219.87,-193.25 227.07,-201.03 230.35,-194.84"/>
+<path d="M322.5859,-238.9078C301.4925,-227.9817 268.8083,-211.0518 243.2475,-197.8116"/>
+<polygon points="244.6766,-194.6103 234.1873,-193.1186 241.4569,-200.8259 244.6766,-194.6103"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x112f650</title>
-<ellipse cx="253" cy="-322" rx="38.76" ry="18"/>
-<text text-anchor="middle" x="253" y="-318.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_py</text>
+<ellipse cx="276" cy="-322" rx="42.9448" ry="18"/>
+<text text-anchor="middle" x="276" y="-319.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">allocate_py</text>
 </g>
 <g class="m-edge">
 <title>p0x112f650&#45;&gt;p0x112fa10</title>
-<path d="M268.76,-305.46C278.39,-295.96 290.88,-283.66 301.54,-273.15"/>
-<polygon points="303.59,-276.05 308.26,-266.54 298.68,-271.06 303.59,-276.05"/>
+<path d="M292.1151,-304.937C301.1285,-295.3933 312.4864,-283.3674 322.2758,-273.002"/>
+<polygon points="325.0697,-275.1413 329.3914,-265.4679 319.9806,-270.3349 325.0697,-275.1413"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x112f560</title>
-<ellipse cx="156" cy="-322" rx="40.53" ry="18"/>
-<text text-anchor="middle" x="156" y="-318.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_mx</text>
+<ellipse cx="170" cy="-322" rx="45.1548" ry="18"/>
+<text text-anchor="middle" x="170" y="-319.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">allocate_mx</text>
 </g>
 <g class="m-edge">
 <title>p0x112f560&#45;&gt;p0x112fa10</title>
-<path d="M186.09,-309.5C212.98,-299.09 253.37,-283.11 288,-268 289.65,-267.28 291.35,-266.53 293.05,-265.76"/>
-<polygon points="294.16,-268.64 301.78,-261.28 291.23,-262.28 294.16,-268.64"/>
+<path d="M203.5308,-309.851C231.6944,-299.4159 272.8542,-283.6243 308,-268 309.7719,-267.2123 311.5826,-266.3839 313.403,-265.5328"/>
+<polygon points="314.9611,-268.6672 322.4497,-261.1724 311.9218,-262.3614 314.9611,-268.6672"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x112f470</title>
-<ellipse cx="57" cy="-322" rx="40.53" ry="18"/>
-<text text-anchor="middle" x="57" y="-318.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_my</text>
+<ellipse cx="61" cy="-322" rx="45.1548" ry="18"/>
+<text text-anchor="middle" x="61" y="-319.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">allocate_my</text>
 </g>
 <g class="m-edge">
 <title>p0x112f470&#45;&gt;p0x112fa10</title>
-<path d="M87.38,-309.73C93.5,-307.67 99.92,-305.65 106,-304 185.59,-282.43 209.68,-293.8 288,-268 289.72,-267.44 291.45,-266.81 293.2,-266.14"/>
-<polygon points="294.2,-269.09 302.03,-261.96 291.46,-262.65 294.2,-269.09"/>
+<path d="M95.1228,-310.0658C101.9879,-307.8823 109.1872,-305.7455 116,-304 200.1038,-282.4516 225.7107,-295.6812 308,-268 309.8876,-267.365 311.801,-266.6484 313.7112,-265.8761"/>
+<polygon points="315.4041,-268.953 323.1001,-261.6714 312.543,-262.5643 315.4041,-268.953"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x112f380</title>
-<ellipse cx="240" cy="-250" rx="38.76" ry="18"/>
-<text text-anchor="middle" x="240" y="-246.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_sx</text>
+<ellipse cx="257" cy="-250" rx="42.2678" ry="18"/>
+<text text-anchor="middle" x="257" y="-247.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">allocate_sx</text>
 </g>
 <g class="m-edge">
 <title>p0x112f380&#45;&gt;p0x112fb00</title>
-<path d="M228.62,-232.41C222.89,-224.04 215.8,-213.71 209.4,-204.37"/>
-<polygon points="211.84,-202.74 203.29,-196.47 206.06,-206.7 211.84,-202.74"/>
+<path d="M244.4123,-232.5708C238.1988,-223.9675 230.578,-213.4156 223.6991,-203.8911"/>
+<polygon points="226.3444,-201.5758 217.6521,-195.5182 220.6696,-205.6743 226.3444,-201.5758"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x112fbf0</title>
-<ellipse cx="192" cy="-106" rx="27" ry="18"/>
-<text text-anchor="middle" x="192" y="-102.12" font-family="Helvetica,sans-Serif" font-size="10.00">d2h</text>
+<ellipse cx="205" cy="-106" rx="27" ry="18"/>
+<text text-anchor="middle" x="205" y="-103.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">d2h</text>
 </g>
 <g class="m-edge">
 <title>p0x112fb00&#45;&gt;p0x112fbf0</title>
-<path d="M192,-159.7C192,-152.24 192,-143.32 192,-134.97"/>
-<polygon points="195.5,-135.1 192,-125.1 188.5,-135.1 195.5,-135.1"/>
+<path d="M205,-159.8314C205,-152.131 205,-142.9743 205,-134.4166"/>
+<polygon points="208.5001,-134.4132 205,-124.4133 201.5001,-134.4133 208.5001,-134.4132"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x112f830</title>
-<ellipse cx="144" cy="-250" rx="38.76" ry="18"/>
-<text text-anchor="middle" x="144" y="-246.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_sy</text>
+<ellipse cx="154" cy="-250" rx="42.2678" ry="18"/>
+<text text-anchor="middle" x="154" y="-247.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">allocate_sy</text>
 </g>
 <g class="m-edge">
 <title>p0x112f830&#45;&gt;p0x112fb00</title>
-<path d="M155.38,-232.41C161.11,-224.04 168.2,-213.71 174.6,-204.37"/>
-<polygon points="177.94,-206.7 180.71,-196.47 172.16,-202.74 177.94,-206.7"/>
+<path d="M166.3457,-232.5708C172.4397,-223.9675 179.9139,-213.4156 186.6605,-203.8911"/>
+<polygon points="189.6671,-205.7016 192.5912,-195.5182 183.9549,-201.6554 189.6671,-205.7016"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x112f920</title>
-<ellipse cx="52" cy="-250" rx="35.65" ry="18"/>
-<text text-anchor="middle" x="52" y="-246.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_c</text>
+<ellipse cx="55" cy="-250" rx="38.7041" ry="18"/>
+<text text-anchor="middle" x="55" y="-247.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">allocate_c</text>
 </g>
 <g class="m-edge">
 <title>p0x112f920&#45;&gt;p0x112fb00</title>
-<path d="M76.71,-236.65C98.23,-225.88 129.77,-210.11 154.43,-197.79"/>
-<polygon points="155.8,-200.51 163.18,-192.91 152.67,-194.25 155.8,-200.51"/>
+<path d="M82.1639,-236.9613C105.3229,-225.845 138.9258,-209.7156 165.134,-197.1357"/>
+<polygon points="166.9214,-200.1601 174.422,-192.6774 163.8922,-193.8495 166.9214,-200.1601"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x112fce0</title>
-<ellipse cx="192" cy="-34" rx="27" ry="18"/>
-<text text-anchor="middle" x="192" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">free</text>
+<ellipse cx="205" cy="-34" rx="27" ry="18"/>
+<text text-anchor="middle" x="205" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">free</text>
 </g>
 <g class="m-edge">
 <title>p0x112fbf0&#45;&gt;p0x112fce0</title>
-<path d="M192,-87.7C192,-80.24 192,-71.32 192,-62.97"/>
-<polygon points="195.5,-63.1 192,-53.1 188.5,-63.1 195.5,-63.1"/>
+<path d="M205,-87.8314C205,-80.131 205,-70.9743 205,-62.4166"/>
+<polygon points="208.5001,-62.4132 205,-52.4133 201.5001,-62.4133 208.5001,-62.4132"/>
 </g>
 </g>
 </svg>
@@ -370,7 +370,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

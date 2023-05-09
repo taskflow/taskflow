@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="classtf_1_1WorkerInterface" kind="class" language="C++" prot="public" abstract="yes">
     <compoundname>tf::WorkerInterface</compoundname>
     <includes refid="worker_8hpp" local="no">worker.hpp</includes>
@@ -9,106 +9,88 @@
         <definition>virtual tf::WorkerInterface::~WorkerInterface</definition>
         <argsstring>()=default</argsstring>
         <name>~WorkerInterface</name>
-        <qualifiedname>tf::WorkerInterface::~WorkerInterface</qualifiedname>
         <briefdescription>
-<para>default destructor </para>
-        </briefdescription>
+<para>default destructor </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="220" column="11"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="220" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1WorkerInterface_1a41c3b931a36bde8eff4aa8d375e8888a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
         <type>void</type>
         <definition>virtual void tf::WorkerInterface::scheduler_prologue</definition>
         <argsstring>(Worker &amp;worker)=0</argsstring>
         <name>scheduler_prologue</name>
-        <qualifiedname>tf::WorkerInterface::scheduler_prologue</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <declname>worker</declname>
         </param>
         <briefdescription>
-<para>method to call before a worker enters the scheduling loop </para>
-        </briefdescription>
+<para>method to call before a worker enters the scheduling loop </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>worker</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a reference to the worker</para>
-</parameterdescription>
+<para>a reference to the worker</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-The method is called by the constructor of an executor. </para>
-        </detaileddescription>
+The method is called by the constructor of an executor. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="228" column="16"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="228" column="1"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1WorkerInterface_1a3e6d68fd4041f433d1b7ca9e5786b57c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
         <type>void</type>
         <definition>virtual void tf::WorkerInterface::scheduler_epilogue</definition>
         <argsstring>(Worker &amp;worker, std::exception_ptr ptr)=0</argsstring>
         <name>scheduler_epilogue</name>
-        <qualifiedname>tf::WorkerInterface::scheduler_epilogue</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <declname>worker</declname>
         </param>
         <param>
-          <type><ref refid="cpp/error/exception_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::exception_ptr</ref></type>
+          <type><ref refid="cpp/error/exception_ptr" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::exception_ptr</ref></type>
           <declname>ptr</declname>
         </param>
         <briefdescription>
-<para>method to call after a worker leaves the scheduling loop </para>
-        </briefdescription>
+<para>method to call after a worker leaves the scheduling loop </para>        </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>worker</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a reference to the worker </para>
-</parameterdescription>
+<para>a reference to the worker </para></parameterdescription>
 </parameteritem>
 <parameteritem>
 <parameternamelist>
 <parametername>ptr</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>an pointer to the exception thrown by the scheduling loop</para>
-</parameterdescription>
+<para>an pointer to the exception thrown by the scheduling loop</para></parameterdescription>
 </parameteritem>
 </parameterlist>
-The method is called by the constructor of an executor. </para>
-        </detaileddescription>
+The method is called by the constructor of an executor. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="237" column="16"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="237" column="1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class to configure worker behavior in an executor </para>
-    </briefdescription>
+<para>class to configure worker behavior in an executor </para>    </briefdescription>
     <detaileddescription>
-<para>The <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> class lets users interact with the executor to customize the worker behavior, such as calling custom methods before and after a worker enters and leaves the loop. When you create an executor, it spawns a set of workers to run tasks. The interaction between the executor and its spawned workers looks like the following:</para>
-<para>for(size_t n=0; n&lt;num_workers; n++) { create_thread([](<ref refid="classtf_1_1Worker" kindref="compound">Worker</ref>&amp; worker)</para>
-<para>pre-processing executor-specific worker information ...</para>
-<para>enter the scheduling loop Here, <ref refid="classtf_1_1WorkerInterface_1a41c3b931a36bde8eff4aa8d375e8888a" kindref="member">WorkerInterface::scheduler_prologue</ref> is invoked, if any <verbatim>while(1) {
+<para>The <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> class lets users interact with the executor to customize the worker behavior, such as calling custom methods before and after a worker enters and leaves the loop. When you create an executor, it spawns a set of workers to run tasks. The interaction between the executor and its spawned workers looks like the following:</para><para>for(size_t n=0; n&lt;num_workers; n++) { create_thread([](<ref refid="classtf_1_1Worker" kindref="compound">Worker</ref>&amp; worker)</para><para>pre-processing executor-specific worker information ...</para><para>enter the scheduling loop Here, <ref refid="classtf_1_1WorkerInterface_1a41c3b931a36bde8eff4aa8d375e8888a" kindref="member">WorkerInterface::scheduler_prologue</ref> is invoked, if any <verbatim>while(1) {
   perform_work_stealing_algorithm();
   if(stop) {
     break; 
   }
 }
-</verbatim> leaves the scheduling loop and joins this worker thread Here, <ref refid="classtf_1_1WorkerInterface_1a3e6d68fd4041f433d1b7ca9e5786b57c" kindref="member">WorkerInterface::scheduler_epilogue</ref> is invoked, if any ); }</para>
-<para><simplesect kind="note"><para>Methods defined in <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> are not thread-safe and may be be invoked by multiple workers concurrently. </para>
-</simplesect>
-</para>
-    </detaileddescription>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="213" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="213" bodyend="239"/>
+</verbatim></para><para>leaves the scheduling loop and joins this worker thread Here, <ref refid="classtf_1_1WorkerInterface_1a3e6d68fd4041f433d1b7ca9e5786b57c" kindref="member">WorkerInterface::scheduler_epilogue</ref> is invoked, if any ); }</para><para><simplesect kind="note"><para>Methods defined in <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> are not thread-safe and may be be invoked by multiple workers concurrently. </para></simplesect>
+</para>    </detaileddescription>
+    <location file="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" line="213" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/worker.hpp" bodystart="213" bodyend="239"/>
     <listofallmembers>
       <member refid="classtf_1_1WorkerInterface_1a3e6d68fd4041f433d1b7ca9e5786b57c" prot="public" virt="pure-virtual"><scope>tf::WorkerInterface</scope><name>scheduler_epilogue</name></member>
       <member refid="classtf_1_1WorkerInterface_1a41c3b931a36bde8eff4aa8d375e8888a" prot="public" virt="pure-virtual"><scope>tf::WorkerInterface</scope><name>scheduler_prologue</name></member>

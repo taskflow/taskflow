@@ -5,7 +5,7 @@
   <title>Cookbook &raquo; Limit the Maximum Concurrency | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -58,256 +58,256 @@
           </ul>
         </nav>
 <p>This chapters discusses how to limit the concurrency or the maximum number of workers in subgraphs of a taskflow.</p><section id="DefineASemaphore"><h2><a href="#DefineASemaphore">Define a Semaphore</a></h2><p>Taskflow provides a mechanism, <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a>, for you to limit the maximum concurrency in a section of tasks. You can let a task acquire/release one or multiple semaphores before/after executing its work. A task can acquire and release a semaphore, or just acquire or just release it. A <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a> object starts with an initial count. As long as that count is above 0, tasks can acquire the semaphore and do their work. If the count is 0 or less, a task trying to acquire the semaphore will not run but goes to a waiting list of that semaphore. When the semaphore is released by another task, it reschedules all tasks on that waiting list.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="nf">executor</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span><span class="w">   </span><span class="c1">// create an executor of 8 workers</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
 
 <span class="n">tf</span><span class="o">::</span><span class="n">Semaphore</span><span class="w"> </span><span class="nf">semaphore</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="c1">// create a semaphore with initial count 1</span>
 
-<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="o">&gt;</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;B&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;D&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;E&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">})</span>
-<span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="o">&gt;</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span><span class="w"></span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;B&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span><span class="w"></span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span><span class="w"></span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;D&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span><span class="w"></span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;E&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">})</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
 <span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">tasks</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="c1">// each task acquires and release the semaphore</span>
-<span class="w">  </span><span class="n">task</span><span class="p">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">semaphore</span><span class="p">);</span>
-<span class="w">  </span><span class="n">task</span><span class="p">.</span><span class="n">release</span><span class="p">(</span><span class="n">semaphore</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="w">  </span><span class="n">task</span><span class="p">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">semaphore</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">task</span><span class="p">.</span><span class="n">release</span><span class="p">(</span><span class="n">semaphore</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><div class="m-graph"><svg style="width: 35.000rem; height: 4.400rem;" viewBox="0.00 0.00 350.00 44.00">
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 35.000rem; height: 4.400rem;" viewBox="0.00 0.00 350.00 44.00">
 <g transform="scale(1 1) rotate(0) translate(4 40)">
 <title>G</title>
 <g class="m-node m-flat">
 <title>A</title>
 <ellipse cx="27" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="27" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">A</text>
+<text text-anchor="middle" x="27" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">A</text>
 </g>
 <g class="m-node m-flat">
 <title>B</title>
 <ellipse cx="99" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="99" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">B</text>
+<text text-anchor="middle" x="99" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">B</text>
 </g>
 <g class="m-node m-flat">
 <title>C</title>
 <ellipse cx="171" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="171" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">C</text>
+<text text-anchor="middle" x="171" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">C</text>
 </g>
 <g class="m-node m-flat">
 <title>D</title>
 <ellipse cx="243" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="243" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">D</text>
+<text text-anchor="middle" x="243" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">D</text>
 </g>
 <g class="m-node m-flat">
 <title>E</title>
 <ellipse cx="315" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="315" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">E</text>
+<text text-anchor="middle" x="315" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">E</text>
 </g>
 </g>
 </svg>
-</div><p>The above example creates five tasks with no dependencies between them. Under normal circumstances, the five tasks would be executed concurrently. However, this example has a semaphore with initial count 1, and all tasks need to acquire that semaphore before running and release that semaphore after they are done. This organization limits the number of concurrently running tasks to only one. One possible output is shown below:</p><pre class="m-console"><span class="gp"># </span>the<span class="w"> </span>output<span class="w"> </span>is<span class="w"> </span>a<span class="w"> </span>sequential<span class="w"> </span>chain<span class="w"> </span>of<span class="w"> </span>five<span class="w"> </span>tasks
+</div><p>The above example creates five tasks with no dependencies between them. Under normal circumstances, the five tasks would be executed concurrently. However, this example has a semaphore with initial count 1, and all tasks need to acquire that semaphore before running and release that semaphore after they are done. This organization limits the number of concurrently running tasks to only one. One possible output is shown below:</p><pre class="m-console"><span class="gp"># </span>the output is a sequential chain of five tasks
 <span class="go">A</span>
 <span class="go">B</span>
 <span class="go">E</span>
 <span class="go">D</span>
 <span class="go">C</span></pre><aside class="m-note m-warning"><h4>Attention</h4><p>It is your responsibility to ensure the semaphore stays alive during the execution of tasks that acquire and release it. The executor and taskflow do not manage lifetime of any semaphores.</p></aside><p>For the same example above, we can limit the semaphore concurrency to another value different from 1, say 3, which will limit only three workers to run the five tasks, <code>A</code>, <code>B</code>, <code>C</code>, <code>D</code>, and <code>E</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="nf">executor</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span><span class="w">   </span><span class="c1">// create an executor of 8 workers</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
 
 <span class="n">tf</span><span class="o">::</span><span class="n">Semaphore</span><span class="w"> </span><span class="nf">semaphore</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span><span class="w"> </span><span class="c1">// create a semaphore with initial count 3</span>
 
-<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="o">&gt;</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;B&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;D&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;E&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">})</span>
-<span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="o">&gt;</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span><span class="w"></span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;B&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span><span class="w"></span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span><span class="w"></span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;D&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span><span class="w"></span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;E&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">})</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
 <span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">tasks</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="c1">// each task acquires and release the semaphore</span>
-<span class="w">  </span><span class="n">task</span><span class="p">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">semaphore</span><span class="p">);</span>
-<span class="w">  </span><span class="n">task</span><span class="p">.</span><span class="n">release</span><span class="p">(</span><span class="n">semaphore</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="w">  </span><span class="n">task</span><span class="p">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">semaphore</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">task</span><span class="p">.</span><span class="n">release</span><span class="p">(</span><span class="n">semaphore</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><pre class="m-console"><span class="gp"># </span>One<span class="w"> </span>possible<span class="w"> </span>output:<span class="w"> </span>A,<span class="w"> </span>B,<span class="w"> </span>and<span class="w"> </span>C<span class="w"> </span>run<span class="w"> </span>concurrently,<span class="w"> </span>D<span class="w"> </span>and<span class="w"> </span>E<span class="w"> </span>run<span class="w"> </span>concurrently
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><pre class="m-console"><span class="gp"># </span>One possible output: A, B, and C run concurrently, D and E run concurrently
 <span class="go">ABC</span>
 <span class="go">ED</span></pre><p>Semaphores are powerful for limiting the maximum concurrency of not only a section of tasks but also different sections of tasks. Specifically, you can have one task acquire a semaphore and have another task release that semaphore to impose concurrency on subgraphs of tasks. The following example serializes the execution of five pairs of tasks using a semaphore rather than explicit dependencies.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="nf">executor</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span><span class="w">  </span><span class="c1">// creates an executor of 4 workers</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Semaphore</span><span class="w"> </span><span class="nf">semaphore</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Semaphore</span><span class="w"> </span><span class="nf">semaphore</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
 
-<span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"></span>
 <span class="kt">int</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">  </span><span class="c1">// non-atomic integer counter</span>
 
-<span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">})</span>
-<span class="w">                       </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;from-&quot;</span><span class="n">s</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">i</span><span class="p">));</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">})</span>
-<span class="w">                       </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;to-&quot;</span><span class="n">s</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">i</span><span class="p">));</span>
-<span class="w">  </span><span class="n">f</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">t</span><span class="p">);</span>
-<span class="w">  </span><span class="n">f</span><span class="p">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">semaphore</span><span class="p">);</span>
-<span class="w">  </span><span class="n">t</span><span class="p">.</span><span class="n">release</span><span class="p">(</span><span class="n">semaphore</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">})</span><span class="w"></span>
+<span class="w">                       </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;from-&quot;</span><span class="n">s</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">i</span><span class="p">));</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">})</span><span class="w"></span>
+<span class="w">                       </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;to-&quot;</span><span class="n">s</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">i</span><span class="p">));</span><span class="w"></span>
+<span class="w">  </span><span class="n">f</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">t</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">f</span><span class="p">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">semaphore</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">t</span><span class="p">.</span><span class="n">release</span><span class="p">(</span><span class="n">semaphore</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
 
-<span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">N</span><span class="p">);</span></pre><div class="m-graph"><svg style="width: 35.000rem; height: 11.600rem;" viewBox="0.00 0.00 350.00 116.00">
+<span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">N</span><span class="p">);</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 37.500rem; height: 11.600rem;" viewBox="0.00 0.00 374.87 116.00">
 <g transform="scale(1 1) rotate(0) translate(4 112)">
 <title>Taskflow</title>
 <g class="m-node m-flat">
 <title>p0xc02d50</title>
-<ellipse cx="27" cy="-90" rx="27" ry="18"/>
-<text text-anchor="middle" x="27" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">from&#45;0</text>
+<ellipse cx="29.4331" cy="-90" rx="29.3664" ry="18"/>
+<text text-anchor="middle" x="29.4331" y="-87.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">from&#45;0</text>
 </g>
 <g class="m-node m-flat">
 <title>p0xc02e40</title>
-<ellipse cx="27" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="27" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">to&#45;0</text>
+<ellipse cx="29.4331" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="29.4331" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">to&#45;0</text>
 </g>
 <g class="m-edge">
 <title>p0xc02d50&#45;&gt;p0xc02e40</title>
-<path d="M27,-71.7C27,-64.24 27,-55.32 27,-46.97"/>
-<polygon points="30.5,-47.1 27,-37.1 23.5,-47.1 30.5,-47.1"/>
+<path d="M29.4331,-71.8314C29.4331,-64.131 29.4331,-54.9743 29.4331,-46.4166"/>
+<polygon points="32.9332,-46.4132 29.4331,-36.4133 25.9332,-46.4133 32.9332,-46.4132"/>
 </g>
 <g class="m-node m-flat">
 <title>p0xc02f30</title>
-<ellipse cx="99" cy="-90" rx="27" ry="18"/>
-<text text-anchor="middle" x="99" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">from&#45;1</text>
+<ellipse cx="106.4331" cy="-90" rx="29.3664" ry="18"/>
+<text text-anchor="middle" x="106.4331" y="-87.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">from&#45;1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0xc03020</title>
-<ellipse cx="99" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="99" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">to&#45;1</text>
+<ellipse cx="106.4331" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="106.4331" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">to&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p0xc02f30&#45;&gt;p0xc03020</title>
-<path d="M99,-71.7C99,-64.24 99,-55.32 99,-46.97"/>
-<polygon points="102.5,-47.1 99,-37.1 95.5,-47.1 102.5,-47.1"/>
+<path d="M106.4331,-71.8314C106.4331,-64.131 106.4331,-54.9743 106.4331,-46.4166"/>
+<polygon points="109.9332,-46.4132 106.4331,-36.4133 102.9332,-46.4133 109.9332,-46.4132"/>
 </g>
 <g class="m-node m-flat">
 <title>p0xc03110</title>
-<ellipse cx="171" cy="-90" rx="27" ry="18"/>
-<text text-anchor="middle" x="171" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">from&#45;2</text>
+<ellipse cx="183.4331" cy="-90" rx="29.3664" ry="18"/>
+<text text-anchor="middle" x="183.4331" y="-87.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">from&#45;2</text>
 </g>
 <g class="m-node m-flat">
 <title>p0xc03200</title>
-<ellipse cx="171" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="171" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">to&#45;2</text>
+<ellipse cx="183.4331" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="183.4331" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">to&#45;2</text>
 </g>
 <g class="m-edge">
 <title>p0xc03110&#45;&gt;p0xc03200</title>
-<path d="M171,-71.7C171,-64.24 171,-55.32 171,-46.97"/>
-<polygon points="174.5,-47.1 171,-37.1 167.5,-47.1 174.5,-47.1"/>
+<path d="M183.4331,-71.8314C183.4331,-64.131 183.4331,-54.9743 183.4331,-46.4166"/>
+<polygon points="186.9332,-46.4132 183.4331,-36.4133 179.9332,-46.4133 186.9332,-46.4132"/>
 </g>
 <g class="m-node m-flat">
 <title>p0xc032f0</title>
-<ellipse cx="243" cy="-90" rx="27" ry="18"/>
-<text text-anchor="middle" x="243" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">from&#45;3</text>
+<ellipse cx="260.4331" cy="-90" rx="29.3664" ry="18"/>
+<text text-anchor="middle" x="260.4331" y="-87.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">from&#45;3</text>
 </g>
 <g class="m-node m-flat">
 <title>p0xc033e0</title>
-<ellipse cx="243" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="243" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">to&#45;3</text>
+<ellipse cx="260.4331" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="260.4331" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">to&#45;3</text>
 </g>
 <g class="m-edge">
 <title>p0xc032f0&#45;&gt;p0xc033e0</title>
-<path d="M243,-71.7C243,-64.24 243,-55.32 243,-46.97"/>
-<polygon points="246.5,-47.1 243,-37.1 239.5,-47.1 246.5,-47.1"/>
+<path d="M260.4331,-71.8314C260.4331,-64.131 260.4331,-54.9743 260.4331,-46.4166"/>
+<polygon points="263.9332,-46.4132 260.4331,-36.4133 256.9332,-46.4133 263.9332,-46.4132"/>
 </g>
 <g class="m-node m-flat">
 <title>p0xc034d0</title>
-<ellipse cx="315" cy="-90" rx="27" ry="18"/>
-<text text-anchor="middle" x="315" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">from&#45;4</text>
+<ellipse cx="337.4331" cy="-90" rx="29.3664" ry="18"/>
+<text text-anchor="middle" x="337.4331" y="-87.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">from&#45;4</text>
 </g>
 <g class="m-node m-flat">
 <title>p0xc035c0</title>
-<ellipse cx="315" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="315" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">to&#45;4</text>
+<ellipse cx="337.4331" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="337.4331" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">to&#45;4</text>
 </g>
 <g class="m-edge">
 <title>p0xc034d0&#45;&gt;p0xc035c0</title>
-<path d="M315,-71.7C315,-64.24 315,-55.32 315,-46.97"/>
-<polygon points="318.5,-47.1 315,-37.1 311.5,-47.1 318.5,-47.1"/>
+<path d="M337.4331,-71.8314C337.4331,-64.131 337.4331,-54.9743 337.4331,-46.4166"/>
+<polygon points="340.9332,-46.4132 337.4331,-36.4133 333.9332,-46.4133 340.9332,-46.4132"/>
 </g>
 </g>
 </svg>
 </div><p>Without semaphores, each pair of tasks, e.g., <code>from-0 -&gt; to-0</code>, will run independently and concurrently. However, the program forces each <code>from</code> task to acquire the semaphore before running its work and not to release it until its paired <code>to</code> task is done. This constraint forces each pair of tasks to run sequentially, while the order of which pair runs first is up to the scheduler.</p></section><section id="DefineACriticalRegion"><h2><a href="#DefineACriticalRegion">Define a Critical Section</a></h2><p><a href="classtf_1_1CriticalSection.html" class="m-doc">tf::<wbr />CriticalSection</a> is a wrapper over <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a> specialized for limiting the maximum concurrency over a section of tasks. A critical section starts with an initial count representing that limit. When a task is added to the critical section, the task acquires and releases the semaphore internal to the critical section. This method <a href="classtf_1_1CriticalSection.html#abf9cbde9354a06e0fee5fee2ea2bfc45" class="m-doc">tf::<wbr />CriticalSection::<wbr />add</a> automatically calls <a href="classtf_1_1Task.html#a076ab9c6f3a0346e16cfb5fee7dc4ce8" class="m-doc">tf::<wbr />Task::<wbr />acquire</a> and <a href="classtf_1_1Task.html#a26709523eb112f2d024f4c0e9d2f0019" class="m-doc">tf::<wbr />Task::<wbr />release</a> for each task added to the critical section. The following example creates a critical section of two workers to run five tasks in the critical section.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="nf">executor</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span><span class="w">   </span><span class="c1">// create an executor of 8 workers</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
 
 <span class="c1">// create a critical section of two workers</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">CriticalSection</span><span class="w"> </span><span class="nf">critical_section</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span><span class="w"> </span>
 
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;B&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;D&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">E</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;E&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;B&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;D&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">E</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;E&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
 
-<span class="n">critical_section</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">);</span>
+<span class="n">critical_section</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">);</span><span class="w"></span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre></section><section id="DefineAConflictGraph"><h2><a href="#DefineAConflictGraph">Define a Conflict Graph</a></h2><p>One important application of <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a> is <em>conflict-aware scheduling</em> using a conflict graph. A conflict graph is a <em>undirected</em> graph where each vertex represents a task and each edge represents a conflict between a pair of tasks. When a task conflicts with another task, they cannot run together. Consider the conflict graph below, task <code>A</code> conflicts with task <code>B</code> and task <code>C</code> (and vice versa), meaning that <code>A</code> cannot run together with <code>B</code> and <code>C</code> whereas <code>B</code> and <code>C</code> can run together.</p><div class="m-graph"><svg style="width: 20.800rem; height: 9.800rem;" viewBox="0.00 0.00 208.25 98.00">
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre></section><section id="DefineAConflictGraph"><h2><a href="#DefineAConflictGraph">Define a Conflict Graph</a></h2><p>One important application of <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a> is <em>conflict-aware scheduling</em> using a conflict graph. A conflict graph is a <em>undirected</em> graph where each vertex represents a task and each edge represents a conflict between a pair of tasks. When a task conflicts with another task, they cannot run together. Consider the conflict graph below, task <code>A</code> conflicts with task <code>B</code> and task <code>C</code> (and vice versa), meaning that <code>A</code> cannot run together with <code>B</code> and <code>C</code> whereas <code>B</code> and <code>C</code> can run together.</p><div class="m-graph"><svg style="width: 21.300rem; height: 9.800rem;" viewBox="0.00 0.00 213.00 98.00">
 <g transform="scale(1 1) rotate(0) translate(4 94)">
 <title>G</title>
 <g class="m-node m-flat">
 <title>A</title>
 <ellipse cx="27" cy="-45" rx="27" ry="18"/>
-<text text-anchor="middle" x="27" y="-41.12" font-family="Helvetica,sans-Serif" font-size="10.00">A</text>
+<text text-anchor="middle" x="27" y="-42.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">A</text>
 </g>
 <g class="m-node m-flat">
 <title>B</title>
-<ellipse cx="173.25" cy="-72" rx="27" ry="18"/>
-<text text-anchor="middle" x="173.25" y="-68.12" font-family="Helvetica,sans-Serif" font-size="10.00">B</text>
+<ellipse cx="178" cy="-72" rx="27" ry="18"/>
+<text text-anchor="middle" x="178" y="-69.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">B</text>
 </g>
 <g class="m-edge">
 <title>A&#45;&#45;B</title>
-<path d="M53.46,-49.76C79.82,-54.7 120.77,-62.37 147.05,-67.28"/>
-<text text-anchor="middle" x="100.12" y="-64.75" font-family="Helvetica,sans-Serif" font-size="10.00">A conflicts B</text>
+<path d="M53.3022,-49.703C80.9327,-54.6436 124.134,-62.3683 151.7463,-67.3056"/>
+<text text-anchor="middle" x="102.5" y="-66" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">A conflicts B</text>
 </g>
 <g class="m-node m-flat">
 <title>C</title>
-<ellipse cx="173.25" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="173.25" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">C</text>
+<ellipse cx="178" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="178" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">C</text>
 </g>
 <g class="m-edge">
 <title>A&#45;&#45;C</title>
-<path d="M53.46,-40.24C79.82,-35.3 120.77,-27.63 147.05,-22.72"/>
-<text text-anchor="middle" x="100.12" y="-37.75" font-family="Helvetica,sans-Serif" font-size="10.00">A conflicts C</text>
+<path d="M53.3022,-40.297C80.9327,-35.3564 124.134,-27.6317 151.7463,-22.6944"/>
+<text text-anchor="middle" x="102.5" y="-39" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">A conflicts C</text>
 </g>
 </g>
 </svg>
-</div><p>We can create one semaphore of one concurrency for each edge in the conflict graph and let the two tasks of that edge acquire the semaphore. This organization forces the two tasks to not run concurrently.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+</div><p>We can create one semaphore of one concurrency for each edge in the conflict graph and let the two tasks of that edge acquire the semaphore. This organization forces the two tasks to not run concurrently.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
 
-<span class="n">tf</span><span class="o">::</span><span class="n">Semaphore</span><span class="w"> </span><span class="nf">conflict_AB</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Semaphore</span><span class="w"> </span><span class="nf">conflict_AC</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Semaphore</span><span class="w"> </span><span class="nf">conflict_AB</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Semaphore</span><span class="w"> </span><span class="nf">conflict_AC</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
 
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;B&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;B&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
 
 <span class="c1">// describe the conflict between A and B</span>
-<span class="n">A</span><span class="p">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">conflict_AB</span><span class="p">).</span><span class="n">release</span><span class="p">(</span><span class="n">conflict_AB</span><span class="p">);</span>
-<span class="n">B</span><span class="p">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">conflict_AB</span><span class="p">).</span><span class="n">release</span><span class="p">(</span><span class="n">conflict_AB</span><span class="p">);</span>
+<span class="n">A</span><span class="p">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">conflict_AB</span><span class="p">).</span><span class="n">release</span><span class="p">(</span><span class="n">conflict_AB</span><span class="p">);</span><span class="w"></span>
+<span class="n">B</span><span class="p">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">conflict_AB</span><span class="p">).</span><span class="n">release</span><span class="p">(</span><span class="n">conflict_AB</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// describe the conflict between A and C</span>
-<span class="n">A</span><span class="p">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">conflict_AC</span><span class="p">).</span><span class="n">release</span><span class="p">(</span><span class="n">conflict_AC</span><span class="p">);</span>
-<span class="n">C</span><span class="p">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">conflict_AC</span><span class="p">).</span><span class="n">release</span><span class="p">(</span><span class="n">conflict_AC</span><span class="p">);</span>
+<span class="n">A</span><span class="p">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">conflict_AC</span><span class="p">).</span><span class="n">release</span><span class="p">(</span><span class="n">conflict_AC</span><span class="p">);</span><span class="w"></span>
+<span class="n">C</span><span class="p">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">conflict_AC</span><span class="p">).</span><span class="n">release</span><span class="p">(</span><span class="n">conflict_AC</span><span class="p">);</span><span class="w"></span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><pre class="m-console"><span class="gp"># </span>One<span class="w"> </span>possible<span class="w"> </span>output:<span class="w"> </span>B<span class="w"> </span>and<span class="w"> </span>C<span class="w"> </span>run<span class="w"> </span>concurrently<span class="w"> </span>after<span class="w"> </span>A
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><pre class="m-console"><span class="gp"># </span>One possible output: B and C run concurrently after A
 <span class="go">A</span>
-<span class="go">BC</span></pre><aside class="m-note m-info"><h4>Note</h4><p>A task can acquire and release multiple semaphores. When the executor is running a task, it will first try to acquire all semaphores of that task. When the executor finishes a task, it will release all acquired semaphores of that task.</p></aside><p>The above code can be rewritten with <a href="classtf_1_1CriticalSection.html" class="m-doc">tf::<wbr />CriticalSection</a> for simplicity, as shown below:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+<span class="go">BC</span></pre><aside class="m-note m-info"><h4>Note</h4><p>A task can acquire and release multiple semaphores. When the executor is running a task, it will first try to acquire all semaphores of that task. When the executor finishes a task, it will release all acquired semaphores of that task.</p></aside><p>The above code can be rewritten with <a href="classtf_1_1CriticalSection.html" class="m-doc">tf::<wbr />CriticalSection</a> for simplicity, as shown below:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
 
-<span class="n">tf</span><span class="o">::</span><span class="n">CriticalSection</span><span class="w"> </span><span class="nf">critical_section_AB</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">CriticalSection</span><span class="w"> </span><span class="nf">critical_section_AC</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">CriticalSection</span><span class="w"> </span><span class="nf">critical_section_AB</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">CriticalSection</span><span class="w"> </span><span class="nf">critical_section_AC</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
 
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;B&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;B&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
 
 <span class="c1">// describe the conflict graph</span>
-<span class="n">critical_section_AB</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">);</span>
-<span class="n">critical_section_AC</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">);</span>
+<span class="n">critical_section_AB</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">);</span><span class="w"></span>
+<span class="n">critical_section_AC</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">);</span><span class="w"></span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre></section>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre></section>
       </div>
     </div>
   </div>
@@ -352,7 +352,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

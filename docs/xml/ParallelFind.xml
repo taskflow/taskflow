@@ -1,64 +1,25 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="ParallelFind" kind="page">
     <compoundname>ParallelFind</compoundname>
     <title>Parallel Find</title>
-    <tableofcontents>
-      <tocsect>
-        <name>Include the Header</name>
-        <reference>ParallelFind_1ParallelFindIncludeTheHeader</reference>
-    </tocsect>
-      <tocsect>
-        <name>What is a Find Algorithm?</name>
-        <reference>ParallelFind_1WhatIsAFindAlgorithm</reference>
-    </tocsect>
-      <tocsect>
-        <name>Create a Parallel Find-If Task</name>
-        <reference>ParallelFind_1CreateAParallelFindIfTask</reference>
-    </tocsect>
-      <tocsect>
-        <name>Capture Iterators by Reference</name>
-        <reference>ParallelFind_1ParallelFindCaptureIteratorsByReference</reference>
-    </tocsect>
-      <tocsect>
-        <name>Create a Parallel Find-If-Not Task</name>
-        <reference>ParallelFind_1CreateAParallelFindIfNotTask</reference>
-    </tocsect>
-      <tocsect>
-        <name>Find the Smallest and the Largest Elements</name>
-        <reference>ParallelFind_1ParallelFindMinMaxElement</reference>
-    </tocsect>
-      <tocsect>
-        <name>Configure a Partitioner</name>
-        <reference>ParallelFind_1ParallelFindConfigureAPartitioner</reference>
-    </tocsect>
-    </tableofcontents>
+    <tableofcontents/>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow provides template functions for constructing tasks to perform parallel iterations over ranges of items.</para>
-<sect1 id="ParallelFind_1ParallelFindIncludeTheHeader">
+<para>Taskflow provides template functions for constructing tasks to perform parallel iterations over ranges of items.</para><sect1 id="ParallelFind_1ParallelFindIncludeTheHeader">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/algorithm/find.hpp</computeroutput>, for using parallel-find algorithms.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;taskflow/algorithm/find.hpp&gt;</highlight></codeline>
-</programlisting></para>
-</sect1>
+<para>You need to include the header file, <computeroutput>taskflow/algorithm/find.hpp</computeroutput>, for using parallel-find algorithms.</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;taskflow/algorithm/find.hpp&gt;</highlight></codeline>
+</programlisting></para></sect1>
 <sect1 id="ParallelFind_1WhatIsAFindAlgorithm">
 <title>What is a Find Algorithm?</title>
-<para>A find algorithm allows you to find an element in a range <computeroutput>[first, last)</computeroutput> that satisfies a specific criteria. The algorithm returns an iterator to the first found element in the range or returns <computeroutput>last</computeroutput> if there is no such iterator. Taskflow provides the following parallel-find algorithms:</para>
-<para><itemizedlist>
-<listitem><para><ref refid="classtf_1_1FlowBuilder_1a94e70e5f7a459a7762cc312b6d6dec79" kindref="member">tf::Taskflow::find_if(B first, E last, T&amp; result, UOP predicate, P&amp;&amp; part)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1aae268c9763df9323dc349fb1b35988cf" kindref="member">tf::Taskflow::find_if_not(B first, E last, T&amp; result, UOP predicate, P&amp;&amp; part)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1ad6a7caf3cfc8d1887bd211be307a3eb0" kindref="member">tf::Taskflow::min_element(B first, E last, T&amp; result, C comp, P&amp;&amp; part)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1af0415d1fa5f36fee2405b0fcbf592fe0" kindref="member">tf::Taskflow::max_element(B first, E last, T&amp; result, C comp, P&amp;&amp; part)</ref></para>
-</listitem></itemizedlist>
-</para>
-</sect1>
+<para>A find algorithm allows you to find an element in a range <computeroutput>[first, last)</computeroutput> that satisfies a specific criteria. The algorithm returns an iterator to the first found element in the range or returns <computeroutput>last</computeroutput> if there is no such iterator. Taskflow provides the following parallel-find algorithms:</para><para><itemizedlist>
+<listitem><para><ref refid="classtf_1_1FlowBuilder_1a94e70e5f7a459a7762cc312b6d6dec79" kindref="member">tf::Taskflow::find_if(B first, E last, T&amp; result, UOP predicate, P&amp;&amp; part)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1aae268c9763df9323dc349fb1b35988cf" kindref="member">tf::Taskflow::find_if_not(B first, E last, T&amp; result, UOP predicate, P&amp;&amp; part)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1ad6a7caf3cfc8d1887bd211be307a3eb0" kindref="member">tf::Taskflow::min_element(B first, E last, T&amp; result, C comp, P&amp;&amp; part)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1af0415d1fa5f36fee2405b0fcbf592fe0" kindref="member">tf::Taskflow::max_element(B first, E last, T&amp; result, C comp, P&amp;&amp; part)</ref></para></listitem></itemizedlist>
+</para></sect1>
 <sect1 id="ParallelFind_1CreateAParallelFindIfTask">
 <title>Create a Parallel Find-If Task</title>
-<para><ref refid="classtf_1_1FlowBuilder_1a94e70e5f7a459a7762cc312b6d6dec79" kindref="member">tf::Taskflow::find_if</ref> performs parallel iterations to find the first element in the range <computeroutput>[first, last)</computeroutput> that makes the given predicate return <computeroutput>true</computeroutput>. It resembles a parallel implementation of the following loop:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>InputIt,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>UnaryPredicate&gt;</highlight></codeline>
-<codeline><highlight class="normal">InputIt<sp/>find_if(InputIt<sp/>first,<sp/>InputIt<sp/>last,<sp/>UnaryPredicate<sp/>predicate)<sp/>{</highlight></codeline>
+<para><ref refid="classtf_1_1FlowBuilder_1a94e70e5f7a459a7762cc312b6d6dec79" kindref="member">tf::Taskflow::find_if</ref> performs parallel iterations to find the first element in the range <computeroutput>[first, last)</computeroutput> that makes the given predicate return <computeroutput>true</computeroutput>. It resembles a parallel implementation of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>InputIt,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>UnaryPredicate&gt;</highlight></codeline>
+<codeline><highlight class="normal">InputIt<sp/><ref refid="cpp/algorithm/find" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">find_if</ref>(InputIt<sp/>first,<sp/>InputIt<sp/>last,<sp/>UnaryPredicate<sp/>predicate)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>first<sp/>!=<sp/>last;<sp/>++first)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(predicate(*first))<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>first;</highlight></codeline>
@@ -66,47 +27,40 @@
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>last;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para>
-<para>The example below creates a task to find the element that is equal to 22 from an input range of 10 elements. The result will be stored in the forth argument passed by reference:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>9,<sp/>22,<sp/>3,<sp/>-6,<sp/>13,<sp/>12,<sp/>0,<sp/>9,<sp/>11};</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
-<codeline><highlight class="normal">taskflow.find_if(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>return<sp/>i<sp/>==<sp/>22;<sp/>},<sp/>result</highlight></codeline>
+</programlisting></para><para>The example below creates a task to find the element that is equal to 22 from an input range of 10 elements. The result will be stored in the forth argument passed by reference:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>9,<sp/>22,<sp/>3,<sp/>-6,<sp/>13,<sp/>12,<sp/>0,<sp/>9,<sp/>11};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a94e70e5f7a459a7762cc312b6d6dec79" kindref="member">find_if</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>i<sp/>==<sp/>22;<sp/>},<sp/>result</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow);</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow);</highlight></codeline>
 <codeline><highlight class="normal">assert(*result<sp/>==<sp/>22);</highlight></codeline>
-</programlisting></para>
-</sect1>
+</programlisting></para></sect1>
 <sect1 id="ParallelFind_1ParallelFindCaptureIteratorsByReference">
 <title>Capture Iterators by Reference</title>
-<para>You can pass iterators by reference using <ulink url="https://en.cppreference.com/w/cpp/utility/functional/ref">std::ref</ulink> to marshal parameters update between dependent tasks. This is especially useful when the range iterators are not known at the time of creating a find-if task, but need initialization from another task.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result,<sp/>first,<sp/>last;</highlight></codeline>
+<para>You can pass iterators by reference using <ulink url="https://en.cppreference.com/w/cpp/utility/functional/ref">std::ref</ulink> to marshal parameters update between dependent tasks. This is especially useful when the range iterators are not known at the time of creating a find-if task, but need initialization from another task.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result,<sp/>first,<sp/>last;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>task<sp/>to<sp/>set<sp/>up<sp/>the<sp/>range<sp/>iterators</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>taskflow.emplace([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>input<sp/>=<sp/>{1,<sp/>9,<sp/>22,<sp/>3,<sp/>-6,<sp/>13,<sp/>12,<sp/>0,<sp/>9,<sp/>11};</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>first<sp/>=<sp/>input.begin(),</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>last<sp/><sp/>=<sp/>input.end();</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>task<sp/>to<sp/>perform<sp/>parallel<sp/>find</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.find_if(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/utility/functional/ref" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ref</ref>(first),<sp/><ref refid="cpp/utility/functional/ref" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ref</ref>(last),<sp/>result,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>i<sp/>==<sp/>22;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a94e70e5f7a459a7762cc312b6d6dec79" kindref="member">find_if</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::ref(first),<sp/>std::ref(last),<sp/>result,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>i<sp/>==<sp/>22;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">init.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(task);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow);</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow);</highlight></codeline>
 <codeline><highlight class="normal">assert(*result<sp/>==<sp/>22);</highlight></codeline>
-</programlisting></para>
-<para>In the above example, when <computeroutput>init</computeroutput> finishes, <computeroutput>input</computeroutput> has been initialized to 10 elements with <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput> pointing to the data range of <computeroutput>input</computeroutput>. The find-if task will then work on this initialized range as a result of passing iterators by reference.</para>
-</sect1>
+</programlisting></para><para>In the above example, when <computeroutput>init</computeroutput> finishes, <computeroutput>input</computeroutput> has been initialized to 10 elements with <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput> pointing to the data range of <computeroutput>input</computeroutput>. The find-if task will then work on this initialized range as a result of passing iterators by reference.</para></sect1>
 <sect1 id="ParallelFind_1CreateAParallelFindIfNotTask">
 <title>Create a Parallel Find-If-Not Task</title>
-<para><ref refid="classtf_1_1FlowBuilder_1aae268c9763df9323dc349fb1b35988cf" kindref="member">tf::Taskflow::find_if_not</ref> performs parallel iterations to find the first element in the range <computeroutput>[first, last)</computeroutput> that makes the given predicate return <computeroutput>false</computeroutput>. It resembles a parallel implementation of the following loop:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>InputIt,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>UnaryPredicate&gt;</highlight></codeline>
-<codeline><highlight class="normal">InputIt<sp/>find_if(InputIt<sp/>first,<sp/>InputIt<sp/>last,<sp/>UnaryPredicate<sp/>predicate)<sp/>{</highlight></codeline>
+<para><ref refid="classtf_1_1FlowBuilder_1aae268c9763df9323dc349fb1b35988cf" kindref="member">tf::Taskflow::find_if_not</ref> performs parallel iterations to find the first element in the range <computeroutput>[first, last)</computeroutput> that makes the given predicate return <computeroutput>false</computeroutput>. It resembles a parallel implementation of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>InputIt,<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>UnaryPredicate&gt;</highlight></codeline>
+<codeline><highlight class="normal">InputIt<sp/><ref refid="cpp/algorithm/find" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">find_if</ref>(InputIt<sp/>first,<sp/>InputIt<sp/>last,<sp/>UnaryPredicate<sp/>predicate)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>first<sp/>!=<sp/>last;<sp/>++first)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(!predicate(*first))<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>first;</highlight></codeline>
@@ -114,66 +68,51 @@
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>last;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para>
-<para>The example below creates a task to find the element that is <emphasis>NOT</emphasis> equal to 22 from an input range of 10 elements. The result will be stored in the forth argument passed by reference:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>1,<sp/>22,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>1};</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
-<codeline><highlight class="normal">taskflow.find_if_not(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>result,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>return<sp/>i<sp/>==<sp/>1;<sp/>}</highlight></codeline>
+</programlisting></para><para>The example below creates a task to find the element that is <emphasis>NOT</emphasis> equal to 22 from an input range of 10 elements. The result will be stored in the forth argument passed by reference:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>1,<sp/>22,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>1};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1aae268c9763df9323dc349fb1b35988cf" kindref="member">find_if_not</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>result,<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>i<sp/>==<sp/>1;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow);</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow);</highlight></codeline>
 <codeline><highlight class="normal">assert(*result<sp/>==<sp/>22);</highlight></codeline>
-</programlisting></para>
-<para>Similar to <ref refid="ParallelFind_1ParallelFindCaptureIteratorsByReference" kindref="member">Capture Iterators by Reference</ref>, iterators of <ref refid="classtf_1_1FlowBuilder_1aae268c9763df9323dc349fb1b35988cf" kindref="member">tf::Taskflow::find_if_not</ref> are templated to allow passing iterators by reference using <ulink url="https://en.cppreference.com/w/cpp/utility/functional/ref">std::ref</ulink>. This is especially useful when the range iterators are not known at the time of creating a find-if-not task, but need initialization from another task.</para>
-</sect1>
+</programlisting></para><para>Similar to <ref refid="ParallelFind_1ParallelFindCaptureIteratorsByReference" kindref="member">Capture Iterators by Reference</ref>, iterators of <ref refid="classtf_1_1FlowBuilder_1aae268c9763df9323dc349fb1b35988cf" kindref="member">tf::Taskflow::find_if_not</ref> are templated to allow passing iterators by reference using <ulink url="https://en.cppreference.com/w/cpp/utility/functional/ref">std::ref</ulink>. This is especially useful when the range iterators are not known at the time of creating a find-if-not task, but need initialization from another task.</para></sect1>
 <sect1 id="ParallelFind_1ParallelFindMinMaxElement">
 <title>Find the Smallest and the Largest Elements</title>
-<para><ref refid="classtf_1_1FlowBuilder_1ad6a7caf3cfc8d1887bd211be307a3eb0" kindref="member">tf::Taskflow::min_element</ref> finds the smallest element in a range <computeroutput>[first, last)</computeroutput> using the given comparison function object. The example below finds the smallest element, i.e., -1, from an input range of 10 elements and stores the iterator to that smallest element in <computeroutput>result:</computeroutput> </para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>-1,<sp/>1,<sp/>1,<sp/>1,<sp/>1};</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
-<codeline><highlight class="normal">taskflow.min_element(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>(),<sp/>result</highlight></codeline>
+<para><ref refid="classtf_1_1FlowBuilder_1ad6a7caf3cfc8d1887bd211be307a3eb0" kindref="member">tf::Taskflow::min_element</ref> finds the smallest element in a range <computeroutput>[first, last)</computeroutput> using the given comparison function object. The example below finds the smallest element, i.e., -1, from an input range of 10 elements and stores the iterator to that smallest element in <computeroutput>result:</computeroutput> </para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>-1,<sp/>1,<sp/>1,<sp/>1,<sp/>1};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1ad6a7caf3cfc8d1887bd211be307a3eb0" kindref="member">min_element</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>(),<sp/>result</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">assert(*result<sp/>==<sp/>-1);</highlight></codeline>
-</programlisting></para>
-<para>Similarly, <ref refid="classtf_1_1FlowBuilder_1af0415d1fa5f36fee2405b0fcbf592fe0" kindref="member">tf::Taskflow::max_element</ref> finds the largest element in a range <computeroutput>[first, last)</computeroutput> using the given comparison function object. The example below finds the largest element, i.e., 2, from an input range of 10 elements and stores the iterator to that largest element in <computeroutput>result:</computeroutput> </para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>2,<sp/>1,<sp/>1,<sp/>1,<sp/>1};</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
-<codeline><highlight class="normal">taskflow.max_element(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>(),<sp/>result</highlight></codeline>
+</programlisting></para><para>Similarly, <ref refid="classtf_1_1FlowBuilder_1af0415d1fa5f36fee2405b0fcbf592fe0" kindref="member">tf::Taskflow::max_element</ref> finds the largest element in a range <computeroutput>[first, last)</computeroutput> using the given comparison function object. The example below finds the largest element, i.e., 2, from an input range of 10 elements and stores the iterator to that largest element in <computeroutput>result:</computeroutput> </para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>2,<sp/>1,<sp/>1,<sp/>1,<sp/>1};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1af0415d1fa5f36fee2405b0fcbf592fe0" kindref="member">max_element</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>(),<sp/>result</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">assert(*result<sp/>==<sp/>2);</highlight></codeline>
-</programlisting></para>
-<para><simplesect kind="note"><para>When using <ref refid="classtf_1_1FlowBuilder_1af0415d1fa5f36fee2405b0fcbf592fe0" kindref="member">tf::Taskflow::max_element</ref> to find the large element, we will still need to use <ref refid="cpp/utility/functional/less" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less</ref> as our comparison function. Details can be referred to <ulink url="https://en.cppreference.com/w/cpp/algorithm/max_element">std::max_element</ulink>.</para>
-</simplesect>
-</para>
-</sect1>
+</programlisting></para><para><simplesect kind="note"><para>When using <ref refid="classtf_1_1FlowBuilder_1af0415d1fa5f36fee2405b0fcbf592fe0" kindref="member">tf::Taskflow::max_element</ref> to find the large element, we will still need to use <ref refid="cpp/utility/functional/less" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less</ref> as our comparison function. Details can be referred to <ulink url="https://en.cppreference.com/w/cpp/algorithm/max_element">std::max_element</ulink>.</para></simplesect>
+</para></sect1>
 <sect1 id="ParallelFind_1ParallelFindConfigureAPartitioner">
 <title>Configure a Partitioner</title>
-<para>You can configure a partitioner for parallel-find tasks (<ref refid="classtf_1_1FlowBuilder_1a94e70e5f7a459a7762cc312b6d6dec79" kindref="member">tf::Taskflow::find_if</ref>, <ref refid="classtf_1_1FlowBuilder_1aae268c9763df9323dc349fb1b35988cf" kindref="member">tf::Taskflow::find_if_not</ref>, <ref refid="classtf_1_1FlowBuilder_1ad6a7caf3cfc8d1887bd211be307a3eb0" kindref="member">tf::Taskflow::min_element</ref>, <ref refid="classtf_1_1FlowBuilder_1af0415d1fa5f36fee2405b0fcbf592fe0" kindref="member">tf::Taskflow::max_element</ref>) to run with different scheduling methods, such as guided partitioning, dynamic partitioning, and static partitioning. The following example creates two parallel-find tasks using two different partitioners, one with the static partitioning algorithm and another one with the guided partitioning algorithm:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>vec(1024,<sp/>-1);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
+<para>You can configure a partitioner for parallel-find tasks (<ref refid="classtf_1_1FlowBuilder_1a94e70e5f7a459a7762cc312b6d6dec79" kindref="member">tf::Taskflow::find_if</ref>, <ref refid="classtf_1_1FlowBuilder_1aae268c9763df9323dc349fb1b35988cf" kindref="member">tf::Taskflow::find_if_not</ref>, <ref refid="classtf_1_1FlowBuilder_1ad6a7caf3cfc8d1887bd211be307a3eb0" kindref="member">tf::Taskflow::min_element</ref>, <ref refid="classtf_1_1FlowBuilder_1af0415d1fa5f36fee2405b0fcbf592fe0" kindref="member">tf::Taskflow::max_element</ref>) to run with different scheduling methods, such as guided partitioning, dynamic partitioning, and static partitioning. The following example creates two parallel-find tasks using two different partitioners, one with the static partitioning algorithm and another one with the guided partitioning algorithm:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>vec(1024,<sp/>-1);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">tf::ExecutionPolicy&lt;tf::StaticPartitioner&gt;<sp/>static_partitioner;</highlight></codeline>
 <codeline><highlight class="normal">tf::ExecutionPolicy&lt;tf::GuidedPartitioner&gt;<sp/>guided_partitioner;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>parallel-find<sp/>task<sp/>with<sp/>a<sp/>static<sp/>partitioner</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.find_if(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>vec.begin(),<sp/>vec.end(),<sp/>result,<sp/>[&amp;](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i)<sp/>{<sp/>return<sp/>i<sp/>==<sp/>-1;<sp/>},<sp/>static_partitioner</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a94e70e5f7a459a7762cc312b6d6dec79" kindref="member">find_if</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>vec.begin(),<sp/>vec.end(),<sp/>result,<sp/>[&amp;](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>i<sp/>==<sp/>-1;<sp/>},<sp/>static_partitioner</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>parallel-find<sp/>task<sp/>with<sp/>a<sp/>guided<sp/>partitioner</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.find_if(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>vec.begin(),<sp/>vec.end(),<sp/>result,<sp/>[&amp;](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i)<sp/>{<sp/>return<sp/>i<sp/>==<sp/>-1;<sp/>},<sp/>guided_partitioner</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a94e70e5f7a459a7762cc312b6d6dec79" kindref="member">find_if</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>vec.begin(),<sp/>vec.end(),<sp/>result,<sp/>[&amp;](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>i<sp/>==<sp/>-1;<sp/>},<sp/>guided_partitioner</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-</programlisting></para>
-<para><simplesect kind="note"><para>By default, parallel-find tasks use <ref refid="namespacetf_1a77d193108ae375fdfc554e7f10bea23e" kindref="member">tf::DefaultPartitioner</ref> if no partitioner is specified. </para>
-</simplesect>
-</para>
-</sect1>
+</programlisting></para><para><simplesect kind="note"><para>By default, parallel-find tasks use <ref refid="namespacetf_1a77d193108ae375fdfc554e7f10bea23e" kindref="member">tf::DefaultPartitioner</ref> if no partitioner is specified. </para></simplesect>
+</para></sect1>
     </detaileddescription>
-    <location file="algorithms/find.dox"/>
   </compounddef>
 </doxygen>

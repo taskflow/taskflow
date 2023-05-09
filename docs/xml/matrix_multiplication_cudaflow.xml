@@ -1,30 +1,15 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
   <compounddef id="matrix_multiplication_cudaflow" kind="page">
     <compoundname>matrix_multiplication_cudaflow</compoundname>
     <title>Matrix Multiplication (cudaFlow)</title>
-    <tableofcontents>
-      <tocsect>
-        <name>Define a Matrix Multiplication Kernel</name>
-        <reference>matrix_multiplication_cudaflow_1GPUAcceleratedMatrixMultiplication</reference>
-    </tocsect>
-      <tocsect>
-        <name>Define a cudaFlow for Matrix Multiplication</name>
-        <reference>matrix_multiplication_cudaflow_1DefineAcudaFlowForMatrixMultiplication</reference>
-    </tocsect>
-      <tocsect>
-        <name>Benchmarking</name>
-        <reference>matrix_multiplication_cudaflow_1MatrixMultiplicationcudaFlowBenchmarking</reference>
-    </tocsect>
-    </tableofcontents>
+    <tableofcontents/>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Following up on <ref refid="matrix_multiplication" kindref="compound">Matrix Multiplication</ref>, this page studies how to accelerate a matrix multiplication workload on a GPU using <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>.</para>
-<sect1 id="matrix_multiplication_cudaflow_1GPUAcceleratedMatrixMultiplication">
+<para>Following up on <ref refid="matrix_multiplication" kindref="compound">Matrix Multiplication</ref>, this page studies how to accelerate a matrix multiplication workload on a GPU using <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>.</para><sect1 id="matrix_multiplication_cudaflow_1GPUAcceleratedMatrixMultiplication">
 <title>Define a Matrix Multiplication Kernel</title>
-<para>GPU can perform a lot of parallel computations more than CPUs. It is especially useful for data-intensive computing such as matrix multiplication. With GPU, we express the parallel patterns at a fine-grained level. The kernel, written in CUDA, is described as follows:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>CUDA<sp/>kernel<sp/>to<sp/>perform<sp/>matrix<sp/>multiplication</highlight><highlight class="normal"></highlight></codeline>
+<para>GPU can perform a lot of parallel computations more than CPUs. It is especially useful for data-intensive computing such as matrix multiplication. With GPU, we express the parallel patterns at a fine-grained level. The kernel, written in CUDA, is described as follows:</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>CUDA<sp/>kernel<sp/>to<sp/>perform<sp/>matrix<sp/>multiplication</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">__global__<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>matmul(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>*A,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>*B,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>*C,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>M,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>K,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>row<sp/>=<sp/>blockIdx.y<sp/>*<sp/>blockDim.y<sp/>+<sp/>threadIdx.y;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>col<sp/>=<sp/>blockIdx.x<sp/>*<sp/>blockDim.x<sp/>+<sp/>threadIdx.x;</highlight></codeline>
@@ -36,15 +21,11 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>c[row<sp/>*<sp/>N<sp/>+<sp/>col]<sp/>=<sp/>sum;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para>
-<para>Each CUDA thread corresponds to an element of <computeroutput>C</computeroutput> and compute its result. Instead of storing each matrix in a 2D array, we use 1D layout to ease the data transfer between CPU and GPU. In a row-major layout, an element <computeroutput>(x, y)</computeroutput> in the 2D matrix can be addressed at <computeroutput>x * width + y</computeroutput> in the transformed 1D layout.</para>
-<para><image type="html" name="matrix_multiplication_4.png" width="70%"></image>
-</para>
-</sect1>
+</programlisting></para><para>Each CUDA thread corresponds to an element of <computeroutput>C</computeroutput> and compute its result. Instead of storing each matrix in a 2D array, we use 1D layout to ease the data transfer between CPU and GPU. In a row-major layout, an element <computeroutput>(x, y)</computeroutput> in the 2D matrix can be addressed at <computeroutput>x * width + y</computeroutput> in the transformed 1D layout.</para><para><image type="html" name="matrix_multiplication_4.png" width="70%"></image>
+</para></sect1>
 <sect1 id="matrix_multiplication_cudaflow_1DefineAcudaFlowForMatrixMultiplication">
 <title>Define a cudaFlow for Matrix Multiplication</title>
-<para>The next step is to allocate memory for <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput> at a GPU. We create three tasks each calling <computeroutput>cudaMalloc</computeroutput> to allocate space for one matrix. Then, we create a cudaFlow to offload matrix multiplication to a GPU. The entire code is described as follows:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>matrix_multiplication(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>A,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>B,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>C,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>M,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>K,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N)<sp/>{</highlight></codeline>
+<para>The next step is to allocate memory for <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput> at a GPU. We create three tasks each calling <computeroutput>cudaMalloc</computeroutput> to allocate space for one matrix. Then, we create a cudaFlow to offload matrix multiplication to a GPU. The entire code is described as follows:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>matrix_multiplication(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>A,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>B,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>C,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>M,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>K,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
@@ -91,7 +72,7 @@
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;cudaFlow&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>free<sp/>the<sp/>gpu<sp/>storage</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="cpp/memory/c/free" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">free</ref><sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="cpp/memory/c/free" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">free</ref><sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaFree(da);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaFree(db);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaFree(dc);</highlight></codeline>
@@ -102,86 +83,35 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(free);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>graph<sp/>without<sp/>unfolding<sp/>the<sp/>cudaFlow</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>entire<sp/>execution<sp/>graph<sp/>including<sp/>unfolded<sp/>cudaFlow</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para>
-<para>Within the cudaFlow, we create two host-to-device (H2D) tasks that copy data from <computeroutput>A</computeroutput> and <computeroutput>B</computeroutput> to <computeroutput>da</computeroutput> and <computeroutput>db</computeroutput>, one device-to-host (D2H) task that copies the result from <computeroutput>dc</computeroutput> to <computeroutput>C</computeroutput>, and one kernel task that launches <computeroutput>matmul</computeroutput> on the GPU (by default, GPU 0). H2D tasks precede the kernel and the kernel precedes the D2H task. These GPU operations form a GPU task graph managed by a cudaFlow. The first dump of the taskflow gives the following graph:</para>
-<para><dotfile name="matrix_multiplication_5.dot"></dotfile>
-</para>
-<para>A cudaFlow encapsulates a GPU task dependency graph similar to a <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> (see <ref refid="DynamicTasking" kindref="compound">Dynamic Tasking</ref>). In order to visualize it, we need to execute the graph first and then dump the taskflow.</para>
-<para><dotfile name="matrix_multiplication_6.dot"></dotfile>
-</para>
-</sect1>
+</programlisting></para><para>Within the cudaFlow, we create two host-to-device (H2D) tasks that copy data from <computeroutput>A</computeroutput> and <computeroutput>B</computeroutput> to <computeroutput>da</computeroutput> and <computeroutput>db</computeroutput>, one device-to-host (D2H) task that copies the result from <computeroutput>dc</computeroutput> to <computeroutput>C</computeroutput>, and one kernel task that launches <computeroutput>matmul</computeroutput> on the GPU (by default, GPU 0). H2D tasks precede the kernel and the kernel precedes the D2H task. These GPU operations form a GPU task graph managed by a cudaFlow. The first dump of the taskflow gives the following graph:</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/matrix_multiplication_5.dot"></dotfile>
+</para><para>A cudaFlow encapsulates a GPU task dependency graph similar to a <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> (see <ref refid="DynamicTasking" kindref="compound">Dynamic Tasking</ref>). In order to visualize it, we need to execute the graph first and then dump the taskflow.</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/matrix_multiplication_6.dot"></dotfile>
+</para></sect1>
 <sect1 id="matrix_multiplication_cudaflow_1MatrixMultiplicationcudaFlowBenchmarking">
 <title>Benchmarking</title>
-<para>We run three versions of matrix multiplication, sequential CPU, parallel CPUs, and one GPU, on a machine of 12 Intel i7-8700 CPUs at 3.20 GHz and a Nvidia RTX 2080 GPU using various matrix sizes of <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>.</para>
-<para> <table rows="7" cols="6"><row>
-<entry thead="yes" align='center'><para>A   </para>
-</entry><entry thead="yes" align='center'><para>B   </para>
-</entry><entry thead="yes" align='center'><para>C   </para>
-</entry><entry thead="yes" align='center'><para>CPU Sequential   </para>
-</entry><entry thead="yes" align='center'><para>CPU Parallel   </para>
-</entry><entry thead="yes" align='center'><para>GPU Parallel    </para>
-</entry></row>
+<para>We run three versions of matrix multiplication, sequential CPU, parallel CPUs, and one GPU, on a machine of 12 Intel i7-8700 CPUs at 3.20 GHz and a Nvidia RTX 2080 GPU using various matrix sizes of <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>.</para><para> <table rows="7" cols="6"><row>
+<entry thead="yes"><para>A  </para></entry><entry thead="yes"><para>B  </para></entry><entry thead="yes"><para>C  </para></entry><entry thead="yes"><para>CPU Sequential  </para></entry><entry thead="yes"><para>CPU Parallel  </para></entry><entry thead="yes"><para>GPU Parallel   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>10x10   </para>
-</entry><entry thead="no" align='center'><para>10x10   </para>
-</entry><entry thead="no" align='center'><para>10x10   </para>
-</entry><entry thead="no" align='center'><para>0.142 ms   </para>
-</entry><entry thead="no" align='center'><para>0.414 ms   </para>
-</entry><entry thead="no" align='center'><para>82 ms    </para>
-</entry></row>
+<entry thead="no"><para>10x10  </para></entry><entry thead="no"><para>10x10  </para></entry><entry thead="no"><para>10x10  </para></entry><entry thead="no"><para>0.142 ms  </para></entry><entry thead="no"><para>0.414 ms  </para></entry><entry thead="no"><para>82 ms   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>100x100   </para>
-</entry><entry thead="no" align='center'><para>100x100   </para>
-</entry><entry thead="no" align='center'><para>100x100   </para>
-</entry><entry thead="no" align='center'><para>1.641 ms   </para>
-</entry><entry thead="no" align='center'><para>0.733 ms   </para>
-</entry><entry thead="no" align='center'><para>83 ms    </para>
-</entry></row>
+<entry thead="no"><para>100x100  </para></entry><entry thead="no"><para>100x100  </para></entry><entry thead="no"><para>100x100  </para></entry><entry thead="no"><para>1.641 ms  </para></entry><entry thead="no"><para>0.733 ms  </para></entry><entry thead="no"><para>83 ms   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>1000x1000   </para>
-</entry><entry thead="no" align='center'><para>1000x1000   </para>
-</entry><entry thead="no" align='center'><para>1000x1000   </para>
-</entry><entry thead="no" align='center'><para>1532 ms   </para>
-</entry><entry thead="no" align='center'><para>504 ms   </para>
-</entry><entry thead="no" align='center'><para>85 ms    </para>
-</entry></row>
+<entry thead="no"><para>1000x1000  </para></entry><entry thead="no"><para>1000x1000  </para></entry><entry thead="no"><para>1000x1000  </para></entry><entry thead="no"><para>1532 ms  </para></entry><entry thead="no"><para>504 ms  </para></entry><entry thead="no"><para>85 ms   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>2000x2000   </para>
-</entry><entry thead="no" align='center'><para>2000x2000   </para>
-</entry><entry thead="no" align='center'><para>2000x2000   </para>
-</entry><entry thead="no" align='center'><para>25688 ms   </para>
-</entry><entry thead="no" align='center'><para>4387 ms   </para>
-</entry><entry thead="no" align='center'><para>133 ms    </para>
-</entry></row>
+<entry thead="no"><para>2000x2000  </para></entry><entry thead="no"><para>2000x2000  </para></entry><entry thead="no"><para>2000x2000  </para></entry><entry thead="no"><para>25688 ms  </para></entry><entry thead="no"><para>4387 ms  </para></entry><entry thead="no"><para>133 ms   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>3000x3000   </para>
-</entry><entry thead="no" align='center'><para>3000x3000   </para>
-</entry><entry thead="no" align='center'><para>3000x3000   </para>
-</entry><entry thead="no" align='center'><para>104838 ms   </para>
-</entry><entry thead="no" align='center'><para>16170 ms   </para>
-</entry><entry thead="no" align='center'><para>214 ms    </para>
-</entry></row>
+<entry thead="no"><para>3000x3000  </para></entry><entry thead="no"><para>3000x3000  </para></entry><entry thead="no"><para>3000x3000  </para></entry><entry thead="no"><para>104838 ms  </para></entry><entry thead="no"><para>16170 ms  </para></entry><entry thead="no"><para>214 ms   </para></entry></row>
 <row>
-<entry thead="no" align='center'><para>4000x4000   </para>
-</entry><entry thead="no" align='center'><para>4000x4000   </para>
-</entry><entry thead="no" align='center'><para>4000x4000   </para>
-</entry><entry thead="no" align='center'><para>250133 ms   </para>
-</entry><entry thead="no" align='center'><para>39646 ms   </para>
-</entry><entry thead="no" align='center'><para>427 ms   </para>
-</entry></row>
+<entry thead="no"><para>4000x4000  </para></entry><entry thead="no"><para>4000x4000  </para></entry><entry thead="no"><para>4000x4000  </para></entry><entry thead="no"><para>250133 ms  </para></entry><entry thead="no"><para>39646 ms  </para></entry><entry thead="no"><para>427 ms   </para></entry></row>
 </table>
-</para>
-<para>As the matrix size increases, the speed-up of GPU over CPUs becomes prominent. For example, at <computeroutput>4000x4000</computeroutput>, the GPU runtime is 585.8 times faster than the sequential CPU runtime and is 92.8 times faster than the parallel CPU solutions. </para>
-</sect1>
+</para><para>As the matrix size increases, the speed-up of GPU over CPUs becomes prominent. For example, at <computeroutput>4000x4000</computeroutput>, the GPU runtime is 585.8 times faster than the sequential CPU runtime and is 92.8 times faster than the parallel CPU solutions. </para></sect1>
     </detaileddescription>
-    <location file="examples/matrix_multiplication_cudaflow.dox"/>
   </compounddef>
 </doxygen>
