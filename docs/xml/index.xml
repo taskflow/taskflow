@@ -20,22 +20,21 @@
     <member refid="structtf_1_1Node_1_1Async_1a6fae56cffa17e20ff0e99eafd4670e07" kind="function"><name>Async</name></member>
   </compound>
   <compound refid="classtf_1_1AsyncTask" kind="class"><name>tf::AsyncTask</name>
-    <member refid="classtf_1_1AsyncTask_1a61184f9bd9c801d0a5eccecfdbddc641" kind="friend"><name>FlowBuilder</name></member>
-    <member refid="classtf_1_1AsyncTask_1af3d14e26ba8af9e6cc5a32aad8446de7" kind="friend"><name>Runtime</name></member>
-    <member refid="classtf_1_1AsyncTask_1af043dd6f6a359602805d9c7dd7539cca" kind="friend"><name>Taskflow</name></member>
-    <member refid="classtf_1_1AsyncTask_1a0aa0e12e4a0ba023033e808fb2132fdf" kind="friend"><name>TaskView</name></member>
     <member refid="classtf_1_1AsyncTask_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
-    <member refid="classtf_1_1AsyncTask_1a48f6e697c2e1f30f4c58668f4d187883" kind="variable"><name>_node</name></member>
+    <member refid="classtf_1_1AsyncTask_1aa84e10d306fd24a7ecfa8de2cc964cac" kind="variable"><name>_node</name></member>
     <member refid="classtf_1_1AsyncTask_1a68689c79c7d794a8be2e1c181c818001" kind="function"><name>AsyncTask</name></member>
-    <member refid="classtf_1_1AsyncTask_1af7d74066d5df4107c585a0a64451a34c" kind="function"><name>~AsyncTask</name></member>
-    <member refid="classtf_1_1AsyncTask_1a52e155d7ea91649028bb28dc56351ee3" kind="function"><name>AsyncTask</name></member>
-    <member refid="classtf_1_1AsyncTask_1a48138b02dd808a8cfa1c9ef194a57b88" kind="function"><name>AsyncTask</name></member>
-    <member refid="classtf_1_1AsyncTask_1a435361b705546188d4dedcaf607bacd5" kind="function"><name>operator=</name></member>
-    <member refid="classtf_1_1AsyncTask_1a72b76bc1d2eb5ff70788706d2b4e8160" kind="function"><name>operator=</name></member>
+    <member refid="classtf_1_1AsyncTask_1a148ddcabda8fd44746b278499cd4cb53" kind="function"><name>~AsyncTask</name></member>
+    <member refid="classtf_1_1AsyncTask_1a682bc679a773da5e45714f71c8137f70" kind="function"><name>AsyncTask</name></member>
+    <member refid="classtf_1_1AsyncTask_1a5a31f85d2ee542f62e784d551ec78896" kind="function"><name>AsyncTask</name></member>
+    <member refid="classtf_1_1AsyncTask_1a14fa18d27a02c41e01b48ea07e87f5c5" kind="function"><name>operator=</name></member>
+    <member refid="classtf_1_1AsyncTask_1a8dc18d17f3a5d72ef4d9c20ebf7ade4a" kind="function"><name>operator=</name></member>
     <member refid="classtf_1_1AsyncTask_1ae42c70dc0c5edc6d58f47b346125fca3" kind="function"><name>empty</name></member>
     <member refid="classtf_1_1AsyncTask_1a7c12835577fbdc1bca3190cf92c78088" kind="function"><name>reset</name></member>
     <member refid="classtf_1_1AsyncTask_1a826a2ea909094f5a26c2df876de58056" kind="function"><name>hash_value</name></member>
-    <member refid="classtf_1_1AsyncTask_1a9d2d950ae2796cc322252780b5b7f401" kind="function"><name>AsyncTask</name></member>
+    <member refid="classtf_1_1AsyncTask_1a6a4a54030f57d1ef05c04ae01825165d" kind="function"><name>use_count</name></member>
+    <member refid="classtf_1_1AsyncTask_1ad6a3bcc865f13ecddc1d32306b6df1bb" kind="function"><name>AsyncTask</name></member>
+    <member refid="classtf_1_1AsyncTask_1ae2eefe6ee6de4f97dd0b247b053addb1" kind="function"><name>_incref</name></member>
+    <member refid="classtf_1_1AsyncTask_1aaee1f8ef1109eb90ad20bac2cba4eaca" kind="function"><name>_decref</name></member>
   </compound>
   <compound refid="classtf_1_1ChromeObserver" kind="class"><name>tf::ChromeObserver</name>
     <member refid="classtf_1_1ChromeObserver_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -436,6 +435,7 @@
   </compound>
   <compound refid="structtf_1_1Node_1_1DependentAsync" kind="struct"><name>tf::Node::DependentAsync</name>
     <member refid="structtf_1_1Node_1_1DependentAsync_1a17a4e95e91708b46969cee36abfcff80" kind="variable"><name>work</name></member>
+    <member refid="structtf_1_1Node_1_1DependentAsync_1a7fafc495551519e0ca220136b923aae7" kind="variable"><name>use_count</name></member>
     <member refid="structtf_1_1Node_1_1DependentAsync_1a1ff3d7cb9d06a7c66623f41e5ed177a3" kind="variable"><name>state</name></member>
     <member refid="structtf_1_1Node_1_1DependentAsync_1a37927e314ca437d682dcaa40f86960e8" kind="function"><name>DependentAsync</name></member>
   </compound>
@@ -464,13 +464,11 @@
     <member refid="classtf_1_1Executor_1aef4cf993dbd8efa0372cdea6b0f725d7" kind="variable"><name>_taskflows_mutex</name></member>
     <member refid="classtf_1_1Executor_1a8be5571fa0df99784aacb26b01d0f4b4" kind="variable"><name>_topology_mutex</name></member>
     <member refid="classtf_1_1Executor_1ad031630f03103157f807d85a174d08cb" kind="variable"><name>_wsq_mutex</name></member>
-    <member refid="classtf_1_1Executor_1a7d1310e0b3e068747f2945359c13840d" kind="variable"><name>_asyncs_mutex</name></member>
     <member refid="classtf_1_1Executor_1a9e38edfbc967dd3f5ca6f7a115f95ed7" kind="variable"><name>_num_topologies</name></member>
     <member refid="classtf_1_1Executor_1a6704efd89fdcf46bd388b2e83c5def9f" kind="variable"><name>_wids</name></member>
     <member refid="classtf_1_1Executor_1a3b5e7cf6749feded228a46e9fbfdef5f" kind="variable"><name>_threads</name></member>
     <member refid="classtf_1_1Executor_1ad93162f032d463cc845fbca4fc0d960e" kind="variable"><name>_workers</name></member>
     <member refid="classtf_1_1Executor_1a63090414fbad15f5934838d21aa0a28f" kind="variable"><name>_taskflows</name></member>
-    <member refid="classtf_1_1Executor_1a532fd57d641cc18defd5dc162b9afd9f" kind="variable"><name>_asyncs</name></member>
     <member refid="classtf_1_1Executor_1ab92c39c4b59577cf4163c21ef2edb2f3" kind="variable"><name>_notifier</name></member>
     <member refid="classtf_1_1Executor_1a21685ee0442fbbd635e7134d6a0afe1c" kind="variable"><name>_wsq</name></member>
     <member refid="classtf_1_1Executor_1a500d540a170f1da6e5247168bc6efa87" kind="variable"><name>_done</name></member>
@@ -656,6 +654,7 @@
     <member refid="classtf_1_1Node_1a82806fcf9c98e784331b93f47010aefa" kind="typedef"><name>handle_t</name></member>
     <member refid="classtf_1_1Node_1afab89afd724f1b07b1aaad6bdc61c47a" kind="friend"><name>Graph</name></member>
     <member refid="classtf_1_1Node_1aaa7728226b6ce66782e8816b1658dd9a" kind="friend"><name>Task</name></member>
+    <member refid="classtf_1_1Node_1a842f41f7bc0f1de257dc369a61cc7eaf" kind="friend"><name>AsyncTask</name></member>
     <member refid="classtf_1_1Node_1a0aa0e12e4a0ba023033e808fb2132fdf" kind="friend"><name>TaskView</name></member>
     <member refid="classtf_1_1Node_1af043dd6f6a359602805d9c7dd7539cca" kind="friend"><name>Taskflow</name></member>
     <member refid="classtf_1_1Node_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -861,6 +860,12 @@
     <member refid="classtf_1_1ScalablePipeline_1ae695c9b1bbe3a5f65a5bb4217087c356" kind="function"><name>_build</name></member>
     <member refid="classtf_1_1ScalablePipeline_1a81b18c25db2cba4c530d85c5ab413a6c" kind="function"><name>_line</name></member>
   </compound>
+  <compound refid="structtf_1_1ChromeObserver_1_1Segment" kind="struct"><name>tf::ChromeObserver::Segment</name>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a8e3739d8a5b9be34851a6404f5916d95" kind="variable"><name>name</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a197cf797abb156e1f17dd276acd2cd74" kind="variable"><name>beg</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1abe331473cff75d9f11c7fb69e481f2f7" kind="variable"><name>end</name></member>
+    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a069ca8806de9e01a0ae2b3f5263a20c2" kind="function"><name>Segment</name></member>
+  </compound>
   <compound refid="structtf_1_1Segment" kind="struct"><name>tf::Segment</name>
     <member refid="structtf_1_1Segment_1a3e259f6da83dcf714ec785aa1a3d14bd" kind="variable"><name>name</name></member>
     <member refid="structtf_1_1Segment_1a8f567dbac067898e2e5c4d4947b04fb4" kind="variable"><name>type</name></member>
@@ -871,12 +876,6 @@
     <member refid="structtf_1_1Segment_1ad6393c5cf90f07b0eda6bf0c0321322d" kind="function"><name>Segment</name></member>
     <member refid="structtf_1_1Segment_1aab1d1ddd792d5b7b312ad14532034054" kind="function"><name>Segment</name></member>
     <member refid="structtf_1_1Segment_1a336d5825032b4b9085f1e78a1fa26341" kind="function"><name>span</name></member>
-  </compound>
-  <compound refid="structtf_1_1ChromeObserver_1_1Segment" kind="struct"><name>tf::ChromeObserver::Segment</name>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a8e3739d8a5b9be34851a6404f5916d95" kind="variable"><name>name</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a197cf797abb156e1f17dd276acd2cd74" kind="variable"><name>beg</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1abe331473cff75d9f11c7fb69e481f2f7" kind="variable"><name>end</name></member>
-    <member refid="structtf_1_1ChromeObserver_1_1Segment_1a069ca8806de9e01a0ae2b3f5263a20c2" kind="function"><name>Segment</name></member>
   </compound>
   <compound refid="classtf_1_1Semaphore" kind="class"><name>tf::Semaphore</name>
     <member refid="classtf_1_1Semaphore_1a6db9d28bd448a131448276ee03de1e6d" kind="friend"><name>Node</name></member>

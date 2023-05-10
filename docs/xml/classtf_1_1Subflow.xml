@@ -78,7 +78,7 @@
 </programlisting></para><para>Only the worker that spawns this subflow can join it. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1266" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2156" bodyend="2167"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1266" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2153" bodyend="2164"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Subflow_1acfdedc7e9676126e9a38ecf7b5a37864" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -95,7 +95,7 @@
 </programlisting></para><para>Only the worker that spawns this subflow can detach it. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1283" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2169" bodyend="2180"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1283" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2166" bodyend="2177"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Subflow_1a540be503df4621be3e8342b99b1729a0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -197,45 +197,45 @@ Clears the underlying task graph depending on the given variable <computeroutput
 <codeline><highlight class="normal">C.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(D);<sp/><sp/></highlight><highlight class="comment">//<sp/>D<sp/>runs<sp/>after<sp/>C</highlight></codeline>
 </programlisting> </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="296">
+      <node id="297">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
       </node>
-      <node id="297">
+      <node id="298">
         <label>tf::Runtime</label>
         <link refid="classtf_1_1Runtime"/>
       </node>
-      <node id="295">
+      <node id="296">
         <label>tf::Subflow</label>
         <link refid="classtf_1_1Subflow"/>
-        <childnode refid="296" relation="public-inheritance">
-        </childnode>
         <childnode refid="297" relation="public-inheritance">
+        </childnode>
+        <childnode refid="298" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="299">
+      <node id="300">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
-        <childnode refid="300" relation="usage">
+        <childnode refid="301" relation="usage">
           <edgelabel>_graph</edgelabel>
         </childnode>
       </node>
-      <node id="301">
+      <node id="302">
         <label>tf::Runtime</label>
         <link refid="classtf_1_1Runtime"/>
       </node>
-      <node id="300">
+      <node id="301">
         <label>tf::Graph</label>
         <link refid="classtf_1_1Graph"/>
       </node>
-      <node id="298">
+      <node id="299">
         <label>tf::Subflow</label>
         <link refid="classtf_1_1Subflow"/>
-        <childnode refid="299" relation="public-inheritance">
+        <childnode refid="300" relation="public-inheritance">
         </childnode>
-        <childnode refid="301" relation="public-inheritance">
+        <childnode refid="302" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>

@@ -121,9 +121,9 @@ tf::AsyncTask A = executor.silent_dependent_async([](){});
 tf::AsyncTask B = executor.silent_dependent_async([](){}, A);
 @endcode
 
-Currently, tf::AsyncTask is implemented based on C++ smart pointer std::shared_ptr and 
-is considered cheap to copy or move as long as only a handful of objects
-own it.
+Currently, tf::AsyncTask is implemented based on the logic of C++ smart pointer 
+std::shared_ptr and is considered cheap to copy or move as long as only 
+a handful of objects own it.
 When a worker completes an async task, it will remove the task from the executor,
 decrementing the number of shared owners by one.
 If that counter reaches zero, the task is destroyed.

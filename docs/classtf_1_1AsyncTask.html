@@ -66,7 +66,7 @@
 
 <span class="c1">// task A remains alive (i.e., at least one ref count by the main thread) </span>
 <span class="c1">// when being added to the dependency list of async task B</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){},</span><span class="w"> </span><span class="n">A</span><span class="p">);</span><span class="w"></span></pre><p>Currently, <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> is implemented based on C++ smart pointer <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a> and is considered cheap to copy or move as long as only a handful of objects own it. When a worker completes an async task, it will remove the task from the executor, decrementing the number of shared owners by one. If that counter reaches zero, the task is destroyed.</p>
+<span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){},</span><span class="w"> </span><span class="n">A</span><span class="p">);</span><span class="w"></span></pre><p>Currently, <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> is implemented based on the logic of C++ smart pointer <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a> and is considered cheap to copy or move as long as only a handful of objects own it. When a worker completes an async task, it will remove the task from the executor, decrementing the number of shared owners by one. If that counter reaches zero, the task is destroyed.</p>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
@@ -74,31 +74,31 @@
               <span class="m-doc-wrap-bumper"><a href="#a68689c79c7d794a8be2e1c181c818001" class="m-doc-self">AsyncTask</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
             <dd>constructs an empty task handle</dd>
-            <dt id="af7d74066d5df4107c585a0a64451a34c">
-              <span class="m-doc-wrap-bumper"><a href="#af7d74066d5df4107c585a0a64451a34c" class="m-doc-self">~AsyncTask</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
+            <dt id="a148ddcabda8fd44746b278499cd4cb53">
+              <span class="m-doc-wrap-bumper"><a href="#a148ddcabda8fd44746b278499cd4cb53" class="m-doc-self">~AsyncTask</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
             <dd>destroys the managed asynchronous task if this is the last owner</dd>
-            <dt id="a52e155d7ea91649028bb28dc56351ee3">
-              <span class="m-doc-wrap-bumper"><a href="#a52e155d7ea91649028bb28dc56351ee3" class="m-doc-self">AsyncTask</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; rhs) <span class="m-label m-flat m-info">defaulted</span></span>
+            <dt id="a682bc679a773da5e45714f71c8137f70">
+              <span class="m-doc-wrap-bumper"><a href="#a682bc679a773da5e45714f71c8137f70" class="m-doc-self">AsyncTask</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; rhs)</span>
             </dt>
-            <dd>constructs an task that shares ownership of <code>rhs</code></dd>
-            <dt id="a48138b02dd808a8cfa1c9ef194a57b88">
-              <span class="m-doc-wrap-bumper"><a href="#a48138b02dd808a8cfa1c9ef194a57b88" class="m-doc-self">AsyncTask</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp;&amp; rhs) <span class="m-label m-flat m-info">defaulted</span></span>
+            <dd>constructs an asynchronous task that shares ownership of <code>rhs</code></dd>
+            <dt id="a5a31f85d2ee542f62e784d551ec78896">
+              <span class="m-doc-wrap-bumper"><a href="#a5a31f85d2ee542f62e784d551ec78896" class="m-doc-self">AsyncTask</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp;&amp; rhs)</span>
             </dt>
-            <dd>move-constructs an task from <code>rhs</code></dd>
+            <dd>move-constructs an asynchronous task from <code>rhs</code></dd>
           </dl>
         </section>
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="a435361b705546188d4dedcaf607bacd5">
-              <span class="m-doc-wrap-bumper">auto <a href="#a435361b705546188d4dedcaf607bacd5" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; rhs) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a14fa18d27a02c41e01b48ea07e87f5c5" class="m-doc">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; rhs) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp;</span>
             </dt>
-            <dd>shares ownership of the task managed by <code>rhs</code></dd>
-            <dt id="a72b76bc1d2eb5ff70788706d2b4e8160">
-              <span class="m-doc-wrap-bumper">auto <a href="#a72b76bc1d2eb5ff70788706d2b4e8160" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp;&amp; rhs) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
+            <dd>copy-assigns the asynchronous task from <code>rhs</code></dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a8dc18d17f3a5d72ef4d9c20ebf7ade4a" class="m-doc">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp;&amp; rhs) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp;</span>
             </dt>
-            <dd>move-assigns the task from <code>rhs</code></dd>
+            <dd>move-assigns the asynchronous task from <code>rhs</code></dd>
             <dt id="ae42c70dc0c5edc6d58f47b346125fca3">
               <span class="m-doc-wrap-bumper">auto <a href="#ae42c70dc0c5edc6d58f47b346125fca3" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
             </dt>
@@ -106,12 +106,33 @@
             <dt id="a7c12835577fbdc1bca3190cf92c78088">
               <span class="m-doc-wrap-bumper">void <a href="#a7c12835577fbdc1bca3190cf92c78088" class="m-doc-self">reset</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
-            <dd>release the ownership</dd>
+            <dd>release the managed object of <code>this</code>.</dd>
             <dt id="a826a2ea909094f5a26c2df876de58056">
               <span class="m-doc-wrap-bumper">auto <a href="#a826a2ea909094f5a26c2df876de58056" class="m-doc-self">hash_value</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>obtains a hash value of the underlying node</dd>
+            <dt id="a6a4a54030f57d1ef05c04ae01825165d">
+              <span class="m-doc-wrap-bumper">auto <a href="#a6a4a54030f57d1ef05c04ae01825165d" class="m-doc-self">use_count</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            </dt>
+            <dd>returns the number of shared owners managing this asynchronous task</dd>
           </dl>
+        </section>
+        <section>
+          <h2>Function documentation</h2>
+          <section class="m-doc-details" id="a14fa18d27a02c41e01b48ea07e87f5c5"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; tf::<wbr />AsyncTask::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a14fa18d27a02c41e01b48ea07e87f5c5" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; rhs)</span></span>
+            </h3>
+            <p>copy-assigns the asynchronous task from <code>rhs</code></p>
+<p>Releases the managed object of <code>this</code> and retains a new shared ownership of <code>rhs</code>.</p>
+          </div></section>
+          <section class="m-doc-details" id="a8dc18d17f3a5d72ef4d9c20ebf7ade4a"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp; tf::<wbr />AsyncTask::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8dc18d17f3a5d72ef4d9c20ebf7ade4a" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&amp;&amp; rhs)</span></span>
+            </h3>
+            <p>move-assigns the asynchronous task from <code>rhs</code></p>
+<p>Releases the managed object of <code>this</code> and takes over the ownership of <code>rhs</code>.</p>
+          </div></section>
         </section>
       </div>
     </div>

@@ -1042,7 +1042,6 @@ class Executor {
   std::mutex _taskflows_mutex;
   std::mutex _topology_mutex;
   std::mutex _wsq_mutex;
-  std::mutex _asyncs_mutex;
 
   size_t _num_topologies {0};
   
@@ -1050,8 +1049,6 @@ class Executor {
   std::vector<std::thread> _threads;
   std::vector<Worker> _workers;
   std::list<Taskflow> _taskflows;
-
-  std::unordered_set<std::shared_ptr<Node>> _asyncs;
 
   Notifier _notifier;
 
