@@ -329,7 +329,7 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
               else {
                 curr_b = prev_e;
               }   
-              for(size_t x=curr_b; x<curr_e; x++, beg1++, beg2++) { // TODO???/
+              for(size_t x=curr_b; x<curr_e; x++, beg1++, beg2++) { 
                 sum = bop_r(std::move(sum), bop_t(*beg1, *beg2));
               }   
               prev_e = curr_e;

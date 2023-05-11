@@ -585,7 +585,7 @@ class FlowBuilder {
  
   @code{.cpp}
   for(auto itr1=first1, itr2=first2; itr1!=last1; itr1++, itr2++) {
-    init = bop_r(init, bop_t(*itr1, itr2));
+    init = bop_r(init, bop_t(*itr1, *itr2));
   }
   @endcode
  
