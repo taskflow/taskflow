@@ -558,7 +558,48 @@ class FlowBuilder {
    typename B, typename E, typename T, typename BOP, typename UOP, typename P = GuidedPartitioner
   >
   Task transform_reduce(B first, E last, T& init, BOP bop, UOP uop, P&& part = P());
+
+  /**
+  @brief constructs an STL-styled parallel transform-reduce task
+  @tparam B1 first beginning iterator type
+  @tparam E1 first ending iterator type
+  @tparam B2 second beginning iterator type
+  @tparam T result type
+  @tparam BOP_R binary reducer type
+  @tparam BOP_T binary transformion type
+  @tparam P partitioner type (default tf::GuidedPartitioner)
+ 
+  @param first iterator to the beginning (inclusive)
+  @param last iterator to the end (exclusive)
+  @param init initial value of the reduction and the storage for the reduced result
+  @param bop_r binary operator that will be applied in unspecified order to the results of @c bop_t
+  @param bop_t binary operator that will be applied to transform each element in the range to the result type
+  @param part partitioning algorithm to schedule parallel iterations
+ 
+  @return a tf::Task handle
+ 
+  The task spawns asynchronous tasks to perform parallel reduction over @c init and
+  the transformed elements in the range <tt>[first, last)</tt>.
+  The reduced result is store in @c init.
+  This method is equivalent to the parallel execution of the following loop:
+ 
+  @code{.cpp}
+  for(auto itr1=first1, itr2=first2; itr1!=last1; itr1++, itr2++) {
+    init = bop_r(init, bop_t(*itr1, *itr2));
+  }
+  @endcode
+ 
+  Iterators are templated to enable stateful range using std::reference_wrapper.
+
+  Please refer to @ref ParallelReduction for details.
+  */
   
+  template <
+    typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, typename P = GuidedPartitioner
+  >
+  Task transform_reduce(B1 first1, E1 last1, B2 first2, T& init, BOP_R bop_r, BOP_T bop_t, P&& part = P());
+
+
   // ------------------------------------------------------------------------
   // scan
   // ------------------------------------------------------------------------

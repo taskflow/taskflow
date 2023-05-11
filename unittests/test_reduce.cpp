@@ -1195,3 +1195,501 @@ TEST_CASE("TransformReduceSum.Random.12threads" * doctest::timeout(300)) {
   transform_reduce_sum<tf::RandomPartitioner>(12);
 }
 
+// ----------------------------------------------------------------------------
+// binary_transform_reduce
+// ----------------------------------------------------------------------------
+template <typename P>
+void binary_transform_reduce(unsigned W) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  std::vector<Data> vec1(1000);
+  std::vector<Data> vec2(1000);
+
+  for(size_t n=1; n<vec1.size(); n++) {
+    for(size_t c : {0, 1, 3, 7, 99}) {
+      
+      int smin = std::numeric_limits<int>::max();
+      int pmin = std::numeric_limits<int>::max();
+      auto beg1 = vec1.end();
+      auto end1 = vec1.end();
+      auto beg2 = vec2.end();
+      auto end2 = vec2.end();
+
+      taskflow.clear();
+      auto stack = taskflow.emplace([&](){
+        beg1 = vec1.begin();
+        end1 = vec1.begin() + n;
+        beg2 = vec2.begin();
+        end2 = vec2.begin() + n;
+        for (auto itr1 = beg1, itr2 = beg2; itr1 != end1 && itr2 != end2; itr1++, itr2++) {
+          smin = std::min(itr1->get(), smin);
+          smin = std::min(itr2->get(), smin);
+        }
+      });
+
+      tf::Task ptask;
+      
+      ptask = taskflow.transform_reduce(
+        std::ref(beg1), std::ref(end1), std::ref(beg2), pmin,
+        [] (int l, int r) { return std::min(l, r); },
+        [] (const Data& data1, const Data& data2) { return std::min(data1.get(), data2.get()); },
+        P(c)
+      );
+
+      stack.precede(ptask);
+
+      executor.run(taskflow).wait();
+
+      REQUIRE(smin != std::numeric_limits<int>::max());
+      REQUIRE(pmin != std::numeric_limits<int>::max());
+      REQUIRE(smin == pmin);
+    }
+  }
+}
+
+// guided
+TEST_CASE("BinaryTransformReduce.Guided.1thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::GuidedPartitioner>(1);
+}
+
+TEST_CASE("BinaryTransformReduce.Guided.2thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::GuidedPartitioner>(2);
+}
+
+TEST_CASE("BinaryTransformReduce.Guided.3thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::GuidedPartitioner>(3);
+}
+
+TEST_CASE("BinaryTransformReduce.Guided.4thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::GuidedPartitioner>(4);
+}
+
+TEST_CASE("BinaryTransformReduce.Guided.5thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::GuidedPartitioner>(5);
+}
+
+TEST_CASE("BinaryTransformReduce.Guided.6thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::GuidedPartitioner>(6);
+}
+
+TEST_CASE("BinaryTransformReduce.Guided.7thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::GuidedPartitioner>(7);
+}
+
+TEST_CASE("BinaryTransformReduce.Guided.8thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::GuidedPartitioner>(8);
+}
+
+TEST_CASE("BinaryTransformReduce.Guided.9thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::GuidedPartitioner>(9);
+}
+
+TEST_CASE("BinaryTransformReduce.Guided.10thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::GuidedPartitioner>(10);
+}
+
+TEST_CASE("BinaryTransformReduce.Guided.11thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::GuidedPartitioner>(11);
+}
+
+TEST_CASE("BinaryTransformReduce.Guided.12thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::GuidedPartitioner>(12);
+}
+
+// dynamic
+TEST_CASE("BinaryTransformReduce.Dynamic.1thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::DynamicPartitioner>(1);
+}
+
+TEST_CASE("BinaryTransformReduce.Dynamic.2thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::DynamicPartitioner>(2);
+}
+
+TEST_CASE("BinaryTransformReduce.Dynamic.3thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::DynamicPartitioner>(3);
+}
+
+TEST_CASE("BinaryTransformReduce.Dynamic.4thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::DynamicPartitioner>(4);
+}
+
+TEST_CASE("BinaryTransformReduce.Dynamic.5thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::DynamicPartitioner>(5);
+}
+
+TEST_CASE("BinaryTransformReduce.Dynamic.6thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::DynamicPartitioner>(6);
+}
+
+TEST_CASE("BinaryTransformReduce.Dynamic.7thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::DynamicPartitioner>(7);
+}
+
+TEST_CASE("BinaryTransformReduce.Dynamic.8thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::DynamicPartitioner>(8);
+}
+
+TEST_CASE("BinaryTransformReduce.Dynamic.9thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::DynamicPartitioner>(9);
+}
+
+TEST_CASE("BinaryTransformReduce.Dynamic.10thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::DynamicPartitioner>(10);
+}
+
+TEST_CASE("BinaryTransformReduce.Dynamic.11thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::DynamicPartitioner>(11);
+}
+
+TEST_CASE("BinaryTransformReduce.Dynamic.12thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::DynamicPartitioner>(12);
+}
+
+// static
+TEST_CASE("BinaryTransformReduce.Static.1thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::StaticPartitioner>(1);
+}
+
+TEST_CASE("BinaryTransformReduce.Static.2thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::StaticPartitioner>(2);
+}
+
+TEST_CASE("BinaryTransformReduce.Static.3thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::StaticPartitioner>(3);
+}
+
+TEST_CASE("BinaryTransformReduce.Static.4thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::StaticPartitioner>(4);
+}
+
+TEST_CASE("BinaryTransformReduce.Static.5thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::StaticPartitioner>(5);
+}
+
+TEST_CASE("BinaryTransformReduce.Static.6thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::StaticPartitioner>(6);
+}
+
+TEST_CASE("BinaryTransformReduce.Static.7thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::StaticPartitioner>(7);
+}
+
+TEST_CASE("BinaryTransformReduce.Static.8thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::StaticPartitioner>(8);
+}
+
+TEST_CASE("BinaryTransformReduce.Static.9thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::StaticPartitioner>(9);
+}
+
+TEST_CASE("BinaryTransformReduce.Static.10thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::StaticPartitioner>(10);
+}
+
+TEST_CASE("BinaryTransformReduce.Static.11thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::StaticPartitioner>(11);
+}
+
+TEST_CASE("BinaryTransformReduce.Static.12thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::StaticPartitioner>(12);
+}
+
+// random
+TEST_CASE("BinaryTransformReduce.Random.1thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::RandomPartitioner>(1);
+}
+
+TEST_CASE("BinaryTransformReduce.Random.2thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::RandomPartitioner>(2);
+}
+
+TEST_CASE("BinaryTransformReduce.Random.3thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::RandomPartitioner>(3);
+}
+
+TEST_CASE("BinaryTransformReduce.Random.4thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::RandomPartitioner>(4);
+}
+
+TEST_CASE("BinaryTransformReduce.Random.5thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::RandomPartitioner>(5);
+}
+
+TEST_CASE("BinaryTransformReduce.Random.6thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::RandomPartitioner>(6);
+}
+
+TEST_CASE("BinaryTransformReduce.Random.7thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::RandomPartitioner>(7);
+}
+
+TEST_CASE("BinaryTransformReduce.Random.8thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::RandomPartitioner>(8);
+}
+
+TEST_CASE("BinaryTransformReduce.Random.9thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::RandomPartitioner>(9);
+}
+
+TEST_CASE("BinaryTransformReduce.Random.10thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::RandomPartitioner>(10);
+}
+
+TEST_CASE("BinaryTransformReduce.Random.11thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::RandomPartitioner>(11);
+}
+
+TEST_CASE("BinaryTransformReduce.Random.12thread" * doctest::timeout(300)) {
+  binary_transform_reduce<tf::RandomPartitioner>(12);
+}
+// ----------------------------------------------------------------------------
+// binary_transform_reduce_sum
+// ----------------------------------------------------------------------------
+
+template <typename P>
+void binary_transform_reduce_sum(unsigned W) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  std::vector<Data> vec1(1000);
+  std::vector<Data> vec2(1000);
+
+  for(size_t n=1; n<vec1.size(); n++) {
+    for(size_t c : {0, 1, 3, 7, 99}) {
+
+      auto sum = 100;
+      auto sol = 100;
+      auto beg1 = vec1.end();
+      auto end1 = vec1.end();
+      auto beg2 = vec2.end();
+      auto end2 = vec2.end();
+
+      taskflow.clear();
+      auto stask = taskflow.emplace([&](){
+        beg1 = vec1.begin();
+        end1 = vec1.begin() + n;
+        beg2 = vec2.begin();
+        end2 = vec2.begin() + n;
+        for(auto itr1 = beg1, itr2 = beg2; itr1 != end1 && itr2 != end2; itr1++, itr2++) {
+          sum += (itr1->get() + itr2->get());
+        }
+      });
+
+      tf::Task ptask;
+
+      ptask = taskflow.transform_reduce(
+        std::ref(beg1), std::ref(end1), std::ref(beg2), sol,
+        [] (int l, int r)   { return  l + r; },
+        [] (const Data& data1, const Data& data2) { return data1.get() + data2.get(); },
+        P(c)
+      );
+
+      stask.precede(ptask);
+
+      executor.run(taskflow).wait();
+
+      REQUIRE(sol == sum);
+      
+    }
+  }
+}
+
+// guided
+TEST_CASE("BinaryTransformReduceSum.Guided.1thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::GuidedPartitioner>(1);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Guided.2thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::GuidedPartitioner>(2);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Guided.3thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::GuidedPartitioner>(3);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Guided.4thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::GuidedPartitioner>(4);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Guided.5thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::GuidedPartitioner>(5);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Guided.6thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::GuidedPartitioner>(6);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Guided.7thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::GuidedPartitioner>(7);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Guided.8thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::GuidedPartitioner>(8);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Guided.9thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::GuidedPartitioner>(9);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Guided.10thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::GuidedPartitioner>(10);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Guided.11thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::GuidedPartitioner>(11);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Guided.12thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::GuidedPartitioner>(12);
+}
+
+// dynamic
+TEST_CASE("BinaryTransformReduceSum.Dynamic.1thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::DynamicPartitioner>(1);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Dynamic.2thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::DynamicPartitioner>(2);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Dynamic.3thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::DynamicPartitioner>(3);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Dynamic.4thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::DynamicPartitioner>(4);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Dynamic.5thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::DynamicPartitioner>(5);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Dynamic.6thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::DynamicPartitioner>(6);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Dynamic.7thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::DynamicPartitioner>(7);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Dynamic.8thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::DynamicPartitioner>(8);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Dynamic.9thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::DynamicPartitioner>(9);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Dynamic.10thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::DynamicPartitioner>(10);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Dynamic.11thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::DynamicPartitioner>(11);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Dynamic.12thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::DynamicPartitioner>(12);
+}
+
+// static
+TEST_CASE("BinaryTransformReduceSum.Static.1thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::StaticPartitioner>(1);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Static.2thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::StaticPartitioner>(2);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Static.3thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::StaticPartitioner>(3);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Static.4thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::StaticPartitioner>(4);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Static.5thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::StaticPartitioner>(5);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Static.6thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::StaticPartitioner>(6);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Static.7thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::StaticPartitioner>(7);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Static.8thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::StaticPartitioner>(8);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Static.9thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::StaticPartitioner>(9);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Static.10thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::StaticPartitioner>(10);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Static.11thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::StaticPartitioner>(11);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Static.12thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::StaticPartitioner>(12);
+}
+
+// random
+TEST_CASE("BinaryTransformReduceSum.Random.1thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::RandomPartitioner>(1);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Random.2thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::RandomPartitioner>(2);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Random.3thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::RandomPartitioner>(3);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Random.4thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::RandomPartitioner>(4);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Random.5thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::RandomPartitioner>(5);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Random.6thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::RandomPartitioner>(6);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Random.7thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::RandomPartitioner>(7);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Random.8thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::RandomPartitioner>(8);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Random.9thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::RandomPartitioner>(9);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Random.10thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::RandomPartitioner>(10);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Random.11thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::RandomPartitioner>(11);
+}
+
+TEST_CASE("BinaryTransformReduceSum.Random.12thread" * doctest::timeout(300)) {
+  binary_transform_reduce_sum<tf::RandomPartitioner>(12);
+}
+
