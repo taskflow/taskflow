@@ -1037,13 +1037,18 @@ class Executor {
   private:
     
   const size_t _MAX_STEALS;
-
-  std::condition_variable _topology_cv;
-  std::mutex _taskflows_mutex;
-  std::mutex _topology_mutex;
+  
   std::mutex _wsq_mutex;
+  std::mutex _taskflows_mutex;
 
+#ifdef __cpp_lib_atomic_wait
+  std::atomic<size_t> _num_topologies{0};
+  std::atomic_flag _has_tasks = ATOMIC_FLAG_INIT;
+#else
+  std::condition_variable _topology_cv;
+  std::mutex _topology_mutex;
   size_t _num_topologies {0};
+#endif
   
   std::unordered_map<std::thread::id, size_t> _wids;
   std::vector<std::thread> _threads;
@@ -1143,7 +1148,11 @@ inline size_t Executor::num_workers() const noexcept {
 
 // Function: num_topologies
 inline size_t Executor::num_topologies() const {
+#ifdef __cpp_lib_atomic_wait
+  return _num_topologies.load(std::memory_order_relaxed);
+#else
   return _num_topologies;
+#endif
 }
 
 // Function: num_taskflows
@@ -2014,28 +2023,59 @@ void Executor::corun_until(P&& predicate) {
 
 // Procedure: _increment_topology
 inline void Executor::_increment_topology() {
+#ifdef __cpp_lib_atomic_wait
+  if(_num_topologies.fetch_add(1, std::memory_order_relaxed) == 0) {
+    _has_tasks.test_and_set(std::memory_order_relaxed);
+  }
+#else
   std::lock_guard<std::mutex> lock(_topology_mutex);
   ++_num_topologies;
+#endif
 }
 
 // Procedure: _decrement_topology_and_notify
 inline void Executor::_decrement_topology_and_notify() {
+#ifdef __cpp_lib_atomic_wait
+  if(_num_topologies.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+    _has_tasks.clear(std::memory_order_relaxed);
+    _has_tasks.notify_all();
+  }
+#else
   std::lock_guard<std::mutex> lock(_topology_mutex);
   if(--_num_topologies == 0) {
     _topology_cv.notify_all();
   }
+#endif
 }
 
 // Procedure: _decrement_topology
 inline void Executor::_decrement_topology() {
+#ifdef __cpp_lib_atomic_wait
+  if(_num_topologies.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+    _has_tasks.clear(std::memory_order_relaxed);
+  }
+#else
   std::lock_guard<std::mutex> lock(_topology_mutex);
   --_num_topologies;
+#endif
 }
 
 // Procedure: wait_for_all
 inline void Executor::wait_for_all() {
+#ifdef __cpp_lib_atomic_wait
+  while(1) {
+    _has_tasks.wait(true, std::memory_order_relaxed);
+    if(_num_topologies.load(std::memory_order_acquire)) {
+      _has_tasks.test_and_set(std::memory_order_relaxed);
+    }
+    else {
+      break;
+    }
+  }
+#else
   std::unique_lock<std::mutex> lock(_topology_mutex);
   _topology_cv.wait(lock, [&](){ return _num_topologies == 0; });
+#endif
 }
 
 // Function: _set_up_topology

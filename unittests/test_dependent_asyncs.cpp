@@ -33,7 +33,9 @@ void embarrassing_parallelism(unsigned W) {
 
   executor.wait_for_all();
 
-  REQUIRE(counter == N);
+  int cnt = counter.load(std::memory_order_relaxed);
+
+  REQUIRE(cnt == N);
 }
 
 TEST_CASE("DependentAsync.EmbarrassingParallelism.1thread" * doctest::timeout(300)) {
@@ -886,7 +888,5 @@ TEST_CASE("DependentAsync.ParallelGraphConstruction.8threads" * doctest::timeout
 TEST_CASE("DependentAsync.ParallelGraphConstruction.16threads" * doctest::timeout(300)) {
   parallel_graph_construction(16);
 }
-
-
 
 

@@ -6,6 +6,11 @@
 #
 # To enable address and leak sanitizers
 # -DCMAKE_CXX_FLAGS="-fsanitize=address  -fsanitize=leak -g"
+#
+# To enable different c++ standards
+# -DCMAKE_CXX_STANDARD=17
+# -DCMAKE_CXX_STANDARD=20
+# -DCMAKE_CXX_STANDARD=23
 # -------------------------------------------------------------------
 
 
