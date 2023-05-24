@@ -2063,14 +2063,9 @@ inline void Executor::_decrement_topology() {
 // Procedure: wait_for_all
 inline void Executor::wait_for_all() {
 #ifdef __cpp_lib_atomic_wait
-  while(1) {
-    _has_tasks.wait(true, std::memory_order_relaxed);
-    if(_num_topologies.load(std::memory_order_acquire)) {
-      _has_tasks.test_and_set(std::memory_order_relaxed);
-    }
-    else {
-      break;
-    }
+  // TODO: unfortunately, this implementation has busy loop
+  while(_num_topologies.load(std::memory_order_acquire) != 0) {
+    _has_tasks.wait(true);
   }
 #else
   std::unique_lock<std::mutex> lock(_topology_mutex);
