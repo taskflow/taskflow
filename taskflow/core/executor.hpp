@@ -1043,7 +1043,6 @@ class Executor {
 
 #ifdef __cpp_lib_atomic_wait
   std::atomic<size_t> _num_topologies{0};
-  std::atomic_flag _has_tasks = ATOMIC_FLAG_INIT;
 #else
   std::condition_variable _topology_cv;
   std::mutex _topology_mutex;
@@ -1084,7 +1083,6 @@ class Executor {
   void _tear_down_invoke(Worker&, Node*);
   void _increment_topology();
   void _decrement_topology();
-  void _decrement_topology_and_notify();
   void _invoke(Worker&, Node*);
   void _invoke_static_task(Worker&, Node*);
   void _invoke_dynamic_task(Worker&, Node*);
@@ -1814,7 +1812,9 @@ inline void Executor::_consume_graph(Worker& w, Node* p, Graph& g) {
   p->_join_counter.fetch_add(src.size(), std::memory_order_relaxed);
   
   _schedule(w, src);
-  _corun_until(w, [p] () -> bool { return p->_join_counter.load(std::memory_order_acquire) == 0; });
+  _corun_until(w, [p] () -> bool { 
+    return p->_join_counter.load(std::memory_order_acquire) == 0; }
+  );
 }
 
 // Procedure: _invoke_condition_task
@@ -1957,7 +1957,7 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
     c();
     std::promise<void> promise;
     promise.set_value();
-    _decrement_topology_and_notify();
+    _decrement_topology();
     return tf::Future<void>(promise.get_future(), std::monostate{});
   }
 
@@ -2024,21 +2024,18 @@ void Executor::corun_until(P&& predicate) {
 // Procedure: _increment_topology
 inline void Executor::_increment_topology() {
 #ifdef __cpp_lib_atomic_wait
-  if(_num_topologies.fetch_add(1, std::memory_order_relaxed) == 0) {
-    _has_tasks.test_and_set(std::memory_order_relaxed);
-  }
+  _num_topologies.fetch_add(1, std::memory_order_relaxed);
 #else
   std::lock_guard<std::mutex> lock(_topology_mutex);
   ++_num_topologies;
 #endif
 }
 
-// Procedure: _decrement_topology_and_notify
-inline void Executor::_decrement_topology_and_notify() {
+// Procedure: _decrement_topology
+inline void Executor::_decrement_topology() {
 #ifdef __cpp_lib_atomic_wait
   if(_num_topologies.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-    _has_tasks.clear(std::memory_order_relaxed);
-    _has_tasks.notify_all();
+    _num_topologies.notify_all();
   }
 #else
   std::lock_guard<std::mutex> lock(_topology_mutex);
@@ -2048,24 +2045,13 @@ inline void Executor::_decrement_topology_and_notify() {
 #endif
 }
 
-// Procedure: _decrement_topology
-inline void Executor::_decrement_topology() {
-#ifdef __cpp_lib_atomic_wait
-  if(_num_topologies.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-    _has_tasks.clear(std::memory_order_relaxed);
-  }
-#else
-  std::lock_guard<std::mutex> lock(_topology_mutex);
-  --_num_topologies;
-#endif
-}
-
 // Procedure: wait_for_all
 inline void Executor::wait_for_all() {
 #ifdef __cpp_lib_atomic_wait
-  // TODO: unfortunately, this implementation has busy loop
-  while(_num_topologies.load(std::memory_order_acquire) != 0) {
-    _has_tasks.wait(true);
+  size_t n = _num_topologies.load(std::memory_order_acquire);
+  while(n != 0) {
+    _num_topologies.wait(n);
+    n = _num_topologies.load(std::memory_order_acquire);
   }
 #else
   std::unique_lock<std::mutex> lock(_topology_mutex);
@@ -2168,7 +2154,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
       // After set_value, the caller will return from wait
       p.set_value();
 
-      _decrement_topology_and_notify();
+      _decrement_topology();
 
       // remove the taskflow if it is managed by the executor
       // TODO: in the future, we may need to synchronize on wait

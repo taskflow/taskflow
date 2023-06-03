@@ -84,7 +84,7 @@ class AsyncTask {
     @brief checks if the asynchronous task stores nothing
     */
     bool empty() const;
-    
+
     /**
     @brief release the managed object of @c this
     */

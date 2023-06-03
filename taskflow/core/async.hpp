@@ -98,7 +98,7 @@ inline void Executor::_tear_down_async(Node* node) {
   }
   // from executor
   else {
-    _decrement_topology_and_notify();
+    _decrement_topology();
   }
   node_pool.recycle(node);
 }
@@ -335,7 +335,7 @@ inline void Executor::_tear_down_dependent_async(Worker& worker, Node* node) {
     node_pool.recycle(node);
   }
 
-  _decrement_topology_and_notify();
+  _decrement_topology();
 }
 
 
