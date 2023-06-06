@@ -364,7 +364,7 @@ configure_package_config_file(
 
 write_basic_package_version_file(
   ${PROJECT_NAME}ConfigVersion.cmake 
-  COMPATIBILITY SameMajorVersion
+  COMPATIBILITY SameMinorVersion
 )
 
 install(
