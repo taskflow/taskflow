@@ -70,15 +70,21 @@ class Notifier {
 
   struct Waiter {
     std::atomic<Waiter*> next;
-    std::mutex mu;
-    std::condition_variable cv;
     uint64_t epoch;
-    unsigned state;
-    enum {
-      kNotSignaled,
+    enum : unsigned {
+      kNotSignaled = 0,
       kWaiting,
       kSignaled,
     };
+
+#ifdef __cpp_lib_atomic_wait
+    //std::atomic_flag notified = ATOMIC_FLAG_INIT;
+    std::atomic<unsigned> state {0};
+#else
+    std::mutex mu;
+    std::condition_variable cv;
+    unsigned state;
+#endif
   };
 
   explicit Notifier(size_t N) : _waiters{N} {
@@ -102,7 +108,12 @@ class Notifier {
 
   // commit_wait commits waiting.
   void commit_wait(Waiter* w) {
+#ifdef __cpp_lib_atomic_wait
+    //w->notified.clear();
+    w->state.store(Waiter::kNotSignaled, std::memory_order_relaxed);
+#else
     w->state = Waiter::kNotSignaled;
+#endif
     // Modification epoch of this waiter.
     uint64_t epoch =
         (w->epoch & kEpochMask) +
@@ -237,17 +248,40 @@ class Notifier {
   std::vector<Waiter> _waiters;
 
   void _park(Waiter* w) {
+#ifdef __cpp_lib_atomic_wait
+    //w->notified.wait(false);
+    unsigned target = Waiter::kNotSignaled;
+    if(w->state.compare_exchange_strong(target, Waiter::kWaiting,
+                                        std::memory_order_relaxed,
+                                        std::memory_order_relaxed)) {
+      w->state.wait(Waiter::kWaiting, std::memory_order_relaxed);
+    }
+#else
     std::unique_lock<std::mutex> lock(w->mu);
     while (w->state != Waiter::kSignaled) {
       w->state = Waiter::kWaiting;
       w->cv.wait(lock);
     }
+#endif
   }
 
   void _unpark(Waiter* waiters) {
     Waiter* next = nullptr;
     for (Waiter* w = waiters; w; w = next) {
       next = w->next.load(std::memory_order_relaxed);
+#ifdef __cpp_lib_atomic_wait
+      //if(w->notified.test_and_set() == false) {
+      //  w->notified.notify_one();
+      //}
+
+      // We only notify if the other is waiting - this is why we use tri-state
+      // variable instead of binary-state variable (i.e., atomic_flag)
+      // Performance is about 0.1% faster
+      if(w->state.exchange(Waiter::kSignaled, std::memory_order_relaxed) == 
+         Waiter::kWaiting) {
+        w->state.notify_one();
+      }
+#else
       unsigned state;
       {
         std::unique_lock<std::mutex> lock(w->mu);
@@ -256,6 +290,7 @@ class Notifier {
       }
       // Avoid notifying if it wasn't waiting.
       if (state == Waiter::kWaiting) w->cv.notify_one();
+#endif
     }
   }
 
