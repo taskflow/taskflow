@@ -43,211 +43,211 @@ find_package(TBB REQUIRED)
 
 ## benchmark 1: wavefront computing
 add_executable(
-  wavefront 
+  bench_wavefront 
   ${TF_BENCHMARK_DIR}/wavefront/main.cpp
   ${TF_BENCHMARK_DIR}/wavefront/omp.cpp
   ${TF_BENCHMARK_DIR}/wavefront/tbb.cpp
   ${TF_BENCHMARK_DIR}/wavefront/seq.cpp
   ${TF_BENCHMARK_DIR}/wavefront/taskflow.cpp
 )
-target_include_directories(wavefront PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_include_directories(bench_wavefront PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
-  wavefront 
+  bench_wavefront 
   ${PROJECT_NAME} 
   ${TBB_IMPORTED_TARGETS} 
   ${OpenMP_CXX_LIBRARIES} 
   tf::default_settings
 )
-set_target_properties(wavefront PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+set_target_properties(bench_wavefront PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 2: graph traversal
 add_executable(
-  graph_traversal 
+  bench_graph_traversal 
   ${TF_BENCHMARK_DIR}/graph_traversal/main.cpp
   ${TF_BENCHMARK_DIR}/graph_traversal/omp.cpp
   ${TF_BENCHMARK_DIR}/graph_traversal/tbb.cpp
   ${TF_BENCHMARK_DIR}/graph_traversal/seq.cpp
   ${TF_BENCHMARK_DIR}/graph_traversal/taskflow.cpp
 )
-target_include_directories(graph_traversal PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_include_directories(bench_graph_traversal PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
-  graph_traversal 
+  bench_graph_traversal 
   ${PROJECT_NAME} 
   ${TBB_IMPORTED_TARGETS} 
   ${OpenMP_CXX_LIBRARIES} 
   tf::default_settings
 )
-set_target_properties(graph_traversal PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+set_target_properties(bench_graph_traversal PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 3: binary_tree
 add_executable(
-  binary_tree 
+  bench_binary_tree 
   ${TF_BENCHMARK_DIR}/binary_tree/main.cpp
   ${TF_BENCHMARK_DIR}/binary_tree/tbb.cpp
   ${TF_BENCHMARK_DIR}/binary_tree/omp.cpp
   ${TF_BENCHMARK_DIR}/binary_tree/taskflow.cpp
 )
-target_include_directories(binary_tree PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_include_directories(bench_binary_tree PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
-  binary_tree 
+  bench_binary_tree 
   ${PROJECT_NAME} 
   ${TBB_IMPORTED_TARGETS} 
   ${OpenMP_CXX_LIBRARIES} 
   tf::default_settings
 )
-set_target_properties(binary_tree PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+set_target_properties(bench_binary_tree PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 4: linear_chain
 add_executable(
-  linear_chain
+  bench_linear_chain
   ${TF_BENCHMARK_DIR}/linear_chain/main.cpp
   ${TF_BENCHMARK_DIR}/linear_chain/tbb.cpp
   ${TF_BENCHMARK_DIR}/linear_chain/omp.cpp
   ${TF_BENCHMARK_DIR}/linear_chain/taskflow.cpp
 )
-target_include_directories(linear_chain PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_include_directories(bench_linear_chain PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
-  linear_chain 
+  bench_linear_chain 
   ${PROJECT_NAME} 
   ${TBB_IMPORTED_TARGETS} 
   ${OpenMP_CXX_LIBRARIES} 
   tf::default_settings
 )
-set_target_properties(linear_chain PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+set_target_properties(bench_linear_chain PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 5: MNIST
 add_executable(
-  mnist 
+  bench_mnist 
   ${TF_BENCHMARK_DIR}/mnist/main.cpp
   ${TF_BENCHMARK_DIR}/mnist/omp.cpp
   ${TF_BENCHMARK_DIR}/mnist/tbb.cpp
   ${TF_BENCHMARK_DIR}/mnist/seq.cpp
   ${TF_BENCHMARK_DIR}/mnist/taskflow.cpp
 )
-target_include_directories(mnist PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_include_directories(bench_mnist PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
-  mnist 
+  bench_mnist 
   ${PROJECT_NAME} 
   ${TBB_IMPORTED_TARGETS}
   ${OpenMP_CXX_LIBRARIES} 
   stdc++fs 
   tf::default_settings
 )
-set_target_properties(mnist PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+set_target_properties(bench_mnist PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 6: matrix multiplication
 add_executable(
-  matrix_multiplication 
+  bench_matrix_multiplication 
   ${TF_BENCHMARK_DIR}/matrix_multiplication/main.cpp
   ${TF_BENCHMARK_DIR}/matrix_multiplication/omp.cpp
   ${TF_BENCHMARK_DIR}/matrix_multiplication/tbb.cpp
   ${TF_BENCHMARK_DIR}/matrix_multiplication/taskflow.cpp
 )
-target_include_directories(matrix_multiplication PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_include_directories(bench_matrix_multiplication PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
-  matrix_multiplication 
+  bench_matrix_multiplication 
   ${PROJECT_NAME} 
   ${TBB_IMPORTED_TARGETS} 
   ${OpenMP_CXX_LIBRARIES} 
   tf::default_settings
 )
-set_target_properties(matrix_multiplication PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+set_target_properties(bench_matrix_multiplication PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 7: mandelbrot
 add_executable(
-  mandelbrot 
+  bench_mandelbrot 
   ${TF_BENCHMARK_DIR}/mandelbrot/main.cpp
   ${TF_BENCHMARK_DIR}/mandelbrot/omp.cpp
   ${TF_BENCHMARK_DIR}/mandelbrot/tbb.cpp
   ${TF_BENCHMARK_DIR}/mandelbrot/taskflow.cpp
 )
-target_include_directories(mandelbrot PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_include_directories(bench_mandelbrot PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
-  mandelbrot 
+  bench_mandelbrot 
   ${PROJECT_NAME} 
   ${TBB_IMPORTED_TARGETS} 
   ${OpenMP_CXX_LIBRARIES} 
   tf::default_settings
 )
-set_target_properties(mandelbrot PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+set_target_properties(bench_mandelbrot PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 8: black_scholes
 add_executable(
-  black_scholes
+  bench_black_scholes
   ${TF_BENCHMARK_DIR}/black_scholes/main.cpp
   ${TF_BENCHMARK_DIR}/black_scholes/omp.cpp
   ${TF_BENCHMARK_DIR}/black_scholes/tbb.cpp
   ${TF_BENCHMARK_DIR}/black_scholes/taskflow.cpp
 )
-target_include_directories(black_scholes PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_include_directories(bench_black_scholes PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
-  black_scholes 
+  bench_black_scholes 
   ${PROJECT_NAME} 
   ${TBB_IMPORTED_TARGETS} 
   ${OpenMP_CXX_LIBRARIES} 
   tf::default_settings
 )
-set_target_properties(black_scholes PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+set_target_properties(bench_black_scholes PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 9: reduce_sum
 add_executable(
-  reduce_sum
+  bench_reduce_sum
   ${TF_BENCHMARK_DIR}/reduce_sum/main.cpp
   ${TF_BENCHMARK_DIR}/reduce_sum/omp.cpp
   ${TF_BENCHMARK_DIR}/reduce_sum/tbb.cpp
   ${TF_BENCHMARK_DIR}/reduce_sum/taskflow.cpp
 )
-target_include_directories(reduce_sum PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_include_directories(bench_reduce_sum PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
-  reduce_sum 
+  bench_reduce_sum 
   ${PROJECT_NAME} 
   ${TBB_IMPORTED_TARGETS} 
   ${OpenMP_CXX_LIBRARIES} 
   tf::default_settings
 )
-set_target_properties(reduce_sum PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+set_target_properties(bench_reduce_sum PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 10: sort
 add_executable(
-  sort
+  bench_sort
   ${TF_BENCHMARK_DIR}/sort/main.cpp
   ${TF_BENCHMARK_DIR}/sort/omp.cpp
   ${TF_BENCHMARK_DIR}/sort/tbb.cpp
   ${TF_BENCHMARK_DIR}/sort/taskflow.cpp
 )
-target_include_directories(sort PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_include_directories(bench_sort PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
-  sort 
+  bench_sort 
   ${PROJECT_NAME} 
   ${TBB_IMPORTED_TARGETS} 
   ${OpenMP_CXX_LIBRARIES} 
   tf::default_settings
 )
-set_target_properties(sort PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+set_target_properties(bench_sort PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 
 ## benchmark 11: linear_pipeline
 add_executable(
-  linear_pipeline
+  bench_linear_pipeline
   ${TF_BENCHMARK_DIR}/linear_pipeline/main.cpp
   ${TF_BENCHMARK_DIR}/linear_pipeline/omp.cpp
   ${TF_BENCHMARK_DIR}/linear_pipeline/tbb.cpp
   ${TF_BENCHMARK_DIR}/linear_pipeline/taskflow.cpp
 )
-target_include_directories(linear_pipeline PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_include_directories(bench_linear_pipeline PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
-  linear_pipeline 
+  bench_linear_pipeline 
   ${PROJECT_NAME} 
   ${TBB_IMPORTED_TARGETS} 
   ${OpenMP_CXX_LIBRARIES} 
   tf::default_settings
 )
-set_target_properties(linear_pipeline PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+set_target_properties(bench_linear_pipeline PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 
 ## benchmark 12: graph_pipeline
 add_executable(
-  graph_pipeline
+  bench_graph_pipeline
   ${TF_BENCHMARK_DIR}/graph_pipeline/main.cpp
   ${TF_BENCHMARK_DIR}/graph_pipeline/omp.cpp
   ${TF_BENCHMARK_DIR}/graph_pipeline/tbb.cpp
@@ -255,82 +255,82 @@ add_executable(
   ${TF_BENCHMARK_DIR}/graph_pipeline/gold.cpp
   #${TF_BENCHMARK_DIR}/graph_pipeline/fastflow.cpp
 )
-target_include_directories(graph_pipeline PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
-target_include_directories(graph_pipeline PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/)
+target_include_directories(bench_graph_pipeline PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_include_directories(bench_graph_pipeline PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/)
 target_link_libraries(
-  graph_pipeline 
+  bench_graph_pipeline 
   ${PROJECT_NAME} 
   ${TBB_IMPORTED_TARGETS} 
   ${OpenMP_CXX_LIBRARIES} 
   tf::default_settings
 )
-set_target_properties(graph_pipeline PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+set_target_properties(bench_graph_pipeline PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 13: comparison with simple thread pool
 add_executable(
-  thread_pool
+  bench_thread_pool
   ${TF_BENCHMARK_DIR}/thread_pool/thread_pool.cpp
 )
-target_include_directories(thread_pool PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_include_directories(bench_thread_pool PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
-  thread_pool
+  bench_thread_pool
   ${PROJECT_NAME}
   ${TBB_IMPORTED_TARGETS}
   ${OpenMP_CXX_LIBRARIES}
   tf::default_settings
 )
-set_target_properties(thread_pool PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+set_target_properties(bench_thread_pool PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 14: data_pipeline
 add_executable(
-  data_pipeline
+  bench_data_pipeline
   ${TF_BENCHMARK_DIR}/data_pipeline/main.cpp
   ${TF_BENCHMARK_DIR}/data_pipeline/tbb.cpp
   ${TF_BENCHMARK_DIR}/data_pipeline/taskflow.cpp
 )
-target_include_directories(data_pipeline PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_include_directories(bench_data_pipeline PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
-  data_pipeline 
+  bench_data_pipeline 
   ${PROJECT_NAME} 
   ${TBB_IMPORTED_TARGETS} 
   ${OpenMP_CXX_LIBRARIES} 
   tf::default_settings
 )
-set_target_properties(data_pipeline PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+set_target_properties(bench_data_pipeline PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 15: deferred_pipeline                                                                               
 add_executable(
-  deferred_pipeline
+  bench_deferred_pipeline
   ${TF_BENCHMARK_DIR}/deferred_pipeline/main.cpp
   ${TF_BENCHMARK_DIR}/deferred_pipeline/pthread.cpp
   ${TF_BENCHMARK_DIR}/deferred_pipeline/taskflow.cpp
 )
-target_include_directories(deferred_pipeline PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_include_directories(bench_deferred_pipeline PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
-  deferred_pipeline
+  bench_deferred_pipeline
   ${PROJECT_NAME}
   ${OpenMP_CXX_LIBRARIES}
   tf::default_settings
 )
-set_target_properties(deferred_pipeline PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+set_target_properties(bench_deferred_pipeline PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 16: for_each
 add_executable(
-  for_each
+  bench_for_each
   ${TF_BENCHMARK_DIR}/for_each/main.cpp
   ${TF_BENCHMARK_DIR}/for_each/omp.cpp
   ${TF_BENCHMARK_DIR}/for_each/tbb.cpp
   ${TF_BENCHMARK_DIR}/for_each/taskflow.cpp
 )
-target_include_directories(for_each PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_include_directories(bench_for_each PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
 target_link_libraries(
-  for_each 
+  bench_for_each 
   ${PROJECT_NAME} 
   ${TBB_IMPORTED_TARGETS} 
   ${OpenMP_CXX_LIBRARIES} 
   tf::default_settings
 )
-set_target_properties(for_each PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+set_target_properties(bench_for_each PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ## benchmark 17: scan
 add_executable(
@@ -350,6 +350,22 @@ target_link_libraries(
 )
 set_target_properties(bench_scan PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
+## benchmark 18: dependent_async
+#add_executable(
+#  bench_dependent_async
+#  ${TF_BENCHMARK_DIR}/dependent_async/main.cpp
+#  ${TF_BENCHMARK_DIR}/dependent_async/omp.cpp
+#  ${TF_BENCHMARK_DIR}/dependent_async/taskflow.cpp
+#)
+#target_include_directories(bench_dependent_async PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+#target_link_libraries(
+#  bench_dependent_async 
+#  ${PROJECT_NAME} 
+#  ${TBB_IMPORTED_TARGETS} 
+#  ${OpenMP_CXX_LIBRARIES} 
+#  tf::default_settings
+#)
+#set_target_properties(bench_dependent_async PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ###############################################################################
 # CUDA benchmarks
