@@ -101,6 +101,11 @@ class AsyncTask {
     */
     size_t use_count() const;
 
+    /**                                                                                                       
+    @brief returns the boolean indicating whether the async task is done
+    */
+    bool is_done() const; 
+
   private:
 
     explicit AsyncTask(Node*);
@@ -189,6 +194,14 @@ inline size_t AsyncTask::use_count() const {
   std::get_if<Node::DependentAsync>(&(_node->_handle))->use_count.load(
     std::memory_order_relaxed
   );
+}
+
+// Function: is_done
+inline bool AsyncTask::is_done() const {
+  return 
+    std::get_if<Node::DependentAsync>(&(_node->_handle))->state.load(
+      std::memory_order_acquire
+    ) == Node::AsyncState::FINISHED;
 }
 
 }  // end of namespace tf ----------------------------------------------------
