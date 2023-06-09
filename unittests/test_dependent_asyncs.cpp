@@ -909,7 +909,7 @@ void iterative_fibonacci(unsigned W) {
       val_n_1 = fut.get();
     }
     else {
-      auto [t, fut] = executor.dependent_async([i, val_n_1, val_n_2, &tasks](){
+      auto [t, fut] = executor.dependent_async([val_n_1, val_n_2](){
         return val_n_2 + val_n_1;
       }, tasks[i-1], tasks[i-2]);
       
@@ -947,11 +947,16 @@ void recursive_fibonacci(unsigned W) {
   std::function<int(int)> fib;
 
   fib = [&](int N){
+
     if (N < 2) {
       return N; 
     }
-    auto [t1, fu1] = executor.dependent_async(std::bind(fib, N-1));
-    auto [t2, fu2] = executor.dependent_async(std::bind(fib, N-2));
+
+    std::future<int> fu1, fu2;
+    tf::AsyncTask t1, t2;
+
+    std::tie(t1, fu1) = executor.dependent_async(std::bind(fib, N-1));
+    std::tie(t2, fu2) = executor.dependent_async(std::bind(fib, N-2));
 
     executor.corun_until([&](){ return t1.is_done(); });
     executor.corun_until([&](){ return t2.is_done(); });

@@ -198,10 +198,9 @@ inline size_t AsyncTask::use_count() const {
 
 // Function: is_done
 inline bool AsyncTask::is_done() const {
-  return 
-    std::get_if<Node::DependentAsync>(&(_node->_handle))->state.load(
-      std::memory_order_acquire
-    ) == Node::AsyncState::FINISHED;
+  return std::get_if<Node::DependentAsync>(&(_node->_handle))->state.load(
+    std::memory_order_acquire
+  ) == Node::AsyncState::FINISHED;
 }
 
 }  // end of namespace tf ----------------------------------------------------
