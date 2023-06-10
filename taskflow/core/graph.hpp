@@ -492,6 +492,7 @@ class Node {
 
   friend class Graph;
   friend class Task;
+  friend class AsyncTask;
   friend class TaskView;
   friend class Taskflow;
   friend class Executor;
@@ -583,7 +584,8 @@ class Node {
     DependentAsync(C&&);
     
     std::function<void()> work;
-    
+   
+    std::atomic<size_t> use_count {1};
     std::atomic<AsyncState> state {AsyncState::UNFINISHED};
   };
 
@@ -595,7 +597,7 @@ class Node {
     MultiCondition,   // multi-conditional tasking
     Module,           // composable tasking
     Async,            // async tasking
-    DependentAsync    // dependent async tasking (no future)
+    DependentAsync    // dependent async tasking
   >;
 
   struct Semaphores {
@@ -754,9 +756,6 @@ Node::Node(
   _handle       {std::forward<Args>(args)...} {
 }
 
-//Node::Node(Args&&... args): _handle{std::forward<Args>(args)...} {
-//}
-
 // Destructor
 inline Node::~Node() {
   // this is to avoid stack overflow
@@ -865,7 +864,7 @@ inline void Node::_set_up_join_counter() {
       c++;
     }
   }
-  _join_counter.store(c, std::memory_order_release);
+  _join_counter.store(c, std::memory_order_relaxed);
 }
 
 

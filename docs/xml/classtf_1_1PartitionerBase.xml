@@ -92,32 +92,32 @@
 <listitem><para><ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref> to enable guided scheduling algorithm of adaptive chunk size</para></listitem><listitem><para><ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref> to enable dynamic scheduling algorithm of equal chunk size</para></listitem><listitem><para><ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref> to enable static scheduling algorithm of static chunk size</para></listitem><listitem><para><ref refid="classtf_1_1RandomPartitioner" kindref="compound">tf::RandomPartitioner</ref> to enable random scheduling algorithm of random chunk size</para></listitem></itemizedlist>
 </para><para>Depending on applications, partitioning algorithms can impact the performance a lot. For example, if a parallel-iteration workload contains a regular work unit per iteration, <ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref> can deliver the best performance. On the other hand, if the work unit per iteration is irregular and unbalanced, <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref> or <ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref> can outperform <ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref>. In most situations, <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref> can deliver decent performance and is thus used as our default partitioner. </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="181">
+      <node id="182">
         <label>tf::RandomPartitioner</label>
         <link refid="classtf_1_1RandomPartitioner"/>
-        <childnode refid="178" relation="public-inheritance">
+        <childnode refid="179" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="181">
+        <label>tf::GuidedPartitioner</label>
+        <link refid="classtf_1_1GuidedPartitioner"/>
+        <childnode refid="179" relation="public-inheritance">
         </childnode>
       </node>
       <node id="180">
-        <label>tf::GuidedPartitioner</label>
-        <link refid="classtf_1_1GuidedPartitioner"/>
-        <childnode refid="178" relation="public-inheritance">
+        <label>tf::DynamicPartitioner</label>
+        <link refid="classtf_1_1DynamicPartitioner"/>
+        <childnode refid="179" relation="public-inheritance">
         </childnode>
       </node>
       <node id="179">
-        <label>tf::DynamicPartitioner</label>
-        <link refid="classtf_1_1DynamicPartitioner"/>
-        <childnode refid="178" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="178">
         <label>tf::PartitionerBase</label>
         <link refid="classtf_1_1PartitionerBase"/>
       </node>
-      <node id="182">
+      <node id="183">
         <label>tf::StaticPartitioner</label>
         <link refid="classtf_1_1StaticPartitioner"/>
-        <childnode refid="178" relation="public-inheritance">
+        <childnode refid="179" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>

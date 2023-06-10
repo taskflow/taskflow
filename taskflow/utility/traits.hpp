@@ -1,5 +1,9 @@
 #pragma once
 
+#if __has_include(<version>)
+#  include <version>
+#endif
+
 #include <type_traits>
 #include <iterator>
 #include <iostream>

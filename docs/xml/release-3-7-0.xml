@@ -29,7 +29,9 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <title>New Features</title>
 <sect2 id="release-3-7-0_1release-3-7-0_taskflow_core">
 <title>Taskflow Core</title>
-</sect2>
+<para><itemizedlist>
+<listitem><para>Improved scheduling performance of dependent asynchronous tasks</para></listitem><listitem><para>Improved scheduling performance of module task by removing busy looping</para></listitem><listitem><para>Improved <ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">tf::Executor::wait_for_all</ref> using C++20 atomic wait (with feature macro)</para></listitem><listitem><para>Improved tf::Notifier using C++20 atomic wait (with feature macro)</para></listitem><listitem><para>Added <ref refid="classtf_1_1AsyncTask_1aefeefa30d7cafdfbb7dc8def542e8e51" kindref="member">tf::AsyncTask::is_done</ref> to query the completion status of an async task</para></listitem></itemizedlist>
+</para></sect2>
 <sect2 id="release-3-7-0_1release-3-7-0_cudaflow">
 <title>cudaFlow</title>
 </sect2>

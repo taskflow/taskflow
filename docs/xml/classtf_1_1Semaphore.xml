@@ -149,13 +149,13 @@
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para><para>The above example creates five tasks with no dependencies between them. Under normal circumstances, the five tasks would be executed concurrently. However, this example has a semaphore with initial count 1, and all tasks need to acquire that semaphore before running and release that semaphore after they are done. This arrangement limits the number of concurrently running tasks to only one. </para>    </detaileddescription>
     <inheritancegraph>
-      <node id="219">
+      <node id="220">
         <label>tf::CriticalSection</label>
         <link refid="classtf_1_1CriticalSection"/>
-        <childnode refid="218" relation="public-inheritance">
+        <childnode refid="219" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="218">
+      <node id="219">
         <label>tf::Semaphore</label>
         <link refid="classtf_1_1Semaphore"/>
       </node>
