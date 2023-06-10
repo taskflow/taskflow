@@ -128,7 +128,7 @@ This member function immediately schedules an active task to the task queue of t
 </programlisting></para><para>The executor will first run the condition task <computeroutput>A</computeroutput> which returns <computeroutput>0</computeroutput> to inform the scheduler to go to the runtime task <computeroutput>B</computeroutput>. During the execution of <computeroutput>B</computeroutput>, it directly schedules task <computeroutput>C</computeroutput> without going through the normal taskflow graph scheduling process. At this moment, task <computeroutput>C</computeroutput> is active because its parent taskflow is running. When the taskflow finishes, we will see both <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> in the output. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="203" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2184" bodyend="2196"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="203" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2226" bodyend="2238"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1a5688b13034f179c4a8b2b0ebbb215051" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -198,7 +198,7 @@ The method creates an asynchronous task to launch the given function on the give
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="264" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2287" bodyend="2289"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="264" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2329" bodyend="2331"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1a4b25b60f41d1725fad6928d6b77cfb65" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -251,7 +251,7 @@ The method creates an asynchronous task to launch the given function on the give
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="283" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2293" bodyend="2295"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="283" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2335" bodyend="2337"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -297,7 +297,7 @@ This member function is more efficient than <ref refid="classtf_1_1Runtime_1a568
 </programlisting></para><para>This member function is thread-safe. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="308" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2239" bodyend="2241"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="308" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2281" bodyend="2283"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1a8365512d6a34e3ca867c195c97a3f719" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -350,7 +350,7 @@ This member function is more efficient than <ref refid="classtf_1_1Runtime_1a568
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="325" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2245" bodyend="2247"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="325" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2287" bodyend="2289"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1aa0cf6ddf97fd1ae178df0fbf71023fe3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -404,7 +404,7 @@ The method bypass the check of the caller worker from the executor and thus can 
 </programlisting> </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="347" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2251" bodyend="2253"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="347" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2293" bodyend="2295"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -444,7 +444,7 @@ The method bypass the check of the caller worker from the executor and thus can 
 </programlisting></para><para>Although <ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">tf::Runtime::corun</ref> blocks until the operation completes, the caller thread (worker) is not blocked (e.g., sleeping or holding any lock). Instead, the caller thread joins the work-stealing loop of the executor and returns when all tasks in the target completes. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="381" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2200" bodyend="2215"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="381" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2242" bodyend="2257"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1a078fc4e7202426221d45e44b08ad60e6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -482,7 +482,7 @@ The method bypass the check of the caller worker from the executor and thus can 
 The method keeps the caller worker running in the work-stealing loop until the stop predicate becomes true. </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="393" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2219" bodyend="2221"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="393" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2261" bodyend="2263"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1a67a1dba6462cc63b1142bcb19ad86df5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -512,7 +512,7 @@ The method keeps the caller worker running in the work-stealing loop until the s
 </para>        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="425" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2298" bodyend="2302"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="425" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2340" bodyend="2344"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1ae1dbce75fd7375ae3bf38948638e34ec" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
@@ -582,7 +582,7 @@ The method keeps the caller worker running in the work-stealing loop until the s
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="458" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2257" bodyend="2283"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="458" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2299" bodyend="2325"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1a249f11e4c84ad7a76e9e105e4b8cab58" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -612,7 +612,7 @@ The method keeps the caller worker running in the work-stealing loop until the s
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="464" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2225" bodyend="2235"/>
+        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="464" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/executor.hpp" bodystart="2267" bodyend="2277"/>
       </memberdef>
       </sectiondef>
     <briefdescription>

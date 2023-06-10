@@ -40,6 +40,7 @@ To use %Taskflow v3.7.0, you need a compiler that supports C++17:
 + Improved scheduling performance of module task by removing busy looping
 + Improved tf::Executor::wait_for_all using C++20 atomic wait (with feature macro)
 + Improved tf::Notifier using C++20 atomic wait (with feature macro)
++ Added tf::AsyncTask::is_done to query the completion status of an async task
 
 @subsection release-3-7-0_cudaflow cudaFlow
 

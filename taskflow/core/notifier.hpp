@@ -78,7 +78,6 @@ class Notifier {
     };
 
 #ifdef __cpp_lib_atomic_wait
-    //std::atomic_flag notified = ATOMIC_FLAG_INIT;
     std::atomic<unsigned> state {0};
 #else
     std::mutex mu;
@@ -109,7 +108,6 @@ class Notifier {
   // commit_wait commits waiting.
   void commit_wait(Waiter* w) {
 #ifdef __cpp_lib_atomic_wait
-    //w->notified.clear();
     w->state.store(Waiter::kNotSignaled, std::memory_order_relaxed);
 #else
     w->state = Waiter::kNotSignaled;
@@ -249,7 +247,6 @@ class Notifier {
 
   void _park(Waiter* w) {
 #ifdef __cpp_lib_atomic_wait
-    //w->notified.wait(false);
     unsigned target = Waiter::kNotSignaled;
     if(w->state.compare_exchange_strong(target, Waiter::kWaiting,
                                         std::memory_order_relaxed,
@@ -270,10 +267,6 @@ class Notifier {
     for (Waiter* w = waiters; w; w = next) {
       next = w->next.load(std::memory_order_relaxed);
 #ifdef __cpp_lib_atomic_wait
-      //if(w->notified.test_and_set() == false) {
-      //  w->notified.notify_one();
-      //}
-
       // We only notify if the other is waiting - this is why we use tri-state
       // variable instead of binary-state variable (i.e., atomic_flag)
       // Performance is about 0.1% faster

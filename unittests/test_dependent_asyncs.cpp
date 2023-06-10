@@ -958,8 +958,7 @@ void recursive_fibonacci(unsigned W) {
     std::tie(t1, fu1) = executor.dependent_async(std::bind(fib, N-1));
     std::tie(t2, fu2) = executor.dependent_async(std::bind(fib, N-2));
 
-    executor.corun_until([&](){ return t1.is_done(); });
-    executor.corun_until([&](){ return t2.is_done(); });
+    executor.corun_until([&](){ return t1.is_done() && t2.is_done(); });
 
     return fu1.get() + fu2.get();
   };

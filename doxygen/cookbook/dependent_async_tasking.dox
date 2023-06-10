@@ -77,7 +77,7 @@ tf::AsyncTask D = executor.silent_dependent_async([](){ printf("D\n"); }, B, C);
 executor.wait_for_all();
 @endcode
 
-@section SpecifyARagneOfDependentTasks Specify a Range of Dependent Tasks
+@section SpecifyARagneOfDependentAsyncTasks Specify a Range of Dependent Async Tasks
 
 Both tf::Executor::dependent_async(F&& func, Tasks&&... tasks) and 
 tf::Executor::silent_dependent_async(F&& func, Tasks&&... tasks)
@@ -161,6 +161,47 @@ Regardless of @c t1 runs before or after @c t2,
 the resulting topological order is always correct with the graph definition,
 either @c ABC or @c ACB.
 
+@section QueryTheComppletionStatusOfADependentAsyncTask Query the Completion Status of a Dependent Async Task
+
+When you create a dependent async task, you can query its completion status by tf::AsyncTask::is_done,
+which returns @c true upon completion or @c false otherwise.
+A completed dependent async task indicates that a worker has executed its associated callable.
+
+@code{.cpp}
+// create a dependent async task that returns 100
+auto [task, fu] = executor.dependent_async([](){ return 100; });
+
+// loops until the dependent async task completes
+while(!task.is_done());
+assert(fu.get() == 100);
+@endcode
+
+tf::AsyncTask::is_done is useful when you need to wait on the result of a dependent async task
+before moving onto the next program instruction.
+Often, tf::AsyncTask is used together with tf::Executor::corun_until to keep a worker awake
+in its work-stealing loop to avoid deadlock (see @ref ExecuteATaskflowFromAnInternalWorker 
+for more details).
+For instance, the code below implements the famous Fibonacci sequence using recursive
+asynchronous tasking:
+
+@code{.cpp}
+tf::Executor executor;
+std::function<int(int)> fibonacci;
+
+// calculate the Fibonacci sequence: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89
+fibonacci = [&](int N){
+  if (N < 2) {
+    return N; 
+  }
+  auto [t1, fu1] = executor.dependent_async(std::bind(fibonacci, N-1));
+  auto [t2, fu2] = executor.dependent_async(std::bind(fibonacci, N-2));
+  executor.corun_until([&](){ return t1.is_done() && t2.is_done(); });
+  return fu1.get() + fu2.get();
+};
+
+auto [task, fib11] = executor.dependent_async(std::bind(fibonacci, 11));
+assert(fib11 == 89);  // the 11-th Fibonacci number is 89
+@endcode{.cpp}
 
 */
 

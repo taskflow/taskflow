@@ -102,19 +102,23 @@
             <dt id="ae42c70dc0c5edc6d58f47b346125fca3">
               <span class="m-doc-wrap-bumper">auto <a href="#ae42c70dc0c5edc6d58f47b346125fca3" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
             </dt>
-            <dd>checks if the task stores a non-null shared pointer</dd>
+            <dd>checks if the asynchronous task stores nothing</dd>
             <dt id="a7c12835577fbdc1bca3190cf92c78088">
               <span class="m-doc-wrap-bumper">void <a href="#a7c12835577fbdc1bca3190cf92c78088" class="m-doc-self">reset</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
-            <dd>release the managed object of <code>this</code>.</dd>
+            <dd>release the managed object of <code>this</code></dd>
             <dt id="a826a2ea909094f5a26c2df876de58056">
               <span class="m-doc-wrap-bumper">auto <a href="#a826a2ea909094f5a26c2df876de58056" class="m-doc-self">hash_value</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
-            <dd>obtains a hash value of the underlying node</dd>
+            <dd>obtains a hash value of this asynchronous task</dd>
             <dt id="a6a4a54030f57d1ef05c04ae01825165d">
               <span class="m-doc-wrap-bumper">auto <a href="#a6a4a54030f57d1ef05c04ae01825165d" class="m-doc-self">use_count</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
-            <dd>returns the number of shared owners managing this asynchronous task</dd>
+            <dd>returns the number of shared owners that are currently managing this asynchronous task</dd>
+            <dt id="aefeefa30d7cafdfbb7dc8def542e8e51">
+              <span class="m-doc-wrap-bumper">auto <a href="#aefeefa30d7cafdfbb7dc8def542e8e51" class="m-doc-self">is_done</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
+            </dt>
+            <dd>returns the boolean indicating whether the async task is done</dd>
           </dl>
         </section>
         <section>
