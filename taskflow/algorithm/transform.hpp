@@ -4,12 +4,13 @@
 
 namespace tf {
 
-namespace detail {
-
 // Function: make_transform_task
-template <typename B, typename E, typename O, typename C, typename P>
+template <
+  typename B, typename E, typename O, typename C, typename P = GuidedPartitioner,
+  std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>* = nullptr
+>
 TF_FORCE_INLINE auto make_transform_task(
-  B first1, E last1, O d_first, C c, P&& part
+  B first1, E last1, O d_first, C c, P&& part = P()
 ) {
 
   using namespace std::string_literals;
@@ -82,11 +83,11 @@ TF_FORCE_INLINE auto make_transform_task(
 
 // Function: make_transform_task
 template <
-  typename B1, typename E1, typename B2, typename O, typename C, typename P,
+  typename B1, typename E1, typename B2, typename O, typename C, typename P = GuidedPartitioner,
   std::enable_if_t<!is_partitioner_v<std::decay_t<C>>, void>* = nullptr
 >
 TF_FORCE_INLINE auto make_transform_task(
-  B1 first1, E1 last1, B2 first2, O d_first, C c, P&& part
+  B1 first1, E1 last1, B2 first2, O d_first, C c, P&& part = P()
 ) {
 
   using namespace std::string_literals;
@@ -160,17 +161,17 @@ TF_FORCE_INLINE auto make_transform_task(
   };
 }
 
-}  // end of namespace detail -------------------------------------------------
-
 // ----------------------------------------------------------------------------
 // transform
 // ----------------------------------------------------------------------------
 
 // Function: transform
-template <typename B, typename E, typename O, typename C, typename P>
+template <typename B, typename E, typename O, typename C, typename P,
+  std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>*
+>
 Task FlowBuilder::transform(B first1, E last1, O d_first, C c, P&& part) {
   return emplace(
-    detail::make_transform_task(first1, last1, d_first, c, std::forward<P>(part))
+    make_transform_task(first1, last1, d_first, c, std::forward<P>(part))
   );
 }
 
@@ -186,8 +187,7 @@ template <
 Task FlowBuilder::transform(
   B1 first1, E1 last1, B2 first2, O d_first, C c, P&& part
 ) {
-
-  return emplace(detail::make_transform_task(
+  return emplace(make_transform_task(
     first1, last1, first2, d_first, c, std::forward<P>(part)
   ));
 }

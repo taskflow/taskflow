@@ -4,11 +4,9 @@
 
 namespace tf {
 
-namespace detail {
-
 // Function: make_reduce_task
-template <typename B, typename E, typename T, typename O, typename P>
-TF_FORCE_INLINE auto make_reduce_task(B beg, E end, T& init, O bop, P&& part) {
+template <typename B, typename E, typename T, typename O, typename P = GuidedPartitioner>
+TF_FORCE_INLINE auto make_reduce_task(B beg, E end, T& init, O bop, P&& part = P()) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
@@ -132,9 +130,12 @@ TF_FORCE_INLINE auto make_reduce_task(B beg, E end, T& init, O bop, P&& part) {
 }
 
 // Function: make_transform_reduce_task
-template <typename B, typename E, typename T, typename BOP, typename UOP, typename P>
+template <
+  typename B, typename E, typename T, typename BOP, typename UOP, 
+  typename P = GuidedPartitioner
+>
 TF_FORCE_INLINE auto make_transform_reduce_task(
-  B beg, E end, T& init, BOP bop, UOP uop, P&& part
+  B beg, E end, T& init, BOP bop, UOP uop, P&& part = P()
 ) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
@@ -261,9 +262,13 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
 }
 
 // Function: make_transform_reduce_task with two binary operation
-template <typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, typename P>
+template <
+  typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, 
+  typename P = GuidedPartitioner,
+  std::enable_if_t<!is_partitioner_v<std::decay_t<BOP_T>>, void>* = nullptr
+>
 TF_FORCE_INLINE auto make_transform_reduce_task(
-  B1 beg1, E1 end1, B2 beg2, T& init, BOP_R bop_r, BOP_T bop_t, P&& part
+  B1 beg1, E1 end1, B2 beg2, T& init, BOP_R bop_r, BOP_T bop_t, P&& part = P()
 ) {
 
   using B1_t = std::decay_t<unwrap_ref_decay_t<B1>>;
@@ -394,8 +399,6 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
   };  
 }
 
-}  // end of namespace detail -------------------------------------------------
-
 // ----------------------------------------------------------------------------
 // default reduction
 // ----------------------------------------------------------------------------
@@ -403,9 +406,7 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
 // Function: reduce
 template <typename B, typename E, typename T, typename O, typename P>
 Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P&& part) {
-  return emplace(detail::make_reduce_task(
-    beg, end, init, bop, std::forward<P>(part)
-  ));
+  return emplace(make_reduce_task(beg, end, init, bop, std::forward<P>(part)));
 }
 
 // ----------------------------------------------------------------------------
@@ -413,21 +414,27 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P&& part) {
 // ----------------------------------------------------------------------------
 
 // Function: transform_reduce
-template <typename B, typename E, typename T, typename BOP, typename UOP, typename P>
+template <typename B, typename E, typename T, typename BOP, typename UOP, typename P,
+  std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>*
+>
 Task FlowBuilder::transform_reduce(
   B beg, E end, T& init, BOP bop, UOP uop, P&& part
 ) {
-  return emplace(detail::make_transform_reduce_task(
+  return emplace(make_transform_reduce_task(
     beg, end, init, bop, uop, std::forward<P>(part)
   ));
 }
 
 // Function: transform_reduce
-template <typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, typename P>
+template <
+  typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, 
+  typename P,
+  std::enable_if_t<!is_partitioner_v<std::decay_t<BOP_T>>, void>*
+>
 Task FlowBuilder::transform_reduce(
   B1 beg1, E1 end1, B2 beg2, T& init, BOP_R bop_r, BOP_T bop_t, P&& part
 ) {
-  return emplace(detail::make_transform_reduce_task(
+  return emplace(make_transform_reduce_task(
     beg1, end1, beg2, init, bop_r, bop_t, std::forward<P>(part)
   ));
 }

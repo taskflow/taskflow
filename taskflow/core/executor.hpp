@@ -1885,17 +1885,37 @@ inline bool Executor::_invoke_module_task_internal(Worker& w, Node* p) {
 }
 
 // Procedure: _invoke_async_task
-inline void Executor::_invoke_async_task(Worker& w, Node* node) {
-  _observer_prologue(w, node);
-  std::get_if<Node::Async>(&node->_handle)->work();
-  _observer_epilogue(w, node);
+inline void Executor::_invoke_async_task(Worker& worker, Node* node) {
+  _observer_prologue(worker, node);
+  auto& work = std::get_if<Node::Async>(&node->_handle)->work;
+  switch(work.index()) {
+    case 0:
+      std::get_if<0>(&work)->operator()();
+    break;
+
+    case 1:
+      Runtime rt(*this, worker, node);
+      std::get_if<1>(&work)->operator()(rt);
+    break;
+  }
+  _observer_epilogue(worker, node);
 }
 
 // Procedure: _invoke_dependent_async_task
-inline void Executor::_invoke_dependent_async_task(Worker& w, Node* node) {
-  _observer_prologue(w, node);
-  std::get_if<Node::DependentAsync>(&node->_handle)->work();
-  _observer_epilogue(w, node);
+inline void Executor::_invoke_dependent_async_task(Worker& worker, Node* node) {
+  _observer_prologue(worker, node);
+  auto& work = std::get_if<Node::DependentAsync>(&node->_handle)->work;
+  switch(work.index()) {
+    case 0:
+      std::get_if<0>(&work)->operator()();
+    break;
+
+    case 1:
+      Runtime rt(*this, worker, node);
+      std::get_if<1>(&work)->operator()(rt);
+    break;
+  }
+  _observer_epilogue(worker, node);
 }
 
 // Function: run

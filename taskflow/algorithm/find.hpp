@@ -57,10 +57,12 @@ TF_FORCE_INLINE bool find_if_not_loop(
   return false;
 }
 
+}  // namespace detail --------------------------------------------------------
+
 // Function: make_find_if_task
-template <typename B, typename E, typename T, typename UOP, typename P>
+template <typename B, typename E, typename T, typename UOP, typename P = GuidedPartitioner>
 TF_FORCE_INLINE auto make_find_if_task(
-  B first, E last, T& result, UOP predicate, P&& part
+  B first, E last, T& result, UOP predicate, P&& part = P()
 ) {
   
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
@@ -137,9 +139,9 @@ TF_FORCE_INLINE auto make_find_if_task(
 }
 
 // Function: make_find_if_not_task
-template <typename B, typename E, typename T, typename UOP, typename P>
+template <typename B, typename E, typename T, typename UOP, typename P = GuidedPartitioner>
 TF_FORCE_INLINE auto make_find_if_not_task(
-  B first, E last, T& result, UOP predicate, P&& part
+  B first, E last, T& result, UOP predicate, P&& part = P()
 ) {
   
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
@@ -215,9 +217,9 @@ TF_FORCE_INLINE auto make_find_if_not_task(
 }
 
 // Function: make_min_element_task
-template <typename B, typename E, typename T, typename C, typename P>
+template <typename B, typename E, typename T, typename C, typename P = GuidedPartitioner>
 TF_FORCE_INLINE auto make_min_element_task(
-  B first, E last, T& result, C comp, P&& part
+  B first, E last, T& result, C comp, P&& part = P()
 ) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
@@ -360,8 +362,10 @@ TF_FORCE_INLINE auto make_min_element_task(
 }
 
 // Function: make_max_element_task
-template <typename B, typename E, typename T, typename C, typename P>
-TF_FORCE_INLINE auto make_max_element_task(B first, E last, T& result, C comp, P&& part) {
+template <typename B, typename E, typename T, typename C, typename P = GuidedPartitioner>
+TF_FORCE_INLINE auto make_max_element_task(
+  B first, E last, T& result, C comp, P&& part = P()
+) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
@@ -502,12 +506,12 @@ TF_FORCE_INLINE auto make_max_element_task(B first, E last, T& result, C comp, P
   };
 }
 
-}  // namespace detail --------------------------------------------------------
+
 
 // Function: find_if
 template <typename B, typename E, typename T, typename UOP, typename P>
 Task tf::FlowBuilder::find_if(B first, E last, T& result, UOP predicate, P&& part) {
-  return emplace(detail::make_find_if_task(
+  return emplace(make_find_if_task(
     first, last, result, predicate, std::forward<P>(part)
   ));
 }
@@ -515,7 +519,7 @@ Task tf::FlowBuilder::find_if(B first, E last, T& result, UOP predicate, P&& par
 // Function: find_if_not
 template <typename B, typename E, typename T, typename UOP, typename P>
 Task tf::FlowBuilder::find_if_not(B first, E last, T& result, UOP predicate, P&& part) {
-  return emplace(detail::make_find_if_not_task(
+  return emplace(make_find_if_not_task(
     first, last, result, predicate, std::forward<P>(part)
   ));
 }
@@ -527,7 +531,7 @@ Task tf::FlowBuilder::find_if_not(B first, E last, T& result, UOP predicate, P&&
 // Function: min_element
 template <typename B, typename E, typename T, typename C, typename P>
 Task FlowBuilder::min_element(B first, E last, T& result, C comp, P&& part) {
-  return emplace(detail::make_min_element_task(
+  return emplace(make_min_element_task(
     first, last, result, comp, std::forward<P>(part)
   ));
 }
@@ -539,7 +543,7 @@ Task FlowBuilder::min_element(B first, E last, T& result, C comp, P&& part) {
 // Function: max_element
 template <typename B, typename E, typename T, typename C, typename P>
 Task FlowBuilder::max_element(B first, E last, T& result, C comp, P&& part) {
-  return emplace(detail::make_max_element_task(
+  return emplace(make_max_element_task(
     first, last, result, comp, std::forward<P>(part)
   ));
 }

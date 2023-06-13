@@ -191,6 +191,17 @@
             </dt>
             <dd>constructs an STL-styled parallel transform-reduce task</dd>
             <dt>
+              <div class="m-doc-template">template&lt;typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a7099ef62158a6e0770bc8ceef1961326" class="m-doc">transform_reduce</a>(</span><span class="m-doc-wrap">B1 first1,
+              E1 last1,
+              B2 first2,
+              T&amp; init,
+              BOP_R bop_r,
+              BOP_T bop_t,
+              P&amp;&amp; part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+            </dt>
+            <dd>constructs an STL-styled parallel transform-reduce task</dd>
+            <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename D, typename BOP&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a1c2ace9290d83c2a006614a4d66ad588" class="m-doc">inclusive_scan</a>(</span><span class="m-doc-wrap">B first,
               E last,
@@ -1129,6 +1140,98 @@
             </table>
 <p>The task spawns asynchronous tasks to perform parallel reduction over <code>init</code> and the transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">itr</span><span class="o">=</span><span class="n">first</span><span class="p">;</span><span class="w"> </span><span class="n">itr</span><span class="o">!=</span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="n">itr</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bop</span><span class="p">(</span><span class="n">init</span><span class="p">,</span><span class="w"> </span><span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">));</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
+          </div></section>
+          <section class="m-doc-details" id="a7099ef62158a6e0770bc8ceef1961326"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a7099ef62158a6e0770bc8ceef1961326" class="m-doc-self">transform_reduce</a>(</span><span class="m-doc-wrap">B1 first1,
+              E1 last1,
+              B2 first2,
+              T&amp; init,
+              BOP_R bop_r,
+              BOP_T bop_t,
+              P&amp;&amp; part = P())</span></span>
+            </h3>
+            <p>constructs an STL-styled parallel transform-reduce task</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">B1</td>
+                  <td>first beginning iterator type</td>
+                </tr>
+                <tr>
+                  <td>E1</td>
+                  <td>first ending iterator type</td>
+                </tr>
+                <tr>
+                  <td>B2</td>
+                  <td>second beginning iterator type</td>
+                </tr>
+                <tr>
+                  <td>T</td>
+                  <td>result type</td>
+                </tr>
+                <tr>
+                  <td>BOP_R</td>
+                  <td>binary reducer type</td>
+                </tr>
+                <tr>
+                  <td>BOP_T</td>
+                  <td>binary transformion type</td>
+                </tr>
+                <tr>
+                  <td>P</td>
+                  <td>partitioner type (default <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">tf::<wbr />GuidedPartitioner</a>)</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>first1</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>last1</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>first2</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>init</td>
+                  <td>initial value of the reduction and the storage for the reduced result</td>
+                </tr>
+                <tr>
+                  <td>bop_r</td>
+                  <td>binary operator that will be applied in unspecified order to the results of <code>bop_t</code></td>
+                </tr>
+                <tr>
+                  <td>bop_t</td>
+                  <td>binary operator that will be applied to transform each element in the range to the result type</td>
+                </tr>
+                <tr>
+                  <td>part</td>
+                  <td>partitioning algorithm to schedule parallel iterations</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>The task spawns asynchronous tasks to perform parallel reduction over <code>init</code> and the transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">itr1</span><span class="o">=</span><span class="n">first1</span><span class="p">,</span><span class="w"> </span><span class="n">itr2</span><span class="o">=</span><span class="n">first2</span><span class="p">;</span><span class="w"> </span><span class="n">itr1</span><span class="o">!=</span><span class="n">last1</span><span class="p">;</span><span class="w"> </span><span class="n">itr1</span><span class="o">++</span><span class="p">,</span><span class="w"> </span><span class="n">itr2</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bop_r</span><span class="p">(</span><span class="n">init</span><span class="p">,</span><span class="w"> </span><span class="n">bop_t</span><span class="p">(</span><span class="o">*</span><span class="n">itr1</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">itr2</span><span class="p">));</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="a1c2ace9290d83c2a006614a4d66ad588"><div>

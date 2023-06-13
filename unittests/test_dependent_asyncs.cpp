@@ -2,6 +2,11 @@
 
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
+#include <taskflow/algorithm/for_each.hpp>
+#include <taskflow/algorithm/transform.hpp>
+#include <taskflow/algorithm/reduce.hpp>
+#include <taskflow/algorithm/scan.hpp>
+#include <taskflow/algorithm/sort.hpp>
 
 // ----------------------------------------------------------------------------
 // embarrassing parallelism
@@ -983,5 +988,135 @@ TEST_CASE("DependentAsync.RecursiveFibonacci.4threads" * doctest::timeout(300)) 
 
 TEST_CASE("DependentAsync.RecursiveFibonacci.8threads" * doctest::timeout(300)) {
   recursive_fibonacci(8);
+}
+
+// ----------------------------------------------------------------------------
+// Mixed algorithms
+// ----------------------------------------------------------------------------
+
+void mixed_algorithms(unsigned W) {
+
+  size_t N = 65536;
+
+  tf::Executor executor(W);
+  
+  int sum1{1}, sum2{1};
+  std::vector<int> data(N), data1(N), data2(N), data3(N), data4(N);
+  
+  // initialize data to 10
+  tf::AsyncTask A = executor.silent_dependent_async(tf::make_for_each_task(
+    data.begin(), data.begin() + N/2, [](int& d){ d = 10; }
+  )); 
+  
+  tf::AsyncTask B = executor.silent_dependent_async(tf::make_for_each_index_task(
+    N/2, N, size_t{1}, [&] (size_t i) { data[i] = 10; }
+  ));
+  
+  // data1[i] = [11, 11, 11, ...]
+  tf::AsyncTask T1 = executor.silent_dependent_async(tf::make_transform_task(
+    data.begin(), data.end(), data1.begin(), [](int& d) { return d+1; }
+  ), A, B);
+  
+  // data2[i] = [12, 12, 12, ...]
+  tf::AsyncTask T2 = executor.silent_dependent_async(tf::make_transform_task(
+    data.begin(), data.end(), data2.begin(), [](int& d) { return d+2; }
+  ), A, B);
+  
+  // data3[i] = [13, 13, 13, ...]
+  tf::AsyncTask T3 = executor.silent_dependent_async(tf::make_transform_task(
+    data.begin(), data.end(), data3.begin(), [](int& d) { return d+3; }
+  ), A, B);
+
+  // data4[i] = [1, 1, 1, ...]
+  tf::AsyncTask T4 = executor.silent_dependent_async(tf::make_transform_task(
+    data1.begin(), data1.end(), data2.begin(), data4.begin(),
+    [](int a, int b){ return b - a; } 
+  ), T1, T2);
+  
+  // sum1 = 1 + [-1-1-1-1...]
+  tf::AsyncTask T5 = executor.silent_dependent_async(tf::make_transform_reduce_task(
+    data4.begin(), data4.end(), sum1, std::plus<int>{}, [](int d){ return -d; }
+  ), T4);
+
+  tf::AsyncTask T6 = executor.silent_dependent_async(tf::make_transform_reduce_task(
+    data4.begin(), data4.end(), data3.begin(), sum2, std::plus<int>{}, std::plus<int>{}
+  ), T3, T4);
+  
+  // inclusive scan over data1 [11, 22, 33, 44, ...]
+  tf::AsyncTask T7 = executor.silent_dependent_async(tf::make_inclusive_scan_task(
+    data1.begin(), data1.end(), data1.begin(), std::plus<int>{}
+  ), T5, T6);
+  
+  // exclusive scan over data2 [-1, 11, 23, 35, ...]
+  tf::AsyncTask T8 = executor.silent_dependent_async(tf::make_exclusive_scan_task(
+    data2.begin(), data2.end(), data2.begin(), -1, std::plus<int>{}
+  ), T5, T6);
+    
+  // transform inclusive scan over data3 [-13, -26, -39, ...]
+  tf::AsyncTask T9 = executor.silent_dependent_async(tf::make_transform_inclusive_scan_task(
+    data3.begin(), data3.end(), data3.begin(), std::plus<int>{},
+    [](int i){ return -i; }
+  ), T5, T6);
+  
+  // transform exclusive scan over data4 [7, 6, 5, 4, ...]
+  tf::AsyncTask T10 = executor.silent_dependent_async(tf::make_transform_exclusive_scan_task(
+    data4.begin(), data4.end(), data4.begin(), 7, std::plus<int>{},
+    [](int i){ return -i; }
+  ), T5, T6);
+  
+  // sort data4
+  tf::AsyncTask T11 = executor.silent_dependent_async(tf::make_sort_task(
+    data4.begin(), data4.end()
+  ), T10);
+  
+  executor.wait_for_all();
+
+  REQUIRE(sum1 == 1-N);
+  REQUIRE(sum2 == 1+N*14);
+
+  for(size_t i=0; i<N; i++) {
+    REQUIRE(data [i] == 10);
+    REQUIRE(data1[i] == (i+1)*11);
+    REQUIRE(data2[i] == i*12 - 1);
+    REQUIRE(data3[i] == (i+1)*-13);
+    REQUIRE(data4[N-i-1] == 7-i);
+    //printf(
+    //  "data 0|1|2|3|4 [%2zu]=%5d|%5d|%5d|%5d|%5d\n", 
+    //  i, data[i], data1[i], data2[i], data3[i], data4[i]
+    //);
+  }
+
+}
+
+TEST_CASE("DependentAsync.MixedAlgorithms.1thread" * doctest::timeout(300)) {
+  mixed_algorithms(1);
+}
+
+TEST_CASE("DependentAsync.MixedAlgorithms.2threads" * doctest::timeout(300)) {
+  mixed_algorithms(2);
+}
+
+TEST_CASE("DependentAsync.MixedAlgorithms.3threads" * doctest::timeout(300)) {
+  mixed_algorithms(3);
+}
+
+TEST_CASE("DependentAsync.MixedAlgorithms.4threads" * doctest::timeout(300)) {
+  mixed_algorithms(4);
+}
+
+TEST_CASE("DependentAsync.MixedAlgorithms.5threads" * doctest::timeout(300)) {
+  mixed_algorithms(5);
+}
+
+TEST_CASE("DependentAsync.MixedAlgorithms.6threads" * doctest::timeout(300)) {
+  mixed_algorithms(6);
+}
+
+TEST_CASE("DependentAsync.MixedAlgorithms.7threads" * doctest::timeout(300)) {
+  mixed_algorithms(7);
+}
+
+TEST_CASE("DependentAsync.MixedAlgorithms.8threads" * doctest::timeout(300)) {
+  mixed_algorithms(8);
 }
 

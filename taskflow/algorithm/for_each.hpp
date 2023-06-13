@@ -4,11 +4,9 @@
 
 namespace tf {
 
-namespace detail {
-
 // Function: make_for_each_task
-template <typename B, typename E, typename C, typename P>
-TF_FORCE_INLINE auto make_for_each_task(B beg, E end, C c, P&& part) {
+template <typename B, typename E, typename C, typename P = GuidedPartitioner>
+TF_FORCE_INLINE auto make_for_each_task(B beg, E end, C c, P&& part = P()) {
   
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
@@ -72,8 +70,8 @@ TF_FORCE_INLINE auto make_for_each_task(B beg, E end, C c, P&& part) {
 }
 
 // Function: make_for_each_index_task
-template <typename B, typename E, typename S, typename C, typename P>
-TF_FORCE_INLINE auto make_for_each_index_task(B beg, E end, S inc, C c, P&& part){
+template <typename B, typename E, typename S, typename C, typename P = GuidedPartitioner>
+TF_FORCE_INLINE auto make_for_each_index_task(B beg, E end, S inc, C c, P&& part = P()){
 
   using namespace std::string_literals;
 
@@ -142,8 +140,6 @@ TF_FORCE_INLINE auto make_for_each_index_task(B beg, E end, S inc, C c, P&& part
   };
 }
 
-}  // end of namespace detail -------------------------------------------------
-
 // ----------------------------------------------------------------------------
 // for_each
 // ----------------------------------------------------------------------------
@@ -152,7 +148,7 @@ TF_FORCE_INLINE auto make_for_each_index_task(B beg, E end, S inc, C c, P&& part
 template <typename B, typename E, typename C, typename P>
 Task FlowBuilder::for_each(B beg, E end, C c, P&& part) {
   return emplace(
-    detail::make_for_each_task(beg, end, c, std::forward<P>(part))
+    make_for_each_task(beg, end, c, std::forward<P>(part))
   );
 }
 
@@ -164,7 +160,7 @@ Task FlowBuilder::for_each(B beg, E end, C c, P&& part) {
 template <typename B, typename E, typename S, typename C, typename P>
 Task FlowBuilder::for_each_index(B beg, E end, S inc, C c, P&& part){
   return emplace(
-    detail::make_for_each_index_task(beg, end, inc, c, std::forward<P>(part))
+    make_for_each_index_task(beg, end, inc, c, std::forward<P>(part))
   );
 }
 

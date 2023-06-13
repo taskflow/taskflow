@@ -72,8 +72,8 @@
 <codeline><highlight class="normal">t1.join();</highlight></codeline>
 <codeline><highlight class="normal">t2.join();</highlight></codeline>
 </programlisting></para><para>Regardless of <computeroutput>t1</computeroutput> runs before or after <computeroutput>t2</computeroutput>, the resulting topological order is always correct with the graph definition, either <computeroutput>ABC</computeroutput> or <computeroutput>ACB</computeroutput>.</para></sect1>
-<sect1 id="DependentAsyncTasking_1QueryTheComppletionStatusOfADependentAsyncTask">
-<title>Query the Completion Status of a Dependent Async Task</title>
+<sect1 id="DependentAsyncTasking_1QueryTheComppletionStatusOfDependentAsyncTasks">
+<title>Query the Completion Status of Dependent Async Tasks</title>
 <para>When you create a dependent async task, you can query its completion status by <ref refid="classtf_1_1AsyncTask_1aefeefa30d7cafdfbb7dc8def542e8e51" kindref="member">tf::AsyncTask::is_done</ref>, which returns <computeroutput>true</computeroutput> upon completion or <computeroutput>false</computeroutput> otherwise. A completed dependent async task indicates that a worker has executed its associated callable.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>create<sp/>a<sp/>dependent<sp/>async<sp/>task<sp/>that<sp/>returns<sp/>100</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[task,<sp/>fu]<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kindref="member">dependent_async</ref>([](){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>100;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -96,7 +96,7 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[task,<sp/>fib11]<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kindref="member">dependent_async</ref>(std::bind(fibonacci,<sp/>11));</highlight></codeline>
 <codeline><highlight class="normal">assert(fib11<sp/>==<sp/>89);<sp/><sp/></highlight><highlight class="comment">//<sp/>the<sp/>11-th<sp/>Fibonacci<sp/>number<sp/>is<sp/>89</highlight></codeline>
-</programlisting>{.cpp} </para></sect1>
+</programlisting> </para></sect1>
     </detaileddescription>
   </compounddef>
 </doxygen>

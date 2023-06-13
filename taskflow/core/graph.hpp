@@ -574,7 +574,9 @@ class Node {
     template <typename T>
     Async(T&&);
 
-    std::function<void()> work;
+    std::variant<
+      std::function<void()>, std::function<void(Runtime&)>
+    > work;
   };
   
   // silent dependent async
@@ -583,7 +585,9 @@ class Node {
     template <typename C>
     DependentAsync(C&&);
     
-    std::function<void()> work;
+    std::variant<
+      std::function<void()>, std::function<void(Runtime&)>
+    > work;
    
     std::atomic<size_t> use_count {1};
     std::atomic<AsyncState> state {AsyncState::UNFINISHED};

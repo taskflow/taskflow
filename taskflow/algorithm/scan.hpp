@@ -42,6 +42,9 @@ TF_FORCE_INLINE void scan_loop(
   }
 }
 
+}  // end of namespace tf::detail ---------------------------------------------
+
+
 // Function: make_inclusive_scan_task
 template <typename B, typename E, typename D, typename BOP>
 TF_FORCE_INLINE auto make_inclusive_scan_task(B first, E last, D d_first, BOP bop) {
@@ -539,7 +542,6 @@ TF_FORCE_INLINE auto make_transform_exclusive_scan_task(
   };
 }
 
-}  // end of namespace tf::detail ---------------------------------------------
 
 // ----------------------------------------------------------------------------
 // Inclusive Scan
@@ -548,7 +550,7 @@ TF_FORCE_INLINE auto make_transform_exclusive_scan_task(
 // Function: inclusive_scan
 template <typename B, typename E, typename D, typename BOP>
 Task FlowBuilder::inclusive_scan(B first, E last, D d_first, BOP bop) {
-  return emplace(detail::make_inclusive_scan_task(
+  return emplace(make_inclusive_scan_task(
     first, last, d_first, bop
   ));
 }
@@ -556,7 +558,7 @@ Task FlowBuilder::inclusive_scan(B first, E last, D d_first, BOP bop) {
 // Function: inclusive_scan
 template <typename B, typename E, typename D, typename BOP, typename T>
 Task FlowBuilder::inclusive_scan(B first, E last, D d_first, BOP bop, T init) {
-  return emplace(detail::make_inclusive_scan_task(
+  return emplace(make_inclusive_scan_task(
     first, last, d_first, bop, init
   ));
 }
@@ -570,7 +572,7 @@ template <typename B, typename E, typename D, typename BOP, typename UOP>
 Task FlowBuilder::transform_inclusive_scan(
   B first, E last, D d_first, BOP bop, UOP uop
 ) {
-  return emplace(detail::make_transform_inclusive_scan_task(
+  return emplace(make_transform_inclusive_scan_task(
     first, last, d_first, bop, uop
   ));
 }
@@ -580,7 +582,7 @@ template <typename B, typename E, typename D, typename BOP, typename UOP, typena
 Task FlowBuilder::transform_inclusive_scan(
   B first, E last, D d_first, BOP bop, UOP uop, T init
 ) {
-  return emplace(detail::make_transform_inclusive_scan_task(
+  return emplace(make_transform_inclusive_scan_task(
     first, last, d_first, bop, uop, init
   ));  
 }
@@ -592,7 +594,7 @@ Task FlowBuilder::transform_inclusive_scan(
 // Function: exclusive_scan
 template <typename B, typename E, typename D, typename T, typename BOP>
 Task FlowBuilder::exclusive_scan(B first, E last, D d_first, T init, BOP bop) {
-  return emplace(detail::make_exclusive_scan_task(
+  return emplace(make_exclusive_scan_task(
     first, last, d_first, init, bop
   ));
 }
@@ -606,9 +608,10 @@ template <typename B, typename E, typename D, typename T, typename BOP, typename
 Task FlowBuilder::transform_exclusive_scan(
   B first, E last, D d_first, T init, BOP bop, UOP uop
 ) {
-  return emplace(detail::make_transform_exclusive_scan_task(
+  return emplace(make_transform_exclusive_scan_task(
     first, last, d_first, init, bop, uop
   )); 
 }
 
 }  // end of namespace tf -----------------------------------------------------
+

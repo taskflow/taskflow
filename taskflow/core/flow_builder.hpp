@@ -432,7 +432,8 @@ class FlowBuilder {
   Please refer to @ref ParallelTransforms for details.
   */
   template <
-    typename B, typename E, typename O, typename C, typename P = GuidedPartitioner
+    typename B, typename E, typename O, typename C, typename P = GuidedPartitioner,
+    std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>* = nullptr
   >
   Task transform(B first1, E last1, O d_first, C c, P&& part = P());
   
@@ -555,7 +556,8 @@ class FlowBuilder {
   Please refer to @ref ParallelReduction for details.
   */
   template <
-   typename B, typename E, typename T, typename BOP, typename UOP, typename P = GuidedPartitioner
+    typename B, typename E, typename T, typename BOP, typename UOP, typename P = GuidedPartitioner,
+    std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>* = nullptr
   >
   Task transform_reduce(B first, E last, T& init, BOP bop, UOP uop, P&& part = P());
 
@@ -595,10 +597,13 @@ class FlowBuilder {
   */
   
   template <
-    typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, typename P = GuidedPartitioner
+    typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, 
+    typename P = GuidedPartitioner,
+    std::enable_if_t<!is_partitioner_v<std::decay_t<BOP_T>>, void>* = nullptr
   >
-  Task transform_reduce(B1 first1, E1 last1, B2 first2, T& init, BOP_R bop_r, BOP_T bop_t, P&& part = P());
-
+  Task transform_reduce(
+    B1 first1, E1 last1, B2 first2, T& init, BOP_R bop_r, BOP_T bop_t, P&& part = P()
+  );
 
   // ------------------------------------------------------------------------
   // scan

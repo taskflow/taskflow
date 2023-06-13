@@ -2,7 +2,7 @@
 
 #include "../core/async.hpp"
 
-namespace tf {
+namespace tf::detail {
 
 // threshold whether or not to perform parallel sort
 template <typename I>
@@ -595,15 +595,15 @@ void parallel_3wqsort(tf::Runtime& rt, RandItr first, RandItr last, C compare) {
   //rt.join();
 }
 
-// ----------------------------------------------------------------------------
-// tf::Taskflow::sort
-// ----------------------------------------------------------------------------
+}  // end of namespace tf::detail ---------------------------------------------
 
-// Function: sort
+namespace tf { 
+
+// Function: make_sort_task
 template <typename B, typename E, typename C>
-Task FlowBuilder::sort(B beg, E end, C cmp) {
-
-  Task task = emplace([b=beg, e=end, cmp] (Runtime& rt) mutable {
+TF_FORCE_INLINE auto make_sort_task(B beg, E end, C cmp) {
+  
+  return [b=beg, e=end, cmp] (Runtime& rt) mutable {
 
     using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
     using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
@@ -616,32 +616,45 @@ Task FlowBuilder::sort(B beg, E end, C cmp) {
       return;
     }
 
-    size_t W = rt._executor.num_workers();
+    size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
-    if(W <= 1 || N <= parallel_sort_cutoff<B_t>()) {
+    if(W <= 1 || N <= detail::parallel_sort_cutoff<B_t>()) {
       std::sort(beg, end, cmp);
       return;
     }
 
     //parallel_3wqsort(rt, beg, end-1, cmp);
-    parallel_pdqsort<B_t, C,
+    detail::parallel_pdqsort<B_t, C,
       is_std_compare_v<std::decay_t<C>> &&
       std::is_arithmetic_v<typename std::iterator_traits<B_t>::value_type>
     >(rt, beg, end, cmp, log2(end - beg));
 
     rt.join();
-  });
+  };
+}
+  
+template <typename B, typename E>
+TF_FORCE_INLINE auto make_sort_task(B beg, E end) {
+  using value_type = std::decay_t<decltype(*std::declval<B>())>;
+  return make_sort_task(beg, end, std::less<value_type>{});
+}
 
-  return task;
+// ----------------------------------------------------------------------------
+// tf::Taskflow::sort
+// ----------------------------------------------------------------------------
+
+// Function: sort
+template <typename B, typename E, typename C>
+Task FlowBuilder::sort(B beg, E end, C cmp) {
+  return emplace(make_sort_task(beg, end, cmp));
 }
 
 // Function: sort
 template <typename B, typename E>
 Task FlowBuilder::sort(B beg, E end) {
-  using value_type = std::decay_t<decltype(*std::declval<B>())>;
-  return sort(beg, end, std::less<value_type>{});
+  return emplace(make_sort_task(beg, end));
 }
 
 }  // namespace tf ------------------------------------------------------------

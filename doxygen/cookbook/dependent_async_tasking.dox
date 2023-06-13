@@ -161,7 +161,7 @@ Regardless of @c t1 runs before or after @c t2,
 the resulting topological order is always correct with the graph definition,
 either @c ABC or @c ACB.
 
-@section QueryTheComppletionStatusOfADependentAsyncTask Query the Completion Status of a Dependent Async Task
+@section QueryTheComppletionStatusOfDependentAsyncTasks Query the Completion Status of Dependent Async Tasks
 
 When you create a dependent async task, you can query its completion status by tf::AsyncTask::is_done,
 which returns @c true upon completion or @c false otherwise.
@@ -201,7 +201,7 @@ fibonacci = [&](int N){
 
 auto [task, fib11] = executor.dependent_async(std::bind(fibonacci, 11));
 assert(fib11 == 89);  // the 11-th Fibonacci number is 89
-@endcode{.cpp}
+@endcode
 
 */
 
