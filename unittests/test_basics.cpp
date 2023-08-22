@@ -169,6 +169,26 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
     REQUIRE(taskflow.num_tasks() == num_tasks);
   }
 
+  SUBCASE("Connect Decrement") {
+      for (size_t i = 0; i < num_tasks; i++) {
+          tasks.emplace_back(
+              taskflow.emplace([&counter, i]() {
+                 counter += 1; }
+              )
+          );
+          if (i > 0) {
+              tasks[i - 1].precede(tasks[i]);
+              taskflow.connectDecre(tasks[i - 1], tasks[i]);
+          }
+      }
+      for (size_t i = 0; i < num_tasks; ++i) {
+          REQUIRE(tasks[i].num_dependents() == 0);
+          REQUIRE(tasks[i].num_successors() == 0);
+      }
+      executor.run(taskflow).get();
+      REQUIRE(taskflow.num_tasks() == num_tasks);
+  }
+
   SUBCASE("MapReduce"){
 
     auto src = taskflow.emplace([&counter]() {counter = 0;});

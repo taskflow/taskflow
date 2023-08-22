@@ -255,6 +255,13 @@ class Taskflow : public FlowBuilder {
     */
     Graph& graph();
 
+    /**
+    @brief 
+
+    Cancel the precedence relationship between two tasks.
+    */
+    void connectDecre(Task dep, Task cuc);
+
   private:
 
     mutable std::mutex _mutex;
@@ -358,6 +365,29 @@ inline void Taskflow::dump(std::ostream& os) const {
   os << "digraph Taskflow {\n";
   _dump(os, &_graph);
   os << "}\n";
+}
+
+// Function: connectDecre
+inline void Taskflow::connectDecre(Task dep, Task cuc) {
+    if (!dep._node || !cuc._node) {
+        return;
+    }
+
+    auto& S = dep._node->_successors;
+    for (auto I = S.begin(); I < S.end(); I++) {
+        if (*I == cuc._node) {
+            S.erase(I);
+            break;
+        }
+    }
+
+    auto& D = cuc._node->_dependents;
+    for (auto I = D.begin(); I < D.end(); I++) {
+        if (*I == dep._node) {
+            D.erase(I);
+            break;
+        }
+    }
 }
 
 // Procedure: _dump
