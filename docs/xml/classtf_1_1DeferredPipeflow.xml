@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1DeferredPipeflow" kind="class" language="C++" prot="private">
     <compoundname>tf::DeferredPipeflow</compoundname>
       <sectiondef kind="friend">
@@ -11,17 +11,20 @@
             <defname>Ps</defname>
           </param>
         </templateparamlist>
-        <type>friend class</type>
+        <type>class</type>
         <definition>friend class Pipeline</definition>
         <argsstring></argsstring>
         <name>Pipeline</name>
+        <param>
+          <type><ref refid="classtf_1_1Pipeline" kindref="compound">Pipeline</ref></type>
+        </param>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="37" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="37" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="37" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="37" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1DeferredPipeflow_1af64ddb98831b893b2388af2a2302acea" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -29,17 +32,20 @@
             <type>typename P</type>
           </param>
         </templateparamlist>
-        <type>friend class</type>
+        <type>class</type>
         <definition>friend class ScalablePipeline</definition>
         <argsstring></argsstring>
         <name>ScalablePipeline</name>
+        <param>
+          <type><ref refid="classtf_1_1ScalablePipeline" kindref="compound">ScalablePipeline</ref></type>
+        </param>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="40" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="40" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="40" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="40" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
@@ -54,7 +60,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="58" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="58" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="58" column="12" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="58" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1DeferredPipeflow_1af1c058902aa45aab8441df9ae6d3a8e8" prot="private" static="no" mutable="no">
         <type>size_t</type>
@@ -67,10 +73,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="61" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="61" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="61" column="12" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="61" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1DeferredPipeflow_1ae6b4ab057aefe7b7dac6925f64026c9b" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/container/unordered_set" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_set</ref>&lt; size_t &gt;</type>
+        <type><ref refid="cpp/container/unordered_set" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_set</ref>&lt; size_t &gt;</type>
         <definition>std::unordered_set&lt;size_t&gt; tf::DeferredPipeflow::_dependents</definition>
         <argsstring></argsstring>
         <name>_dependents</name>
@@ -80,7 +86,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="67" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="67" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="67" column="24" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="67" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -95,7 +101,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="44" column="1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="44" column="5"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1DeferredPipeflow_1af7901bf11f47c8a18f4a975f9c3310b5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -111,7 +117,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="45" column="1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="45" column="5"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1DeferredPipeflow_1af73af50f0d304ec6b51219c9f2f9babc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -127,7 +133,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="46" column="1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="46" column="5"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1DeferredPipeflow_1a2f54d8b4097235501de465000490e5d8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -143,7 +149,7 @@
           <declname>n</declname>
         </param>
         <param>
-          <type><ref refid="cpp/container/unordered_set" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_set</ref>&lt; size_t &gt; &amp;&amp;</type>
+          <type><ref refid="cpp/container/unordered_set" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_set</ref>&lt; size_t &gt; &amp;&amp;</type>
           <declname>dep</declname>
         </param>
         <briefdescription>
@@ -152,7 +158,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="48" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="48" bodyend="50"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="48" column="5" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="48" bodyend="50"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1DeferredPipeflow_1a13188876ec55da73f71f7d6d36a3024e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>DeferredPipeflow &amp;</type>
@@ -168,7 +174,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="52" column="1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="52" column="22"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1DeferredPipeflow_1ae7356cbbea96ae9f62711703e610eba8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>DeferredPipeflow &amp;</type>
@@ -184,14 +190,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="53" column="1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="53" column="22"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="34" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="34" bodyend="68"/>
+    <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/pipeline.hpp" line="34" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/pipeline.hpp" bodystart="34" bodyend="68"/>
     <listofallmembers>
       <member refid="classtf_1_1DeferredPipeflow_1ae6b4ab057aefe7b7dac6925f64026c9b" prot="private" virt="non-virtual"><scope>tf::DeferredPipeflow</scope><name>_dependents</name></member>
       <member refid="classtf_1_1DeferredPipeflow_1af1c058902aa45aab8441df9ae6d3a8e8" prot="private" virt="non-virtual"><scope>tf::DeferredPipeflow</scope><name>_num_deferrals</name></member>

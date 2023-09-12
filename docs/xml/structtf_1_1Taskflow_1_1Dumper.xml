@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="structtf_1_1Taskflow_1_1Dumper" kind="struct" language="C++" prot="private">
     <compoundname>tf::Taskflow::Dumper</compoundname>
       <sectiondef kind="public-attrib">
@@ -14,10 +14,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="74" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="74" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/taskflow.hpp" line="74" column="12" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="74" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1Taskflow_1_1Dumper_1aaf12aeff9ab5fdc366886711130e1f1f" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/container/stack" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::stack</ref>&lt; <ref refid="cpp/utility/pair" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::pair</ref>&lt; const Node *, const <ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> * &gt; &gt;</type>
+        <type><ref refid="cpp/container/stack" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::stack</ref>&lt; <ref refid="cpp/utility/pair" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::pair</ref>&lt; const Node *, const <ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> * &gt; &gt;</type>
         <definition>std::stack&lt;std::pair&lt;const Node*, const Graph*&gt; &gt; tf::Taskflow::Dumper::stack</definition>
         <argsstring></argsstring>
         <name>stack</name>
@@ -27,10 +27,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="75" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="75" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/taskflow.hpp" line="75" column="16" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="75" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1Taskflow_1_1Dumper_1a3419470cb683a0eef3a8fb03ec0cf126" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/container/unordered_map" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_map</ref>&lt; const <ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> *, size_t &gt;</type>
+        <type><ref refid="cpp/container/unordered_map" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_map</ref>&lt; const <ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> *, size_t &gt;</type>
         <definition>std::unordered_map&lt;const Graph*, size_t&gt; tf::Taskflow::Dumper::visited</definition>
         <argsstring></argsstring>
         <name>visited</name>
@@ -40,7 +40,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="76" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="76" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/taskflow.hpp" line="76" column="24" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="76" bodyend="-1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -48,23 +48,23 @@
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
-      <node id="123">
-        <label>std::stack&lt; std::pair&lt; const Node *, const tf::Graph *&gt; &gt;</label>
-      </node>
-      <node id="121">
+      <node id="1">
         <label>tf::Taskflow::Dumper</label>
-        <childnode refid="122" relation="usage">
+        <childnode refid="2" relation="usage">
           <edgelabel>visited</edgelabel>
         </childnode>
-        <childnode refid="123" relation="usage">
+        <childnode refid="3" relation="usage">
           <edgelabel>stack</edgelabel>
         </childnode>
       </node>
-      <node id="122">
+      <node id="2">
         <label>std::unordered_map&lt; const tf::Graph *, size_t &gt;</label>
       </node>
+      <node id="3">
+        <label>std::stack&lt; std::pair&lt; const Node *, const tf::Graph * &gt; &gt;</label>
+      </node>
     </collaborationgraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" line="73" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="73" bodyend="77"/>
+    <location file="/home/thuang295/Code/taskflow/taskflow/core/taskflow.hpp" line="73" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/taskflow.hpp" bodystart="73" bodyend="77"/>
     <listofallmembers>
       <member refid="structtf_1_1Taskflow_1_1Dumper_1ae4ab73ca95da35a18d6bad1e0932ab19" prot="public" virt="non-virtual"><scope>tf::Taskflow::Dumper</scope><name>id</name></member>
       <member refid="structtf_1_1Taskflow_1_1Dumper_1aaf12aeff9ab5fdc366886711130e1f1f" prot="public" virt="non-virtual"><scope>tf::Taskflow::Dumper</scope><name>stack</name></member>

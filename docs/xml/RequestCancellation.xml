@@ -1,20 +1,31 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="RequestCancellation" kind="page">
     <compoundname>RequestCancellation</compoundname>
     <title>Request Cancellation</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Cancel Execution of Taskflows</name>
+        <reference>RequestCancellation_1CancelARunningTaskflow</reference>
+    </tocsect>
+      <tocsect>
+        <name>Understand the Limitations of Cancellation</name>
+        <reference>RequestCancellation_1UnderstandTheLimitationsOfCancellation</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>This chapters discusses how to cancel submitted tasks.</para><sect1 id="RequestCancellation_1CancelARunningTaskflow">
+<para>This chapters discusses how to cancel submitted tasks.</para>
+<sect1 id="RequestCancellation_1CancelARunningTaskflow">
 <title>Cancel Execution of Taskflows</title>
-<para>When you submit a taskflow to an executor (e.g., <ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">tf::Executor::run</ref>), the executor returns a <ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> object that will hold the result of the execution. <ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> is a derived class from <ref refid="cpp/thread/future" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>. In addition to base methods of <ref refid="cpp/thread/future" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>, you can call <ref refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kindref="member">tf::Future::cancel</ref> to cancel the execution of a running taskflow. The following example cancels a submission of a taskflow that contains 1000 tasks each running one second.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<para>When you submit a taskflow to an executor (e.g., <ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">tf::Executor::run</ref>), the executor returns a <ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> object that will hold the result of the execution. <ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> is a derived class from <ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>. In addition to base methods of <ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>, you can call <ref refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kindref="member">tf::Future::cancel</ref> to cancel the execution of a running taskflow. The following example cancels a submission of a taskflow that contains 1000 tasks each running one second.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;1000;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/thread/sleep_for" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::this_thread::sleep_for</ref>(<ref refid="cpp/chrono/duration" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::seconds</ref>(1));</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/thread/sleep_for" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::this_thread::sleep_for</ref>(<ref refid="cpp/chrono/duration" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::seconds</ref>(1));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -26,9 +37,14 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>wait<sp/>until<sp/>the<sp/>cancellation<sp/>completes</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">fu.get();</highlight></codeline>
-</programlisting></para><para><simplesect kind="note"><para><ref refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kindref="member">tf::Future::cancel</ref> is <emphasis>non-deterministic</emphasis> and <emphasis>out-of-order</emphasis>.</para></simplesect>
-When you request a cancellation, the executor will stop scheduling the rest tasks of the taskflow. Tasks that are already running will continue to finish, but their successor tasks will not be scheduled to run. A cancellation is considered complete when all these running tasks finish. To wait for a cancellation to complete, you may explicitly call <computeroutput>tf::Future::get</computeroutput>.</para><para><simplesect kind="attention"><para>It is your responsibility to ensure that the taskflow remains alive before the cancellation completes.</para></simplesect>
-For instance, the following code results in undefined behavior:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+</programlisting></para>
+<para><simplesect kind="note"><para><ref refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kindref="member">tf::Future::cancel</ref> is <emphasis>non-deterministic</emphasis> and <emphasis>out-of-order</emphasis>.</para>
+</simplesect>
+When you request a cancellation, the executor will stop scheduling the rest tasks of the taskflow. Tasks that are already running will continue to finish, but their successor tasks will not be scheduled to run. A cancellation is considered complete when all these running tasks finish. To wait for a cancellation to complete, you may explicitly call <computeroutput>tf::Future::get</computeroutput>.</para>
+<para><simplesect kind="attention"><para>It is your responsibility to ensure that the taskflow remains alive before the cancellation completes.</para>
+</simplesect>
+For instance, the following code results in undefined behavior:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
@@ -41,7 +57,9 @@ For instance, the following code results in undefined behavior:</para><para><pro
 <codeline><highlight class="normal"><sp/><sp/>fu.<ref refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kindref="member">cancel</ref>();<sp/><sp/></highlight><highlight class="comment">//<sp/>there<sp/>can<sp/>still<sp/>be<sp/>task<sp/>running<sp/>after<sp/>cancellation</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>destroying<sp/>taskflow<sp/>here<sp/>can<sp/>result<sp/>in<sp/>undefined<sp/>behavior</highlight></codeline>
-</programlisting></para><para>The undefined behavior problem exists because <ref refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kindref="member">tf::Future::cancel</ref> does not guarantee an immediate cancellation. To fix the problem, call <computeroutput>get</computeroutput> to ensure the cancellation completes before the end of the scope destroys the taskflow.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+</programlisting></para>
+<para>The undefined behavior problem exists because <ref refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kindref="member">tf::Future::cancel</ref> does not guarantee an immediate cancellation. To fix the problem, call <computeroutput>get</computeroutput> to ensure the cancellation completes before the end of the scope destroys the taskflow.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
@@ -54,12 +72,18 @@ For instance, the following code results in undefined behavior:</para><para><pro
 <codeline><highlight class="normal"><sp/><sp/>fu.<ref refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kindref="member">cancel</ref>();<sp/><sp/></highlight><highlight class="comment">//<sp/>there<sp/>can<sp/>still<sp/>be<sp/>task<sp/>running<sp/>after<sp/>cancellation</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>fu.get();<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>waits<sp/>until<sp/>the<sp/>cancellation<sp/>completes</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+</sect1>
 <sect1 id="RequestCancellation_1UnderstandTheLimitationsOfCancellation">
 <title>Understand the Limitations of Cancellation</title>
 <para>Canceling the execution of a running taskflow has the following limitations:<itemizedlist>
-<listitem><para>Cancellation is non-preemptive. A running task will not be cancelled until it finishes.</para></listitem><listitem><para>Cancelling a taskflow with tasks acquiring and/or releasing <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> results is currently not supported.</para></listitem></itemizedlist>
-</para><para>We may overcome these limitations in the future releases. </para></sect1>
+<listitem><para>Cancellation is non-preemptive. A running task will not be cancelled until it finishes.</para>
+</listitem><listitem><para>Cancelling a taskflow with tasks acquiring and/or releasing <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> results is currently not supported.</para>
+</listitem></itemizedlist>
+</para>
+<para>We may overcome these limitations in the future releases. </para>
+</sect1>
     </detaileddescription>
+    <location file="cookbook/cancellation.dox"/>
   </compounddef>
 </doxygen>

@@ -110,7 +110,7 @@
             </dt>
             <dd>creates a multi-condition task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt;</div>
+              <div class="m-doc-template">template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt;1), void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a1f6118326ad434f6c839007a1a79fe1b" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C &amp;&amp; ... callables) -&gt; auto</span>
             </dt>
             <dd>creates multiple tasks from a list of callable objects</dd>
@@ -153,8 +153,8 @@
             </dt>
             <dd>constructs an STL-styled index-based parallel-for task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename O, typename C, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a822a75c597ae42cacc28d6f8cefb8c7c" class="m-doc">transform</a>(</span><span class="m-doc-wrap">B first1,
+              <div class="m-doc-template">template&lt;typename B, typename E, typename O, typename C, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ab2db36500ea85146772acc75fc586ced" class="m-doc">transform</a>(</span><span class="m-doc-wrap">B first1,
               E last1,
               O d_first,
               C c,
@@ -181,8 +181,8 @@
             </dt>
             <dd>constructs an STL-styled parallel-reduce task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename BOP, typename UOP, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a3451d6d69aceb775450e41ebe169e4b7" class="m-doc">transform_reduce</a>(</span><span class="m-doc-wrap">B first,
+              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename BOP, typename UOP, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#af4ebfc8f39ab2fa3b44ab93e9675e1b1" class="m-doc">transform_reduce</a>(</span><span class="m-doc-wrap">B first,
               E last,
               T&amp; init,
               BOP bop,
@@ -191,8 +191,8 @@
             </dt>
             <dd>constructs an STL-styled parallel transform-reduce task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a7099ef62158a6e0770bc8ceef1961326" class="m-doc">transform_reduce</a>(</span><span class="m-doc-wrap">B1 first1,
+              <div class="m-doc-template">template&lt;typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>, std::enable_if_t&lt;!<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;BOP_T&gt;&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a21a552e5aad0dd1681c733703edd90e0" class="m-doc">transform_reduce</a>(</span><span class="m-doc-wrap">B1 first1,
               E1 last1,
               B2 first2,
               T&amp; init,
@@ -491,7 +491,7 @@
           <section class="m-doc-details" id="a1f6118326ad434f6c839007a1a79fe1b"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt; 1&gt;
+                template&lt;typename... C, std::enable_if_t&lt;(sizeof...(C)&gt;1), void&gt;* = nullptr&gt;
               </div>
               <span class="m-doc-wrap-bumper">auto tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1f6118326ad434f6c839007a1a79fe1b" class="m-doc-self">emplace</a>(</span><span class="m-doc-wrap">C &amp;&amp; ... callables)</span></span>
             </h3>
@@ -504,10 +504,6 @@
                 <tr>
                   <td style="width: 1%">C</td>
                   <td>callable types</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td></td>
                 </tr>
               </tbody>
               <thead>
@@ -828,12 +824,12 @@
 <span class="w">  </span><span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the integral index type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a822a75c597ae42cacc28d6f8cefb8c7c"><div>
+          <section class="m-doc-details" id="ab2db36500ea85146772acc75fc586ced"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename O, typename C, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&gt;
+                template&lt;typename B, typename E, typename O, typename C, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a822a75c597ae42cacc28d6f8cefb8c7c" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">B first1,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab2db36500ea85146772acc75fc586ced" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">B first1,
               E last1,
               O d_first,
               C c,
@@ -1059,12 +1055,12 @@
 <span class="w">  </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bop</span><span class="p">(</span><span class="n">init</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">itr</span><span class="p">);</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a3451d6d69aceb775450e41ebe169e4b7"><div>
+          <section class="m-doc-details" id="af4ebfc8f39ab2fa3b44ab93e9675e1b1"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename T, typename BOP, typename UOP, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&gt;
+                template&lt;typename B, typename E, typename T, typename BOP, typename UOP, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3451d6d69aceb775450e41ebe169e4b7" class="m-doc-self">transform_reduce</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af4ebfc8f39ab2fa3b44ab93e9675e1b1" class="m-doc-self">transform_reduce</a>(</span><span class="m-doc-wrap">B first,
               E last,
               T&amp; init,
               BOP bop,
@@ -1142,12 +1138,12 @@
 <span class="w">  </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bop</span><span class="p">(</span><span class="n">init</span><span class="p">,</span><span class="w"> </span><span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">));</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a7099ef62158a6e0770bc8ceef1961326"><div>
+          <section class="m-doc-details" id="a21a552e5aad0dd1681c733703edd90e0"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&gt;
+                template&lt;typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, typename P = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>, std::enable_if_t&lt;!<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;BOP_T&gt;&gt;, void&gt;* = nullptr&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a7099ef62158a6e0770bc8ceef1961326" class="m-doc-self">transform_reduce</a>(</span><span class="m-doc-wrap">B1 first1,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a21a552e5aad0dd1681c733703edd90e0" class="m-doc-self">transform_reduce</a>(</span><span class="m-doc-wrap">B1 first1,
               E1 last1,
               B2 first2,
               T&amp; init,
@@ -1196,15 +1192,15 @@
               <tbody>
                 <tr>
                   <td>first1</td>
-                  <td></td>
+                  <td>iterator to the beginning of the first range (inclusive)</td>
                 </tr>
                 <tr>
                   <td>last1</td>
-                  <td></td>
+                  <td>iterator to the end of the first range (exclusive)</td>
                 </tr>
                 <tr>
                   <td>first2</td>
-                  <td></td>
+                  <td>iterator to the beginning of the second range</td>
                 </tr>
                 <tr>
                   <td>init</td>
@@ -2133,7 +2129,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.8.14 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

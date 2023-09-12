@@ -2,6 +2,7 @@
 
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
+#include <taskflow/algorithm/for_each.hpp>
 #include <taskflow/cuda/cudaflow.hpp>
 #include <taskflow/cuda/algorithm/for_each.hpp>
 

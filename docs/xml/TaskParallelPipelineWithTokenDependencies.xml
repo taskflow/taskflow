@@ -1,33 +1,89 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="TaskParallelPipelineWithTokenDependencies" kind="page">
     <compoundname>TaskParallelPipelineWithTokenDependencies</compoundname>
     <title>Task-parallel Pipeline with Token Dependencies</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Understand Token Dependencies</name>
+        <reference>TaskParallelPipelineWithTokenDependencies_1DeferredPipelineTokenDependencies</reference>
+    </tocsect>
+      <tocsect>
+        <name>Resolve Token Dependencies</name>
+        <reference>TaskParallelPipelineWithTokenDependencies_1DeferredPipelineResolveTokenDependencies</reference>
+    </tocsect>
+      <tocsect>
+        <name>Include the Header</name>
+        <reference>TaskParallelPipelineWithTokenDependencies_1DeferredPipelineIncludeHeaderFile</reference>
+    </tocsect>
+      <tocsect>
+        <name>Create a Deferred Pipeline Module Task</name>
+        <reference>TaskParallelPipelineWithTokenDependencies_1CreateADeferredPipelineModuleTask</reference>
+    </tocsect>
+      <tocsect>
+        <name>Create a Deferred Scalable Pipeline Module Task</name>
+        <reference>TaskParallelPipelineWithTokenDependencies_1CreateADeferredScalablePipelineModuleTask</reference>
+    </tocsect>
+      <tocsect>
+        <name>Learn More about Taskflow Pipeline</name>
+        <reference>TaskParallelPipelineWithTokenDependencies_1ParalleliDeferredScalablePipelineLearnMore</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow pipeline allows you to defer the execution of a token to future tokens. This deferral introduces a dependency from a future token to the current token, particularly suitable for many video encoding applications. We recommend reading <ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref> first before learning this interface.</para><sect1 id="TaskParallelPipelineWithTokenDependencies_1DeferredPipelineTokenDependencies">
+<para>Taskflow pipeline allows you to defer the execution of a token to future tokens. This deferral introduces a dependency from a future token to the current token, particularly suitable for many video encoding applications. We recommend reading <ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref> first before learning this interface.</para>
+<sect1 id="TaskParallelPipelineWithTokenDependencies_1DeferredPipelineTokenDependencies">
 <title>Understand Token Dependencies</title>
 <para>Token dependencies establish the order in which data tokens should execute in a task-parallel pipeline. When token <computeroutput>t1</computeroutput> completes before <computeroutput>t2</computeroutput> starts, there is a dependency from <computeroutput>t1</computeroutput> to <computeroutput>t2</computeroutput>. We categorize token dependencies into two types:<itemizedlist>
-<listitem><para>forward token dependencies (FTD): dependencies from earlier to future tokens</para></listitem><listitem><para>backward token dependencies (BTD): dependencies from future to earlier tokens The following figure illustrates a sample token dependency diagram and its token execution sequence. Edge pointing from token 2 to 5 is FTD, and those from 8 to 2 and 5 and 9 to 5 are BTDs. Based on the dependencies, the tokens execute in the corresponding execution sequence.</para></listitem></itemizedlist>
-</para><para><image type="html" name="token_dependencies.png" width="60%"></image>
-</para></sect1>
+<listitem><para>forward token dependencies (FTD): dependencies from earlier to future tokens</para>
+</listitem><listitem><para>backward token dependencies (BTD): dependencies from future to earlier tokens The following figure illustrates a sample token dependency diagram and its token execution sequence. Edge pointing from token 2 to 5 is FTD, and those from 8 to 2 and 5 and 9 to 5 are BTDs. Based on the dependencies, the tokens execute in the corresponding execution sequence.</para>
+</listitem></itemizedlist>
+</para>
+<para><image type="html" name="token_dependencies.png" width="60%"></image>
+</para>
+</sect1>
 <sect1 id="TaskParallelPipelineWithTokenDependencies_1DeferredPipelineResolveTokenDependencies">
 <title>Resolve Token Dependencies</title>
-<para>To resolve the token dependencies, the basic idea is to defer the execution of a token with unresolved dependencies and save the token in a data structure until its dependencies are resolved. To implement the idea, we leverage three data structures, deferred_tokens (DT), token_dependencies (TD), and ready_tokens (RT). DT and TD are associative containers and RT is a queue. DT stores deferred tokens and their dependents by which the deferred tokens are deferred. TD stores a dependent and its related deferred tokens. RT stores the tokens that were deferred tokens and now are ready because their dependencies are resolved. The following image illustrates the usages of the three data structures to resolve the token dependencies and get the corresponding serial execution sequence exemplified in <ref refid="TaskParallelPipelineWithTokenDependencies_1DeferredPipelineTokenDependencies" kindref="member">Understand Token Dependencies</ref>.</para><para><image type="html" name="deferred_three_data_structures.png" width="90%"></image>
-</para><para>The whole process has the following steps:</para><para><orderedlist>
-<listitem><para>Token 1 is not a deferred token and then 1 is finished. Now the execution sequence is {1}.</para></listitem><listitem><para>Token 2 defers to 8. We insert DT[2]={8} and TD[8]={2}. The black cicle 2 in the above image illustrates this step.</para></listitem><listitem><para>Token 3 is not a deferred token and then 3 is finished. Now the execution sequence is {1,3}.</para></listitem><listitem><para>Token 4 is not a deferred token and then 4 is finished. Now the execution sequence is {1,3,4}.</para></listitem><listitem><para>Token 5 defers to 2 and 7. We insert DT[5]={2,7}, TD[2]={5}, and TD[7]={5}. The black cicle 5 in the above image illustrates this step.</para></listitem><listitem><para>Token 6 is not a deferred token and then 6 is finished. Now the execution sequence is {1,3,4,6}.</para></listitem><listitem><para>Token 7 is not a deferred token and then 7 is finished. Now the execution sequence is {1,3,4,6,7}. Since TD[7]={5}, we directly remove 7 from DT[5]. The black cicle 7 in the above image illustrates this step.</para></listitem><listitem><para>Token 8 is not a deferred token and then 8 is finished. Now the execution sequence is {1,3,4,6,7,8}. Since TD[8]={2}, we directly remove 8 from DT[2] and find out DT[2] is empty. Now token 2 is no longer a deferred token and we move 2 to RT. The black cicle 8 in the above image illustrates this step.</para></listitem><listitem><para>RT is not empty and has a token 2. Then we finish running 2. Now the execution sequence is {1,3,4,6,7,8,2}. Since TD[2]={5}, we directly remove 2 from DT[5] and find out DT[5] is empty. Now token 5 is no longer a deferred token and we move 5 to RT. The black cicle 9 in the above image illustrates this step.</para></listitem><listitem><para>RT is not empty and has a token 5. Then we run 5 and find out token 5 defers the second time, defers to 9. We insert DT[5]={9} and TD[9]={5}. The black cicle 20 in the above image illustrates this step.</para></listitem><listitem><para>Token 9 is not a deferred token and then 9 is finished. Now the execution sequence is {1,3,4,6,7,8,2,9}. Since TD[9]={5}, we directly remove 9 from DT[5] and find out DT[5] is empty. Now token 5 is no longer a deferred token and we move 5 to RT. The black cicle 11 in the above image illustrates this step.</para></listitem><listitem><para>RT is not empty and has a token 5. Then we finish running 5. Now the execution sequence is {1,3,4,6,7,8,2,9,5}. The black cicle 12 in the above image illustrates this step.</para></listitem><listitem><para>Token 10 is not a deferred token and then 10 is finished. Now the execution sequence is {1,3,4,6,7,8,2,9,5,10}.</para></listitem></orderedlist>
-</para></sect1>
+<para>To resolve the token dependencies, the basic idea is to defer the execution of a token with unresolved dependencies and save the token in a data structure until its dependencies are resolved. To implement the idea, we leverage three data structures, deferred_tokens (DT), token_dependencies (TD), and ready_tokens (RT). DT and TD are associative containers and RT is a queue. DT stores deferred tokens and their dependents by which the deferred tokens are deferred. TD stores a dependent and its related deferred tokens. RT stores the tokens that were deferred tokens and now are ready because their dependencies are resolved. The following image illustrates the usages of the three data structures to resolve the token dependencies and get the corresponding serial execution sequence exemplified in <ref refid="TaskParallelPipelineWithTokenDependencies_1DeferredPipelineTokenDependencies" kindref="member">Understand Token Dependencies</ref>.</para>
+<para><image type="html" name="deferred_three_data_structures.png" width="90%"></image>
+</para>
+<para>The whole process has the following steps:</para>
+<para><orderedlist>
+<listitem><para>Token 1 is not a deferred token and then 1 is finished. Now the execution sequence is {1}.</para>
+</listitem><listitem><para>Token 2 defers to 8. We insert DT[2]={8} and TD[8]={2}. The black cicle 2 in the above image illustrates this step.</para>
+</listitem><listitem><para>Token 3 is not a deferred token and then 3 is finished. Now the execution sequence is {1,3}.</para>
+</listitem><listitem><para>Token 4 is not a deferred token and then 4 is finished. Now the execution sequence is {1,3,4}.</para>
+</listitem><listitem><para>Token 5 defers to 2 and 7. We insert DT[5]={2,7}, TD[2]={5}, and TD[7]={5}. The black cicle 5 in the above image illustrates this step.</para>
+</listitem><listitem><para>Token 6 is not a deferred token and then 6 is finished. Now the execution sequence is {1,3,4,6}.</para>
+</listitem><listitem><para>Token 7 is not a deferred token and then 7 is finished. Now the execution sequence is {1,3,4,6,7}. Since TD[7]={5}, we directly remove 7 from DT[5]. The black cicle 7 in the above image illustrates this step.</para>
+</listitem><listitem><para>Token 8 is not a deferred token and then 8 is finished. Now the execution sequence is {1,3,4,6,7,8}. Since TD[8]={2}, we directly remove 8 from DT[2] and find out DT[2] is empty. Now token 2 is no longer a deferred token and we move 2 to RT. The black cicle 8 in the above image illustrates this step.</para>
+</listitem><listitem><para>RT is not empty and has a token 2. Then we finish running 2. Now the execution sequence is {1,3,4,6,7,8,2}. Since TD[2]={5}, we directly remove 2 from DT[5] and find out DT[5] is empty. Now token 5 is no longer a deferred token and we move 5 to RT. The black cicle 9 in the above image illustrates this step.</para>
+</listitem><listitem><para>RT is not empty and has a token 5. Then we run 5 and find out token 5 defers the second time, defers to 9. We insert DT[5]={9} and TD[9]={5}. The black cicle 20 in the above image illustrates this step.</para>
+</listitem><listitem><para>Token 9 is not a deferred token and then 9 is finished. Now the execution sequence is {1,3,4,6,7,8,2,9}. Since TD[9]={5}, we directly remove 9 from DT[5] and find out DT[5] is empty. Now token 5 is no longer a deferred token and we move 5 to RT. The black cicle 11 in the above image illustrates this step.</para>
+</listitem><listitem><para>RT is not empty and has a token 5. Then we finish running 5. Now the execution sequence is {1,3,4,6,7,8,2,9,5}. The black cicle 12 in the above image illustrates this step.</para>
+</listitem><listitem><para>Token 10 is not a deferred token and then 10 is finished. Now the execution sequence is {1,3,4,6,7,8,2,9,5,10}.</para>
+</listitem></orderedlist>
+</para>
+</sect1>
 <sect1 id="TaskParallelPipelineWithTokenDependencies_1DeferredPipelineIncludeHeaderFile">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/algorithm/pipeline.hpp</computeroutput>, for implementing deferred pipeline algorithms.</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="pipeline_8hpp" kindref="compound">taskflow/algorithm/pipeline.hpp</ref>&gt;</highlight></codeline>
-</programlisting></para></sect1>
+<para>You need to include the header file, <computeroutput>taskflow/algorithm/pipeline.hpp</computeroutput>, for implementing deferred pipeline algorithms.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="pipeline_8hpp" kindref="compound">taskflow/algorithm/pipeline.hpp</ref>&gt;</highlight></codeline>
+</programlisting></para>
+</sect1>
 <sect1 id="TaskParallelPipelineWithTokenDependencies_1CreateADeferredPipelineModuleTask">
 <title>Create a Deferred Pipeline Module Task</title>
-<para>To create a deferred pipeline application, there are four steps, one more step than creating a task-parallel pipeline (<ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref>):</para><para><orderedlist>
-<listitem><para>Define the pipeline structure (e.g., pipe type, pipe callable, stopping rule, line count)</para></listitem><listitem><para>Define the token dependencies <bold>at the first pipe</bold></para></listitem><listitem><para>Define the data storage and layout, if needed for the application</para></listitem><listitem><para>Define the pipeline taskflow graph using composition</para></listitem></orderedlist>
-</para><para>The following example demonstrates the creation of a deferred pipeline application exemplified in the dependency diagram in <ref refid="TaskParallelPipelineWithTokenDependencies_1DeferredPipelineTokenDependencies" kindref="member">Understand Token Dependencies</ref>. The example creates a deferred pipeline that generates a total of 10 data tokens. The pipeline structure consists of four lines and three stages (all serial types).</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;deferred_pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<para>To create a deferred pipeline application, there are four steps, one more step than creating a task-parallel pipeline (<ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref>):</para>
+<para><orderedlist>
+<listitem><para>Define the pipeline structure (e.g., pipe type, pipe callable, stopping rule, line count)</para>
+</listitem><listitem><para>Define the token dependencies <bold>at the first pipe</bold></para>
+</listitem><listitem><para>Define the data storage and layout, if needed for the application</para>
+</listitem><listitem><para>Define the pipeline taskflow graph using composition</para>
+</listitem></orderedlist>
+</para>
+<para>The following example demonstrates the creation of a deferred pipeline application exemplified in the dependency diagram in <ref refid="TaskParallelPipelineWithTokenDependencies_1DeferredPipelineTokenDependencies" kindref="member">Understand Token Dependencies</ref>. The example creates a deferred pipeline that generates a total of 10 data tokens. The pipeline structure consists of four lines and three stages (all serial types).</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;deferred_pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/>2:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>3:</highlight></codeline>
 <codeline><highlight class="normal"><sp/>4:<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>num_lines<sp/>=<sp/>4;</highlight></codeline>
@@ -37,77 +93,88 @@
 <codeline><highlight class="normal"><sp/>8:<sp/><ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref><sp/>pl(num_lines,</highlight></codeline>
 <codeline><highlight class="normal"><sp/>9:<sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal">10:<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>stop<sp/>at<sp/>11<sp/>scheduling<sp/>tokens</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">11:<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>()<sp/>==<sp/>11)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">12:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a830b7f204cb87fff17e8d424918d9453" kindref="member">stop</ref>();</highlight></codeline>
+<codeline><highlight class="normal">11:<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(pf.token()<sp/>==<sp/>11)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal">12:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.stop();</highlight></codeline>
 <codeline><highlight class="normal">13:<sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">14:<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
 <codeline><highlight class="normal">15:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Token<sp/>5<sp/>is<sp/>deferred</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">16:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>()<sp/>==<sp/>5)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">17:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">switch</highlight><highlight class="normal">(pf.<ref refid="classtf_1_1Pipeflow_1a2f909c75e15b6bdf83faf2c0b74c7a74" kindref="member">num_deferrals</ref>())<sp/>{</highlight></codeline>
+<codeline><highlight class="normal">16:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(pf.token()<sp/>==<sp/>5)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal">17:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">switch</highlight><highlight class="normal">(pf.num_deferrals())<sp/>{</highlight></codeline>
 <codeline><highlight class="normal">18:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>0:</highlight></codeline>
-<codeline><highlight class="normal">19:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a5fbd2326b68a69826423bf0528a7c961" kindref="member">defer</ref>(2);</highlight></codeline>
-<codeline><highlight class="normal">20:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;1st-time:<sp/>Token<sp/>%zu<sp/>is<sp/>deferred<sp/>by<sp/>2\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>());</highlight></codeline>
-<codeline><highlight class="normal">21:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a5fbd2326b68a69826423bf0528a7c961" kindref="member">defer</ref>(7);</highlight></codeline>
-<codeline><highlight class="normal">22:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;1st-time:<sp/>Token<sp/>%zu<sp/>is<sp/>deferred<sp/>by<sp/>7\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>());</highlight></codeline>
+<codeline><highlight class="normal">19:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.defer(2);</highlight></codeline>
+<codeline><highlight class="normal">20:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;1st-time:<sp/>Token<sp/>%zu<sp/>is<sp/>deferred<sp/>by<sp/>2\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
+<codeline><highlight class="normal">21:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.defer(7);</highlight></codeline>
+<codeline><highlight class="normal">22:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;1st-time:<sp/>Token<sp/>%zu<sp/>is<sp/>deferred<sp/>by<sp/>7\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">23:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal">24:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">25:</highlight></codeline>
 <codeline><highlight class="normal">26:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>1:</highlight></codeline>
-<codeline><highlight class="normal">27:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a5fbd2326b68a69826423bf0528a7c961" kindref="member">defer</ref>(9);</highlight></codeline>
-<codeline><highlight class="normal">28:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;2nd-time:<sp/>Token<sp/>%zu<sp/>is<sp/>deferred<sp/>by<sp/>9\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>());</highlight></codeline>
+<codeline><highlight class="normal">27:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.defer(9);</highlight></codeline>
+<codeline><highlight class="normal">28:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;2nd-time:<sp/>Token<sp/>%zu<sp/>is<sp/>deferred<sp/>by<sp/>9\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">29:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">30:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">31:</highlight></codeline>
 <codeline><highlight class="normal">32:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>2:</highlight></codeline>
-<codeline><highlight class="normal">33:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;3rd-time:<sp/>Tokens<sp/>2,<sp/>7<sp/>and<sp/>9<sp/>resolved<sp/>dependencies<sp/>\</highlight></codeline>
-<codeline><highlight class="stringliteral"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>for<sp/>token<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>());</highlight></codeline>
+<codeline><highlight class="normal">33:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;3rd-time:<sp/>Tokens<sp/>2,<sp/>7<sp/>and<sp/>9<sp/>resolved<sp/>dependencies<sp/>\</highlight></codeline>
+<codeline><highlight class="stringliteral"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>for<sp/>token<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">34:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">35:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">36:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">37:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>token<sp/>2<sp/>is<sp/>deferred</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">38:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>()<sp/>==<sp/>2)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">39:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">switch</highlight><highlight class="normal">(pf.<ref refid="classtf_1_1Pipeflow_1a2f909c75e15b6bdf83faf2c0b74c7a74" kindref="member">num_deferrals</ref>())<sp/>{</highlight></codeline>
+<codeline><highlight class="normal">38:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(pf.token()<sp/>==<sp/>2)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal">39:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">switch</highlight><highlight class="normal">(pf.num_deferrals())<sp/>{</highlight></codeline>
 <codeline><highlight class="normal">40:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>0:</highlight></codeline>
-<codeline><highlight class="normal">41:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a5fbd2326b68a69826423bf0528a7c961" kindref="member">defer</ref>(8);</highlight></codeline>
-<codeline><highlight class="normal">42:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;1st-time:<sp/>Token<sp/>%zu<sp/>is<sp/>deferred<sp/>by<sp/>8\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>());</highlight></codeline>
+<codeline><highlight class="normal">41:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.defer(8);</highlight></codeline>
+<codeline><highlight class="normal">42:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;1st-time:<sp/>Token<sp/>%zu<sp/>is<sp/>deferred<sp/>by<sp/>8\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">43:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">44:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>1:</highlight></codeline>
-<codeline><highlight class="normal">45:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;2nd-time:<sp/>Token<sp/>8<sp/>resolved<sp/>dependencies<sp/>for<sp/>token<sp/>%zu\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>());</highlight></codeline>
+<codeline><highlight class="normal">45:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;2nd-time:<sp/>Token<sp/>8<sp/>resolved<sp/>dependencies<sp/>for<sp/>token<sp/>%zu\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">46:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">47:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">48:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">49:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline><highlight class="normal">50:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>1:<sp/>Non-deferred<sp/>token<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>());</highlight></codeline>
+<codeline><highlight class="normal">50:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>1:<sp/>Non-deferred<sp/>token<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">51:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">52:<sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">53:<sp/><sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal">54:</highlight></codeline>
 <codeline><highlight class="normal">55:<sp/><sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">56:<sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>2:<sp/>input<sp/>token<sp/>%zu<sp/>(deferrals=%zu)\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>(),<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a2f909c75e15b6bdf83faf2c0b74c7a74" kindref="member">num_deferrals</ref>());</highlight></codeline>
+<codeline><highlight class="normal">56:<sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>2:<sp/>input<sp/>token<sp/>%zu<sp/>(deferrals=%zu)\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.token(),<sp/>pf.num_deferrals());</highlight></codeline>
 <codeline><highlight class="normal">57:<sp/><sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal">58:</highlight></codeline>
 <codeline><highlight class="normal">59:<sp/><sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">60:<sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>3:<sp/>input<sp/>token<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>());</highlight></codeline>
+<codeline><highlight class="normal">60:<sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>3:<sp/>input<sp/>token<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">61:<sp/><sp/><sp/><sp/>}}</highlight></codeline>
 <codeline><highlight class="normal">62:<sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal">63:<sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal">64:<sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">composed_of</ref>(pl);</highlight></codeline>
+<codeline><highlight class="normal">64:<sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1Task_1ab38be520fe700cb4ca1f312308a95585" kindref="member">composed_of</ref>(pl);</highlight></codeline>
 <codeline><highlight class="normal">65:</highlight></codeline>
 <codeline><highlight class="normal">66:<sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>pipeline</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">67:<sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
-</programlisting></para><para>Debrief:</para><para><itemizedlist>
-<listitem><para>Line 8 defines the number of lines in the pipeline </para></listitem>
-<listitem><para>Lines 9-52 define the first serial pipe, which will stop the pipeline scheduling at the 11th token </para></listitem>
-<listitem><para>Lines 15-30 define the token dependencies for token 5 </para></listitem>
-<listitem><para>Lines 37-48 define the token dependencies for token 2 </para></listitem>
-<listitem><para>Lines 55-57 define the second serial pipe </para></listitem>
-<listitem><para>Lines 59-61 define the third serial pipe </para></listitem>
-<listitem><para>Line 64 defines the pipeline taskflow graph using composition </para></listitem>
-<listitem><para>Line 67 executes the taskflow</para></listitem>
+</programlisting></para>
+<para>Debrief:</para>
+<para><itemizedlist>
+<listitem><para>Line 8 defines the number of lines in the pipeline </para>
+</listitem>
+<listitem><para>Lines 9-52 define the first serial pipe, which will stop the pipeline scheduling at the 11th token </para>
+</listitem>
+<listitem><para>Lines 15-30 define the token dependencies for token 5 </para>
+</listitem>
+<listitem><para>Lines 37-48 define the token dependencies for token 2 </para>
+</listitem>
+<listitem><para>Lines 55-57 define the second serial pipe </para>
+</listitem>
+<listitem><para>Lines 59-61 define the third serial pipe </para>
+</listitem>
+<listitem><para>Line 64 defines the pipeline taskflow graph using composition </para>
+</listitem>
+<listitem><para>Line 67 executes the taskflow</para>
+</listitem>
 </itemizedlist>
-The following is one of the possible outcomes of the exmaple.</para><para><programlisting filename=".bash"><codeline><highlight class="normal">stage<sp/>1:<sp/>Non-deferred<sp/>token<sp/>0</highlight></codeline>
+The following is one of the possible outcomes of the exmaple.</para>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">stage<sp/>1:<sp/>Non-deferred<sp/>token<sp/>0</highlight></codeline>
 <codeline><highlight class="normal">stage<sp/>2:<sp/>input<sp/>token<sp/>0<sp/>(deferrals=0)</highlight></codeline>
 <codeline><highlight class="normal">stage<sp/>3:<sp/>input<sp/>token<sp/>0</highlight></codeline>
 <codeline><highlight class="normal">stage<sp/>1:<sp/>Non-deferred<sp/>token<sp/>1</highlight></codeline>
@@ -144,73 +211,84 @@ The following is one of the possible outcomes of the exmaple.</para><para><progr
 <codeline><highlight class="normal">stage<sp/>1:<sp/>Non-deferred<sp/>token<sp/>10</highlight></codeline>
 <codeline><highlight class="normal">stage<sp/>2:<sp/>input<sp/>token<sp/>10<sp/>(deferrals=0)</highlight></codeline>
 <codeline><highlight class="normal">stage<sp/>3:<sp/>input<sp/>token<sp/>10</highlight></codeline>
-</programlisting></para><para><simplesect kind="note"><para>You can only specify the token dependencies at the first pipe to get the serial execution of tokens.</para></simplesect>
-</para></sect1>
+</programlisting></para>
+<para><simplesect kind="note"><para>You can only specify the token dependencies at the first pipe to get the serial execution of tokens.</para>
+</simplesect>
+</para>
+</sect1>
 <sect1 id="TaskParallelPipelineWithTokenDependencies_1CreateADeferredScalablePipelineModuleTask">
 <title>Create a Deferred Scalable Pipeline Module Task</title>
-<para>In addition to task-parallel pipeline (<ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref>), you can specify token dependencies on top of a task-parallel scalable pipeline (<ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref>). We recommend reading <ref refid="TaskParallelScalablePipeline" kindref="compound">Task-parallel Scalable Pipeline</ref> first before learning this interface.</para><para>To create a deferred scalable pipeline application, there are four steps, which are identical to the steps described in <ref refid="TaskParallelPipelineWithTokenDependencies_1CreateADeferredPipelineModuleTask" kindref="member">Create a Deferred Pipeline Module Task</ref>. They are:</para><para><orderedlist>
-<listitem><para>Define the pipeline structure (e.g., pipe type, pipe callable, stopping rule, line count)</para></listitem><listitem><para>Define the token dependencies <bold>at the first pipe</bold></para></listitem><listitem><para>Define the data storage and layout, if needed for the application</para></listitem><listitem><para>Define the pipeline taskflow graph using composition</para></listitem></orderedlist>
-</para><para>The following code creates a deferred scalable pipeline that uses four parallel lines to schedule tokens through two serial pipes in the given vector, then resetting that pipeline to three serial pipes. The three pipe callables are identical to the pipe callables demonstrated in the code snippet in <ref refid="TaskParallelPipelineWithTokenDependencies_1CreateADeferredPipelineModuleTask" kindref="member">Create a Deferred Pipeline Module Task</ref>. The token dependencies are exemplified in <ref refid="TaskParallelPipelineWithTokenDependencies_1DeferredPipelineTokenDependencies" kindref="member">Understand Token Dependencies</ref>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>vector<sp/>of<sp/>three<sp/>pipes</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/>2:<sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt; tf::Pipe&lt;std::function&lt;void(tf::Pipeflow&amp;)&gt;</ref>&gt;<sp/>&gt;<sp/>pipes;</highlight></codeline>
+<para>In addition to task-parallel pipeline (<ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref>), you can specify token dependencies on top of a task-parallel scalable pipeline (<ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref>). We recommend reading <ref refid="TaskParallelScalablePipeline" kindref="compound">Task-parallel Scalable Pipeline</ref> first before learning this interface.</para>
+<para>To create a deferred scalable pipeline application, there are four steps, which are identical to the steps described in <ref refid="TaskParallelPipelineWithTokenDependencies_1CreateADeferredPipelineModuleTask" kindref="member">Create a Deferred Pipeline Module Task</ref>. They are:</para>
+<para><orderedlist>
+<listitem><para>Define the pipeline structure (e.g., pipe type, pipe callable, stopping rule, line count)</para>
+</listitem><listitem><para>Define the token dependencies <bold>at the first pipe</bold></para>
+</listitem><listitem><para>Define the data storage and layout, if needed for the application</para>
+</listitem><listitem><para>Define the pipeline taskflow graph using composition</para>
+</listitem></orderedlist>
+</para>
+<para>The following code creates a deferred scalable pipeline that uses four parallel lines to schedule tokens through two serial pipes in the given vector, then resetting that pipeline to three serial pipes. The three pipe callables are identical to the pipe callables demonstrated in the code snippet in <ref refid="TaskParallelPipelineWithTokenDependencies_1CreateADeferredPipelineModuleTask" kindref="member">Create a Deferred Pipeline Module Task</ref>. The token dependencies are exemplified in <ref refid="TaskParallelPipelineWithTokenDependencies_1DeferredPipelineTokenDependencies" kindref="member">Understand Token Dependencies</ref>.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>vector<sp/>of<sp/>three<sp/>pipes</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/>2:<sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt;<sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>&lt;<ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;void(<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;)&gt;&gt;<sp/>&gt;<sp/>pipes;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>3:<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/>4:<sp/></highlight><highlight class="comment">//<sp/>define<sp/>pipe<sp/>callables</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/>5:<sp/></highlight><highlight class="comment">//<sp/>first_pipe_callable<sp/>is<sp/>same<sp/>as<sp/>lines<sp/>15-53<sp/>in<sp/>the<sp/>above<sp/>code<sp/>snippet<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/>6:<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>first_pipe_callable<sp/>=<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/>7:<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>stop<sp/>at<sp/>11<sp/>scheduling<sp/>tokens</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/>8:<sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>()<sp/>==<sp/>11)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/>9:<sp/><sp/><sp/><sp/><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a830b7f204cb87fff17e8d424918d9453" kindref="member">stop</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/>8:<sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(pf.token()<sp/>==<sp/>11)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/>9:<sp/><sp/><sp/><sp/><sp/>pf.stop();</highlight></codeline>
 <codeline><highlight class="normal">10:<sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">11:<sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
 <codeline><highlight class="normal">12:<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Token<sp/>5<sp/>is<sp/>deferred</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">13:<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>()<sp/>==<sp/>5)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">14:<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">switch</highlight><highlight class="normal">(pf.<ref refid="classtf_1_1Pipeflow_1a2f909c75e15b6bdf83faf2c0b74c7a74" kindref="member">num_deferrals</ref>())<sp/>{</highlight></codeline>
+<codeline><highlight class="normal">13:<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(pf.token()<sp/>==<sp/>5)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal">14:<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">switch</highlight><highlight class="normal">(pf.num_deferrals())<sp/>{</highlight></codeline>
 <codeline><highlight class="normal">15:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>0:</highlight></codeline>
-<codeline><highlight class="normal">16:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a5fbd2326b68a69826423bf0528a7c961" kindref="member">defer</ref>(2);</highlight></codeline>
-<codeline><highlight class="normal">17:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;1st-time:<sp/>Token<sp/>%zu<sp/>is<sp/>deferred<sp/>by<sp/>2\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>());</highlight></codeline>
-<codeline><highlight class="normal">18:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a5fbd2326b68a69826423bf0528a7c961" kindref="member">defer</ref>(7);</highlight></codeline>
-<codeline><highlight class="normal">19:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;1st-time:<sp/>Token<sp/>%zu<sp/>is<sp/>deferred<sp/>by<sp/>7\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>());</highlight></codeline>
+<codeline><highlight class="normal">16:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.defer(2);</highlight></codeline>
+<codeline><highlight class="normal">17:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;1st-time:<sp/>Token<sp/>%zu<sp/>is<sp/>deferred<sp/>by<sp/>2\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
+<codeline><highlight class="normal">18:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.defer(7);</highlight></codeline>
+<codeline><highlight class="normal">19:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;1st-time:<sp/>Token<sp/>%zu<sp/>is<sp/>deferred<sp/>by<sp/>7\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">20:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal">21:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">22:</highlight></codeline>
 <codeline><highlight class="normal">23:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>1:</highlight></codeline>
-<codeline><highlight class="normal">24:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a5fbd2326b68a69826423bf0528a7c961" kindref="member">defer</ref>(9);</highlight></codeline>
-<codeline><highlight class="normal">25:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;2nd-time:<sp/>Token<sp/>%zu<sp/>is<sp/>deferred<sp/>by<sp/>9\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>());</highlight></codeline>
+<codeline><highlight class="normal">24:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.defer(9);</highlight></codeline>
+<codeline><highlight class="normal">25:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;2nd-time:<sp/>Token<sp/>%zu<sp/>is<sp/>deferred<sp/>by<sp/>9\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">26:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">27:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">28:</highlight></codeline>
 <codeline><highlight class="normal">29:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>2:</highlight></codeline>
-<codeline><highlight class="normal">30:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;3rd-time:<sp/>Tokens<sp/>2,<sp/>7<sp/>and<sp/>9<sp/>resolved<sp/>dependencies<sp/>for<sp/>token<sp/>%zu\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>());</highlight></codeline>
+<codeline><highlight class="normal">30:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;3rd-time:<sp/>Tokens<sp/>2,<sp/>7<sp/>and<sp/>9<sp/>resolved<sp/>dependencies<sp/>for<sp/>token<sp/>%zu\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">31:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">32:<sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">33:<sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">34:<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>token<sp/>2<sp/>is<sp/>deferred</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">35:<sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>()<sp/>==<sp/>2)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">36:<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">switch</highlight><highlight class="normal">(pf.<ref refid="classtf_1_1Pipeflow_1a2f909c75e15b6bdf83faf2c0b74c7a74" kindref="member">num_deferrals</ref>())<sp/>{</highlight></codeline>
+<codeline><highlight class="normal">35:<sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(pf.token()<sp/>==<sp/>2)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal">36:<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">switch</highlight><highlight class="normal">(pf.num_deferrals())<sp/>{</highlight></codeline>
 <codeline><highlight class="normal">37:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>0:</highlight></codeline>
-<codeline><highlight class="normal">38:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a5fbd2326b68a69826423bf0528a7c961" kindref="member">defer</ref>(8);</highlight></codeline>
-<codeline><highlight class="normal">39:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;1st-time:<sp/>Token<sp/>%zu<sp/>is<sp/>deferred<sp/>by<sp/>8\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>());</highlight></codeline>
+<codeline><highlight class="normal">38:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.defer(8);</highlight></codeline>
+<codeline><highlight class="normal">39:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;1st-time:<sp/>Token<sp/>%zu<sp/>is<sp/>deferred<sp/>by<sp/>8\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">40:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">41:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>1:</highlight></codeline>
-<codeline><highlight class="normal">42:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;2nd-time:<sp/>Token<sp/>8<sp/>resolved<sp/>dependencies<sp/>for<sp/>token<sp/>%zu\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>());</highlight></codeline>
+<codeline><highlight class="normal">42:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;2nd-time:<sp/>Token<sp/>8<sp/>resolved<sp/>dependencies<sp/>for<sp/>token<sp/>%zu\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">43:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">44:<sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">45:<sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">46:<sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline><highlight class="normal">47:<sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>1:<sp/>Non-deferred<sp/>token<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>());</highlight></codeline>
+<codeline><highlight class="normal">47:<sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>1:<sp/>Non-deferred<sp/>token<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">48:<sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">49:<sp/>};</highlight></codeline>
 <codeline><highlight class="normal">50:</highlight></codeline>
 <codeline><highlight class="normal">51:<sp/></highlight><highlight class="comment">//<sp/>second_pipe_callable<sp/>is<sp/>same<sp/>as<sp/>lines<sp/>55-57<sp/>in<sp/>the<sp/>above<sp/>code<sp/>snippet</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">52:<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>second_pipe_callable<sp/>=<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf){</highlight></codeline>
-<codeline><highlight class="normal">53:<sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>2:<sp/>input<sp/>token<sp/>%zu<sp/>(deferrals=%zu)\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>(),<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a2f909c75e15b6bdf83faf2c0b74c7a74" kindref="member">num_deferrals</ref>());</highlight></codeline>
+<codeline><highlight class="normal">53:<sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>2:<sp/>input<sp/>token<sp/>%zu<sp/>(deferrals=%zu)\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.token(),<sp/>pf.num_deferrals());</highlight></codeline>
 <codeline><highlight class="normal">54:<sp/>};</highlight></codeline>
 <codeline><highlight class="normal">55:</highlight></codeline>
 <codeline><highlight class="normal">56:<sp/></highlight><highlight class="comment">//<sp/>third_pipe_callable<sp/>is<sp/>same<sp/>as<sp/>lines<sp/>59-61<sp/>in<sp/>the<sp/>above<sp/>code<sp/>snippet</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">57:<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>third_pipe_callable<sp/>=<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf){</highlight></codeline>
-<codeline><highlight class="normal">58:<sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>3:<sp/>input<sp/>token<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>());</highlight></codeline>
+<codeline><highlight class="normal">58:<sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>3:<sp/>input<sp/>token<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">59:<sp/>};</highlight></codeline>
 <codeline><highlight class="normal">60:</highlight></codeline>
 <codeline><highlight class="normal">61:<sp/>pipes.emplace_back(<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>first_pipe_callable);</highlight></codeline>
@@ -219,7 +297,7 @@ The following is one of the possible outcomes of the exmaple.</para><para><progr
 <codeline><highlight class="normal">64:<sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>pipeline<sp/>of<sp/>four<sp/>parallel<sp/>lines<sp/>based<sp/>on<sp/>the<sp/>given<sp/>vector<sp/>of<sp/>pipes</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">65:<sp/><ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref><sp/>pl(4,<sp/>pipes.begin(),<sp/>pipes.end());</highlight></codeline>
 <codeline><highlight class="normal">66:</highlight></codeline>
-<codeline><highlight class="normal">67:<sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">composed_of</ref>(pl);</highlight></codeline>
+<codeline><highlight class="normal">67:<sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1Task_1ab38be520fe700cb4ca1f312308a95585" kindref="member">composed_of</ref>(pl);</highlight></codeline>
 <codeline><highlight class="normal">68:<sp/></highlight></codeline>
 <codeline><highlight class="normal">69:<sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>pipeline</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">70:<sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
@@ -230,25 +308,48 @@ The following is one of the possible outcomes of the exmaple.</para><para><progr
 <codeline><highlight class="normal">75:<sp/>pl.reset(pipes.begin(),<sp/>pipes.end());</highlight></codeline>
 <codeline><highlight class="normal">76:</highlight></codeline>
 <codeline><highlight class="normal">77:<sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
-</programlisting></para><para>Debrief:</para><para><itemizedlist>
-<listitem><para>Lines 2 defines the vector of <ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref> type </para></listitem>
-<listitem><para>Lines 6-49 define the first pipe callable </para></listitem>
-<listitem><para>Lines 52-54 define the second pipe callable </para></listitem>
-<listitem><para>Lines 57-59 define the third pipe callable </para></listitem>
-<listitem><para>Lines 61-62 define the vector of two pipe callables </para></listitem>
-<listitem><para>Line 65 defines the scalable pipeline </para></listitem>
-<listitem><para>Line 67 defines the pipeline taskflow graph using composition </para></listitem>
-<listitem><para>Line 70 executes the taskflow for the first run </para></listitem>
-<listitem><para>Line 74 inserts the third pipe callable in the vector </para></listitem>
-<listitem><para>Line 75 resets the pipes to three pipe callables </para></listitem>
-<listitem><para>Line 77 executes the taskflow for the second run</para></listitem>
+</programlisting></para>
+<para>Debrief:</para>
+<para><itemizedlist>
+<listitem><para>Lines 2 defines the vector of <ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref> type </para>
+</listitem>
+<listitem><para>Lines 6-49 define the first pipe callable </para>
+</listitem>
+<listitem><para>Lines 52-54 define the second pipe callable </para>
+</listitem>
+<listitem><para>Lines 57-59 define the third pipe callable </para>
+</listitem>
+<listitem><para>Lines 61-62 define the vector of two pipe callables </para>
+</listitem>
+<listitem><para>Line 65 defines the scalable pipeline </para>
+</listitem>
+<listitem><para>Line 67 defines the pipeline taskflow graph using composition </para>
+</listitem>
+<listitem><para>Line 70 executes the taskflow for the first run </para>
+</listitem>
+<listitem><para>Line 74 inserts the third pipe callable in the vector </para>
+</listitem>
+<listitem><para>Line 75 resets the pipes to three pipe callables </para>
+</listitem>
+<listitem><para>Line 77 executes the taskflow for the second run</para>
+</listitem>
 </itemizedlist>
-</para></sect1>
+</para>
+</sect1>
 <sect1 id="TaskParallelPipelineWithTokenDependencies_1ParalleliDeferredScalablePipelineLearnMore">
 <title>Learn More about Taskflow Pipeline</title>
-<para>Visit the following pages to learn more about pipeline:</para><para><itemizedlist>
-<listitem><para><ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref></para></listitem><listitem><para><ref refid="DataParallelPipeline" kindref="compound">Data-parallel Pipeline</ref></para></listitem><listitem><para><ref refid="TaskParallelScalablePipeline" kindref="compound">Task-parallel Scalable Pipeline</ref></para></listitem><listitem><para><ref refid="TextProcessingPipeline" kindref="compound">Text Processing Pipeline</ref></para></listitem><listitem><para><ref refid="GraphProcessingPipeline" kindref="compound">Graph Processing Pipeline</ref></para></listitem><listitem><para><ref refid="TaskflowProcessingPipeline" kindref="compound">Taskflow Processing Pipeline</ref> </para></listitem></itemizedlist>
-</para></sect1>
+<para>Visit the following pages to learn more about pipeline:</para>
+<para><itemizedlist>
+<listitem><para><ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref></para>
+</listitem><listitem><para><ref refid="DataParallelPipeline" kindref="compound">Data-parallel Pipeline</ref></para>
+</listitem><listitem><para><ref refid="TaskParallelScalablePipeline" kindref="compound">Task-parallel Scalable Pipeline</ref></para>
+</listitem><listitem><para><ref refid="TextProcessingPipeline" kindref="compound">Text Processing Pipeline</ref></para>
+</listitem><listitem><para><ref refid="GraphProcessingPipeline" kindref="compound">Graph Processing Pipeline</ref></para>
+</listitem><listitem><para><ref refid="TaskflowProcessingPipeline" kindref="compound">Taskflow Processing Pipeline</ref> </para>
+</listitem></itemizedlist>
+</para>
+</sect1>
     </detaileddescription>
+    <location file="algorithms/pipeline_with_token_dependencies.dox"/>
   </compounddef>
 </doxygen>

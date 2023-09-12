@@ -1,20 +1,20 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="namespacetf_1_1detail" kind="namespace" language="C++">
     <compoundname>tf::detail</compoundname>
     <innerclass refid="structtf_1_1detail_1_1cudaBlockReduce" prot="private">tf::detail::cudaBlockReduce</innerclass>
-    <innerclass refid="structtf_1_1detail_1_1cudaBlockScan" prot="private">tf::detail::cudaBlockScan</innerclass>
-    <innerclass refid="structtf_1_1detail_1_1cudaBlockSort" prot="private">tf::detail::cudaBlockSort</innerclass>
-    <innerclass refid="structtf_1_1detail_1_1cudaFindPair" prot="private">tf::detail::cudaFindPair</innerclass>
-    <innerclass refid="structtf_1_1detail_1_1cudaMergePair" prot="private">tf::detail::cudaMergePair</innerclass>
-    <innerclass refid="structtf_1_1detail_1_1cudaMergeRange" prot="private">tf::detail::cudaMergeRange</innerclass>
     <innerclass refid="structtf_1_1detail_1_1cudaScanResult" prot="private">tf::detail::cudaScanResult</innerclass>
     <innerclass refid="structtf_1_1detail_1_1cudaScanResult_3_01T_00_01vt_00_01true_01_4" prot="private">tf::detail::cudaScanResult&lt; T, vt, true &gt;</innerclass>
+    <innerclass refid="structtf_1_1detail_1_1cudaBlockScan" prot="private">tf::detail::cudaBlockScan</innerclass>
+    <innerclass refid="structtf_1_1detail_1_1cudaMergePair" prot="private">tf::detail::cudaMergePair</innerclass>
+    <innerclass refid="structtf_1_1detail_1_1cudaMergeRange" prot="private">tf::detail::cudaMergeRange</innerclass>
+    <innerclass refid="structtf_1_1detail_1_1cudaBlockSort" prot="private">tf::detail::cudaBlockSort</innerclass>
+    <innerclass refid="structtf_1_1detail_1_1cudaFindPair" prot="private">tf::detail::cudaFindPair</innerclass>
       <sectiondef kind="enum">
       <memberdef kind="enum" id="scan_8hpp_1a1f08990983d8305f1592fee1a3fdc593" prot="private" static="no" strong="yes">
         <type>int</type>
         <name>cudaScanType</name>
-        <enumvalue id="dummy_1a1f08990983d8305f1592fee1a3fdc593af45c3a0bb3687ed8e221253b3fd4a2ce" prot="private">
+        <enumvalue id="scan_8hpp_1a1f08990983d8305f1592fee1a3fdc593af45c3a0bb3687ed8e221253b3fd4a2ce" prot="private">
           <name>EXCLUSIVE</name>
           <initializer>= 1</initializer>
           <briefdescription>
@@ -22,7 +22,7 @@
           <detaileddescription>
           </detaileddescription>
         </enumvalue>
-        <enumvalue id="dummy_1a1f08990983d8305f1592fee1a3fdc593a572d795e2d044f895cc511e5c05030e5" prot="private">
+        <enumvalue id="scan_8hpp_1a1f08990983d8305f1592fee1a3fdc593a572d795e2d044f895cc511e5c05030e5" prot="private">
           <name>INCLUSIVE</name>
           <briefdescription>
           </briefdescription>
@@ -35,19 +35,19 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="20" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="20" bodyend="23"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="20" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="20" bodyend="23"/>
       </memberdef>
       <memberdef kind="enum" id="merge_8hpp_1a93988a64371309e28f815e1266b875f9" prot="private" static="no" strong="yes">
         <type></type>
         <name>cudaMergeBoundType</name>
-        <enumvalue id="dummy_1a93988a64371309e28f815e1266b875f9aa7c48ba367e019d004bfb0239b85f2b3" prot="private">
+        <enumvalue id="merge_8hpp_1a93988a64371309e28f815e1266b875f9aa7c48ba367e019d004bfb0239b85f2b3" prot="private">
           <name>LOWER</name>
           <briefdescription>
           </briefdescription>
           <detaileddescription>
           </detaileddescription>
         </enumvalue>
-        <enumvalue id="dummy_1a93988a64371309e28f815e1266b875f9a9e43f5291e6fcb2ad99c8e3f91acd179" prot="private">
+        <enumvalue id="merge_8hpp_1a93988a64371309e28f815e1266b875f9a9e43f5291e6fcb2ad99c8e3f91acd179" prot="private">
           <name>UPPER</name>
           <briefdescription>
           </briefdescription>
@@ -55,16 +55,17 @@
           </detaileddescription>
         </enumvalue>
         <briefdescription>
-<para>merge bound type </para>        </briefdescription>
+<para>merge bound type </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="16" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="16" bodyend="19"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="16" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="16" bodyend="19"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="var">
-      <memberdef kind="variable" id="scan_8hpp_1acb48d657669121bb9dfd45662e5bf9e1" prot="private" static="no" mutable="no">
+      <memberdef kind="variable" id="scan_8hpp_1acb48d657669121bb9dfd45662e5bf9e1" prot="private" static="no" constexpr="yes" mutable="no">
         <type>constexpr unsigned</type>
         <definition>constexpr unsigned tf::detail::cudaScanRecursionThreshold</definition>
         <argsstring></argsstring>
@@ -76,7 +77,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="17" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="17" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="17" column="27" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="17" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
@@ -90,12 +91,13 @@
           <declname>A</declname>
         </param>
         <briefdescription>
-<para>NextCapacity - Returns the next power of two (in 64-bits) that is strictly greater than A. Returns zero on overflow. this function assumes A to be positive. </para>        </briefdescription>
+<para>NextCapacity - Returns the next power of two (in 64-bits) that is strictly greater than A. Returns zero on overflow. this function assumes A to be positive. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="35" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="35" bodyend="43"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/utility/small_vector.hpp" line="35" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="35" bodyend="43"/>
       </memberdef>
       <memberdef kind="function" id="for__each_8hpp_1a25cd7b4ecddff9e32d577eba0f8455bb" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -138,7 +140,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="18" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="18" bodyend="28"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="18" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="18" bodyend="28"/>
       </memberdef>
       <memberdef kind="function" id="for__each_8hpp_1aa5625b737f69747c9fe334fc91b9dcb2" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -185,7 +187,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="32" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="32" bodyend="42"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" line="32" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/for_each.hpp" bodystart="32" bodyend="42"/>
       </memberdef>
       <memberdef kind="function" id="transform_8hpp_1ac3c389313dfd125f579cd879bacb5b81" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -235,7 +237,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" line="22" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="22" bodyend="34"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" line="22" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="22" bodyend="34"/>
       </memberdef>
       <memberdef kind="function" id="transform_8hpp_1a9b628fdc2171542fc80538207da90f76" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -292,7 +294,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" line="40" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="40" bodyend="54"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" line="40" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/transform.hpp" bodystart="40" bodyend="54"/>
       </memberdef>
       <memberdef kind="function" id="reduce_8hpp_1a9b9598d1760f0473831ba440e2334fc3" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -346,7 +348,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="93" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="93" bodyend="122"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="93" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="93" bodyend="122"/>
       </memberdef>
       <memberdef kind="function" id="reduce_8hpp_1ab2081cd1728759054a34c21a16453db6" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -397,7 +399,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="126" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="126" bodyend="143"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="126" column="6" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="126" bodyend="143"/>
       </memberdef>
       <memberdef kind="function" id="reduce_8hpp_1a7f47a6f1da83330ac06a00b85a88c556" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -451,7 +453,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="153" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="153" bodyend="183"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="153" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="153" bodyend="183"/>
       </memberdef>
       <memberdef kind="function" id="reduce_8hpp_1a6694b88dc343d87df2104809002583cc" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -502,7 +504,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="189" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="189" bodyend="206"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" line="189" column="6" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/reduce.hpp" bodystart="189" bodyend="206"/>
       </memberdef>
       <memberdef kind="function" id="scan_8hpp_1a2c9669b414231e12f66e9d40ca9ae3a3" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -548,12 +550,13 @@
           <declname>op</declname>
         </param>
         <briefdescription>
-<para>single-pass scan for small input </para>        </briefdescription>
+<para>single-pass scan for small input </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="176" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="176" bodyend="222"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="176" column="6" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="176" bodyend="222"/>
       </memberdef>
       <memberdef kind="function" id="scan_8hpp_1a10be6941d3e42a5583d07a092a7b083d" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -603,12 +606,13 @@
           <declname>ptr</declname>
         </param>
         <briefdescription>
-<para>main scan loop </para>        </briefdescription>
+<para>main scan loop </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="230" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="230" bodyend="321"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" line="230" column="6" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/scan.hpp" bodystart="230" bodyend="321"/>
       </memberdef>
       <memberdef kind="function" id="merge_8hpp_1ae9d3db5c9457ebec7cbdd3a3d8c65e94" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -662,7 +666,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="77" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="77" bodyend="98"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="77" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="77" bodyend="98"/>
       </memberdef>
       <memberdef kind="function" id="merge_8hpp_1afc818e3bceee479b5dc1af7f0e6da282" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -704,7 +708,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="102" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="102" bodyend="110"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="102" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="102" bodyend="110"/>
       </memberdef>
       <memberdef kind="function" id="merge_8hpp_1ae27cfa73d1f4b90114cd513e98c56d62" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -751,7 +755,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="114" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="114" bodyend="130"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="114" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="114" bodyend="130"/>
       </memberdef>
       <memberdef kind="function" id="merge_8hpp_1a9c104811415e59c6f7116eb2553d656e" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>__device__ auto</type>
@@ -788,7 +792,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="133" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="133" bodyend="143"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="133" column="24" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="133" bodyend="143"/>
       </memberdef>
       <memberdef kind="function" id="merge_8hpp_1a433a26ef6a2aa8e1d737fea93a42ecf4" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -833,10 +837,11 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Specialization that emits just one LD instruction. Can only reliably used with raw pointer types. Fixed not to use pointer arithmetic so that we don&apos;t get undefined behaviors with unaligned types. </para>        </detaileddescription>
+<para>Specialization that emits just one LD instruction. Can only reliably used with raw pointer types. Fixed not to use pointer arithmetic so that we don&apos;t get undefined behaviors with unaligned types. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="153" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="153" bodyend="165"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="153" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="153" bodyend="165"/>
       </memberdef>
       <memberdef kind="function" id="merge_8hpp_1a87f27d6553efe6c32e4eaef800d2787c" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -860,7 +865,7 @@
             <type>typename b_it</type>
           </param>
         </templateparamlist>
-        <type>__device__ std::enable_if_t&lt; !(<ref refid="cpp/types/is_pointer" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_pointer</ref>&lt; a_it &gt;::value &amp;&amp;<ref refid="cpp/types/is_pointer" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_pointer</ref>&lt; b_it &gt;::value), cudaArray&lt; T, vt &gt;&gt;</type>
+        <type>__device__ std::enable_if_t&lt; !(<ref refid="cpp/types/is_pointer" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_pointer</ref>&lt; a_it &gt;::value &amp;&amp;<ref refid="cpp/types/is_pointer" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_pointer</ref>&lt; b_it &gt;::value), cudaArray&lt; T, vt &gt;&gt;</type>
         <definition>__device__ std::enable_if_t&lt; !(std::is_pointer&lt;a_it&gt;::value &amp;&amp; std::is_pointer&lt;b_it&gt;::value), cudaArray&lt;T, vt&gt;&gt; tf::detail::load_two_streams_reg</definition>
         <argsstring>(a_it a, unsigned a_count, b_it b, unsigned b_count, unsigned tid)</argsstring>
         <name>load_two_streams_reg</name>
@@ -890,7 +895,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="173" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="173" bodyend="180"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="173" column="2" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="173" bodyend="180"/>
       </memberdef>
       <memberdef kind="function" id="merge_8hpp_1a6da5d76af53a630241f6aade1bf76969" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -959,7 +964,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="184" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="184" bodyend="190"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="184" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="184" bodyend="190"/>
       </memberdef>
       <memberdef kind="function" id="merge_8hpp_1afefa562dcaa4b71ace44ee6b4be764d6" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1011,7 +1016,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="194" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="194" bodyend="209"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="194" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="194" bodyend="209"/>
       </memberdef>
       <memberdef kind="function" id="merge_8hpp_1a9f8cf7550f2b00d99ffa12aa30374237" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1035,7 +1040,7 @@
             <type>typename b_it</type>
           </param>
         </templateparamlist>
-        <type>__device__ std::enable_if_t&lt; !(<ref refid="cpp/types/is_pointer" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_pointer</ref>&lt; a_it &gt;::value &amp;&amp;<ref refid="cpp/types/is_pointer" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_pointer</ref>&lt; b_it &gt;::value), cudaArray&lt; T, vt &gt;&gt;</type>
+        <type>__device__ std::enable_if_t&lt; !(<ref refid="cpp/types/is_pointer" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_pointer</ref>&lt; a_it &gt;::value &amp;&amp;<ref refid="cpp/types/is_pointer" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_pointer</ref>&lt; b_it &gt;::value), cudaArray&lt; T, vt &gt;&gt;</type>
         <definition>__device__ std::enable_if_t&lt; !(std::is_pointer&lt;a_it&gt;::value &amp;&amp; std::is_pointer&lt;b_it&gt;::value), cudaArray&lt;T, vt&gt;&gt; tf::detail::cuda_gather_two_streams_strided</definition>
         <argsstring>(a_it a, unsigned a_count, b_it b, unsigned b_count, cudaArray&lt; unsigned, vt &gt; indices, unsigned tid)</argsstring>
         <name>cuda_gather_two_streams_strided</name>
@@ -1069,7 +1074,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="217" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="217" bodyend="227"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="217" column="2" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="217" bodyend="227"/>
       </memberdef>
       <memberdef kind="function" id="merge_8hpp_1ac4e1e83b946b3ef78e5dcb3e9bfc3c48" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1131,7 +1136,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="231" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="231" bodyend="242"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="231" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="231" bodyend="242"/>
       </memberdef>
       <memberdef kind="function" id="merge_8hpp_1a9d4d00a3dbc0158eac24e4603548bdbd" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1176,10 +1181,11 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>This function must be able to dereference keys[a_begin] and keys[b_begin], no matter the indices for each. The caller should allocate at least nt * vt + 1 elements for </para>        </detaileddescription>
+<para>This function must be able to dereference keys[a_begin] and keys[b_begin], no matter the indices for each. The caller should allocate at least nt * vt + 1 elements for </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="253" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="253" bodyend="275"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="253" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="253" bodyend="275"/>
       </memberdef>
       <memberdef kind="function" id="merge_8hpp_1a79b4c5f2bace6ae958abd8573e00a849" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1248,10 +1254,11 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>Load arrays a and b from global memory and merge unsignedo register. </para>        </detaileddescription>
+<para>Load arrays a and b from global memory and merge unsignedo register. </para>
+        </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="286" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="286" bodyend="314"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="286" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="286" bodyend="314"/>
       </memberdef>
       <memberdef kind="function" id="merge_8hpp_1a9a1b1d78a16e27a208e90d75d4885f05" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1315,7 +1322,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="320" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="320" bodyend="347"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="320" column="6" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="320" bodyend="347"/>
       </memberdef>
       <memberdef kind="function" id="merge_8hpp_1a9a1d50803593cc703ed79f2baf9cfa78" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1398,9 +1405,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="381" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="381" bodyend="440"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" line="381" column="6" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/merge.hpp" bodystart="381" bodyend="440"/>
       </memberdef>
-      <memberdef kind="function" id="sort_8hpp_1a95a5212f3d79eb1bba3ca3f8e373ae16" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="sort_8hpp_1a95a5212f3d79eb1bba3ca3f8e373ae16" prot="private" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>constexpr int</type>
         <definition>constexpr int tf::detail::cuda_clz</definition>
         <argsstring>(int x)</argsstring>
@@ -1410,14 +1417,15 @@
           <declname>x</declname>
         </param>
         <briefdescription>
-<para>counts the number of leading zeros starting from the most significant bit </para>        </briefdescription>
+<para>counts the number of leading zeros starting from the most significant bit </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="20" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="20" bodyend="27"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="20" column="15" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="20" bodyend="27"/>
       </memberdef>
-      <memberdef kind="function" id="sort_8hpp_1a9a76c046987683e12f4a4381d1559a69" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="sort_8hpp_1a9a76c046987683e12f4a4381d1559a69" prot="private" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>constexpr int</type>
         <definition>constexpr int tf::detail::cuda_find_log2</definition>
         <argsstring>(int x, bool round_up=false)</argsstring>
@@ -1432,12 +1440,13 @@
           <defval>false</defval>
         </param>
         <briefdescription>
-<para>finds log2(x) and optionally round up to the next integer logarithm. </para>        </briefdescription>
+<para>finds log2(x) and optionally round up to the next integer logarithm. </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="33" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="33" bodyend="39"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="33" column="15" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="33" bodyend="39"/>
       </memberdef>
       <memberdef kind="function" id="sort_8hpp_1a899f77e74e47867dac8c4eb08b92577e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1476,7 +1485,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="43" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="43" bodyend="54"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="43" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="43" bodyend="54"/>
       </memberdef>
       <memberdef kind="function" id="sort_8hpp_1ad452d61656e6301ef16e8241f05c8918" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1518,7 +1527,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="58" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="58" bodyend="71"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="58" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="58" bodyend="71"/>
       </memberdef>
       <memberdef kind="function" id="sort_8hpp_1a2b01469cc11053017b1cfea2a6409057" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>__device__ int</type>
@@ -1543,7 +1552,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="78" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="78" bodyend="86"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="78" column="23" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="78" bodyend="86"/>
       </memberdef>
       <memberdef kind="function" id="sort_8hpp_1af2d7d0e939a7d1a07ced94221a24683c" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>__device__ auto</type>
@@ -1568,7 +1577,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="89" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="89" bodyend="104"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="89" column="24" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="89" bodyend="104"/>
       </memberdef>
       <memberdef kind="function" id="sort_8hpp_1a1a8d810065126154d47114e93bbfea57" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>__device__ auto</type>
@@ -1597,7 +1606,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="107" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="107" bodyend="119"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="107" column="24" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="107" bodyend="119"/>
       </memberdef>
       <memberdef kind="function" id="sort_8hpp_1a4705874f6abf58283ecae02f60cdf8d2" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>__device__ auto</type>
@@ -1634,7 +1643,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="122" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="122" bodyend="146"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="122" column="24" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="122" bodyend="146"/>
       </memberdef>
       <memberdef kind="function" id="sort_8hpp_1ab4d357fb63d82334ea784ee72beaf600" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1686,7 +1695,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="224" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="224" bodyend="251"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="224" column="6" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="224" bodyend="251"/>
       </memberdef>
       <memberdef kind="function" id="sort_8hpp_1a1d70c013b280d4f811275e892af15c18" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1737,7 +1746,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="255" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="255" bodyend="397"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="255" column="6" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="255" bodyend="397"/>
       </memberdef>
       <memberdef kind="function" id="find_8hpp_1a3941b09790867beb42f502c08e08b908" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1781,7 +1790,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="25" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="25" bodyend="90"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="25" column="6" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="25" bodyend="89"/>
       </memberdef>
       <memberdef kind="function" id="find_8hpp_1a72820903215a409e1e3d47a073579918" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1829,7 +1838,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="94" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="94" bodyend="116"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="93" column="6" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="93" bodyend="115"/>
       </memberdef>
       <memberdef kind="function" id="find_8hpp_1a442fbc4beb897580a46164147d7db2c9" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1877,13 +1886,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="120" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="120" bodyend="142"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/find.hpp" line="119" column="6" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/find.hpp" bodystart="119" bodyend="141"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/twhuang/Code/taskflow/taskflow/utility/small_vector.hpp" line="27" column="1"/>
+    <location file="/home/thuang295/Code/taskflow/taskflow/utility/small_vector.hpp" line="27" column="12"/>
   </compounddef>
 </doxygen>

@@ -571,8 +571,9 @@ class FlowBuilder {
   @tparam BOP_T binary transformion type
   @tparam P partitioner type (default tf::GuidedPartitioner)
  
-  @param first iterator to the beginning (inclusive)
-  @param last iterator to the end (exclusive)
+  @param first1 iterator to the beginning of the first range (inclusive)
+  @param last1 iterator to the end of the first range (exclusive)
+  @param first2 iterator to the beginning of the second range
   @param init initial value of the reduction and the storage for the reduced result
   @param bop_r binary operator that will be applied in unspecified order to the results of @c bop_t
   @param bop_t binary operator that will be applied to transform each element in the range to the result type

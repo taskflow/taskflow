@@ -4,6 +4,8 @@
 //  - gpu with conditional tasking
 //  - gpu without conditional tasking
 
+#include <taskflow/taskflow.hpp>
+#include <taskflow/algorithm/for_each.hpp>
 #include <taskflow/cuda/cudaflow.hpp>
 
 #include <iomanip>

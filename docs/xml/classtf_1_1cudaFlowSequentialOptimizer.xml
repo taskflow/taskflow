@@ -1,22 +1,25 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaFlowSequentialOptimizer" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaFlowSequentialOptimizer</compoundname>
     <basecompoundref prot="public" virt="non-virtual">tf::cudaFlowOptimizerBase</basecompoundref>
     <includes refid="cuda__optimizer_8hpp" local="no">cuda_optimizer.hpp</includes>
       <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1cudaFlowSequentialOptimizer_1a672b45d300c57d726c203c62f950efbd" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>friend class</type>
+        <type>class</type>
         <definition>friend class cudaFlowCapturer</definition>
         <argsstring></argsstring>
         <name>cudaFlowCapturer</name>
+        <param>
+          <type><ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">cudaFlowCapturer</ref></type>
+        </param>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="136" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="136" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="136" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="136" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -26,12 +29,13 @@
         <argsstring>()=default</argsstring>
         <name>cudaFlowSequentialOptimizer</name>
         <briefdescription>
-<para>constructs a sequential optimizer </para>        </briefdescription>
+<para>constructs a sequential optimizer </para>
+        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="143" column="1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="143" column="5"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -50,36 +54,38 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="147" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="150" bodyend="165"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="147" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="150" bodyend="165"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>class to capture a CUDA graph using a sequential stream </para>    </briefdescription>
+<para>class to capture a CUDA graph using a sequential stream </para>
+    </briefdescription>
     <detaileddescription>
-<para>A sequential capturing algorithm finds a topological order of the described graph and captures dependent GPU tasks using a single stream. All GPU tasks run sequentially without breaking inter dependencies. </para>    </detaileddescription>
+<para>A sequential capturing algorithm finds a topological order of the described graph and captures dependent GPU tasks using a single stream. All GPU tasks run sequentially without breaking inter dependencies. </para>
+    </detaileddescription>
     <inheritancegraph>
-      <node id="60">
+      <node id="2">
         <label>tf::cudaFlowOptimizerBase</label>
       </node>
-      <node id="59">
+      <node id="1">
         <label>tf::cudaFlowSequentialOptimizer</label>
         <link refid="classtf_1_1cudaFlowSequentialOptimizer"/>
-        <childnode refid="60" relation="public-inheritance">
+        <childnode refid="2" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="62">
+      <node id="2">
         <label>tf::cudaFlowOptimizerBase</label>
       </node>
-      <node id="61">
+      <node id="1">
         <label>tf::cudaFlowSequentialOptimizer</label>
         <link refid="classtf_1_1cudaFlowSequentialOptimizer"/>
-        <childnode refid="62" relation="public-inheritance">
+        <childnode refid="2" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="134" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="134" bodyend="148"/>
+    <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="134" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="134" bodyend="148"/>
     <listofallmembers>
       <member refid="classtf_1_1cudaFlowOptimizerBase_1ae20d9b88a98439f8d8ee5f6280b15744" prot="protected" virt="non-virtual"><scope>tf::cudaFlowSequentialOptimizer</scope><name>_levelize</name></member>
       <member refid="classtf_1_1cudaFlowSequentialOptimizer_1a0bf59a8ce8c0ee8dd2ae9f7af192e3ad" prot="private" virt="non-virtual"><scope>tf::cudaFlowSequentialOptimizer</scope><name>_optimize</name></member>

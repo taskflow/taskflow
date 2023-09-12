@@ -1,19 +1,36 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="CUDASTDForEach" kind="page">
     <compoundname>CUDASTDForEach</compoundname>
     <title>Parallel Iterations</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Include the Header</name>
+        <reference>CUDASTDForEach_1CUDASTDParallelIterationIncludeTheHeader</reference>
+    </tocsect>
+      <tocsect>
+        <name>Index-based Parallel Iterations</name>
+        <reference>CUDASTDForEach_1CUDASTDIndexBasedParallelFor</reference>
+    </tocsect>
+      <tocsect>
+        <name>Iterator-based Parallel Iterations</name>
+        <reference>CUDASTDForEach_1CUDASTDIteratorBasedParallelFor</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow provides standard template methods for performing parallel iterations over a range of items a CUDA GPU.</para><sect1 id="CUDASTDForEach_1CUDASTDParallelIterationIncludeTheHeader">
+<para>Taskflow provides standard template methods for performing parallel iterations over a range of items a CUDA GPU.</para>
+<sect1 id="CUDASTDForEach_1CUDASTDParallelIterationIncludeTheHeader">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/for_each.hpp</computeroutput>, for using the parallel-iteration algorithm.</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="for__each_8hpp" kindref="compound">taskflow/cuda/algorithm/for_each.hpp</ref>&gt;</highlight></codeline>
-</programlisting></para></sect1>
+<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/for_each.hpp</computeroutput>, for using the parallel-iteration algorithm.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="for__each_8hpp" kindref="compound">taskflow/cuda/algorithm/for_each.hpp</ref>&gt;</highlight></codeline>
+</programlisting></para>
+</sect1>
 <sect1 id="CUDASTDForEach_1CUDASTDIndexBasedParallelFor">
 <title>Index-based Parallel Iterations</title>
-<para>Index-based parallel-for performs parallel iterations over a range <computeroutput>[first, last)</computeroutput> with the given <computeroutput>step</computeroutput> size. The task created by <ref refid="namespacetf_1a01ad7ce62fa6f42f2f2fbff3659b7884" kindref="member">tf::cuda_for_each_index</ref> represents a kernel of parallel execution for the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>positive<sp/>step:<sp/>first,<sp/>first+step,<sp/>first+2*step,<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<para>Index-based parallel-for performs parallel iterations over a range <computeroutput>[first, last)</computeroutput> with the given <computeroutput>step</computeroutput> size. The task created by <ref refid="namespacetf_1a01ad7ce62fa6f42f2f2fbff3659b7884" kindref="member">tf::cuda_for_each_index</ref> represents a kernel of parallel execution for the following loop:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>positive<sp/>step:<sp/>first,<sp/>first+step,<sp/>first+2*step,<sp/>...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -21,7 +38,9 @@
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&gt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>Each iteration <computeroutput>i</computeroutput> is independent of each other and is assigned one kernel thread to run the callable. The following example creates a kernel that assigns each entry of <computeroutput>data</computeroutput> to 1 over the range <computeroutput></computeroutput>[0, 100) with step size 1.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
+</programlisting></para>
+<para>Each iteration <computeroutput>i</computeroutput> is independent of each other and is assigned one kernel thread to run the callable. The following example creates a kernel that assigns each entry of <computeroutput>data</computeroutput> to 1 over the range <computeroutput></computeroutput>[0, 100) with step size 1.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>data<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(100);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>assigns<sp/>each<sp/>element<sp/>in<sp/>data<sp/>to<sp/>1<sp/>over<sp/>the<sp/>range<sp/>[0,<sp/>100)<sp/>with<sp/>step<sp/>size<sp/>1</highlight><highlight class="normal"></highlight></codeline>
@@ -31,13 +50,18 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronize<sp/>the<sp/>execution</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
-</programlisting></para><para>The parallel-iteration algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results.</para></sect1>
+</programlisting></para>
+<para>The parallel-iteration algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results.</para>
+</sect1>
 <sect1 id="CUDASTDForEach_1CUDASTDIteratorBasedParallelFor">
 <title>Iterator-based Parallel Iterations</title>
-<para>Iterator-based parallel-for performs parallel iterations over a range specified by two STL-styled iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by <ref refid="namespacetf_1a7c449cec0b93503b8280d05add35e9f4" kindref="member">tf::cuda_for_each</ref> represents a parallel execution of the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i++)<sp/>{</highlight></codeline>
+<para>Iterator-based parallel-for performs parallel iterations over a range specified by two STL-styled iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by <ref refid="namespacetf_1a7c449cec0b93503b8280d05add35e9f4" kindref="member">tf::cuda_for_each</ref> represents a parallel execution of the following loop:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(*i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>The two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>, are typically two raw pointers to the first element and the next to the last element in the range in GPU memory space. The following example creates a <computeroutput>for_each</computeroutput> kernel that assigns each element in <computeroutput>gpu_data</computeroutput> to 1 over the range <computeroutput>[data, data + 1000)</computeroutput>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
+</programlisting></para>
+<para>The two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>, are typically two raw pointers to the first element and the next to the last element in the range in GPU memory space. The following example creates a <computeroutput>for_each</computeroutput> kernel that assigns each element in <computeroutput>gpu_data</computeroutput> to 1 over the range <computeroutput>[data, data + 1000)</computeroutput>.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>data<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(1000);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>assigns<sp/>each<sp/>element<sp/>in<sp/>data<sp/>to<sp/>1<sp/>over<sp/>the<sp/>range<sp/>[0,<sp/>1000)<sp/>with<sp/>step<sp/>size<sp/>1</highlight><highlight class="normal"></highlight></codeline>
@@ -47,7 +71,10 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>synchronize<sp/>the<sp/>execution</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">policy.synchronize();</highlight></codeline>
-</programlisting></para><para>Each iteration is independent of each other and is assigned one kernel thread to run the callable. Since the callable runs on GPU, it must be declared with a <computeroutput>__device__</computeroutput> specifier. </para></sect1>
+</programlisting></para>
+<para>Each iteration is independent of each other and is assigned one kernel thread to run the callable. Since the callable runs on GPU, it must be declared with a <computeroutput>__device__</computeroutput> specifier. </para>
+</sect1>
     </detaileddescription>
+    <location file="cuda_std_algorithms/cuda_std_for_each.dox"/>
   </compounddef>
 </doxygen>

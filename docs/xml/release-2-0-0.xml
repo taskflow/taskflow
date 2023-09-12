@@ -1,39 +1,75 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="release-2-0-0" kind="page">
     <compoundname>release-2-0-0</compoundname>
     <title>Release 2.0.0 (2018/08/28)</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Download</name>
+        <reference>release-2-0-0_1release-2-0-0_download</reference>
+    </tocsect>
+      <tocsect>
+        <name>New Features</name>
+        <reference>release-2-0-0_1release-2-0-0_new_features</reference>
+    </tocsect>
+      <tocsect>
+        <name>Improvements and Enhancements</name>
+        <reference>release-2-0-0_1release-2-0-0_improvements_enhancements</reference>
+    </tocsect>
+      <tocsect>
+        <name>Breaks and Deprecated Features</name>
+        <reference>release-2-0-0_1release-2-0-0_breaks_and_deprecated_features</reference>
+    </tocsect>
+      <tocsect>
+        <name>Bug Fixes</name>
+        <reference>release-2-0-0_1release-2-0-0_bug_fixes</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Cpp-Taskflow 2.0.0 is the first release in the 2.x line! This release includes several new changes such as dynamic tasking, executor, thread pool, etc. In addition, this release improved usability, stability, and performance.</para><sect1 id="release-2-0-0_1release-2-0-0_download">
+<para>Cpp-Taskflow 2.0.0 is the first release in the 2.x line! This release includes several new changes such as dynamic tasking, executor, thread pool, etc. In addition, this release improved usability, stability, and performance.</para>
+<sect1 id="release-2-0-0_1release-2-0-0_download">
 <title>Download</title>
-<para>Cpp-Taskflow 2.0.0 can be downloaded from <ulink url="https://github.com/cpp-taskflow/cpp-taskflow/releases/tag/v2.0.0">here</ulink>.</para></sect1>
+<para>Cpp-Taskflow 2.0.0 can be downloaded from <ulink url="https://github.com/cpp-taskflow/cpp-taskflow/releases/tag/v2.0.0">here</ulink>.</para>
+</sect1>
 <sect1 id="release-2-0-0_1release-2-0-0_new_features">
 <title>New Features</title>
 <para><itemizedlist>
-<listitem><para>New dynamic tasking capability through tf::SubflowBuilder to spawn tasks at runtime. </para></listitem>
-<listitem><para>New algorithm collections (<ref refid="classtf_1_1FlowBuilder_1a97f345ee90bdeb8c0c95120752e32dcb" kindref="member">tf::FlowBuilder::reduce</ref>, <ref refid="classtf_1_1FlowBuilder_1a3451d6d69aceb775450e41ebe169e4b7" kindref="member">tf::FlowBuilder::transform_reduce</ref>) added to <ref refid="classtf_1_1FlowBuilder" kindref="compound">tf::FlowBuilder</ref>. </para></listitem>
-<listitem><para>New schedulers tf::ProactiveThreadpool, tf::SpeculativeThreadpool, and tf::WorkStealingThreadpool.</para></listitem>
+<listitem><para>New dynamic tasking capability through tf::SubflowBuilder to spawn tasks at runtime. </para>
+</listitem>
+<listitem><para>New algorithm collections (<ref refid="classtf_1_1FlowBuilder_1a97f345ee90bdeb8c0c95120752e32dcb" kindref="member">tf::FlowBuilder::reduce</ref>, <ref refid="classtf_1_1FlowBuilder_1af4ebfc8f39ab2fa3b44ab93e9675e1b1" kindref="member">tf::FlowBuilder::transform_reduce</ref>) added to <ref refid="classtf_1_1FlowBuilder" kindref="compound">tf::FlowBuilder</ref>. </para>
+</listitem>
+<listitem><para>New schedulers tf::ProactiveThreadpool, tf::SpeculativeThreadpool, and tf::WorkStealingThreadpool.</para>
+</listitem>
 </itemizedlist>
-</para></sect1>
+</para>
+</sect1>
 <sect1 id="release-2-0-0_1release-2-0-0_improvements_enhancements">
 <title>Improvements and Enhancements</title>
 <para><itemizedlist>
-<listitem><para>Improved the performance of speculative </para></listitem>
-<listitem><para>Removed the target node from a topology. </para></listitem>
-<listitem><para>Added many examples to demonstrate the usage of Cpp-Taskflow. </para></listitem>
-<listitem><para>Added support for Microsoft Visual Studio C++ compiler environment. </para></listitem>
-<listitem><para>Created multiple header files for each class instance.</para></listitem>
+<listitem><para>Improved the performance of speculative </para>
+</listitem>
+<listitem><para>Removed the target node from a topology. </para>
+</listitem>
+<listitem><para>Added many examples to demonstrate the usage of Cpp-Taskflow. </para>
+</listitem>
+<listitem><para>Added support for Microsoft Visual Studio C++ compiler environment. </para>
+</listitem>
+<listitem><para>Created multiple header files for each class instance.</para>
+</listitem>
 </itemizedlist>
-</para></sect1>
+</para>
+</sect1>
 <sect1 id="release-2-0-0_1release-2-0-0_breaks_and_deprecated_features">
 <title>Breaks and Deprecated Features</title>
-<para>There are no breaks and deprecated features in this release.</para></sect1>
+<para>There are no breaks and deprecated features in this release.</para>
+</sect1>
 <sect1 id="release-2-0-0_1release-2-0-0_bug_fixes">
 <title>Bug Fixes</title>
-<para>There are no major bug fixes in this release. </para></sect1>
+<para>There are no major bug fixes in this release. </para>
+</sect1>
     </detaileddescription>
+    <location file="releases/release-2.0.0.dox"/>
   </compounddef>
 </doxygen>

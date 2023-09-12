@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="structtf_1_1detail_1_1cudaBlockSort" kind="struct" language="C++" prot="private">
     <compoundname>tf::detail::cudaBlockSort</compoundname>
     <innerclass refid="uniontf_1_1detail_1_1cudaBlockSort_1_1Storage" prot="private">tf::detail::cudaBlockSort::Storage</innerclass>
@@ -22,21 +22,21 @@
       </param>
     </templateparamlist>
       <sectiondef kind="public-static-attrib">
-      <memberdef kind="variable" id="structtf_1_1detail_1_1cudaBlockSort_1ab08e7fc6dcfebd4c091bf742558a004e" prot="public" static="yes" mutable="no">
+      <memberdef kind="variable" id="structtf_1_1detail_1_1cudaBlockSort_1ab08e7fc6dcfebd4c091bf742558a004e" prot="public" static="yes" constexpr="yes" mutable="no">
         <type>constexpr bool</type>
         <definition>constexpr bool tf::detail::cudaBlockSort&lt; nt, vt, K, V &gt;::has_values</definition>
         <argsstring></argsstring>
         <name>has_values</name>
-        <initializer>= !<ref refid="cpp/types/is_same" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_same</ref>&lt;V, cudaEmpty&gt;::value</initializer>
+        <initializer>= !<ref refid="cpp/types/is_same" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_same</ref>&lt;V, cudaEmpty&gt;::value</initializer>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="152" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="152" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="152" column="25" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="152" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="structtf_1_1detail_1_1cudaBlockSort_1a09986d68c8c99159902e9c2ab9182079" prot="public" static="yes" mutable="no">
+      <memberdef kind="variable" id="structtf_1_1detail_1_1cudaBlockSort_1a09986d68c8c99159902e9c2ab9182079" prot="public" static="yes" constexpr="yes" mutable="no">
         <type>constexpr unsigned</type>
         <definition>constexpr unsigned tf::detail::cudaBlockSort&lt; nt, vt, K, V &gt;::num_passes</definition>
         <argsstring></argsstring>
@@ -48,7 +48,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="153" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="153" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="153" column="29" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="153" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -92,7 +92,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="164" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="164" bodyend="196"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="164" column="19" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="164" bodyend="196"/>
       </memberdef>
       <memberdef kind="function" id="structtf_1_1detail_1_1cudaBlockSort_1a79d7cd8115842d64e15b91bb7f6c31a7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -130,14 +130,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="199" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="199" bodyend="219"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="199" column="19" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="199" bodyend="219"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="150" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="150" bodyend="220"/>
+    <location file="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" line="150" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/algorithm/sort.hpp" bodystart="150" bodyend="220"/>
     <listofallmembers>
       <member refid="structtf_1_1detail_1_1cudaBlockSort_1a79d7cd8115842d64e15b91bb7f6c31a7" prot="public" virt="non-virtual"><scope>tf::detail::cudaBlockSort</scope><name>block_sort</name></member>
       <member refid="structtf_1_1detail_1_1cudaBlockSort_1ab08e7fc6dcfebd4c091bf742558a004e" prot="public" virt="non-virtual"><scope>tf::detail::cudaBlockSort</scope><name>has_values</name></member>

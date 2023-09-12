@@ -1,37 +1,54 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="CUDASTDMerge" kind="page">
     <compoundname>CUDASTDMerge</compoundname>
     <title>Parallel Merge</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Include the Header</name>
+        <reference>CUDASTDMerge_1CUDASTDMergeIncludeTheHeader</reference>
+    </tocsect>
+      <tocsect>
+        <name>Merge Two Sorted Ranges of Items</name>
+        <reference>CUDASTDMerge_1CUDASTDMergeItems</reference>
+    </tocsect>
+      <tocsect>
+        <name>Merge Two Sorted Ranges of Key-Value Items</name>
+        <reference>CUDASTDMerge_1CUDASTDMergeKeyValueItems</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow provides standalone template methods for merging two sorted ranges of items into a sorted range of items.</para><sect1 id="CUDASTDMerge_1CUDASTDMergeIncludeTheHeader">
+<para>Taskflow provides standalone template methods for merging two sorted ranges of items into a sorted range of items.</para>
+<sect1 id="CUDASTDMerge_1CUDASTDMergeIncludeTheHeader">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/merge.hpp</computeroutput>, for using the parallel-merge algorithm.</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="merge_8hpp" kindref="compound">taskflow/cuda/algorithm/merge.hpp</ref>&gt;</highlight></codeline>
-</programlisting></para></sect1>
+<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/merge.hpp</computeroutput>, for using the parallel-merge algorithm.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="merge_8hpp" kindref="compound">taskflow/cuda/algorithm/merge.hpp</ref>&gt;</highlight></codeline>
+</programlisting></para>
+</sect1>
 <sect1 id="CUDASTDMerge_1CUDASTDMergeItems">
 <title>Merge Two Sorted Ranges of Items</title>
-<para><ref refid="namespacetf_1a37ec481149c2f01669353033d75ed72a" kindref="member">tf::cuda_merge</ref> merges two sorted ranges of items into a sorted range. The following code merges two sorted arrays <computeroutput>input_1</computeroutput> and <computeroutput>input_2</computeroutput>, each of 1000 items, into a sorted array <computeroutput>output</computeroutput> of 2000 items.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000;</highlight></codeline>
+<para><ref refid="namespacetf_1a37ec481149c2f01669353033d75ed72a" kindref="member">tf::cuda_merge</ref> merges two sorted ranges of items into a sorted range. The following code merges two sorted arrays <computeroutput>input_1</computeroutput> and <computeroutput>input_2</computeroutput>, each of 1000 items, into a sorted array <computeroutput>output</computeroutput> of 2000 items.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>input_1<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>input<sp/>vector<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>input_2<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>input<sp/>vector<sp/>2</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>output<sp/><sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(2*N);<sp/><sp/></highlight><highlight class="comment">//<sp/>output<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input_1[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>()%100;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input_2[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>()%100;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input_1[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>()%100;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input_2[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>()%100;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/algorithm/sort" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::sort</ref>(input_1,<sp/>input1<sp/>+<sp/>N);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/algorithm/sort" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::sort</ref>(input_2,<sp/>input2<sp/>+<sp/>N);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/algorithm/sort" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::sort</ref>(input_1,<sp/>input1<sp/>+<sp/>N);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/algorithm/sort" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::sort</ref>(input_2,<sp/>input2<sp/>+<sp/>N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>merge<sp/>two<sp/>N-element<sp/>sorted<sp/>vectors</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" kindref="member">merge_bufsz</ref>(N,<sp/>N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.merge_bufsz(N,<sp/>N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>merge<sp/>input_1<sp/>and<sp/>input_2<sp/>to<sp/>output</highlight><highlight class="normal"></highlight></codeline>
@@ -52,11 +69,16 @@
 <codeline><highlight class="normal">cudaFree(input2);</highlight></codeline>
 <codeline><highlight class="normal">cudaFree(output);</highlight></codeline>
 <codeline><highlight class="normal">cudaFree(buffer);</highlight></codeline>
-</programlisting></para><para>The merge algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results. Since the GPU merge algorithm may require extra buffer to store the temporary results, you need to provide a buffer of size at least larger or equal to the value returned from <computeroutput><ref refid="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" kindref="member">tf::cudaDefaultExecutionPolicy::merge_bufsz</ref></computeroutput>. The buffer size depends only on the two input vector sizes.</para><para><simplesect kind="attention"><para>You must keep the buffer alive before the merge call completes.</para></simplesect>
-</para></sect1>
+</programlisting></para>
+<para>The merge algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results. Since the GPU merge algorithm may require extra buffer to store the temporary results, you need to provide a buffer of size at least larger or equal to the value returned from <computeroutput><ref refid="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" kindref="member">tf::cudaDefaultExecutionPolicy::merge_bufsz</ref></computeroutput>. The buffer size depends only on the two input vector sizes.</para>
+<para><simplesect kind="attention"><para>You must keep the buffer alive before the merge call completes.</para>
+</simplesect>
+</para>
+</sect1>
 <sect1 id="CUDASTDMerge_1CUDASTDMergeKeyValueItems">
 <title>Merge Two Sorted Ranges of Key-Value Items</title>
-<para><ref refid="namespacetf_1aa84d4c68d2cbe9f6efc4a1eb1a115458" kindref="member">tf::cuda_merge_by_key</ref> performs key-value merge over two sorted ranges in a similar way to <ref refid="namespacetf_1a37ec481149c2f01669353033d75ed72a" kindref="member">tf::cuda_merge</ref>; additionally, it copies elements from the two ranges of values associated with the two input keys, respectively. The following code performs key-value merge over <computeroutput>a</computeroutput> and <computeroutput>b:</computeroutput> </para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>2;</highlight></codeline>
+<para><ref refid="namespacetf_1aa84d4c68d2cbe9f6efc4a1eb1a115458" kindref="member">tf::cuda_merge_by_key</ref> performs key-value merge over two sorted ranges in a similar way to <ref refid="namespacetf_1a37ec481149c2f01669353033d75ed72a" kindref="member">tf::cuda_merge</ref>; additionally, it copies elements from the two ranges of values associated with the two input keys, respectively. The following code performs key-value merge over <computeroutput>a</computeroutput> and <computeroutput>b:</computeroutput> </para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>2;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>a_keys<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>a_vals<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>b_keys<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);</highlight></codeline>
@@ -75,7 +97,7 @@
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>merge<sp/>two<sp/>N-element<sp/>sorted<sp/>vectors<sp/>by<sp/>keys</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" kindref="member">merge_bufsz</ref>(N,<sp/>N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.merge_bufsz(N,<sp/>N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>merge<sp/>keys<sp/>and<sp/>values<sp/>of<sp/>a<sp/>and<sp/>b<sp/>to<sp/>c</highlight><highlight class="normal"></highlight></codeline>
@@ -102,7 +124,10 @@
 <codeline><highlight class="normal">cudaFree(a_vals);</highlight></codeline>
 <codeline><highlight class="normal">cudaFree(b_vals);</highlight></codeline>
 <codeline><highlight class="normal">cudaFree(c_vals);</highlight></codeline>
-</programlisting></para><para>Since the GPU merge algorithm may require extra buffer to store the temporary results, you need to provide a buffer of size at least larger or equal to the value returned from <computeroutput><ref refid="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" kindref="member">tf::cudaDefaultExecutionPolicy::merge_bufsz</ref></computeroutput>. The buffer size depends only on the two input vector sizes. </para></sect1>
+</programlisting></para>
+<para>Since the GPU merge algorithm may require extra buffer to store the temporary results, you need to provide a buffer of size at least larger or equal to the value returned from <computeroutput><ref refid="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" kindref="member">tf::cudaDefaultExecutionPolicy::merge_bufsz</ref></computeroutput>. The buffer size depends only on the two input vector sizes. </para>
+</sect1>
     </detaileddescription>
+    <location file="cuda_std_algorithms/cuda_std_merge.dox"/>
   </compounddef>
 </doxygen>

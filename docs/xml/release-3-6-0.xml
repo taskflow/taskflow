@@ -1,99 +1,218 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="release-3-6-0" kind="page">
     <compoundname>release-3-6-0</compoundname>
     <title>Release 3.6.0 (2023/05/07)</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Download</name>
+        <reference>release-3-6-0_1release-3-6-0_download</reference>
+    </tocsect>
+      <tocsect>
+        <name>System Requirements</name>
+        <reference>release-3-6-0_1release-3-6-0_system_requirements</reference>
+    </tocsect>
+      <tocsect>
+        <name>Release Summary</name>
+        <reference>release-3-6-0_1release-3-6-0_summary</reference>
+    </tocsect>
+      <tocsect>
+        <name>New Features</name>
+        <reference>release-3-6-0_1release-3-6-0_new_features</reference>
+    <tableofcontents>
+      <tocsect>
+        <name>Taskflow Core</name>
+        <reference>release-3-6-0_1release-3-6-0_taskflow_core</reference>
+    </tocsect>
+      <tocsect>
+        <name>cudaFlow</name>
+        <reference>release-3-6-0_1release-3-6-0_cudaflow</reference>
+    </tocsect>
+      <tocsect>
+        <name>Utilities</name>
+        <reference>release-3-6-0_1release-3-6-0_utilities</reference>
+    </tocsect>
+      <tocsect>
+        <name>Taskflow Profiler (TFProf)</name>
+        <reference>release-3-6-0_1release-3-6-0_profiler</reference>
+    </tocsect>
+    </tableofcontents>
+    </tocsect>
+      <tocsect>
+        <name>Bug Fixes</name>
+        <reference>release-3-6-0_1release-3-6-0_bug_fixes</reference>
+    </tocsect>
+      <tocsect>
+        <name>Breaking Changes</name>
+        <reference>release-3-6-0_1release-3-6-0_breaking_changes</reference>
+    </tocsect>
+      <tocsect>
+        <name>Documentation</name>
+        <reference>release-3-6-0_1release-3-6-0_documentation</reference>
+    </tocsect>
+      <tocsect>
+        <name>Miscellaneous Items</name>
+        <reference>release-3-6-0_1release-3-6-0_miscellaneous_items</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow 3.6.0 is the 7th release in the 3.x line! This release includes several new changes, such as dynamic task graph parallelism, improved parallel algorithms, modified GPU tasking interface, documentation, examples, and unit tests.</para><sect1 id="release-3-6-0_1release-3-6-0_download">
+<para>Taskflow 3.6.0 is the 7th release in the 3.x line! This release includes several new changes, such as dynamic task graph parallelism, improved parallel algorithms, modified GPU tasking interface, documentation, examples, and unit tests.</para>
+<sect1 id="release-3-6-0_1release-3-6-0_download">
 <title>Download</title>
-<para>Taskflow 3.6.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.6.0">here</ulink>.</para></sect1>
+<para>Taskflow 3.6.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.6.0">here</ulink>.</para>
+</sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_system_requirements">
 <title>System Requirements</title>
-<para>To use Taskflow v3.6.0, you need a compiler that supports C++17:</para><para><itemizedlist>
-<listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para></listitem>
-<listitem><para>Clang C++ Compiler at least v6.0 with -std=c++17 </para></listitem>
-<listitem><para>Microsoft Visual Studio at least v19.27 with /std:c++17 </para></listitem>
-<listitem><para>AppleClang Xcode Version at least v12.0 with -std=c++17 </para></listitem>
-<listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17 </para></listitem>
-<listitem><para>Intel C++ Compiler at least v19.0.1 with -std=c++17 </para></listitem>
-<listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</para></listitem>
+<para>To use Taskflow v3.6.0, you need a compiler that supports C++17:</para>
+<para><itemizedlist>
+<listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para>
+</listitem>
+<listitem><para>Clang C++ Compiler at least v6.0 with -std=c++17 </para>
+</listitem>
+<listitem><para>Microsoft Visual Studio at least v19.27 with /std:c++17 </para>
+</listitem>
+<listitem><para>AppleClang Xcode Version at least v12.0 with -std=c++17 </para>
+</listitem>
+<listitem><para>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17 </para>
+</listitem>
+<listitem><para>Intel C++ Compiler at least v19.0.1 with -std=c++17 </para>
+</listitem>
+<listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</para>
+</listitem>
 </itemizedlist>
-Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
+Taskflow works on Linux, Windows, and Mac OS X.</para>
+</sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_summary">
 <title>Release Summary</title>
-<para>This release contains several changes to largely enhance the programmability of GPU tasking and standard parallel algorithms. More importantly, we have introduced a new dependent asynchronous tasking model that offers great flexibility for expressing dynamic task graph parallelism.</para></sect1>
+<para>This release contains several changes to largely enhance the programmability of GPU tasking and standard parallel algorithms. More importantly, we have introduced a new dependent asynchronous tasking model that offers great flexibility for expressing dynamic task graph parallelism.</para>
+</sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_new_features">
 <title>New Features</title>
 <sect2 id="release-3-6-0_1release-3-6-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
 <listitem><para>Added new async methods to support dynamic task graph creation<itemizedlist>
-<listitem><para><ref refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kindref="member">tf::Executor::dependent_async</ref>(F&amp;&amp; func, Tasks&amp;&amp;... tasks)</para></listitem><listitem><para><ref refid="classtf_1_1Executor_1a01e51e564f5def845506bcf6b4bb1664" kindref="member">tf::Executor::dependent_async(F&amp;&amp; func, I first, I last)</ref></para></listitem><listitem><para><ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">tf::Executor::silent_dependent_async</ref>(F&amp;&amp; func, Tasks&amp;&amp;... tasks)</para></listitem><listitem><para><ref refid="classtf_1_1Executor_1aa9b08e47e68ae1e568f18aa7104cb9b1" kindref="member">tf::Executor::silent_dependent_async(F&amp;&amp; func, I first, I last)</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Added new async and join methods to <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref><itemizedlist>
-<listitem><para><ref refid="classtf_1_1Runtime_1a5688b13034f179c4a8b2b0ebbb215051" kindref="member">tf::Runtime::async</ref></para></listitem><listitem><para><ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">tf::Runtime::silent_async</ref></para></listitem><listitem><para><ref refid="classtf_1_1Runtime_1a67a1dba6462cc63b1142bcb19ad86df5" kindref="member">tf::Runtime::join</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Added a new partitioner interface to optimize parallel algorithms<itemizedlist>
-<listitem><para><ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref></para></listitem><listitem><para><ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref></para></listitem><listitem><para><ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref></para></listitem><listitem><para><ref refid="classtf_1_1RandomPartitioner" kindref="compound">tf::RandomPartitioner</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Added parallel-scan algorithms to Taskflow<itemizedlist>
-<listitem><para><ref refid="classtf_1_1FlowBuilder_1a1c2ace9290d83c2a006614a4d66ad588" kindref="member">tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a0b589a5bbf9b18e6484fa9e554d39a39" kindref="member">tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop, T init)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a82f3c3f49a2d52cd52f6eac07a659e9c" kindref="member">tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a49f7e17d02c708035b9134d8c6c89f90" kindref="member">tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a4e0d618d8eb0b3b2e5e00443a10bf512" kindref="member">tf::Taskflow::exclusive_scan(B first, E last, D d_first, T init, BOP bop)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a8549478ef819699b30f8daf88f04d577" kindref="member">tf::Taskflow::transform_exclusive_scan(B first, E last, D d_first, T init, BOP bop, UOP uop)</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Added parallel-find algorithms to Taskflow<itemizedlist>
-<listitem><para><ref refid="classtf_1_1FlowBuilder_1a94e70e5f7a459a7762cc312b6d6dec79" kindref="member">tf::Taskflow::find_if(B first, E last, T&amp; result, UOP predicate, P&amp;&amp; part)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1aae268c9763df9323dc349fb1b35988cf" kindref="member">tf::Taskflow::find_if_not(B first, E last, T&amp; result, UOP predicate, P&amp;&amp; part)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1ad6a7caf3cfc8d1887bd211be307a3eb0" kindref="member">tf::Taskflow::min_element(B first, E last, T&amp; result, C comp, P&amp;&amp; part)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1af0415d1fa5f36fee2405b0fcbf592fe0" kindref="member">tf::Taskflow::max_element(B first, E last, T&amp; result, C comp, P&amp;&amp; part)</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Modified <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> as a derived class from <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref></para></listitem><listitem><para>Extended parallel algorithms to support different partitioning algorithms<itemizedlist>
-<listitem><para><ref refid="classtf_1_1FlowBuilder_1a47ea2b35d0ec18afb35b45316939dc67" kindref="member">tf::Taskflow::for_each_index(B first, E last, S step, C callable, P&amp;&amp; part)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each(B first, E last, C callable, P&amp;&amp; part)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a822a75c597ae42cacc28d6f8cefb8c7c" kindref="member">tf::Taskflow::transform(B first1, E last1, O d_first, C c, P&amp;&amp; part)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a519ca8f909c86efdc70fa01f28156219" kindref="member">tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P&amp;&amp; part)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a97f345ee90bdeb8c0c95120752e32dcb" kindref="member">tf::Taskflow::reduce(B first, E last, T&amp; result, O bop, P&amp;&amp; part)</ref></para></listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a3451d6d69aceb775450e41ebe169e4b7" kindref="member">tf::Taskflow::transform_reduce(B first, E last, T&amp; result, BOP bop, UOP uop, P&amp;&amp; part)</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Improved the performance of <ref refid="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" kindref="member">tf::Taskflow::sort</ref> for plain-old-data (POD) type</para></listitem><listitem><para>Extended task-parallel pipeline to handle token dependencies<itemizedlist>
-<listitem><para><ref refid="TaskParallelPipelineWithTokenDependencies" kindref="compound">Task-parallel Pipeline with Token Dependencies</ref></para></listitem></itemizedlist>
-</para></listitem></itemizedlist>
-</para></sect2>
+<listitem><para><ref refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kindref="member">tf::Executor::dependent_async(F&amp;&amp; func, Tasks&amp;&amp;... tasks)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1a01e51e564f5def845506bcf6b4bb1664" kindref="member">tf::Executor::dependent_async(F&amp;&amp; func, I first, I last)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">tf::Executor::silent_dependent_async(F&amp;&amp; func, Tasks&amp;&amp;... tasks)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1aa9b08e47e68ae1e568f18aa7104cb9b1" kindref="member">tf::Executor::silent_dependent_async(F&amp;&amp; func, I first, I last)</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Added new async and join methods to <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref><itemizedlist>
+<listitem><para><ref refid="classtf_1_1Runtime_1a5688b13034f179c4a8b2b0ebbb215051" kindref="member">tf::Runtime::async</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">tf::Runtime::silent_async</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Runtime_1a67a1dba6462cc63b1142bcb19ad86df5" kindref="member">tf::Runtime::join</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Added a new partitioner interface to optimize parallel algorithms<itemizedlist>
+<listitem><para><ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1RandomPartitioner" kindref="compound">tf::RandomPartitioner</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Added parallel-scan algorithms to Taskflow<itemizedlist>
+<listitem><para><ref refid="classtf_1_1FlowBuilder_1a1c2ace9290d83c2a006614a4d66ad588" kindref="member">tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a0b589a5bbf9b18e6484fa9e554d39a39" kindref="member">tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop, T init)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a82f3c3f49a2d52cd52f6eac07a659e9c" kindref="member">tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a49f7e17d02c708035b9134d8c6c89f90" kindref="member">tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a4e0d618d8eb0b3b2e5e00443a10bf512" kindref="member">tf::Taskflow::exclusive_scan(B first, E last, D d_first, T init, BOP bop)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a8549478ef819699b30f8daf88f04d577" kindref="member">tf::Taskflow::transform_exclusive_scan(B first, E last, D d_first, T init, BOP bop, UOP uop)</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Added parallel-find algorithms to Taskflow<itemizedlist>
+<listitem><para><ref refid="classtf_1_1FlowBuilder_1a94e70e5f7a459a7762cc312b6d6dec79" kindref="member">tf::Taskflow::find_if(B first, E last, T&amp; result, UOP predicate, P&amp;&amp; part)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1aae268c9763df9323dc349fb1b35988cf" kindref="member">tf::Taskflow::find_if_not(B first, E last, T&amp; result, UOP predicate, P&amp;&amp; part)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1ad6a7caf3cfc8d1887bd211be307a3eb0" kindref="member">tf::Taskflow::min_element(B first, E last, T&amp; result, C comp, P&amp;&amp; part)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1af0415d1fa5f36fee2405b0fcbf592fe0" kindref="member">tf::Taskflow::max_element(B first, E last, T&amp; result, C comp, P&amp;&amp; part)</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Modified <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> as a derived class from <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref></para>
+</listitem><listitem><para>Extended parallel algorithms to support different partitioning algorithms<itemizedlist>
+<listitem><para><ref refid="classtf_1_1FlowBuilder_1a47ea2b35d0ec18afb35b45316939dc67" kindref="member">tf::Taskflow::for_each_index(B first, E last, S step, C callable, P&amp;&amp; part)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each(B first, E last, C callable, P&amp;&amp; part)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1ab2db36500ea85146772acc75fc586ced" kindref="member">tf::Taskflow::transform(B first1, E last1, O d_first, C c, P&amp;&amp; part)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a519ca8f909c86efdc70fa01f28156219" kindref="member">tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P&amp;&amp; part)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a97f345ee90bdeb8c0c95120752e32dcb" kindref="member">tf::Taskflow::reduce(B first, E last, T&amp; result, O bop, P&amp;&amp; part)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1af4ebfc8f39ab2fa3b44ab93e9675e1b1" kindref="member">tf::Taskflow::transform_reduce(B first, E last, T&amp; result, BOP bop, UOP uop, P&amp;&amp; part)</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Improved the performance of <ref refid="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" kindref="member">tf::Taskflow::sort</ref> for plain-old-data (POD) type</para>
+</listitem><listitem><para>Extended task-parallel pipeline to handle token dependencies<itemizedlist>
+<listitem><para><ref refid="TaskParallelPipelineWithTokenDependencies" kindref="compound">Task-parallel Pipeline with Token Dependencies</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
+</sect2>
 <sect2 id="release-3-6-0_1release-3-6-0_cudaflow">
 <title>cudaFlow</title>
 <para><itemizedlist>
-<listitem><para>removed algorithms that require buffer from <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> due to update limitation</para></listitem><listitem><para>removed support for a dedicated cudaFlow task in Taskflow<itemizedlist>
-<listitem><para>all usage of <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> and <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> are standalone now</para></listitem></itemizedlist>
-</para></listitem></itemizedlist>
-</para></sect2>
+<listitem><para>removed algorithms that require buffer from <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> due to update limitation</para>
+</listitem><listitem><para>removed support for a dedicated cudaFlow task in Taskflow<itemizedlist>
+<listitem><para>all usage of <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> and <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> are standalone now</para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
+</sect2>
 <sect2 id="release-3-6-0_1release-3-6-0_utilities">
 <title>Utilities</title>
 <para><itemizedlist>
-<listitem><para>Added all_same templates to check if a parameter pack has the same type</para></listitem></itemizedlist>
-</para></sect2>
+<listitem><para>Added all_same templates to check if a parameter pack has the same type</para>
+</listitem></itemizedlist>
+</para>
+</sect2>
 <sect2 id="release-3-6-0_1release-3-6-0_profiler">
 <title>Taskflow Profiler (TFProf)</title>
 <para><itemizedlist>
-<listitem><para>Removed cudaFlow and syclFlow tasks</para></listitem></itemizedlist>
-</para></sect2>
+<listitem><para>Removed cudaFlow and syclFlow tasks</para>
+</listitem></itemizedlist>
+</para>
+</sect2>
 </sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_bug_fixes">
 <title>Bug Fixes</title>
 <para><itemizedlist>
-<listitem><para>Fixed the compilation error caused by clashing <computeroutput>MAX_PRIORITY</computeroutput> wtih <computeroutput>winspool.h</computeroutput> (<ulink url="https://github.com/taskflow/taskflow/pull/459">#459</ulink>)</para></listitem><listitem><para>Fixed the compilation error caused by <ref refid="classtf_1_1TaskView_1a3cb647dc0064b5d11e0c87226c47f8f8" kindref="member">tf::TaskView::for_each_successor</ref> and <ref refid="classtf_1_1TaskView_1a55651e26436bfc2499cadaca4a24e48d" kindref="member">tf::TaskView::for_each_dependent</ref></para></listitem><listitem><para>Fixed the infinite-loop bug when corunning a module task from <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref></para></listitem></itemizedlist>
-</para><para>If you encounter any potential bugs, please submit an issue at <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>.</para></sect1>
+<listitem><para>Fixed the compilation error caused by clashing <computeroutput>MAX_PRIORITY</computeroutput> wtih <computeroutput>winspool.h</computeroutput> (<ulink url="https://github.com/taskflow/taskflow/pull/459">#459</ulink>)</para>
+</listitem><listitem><para>Fixed the compilation error caused by <ref refid="classtf_1_1TaskView_1a3cb647dc0064b5d11e0c87226c47f8f8" kindref="member">tf::TaskView::for_each_successor</ref> and <ref refid="classtf_1_1TaskView_1a55651e26436bfc2499cadaca4a24e48d" kindref="member">tf::TaskView::for_each_dependent</ref></para>
+</listitem><listitem><para>Fixed the infinite-loop bug when corunning a module task from <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref></para>
+</listitem></itemizedlist>
+</para>
+<para>If you encounter any potential bugs, please submit an issue at <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>.</para>
+</sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_breaking_changes">
 <title>Breaking Changes</title>
 <para><itemizedlist>
-<listitem><para>Dropped support for cancelling asynchronous tasks</para></listitem></itemizedlist>
-</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>no<sp/>longer<sp/>supported</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Future" kindref="compound">tf::Future&lt;int&gt;</ref><sp/>fu<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a28bdb43837bd6b548e092154e4df5dd9" kindref="member">async</ref>([](){</highlight></codeline>
+<listitem><para>Dropped support for cancelling asynchronous tasks</para>
+</listitem></itemizedlist>
+</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>no<sp/>longer<sp/>supported</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Future" kindref="compound">tf::Future&lt;int&gt;</ref><sp/>fu<sp/>=<sp/>executor.async([](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal">fu.<ref refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kindref="member">cancel</ref>();</highlight></codeline>
 <codeline><highlight class="normal">std::optional&lt;int&gt;<sp/>res<sp/>=<sp/>fu.get();<sp/><sp/></highlight><highlight class="comment">//<sp/>res<sp/>may<sp/>be<sp/>std::nullopt<sp/>or<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>-<sp/>use<sp/>std::future<sp/>instead</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;int&gt;</ref><sp/>fu<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a28bdb43837bd6b548e092154e4df5dd9" kindref="member">async</ref>([](){</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;int&gt;</ref><sp/>fu<sp/>=<sp/>executor.async([](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>res<sp/>=<sp/>fu.get();</highlight></codeline>
-</programlisting></para><para><itemizedlist>
-<listitem><para>Dropped in-place support for running <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> from a dedicated task</para></listitem></itemizedlist>
-</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>no<sp/>longer<sp/>supported</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
+</programlisting></para>
+<para><itemizedlist>
+<listitem><para>Dropped in-place support for running <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> from a dedicated task</para>
+</listitem></itemizedlist>
+</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>no<sp/>longer<sp/>supported</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">taskflow.emplace([](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cf.offload();</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>-<sp/>user<sp/>to<sp/>fully<sp/>control<sp/>tf::cudaFlow<sp/>for<sp/>maximum<sp/>flexibility</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){</highlight></codeline>
+<codeline><highlight class="normal">taskflow.emplace([](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>offload<sp/>the<sp/>cudaflow<sp/>asynchronously<sp/>through<sp/>a<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
@@ -103,15 +222,18 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>cudaflow<sp/>completes</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-</programlisting></para><para><itemizedlist>
-<listitem><para>Dropped in-place support for running <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> from a dedicated task</para></listitem></itemizedlist>
-</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>now<sp/>longer<sp/>supported</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>cf){</highlight></codeline>
+</programlisting></para>
+<para><itemizedlist>
+<listitem><para>Dropped in-place support for running <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> from a dedicated task</para>
+</listitem></itemizedlist>
+</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>now<sp/>longer<sp/>supported</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">taskflow.emplace([](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cf.offload();</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>-<sp/>user<sp/>to<sp/>fully<sp/>control<sp/>tf::cudaFlowCapturer<sp/>for<sp/>maximum<sp/>flexibility</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){</highlight></codeline>
+<codeline><highlight class="normal">taskflow.emplace([](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref><sp/>cf;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>offload<sp/>the<sp/>cudaflow<sp/>asynchronously<sp/>through<sp/>a<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
@@ -121,51 +243,96 @@ Taskflow works on Linux, Windows, and Mac OS X.</para></sect1>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>cudaflow<sp/>completes</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-</programlisting></para><para><itemizedlist>
+</programlisting></para>
+<para><itemizedlist>
 <listitem><para>Dropped in-place support for running tf::syclFlow from a dedicated task<itemizedlist>
-<listitem><para>SYCL can just be used out of box together with Taskflow</para></listitem></itemizedlist>
-</para></listitem><listitem><para>Move all buffer query methods of CUDA standard algorithms inside execution policy<itemizedlist>
-<listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a446cee95bb839ee180052059e2ad7fd6" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::reduce_bufsz</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::scan_bufsz</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::merge_bufsz</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1abcafb001cd68c1135392f4bcda5a2a05" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::min_element_bufsz</ref></para></listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a31fe75c4b0765df3035e12be49af88aa" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::max_element_bufsz</ref></para></listitem></itemizedlist>
-</para></listitem></itemizedlist>
-</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>no<sp/>longer<sp/>supported</highlight><highlight class="normal"></highlight></codeline>
+<listitem><para>SYCL can just be used out of box together with Taskflow</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Move all buffer query methods of CUDA standard algorithms inside execution policy<itemizedlist>
+<listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a446cee95bb839ee180052059e2ad7fd6" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::reduce_bufsz</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::scan_bufsz</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::merge_bufsz</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1abcafb001cd68c1135392f4bcda5a2a05" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::min_element_bufsz</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a31fe75c4b0765df3035e12be49af88aa" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::max_element_bufsz</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>no<sp/>longer<sp/>supported</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">tf::cuda_reduce_buffer_size&lt;tf::cudaDefaultExecutionPolicy,<sp/>int&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>(and<sp/>similarly<sp/>for<sp/>other<sp/>parallel<sp/>algorithms)</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
 <codeline><highlight class="normal">policy.reduce_bufsz&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
-</programlisting></para><para><itemizedlist>
-<listitem><para>Renamed tf::Executor::run_and_wait to <ref refid="classtf_1_1Executor_1a8fcd9e0557922bb8194999f0cd433ea8" kindref="member">tf::Executor::corun</ref> for expressiveness</para></listitem><listitem><para>Renamed tf::Executor::loop_until to <ref refid="classtf_1_1Executor_1a0fc6eb19f168dc4a9cd0a7c6187c1d2d" kindref="member">tf::Executor::corun_until</ref> for expressiveness</para></listitem><listitem><para>Renamed tf::Runtime::run_and_wait to <ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">tf::Runtime::corun</ref> for expressiveness</para></listitem><listitem><para>Disabled argument support for all asynchronous tasking features<itemizedlist>
-<listitem><para>users are responsible for creating their own wrapper to make the callable</para></listitem></itemizedlist>
-</para></listitem></itemizedlist>
-</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>async<sp/>allows<sp/>passing<sp/>arguments<sp/>to<sp/>the<sp/>callable</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a28bdb43837bd6b548e092154e4df5dd9" kindref="member">async</ref>([](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>},<sp/>4);<sp/><sp/></highlight></codeline>
+</programlisting></para>
+<para><itemizedlist>
+<listitem><para>Renamed tf::Executor::run_and_wait to <ref refid="classtf_1_1Executor_1a8fcd9e0557922bb8194999f0cd433ea8" kindref="member">tf::Executor::corun</ref> for expressiveness</para>
+</listitem><listitem><para>Renamed tf::Executor::loop_until to <ref refid="classtf_1_1Executor_1a0fc6eb19f168dc4a9cd0a7c6187c1d2d" kindref="member">tf::Executor::corun_until</ref> for expressiveness</para>
+</listitem><listitem><para>Renamed tf::Runtime::run_and_wait to <ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">tf::Runtime::corun</ref> for expressiveness</para>
+</listitem><listitem><para>Disabled argument support for all asynchronous tasking features<itemizedlist>
+<listitem><para>users are responsible for creating their own wrapper to make the callable</para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>async<sp/>allows<sp/>passing<sp/>arguments<sp/>to<sp/>the<sp/>callable</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.async([](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>},<sp/>4);<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>-<sp/>users<sp/>are<sp/>responsible<sp/>of<sp/>wrapping<sp/>the<sp/>arumgnets<sp/>into<sp/>a<sp/>callable</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a28bdb43837bd6b548e092154e4df5dd9" kindref="member">async</ref>([i=4](<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/>std::endl;<sp/>){});</highlight></codeline>
-</programlisting></para><para><itemizedlist>
-<listitem><para>Replaced <computeroutput>named_async</computeroutput> with an overload that takes the name string on the first argument</para></listitem></itemizedlist>
-</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>explicitly<sp/>calling<sp/>named_async<sp/>to<sp/>assign<sp/>a<sp/>name<sp/>to<sp/>an<sp/>async<sp/>task</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.async([i=4](<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/>std::endl;<sp/>){});</highlight></codeline>
+</programlisting></para>
+<para><itemizedlist>
+<listitem><para>Replaced <computeroutput>named_async</computeroutput> with an overload that takes the name string on the first argument</para>
+</listitem></itemizedlist>
+</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>explicitly<sp/>calling<sp/>named_async<sp/>to<sp/>assign<sp/>a<sp/>name<sp/>to<sp/>an<sp/>async<sp/>task</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.named_async(</highlight><highlight class="stringliteral">&quot;name&quot;</highlight><highlight class="normal">,<sp/>[](){});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>-<sp/>overlaod</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a28bdb43837bd6b548e092154e4df5dd9" kindref="member">async</ref>(</highlight><highlight class="stringliteral">&quot;name&quot;</highlight><highlight class="normal">,<sp/>[](){});</highlight></codeline>
-</programlisting></para></sect1>
+<codeline><highlight class="normal">executor.async(</highlight><highlight class="stringliteral">&quot;name&quot;</highlight><highlight class="normal">,<sp/>[](){});</highlight></codeline>
+</programlisting></para>
+</sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_documentation">
 <title>Documentation</title>
 <para><itemizedlist>
-<listitem><para>Revised <ref refid="RequestCancellation" kindref="compound">Request Cancellation</ref> to remove support of cancelling async tasks</para></listitem><listitem><para>Revised <ref refid="AsyncTasking" kindref="compound">Asynchronous Tasking</ref> to include asynchronous tasking from <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref><itemizedlist>
-<listitem><para><ref refid="AsyncTasking_1LaunchAsynchronousTasksFromARuntime" kindref="member">Launch Asynchronous Tasks from a Runtime</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Revised Taskflow algorithms to include execution policy<itemizedlist>
-<listitem><para><ref refid="PartitioningAlgorithm" kindref="compound">Partitioning Algorithm</ref></para></listitem><listitem><para><ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref></para></listitem><listitem><para><ref refid="ParallelTransforms" kindref="compound">Parallel Transforms</ref></para></listitem><listitem><para><ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Revised CUDA standard algorithms to correct the use of buffer query methods<itemizedlist>
-<listitem><para><ref refid="CUDASTDReduce" kindref="compound">Parallel Reduction</ref></para></listitem><listitem><para><ref refid="CUDASTDFind" kindref="compound">Parallel Find</ref></para></listitem><listitem><para><ref refid="CUDASTDMerge" kindref="compound">Parallel Merge</ref></para></listitem><listitem><para><ref refid="CUDASTDScan" kindref="compound">Parallel Scan</ref></para></listitem></itemizedlist>
-</para></listitem><listitem><para>Added <ref refid="TaskParallelPipelineWithTokenDependencies" kindref="compound">Task-parallel Pipeline with Token Dependencies</ref></para></listitem><listitem><para>Added <ref refid="ParallelScan" kindref="compound">Parallel Scan</ref></para></listitem><listitem><para>Added <ref refid="DependentAsyncTasking" kindref="compound">Asynchronous Tasking with Dependencies</ref></para></listitem></itemizedlist>
-</para></sect1>
+<listitem><para>Revised <ref refid="RequestCancellation" kindref="compound">Request Cancellation</ref> to remove support of cancelling async tasks</para>
+</listitem><listitem><para>Revised <ref refid="AsyncTasking" kindref="compound">Asynchronous Tasking</ref> to include asynchronous tasking from <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref><itemizedlist>
+<listitem><para><ref refid="AsyncTasking_1LaunchAsynchronousTasksFromARuntime" kindref="member">Launch Asynchronous Tasks from a Runtime</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Revised Taskflow algorithms to include execution policy<itemizedlist>
+<listitem><para><ref refid="PartitioningAlgorithm" kindref="compound">Partitioning Algorithm</ref></para>
+</listitem><listitem><para><ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref></para>
+</listitem><listitem><para><ref refid="ParallelTransforms" kindref="compound">Parallel Transforms</ref></para>
+</listitem><listitem><para><ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Revised CUDA standard algorithms to correct the use of buffer query methods<itemizedlist>
+<listitem><para><ref refid="CUDASTDReduce" kindref="compound">Parallel Reduction</ref></para>
+</listitem><listitem><para><ref refid="CUDASTDFind" kindref="compound">Parallel Find</ref></para>
+</listitem><listitem><para><ref refid="CUDASTDMerge" kindref="compound">Parallel Merge</ref></para>
+</listitem><listitem><para><ref refid="CUDASTDScan" kindref="compound">Parallel Scan</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>Added <ref refid="TaskParallelPipelineWithTokenDependencies" kindref="compound">Task-parallel Pipeline with Token Dependencies</ref></para>
+</listitem><listitem><para>Added <ref refid="ParallelScan" kindref="compound">Parallel Scan</ref></para>
+</listitem><listitem><para>Added <ref refid="DependentAsyncTasking" kindref="compound">Asynchronous Tasking with Dependencies</ref></para>
+</listitem></itemizedlist>
+</para>
+</sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_miscellaneous_items">
 <title>Miscellaneous Items</title>
-<para>We have published Taskflow in the following venues:</para><para><itemizedlist>
-<listitem><para>Dian-Lun Lin, Yanqing Zhang, Haoxing Ren, Shih-Hsin Wang, Brucek Khailany and Tsung-Wei Huang, "<ulink url="https://tsung-wei-huang.github.io/papers/2023-dac.pdf">GenFuzz: GPU-accelerated Hardware Fuzzing using Genetic Algorithm with Multiple Inputs</ulink>," <emphasis>ACM/IEEE Design Automation Conference (DAC)</emphasis>, San Francisco, CA, 2023</para></listitem><listitem><para>Tsung-Wei Huang, "<ulink url="https://tsung-wei-huang.github.io/papers/ipdps23.pdf">qTask: Task-parallel Quantum Circuit Simulation with Incrementality</ulink>," <emphasis>IEEE International Parallel and Distributed Processing Symposium (IPDPS)</emphasis>, St. Petersburg, Florida, 2023</para></listitem><listitem><para>Elmir Dzaka, Dian-Lun Lin, and Tsung-Wei Huang, "<ulink url="https://tsung-wei-huang.github.io/papers/pdco-23.pdf">Parallel And-Inverter Graph Simulation Using a Task-graph Computing System</ulink>," <emphasis>IEEE International Parallel and Distributed Processing Symposium Workshop (IPDPSW)</emphasis>, St. Petersburg, Florida, 2023</para></listitem></itemizedlist>
-</para><para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you intend to collaborate with us on using Taskflow in your scientific computing projects. </para></sect1>
+<para>We have published Taskflow in the following venues:</para>
+<para><itemizedlist>
+<listitem><para>Dian-Lun Lin, Yanqing Zhang, Haoxing Ren, Shih-Hsin Wang, Brucek Khailany and Tsung-Wei Huang, "<ulink url="https://tsung-wei-huang.github.io/papers/2023-dac.pdf">GenFuzz: GPU-accelerated Hardware Fuzzing using Genetic Algorithm with Multiple Inputs</ulink>," <emphasis>ACM/IEEE Design Automation Conference (DAC)</emphasis>, San Francisco, CA, 2023</para>
+</listitem><listitem><para>Tsung-Wei Huang, "<ulink url="https://tsung-wei-huang.github.io/papers/ipdps23.pdf">qTask: Task-parallel Quantum Circuit Simulation with Incrementality</ulink>," <emphasis>IEEE International Parallel and Distributed Processing Symposium (IPDPS)</emphasis>, St. Petersburg, Florida, 2023</para>
+</listitem><listitem><para>Elmir Dzaka, Dian-Lun Lin, and Tsung-Wei Huang, "<ulink url="https://tsung-wei-huang.github.io/papers/pdco-23.pdf">Parallel And-Inverter Graph Simulation Using a Task-graph Computing System</ulink>," <emphasis>IEEE International Parallel and Distributed Processing Symposium Workshop (IPDPSW)</emphasis>, St. Petersburg, Florida, 2023</para>
+</listitem></itemizedlist>
+</para>
+<para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you intend to collaborate with us on using Taskflow in your scientific computing projects. </para>
+</sect1>
     </detaileddescription>
+    <location file="releases/release-3.6.0.dox"/>
   </compounddef>
 </doxygen>

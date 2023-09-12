@@ -35,7 +35,6 @@ void cuda_find_if_loop(P&& p, I input, unsigned count, unsigned* idx, U pred) {
 
   // set the index to the maximum
   cuda_single_task(p, [=] __device__ () { *idx = count; });
-ls
 
   // launch the kernel to atomic-find the minimum
   cuda_kernel<<<B, E::nt, 0, p.stream()>>>([=] __device__ (auto tid, auto bid) {

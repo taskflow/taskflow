@@ -1,35 +1,58 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="CUDASTDScan" kind="page">
     <compoundname>CUDASTDScan</compoundname>
     <title>Parallel Scan</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Include the Header</name>
+        <reference>CUDASTDScan_1CUDASTDParallelScanIncludeTheHeader</reference>
+    </tocsect>
+      <tocsect>
+        <name>What is a Scan Operation?</name>
+        <reference>CUDASTDScan_1CUDASTDWhatIsAScanOperation</reference>
+    </tocsect>
+      <tocsect>
+        <name>Scan a Range of Items</name>
+        <reference>CUDASTDScan_1CUDASTDScanItems</reference>
+    </tocsect>
+      <tocsect>
+        <name>Scan a Range of Transformed Items</name>
+        <reference>CUDASTDScan_1CUDASTDScanTransformedItems</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow provides standard template methods for scanning a range of items on a CUDA GPU.</para><sect1 id="CUDASTDScan_1CUDASTDParallelScanIncludeTheHeader">
+<para>Taskflow provides standard template methods for scanning a range of items on a CUDA GPU.</para>
+<sect1 id="CUDASTDScan_1CUDASTDParallelScanIncludeTheHeader">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/scan.hpp</computeroutput>, for using the parallel-scan algorithm.</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="find_8hpp" kindref="compound">taskflow/cuda/algorithm/find.hpp</ref>&gt;</highlight></codeline>
-</programlisting></para></sect1>
+<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/scan.hpp</computeroutput>, for using the parallel-scan algorithm.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="find_8hpp" kindref="compound">taskflow/cuda/algorithm/find.hpp</ref>&gt;</highlight></codeline>
+</programlisting></para>
+</sect1>
 <sect1 id="CUDASTDScan_1CUDASTDWhatIsAScanOperation">
 <title>What is a Scan Operation?</title>
-<para>A parallel scan task performs the cumulative sum, also known as <emphasis>prefix sum</emphasis> or <emphasis>scan</emphasis>, of the input range and writes the result to the output range. Each element of the output range contains the running total of all earlier elements using the given binary operator for summation.</para><para><image type="html" name="scan.png"></image>
-</para></sect1>
+<para>A parallel scan task performs the cumulative sum, also known as <emphasis>prefix sum</emphasis> or <emphasis>scan</emphasis>, of the input range and writes the result to the output range. Each element of the output range contains the running total of all earlier elements using the given binary operator for summation.</para>
+<para><image type="html" name="scan.png"></image>
+</para>
+</sect1>
 <sect1 id="CUDASTDScan_1CUDASTDScanItems">
 <title>Scan a Range of Items</title>
-<para><ref refid="namespacetf_1a2e1b44c84a09e0a8495a611cb9a7ea40" kindref="member">tf::cuda_inclusive_scan</ref> computes an inclusive prefix sum operation using the given binary operator over a range of elements specified by <computeroutput>[first, last)</computeroutput>. The term "inclusive" means that the i-th input element is included in the i-th sum. The following code computes the inclusive prefix sum over an input array and stores the result in an output array.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+<para><ref refid="namespacetf_1a2e1b44c84a09e0a8495a611cb9a7ea40" kindref="member">tf::cuda_inclusive_scan</ref> computes an inclusive prefix sum operation using the given binary operator over a range of elements specified by <computeroutput>[first, last)</computeroutput>. The term "inclusive" means that the i-th input element is included in the i-th sum. The following code computes the inclusive prefix sum over an input array and stores the result in an output array.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>input<sp/><sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>input<sp/><sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>output<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>output<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>input[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>input[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>scan<sp/>N<sp/>elements<sp/>using<sp/>the<sp/>given<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.<ref refid="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" kindref="member">scan_bufsz</ref>&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.scan_bufsz&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>computes<sp/>inclusive<sp/>scan<sp/>over<sp/>input<sp/>and<sp/>stores<sp/>the<sp/>result<sp/>in<sp/>output</highlight><highlight class="normal"></highlight></codeline>
@@ -48,8 +71,12 @@
 <codeline><highlight class="normal">cudaFree(input);</highlight></codeline>
 <codeline><highlight class="normal">cudaFree(output);</highlight></codeline>
 <codeline><highlight class="normal">cudaFree(buffer);</highlight></codeline>
-</programlisting></para><para>The scan algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results. Since the GPU scan algorithm may require extra buffer to store the temporary results, you need to provide a buffer of size at least larger or equal to the value returned from <computeroutput><ref refid="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" kindref="member">tf::cudaDefaultExecutionPolicy::scan_bufsz</ref></computeroutput>.</para><para><simplesect kind="attention"><para>You must keep the buffer alive before the scan call completes.</para></simplesect>
-On the other hand, <ref refid="namespacetf_1aeb391c40120844318fd715b8c3a716bb" kindref="member">tf::cuda_exclusive_scan</ref> computes an exclusive prefix sum operation. The term "exclusive" means that the i-th input element is <emphasis>NOT</emphasis> included in the i-th sum.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>computes<sp/>exclusive<sp/>scan<sp/>over<sp/>input<sp/>and<sp/>stores<sp/>the<sp/>result<sp/>in<sp/>output</highlight><highlight class="normal"></highlight></codeline>
+</programlisting></para>
+<para>The scan algorithm runs <emphasis>asynchronously</emphasis> through the stream specified in the execution policy. You need to synchronize the stream to obtain correct results. Since the GPU scan algorithm may require extra buffer to store the temporary results, you need to provide a buffer of size at least larger or equal to the value returned from <computeroutput><ref refid="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" kindref="member">tf::cudaDefaultExecutionPolicy::scan_bufsz</ref></computeroutput>.</para>
+<para><simplesect kind="attention"><para>You must keep the buffer alive before the scan call completes.</para>
+</simplesect>
+On the other hand, <ref refid="namespacetf_1aeb391c40120844318fd715b8c3a716bb" kindref="member">tf::cuda_exclusive_scan</ref> computes an exclusive prefix sum operation. The term "exclusive" means that the i-th input element is <emphasis>NOT</emphasis> included in the i-th sum.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>computes<sp/>exclusive<sp/>scan<sp/>over<sp/>input<sp/>and<sp/>stores<sp/>the<sp/>result<sp/>in<sp/>output</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1aeb391c40120844318fd715b8c3a716bb" kindref="member">tf::cuda_exclusive_scan</ref>(policy,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>input,<sp/>input<sp/>+<sp/>N,<sp/>output,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{</highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a<sp/>+<sp/>b;},<sp/>buffer</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
@@ -59,22 +86,24 @@ On the other hand, <ref refid="namespacetf_1aeb391c40120844318fd715b8c3a716bb" k
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=1;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(output[i]<sp/>==<sp/>output[i-1]<sp/>+<sp/>input[i-1]);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+</sect1>
 <sect1 id="CUDASTDScan_1CUDASTDScanTransformedItems">
 <title>Scan a Range of Transformed Items</title>
-<para><ref refid="namespacetf_1afa4aa760ddb6efbda1b9bab505ad5baf" kindref="member">tf::cuda_transform_inclusive_scan</ref> transforms each item in the range <computeroutput>[first, last)</computeroutput> and computes an inclusive prefix sum over these transformed items. The following code multiplies each item by 10 and then compute the inclusive prefix sum over 1000000 transformed items.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+<para><ref refid="namespacetf_1afa4aa760ddb6efbda1b9bab505ad5baf" kindref="member">tf::cuda_transform_inclusive_scan</ref> transforms each item in the range <computeroutput>[first, last)</computeroutput> and computes an inclusive prefix sum over these transformed items. The following code multiplies each item by 10 and then compute the inclusive prefix sum over 1000000 transformed items.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>input<sp/><sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>input<sp/><sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>output<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>output<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>input[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>input[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>scan<sp/>N<sp/>elements<sp/>using<sp/>the<sp/>given<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.<ref refid="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" kindref="member">scan_bufsz</ref>&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.scan_bufsz&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>computes<sp/>inclusive<sp/>scan<sp/>over<sp/>transformed<sp/>input<sp/>and<sp/>stores<sp/>the<sp/>result<sp/>in<sp/>output</highlight><highlight class="normal"></highlight></codeline>
@@ -97,19 +126,21 @@ On the other hand, <ref refid="namespacetf_1aeb391c40120844318fd715b8c3a716bb" k
 <codeline><highlight class="normal">cudaFree(input);</highlight></codeline>
 <codeline><highlight class="normal">cudaFree(output);</highlight></codeline>
 <codeline><highlight class="normal">cudaFree(buffer);</highlight></codeline>
-</programlisting></para><para>Similarly, <ref refid="namespacetf_1a2e739895c1c73538967af060ca714366" kindref="member">tf::cuda_transform_exclusive_scan</ref> performs an exclusive prefix sum over a range of transformed items. The following code computes the exclusive prefix sum over 1000000 transformed items each multipled by 10.</para><para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
+</programlisting></para>
+<para>Similarly, <ref refid="namespacetf_1a2e739895c1c73538967af060ca714366" kindref="member">tf::cuda_transform_exclusive_scan</ref> performs an exclusive prefix sum over a range of transformed items. The following code computes the exclusive prefix sum over 1000000 transformed items each multipled by 10.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>input<sp/><sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>input<sp/><sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>output<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(N);<sp/><sp/></highlight><highlight class="comment">//<sp/>output<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>input[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>input[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>queries<sp/>the<sp/>required<sp/>buffer<sp/>size<sp/>to<sp/>scan<sp/>N<sp/>elements<sp/>using<sp/>the<sp/>given<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.<ref refid="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" kindref="member">scan_bufsz</ref>&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>bytes<sp/><sp/>=<sp/>policy.scan_bufsz&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>buffer<sp/>=<sp/>tf::cuda_malloc_device&lt;std::byte&gt;(bytes);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>computes<sp/>exclusive<sp/>scan<sp/>over<sp/>transformed<sp/>input<sp/>and<sp/>stores<sp/>the<sp/>result<sp/>in<sp/>output</highlight><highlight class="normal"></highlight></codeline>
@@ -132,7 +163,9 @@ On the other hand, <ref refid="namespacetf_1aeb391c40120844318fd715b8c3a716bb" k
 <codeline><highlight class="normal">cudaFree(input);</highlight></codeline>
 <codeline><highlight class="normal">cudaFree(output);</highlight></codeline>
 <codeline><highlight class="normal">cudaFree(buffer);</highlight></codeline>
-</programlisting> </para></sect1>
+</programlisting> </para>
+</sect1>
     </detaileddescription>
+    <location file="cuda_std_algorithms/cuda_std_scan.dox"/>
   </compounddef>
 </doxygen>

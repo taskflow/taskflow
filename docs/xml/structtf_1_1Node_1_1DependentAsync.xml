@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="structtf_1_1Node_1_1DependentAsync" kind="struct" language="C++" prot="private">
     <compoundname>tf::Node::DependentAsync</compoundname>
       <sectiondef kind="public-attrib">
-      <memberdef kind="variable" id="structtf_1_1Node_1_1DependentAsync_1a17a4e95e91708b46969cee36abfcff80" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/utility/functional/function" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void()&gt;</type>
-        <definition>std::function&lt;void()&gt; tf::Node::DependentAsync::work</definition>
+      <memberdef kind="variable" id="structtf_1_1Node_1_1DependentAsync_1a8fe764be4c0357d25e6da706c6c56390" prot="public" static="no" mutable="no">
+        <type>std::variant&lt; <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void()&gt;, <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(<ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref> &amp;)&gt; &gt;</type>
+        <definition>std::variant&lt; std::function&lt;void()&gt;, std::function&lt;void(Runtime&amp;)&gt; &gt; tf::Node::DependentAsync::work</definition>
         <argsstring></argsstring>
         <name>work</name>
         <briefdescription>
@@ -14,10 +14,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="586" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="586" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/graph.hpp" line="590" column="2" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/graph.hpp" bodystart="590" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1Node_1_1DependentAsync_1a7fafc495551519e0ca220136b923aae7" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt;</type>
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt;</type>
         <definition>std::atomic&lt;size_t&gt; tf::Node::DependentAsync::use_count</definition>
         <argsstring></argsstring>
         <name>use_count</name>
@@ -28,10 +28,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="588" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="588" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/graph.hpp" line="592" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/graph.hpp" bodystart="592" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1Node_1_1DependentAsync_1a1ff3d7cb9d06a7c66623f41e5ed177a3" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; AsyncState &gt;</type>
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; AsyncState &gt;</type>
         <definition>std::atomic&lt;AsyncState&gt; tf::Node::DependentAsync::state</definition>
         <argsstring></argsstring>
         <name>state</name>
@@ -42,7 +42,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="589" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="589" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/graph.hpp" line="593" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/graph.hpp" bodystart="593" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -66,7 +66,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="584" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="734" bodyend="735"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/graph.hpp" line="586" column="5" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/graph.hpp" bodystart="738" bodyend="739"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -74,34 +74,28 @@
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
-      <node id="116">
+      <node id="1">
         <label>tf::Node::DependentAsync</label>
-        <childnode refid="117" relation="usage">
-          <edgelabel>work</edgelabel>
-        </childnode>
-        <childnode refid="118" relation="usage">
+        <childnode refid="2" relation="usage">
           <edgelabel>use_count</edgelabel>
         </childnode>
-        <childnode refid="119" relation="usage">
+        <childnode refid="3" relation="usage">
           <edgelabel>state</edgelabel>
         </childnode>
       </node>
-      <node id="119">
+      <node id="3">
         <label>std::atomic&lt; AsyncState &gt;</label>
       </node>
-      <node id="118">
+      <node id="2">
         <label>std::atomic&lt; size_t &gt;</label>
       </node>
-      <node id="117">
-        <label>std::function&lt; void()&gt;</label>
-      </node>
     </collaborationgraph>
-    <location file="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" line="581" column="1" bodyfile="/home/twhuang/Code/taskflow/taskflow/core/graph.hpp" bodystart="581" bodyend="590"/>
+    <location file="/home/thuang295/Code/taskflow/taskflow/core/graph.hpp" line="583" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/graph.hpp" bodystart="583" bodyend="594"/>
     <listofallmembers>
       <member refid="structtf_1_1Node_1_1DependentAsync_1a37927e314ca437d682dcaa40f86960e8" prot="public" virt="non-virtual"><scope>tf::Node::DependentAsync</scope><name>DependentAsync</name></member>
       <member refid="structtf_1_1Node_1_1DependentAsync_1a1ff3d7cb9d06a7c66623f41e5ed177a3" prot="public" virt="non-virtual"><scope>tf::Node::DependentAsync</scope><name>state</name></member>
       <member refid="structtf_1_1Node_1_1DependentAsync_1a7fafc495551519e0ca220136b923aae7" prot="public" virt="non-virtual"><scope>tf::Node::DependentAsync</scope><name>use_count</name></member>
-      <member refid="structtf_1_1Node_1_1DependentAsync_1a17a4e95e91708b46969cee36abfcff80" prot="public" virt="non-virtual"><scope>tf::Node::DependentAsync</scope><name>work</name></member>
+      <member refid="structtf_1_1Node_1_1DependentAsync_1a8fe764be4c0357d25e6da706c6c56390" prot="public" virt="non-virtual"><scope>tf::Node::DependentAsync</scope><name>work</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

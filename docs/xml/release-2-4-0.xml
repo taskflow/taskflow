@@ -1,39 +1,71 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="release-2-4-0" kind="page">
     <compoundname>release-2-4-0</compoundname>
     <title>Release 2.4.0 (2020/03/25)</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Download</name>
+        <reference>release-2-4-0_1release-2-4-0_download</reference>
+    </tocsect>
+      <tocsect>
+        <name>New Features</name>
+        <reference>release-2-4-0_1release-2-4-0_new_features</reference>
+    </tocsect>
+      <tocsect>
+        <name>Bug Fixes</name>
+        <reference>release-2-4-0_1release-2-4-0_bug_fixes</reference>
+    </tocsect>
+      <tocsect>
+        <name>Miscellaneous Items</name>
+        <reference>release-2-4-0_1release-2-4-0_miscellaneous_items</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Cpp-Taskflow 2.4.0 is the 6th release in the 2.x line! This release includes several new changes such as CPU-GPU tasking, improved scheduling flow, documentation, and unit tests.</para><sect1 id="release-2-4-0_1release-2-4-0_download">
+<para>Cpp-Taskflow 2.4.0 is the 6th release in the 2.x line! This release includes several new changes such as CPU-GPU tasking, improved scheduling flow, documentation, and unit tests.</para>
+<sect1 id="release-2-4-0_1release-2-4-0_download">
 <title>Download</title>
-<para>Cpp-Taskflow 2.4.0 can be downloaded from <ulink url="https://github.com/cpp-taskflow/cpp-taskflow/releases/tag/v2.4.0">here</ulink>.</para></sect1>
+<para>Cpp-Taskflow 2.4.0 can be downloaded from <ulink url="https://github.com/cpp-taskflow/cpp-taskflow/releases/tag/v2.4.0">here</ulink>.</para>
+</sect1>
 <sect1 id="release-2-4-0_1release-2-4-0_new_features">
 <title>New Features</title>
 <para><itemizedlist>
-<listitem><para>added <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> for concurrent CPU-GPU tasking (see <ref refid="GPUTaskingcudaFlow" kindref="compound">GPU Tasking (cudaFlow)</ref>) </para></listitem>
-<listitem><para>added a new method <ref refid="classtf_1_1Executor_1a6d6c28ed58211e4c27a99571e5bf0b6c" kindref="member">tf::Executor::num_topologies</ref> to query the number of running taskflows in an executor </para></listitem>
-<listitem><para>added <ref refid="cpp/utility/hash" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::hash</ref> support for <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> </para></listitem>
-<listitem><para>added a new work-stealing algorithm capable of general heterogeneous domains </para></listitem>
-<listitem><para>added unittests for CUDA work (enable by <computeroutput>-DTF_ENABLE_CUDA</computeroutput> during cmake)</para></listitem>
+<listitem><para>added <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> for concurrent CPU-GPU tasking (see <ref refid="GPUTaskingcudaFlow" kindref="compound">GPU Tasking (cudaFlow)</ref>) </para>
+</listitem>
+<listitem><para>added a new method <ref refid="classtf_1_1Executor_1a6d6c28ed58211e4c27a99571e5bf0b6c" kindref="member">tf::Executor::num_topologies</ref> to query the number of running taskflows in an executor </para>
+</listitem>
+<listitem><para>added <ref refid="cpp/utility/hash" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::hash</ref> support for <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> </para>
+</listitem>
+<listitem><para>added a new work-stealing algorithm capable of general heterogeneous domains </para>
+</listitem>
+<listitem><para>added unittests for CUDA work (enable by <computeroutput>-DTF_ENABLE_CUDA</computeroutput> during cmake)</para>
+</listitem>
 </itemizedlist>
-</para></sect1>
+</para>
+</sect1>
 <sect1 id="release-2-4-0_1release-2-4-0_bug_fixes">
 <title>Bug Fixes</title>
 <para><itemizedlist>
-<listitem><para>fixed the bug in nested execution (<ulink url="https://github.com/cpp-taskflow/cpp-taskflow/issues/152">#152</ulink>) </para></listitem>
-<listitem><para>fixed the nameless union/struct extension warning in MS environment (<ulink url="https://github.com/cpp-taskflow/cpp-taskflow/issues/153">#153</ulink>) </para></listitem>
-<listitem><para>fixed the warning/error by changing the type of join counter to std::size (<ulink url="https://github.com/cpp-taskflow/cpp-taskflow/pull/137">#137</ulink>)</para></listitem>
+<listitem><para>fixed the bug in nested execution (<ulink url="https://github.com/cpp-taskflow/cpp-taskflow/issues/152">#152</ulink>) </para>
+</listitem>
+<listitem><para>fixed the nameless union/struct extension warning in MS environment (<ulink url="https://github.com/cpp-taskflow/cpp-taskflow/issues/153">#153</ulink>) </para>
+</listitem>
+<listitem><para>fixed the warning/error by changing the type of join counter to std::size (<ulink url="https://github.com/cpp-taskflow/cpp-taskflow/pull/137">#137</ulink>)</para>
+</listitem>
 </itemizedlist>
-</para></sect1>
+</para>
+</sect1>
 <sect1 id="release-2-4-0_1release-2-4-0_miscellaneous_items">
 <title>Miscellaneous Items</title>
 <para><itemizedlist>
-<listitem><para>reflected the <ulink url="https://cpp-taskflow.github.io/#/">showcase presentation</ulink> on CPU-GPU tasking </para></listitem>
+<listitem><para>reflected the <ulink url="https://cpp-taskflow.github.io/#/">showcase presentation</ulink> on CPU-GPU tasking </para>
+</listitem>
 </itemizedlist>
-</para></sect1>
+</para>
+</sect1>
     </detaileddescription>
+    <location file="releases/release-2.4.0.dox"/>
   </compounddef>
 </doxygen>

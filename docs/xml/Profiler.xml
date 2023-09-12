@@ -1,40 +1,76 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="Profiler" kind="page">
     <compoundname>Profiler</compoundname>
     <title>Profile Taskflow Programs</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Enable Taskflow Profiler</name>
+        <reference>Profiler_1ProfilerEnableTFProf</reference>
+    </tocsect>
+      <tocsect>
+        <name>Enable Taskflow Profiler on a HTTP Server</name>
+        <reference>Profiler_1ProfilerEnableTFProfServer</reference>
+    </tocsect>
+      <tocsect>
+        <name>Display Profile Summary</name>
+        <reference>Profiler_1ProfilerDisplayProfileSummary</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow comes with a built-in profiler, <emphasis>TFProf</emphasis>, for you to profile and visualize taskflow programs.</para><para><image type="html" name="tfprof.png" width="100%"></image>
-</para><sect1 id="Profiler_1ProfilerEnableTFProf">
+<para>Taskflow comes with a built-in profiler, <emphasis>TFProf</emphasis>, for you to profile and visualize taskflow programs.</para>
+<para><image type="html" name="tfprof.png" width="100%"></image>
+</para>
+<sect1 id="Profiler_1ProfilerEnableTFProf">
 <title>Enable Taskflow Profiler</title>
-<para>All taskflow programs come with a lightweight profiling module to observer worker activities in every executor. To enable the profiler, set the environment variable <computeroutput>TF_ENABLE_PROFILER</computeroutput> to a file name in which the profiling result will be stored.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>TF_ENABLE_PROFILER=result.json<sp/>./my_taskflow</highlight></codeline>
+<para>All taskflow programs come with a lightweight profiling module to observer worker activities in every executor. To enable the profiler, set the environment variable <computeroutput>TF_ENABLE_PROFILER</computeroutput> to a file name in which the profiling result will be stored.</para>
+<para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>TF_ENABLE_PROFILER=result.json<sp/>./my_taskflow</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>cat<sp/>result.json</highlight></codeline>
 <codeline><highlight class="normal">[</highlight></codeline>
 <codeline><highlight class="normal">{&quot;executor&quot;:&quot;0&quot;,&quot;data&quot;:[{&quot;worker&quot;:12,&quot;level&quot;:0,&quot;data&quot;:[{&quot;span&quot;:[72,117],&quot;name&quot;:&quot;12_0&quot;,&quot;type&quot;:&quot;static&quot;},{&quot;span&quot;:[121,123],&quot;name&quot;:&quot;12_1&quot;,&quot;type&quot;:&quot;static&quot;},{&quot;span&quot;:[123,125],&quot;name&quot;:&quot;12_2&quot;,&quot;type&quot;:&quot;static&quot;},{&quot;span&quot;:[125,127],&quot;name&quot;:&quot;12_3&quot;,&quot;type&quot;:&quot;static&quot;}]}]}</highlight></codeline>
 <codeline><highlight class="normal">]</highlight></codeline>
-</programlisting></para><para>When the program finishes, it generates and saves the profiling data to <computeroutput>result.json</computeroutput> in JavaScript Object Notation (JSON) format. You can then paste the JSON data to our web-based interface, <ulink url="https://taskflow.github.io/tfprof/">Taskflow Profiler</ulink>, to visualize the execution timelines of tasks and workers. The web interface supports the following features:<itemizedlist>
-<listitem><para>zoom into a selected window</para></listitem><listitem><para>double click to zoom back to the previously selected window</para></listitem><listitem><para>filter workers</para></listitem><listitem><para>mouse over to show the tooltip of the task</para></listitem><listitem><para>rank tasks in decreasing order of criticality (i.e., execution time)</para></listitem></itemizedlist>
-</para><para>TFProf implements a clustering-based algorithm to efficiently visualize tasks and their execution timelines in a browser. Without losing much visual accuracy, each <emphasis>clustered</emphasis> task indicates a group of adjacent tasks clustered by the algorithm, and you can zoom in to see these tasks.</para></sect1>
+</programlisting></para>
+<para>When the program finishes, it generates and saves the profiling data to <computeroutput>result.json</computeroutput> in JavaScript Object Notation (JSON) format. You can then paste the JSON data to our web-based interface, <ulink url="https://taskflow.github.io/tfprof/">Taskflow Profiler</ulink>, to visualize the execution timelines of tasks and workers. The web interface supports the following features:<itemizedlist>
+<listitem><para>zoom into a selected window</para>
+</listitem><listitem><para>double click to zoom back to the previously selected window</para>
+</listitem><listitem><para>filter workers</para>
+</listitem><listitem><para>mouse over to show the tooltip of the task</para>
+</listitem><listitem><para>rank tasks in decreasing order of criticality (i.e., execution time)</para>
+</listitem></itemizedlist>
+</para>
+<para>TFProf implements a clustering-based algorithm to efficiently visualize tasks and their execution timelines in a browser. Without losing much visual accuracy, each <emphasis>clustered</emphasis> task indicates a group of adjacent tasks clustered by the algorithm, and you can zoom in to see these tasks.</para>
+</sect1>
 <sect1 id="Profiler_1ProfilerEnableTFProfServer">
 <title>Enable Taskflow Profiler on a HTTP Server</title>
-<para>When profiling large taskflow programs, the method in the previous section may not work because of the limitation of processing large JSON files. For example, a taskflow program of a million tasks can produce several GBs of profiling data, and the profile may respond to your requests very slowly. To solve this problem, we have implemented a C++-based http server optimized for our profiling data. To compile the server, enable the cmake option <computeroutput>TF_BUILD_PROFILER</computeroutput>. You may visit <ref refid="install" kindref="compound">Building and Installing</ref> to understand Taskflow&apos;s build environment.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>under<sp/>the<sp/>build<sp/>directory</highlight></codeline>
+<para>When profiling large taskflow programs, the method in the previous section may not work because of the limitation of processing large JSON files. For example, a taskflow program of a million tasks can produce several GBs of profiling data, and the profile may respond to your requests very slowly. To solve this problem, we have implemented a C++-based http server optimized for our profiling data. To compile the server, enable the cmake option <computeroutput>TF_BUILD_PROFILER</computeroutput>. You may visit <ref refid="install" kindref="compound">Building and Installing</ref> to understand Taskflow&apos;s build environment.</para>
+<para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>under<sp/>the<sp/>build<sp/>directory</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_PROFILER=ON</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>make</highlight></codeline>
-</programlisting></para><para>After successfully compiling the server, you can find the executable at <computeroutput>tfprof/server/tfprof</computeroutput>. Now, generate profiling data from running a taskflow program but specify the output file with extension <computeroutput></computeroutput>.tfp.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>TF_ENABLE_PROFILER=my_taskflow.tfp<sp/>./my_taskflow</highlight></codeline>
+</programlisting></para>
+<para>After successfully compiling the server, you can find the executable at <computeroutput>tfprof/server/tfprof</computeroutput>. Now, generate profiling data from running a taskflow program but specify the output file with extension <computeroutput></computeroutput>.tfp.</para>
+<para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>TF_ENABLE_PROFILER=my_taskflow.tfp<sp/>./my_taskflow</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>ls</highlight></codeline>
 <codeline><highlight class="normal">my_taskflow.tfp<sp/><sp/><sp/><sp/>#<sp/>my_taskflow.tfp<sp/>is<sp/>of<sp/>binary<sp/>format</highlight></codeline>
-</programlisting></para><para>Launch the server program <computeroutput>tfprof/server/tfprof</computeroutput> and pass (1) the directory of <computeroutput>index.html</computeroutput> (default at <computeroutput>tfprof/</computeroutput>) via the option <computeroutput><ndash/>mount</computeroutput> and (2) the <computeroutput>my_taskflow.tfp</computeroutput> via the option <computeroutput><ndash/>input</computeroutput>.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>under<sp/>the<sp/>build/<sp/>directory</highlight></codeline>
+</programlisting></para>
+<para>Launch the server program <computeroutput>tfprof/server/tfprof</computeroutput> and pass (1) the directory of <computeroutput>index.html</computeroutput> (default at <computeroutput>tfprof/</computeroutput>) via the option <computeroutput><ndash/>mount</computeroutput> and (2) the <computeroutput>my_taskflow.tfp</computeroutput> via the option <computeroutput><ndash/>input</computeroutput>.</para>
+<para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>under<sp/>the<sp/>build/<sp/>directory</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./tfprof/server/tfprof<sp/>--mount<sp/>../tfprof/<sp/>--input<sp/>my_taskflow.tfp</highlight></codeline>
-</programlisting></para><para>Now, open your favorite browser at <computeroutput>localhost:8080</computeroutput> to visualize and profile your <computeroutput>my_taskflow</computeroutput> program.</para><para><image type="html" name="tfprof-local.png"></image>
-</para><para>The compiled profiler is a more powerful version than the pure JavaScript-based interface and it is able to more efficiently handle large profiling data under different queries. We currently support the following two view types:<itemizedlist>
-<listitem><para>Cluster: visualize the profiling data using a clustering algorithm with a limit</para></listitem><listitem><para>Criticality: visualize the top-limit tasks in decreasing order of their execution times</para></listitem></itemizedlist>
-</para></sect1>
+</programlisting></para>
+<para>Now, open your favorite browser at <computeroutput>localhost:8080</computeroutput> to visualize and profile your <computeroutput>my_taskflow</computeroutput> program.</para>
+<para><image type="html" name="tfprof-local.png"></image>
+</para>
+<para>The compiled profiler is a more powerful version than the pure JavaScript-based interface and it is able to more efficiently handle large profiling data under different queries. We currently support the following two view types:<itemizedlist>
+<listitem><para>Cluster: visualize the profiling data using a clustering algorithm with a limit</para>
+</listitem><listitem><para>Criticality: visualize the top-limit tasks in decreasing order of their execution times</para>
+</listitem></itemizedlist>
+</para>
+</sect1>
 <sect1 id="Profiler_1ProfilerDisplayProfileSummary">
 <title>Display Profile Summary</title>
-<para>You can display a profile summary by specifying only the environment variable <computeroutput>TF_ENABLE_PROFILER</computeroutput> without any value. The Taskflow will generate a separate summary report of tasks and workers for each executor created by the program.</para><para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>enable<sp/>the<sp/>environment<sp/>variable<sp/>without<sp/>any<sp/>value</highlight></codeline>
+<para>You can display a profile summary by specifying only the environment variable <computeroutput>TF_ENABLE_PROFILER</computeroutput> without any value. The Taskflow will generate a separate summary report of tasks and workers for each executor created by the program.</para>
+<para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>enable<sp/>the<sp/>environment<sp/>variable<sp/>without<sp/>any<sp/>value</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>TF_ENABLE_PROFILER=<sp/><sp/><sp/><sp/>./my_taskflow_program<sp/><sp/></highlight></codeline>
 <codeline></codeline>
 <codeline><highlight class="normal">#<sp/>your<sp/>program<sp/>output</highlight></codeline>
@@ -51,7 +87,10 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>14<sp/><sp/><sp/><sp/><sp/><sp/>0<sp/><sp/><sp/><sp/>static<sp/><sp/><sp/><sp/><sp/><sp/>7<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>5<sp/><sp/>0.714286<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>4</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>condition<sp/><sp/><sp/><sp/><sp/>11<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0<sp/><sp/>0.000000<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>18<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>5<sp/><sp/>0.277778<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>0<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>4</highlight></codeline>
-</programlisting></para><para>The report consists of two sections, task summary and worker summary. In the first section, the summary reports for each task type the number of executions (<computeroutput>Count</computeroutput>), the total execution time (<computeroutput>Time</computeroutput>), average execution time per task (<computeroutput>Avg</computeroutput>), and the minimum (<computeroutput>Min</computeroutput>) and the maximum (<computeroutput>Max</computeroutput>) execution time among all tasks. Similarly in the second section, the summary reports for each worker the task execution statistics. </para></sect1>
+</programlisting></para>
+<para>The report consists of two sections, task summary and worker summary. In the first section, the summary reports for each task type the number of executions (<computeroutput>Count</computeroutput>), the total execution time (<computeroutput>Time</computeroutput>), average execution time per task (<computeroutput>Avg</computeroutput>), and the minimum (<computeroutput>Min</computeroutput>) and the maximum (<computeroutput>Max</computeroutput>) execution time among all tasks. Similarly in the second section, the summary reports for each worker the task execution statistics. </para>
+</sect1>
     </detaileddescription>
+    <location file="cookbook/profiler.dox"/>
   </compounddef>
 </doxygen>

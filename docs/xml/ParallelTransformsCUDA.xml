@@ -1,39 +1,70 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="ParallelTransformsCUDA" kind="page">
     <compoundname>ParallelTransformsCUDA</compoundname>
     <title>Parallel Transforms</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Include the Header</name>
+        <reference>ParallelTransformsCUDA_1CUDAParallelTransformsIncludeTheHeader</reference>
+    </tocsect>
+      <tocsect>
+        <name>Transform a Range of Items</name>
+        <reference>ParallelTransformsCUDA_1cudaFlowTransformARangeOfItems</reference>
+    </tocsect>
+      <tocsect>
+        <name>Transform Two Ranges of Items</name>
+        <reference>ParallelTransformsCUDA_1cudaFlowTransformTwoRangesOfItems</reference>
+    </tocsect>
+      <tocsect>
+        <name>Miscellaneous Items</name>
+        <reference>ParallelTransformsCUDA_1ParallelTransformCUDAMiscellaneousItems</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> provides template methods for transforming ranges of items to different outputs.</para><sect1 id="ParallelTransformsCUDA_1CUDAParallelTransformsIncludeTheHeader">
+<para><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> provides template methods for transforming ranges of items to different outputs.</para>
+<sect1 id="ParallelTransformsCUDA_1CUDAParallelTransformsIncludeTheHeader">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/transform.hpp</computeroutput>, for creating a parallel-transform task.</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="transform_8hpp" kindref="compound">taskflow/cuda/algorithm/transform.hpp</ref>&gt;</highlight></codeline>
-</programlisting></para></sect1>
+<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/transform.hpp</computeroutput>, for creating a parallel-transform task.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="transform_8hpp" kindref="compound">taskflow/cuda/algorithm/transform.hpp</ref>&gt;</highlight></codeline>
+</programlisting></para>
+</sect1>
 <sect1 id="ParallelTransformsCUDA_1cudaFlowTransformARangeOfItems">
 <title>Transform a Range of Items</title>
-<para>Iterator-based parallel-transform applies the given transform function to a range of items and store the result in another range specified by two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by <ref refid="classtf_1_1cudaFlow_1af89a9bda182272462a0eda2581536cd8" kindref="member">tf::cudaFlow::transform(I first, I last, O output, C op)</ref> represents a parallel execution for the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
+<para>Iterator-based parallel-transform applies the given transform function to a range of items and store the result in another range specified by two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by <ref refid="classtf_1_1cudaFlow_1af89a9bda182272462a0eda2581536cd8" kindref="member">tf::cudaFlow::transform(I first, I last, O output, C op)</ref> represents a parallel execution for the following loop:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*output++<sp/>=<sp/>op(*first++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>The following example creates a transform kernel that transforms an input range of <computeroutput>N</computeroutput> items to an output range by multiplying each item by 10.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>output[i]<sp/>=<sp/>input[i]<sp/>*<sp/>10</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">cudaflow.<ref refid="classtf_1_1cudaFlow_1af89a9bda182272462a0eda2581536cd8" kindref="member">transform</ref>(</highlight></codeline>
+</programlisting></para>
+<para>The following example creates a transform kernel that transforms an input range of <computeroutput>N</computeroutput> items to an output range by multiplying each item by 10.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>output[i]<sp/>=<sp/>input[i]<sp/>*<sp/>10</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">cudaflow.transform(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>input,<sp/>input<sp/>+<sp/>N,<sp/>output,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>x)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>x<sp/>*<sp/>10;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);<sp/></highlight></codeline>
-</programlisting></para><para>Each iteration is independent of each other and is assigned one kernel thread to run the callable. Since the callable runs on GPU, it must be declared with a <computeroutput>__device__</computeroutput> specifier.</para></sect1>
+</programlisting></para>
+<para>Each iteration is independent of each other and is assigned one kernel thread to run the callable. Since the callable runs on GPU, it must be declared with a <computeroutput>__device__</computeroutput> specifier.</para>
+</sect1>
 <sect1 id="ParallelTransformsCUDA_1cudaFlowTransformTwoRangesOfItems">
 <title>Transform Two Ranges of Items</title>
-<para>You can transform two ranges of items to an output range through a binary operator. The task created by <ref refid="classtf_1_1cudaFlow_1abab2bfdfc86ef3a764ece4743fdede76" kindref="member">tf::cudaFlow::transform(I1 first1, I1 last1, I2 first2, O output, C op)</ref> represents a parallel execution for the following loop:</para><para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first1<sp/>!=<sp/>last1)<sp/>{</highlight></codeline>
+<para>You can transform two ranges of items to an output range through a binary operator. The task created by <ref refid="classtf_1_1cudaFlow_1abab2bfdfc86ef3a764ece4743fdede76" kindref="member">tf::cudaFlow::transform(I1 first1, I1 last1, I2 first2, O output, C op)</ref> represents a parallel execution for the following loop:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first1<sp/>!=<sp/>last1)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*output++<sp/>=<sp/>op(*first1++,<sp/>*first2++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para><para>The following example creates a transform kernel that transforms two input ranges of <computeroutput>N</computeroutput> items to an output range by summing each pair of items in the input ranges.</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>output[i]<sp/>=<sp/>input1[i]<sp/>+<sp/>inpu2[i]</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">cudaflow.<ref refid="classtf_1_1cudaFlow_1af89a9bda182272462a0eda2581536cd8" kindref="member">transform</ref>(</highlight></codeline>
+</programlisting></para>
+<para>The following example creates a transform kernel that transforms two input ranges of <computeroutput>N</computeroutput> items to an output range by summing each pair of items in the input ranges.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>output[i]<sp/>=<sp/>input1[i]<sp/>+<sp/>inpu2[i]</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">cudaflow.transform(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>input1,<sp/>input1+N,<sp/>input2,<sp/>output,<sp/>[]__device__(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a+b;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);<sp/></highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+</sect1>
 <sect1 id="ParallelTransformsCUDA_1ParallelTransformCUDAMiscellaneousItems">
 <title>Miscellaneous Items</title>
-<para>The parallel-transform algorithms are also available in <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>. </para></sect1>
+<para>The parallel-transform algorithms are also available in <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>. </para>
+</sect1>
     </detaileddescription>
+    <location file="cudaflow_algorithms/cudaflow_transform.dox"/>
   </compounddef>
 </doxygen>

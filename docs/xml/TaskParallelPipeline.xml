@@ -1,33 +1,86 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="TaskParallelPipeline" kind="page">
     <compoundname>TaskParallelPipeline</compoundname>
     <title>Task-parallel Pipeline</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Include the Header</name>
+        <reference>TaskParallelPipeline_1TaskParallelPipelineIncludeHeaderFile</reference>
+    </tocsect>
+      <tocsect>
+        <name>Understand the Pipeline Scheduling Framework</name>
+        <reference>TaskParallelPipeline_1UnderstandPipelineScheduling</reference>
+    </tocsect>
+      <tocsect>
+        <name>Create a Task-parallel Pipeline Module Task</name>
+        <reference>TaskParallelPipeline_1CreateATaskParallelPipelineModuleTask</reference>
+    </tocsect>
+      <tocsect>
+        <name>Connect Pipeline with Other Tasks</name>
+        <reference>TaskParallelPipeline_1ConnectWithTasks</reference>
+    <tableofcontents>
+      <tocsect>
+        <name>Example 1: Iterate a Pipeline</name>
+        <reference>TaskParallelPipeline_1IterateAPipeline</reference>
+    </tocsect>
+      <tocsect>
+        <name>Example 2: Concatenate Two Pipelines</name>
+        <reference>TaskParallelPipeline_1ConcatenateTwoPipelines</reference>
+    </tocsect>
+      <tocsect>
+        <name>Example 3: Define Multiple Parallel Pipelines</name>
+        <reference>TaskParallelPipeline_1DefineMultipleTaskParallelPipelines</reference>
+    </tocsect>
+    </tableofcontents>
+    </tocsect>
+      <tocsect>
+        <name>Reset a Pipeline</name>
+        <reference>TaskParallelPipeline_1ResetPipeline</reference>
+    </tocsect>
+      <tocsect>
+        <name>Learn More about Taskflow Pipeline</name>
+        <reference>TaskParallelPipeline_1TaskParallelPipelineLearnMore</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow provides a <emphasis>task-parallel</emphasis> pipeline programming framework for you to implement a pipeline algorithm. Pipeline parallelism refers to a parallel execution of multiple data tokens through a linear chain of pipes or stages. Each stage processes the data token sent from the previous stage, applies the given callable to that data token, and then sends the result to the next stage. Multiple data tokens can be processed simultaneously across different stages.</para><sect1 id="TaskParallelPipeline_1TaskParallelPipelineIncludeHeaderFile">
+<para>Taskflow provides a <emphasis>task-parallel</emphasis> pipeline programming framework for you to implement a pipeline algorithm. Pipeline parallelism refers to a parallel execution of multiple data tokens through a linear chain of pipes or stages. Each stage processes the data token sent from the previous stage, applies the given callable to that data token, and then sends the result to the next stage. Multiple data tokens can be processed simultaneously across different stages.</para>
+<sect1 id="TaskParallelPipeline_1TaskParallelPipelineIncludeHeaderFile">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/algorithm/pipeline.hpp</computeroutput>, for implementing task-parallel pipeline algorithms.</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="pipeline_8hpp" kindref="compound">taskflow/algorithm/pipeline.hpp</ref>&gt;</highlight></codeline>
-</programlisting></para></sect1>
+<para>You need to include the header file, <computeroutput>taskflow/algorithm/pipeline.hpp</computeroutput>, for implementing task-parallel pipeline algorithms.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="pipeline_8hpp" kindref="compound">taskflow/algorithm/pipeline.hpp</ref>&gt;</highlight></codeline>
+</programlisting></para>
+</sect1>
 <sect1 id="TaskParallelPipeline_1UnderstandPipelineScheduling">
 <title>Understand the Pipeline Scheduling Framework</title>
-<para>A <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref> object is a <emphasis>composable</emphasis> graph to create a <emphasis>pipeline scheduling framework</emphasis> through a module task in a taskflow (see <ref refid="ComposableTasking" kindref="compound">Composable Tasking</ref>). Unlike the conventional pipeline programming frameworks (e.g., Intel TBB Parallel Pipeline), Taskflow&apos;s pipeline algorithm does not provide any data abstraction, which often restricts users from optimizing data layouts in their applications, but a flexible framework for users to customize their application data atop an efficient pipeline scheduling framework.</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/pipeline_our_structure.dot"></dotfile>
-</para><para>The figure above gives an example of our pipeline scheduling framework. The framework consists of three <emphasis>pipes</emphasis> (serial-parallel-serial stages) and four <emphasis>lines</emphasis> (maximum parallelism), where each line processes at most one data token. A pipeline of three pipes and four lines will propagate each data token through a sequential chain of three pipes and can simultaneously process up to four data tokens at the four lines. Each edge represents a task dependency. For example, the edge from <computeroutput>pipe-0</computeroutput> to <computeroutput>pipe-1</computeroutput> in line <computeroutput>0</computeroutput> represents the task dependency between the first and the second pipes in the first line; the edge from <computeroutput>pipe-0</computeroutput> in line <computeroutput>0</computeroutput> to <computeroutput>pipe-0</computeroutput> in line <computeroutput>1</computeroutput> represents the task dependency between two adjacent lines when processing two data tokens at the same pipe. Each pipe can be either a <emphasis>serial</emphasis> type or a <emphasis>parallel</emphasis> type, where a serial pipe processes data tokens sequentially and a parallel pipe processes different data tokens simultaneously.</para><para><simplesect kind="note"><para>Due to the nature of pipeline, Taskflow requires the first pipe to be a serial type. The pipeline scheduling algorithm operates in a circular fashion with a factor of line count.</para></simplesect>
-</para></sect1>
+<para>A <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref> object is a <emphasis>composable</emphasis> graph to create a <emphasis>pipeline scheduling framework</emphasis> through a module task in a taskflow (see <ref refid="ComposableTasking" kindref="compound">Composable Tasking</ref>). Unlike the conventional pipeline programming frameworks (e.g., Intel TBB Parallel Pipeline), Taskflow&apos;s pipeline algorithm does not provide any data abstraction, which often restricts users from optimizing data layouts in their applications, but a flexible framework for users to customize their application data atop an efficient pipeline scheduling framework.</para>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/pipeline_our_structure.dot"></dotfile>
+</para>
+<para>The figure above gives an example of our pipeline scheduling framework. The framework consists of three <emphasis>pipes</emphasis> (serial-parallel-serial stages) and four <emphasis>lines</emphasis> (maximum parallelism), where each line processes at most one data token. A pipeline of three pipes and four lines will propagate each data token through a sequential chain of three pipes and can simultaneously process up to four data tokens at the four lines. Each edge represents a task dependency. For example, the edge from <computeroutput>pipe-0</computeroutput> to <computeroutput>pipe-1</computeroutput> in line <computeroutput>0</computeroutput> represents the task dependency between the first and the second pipes in the first line; the edge from <computeroutput>pipe-0</computeroutput> in line <computeroutput>0</computeroutput> to <computeroutput>pipe-0</computeroutput> in line <computeroutput>1</computeroutput> represents the task dependency between two adjacent lines when processing two data tokens at the same pipe. Each pipe can be either a <emphasis>serial</emphasis> type or a <emphasis>parallel</emphasis> type, where a serial pipe processes data tokens sequentially and a parallel pipe processes different data tokens simultaneously.</para>
+<para><simplesect kind="note"><para>Due to the nature of pipeline, Taskflow requires the first pipe to be a serial type. The pipeline scheduling algorithm operates in a circular fashion with a factor of line count.</para>
+</simplesect>
+</para>
+</sect1>
 <sect1 id="TaskParallelPipeline_1CreateATaskParallelPipelineModuleTask">
 <title>Create a Task-parallel Pipeline Module Task</title>
-<para>Taskflow leverages modern C++ and template techniques to strike a balance between the <emphasis>expressiveness</emphasis> and <emphasis>generality</emphasis> in designing the pipeline programming model. In general, there are three steps to create a task-parallel pipeline application:</para><para><orderedlist>
-<listitem><para>Define the pipeline structure (e.g., pipe type, pipe callable, stopping rule, line count)</para></listitem><listitem><para>Define the data storage and layout, if needed for the application</para></listitem><listitem><para>Define the pipeline taskflow graph using composition</para></listitem></orderedlist>
-</para><para>The following code creates a pipeline scheduling framework using the example from the previous section. The framework schedules a total of five <emphasis>scheduling tokens</emphasis> labeled from 0 to 4. The first pipe stores the token identifier in a custom data storage, <computeroutput>buffer</computeroutput>, and each of the rest pipes adds one to the input data from the result of the previous pipe and stores the result into the corresponding line entry in the buffer.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<para>Taskflow leverages modern C++ and template techniques to strike a balance between the <emphasis>expressiveness</emphasis> and <emphasis>generality</emphasis> in designing the pipeline programming model. In general, there are three steps to create a task-parallel pipeline application:</para>
+<para><orderedlist>
+<listitem><para>Define the pipeline structure (e.g., pipe type, pipe callable, stopping rule, line count)</para>
+</listitem><listitem><para>Define the data storage and layout, if needed for the application</para>
+</listitem><listitem><para>Define the pipeline taskflow graph using composition</para>
+</listitem></orderedlist>
+</para>
+<para>The following code creates a pipeline scheduling framework using the example from the previous section. The framework schedules a total of five <emphasis>scheduling tokens</emphasis> labeled from 0 to 4. The first pipe stores the token identifier in a custom data storage, <computeroutput>buffer</computeroutput>, and each of the rest pipes adds one to the input data from the result of the previous pipe and stores the result into the corresponding line entry in the buffer.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>2:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>3:</highlight></codeline>
 <codeline><highlight class="normal"><sp/>4:<sp/></highlight><highlight class="comment">//<sp/>maximum<sp/>parallelism<sp/>-<sp/>each<sp/>line<sp/>processes<sp/>one<sp/>token<sp/>at<sp/>a<sp/>time</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/>5:<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>num_lines<sp/>=<sp/>4;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>6:</highlight></codeline>
 <codeline><highlight class="normal"><sp/>7:<sp/></highlight><highlight class="comment">//<sp/>custom<sp/>data<sp/>storage</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/>8:<sp/><ref refid="cpp/container/array" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;int, num_lines&gt;</ref><sp/>buffer;</highlight></codeline>
+<codeline><highlight class="normal"><sp/>8:<sp/><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;int, num_lines&gt;</ref><sp/>buffer;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>9:</highlight></codeline>
 <codeline><highlight class="normal">10:<sp/></highlight><highlight class="comment">//<sp/>the<sp/>pipeline<sp/>consists<sp/>of<sp/>three<sp/>pipes<sp/>(serial-parallel-serial)</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">11:<sp/></highlight><highlight class="comment">//<sp/>and<sp/>up<sp/>to<sp/>four<sp/>concurrent<sp/>scheduling<sp/>tokens</highlight><highlight class="normal"></highlight></codeline>
@@ -39,13 +92,13 @@
 <codeline><highlight class="normal">17:<sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">18:<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>save<sp/>the<sp/>result<sp/>of<sp/>this<sp/>pipe<sp/>into<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">19:<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline><highlight class="normal">20:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;pipe<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
+<codeline><highlight class="normal">20:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;pipe<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">21:<sp/><sp/><sp/><sp/><sp/><sp/><sp/>buffer[pf.line()]<sp/>=<sp/>pf.token();</highlight></codeline>
 <codeline><highlight class="normal">22:<sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">23:<sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal">24:</highlight></codeline>
 <codeline><highlight class="normal">25:<sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::PARALLEL</ref>,<sp/>[&amp;buffer](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">26:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
+<codeline><highlight class="normal">26:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
 <codeline><highlight class="normal">27:<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;pipe<sp/>1:<sp/>input<sp/>buffer[%zu]<sp/>=<sp/>%d\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
 <codeline><highlight class="normal">28:<sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.line(),<sp/>buffer[pf.line()]</highlight></codeline>
 <codeline><highlight class="normal">29:<sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
@@ -54,7 +107,7 @@
 <codeline><highlight class="normal">32:<sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal">33:</highlight></codeline>
 <codeline><highlight class="normal">34:<sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;buffer](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">35:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
+<codeline><highlight class="normal">35:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
 <codeline><highlight class="normal">36:<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;pipe<sp/>2:<sp/>input<sp/>buffer[%zu]<sp/>=<sp/>%d\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
 <codeline><highlight class="normal">37:<sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.line(),<sp/>buffer[pf.line()]</highlight></codeline>
 <codeline><highlight class="normal">38:<sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
@@ -68,23 +121,43 @@
 <codeline><highlight class="normal">46:</highlight></codeline>
 <codeline><highlight class="normal">47:<sp/></highlight><highlight class="comment">//<sp/>execute<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">48:<sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
-</programlisting></para><para>Debrief:</para><para><itemizedlist>
-<listitem><para>Lines 4-5 define the structure of the pipeline scheduling framework </para></listitem>
-<listitem><para>Line 8 defines the data storage as an one-dimensional array of <computeroutput>num_lines</computeroutput> integers </para></listitem>
-<listitem><para>Line 12 defines the number of lines in the pipeline </para></listitem>
-<listitem><para>Lines 13-23 define the first serial pipe, which will stop the pipeline scheduling at the fifth token </para></listitem>
-<listitem><para>Lines 25-32 define the second parallel pipe </para></listitem>
-<listitem><para>Lines 34-41 define the third serial pipe </para></listitem>
-<listitem><para>Line 45 defines the pipeline taskflow graph using composition </para></listitem>
-<listitem><para>Line 48 executes the taskflow</para></listitem>
+</programlisting></para>
+<para>Debrief:</para>
+<para><itemizedlist>
+<listitem><para>Lines 4-5 define the structure of the pipeline scheduling framework </para>
+</listitem>
+<listitem><para>Line 8 defines the data storage as an one-dimensional array of <computeroutput>num_lines</computeroutput> integers </para>
+</listitem>
+<listitem><para>Line 12 defines the number of lines in the pipeline </para>
+</listitem>
+<listitem><para>Lines 13-23 define the first serial pipe, which will stop the pipeline scheduling at the fifth token </para>
+</listitem>
+<listitem><para>Lines 25-32 define the second parallel pipe </para>
+</listitem>
+<listitem><para>Lines 34-41 define the third serial pipe </para>
+</listitem>
+<listitem><para>Line 45 defines the pipeline taskflow graph using composition </para>
+</listitem>
+<listitem><para>Line 48 executes the taskflow</para>
+</listitem>
 </itemizedlist>
-Taskflow leverages <ref refid="RuntimeTasking" kindref="compound">Interact with the Runtime</ref> and <ref refid="ComposableTasking" kindref="compound">Composable Tasking</ref> to implement the pipeline scheduling framework. The taskflow graph of this pipeline example is shown as follows, where 1) one condition task is used to decide which runtime task to run and 2) four runtime tasks is used to schedule tokens at four parallel lines, respectively.</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/pipeline_basic_dependency_graph.dot"></dotfile>
-</para><para>In this example, we customize the data storage, <computeroutput>buffer</computeroutput>, as an one-dimensional array of 4 integers, since the pipeline structure defines only four parallel lines. Each entry of <computeroutput>buffer</computeroutput> stores stores the data being processed in the corresponding line. For example, <computeroutput>buffer[1]</computeroutput> stores the processed data at line <computeroutput>1</computeroutput>. The following figure shows the data layout of <computeroutput>buffer</computeroutput>.</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/pipeline_memory_layout.dot"></dotfile>
-</para><para><simplesect kind="note"><para>In practice, you may need to add padding to the data type of the buffer or align it with the cacheline size to avoid false sharing. If the data type varies at different pipes, you can use <ulink url="https://en.cppreference.com/w/cpp/utility/variant">std::variant</ulink> to store the data types in a uniform storage.</para></simplesect>
-For each scheduling token, you can use <ref refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kindref="member">tf::Pipeflow::line()</ref> to get its line identifier and <ref refid="classtf_1_1Pipeflow_1a4914c1f381a3016e98285b019cf60d6d" kindref="member">tf::Pipeflow::pipe()</ref> to get its pipe identifier. For example, if a scheduling token is at the third pipe of the forth line, <ref refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kindref="member">tf::Pipeflow::line()</ref> will return <computeroutput>3</computeroutput> and <ref refid="classtf_1_1Pipeflow_1a4914c1f381a3016e98285b019cf60d6d" kindref="member">tf::Pipeflow::pipe()</ref> will return <computeroutput>2</computeroutput> (index starts from 0). To stop the execution of the pipeline, you need to call <ref refid="classtf_1_1Pipeflow_1a830b7f204cb87fff17e8d424918d9453" kindref="member">tf::Pipeflow::stop()</ref> at the first pipe. Once the stop signal has been triggered, the pipeline will stop scheduling any new tokens after the callable. As we can see from this example, <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref> gives you the full control to customize your application data on top of a pipeline scheduling framework.</para><para><simplesect kind="note"><para><orderedlist>
-<listitem><para>Calling <ref refid="classtf_1_1Pipeflow_1a830b7f204cb87fff17e8d424918d9453" kindref="member">tf::Pipeflow::stop()</ref> not at the first pipe has no effect on the pipeline scheduling.</para></listitem><listitem><para>In most cases, <ref refid="cpp/thread/thread/hardware_concurrency" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::thread::hardware_concurrency</ref> is a good number for line count.</para></listitem></orderedlist>
-</para></simplesect>
-Our pipeline algorithm schedules tokens in a <emphasis>circular</emphasis> manner, with a factor of <computeroutput>num_lines</computeroutput>. That is, token <computeroutput>t</computeroutput> will be processed at line <computeroutput>t % num_lines</computeroutput>. The following snippet shows one of the possible outputs of this pipeline program:</para><para><programlisting filename=".bash"><codeline><highlight class="normal">pipe<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>0</highlight></codeline>
+Taskflow leverages <ref refid="RuntimeTasking" kindref="compound">Interact with the Runtime</ref> and <ref refid="ComposableTasking" kindref="compound">Composable Tasking</ref> to implement the pipeline scheduling framework. The taskflow graph of this pipeline example is shown as follows, where 1) one condition task is used to decide which runtime task to run and 2) four runtime tasks is used to schedule tokens at four parallel lines, respectively.</para>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/pipeline_basic_dependency_graph.dot"></dotfile>
+</para>
+<para>In this example, we customize the data storage, <computeroutput>buffer</computeroutput>, as an one-dimensional array of 4 integers, since the pipeline structure defines only four parallel lines. Each entry of <computeroutput>buffer</computeroutput> stores stores the data being processed in the corresponding line. For example, <computeroutput>buffer[1]</computeroutput> stores the processed data at line <computeroutput>1</computeroutput>. The following figure shows the data layout of <computeroutput>buffer</computeroutput>.</para>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/pipeline_memory_layout.dot"></dotfile>
+</para>
+<para><simplesect kind="note"><para>In practice, you may need to add padding to the data type of the buffer or align it with the cacheline size to avoid false sharing. If the data type varies at different pipes, you can use <ulink url="https://en.cppreference.com/w/cpp/utility/variant">std::variant</ulink> to store the data types in a uniform storage.</para>
+</simplesect>
+For each scheduling token, you can use <ref refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kindref="member">tf::Pipeflow::line()</ref> to get its line identifier and <ref refid="classtf_1_1Pipeflow_1a4914c1f381a3016e98285b019cf60d6d" kindref="member">tf::Pipeflow::pipe()</ref> to get its pipe identifier. For example, if a scheduling token is at the third pipe of the forth line, <ref refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kindref="member">tf::Pipeflow::line()</ref> will return <computeroutput>3</computeroutput> and <ref refid="classtf_1_1Pipeflow_1a4914c1f381a3016e98285b019cf60d6d" kindref="member">tf::Pipeflow::pipe()</ref> will return <computeroutput>2</computeroutput> (index starts from 0). To stop the execution of the pipeline, you need to call <ref refid="classtf_1_1Pipeflow_1a830b7f204cb87fff17e8d424918d9453" kindref="member">tf::Pipeflow::stop()</ref> at the first pipe. Once the stop signal has been triggered, the pipeline will stop scheduling any new tokens after the callable. As we can see from this example, <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref> gives you the full control to customize your application data on top of a pipeline scheduling framework.</para>
+<para><simplesect kind="note"><para><orderedlist>
+<listitem><para>Calling <ref refid="classtf_1_1Pipeflow_1a830b7f204cb87fff17e8d424918d9453" kindref="member">tf::Pipeflow::stop()</ref> not at the first pipe has no effect on the pipeline scheduling.</para>
+</listitem><listitem><para>In most cases, <ref refid="cpp/thread/thread/hardware_concurrency" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::thread::hardware_concurrency</ref> is a good number for line count.</para>
+</listitem></orderedlist>
+</para>
+</simplesect>
+Our pipeline algorithm schedules tokens in a <emphasis>circular</emphasis> manner, with a factor of <computeroutput>num_lines</computeroutput>. That is, token <computeroutput>t</computeroutput> will be processed at line <computeroutput>t % num_lines</computeroutput>. The following snippet shows one of the possible outputs of this pipeline program:</para>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">pipe<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>0</highlight></codeline>
 <codeline><highlight class="normal">pipe<sp/>1:<sp/>input<sp/>buffer[0]<sp/>=<sp/>0</highlight></codeline>
 <codeline><highlight class="normal">pipe<sp/>2:<sp/>input<sp/>buffer[0]<sp/>=<sp/>1</highlight></codeline>
 <codeline><highlight class="normal">pipe<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>1</highlight></codeline>
@@ -99,22 +172,29 @@ Our pipeline algorithm schedules tokens in a <emphasis>circular</emphasis> manne
 <codeline><highlight class="normal">pipe<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>4</highlight></codeline>
 <codeline><highlight class="normal">pipe<sp/>1:<sp/>input<sp/>buffer[0]<sp/>=<sp/>4</highlight></codeline>
 <codeline><highlight class="normal">pipe<sp/>2:<sp/>input<sp/>buffer[0]<sp/>=<sp/>5</highlight></codeline>
-</programlisting></para><para>There are a total of five tokens running through three pipes. Each pipes prints its input data value, except the first pipe that prints its token identifier. Since the second pipe is a parallel pipe, the output can interleave.</para></sect1>
+</programlisting></para>
+<para>There are a total of five tokens running through three pipes. Each pipes prints its input data value, except the first pipe that prints its token identifier. Since the second pipe is a parallel pipe, the output can interleave.</para>
+</sect1>
 <sect1 id="TaskParallelPipeline_1ConnectWithTasks">
 <title>Connect Pipeline with Other Tasks</title>
 <para>You can connect the pipeline module task with other tasks to create a taskflow application that embeds one or multiple pipeline algorithms. We describe three common examples below:<itemizedlist>
-<listitem><para><ref refid="TaskParallelPipeline_1IterateAPipeline" kindref="member">Example 1: Iterate a Pipeline</ref></para></listitem><listitem><para><ref refid="TaskParallelPipeline_1ConcatenateTwoPipelines" kindref="member">Example 2: Concatenate Two Pipelines</ref></para></listitem><listitem><para><ref refid="TaskParallelPipeline_1DefineMultipleTaskParallelPipelines" kindref="member">Example 3: Define Multiple Parallel Pipelines</ref></para></listitem></itemizedlist>
-</para><sect2 id="TaskParallelPipeline_1IterateAPipeline">
+<listitem><para><ref refid="TaskParallelPipeline_1IterateAPipeline" kindref="member">Example 1: Iterate a Pipeline</ref></para>
+</listitem><listitem><para><ref refid="TaskParallelPipeline_1ConcatenateTwoPipelines" kindref="member">Example 2: Concatenate Two Pipelines</ref></para>
+</listitem><listitem><para><ref refid="TaskParallelPipeline_1DefineMultipleTaskParallelPipelines" kindref="member">Example 3: Define Multiple Parallel Pipelines</ref></para>
+</listitem></itemizedlist>
+</para>
+<sect2 id="TaskParallelPipeline_1IterateAPipeline">
 <title>Example 1: Iterate a Pipeline</title>
 <para>This example emulates a data streaming application that iteratively runs a stream of data through a pipeline using conditional tasking. The taskflow graph consists of one pipeline module task and one condition task. The pipeline module task processes a stream of data. The condition task decides the availability of data and reruns the pipeline when the next stream of data becomes available. <linebreak/>
- <programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>2:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>3:</highlight></codeline>
 <codeline><highlight class="normal"><sp/>4:<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>num_lines<sp/>=<sp/>4;<sp/><sp/></highlight><highlight class="comment">//<sp/>maximum<sp/>parallelism<sp/>of<sp/>the<sp/>pipeline</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/>5:<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/>6:<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>0,<sp/>N<sp/>=<sp/>0;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>7:<sp/></highlight><highlight class="comment">//<sp/>custom<sp/>data<sp/>storage</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/>8:<sp/><ref refid="cpp/container/array" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;int, num_lines&gt;</ref><sp/>buffer;</highlight></codeline>
+<codeline><highlight class="normal"><sp/>8:<sp/><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;int, num_lines&gt;</ref><sp/>buffer;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>9:</highlight></codeline>
 <codeline><highlight class="normal">10:<sp/></highlight><highlight class="comment">//<sp/>the<sp/>pipeline<sp/>consists<sp/>of<sp/>three<sp/>pipes<sp/>(serial-parallel-serial)</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">11:<sp/></highlight><highlight class="comment">//<sp/>and<sp/>up<sp/>to<sp/>four<sp/>concurrent<sp/>scheduling<sp/>tokens</highlight><highlight class="normal"></highlight></codeline>
@@ -126,13 +206,13 @@ Our pipeline algorithm schedules tokens in a <emphasis>circular</emphasis> manne
 <codeline><highlight class="normal">17:<sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">18:<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>save<sp/>the<sp/>result<sp/>of<sp/>this<sp/>pipe<sp/>into<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">19:<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline><highlight class="normal">20:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
+<codeline><highlight class="normal">20:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">21:<sp/><sp/><sp/><sp/><sp/><sp/><sp/>buffer[pf.line()]<sp/>=<sp/>pf.token();</highlight></codeline>
 <codeline><highlight class="normal">22:<sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">23:<sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal">24:</highlight></codeline>
 <codeline><highlight class="normal">25:<sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::PARALLEL</ref>,<sp/>[&amp;buffer](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">26:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
+<codeline><highlight class="normal">26:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
 <codeline><highlight class="normal">27:<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;stage<sp/>1:<sp/>input<sp/>buffer[%zu]<sp/>=<sp/>%d\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
 <codeline><highlight class="normal">28:<sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.line(),<sp/>buffer[pf.line()]</highlight></codeline>
 <codeline><highlight class="normal">29:<sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
@@ -141,7 +221,7 @@ Our pipeline algorithm schedules tokens in a <emphasis>circular</emphasis> manne
 <codeline><highlight class="normal">32:<sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal">33:</highlight></codeline>
 <codeline><highlight class="normal">34:<sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;buffer](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">35:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
+<codeline><highlight class="normal">35:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
 <codeline><highlight class="normal">36:<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;stage<sp/>2:<sp/>input<sp/>buffer[%zu]<sp/>=<sp/>%d\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
 <codeline><highlight class="normal">37:<sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.line(),<sp/>buffer[pf.line()]</highlight></codeline>
 <codeline><highlight class="normal">38:<sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
@@ -153,7 +233,7 @@ Our pipeline algorithm schedules tokens in a <emphasis>circular</emphasis> manne
 <codeline><highlight class="normal">44:<sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>conditional<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;N,<sp/>&amp;i](){</highlight></codeline>
 <codeline><highlight class="normal">45:<sp/><sp/><sp/>i<sp/>=<sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">46:<sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(++N<sp/>&lt;<sp/>2)<sp/>{<sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal">47:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Rerun<sp/>the<sp/>pipeline\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">47:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Rerun<sp/>the<sp/>pipeline\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">48:<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">49:<sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">50:<sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
@@ -164,9 +244,9 @@ Our pipeline algorithm schedules tokens in a <emphasis>circular</emphasis> manne
 <codeline><highlight class="normal">55:<sp/></highlight><highlight class="comment">//<sp/>build<sp/>the<sp/>pipeline<sp/>graph<sp/>using<sp/>composition</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">56:<sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>pipeline<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">composed_of</ref>(pl)</highlight></codeline>
 <codeline><highlight class="normal">57:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">58:<sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>initial<sp/><sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;initial\n&quot;</highlight><highlight class="normal">;<sp/><sp/>})</highlight></codeline>
+<codeline><highlight class="normal">58:<sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>initial<sp/><sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;initial\n&quot;</highlight><highlight class="normal">;<sp/><sp/>})</highlight></codeline>
 <codeline><highlight class="normal">59:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;initial&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">60:<sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>stop<sp/><sp/><sp/><sp/><sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;stop\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal">60:<sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>stop<sp/><sp/><sp/><sp/><sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;stop\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
 <codeline><highlight class="normal">61:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;stop&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">62:</highlight></codeline>
 <codeline><highlight class="normal">63:<sp/></highlight><highlight class="comment">//<sp/>specify<sp/>the<sp/>graph<sp/>dependency</highlight><highlight class="normal"></highlight></codeline>
@@ -176,23 +256,40 @@ Our pipeline algorithm schedules tokens in a <emphasis>circular</emphasis> manne
 <codeline><highlight class="normal">67:</highlight></codeline>
 <codeline><highlight class="normal">68:<sp/></highlight><highlight class="comment">//<sp/>execute<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">69:<sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
-</programlisting></para><para>Debrief:</para><para><itemizedlist>
-<listitem><para>Lines 4-5 define the structure of the pipeline scheduling framework </para></listitem>
-<listitem><para>Line 8 defines the data storage as an one-dimensional array (<computeroutput>num_lines</computeroutput> integers) </para></listitem>
-<listitem><para>Line 12 defines the number of lines in the pipeline </para></listitem>
+</programlisting></para>
+<para>Debrief:</para>
+<para><itemizedlist>
+<listitem><para>Lines 4-5 define the structure of the pipeline scheduling framework </para>
+</listitem>
+<listitem><para>Line 8 defines the data storage as an one-dimensional array (<computeroutput>num_lines</computeroutput> integers) </para>
+</listitem>
+<listitem><para>Line 12 defines the number of lines in the pipeline </para>
+</listitem>
 <listitem><para>Lines 13-23 define the first serial pipe, which will stop the pipeline scheduling when <computeroutput>i</computeroutput> is <computeroutput>5</computeroutput> <linebreak/>
-</para></listitem>
-<listitem><para>Lines 25-32 define the second parallel pipe </para></listitem>
-<listitem><para>Lines 34-41 define the third serial pipe </para></listitem>
-<listitem><para>Lines 44-53 define a condition task which returns 0 when <computeroutput>N</computeroutput> is less than <computeroutput>2</computeroutput>, otherwise returns <computeroutput>1</computeroutput> </para></listitem>
-<listitem><para>Line 45 resets variable <computeroutput>i</computeroutput> </para></listitem>
-<listitem><para>Lines 56-57 define the pipeline graph using composition </para></listitem>
-<listitem><para>Lines 58-61 define two static tasks </para></listitem>
-<listitem><para>Line 64-66 define the task dependency </para></listitem>
-<listitem><para>Line 69 executes the taskflow</para></listitem>
+ </para>
+</listitem>
+<listitem><para>Lines 25-32 define the second parallel pipe </para>
+</listitem>
+<listitem><para>Lines 34-41 define the third serial pipe </para>
+</listitem>
+<listitem><para>Lines 44-53 define a condition task which returns 0 when <computeroutput>N</computeroutput> is less than <computeroutput>2</computeroutput>, otherwise returns <computeroutput>1</computeroutput> </para>
+</listitem>
+<listitem><para>Line 45 resets variable <computeroutput>i</computeroutput> </para>
+</listitem>
+<listitem><para>Lines 56-57 define the pipeline graph using composition </para>
+</listitem>
+<listitem><para>Lines 58-61 define two static tasks </para>
+</listitem>
+<listitem><para>Line 64-66 define the task dependency </para>
+</listitem>
+<listitem><para>Line 69 executes the taskflow</para>
+</listitem>
 </itemizedlist>
-The taskflow graph of this pipeline example is illustrated as follows:</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/pipeline_example1.dot"></dotfile>
-</para><para>The following snippet shows one of the possible outputs:</para><para><programlisting filename=".bash"><codeline><highlight class="normal">initial</highlight></codeline>
+The taskflow graph of this pipeline example is illustrated as follows:</para>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/pipeline_example1.dot"></dotfile>
+</para>
+<para>The following snippet shows one of the possible outputs:</para>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">initial</highlight></codeline>
 <codeline><highlight class="normal">stage<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>0</highlight></codeline>
 <codeline><highlight class="normal">stage<sp/>1:<sp/>input<sp/>buffer[0]<sp/>=<sp/>0</highlight></codeline>
 <codeline><highlight class="normal">stage<sp/>2:<sp/>input<sp/>buffer[0]<sp/>=<sp/>1</highlight></codeline>
@@ -225,18 +322,21 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal">stage<sp/>1:<sp/>input<sp/>buffer[1]<sp/>=<sp/>9</highlight></codeline>
 <codeline><highlight class="normal">stage<sp/>2:<sp/>input<sp/>buffer[1]<sp/>=<sp/>10</highlight></codeline>
 <codeline><highlight class="normal">stop</highlight></codeline>
-</programlisting></para><para>The pipeline runs twice as controlled by the condition task <computeroutput>conditional</computeroutput>. The starting token in the second run of the pipeline is <computeroutput>5</computeroutput> rather than <computeroutput>0</computeroutput> because the pipeline keeps a stateful number of tokens. The last token is <computeroutput>9</computeroutput>, which means the pipeline processes in total <computeroutput>10</computeroutput> scheduling tokens. The first five tokens (token <computeroutput>0</computeroutput> to <computeroutput>4</computeroutput>) are processed in the first run, and the remaining five tokens (token <computeroutput>5</computeroutput> to <computeroutput>9</computeroutput>) are processed in the second run. In the condition task, we use <computeroutput>N</computeroutput> as a decision-making counter to process the next stream of data.</para></sect2>
+</programlisting></para>
+<para>The pipeline runs twice as controlled by the condition task <computeroutput>conditional</computeroutput>. The starting token in the second run of the pipeline is <computeroutput>5</computeroutput> rather than <computeroutput>0</computeroutput> because the pipeline keeps a stateful number of tokens. The last token is <computeroutput>9</computeroutput>, which means the pipeline processes in total <computeroutput>10</computeroutput> scheduling tokens. The first five tokens (token <computeroutput>0</computeroutput> to <computeroutput>4</computeroutput>) are processed in the first run, and the remaining five tokens (token <computeroutput>5</computeroutput> to <computeroutput>9</computeroutput>) are processed in the second run. In the condition task, we use <computeroutput>N</computeroutput> as a decision-making counter to process the next stream of data.</para>
+</sect2>
 <sect2 id="TaskParallelPipeline_1ConcatenateTwoPipelines">
 <title>Example 2: Concatenate Two Pipelines</title>
-<para>This example demonstrates two concatenated pipelines where a sequence of data tokens run synchronously from one pipeline to another pipeline. The first pipeline task precedes the second pipeline task.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<para>This example demonstrates two concatenated pipelines where a sequence of data tokens run synchronously from one pipeline to another pipeline. The first pipeline task precedes the second pipeline task.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/>2:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>3:</highlight></codeline>
 <codeline><highlight class="normal"><sp/>4:<sp/></highlight><highlight class="comment">//<sp/>define<sp/>the<sp/>maximum<sp/>parallelism<sp/>of<sp/>the<sp/>pipeline</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/>5:<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>num_lines<sp/>=<sp/>4;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>6:</highlight></codeline>
 <codeline><highlight class="normal"><sp/>7:<sp/></highlight><highlight class="comment">//<sp/>custom<sp/>data<sp/>storage</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/>8:<sp/><ref refid="cpp/container/array" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;int, num_lines&gt;</ref><sp/>buffer_1;</highlight></codeline>
-<codeline><highlight class="normal"><sp/>9:<sp/><ref refid="cpp/container/array" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;int, num_lines&gt;</ref><sp/>buffer_2;</highlight></codeline>
+<codeline><highlight class="normal"><sp/>8:<sp/><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;int, num_lines&gt;</ref><sp/>buffer_1;</highlight></codeline>
+<codeline><highlight class="normal"><sp/>9:<sp/><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;int, num_lines&gt;</ref><sp/>buffer_2;</highlight></codeline>
 <codeline><highlight class="normal">10:<sp/></highlight></codeline>
 <codeline><highlight class="normal">11:<sp/></highlight><highlight class="comment">//<sp/>the<sp/>pipeline_1<sp/>consists<sp/>of<sp/>three<sp/>pipes<sp/>(serial-parallel-serial)</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">12:<sp/></highlight><highlight class="comment">//<sp/>and<sp/>up<sp/>to<sp/>four<sp/>concurrent<sp/>scheduling<sp/>tokens</highlight><highlight class="normal"></highlight></codeline>
@@ -248,13 +348,13 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal">18:<sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">19:<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>save<sp/>the<sp/>result<sp/>of<sp/>this<sp/>pipe<sp/>into<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">20:<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline><highlight class="normal">21:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;pipeline<sp/>1,<sp/>pipe<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
+<codeline><highlight class="normal">21:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;pipeline<sp/>1,<sp/>pipe<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">22:<sp/><sp/><sp/><sp/><sp/><sp/><sp/>buffer_1[pf.line()]<sp/>=<sp/>pf.token();</highlight></codeline>
 <codeline><highlight class="normal">23:<sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">24:<sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal">25:</highlight></codeline>
 <codeline><highlight class="normal">26:<sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::PARALLEL</ref>,<sp/>[&amp;buffer_1](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">27:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
+<codeline><highlight class="normal">27:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
 <codeline><highlight class="normal">28:<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;pipeline<sp/>1,<sp/>pipe<sp/>1:<sp/>input<sp/>buffer_1[%zu]<sp/>=<sp/>%d\n&quot;</highlight><highlight class="normal">,<sp/></highlight></codeline>
 <codeline><highlight class="normal">29:<sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.line(),<sp/>buffer_1[pf.line()]</highlight></codeline>
 <codeline><highlight class="normal">30:<sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
@@ -263,7 +363,7 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal">33:<sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal">34:</highlight></codeline>
 <codeline><highlight class="normal">35:<sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;buffer_1](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">36:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
+<codeline><highlight class="normal">36:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
 <codeline><highlight class="normal">37:<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;pipeline<sp/>1,<sp/>pipe<sp/>2:<sp/>input<sp/>buffer_1[%zu]<sp/>=<sp/>%d\n&quot;</highlight><highlight class="normal">,<sp/></highlight></codeline>
 <codeline><highlight class="normal">38:<sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.line(),<sp/>buffer_1[pf.line()]</highlight></codeline>
 <codeline><highlight class="normal">39:<sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
@@ -283,13 +383,13 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal">53:<sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">54:<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>save<sp/>the<sp/>result<sp/>of<sp/>this<sp/>pipe<sp/>into<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">55:<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline><highlight class="normal">56:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;pipeline<sp/>2,<sp/>pipe<sp/>0:<sp/>input<sp/>value<sp/>=<sp/>%d\n&quot;</highlight><highlight class="normal">,<sp/>buffer_1[pf.line()]);</highlight></codeline>
+<codeline><highlight class="normal">56:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;pipeline<sp/>2,<sp/>pipe<sp/>0:<sp/>input<sp/>value<sp/>=<sp/>%d\n&quot;</highlight><highlight class="normal">,<sp/>buffer_1[pf.line()]);</highlight></codeline>
 <codeline><highlight class="normal">57:<sp/><sp/><sp/><sp/><sp/><sp/><sp/>buffer_2[pf.line()]<sp/>=<sp/>buffer_1[pf.line()];</highlight></codeline>
 <codeline><highlight class="normal">58:<sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">59:<sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal">60:</highlight></codeline>
 <codeline><highlight class="normal">61:<sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::PARALLEL</ref>,<sp/>[&amp;buffer_2](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">62:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
+<codeline><highlight class="normal">62:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
 <codeline><highlight class="normal">63:<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;pipeline<sp/>2,<sp/>pipe<sp/>1:<sp/>input<sp/>buffer_2[%zu]<sp/>=<sp/>%d\n&quot;</highlight><highlight class="normal">,<sp/></highlight></codeline>
 <codeline><highlight class="normal">64:<sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.line(),<sp/>buffer_2[pf.line()]</highlight></codeline>
 <codeline><highlight class="normal">65:<sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
@@ -298,7 +398,7 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal">68:<sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal">69:</highlight></codeline>
 <codeline><highlight class="normal">70:<sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;buffer_2](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">71:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
+<codeline><highlight class="normal">71:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
 <codeline><highlight class="normal">72:<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;pipeline<sp/>2,<sp/>pipe<sp/>2:<sp/>input<sp/>buffer_2[%zu]<sp/>=<sp/>%d\n&quot;</highlight><highlight class="normal">,<sp/></highlight></codeline>
 <codeline><highlight class="normal">73:<sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.line(),<sp/>buffer_2[pf.line()]</highlight></codeline>
 <codeline><highlight class="normal">74:<sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
@@ -316,22 +416,37 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal">86:<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal">87:<sp/></highlight><highlight class="comment">//<sp/>execute<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">88:<sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
-</programlisting> <linebreak/>
- Debrief:</para><para><itemizedlist>
-<listitem><para>Line 8 defines the data storage (<computeroutput>num_lines</computeroutput> integers) for pipeline <computeroutput>pl_1</computeroutput> </para></listitem>
-<listitem><para>Line 9 defines the data storage (<computeroutput>num_lines</computeroutput> integers) for pipeline <computeroutput>pl_2</computeroutput> </para></listitem>
-<listitem><para>Lines 14-24 define the first serial pipe in <computeroutput>pl_1</computeroutput> </para></listitem>
-<listitem><para>Lines 26-33 define the second parallel pipe in <computeroutput>pl_1</computeroutput> </para></listitem>
-<listitem><para>Lines 35-42 define the third serial pipe in <computeroutput>pl_1</computeroutput> </para></listitem>
-<listitem><para>Lines 48-59 define the first serial pipe in <computeroutput>pl_2</computeroutput> that takes the results of <computeroutput>pl_1</computeroutput> as inputs </para></listitem>
-<listitem><para>Lines 61-68 define the second parallel pipe in <computeroutput>pl_2</computeroutput> </para></listitem>
-<listitem><para>Lines 70-77 define the third serial pipe in <computeroutput>pl_2</computeroutput> </para></listitem>
-<listitem><para>Lines 81-82 define the pipeline graphs using composition </para></listitem>
-<listitem><para>Line 85 defines the task dependency </para></listitem>
-<listitem><para>Line 88 runs the taskflow</para></listitem>
+</programlisting></para>
+<para>Debrief:</para>
+<para><itemizedlist>
+<listitem><para>Line 8 defines the data storage (<computeroutput>num_lines</computeroutput> integers) for pipeline <computeroutput>pl_1</computeroutput> </para>
+</listitem>
+<listitem><para>Line 9 defines the data storage (<computeroutput>num_lines</computeroutput> integers) for pipeline <computeroutput>pl_2</computeroutput> </para>
+</listitem>
+<listitem><para>Lines 14-24 define the first serial pipe in <computeroutput>pl_1</computeroutput> </para>
+</listitem>
+<listitem><para>Lines 26-33 define the second parallel pipe in <computeroutput>pl_1</computeroutput> </para>
+</listitem>
+<listitem><para>Lines 35-42 define the third serial pipe in <computeroutput>pl_1</computeroutput> </para>
+</listitem>
+<listitem><para>Lines 48-59 define the first serial pipe in <computeroutput>pl_2</computeroutput> that takes the results of <computeroutput>pl_1</computeroutput> as inputs </para>
+</listitem>
+<listitem><para>Lines 61-68 define the second parallel pipe in <computeroutput>pl_2</computeroutput> </para>
+</listitem>
+<listitem><para>Lines 70-77 define the third serial pipe in <computeroutput>pl_2</computeroutput> </para>
+</listitem>
+<listitem><para>Lines 81-82 define the pipeline graphs using composition </para>
+</listitem>
+<listitem><para>Line 85 defines the task dependency </para>
+</listitem>
+<listitem><para>Line 88 runs the taskflow</para>
+</listitem>
 </itemizedlist>
-The taskflow graph of this pipeline example is illustrated as follows:</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/pipeline_example2.dot"></dotfile>
-</para><para>The following snippet shows one of the possible outputs:</para><para><programlisting filename=".bash"><codeline><highlight class="normal">pipeline<sp/>1,<sp/>pipe<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>0</highlight></codeline>
+The taskflow graph of this pipeline example is illustrated as follows:</para>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/pipeline_example2.dot"></dotfile>
+</para>
+<para>The following snippet shows one of the possible outputs:</para>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">pipeline<sp/>1,<sp/>pipe<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>0</highlight></codeline>
 <codeline><highlight class="normal">pipeline<sp/>1,<sp/>pipe<sp/>1:<sp/>input<sp/>buffer_1[0]<sp/>=<sp/>0</highlight></codeline>
 <codeline><highlight class="normal">pipeline<sp/>1,<sp/>pipe<sp/>2:<sp/>input<sp/>buffer_1[0]<sp/>=<sp/>1</highlight></codeline>
 <codeline><highlight class="normal">pipeline<sp/>1,<sp/>pipe<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>1</highlight></codeline>
@@ -355,18 +470,21 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal">pipeline<sp/>2,<sp/>pipe<sp/>1:<sp/>input<sp/>value<sp/>=<sp/>5</highlight></codeline>
 <codeline><highlight class="normal">pipeline<sp/>2,<sp/>pipe<sp/>2:<sp/>input<sp/>buffer_2[3]<sp/>=<sp/>5</highlight></codeline>
 <codeline><highlight class="normal">pipeline<sp/>2,<sp/>pipe<sp/>3:<sp/>input<sp/>buffer_2[3]<sp/>=<sp/>6</highlight></codeline>
-</programlisting></para><para>The output of pipelines <computeroutput>pl_1</computeroutput> and <computeroutput>pl_2</computeroutput> can be different from run to run because their second pipes are both parallel types. Due to the task dependency between <computeroutput>pipeline_1</computeroutput> and <computeroutput>pipeline_2</computeroutput>, the output of <computeroutput>pl_1</computeroutput> precedes the output of <computeroutput>pl_2</computeroutput>.</para></sect2>
+</programlisting></para>
+<para>The output of pipelines <computeroutput>pl_1</computeroutput> and <computeroutput>pl_2</computeroutput> can be different from run to run because their second pipes are both parallel types. Due to the task dependency between <computeroutput>pipeline_1</computeroutput> and <computeroutput>pipeline_2</computeroutput>, the output of <computeroutput>pl_1</computeroutput> precedes the output of <computeroutput>pl_2</computeroutput>.</para>
+</sect2>
 <sect2 id="TaskParallelPipeline_1DefineMultipleTaskParallelPipelines">
 <title>Example 3: Define Multiple Parallel Pipelines</title>
-<para>This example creates two independent pipelines that run in parallel on different data sets.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<para>This example creates two independent pipelines that run in parallel on different data sets.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/>2:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>3:</highlight></codeline>
 <codeline><highlight class="normal"><sp/>4:<sp/></highlight><highlight class="comment">//<sp/>define<sp/>the<sp/>maximum<sp/>parallelism<sp/>of<sp/>the<sp/>pipeline</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/>5:<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>num_lines<sp/>=<sp/>4;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>6:</highlight></codeline>
 <codeline><highlight class="normal"><sp/>7:<sp/></highlight><highlight class="comment">//<sp/>custom<sp/>data<sp/>storage</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/>8:<sp/><ref refid="cpp/container/array" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;int, num_lines&gt;</ref><sp/>buffer_1;</highlight></codeline>
-<codeline><highlight class="normal"><sp/>9:<sp/><ref refid="cpp/container/array" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;int, num_lines&gt;</ref><sp/>buffer_2;</highlight></codeline>
+<codeline><highlight class="normal"><sp/>8:<sp/><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;int, num_lines&gt;</ref><sp/>buffer_1;</highlight></codeline>
+<codeline><highlight class="normal"><sp/>9:<sp/><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;int, num_lines&gt;</ref><sp/>buffer_2;</highlight></codeline>
 <codeline><highlight class="normal">10:<sp/></highlight></codeline>
 <codeline><highlight class="normal">11:<sp/></highlight><highlight class="comment">//<sp/>the<sp/>pipeline_1<sp/>consists<sp/>of<sp/>three<sp/>pipes<sp/>(serial-parallel-serial)</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">12:<sp/></highlight><highlight class="comment">//<sp/>and<sp/>up<sp/>to<sp/>four<sp/>concurrent<sp/>scheduling<sp/>tokens</highlight><highlight class="normal"></highlight></codeline>
@@ -378,13 +496,13 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal">18:<sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">19:<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>save<sp/>the<sp/>result<sp/>of<sp/>this<sp/>pipe<sp/>into<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">20:<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline><highlight class="normal">21:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;pipeline<sp/>1,<sp/>pipe<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
+<codeline><highlight class="normal">21:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;pipeline<sp/>1,<sp/>pipe<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">22:<sp/><sp/><sp/><sp/><sp/><sp/><sp/>buffer_1[pf.line()]<sp/>=<sp/>pf.token();</highlight></codeline>
 <codeline><highlight class="normal">23:<sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">24:<sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal">25:</highlight></codeline>
 <codeline><highlight class="normal">26:<sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::PARALLEL</ref>,<sp/>[&amp;buffer_1](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">27:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
+<codeline><highlight class="normal">27:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
 <codeline><highlight class="normal">28:<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;pipeline<sp/>1,<sp/>pipe<sp/>1:<sp/>input<sp/>buffer_1[%zu]<sp/>=<sp/>%d\n&quot;</highlight><highlight class="normal">,<sp/></highlight></codeline>
 <codeline><highlight class="normal">29:<sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.line(),<sp/>buffer_1[pf.line()]</highlight></codeline>
 <codeline><highlight class="normal">30:<sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
@@ -393,7 +511,7 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal">33:<sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal">34:</highlight></codeline>
 <codeline><highlight class="normal">35:<sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;buffer_1](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">36:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
+<codeline><highlight class="normal">36:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
 <codeline><highlight class="normal">37:<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;pipeline<sp/>1,<sp/>pipe<sp/>2:<sp/>input<sp/>buffer_1[%zu]<sp/>=<sp/>%d\n&quot;</highlight><highlight class="normal">,<sp/></highlight></codeline>
 <codeline><highlight class="normal">38:<sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.line(),<sp/>buffer_1[pf.line()]</highlight></codeline>
 <codeline><highlight class="normal">39:<sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
@@ -412,13 +530,13 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal">52:<sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">53:<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>save<sp/>the<sp/>result<sp/>of<sp/>this<sp/>pipe<sp/>into<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">54:<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline><highlight class="normal">55:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;pipeline<sp/>2,<sp/>pipe<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
+<codeline><highlight class="normal">55:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;pipeline<sp/>2,<sp/>pipe<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">56:<sp/><sp/><sp/><sp/><sp/><sp/><sp/>buffer_2[pf.line()]<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">57:<sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">58:<sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal">59:</highlight></codeline>
 <codeline><highlight class="normal">60:<sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::PARALLEL</ref>,<sp/>[&amp;buffer_2](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">61:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
+<codeline><highlight class="normal">61:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
 <codeline><highlight class="normal">62:<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;pipeline<sp/>2,<sp/>pipe<sp/>1:<sp/>input<sp/>buffer_2[%zu]<sp/>=<sp/>%d\n&quot;</highlight><highlight class="normal">,<sp/></highlight></codeline>
 <codeline><highlight class="normal">63:<sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.line(),<sp/>buffer_2[pf.line()]</highlight></codeline>
 <codeline><highlight class="normal">64:<sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
@@ -427,7 +545,7 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal">67:<sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal">68:</highlight></codeline>
 <codeline><highlight class="normal">69:<sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;buffer_2](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">70:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
+<codeline><highlight class="normal">70:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
 <codeline><highlight class="normal">71:<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;pipeline<sp/>2,<sp/>pipe<sp/>2:<sp/>input<sp/>buffer_2[%zu]<sp/>=<sp/>%d\n&quot;</highlight><highlight class="normal">,<sp/></highlight></codeline>
 <codeline><highlight class="normal">72:<sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.line(),<sp/>buffer_2[pf.line()]</highlight></codeline>
 <codeline><highlight class="normal">73:<sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
@@ -440,28 +558,45 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal">80:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;pipeline_1&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">81:<sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>pipeline_2<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">composed_of</ref>(pl_2)</highlight></codeline>
 <codeline><highlight class="normal">82:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;pipeline_2&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">83:<sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>initial<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;initial&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal">83:<sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>initial<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;initial&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
 <codeline><highlight class="normal">84:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;initial&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">85:</highlight></codeline>
 <codeline><highlight class="normal">86:<sp/>initial.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(pipeline_1,<sp/>pipeline_2);</highlight></codeline>
 <codeline><highlight class="normal">87:<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal">88:<sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
-</programlisting></para><para>Debrief:</para><para><itemizedlist>
-<listitem><para>Line 8 defines the data storage (<computeroutput>num_lines</computeroutput> integers) for pipeline <computeroutput>pl_1</computeroutput> </para></listitem>
-<listitem><para>Line 9 defines the data storage (<computeroutput>num_lines</computeroutput> integers) for pipeline <computeroutput>pl_2</computeroutput> </para></listitem>
-<listitem><para>Lines 14-24 define the first serial pipe in <computeroutput>pl_1</computeroutput> </para></listitem>
-<listitem><para>Lines 26-33 define the second parallel pipe in <computeroutput>pl_1</computeroutput> </para></listitem>
-<listitem><para>Lines 35-42 define the third serial pipe in <computeroutput>pl_1</computeroutput> </para></listitem>
-<listitem><para>Lines 48-58 define the first serial pipe in <computeroutput>pl_2</computeroutput> </para></listitem>
-<listitem><para>Lines 60-67 define the second parallel pipe in <computeroutput>pl_2</computeroutput> </para></listitem>
-<listitem><para>Lines 69-76 define the third serial pipe in <computeroutput>pl_2</computeroutput> </para></listitem>
-<listitem><para>Lines 79-82 define the pipeline graphs using composition </para></listitem>
-<listitem><para>Lines 83-84 define a static task. </para></listitem>
-<listitem><para>Line 86 defines the task dependency </para></listitem>
-<listitem><para>Line 88 runs the taskflow</para></listitem>
+</programlisting></para>
+<para>Debrief:</para>
+<para><itemizedlist>
+<listitem><para>Line 8 defines the data storage (<computeroutput>num_lines</computeroutput> integers) for pipeline <computeroutput>pl_1</computeroutput> </para>
+</listitem>
+<listitem><para>Line 9 defines the data storage (<computeroutput>num_lines</computeroutput> integers) for pipeline <computeroutput>pl_2</computeroutput> </para>
+</listitem>
+<listitem><para>Lines 14-24 define the first serial pipe in <computeroutput>pl_1</computeroutput> </para>
+</listitem>
+<listitem><para>Lines 26-33 define the second parallel pipe in <computeroutput>pl_1</computeroutput> </para>
+</listitem>
+<listitem><para>Lines 35-42 define the third serial pipe in <computeroutput>pl_1</computeroutput> </para>
+</listitem>
+<listitem><para>Lines 48-58 define the first serial pipe in <computeroutput>pl_2</computeroutput> </para>
+</listitem>
+<listitem><para>Lines 60-67 define the second parallel pipe in <computeroutput>pl_2</computeroutput> </para>
+</listitem>
+<listitem><para>Lines 69-76 define the third serial pipe in <computeroutput>pl_2</computeroutput> </para>
+</listitem>
+<listitem><para>Lines 79-82 define the pipeline graphs using composition </para>
+</listitem>
+<listitem><para>Lines 83-84 define a static task. </para>
+</listitem>
+<listitem><para>Line 86 defines the task dependency </para>
+</listitem>
+<listitem><para>Line 88 runs the taskflow</para>
+</listitem>
 </itemizedlist>
-The taskflow graph of this pipeline example is illustrated as follows:</para><para><dotfile name="/home/twhuang/Code/taskflow/doxygen/images/pipeline_example3.dot"></dotfile>
-</para><para>The following snippet shows one of the possible outputs:</para><para><programlisting filename=".bash"><codeline><highlight class="normal">initial</highlight></codeline>
+The taskflow graph of this pipeline example is illustrated as follows:</para>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/pipeline_example3.dot"></dotfile>
+</para>
+<para>The following snippet shows one of the possible outputs:</para>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">initial</highlight></codeline>
 <codeline><highlight class="normal">pipeline<sp/>2,<sp/>pipe<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>0</highlight></codeline>
 <codeline><highlight class="normal">pipeline<sp/>2,<sp/>pipe<sp/>1:<sp/>input<sp/>buffer_2[0]<sp/>=<sp/>0</highlight></codeline>
 <codeline><highlight class="normal">pipeline<sp/>2,<sp/>pipe<sp/>2:<sp/>input<sp/>buffer_2[0]<sp/>=<sp/>1</highlight></codeline>
@@ -492,18 +627,21 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal">pipeline<sp/>1,<sp/>pipe<sp/>2:<sp/>input<sp/>buffer_1[2]<sp/>=<sp/>3</highlight></codeline>
 <codeline><highlight class="normal">pipeline<sp/>1,<sp/>pipe<sp/>2:<sp/>input<sp/>buffer_1[3]<sp/>=<sp/>4</highlight></codeline>
 <codeline><highlight class="normal">pipeline<sp/>1,<sp/>pipe<sp/>2:<sp/>input<sp/>buffer_1[0]<sp/>=<sp/>5</highlight></codeline>
-</programlisting></para><para>Because pipeline <computeroutput>pl_1</computeroutput> and pipeline <computeroutput>pl_2</computeroutput> are running in parallel, their outputs may interleave.</para></sect2>
+</programlisting></para>
+<para>Because pipeline <computeroutput>pl_1</computeroutput> and pipeline <computeroutput>pl_2</computeroutput> are running in parallel, their outputs may interleave.</para>
+</sect2>
 </sect1>
 <sect1 id="TaskParallelPipeline_1ResetPipeline">
 <title>Reset a Pipeline</title>
-<para>Our pipeline scheduling framework keeps a <emphasis>stateful</emphasis> number of scheduled tokens at each submitted run. You can reset the pipeline to the initial state using <ref refid="classtf_1_1Pipeline_1a311d874b98de6f0def8a7d869e8d15bd" kindref="member">tf::Pipeline::reset()</ref>, where the number of scheduled tokens will start from zero in the next run. Borrowed from <ref refid="TaskParallelPipeline_1IterateAPipeline" kindref="member">Example 1: Iterate a Pipeline</ref>, the program below resets the pipeline at the second iteration (inside the condition task) so the scheduling token will start from zero in the next run.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<para>Our pipeline scheduling framework keeps a <emphasis>stateful</emphasis> number of scheduled tokens at each submitted run. You can reset the pipeline to the initial state using <ref refid="classtf_1_1Pipeline_1a311d874b98de6f0def8a7d869e8d15bd" kindref="member">tf::Pipeline::reset()</ref>, where the number of scheduled tokens will start from zero in the next run. Borrowed from <ref refid="TaskParallelPipeline_1IterateAPipeline" kindref="member">Example 1: Iterate a Pipeline</ref>, the program below resets the pipeline at the second iteration (inside the condition task) so the scheduling token will start from zero in the next run.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>define<sp/>the<sp/>maximum<sp/>parallelism<sp/>of<sp/>the<sp/>pipeline</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>num_lines<sp/>=<sp/>4;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>custom<sp/>data<sp/>storage</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/array" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;int, num_lines&gt;</ref><sp/>buffer;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;int, num_lines&gt;</ref><sp/>buffer;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>the<sp/>pipeline<sp/>consists<sp/>of<sp/>three<sp/>pipes<sp/>(serial-parallel-serial)</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>and<sp/>up<sp/>to<sp/>four<sp/>concurrent<sp/>scheduling<sp/>tokens</highlight><highlight class="normal"></highlight></codeline>
@@ -515,13 +653,13 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>save<sp/>the<sp/>result<sp/>of<sp/>this<sp/>pipe<sp/>into<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;pipe<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;pipe<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>buffer[pf.line()]<sp/>=<sp/>pf.token();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::PARALLEL</ref>,<sp/>[&amp;buffer](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;pipe<sp/>1:<sp/>input<sp/>buffer_1[%zu]<sp/>=<sp/>%d\n&quot;</highlight><highlight class="normal">,<sp/>pf.line(),<sp/>buffer[pf.line()]</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>propagate<sp/>the<sp/>previous<sp/>result<sp/>to<sp/>this<sp/>pipe<sp/>by<sp/>adding<sp/>one</highlight><highlight class="normal"></highlight></codeline>
@@ -529,7 +667,7 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal"><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;buffer](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;pipe<sp/>2:<sp/>input<sp/>buffer[%zu][%zu]<sp/>=<sp/>%d\n&quot;</highlight><highlight class="normal">,<sp/>pf.line(),<sp/>buffer[pf.line()]</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>propagate<sp/>the<sp/>previous<sp/>result<sp/>to<sp/>this<sp/>pipe<sp/>by<sp/>adding<sp/>one</highlight><highlight class="normal"></highlight></codeline>
@@ -540,7 +678,7 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>conditional<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(++N<sp/>&lt;<sp/>2)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>pl.reset();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Rerun<sp/>the<sp/>pipeline\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Rerun<sp/>the<sp/>pipeline\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
@@ -550,9 +688,9 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>pipeline<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">composed_of</ref>(pl)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>initial<sp/><sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;initial&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>initial<sp/><sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;initial&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;initial&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>stop<sp/><sp/><sp/><sp/><sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;stop&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>stop<sp/><sp/><sp/><sp/><sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;stop&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;stop&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">initial.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(pipeline);</highlight></codeline>
@@ -560,7 +698,9 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal">conditional.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(pipeline,<sp/>stop);</highlight></codeline>
 <codeline><highlight class="normal"><sp/></highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
-</programlisting></para><para>The following snippet shows one of the possible outputs:</para><para><programlisting filename=".bash"><codeline><highlight class="normal">initial</highlight></codeline>
+</programlisting></para>
+<para>The following snippet shows one of the possible outputs:</para>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">initial</highlight></codeline>
 <codeline><highlight class="normal">pipe<sp/>0:<sp/>input<sp/>token<sp/>=<sp/>0</highlight></codeline>
 <codeline><highlight class="normal">pipe<sp/>1:<sp/>input<sp/>buffer_1[0]<sp/>=<sp/>0</highlight></codeline>
 <codeline><highlight class="normal">pipe<sp/>2:<sp/>input<sp/>buffer_1[0]<sp/>=<sp/>1</highlight></codeline>
@@ -593,12 +733,22 @@ The taskflow graph of this pipeline example is illustrated as follows:</para><pa
 <codeline><highlight class="normal">pipe<sp/>1:<sp/>input<sp/>buffer_1[0]<sp/>=<sp/>4</highlight></codeline>
 <codeline><highlight class="normal">pipe<sp/>2:<sp/>input<sp/>buffer_1[0]<sp/>=<sp/>5</highlight></codeline>
 <codeline><highlight class="normal">stop</highlight></codeline>
-</programlisting></para><para>The output can be different from run to run, since the second pipe is a parallel type. At the second iteration from the condition task, we reset the pipeline so the token identifier starts from <computeroutput>0</computeroutput> rather than <computeroutput>5</computeroutput>.</para></sect1>
+</programlisting></para>
+<para>The output can be different from run to run, since the second pipe is a parallel type. At the second iteration from the condition task, we reset the pipeline so the token identifier starts from <computeroutput>0</computeroutput> rather than <computeroutput>5</computeroutput>.</para>
+</sect1>
 <sect1 id="TaskParallelPipeline_1TaskParallelPipelineLearnMore">
 <title>Learn More about Taskflow Pipeline</title>
-<para>Visit the following pages to learn more about pipeline:</para><para><itemizedlist>
-<listitem><para><ref refid="TaskParallelScalablePipeline" kindref="compound">Task-parallel Scalable Pipeline</ref></para></listitem><listitem><para><ref refid="DataParallelPipeline" kindref="compound">Data-parallel Pipeline</ref></para></listitem><listitem><para><ref refid="TextProcessingPipeline" kindref="compound">Text Processing Pipeline</ref></para></listitem><listitem><para><ref refid="GraphProcessingPipeline" kindref="compound">Graph Processing Pipeline</ref></para></listitem><listitem><para><ref refid="TaskflowProcessingPipeline" kindref="compound">Taskflow Processing Pipeline</ref> </para></listitem></itemizedlist>
-</para></sect1>
+<para>Visit the following pages to learn more about pipeline:</para>
+<para><itemizedlist>
+<listitem><para><ref refid="TaskParallelScalablePipeline" kindref="compound">Task-parallel Scalable Pipeline</ref></para>
+</listitem><listitem><para><ref refid="DataParallelPipeline" kindref="compound">Data-parallel Pipeline</ref></para>
+</listitem><listitem><para><ref refid="TextProcessingPipeline" kindref="compound">Text Processing Pipeline</ref></para>
+</listitem><listitem><para><ref refid="GraphProcessingPipeline" kindref="compound">Graph Processing Pipeline</ref></para>
+</listitem><listitem><para><ref refid="TaskflowProcessingPipeline" kindref="compound">Taskflow Processing Pipeline</ref> </para>
+</listitem></itemizedlist>
+</para>
+</sect1>
     </detaileddescription>
+    <location file="algorithms/pipeline.dox"/>
   </compounddef>
 </doxygen>

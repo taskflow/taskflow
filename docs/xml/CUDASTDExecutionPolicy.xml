@@ -1,23 +1,47 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="CUDASTDExecutionPolicy" kind="page">
     <compoundname>CUDASTDExecutionPolicy</compoundname>
     <title>Execution Policy</title>
-    <tableofcontents/>
+    <tableofcontents>
+      <tocsect>
+        <name>Include the Header</name>
+        <reference>CUDASTDExecutionPolicy_1CUDASTDExecutionPolicyIncludeTheHeader</reference>
+    </tocsect>
+      <tocsect>
+        <name>Parameterize Performance</name>
+        <reference>CUDASTDExecutionPolicy_1CUDASTDParameterizePerformance</reference>
+    </tocsect>
+      <tocsect>
+        <name>Define an Execution Policy</name>
+        <reference>CUDASTDExecutionPolicy_1CUDASTDDefineAnExecutionPolicy</reference>
+    </tocsect>
+      <tocsect>
+        <name>Allocate Memory Buffer for Algorithms</name>
+        <reference>CUDASTDExecutionPolicy_1CUDASTDAllocateMemoryBufferForAlgorithms</reference>
+    </tocsect>
+    </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow provides standalone template methods for expressing common parallel algorithms on a GPU. Each of these methods is governed by an <emphasis>execution policy object</emphasis> to configure the kernel execution parameters.</para><sect1 id="CUDASTDExecutionPolicy_1CUDASTDExecutionPolicyIncludeTheHeader">
+<para>Taskflow provides standalone template methods for expressing common parallel algorithms on a GPU. Each of these methods is governed by an <emphasis>execution policy object</emphasis> to configure the kernel execution parameters.</para>
+<sect1 id="CUDASTDExecutionPolicy_1CUDASTDExecutionPolicyIncludeTheHeader">
 <title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/cuda/cudaflow.hpp</computeroutput>, for creating a CUDA execution policy object.</para><para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="cudaflow_8hpp" kindref="compound">taskflow/cuda/cudaflow.hpp</ref>&gt;</highlight></codeline>
-</programlisting></para></sect1>
+<para>You need to include the header file, <computeroutput>taskflow/cuda/cudaflow.hpp</computeroutput>, for creating a CUDA execution policy object.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="cudaflow_8hpp" kindref="compound">taskflow/cuda/cudaflow.hpp</ref>&gt;</highlight></codeline>
+</programlisting></para>
+</sect1>
 <sect1 id="CUDASTDExecutionPolicy_1CUDASTDParameterizePerformance">
 <title>Parameterize Performance</title>
-<para>Taskflow parameterizes most CUDA algorithms in terms of <emphasis>the number of threads per block</emphasis> and <emphasis>units of work per thread</emphasis>, which can be specified in the execution policy template type, <ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaExecutionPolicy</ref>. The design is inspired by <ulink url="https://moderngpu.github.io/">Modern GPU Programming</ulink> authored by Sean Baxter to achieve high-performance GPU computing.</para></sect1>
+<para>Taskflow parameterizes most CUDA algorithms in terms of <emphasis>the number of threads per block</emphasis> and <emphasis>units of work per thread</emphasis>, which can be specified in the execution policy template type, <ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaExecutionPolicy</ref>. The design is inspired by <ulink url="https://moderngpu.github.io/">Modern GPU Programming</ulink> authored by Sean Baxter to achieve high-performance GPU computing.</para>
+</sect1>
 <sect1 id="CUDASTDExecutionPolicy_1CUDASTDDefineAnExecutionPolicy">
 <title>Define an Execution Policy</title>
-<para>The following example defines an execution policy object, <computeroutput>policy</computeroutput>, which configures (1) each block to invoke 512 threads and (2) each of these <computeroutput>512</computeroutput> threads to perform <computeroutput>11</computeroutput> units of work. Block size must be a power of two. It is always a good idea to specify an odd number in the second parameter to avoid bank conflicts.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaExecutionPolicy&lt;512, 11&gt;</ref><sp/>policy;</highlight></codeline>
-</programlisting></para><para>By default, the execution policy object is associated with the CUDA <emphasis>default stream</emphasis> (i.e., 0). Default stream can incur significant overhead due to the global synchronization. You can associate an execution policy with another stream as shown below:</para><para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>create<sp/>a<sp/>RAII-styled<sp/>stream<sp/>object</highlight><highlight class="normal"></highlight></codeline>
+<para>The following example defines an execution policy object, <computeroutput>policy</computeroutput>, which configures (1) each block to invoke 512 threads and (2) each of these <computeroutput>512</computeroutput> threads to perform <computeroutput>11</computeroutput> units of work. Block size must be a power of two. It is always a good idea to specify an odd number in the second parameter to avoid bank conflicts.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaExecutionPolicy&lt;512, 11&gt;</ref><sp/>policy;</highlight></codeline>
+</programlisting></para>
+<para>By default, the execution policy object is associated with the CUDA <emphasis>default stream</emphasis> (i.e., 0). Default stream can incur significant overhead due to the global synchronization. You can associate an execution policy with another stream as shown below:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>create<sp/>a<sp/>RAII-styled<sp/>stream<sp/>object</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream1,<sp/>stream2;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>assign<sp/>a<sp/>stream<sp/>to<sp/>a<sp/>policy<sp/>at<sp/>construction<sp/>time</highlight><highlight class="normal"></highlight></codeline>
@@ -25,12 +49,19 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>assign<sp/>another<sp/>stream<sp/>to<sp/>the<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a5be1b273985800ab886665d28663c29b" kindref="member">stream</ref>(stream2);</highlight></codeline>
-</programlisting></para><para>All the CUDA standard algorithms in Taskflow are asynchronous with respect to the stream assigned to the execution policy. This enables high execution efficiency for large GPU workloads that call for many different algorithms. You can synchronize the stream the block until all tasks in the stream finish:</para><para><programlisting filename=".cpp"><codeline><highlight class="normal">cudaStreamSynchronize(policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a5be1b273985800ab886665d28663c29b" kindref="member">stream</ref>());<sp/></highlight></codeline>
-</programlisting></para><para>The best-performing configurations for each algorithm, each GPU architecture, and each data type can vary significantly. You should experiment different configurations and find the optimal tuning parameters for your applications. A default policy is given in <ref refid="namespacetf_1a0e267ab3e1baeb1962f3b3a374de9553" kindref="member">tf::cudaDefaultExecutionPolicy</ref>.</para><para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>default_policy;</highlight></codeline>
-</programlisting></para></sect1>
+</programlisting></para>
+<para>All the CUDA standard algorithms in Taskflow are asynchronous with respect to the stream assigned to the execution policy. This enables high execution efficiency for large GPU workloads that call for many different algorithms. You can synchronize the stream the block until all tasks in the stream finish:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">cudaStreamSynchronize(policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a5be1b273985800ab886665d28663c29b" kindref="member">stream</ref>());<sp/></highlight></codeline>
+</programlisting></para>
+<para>The best-performing configurations for each algorithm, each GPU architecture, and each data type can vary significantly. You should experiment different configurations and find the optimal tuning parameters for your applications. A default policy is given in <ref refid="namespacetf_1a0e267ab3e1baeb1962f3b3a374de9553" kindref="member">tf::cudaDefaultExecutionPolicy</ref>.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>default_policy;</highlight></codeline>
+</programlisting></para>
+</sect1>
 <sect1 id="CUDASTDExecutionPolicy_1CUDASTDAllocateMemoryBufferForAlgorithms">
 <title>Allocate Memory Buffer for Algorithms</title>
-<para>A key difference between our CUDA standard algorithms and others (e.g., Thrust) is the <emphasis>memory management</emphasis>. Unlike CPU-parallel algorithms, many GPU-parallel algorithms require extra buffer to store the temporary results during the multi-phase computation, for instance, <ref refid="namespacetf_1a8a872d2a0ac73a676713cb5be5aa688c" kindref="member">tf::cuda_reduce</ref> and <ref refid="namespacetf_1a06804cb1598e965febc7bd35fc0fbbb0" kindref="member">tf::cuda_sort</ref>. We <emphasis>DO NOT</emphasis> allocate any memory during these algorithms call but ask you to provide the memory buffer required for each of such algorithms. This decision seems to complicate the code a little bit, but it gives applications freedom to optimize the memory; also, it makes all algorithm calls capturable to a CUDA graph to improve the execution efficiency. </para></sect1>
+<para>A key difference between our CUDA standard algorithms and others (e.g., Thrust) is the <emphasis>memory management</emphasis>. Unlike CPU-parallel algorithms, many GPU-parallel algorithms require extra buffer to store the temporary results during the multi-phase computation, for instance, <ref refid="namespacetf_1a8a872d2a0ac73a676713cb5be5aa688c" kindref="member">tf::cuda_reduce</ref> and <ref refid="namespacetf_1a06804cb1598e965febc7bd35fc0fbbb0" kindref="member">tf::cuda_sort</ref>. We <emphasis>DO NOT</emphasis> allocate any memory during these algorithms call but ask you to provide the memory buffer required for each of such algorithms. This decision seems to complicate the code a little bit, but it gives applications freedom to optimize the memory; also, it makes all algorithm calls capturable to a CUDA graph to improve the execution efficiency. </para>
+</sect1>
     </detaileddescription>
+    <location file="cuda_std_algorithms/cuda_std_execution_policy.dox"/>
   </compounddef>
 </doxygen>
