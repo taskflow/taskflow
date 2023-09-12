@@ -145,6 +145,11 @@
             </dt>
             <dd>applies a visitor to each task in the taskflow</dd>
             <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#a354a7673fabeaf3be66928ad6b573900" class="m-doc">remove_dependency</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Task.html" class="m-doc">Task</a> from,
+              <a href="classtf_1_1Task.html" class="m-doc">Task</a> to)</span>
+            </dt>
+            <dd>removes dependencies that go from task <code>from</code> to task <code>to</code></dd>
+            <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#a8da984d149b439e88468bf26e02ecf27" class="m-doc">graph</a>(</span><span class="m-doc-wrap">) -&gt; <a href="classtf_1_1Graph.html" class="m-doc">Graph</a>&amp;</span>
             </dt>
             <dd>returns a reference to the underlying graph object</dd>
@@ -250,6 +255,43 @@
 <p>A visitor is a callable that takes an argument of type <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> and returns nothing. The following example iterates each task in a taskflow and prints its name:</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">for_each_task</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="p">){</span><span class="w"></span>
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">task</span><span class="p">.</span><span class="n">name</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w"></span>
 <span class="p">});</span><span class="w"></span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a354a7673fabeaf3be66928ad6b573900"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Taskflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a354a7673fabeaf3be66928ad6b573900" class="m-doc-self">remove_dependency</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Task.html" class="m-doc">Task</a> from,
+              <a href="classtf_1_1Task.html" class="m-doc">Task</a> to)</span></span>
+            </h3>
+            <p>removes dependencies that go from task <code>from</code> to task <code>to</code></p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">from</td>
+                  <td>from task (dependent)</td>
+                </tr>
+                <tr>
+                  <td>to</td>
+                  <td>to task (successor)</td>
+                </tr>
+              </tbody>
+            </table>
+<pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
+<span class="k">auto</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">placeholder</span><span class="p">().</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;a&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="k">auto</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">placeholder</span><span class="p">().</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;b&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="k">auto</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">placeholder</span><span class="p">().</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;c&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="k">auto</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">placeholder</span><span class="p">().</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;d&quot;</span><span class="p">);</span><span class="w"></span>
+
+<span class="n">a</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">);</span><span class="w"></span>
+<span class="n">assert</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">num_successors</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span><span class="w"></span>
+<span class="n">assert</span><span class="p">(</span><span class="n">b</span><span class="p">.</span><span class="n">num_dependents</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="n">assert</span><span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="n">num_dependents</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="n">assert</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">num_dependents</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+
+<span class="n">taskflow</span><span class="p">.</span><span class="n">remove_dependency</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">);</span><span class="w"></span>
+<span class="n">assert</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">num_successors</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w"></span>
+<span class="n">assert</span><span class="p">(</span><span class="n">b</span><span class="p">.</span><span class="n">num_dependents</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span></pre>
           </div></section>
           <section class="m-doc-details" id="a8da984d149b439e88468bf26e02ecf27"><div>
             <h3>

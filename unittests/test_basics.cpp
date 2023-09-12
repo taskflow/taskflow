@@ -274,6 +274,58 @@ TEST_CASE("Creation" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
+// Testcase: Removal
+// --------------------------------------------------------
+TEST_CASE("Removal" * doctest::timeout(300)) {
+  
+  tf::Taskflow taskflow;
+  auto a = taskflow.placeholder().name("a");
+  auto b = taskflow.placeholder().name("b");
+  auto c = taskflow.placeholder().name("c");
+  auto d = taskflow.placeholder().name("d");
+
+  REQUIRE(a.num_successors() == 0);
+  REQUIRE(a.num_dependents() == 0);
+  REQUIRE(a.num_successors() == 0);
+  REQUIRE(a.num_dependents() == 0);
+
+  a.precede(b, c, d);
+  REQUIRE(a.num_successors() == 3);
+  REQUIRE(b.num_dependents() == 1);
+  REQUIRE(c.num_dependents() == 1);
+  REQUIRE(d.num_dependents() == 1);
+
+  taskflow.remove_dependency(a, b);
+  REQUIRE(a.num_successors() == 2);
+  REQUIRE(b.num_dependents() == 0);
+
+  taskflow.remove_dependency(a, c);
+  REQUIRE(a.num_successors() == 1);
+  REQUIRE(c.num_dependents() == 0);
+  
+  taskflow.remove_dependency(a, d);
+  REQUIRE(a.num_successors() == 0);
+  REQUIRE(d.num_dependents() == 0);
+
+  a.precede(b, b, c, c, d, d);
+  REQUIRE(a.num_successors() == 6);
+  REQUIRE(b.num_dependents() == 2);
+
+  taskflow.remove_dependency(a, b);
+  REQUIRE(a.num_successors() == 4);
+  REQUIRE(b.num_dependents() == 0);
+
+  taskflow.remove_dependency(a, c);
+  REQUIRE(a.num_successors() == 2);
+  REQUIRE(b.num_dependents() == 0);
+  
+  taskflow.remove_dependency(a, d);
+  REQUIRE(a.num_successors() == 0);
+  REQUIRE(d.num_dependents() == 0);
+}
+
+
+// --------------------------------------------------------
 // Testcase: STDFunction
 // --------------------------------------------------------
 TEST_CASE("STDFunction" * doctest::timeout(300)) {

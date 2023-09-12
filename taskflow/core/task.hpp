@@ -307,7 +307,7 @@ class Task {
     @return @c *this
     */
     Task& data(void* data);
-      
+    
     /**
     @brief assigns a priority value to the task
 

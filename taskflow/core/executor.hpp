@@ -1251,6 +1251,7 @@ inline void Executor::_spawn(size_t N) {
     //pthread_setaffinity_np(
     //  _threads[id].native_handle(), sizeof(cpu_set_t), &cpuset
     //);
+
 #ifdef __cpp_lib_atomic_wait
     //_wids[_threads[id].get_id()] = id;
     _wids.emplace(std::piecewise_construct,
