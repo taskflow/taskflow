@@ -1570,7 +1570,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // condition task
   //int cond = -1;
 
-
   // switch is faster than nested if-else due to jump table
   switch(node->_handle.index()) {
     // static task
@@ -2158,7 +2157,10 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
   //assert(&tpg == &(f._topologies.front()));
 
   // case 1: we still need to run the topology again
-  if(!tpg->_is_cancelled && !tpg->_pred()) {
+  if(!tpg->_exception && 
+     !tpg->_is_cancelled.load(std::memory_order_relaxed) && 
+     !tpg->_pred()
+  ) {
     //assert(tpg->_join_counter == 0);
     std::lock_guard<std::mutex> lock(f._mutex);
     tpg->_join_counter.store(tpg->_sources.size(), std::memory_order_relaxed);
@@ -2191,7 +2193,17 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
     else {
       //assert(f._topologies.size() == 1);
 
-      // Need to back up the promise first here becuz taskflow might be
+      auto fetched_tpg {std::move(f._topologies.front())};
+      f._topologies.pop();
+      auto satellite {f._satellite};
+
+      lock.unlock();
+      
+      // soon after we carry out the promise, we can no longer know the 
+      // lifetime of the associated taskflow
+      fetched_tpg->_carry_out_promise();
+
+      /*// Need to back up the promise first here becuz taskflow might be
       // destroy soon after calling get
       auto p {std::move(tpg->_promise)};
 
@@ -2212,15 +2224,16 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
       // We set the promise in the end in case taskflow leaves the scope.
       // After set_value, the caller will return from wait
       p.set_value();
+      */
 
       _decrement_topology();
 
       // remove the taskflow if it is managed by the executor
       // TODO: in the future, we may need to synchronize on wait
       // (which means the following code should the moved before set_value)
-      if(s) {
+      if(satellite) {
         std::scoped_lock<std::mutex> lock(_taskflows_mutex);
-        _taskflows.erase(*s);
+        _taskflows.erase(*satellite);
       }
     }
   }

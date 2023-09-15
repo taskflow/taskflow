@@ -290,7 +290,6 @@ class Taskflow : public FlowBuilder {
     Graph _graph;
 
     std::queue<std::shared_ptr<Topology>> _topologies;
-
     std::optional<std::list<Taskflow>::iterator> _satellite;
 
     void _dump(std::ostream&, const Graph*) const;

@@ -71,7 +71,7 @@ TF_FORCE_INLINE auto make_for_each_task(B beg, E end, C c, P&& part = P()) {
 
 // Function: make_for_each_index_task
 template <typename B, typename E, typename S, typename C, typename P = GuidedPartitioner>
-TF_FORCE_INLINE auto make_for_each_index_task(B beg, E end, S inc, C c, P&& part = P()){
+TF_FORCE_INLINE auto make_for_each_index_task(B beg, E end, S inc, C c, P&& part = P()) {
 
   using namespace std::string_literals;
 
@@ -104,9 +104,7 @@ TF_FORCE_INLINE auto make_for_each_index_task(B beg, E end, S inc, C c, P&& part
     
     // static partitioner
     if constexpr(std::is_same_v<std::decay_t<P>, StaticPartitioner>) {
-
       size_t chunk_size;
-
       for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
         chunk_size = part.adjusted_chunk_size(N, W, w);
         launch_loop(W, w, rt, [=, &c, &part] () mutable {
@@ -158,7 +156,7 @@ Task FlowBuilder::for_each(B beg, E end, C c, P&& part) {
 
 // Function: for_each_index
 template <typename B, typename E, typename S, typename C, typename P>
-Task FlowBuilder::for_each_index(B beg, E end, S inc, C c, P&& part){
+Task FlowBuilder::for_each_index(B beg, E end, S inc, C c, P&& part) {
   return emplace(
     make_for_each_index_task(beg, end, inc, c, std::forward<P>(part))
   );
