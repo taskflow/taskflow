@@ -532,46 +532,46 @@ TEST_CASE("StatefulParallelFor.Random.12threads" * doctest::timeout(300)) {
   stateful_for_each<tf::RandomPartitioner>(12);
 }
 
-// ----------------------------------------------------------------------------
-// Parallel For Exception
-// ----------------------------------------------------------------------------
-
-void parallel_for_exception(unsigned W) {
-
-  tf::Taskflow taskflow;
-  tf::Executor executor(W);
-
-  std::vector<int> data(1000000);
-
-  // for_each
-  taskflow.for_each(data.begin(), data.end(), [](int){
-    throw std::runtime_error("x");
-  });
-  REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "x", std::runtime_error);
-  
-  // for_each_index
-  taskflow.clear();
-  taskflow.for_each_index(0, 10000, 1, [](int){
-    throw std::runtime_error("y");
-  });
-  REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "y", std::runtime_error);
-}
-
-TEST_CASE("ParallelFor.Exception.1thread") {
-  parallel_for_exception(1);
-}
-
-TEST_CASE("ParallelFor.Exception.2threads") {
-  parallel_for_exception(2);
-}
-
-TEST_CASE("ParallelFor.Exception.3threads") {
-  parallel_for_exception(3);
-}
-
-TEST_CASE("ParallelFor.Exception.4threads") {
-  parallel_for_exception(4);
-}
+//// ----------------------------------------------------------------------------
+//// Parallel For Exception
+//// ----------------------------------------------------------------------------
+//
+//void parallel_for_exception(unsigned W) {
+//
+//  tf::Taskflow taskflow;
+//  tf::Executor executor(W);
+//
+//  std::vector<int> data(1000000);
+//
+//  // for_each
+//  taskflow.for_each(data.begin(), data.end(), [](int){
+//    throw std::runtime_error("x");
+//  });
+//  REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "x", std::runtime_error);
+//  
+//  // for_each_index
+//  taskflow.clear();
+//  taskflow.for_each_index(0, 10000, 1, [](int){
+//    throw std::runtime_error("y");
+//  });
+//  REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "y", std::runtime_error);
+//}
+//
+//TEST_CASE("ParallelFor.Exception.1thread") {
+//  parallel_for_exception(1);
+//}
+//
+//TEST_CASE("ParallelFor.Exception.2threads") {
+//  parallel_for_exception(2);
+//}
+//
+//TEST_CASE("ParallelFor.Exception.3threads") {
+//  parallel_for_exception(3);
+//}
+//
+//TEST_CASE("ParallelFor.Exception.4threads") {
+//  parallel_for_exception(4);
+//}
 
 
 

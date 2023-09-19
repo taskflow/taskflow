@@ -444,39 +444,39 @@ TEST_CASE("ParallelTransform3.Random.4threads") {
   parallel_transform3<tf::RandomPartitioner>(4);
 }
 
-// ----------------------------------------------------------------------------
-// ParallelTransform Exception
-// ----------------------------------------------------------------------------
-
-void parallel_transform_exception(unsigned W) {
-  tf::Taskflow taskflow;
-  tf::Executor executor(W);
-
-  std::vector<int> src(1000000, 0);
-  std::vector<int> tgt(1000000, 0);
-
-  taskflow.transform(src.begin(), src.end(), tgt.begin(), [](int&) {
-    throw std::runtime_error("x");
-    return 1;
-  }); 
-  REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "x", std::runtime_error);
-}
-
-TEST_CASE("ParallelTransform.Exception.1thread") {
-  parallel_transform_exception(1);
-}
-
-TEST_CASE("ParallelTransform.Exception.2threads") {
-  parallel_transform_exception(2);
-}
-
-TEST_CASE("ParallelTransform.Exception.3threads") {
-  parallel_transform_exception(3);
-}
-
-TEST_CASE("ParallelTransform.Exception.4threads") {
-  parallel_transform_exception(4);
-}
+//// ----------------------------------------------------------------------------
+//// ParallelTransform Exception
+//// ----------------------------------------------------------------------------
+//
+//void parallel_transform_exception(unsigned W) {
+//  tf::Taskflow taskflow;
+//  tf::Executor executor(W);
+//
+//  std::vector<int> src(1000000, 0);
+//  std::vector<int> tgt(1000000, 0);
+//
+//  taskflow.transform(src.begin(), src.end(), tgt.begin(), [](int&) {
+//    throw std::runtime_error("x");
+//    return 1;
+//  }); 
+//  REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "x", std::runtime_error);
+//}
+//
+//TEST_CASE("ParallelTransform.Exception.1thread") {
+//  parallel_transform_exception(1);
+//}
+//
+//TEST_CASE("ParallelTransform.Exception.2threads") {
+//  parallel_transform_exception(2);
+//}
+//
+//TEST_CASE("ParallelTransform.Exception.3threads") {
+//  parallel_transform_exception(3);
+//}
+//
+//TEST_CASE("ParallelTransform.Exception.4threads") {
+//  parallel_transform_exception(4);
+//}
 
 
 

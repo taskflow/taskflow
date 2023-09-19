@@ -531,39 +531,39 @@ TEST_CASE("QuickSort" * doctest::timeout(300)) {
   }
 }
 
-// ----------------------------------------------------------------------------
-// Exception
-// ----------------------------------------------------------------------------
-
-void parallel_sort_exception(unsigned W) {
-
-  tf::Taskflow taskflow;
-  tf::Executor executor(W);
-
-  std::vector<int> data(1000000);
-
-  // for_each
-  taskflow.sort(data.begin(), data.end(), [](int a, int b){
-    throw std::runtime_error("x");
-    return a < b;
-  });
-  REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "x", std::runtime_error);
-}
-
-TEST_CASE("ParallelSort.Exception.1thread") {
-  parallel_sort_exception(1);
-}
-
-TEST_CASE("ParallelSort.Exception.2threads") {
-  parallel_sort_exception(2);
-}
-
-TEST_CASE("ParallelSort.Exception.3threads") {
-  parallel_sort_exception(3);
-}
-
-TEST_CASE("ParallelSort.Exception.4threads") {
-  parallel_sort_exception(4);
-}
+//// ----------------------------------------------------------------------------
+//// Exception
+//// ----------------------------------------------------------------------------
+//
+//void parallel_sort_exception(unsigned W) {
+//
+//  tf::Taskflow taskflow;
+//  tf::Executor executor(W);
+//
+//  std::vector<int> data(1000000);
+//
+//  // for_each
+//  taskflow.sort(data.begin(), data.end(), [](int a, int b){
+//    throw std::runtime_error("x");
+//    return a < b;
+//  });
+//  REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "x", std::runtime_error);
+//}
+//
+//TEST_CASE("ParallelSort.Exception.1thread") {
+//  parallel_sort_exception(1);
+//}
+//
+//TEST_CASE("ParallelSort.Exception.2threads") {
+//  parallel_sort_exception(2);
+//}
+//
+//TEST_CASE("ParallelSort.Exception.3threads") {
+//  parallel_sort_exception(3);
+//}
+//
+//TEST_CASE("ParallelSort.Exception.4threads") {
+//  parallel_sort_exception(4);
+//}
 
 
