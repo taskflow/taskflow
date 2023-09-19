@@ -39,7 +39,7 @@ within the execution of the parallel-transform task.
 @code{.cpp}
 std::vector<int> src = {1, 2, 3, 4, 5};
 std::vector<int> tgt(src.size());
-taskflow.transform(src.begin(), src.end(), [](int i){ 
+taskflow.transform(src.begin(), src.end(), tgt.begin(), [](int i){ 
   std::cout << "transforming item " << i << " to " << i + 1 << '\n';
   return i + 1;
 });

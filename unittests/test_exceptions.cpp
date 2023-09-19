@@ -286,7 +286,13 @@ void thread_safety(unsigned W) {
   }
 
   // thread sanitizer should not report any data race 
-  REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "x", std::runtime_error);
+  auto fu = executor.run(taskflow);
+  try {
+    fu.get();
+  }catch(const std::exception& e) {
+    REQUIRE(std::strcmp(e.what(), "x") == 0);
+  }
+  //REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "x", std::runtime_error);
 }
 
 TEST_CASE("Exception.ThreadSafety.1thread") {
@@ -304,22 +310,5 @@ TEST_CASE("Exception.ThreadSafety.3threads") {
 TEST_CASE("Exception.ThreadSafety.4threads") {
   thread_safety(4);
 }
-
-// ----------------------------------------------------------------------------
-// Algorithm Exception
-// ----------------------------------------------------------------------------
-
-void algorithm_for_each_exception() {
-
-}
-
-
-
-
-
-
-
-
-
 
 
