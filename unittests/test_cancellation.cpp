@@ -32,7 +32,7 @@ TEST_CASE("Future" * doctest::timeout(300)) {
 }
 
 // Cancel
-TEST_CASE("Cancel" * doctest::timeout(300)) {
+TEST_CASE("BasicCancellation" * doctest::timeout(300)) {
 
   tf::Taskflow taskflow;
   tf::Executor executor(4);
@@ -63,7 +63,7 @@ TEST_CASE("Cancel" * doctest::timeout(300)) {
 }
 
 // multiple cnacels
-TEST_CASE("MultipleCancels" * doctest::timeout(300)) {
+TEST_CASE("MultipleCancellations" * doctest::timeout(300)) {
 
   tf::Taskflow taskflow1, taskflow2, taskflow3, taskflow4;
   tf::Executor executor(4);
@@ -108,7 +108,32 @@ TEST_CASE("MultipleCancels" * doctest::timeout(300)) {
   REQUIRE(fu4.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready);
 }
 
-
+// Cancel linear chain
+//TEST_CASE("CancelLinearChain" * doctest::timeout(300)) {
+//
+//  tf::Taskflow taskflow;
+//  tf::Executor executor(4);
+//  tf::Future<void>* future;
+//
+//  std::atomic<int> counter{0};
+//  tf::Task prev, curr;
+//
+//  for(int i=0; i<10000; i++) {
+//    curr = taskflow.emplace([&, i](){
+//      counter.fetch_add(1, std::memory_order_relaxed);
+//      if(i == 5000) {
+//        future->cancel();
+//      }
+//    });
+//    if(i) {
+//      prev.precede(curr);
+//    }
+//    prev = curr;
+//  }
+//  
+//  future = executor.run(taskflow);
+//  future->wait();
+//}
 
 // cancel subflow
 TEST_CASE("CancelSubflow" * doctest::timeout(300)) {

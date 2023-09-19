@@ -8,6 +8,7 @@ list(APPEND TF_UNITTESTS
   #test_serializer 
   test_priorities
   test_basics 
+  test_exceptions
   test_asyncs
   test_dependent_asyncs
   test_subflows

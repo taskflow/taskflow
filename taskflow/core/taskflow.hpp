@@ -575,10 +575,6 @@ class Future : public std::future<T>  {
   friend class Subflow;
   friend class Runtime;
 
-  using handle_t = std::variant<
-    std::monostate, std::weak_ptr<Topology>
-  >;
-
   public:
 
     /**
@@ -622,36 +618,28 @@ class Future : public std::future<T>  {
 
   private:
 
-    handle_t _handle;
-
-    template <typename P>
-    Future(std::future<T>&&, P&&);
+    Future(std::future<T>&&, std::shared_ptr<Topology> = nullptr);
+    
+    // we keep a shared ownership of topology to avoid invalid access
+    // when exception occurs (due to the clean-up of promise that keeps
+    // the exception pointer to that exception)
+    std::shared_ptr<Topology> _topology;
 };
 
 template <typename T>
-template <typename P>
-Future<T>::Future(std::future<T>&& fu, P&& p) :
-  std::future<T> {std::move(fu)},
-  _handle        {std::forward<P>(p)} {
+Future<T>::Future(std::future<T>&& f, std::shared_ptr<Topology> p) :
+  std::future<T> {std::move(f)},
+  _topology      {std::move(p)} {
 }
 
 // Function: cancel
 template <typename T>
 bool Future<T>::cancel() {
-  return std::visit([](auto&& arg){
-    using P = std::decay_t<decltype(arg)>;
-    if constexpr(std::is_same_v<P, std::monostate>) {
-      return false;
-    }
-    else {
-      auto ptr = arg.lock();
-      if(ptr) {
-        ptr->_is_cancelled.store(true, std::memory_order_relaxed);
-        return true;
-      }
-      return false;
-    }
-  }, _handle);
+  if(_topology) {
+    _topology->_state.fetch_or(Topology::CANCELLED, std::memory_order_relaxed);
+    return true;
+  }
+  return false;
 }
 
 

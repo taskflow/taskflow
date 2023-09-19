@@ -1098,6 +1098,7 @@ class Executor {
   void _invoke_async_task(Worker&, Node*);
   void _invoke_dependent_async_task(Worker&, Node*);
   void _process_async_dependent(Node*, tf::AsyncTask&, size_t&);
+  void _process_exception(Worker&, Node*);
   void _schedule_async_task(Node*);
   
   template <typename P>
@@ -1758,19 +1759,35 @@ inline void Executor::_observer_epilogue(Worker& worker, Node* node) {
   }
 }
 
+// Procedure: _process_exception
+inline void Executor::_process_exception(Worker&, Node* node) {
+  constexpr static auto flag = Topology::EXCEPTION | Topology::CANCELLED;
+
+  // multiple tasks may throw, so we only take the first thrown exception
+  if(auto tpg = node->_topology; tpg && 
+    ((tpg->_state.fetch_or(flag, std::memory_order_relaxed) & Topology::EXCEPTION) == 0)
+  ) {
+    tpg->_exception = std::current_exception();
+  }
+}
+
 // Procedure: _invoke_static_task
 inline void Executor::_invoke_static_task(Worker& worker, Node* node) {
   _observer_prologue(worker, node);
-  auto& work = std::get_if<Node::Static>(&node->_handle)->work;
-  switch(work.index()) {
-    case 0:
-      std::get_if<0>(&work)->operator()();
-    break;
+  try {
+    auto& work = std::get_if<Node::Static>(&node->_handle)->work;
+    switch(work.index()) {
+      case 0:
+        std::get_if<0>(&work)->operator()();
+      break;
 
-    case 1:
-      Runtime rt(*this, worker, node);
-      std::get_if<1>(&work)->operator()(rt);
-    break;
+      case 1:
+        Runtime rt(*this, worker, node);
+        std::get_if<1>(&work)->operator()(rt);
+      break;
+    }
+  } catch(...) {
+    _process_exception(worker, node);
   }
   _observer_epilogue(worker, node);
 }
@@ -1785,8 +1802,12 @@ inline void Executor::_invoke_dynamic_task(Worker& w, Node* node) {
   handle->subgraph._clear();
 
   Subflow sf(*this, w, node, handle->subgraph);
-
-  handle->work(sf);
+  
+  try {
+    handle->work(sf);
+  } catch(...) {
+    _process_exception(w, node);
+  }
 
   if(sf._joinable) {
     _consume_graph(w, node, handle->subgraph);
@@ -1842,16 +1863,20 @@ inline void Executor::_invoke_condition_task(
   Worker& worker, Node* node, SmallVector<int>& conds
 ) {
   _observer_prologue(worker, node);
-  auto& work = std::get_if<Node::Condition>(&node->_handle)->work;
-  switch(work.index()) {
-    case 0:
-      conds = { std::get_if<0>(&work)->operator()() };
-    break;
+  try {
+    auto& work = std::get_if<Node::Condition>(&node->_handle)->work;
+    switch(work.index()) {
+      case 0:
+        conds = { std::get_if<0>(&work)->operator()() };
+      break;
 
-    case 1:
-      Runtime rt(*this, worker, node);
-      conds = { std::get_if<1>(&work)->operator()(rt) };
-    break;
+      case 1:
+        Runtime rt(*this, worker, node);
+        conds = { std::get_if<1>(&work)->operator()(rt) };
+      break;
+    }
+  } catch (...) {
+    _process_exception(worker, node);
   }
   _observer_epilogue(worker, node);
 }
@@ -1861,16 +1886,20 @@ inline void Executor::_invoke_multi_condition_task(
   Worker& worker, Node* node, SmallVector<int>& conds
 ) {
   _observer_prologue(worker, node);
-  auto& work = std::get_if<Node::MultiCondition>(&node->_handle)->work;
-  switch(work.index()) {
-    case 0:
-      conds = std::get_if<0>(&work)->operator()();
-    break;
+  try {
+    auto& work = std::get_if<Node::MultiCondition>(&node->_handle)->work;
+    switch(work.index()) {
+      case 0:
+        conds = std::get_if<0>(&work)->operator()();
+      break;
 
-    case 1:
-      Runtime rt(*this, worker, node);
-      conds = std::get_if<1>(&work)->operator()(rt);
-    break;
+      case 1:
+        Runtime rt(*this, worker, node);
+        conds = std::get_if<1>(&work)->operator()(rt);
+      break;
+    }
+  } catch(...) {
+    _process_exception(worker, node);
   }
   _observer_epilogue(worker, node);
 }
@@ -2015,7 +2044,7 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
     std::promise<void> promise;
     promise.set_value();
     _decrement_topology();
-    return tf::Future<void>(promise.get_future(), std::monostate{});
+    return tf::Future<void>(promise.get_future());
   }
 
   // create a topology for this run
@@ -2158,7 +2187,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
 
   // case 1: we still need to run the topology again
   if(!tpg->_exception && 
-     !tpg->_is_cancelled.load(std::memory_order_relaxed) && 
+     !(tpg->_state.load(std::memory_order_relaxed) & Topology::CANCELLED) && 
      !tpg->_pred()
   ) {
     //assert(tpg->_join_counter == 0);
@@ -2199,32 +2228,9 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
 
       lock.unlock();
       
-      // soon after we carry out the promise, we can no longer know the 
-      // lifetime of the associated taskflow
+      // Soon after we carry out the promise, there is no longer any guarantee
+      // for the lifetime of the associated taskflow.
       fetched_tpg->_carry_out_promise();
-
-      /*// Need to back up the promise first here becuz taskflow might be
-      // destroy soon after calling get
-      auto p {std::move(tpg->_promise)};
-
-      // Back up lambda capture in case it has the topology pointer,
-      // to avoid it releasing on pop_front ahead of _mutex.unlock &
-      // _promise.set_value. Released safely when leaving scope.
-      auto c {std::move(tpg->_call)};
-
-      // Get the satellite if any
-      auto s {f._satellite};
-
-      // Now we remove the topology from this taskflow
-      f._topologies.pop();
-
-      //f._mutex.unlock();
-      lock.unlock();
-
-      // We set the promise in the end in case taskflow leaves the scope.
-      // After set_value, the caller will return from wait
-      p.set_value();
-      */
 
       _decrement_topology();
 

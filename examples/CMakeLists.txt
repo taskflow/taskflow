@@ -37,6 +37,7 @@ list(APPEND TF_EXAMPLES
   composition
   limited_concurrency
   cancel
+  exception
 )
 
 foreach(example IN LISTS TF_EXAMPLES)

@@ -854,7 +854,9 @@ inline bool Node::_is_conditioner() const {
 // Function: _is_cancelled
 // we currently only support cancellation of taskflow (no async task)
 inline bool Node::_is_cancelled() const {
-  return _topology && _topology->_is_cancelled.load(std::memory_order_relaxed);
+  //return _topology && _topology->_is_cancelled.load(std::memory_order_relaxed);
+  return _topology &&
+         (_topology->_state.load(std::memory_order_relaxed) & Topology::CANCELLED);
 }
 
 // Procedure: _set_up_join_counter

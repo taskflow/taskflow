@@ -13,6 +13,10 @@ class Topology {
 
   template <typename T>
   friend class Future;
+  
+  constexpr static int CLEAN = 0;
+  constexpr static int CANCELLED = 1;
+  constexpr static int EXCEPTION = 2;
 
   public:
 
@@ -31,9 +35,9 @@ class Topology {
     std::function<void()> _call;
 
     std::atomic<size_t> _join_counter {0};
-    std::atomic<bool> _is_cancelled { false };
+    std::atomic<int> _state {CLEAN};
 
-    std::exception_ptr _exception;
+    std::exception_ptr _exception {nullptr};
 
     void _carry_out_promise();
 };
