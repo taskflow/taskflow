@@ -1766,8 +1766,7 @@ inline void Executor::_process_exception(Worker&, Node* node) {
   ) {
     tpg->_exception = std::current_exception();
   }
-  // TODO: rethrow exception for Executor::silent_async and 
-  //       Executor::silent_dependent_async
+  // TODO: skip the exception that is not associated with any taskflows
 }
 
 // Procedure: _invoke_static_task
@@ -1816,9 +1815,7 @@ inline void Executor::_invoke_dynamic_task(Worker& w, Node* node) {
 }
 
 // Procedure: _detach_dynamic_task
-inline void Executor::_detach_dynamic_task(
-  Worker& w, Node* p, Graph& g
-) {
+inline void Executor::_detach_dynamic_task(Worker& w, Node* p, Graph& g) {
 
   // graph is empty and has no async tasks
   if(g.empty() && p->_join_counter.load(std::memory_order_acquire) == 0) {

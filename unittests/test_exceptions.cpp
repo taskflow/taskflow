@@ -292,7 +292,9 @@ void async_task_exception(unsigned W) {
   REQUIRE_THROWS_WITH_AS(fu2.get(), "x", std::runtime_error);
   
   // exception is caught without any action
-  executor.silent_async([](){ std::runtime_error("y"); });
+  executor.silent_async([](){
+    throw std::runtime_error("y"); 
+  });
 
   executor.wait_for_all();
 }
@@ -366,43 +368,37 @@ TEST_CASE("Exception.RuntimeAsyncTask.4threads") {
   runtime_async_task_exception(4);
 }
 
-//// ----------------------------------------------------------------------------
-//// Exception.ThreadSafety
-//// ----------------------------------------------------------------------------
-//
-//void thread_safety(unsigned W) {
-//
-//  tf::Executor executor(W);
-//  tf::Taskflow taskflow;
-//
-//  for(int i=0; i<100000; i++) {
-//    taskflow.emplace([&](){ throw std::runtime_error("x"); });
-//  }
-//
-//  // thread sanitizer should not report any data race 
-//  auto fu = executor.run(taskflow);
-//  try {
-//    fu.get();
-//  }catch(const std::exception& e) {
-//    REQUIRE(std::strcmp(e.what(), "x") == 0);
-//  }
-//  //REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "x", std::runtime_error);
-//}
-//
-//TEST_CASE("Exception.ThreadSafety.1thread") {
-//  thread_safety(1);
-//}
-//
-//TEST_CASE("Exception.ThreadSafety.2threads") {
-//  thread_safety(2);
-//}
-//
-//TEST_CASE("Exception.ThreadSafety.3threads") {
-//  thread_safety(3);
-//}
-//
-//TEST_CASE("Exception.ThreadSafety.4threads") {
-//  thread_safety(4);
-//}
+// ----------------------------------------------------------------------------
+// Exception.ThreadSafety
+// ----------------------------------------------------------------------------
+
+void thread_safety(unsigned W) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  for(int i=0; i<1000; i++) {
+    taskflow.emplace([&](){ throw std::runtime_error("x"); });
+  }
+
+  // thread sanitizer should not report any data race 
+  REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "x", std::runtime_error);
+}
+
+TEST_CASE("Exception.ThreadSafety.1thread") {
+  thread_safety(1);
+}
+
+TEST_CASE("Exception.ThreadSafety.2threads") {
+  thread_safety(2);
+}
+
+TEST_CASE("Exception.ThreadSafety.3threads") {
+  thread_safety(3);
+}
+
+TEST_CASE("Exception.ThreadSafety.4threads") {
+  thread_safety(4);
+}
 
 

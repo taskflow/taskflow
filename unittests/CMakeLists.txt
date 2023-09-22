@@ -8,7 +8,6 @@ list(APPEND TF_UNITTESTS
   #test_serializer 
   test_priorities
   test_basics 
-  test_exceptions
   test_asyncs
   test_dependent_asyncs
   test_subflows
@@ -32,6 +31,15 @@ list(APPEND TF_UNITTESTS
   test_data_pipelines
   test_workers
 )
+
+string(FIND '${CMAKE_CXX_FLAGS}' "-fsanitize" sanitize)
+#message("sanitize='${sanitize}'")
+
+if(${sanitize} EQUAL -1)
+  message(STATUS "Add test_exception to unit tests")
+  list(APPEND TF_UNITTESTS test_exceptions)
+endif()
+
 
 foreach(unittest IN LISTS TF_UNITTESTS)
   add_executable(${unittest} ${unittest}.cpp)
