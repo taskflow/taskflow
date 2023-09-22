@@ -254,7 +254,7 @@ class Runtime {
       });
     }
     
-    // explicit join 100 asynchronous tasks
+    // explicitly join 100 asynchronous tasks
     rt.join();
     assert(counter == 200);
   });

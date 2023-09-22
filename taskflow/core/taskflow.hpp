@@ -617,17 +617,14 @@ class Future : public std::future<T>  {
     bool cancel();
 
   private:
-
-    Future(std::future<T>&&, std::shared_ptr<Topology> = nullptr);
     
-    // we keep a shared ownership of topology to avoid invalid access
-    // when exception occurs (due to the clean-up of promise that keeps
-    // the exception pointer to that exception)
-    std::shared_ptr<Topology> _topology;
+    std::weak_ptr<Topology> _topology;
+
+    Future(std::future<T>&&, std::weak_ptr<Topology> = std::weak_ptr<Topology>());
 };
 
 template <typename T>
-Future<T>::Future(std::future<T>&& f, std::shared_ptr<Topology> p) :
+Future<T>::Future(std::future<T>&& f, std::weak_ptr<Topology> p) :
   std::future<T> {std::move(f)},
   _topology      {std::move(p)} {
 }
@@ -635,8 +632,8 @@ Future<T>::Future(std::future<T>&& f, std::shared_ptr<Topology> p) :
 // Function: cancel
 template <typename T>
 bool Future<T>::cancel() {
-  if(_topology) {
-    _topology->_state.fetch_or(Topology::CANCELLED, std::memory_order_relaxed);
+  if(auto ptr = _topology.lock(); ptr) {
+    ptr->_state.fetch_or(Topology::CANCELLED, std::memory_order_relaxed);
     return true;
   }
   return false;

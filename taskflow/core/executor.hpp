@@ -1103,9 +1103,6 @@ class Executor {
   
   template <typename P>
   void _corun_until(Worker&, P&&);
-  
-  template <typename R, typename F>
-  auto _make_promised_async(std::promise<R>&&, F&&);
 };
 
 // Constructor
@@ -1769,6 +1766,8 @@ inline void Executor::_process_exception(Worker&, Node* node) {
   ) {
     tpg->_exception = std::current_exception();
   }
+  // TODO: rethrow exception for Executor::silent_async and 
+  //       Executor::silent_dependent_async
 }
 
 // Procedure: _invoke_static_task
@@ -1933,16 +1932,20 @@ inline bool Executor::_invoke_module_task_internal(Worker& w, Node* p) {
 // Procedure: _invoke_async_task
 inline void Executor::_invoke_async_task(Worker& worker, Node* node) {
   _observer_prologue(worker, node);
-  auto& work = std::get_if<Node::Async>(&node->_handle)->work;
-  switch(work.index()) {
-    case 0:
-      std::get_if<0>(&work)->operator()();
-    break;
+  try {
+    auto& work = std::get_if<Node::Async>(&node->_handle)->work;
+    switch(work.index()) {
+      case 0:
+        std::get_if<0>(&work)->operator()();
+      break;
 
-    case 1:
-      Runtime rt(*this, worker, node);
-      std::get_if<1>(&work)->operator()(rt);
-    break;
+      case 1:
+        Runtime rt(*this, worker, node);
+        std::get_if<1>(&work)->operator()(rt);
+      break;
+    }
+  } catch(...) {
+    _process_exception(worker, node);
   }
   _observer_epilogue(worker, node);
 }
@@ -1950,16 +1953,20 @@ inline void Executor::_invoke_async_task(Worker& worker, Node* node) {
 // Procedure: _invoke_dependent_async_task
 inline void Executor::_invoke_dependent_async_task(Worker& worker, Node* node) {
   _observer_prologue(worker, node);
-  auto& work = std::get_if<Node::DependentAsync>(&node->_handle)->work;
-  switch(work.index()) {
-    case 0:
-      std::get_if<0>(&work)->operator()();
-    break;
+  try {
+    auto& work = std::get_if<Node::DependentAsync>(&node->_handle)->work;
+    switch(work.index()) {
+      case 0:
+        std::get_if<0>(&work)->operator()();
+      break;
 
-    case 1:
-      Runtime rt(*this, worker, node);
-      std::get_if<1>(&work)->operator()(rt);
-    break;
+      case 1:
+        Runtime rt(*this, worker, node);
+        std::get_if<1>(&work)->operator()(rt);
+      break;
+    }
+  } catch(...) {
+    _process_exception(worker, node);
   }
   _observer_epilogue(worker, node);
 }
@@ -2359,21 +2366,12 @@ auto Runtime::_async(Worker& w, const std::string& name, F&& f) {
 
   using R = std::invoke_result_t<std::decay_t<F>>;
 
-  std::promise<R> p;
+  std::packaged_task<R()> p(std::forward<F>(f));
   auto fu{p.get_future()};
 
   auto node = node_pool.animate(
-    name, 0, _parent->_topology, _parent, 0,
-    std::in_place_type_t<Node::Async>{},
-    [p=make_moc(std::move(p)), f=std::forward<F>(f)] () mutable {
-      if constexpr(std::is_same_v<R, void>) {
-        f();
-        p.object.set_value();
-      }
-      else {
-        p.object.set_value(f());
-      }
-    }
+    name, 0, _parent->_topology, _parent, 0, std::in_place_type_t<Node::Async>{},
+    [p=make_moc(std::move(p))] () mutable { p.object(); }
   );
 
   _executor._schedule(w, node);

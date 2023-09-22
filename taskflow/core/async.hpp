@@ -18,13 +18,12 @@ auto Executor::async(const std::string& name, F&& f) {
 
   using R = std::invoke_result_t<std::decay_t<F>>;
 
-  std::promise<R> p;
+  std::packaged_task<R()> p(std::forward<F>(f));
   auto fu{p.get_future()};
 
   auto node = node_pool.animate(
-    name, 0, nullptr, nullptr, 0,
-    std::in_place_type_t<Node::Async>{}, 
-    _make_promised_async(std::move(p), std::forward<F>(f))
+    name, 0, nullptr, nullptr, 0, std::in_place_type_t<Node::Async>{}, 
+    [p=make_moc(std::move(p))]() mutable { p.object(); }
   );
 
   _schedule_async_task(node);
@@ -49,8 +48,8 @@ void Executor::silent_async(const std::string& name, F&& f) {
   _increment_topology();
 
   auto node = node_pool.animate(
-    name, 0, nullptr, nullptr, 0,
-    std::in_place_type_t<Node::Async>{}, std::forward<F>(f)
+    name, 0, nullptr, nullptr, 0, std::in_place_type_t<Node::Async>{}, 
+    std::forward<F>(f)
   );
 
   _schedule_async_task(node);
@@ -66,20 +65,6 @@ void Executor::silent_async(F&& f) {
 // Async Helper Methods
 // ----------------------------------------------------------------------------
 
-// Function: _make_promised_async
-template <typename R, typename F>
-auto Executor::_make_promised_async(std::promise<R>&& p, F&& func) {
-  return [p=make_moc(std::move(p)), func=std::forward<F>(func)]() mutable {
-    if constexpr(std::is_same_v<R, void>) {
-      func();
-      p.object.set_value();
-    }
-    else {
-      p.object.set_value(func());
-    }
-  };
-}
-  
 // Procedure: _schedule_async_task
 inline void Executor::_schedule_async_task(Node* node) {  
   if(auto w = _this_worker(); w) {
@@ -204,7 +189,7 @@ auto Executor::dependent_async(
   
   using R = std::invoke_result_t<std::decay_t<F>>;
 
-  std::promise<R> p;
+  std::packaged_task<R()> p(std::forward<F>(func));
   auto fu{p.get_future()};
 
   size_t num_dependents = sizeof...(tasks);
@@ -212,7 +197,7 @@ auto Executor::dependent_async(
   AsyncTask task(node_pool.animate(
     name, 0, nullptr, nullptr, num_dependents,
     std::in_place_type_t<Node::DependentAsync>{},
-    _make_promised_async(std::move(p), std::forward<F>(func))
+    [p=make_moc(std::move(p))] () mutable { p.object(); }
   ));
   
   if constexpr(sizeof...(Tasks) > 0) {
@@ -246,7 +231,7 @@ auto Executor::dependent_async(
   
   using R = std::invoke_result_t<std::decay_t<F>>;
 
-  std::promise<R> p;
+  std::packaged_task<R()> p(std::forward<F>(func));
   auto fu{p.get_future()};
 
   size_t num_dependents = std::distance(first, last);
@@ -254,7 +239,7 @@ auto Executor::dependent_async(
   AsyncTask task(node_pool.animate(
     name, 0, nullptr, nullptr, num_dependents,
     std::in_place_type_t<Node::DependentAsync>{},
-    _make_promised_async(std::move(p), std::forward<F>(func))
+    [p=make_moc(std::move(p))] () mutable { p.object(); }
   ));
 
   for(; first != last; first++) {
