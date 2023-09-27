@@ -49,7 +49,7 @@ TF_FORCE_INLINE auto make_for_each_task(B beg, E end, C c, P&& part = P()) {
         });
       }
 
-      rt.join();
+      rt.corun_all();
     }
     // dynamic partitioner
     else {
@@ -119,7 +119,7 @@ TF_FORCE_INLINE auto make_for_each_index_task(B beg, E end, S inc, C c, P&& part
         });
       }
 
-      rt.join();
+      rt.corun_all();
     }
     // dynamic partitioner
     else {

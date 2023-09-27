@@ -59,7 +59,7 @@ TF_FORCE_INLINE auto make_transform_task(
           ); 
         });
       }
-      rt.join();
+      rt.corun_all();
     }
     // dynamic partitioner
     else {
@@ -139,7 +139,7 @@ TF_FORCE_INLINE auto make_transform_task(
           ); 
         });
       }
-      rt.join();
+      rt.corun_all();
     }
     // dynamic partitioner
     else {

@@ -341,7 +341,7 @@ void runtime_async(size_t W) {
         "named_silent_async", [&](){counter.fetch_add(1, std::memory_order_relaxed);}
       );
     }
-    sf.join();
+    sf.corun_all();
   });
 
   auto S2 = taskflow.emplace([&] (tf::Runtime& sf){
@@ -349,7 +349,7 @@ void runtime_async(size_t W) {
     for(int i=0; i<1000; i++) {
       sf.silent_async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
     }
-    sf.join();
+    sf.corun_all();
   });
 
   taskflow.emplace([&] (tf::Runtime& sf){
@@ -359,14 +359,14 @@ void runtime_async(size_t W) {
         "named_async", [&](){ counter.fetch_add(1, std::memory_order_relaxed); }
       );
     }
-    sf.join();
+    sf.corun_all();
   });
 
   taskflow.emplace([&] (tf::Runtime& sf){
     for(int i=0; i<1000; i++) {
       sf.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
     }
-    sf.join();
+    sf.corun_all();
   });
 
   A.precede(S1, S2);

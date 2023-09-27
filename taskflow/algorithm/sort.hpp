@@ -631,7 +631,7 @@ TF_FORCE_INLINE auto make_sort_task(B beg, E end, C cmp) {
       std::is_arithmetic_v<typename std::iterator_traits<B_t>::value_type>
     >(rt, beg, end, cmp, log2(end - beg));
 
-    rt.join();
+    rt.corun_all();
   };
 }
   

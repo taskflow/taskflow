@@ -147,6 +147,14 @@ class Runtime {
   friend class FlowBuilder;
 
   public:
+  
+  /**
+  @brief destroys the runtime object
+
+  Issues a tf::Runtime::corun_all to finish all spawned asynchronous tasks
+  and then destroys the runtime object.
+  */
+  ~Runtime();
 
   /**
   @brief obtains the running executor
@@ -211,9 +219,9 @@ class Runtime {
   The method creates an asynchronous task to launch the given
   function on the given arguments.
   The difference to tf::Executor::async is that the created asynchronous task
-  pertains to the runtime.
-  When the runtime joins, all asynchronous tasks created from the runtime
-  are guaranteed to finish after the join returns.
+  pertains to the runtime object.
+  Applications can explicitly issue tf::Runtime::corun_all
+  to wait for all spawned asynchronous tasks to finish.
   For example:
 
   @code{.cpp}
@@ -230,8 +238,8 @@ class Runtime {
       rt.async([&](){ counter++; });
     }
     
-    // explicit join 100 asynchronous tasks
-    rt.join();
+    // wait for the 100 asynchronous tasks to finish
+    rt.corun_all();
     assert(counter == 102);
   });
   @endcode
@@ -254,8 +262,8 @@ class Runtime {
       });
     }
     
-    // explicitly join 100 asynchronous tasks
-    rt.join();
+    // wait for the 200 asynchronous tasks to finish
+    rt.corun_all();
     assert(counter == 200);
   });
   @endcode
@@ -297,7 +305,7 @@ class Runtime {
     for(int i=0; i<100; i++) {
       rt.silent_async([&](){ counter++; });
     }
-    rt.join();
+    rt.corun_all();
     assert(counter == 100);
   });
   @endcode
@@ -317,7 +325,7 @@ class Runtime {
   @code{.cpp}
   taskflow.emplace([&](tf::Runtime& rt){
     rt.silent_async("my task", [](){});
-    rt.join();
+    rt.corun_all();
   });
   @endcode
   */
@@ -339,7 +347,7 @@ class Runtime {
   taskflow.emplace([&](tf::Runtime& rt){
     // running by the worker of this runtime
     rt.silent_async_unchecked("my task", [](){});
-    rt.join();
+    rt.corun_all();
   });
   @endcode
   */
@@ -376,6 +384,9 @@ class Runtime {
   the caller thread (worker) is not blocked (e.g., sleeping or holding any lock). 
   Instead, the caller thread joins the work-stealing loop of the executor 
   and returns when all tasks in the target completes.
+  
+  @attention
+  Only the worker of this tf::Runtime can issue corun.
   */
   template <typename T>
   void corun(T&& target);
@@ -388,41 +399,43 @@ class Runtime {
 
   The method keeps the caller worker running in the work-stealing loop
   until the stop predicate becomes true.
+  
+  @attention
+  Only the worker of this tf::Runtime can issue corun.
   */
   template <typename P>
   void corun_until(P&& predicate);
   
   /**
-  @brief joins all asynchronous tasks spawned by this runtime
+  @brief corun all asynchronous tasks spawned by this runtime with other workers
 
-  Immediately joins all asynchronous tasks (tf::Runtime::async,
-  tf::Runtime::silent_async).
-  Unlike tf::Subflow::join, you can join multiples times from
-  a tf::Runtime object.
+  Coruns all asynchronous tasks (tf::Runtime::async,
+  tf::Runtime::silent_async) with other workers until all those 
+  asynchronous tasks finish.
     
   @code{.cpp}
   std::atomic<size_t> counter{0};
   taskflow.emplace([&](tf::Runtime& rt){
-    // spawn 100 async tasks and join
+    // spawn 100 async tasks and wait
     for(int i=0; i<100; i++) {
       rt.silent_async([&](){ counter++; });
     }
-    rt.join();
+    rt.corun_all();
     assert(counter == 100);
     
-    // spawn another 100 async tasks and join
+    // spawn another 100 async tasks and wait
     for(int i=0; i<100; i++) {
       rt.silent_async([&](){ counter++; });
     }
-    rt.join();
+    rt.corun_all();
     assert(counter == 200);
   });
   @endcode
 
   @attention
-  Only the worker of this tf::Runtime can issue join.
+  Only the worker of this tf::Runtime can issue tf::Runtime::corun_all.
   */
-  inline void join();
+  inline void corun_all();
 
   /**
   @brief acquire a reference to the underlying worker

@@ -43,12 +43,23 @@ To use %Taskflow v3.7.0, you need a compiler that supports C++17:
 + Improved worker-thread ID mapping performance using C++20 atomic wait
 + Added tf::AsyncTask::is_done to query the completion status of an async task
 + Added tf::Taskflow::remove_dependency to remove dependencies from the graph
++ Added support for exception in Taskflow
 
-@subsection release-3-7-0_cudaflow cudaFlow
+@code{.cpp}
+tf::Executor executor;
+tf::Taskflow taskflow;
+taskflow.emplace([](){ throw std::runtime_error("exception"); });
+try {
+  executor.run(taskflow).get();
+}
+catch(const std::runtime_error& e) {
+  std::cerr << e.what() << std::endl;
+}
+@endcode
+
++ Modified the CI to exclude exception test under sanitizers 
 
 @subsection release-3-7-0_utilities Utilities
-
-@subsection release-3-7-0_profiler Taskflow Profiler (TFProf)
 
 @section release-3-7-0_bug_fixes Bug Fixes 
 
@@ -56,10 +67,13 @@ To use %Taskflow v3.7.0, you need a compiler that supports C++17:
 
 @section release-3-7-0_breaking_changes Breaking Changes
 
++ Renamed tf::Runtime::join to tf::Runtime::corun_all
+
 @section release-3-7-0_documentation Documentation
 
 + Revised @ref DependentAsyncTasking
   + Added @ref QueryTheComppletionStatusOfDependentAsyncTasks
++ Revised @ref ExceptionHandling 
 
 @section release-3-7-0_miscellaneous_items Miscellaneous Items
 

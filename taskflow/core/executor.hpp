@@ -2388,11 +2388,18 @@ auto Runtime::async(const std::string& name, F&& f) {
   return _async(*_executor._this_worker(), name, std::forward<F>(f));
 }
 
-// Function: join
-inline void Runtime::join() {
+// Function: corun_all
+inline void Runtime::corun_all() {
   corun_until([this] () -> bool { 
     return _parent->_join_counter.load(std::memory_order_acquire) == 0; 
   });
+}
+
+// Destructor
+inline Runtime::~Runtime() {
+  if(_parent->_join_counter.load(std::memory_order_acquire)) {
+    corun_all();
+  }
 }
 
 }  // end of namespace tf -----------------------------------------------------

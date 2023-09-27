@@ -174,7 +174,11 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="install_1BAIBuildDocumentation">
 <title>Build Documentation</title>
-<para>Taskflow uses <ulink url="https://www.doxygen.nl/index.html">Doxygen</ulink> and <ulink url="https://mcss.mosra.cz/documentation/doxygen/">m.css</ulink> to generate this documentation. The source of documentation is located in the folder <computeroutput>taskflow/doxygen</computeroutput> and the generated html is output to the folder <computeroutput>taskflow/docs</computeroutput>. To generate the documentation, clone the m.css project and enter the <computeroutput>m.css/documentation</computeroutput> directory:</para>
+<para>Taskflow uses <ulink url="https://www.doxygen.nl/index.html">Doxygen</ulink> and <ulink url="https://mcss.mosra.cz/documentation/doxygen/">m.css</ulink> to generate this documentation. The source of documentation is located in the folder <computeroutput>taskflow/doxygen</computeroutput> and the generated html is output to the folder <computeroutput>taskflow/docs</computeroutput>. To generate the documentation, you need to first install doxygen:</para>
+<para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>ubuntu<sp/>as<sp/>an<sp/>example</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>sudo<sp/>apt-get<sp/>install<sp/>doxygen<sp/>graphviz</highlight></codeline>
+</programlisting></para>
+<para>Once you have doxygen and dot graph generator installed, clone the m.css project and enter the <computeroutput>m.css/documentation</computeroutput> directory:</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>git<sp/>clone<sp/>https://github.com/mosra/m.css.git</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>cd<sp/>m.css/documentation</highlight></codeline>
 </programlisting></para>

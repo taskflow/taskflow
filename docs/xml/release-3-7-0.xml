@@ -25,16 +25,8 @@
         <reference>release-3-7-0_1release-3-7-0_taskflow_core</reference>
     </tocsect>
       <tocsect>
-        <name>cudaFlow</name>
-        <reference>release-3-7-0_1release-3-7-0_cudaflow</reference>
-    </tocsect>
-      <tocsect>
         <name>Utilities</name>
         <reference>release-3-7-0_1release-3-7-0_utilities</reference>
-    </tocsect>
-      <tocsect>
-        <name>Taskflow Profiler (TFProf)</name>
-        <reference>release-3-7-0_1release-3-7-0_profiler</reference>
     </tocsect>
     </tableofcontents>
     </tocsect>
@@ -99,17 +91,26 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem><listitem><para>Improved worker-thread ID mapping performance using C++20 atomic wait</para>
 </listitem><listitem><para>Added <ref refid="classtf_1_1AsyncTask_1aefeefa30d7cafdfbb7dc8def542e8e51" kindref="member">tf::AsyncTask::is_done</ref> to query the completion status of an async task</para>
 </listitem><listitem><para>Added <ref refid="classtf_1_1Taskflow_1a354a7673fabeaf3be66928ad6b573900" kindref="member">tf::Taskflow::remove_dependency</ref> to remove dependencies from the graph</para>
+</listitem><listitem><para>Added support for exception in <ref refid="classtf_1_1Taskflow" kindref="compound">Taskflow</ref></para>
+</listitem></itemizedlist>
+</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>(</highlight><highlight class="stringliteral">&quot;exception&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">try</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).get();</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>&amp;<sp/>e)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cerr</ref><sp/>&lt;&lt;<sp/>e.what()<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+<para><itemizedlist>
+<listitem><para>Modified the CI to exclude exception test under sanitizers</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
-<sect2 id="release-3-7-0_1release-3-7-0_cudaflow">
-<title>cudaFlow</title>
-</sect2>
 <sect2 id="release-3-7-0_1release-3-7-0_utilities">
 <title>Utilities</title>
-</sect2>
-<sect2 id="release-3-7-0_1release-3-7-0_profiler">
-<title>Taskflow Profiler (TFProf)</title>
 </sect2>
 </sect1>
 <sect1 id="release-3-7-0_1release-3-7-0_bug_fixes">
@@ -121,6 +122,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-3-7-0_1release-3-7-0_breaking_changes">
 <title>Breaking Changes</title>
+<para><itemizedlist>
+<listitem><para>Renamed tf::Runtime::join to <ref refid="classtf_1_1Runtime_1afcc18484a95fd2a834940d878eaf4dfc" kindref="member">tf::Runtime::corun_all</ref></para>
+</listitem></itemizedlist>
+</para>
 </sect1>
 <sect1 id="release-3-7-0_1release-3-7-0_documentation">
 <title>Documentation</title>
@@ -129,6 +134,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <listitem><para>Added <ref refid="DependentAsyncTasking_1QueryTheComppletionStatusOfDependentAsyncTasks" kindref="member">Query the Completion Status of Dependent Async Tasks</ref></para>
 </listitem></itemizedlist>
 </para>
+</listitem><listitem><para>Revised <ref refid="ExceptionHandling" kindref="compound">Exception Handling</ref></para>
 </listitem></itemizedlist>
 </para>
 </sect1>

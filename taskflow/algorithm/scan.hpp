@@ -137,7 +137,7 @@ TF_FORCE_INLINE auto make_inclusive_scan_task(B first, E last, D d_first, BOP bo
       curr_b += chunk_size;
     }
 
-    rt.join();
+    rt.corun_all();
   };
 }
 
@@ -210,7 +210,7 @@ TF_FORCE_INLINE auto make_inclusive_scan_task(B first, E last, D d_first, BOP bo
       curr_b += chunk_size;
     }
 
-    rt.join();
+    rt.corun_all();
   };
 }
 
@@ -286,7 +286,7 @@ TF_FORCE_INLINE auto make_transform_inclusive_scan_task(
       curr_b += chunk_size;
     }
 
-    rt.join();
+    rt.corun_all();
   };
 }
 
@@ -361,7 +361,7 @@ TF_FORCE_INLINE auto make_transform_inclusive_scan_task(
       curr_b += chunk_size;
     }
 
-    rt.join();
+    rt.corun_all();
     
   };
 }
@@ -449,7 +449,7 @@ TF_FORCE_INLINE auto make_exclusive_scan_task(
       curr_b += chunk_size;
     }
 
-    rt.join();
+    rt.corun_all();
     
   };
 }
@@ -537,7 +537,7 @@ TF_FORCE_INLINE auto make_transform_exclusive_scan_task(
       curr_b += chunk_size;
     }
 
-    rt.join();
+    rt.corun_all();
     
   };
 }

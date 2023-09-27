@@ -66,7 +66,7 @@
 <span class="p">}</span><span class="w"></span>
 
 <span class="c1">// submit the taskflow</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="w"> </span><span class="n">fu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">fu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// request to cancel the above submitted execution</span>
 <span class="n">fu</span><span class="p">.</span><span class="n">cancel</span><span class="p">();</span><span class="w"></span>

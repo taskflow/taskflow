@@ -344,8 +344,8 @@ void runtime_async_task_exception(unsigned W) {
   taskflow.clear();
   A = taskflow.emplace([&](tf::Runtime& rt){
     rt.silent_async([&](){ throw std::runtime_error("a"); });
-    rt.join();  // must join to propagate the exception to taskflow
-                // because async is independent of taskflow
+    rt.corun_all();  // must join to propagate the exception to taskflow
+                     // because async is independent of taskflow
     flag = 1;
   });
   B = taskflow.emplace([&](){

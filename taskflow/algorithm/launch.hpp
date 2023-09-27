@@ -35,7 +35,7 @@ TF_FORCE_INLINE void launch_loop(
     }
   }
       
-  rt.join();
+  rt.corun_all();
 }
 
 // Function: launch_loop

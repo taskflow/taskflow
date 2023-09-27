@@ -178,7 +178,14 @@ Please visit the page @subpage BenchmarkTaskflow for details.
 %Taskflow uses @Doxygen and @MCSS to generate this documentation.
 The source of documentation is located in the folder @c taskflow/doxygen
 and the generated html is output to the folder @c taskflow/docs.
-To generate the documentation, clone the m.css project and enter
+To generate the documentation, you need to first install doxygen:
+
+@code{.shell-session}
+# ubuntu as an example
+~$ sudo apt-get install doxygen graphviz
+@endcode
+
+Once you have doxygen and dot graph generator installed, clone the m.css project and enter
 the @c m.css/documentation directory:
 
 @code{.shell-session}

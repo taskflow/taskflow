@@ -115,7 +115,7 @@ TF_FORCE_INLINE auto make_find_if_task(
         );
       }
 
-      rt.join();
+      rt.corun_all();
     }
     // dynamic partitioner
     else {
@@ -193,7 +193,7 @@ TF_FORCE_INLINE auto make_find_if_not_task(
         );
       }
 
-      rt.join();
+      rt.corun_all();
     }
     // dynamic partitioner
     else {
@@ -308,7 +308,7 @@ TF_FORCE_INLINE auto make_min_element_task(
           }
         });
       }
-      rt.join();
+      rt.corun_all();
     }
     // dynamic partitioner
     else {
@@ -453,7 +453,7 @@ TF_FORCE_INLINE auto make_max_element_task(
           }
         });
       }
-      rt.join();
+      rt.corun_all();
     }
     // dynamic partitioner
     else {

@@ -28,7 +28,7 @@ for(int i=0; i<1000; i++) {
 }
 
 // submit the taskflow
-tf::Future fu = executor.run(taskflow);
+tf::Future<void> fu = executor.run(taskflow);
 
 // request to cancel the above submitted execution
 fu.cancel();
