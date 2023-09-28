@@ -102,10 +102,6 @@
             </dt>
             <dd>class to create an immutable view of a worker in an executor</dd>
             <dt>
-              class <a href="classtf_1_1WorkerInterface.html" class="m-doc">WorkerInterface</a>
-            </dt>
-            <dd>class to configure worker behavior in an executor</dd>
-            <dt>
               class <a href="classtf_1_1Executor.html" class="m-doc">Executor</a>
             </dt>
             <dd>class to create an executor for running a taskflow graph</dd>
@@ -316,11 +312,6 @@
         <section id="func-members">
           <h2><a href="#func-members">Functions</a></h2>
           <dl class="m-doc">
-            <dt>
-              <div class="m-doc-template">template&lt;typename T, typename... ArgsT&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a6371ab1b1b0e57db6ca95cb4456ac5d3" class="m-doc">make_worker_interface</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) -&gt; <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a>&lt;T&gt;</span>
-            </dt>
-            <dd>helper function to create an instance derived from <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a></dd>
             <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#a9ca58dc6c666698cc7373eb0262140ef" class="m-doc">to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a> type) -&gt; const char*</span>
             </dt>
@@ -912,39 +903,6 @@
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="a6371ab1b1b0e57db6ca95cb4456ac5d3"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename T, typename... ArgsT&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"><a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a>&lt;T&gt; tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6371ab1b1b0e57db6ca95cb4456ac5d3" class="m-doc-self">make_worker_interface</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args)</span></span>
-            </h3>
-            <p>helper function to create an instance derived from <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a></p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">T</td>
-                  <td>type derived from <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a></td>
-                </tr>
-                <tr>
-                  <td>ArgsT</td>
-                  <td>argument types to construct <code>T</code></td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>args</td>
-                  <td>arguments to forward to the constructor of <code>T</code></td>
-                </tr>
-              </tbody>
-            </table>
-          </div></section>
           <section class="m-doc-details" id="a9ca58dc6c666698cc7373eb0262140ef"><div>
             <h3>
               <span class="m-doc-wrap-bumper">const char* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a9ca58dc6c666698cc7373eb0262140ef" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a> type)</span></span>

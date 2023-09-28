@@ -33,7 +33,6 @@ list(APPEND TF_EXAMPLES
   run 
   corun
   runtime
-  worker_interface
   composition
   limited_concurrency
   cancel

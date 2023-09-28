@@ -85,8 +85,7 @@
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper"><a href="#a23b4c858279616d79612dccd9a715365" class="m-doc">Executor</a>(</span><span class="m-doc-wrap">size_t N = <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>(),
-              <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a>&lt;<a href="classtf_1_1WorkerInterface.html" class="m-doc">WorkerInterface</a>&gt; wix = nullptr) <span class="m-label m-flat m-info">explicit</span> </span>
+              <span class="m-doc-wrap-bumper"><a href="#a4910e89d89146b6d563d598b795eb4a9" class="m-doc">Executor</a>(</span><span class="m-doc-wrap">size_t N = <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>()) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
             <dd>constructs the executor with <code>N</code> worker threads</dd>
             <dt>
@@ -294,10 +293,9 @@
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="a23b4c858279616d79612dccd9a715365"><div>
+          <section class="m-doc-details" id="a4910e89d89146b6d563d598b795eb4a9"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"> tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a23b4c858279616d79612dccd9a715365" class="m-doc-self">Executor</a>(</span><span class="m-doc-wrap">size_t N = <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>(),
-              <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a>&lt;<a href="classtf_1_1WorkerInterface.html" class="m-doc">WorkerInterface</a>&gt; wix = nullptr) <span class="m-label m-info">explicit</span> </span></span>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4910e89d89146b6d563d598b795eb4a9" class="m-doc-self">Executor</a>(</span><span class="m-doc-wrap">size_t N = <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>()) <span class="m-label m-info">explicit</span> </span></span>
             </h3>
             <p>constructs the executor with <code>N</code> worker threads</p>
             <table class="m-table m-fullwidth m-flat">
@@ -307,15 +305,11 @@
               <tbody>
                 <tr>
                   <td style="width: 1%">N</td>
-                  <td>number of workers (default <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>)</td>
-                </tr>
-                <tr>
-                  <td>wix</td>
-                  <td>worker interface class to alter worker (thread) behaviors</td>
+                  <td>the number of workers (default <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>)</td>
                 </tr>
               </tbody>
             </table>
-<p>The constructor spawns <code>N</code> worker threads to run tasks in a work-stealing loop. The number of workers must be greater than zero or an exception will be thrown. By default, the number of worker threads is equal to the maximum hardware concurrency returned by <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>.</p><p>Users can alter the worker behavior, such as changing thread affinity, via deriving an instance from <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a>.</p>
+<p>The constructor spawns <code>N</code> worker threads to run tasks in a work-stealing loop. The number of workers must be greater than zero or an exception will be thrown. By default, the number of worker threads is equal to the maximum hardware concurrency returned by <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>.</p>
           </div></section>
           <section class="m-doc-details" id="a5a511b0cc23b264826373d3dabcef670"><div>
             <h3>

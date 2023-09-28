@@ -97,7 +97,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <sect2 id="release-3-5-0_1release-3-5-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>Added <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> to allow changing properties of workers upon their creations</para>
+<listitem><para>Added tf::WorkerInterface to allow changing properties of workers upon their creations</para>
 </listitem><listitem><para>Added tf::Executor::loop_until to allow looping a worker with a custom stop predicate</para>
 </listitem><listitem><para>Added <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref> to implement data-parallel algorithms<itemizedlist>
 <listitem><para>See <ref refid="DataParallelPipeline" kindref="compound">Data-parallel Pipeline</ref></para>
@@ -107,7 +107,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <listitem><para>See <ref refid="PrioritizedTasking" kindref="compound">Prioritized Tasking</ref></para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para>Extended <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> to include <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref></para>
+</listitem><listitem><para>Extended <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> to include tf::WorkerInterface</para>
 </listitem><listitem><para>Improved parallel algorithms (e.g., <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each</ref>) with tail optimization</para>
 </listitem><listitem><para>Resolved the busy-waiting problem in our work-stealing algorithm (<ulink url="https://github.com/taskflow/taskflow/pull/440">#400</ulink>)</para>
 </listitem></itemizedlist>
@@ -160,7 +160,6 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <para><itemizedlist>
 <listitem><para>Revised <ref refid="ExecuteTaskflow" kindref="compound">Executor</ref><itemizedlist>
 <listitem><para>Added <ref refid="ExecuteTaskflow_1ExecuteATaskflowFromAnInternalWorker" kindref="member">Execute a Taskflow from an Internal Worker</ref></para>
-</listitem><listitem><para>Added <ref refid="ExecuteTaskflow_1ModifyWorkerProperty" kindref="member">Modify Worker Property</ref></para>
 </listitem></itemizedlist>
 </para>
 </listitem><listitem><para>Added <ref refid="PrioritizedTasking" kindref="compound">Prioritized Tasking</ref></para>

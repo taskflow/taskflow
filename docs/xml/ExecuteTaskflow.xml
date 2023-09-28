@@ -32,10 +32,6 @@
         <name>Observe Thread Activities</name>
         <reference>ExecuteTaskflow_1ObserveThreadActivities</reference>
     </tocsect>
-      <tocsect>
-        <name>Modify Worker Property</name>
-        <reference>ExecuteTaskflow_1ModifyWorkerProperty</reference>
-    </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
@@ -349,63 +345,7 @@ Issuing multiple runs on the same taskflow will automatically <emphasis>synchron
 <codeline><highlight class="normal">worker<sp/>2<sp/>finished<sp/>running<sp/>G</highlight></codeline>
 <codeline><highlight class="normal">worker<sp/>3<sp/>finished<sp/>running<sp/>H</highlight></codeline>
 </programlisting></para>
-<para>It is expected each line of <ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref> interleaves with each other as there are four workers participating in task scheduling. However, the <emphasis>ready</emphasis> message always appears before the corresponding task message (e.g., numbers) and then the <emphasis>finished</emphasis> message.</para>
-</sect1>
-<sect1 id="ExecuteTaskflow_1ModifyWorkerProperty">
-<title>Modify Worker Property</title>
-<para>You can change the property of each worker thread from its executor, such as assigning thread-processor affinity before the worker enters the scheduler loop and post-processing additional information after the worker leaves the scheduler loop, by passing an instance derived from <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> to the executor. The example below prints the worker identifier when it enters and leaves the scheduler loop, respectively:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keyword">class<sp/></highlight><highlight class="normal">CustomWorkerBehavior<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref><sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>to<sp/>call<sp/>before<sp/>the<sp/>worker<sp/>enters<sp/>the<sp/>scheduling<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>scheduler_prologue(<ref refid="classtf_1_1Worker" kindref="compound">tf::Worker</ref>&amp;<sp/>w)</highlight><highlight class="keyword"><sp/>override<sp/></highlight><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>tf::stringify(</highlight><highlight class="stringliteral">&quot;worker<sp/>&quot;</highlight><highlight class="normal">,<sp/>w.<ref refid="classtf_1_1Worker_1a0180ea51cc46551157eaae451b50c7d8" kindref="member">id</ref>(),<sp/></highlight><highlight class="stringliteral">&quot;<sp/>enters<sp/>the<sp/>scheduler<sp/>loop\n&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>to<sp/>call<sp/>after<sp/>the<sp/>worker<sp/>leaves<sp/>the<sp/>scheduling<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>scheduler_epilogue(<ref refid="classtf_1_1Worker" kindref="compound">tf::Worker</ref>&amp;<sp/>w,<sp/><ref refid="cpp/error/exception_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::exception_ptr</ref>)</highlight><highlight class="keyword"><sp/>override<sp/></highlight><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>tf::stringify(</highlight><highlight class="stringliteral">&quot;worker<sp/>&quot;</highlight><highlight class="normal">,<sp/>w.<ref refid="classtf_1_1Worker_1a0180ea51cc46551157eaae451b50c7d8" kindref="member">id</ref>(),<sp/></highlight><highlight class="stringliteral">&quot;<sp/>leaves<sp/>the<sp/>scheduler<sp/>loop\n&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal">};</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(4,<sp/>std::make_shared&lt;CustomWorkerBehavior&gt;());</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para>
-<para>When running the program, we see the following one possible output:</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">worker<sp/>1<sp/>enters<sp/>the<sp/>scheduler<sp/>loop</highlight></codeline>
-<codeline><highlight class="normal">worker<sp/>0<sp/>enters<sp/>the<sp/>scheduler<sp/>loop</highlight></codeline>
-<codeline><highlight class="normal">worker<sp/>2<sp/>enters<sp/>the<sp/>scheduler<sp/>loop</highlight></codeline>
-<codeline><highlight class="normal">worker<sp/>3<sp/>enters<sp/>the<sp/>scheduler<sp/>loop</highlight></codeline>
-<codeline><highlight class="normal">worker<sp/>3<sp/>leaves<sp/>the<sp/>scheduler<sp/>loop</highlight></codeline>
-<codeline><highlight class="normal">worker<sp/>0<sp/>leaves<sp/>the<sp/>scheduler<sp/>loop</highlight></codeline>
-<codeline><highlight class="normal">worker<sp/>2<sp/>leaves<sp/>the<sp/>scheduler<sp/>loop</highlight></codeline>
-<codeline><highlight class="normal">worker<sp/>1<sp/>leaves<sp/>the<sp/>scheduler<sp/>loop</highlight></codeline>
-</programlisting></para>
-<para>When you create an executor, it spawns a set of worker threads to run tasks using a work-stealing scheduling algorithm. The execution logic of the scheduler and its interaction with each spawned worker via <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> is given below:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>n=0;<sp/>n&lt;num_workers;<sp/>n++)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>create_thread([](Worker&amp;<sp/>worker)</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>pre-processing<sp/>executor-specific<sp/>worker<sp/>information</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>enter<sp/>the<sp/>scheduling<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Here,<sp/>WorkerInterface::scheduler_prologue<sp/>is<sp/>invoked,<sp/>if<sp/>any</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal">(1)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>perform_work_stealing_algorithm();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(stop)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>leaves<sp/>the<sp/>scheduling<sp/>loop<sp/>and<sp/>joins<sp/>this<sp/>worker<sp/>thread</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Here,<sp/>WorkerInterface::scheduler_epilogue<sp/>is<sp/>invoked,<sp/>if<sp/>any</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-</programlisting></para>
-<para><simplesect kind="note"><para>Methods defined in <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> are not thread-safe and may be be invoked by multiple workers concurrently. </para>
-</simplesect>
-</para>
+<para>It is expected each line of <ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref> interleaves with each other as there are four workers participating in task scheduling. However, the <emphasis>ready</emphasis> message always appears before the corresponding task message (e.g., numbers) and then the <emphasis>finished</emphasis> message. </para>
 </sect1>
     </detaileddescription>
     <location file="cookbook/executor.dox"/>

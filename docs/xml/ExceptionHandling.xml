@@ -19,7 +19,7 @@
 <para>This chapters discusses how to handle exceptions from a submitted taskflow so you can properly catch or propagate exceptions in your workload.</para>
 <sect1 id="ExceptionHandling_1CatchAnExceptionFromARunningTaskflow">
 <title>Catch an Exception from a Running Taskflow</title>
-<para>When a task throws an exception, the executor will store that exception in the shared state referenced by the <ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> handle. You can catch that exception via calling <computeroutput>get:</computeroutput> </para>
+<para>When a task throws an exception, the executor will store that exception in the shared state referenced by the <ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> handle. You can catch that exception via calling the <computeroutput>get</computeroutput> method:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -93,7 +93,14 @@ An exception will automatically cancel the execution of its parent taskflow. All
 <codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cerr</ref><sp/>&lt;&lt;<sp/>e.what()<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para>On the other hand, <ref refid="classtf_1_1Executor_1a878ec1bc337c7efe22619b21ba3ecdf3" kindref="member">tf::Executor::silent_async</ref> will silently catch the exception, if any, and ignore it. </para>
+<para>Running the program will show the exception message on the async task:</para>
+<para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>exception<sp/>on<sp/>A</highlight></codeline>
+</programlisting></para>
+<para>On the other hand, since <ref refid="classtf_1_1Executor_1a878ec1bc337c7efe22619b21ba3ecdf3" kindref="member">tf::Executor::silent_async</ref> does not return any future handle, any exception thrown from a silent-async task will be silently caught by the executor and ignored.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a878ec1bc337c7efe22619b21ba3ecdf3" kindref="member">silent_async</ref>([](){<sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>(</highlight><highlight class="stringliteral">&quot;exception<sp/>on<sp/>A&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+</programlisting></para>
+<para>Running the above program will not show any exception message as it is silently caught by the executor. </para>
 </sect1>
     </detaileddescription>
     <location file="cookbook/exception.dox"/>

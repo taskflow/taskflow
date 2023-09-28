@@ -29,7 +29,6 @@ list(APPEND TF_UNITTESTS
   test_deferred_scalable_pipelines
   test_runtimes
   test_data_pipelines
-  test_workers
 )
 
 string(FIND '${CMAKE_CXX_FLAGS}' "-fsanitize" sanitize)

@@ -21,7 +21,6 @@
     <innerclass refid="classtf_1_1Subflow" prot="public">tf::Subflow</innerclass>
     <innerclass refid="classtf_1_1Worker" prot="public">tf::Worker</innerclass>
     <innerclass refid="classtf_1_1WorkerView" prot="public">tf::WorkerView</innerclass>
-    <innerclass refid="classtf_1_1WorkerInterface" prot="public">tf::WorkerInterface</innerclass>
     <innerclass refid="classtf_1_1Executor" prot="public">tf::Executor</innerclass>
     <innerclass refid="classtf_1_1Task" prot="public">tf::Task</innerclass>
     <innerclass refid="classtf_1_1TaskView" prot="public">tf::TaskView</innerclass>
@@ -568,61 +567,6 @@
         <inbodydescription>
         </inbodydescription>
         <location file="/home/thuang295/Code/taskflow/taskflow/utility/small_vector.hpp" line="1026" column="22" bodyfile="/home/thuang295/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="1026" bodyend="1028"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a6371ab1b1b0e57db6ca95cb4456ac5d3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename T</type>
-          </param>
-          <param>
-            <type>typename...</type>
-            <declname>ArgsT</declname>
-            <defname>ArgsT</defname>
-          </param>
-        </templateparamlist>
-        <type><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; T &gt;</type>
-        <definition>std::shared_ptr&lt;T&gt; tf::make_worker_interface</definition>
-        <argsstring>(ArgsT &amp;&amp;... args)</argsstring>
-        <name>make_worker_interface</name>
-        <param>
-          <type>ArgsT &amp;&amp;...</type>
-          <declname>args</declname>
-        </param>
-        <briefdescription>
-<para>helper function to create an instance derived from <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>T</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>type derived from <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>ArgsT</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>argument types to construct <computeroutput>T</computeroutput> </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>args</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>arguments to forward to the constructor of <computeroutput>T</computeroutput> </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/worker.hpp" line="250" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/worker.hpp" bodystart="250" bodyend="256"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>

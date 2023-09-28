@@ -11,7 +11,7 @@ so you can properly catch or propagate exceptions in your workload.
 
 When a task throws an exception, the executor will store that exception in the
 shared state referenced by the tf::Future handle.
-You can catch that exception via calling @c get:
+You can catch that exception via calling the @c get method:
 
 @code{.cpp}
 tf::Executor executor;
@@ -114,9 +114,23 @@ catch(const std::runtime_error& e) {
 }
 @endcode
 
-On the other hand, tf::Executor::silent_async will silently catch the exception, if any,
-and ignore it.
+Running the program will show the exception message on the async task:
 
+@code{.shell-session}
+~$ exception on A
+@endcode
+
+On the other hand, since tf::Executor::silent_async does not return any future handle,
+any exception thrown from a silent-async task will be silently caught by the 
+executor and ignored.
+
+@code{.cpp}
+tf::Executor executor;
+executor.silent_async([](){ throw std::runtime_error("exception on A"); });
+@endcode
+
+Running the above program will not show any exception message as it is silently
+caught by the executor.
 
 */
 

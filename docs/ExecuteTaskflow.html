@@ -59,7 +59,6 @@
             <li><a href="#ThreadSafety">Touch an Executor from Multiple Threads</a></li>
             <li><a href="#QueryTheWorkerID">Query the Worker ID</a></li>
             <li><a href="#ObserveThreadActivities">Observe Thread Activities</a></li>
-            <li><a href="#ModifyWorkerProperty">Modify Worker Property</a></li>
           </ul>
         </nav>
 <p>After you create a task dependency graph, you need to submit it to threads for execution. In this chapter, we will show you how to execute a task dependency graph.</p><section id="CreateAnExecutor"><h2><a href="#CreateAnExecutor">Create an Executor</a></h2><p>To execute a taskflow, you need to create an <em>executor</em> of type <a href="classtf_1_1Executor.html" class="m-doc">tf::<wbr />Executor</a>. An executor is a <em>thread-safe</em> object that manages a set of worker threads and executes tasks through an efficient <em>work-stealing</em> algorithm. Issuing a call to run a taskflow creates a <em>topology</em>, a data structure to keep track of the execution status of a running graph. <a href="classtf_1_1Executor.html" class="m-doc">tf::<wbr />Executor</a> takes an unsigned integer to construct with <code>N</code> worker threads. The default value is <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor1</span><span class="p">;</span><span class="w">     </span><span class="c1">// create an executor with the number of workers</span>
@@ -277,48 +276,7 @@ worker <span class="m">1</span> finished running F
 <span class="m">7</span>
 <span class="m">8</span>
 worker <span class="m">2</span> finished running G
-worker <span class="m">3</span> finished running H</pre><p>It is expected each line of <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />cout</a> interleaves with each other as there are four workers participating in task scheduling. However, the <em>ready</em> message always appears before the corresponding task message (e.g., numbers) and then the <em>finished</em> message.</p></section><section id="ModifyWorkerProperty"><h2><a href="#ModifyWorkerProperty">Modify Worker Property</a></h2><p>You can change the property of each worker thread from its executor, such as assigning thread-processor affinity before the worker enters the scheduler loop and post-processing additional information after the worker leaves the scheduler loop, by passing an instance derived from <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a> to the executor. The example below prints the worker identifier when it enters and leaves the scheduler loop, respectively:</p><pre class="m-code"><span class="k">class</span><span class="w"> </span><span class="nc">CustomWorkerBehavior</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">WorkerInterface</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
-<span class="w">  </span><span class="c1">// to call before the worker enters the scheduling loop</span>
-<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">scheduler_prologue</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Worker</span><span class="o">&amp;</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">stringify</span><span class="p">(</span><span class="s">&quot;worker &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">id</span><span class="p">(),</span><span class="w"> </span><span class="s">&quot; enters the scheduler loop</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span><span class="c1">// to call after the worker leaves the scheduling loop</span>
-<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">scheduler_epilogue</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Worker</span><span class="o">&amp;</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">exception_ptr</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">stringify</span><span class="p">(</span><span class="s">&quot;worker &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">id</span><span class="p">(),</span><span class="w"> </span><span class="s">&quot; leaves the scheduler loop</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">};</span><span class="w"></span>
-
-<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">CustomWorkerBehavior</span><span class="o">&gt;</span><span class="p">());</span><span class="w"></span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre><p>When running the program, we see the following one possible output:</p><pre class="m-console"><span class="go">worker 1 enters the scheduler loop</span>
-<span class="go">worker 0 enters the scheduler loop</span>
-<span class="go">worker 2 enters the scheduler loop</span>
-<span class="go">worker 3 enters the scheduler loop</span>
-<span class="go">worker 3 leaves the scheduler loop</span>
-<span class="go">worker 0 leaves the scheduler loop</span>
-<span class="go">worker 2 leaves the scheduler loop</span>
-<span class="go">worker 1 leaves the scheduler loop</span></pre><p>When you create an executor, it spawns a set of worker threads to run tasks using a work-stealing scheduling algorithm. The execution logic of the scheduler and its interaction with each spawned worker via <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a> is given below:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="o">&lt;</span><span class="n">num_workers</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="n">create_thread</span><span class="p">([](</span><span class="n">Worker</span><span class="o">&amp;</span><span class="w"> </span><span class="n">worker</span><span class="p">)</span><span class="w"></span>
-
-<span class="w">    </span><span class="c1">// pre-processing executor-specific worker information</span>
-<span class="w">    </span><span class="c1">// ...</span>
-<span class="w">  </span>
-<span class="w">    </span><span class="c1">// enter the scheduling loop</span>
-<span class="w">    </span><span class="c1">// Here, WorkerInterface::scheduler_prologue is invoked, if any</span>
-<span class="w">    </span>
-<span class="w">    </span><span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="n">perform_work_stealing_algorithm</span><span class="p">();</span><span class="w"></span>
-<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">stop</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">break</span><span class="p">;</span><span class="w"> </span>
-<span class="w">      </span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span>
-<span class="w">    </span><span class="c1">// leaves the scheduling loop and joins this worker thread</span>
-<span class="w">    </span><span class="c1">// Here, WorkerInterface::scheduler_epilogue is invoked, if any</span>
-<span class="w">  </span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre><aside class="m-note m-info"><h4>Note</h4><p>Methods defined in <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a> are not thread-safe and may be be invoked by multiple workers concurrently.</p></aside></section>
+worker <span class="m">3</span> finished running H</pre><p>It is expected each line of <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />cout</a> interleaves with each other as there are four workers participating in task scheduling. However, the <em>ready</em> message always appears before the corresponding task message (e.g., numbers) and then the <em>finished</em> message.</p></section>
       </div>
     </div>
   </div>

@@ -59,23 +59,15 @@ class Executor {
   /**
   @brief constructs the executor with @c N worker threads
 
-
-  @param N number of workers (default std::thread::hardware_concurrency)
-  @param wix worker interface class to alter worker (thread) behaviors
+  @param N the number of workers (default std::thread::hardware_concurrency)
   
   The constructor spawns @c N worker threads to run tasks in a
   work-stealing loop. The number of workers must be greater than zero
   or an exception will be thrown.
   By default, the number of worker threads is equal to the maximum
   hardware concurrency returned by std::thread::hardware_concurrency.
-
-  Users can alter the worker behavior, such as changing thread affinity,
-  via deriving an instance from tf::WorkerInterface.
   */
-  explicit Executor(
-    size_t N = std::thread::hardware_concurrency(),
-    std::shared_ptr<WorkerInterface> wix = nullptr 
-  );
+  explicit Executor(size_t N = std::thread::hardware_concurrency());
 
   /**
   @brief destructs the executor
@@ -1043,7 +1035,7 @@ class Executor {
 
 #ifdef __cpp_lib_atomic_wait
   std::atomic<size_t> _num_topologies {0};
-  std::atomic_flag _all_spawned {false};
+  std::atomic_flag _all_spawned = ATOMIC_FLAG_INIT;
 #else
   std::condition_variable _topology_cv;
   std::mutex _topology_mutex;
@@ -1061,7 +1053,6 @@ class Executor {
 
   std::atomic<bool> _done {0};
 
-  std::shared_ptr<WorkerInterface> _worker_interface;
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
 
   Worker* _this_worker();
@@ -1106,12 +1097,11 @@ class Executor {
 };
 
 // Constructor
-inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix) :
+inline Executor::Executor(size_t N) :
   _MAX_STEALS {((N+1) << 1)},
   _threads    {N},
   _workers    {N},
-  _notifier   {N},
-  _worker_interface {std::move(wix)} {
+  _notifier   {N} {
 
   if(N == 0) {
     TF_THROW("no cpu workers to execute taskflows");
@@ -1209,35 +1199,15 @@ inline void Executor::_spawn(size_t N) {
 
       Node* t = nullptr;
       
-      // before entering the scheduler (work-stealing loop), 
-      // call the user-specified prologue function
-      if(_worker_interface) {
-        _worker_interface->scheduler_prologue(w);
-      }
-      
-      // must use 1 as condition instead of !done because
-      // the previous worker may stop while the following workers
-      // are still preparing for entering the scheduling loop
-      std::exception_ptr ptr{nullptr};
-      try {
-        while(1) {
+      while(1) {
 
-          // execute the tasks.
-          _exploit_task(w, t);
+        // execute the tasks.
+        _exploit_task(w, t);
 
-          // wait for tasks
-          if(_wait_for_task(w, t) == false) {
-            break;
-          }
+        // wait for tasks
+        if(_wait_for_task(w, t) == false) {
+          break;
         }
-      } 
-      catch(...) {
-        ptr = std::current_exception();
-      }
-      
-      // call the user-specified epilogue function
-      if(_worker_interface) {
-        _worker_interface->scheduler_epilogue(w, ptr);
       }
 
     });
