@@ -52,11 +52,11 @@
         <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
-            <li><a href="#CatchAnExceptionFromARunningTaskflow">Catch an Exception from a Running %Taskflow</a></li>
+            <li><a href="#CatchAnExceptionFromARunningTaskflow">Catch an Exception from a Running Taskflow</a></li>
             <li><a href="#CatchAnExceptionFromAnAsyncTask">Catch an Exception from an Async Task</a></li>
           </ul>
         </nav>
-<p>This chapters discusses how to handle exceptions from a submitted taskflow so you can properly catch or propagate exceptions in your workload.</p><section id="CatchAnExceptionFromARunningTaskflow"><h2><a href="#CatchAnExceptionFromARunningTaskflow">Catch an Exception from a Running %Taskflow</a></h2><p>When a task throws an exception, the executor will store that exception in the shared state referenced by the <a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> handle. You can catch that exception when calling tf::Future::get:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+<p>This chapters discusses how to handle exceptions from a submitted taskflow so you can properly catch or propagate exceptions in your workload.</p><section id="CatchAnExceptionFromARunningTaskflow"><h2><a href="#CatchAnExceptionFromARunningTaskflow">Catch an Exception from a Running Taskflow</a></h2><p>When a task throws an exception, the executor will store that exception in the shared state referenced by the <a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> handle. You can catch that exception via calling <code>get:</code></p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
 
 <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&quot;exception&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">});</span><span class="w"></span>

@@ -5,7 +5,7 @@
     <title>Exception Handling</title>
     <tableofcontents>
       <tocsect>
-        <name>Catch an Exception from a Running %Taskflow</name>
+        <name>Catch an Exception from a Running Taskflow</name>
         <reference>ExceptionHandling_1CatchAnExceptionFromARunningTaskflow</reference>
     </tocsect>
       <tocsect>
@@ -18,8 +18,8 @@
     <detaileddescription>
 <para>This chapters discusses how to handle exceptions from a submitted taskflow so you can properly catch or propagate exceptions in your workload.</para>
 <sect1 id="ExceptionHandling_1CatchAnExceptionFromARunningTaskflow">
-<title>Catch an Exception from a Running %Taskflow</title>
-<para>When a task throws an exception, the executor will store that exception in the shared state referenced by the <ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> handle. You can catch that exception when calling tf::Future::get:</para>
+<title>Catch an Exception from a Running Taskflow</title>
+<para>When a task throws an exception, the executor will store that exception in the shared state referenced by the <ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> handle. You can catch that exception via calling <computeroutput>get:</computeroutput> </para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>

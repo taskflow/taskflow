@@ -7,11 +7,11 @@ so you can properly catch or propagate exceptions in your workload.
 
 @tableofcontents
 
-@section CatchAnExceptionFromARunningTaskflow Catch an Exception from a Running %Taskflow
+@section CatchAnExceptionFromARunningTaskflow Catch an Exception from a Running Taskflow
 
 When a task throws an exception, the executor will store that exception in the
 shared state referenced by the tf::Future handle.
-You can catch that exception when calling tf::Future::get:
+You can catch that exception via calling @c get:
 
 @code{.cpp}
 tf::Executor executor;
