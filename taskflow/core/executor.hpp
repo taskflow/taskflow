@@ -1096,6 +1096,21 @@ class Executor {
   void _corun_until(Worker&, P&&);
 };
 
+#ifdef TF_DISABLE_EXCEPTION_HANDLING
+
+#define TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, code_block) \
+    do { code_block; } while(0)
+#else
+
+#define TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, code_block)  \
+    try {                                            \
+        code_block;                                  \
+    } catch(...) {                                   \
+        _process_exception(worker, node);            \
+    }
+#endif
+
+
 // Constructor
 inline Executor::Executor(size_t N) :
   _MAX_STEALS {((N+1) << 1)},
@@ -1742,7 +1757,7 @@ inline void Executor::_process_exception(Worker&, Node* node) {
 // Procedure: _invoke_static_task
 inline void Executor::_invoke_static_task(Worker& worker, Node* node) {
   _observer_prologue(worker, node);
-  try {
+  TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
     auto& work = std::get_if<Node::Static>(&node->_handle)->work;
     switch(work.index()) {
       case 0:
@@ -1754,9 +1769,7 @@ inline void Executor::_invoke_static_task(Worker& worker, Node* node) {
         std::get_if<1>(&work)->operator()(rt);
       break;
     }
-  } catch(...) {
-    _process_exception(worker, node);
-  }
+  });
   _observer_epilogue(worker, node);
 }
 
@@ -1770,12 +1783,10 @@ inline void Executor::_invoke_dynamic_task(Worker& w, Node* node) {
   handle->subgraph._clear();
 
   Subflow sf(*this, w, node, handle->subgraph);
-  
-  try {
+
+  TF_EXECUTOR_EXCEPTION_HANDLER(w, node, {
     handle->work(sf);
-  } catch(...) {
-    _process_exception(w, node);
-  }
+  });
 
   if(sf._joinable) {
     _consume_graph(w, node, handle->subgraph);
@@ -1829,7 +1840,7 @@ inline void Executor::_invoke_condition_task(
   Worker& worker, Node* node, SmallVector<int>& conds
 ) {
   _observer_prologue(worker, node);
-  try {
+  TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
     auto& work = std::get_if<Node::Condition>(&node->_handle)->work;
     switch(work.index()) {
       case 0:
@@ -1841,9 +1852,7 @@ inline void Executor::_invoke_condition_task(
         conds = { std::get_if<1>(&work)->operator()(rt) };
       break;
     }
-  } catch (...) {
-    _process_exception(worker, node);
-  }
+  });
   _observer_epilogue(worker, node);
 }
 
@@ -1852,7 +1861,7 @@ inline void Executor::_invoke_multi_condition_task(
   Worker& worker, Node* node, SmallVector<int>& conds
 ) {
   _observer_prologue(worker, node);
-  try {
+  TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
     auto& work = std::get_if<Node::MultiCondition>(&node->_handle)->work;
     switch(work.index()) {
       case 0:
@@ -1864,9 +1873,7 @@ inline void Executor::_invoke_multi_condition_task(
         conds = std::get_if<1>(&work)->operator()(rt);
       break;
     }
-  } catch(...) {
-    _process_exception(worker, node);
-  }
+  });
   _observer_epilogue(worker, node);
 }
 
@@ -1899,7 +1906,7 @@ inline bool Executor::_invoke_module_task_internal(Worker& w, Node* p) {
 // Procedure: _invoke_async_task
 inline void Executor::_invoke_async_task(Worker& worker, Node* node) {
   _observer_prologue(worker, node);
-  try {
+  TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
     auto& work = std::get_if<Node::Async>(&node->_handle)->work;
     switch(work.index()) {
       case 0:
@@ -1911,16 +1918,14 @@ inline void Executor::_invoke_async_task(Worker& worker, Node* node) {
         std::get_if<1>(&work)->operator()(rt);
       break;
     }
-  } catch(...) {
-    _process_exception(worker, node);
-  }
+  });
   _observer_epilogue(worker, node);
 }
 
 // Procedure: _invoke_dependent_async_task
 inline void Executor::_invoke_dependent_async_task(Worker& worker, Node* node) {
   _observer_prologue(worker, node);
-  try {
+  TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
     auto& work = std::get_if<Node::DependentAsync>(&node->_handle)->work;
     switch(work.index()) {
       case 0:
@@ -1932,9 +1937,7 @@ inline void Executor::_invoke_dependent_async_task(Worker& worker, Node* node) {
         std::get_if<1>(&work)->operator()(rt);
       break;
     }
-  } catch(...) {
-    _process_exception(worker, node);
-  }
+  });
   _observer_epilogue(worker, node);
 }
 
