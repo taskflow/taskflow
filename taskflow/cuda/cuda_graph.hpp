@@ -248,12 +248,12 @@ inline const char* cuda_graph_node_type_to_string(cudaGraphNodeType type) {
 @param graph native CUDA graph
 */
 template <typename T>
-void cuda_dump_graph(T& os, cudaGraph_t graph) {
+void cuda_dump_graph(T& os, cudaGraph_t g) {
 
   os << "digraph cudaGraph {\n";
 
   std::stack<std::tuple<cudaGraph_t, cudaGraphNode_t, int>> stack;
-  stack.push(std::make_tuple(graph, nullptr, 1));
+  stack.push(std::make_tuple(g, nullptr, 1));
 
   int pl = 0;
 
@@ -281,9 +281,9 @@ void cuda_dump_graph(T& os, cudaGraph_t graph) {
       auto type = cuda_get_graph_node_type(node);
       if(type == cudaGraphNodeTypeGraph) {
 
-        cudaGraph_t graph;
-        TF_CHECK_CUDA(cudaGraphChildGraphNodeGetGraph(node, &graph), "");
-        stack.push(std::make_tuple(graph, node, l+1));
+        cudaGraph_t child_graph;
+        TF_CHECK_CUDA(cudaGraphChildGraphNodeGetGraph(node, &child_graph), "");
+        stack.push(std::make_tuple(child_graph, node, l+1));
 
         os << 'p' << node << "["
            << "shape=folder, style=filled, fontcolor=white, fillcolor=purple, "
@@ -635,8 +635,8 @@ cudaFlowNode::Kernel::Kernel(F&& f) :
 
 // Capture handle constructor
 template <typename C>
-cudaFlowNode::Capture::Capture(C&& work) :
-  work {std::forward<C>(work)} {
+cudaFlowNode::Capture::Capture(C&& c) :
+  work {std::forward<C>(c)} {
 }
 
 // Constructor

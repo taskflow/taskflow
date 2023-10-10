@@ -35,17 +35,17 @@ TEST_CASE("Runtime.Basics" * doctest::timeout(300)) {
   taskflow.emplace([&](tf::Subflow& sf){
     sf.emplace([&](tf::Runtime& rt){
       REQUIRE(&rt.executor() == &executor);
-      rt.corun([&](tf::Subflow& sf){
-        auto task1 = sf.emplace([&](){b++;});
-        auto task2 = sf.emplace([&](){b++;});
-        auto task3 = sf.emplace([&](){b++;});
-        auto task4 = sf.emplace([&](){b++;});
-        auto task5 = sf.emplace([&](){b++;});
+      rt.corun([&](tf::Subflow& sf2){
+        auto task1 = sf2.emplace([&](){b++;});
+        auto task2 = sf2.emplace([&](){b++;});
+        auto task3 = sf2.emplace([&](){b++;});
+        auto task4 = sf2.emplace([&](){b++;});
+        auto task5 = sf2.emplace([&](){b++;});
         task1.precede(task2);
         task2.precede(task3);
         task3.precede(task4);
         task4.precede(task5);
-        sf.detach();
+        sf2.detach();
       });
     });
   });

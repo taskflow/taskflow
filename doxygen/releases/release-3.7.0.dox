@@ -41,6 +41,7 @@ To use %Taskflow v3.7.0, you need a compiler that supports C++17:
 + Improved tf::Executor::wait_for_all using C++20 atomic wait
 + Improved tf::Notifier using C++20 atomic wait 
 + Improved worker-thread ID mapping performance using C++20 atomic wait
++ Added `-Wshadow` to the compilation check
 + Added tf::AsyncTask::is_done to query the completion status of an async task
 + Added tf::Taskflow::remove_dependency to remove dependencies from the graph
 + Added support for exception in tf::Taskflow and tf::Executor
@@ -64,6 +65,7 @@ catch(const std::runtime_error& e) {
 @section release-3-7-0_bug_fixes Bug Fixes 
 
 + Fixed compilation erros of CUDA examples caused by not including `for_each.hpp`
++ Fixed the runtime error of tf::Taskflow::for_each_index when the range invalid 
 
 @section release-3-7-0_breaking_changes Breaking Changes
 

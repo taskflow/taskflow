@@ -227,7 +227,7 @@ void test_threaded_uuid(size_t N) {
 
   for(size_t i=0; i<N; ++i) {
     threads.emplace_back([&](){
-      for(int i=0; i<1000; ++i) {
+      for(int j=0; j<1000; ++j) {
         std::lock_guard<std::mutex> lock(mutex);
         uuids.push_back(tf::UUID());
       }

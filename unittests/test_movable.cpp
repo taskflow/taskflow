@@ -106,8 +106,6 @@ TEST_CASE("moved_run") {
 
 TEST_CASE("moved_taskflows") {
 
-  int N = 10000;
-
   std::atomic<int> counter {0};
 
   auto make_taskflow = [&counter](tf::Taskflow& taskflow, int N){
@@ -117,6 +115,8 @@ TEST_CASE("moved_taskflows") {
       });
     }
   };
+  
+  int N = 10000;
 
   {
     tf::Taskflow taskflow1;
@@ -185,8 +185,6 @@ TEST_CASE("moved_taskflows") {
 
 TEST_CASE("parallel_moved_runs") {
 
-  int N = 10000;
-
   std::atomic<int> counter {0};
 
   auto make_taskflow = [&counter](tf::Taskflow& taskflow, int N){
@@ -196,6 +194,8 @@ TEST_CASE("parallel_moved_runs") {
       });
     }
   };
+  
+  int N = 10000;
 
   {
     tf::Executor executor;

@@ -1373,8 +1373,8 @@ void nested_subflow() {
       REQUIRE(cf.num_tasks() == tf::cuda_graph_get_num_nodes(cf.native_graph()));
     });
 
-    auto subtask1 = sf.emplace([&](tf::Subflow& sf) {
-      auto gputask2 = sf.emplace([&]() {
+    auto subtask1 = sf.emplace([&](tf::Subflow& sf2) {
+      auto gputask2 = sf2.emplace([&]() {
         F cf;
         dim3 g = {(n+255)/256, 1, 1};
         dim3 b = {256, 1, 1};
@@ -1387,8 +1387,8 @@ void nested_subflow() {
         REQUIRE(cf.num_tasks() == tf::cuda_graph_get_num_nodes(cf.native_graph()));
       });
       
-      auto subtask2 = sf.emplace([&](tf::Subflow& sf){
-        sf.emplace([&]() {
+      auto subtask2 = sf2.emplace([&](tf::Subflow& sf3){
+        sf3.emplace([&]() {
           F cf;
           dim3 g = {(n+255)/256, 1, 1};
           dim3 b = {256, 1, 1};

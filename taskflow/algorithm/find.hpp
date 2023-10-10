@@ -105,9 +105,9 @@ TF_FORCE_INLINE auto make_find_if_task(
           [N, W, curr_b, chunk_size, beg, &predicate, &offset, &part] 
           () mutable {
             part.loop_until(N, W, curr_b, chunk_size,
-              [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
+              [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
                 return detail::find_if_loop(
-                  offset, beg, prev_e, curr_b, curr_e, predicate
+                  offset, beg, prev_e, part_b, part_e, predicate
                 );
               }
             ); 
@@ -183,9 +183,9 @@ TF_FORCE_INLINE auto make_find_if_not_task(
         launch_loop(W, w, rt,
           [N, W, curr_b, chunk_size, beg, &predicate, &offset, &part] () mutable {
             part.loop_until(N, W, curr_b, chunk_size,
-              [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
+              [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
                 return detail::find_if_not_loop(
-                  offset, beg, prev_e, curr_b, curr_e, predicate
+                  offset, beg, prev_e, part_b, part_e, predicate
                 );
               }
             ); 
@@ -283,21 +283,21 @@ TF_FORCE_INLINE auto make_min_element_task(
         
           // loop reduce
           part.loop(N, W, curr_b, chunk_size,
-            [&, prev_e=curr_b+2](size_t curr_b, size_t curr_e) mutable {
+            [&, prev_e=curr_b+2](size_t part_b, size_t part_e) mutable {
 
-              if(curr_b > prev_e) {
-                std::advance(beg, curr_b - prev_e);
+              if(part_b > prev_e) {
+                std::advance(beg, part_b - prev_e);
               }
               else {
-                curr_b = prev_e;
+                part_b = prev_e;
               }
 
-              for(size_t x=curr_b; x<curr_e; x++, beg++) {
+              for(size_t x=part_b; x<part_e; x++, beg++) {
                 if(comp(*beg, *smallest)) {
                   smallest = beg;
                 }
               }
-              prev_e = curr_e;
+              prev_e = part_e;
             }
           ); 
           
@@ -339,14 +339,14 @@ TF_FORCE_INLINE auto make_min_element_task(
           
           // loop reduce
           part.loop(N, W, next, 
-            [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
-              std::advance(beg, curr_b - prev_e);
-              for(size_t x=curr_b; x<curr_e; x++, beg++) {
+            [&, prev_e=s0+2](size_t part_b, size_t part_e) mutable {
+              std::advance(beg, part_b - prev_e);
+              for(size_t x=part_b; x<part_e; x++, beg++) {
                 if(comp(*beg, *smallest)) {
                   smallest = beg;
                 }
               }
-              prev_e = curr_e;
+              prev_e = part_e;
             }
           ); 
           
@@ -428,21 +428,21 @@ TF_FORCE_INLINE auto make_max_element_task(
         
           // loop reduce
           part.loop(N, W, curr_b, chunk_size,
-            [&, prev_e=curr_b+2](size_t curr_b, size_t curr_e) mutable {
+            [&, prev_e=curr_b+2](size_t part_b, size_t part_e) mutable {
 
-              if(curr_b > prev_e) {
-                std::advance(beg, curr_b - prev_e);
+              if(part_b > prev_e) {
+                std::advance(beg, part_b - prev_e);
               }
               else {
-                curr_b = prev_e;
+                part_b = prev_e;
               }
 
-              for(size_t x=curr_b; x<curr_e; x++, beg++) {
+              for(size_t x=part_b; x<part_e; x++, beg++) {
                 if(comp(*largest, *beg)) {
                   largest = beg;
                 }
               }
-              prev_e = curr_e;
+              prev_e = part_e;
             }
           ); 
           
@@ -484,14 +484,14 @@ TF_FORCE_INLINE auto make_max_element_task(
           
           // loop reduce
           part.loop(N, W, next, 
-            [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
-              std::advance(beg, curr_b - prev_e);
-              for(size_t x=curr_b; x<curr_e; x++, beg++) {
+            [&, prev_e=s0+2](size_t part_b, size_t part_e) mutable {
+              std::advance(beg, part_b - prev_e);
+              for(size_t x=part_b; x<part_e; x++, beg++) {
                 if(comp(*largest, *beg)) {
                   largest = beg;
                 }
               }
-              prev_e = curr_e;
+              prev_e = part_e;
             }
           ); 
           

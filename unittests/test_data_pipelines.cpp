@@ -2547,22 +2547,6 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
     std::iota(each.begin(), each.end(), 0);
   }
 
-  // std::vector<std::array<int, 4>> buffer(L);
-
-  // each pipe contains one subpipeline
-  // each subpipeline has three pipes, subL lines
-  //
-  // subbuffers[0][1][2][2] means
-  // first line, second pipe, third subline, third subpipe
-  // std::vector<std::vector<std::vector<std::array<int, 3>>>> subbuffers(L);
-
-  // for(auto&& pipes: subbuffers) {
-  //   pipes.resize(4);
-  //   for(auto&& pipe: pipes) {
-  //       pipe.resize(subL);
-  //   }
-  // }
-
   for (size_t N = 1; N < maxN; ++N) {
     for(size_t subN = 1; subN < maxsubN; ++subN) {
 
@@ -2574,7 +2558,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
       tf::DataPipeline pl(L,
 
         // begin of pipe 1 -----------------------------
-        tf::make_data_pipe<void, int>(tf::PipeType::SERIAL, [&, w, N, subN, subL](auto& pf) mutable {
+        tf::make_data_pipe<void, int>(tf::PipeType::SERIAL, [&, N, subN, subL](auto& pf) mutable {
           if(j1 == N) {
             pf.stop();
             return 0;
@@ -2617,7 +2601,6 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
             })
           );
 
-          tf::Executor executor(w);
           tf::Taskflow taskflow;
 
           // test task
@@ -2633,7 +2616,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
           auto subpl_t = taskflow.composed_of(subpl).name("module_of_subpipeline");
 
           subpl_t.precede(test_t);
-          executor.run(taskflow).wait();
+          executor.corun(taskflow);
 
           j1++;
 
@@ -2646,7 +2629,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
         // end of pipe 1 -----------------------------
 
          //begin of pipe 2 ---------------------------
-        tf::make_data_pipe<int, int>(tf::PipeType::PARALLEL, [&, w, N, subN, subL](int input, auto& pf) mutable {
+        tf::make_data_pipe<int, int>(tf::PipeType::PARALLEL, [&, N, subN, subL](int input, auto& pf) mutable {
           REQUIRE(j2++ < N);
           int res = std::accumulate(
             source[pf.token()].begin(),
@@ -2674,25 +2657,24 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
             }),
 
             // subpipe 2
-            tf::make_data_pipe<int, int>(tf::PipeType::PARALLEL, [&, subN](int input, auto& subpf) mutable {
+            tf::make_data_pipe<int, int>(tf::PipeType::PARALLEL, [&, subN](int in, auto& subpf) mutable {
               REQUIRE(subj2++ < subN);
               REQUIRE(subpf.token() % subL == subpf.line());
-              REQUIRE(source[j2][subpf.token()] + 1 == input);
-              return input;
+              REQUIRE(source[j2][subpf.token()] + 1 == in);
+              return in;
             }),
 
 
             // subpipe 3
-            tf::make_data_pipe<int, void>(tf::PipeType::SERIAL, [&, subN](int input, auto& subpf) mutable {
+            tf::make_data_pipe<int, void>(tf::PipeType::SERIAL, [&, subN](int in, auto& subpf) mutable {
               REQUIRE(subj3 < subN);
               REQUIRE(subpf.token() % subL == subpf.line());
-              REQUIRE(source[pf.token()][subj3] + 1 == input);
-              subcollection.push_back(input + 12);
+              REQUIRE(source[pf.token()][subj3] + 1 == in);
+              subcollection.push_back(in + 12);
               ++subj3;
             })
           );
 
-          tf::Executor executor(w);
           tf::Taskflow taskflow;
 
           // test task
@@ -2708,7 +2690,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
           auto subpl_t = taskflow.composed_of(subpl).name("module_of_subpipeline");
 
           subpl_t.precede(test_t);
-          executor.run(taskflow).wait();
+          executor.corun(taskflow);
 
           return std::accumulate(
             subcollection.begin(),
@@ -2720,7 +2702,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
         // end of pipe 2 -----------------------------
 
         // begin of pipe 3 ---------------------------
-        tf::make_data_pipe<int, int>(tf::PipeType::SERIAL, [&, w, N, subN, subL](int input, auto& pf) mutable {
+        tf::make_data_pipe<int, int>(tf::PipeType::SERIAL, [&, N, subN, subL](int input, auto& pf) mutable {
 
           REQUIRE(j3++ < N);
           int res = std::accumulate(
@@ -2750,25 +2732,24 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
             }),
 
             // subpipe 2
-            tf::make_data_pipe<int, int>(tf::PipeType::PARALLEL, [&, subN](int input, auto& subpf) mutable {
+            tf::make_data_pipe<int, int>(tf::PipeType::PARALLEL, [&, subN](int in, auto& subpf) mutable {
               REQUIRE(subj2++ < subN);
               REQUIRE(subpf.token() % subL == subpf.line());
-              REQUIRE(source[pf.token()][subpf.token()] + 1 == input);
-              return input;
+              REQUIRE(source[pf.token()][subpf.token()] + 1 == in);
+              return in;
             }),
 
 
             // subpipe 3
-            tf::make_data_pipe<int, void>(tf::PipeType::SERIAL, [&, subN](int input, auto& subpf) mutable {
+            tf::make_data_pipe<int, void>(tf::PipeType::SERIAL, [&, subN](int in, auto& subpf) mutable {
               REQUIRE(subj3 < subN);
               REQUIRE(subpf.token() % subL == subpf.line());
-              REQUIRE(source[pf.token()][subj3] + 1 == input);
-              subcollection.push_back(input + 6);
+              REQUIRE(source[pf.token()][subj3] + 1 == in);
+              subcollection.push_back(in + 6);
               ++subj3;
             })
           );
 
-          tf::Executor executor(w);
           tf::Taskflow taskflow;
 
           // test task
@@ -2784,7 +2765,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
           auto subpl_t = taskflow.composed_of(subpl).name("module_of_subpipeline");
 
           subpl_t.precede(test_t);
-          executor.run(taskflow).wait();
+          executor.corun(taskflow);
 
           return std::accumulate(
             subcollection.begin(),

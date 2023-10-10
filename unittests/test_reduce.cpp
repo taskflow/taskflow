@@ -808,9 +808,9 @@ void move_only_transform_reduce(unsigned W) {
 
     taskflow.transform_reduce(vec.begin(), vec.end(), res,
       [](MoveOnly2 m1, MoveOnly2 m2) {
-        MoveOnly2 res;
-        res.b = m1.b + m2.b;
-        return res;
+        MoveOnly2 lres;
+        lres.b = m1.b + m2.b;
+        return lres;
       },
       [](const MoveOnly1& m) {
         MoveOnly2 n;
@@ -830,9 +830,9 @@ void move_only_transform_reduce(unsigned W) {
     
     taskflow.transform_reduce(vec.begin(), vec.end(), res,
       [](MoveOnly2&& m1, MoveOnly2&& m2) {
-        MoveOnly2 res;
-        res.b = m1.b + m2.b;
-        return res;
+        MoveOnly2 lres;
+        lres.b = m1.b + m2.b;
+        return lres;
       },
       [](MoveOnly1& m) {
         MoveOnly2 n;
@@ -857,9 +857,9 @@ void move_only_transform_reduce(unsigned W) {
 
     taskflow.reduce(vec.begin(), vec.end(), red,
       [](MoveOnly1& m1, MoveOnly1& m2){
-        MoveOnly1 res;
-        res.a = m1.a + m2.a;
-        return res;
+        MoveOnly1 lres;
+        lres.a = m1.a + m2.a;
+        return lres;
       },
       partitioner
     );  
@@ -872,9 +872,9 @@ void move_only_transform_reduce(unsigned W) {
 
     taskflow.reduce(vec.begin(), vec.end(), red,
       [](const MoveOnly1& m1, const MoveOnly1& m2){
-        MoveOnly1 res;
-        res.a = m1.a + m2.a;
-        return res;
+        MoveOnly1 lres;
+        lres.a = m1.a + m2.a;
+        return lres;
       },
       partitioner
     );  

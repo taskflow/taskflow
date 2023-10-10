@@ -194,11 +194,11 @@ TF_FORCE_INLINE auto make_inclusive_scan_task(B first, E last, D d_first, BOP bo
         auto result = d_beg;
 
         // local scan per worker
-        auto& init = buf[w].data;
-        *d_beg++ = init = (w == 0) ? bop(init, *s_beg++) : *s_beg++;
+        auto& local = buf[w].data;
+        *d_beg++ = local = (w == 0) ? bop(local, *s_beg++) : *s_beg++;
 
         for(size_t i=1; i<chunk_size; i++){
-          *d_beg++ = init = bop(init, *s_beg++); 
+          *d_beg++ = local = bop(local, *s_beg++); 
         }
         
         // block scan
@@ -345,11 +345,11 @@ TF_FORCE_INLINE auto make_transform_inclusive_scan_task(
         auto result = d_beg;
 
         // local scan per worker
-        auto& init = buf[w].data;
-        *d_beg++ = init = (w == 0) ? bop(init, uop(*s_beg++)) : uop(*s_beg++);
+        auto& local = buf[w].data;
+        *d_beg++ = local = (w == 0) ? bop(local, uop(*s_beg++)) : uop(*s_beg++);
 
         for(size_t i=1; i<chunk_size; i++){
-          *d_beg++ = init = bop(init, uop(*s_beg++)); 
+          *d_beg++ = local = bop(local, uop(*s_beg++)); 
         }
         
         // block scan
@@ -431,14 +431,14 @@ TF_FORCE_INLINE auto make_exclusive_scan_task(
         auto result = d_beg;
 
         // local scan per worker
-        auto& init = buf[w].data;
+        auto& local = buf[w].data;
 
         for(size_t i=1; i<chunk_size; i++) {
-          auto v = init;
-          init = bop(init, *s_beg++);
+          auto v = local;
+          local = bop(local, *s_beg++);
           *d_beg++ = std::move(v);
         }
-        *d_beg++ = init;
+        *d_beg++ = local;
         
         // block scan
         detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);
@@ -519,14 +519,14 @@ TF_FORCE_INLINE auto make_transform_exclusive_scan_task(
         auto result = d_beg;
 
         // local scan per worker
-        auto& init = buf[w].data;
+        auto& local = buf[w].data;
 
         for(size_t i=1; i<chunk_size; i++) {
-          auto v = init;
-          init = bop(init, uop(*s_beg++));
+          auto v = local;
+          local = bop(local, uop(*s_beg++));
           *d_beg++ = std::move(v);
         }
-        *d_beg++ = init;
+        *d_beg++ = local;
         
         // block scan
         detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);

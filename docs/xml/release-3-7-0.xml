@@ -89,6 +89,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem><listitem><para>Improved <ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">tf::Executor::wait_for_all</ref> using C++20 atomic wait</para>
 </listitem><listitem><para>Improved tf::Notifier using C++20 atomic wait</para>
 </listitem><listitem><para>Improved worker-thread ID mapping performance using C++20 atomic wait</para>
+</listitem><listitem><para>Added <computeroutput>-Wshadow</computeroutput> to the compilation check</para>
 </listitem><listitem><para>Added <ref refid="classtf_1_1AsyncTask_1aefeefa30d7cafdfbb7dc8def542e8e51" kindref="member">tf::AsyncTask::is_done</ref> to query the completion status of an async task</para>
 </listitem><listitem><para>Added <ref refid="classtf_1_1Taskflow_1a354a7673fabeaf3be66928ad6b573900" kindref="member">tf::Taskflow::remove_dependency</ref> to remove dependencies from the graph</para>
 </listitem><listitem><para>Added support for exception in <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> and <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref></para>
@@ -117,6 +118,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <title>Bug Fixes</title>
 <para><itemizedlist>
 <listitem><para>Fixed compilation erros of CUDA examples caused by not including <computeroutput><ref refid="for__each_8hpp" kindref="compound">for_each.hpp</ref></computeroutput></para>
+</listitem><listitem><para>Fixed the runtime error of <ref refid="classtf_1_1FlowBuilder_1a47ea2b35d0ec18afb35b45316939dc67" kindref="member">tf::Taskflow::for_each_index</ref> when the range invalid</para>
 </listitem></itemizedlist>
 </para>
 </sect1>

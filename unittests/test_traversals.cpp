@@ -136,8 +136,8 @@ TEST_CASE("DynamicTraversal" * doctest::timeout(300)) {
     for(size_t i=0; i<S; i++) {
       if(n->successors[i]->dependents.fetch_sub(1) == 1) {
         n->successors[i]->level = ++level;
-        subflow.emplace([s=n->successors[i], &traverse](tf::Subflow &subflow){
-          traverse(s, subflow);
+        subflow.emplace([s=n->successors[i], &traverse](tf::Subflow &subflow2){
+          traverse(s, subflow2);
         });
       }
     }

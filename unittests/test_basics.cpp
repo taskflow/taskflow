@@ -36,15 +36,6 @@ TEST_CASE("Type" * doctest::timeout(300)) {
 // --------------------------------------------------------
 TEST_CASE("Builder" * doctest::timeout(300)) {
 
-  const size_t num_tasks = 100;
-
-  tf::Taskflow taskflow;
-  tf::Executor executor;
-
-  std::atomic<int> counter {0};
-  std::vector<tf::Task> silent_tasks;
-  std::vector<tf::Task> tasks;
-
   SUBCASE("EmptyFlow") {
     for(unsigned W=1; W<32; ++W) {
       tf::Executor executor(W);
@@ -54,6 +45,15 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
       executor.run(taskflow).wait();
     }
   }
+  
+  const size_t num_tasks = 100;
+
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+
+  std::atomic<int> counter {0};
+  std::vector<tf::Task> silent_tasks;
+  std::vector<tf::Task> tasks;
 
   SUBCASE("Placeholder") {
 
@@ -693,24 +693,24 @@ void sequential_runs(unsigned W) {
   }
 
   SUBCASE("MultipleRuns") {
-    std::atomic<size_t> counter(0);
+    std::atomic<size_t> count(0);
 
     tf::Taskflow tf1, tf2, tf3, tf4;
 
     for(size_t n=0; n<16; ++n) {
-      tf1.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
+      tf1.emplace([&](){count.fetch_add(1, std::memory_order_relaxed);});
     }
 
     for(size_t n=0; n<1024; ++n) {
-      tf2.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
+      tf2.emplace([&](){count.fetch_add(1, std::memory_order_relaxed);});
     }
 
     for(size_t n=0; n<32; ++n) {
-      tf3.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
+      tf3.emplace([&](){count.fetch_add(1, std::memory_order_relaxed);});
     }
 
     for(size_t n=0; n<128; ++n) {
-      tf4.emplace([&](){counter.fetch_add(1, std::memory_order_relaxed);});
+      tf4.emplace([&](){count.fetch_add(1, std::memory_order_relaxed);});
     }
 
     for(int i=0; i<200; ++i) {
@@ -720,7 +720,7 @@ void sequential_runs(unsigned W) {
       executor.run(tf4);
     }
     executor.wait_for_all();
-    REQUIRE(counter == 240000);
+    REQUIRE(count == 240000);
 
   }
 }
@@ -845,14 +845,14 @@ void worker_id(unsigned w) {
       REQUIRE(id>=0);
       REQUIRE(id< w);
       sf.emplace([&](){
-        auto id = executor.this_worker_id();
-        REQUIRE(id>=0);
-        REQUIRE(id< w);
+        auto sfid = executor.this_worker_id();
+        REQUIRE(sfid>=0);
+        REQUIRE(sfid< w);
       });
       sf.emplace([&](tf::Subflow&){
-        auto id = executor.this_worker_id();
-        REQUIRE(id>=0);
-        REQUIRE(id< w);
+        auto sfid = executor.this_worker_id();
+        REQUIRE(sfid>=0);
+        REQUIRE(sfid< w);
       });
     });
 
@@ -1089,311 +1089,6 @@ TEST_CASE("NestedRuns.8threads") {
 
 TEST_CASE("NestedRuns.16threads") {
   nested_runs(16);
-}
-
-// --------------------------------------------------------
-// Testcase: ParallelFor
-// --------------------------------------------------------
-
-void for_each(unsigned W) {
-
-  using namespace std::chrono_literals;
-
-  const auto mapper = [](unsigned w, size_t num_data){
-    tf::Executor executor(w);
-    tf::Taskflow tf;
-    std::vector<int> vec(num_data, 0);
-    tf.for_each(
-      vec.begin(), vec.end(), [] (int& v) { v = 64; } /*, group ? ::rand()%17 : 0*/
-    );
-    for(const auto v : vec) {
-      REQUIRE(v == 0);
-    }
-    executor.run(tf);
-    executor.wait_for_all();
-    for(const auto v : vec) {
-      REQUIRE(v == 64);
-    }
-  };
-
-  const auto reducer = [](unsigned w, size_t num_data){
-    tf::Executor executor(w);
-    tf::Taskflow tf;
-    std::vector<int> vec(num_data, 0);
-    std::atomic<int> sum(0);
-    tf.for_each(vec.begin(), vec.end(), [&](auto) { ++sum; }/*, group ? ::rand()%17 : 0*/);
-    REQUIRE(sum == 0);
-    executor.run(tf);
-    executor.wait_for_all();
-    REQUIRE(sum == vec.size());
-  };
-
-  // map
-  SUBCASE("Map") {
-    for(size_t num_data=1; num_data<=59049; num_data *= 3){
-      mapper(W, num_data);
-    }
-  }
-
-  // reduce
-  SUBCASE("Reduce") {
-    for(size_t num_data=1; num_data<=59049; num_data *= 3){
-      reducer(W, num_data);
-    }
-  }
-}
-
-TEST_CASE("ParallelFor.1thread" * doctest::timeout(300)) {
-  for_each(1);
-}
-
-TEST_CASE("ParallelFor.2threads" * doctest::timeout(300)) {
-  for_each(2);
-}
-
-TEST_CASE("ParallelFor.3threads" * doctest::timeout(300)) {
-  for_each(3);
-}
-
-TEST_CASE("ParallelFor.4threads" * doctest::timeout(300)) {
-  for_each(4);
-}
-
-TEST_CASE("ParallelFor.5threads" * doctest::timeout(300)) {
-  for_each(5);
-}
-
-TEST_CASE("ParallelFor.6threads" * doctest::timeout(300)) {
-  for_each(6);
-}
-
-TEST_CASE("ParallelFor.7threads" * doctest::timeout(300)) {
-  for_each(7);
-}
-
-TEST_CASE("ParallelFor.8threads" * doctest::timeout(300)) {
-  for_each(8);
-}
-
-// --------------------------------------------------------
-// Testcase: ParallelForOnIndex
-// --------------------------------------------------------
-void for_each_index(unsigned w) {
-
-  using namespace std::chrono_literals;
-
-  auto positive_integer_step = [] (unsigned w) {
-    tf::Executor executor(w);
-    for(int beg=-10; beg<=10; ++beg) {
-      for(int end=beg; end<=10; ++end) {
-        for(int s=1; s<=end-beg; ++s) {
-          int n = 0;
-          for(int b = beg; b<end; b+=s) {
-            ++n;
-          }
-          //for(size_t c=0; c<10; c++) {
-            tf::Taskflow tf;
-            std::atomic<int> counter {0};
-            tf.for_each_index(beg, end, s, [&] (auto) {
-              counter.fetch_add(1, std::memory_order_relaxed);
-            }/*, c*/);
-            executor.run(tf);
-            executor.wait_for_all();
-            REQUIRE(n == counter);
-          //}
-        }
-      }
-    }
-  };
-
-  auto negative_integer_step = [] (unsigned w) {
-    tf::Executor executor(w);
-    for(int beg=10; beg>=-10; --beg) {
-      for(int end=beg; end>=-10; --end) {
-        for(int s=1; s<=beg-end; ++s) {
-          int n = 0;
-          for(int b = beg; b>end; b-=s) {
-            ++n;
-          }
-          //for(size_t c=0; c<10; c++) {
-            tf::Taskflow tf;
-            std::atomic<int> counter {0};
-            tf.for_each_index(beg, end, -s, [&] (auto) {
-              counter.fetch_add(1, std::memory_order_relaxed);
-            }/*, c*/);
-            executor.run(tf);
-            executor.wait_for_all();
-            REQUIRE(n == counter);
-          //}
-        }
-      }
-    }
-  };
-
-  SUBCASE("PositiveIntegerStep") {
-    positive_integer_step(w);
-  }
-
-  SUBCASE("NegativeIntegerStep") {
-    negative_integer_step(w);
-  }
-
-  //SUBCASE("PositiveFloatingStep") {
-  //  positive_floating_step(w);
-  //}
-  //
-  //SUBCASE("NegativeFloatingStep") {
-  //  negative_floating_step(w);
-  //}
-}
-
-TEST_CASE("ParallelForIndex.1thread" * doctest::timeout(300)) {
-  for_each_index(1);
-}
-
-TEST_CASE("ParallelForIndex.2threads" * doctest::timeout(300)) {
-  for_each_index(2);
-}
-
-TEST_CASE("ParallelForIndex.3threads" * doctest::timeout(300)) {
-  for_each_index(3);
-}
-
-TEST_CASE("ParallelForIndex.4threads" * doctest::timeout(300)) {
-  for_each_index(4);
-}
-
-TEST_CASE("ParallelForIndex.5threads" * doctest::timeout(300)) {
-  for_each_index(5);
-}
-
-TEST_CASE("ParallelForIndex.6threads" * doctest::timeout(300)) {
-  for_each_index(6);
-}
-
-TEST_CASE("ParallelForIndex.7threads" * doctest::timeout(300)) {
-  for_each_index(7);
-}
-
-TEST_CASE("ParallelForIndex.8threads" * doctest::timeout(300)) {
-  for_each_index(8);
-}
-
-// --------------------------------------------------------
-// Testcase: Reduce
-// --------------------------------------------------------
-TEST_CASE("Reduce" * doctest::timeout(300)) {
-
-  const auto plus_test = [](unsigned num_workers, auto &&data){
-    tf::Executor executor(num_workers);
-    tf::Taskflow tf;
-    int result {0};
-    std::iota(data.begin(), data.end(), 1);
-    tf.reduce(data.begin(), data.end(), result, std::plus<int>());
-    executor.run(tf).get();
-    REQUIRE(result == std::accumulate(data.begin(), data.end(), 0, std::plus<int>()));
-  };
-
-  const auto multiply_test = [](unsigned num_workers, auto &&data){
-    tf::Executor executor(num_workers);
-    tf::Taskflow tf;
-    std::fill(data.begin(), data.end(), 1.0);
-    double result {2.0};
-    tf.reduce(data.begin(), data.end(), result, std::multiplies<double>());
-    executor.run(tf).get();
-    REQUIRE(result == std::accumulate(data.begin(), data.end(), 2.0, std::multiplies<double>()));
-  };
-
-  const auto max_test = [](unsigned num_workers, auto &&data){
-    tf::Executor executor(num_workers);
-    tf::Taskflow tf;
-    std::iota(data.begin(), data.end(), 1);
-    int result {0};
-    auto lambda = [](const auto& l, const auto& r){return std::max(l, r);};
-    tf.reduce(data.begin(), data.end(), result, lambda);
-    executor.run(tf).get();
-    REQUIRE(result == std::accumulate(data.begin(), data.end(), 0, lambda));
-  };
-
-  const auto min_test = [](unsigned num_workers, auto &&data){
-    tf::Executor executor(num_workers);
-    tf::Taskflow tf;
-    std::iota(data.begin(), data.end(), 1);
-    int result {std::numeric_limits<int>::max()};
-    auto lambda = [](const auto& l, const auto& r){return std::min(l, r);};
-    tf.reduce(data.begin(), data.end(), result, lambda);
-    executor.run(tf).get();
-    REQUIRE(result == std::accumulate(
-      data.begin(), data.end(), std::numeric_limits<int>::max(), lambda)
-    );
-  };
-
-  for(unsigned w=1; w<=4; ++w){
-    for(size_t j=0; j<=256; j=j*2+1){
-      plus_test(w, std::vector<int>(j));
-      plus_test(w, std::list<int>(j));
-
-      multiply_test(w, std::vector<double>(j));
-      multiply_test(w, std::list<double>(j));
-
-      max_test(w, std::vector<int>(j));
-      max_test(w, std::list<int>(j));
-
-      min_test(w, std::vector<int>(j));
-      min_test(w, std::list<int>(j));
-    }
-  }
-}
-
-// --------------------------------------------------------
-// Testcase: ReduceMin
-// --------------------------------------------------------
-TEST_CASE("ReduceMin" * doctest::timeout(300)) {
-
-  for(int w=1; w<=4; w++) {
-    tf::Executor executor(w);
-    for(int i=0; i<=65536; i = (i <= 1024) ? i + 1 : i*2 + 1) {
-      tf::Taskflow tf;
-      std::vector<int> data(i);
-      int gold = std::numeric_limits<int>::max();
-      int test = std::numeric_limits<int>::max();
-      for(auto& d : data) {
-        d = ::rand();
-        gold = std::min(gold, d);
-      }
-      tf.reduce(data.begin(), data.end(), test, [] (int l, int r) {
-        return std::min(l, r);
-      });
-      executor.run(tf).get();
-      REQUIRE(test == gold);
-    }
-  }
-
-}
-
-// --------------------------------------------------------
-// Testcase: ReduceMax
-// --------------------------------------------------------
-TEST_CASE("ReduceMax" * doctest::timeout(300)) {
-
-  for(int w=1; w<=4; w++) {
-    tf::Executor executor(w);
-    for(int i=0; i<=65536; i = (i <= 1024) ? i + 1 : i*2 + 1) {
-      tf::Taskflow tf;
-      std::vector<int> data(i);
-      int gold = std::numeric_limits<int>::min();
-      int test = std::numeric_limits<int>::min();
-      for(auto& d : data) {
-        d = ::rand();
-        gold = std::max(gold, d);
-      }
-      tf.reduce(data.begin(), data.end(), test, [](int l, int r){
-        return std::max(l, r);
-      });
-      executor.run(tf).get();
-      REQUIRE(test == gold);
-    }
-  }
 }
 
 // --------------------------------------------------------

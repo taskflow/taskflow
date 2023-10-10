@@ -16,9 +16,9 @@ TEST_CASE("cuda.device" * doctest::timeout(300) ) {
 
   size_t num_devices = tf::cuda_get_num_devices();
 
-  for(size_t d=0; d<num_devices; d++) {
-    tf::cuda_set_device(d);
-    REQUIRE(tf::cuda_get_device() == d);
+  for(size_t c=0; c<num_devices; c++) {
+    tf::cuda_set_device(c);
+    REQUIRE(tf::cuda_get_device() == c);
     
     for(size_t d=0; d<num_devices; d++) {
       REQUIRE(tf::cuda_get_device_max_threads_per_block(d) > 0);

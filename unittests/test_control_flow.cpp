@@ -40,12 +40,12 @@ void conditional_spawn(
     for(int i=0; i<2; i++) {
       auto A = subflow.emplace([&](){ counter++; });
       auto B = subflow.emplace(
-        [&, max_depth, depth=depth+1](tf::Subflow& subflow){
-          conditional_spawn(counter, max_depth, depth, subflow);
+        [&, max_depth, depth=depth+1](tf::Subflow& sf2){
+          conditional_spawn(counter, max_depth, depth, sf2);
       });
       auto C = subflow.emplace(
-        [&, max_depth, depth=depth+1](tf::Subflow& subflow){
-          conditional_spawn(counter, max_depth, depth, subflow);
+        [&, max_depth, depth=depth+1](tf::Subflow& sf2){
+          conditional_spawn(counter, max_depth, depth, sf2);
         }
       );
 
@@ -350,46 +350,46 @@ void nested_cond(unsigned w) {
   tf::Taskflow flow;
   auto S = flow.emplace([](){});
   auto A = flow.emplace([&] (tf::Subflow& subflow) mutable {
-    //         ___________
-    //        |           |
-    //        v           |
-    //   S -> A -> B -> cond
-    auto S = subflow.emplace([](){ });
-    auto A = subflow.emplace([](){ }).succeed(S);
-    auto B = subflow.emplace([&](tf::Subflow& subflow){
+    //           ___________
+    //          |           |
+    //          v           |
+    //   S1 -> A1 -> B1 -> cond
+    auto S1 = subflow.emplace([](){ });
+    auto A1 = subflow.emplace([](){ }).succeed(S1);
+    auto B1 = subflow.emplace([&](tf::Subflow& sf){
 
-      //         ___________
-      //        |           |
-      //        v           |
-      //   S -> A -> B -> cond
-      //        |
-      //        -----> C
-      //        -----> D
-      //        -----> E
+      //           ___________
+      //          |           |
+      //          v           |
+      //   S2 -> A2 -> B2 -> cond
+      //          |
+      //          -----> C
+      //          -----> D
+      //          -----> E
 
-      auto S = subflow.emplace([](){});
-      auto A = subflow.emplace([](){}).succeed(S);
-      auto B = subflow.emplace([&](){ counter++; }).succeed(A);
-      subflow.emplace([&, repeat=0]() mutable {
+      auto S2 = sf.emplace([](){});
+      auto A2 = sf.emplace([](){}).succeed(S2);
+      auto B2 = sf.emplace([&](){ counter++; }).succeed(A2);
+      sf.emplace([&, repeat=0]() mutable {
         if(repeat ++ < inner_loop)
           return 0;
 
         repeat = 0;
         return 1;
-      }).succeed(B).precede(A).name("cond");
+      }).succeed(B2).precede(A2).name("cond");
 
       // Those are redundant tasks
-      subflow.emplace([](){}).succeed(A).name("C");
-      subflow.emplace([](){}).succeed(A).name("D");
-      subflow.emplace([](){}).succeed(A).name("E");
-    }).succeed(A);
+      sf.emplace([](){}).succeed(A2).name("C");
+      sf.emplace([](){}).succeed(A2).name("D");
+      sf.emplace([](){}).succeed(A2).name("E");
+    }).succeed(A1);
     subflow.emplace([&, repeat=0]() mutable {
       if(repeat ++ < mid_loop)
         return 0;
 
       repeat = 0;
       return 1;
-    }).succeed(B).precede(A).name("cond");
+    }).succeed(B1).precede(A1).name("cond");
 
   }).succeed(S);
 
@@ -685,9 +685,9 @@ void condition_subflow(unsigned W) {
 
   REQUIRE(taskflow.num_tasks() == 4 + I);
 
-  for(size_t i=0; i<data.size(); ++i) {
-    REQUIRE(data[i] == i*(i+1)/2*123);
-    data[i] = 0;
+  for(size_t j=0; j<data.size(); ++j) {
+    REQUIRE(data[j] == j*(j+1)/2*123);
+    data[j] = 0;
   }
 
   executor.run_n(taskflow, 1);
@@ -698,8 +698,8 @@ void condition_subflow(unsigned W) {
 
   REQUIRE(taskflow.num_tasks() == 4 + I*100);
 
-  for(size_t i=0; i<data.size(); ++i) {
-    REQUIRE(data[i] == i*(i+1)/2*123);
+  for(size_t j=0; j<data.size(); ++j) {
+    REQUIRE(data[j] == j*(j+1)/2*123);
   }
 
 }

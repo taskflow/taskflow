@@ -6,15 +6,14 @@ namespace tf {
 
 // Function: make_reduce_task
 template <typename B, typename E, typename T, typename O, typename P = GuidedPartitioner>
-TF_FORCE_INLINE auto make_reduce_task(B beg, E end, T& init, O bop, P&& part = P()) {
+TF_FORCE_INLINE auto make_reduce_task(B b, E e, T& init, O bop, P&& part = P()) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
   return 
-  [b=beg, e=end, &r=init, bop, part=std::forward<P>(part)] 
-  (Runtime& rt) mutable {
+  [b, e, &r=init, bop, part=std::forward<P>(part)] (Runtime& rt) mutable {
 
     // fetch the iterator values
     B_t beg = b;
@@ -62,19 +61,19 @@ TF_FORCE_INLINE auto make_reduce_task(B beg, E end, T& init, O bop, P&& part = P
         
           // loop reduce
           part.loop(N, W, curr_b, chunk_size,
-            [&, prev_e=curr_b+2](size_t curr_b, size_t curr_e) mutable {
+            [&, prev_e=curr_b+2](size_t part_b, size_t part_e) mutable {
 
-              if(curr_b > prev_e) {
-                std::advance(beg, curr_b - prev_e);
+              if(part_b > prev_e) {
+                std::advance(beg, part_b - prev_e);
               }
               else {
-                curr_b = prev_e;
+                part_b = prev_e;
               }
 
-              for(size_t x=curr_b; x<curr_e; x++, beg++) {
+              for(size_t x=part_b; x<part_e; x++, beg++) {
                 sum = bop(sum, *beg);
               }
-              prev_e = curr_e;
+              prev_e = part_e;
             }
           ); 
           
@@ -135,16 +134,14 @@ template <
   typename P = GuidedPartitioner
 >
 TF_FORCE_INLINE auto make_transform_reduce_task(
-  B beg, E end, T& init, BOP bop, UOP uop, P&& part = P()
+  B b, E e, T& init, BOP bop, UOP uop, P&& part = P()
 ) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  return 
-  [b=beg, e=end, &r=init, bop, uop, part=std::forward<P>(part)] 
-  (Runtime& rt) mutable {
+  return [b, e, &r=init, bop, uop, part=std::forward<P>(part)] (Runtime& rt) mutable {
 
     // fetch the iterator values
     B_t beg = b;
@@ -193,17 +190,17 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
           // loop reduce
           part.loop(N, W, curr_b, chunk_size,
             [&, prev_e=curr_b+(chunk_size == 1 ? 1 : 2)]
-            (size_t curr_b, size_t curr_e) mutable {
-              if(curr_b > prev_e) {
-                std::advance(beg, curr_b - prev_e);
+            (size_t part_b, size_t part_e) mutable {
+              if(part_b > prev_e) {
+                std::advance(beg, part_b - prev_e);
               }
               else {
-                curr_b = prev_e;
+                part_b = prev_e;
               }
-              for(size_t x=curr_b; x<curr_e; x++, beg++) {
+              for(size_t x=part_b; x<part_e; x++, beg++) {
                 sum = bop(std::move(sum), uop(*beg));
               }
-              prev_e = curr_e;
+              prev_e = part_e;
             }
           ); 
           
@@ -268,7 +265,7 @@ template <
   std::enable_if_t<!is_partitioner_v<std::decay_t<BOP_T>>, void>* = nullptr
 >
 TF_FORCE_INLINE auto make_transform_reduce_task(
-  B1 beg1, E1 end1, B2 beg2, T& init, BOP_R bop_r, BOP_T bop_t, P&& part = P()
+  B1 b1, E1 e1, B2 b2, T& init, BOP_R bop_r, BOP_T bop_t, P&& part = P()
 ) {
 
   using B1_t = std::decay_t<unwrap_ref_decay_t<B1>>;
@@ -277,7 +274,7 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
   using namespace std::string_literals;
 
   return 
-  [b1=beg1, e1=end1, b2=beg2, &r=init, bop_r, bop_t, part=std::forward<P>(part)] 
+  [b1, e1, b2, &r=init, bop_r, bop_t, part=std::forward<P>(part)] 
   (Runtime& rt) mutable {
 
     // fetch the iterator values
@@ -326,18 +323,18 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
           // loop reduce
           part.loop(N, W, curr_b, chunk_size,
             [&, prev_e=curr_b+(chunk_size == 1 ? 1 : 2)] 
-            (size_t curr_b, size_t curr_e) mutable {
-              if(curr_b > prev_e) {
-                std::advance(beg1, curr_b - prev_e);
-                std::advance(beg2, curr_b - prev_e);
+            (size_t part_b, size_t part_e) mutable {
+              if(part_b > prev_e) {
+                std::advance(beg1, part_b - prev_e);
+                std::advance(beg2, part_b - prev_e);
               }   
               else {
-                curr_b = prev_e;
+                part_b = prev_e;
               }   
-              for(size_t x=curr_b; x<curr_e; x++, beg1++, beg2++) { 
+              for(size_t x=part_b; x<part_e; x++, beg1++, beg2++) { 
                 sum = bop_r(std::move(sum), bop_t(*beg1, *beg2));
               }   
-              prev_e = curr_e;
+              prev_e = part_e;
             }   
           );  
     

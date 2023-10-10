@@ -510,9 +510,9 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
   // first line, second pipe, third subline, third subpipe
   std::vector<std::vector<std::vector<std::array<int, 3>>>> subbuffers(L);
 
-  for(auto&& buffer: subbuffers) {
-    buffer.resize(4);
-    for(auto&& each: buffer) {
+  for(auto&& b: subbuffers) {
+    b.resize(4);
+    for(auto&& each: b) {
         each.resize(subL);
     }
   }
@@ -527,7 +527,7 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
       // begin of pipeline ---------------------------
 
       // begin of pipe 1 -----------------------------
-      pipes.emplace_back(tf::PipeType::SERIAL, [&, w, N, subN, subL](auto& pf) mutable {
+      pipes.emplace_back(tf::PipeType::SERIAL, [&, N, subN, subL](auto& pf) mutable {
         if(j1 == N) {
           pf.stop();
           return;
@@ -581,7 +581,6 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
           ++subj3;
         });
 
-        tf::Executor executor(w);
         tf::Taskflow taskflow;
 
         // test task
@@ -598,7 +597,7 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
         auto subpl_t = taskflow.composed_of(subpl).name("module_of_subpipeline");
 
         subpl_t.precede(test_t);
-        executor.run(taskflow).wait();
+        executor.corun(taskflow);
 
         buffer[pf.line()][pf.pipe()] = std::accumulate(
           subcollection.begin(),
@@ -611,7 +610,7 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
       // end of pipe 1 -----------------------------
 
       //begin of pipe 2 ---------------------------
-      pipes.emplace_back(tf::PipeType::PARALLEL, [&, w, subN, subL](auto& pf) mutable {
+      pipes.emplace_back(tf::PipeType::PARALLEL, [&, subN, subL](auto& pf) mutable {
 
         REQUIRE(j2++ < N);
         int res = std::accumulate(
@@ -669,7 +668,6 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
           ++subj3;
         });
 
-        tf::Executor executor(w);
         tf::Taskflow taskflow;
 
         // test task
@@ -686,7 +684,7 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
         auto subpl_t = taskflow.composed_of(subpl).name("module_of_subpipeline");
 
         subpl_t.precede(test_t);
-        executor.run(taskflow).wait();
+        executor.corun(taskflow);
 
         buffer[pf.line()][pf.pipe()] = std::accumulate(
           subcollection.begin(),
@@ -698,7 +696,7 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
       // end of pipe 2 -----------------------------
 
       // begin of pipe 3 ---------------------------
-      pipes.emplace_back(tf::PipeType::SERIAL, [&, w, N, subN, subL](auto& pf) mutable {
+      pipes.emplace_back(tf::PipeType::SERIAL, [&, N, subN, subL](auto& pf) mutable {
 
         REQUIRE(j3++ < N);
         int res = std::accumulate(
@@ -757,7 +755,6 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
           ++subj3;
         });
 
-        tf::Executor executor(w);
         tf::Taskflow taskflow;
 
         // test task
@@ -774,7 +771,7 @@ void spipeline_in_spipeline(size_t L, unsigned w, unsigned subL) {
         auto subpl_t = taskflow.composed_of(subpl).name("module_of_subpipeline");
 
         subpl_t.precede(test_t);
-        executor.run(taskflow).wait();
+        executor.corun(taskflow);
 
         buffer[pf.line()][pf.pipe()] = std::accumulate(
           subcollection.begin(),
@@ -1168,8 +1165,8 @@ void spawn(
   auto spl_t = sf.composed_of(spls[r]).name("module_of_pipeline");
 
   if(r + 1 < NUM_RECURS) {
-    auto spawn_t = sf.emplace([&, L, NUM_PIPES, NUM_RECURS, maxN, r](tf::Subflow& sf) mutable {
-      spawn(sf, L, NUM_PIPES, NUM_RECURS, maxN, r + 1, buffer, source, pipes, spls, counter);
+    auto spawn_t = sf.emplace([&, L, NUM_PIPES, NUM_RECURS, maxN, r](tf::Subflow& sf2) mutable {
+      spawn(sf2, L, NUM_PIPES, NUM_RECURS, maxN, r + 1, buffer, source, pipes, spls, counter);
     });
     spawn_t.precede(spl_t);
   }

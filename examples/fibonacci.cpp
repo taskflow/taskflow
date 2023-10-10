@@ -5,11 +5,11 @@ int spawn(int n, tf::Subflow& sbf) {
   int res1, res2;
 
   // compute f(n-1)
-  sbf.emplace([&res1, n] (tf::Subflow& sbf) { res1 = spawn(n - 1, sbf); } )
+  sbf.emplace([&res1, n] (tf::Subflow& sbf_n_1) { res1 = spawn(n - 1, sbf_n_1); } )
      .name(std::to_string(n-1));
 
   // compute f(n-2)
-  sbf.emplace([&res2, n] (tf::Subflow& sbf) { res2 = spawn(n - 2, sbf); } )
+  sbf.emplace([&res2, n] (tf::Subflow& sbf_n_2) { res2 = spawn(n - 2, sbf_n_2); } )
      .name(std::to_string(n-2));
 
   sbf.join();

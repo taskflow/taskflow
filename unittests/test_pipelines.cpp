@@ -2591,7 +2591,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
       tf::Pipeline pl(L,
 
         // begin of pipe 1 -----------------------------
-        tf::Pipe{tf::PipeType::SERIAL, [&, w, N, subN, subL](auto& pf) mutable {
+        tf::Pipe{tf::PipeType::SERIAL, [&, N, subN, subL](auto& pf) mutable {
           if(j1 == N) {
             pf.stop();
             return;
@@ -2642,7 +2642,6 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
             }}
           );
 
-          tf::Executor executor(w);
           tf::Taskflow taskflow;
 
           // test task
@@ -2658,7 +2657,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
           auto subpl_t = taskflow.composed_of(subpl).name("module_of_subpipeline");
 
           subpl_t.precede(test_t);
-          executor.run(taskflow).wait();
+          executor.corun(taskflow);
 
           buffer[pf.line()][pf.pipe()] = std::accumulate(
             subcollection.begin(),
@@ -2671,7 +2670,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
         // end of pipe 1 -----------------------------
 
          //begin of pipe 2 ---------------------------
-        tf::Pipe{tf::PipeType::PARALLEL, [&, w, N, subN, subL](auto& pf) mutable {
+        tf::Pipe{tf::PipeType::PARALLEL, [&, N, subN, subL](auto& pf) mutable {
 
           REQUIRE(j2++ < N);
           int res = std::accumulate(
@@ -2726,7 +2725,6 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
             }}
           );
 
-          tf::Executor executor(w);
           tf::Taskflow taskflow;
 
           // test task
@@ -2742,7 +2740,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
           auto subpl_t = taskflow.composed_of(subpl).name("module_of_subpipeline");
 
           subpl_t.precede(test_t);
-          executor.run(taskflow).wait();
+          executor.corun(taskflow);
 
           buffer[pf.line()][pf.pipe()] = std::accumulate(
             subcollection.begin(),
@@ -2754,7 +2752,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
         // end of pipe 2 -----------------------------
 
         // begin of pipe 3 ---------------------------
-        tf::Pipe{tf::PipeType::SERIAL, [&, w, N, subN, subL](auto& pf) mutable {
+        tf::Pipe{tf::PipeType::SERIAL, [&, N, subN, subL](auto& pf) mutable {
 
           REQUIRE(j3++ < N);
           int res = std::accumulate(
@@ -2810,7 +2808,6 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
             }}
           );
 
-          tf::Executor executor(w);
           tf::Taskflow taskflow;
 
           // test task
@@ -2826,7 +2823,7 @@ void pipeline_in_pipeline(size_t L, unsigned w, unsigned subL) {
           auto subpl_t = taskflow.composed_of(subpl).name("module_of_subpipeline");
 
           subpl_t.precede(test_t);
-          executor.run(taskflow).wait();
+          executor.corun(taskflow);
 
           buffer[pf.line()][pf.pipe()] = std::accumulate(
             subcollection.begin(),

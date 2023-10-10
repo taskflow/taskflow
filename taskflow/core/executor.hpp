@@ -1728,6 +1728,7 @@ inline void Executor::_observer_epilogue(Worker& worker, Node* node) {
 
 // Procedure: _process_exception
 inline void Executor::_process_exception(Worker&, Node* node) {
+
   constexpr static auto flag = Topology::EXCEPTION | Topology::CANCELLED;
 
   // multiple tasks may throw, so we only take the first thrown exception
@@ -2212,7 +2213,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
       // TODO: in the future, we may need to synchronize on wait
       // (which means the following code should the moved before set_value)
       if(satellite) {
-        std::scoped_lock<std::mutex> lock(_taskflows_mutex);
+        std::scoped_lock<std::mutex> satellite_lock(_taskflows_mutex);
         _taskflows.erase(*satellite);
       }
     }

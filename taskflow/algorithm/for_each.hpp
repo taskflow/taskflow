@@ -6,13 +6,13 @@ namespace tf {
 
 // Function: make_for_each_task
 template <typename B, typename E, typename C, typename P = GuidedPartitioner>
-TF_FORCE_INLINE auto make_for_each_task(B beg, E end, C c, P&& part = P()) {
+TF_FORCE_INLINE auto make_for_each_task(B b, E e, C c, P&& part = P()) {
   
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  return [b=beg, e=end, c, part=std::forward<P>(part)] (Runtime& rt) mutable {
+  return [b, e, c, part=std::forward<P>(part)] (Runtime& rt) mutable {
 
     // fetch the stateful values
     B_t beg = b;
@@ -38,12 +38,12 @@ TF_FORCE_INLINE auto make_for_each_task(B beg, E end, C c, P&& part = P()) {
         chunk_size = part.adjusted_chunk_size(N, W, w);
         launch_loop(W, w, rt, [=, &c, &part] () mutable {
           part.loop(N, W, curr_b, chunk_size,
-            [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
-              std::advance(beg, curr_b - prev_e);
-              for(size_t x = curr_b; x<curr_e; x++) {
+            [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
+              std::advance(beg, part_b - prev_e);
+              for(size_t x = part_b; x<part_e; x++) {
                 c(*beg++);
               }
-              prev_e = curr_e;
+              prev_e = part_e;
             }
           ); 
         });
@@ -56,12 +56,12 @@ TF_FORCE_INLINE auto make_for_each_task(B beg, E end, C c, P&& part = P()) {
       std::atomic<size_t> next(0);
       launch_loop(N, W, rt, next, part, [=, &c, &next, &part] () mutable {
         part.loop(N, W, next, 
-          [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
-            std::advance(beg, curr_b - prev_e);
-            for(size_t x = curr_b; x<curr_e; x++) {
+          [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
+            std::advance(beg, part_b - prev_e);
+            for(size_t x = part_b; x<part_e; x++) {
               c(*beg++);
             }
-            prev_e = curr_e;
+            prev_e = part_e;
           }
         ); 
       });
@@ -71,7 +71,7 @@ TF_FORCE_INLINE auto make_for_each_task(B beg, E end, C c, P&& part = P()) {
 
 // Function: make_for_each_index_task
 template <typename B, typename E, typename S, typename C, typename P = GuidedPartitioner>
-TF_FORCE_INLINE auto make_for_each_index_task(B beg, E end, S inc, C c, P&& part = P()) {
+TF_FORCE_INLINE auto make_for_each_index_task(B b, E e, S s, C c, P&& part = P()) {
 
   using namespace std::string_literals;
 
@@ -79,13 +79,17 @@ TF_FORCE_INLINE auto make_for_each_index_task(B beg, E end, S inc, C c, P&& part
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using S_t = std::decay_t<unwrap_ref_decay_t<S>>;
 
-  return [b=beg, e=end, a=inc, c, part=std::forward<P>(part)] 
-  (Runtime& rt) mutable {
+  return [b, e, s, c, part=std::forward<P>(part)] (Runtime& rt) mutable {
 
     // fetch the iterator values
     B_t beg = b;
     E_t end = e;
-    S_t inc = a;
+    S_t inc = s;
+    
+    // nothing to be done if the range is invalid
+    if(is_range_invalid(beg, end, inc)) {
+      return;
+    }
 
     size_t W = rt.executor().num_workers();
     size_t N = distance(beg, end, inc);
@@ -109,9 +113,9 @@ TF_FORCE_INLINE auto make_for_each_index_task(B beg, E end, S inc, C c, P&& part
         chunk_size = part.adjusted_chunk_size(N, W, w);
         launch_loop(W, w, rt, [=, &c, &part] () mutable {
           part.loop(N, W, curr_b, chunk_size,
-            [&](size_t curr_b, size_t curr_e) {
-              auto idx = static_cast<B_t>(curr_b) * inc + beg;
-              for(size_t x=curr_b; x<curr_e; x++, idx += inc) {
+            [&](size_t part_b, size_t part_e) {
+              auto idx = static_cast<B_t>(part_b) * inc + beg;
+              for(size_t x=part_b; x<part_e; x++, idx += inc) {
                 c(idx);
               }
             }
@@ -126,9 +130,9 @@ TF_FORCE_INLINE auto make_for_each_index_task(B beg, E end, S inc, C c, P&& part
       std::atomic<size_t> next(0);
       launch_loop(N, W, rt, next, part, [=, &c, &next, &part] () mutable {
         part.loop(N, W, next, 
-          [&](size_t curr_b, size_t curr_e) {
-            auto idx = static_cast<B_t>(curr_b) * inc + beg;
-            for(size_t x=curr_b; x<curr_e; x++, idx += inc) {
+          [&](size_t part_b, size_t part_e) {
+            auto idx = static_cast<B_t>(part_b) * inc + beg;
+            for(size_t x=part_b; x<part_e; x++, idx += inc) {
               c(idx);
             }
           }
