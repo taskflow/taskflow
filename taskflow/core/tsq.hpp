@@ -263,7 +263,7 @@ TaskQueue<T, TF_MAX_PRIORITY>::TaskQueue(int64_t c) {
   unroll<0, TF_MAX_PRIORITY, 1>([&](auto p){
     _top[p].data.store(0, std::memory_order_relaxed);
     _bottom[p].data.store(0, std::memory_order_relaxed);
-    _array[p].store(new Array{c}, std::memory_order_relaxed);
+    _array[p].store(std::make_unique<Array>(c), std::memory_order_relaxed);
     _garbage[p].reserve(32);
   });
 }
