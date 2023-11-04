@@ -4,6 +4,7 @@
 #include <mutex>
 
 #include "declarations.hpp"
+#include "graph.hpp"
 
 /**
 @file semaphore.hpp
@@ -68,6 +69,7 @@ This arrangement limits the number of concurrently running tasks to only one.
 class Semaphore {
 
   friend class Node;
+  friend class Runtime;
 
   public:
 

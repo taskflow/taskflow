@@ -2376,6 +2376,21 @@ inline Runtime::~Runtime() {
   }
 }
 
+inline void Runtime::acquire(Semaphore& s) {
+  corun_until([&]() {
+    return s._try_acquire_or_wait(this->_parent);
+  });
+}
+
+inline void Runtime::release(Semaphore& s) {
+  s._release();
+  _executor._notifier.notify(1);
+  // for (auto& w : s._waiters) {
+    // // TODO(wdxu): want to notify specific waiter.
+    // _executor._notifier.notify(w);
+  // }
+}
+
 }  // end of namespace tf -----------------------------------------------------
 
 

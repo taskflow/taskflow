@@ -149,6 +149,18 @@ class Runtime {
   public:
   
   /**
+   @brief try to acquire a semaphore
+   * 
+   */
+  void acquire(Semaphore& s);
+
+  /**
+   @brief try to acquire a semaphore
+   * 
+   */
+  void release(Semaphore& s);
+
+  /**
   @brief destroys the runtime object
 
   Issues a tf::Runtime::corun_all to finish all spawned asynchronous tasks
