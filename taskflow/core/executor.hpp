@@ -2377,8 +2377,14 @@ inline Runtime::~Runtime() {
 }
 
 inline void Runtime::acquire(Semaphore& s) {
+  bool enque = false;
   corun_until([&]() {
-    return s._try_acquire_or_wait(this->_parent);
+    // return s._try_acquire_or_wait(this->_parent);
+    if (TF_UNLIKELY(!enque)) {
+      enque = true;
+      return s._try_acquire_or_wait(this->_parent);
+    }
+    return s._try_acquire_or_wait_pred(this->_parent);
   });
 }
 

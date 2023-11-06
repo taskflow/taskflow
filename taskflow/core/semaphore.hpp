@@ -99,6 +99,10 @@ class Semaphore {
     std::vector<Node*> _waiters;
 
     bool _try_acquire_or_wait(Node*);
+    bool _try_acquire_or_wait_pred(Node*);
+
+    bool _try_acquire_or_wait_opt(Node*);
+    bool _try_acquire_or_wait_pred_opt(Node*);
 
     std::vector<Node*> _release();
 };
@@ -117,6 +121,47 @@ inline bool Semaphore::_try_acquire_or_wait(Node* me) {
     _waiters.push_back(me);
     return false;
   }
+}
+
+inline bool Semaphore::_try_acquire_or_wait_pred(Node* me) {
+  std::lock_guard<std::mutex> lock(_mtx);
+  if(_counter > 0) {
+    --_counter;
+    return true;
+  } else {
+    return false;
+  }
+}
+
+inline bool Semaphore::_try_acquire_or_wait_opt(Node* me) {
+  if (_mtx.try_lock()) {
+    if(_counter > 0) {
+      --_counter;
+      _mtx.unlock();
+      return true;
+    }
+    else {
+      _waiters.push_back(me);
+      _mtx.unlock();
+      return false;
+    }
+  }
+  return false;
+}
+
+inline bool Semaphore::_try_acquire_or_wait_pred_opt(Node* me) {
+  if (_mtx.try_lock()) {
+    if(_counter > 0) {
+      --_counter;
+      _mtx.unlock();
+      return true;
+    } else {
+      _mtx.unlock();
+      return false;
+    }
+    return false;
+  }
+  return false;
 }
 
 inline std::vector<Node*> Semaphore::_release() {
