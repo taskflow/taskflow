@@ -1029,7 +1029,9 @@ class Executor {
   private:
     
   const size_t _MAX_STEALS;
-  
+
+  std::vector<std::pair<std::function<bool()>, Worker*>> _predicates;
+
   std::mutex _wsq_mutex;
   std::mutex _taskflows_mutex;
 
@@ -2389,7 +2391,7 @@ inline void Runtime::acquire(Semaphore& s) {
 }
 
 inline void Runtime::release(Semaphore& s) {
-  s._release();
+  s._release(this->_parent);
   _executor._notifier.notify(1);
   // for (auto& w : s._waiters) {
     // // TODO(wdxu): want to notify specific waiter.

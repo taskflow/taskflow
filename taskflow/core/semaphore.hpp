@@ -105,6 +105,7 @@ class Semaphore {
     bool _try_acquire_or_wait_pred_opt(Node*);
 
     std::vector<Node*> _release();
+    void _release(Node*);
 };
 
 inline Semaphore::Semaphore(size_t max_workers) :
@@ -169,6 +170,17 @@ inline std::vector<Node*> Semaphore::_release() {
   ++_counter;
   std::vector<Node*> r{std::move(_waiters)};
   return r;
+}
+
+inline void Semaphore::_release(Node* me) {
+  std::lock_guard<std::mutex> lock(_mtx);
+  for (uint32_t i = 0; i < _waiters.size(); ++i) {
+    if (_waiters[i] == me) {
+      _waiters.erase(_waiters.begin() + i);
+      break;
+    }
+  }
+  ++_counter;
 }
 
 inline size_t Semaphore::count() const {
