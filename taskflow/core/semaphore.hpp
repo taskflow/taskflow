@@ -4,6 +4,7 @@
 #include <mutex>
 
 #include "declarations.hpp"
+#include "graph.hpp"
 
 /**
 @file semaphore.hpp
@@ -68,6 +69,7 @@ This arrangement limits the number of concurrently running tasks to only one.
 class Semaphore {
 
   friend class Node;
+  friend class Runtime;
 
   public:
 
@@ -83,6 +85,8 @@ class Semaphore {
     */
     explicit Semaphore(size_t max_workers);
 
+    virtual ~Semaphore() = default;
+
     /**
     @brief queries the counter value (not thread-safe during the run)
     */
@@ -96,15 +100,19 @@ class Semaphore {
 
     std::vector<Node*> _waiters;
 
+    template <bool>
     bool _try_acquire_or_wait(Node*);
 
     std::vector<Node*> _release();
+
+    void _release(Node*);
 };
 
 inline Semaphore::Semaphore(size_t max_workers) :
   _counter(max_workers) {
 }
 
+template <bool emplace_waiter>
 inline bool Semaphore::_try_acquire_or_wait(Node* me) {
   std::lock_guard<std::mutex> lock(_mtx);
   if(_counter > 0) {
@@ -112,7 +120,9 @@ inline bool Semaphore::_try_acquire_or_wait(Node* me) {
     return true;
   }
   else {
-    _waiters.push_back(me);
+    if constexpr (emplace_waiter) {
+      _waiters.push_back(me);
+    }
     return false;
   }
 }
@@ -122,6 +132,17 @@ inline std::vector<Node*> Semaphore::_release() {
   ++_counter;
   std::vector<Node*> r{std::move(_waiters)};
   return r;
+}
+
+inline void Semaphore::_release(Node* me) {
+  std::lock_guard<std::mutex> lock(_mtx);
+  for (uint32_t i = 0; i < _waiters.size(); ++i) {
+    if (_waiters[i] == me) {
+      _waiters.erase(_waiters.begin() + i);
+      break;
+    }
+  }
+  ++_counter;
 }
 
 inline size_t Semaphore::count() const {

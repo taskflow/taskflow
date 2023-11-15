@@ -442,6 +442,18 @@ class Runtime {
   */
   inline Worker& worker();
 
+  /**
+   @brief try to acquire a semaphore
+   * 
+   */
+  void acquire(Semaphore& s);
+
+  /**
+   @brief try to acquire a semaphore
+   * 
+   */
+  void release(Semaphore& s);
+
   protected:
   
   /**
@@ -894,7 +906,7 @@ inline bool Node::_acquire_all(SmallVector<Node*>& nodes) {
   auto& to_acquire = _semaphores->to_acquire;
 
   for(size_t i = 0; i < to_acquire.size(); ++i) {
-    if(!to_acquire[i]->_try_acquire_or_wait(this)) {
+    if(!to_acquire[i]->_try_acquire_or_wait<true>(this)) {
       for(size_t j = 1; j <= i; ++j) {
         auto r = to_acquire[i-j]->_release();
         nodes.insert(std::end(nodes), std::begin(r), std::end(r));
