@@ -317,14 +317,21 @@ void bench_semaphore(size_t W, size_t N) {
     t.acquire(se_2).release(se_2);
   }
 
+  // some independent workload
+  for (size_t i = 0; i < N; i++) {
+    taskflow.emplace([&]() {
+      std::this_thread::sleep_for(std::chrono::microseconds(10));
+    });
+  }
+
   auto beg = std::chrono::high_resolution_clock::now();
   executor.run(taskflow).wait();
   auto end = std::chrono::high_resolution_clock::now();
-  // std::cout << "semaphore worker_num:" << W << " thread_num:" << N
-  //           << " time cost : "
-  //           << std::chrono::duration_cast<std::chrono::microseconds>(end - beg)
-  //                      .count()
-  //           << "us." << std::endl;
+  std::cout << "semaphore worker_num:" << W << " thread_num:" << N
+            << " time cost : "
+            << std::chrono::duration_cast<std::chrono::microseconds>(end - beg)
+                       .count()
+            << "us." << std::endl;
 }
 
 void bench_intask_semaphore(size_t W, size_t N) {
@@ -352,14 +359,21 @@ void bench_intask_semaphore(size_t W, size_t N) {
     });
   }
 
+  // some independent workload
+  for (size_t i = 0; i < N; i++) {
+    taskflow.emplace([&]() {
+      std::this_thread::sleep_for(std::chrono::microseconds(10));
+    });
+  }
+
   auto beg = std::chrono::high_resolution_clock::now();
   executor.run(taskflow).wait();
   auto end = std::chrono::high_resolution_clock::now();
-  // std::cout << "intask_semaphore worker_num:" << W << " thread_num:" << N
-  //           << " time cost : "
-  //           << std::chrono::duration_cast<std::chrono::microseconds>(end - beg)
-  //                      .count()
-  //           << "us." << std::endl;
+  std::cout << "intask_semaphore worker_num:" << W << " thread_num:" << N
+            << " time cost : "
+            << std::chrono::duration_cast<std::chrono::microseconds>(end - beg)
+                       .count()
+            << "us." << std::endl;
 }
 
 #define TASKFLOW_TEST_SEMAPHORE_BENCHMARK(W, N)                                \
@@ -368,16 +382,16 @@ void bench_intask_semaphore(size_t W, size_t N) {
     bench_intask_semaphore(W, N);                                              \
   }
 
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(1, 10000);
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(2, 10000);
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(4, 10000);
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(8, 10000);
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(16, 10000);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(1, 100);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(2, 100);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(4, 100);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(8, 100);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(16, 100);
 
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(1, 20000);
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(2, 20000);
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(4, 20000);
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(8, 20000);
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(16, 20000);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(1, 200);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(2, 200);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(4, 200);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(8, 200);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(16, 200);
 
 #undef TASKFLOW_TEST_SEMAPHORE_BENCHMARK
