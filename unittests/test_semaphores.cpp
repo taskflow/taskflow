@@ -3,8 +3,8 @@
 #include <chrono>
 
 #include <doctest.h>
-#include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/semaphore_guard.hpp>
+#include <taskflow/taskflow.hpp>
 
 // --------------------------------------------------------
 // Testcase: CriticalSection
@@ -19,9 +19,9 @@ void critical_section(size_t W) {
   int N = 1000;
   int counter = 0;
 
-  for(int i=0; i<N; ++i) {
-    tf::Task task = taskflow.emplace([&](){ counter++; })
-                            .name(std::to_string(i));
+  for (int i = 0; i < N; ++i) {
+    tf::Task task
+            = taskflow.emplace([&]() { counter++; }).name(std::to_string(i));
     section.add(task);
   }
 
@@ -35,7 +35,7 @@ void critical_section(size_t W) {
 
   executor.wait_for_all();
 
-  REQUIRE(counter == 4*N);
+  REQUIRE(counter == 4 * N);
   REQUIRE(section.count() == 1);
 }
 
@@ -76,9 +76,9 @@ void semaphore(size_t W) {
   int N = 1000;
   int counter = 0;
 
-  for(int i=0; i<N; i++) {
-    auto f = taskflow.emplace([&](){ counter++; });
-    auto t = taskflow.emplace([&](){ counter++; });
+  for (int i = 0; i < N; i++) {
+    auto f = taskflow.emplace([&]() { counter++; });
+    auto t = taskflow.emplace([&]() { counter++; });
     f.precede(t);
     f.acquire(semaphore);
     t.release(semaphore);
@@ -86,8 +86,7 @@ void semaphore(size_t W) {
 
   executor.run(taskflow).wait();
 
-  REQUIRE(counter == 2*N);
-
+  REQUIRE(counter == 2 * N);
 }
 
 TEST_CASE("Semaphore.1thread") {
@@ -120,8 +119,8 @@ void overlapped_semaphore(size_t W) {
   int N = 1000;
   int counter = 0;
 
-  for(int i=0; i<N; i++) {
-    auto task = taskflow.emplace([&](){ counter++; });
+  for (int i = 0; i < N; i++) {
+    auto task = taskflow.emplace([&]() { counter++; });
     task.acquire(semaphore1);
     task.acquire(semaphore4);
     task.release(semaphore1);
@@ -162,17 +161,17 @@ void conflict_graph(size_t W) {
   tf::Semaphore conflict_AB(1);
   tf::Semaphore conflict_AC(1);
 
-  int counter {0};
+  int counter { 0 };
   std::mutex mutex;
 
-  tf::Task A = taskflow.emplace([&](){ counter++; });
+  tf::Task A = taskflow.emplace([&]() { counter++; });
 
   // B and C can run together
-  tf::Task B = taskflow.emplace([&](){
+  tf::Task B = taskflow.emplace([&]() {
     std::lock_guard<std::mutex> lock(mutex);
     counter++;
   });
-  tf::Task C = taskflow.emplace([&](){
+  tf::Task C = taskflow.emplace([&]() {
     std::lock_guard<std::mutex> lock(mutex);
     counter++;
   });
@@ -189,7 +188,7 @@ void conflict_graph(size_t W) {
 
   REQUIRE(counter == 3);
 
-  for(size_t i=0; i<10; i++) {
+  for (size_t i = 0; i < 10; i++) {
     executor.run_n(taskflow, 10);
   }
   executor.wait_for_all();
@@ -300,7 +299,7 @@ TEST_CASE("IntaskSemaphore.SemaphoreGuard") {
   REQUIRE(count == 0);
 }
 
-void bench_semaphore(size_t W, size_t N) {
+void bench_semaphore(size_t W, size_t N, size_t M) {
   tf::Executor executor(W);
   tf::Taskflow taskflow;
   tf::Semaphore se_1(1);
@@ -318,7 +317,7 @@ void bench_semaphore(size_t W, size_t N) {
   }
 
   // some independent workload
-  for (size_t i = 0; i < N; i++) {
+  for (size_t i = 0; i < M; i++) {
     taskflow.emplace([&]() {
       std::this_thread::sleep_for(std::chrono::microseconds(10));
     });
@@ -327,14 +326,15 @@ void bench_semaphore(size_t W, size_t N) {
   auto beg = std::chrono::high_resolution_clock::now();
   executor.run(taskflow).wait();
   auto end = std::chrono::high_resolution_clock::now();
-  std::cout << "semaphore worker_num:" << W << " thread_num:" << N
+  std::cout << "semaphore block_worker_num:" << W
+            << " independent_worker_num:" << M << " thread_num:" << N
             << " time cost : "
             << std::chrono::duration_cast<std::chrono::microseconds>(end - beg)
                        .count()
             << "us." << std::endl;
 }
 
-void bench_intask_semaphore(size_t W, size_t N) {
+void bench_intask_semaphore(size_t W, size_t N, size_t M) {
   tf::Executor executor(W);
   tf::Taskflow taskflow;
   tf::Semaphore se_1(1);
@@ -360,7 +360,7 @@ void bench_intask_semaphore(size_t W, size_t N) {
   }
 
   // some independent workload
-  for (size_t i = 0; i < N; i++) {
+  for (size_t i = 0; i < M; i++) {
     taskflow.emplace([&]() {
       std::this_thread::sleep_for(std::chrono::microseconds(10));
     });
@@ -369,29 +369,38 @@ void bench_intask_semaphore(size_t W, size_t N) {
   auto beg = std::chrono::high_resolution_clock::now();
   executor.run(taskflow).wait();
   auto end = std::chrono::high_resolution_clock::now();
-  std::cout << "intask_semaphore worker_num:" << W << " thread_num:" << N
+  std::cout << "intask_semaphore block_worker_num:" << W
+            << " independent_worker_num:" << M << " thread_num:" << N
             << " time cost : "
             << std::chrono::duration_cast<std::chrono::microseconds>(end - beg)
                        .count()
             << "us." << std::endl;
 }
 
-#define TASKFLOW_TEST_SEMAPHORE_BENCHMARK(W, N)                                \
-  TEST_CASE("IntaskSemaphore.BenchmarkW##vN##") {                              \
-    bench_semaphore(W, N);                                                     \
-    bench_intask_semaphore(W, N);                                              \
+#define TASKFLOW_TEST_SEMAPHORE_BENCHMARK(W, N, M)                             \
+  TEST_CASE("IntaskSemaphore.BenchmarkW##vN##M##") {                           \
+    bench_semaphore(W, N, M);                                                  \
+    bench_intask_semaphore(W, N, M);                                           \
   }
 
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(1, 100);
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(2, 100);
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(4, 100);
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(8, 100);
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(16, 100);
+// with independent task below
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(4, 100, 100);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(8, 100, 100);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(16, 100, 100);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(32, 100, 100);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(64, 100, 100);
 
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(1, 200);
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(2, 200);
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(4, 200);
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(8, 200);
-TASKFLOW_TEST_SEMAPHORE_BENCHMARK(16, 200);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(4, 200, 200);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(8, 200, 200);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(16, 200, 200);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(32, 200, 200);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(64, 200, 200);
+
+// without independent task below
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(4, 400, 0);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(8, 400, 0);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(16, 400, 0);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(32, 400, 0);
+TASKFLOW_TEST_SEMAPHORE_BENCHMARK(64, 400, 0);
 
 #undef TASKFLOW_TEST_SEMAPHORE_BENCHMARK
