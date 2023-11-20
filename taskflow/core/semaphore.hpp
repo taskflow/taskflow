@@ -70,6 +70,7 @@ class Semaphore {
 
   friend class Node;
   friend class Runtime;
+  friend class Executor;
 
   public:
 

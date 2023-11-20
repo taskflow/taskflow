@@ -67,6 +67,16 @@ class Worker {
     std::default_random_engine _rdgen { std::random_device{}() };
     TaskQueue<Node*> _wsq;
     Node* _cache;
+
+  enum class SideProcessStatus : int {
+    UNASSIGNED = 0,
+    SEMAPHORE_SUCCESS = 1,
+    STEAL_SUCCESS = 2
+  };
+  std::mutex _predicate_mtx;
+  std::condition_variable _predicate_cv;
+  std::atomic<SideProcessStatus> _predicate_status;
+  Node* _stealed_task;
 };
 
 // ----------------------------------------------------------------------------

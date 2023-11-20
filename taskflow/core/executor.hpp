@@ -1,5 +1,7 @@
 #pragma once
 
+#include <chrono>
+
 #include "observer.hpp"
 #include "taskflow.hpp"
 #include "async_task.hpp"
@@ -1047,6 +1049,36 @@ class Executor {
   std::vector<Worker> _workers;
   std::list<Taskflow> _taskflows;
 
+  struct TaskNotifier {
+    TaskNotifier() = default;
+    virtual ~TaskNotifier() = default;
+
+    TaskNotifier(tf::Semaphore& se) :
+        _se(se) {}
+
+    inline bool stop_predicate() {
+      // if (TF_UNLIKELY(!_enque)) {
+      //   _enque = true;
+      //   return _se._try_acquire_or_wait<true>(node);
+      // }
+
+      // we do not need to enqueue the Notifier::waiter in intask semaphore use case
+      return _se._try_acquire_or_wait<false>(nullptr);
+    }
+
+    tf::Semaphore& _se;
+
+    // Waitiner worker's index
+    std::mutex _waiters_idx_mtx;
+    std::list<size_t> _waiters_idx;
+  };
+
+  std::mutex _task_notifier_mtx;
+  std::list<TaskNotifier> _task_notifier;
+
+  std::unique_ptr<std::thread> _semaphore_looper { nullptr };
+  std::atomic<bool> _semaphore_notify_finished { false };
+
   Notifier _notifier;
 
   TaskQueue<Node*> _wsq;
@@ -1094,6 +1126,10 @@ class Executor {
   
   template <typename P>
   void _corun_until(Worker&, P&&);
+
+  void _corun_until_opt(Worker&, tf::Semaphore&);
+
+  void _semaphore_notify();
 };
 
 #ifdef TF_DISABLE_EXCEPTION_HANDLING
@@ -1143,6 +1179,12 @@ inline Executor::~Executor() {
 
   for(auto& t : _threads){
     t.join();
+  }
+  _semaphore_notify_finished.store(true, std::memory_order_release);
+
+  if (_semaphore_looper && _semaphore_looper->joinable()) {
+    _semaphore_looper->join();
+    _semaphore_looper.reset();
   }
 }
 
@@ -1224,7 +1266,6 @@ inline void Executor::_spawn(size_t N) {
           break;
         }
       }
-
     });
     
     // POSIX-like system can use the following to affine threads to cores 
@@ -1250,6 +1291,7 @@ inline void Executor::_spawn(size_t N) {
   std::unique_lock<std::mutex> lock(mutex);
   cond.wait(lock, [&](){ return n==N; });
 #endif
+  _semaphore_notify_finished.store(true, std::memory_order_release);
 }
 
 // Function: _corun_until
@@ -2297,6 +2339,116 @@ void Runtime::corun_until(P&& predicate) {
   _executor._corun_until(_worker, std::forward<P>(predicate));
 }
 
+void Executor::_semaphore_notify() {
+  std::uniform_int_distribution<size_t> rdvtm(0, _workers.size() - 1);
+
+  while (!_semaphore_notify_finished.load(std::memory_order_acquire)) {
+    std::lock_guard<std::mutex> lk(_task_notifier_mtx);
+    for (auto& it : _task_notifier) {
+      if (it._waiters_idx.empty()) {
+        continue;
+      }
+      // fetched the semaphore by a thread succeessfully. notify the top and erase it.
+      if (it.stop_predicate()) {
+        auto& selected_worker = _workers[*it._waiters_idx.begin()];
+        std::lock_guard<std::mutex> predicate_lk(selected_worker._predicate_mtx);
+        // get stop predicate, first come first serve
+        selected_worker._predicate_status.store(
+                Worker::SideProcessStatus::SEMAPHORE_SUCCESS,
+                std::memory_order_release);
+        selected_worker._predicate_cv.notify_all();
+        {
+          std::lock_guard<std::mutex> _waiters_lk(it._waiters_idx_mtx);
+          it._waiters_idx.pop_front();
+        }
+        break;
+      } else {
+        for (size_t idx : it._waiters_idx) {
+          auto& w = _workers[idx];
+          if (auto t = w._wsq.pop(); t) {
+            w._stealed_task = t;
+            std::lock_guard<std::mutex> predicate_lk(
+                    w._predicate_mtx);
+            w._predicate_status.store(
+                    Worker::SideProcessStatus::STEAL_SUCCESS,
+                    std::memory_order_release);
+            continue;
+          }
+          for (size_t num_steals = 0; num_steals < _MAX_STEALS; ++num_steals) {
+            auto t = (w._id == w._vtm) ? w._wsq.steal() : _workers[w._vtm]._wsq.steal();
+            if (t) {
+              w._stealed_task = t;
+              std::lock_guard<std::mutex> predicate_lk(
+                      w._predicate_mtx);
+              w._predicate_status.store(
+                      Worker::SideProcessStatus::STEAL_SUCCESS,
+                      std::memory_order_release);
+              break;
+            } else {
+              num_steals++;
+            }
+            w._vtm = rdvtm(w._rdgen);
+          }
+        }
+      }
+    }
+  }
+}
+
+void Executor::_corun_until_opt(Worker& w, tf::Semaphore& se) {
+  {
+    TaskNotifier* task_notifier = nullptr;
+    // register for acquiring semaphore
+    std::lock_guard<std::mutex> lk(_task_notifier_mtx);
+    if (_semaphore_looper == nullptr) {
+      _semaphore_looper.reset(
+              new std::thread(&Executor::_semaphore_notify, this));
+      _semaphore_notify_finished.store(false, std::memory_order_release);
+    }
+    bool inserted = false;
+    for (auto& it : _task_notifier) {
+      std::lock_guard<std::mutex> _waiters_lk(it._waiters_idx_mtx);
+      // there is already have this semaphore waiting list.
+      if (&it._se == &se) {
+        it._waiters_idx.emplace_back(w._id);
+        task_notifier = &it;
+        inserted = true;
+        break;
+      }
+    }
+    if (!inserted) {
+      _task_notifier.emplace_back(se);
+      task_notifier = &*_task_notifier.rbegin();
+      {
+        std::lock_guard<std::mutex> _waiters_lk(task_notifier->_waiters_idx_mtx);
+        task_notifier->_waiters_idx.emplace_back(w._id);
+      }
+    }
+  }
+
+explore:
+  {
+    // waiting for predicate. could be handled by task notifier. blocked here.
+    std::unique_lock<std::mutex> lk(w._predicate_mtx);
+    w._predicate_cv.wait(lk, [&]() {
+      return w._predicate_status.load(std::memory_order_acquire)
+              != tf::Worker::SideProcessStatus::UNASSIGNED;
+    });
+    if (w._predicate_status.load(std::memory_order_acquire)
+            == tf::Worker::SideProcessStatus::SEMAPHORE_SUCCESS) {
+      return;
+    } else if (w._predicate_status.load(std::memory_order_acquire)
+            == tf::Worker::SideProcessStatus::STEAL_SUCCESS) {
+      // 2. if predicate not ready, process(steal) other tasks.
+      _invoke(w, w._stealed_task);
+      std::cout <<" stealed " << std::endl;
+      w._predicate_status.store(tf::Worker::SideProcessStatus::UNASSIGNED,
+              std::memory_order_release);
+    }
+    goto explore;
+  }
+}
+
 // Function: _silent_async
 template <typename F>
 void Runtime::_silent_async(Worker& w, const std::string& name, F&& f) {
@@ -2377,19 +2529,25 @@ inline Runtime::~Runtime() {
 }
 
 inline void Runtime::acquire(Semaphore& s) {
-  bool enque = false;
-  corun_until([&]() {
-    if (TF_UNLIKELY(!enque)) {
-      enque = true;
-      return s._try_acquire_or_wait<true>(this->_parent);
-    }
-    return s._try_acquire_or_wait<false>(this->_parent);
-  });
+  _executor._corun_until_opt(_worker, s);
 }
 
 inline void Runtime::release(Semaphore& s) {
   s._release(this->_parent);
 }
+
+// template<ptrdiff_t least_max_value>
+// inline void Runtime::acquire(tf::counting_semaphore<least_max_value>& s) {
+//   _executor._corun_until(_worker, [&]() {
+//     return s.try_acquire();
+//   });
+// }
+
+// template<ptrdiff_t least_max_value>
+// inline void Runtime::release(tf::counting_semaphore<least_max_value>& s) {
+//   s.release();
+// }
+
 }  // end of namespace tf -----------------------------------------------------
 
 

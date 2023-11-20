@@ -250,8 +250,10 @@ void intask_semaphore(size_t W) {
     auto f = taskflow.emplace([&](tf::Runtime& rt) {
       rt.acquire(se);
       counter++;
+      rt.release(se);
     });
     auto t = taskflow.emplace([&](tf::Runtime& rt) {
+      rt.acquire(se);
       counter++;
       rt.release(se);
     });
@@ -377,8 +379,12 @@ void bench_intask_semaphore(size_t W, size_t N, size_t M) {
             << "us." << std::endl;
 }
 
+#define TASKFLOW_TEST_SEMAPHORE_TO_STR(x) TASKFLOW_TEST_SEMAPHORE_STR(x)
+#define TASKFLOW_TEST_SEMAPHORE_STR(x) #x
+
 #define TASKFLOW_TEST_SEMAPHORE_BENCHMARK(W, N, M)                             \
-  TEST_CASE("IntaskSemaphore.BenchmarkW##vN##M##") {                           \
+  TEST_CASE("IntaskSemaphore.Benchmark_" TASKFLOW_TEST_SEMAPHORE_TO_STR(       \
+          W##_##N##_##M)) {                                                    \
     bench_semaphore(W, N, M);                                                  \
     bench_intask_semaphore(W, N, M);                                           \
   }
@@ -404,3 +410,42 @@ TASKFLOW_TEST_SEMAPHORE_BENCHMARK(32, 400, 0);
 TASKFLOW_TEST_SEMAPHORE_BENCHMARK(64, 400, 0);
 
 #undef TASKFLOW_TEST_SEMAPHORE_BENCHMARK
+#undef TASKFLOW_TEST_SEMAPHORE_STR
+#undef TASKFLOW_TEST_SEMAPHORE_TO_STR
+
+TEST_CASE("IntaskSemaphore.2PCWaiter") {
+  tf::Semaphore se(2);
+  tf::Executor executor(4);
+  tf::Taskflow taskflow;
+  int32_t count = 0;
+
+  auto t1 = taskflow.emplace([&](tf::Runtime& rt) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    rt.acquire(se);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    rt.release(se);
+  });
+  auto t2 = taskflow.emplace([&](tf::Runtime& rt) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    rt.acquire(se);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    rt.release(se);
+  });
+  auto t3 = taskflow.emplace([&](tf::Runtime& rt) {
+                      rt.acquire(se);
+                      std::this_thread::sleep_for(std::chrono::seconds(1));
+                      rt.release(se);
+                    })
+                    .priority(tf::TaskPriority::HIGH);
+  auto t4 = taskflow.emplace([&](tf::Runtime& rt) {
+                      rt.acquire(se);
+                      std::this_thread::sleep_for(std::chrono::seconds(1));
+                      rt.release(se);
+                    })
+                    .priority(tf::TaskPriority::HIGH);
+  t3.precede(t1, t2);
+  t4.precede(t1, t2);
+  executor.run(taskflow);
+  executor.wait_for_all();
+  REQUIRE(count == 0);
+}
