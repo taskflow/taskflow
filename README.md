@@ -77,6 +77,7 @@ The following program (`simple.cpp`) creates four tasks
 `A`, `B`, `C`, and `D`, where `A` runs before `B` and `C`, and `D`
 runs after `B` and `C`.
 When `A` finishes, `B` and `C` can run in parallel.
+Try it live on [Compiler Explorer (godbolt)](https://godbolt.org/z/j8hx3xnnx)!
 
 
 
