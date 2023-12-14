@@ -1096,21 +1096,6 @@ class Executor {
   void _corun_until(Worker&, P&&);
 };
 
-#ifdef TF_DISABLE_EXCEPTION_HANDLING
-
-#define TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, code_block) \
-    do { code_block; } while(0)
-#else
-
-#define TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, code_block)  \
-    try {                                            \
-        code_block;                                  \
-    } catch(...) {                                   \
-        _process_exception(worker, node);            \
-    }
-#endif
-
-
 // Constructor
 inline Executor::Executor(size_t N) :
   _MAX_STEALS {((N+1) << 1)},
