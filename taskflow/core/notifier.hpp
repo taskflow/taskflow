@@ -106,6 +106,7 @@ class Notifier {
   }
 
   // commit_wait commits waiting.
+  // only the waiter itself can call
   void commit_wait(Waiter* w) {
 #ifdef __cpp_lib_atomic_wait
     w->state.store(Waiter::kNotSignaled, std::memory_order_relaxed);
