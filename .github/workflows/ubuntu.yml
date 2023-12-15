@@ -67,7 +67,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: cmake
-      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_STANDARD=20
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_STANDARD=20 -DCMAKE_CXX_FLAGS="-stdlib=libc++"
     - name: build
       run: cmake --build build --parallel 10
     - name: test
@@ -78,7 +78,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: cmake
-      run: cmake -S . -B build -DCMAKE_CXX_FLAGS="-fsanitize=thread -g" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_STANDARD=20
+      run: cmake -S . -B build -DCMAKE_CXX_FLAGS="-stdlib=libc++ -fsanitize=thread -g" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_STANDARD=20
     - name: build
       run: cmake --build build --parallel 10
     - name: test

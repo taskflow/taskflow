@@ -147,8 +147,8 @@ class Notifier {
   // cancel_wait cancels effects of the previous prepare_wait call.
   void cancel_wait(Waiter* w) {
     uint64_t epoch =
-        (w->epoch & kEpochMask) +
-        (((w->epoch & kWaiterMask) >> kWaiterShift) << kEpochShift);
+      (w->epoch & kEpochMask) +
+      (((w->epoch & kWaiterMask) >> kWaiterShift) << kEpochShift);
     uint64_t state = _state.load(std::memory_order_relaxed);
     for (;;) {
       if (int64_t((state & kEpochMask) - epoch) < 0) {
@@ -175,8 +175,9 @@ class Notifier {
     uint64_t state = _state.load(std::memory_order_acquire);
     for (;;) {
       // Easy case: no waiters.
-      if ((state & kStackMask) == kStackMask && (state & kWaiterMask) == 0)
+      if ((state & kStackMask) == kStackMask && (state & kWaiterMask) == 0) {
         return;
+      }
       uint64_t waiters = (state & kWaiterMask) >> kWaiterShift;
       uint64_t newstate;
       if (all) {
@@ -191,7 +192,9 @@ class Notifier {
         Waiter* wnext = w->next.load(std::memory_order_relaxed);
         uint64_t next = kStackMask;
         //if (wnext != nullptr) next = wnext - &_waiters[0];
-        if (wnext != nullptr) next = static_cast<uint64_t>(wnext - &_waiters[0]);
+        if (wnext != nullptr) {
+          next = static_cast<uint64_t>(wnext - &_waiters[0]);
+        }
         // Note: we don't add kEpochInc here. ABA problem on the lock-free stack
         // can't happen because a waiter is re-pushed onto the stack only after
         // it was in the pre-wait state which inevitably leads to epoch
@@ -203,7 +206,9 @@ class Notifier {
         if (!all && waiters) return;  // unblocked pre-wait thread
         if ((state & kStackMask) == kStackMask) return;
         Waiter* w = &_waiters[state & kStackMask];
-        if (!all) w->next.store(nullptr, std::memory_order_relaxed);
+        if (!all) {
+          w->next.store(nullptr, std::memory_order_relaxed);
+        }
         _unpark(w);
         return;
       }
