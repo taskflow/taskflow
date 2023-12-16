@@ -60,9 +60,9 @@ TF_FORCE_INLINE bool find_if_not_loop(
 }  // namespace detail --------------------------------------------------------
 
 // Function: make_find_if_task
-template <typename B, typename E, typename T, typename UOP, typename P = GuidedPartitioner>
+template <typename B, typename E, typename T, typename UOP, typename P = GuidedPartitioner, typename TW = TaskWrapperIdent>
 TF_FORCE_INLINE auto make_find_if_task(
-  B first, E last, T& result, UOP predicate, P&& part = P()
+  B first, E last, T& result, UOP predicate, P&& part = P(), TW&& task_wrapper = TW()
 ) {
   
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
@@ -70,7 +70,7 @@ TF_FORCE_INLINE auto make_find_if_task(
   using namespace std::string_literals;
 
   return 
-  [b=first, e=last, predicate, &result, part=std::forward<P>(part)] 
+  [b=first, e=last, predicate, &result, part=std::forward<P>(part), task_wrapper=std::forward<TW>(task_wrapper)] 
   (Runtime& rt) mutable {
 
     // fetch the stateful values
@@ -102,15 +102,17 @@ TF_FORCE_INLINE auto make_find_if_task(
         chunk_size = part.adjusted_chunk_size(N, W, w);
 
         launch_loop(W, w, rt,
-          [N, W, curr_b, chunk_size, beg, &predicate, &offset, &part] 
+          [N, W, curr_b, chunk_size, beg, &predicate, &offset, &part, &task_wrapper] 
           () mutable {
-            part.loop_until(N, W, curr_b, chunk_size,
-              [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
-                return detail::find_if_loop(
-                  offset, beg, prev_e, part_b, part_e, predicate
-                );
-              }
-            ); 
+            task_wrapper([&]{
+              part.loop_until(N, W, curr_b, chunk_size,
+                [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
+                  return detail::find_if_loop(
+                    offset, beg, prev_e, part_b, part_e, predicate
+                  );
+                }
+              ); 
+            });
           }
         );
       }
@@ -121,14 +123,16 @@ TF_FORCE_INLINE auto make_find_if_task(
     else {
       std::atomic<size_t> next(0);
       launch_loop(N, W, rt, next, part, 
-        [N, W, beg, &predicate, &offset, &next, &part] () mutable {
-          part.loop_until(N, W, next, 
-            [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
-              return detail::find_if_loop(
-                offset, beg, prev_e, curr_b, curr_e, predicate
-              );
-            }
-          ); 
+        [N, W, beg, &predicate, &offset, &next, &part, &task_wrapper] () mutable {
+          task_wrapper([&]{
+            part.loop_until(N, W, next, 
+              [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
+                return detail::find_if_loop(
+                  offset, beg, prev_e, curr_b, curr_e, predicate
+                );
+              }
+            ); 
+          });
         }
       );
     }
@@ -139,9 +143,9 @@ TF_FORCE_INLINE auto make_find_if_task(
 }
 
 // Function: make_find_if_not_task
-template <typename B, typename E, typename T, typename UOP, typename P = GuidedPartitioner>
+template <typename B, typename E, typename T, typename UOP, typename P = GuidedPartitioner, typename TW = TaskWrapperIdent>
 TF_FORCE_INLINE auto make_find_if_not_task(
-  B first, E last, T& result, UOP predicate, P&& part = P()
+  B first, E last, T& result, UOP predicate, P&& part = P(), TW&& task_wrapper = TW()
 ) {
   
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
@@ -149,7 +153,7 @@ TF_FORCE_INLINE auto make_find_if_not_task(
   using namespace std::string_literals;
 
   return
-  [b=first, e=last, predicate, &result, part=std::forward<P>(part)] 
+  [b=first, e=last, predicate, &result, part=std::forward<P>(part), task_wrapper=std::forward<TW>(task_wrapper) ] 
   (Runtime& rt) mutable {
 
     // fetch the stateful values
@@ -181,14 +185,16 @@ TF_FORCE_INLINE auto make_find_if_not_task(
         chunk_size = part.adjusted_chunk_size(N, W, w);
 
         launch_loop(W, w, rt,
-          [N, W, curr_b, chunk_size, beg, &predicate, &offset, &part] () mutable {
-            part.loop_until(N, W, curr_b, chunk_size,
-              [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
-                return detail::find_if_not_loop(
-                  offset, beg, prev_e, part_b, part_e, predicate
-                );
-              }
-            ); 
+          [N, W, curr_b, chunk_size, beg, &predicate, &offset, &part, &task_wrapper] () mutable {
+            task_wrapper([&]{
+              part.loop_until(N, W, curr_b, chunk_size,
+                [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
+                  return detail::find_if_not_loop(
+                    offset, beg, prev_e, part_b, part_e, predicate
+                  );
+                }
+              ); 
+            });
           }
         );
       }
@@ -509,18 +515,18 @@ TF_FORCE_INLINE auto make_max_element_task(
 
 
 // Function: find_if
-template <typename B, typename E, typename T, typename UOP, typename P>
-Task tf::FlowBuilder::find_if(B first, E last, T& result, UOP predicate, P&& part) {
+template <typename B, typename E, typename T, typename UOP, typename P, typename W>
+Task tf::FlowBuilder::find_if(B first, E last, T& result, UOP predicate, P&& part, W&& task_wrapper) {
   return emplace(make_find_if_task(
-    first, last, result, predicate, std::forward<P>(part)
+    first, last, result, predicate, std::forward<P>(part), std::forward<W>(task_wrapper)
   ));
 }
 
 // Function: find_if_not
-template <typename B, typename E, typename T, typename UOP, typename P>
-Task tf::FlowBuilder::find_if_not(B first, E last, T& result, UOP predicate, P&& part) {
+template <typename B, typename E, typename T, typename UOP, typename P, typename W>
+Task tf::FlowBuilder::find_if_not(B first, E last, T& result, UOP predicate, P&& part, W&& task_wrapper) {
   return emplace(make_find_if_not_task(
-    first, last, result, predicate, std::forward<P>(part)
+    first, last, result, predicate, std::forward<P>(part), std::forward<W>(task_wrapper)
   ));
 }
 

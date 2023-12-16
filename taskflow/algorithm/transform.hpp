@@ -6,11 +6,11 @@ namespace tf {
 
 // Function: make_transform_task
 template <
-  typename B, typename E, typename O, typename C, typename P = GuidedPartitioner,
+  typename B, typename E, typename O, typename C, typename P = GuidedPartitioner, typename TW = TaskWrapperIdent,
   std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>* = nullptr
 >
 TF_FORCE_INLINE auto make_transform_task(
-  B first1, E last1, O d_first, C c, P&& part = P()
+  B first1, E last1, O d_first, C c, P&& part = P(), TW&&task_wrapper = TW()
 ) {
 
   using namespace std::string_literals;
@@ -20,7 +20,7 @@ TF_FORCE_INLINE auto make_transform_task(
   using O_t = std::decay_t<unwrap_ref_decay_t<O>>;
   
   return
-  [first1, last1, d_first, c, part=std::forward<P>(part)] 
+  [first1, last1, d_first, c, part=std::forward<P>(part), task_wrapper=std::forward<TW>(task_wrapper)] 
   (Runtime& rt) mutable {
 
     // fetch the stateful values
@@ -47,7 +47,29 @@ TF_FORCE_INLINE auto make_transform_task(
       for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
         chunk_size = part.adjusted_chunk_size(N, W, w);
         launch_loop(W, w, rt, [=, &part] () mutable {
-          part.loop(N, W, curr_b, chunk_size,
+          task_wrapper([&]{
+            part.loop(N, W, curr_b, chunk_size,
+              [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
+                std::advance(beg, part_b - prev_e);
+                std::advance(d_beg, part_b - prev_e);
+                for(size_t x = part_b; x<part_e; x++) {
+                  *d_beg++ = c(*beg++);
+                }
+                prev_e = part_e;
+              }
+            ); 
+          });
+        });
+      }
+      rt.corun_all();
+    }
+    // dynamic partitioner
+    else {
+      std::atomic<size_t> next(0);
+      
+      launch_loop(N, W, rt, next, part, [=, &next, &part] () mutable {
+        task_wrapper([&]{
+          part.loop(N, W, next, 
             [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               std::advance(beg, part_b - prev_e);
               std::advance(d_beg, part_b - prev_e);
@@ -58,24 +80,6 @@ TF_FORCE_INLINE auto make_transform_task(
             }
           ); 
         });
-      }
-      rt.corun_all();
-    }
-    // dynamic partitioner
-    else {
-      std::atomic<size_t> next(0);
-      
-      launch_loop(N, W, rt, next, part, [=, &next, &part] () mutable {
-        part.loop(N, W, next, 
-          [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
-            std::advance(beg, part_b - prev_e);
-            std::advance(d_beg, part_b - prev_e);
-            for(size_t x = part_b; x<part_e; x++) {
-              *d_beg++ = c(*beg++);
-            }
-            prev_e = part_e;
-          }
-        ); 
       });
     }
   };
@@ -83,11 +87,11 @@ TF_FORCE_INLINE auto make_transform_task(
 
 // Function: make_transform_task
 template <
-  typename B1, typename E1, typename B2, typename O, typename C, typename P = GuidedPartitioner,
+  typename B1, typename E1, typename B2, typename O, typename C, typename P = GuidedPartitioner, typename TW = TaskWrapperIdent,
   std::enable_if_t<!is_partitioner_v<std::decay_t<C>>, void>* = nullptr
 >
 TF_FORCE_INLINE auto make_transform_task(
-  B1 first1, E1 last1, B2 first2, O d_first, C c, P&& part = P()
+  B1 first1, E1 last1, B2 first2, O d_first, C c, P&& part = P(), TW&&task_wrapper = TW()
 ) {
 
   using namespace std::string_literals;
@@ -98,7 +102,7 @@ TF_FORCE_INLINE auto make_transform_task(
   using O_t = std::decay_t<unwrap_ref_decay_t<O>>;
 
   return
-  [first1, last1, first2, d_first, c, part=std::forward<P>(part)] 
+  [first1, last1, first2, d_first, c, part=std::forward<P>(part),task_wrapper=std::forward<TW>(task_wrapper)] 
   (Runtime& rt) mutable {
 
     // fetch the stateful values
@@ -126,7 +130,29 @@ TF_FORCE_INLINE auto make_transform_task(
       for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
         chunk_size = part.adjusted_chunk_size(N, W, w);
         launch_loop(W, w, rt, [=, &c, &part] () mutable {
-          part.loop(N, W, curr_b, chunk_size,
+          task_wrapper([&]{
+            part.loop(N, W, curr_b, chunk_size,
+              [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
+                std::advance(beg1, part_b - prev_e);
+                std::advance(beg2, part_b - prev_e);
+                std::advance(d_beg, part_b - prev_e);
+                for(size_t x = part_b; x<part_e; x++) {
+                  *d_beg++ = c(*beg1++, *beg2++);
+                }
+                prev_e = part_e;
+              }
+            ); 
+          });
+        });
+      }
+      rt.corun_all();
+    }
+    // dynamic partitioner
+    else {
+      std::atomic<size_t> next(0);
+      launch_loop(N, W, rt, next, part, [=, &c, &next, &part] () mutable {
+        task_wrapper([&]{
+          part.loop(N, W, next, 
             [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               std::advance(beg1, part_b - prev_e);
               std::advance(beg2, part_b - prev_e);
@@ -138,24 +164,6 @@ TF_FORCE_INLINE auto make_transform_task(
             }
           ); 
         });
-      }
-      rt.corun_all();
-    }
-    // dynamic partitioner
-    else {
-      std::atomic<size_t> next(0);
-      launch_loop(N, W, rt, next, part, [=, &c, &next, &part] () mutable {
-        part.loop(N, W, next, 
-          [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
-            std::advance(beg1, part_b - prev_e);
-            std::advance(beg2, part_b - prev_e);
-            std::advance(d_beg, part_b - prev_e);
-            for(size_t x = part_b; x<part_e; x++) {
-              *d_beg++ = c(*beg1++, *beg2++);
-            }
-            prev_e = part_e;
-          }
-        ); 
       });
     }
   };
@@ -166,12 +174,12 @@ TF_FORCE_INLINE auto make_transform_task(
 // ----------------------------------------------------------------------------
 
 // Function: transform
-template <typename B, typename E, typename O, typename C, typename P,
+template <typename B, typename E, typename O, typename C, typename P, typename W,
   std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>*
 >
-Task FlowBuilder::transform(B first1, E last1, O d_first, C c, P&& part) {
+Task FlowBuilder::transform(B first1, E last1, O d_first, C c, P&& part, W&&task_wrapper) {
   return emplace(
-    make_transform_task(first1, last1, d_first, c, std::forward<P>(part))
+    make_transform_task(first1, last1, d_first, c, std::forward<P>(part), std::forward<W>(task_wrapper))
   );
 }
 
@@ -181,14 +189,14 @@ Task FlowBuilder::transform(B first1, E last1, O d_first, C c, P&& part) {
   
 // Function: transform
 template <
-  typename B1, typename E1, typename B2, typename O, typename C, typename P,
+  typename B1, typename E1, typename B2, typename O, typename C, typename P, typename W,
   std::enable_if_t<!is_partitioner_v<std::decay_t<C>>, void>*
 >
 Task FlowBuilder::transform(
-  B1 first1, E1 last1, B2 first2, O d_first, C c, P&& part
+  B1 first1, E1 last1, B2 first2, O d_first, C c, P&& part, W && task_wrapper
 ) {
   return emplace(make_transform_task(
-    first1, last1, first2, d_first, c, std::forward<P>(part)
+    first1, last1, first2, d_first, c, std::forward<P>(part), std::forward<W>(task_wrapper)
   ));
 }
 
