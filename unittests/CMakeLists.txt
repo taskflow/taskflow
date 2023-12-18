@@ -3,6 +3,7 @@ enable_testing()
 include(${TF_3RD_PARTY_DIR}/doctest/doctest.cmake)
 
 list(APPEND TF_UNITTESTS 
+  test_chunk_context
   test_utility 
   test_work_stealing 
   #test_serializer 
