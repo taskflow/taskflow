@@ -73,13 +73,14 @@ jobs:
     - name: test
       run: cd build ; ctest --output-on-failure
   
-  tsan-test-cpp20:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: cmake
-      run: cmake -S . -B build -DCMAKE_CXX_FLAGS="-stdlib=libc++ -fsanitize=thread -g" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_STANDARD=20
-    - name: build
-      run: cmake --build build --parallel 10
-    - name: test
-      run: cd build ; ctest --output-on-failure
+  # temporarily disable due to error in linking libc++
+  #tsan-test-cpp20:
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #  - uses: actions/checkout@v2
+  #  - name: cmake
+  #    run: cmake -S . -B build -DCMAKE_CXX_FLAGS="-stdlib=libc++ -fsanitize=thread -g" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_STANDARD=20
+  #  - name: build
+  #    run: cmake --build build --parallel 10
+  #  - name: test
+  #    run: cd build ; ctest --output-on-failure

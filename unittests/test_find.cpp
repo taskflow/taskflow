@@ -55,101 +55,101 @@ void test_find_if(unsigned W) {
 
 // static partitioner
 TEST_CASE("find_if.StaticPartitioner.1thread" * doctest::timeout(300)) {
-  test_find_if<tf::StaticPartitioner>(1);
+  test_find_if<tf::StaticPartitioner<>>(1);
 }
 
 TEST_CASE("find_if.StaticPartitioner.2threads" * doctest::timeout(300)) {
-  test_find_if<tf::StaticPartitioner>(2);
+  test_find_if<tf::StaticPartitioner<>>(2);
 }
 
 TEST_CASE("find_if.StaticPartitioner.3threads" * doctest::timeout(300)) {
-  test_find_if<tf::StaticPartitioner>(3);
+  test_find_if<tf::StaticPartitioner<>>(3);
 }
 
 TEST_CASE("find_if.StaticPartitioner.4threads" * doctest::timeout(300)) {
-  test_find_if<tf::StaticPartitioner>(4);
+  test_find_if<tf::StaticPartitioner<>>(4);
 }
 
 TEST_CASE("find_if.StaticPartitioner.5threads" * doctest::timeout(300)) {
-  test_find_if<tf::StaticPartitioner>(5);
+  test_find_if<tf::StaticPartitioner<>>(5);
 }
 
 TEST_CASE("find_if.StaticPartitioner.6threads" * doctest::timeout(300)) {
-  test_find_if<tf::StaticPartitioner>(6);
+  test_find_if<tf::StaticPartitioner<>>(6);
 }
 
 TEST_CASE("find_if.StaticPartitioner.7threads" * doctest::timeout(300)) {
-  test_find_if<tf::StaticPartitioner>(7);
+  test_find_if<tf::StaticPartitioner<>>(7);
 }
 
 TEST_CASE("find_if.StaticPartitioner.8threads" * doctest::timeout(300)) {
-  test_find_if<tf::StaticPartitioner>(8);
+  test_find_if<tf::StaticPartitioner<>>(8);
 }
 
 // guided partitioner
 TEST_CASE("find_if.GuidedPartitioner.1thread" * doctest::timeout(300)) {
-  test_find_if<tf::GuidedPartitioner>(1);
+  test_find_if<tf::GuidedPartitioner<>>(1);
 }
 
 TEST_CASE("find_if.GuidedPartitioner.2threads" * doctest::timeout(300)) {
-  test_find_if<tf::GuidedPartitioner>(2);
+  test_find_if<tf::GuidedPartitioner<>>(2);
 }
 
 TEST_CASE("find_if.GuidedPartitioner.3threads" * doctest::timeout(300)) {
-  test_find_if<tf::GuidedPartitioner>(3);
+  test_find_if<tf::GuidedPartitioner<>>(3);
 }
 
 TEST_CASE("find_if.GuidedPartitioner.4threads" * doctest::timeout(300)) {
-  test_find_if<tf::GuidedPartitioner>(4);
+  test_find_if<tf::GuidedPartitioner<>>(4);
 }
 
 TEST_CASE("find_if.GuidedPartitioner.5threads" * doctest::timeout(300)) {
-  test_find_if<tf::GuidedPartitioner>(5);
+  test_find_if<tf::GuidedPartitioner<>>(5);
 }
 
 TEST_CASE("find_if.GuidedPartitioner.6threads" * doctest::timeout(300)) {
-  test_find_if<tf::GuidedPartitioner>(6);
+  test_find_if<tf::GuidedPartitioner<>>(6);
 }
 
 TEST_CASE("find_if.GuidedPartitioner.7threads" * doctest::timeout(300)) {
-  test_find_if<tf::GuidedPartitioner>(7);
+  test_find_if<tf::GuidedPartitioner<>>(7);
 }
 
 TEST_CASE("find_if.GuidedPartitioner.8threads" * doctest::timeout(300)) {
-  test_find_if<tf::GuidedPartitioner>(8);
+  test_find_if<tf::GuidedPartitioner<>>(8);
 }
 
 // dynamic partitioner
 TEST_CASE("find_if.DynamicPartitioner.1thread" * doctest::timeout(300)) {
-  test_find_if<tf::DynamicPartitioner>(1);
+  test_find_if<tf::DynamicPartitioner<>>(1);
 }
 
 TEST_CASE("find_if.DynamicPartitioner.2threads" * doctest::timeout(300)) {
-  test_find_if<tf::DynamicPartitioner>(2);
+  test_find_if<tf::DynamicPartitioner<>>(2);
 }
 
 TEST_CASE("find_if.DynamicPartitioner.3threads" * doctest::timeout(300)) {
-  test_find_if<tf::DynamicPartitioner>(3);
+  test_find_if<tf::DynamicPartitioner<>>(3);
 }
 
 TEST_CASE("find_if.DynamicPartitioner.4threads" * doctest::timeout(300)) {
-  test_find_if<tf::DynamicPartitioner>(4);
+  test_find_if<tf::DynamicPartitioner<>>(4);
 }
 
 TEST_CASE("find_if.DynamicPartitioner.5threads" * doctest::timeout(300)) {
-  test_find_if<tf::DynamicPartitioner>(5);
+  test_find_if<tf::DynamicPartitioner<>>(5);
 }
 
 TEST_CASE("find_if.DynamicPartitioner.6threads" * doctest::timeout(300)) {
-  test_find_if<tf::DynamicPartitioner>(6);
+  test_find_if<tf::DynamicPartitioner<>>(6);
 }
 
 TEST_CASE("find_if.DynamicPartitioner.7threads" * doctest::timeout(300)) {
-  test_find_if<tf::DynamicPartitioner>(7);
+  test_find_if<tf::DynamicPartitioner<>>(7);
 }
 
 TEST_CASE("find_if.DynamicPartitioner.8threads" * doctest::timeout(300)) {
-  test_find_if<tf::DynamicPartitioner>(8);
+  test_find_if<tf::DynamicPartitioner<>>(8);
 }
 
 // ----------------------------------------------------------------------------
@@ -210,101 +210,101 @@ void test_find_if_not(unsigned W) {
 
 // static partitioner
 TEST_CASE("find_if_not.StaticPartitioner.1thread" * doctest::timeout(300)) {
-  test_find_if_not<tf::StaticPartitioner>(1);
+  test_find_if_not<tf::StaticPartitioner<>>(1);
 }
 
 TEST_CASE("find_if_not.StaticPartitioner.2threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::StaticPartitioner>(2);
+  test_find_if_not<tf::StaticPartitioner<>>(2);
 }
 
 TEST_CASE("find_if_not.StaticPartitioner.3threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::StaticPartitioner>(3);
+  test_find_if_not<tf::StaticPartitioner<>>(3);
 }
 
 TEST_CASE("find_if_not.StaticPartitioner.4threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::StaticPartitioner>(4);
+  test_find_if_not<tf::StaticPartitioner<>>(4);
 }
 
 TEST_CASE("find_if_not.StaticPartitioner.5threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::StaticPartitioner>(5);
+  test_find_if_not<tf::StaticPartitioner<>>(5);
 }
 
 TEST_CASE("find_if_not.StaticPartitioner.6threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::StaticPartitioner>(6);
+  test_find_if_not<tf::StaticPartitioner<>>(6);
 }
 
 TEST_CASE("find_if_not.StaticPartitioner.7threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::StaticPartitioner>(7);
+  test_find_if_not<tf::StaticPartitioner<>>(7);
 }
 
 TEST_CASE("find_if_not.StaticPartitioner.8threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::StaticPartitioner>(8);
+  test_find_if_not<tf::StaticPartitioner<>>(8);
 }
 
 // guided partitioner
 TEST_CASE("find_if_not.GuidedPartitioner.1thread" * doctest::timeout(300)) {
-  test_find_if_not<tf::GuidedPartitioner>(1);
+  test_find_if_not<tf::GuidedPartitioner<>>(1);
 }
 
 TEST_CASE("find_if_not.GuidedPartitioner.2threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::GuidedPartitioner>(2);
+  test_find_if_not<tf::GuidedPartitioner<>>(2);
 }
 
 TEST_CASE("find_if_not.GuidedPartitioner.3threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::GuidedPartitioner>(3);
+  test_find_if_not<tf::GuidedPartitioner<>>(3);
 }
 
 TEST_CASE("find_if_not.GuidedPartitioner.4threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::GuidedPartitioner>(4);
+  test_find_if_not<tf::GuidedPartitioner<>>(4);
 }
 
 TEST_CASE("find_if_not.GuidedPartitioner.5threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::GuidedPartitioner>(5);
+  test_find_if_not<tf::GuidedPartitioner<>>(5);
 }
 
 TEST_CASE("find_if_not.GuidedPartitioner.6threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::GuidedPartitioner>(6);
+  test_find_if_not<tf::GuidedPartitioner<>>(6);
 }
 
 TEST_CASE("find_if_not.GuidedPartitioner.7threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::GuidedPartitioner>(7);
+  test_find_if_not<tf::GuidedPartitioner<>>(7);
 }
 
 TEST_CASE("find_if_not.GuidedPartitioner.8threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::GuidedPartitioner>(8);
+  test_find_if_not<tf::GuidedPartitioner<>>(8);
 }
 
 // dynamic partitioner
 TEST_CASE("find_if_not.DynamicPartitioner.1thread" * doctest::timeout(300)) {
-  test_find_if_not<tf::DynamicPartitioner>(1);
+  test_find_if_not<tf::DynamicPartitioner<>>(1);
 }
 
 TEST_CASE("find_if_not.DynamicPartitioner.2threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::DynamicPartitioner>(2);
+  test_find_if_not<tf::DynamicPartitioner<>>(2);
 }
 
 TEST_CASE("find_if_not.DynamicPartitioner.3threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::DynamicPartitioner>(3);
+  test_find_if_not<tf::DynamicPartitioner<>>(3);
 }
 
 TEST_CASE("find_if_not.DynamicPartitioner.4threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::DynamicPartitioner>(4);
+  test_find_if_not<tf::DynamicPartitioner<>>(4);
 }
 
 TEST_CASE("find_if_not.DynamicPartitioner.5threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::DynamicPartitioner>(5);
+  test_find_if_not<tf::DynamicPartitioner<>>(5);
 }
 
 TEST_CASE("find_if_not.DynamicPartitioner.6threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::DynamicPartitioner>(6);
+  test_find_if_not<tf::DynamicPartitioner<>>(6);
 }
 
 TEST_CASE("find_if_not.DynamicPartitioner.7threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::DynamicPartitioner>(7);
+  test_find_if_not<tf::DynamicPartitioner<>>(7);
 }
 
 TEST_CASE("find_if_not.DynamicPartitioner.8threads" * doctest::timeout(300)) {
-  test_find_if_not<tf::DynamicPartitioner>(8);
+  test_find_if_not<tf::DynamicPartitioner<>>(8);
 }
 
 // ----------------------------------------------------------------------------
@@ -369,101 +369,101 @@ void test_min_element(unsigned W) {
 
 // static partitioner
 TEST_CASE("min_element.StaticPartitioner.1thread" * doctest::timeout(300)) {
-  test_min_element<tf::StaticPartitioner>(1);
+  test_min_element<tf::StaticPartitioner<>>(1);
 }
 
 TEST_CASE("min_element.StaticPartitioner.2threads" * doctest::timeout(300)) {
-  test_min_element<tf::StaticPartitioner>(2);
+  test_min_element<tf::StaticPartitioner<>>(2);
 }
 
 TEST_CASE("min_element.StaticPartitioner.3threads" * doctest::timeout(300)) {
-  test_min_element<tf::StaticPartitioner>(3);
+  test_min_element<tf::StaticPartitioner<>>(3);
 }
 
 TEST_CASE("min_element.StaticPartitioner.4threads" * doctest::timeout(300)) {
-  test_min_element<tf::StaticPartitioner>(4);
+  test_min_element<tf::StaticPartitioner<>>(4);
 }
 
 TEST_CASE("min_element.StaticPartitioner.5threads" * doctest::timeout(300)) {
-  test_min_element<tf::StaticPartitioner>(5);
+  test_min_element<tf::StaticPartitioner<>>(5);
 }
 
 TEST_CASE("min_element.StaticPartitioner.6threads" * doctest::timeout(300)) {
-  test_min_element<tf::StaticPartitioner>(6);
+  test_min_element<tf::StaticPartitioner<>>(6);
 }
 
 TEST_CASE("min_element.StaticPartitioner.7threads" * doctest::timeout(300)) {
-  test_min_element<tf::StaticPartitioner>(7);
+  test_min_element<tf::StaticPartitioner<>>(7);
 }
 
 TEST_CASE("min_element.StaticPartitioner.8threads" * doctest::timeout(300)) {
-  test_min_element<tf::StaticPartitioner>(8);
+  test_min_element<tf::StaticPartitioner<>>(8);
 }
 
 // guided partitioner
 TEST_CASE("min_element.GuidedPartitioner.1thread" * doctest::timeout(300)) {
-  test_min_element<tf::GuidedPartitioner>(1);
+  test_min_element<tf::GuidedPartitioner<>>(1);
 }
 
 TEST_CASE("min_element.GuidedPartitioner.2threads" * doctest::timeout(300)) {
-  test_min_element<tf::GuidedPartitioner>(2);
+  test_min_element<tf::GuidedPartitioner<>>(2);
 }
 
 TEST_CASE("min_element.GuidedPartitioner.3threads" * doctest::timeout(300)) {
-  test_min_element<tf::GuidedPartitioner>(3);
+  test_min_element<tf::GuidedPartitioner<>>(3);
 }
 
 TEST_CASE("min_element.GuidedPartitioner.4threads" * doctest::timeout(300)) {
-  test_min_element<tf::GuidedPartitioner>(4);
+  test_min_element<tf::GuidedPartitioner<>>(4);
 }
 
 TEST_CASE("min_element.GuidedPartitioner.5threads" * doctest::timeout(300)) {
-  test_min_element<tf::GuidedPartitioner>(5);
+  test_min_element<tf::GuidedPartitioner<>>(5);
 }
 
 TEST_CASE("min_element.GuidedPartitioner.6threads" * doctest::timeout(300)) {
-  test_min_element<tf::GuidedPartitioner>(6);
+  test_min_element<tf::GuidedPartitioner<>>(6);
 }
 
 TEST_CASE("min_element.GuidedPartitioner.7threads" * doctest::timeout(300)) {
-  test_min_element<tf::GuidedPartitioner>(7);
+  test_min_element<tf::GuidedPartitioner<>>(7);
 }
 
 TEST_CASE("min_element.GuidedPartitioner.8threads" * doctest::timeout(300)) {
-  test_min_element<tf::GuidedPartitioner>(8);
+  test_min_element<tf::GuidedPartitioner<>>(8);
 }
 
 // dynamic partitioner
 TEST_CASE("min_element.DynamicPartitioner.1thread" * doctest::timeout(300)) {
-  test_min_element<tf::DynamicPartitioner>(1);
+  test_min_element<tf::DynamicPartitioner<>>(1);
 }
 
 TEST_CASE("min_element.DynamicPartitioner.2threads" * doctest::timeout(300)) {
-  test_min_element<tf::DynamicPartitioner>(2);
+  test_min_element<tf::DynamicPartitioner<>>(2);
 }
 
 TEST_CASE("min_element.DynamicPartitioner.3threads" * doctest::timeout(300)) {
-  test_min_element<tf::DynamicPartitioner>(3);
+  test_min_element<tf::DynamicPartitioner<>>(3);
 }
 
 TEST_CASE("min_element.DynamicPartitioner.4threads" * doctest::timeout(300)) {
-  test_min_element<tf::DynamicPartitioner>(4);
+  test_min_element<tf::DynamicPartitioner<>>(4);
 }
 
 TEST_CASE("min_element.DynamicPartitioner.5threads" * doctest::timeout(300)) {
-  test_min_element<tf::DynamicPartitioner>(5);
+  test_min_element<tf::DynamicPartitioner<>>(5);
 }
 
 TEST_CASE("min_element.DynamicPartitioner.6threads" * doctest::timeout(300)) {
-  test_min_element<tf::DynamicPartitioner>(6);
+  test_min_element<tf::DynamicPartitioner<>>(6);
 }
 
 TEST_CASE("min_element.DynamicPartitioner.7threads" * doctest::timeout(300)) {
-  test_min_element<tf::DynamicPartitioner>(7);
+  test_min_element<tf::DynamicPartitioner<>>(7);
 }
 
 TEST_CASE("min_element.DynamicPartitioner.8threads" * doctest::timeout(300)) {
-  test_min_element<tf::DynamicPartitioner>(8);
+  test_min_element<tf::DynamicPartitioner<>>(8);
 }
 
 // ----------------------------------------------------------------------------
@@ -528,104 +528,350 @@ void test_max_element(unsigned W) {
 
 // static partitioner
 TEST_CASE("max_element.StaticPartitioner.1thread" * doctest::timeout(300)) {
-  test_max_element<tf::StaticPartitioner>(1);
+  test_max_element<tf::StaticPartitioner<>>(1);
 }
 
 TEST_CASE("max_element.StaticPartitioner.2threads" * doctest::timeout(300)) {
-  test_max_element<tf::StaticPartitioner>(2);
+  test_max_element<tf::StaticPartitioner<>>(2);
 }
 
 TEST_CASE("max_element.StaticPartitioner.3threads" * doctest::timeout(300)) {
-  test_max_element<tf::StaticPartitioner>(3);
+  test_max_element<tf::StaticPartitioner<>>(3);
 }
 
 TEST_CASE("max_element.StaticPartitioner.4threads" * doctest::timeout(300)) {
-  test_max_element<tf::StaticPartitioner>(4);
+  test_max_element<tf::StaticPartitioner<>>(4);
 }
 
 TEST_CASE("max_element.StaticPartitioner.5threads" * doctest::timeout(300)) {
-  test_max_element<tf::StaticPartitioner>(5);
+  test_max_element<tf::StaticPartitioner<>>(5);
 }
 
 TEST_CASE("max_element.StaticPartitioner.6threads" * doctest::timeout(300)) {
-  test_max_element<tf::StaticPartitioner>(6);
+  test_max_element<tf::StaticPartitioner<>>(6);
 }
 
 TEST_CASE("max_element.StaticPartitioner.7threads" * doctest::timeout(300)) {
-  test_max_element<tf::StaticPartitioner>(7);
+  test_max_element<tf::StaticPartitioner<>>(7);
 }
 
 TEST_CASE("max_element.StaticPartitioner.8threads" * doctest::timeout(300)) {
-  test_max_element<tf::StaticPartitioner>(8);
+  test_max_element<tf::StaticPartitioner<>>(8);
 }
 
 // guided partitioner
 TEST_CASE("max_element.GuidedPartitioner.1thread" * doctest::timeout(300)) {
-  test_max_element<tf::GuidedPartitioner>(1);
+  test_max_element<tf::GuidedPartitioner<>>(1);
 }
 
 TEST_CASE("max_element.GuidedPartitioner.2threads" * doctest::timeout(300)) {
-  test_max_element<tf::GuidedPartitioner>(2);
+  test_max_element<tf::GuidedPartitioner<>>(2);
 }
 
 TEST_CASE("max_element.GuidedPartitioner.3threads" * doctest::timeout(300)) {
-  test_max_element<tf::GuidedPartitioner>(3);
+  test_max_element<tf::GuidedPartitioner<>>(3);
 }
 
 TEST_CASE("max_element.GuidedPartitioner.4threads" * doctest::timeout(300)) {
-  test_max_element<tf::GuidedPartitioner>(4);
+  test_max_element<tf::GuidedPartitioner<>>(4);
 }
 
 TEST_CASE("max_element.GuidedPartitioner.5threads" * doctest::timeout(300)) {
-  test_max_element<tf::GuidedPartitioner>(5);
+  test_max_element<tf::GuidedPartitioner<>>(5);
 }
 
 TEST_CASE("max_element.GuidedPartitioner.6threads" * doctest::timeout(300)) {
-  test_max_element<tf::GuidedPartitioner>(6);
+  test_max_element<tf::GuidedPartitioner<>>(6);
 }
 
 TEST_CASE("max_element.GuidedPartitioner.7threads" * doctest::timeout(300)) {
-  test_max_element<tf::GuidedPartitioner>(7);
+  test_max_element<tf::GuidedPartitioner<>>(7);
 }
 
 TEST_CASE("max_element.GuidedPartitioner.8threads" * doctest::timeout(300)) {
-  test_max_element<tf::GuidedPartitioner>(8);
+  test_max_element<tf::GuidedPartitioner<>>(8);
 }
 
 // dynamic partitioner
 TEST_CASE("max_element.DynamicPartitioner.1thread" * doctest::timeout(300)) {
-  test_max_element<tf::DynamicPartitioner>(1);
+  test_max_element<tf::DynamicPartitioner<>>(1);
 }
 
 TEST_CASE("max_element.DynamicPartitioner.2threads" * doctest::timeout(300)) {
-  test_max_element<tf::DynamicPartitioner>(2);
+  test_max_element<tf::DynamicPartitioner<>>(2);
 }
 
 TEST_CASE("max_element.DynamicPartitioner.3threads" * doctest::timeout(300)) {
-  test_max_element<tf::DynamicPartitioner>(3);
+  test_max_element<tf::DynamicPartitioner<>>(3);
 }
 
 TEST_CASE("max_element.DynamicPartitioner.4threads" * doctest::timeout(300)) {
-  test_max_element<tf::DynamicPartitioner>(4);
+  test_max_element<tf::DynamicPartitioner<>>(4);
 }
 
 TEST_CASE("max_element.DynamicPartitioner.5threads" * doctest::timeout(300)) {
-  test_max_element<tf::DynamicPartitioner>(5);
+  test_max_element<tf::DynamicPartitioner<>>(5);
 }
 
 TEST_CASE("max_element.DynamicPartitioner.6threads" * doctest::timeout(300)) {
-  test_max_element<tf::DynamicPartitioner>(6);
+  test_max_element<tf::DynamicPartitioner<>>(6);
 }
 
 TEST_CASE("max_element.DynamicPartitioner.7threads" * doctest::timeout(300)) {
-  test_max_element<tf::DynamicPartitioner>(7);
+  test_max_element<tf::DynamicPartitioner<>>(7);
 }
 
 TEST_CASE("max_element.DynamicPartitioner.8threads" * doctest::timeout(300)) {
-  test_max_element<tf::DynamicPartitioner>(8);
+  test_max_element<tf::DynamicPartitioner<>>(8);
 }
 
+// ----------------------------------------------------------------------------
+// Closure Wrapper
+// ----------------------------------------------------------------------------
 
+int& GetThreadSpecificContext()
+{
+    thread_local int context = 0;
+    return context;
+}
+
+const int UPPER = 1000;
+
+// write a test for find using static partitioner
+TEST_CASE("ClosureWrapper.find.Static" * doctest::timeout(300))
+{
+  for (int tc = 1; tc < 16; tc++)
+  {
+    tf::Executor executor(tc);
+    std::atomic<int> wrapper_called_count = 0;
+    tf::Taskflow taskflow;
+    std::vector<int> range(UPPER);
+    std::vector<int>::iterator result;
+    std::iota(range.begin(), range.end(), 0);
+    taskflow.find_if(range.begin(), range.end(), result, 
+      [&](int i) { 
+        return i == 500 && GetThreadSpecificContext() == tc; 
+      },
+      tf::StaticPartitioner(1, [&](auto&& task) {
+        wrapper_called_count++;
+        GetThreadSpecificContext() = tc;
+        task();
+        GetThreadSpecificContext() = 0;
+      })
+    );
+    executor.run(taskflow).wait();
+
+    REQUIRE(wrapper_called_count == tc);
+    REQUIRE(*result == 500);
+  }
+}
+
+// Same as above testcase but with dynamic partitioner
+TEST_CASE("ClosureWrapper.find.Dynamic" * doctest::timeout(300))
+{
+  for (int tc = 1; tc < 16; tc++)
+  {
+    tf::Executor executor(tc);
+    std::atomic<int> wrapper_called_count = 0;
+    tf::Taskflow taskflow;
+    std::vector<int> range(UPPER);
+    std::vector<int>::iterator result;
+    std::iota(range.begin(), range.end(), 0);
+    taskflow.find_if(range.begin(), range.end(), result, 
+      [&](int i) { 
+        return i == 500 && GetThreadSpecificContext() == tc; 
+      },
+      tf::DynamicPartitioner(1, [&](auto&& task) {
+        wrapper_called_count++;
+        GetThreadSpecificContext() = tc;
+        task();
+        GetThreadSpecificContext() = 0;
+      })
+    );
+    executor.run(taskflow).wait();
+
+    REQUIRE(wrapper_called_count <= tc);
+    REQUIRE(*result == 500);
+  }
+}
+
+// static partitioner for find_if_not
+TEST_CASE("ClosureWrapper.find_if_not.Static" * doctest::timeout(300))
+{
+  for (int tc = 1; tc < 16; tc++)
+  {
+    tf::Executor executor(tc);
+    std::atomic<int> wrapper_called_count = 0;
+    tf::Taskflow taskflow;
+    std::vector<int> range(UPPER);
+    std::vector<int>::iterator result;
+    std::iota(range.begin(), range.end(), 0);
+    taskflow.find_if_not(range.begin(), range.end(), result, 
+      [&](int i) { 
+        return i != 500 && GetThreadSpecificContext() == tc; 
+      },
+      tf::StaticPartitioner(1, [&](auto&& task){
+        wrapper_called_count++;
+        GetThreadSpecificContext() = tc;
+        task();
+        GetThreadSpecificContext() = 0;
+      })
+    );
+    executor.run(taskflow).wait();
+
+    REQUIRE(wrapper_called_count == tc);
+    REQUIRE(*result == 500);
+  }
+}
+
+// dynamic ic partitioner for find_if_not
+TEST_CASE("ClosureWrapper.find_if_not.Dynamic" * doctest::timeout(300))
+{
+  for (int tc = 1; tc < 16; tc++)
+  {
+    tf::Executor executor(tc);
+    std::atomic<int> wrapper_called_count = 0;
+    tf::Taskflow taskflow;
+    std::vector<int> range(UPPER);
+    std::vector<int>::iterator result;
+    std::iota(range.begin(), range.end(), 0);
+    taskflow.find_if_not(range.begin(), range.end(), result, 
+      [&](int i) { 
+        return i != 500 && GetThreadSpecificContext() == tc; 
+      },
+      tf::DynamicPartitioner(1, [&](auto&& task){
+        wrapper_called_count++;
+        GetThreadSpecificContext() = tc;
+        task();
+        GetThreadSpecificContext() = 0;
+      })
+    );
+    executor.run(taskflow).wait();
+
+    REQUIRE(wrapper_called_count <= tc);
+    REQUIRE(*result == 500);
+  }
+}
+
+// static partitioner for min_element
+TEST_CASE("ClosureWrapper.min_element.Static" * doctest::timeout(300)) {
+  for (int tc = 1; tc < 16; tc++)
+  {
+    tf::Executor executor(tc);
+    std::atomic<int> wrapper_called_count = 0;
+    tf::Taskflow taskflow;
+    std::vector<int> range(UPPER);
+    std::vector<int>::iterator result;
+    std::iota(range.begin(), range.end(), 0);
+    range[500] = -10;
+    taskflow.min_element(range.begin(), range.end(), result, 
+      [&](int a, int b) { 
+        REQUIRE(GetThreadSpecificContext() == tc);
+        return a < b;
+      },
+      tf::StaticPartitioner(1, [&](auto&& task){
+        wrapper_called_count++;
+        GetThreadSpecificContext() = tc;
+        task();
+        GetThreadSpecificContext() = 0;
+      })
+    );
+    executor.run(taskflow).wait();
+
+    REQUIRE(wrapper_called_count == tc);
+    REQUIRE(*result == -10);
+  }
+}
+
+// dynamic partitioner for min_element
+TEST_CASE("ClosureWrapper.min_element.Dynamic" * doctest::timeout(300)) {
+  for (int tc = 1; tc < 16; tc++)
+  {
+    tf::Executor executor(tc);
+    std::atomic<int> wrapper_called_count = 0;
+    tf::Taskflow taskflow;
+    std::vector<int> range(UPPER);
+    std::vector<int>::iterator result;
+    std::iota(range.begin(), range.end(), 0);
+    range[500] = -10;
+    taskflow.min_element(range.begin(), range.end(), result, 
+      [&](int a, int b) { 
+        REQUIRE(GetThreadSpecificContext() == tc);
+        return a < b;
+      },
+      tf::DynamicPartitioner(1, [&](auto&& task){
+        wrapper_called_count++;
+        GetThreadSpecificContext() = tc;
+        task();
+        GetThreadSpecificContext() = 0;
+      })
+    );
+    executor.run(taskflow).wait();
+
+    REQUIRE(wrapper_called_count <= tc);
+    REQUIRE(*result == -10);
+  }
+}
+
+// static partitioner for max_element
+TEST_CASE("ClosureWrapper.max_element.Static" * doctest::timeout(300)) {
+  for (int tc = 1; tc < 16; tc++)
+  {
+    tf::Executor executor(tc);
+    std::atomic<int> wrapper_called_count = 0;
+    tf::Taskflow taskflow;
+    std::vector<int> range(UPPER);
+    std::vector<int>::iterator result;
+    std::iota(range.begin(), range.end(), 0);
+    range[500] = 1000000;
+    taskflow.max_element(range.begin(), range.end(), result, 
+      [&](int a, int b) { 
+        REQUIRE(GetThreadSpecificContext() == tc);
+        return a < b;
+      },
+      tf::StaticPartitioner(1, [&](auto&& task){
+        wrapper_called_count++;
+        GetThreadSpecificContext() = tc;
+        task();
+        GetThreadSpecificContext() = 0;
+      })
+    );
+    executor.run(taskflow).wait();
+
+    REQUIRE(wrapper_called_count == tc);
+    REQUIRE(*result == 1000000);
+  }
+}
+
+// dynamic partitioner for max_element
+TEST_CASE("ClosureWrapper.max_element.Dynamic" * doctest::timeout(300)) {
+  for (int tc = 1; tc < 16; tc++)
+  {
+    tf::Executor executor(tc);
+    std::atomic<int> wrapper_called_count = 0;
+    tf::Taskflow taskflow;
+    std::vector<int> range(UPPER);
+    std::vector<int>::iterator result;
+    std::iota(range.begin(), range.end(), 0);
+    range[500] = 1000000;
+    taskflow.max_element(range.begin(), range.end(), result, 
+      [&](int a, int b) { 
+        REQUIRE(GetThreadSpecificContext() == tc);
+        return a < b;
+      },
+      tf::DynamicPartitioner(1, [&](auto&& task){
+        wrapper_called_count++;
+        GetThreadSpecificContext() = tc;
+        task();
+        GetThreadSpecificContext() = 0;
+      })
+    );
+    executor.run(taskflow).wait();
+
+    REQUIRE(wrapper_called_count <= tc);
+    REQUIRE(*result == 1000000);
+  }
+}
 
 
 

@@ -64,65 +64,65 @@ void parallel_transform(size_t W) {
 
 // guided
 TEST_CASE("ParallelTransform.Guided.1thread") {
-  parallel_transform<std::vector<int>, tf::GuidedPartitioner>(1);
-  parallel_transform<std::list<int>, tf::GuidedPartitioner>(1);
+  parallel_transform<std::vector<int>, tf::GuidedPartitioner<>>(1);
+  parallel_transform<std::list<int>, tf::GuidedPartitioner<>>(1);
 }
 
 TEST_CASE("ParallelTransform.Guided.2threads") {
-  parallel_transform<std::vector<int>, tf::GuidedPartitioner>(2);
-  parallel_transform<std::list<int>, tf::GuidedPartitioner>(2);
+  parallel_transform<std::vector<int>, tf::GuidedPartitioner<>>(2);
+  parallel_transform<std::list<int>, tf::GuidedPartitioner<>>(2);
 }
 
 TEST_CASE("ParallelTransform.Guided.3threads") {
-  parallel_transform<std::vector<int>, tf::GuidedPartitioner>(3);
-  parallel_transform<std::list<int>, tf::GuidedPartitioner>(3);
+  parallel_transform<std::vector<int>, tf::GuidedPartitioner<>>(3);
+  parallel_transform<std::list<int>, tf::GuidedPartitioner<>>(3);
 }
 
 TEST_CASE("ParallelTransform.Guided.4threads") {
-  parallel_transform<std::vector<int>, tf::GuidedPartitioner>(4);
-  parallel_transform<std::list<int>, tf::GuidedPartitioner>(4);
+  parallel_transform<std::vector<int>, tf::GuidedPartitioner<>>(4);
+  parallel_transform<std::list<int>, tf::GuidedPartitioner<>>(4);
 }
 
 // random
 TEST_CASE("ParallelTransform.Random.1thread") {
-  parallel_transform<std::vector<int>, tf::RandomPartitioner>(1);
-  parallel_transform<std::list<int>, tf::RandomPartitioner>(1);
+  parallel_transform<std::vector<int>, tf::RandomPartitioner<>>(1);
+  parallel_transform<std::list<int>, tf::RandomPartitioner<>>(1);
 }
 
 TEST_CASE("ParallelTransform.Random.2threads") {
-  parallel_transform<std::vector<int>, tf::RandomPartitioner>(2);
-  parallel_transform<std::list<int>, tf::RandomPartitioner>(2);
+  parallel_transform<std::vector<int>, tf::RandomPartitioner<>>(2);
+  parallel_transform<std::list<int>, tf::RandomPartitioner<>>(2);
 }
 
 TEST_CASE("ParallelTransform.Random.3threads") {
-  parallel_transform<std::vector<int>, tf::RandomPartitioner>(3);
-  parallel_transform<std::list<int>, tf::RandomPartitioner>(3);
+  parallel_transform<std::vector<int>, tf::RandomPartitioner<>>(3);
+  parallel_transform<std::list<int>, tf::RandomPartitioner<>>(3);
 }
 
 TEST_CASE("ParallelTransform.Random.4threads") {
-  parallel_transform<std::vector<int>, tf::RandomPartitioner>(4);
-  parallel_transform<std::list<int>, tf::RandomPartitioner>(4);
+  parallel_transform<std::vector<int>, tf::RandomPartitioner<>>(4);
+  parallel_transform<std::list<int>, tf::RandomPartitioner<>>(4);
 }
 
 // static
 TEST_CASE("ParallelTransform.Static.1thread") {
-  parallel_transform<std::vector<int>, tf::StaticPartitioner>(1);
-  parallel_transform<std::list<int>, tf::StaticPartitioner>(1);
+  parallel_transform<std::vector<int>, tf::StaticPartitioner<>>(1);
+  parallel_transform<std::list<int>, tf::StaticPartitioner<>>(1);
 }
 
 TEST_CASE("ParallelTransform.Static.2threads") {
-  parallel_transform<std::vector<int>, tf::StaticPartitioner>(2);
-  parallel_transform<std::list<int>, tf::StaticPartitioner>(2);
+  parallel_transform<std::vector<int>, tf::StaticPartitioner<>>(2);
+  parallel_transform<std::list<int>, tf::StaticPartitioner<>>(2);
 }
 
 TEST_CASE("ParallelTransform.Static.3threads") {
-  parallel_transform<std::vector<int>, tf::StaticPartitioner>(3);
-  parallel_transform<std::list<int>, tf::StaticPartitioner>(3);
+  parallel_transform<std::vector<int>, tf::StaticPartitioner<>>(3);
+  parallel_transform<std::list<int>, tf::StaticPartitioner<>>(3);
 }
 
 TEST_CASE("ParallelTransform.Static.4threads") {
-  parallel_transform<std::vector<int>, tf::StaticPartitioner>(4);
-  parallel_transform<std::list<int>, tf::StaticPartitioner>(4);
+  parallel_transform<std::vector<int>, tf::StaticPartitioner<>>(4);
+  parallel_transform<std::list<int>, tf::StaticPartitioner<>>(4);
 }
 
 // ----------------------------------------------------------------------------
@@ -185,86 +185,86 @@ void parallel_transform2(size_t W) {
 
 // guided
 TEST_CASE("ParallelTransform2.Guided.1thread") {
-  parallel_transform2<std::vector<int>, tf::GuidedPartitioner>(1);
-  parallel_transform2<std::list<int>, tf::GuidedPartitioner>(1);
+  parallel_transform2<std::vector<int>, tf::GuidedPartitioner<>>(1);
+  parallel_transform2<std::list<int>, tf::GuidedPartitioner<>>(1);
 }
 
 TEST_CASE("ParallelTransform2.Guided.2threads") {
-  parallel_transform2<std::vector<int>, tf::GuidedPartitioner>(2);
-  parallel_transform2<std::list<int>, tf::GuidedPartitioner>(2);
+  parallel_transform2<std::vector<int>, tf::GuidedPartitioner<>>(2);
+  parallel_transform2<std::list<int>, tf::GuidedPartitioner<>>(2);
 }
 
 TEST_CASE("ParallelTransform2.Guided.3threads") {
-  parallel_transform2<std::vector<int>, tf::GuidedPartitioner>(3);
-  parallel_transform2<std::list<int>, tf::GuidedPartitioner>(3);
+  parallel_transform2<std::vector<int>, tf::GuidedPartitioner<>>(3);
+  parallel_transform2<std::list<int>, tf::GuidedPartitioner<>>(3);
 }
 
 TEST_CASE("ParallelTransform2.Guided.4threads") {
-  parallel_transform2<std::vector<int>, tf::GuidedPartitioner>(4);
-  parallel_transform2<std::list<int>, tf::GuidedPartitioner>(4);
+  parallel_transform2<std::vector<int>, tf::GuidedPartitioner<>>(4);
+  parallel_transform2<std::list<int>, tf::GuidedPartitioner<>>(4);
 }
 
 // dynamic
 TEST_CASE("ParallelTransform2.Dynamic.1thread") {
-  parallel_transform2<std::vector<int>, tf::DynamicPartitioner>(1);
-  parallel_transform2<std::list<int>, tf::DynamicPartitioner>(1);
+  parallel_transform2<std::vector<int>, tf::DynamicPartitioner<>>(1);
+  parallel_transform2<std::list<int>, tf::DynamicPartitioner<>>(1);
 }
 
 TEST_CASE("ParallelTransform2.Dynamic.2threads") {
-  parallel_transform2<std::vector<int>, tf::DynamicPartitioner>(2);
-  parallel_transform2<std::list<int>, tf::DynamicPartitioner>(2);
+  parallel_transform2<std::vector<int>, tf::DynamicPartitioner<>>(2);
+  parallel_transform2<std::list<int>, tf::DynamicPartitioner<>>(2);
 }
 
 TEST_CASE("ParallelTransform2.Dynamic.3threads") {
-  parallel_transform2<std::vector<int>, tf::DynamicPartitioner>(3);
-  parallel_transform2<std::list<int>, tf::DynamicPartitioner>(3);
+  parallel_transform2<std::vector<int>, tf::DynamicPartitioner<>>(3);
+  parallel_transform2<std::list<int>, tf::DynamicPartitioner<>>(3);
 }
 
 TEST_CASE("ParallelTransform2.Dynamic.4threads") {
-  parallel_transform2<std::vector<int>, tf::DynamicPartitioner>(4);
-  parallel_transform2<std::list<int>, tf::DynamicPartitioner>(4);
+  parallel_transform2<std::vector<int>, tf::DynamicPartitioner<>>(4);
+  parallel_transform2<std::list<int>, tf::DynamicPartitioner<>>(4);
 }
 
 // static
 TEST_CASE("ParallelTransform2.Static.1thread") {
-  parallel_transform2<std::vector<int>, tf::StaticPartitioner>(1);
-  parallel_transform2<std::list<int>, tf::StaticPartitioner>(1);
+  parallel_transform2<std::vector<int>, tf::StaticPartitioner<>>(1);
+  parallel_transform2<std::list<int>, tf::StaticPartitioner<>>(1);
 }
 
 TEST_CASE("ParallelTransform2.Static.2threads") {
-  parallel_transform2<std::vector<int>, tf::StaticPartitioner>(2);
-  parallel_transform2<std::list<int>, tf::StaticPartitioner>(2);
+  parallel_transform2<std::vector<int>, tf::StaticPartitioner<>>(2);
+  parallel_transform2<std::list<int>, tf::StaticPartitioner<>>(2);
 }
 
 TEST_CASE("ParallelTransform2.Static.3threads") {
-  parallel_transform2<std::vector<int>, tf::StaticPartitioner>(3);
-  parallel_transform2<std::list<int>, tf::StaticPartitioner>(3);
+  parallel_transform2<std::vector<int>, tf::StaticPartitioner<>>(3);
+  parallel_transform2<std::list<int>, tf::StaticPartitioner<>>(3);
 }
 
 TEST_CASE("ParallelTransform2.Static.4threads") {
-  parallel_transform2<std::vector<int>, tf::StaticPartitioner>(4);
-  parallel_transform2<std::list<int>, tf::StaticPartitioner>(4);
+  parallel_transform2<std::vector<int>, tf::StaticPartitioner<>>(4);
+  parallel_transform2<std::list<int>, tf::StaticPartitioner<>>(4);
 }
 
 // random
 TEST_CASE("ParallelTransform2.Random.1thread") {
-  parallel_transform2<std::vector<int>, tf::RandomPartitioner>(1);
-  parallel_transform2<std::list<int>, tf::RandomPartitioner>(1);
+  parallel_transform2<std::vector<int>, tf::RandomPartitioner<>>(1);
+  parallel_transform2<std::list<int>, tf::RandomPartitioner<>>(1);
 }
 
 TEST_CASE("ParallelTransform2.Random.2threads") {
-  parallel_transform2<std::vector<int>, tf::RandomPartitioner>(2);
-  parallel_transform2<std::list<int>, tf::RandomPartitioner>(2);
+  parallel_transform2<std::vector<int>, tf::RandomPartitioner<>>(2);
+  parallel_transform2<std::list<int>, tf::RandomPartitioner<>>(2);
 }
 
 TEST_CASE("ParallelTransform2.Random.3threads") {
-  parallel_transform2<std::vector<int>, tf::RandomPartitioner>(3);
-  parallel_transform2<std::list<int>, tf::RandomPartitioner>(3);
+  parallel_transform2<std::vector<int>, tf::RandomPartitioner<>>(3);
+  parallel_transform2<std::list<int>, tf::RandomPartitioner<>>(3);
 }
 
 TEST_CASE("ParallelTransform2.Random.4threads") {
-  parallel_transform2<std::vector<int>, tf::RandomPartitioner>(4);
-  parallel_transform2<std::list<int>, tf::RandomPartitioner>(4);
+  parallel_transform2<std::vector<int>, tf::RandomPartitioner<>>(4);
+  parallel_transform2<std::list<int>, tf::RandomPartitioner<>>(4);
 }
 
 
@@ -362,87 +362,158 @@ void parallel_transform3(size_t W) {
 
 // guided
 TEST_CASE("ParallelTransform3.Guided.1thread") {
-  parallel_transform3<tf::GuidedPartitioner>(1);
-  parallel_transform3<tf::GuidedPartitioner>(1);
+  parallel_transform3<tf::GuidedPartitioner<>>(1);
+  parallel_transform3<tf::GuidedPartitioner<>>(1);
 }
 
 TEST_CASE("ParallelTransform3.Guided.2threads") {
-  parallel_transform3<tf::GuidedPartitioner>(2);
-  parallel_transform3<tf::GuidedPartitioner>(2);
+  parallel_transform3<tf::GuidedPartitioner<>>(2);
+  parallel_transform3<tf::GuidedPartitioner<>>(2);
 }
 
 TEST_CASE("ParallelTransform3.Guided.3threads") {
-  parallel_transform3<tf::GuidedPartitioner>(3);
-  parallel_transform3<tf::GuidedPartitioner>(3);
+  parallel_transform3<tf::GuidedPartitioner<>>(3);
+  parallel_transform3<tf::GuidedPartitioner<>>(3);
 }
 
 TEST_CASE("ParallelTransform3.Guided.4threads") {
-  parallel_transform3<tf::GuidedPartitioner>(4);
-  parallel_transform3<tf::GuidedPartitioner>(4);
+  parallel_transform3<tf::GuidedPartitioner<>>(4);
+  parallel_transform3<tf::GuidedPartitioner<>>(4);
 }
 
 // dynamic
 TEST_CASE("ParallelTransform3.Dynamic.1thread") {
-  parallel_transform3<tf::DynamicPartitioner>(1);
-  parallel_transform3<tf::DynamicPartitioner>(1);
+  parallel_transform3<tf::DynamicPartitioner<>>(1);
+  parallel_transform3<tf::DynamicPartitioner<>>(1);
 }
 
 TEST_CASE("ParallelTransform3.Dynamic.2threads") {
-  parallel_transform3<tf::DynamicPartitioner>(2);
-  parallel_transform3<tf::DynamicPartitioner>(2);
+  parallel_transform3<tf::DynamicPartitioner<>>(2);
+  parallel_transform3<tf::DynamicPartitioner<>>(2);
 }
 
 TEST_CASE("ParallelTransform3.Dynamic.3threads") {
-  parallel_transform3<tf::DynamicPartitioner>(3);
-  parallel_transform3<tf::DynamicPartitioner>(3);
+  parallel_transform3<tf::DynamicPartitioner<>>(3);
+  parallel_transform3<tf::DynamicPartitioner<>>(3);
 }
 
 TEST_CASE("ParallelTransform3.Dynamic.4threads") {
-  parallel_transform3<tf::DynamicPartitioner>(4);
-  parallel_transform3<tf::DynamicPartitioner>(4);
+  parallel_transform3<tf::DynamicPartitioner<>>(4);
+  parallel_transform3<tf::DynamicPartitioner<>>(4);
 }
 
 // static
 TEST_CASE("ParallelTransform3.Static.1thread") {
-  parallel_transform3<tf::StaticPartitioner>(1);
-  parallel_transform3<tf::StaticPartitioner>(1);
+  parallel_transform3<tf::StaticPartitioner<>>(1);
+  parallel_transform3<tf::StaticPartitioner<>>(1);
 }
 
 TEST_CASE("ParallelTransform3.Static.2threads") {
-  parallel_transform3<tf::StaticPartitioner>(2);
-  parallel_transform3<tf::StaticPartitioner>(2);
+  parallel_transform3<tf::StaticPartitioner<>>(2);
+  parallel_transform3<tf::StaticPartitioner<>>(2);
 }
 
 TEST_CASE("ParallelTransform3.Static.3threads") {
-  parallel_transform3<tf::StaticPartitioner>(3);
-  parallel_transform3<tf::StaticPartitioner>(3);
+  parallel_transform3<tf::StaticPartitioner<>>(3);
+  parallel_transform3<tf::StaticPartitioner<>>(3);
 }
 
 TEST_CASE("ParallelTransform3.Static.4threads") {
-  parallel_transform3<tf::StaticPartitioner>(4);
-  parallel_transform3<tf::StaticPartitioner>(4);
+  parallel_transform3<tf::StaticPartitioner<>>(4);
+  parallel_transform3<tf::StaticPartitioner<>>(4);
 }
 
 // random
 TEST_CASE("ParallelTransform3.Random.1thread") {
-  parallel_transform3<tf::RandomPartitioner>(1);
-  parallel_transform3<tf::RandomPartitioner>(1);
+  parallel_transform3<tf::RandomPartitioner<>>(1);
+  parallel_transform3<tf::RandomPartitioner<>>(1);
 }
 
 TEST_CASE("ParallelTransform3.Random.2threads") {
-  parallel_transform3<tf::RandomPartitioner>(2);
-  parallel_transform3<tf::RandomPartitioner>(2);
+  parallel_transform3<tf::RandomPartitioner<>>(2);
+  parallel_transform3<tf::RandomPartitioner<>>(2);
 }
 
 TEST_CASE("ParallelTransform3.Random.3threads") {
-  parallel_transform3<tf::RandomPartitioner>(3);
-  parallel_transform3<tf::RandomPartitioner>(3);
+  parallel_transform3<tf::RandomPartitioner<>>(3);
+  parallel_transform3<tf::RandomPartitioner<>>(3);
 }
 
 TEST_CASE("ParallelTransform3.Random.4threads") {
-  parallel_transform3<tf::RandomPartitioner>(4);
-  parallel_transform3<tf::RandomPartitioner>(4);
+  parallel_transform3<tf::RandomPartitioner<>>(4);
+  parallel_transform3<tf::RandomPartitioner<>>(4);
 }
+
+// ----------------------------------------------------------------------------
+// Closure Wrapper
+// ----------------------------------------------------------------------------
+
+int& GetThreadSpecificContext()
+{
+    thread_local int context = 0;
+    return context;
+}
+
+const int UPPER = 1000;
+
+TEST_CASE("ClosureWrapper.transform.Static" * doctest::timeout(300))
+{
+  // Write a test case for using the taskwrapper on tf::transform
+  for (int tc = 1; tc < 16; tc++)
+  {
+    tf::Executor executor(tc);
+    std::atomic<int> wrapper_called_count = 0;
+    tf::Taskflow taskflow;
+    std::vector<int> range(UPPER, 0);
+    std::vector<int> result(UPPER);
+    taskflow.transform(range.begin(), range.end(), begin(result), 
+      [&](int) { 
+        return GetThreadSpecificContext(); 
+      },
+      tf::StaticPartitioner(1, [&](auto&& task){
+        wrapper_called_count++;
+        GetThreadSpecificContext() = tc;
+        task();
+        GetThreadSpecificContext() = 0;
+      })
+    );
+    executor.run(taskflow).wait();
+
+    REQUIRE(wrapper_called_count == tc);
+    REQUIRE(result == std::vector<int>(UPPER, tc));
+  }
+}
+
+// Implement for dynamic case for transform
+TEST_CASE("ClosureWrapper.transform.Dynamic" * doctest::timeout(300))
+{
+  for (int tc = 1; tc < 16; tc++)
+  {
+    tf::Executor executor(tc);
+    std::atomic<int> wrapper_called_count = 0;
+    tf::Taskflow taskflow;
+    std::vector<int> range(UPPER);
+    std::iota(range.begin(), range.end(), 0);
+    std::vector<int> result(UPPER);
+    taskflow.transform(range.begin(), range.end(), begin(result), 
+      [&](int){ 
+        return GetThreadSpecificContext(); 
+      },
+      tf::DynamicPartitioner(1, [&](auto&& task) {
+        wrapper_called_count++;
+        GetThreadSpecificContext() = tc;
+        task();
+        GetThreadSpecificContext() = 0;
+      })
+    );
+    executor.run(taskflow).wait();
+
+    REQUIRE(wrapper_called_count <= tc);
+    REQUIRE(result == std::vector<int>(UPPER, tc));
+  }
+}
+
+
 
 //// ----------------------------------------------------------------------------
 //// ParallelTransform Exception
