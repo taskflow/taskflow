@@ -59,6 +59,29 @@ catch(const std::runtime_error& e) {
 @endcode
 
 + Modified the CI to exclude exception test under sanitizers 
++ Modified the tf::PartitionerBase to allow defining custom closure wrappers 
+
+@code{.cpp}
+std::atomic<int> count = 0;
+tf::Taskflow taskflow;
+taskflow.for_each_index(0, 100, 1, 
+  [](){                 
+    printf("%d\n", i); 
+  },
+  tf::StaticPartitioner(0, [](auto&& closure){
+    // do something before invoking the partitioned task
+    // ...
+    
+    // invoke the partitioned task
+    closure();
+
+    // do something else after invoking the partitioned task
+    // ...
+  }
+);
+executor.run(taskflow).wait();
+@endcode
+
 
 @subsection release-3-7-0_utilities Utilities
 
@@ -79,8 +102,15 @@ catch(const std::runtime_error& e) {
 + Revised @ref ExceptionHandling 
 + Revised @ref ExecuteTaskflow
   + Removed the section of tf::WorkerInterface
++ Revised @ref PartitioningAlgorithm
 
 @section release-3-7-0_miscellaneous_items Miscellaneous Items
+
+We have published %Taskflow in the following venues:
+
++ Cheng-Hsiang Chiu, Zhicheng Xiong, Zizheng Guo, Tsung-Wei Huang, and Yibo Lin, &quot;[An Efficient Task-parallel Pipeline Programming Framework](https://tsung-wei-huang.github.io/papers/hpcasia-24.pdf),&quot; <em>ACM International Conference on High-performance Computing in Asia-Pacific Region (HPC Asia)</em>, Nagoya, Japan, 2024
++ Cheng-Hsiang Chiu, Dian-Lun Lin, and Tsung-Wei Huang,, &quot;[Programming Dynamic Task Parallelism for Heterogeneous EDA Algorithms](https://tsung-wei-huang.github.io/papers/iccad23-asynctask.pdf),&quot; <em>IEEE/ACM International Conference on Computer-aided Design (ICCAD)</em>, San Francisco, CA, 2023
+
 
 Please do not hesitate to contact @twhuang if you intend to collaborate with us 
 on using %Taskflow in your scientific computing projects.

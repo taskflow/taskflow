@@ -2,12 +2,18 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1RandomPartitioner" kind="class" language="C++" prot="public">
     <compoundname>tf::RandomPartitioner</compoundname>
-    <basecompoundref refid="classtf_1_1PartitionerBase" prot="public" virt="non-virtual">tf::PartitionerBase</basecompoundref>
+    <basecompoundref refid="classtf_1_1PartitionerBase" prot="public" virt="non-virtual">tf::PartitionerBase&lt; DefaultClosureWrapper &gt;</basecompoundref>
     <includes refid="partitioner_8hpp" local="no">partitioner.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename C</type>
+        <defval><ref refid="structtf_1_1DefaultClosureWrapper" kindref="compound">DefaultClosureWrapper</ref></defval>
+      </param>
+    </templateparamlist>
       <sectiondef kind="private-attrib">
-      <memberdef kind="variable" id="classtf_1_1RandomPartitioner_1a583827448d43322a6c282fa165b21a21" prot="private" static="no" mutable="no">
+      <memberdef kind="variable" id="classtf_1_1RandomPartitioner_1a8bc25fd9379e4075847ed85efcddba0a" prot="private" static="no" mutable="no">
         <type>float</type>
-        <definition>float tf::RandomPartitioner::_alpha</definition>
+        <definition>float tf::RandomPartitioner&lt; C &gt;::_alpha</definition>
         <argsstring></argsstring>
         <name>_alpha</name>
         <initializer>{0.01f}</initializer>
@@ -17,11 +23,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="519" column="9" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="519" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="808" column="9" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="808" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classtf_1_1RandomPartitioner_1abaca67c5c1cc95d468cf7f894e78f240" prot="private" static="no" mutable="no">
+      <memberdef kind="variable" id="classtf_1_1RandomPartitioner_1a53866b6a5227064ba14d7ec40698f1c7" prot="private" static="no" mutable="no">
         <type>float</type>
-        <definition>float tf::RandomPartitioner::_beta</definition>
+        <definition>float tf::RandomPartitioner&lt; C &gt;::_beta</definition>
         <argsstring></argsstring>
         <name>_beta</name>
         <initializer>{0.5f}</initializer>
@@ -31,13 +37,29 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="520" column="9" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="520" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="809" column="9" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="809" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classtf_1_1RandomPartitioner_1a5c64a1d794cece6ed226fb1c14632cbb" prot="public" static="yes" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr <ref refid="namespacetf_1a32d51425fa23cd0dc3518c16cf3bb6c0" kindref="member">PartitionerType</ref></type>
+        <definition>static constexpr PartitionerType tf::RandomPartitioner&lt; C &gt;::type</definition>
+        <argsstring>()</argsstring>
+        <name>type</name>
+        <briefdescription>
+<para>queries the partition type (dynamic) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="687" column="36" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="687" bodyend="687"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
-      <memberdef kind="function" id="classtf_1_1RandomPartitioner_1af8a23f5bad60d742c4d9ede4421e2fab" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1RandomPartitioner_1a5ab28a71b47ce0ddef1764469d67153d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
-        <definition>tf::RandomPartitioner::RandomPartitioner</definition>
+        <definition>tf::RandomPartitioner&lt; C &gt;::RandomPartitioner</definition>
         <argsstring>()=default</argsstring>
         <name>RandomPartitioner</name>
         <briefdescription>
@@ -47,29 +69,51 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="412" column="3"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="692" column="3"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1RandomPartitioner_1a07113b4c4839437228dfffd0f4c2997a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1RandomPartitioner_1a72fa7e849ffb0c9b6547edc719cbda50" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
-        <definition>tf::RandomPartitioner::RandomPartitioner</definition>
-        <argsstring>(size_t cz)</argsstring>
+        <definition>tf::RandomPartitioner&lt; C &gt;::RandomPartitioner</definition>
+        <argsstring>(size_t sz)</argsstring>
         <name>RandomPartitioner</name>
         <param>
           <type>size_t</type>
-          <declname>cz</declname>
+          <declname>sz</declname>
         </param>
         <briefdescription>
-<para>constructs a random partitioner </para>
+<para>construct a dynamic partitioner with the given chunk size </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="417" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="417" bodyend="417"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="697" column="12" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="697" bodyend="697"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1RandomPartitioner_1a3bb5314f320c70e7d947c1deda46858b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1RandomPartitioner_1a3158af2f133856f3620fad20decd8d40" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
-        <definition>tf::RandomPartitioner::RandomPartitioner</definition>
+        <definition>tf::RandomPartitioner&lt; C &gt;::RandomPartitioner</definition>
+        <argsstring>(size_t sz, C &amp;&amp;closure)</argsstring>
+        <name>RandomPartitioner</name>
+        <param>
+          <type>size_t</type>
+          <declname>sz</declname>
+        </param>
+        <param>
+          <type>C &amp;&amp;</type>
+          <declname>closure</declname>
+        </param>
+        <briefdescription>
+<para>construct a random partitioner with the given chunk size and the closure </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="702" column="12" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="702" bodyend="704"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1RandomPartitioner_1a586f4233b5ace06598282b007b75ee7f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>tf::RandomPartitioner&lt; C &gt;::RandomPartitioner</definition>
         <argsstring>(float alpha, float beta)</argsstring>
         <name>RandomPartitioner</name>
         <param>
@@ -87,11 +131,37 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="422" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="422" bodyend="422"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="709" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="709" bodyend="709"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1RandomPartitioner_1a2ffefd05bda25e3ed25cedc4e7ff65eb" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1RandomPartitioner_1a36fcc5816916f621f0fb2eb9338b3376" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>tf::RandomPartitioner&lt; C &gt;::RandomPartitioner</definition>
+        <argsstring>(float alpha, float beta, C &amp;&amp;closure)</argsstring>
+        <name>RandomPartitioner</name>
+        <param>
+          <type>float</type>
+          <declname>alpha</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>beta</declname>
+        </param>
+        <param>
+          <type>C &amp;&amp;</type>
+          <declname>closure</declname>
+        </param>
+        <briefdescription>
+<para>constructs a random partitioner with the given parameters and the closure </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="714" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="714" bodyend="717"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1RandomPartitioner_1a67eea3b4ca4a2920a320d717ff3153aa" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>float</type>
-        <definition>float tf::RandomPartitioner::alpha</definition>
+        <definition>float tf::RandomPartitioner&lt; C &gt;::alpha</definition>
         <argsstring>() const</argsstring>
         <name>alpha</name>
         <briefdescription>
@@ -101,11 +171,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="427" column="9" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="427" bodyend="427"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="722" column="9" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="722" bodyend="722"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1RandomPartitioner_1a5d2f8decb307e255c52e5df1227f4825" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1RandomPartitioner_1a8f378443b152a7f0b7476a82982d12cb" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>float</type>
-        <definition>float tf::RandomPartitioner::beta</definition>
+        <definition>float tf::RandomPartitioner&lt; C &gt;::beta</definition>
         <argsstring>() const</argsstring>
         <name>beta</name>
         <briefdescription>
@@ -115,11 +185,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="432" column="9" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="432" bodyend="432"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="727" column="9" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="727" bodyend="727"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1RandomPartitioner_1a03ad42736d974f71dd72769e887d8087" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1RandomPartitioner_1a7b283c21ca72666c7a12f0e82b28fde1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="cpp/utility/pair" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::pair</ref>&lt; size_t, size_t &gt;</type>
-        <definition>std::pair&lt;size_t, size_t&gt; tf::RandomPartitioner::chunk_size_range</definition>
+        <definition>std::pair&lt;size_t, size_t&gt; tf::RandomPartitioner&lt; C &gt;::chunk_size_range</definition>
         <argsstring>(size_t N, size_t W) const</argsstring>
         <name>chunk_size_range</name>
         <param>
@@ -155,11 +225,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="440" column="13" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="440" bodyend="453"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="735" column="13" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="735" bodyend="748"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
-      <memberdef kind="function" id="classtf_1_1RandomPartitioner_1a26eb18b6b1c5a0a35ea245ac7d0a647b" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1RandomPartitioner_1a6b1533ffdce413e11298ad28019d1012" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename F</type>
@@ -170,7 +240,7 @@
           </param>
         </templateparamlist>
         <type>void</type>
-        <definition>void tf::RandomPartitioner::loop</definition>
+        <definition>void tf::RandomPartitioner&lt; C &gt;::loop</definition>
         <argsstring>(size_t N, size_t W, std::atomic&lt; size_t &gt; &amp;next, F &amp;&amp;func) const</argsstring>
         <name>loop</name>
         <param>
@@ -195,9 +265,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="465" column="8" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="465" bodyend="485"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="760" column="8" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="760" bodyend="777"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1RandomPartitioner_1affa4b2749b3adb08ca989421aff64132" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1RandomPartitioner_1a25f583caec2a85ebfd33d5cfec12dc9a" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename F</type>
@@ -208,7 +278,7 @@
           </param>
         </templateparamlist>
         <type>void</type>
-        <definition>void tf::RandomPartitioner::loop_until</definition>
+        <definition>void tf::RandomPartitioner&lt; C &gt;::loop_until</definition>
         <argsstring>(size_t N, size_t W, std::atomic&lt; size_t &gt; &amp;next, F &amp;&amp;func) const</argsstring>
         <name>loop_until</name>
         <param>
@@ -233,56 +303,104 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="493" column="8" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="493" bodyend="515"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="785" column="8" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="785" bodyend="804"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
 <para>class to construct a random partitioner for scheduling parallel algorithms </para>
     </briefdescription>
     <detaileddescription>
-<para>Similar to <ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref>, the partitioner splits iterations into many partitions but each with a random chunk size in the range, <computeroutput>c = [alpha * N * W, beta * N * W]</computeroutput>. By default, <computeroutput>alpha</computeroutput> is <computeroutput>0.01</computeroutput> and <computeroutput>beta</computeroutput> is <computeroutput>0.5</computeroutput>, respectively. </para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>C</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>closure wrapper type (default <ref refid="structtf_1_1DefaultClosureWrapper" kindref="compound">tf::DefaultClosureWrapper</ref>)</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+Similar to <ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref>, the partitioner splits iterations into many partitions but each with a random chunk size in the range, <computeroutput>c = [alpha * N * W, beta * N * W]</computeroutput>. By default, <computeroutput>alpha</computeroutput> is <computeroutput>0.01</computeroutput> and <computeroutput>beta</computeroutput> is <computeroutput>0.5</computeroutput>, respectively.</para>
+<para>In addition to partition size, the application can specify a closure wrapper for a random partitioner. A closure wrapper allows the application to wrapper a partitioned task (i.e., closure) with a custom function object that performs additional tasks. For example:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a47ea2b35d0ec18afb35b45316939dc67" kindref="member">for_each_index</ref>(0,<sp/>100,<sp/>1,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;%d\n&quot;</highlight><highlight class="normal">,<sp/>i);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1RandomPartitioner" kindref="compound">tf::RandomPartitioner</ref>(0,<sp/>[](</highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;&amp;<sp/>closure){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>something<sp/>before<sp/>invoking<sp/>the<sp/>partitioned<sp/>task</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>invoke<sp/>the<sp/>partitioned<sp/>task</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>closure();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>something<sp/>else<sp/>after<sp/>invoking<sp/>the<sp/>partitioned<sp/>task</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
+</programlisting> </para>
     </detaileddescription>
     <inheritancegraph>
       <node id="1">
-        <label>tf::RandomPartitioner</label>
+        <label>tf::RandomPartitioner&lt; C &gt;</label>
         <link refid="classtf_1_1RandomPartitioner"/>
         <childnode refid="2" relation="public-inheritance">
         </childnode>
       </node>
+      <node id="3">
+        <label>tf::IsPartitioner</label>
+      </node>
       <node id="2">
-        <label>tf::PartitionerBase</label>
+        <label>tf::PartitionerBase&lt; DefaultClosureWrapper &gt;</label>
         <link refid="classtf_1_1PartitionerBase"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
       <node id="1">
-        <label>tf::RandomPartitioner</label>
+        <label>tf::RandomPartitioner&lt; C &gt;</label>
         <link refid="classtf_1_1RandomPartitioner"/>
         <childnode refid="2" relation="public-inheritance">
         </childnode>
       </node>
+      <node id="3">
+        <label>tf::IsPartitioner</label>
+      </node>
       <node id="2">
-        <label>tf::PartitionerBase</label>
+        <label>tf::PartitionerBase&lt; DefaultClosureWrapper &gt;</label>
         <link refid="classtf_1_1PartitionerBase"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
       </node>
     </collaborationgraph>
-    <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="405" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="405" bodyend="522"/>
+    <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="680" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="680" bodyend="810"/>
     <listofallmembers>
-      <member refid="classtf_1_1RandomPartitioner_1a583827448d43322a6c282fa165b21a21" prot="private" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>_alpha</name></member>
-      <member refid="classtf_1_1RandomPartitioner_1abaca67c5c1cc95d468cf7f894e78f240" prot="private" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>_beta</name></member>
-      <member refid="classtf_1_1PartitionerBase_1a98a744284cfc726b1a597dae90e766f0" prot="protected" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>_chunk_size</name></member>
-      <member refid="classtf_1_1RandomPartitioner_1a2ffefd05bda25e3ed25cedc4e7ff65eb" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>alpha</name></member>
-      <member refid="classtf_1_1RandomPartitioner_1a5d2f8decb307e255c52e5df1227f4825" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>beta</name></member>
-      <member refid="classtf_1_1PartitionerBase_1a8445b917fca6384861898d46b81ec471" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>chunk_size</name></member>
-      <member refid="classtf_1_1PartitionerBase_1ad3aadb6b50b86eb0a679f714f07079cf" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>chunk_size</name></member>
-      <member refid="classtf_1_1RandomPartitioner_1a03ad42736d974f71dd72769e887d8087" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>chunk_size_range</name></member>
-      <member refid="classtf_1_1RandomPartitioner_1a26eb18b6b1c5a0a35ea245ac7d0a647b" prot="private" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>loop</name></member>
-      <member refid="classtf_1_1RandomPartitioner_1affa4b2749b3adb08ca989421aff64132" prot="private" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>loop_until</name></member>
-      <member refid="classtf_1_1PartitionerBase_1a9dae31a2e61d1d64a913bd1d12cfcb20" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>PartitionerBase</name></member>
-      <member refid="classtf_1_1PartitionerBase_1a75ad9b40415d767ef368c20650958be0" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>PartitionerBase</name></member>
-      <member refid="classtf_1_1RandomPartitioner_1af8a23f5bad60d742c4d9ede4421e2fab" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>RandomPartitioner</name></member>
-      <member refid="classtf_1_1RandomPartitioner_1a07113b4c4839437228dfffd0f4c2997a" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>RandomPartitioner</name></member>
-      <member refid="classtf_1_1RandomPartitioner_1a3bb5314f320c70e7d947c1deda46858b" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>RandomPartitioner</name></member>
+      <member refid="classtf_1_1RandomPartitioner_1a8bc25fd9379e4075847ed85efcddba0a" prot="private" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>_alpha</name></member>
+      <member refid="classtf_1_1RandomPartitioner_1a53866b6a5227064ba14d7ec40698f1c7" prot="private" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>_beta</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a9ff56f7150ee4ff42b5006942f9c4b52" prot="protected" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>_chunk_size</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a9c5a8d350a913bea4c63d350e2bc9d1b" prot="protected" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>_closure_wrapper</name></member>
+      <member refid="classtf_1_1RandomPartitioner_1a67eea3b4ca4a2920a320d717ff3153aa" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>alpha</name></member>
+      <member refid="classtf_1_1RandomPartitioner_1a8f378443b152a7f0b7476a82982d12cb" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>beta</name></member>
+      <member refid="classtf_1_1PartitionerBase_1afa34299dea355738efa5684024d08215" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>chunk_size</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a481097aeb7ec62dcc23584eaa48cbce4" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>chunk_size</name></member>
+      <member refid="classtf_1_1RandomPartitioner_1a7b283c21ca72666c7a12f0e82b28fde1" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>chunk_size_range</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a929714296243b2c63e4f2baa2025d380" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>closure_wrapper</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a99e23ce7c0faf3a932ab2b7ac51e58f4" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>closure_wrapper</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a8e16cb49e1547fe06f5512987a1c592e" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>invoke</name></member>
+      <member refid="classtf_1_1PartitionerBase_1ad9657fe2b2da66791bb8400f42fce45c" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>invoke</name></member>
+      <member refid="classtf_1_1RandomPartitioner_1a6b1533ffdce413e11298ad28019d1012" prot="private" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>loop</name></member>
+      <member refid="classtf_1_1RandomPartitioner_1a25f583caec2a85ebfd33d5cfec12dc9a" prot="private" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>loop_until</name></member>
+      <member refid="classtf_1_1PartitionerBase_1ad0037e70726a054527a923821ec2d95a" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>PartitionerBase</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a099464a339e09d9f6e4a59bec425c53a" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>PartitionerBase</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a9cf9f5400992c6d9bd4131b5af2b9e8e" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>PartitionerBase</name></member>
+      <member refid="classtf_1_1RandomPartitioner_1a5ab28a71b47ce0ddef1764469d67153d" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>RandomPartitioner</name></member>
+      <member refid="classtf_1_1RandomPartitioner_1a72fa7e849ffb0c9b6547edc719cbda50" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>RandomPartitioner</name></member>
+      <member refid="classtf_1_1RandomPartitioner_1a3158af2f133856f3620fad20decd8d40" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>RandomPartitioner</name></member>
+      <member refid="classtf_1_1RandomPartitioner_1a586f4233b5ace06598282b007b75ee7f" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>RandomPartitioner</name></member>
+      <member refid="classtf_1_1RandomPartitioner_1a36fcc5816916f621f0fb2eb9338b3376" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>RandomPartitioner</name></member>
+      <member refid="classtf_1_1RandomPartitioner_1a5c64a1d794cece6ed226fb1c14632cbb" prot="public" virt="non-virtual"><scope>tf::RandomPartitioner</scope><name>type</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

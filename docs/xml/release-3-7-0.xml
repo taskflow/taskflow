@@ -107,8 +107,28 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </programlisting></para>
 <para><itemizedlist>
 <listitem><para>Modified the CI to exclude exception test under sanitizers</para>
+</listitem><listitem><para>Modified the <ref refid="classtf_1_1PartitionerBase" kindref="compound">tf::PartitionerBase</ref> to allow defining custom closure wrappers</para>
 </listitem></itemizedlist>
 </para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a47ea2b35d0ec18afb35b45316939dc67" kindref="member">for_each_index</ref>(0,<sp/>100,<sp/>1,<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;%d\n&quot;</highlight><highlight class="normal">,<sp/>i);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref>(0,<sp/>[](</highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;&amp;<sp/>closure){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>something<sp/>before<sp/>invoking<sp/>the<sp/>partitioned<sp/>task</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>invoke<sp/>the<sp/>partitioned<sp/>task</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>closure();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>something<sp/>else<sp/>after<sp/>invoking<sp/>the<sp/>partitioned<sp/>task</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+</programlisting></para>
 </sect2>
 <sect2 id="release-3-7-0_1release-3-7-0_utilities">
 <title>Utilities</title>
@@ -142,11 +162,18 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <listitem><para>Removed the section of tf::WorkerInterface</para>
 </listitem></itemizedlist>
 </para>
+</listitem><listitem><para>Revised <ref refid="PartitioningAlgorithm" kindref="compound">Partitioning Algorithm</ref></para>
 </listitem></itemizedlist>
 </para>
 </sect1>
 <sect1 id="release-3-7-0_1release-3-7-0_miscellaneous_items">
 <title>Miscellaneous Items</title>
+<para>We have published Taskflow in the following venues:</para>
+<para><itemizedlist>
+<listitem><para>Cheng-Hsiang Chiu, Zhicheng Xiong, Zizheng Guo, Tsung-Wei Huang, and Yibo Lin, "<ulink url="https://tsung-wei-huang.github.io/papers/hpcasia-24.pdf">An Efficient Task-parallel Pipeline Programming Framework</ulink>," <emphasis>ACM International Conference on High-performance Computing in Asia-Pacific Region (HPC Asia)</emphasis>, Nagoya, Japan, 2024</para>
+</listitem><listitem><para>Cheng-Hsiang Chiu, Dian-Lun Lin, and Tsung-Wei Huang,, "<ulink url="https://tsung-wei-huang.github.io/papers/iccad23-asynctask.pdf">Programming Dynamic Task Parallelism for Heterogeneous EDA Algorithms</ulink>," <emphasis>IEEE/ACM International Conference on Computer-aided Design (ICCAD)</emphasis>, San Francisco, CA, 2023</para>
+</listitem></itemizedlist>
+</para>
 <para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you intend to collaborate with us on using Taskflow in your scientific computing projects. </para>
 </sect1>
     </detaileddescription>

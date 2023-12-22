@@ -421,6 +421,9 @@
     <member refid="classtf_1_1DataPipeline_1ad5836484403bf71a4082fc9a71393e86" kind="function"><name>_on_pipe</name></member>
     <member refid="classtf_1_1DataPipeline_1a2820a8648648fbdb5f06220b5960f033" kind="function"><name>_build</name></member>
   </compound>
+  <compound refid="structtf_1_1DefaultClosureWrapper" kind="struct"><name>tf::DefaultClosureWrapper</name>
+    <member refid="structtf_1_1DefaultClosureWrapper_1aea50206494480d58be1044b1fb142466" kind="function"><name>operator()</name></member>
+  </compound>
   <compound refid="classtf_1_1DeferredPipeflow" kind="class"><name>tf::DeferredPipeflow</name>
     <member refid="classtf_1_1DeferredPipeflow_1af65467c6cb27f4ef42522207f03ab9cf" kind="friend"><name>Pipeline</name></member>
     <member refid="classtf_1_1DeferredPipeflow_1af64ddb98831b893b2388af2a2302acea" kind="friend"><name>ScalablePipeline</name></member>
@@ -451,10 +454,12 @@
     <member refid="structtf_1_1Node_1_1Dynamic_1a7f31bfe9a2e00cc52f766a3df91dbb1a" kind="function"><name>Dynamic</name></member>
   </compound>
   <compound refid="classtf_1_1DynamicPartitioner" kind="class"><name>tf::DynamicPartitioner</name>
-    <member refid="classtf_1_1DynamicPartitioner_1aa12a7f9c4b7cde960b63c9a2916428ac" kind="function"><name>DynamicPartitioner</name></member>
-    <member refid="classtf_1_1DynamicPartitioner_1afec1c557cfa1b2b5b9c5c47f40bc1697" kind="function"><name>DynamicPartitioner</name></member>
-    <member refid="classtf_1_1DynamicPartitioner_1aead57f8cb15119905845ae72843b86a3" kind="function"><name>loop</name></member>
-    <member refid="classtf_1_1DynamicPartitioner_1a1cb42e80e153127db83cc0833e6f65cb" kind="function"><name>loop_until</name></member>
+    <member refid="classtf_1_1DynamicPartitioner_1ab16dcd2758ad0059aa5ac7822f31f8a7" kind="function"><name>type</name></member>
+    <member refid="classtf_1_1DynamicPartitioner_1a2ff37845f4489df50f199f06a96590c8" kind="function"><name>DynamicPartitioner</name></member>
+    <member refid="classtf_1_1DynamicPartitioner_1ac1922e2796cba43d81e4567c9e2c0c76" kind="function"><name>DynamicPartitioner</name></member>
+    <member refid="classtf_1_1DynamicPartitioner_1a82c2ee7829e54b474e9b11e0944bc2cd" kind="function"><name>DynamicPartitioner</name></member>
+    <member refid="classtf_1_1DynamicPartitioner_1afcb528d9e66380375fce8a7ae99b467f" kind="function"><name>loop</name></member>
+    <member refid="classtf_1_1DynamicPartitioner_1abae632f23aeefe2cd91ca51b6b409d19" kind="function"><name>loop_until</name></member>
   </compound>
   <compound refid="classtf_1_1Executor" kind="class"><name>tf::Executor</name>
     <member refid="classtf_1_1Executor_1a61184f9bd9c801d0a5eccecfdbddc641" kind="friend"><name>FlowBuilder</name></member>
@@ -622,12 +627,16 @@
     <member refid="classtf_1_1Graph_1a4f4256f012b5b05fbaf3125d76faa9b6" kind="function"><name>_emplace_back</name></member>
   </compound>
   <compound refid="classtf_1_1GuidedPartitioner" kind="class"><name>tf::GuidedPartitioner</name>
-    <member refid="classtf_1_1GuidedPartitioner_1a6d54bc802ce765d5b2c7833d1d6f46ce" kind="function"><name>GuidedPartitioner</name></member>
-    <member refid="classtf_1_1GuidedPartitioner_1a8a44c5c770af9b6754afc502ced91b4c" kind="function"><name>GuidedPartitioner</name></member>
-    <member refid="classtf_1_1GuidedPartitioner_1aa91eec9251eb0617c4b71e595c700190" kind="function"><name>loop</name></member>
-    <member refid="classtf_1_1GuidedPartitioner_1a1489de5050e9f223114c74356c5a2618" kind="function"><name>loop_until</name></member>
+    <member refid="classtf_1_1GuidedPartitioner_1ae414688ae5ece94e8b2c108dee4266e2" kind="function"><name>type</name></member>
+    <member refid="classtf_1_1GuidedPartitioner_1ad922cf64fc355513c756247d4e2b69d3" kind="function"><name>GuidedPartitioner</name></member>
+    <member refid="classtf_1_1GuidedPartitioner_1ab5540d5761ed6dbaf037cd431367b9f2" kind="function"><name>GuidedPartitioner</name></member>
+    <member refid="classtf_1_1GuidedPartitioner_1a6a42cf5071fc665671345fefde2c5ec0" kind="function"><name>GuidedPartitioner</name></member>
+    <member refid="classtf_1_1GuidedPartitioner_1ab1c854d9d6059ef5c8014afcdec8b026" kind="function"><name>loop</name></member>
+    <member refid="classtf_1_1GuidedPartitioner_1a40dced9465b64dbc65018a9de64b39fd" kind="function"><name>loop_until</name></member>
   </compound>
   <compound refid="structtf_1_1cudaFlowCapturer_1_1Internal" kind="struct"><name>tf::cudaFlowCapturer::Internal</name>
+  </compound>
+  <compound refid="structtf_1_1IsPartitioner" kind="struct"><name>tf::IsPartitioner</name>
   </compound>
   <compound refid="structtf_1_1IsPod" kind="struct"><name>tf::IsPod</name>
   </compound>
@@ -713,11 +722,17 @@
     <member refid="classtf_1_1ObserverInterface_1aa22f5378154653f08d9a58326bda4754" kind="function"><name>on_exit</name></member>
   </compound>
   <compound refid="classtf_1_1PartitionerBase" kind="class"><name>tf::PartitionerBase</name>
-    <member refid="classtf_1_1PartitionerBase_1a98a744284cfc726b1a597dae90e766f0" kind="variable"><name>_chunk_size</name></member>
-    <member refid="classtf_1_1PartitionerBase_1a9dae31a2e61d1d64a913bd1d12cfcb20" kind="function"><name>PartitionerBase</name></member>
-    <member refid="classtf_1_1PartitionerBase_1a75ad9b40415d767ef368c20650958be0" kind="function"><name>PartitionerBase</name></member>
-    <member refid="classtf_1_1PartitionerBase_1a8445b917fca6384861898d46b81ec471" kind="function"><name>chunk_size</name></member>
-    <member refid="classtf_1_1PartitionerBase_1ad3aadb6b50b86eb0a679f714f07079cf" kind="function"><name>chunk_size</name></member>
+    <member refid="classtf_1_1PartitionerBase_1a9ff56f7150ee4ff42b5006942f9c4b52" kind="variable"><name>_chunk_size</name></member>
+    <member refid="classtf_1_1PartitionerBase_1a9c5a8d350a913bea4c63d350e2bc9d1b" kind="variable"><name>_closure_wrapper</name></member>
+    <member refid="classtf_1_1PartitionerBase_1ad0037e70726a054527a923821ec2d95a" kind="function"><name>PartitionerBase</name></member>
+    <member refid="classtf_1_1PartitionerBase_1a099464a339e09d9f6e4a59bec425c53a" kind="function"><name>PartitionerBase</name></member>
+    <member refid="classtf_1_1PartitionerBase_1a9cf9f5400992c6d9bd4131b5af2b9e8e" kind="function"><name>PartitionerBase</name></member>
+    <member refid="classtf_1_1PartitionerBase_1afa34299dea355738efa5684024d08215" kind="function"><name>chunk_size</name></member>
+    <member refid="classtf_1_1PartitionerBase_1a481097aeb7ec62dcc23584eaa48cbce4" kind="function"><name>chunk_size</name></member>
+    <member refid="classtf_1_1PartitionerBase_1a929714296243b2c63e4f2baa2025d380" kind="function"><name>closure_wrapper</name></member>
+    <member refid="classtf_1_1PartitionerBase_1a99e23ce7c0faf3a932ab2b7ac51e58f4" kind="function"><name>closure_wrapper</name></member>
+    <member refid="classtf_1_1PartitionerBase_1a8e16cb49e1547fe06f5512987a1c592e" kind="function"><name>invoke</name></member>
+    <member refid="classtf_1_1PartitionerBase_1ad9657fe2b2da66791bb8400f42fce45c" kind="function"><name>invoke</name></member>
   </compound>
   <compound refid="classtf_1_1Pipe" kind="class"><name>tf::Pipe</name>
     <member refid="classtf_1_1Pipe_1aa3d034d90bc01d42d9dd55f82de1da2a" kind="typedef"><name>callable_t</name></member>
@@ -792,16 +807,19 @@
     <member refid="structtf_1_1ProfileData_1a8ba1ef7e916c4b827707a48c886381c4" kind="function"><name>load</name></member>
   </compound>
   <compound refid="classtf_1_1RandomPartitioner" kind="class"><name>tf::RandomPartitioner</name>
-    <member refid="classtf_1_1RandomPartitioner_1a583827448d43322a6c282fa165b21a21" kind="variable"><name>_alpha</name></member>
-    <member refid="classtf_1_1RandomPartitioner_1abaca67c5c1cc95d468cf7f894e78f240" kind="variable"><name>_beta</name></member>
-    <member refid="classtf_1_1RandomPartitioner_1af8a23f5bad60d742c4d9ede4421e2fab" kind="function"><name>RandomPartitioner</name></member>
-    <member refid="classtf_1_1RandomPartitioner_1a07113b4c4839437228dfffd0f4c2997a" kind="function"><name>RandomPartitioner</name></member>
-    <member refid="classtf_1_1RandomPartitioner_1a3bb5314f320c70e7d947c1deda46858b" kind="function"><name>RandomPartitioner</name></member>
-    <member refid="classtf_1_1RandomPartitioner_1a2ffefd05bda25e3ed25cedc4e7ff65eb" kind="function"><name>alpha</name></member>
-    <member refid="classtf_1_1RandomPartitioner_1a5d2f8decb307e255c52e5df1227f4825" kind="function"><name>beta</name></member>
-    <member refid="classtf_1_1RandomPartitioner_1a03ad42736d974f71dd72769e887d8087" kind="function"><name>chunk_size_range</name></member>
-    <member refid="classtf_1_1RandomPartitioner_1a26eb18b6b1c5a0a35ea245ac7d0a647b" kind="function"><name>loop</name></member>
-    <member refid="classtf_1_1RandomPartitioner_1affa4b2749b3adb08ca989421aff64132" kind="function"><name>loop_until</name></member>
+    <member refid="classtf_1_1RandomPartitioner_1a8bc25fd9379e4075847ed85efcddba0a" kind="variable"><name>_alpha</name></member>
+    <member refid="classtf_1_1RandomPartitioner_1a53866b6a5227064ba14d7ec40698f1c7" kind="variable"><name>_beta</name></member>
+    <member refid="classtf_1_1RandomPartitioner_1a5c64a1d794cece6ed226fb1c14632cbb" kind="function"><name>type</name></member>
+    <member refid="classtf_1_1RandomPartitioner_1a5ab28a71b47ce0ddef1764469d67153d" kind="function"><name>RandomPartitioner</name></member>
+    <member refid="classtf_1_1RandomPartitioner_1a72fa7e849ffb0c9b6547edc719cbda50" kind="function"><name>RandomPartitioner</name></member>
+    <member refid="classtf_1_1RandomPartitioner_1a3158af2f133856f3620fad20decd8d40" kind="function"><name>RandomPartitioner</name></member>
+    <member refid="classtf_1_1RandomPartitioner_1a586f4233b5ace06598282b007b75ee7f" kind="function"><name>RandomPartitioner</name></member>
+    <member refid="classtf_1_1RandomPartitioner_1a36fcc5816916f621f0fb2eb9338b3376" kind="function"><name>RandomPartitioner</name></member>
+    <member refid="classtf_1_1RandomPartitioner_1a67eea3b4ca4a2920a320d717ff3153aa" kind="function"><name>alpha</name></member>
+    <member refid="classtf_1_1RandomPartitioner_1a8f378443b152a7f0b7476a82982d12cb" kind="function"><name>beta</name></member>
+    <member refid="classtf_1_1RandomPartitioner_1a7b283c21ca72666c7a12f0e82b28fde1" kind="function"><name>chunk_size_range</name></member>
+    <member refid="classtf_1_1RandomPartitioner_1a6b1533ffdce413e11298ad28019d1012" kind="function"><name>loop</name></member>
+    <member refid="classtf_1_1RandomPartitioner_1a25f583caec2a85ebfd33d5cfec12dc9a" kind="function"><name>loop_until</name></member>
   </compound>
   <compound refid="structtf_1_1cudaDeviceAllocator_1_1rebind" kind="struct"><name>tf::cudaDeviceAllocator::rebind</name>
     <member refid="structtf_1_1cudaDeviceAllocator_1_1rebind_1a6d0799b927ce743f4fa174c6a9806282" kind="typedef"><name>other</name></member>
@@ -1027,11 +1045,13 @@
     <member refid="structtf_1_1Node_1_1Static_1a91ebe904215e44a81df97586f15b4e07" kind="function"><name>Static</name></member>
   </compound>
   <compound refid="classtf_1_1StaticPartitioner" kind="class"><name>tf::StaticPartitioner</name>
-    <member refid="classtf_1_1StaticPartitioner_1a656cc541cb3bb38a75b1935e077cb786" kind="function"><name>StaticPartitioner</name></member>
-    <member refid="classtf_1_1StaticPartitioner_1a1278d0818518789051cf0e199c4006ef" kind="function"><name>StaticPartitioner</name></member>
-    <member refid="classtf_1_1StaticPartitioner_1a6d2a6533f5de5066449884cfe5f34cfb" kind="function"><name>adjusted_chunk_size</name></member>
-    <member refid="classtf_1_1StaticPartitioner_1a9466fb017c1bd952bc273dac7a8eb9fe" kind="function"><name>loop</name></member>
-    <member refid="classtf_1_1StaticPartitioner_1a876aab19cb5e7a345289c2a5d2ac0c9b" kind="function"><name>loop_until</name></member>
+    <member refid="classtf_1_1StaticPartitioner_1ad6791c126752f2d85f3107ce8b09b784" kind="function"><name>type</name></member>
+    <member refid="classtf_1_1StaticPartitioner_1a3b8b8040830d1d9f9635090e9af8edf8" kind="function"><name>StaticPartitioner</name></member>
+    <member refid="classtf_1_1StaticPartitioner_1aa6dacbd41f721303afe089f65f9f6549" kind="function"><name>StaticPartitioner</name></member>
+    <member refid="classtf_1_1StaticPartitioner_1ac4fb48bea1252246857e11993bee68c6" kind="function"><name>StaticPartitioner</name></member>
+    <member refid="classtf_1_1StaticPartitioner_1a54a55e0b20f054e215509486bcd5dc1c" kind="function"><name>adjusted_chunk_size</name></member>
+    <member refid="classtf_1_1StaticPartitioner_1a69cc7c62ce278a595bc78360882518c2" kind="function"><name>loop</name></member>
+    <member refid="classtf_1_1StaticPartitioner_1abe72b896a1e983d672729f1d9bc688f2" kind="function"><name>loop_until</name></member>
   </compound>
   <compound refid="structtf_1_1detail_1_1cudaBlockReduce_1_1Storage" kind="struct"><name>tf::detail::cudaBlockReduce::Storage</name>
     <member refid="structtf_1_1detail_1_1cudaBlockReduce_1_1Storage_1ae96b4912d9ac0413c68bfce227a15d04" kind="variable"><name>data</name></member>
@@ -1800,6 +1820,9 @@
     <member refid="namespacetf_1a192f7cb0fab2eb6f1c84f6046706435dac19bf39d8838d00eddb556775fa8acce" kind="enumvalue"><name>TFPROF</name></member>
     <member refid="namespacetf_1a192f7cb0fab2eb6f1c84f6046706435da37960509766262569d504f02a0ee986d" kind="enumvalue"><name>CHROME</name></member>
     <member refid="namespacetf_1a192f7cb0fab2eb6f1c84f6046706435da0db45d2a4141101bdfe48e3314cfbca3" kind="enumvalue"><name>UNDEFINED</name></member>
+    <member refid="namespacetf_1a32d51425fa23cd0dc3518c16cf3bb6c0" kind="enum"><name>PartitionerType</name></member>
+    <member refid="namespacetf_1a32d51425fa23cd0dc3518c16cf3bb6c0afe6f99ef1ec99efbdc19a9786cf1facc" kind="enumvalue"><name>STATIC</name></member>
+    <member refid="namespacetf_1a32d51425fa23cd0dc3518c16cf3bb6c0a0fcc90da4811c877ba9f9c12f7d60bc9" kind="enumvalue"><name>DYNAMIC</name></member>
     <member refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" kind="enum"><name>PipeType</name></member>
     <member refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kind="enumvalue"><name>PARALLEL</name></member>
     <member refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kind="enumvalue"><name>SERIAL</name></member>
@@ -1813,7 +1836,7 @@
     <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132eab72f08e0732365cac9599b5c42157bf9" kind="enumvalue"><name>CAPTURE</name></member>
     <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea0db45d2a4141101bdfe48e3314cfbca3" kind="enumvalue"><name>UNDEFINED</name></member>
     <member refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kind="typedef"><name>observer_stamp_t</name></member>
-    <member refid="namespacetf_1a77d193108ae375fdfc554e7f10bea23e" kind="typedef"><name>DefaultPartitioner</name></member>
+    <member refid="namespacetf_1a66b72776c788898aee9e132b0ea9b405" kind="typedef"><name>DefaultPartitioner</name></member>
     <member refid="namespacetf_1a0e267ab3e1baeb1962f3b3a374de9553" kind="typedef"><name>cudaDefaultExecutionPolicy</name></member>
     <member refid="namespacetf_1a6e7c9182ac3f60e339a7497c16633d28" kind="variable"><name>node_pool</name></member>
     <member refid="namespacetf_1a872cf263ab68abc7c3180710fb792528" kind="variable"><name>TASK_TYPES</name></member>

@@ -46,9 +46,21 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
+          <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>DynamicPartitioner <span class="m-thin">class</span>
         </h1>
         <p>class to construct a dynamic partitioner for scheduling parallel algorithms</p>
+        <table class="m-table m-fullwidth m-flat">
+          <thead>
+            <tr><th colspan="2">Template parameters</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="width: 1%">C</td>
+              <td>closure wrapper type (default <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">tf::<wbr />DefaultClosureWrapper</a>)</td>
+            </tr>
+          </tbody>
+        </table>
         <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -56,32 +68,65 @@
               Reference
               <ul>
                 <li><a href="#base-classes">Base classes</a></li>
+                <li><a href="#pub-static-methods">Public static functions</a></li>
                 <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
               </ul>
             </li>
           </ul>
         </nav>
-<p>The partitioner splits iterations into many partitions each of size equal to the given chunk size. Different partitions are distributed dynamically to workers without any specific order.</p>
+<p>The partitioner splits iterations into many partitions each of size equal to the given chunk size. Different partitions are distributed dynamically to workers without any specific order.</p><p>In addition to partition size, the application can specify a closure wrapper for a dynamic partitioner. A closure wrapper allows the application to wrapper a partitioned task (i.e., closure) with a custom function object that performs additional tasks. For example:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">for_each_index</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="p">[](){</span><span class="w">                 </span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">);</span><span class="w"> </span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">DynamicPartitioner</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="p">[](</span><span class="k">auto</span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">closure</span><span class="p">){</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// do something before invoking the partitioned task</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// invoke the partitioned task</span>
+<span class="w">    </span><span class="n">closure</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// do something else after invoking the partitioned task</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre>
         <section id="base-classes">
           <h2><a href="#base-classes">Base classes</a></h2>
           <dl class="m-doc">
             <dt>
-              class <a href="classtf_1_1PartitionerBase.html" class="m-doc">PartitionerBase</a>
+              <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
+              class <a href="classtf_1_1PartitionerBase.html" class="m-doc">PartitionerBase&lt;DefaultClosureWrapper&gt;</a>
             </dt>
             <dd>class to derive a partitioner for scheduling parallel algorithms</dd>
+          </dl>
+        </section>
+        <section id="pub-static-methods">
+          <h2><a href="#pub-static-methods">Public static functions</a></h2>
+          <dl class="m-doc">
+            <dt id="ab16dcd2758ad0059aa5ac7822f31f8a7">
+              <span class="m-doc-wrap-bumper">static auto <a href="#ab16dcd2758ad0059aa5ac7822f31f8a7" class="m-doc-self">type</a>(</span><span class="m-doc-wrap">) -&gt; <a href="namespacetf.html#a32d51425fa23cd0dc3518c16cf3bb6c0" class="m-doc">PartitionerType</a> <span class="m-label m-flat m-primary">constexpr</span></span>
+            </dt>
+            <dd>queries the partition type (dynamic)</dd>
           </dl>
         </section>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
-            <dt id="aa12a7f9c4b7cde960b63c9a2916428ac">
-              <span class="m-doc-wrap-bumper"><a href="#aa12a7f9c4b7cde960b63c9a2916428ac" class="m-doc-self">DynamicPartitioner</a>(</span><span class="m-doc-wrap">)</span>
+            <dt id="a2ff37845f4489df50f199f06a96590c8">
+              <span class="m-doc-wrap-bumper"><a href="#a2ff37845f4489df50f199f06a96590c8" class="m-doc-self">DynamicPartitioner</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
             <dd>default constructor</dd>
-            <dt id="afec1c557cfa1b2b5b9c5c47f40bc1697">
-              <span class="m-doc-wrap-bumper"><a href="#afec1c557cfa1b2b5b9c5c47f40bc1697" class="m-doc-self">DynamicPartitioner</a>(</span><span class="m-doc-wrap">size_t sz) <span class="m-label m-flat m-info">explicit</span> </span>
+            <dt id="ac1922e2796cba43d81e4567c9e2c0c76">
+              <span class="m-doc-wrap-bumper"><a href="#ac1922e2796cba43d81e4567c9e2c0c76" class="m-doc-self">DynamicPartitioner</a>(</span><span class="m-doc-wrap">size_t sz) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
             <dd>construct a dynamic partitioner with the given chunk size</dd>
+            <dt id="a82c2ee7829e54b474e9b11e0944bc2cd">
+              <span class="m-doc-wrap-bumper"><a href="#a82c2ee7829e54b474e9b11e0944bc2cd" class="m-doc-self">DynamicPartitioner</a>(</span><span class="m-doc-wrap">size_t sz,
+              C&amp;&amp; closure) <span class="m-label m-flat m-info">explicit</span> </span>
+            </dt>
+            <dd>construct a dynamic partitioner with the given chunk size and the closure</dd>
           </dl>
         </section>
       </div>

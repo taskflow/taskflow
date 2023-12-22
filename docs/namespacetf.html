@@ -143,22 +143,31 @@
             </dt>
             <dd>class to create an observer based on the built-in taskflow profiler format</dd>
             <dt>
+              struct <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>
+            </dt>
+            <dd>default closure wrapper that simplies runs the given closure as is</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
               class <a href="classtf_1_1PartitionerBase.html" class="m-doc">PartitionerBase</a>
             </dt>
             <dd>class to derive a partitioner for scheduling parallel algorithms</dd>
             <dt>
+              <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
               class <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>
             </dt>
             <dd>class to construct a guided partitioner for scheduling parallel algorithms</dd>
             <dt>
+              <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
               class <a href="classtf_1_1DynamicPartitioner.html" class="m-doc">DynamicPartitioner</a>
             </dt>
             <dd>class to construct a dynamic partitioner for scheduling parallel algorithms</dd>
             <dt>
+              <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
               class <a href="classtf_1_1StaticPartitioner.html" class="m-doc">StaticPartitioner</a>
             </dt>
-            <dd>class to construct a dynamic partitioner for scheduling parallel algorithms</dd>
+            <dd>class to construct a static partitioner for scheduling parallel algorithms</dd>
             <dt>
+              <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
               class <a href="classtf_1_1RandomPartitioner.html" class="m-doc">RandomPartitioner</a>
             </dt>
             <dd>class to construct a random partitioner for scheduling parallel algorithms</dd>
@@ -275,6 +284,11 @@
             </dt>
             <dd>enumeration of all observer types</dd>
             <dt>
+              <span class="m-doc-wrap-bumper">enum class <a href="#a32d51425fa23cd0dc3518c16cf3bb6c0" class="m-doc">PartitionerType</a>: int { </span><span class="m-doc-wrap"><a href="#a32d51425fa23cd0dc3518c16cf3bb6c0afe6f99ef1ec99efbdc19a9786cf1facc" class="m-doc">STATIC</a>,
+              <a href="#a32d51425fa23cd0dc3518c16cf3bb6c0a0fcc90da4811c877ba9f9c12f7d60bc9" class="m-doc">DYNAMIC</a> }</span>
+            </dt>
+            <dd>enumeration of all partitioner types</dd>
+            <dt>
               <span class="m-doc-wrap-bumper">enum class <a href="#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc">PipeType</a>: int { </span><span class="m-doc-wrap"><a href="#abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" class="m-doc">PARALLEL</a> = 1,
               <a href="#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">SERIAL</a> = 2 }</span>
             </dt>
@@ -300,7 +314,7 @@
             </dt>
             <dd>default time point type of observers</dd>
             <dt>
-              using <a href="#a77d193108ae375fdfc554e7f10bea23e" class="m-doc">DefaultPartitioner</a> = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>
+              using <a href="#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a> = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&lt;&gt;
             </dt>
             <dd>default partitioner set to <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">tf::<wbr />GuidedPartitioner</a></dd>
             <dt id="a0e267ab3e1baeb1962f3b3a374de9553">
@@ -711,7 +725,7 @@
             </dt>
             <dd>determines if a callable is a static task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename C&gt;</div>
+              <div class="m-doc-template">template&lt;typename P&gt;</div>
               bool <a href="#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_partitioner_v</a> <span class="m-label m-flat m-primary">constexpr</span>
             </dt>
             <dd>determines if a type is a partitioner</dd>
@@ -808,6 +822,29 @@
               </tbody>
             </table>
           </div></section>
+          <section class="m-doc-details" id="a32d51425fa23cd0dc3518c16cf3bb6c0"><div>
+            <h3>
+              enum class tf::<wbr /><a href="#a32d51425fa23cd0dc3518c16cf3bb6c0" class="m-doc-self">PartitionerType</a>: int
+            </h3>
+            <p>enumeration of all partitioner types</p>
+            <table class="m-table m-fullwidth m-flat m-doc">
+              <thead><tr><th style="width: 1%">Enumerators</th><th></th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><a href="#a32d51425fa23cd0dc3518c16cf3bb6c0afe6f99ef1ec99efbdc19a9786cf1facc" class="m-doc-self" id="a32d51425fa23cd0dc3518c16cf3bb6c0afe6f99ef1ec99efbdc19a9786cf1facc">STATIC</a></td>
+                  <td>
+                  <p>static partitioner type</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#a32d51425fa23cd0dc3518c16cf3bb6c0a0fcc90da4811c877ba9f9c12f7d60bc9" class="m-doc-self" id="a32d51425fa23cd0dc3518c16cf3bb6c0a0fcc90da4811c877ba9f9c12f7d60bc9">DYNAMIC</a></td>
+                  <td>
+                  <p>dynamic partitioner type</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div></section>
           <section class="m-doc-details" id="abb7a11e41fd457f69e7ff45d4c769564"><div>
             <h3>
               enum class tf::<wbr /><a href="#abb7a11e41fd457f69e7ff45d4c769564" class="m-doc-self">PipeType</a>: int
@@ -893,9 +930,9 @@
         </section>
         <section>
           <h2>Typedef documentation</h2>
-          <section class="m-doc-details" id="a77d193108ae375fdfc554e7f10bea23e"><div>
+          <section class="m-doc-details" id="a66b72776c788898aee9e132b0ea9b405"><div>
             <h3>
-              using tf::<wbr /><a href="#a77d193108ae375fdfc554e7f10bea23e" class="m-doc-self">DefaultPartitioner</a> = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>
+              using tf::<wbr /><a href="#a66b72776c788898aee9e132b0ea9b405" class="m-doc-self">DefaultPartitioner</a> = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&lt;&gt;
             </h3>
             <p>default partitioner set to <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">tf::<wbr />GuidedPartitioner</a></p>
 <p>Guided partitioner can achieve decent performance for most parallel algorithms, especially for those with irregular and unbalanced workload per iteration.</p>
@@ -2606,7 +2643,7 @@
           <section class="m-doc-details" id="a73c20705fc54763f195a00b6e626e301"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename C&gt;
+                template&lt;typename P&gt;
               </div>
               bool tf::<wbr /><a href="#a73c20705fc54763f195a00b6e626e301" class="m-doc-self">is_partitioner_v</a> <span class="m-label m-primary">constexpr</span>
             </h3>

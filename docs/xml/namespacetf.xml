@@ -35,6 +35,8 @@
     <innerclass refid="classtf_1_1ChromeObserver" prot="public">tf::ChromeObserver</innerclass>
     <innerclass refid="classtf_1_1TFProfObserver" prot="public">tf::TFProfObserver</innerclass>
     <innerclass refid="classtf_1_1TFProfManager" prot="private">tf::TFProfManager</innerclass>
+    <innerclass refid="structtf_1_1DefaultClosureWrapper" prot="public">tf::DefaultClosureWrapper</innerclass>
+    <innerclass refid="structtf_1_1IsPartitioner" prot="private">tf::IsPartitioner</innerclass>
     <innerclass refid="classtf_1_1PartitionerBase" prot="public">tf::PartitionerBase</innerclass>
     <innerclass refid="classtf_1_1GuidedPartitioner" prot="public">tf::GuidedPartitioner</innerclass>
     <innerclass refid="classtf_1_1DynamicPartitioner" prot="public">tf::DynamicPartitioner</innerclass>
@@ -234,6 +236,34 @@
         </inbodydescription>
         <location file="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" line="1026" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" bodystart="1026" bodyend="1030"/>
       </memberdef>
+      <memberdef kind="enum" id="namespacetf_1a32d51425fa23cd0dc3518c16cf3bb6c0" prot="public" static="no" strong="yes">
+        <type>int</type>
+        <name>PartitionerType</name>
+        <enumvalue id="namespacetf_1a32d51425fa23cd0dc3518c16cf3bb6c0afe6f99ef1ec99efbdc19a9786cf1facc" prot="public">
+          <name>STATIC</name>
+          <briefdescription>
+<para>static partitioner type </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespacetf_1a32d51425fa23cd0dc3518c16cf3bb6c0a0fcc90da4811c877ba9f9c12f7d60bc9" prot="public">
+          <name>DYNAMIC</name>
+          <briefdescription>
+<para>dynamic partitioner type </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>enumeration of all partitioner types </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="19" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="19" bodyend="24"/>
+      </memberdef>
       <memberdef kind="enum" id="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" prot="public" static="no" strong="yes">
         <type>int</type>
         <name>PipeType</name>
@@ -357,9 +387,9 @@
         </inbodydescription>
         <location file="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" line="20" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" bodystart="20" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="typedef" id="namespacetf_1a77d193108ae375fdfc554e7f10bea23e" prot="public" static="no">
-        <type><ref refid="classtf_1_1GuidedPartitioner" kindref="compound">GuidedPartitioner</ref></type>
-        <definition>using tf::DefaultPartitioner = typedef GuidedPartitioner</definition>
+      <memberdef kind="typedef" id="namespacetf_1a66b72776c788898aee9e132b0ea9b405" prot="public" static="no">
+        <type><ref refid="classtf_1_1GuidedPartitioner" kindref="compound">GuidedPartitioner</ref>&lt;&gt;</type>
+        <definition>using tf::DefaultPartitioner = typedef GuidedPartitioner&lt;&gt;</definition>
         <argsstring></argsstring>
         <name>DefaultPartitioner</name>
         <briefdescription>
@@ -370,7 +400,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="530" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="530" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="818" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="818" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="namespacetf_1a0e267ab3e1baeb1962f3b3a374de9553" prot="public" static="no">
         <type><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">cudaExecutionPolicy</ref>&lt; 512, 7 &gt;</type>
@@ -521,14 +551,14 @@
       <memberdef kind="variable" id="namespacetf_1a73c20705fc54763f195a00b6e626e301" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
           <param>
-            <type>typename C</type>
+            <type>typename P</type>
           </param>
         </templateparamlist>
         <type>constexpr bool</type>
         <definition>constexpr bool tf::is_partitioner_v</definition>
         <argsstring></argsstring>
         <name>is_partitioner_v</name>
-        <initializer>= <ref refid="cpp/types/is_base_of" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_base_of</ref>&lt;<ref refid="classtf_1_1PartitionerBase" kindref="compound">PartitionerBase</ref>, C&gt;::value</initializer>
+        <initializer>= <ref refid="cpp/types/is_base_of" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_base_of</ref>&lt;IsPartitioner, P&gt;::value</initializer>
         <briefdescription>
 <para>determines if a type is a partitioner </para>
         </briefdescription>
@@ -537,7 +567,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="538" column="23" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="538" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="826" column="23" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="826" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">

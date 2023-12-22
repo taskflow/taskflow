@@ -46,9 +46,21 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
+          <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>GuidedPartitioner <span class="m-thin">class</span>
         </h1>
         <p>class to construct a guided partitioner for scheduling parallel algorithms</p>
+        <table class="m-table m-fullwidth m-flat">
+          <thead>
+            <tr><th colspan="2">Template parameters</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="width: 1%">C</td>
+              <td>closure wrapper type (default <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">tf::<wbr />DefaultClosureWrapper</a>)</td>
+            </tr>
+          </tbody>
+        </table>
         <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -56,32 +68,65 @@
               Reference
               <ul>
                 <li><a href="#base-classes">Base classes</a></li>
+                <li><a href="#pub-static-methods">Public static functions</a></li>
                 <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
               </ul>
             </li>
           </ul>
         </nav>
-<p>The size of a partition is proportional to the number of unassigned iterations divided by the number of workers, and the size will gradually decrease to the given chunk size. The last partition may be smaller than the chunk size.</p>
+<p>The size of a partition is proportional to the number of unassigned iterations divided by the number of workers, and the size will gradually decrease to the given chunk size. The last partition may be smaller than the chunk size.</p><p>In addition to partition size, the application can specify a closure wrapper for a guided partitioner. A closure wrapper allows the application to wrapper a partitioned task (i.e., closure) with a custom function object that performs additional tasks. For example:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">for_each_index</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="p">[](){</span><span class="w">                 </span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">);</span><span class="w"> </span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">GuidedPartitioner</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="p">[](</span><span class="k">auto</span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">closure</span><span class="p">){</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// do something before invoking the partitioned task</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// invoke the partitioned task</span>
+<span class="w">    </span><span class="n">closure</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// do something else after invoking the partitioned task</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre>
         <section id="base-classes">
           <h2><a href="#base-classes">Base classes</a></h2>
           <dl class="m-doc">
             <dt>
-              class <a href="classtf_1_1PartitionerBase.html" class="m-doc">PartitionerBase</a>
+              <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
+              class <a href="classtf_1_1PartitionerBase.html" class="m-doc">PartitionerBase&lt;DefaultClosureWrapper&gt;</a>
             </dt>
             <dd>class to derive a partitioner for scheduling parallel algorithms</dd>
+          </dl>
+        </section>
+        <section id="pub-static-methods">
+          <h2><a href="#pub-static-methods">Public static functions</a></h2>
+          <dl class="m-doc">
+            <dt id="ae414688ae5ece94e8b2c108dee4266e2">
+              <span class="m-doc-wrap-bumper">static auto <a href="#ae414688ae5ece94e8b2c108dee4266e2" class="m-doc-self">type</a>(</span><span class="m-doc-wrap">) -&gt; <a href="namespacetf.html#a32d51425fa23cd0dc3518c16cf3bb6c0" class="m-doc">PartitionerType</a> <span class="m-label m-flat m-primary">constexpr</span></span>
+            </dt>
+            <dd>queries the partition type (dynamic)</dd>
           </dl>
         </section>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
-            <dt id="a6d54bc802ce765d5b2c7833d1d6f46ce">
-              <span class="m-doc-wrap-bumper"><a href="#a6d54bc802ce765d5b2c7833d1d6f46ce" class="m-doc-self">GuidedPartitioner</a>(</span><span class="m-doc-wrap">)</span>
+            <dt id="ad922cf64fc355513c756247d4e2b69d3">
+              <span class="m-doc-wrap-bumper"><a href="#ad922cf64fc355513c756247d4e2b69d3" class="m-doc-self">GuidedPartitioner</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
             <dd>default constructor</dd>
-            <dt id="a8a44c5c770af9b6754afc502ced91b4c">
-              <span class="m-doc-wrap-bumper"><a href="#a8a44c5c770af9b6754afc502ced91b4c" class="m-doc-self">GuidedPartitioner</a>(</span><span class="m-doc-wrap">size_t sz) <span class="m-label m-flat m-info">explicit</span> </span>
+            <dt id="ab5540d5761ed6dbaf037cd431367b9f2">
+              <span class="m-doc-wrap-bumper"><a href="#ab5540d5761ed6dbaf037cd431367b9f2" class="m-doc-self">GuidedPartitioner</a>(</span><span class="m-doc-wrap">size_t sz) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
             <dd>construct a guided partitioner with the given chunk size</dd>
+            <dt id="a6a42cf5071fc665671345fefde2c5ec0">
+              <span class="m-doc-wrap-bumper"><a href="#a6a42cf5071fc665671345fefde2c5ec0" class="m-doc-self">GuidedPartitioner</a>(</span><span class="m-doc-wrap">size_t sz,
+              C&amp;&amp; closure) <span class="m-label m-flat m-info">explicit</span> </span>
+            </dt>
+            <dd>construct a guided partitioner with the given chunk size and the closure</dd>
           </dl>
         </section>
       </div>

@@ -48,14 +48,14 @@ On the other hand, if the work unit per iteration is irregular and unbalanced,
 tf::GuidedPartitioner or tf::DynamicPartitioner can outperform tf::StaticPartitioner.
 
 @note
-By default, all parallel algorithms in %Taskflow use tf::DefaultExecutionPolicy,
+By default, all parallel algorithms in %Taskflow use tf::DefaultPartitioner,
 which is based on guided scheduling via tf::GuidedPartitioner.
 
 @section DefineAStaticPartitioner Define a Static Partitioner
 
 Static partitioner splits iterations into <tt>iter_size/chunk_size</tt> chunks
 and distribute chunks to workers in order.
-If no chunk size is given (@c chunk_size is @c 1), 
+If no chunk size is given (@c chunk_size is 0), 
 %Taskflow will partition iterations into chunks that are approximately equal in size.
 The following code creates a static partitioner with chunk size equal to 100:
 
@@ -67,7 +67,8 @@ tf::StaticPartitioner static_partitioner(100);
 
 Dynamic partitioner splits iterations into <tt>iter_size/chunk_size</tt> chunks
 and distribute chunks to workers without any specific order.
-The default chunk size is @c 1, if not specified.
+If no chunk size is given (@c chunk_size is 0),
+%Taskflow will use 1 for the minimum size of a partition.
 The following code creates a dynamic partitioner with chunk size equal to 2:
 
 @code{.cpp}
@@ -79,8 +80,10 @@ tf::DynamicPartitioner dynamic_partitioner(2);
 Guided partitioner dynamically decides the chunk size.
 The size of a chunk is proportional to the number of unassigned iterations divided
 by the number of the threads,
-and the size will gradually decrease to the specified chunk size (default @c 1).
+and the size will gradually decrease to the specified chunk size (default 1).
 The last chunk may be smaller than the specified chunk size.
+If no chunk size is given (@c chunk_size is 0),
+%Taskflow will use 1 for the minimum size of a partition.
 The following code creates a guided partitioner with chunk size equal to 10:
 
 @code{.cpp}
@@ -92,6 +95,46 @@ due to adaptive parallelism, especially for those with irregular and
 unbalanced workload per iteration.
 As a result, guided partitioner is used as the default partitioner for
 our parallel algorithms.
+
+@section DefineAClosureWrapperForAPartitioner Define a Closure Wrapper for a Partitioner
+
+In addition to partition size, applications can specify a <em>closure wrapper</em>
+for a partitioner.
+A closure wrapper allows the application to wrapper a partitioned task,
+i.e., closure, with a custom function object that performs additional tasks.
+For example:
+
+@code{.cpp}
+std::atomic<int> count = 0;
+tf::Taskflow taskflow;
+taskflow.for_each_index(0, 100, 1, 
+  [](){                 
+    printf("%d\n", i); 
+  },
+  tf::StaticPartitioner(0, [](auto&& closure){
+    // do something before invoking the partitioned task
+    // ...
+    
+    // invoke the partitioned task
+    closure();
+
+    // do something else after invoking the partitioned task
+    // ...
+  }
+);
+executor.run(taskflow).wait();
+@endcode
+
+Each partitioner uses a default closure wrapper (tf::DefaultClosureWrapper) 
+that does nothing but simply invokes the given closure to perform 
+the ordinary partitioned task.
+
+@code{.cpp}
+struct DefaultClosureWrapper {
+  template <typename C>
+  void operator()(C&& closure) const { std::forward<C>(closure)(); }
+};
+@endcode
 
 */
 

@@ -12,7 +12,7 @@
 namespace tf {
 
 /**
-@num PartitionerType
+@enum PartitionerType
 
 @brief enumeration of all partitioner types
 */  
@@ -49,10 +49,17 @@ enum class PartitionerType : int {
 @brief default closure wrapper that simplies runs the given closure as is
 */
 struct DefaultClosureWrapper {
+
+  /**
+  @brief operator that does nothing but invoke the given closure
+  */
   template <typename C>
   void operator()(C&& closure) const { std::forward<C>(closure)(); }
 };
 
+/**
+@private
+*/
 struct IsPartitioner {
 };
 
@@ -65,12 +72,14 @@ struct IsPartitioner {
 
 @brief class to derive a partitioner for scheduling parallel algorithms
 
+@tparam C closure wrapper type
+
 The class provides base methods to derive a partitioner that can be used
 to schedule parallel iterations (e.g., tf::Taskflow::for_each).
 
 An partitioner defines the scheduling method for running parallel algorithms,
 such tf::Taskflow::for_each, tf::Taskflow::reduce, and so on.
-By default, we provide the following partitioners:
+By default, we provide the following partitioners: 
 
 + tf::GuidedPartitioner  to enable guided scheduling algorithm of adaptive chunk size
 + tf::DynamicPartitioner to enable dynamic scheduling algorithm of equal chunk size
@@ -85,8 +94,45 @@ On the other hand, if the work unit per iteration is irregular and unbalanced,
 tf::GuidedPartitioner or tf::DynamicPartitioner can outperform tf::StaticPartitioner.
 In most situations, tf::GuidedPartitioner can deliver decent performance and
 is thus used as our default partitioner.
+
+@note
+Giving the partition size of 0 lets the %Taskflow runtime automatically determines
+the partition size for the given partitioner.
+
+
+In addition to partition size, the application can specify a closure wrapper
+for a partitioner.
+A closure wrapper allows the application to wrapper a partitioned task 
+(i.e., closure) with a custom function object that performs additional tasks.
+For example:
+
+@code{.cpp}
+std::atomic<int> count = 0;
+tf::Taskflow taskflow;
+taskflow.for_each_index(0, 100, 1, 
+  [](){                 
+    printf("%d\n", i); 
+  },
+  tf::StaticPartitioner(0, [](auto&& closure){
+    // do something before invoking the partitioned task
+    // ...
+    
+    // invoke the partitioned task
+    closure();
+
+    // do something else after invoking the partitioned task
+    // ...
+  }
+);
+executor.run(taskflow).wait();
+@endcode
+
+@note
+The default closure wrapper (tf::DefaultClosureWrapper) does nothing but invoke
+the partitioned task (closure).
+
 */
-template <typename C>
+template <typename C = DefaultClosureWrapper>
 class PartitionerBase : public IsPartitioner {
 
   public:
@@ -146,10 +192,10 @@ class PartitionerBase : public IsPartitioner {
     std::invoke(_closure_wrapper, std::forward<ArgsT>(args)...);
   } 
   
-  template <typename... ArgsT>
-  void operator () (ArgsT&&... args) const {
-    std::invoke(_closure_wrapper, std::forward<ArgsT>(args)...);
-  } 
+  //template <typename... ArgsT>
+  //void operator () (ArgsT&&... args) const {
+  //  std::invoke(_closure_wrapper, std::forward<ArgsT>(args)...);
+  //} 
 
   protected:
   
@@ -179,6 +225,33 @@ The size of a partition is proportional to the number of unassigned iterations
 divided by the number of workers, 
 and the size will gradually decrease to the given chunk size.
 The last partition may be smaller than the chunk size.
+
+In addition to partition size, the application can specify a closure wrapper
+for a guided partitioner.
+A closure wrapper allows the application to wrapper a partitioned task 
+(i.e., closure) with a custom function object that performs additional tasks.
+For example:
+
+@code{.cpp}
+std::atomic<int> count = 0;
+tf::Taskflow taskflow;
+taskflow.for_each_index(0, 100, 1, 
+  [](){                 
+    printf("%d\n", i); 
+  },
+  tf::GuidedPartitioner(0, [](auto&& closure){
+    // do something before invoking the partitioned task
+    // ...
+    
+    // invoke the partitioned task
+    closure();
+
+    // do something else after invoking the partitioned task
+    // ...
+  }
+);
+executor.run(taskflow).wait();
+@endcode
 */
 template <typename C = DefaultClosureWrapper>
 class GuidedPartitioner : public PartitionerBase<C> {
@@ -197,6 +270,7 @@ class GuidedPartitioner : public PartitionerBase<C> {
 
   /**
   @brief construct a guided partitioner with the given chunk size
+
   */
   explicit GuidedPartitioner(size_t sz) : PartitionerBase<C> (sz) {}
  
@@ -322,10 +396,39 @@ class GuidedPartitioner : public PartitionerBase<C> {
 
 @brief class to construct a dynamic partitioner for scheduling parallel algorithms
 
+@tparam C closure wrapper type (default tf::DefaultClosureWrapper)
+
 The partitioner splits iterations into many partitions each of size equal to 
 the given chunk size.
 Different partitions are distributed dynamically to workers 
 without any specific order.
+
+In addition to partition size, the application can specify a closure wrapper
+for a dynamic partitioner.
+A closure wrapper allows the application to wrapper a partitioned task 
+(i.e., closure) with a custom function object that performs additional tasks.
+For example:
+
+@code{.cpp}
+std::atomic<int> count = 0;
+tf::Taskflow taskflow;
+taskflow.for_each_index(0, 100, 1, 
+  [](){                 
+    printf("%d\n", i); 
+  },
+  tf::DynamicPartitioner(0, [](auto&& closure){
+    // do something before invoking the partitioned task
+    // ...
+    
+    // invoke the partitioned task
+    closure();
+
+    // do something else after invoking the partitioned task
+    // ...
+  }
+);
+executor.run(taskflow).wait();
+@endcode
 */
 template <typename C = DefaultClosureWrapper>
 class DynamicPartitioner : public PartitionerBase<C> {
@@ -407,7 +510,9 @@ class DynamicPartitioner : public PartitionerBase<C> {
 /**
 @class StaticPartitioner
 
-@brief class to construct a dynamic partitioner for scheduling parallel algorithms
+@brief class to construct a static partitioner for scheduling parallel algorithms
+
+@tparam C closure wrapper type (default tf::DefaultClosureWrapper)
 
 The partitioner divides iterations into chunks and distributes chunks 
 to workers in order.
@@ -420,6 +525,33 @@ taskflow.for_each(
   data.begin(), data.end(), [](int i){}, StaticPartitioner(0)
 );
 executor.run(taskflow).run();
+@endcode
+
+In addition to partition size, the application can specify a closure wrapper
+for a static partitioner.
+A closure wrapper allows the application to wrapper a partitioned task 
+(i.e., closure) with a custom function object that performs additional tasks.
+For example:
+
+@code{.cpp}
+std::atomic<int> count = 0;
+tf::Taskflow taskflow;
+taskflow.for_each_index(0, 100, 1, 
+  [](){                 
+    printf("%d\n", i); 
+  },
+  tf::StaticPartitioner(0, [](auto&& closure){
+    // do something before invoking the partitioned task
+    // ...
+    
+    // invoke the partitioned task
+    closure();
+
+    // do something else after invoking the partitioned task
+    // ...
+  }
+);
+executor.run(taskflow).wait();
 @endcode
 */
 template <typename C = DefaultClosureWrapper>
@@ -510,10 +642,39 @@ class StaticPartitioner : public PartitionerBase<C> {
 
 @brief class to construct a random partitioner for scheduling parallel algorithms
 
+@tparam C closure wrapper type (default tf::DefaultClosureWrapper)
+
 Similar to tf::DynamicPartitioner, 
 the partitioner splits iterations into many partitions but each with a random
 chunk size in the range, <tt>c = [alpha * N * W, beta * N * W]</tt>.
 By default, @c alpha is <tt>0.01</tt> and @c beta is <tt>0.5</tt>, respectively.
+
+In addition to partition size, the application can specify a closure wrapper
+for a random partitioner.
+A closure wrapper allows the application to wrapper a partitioned task 
+(i.e., closure) with a custom function object that performs additional tasks.
+For example:
+
+@code{.cpp}
+std::atomic<int> count = 0;
+tf::Taskflow taskflow;
+taskflow.for_each_index(0, 100, 1, 
+  [](){                 
+    printf("%d\n", i); 
+  },
+  tf::RandomPartitioner(0, [](auto&& closure){
+    // do something before invoking the partitioned task
+    // ...
+    
+    // invoke the partitioned task
+    closure();
+
+    // do something else after invoking the partitioned task
+    // ...
+  }
+);
+executor.run(taskflow).wait();
+@endcode
 */
 template <typename C = DefaultClosureWrapper>
 class RandomPartitioner : public PartitionerBase<C> {

@@ -46,9 +46,21 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
+          <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>RandomPartitioner <span class="m-thin">class</span>
         </h1>
         <p>class to construct a random partitioner for scheduling parallel algorithms</p>
+        <table class="m-table m-fullwidth m-flat">
+          <thead>
+            <tr><th colspan="2">Template parameters</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="width: 1%">C</td>
+              <td>closure wrapper type (default <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">tf::<wbr />DefaultClosureWrapper</a>)</td>
+            </tr>
+          </tbody>
+        </table>
         <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -56,53 +68,92 @@
               Reference
               <ul>
                 <li><a href="#base-classes">Base classes</a></li>
+                <li><a href="#pub-static-methods">Public static functions</a></li>
                 <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
                 <li><a href="#pub-methods">Public functions</a></li>
               </ul>
             </li>
           </ul>
         </nav>
-<p>Similar to <a href="classtf_1_1DynamicPartitioner.html" class="m-doc">tf::<wbr />DynamicPartitioner</a>, the partitioner splits iterations into many partitions but each with a random chunk size in the range, <code>c = [alpha * N * W, beta * N * W]</code>. By default, <code>alpha</code> is <code>0.01</code> and <code>beta</code> is <code>0.5</code>, respectively.</p>
+<p>Similar to <a href="classtf_1_1DynamicPartitioner.html" class="m-doc">tf::<wbr />DynamicPartitioner</a>, the partitioner splits iterations into many partitions but each with a random chunk size in the range, <code>c = [alpha * N * W, beta * N * W]</code>. By default, <code>alpha</code> is <code>0.01</code> and <code>beta</code> is <code>0.5</code>, respectively.</p><p>In addition to partition size, the application can specify a closure wrapper for a random partitioner. A closure wrapper allows the application to wrapper a partitioned task (i.e., closure) with a custom function object that performs additional tasks. For example:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">for_each_index</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="p">[](){</span><span class="w">                 </span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">);</span><span class="w"> </span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">RandomPartitioner</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="p">[](</span><span class="k">auto</span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">closure</span><span class="p">){</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// do something before invoking the partitioned task</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// invoke the partitioned task</span>
+<span class="w">    </span><span class="n">closure</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// do something else after invoking the partitioned task</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre>
         <section id="base-classes">
           <h2><a href="#base-classes">Base classes</a></h2>
           <dl class="m-doc">
             <dt>
-              class <a href="classtf_1_1PartitionerBase.html" class="m-doc">PartitionerBase</a>
+              <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
+              class <a href="classtf_1_1PartitionerBase.html" class="m-doc">PartitionerBase&lt;DefaultClosureWrapper&gt;</a>
             </dt>
             <dd>class to derive a partitioner for scheduling parallel algorithms</dd>
+          </dl>
+        </section>
+        <section id="pub-static-methods">
+          <h2><a href="#pub-static-methods">Public static functions</a></h2>
+          <dl class="m-doc">
+            <dt id="a5c64a1d794cece6ed226fb1c14632cbb">
+              <span class="m-doc-wrap-bumper">static auto <a href="#a5c64a1d794cece6ed226fb1c14632cbb" class="m-doc-self">type</a>(</span><span class="m-doc-wrap">) -&gt; <a href="namespacetf.html#a32d51425fa23cd0dc3518c16cf3bb6c0" class="m-doc">PartitionerType</a> <span class="m-label m-flat m-primary">constexpr</span></span>
+            </dt>
+            <dd>queries the partition type (dynamic)</dd>
           </dl>
         </section>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
-            <dt id="af8a23f5bad60d742c4d9ede4421e2fab">
-              <span class="m-doc-wrap-bumper"><a href="#af8a23f5bad60d742c4d9ede4421e2fab" class="m-doc-self">RandomPartitioner</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
+            <dt id="a5ab28a71b47ce0ddef1764469d67153d">
+              <span class="m-doc-wrap-bumper"><a href="#a5ab28a71b47ce0ddef1764469d67153d" class="m-doc-self">RandomPartitioner</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
             <dd>default constructor</dd>
-            <dt id="a07113b4c4839437228dfffd0f4c2997a">
-              <span class="m-doc-wrap-bumper"><a href="#a07113b4c4839437228dfffd0f4c2997a" class="m-doc-self">RandomPartitioner</a>(</span><span class="m-doc-wrap">size_t cz)</span>
+            <dt id="a72fa7e849ffb0c9b6547edc719cbda50">
+              <span class="m-doc-wrap-bumper"><a href="#a72fa7e849ffb0c9b6547edc719cbda50" class="m-doc-self">RandomPartitioner</a>(</span><span class="m-doc-wrap">size_t sz) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
-            <dd>constructs a random partitioner</dd>
-            <dt id="a3bb5314f320c70e7d947c1deda46858b">
-              <span class="m-doc-wrap-bumper"><a href="#a3bb5314f320c70e7d947c1deda46858b" class="m-doc-self">RandomPartitioner</a>(</span><span class="m-doc-wrap">float alpha,
+            <dd>construct a dynamic partitioner with the given chunk size</dd>
+            <dt id="a3158af2f133856f3620fad20decd8d40">
+              <span class="m-doc-wrap-bumper"><a href="#a3158af2f133856f3620fad20decd8d40" class="m-doc-self">RandomPartitioner</a>(</span><span class="m-doc-wrap">size_t sz,
+              C&amp;&amp; closure) <span class="m-label m-flat m-info">explicit</span> </span>
+            </dt>
+            <dd>construct a random partitioner with the given chunk size and the closure</dd>
+            <dt id="a586f4233b5ace06598282b007b75ee7f">
+              <span class="m-doc-wrap-bumper"><a href="#a586f4233b5ace06598282b007b75ee7f" class="m-doc-self">RandomPartitioner</a>(</span><span class="m-doc-wrap">float alpha,
               float beta)</span>
             </dt>
             <dd>constructs a random partitioner with the given parameters</dd>
+            <dt id="a36fcc5816916f621f0fb2eb9338b3376">
+              <span class="m-doc-wrap-bumper"><a href="#a36fcc5816916f621f0fb2eb9338b3376" class="m-doc-self">RandomPartitioner</a>(</span><span class="m-doc-wrap">float alpha,
+              float beta,
+              C&amp;&amp; closure)</span>
+            </dt>
+            <dd>constructs a random partitioner with the given parameters and the closure</dd>
           </dl>
         </section>
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="a2ffefd05bda25e3ed25cedc4e7ff65eb">
-              <span class="m-doc-wrap-bumper">auto <a href="#a2ffefd05bda25e3ed25cedc4e7ff65eb" class="m-doc-self">alpha</a>(</span><span class="m-doc-wrap">) const -&gt; float</span>
+            <dt id="a67eea3b4ca4a2920a320d717ff3153aa">
+              <span class="m-doc-wrap-bumper">auto <a href="#a67eea3b4ca4a2920a320d717ff3153aa" class="m-doc-self">alpha</a>(</span><span class="m-doc-wrap">) const -&gt; float</span>
             </dt>
             <dd>queries the <code>alpha</code> value</dd>
-            <dt id="a5d2f8decb307e255c52e5df1227f4825">
-              <span class="m-doc-wrap-bumper">auto <a href="#a5d2f8decb307e255c52e5df1227f4825" class="m-doc-self">beta</a>(</span><span class="m-doc-wrap">) const -&gt; float</span>
+            <dt id="a8f378443b152a7f0b7476a82982d12cb">
+              <span class="m-doc-wrap-bumper">auto <a href="#a8f378443b152a7f0b7476a82982d12cb" class="m-doc-self">beta</a>(</span><span class="m-doc-wrap">) const -&gt; float</span>
             </dt>
             <dd>queries the <code>beta</code> value</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#a03ad42736d974f71dd72769e887d8087" class="m-doc">chunk_size_range</a>(</span><span class="m-doc-wrap">size_t N,
+              <span class="m-doc-wrap-bumper">auto <a href="#a7b283c21ca72666c7a12f0e82b28fde1" class="m-doc">chunk_size_range</a>(</span><span class="m-doc-wrap">size_t N,
               size_t W) const -&gt; <a href="http://en.cppreference.com/w/cpp/utility/pair.html" class="m-doc-external">std::<wbr />pair</a>&lt;size_t, size_t&gt;</span>
             </dt>
             <dd>queries the range of chunk size</dd>
@@ -110,9 +161,12 @@
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="a03ad42736d974f71dd72769e887d8087"><div>
+          <section class="m-doc-details" id="a7b283c21ca72666c7a12f0e82b28fde1"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><a href="http://en.cppreference.com/w/cpp/utility/pair.html" class="m-doc-external">std::<wbr />pair</a>&lt;size_t, size_t&gt; tf::<wbr />RandomPartitioner::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a03ad42736d974f71dd72769e887d8087" class="m-doc-self">chunk_size_range</a>(</span><span class="m-doc-wrap">size_t N,
+              <div class="m-doc-template">
+                template&lt;typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="http://en.cppreference.com/w/cpp/utility/pair.html" class="m-doc-external">std::<wbr />pair</a>&lt;size_t, size_t&gt; tf::<wbr />RandomPartitioner&lt;C&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a7b283c21ca72666c7a12f0e82b28fde1" class="m-doc-self">chunk_size_range</a>(</span><span class="m-doc-wrap">size_t N,
               size_t W) const</span></span>
             </h3>
             <p>queries the range of chunk size</p>
