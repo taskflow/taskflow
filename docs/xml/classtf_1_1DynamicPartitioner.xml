@@ -23,7 +23,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="441" column="36" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="441" bodyend="441"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="419" column="36" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="419" bodyend="419"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -39,7 +39,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="446" column="3"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="424" column="3"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1DynamicPartitioner_1ac1922e2796cba43d81e4567c9e2c0c76" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
@@ -57,7 +57,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="451" column="12" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="451" bodyend="451"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="429" column="12" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="429" bodyend="429"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1DynamicPartitioner_1a82c2ee7829e54b474e9b11e0944bc2cd" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
@@ -79,7 +79,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="456" column="12" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="456" bodyend="458"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="434" column="12" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="434" bodyend="436"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -118,7 +118,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="470" column="8" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="470" bodyend="481"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="448" column="8" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="448" bodyend="459"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1DynamicPartitioner_1abae632f23aeefe2cd91ca51b6b409d19" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -155,7 +155,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="489" column="8" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="489" bodyend="502"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="467" column="8" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="467" bodyend="480"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -175,7 +175,7 @@ The partitioner splits iterations into many partitions each of size equal to the
 <para>In addition to partition size, the application can specify a closure wrapper for a dynamic partitioner. A closure wrapper allows the application to wrapper a partitioned task (i.e., closure) with a custom function object that performs additional tasks. For example:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/>0;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a47ea2b35d0ec18afb35b45316939dc67" kindref="member">for_each_index</ref>(0,<sp/>100,<sp/>1,<sp/></highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" kindref="member">for_each_index</ref>(0,<sp/>100,<sp/>1,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[](){<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;%d\n&quot;</highlight><highlight class="normal">,<sp/>i);<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
@@ -227,7 +227,7 @@ The partitioner splits iterations into many partitions each of size equal to the
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="434" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="434" bodyend="504"/>
+    <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="412" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="412" bodyend="482"/>
     <listofallmembers>
       <member refid="classtf_1_1PartitionerBase_1a9ff56f7150ee4ff42b5006942f9c4b52" prot="protected" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>_chunk_size</name></member>
       <member refid="classtf_1_1PartitionerBase_1a9c5a8d350a913bea4c63d350e2bc9d1b" prot="protected" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>_closure_wrapper</name></member>
@@ -235,11 +235,10 @@ The partitioner splits iterations into many partitions each of size equal to the
       <member refid="classtf_1_1PartitionerBase_1a481097aeb7ec62dcc23584eaa48cbce4" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>chunk_size</name></member>
       <member refid="classtf_1_1PartitionerBase_1a929714296243b2c63e4f2baa2025d380" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>closure_wrapper</name></member>
       <member refid="classtf_1_1PartitionerBase_1a99e23ce7c0faf3a932ab2b7ac51e58f4" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>closure_wrapper</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a2b6152f24c2a3d6e750349d02ecb4595" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>closure_wrapper_type</name></member>
       <member refid="classtf_1_1DynamicPartitioner_1a2ff37845f4489df50f199f06a96590c8" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>DynamicPartitioner</name></member>
       <member refid="classtf_1_1DynamicPartitioner_1ac1922e2796cba43d81e4567c9e2c0c76" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>DynamicPartitioner</name></member>
       <member refid="classtf_1_1DynamicPartitioner_1a82c2ee7829e54b474e9b11e0944bc2cd" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>DynamicPartitioner</name></member>
-      <member refid="classtf_1_1PartitionerBase_1a8e16cb49e1547fe06f5512987a1c592e" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>invoke</name></member>
-      <member refid="classtf_1_1PartitionerBase_1ad9657fe2b2da66791bb8400f42fce45c" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>invoke</name></member>
       <member refid="classtf_1_1DynamicPartitioner_1afcb528d9e66380375fce8a7ae99b467f" prot="private" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>loop</name></member>
       <member refid="classtf_1_1DynamicPartitioner_1abae632f23aeefe2cd91ca51b6b409d19" prot="private" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>loop_until</name></member>
       <member refid="classtf_1_1PartitionerBase_1ad0037e70726a054527a923821ec2d95a" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>PartitionerBase</name></member>

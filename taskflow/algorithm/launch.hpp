@@ -4,6 +4,14 @@
 
 namespace tf {
 
+#define TF_MAKE_LOOP_TASK(code_block)                                                     \
+  if constexpr(std::is_same_v<typename std::decay_t<P>::closure_wrapper_type, DefaultClosureWrapper>) { \
+    code_block                                                                            \
+  }                                                                                       \
+  else {                                                                                  \
+    std::invoke(part.closure_wrapper(), [&](){ code_block });                             \
+  }                                                                                       
+
 // Function: launch_loop
 template <typename P, typename Loop>
 TF_FORCE_INLINE void launch_loop(

@@ -47,7 +47,7 @@
 </sect1>
 <sect1 id="ParallelScan_1CreateAParallelInclusiveScanTask">
 <title>Create a Parallel Inclusive Scan Task</title>
-<para><ref refid="classtf_1_1FlowBuilder_1a1c2ace9290d83c2a006614a4d66ad588" kindref="member">tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop)</ref> generates an <emphasis>inclusive</emphasis> scan, meaning that the N-th element of the output range is the sum of the first N input elements, so the N-th input element is included. For example, the code below performs an inclusive scan over five elements:</para>
+<para>tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop) generates an <emphasis>inclusive</emphasis> scan, meaning that the N-th element of the output range is the sum of the first N input elements, so the N-th input element is included. For example, the code below performs an inclusive scan over five elements:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>output(input.size())</highlight></codeline>
 <codeline><highlight class="normal">taskflow.inclusive_scan(</highlight></codeline>
@@ -64,7 +64,7 @@
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>input<sp/>is<sp/>{1,<sp/>3,<sp/>6,<sp/>10,<sp/>15}</highlight></codeline>
 </programlisting></para>
-<para>Similar to <ref refid="classtf_1_1FlowBuilder_1a1c2ace9290d83c2a006614a4d66ad588" kindref="member">tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop)</ref>, <ref refid="classtf_1_1FlowBuilder_1a0b589a5bbf9b18e6484fa9e554d39a39" kindref="member">tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop, T init)</ref> performs an inclusive scan but with an additional initial value <computeroutput>init</computeroutput>. For example, the code below performs an inclusive scan over five elements plus an initial value:</para>
+<para>Similar to tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop), tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop, T init) performs an inclusive scan but with an additional initial value <computeroutput>init</computeroutput>. For example, the code below performs an inclusive scan over five elements plus an initial value:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>output(input.size());</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>performs<sp/>inclusive<sp/>scan<sp/>with<sp/>an<sp/>initial<sp/>value</highlight><highlight class="normal"></highlight></codeline>
@@ -77,7 +77,7 @@
 </sect1>
 <sect1 id="ParallelScan_1CreateAParallelTransformInclusiveScanTask">
 <title>Create a Parallel Transform-Inclusive Scan Task</title>
-<para>You can transform elements in the input range before running inclusive scan using <ref refid="classtf_1_1FlowBuilder_1a82f3c3f49a2d52cd52f6eac07a659e9c" kindref="member">tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop)</ref> and <ref refid="classtf_1_1FlowBuilder_1a49f7e17d02c708035b9134d8c6c89f90" kindref="member">tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init)</ref>. For example, the code below performs an inclusive scan over five transformed elements:</para>
+<para>You can transform elements in the input range before running inclusive scan using tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop) and tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init). For example, the code below performs an inclusive scan over five transformed elements:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>output(input.size());</highlight></codeline>
 <codeline><highlight class="normal">taskflow.transform_inclusive_scan(</highlight></codeline>
@@ -87,7 +87,7 @@
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>output<sp/>is<sp/>{-1,<sp/>-3,<sp/>-6,<sp/>-10,<sp/>-15}</highlight></codeline>
 </programlisting></para>
-<para>You can also associate the transform-inclusive scan with an initial value using <ref refid="classtf_1_1FlowBuilder_1a49f7e17d02c708035b9134d8c6c89f90" kindref="member">tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init)</ref>. Only elements in the input range will be transformed using <computeroutput>uop</computeroutput>, i.e., the initial value <computeroutput>init</computeroutput> does not participate in <computeroutput>uop</computeroutput>.</para>
+<para>You can also associate the transform-inclusive scan with an initial value using tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init). Only elements in the input range will be transformed using <computeroutput>uop</computeroutput>, i.e., the initial value <computeroutput>init</computeroutput> does not participate in <computeroutput>uop</computeroutput>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>output(input.size());</highlight></codeline>
 <codeline><highlight class="normal">taskflow.transform_inclusive_scan(</highlight></codeline>
@@ -101,7 +101,7 @@
 </sect1>
 <sect1 id="ParallelScan_1CreateAParallelExclusiveScanTask">
 <title>Create a Parallel Exclusive Scan Task</title>
-<para><ref refid="classtf_1_1FlowBuilder_1a4e0d618d8eb0b3b2e5e00443a10bf512" kindref="member">tf::Taskflow::exclusive_scan(B first, E last, D d_first, T init, BOP bop)</ref> generates an <emphasis>exclusive</emphasis> scan with the given initial value. The N-th element of the output range is the sum of the first N-1 input elements, so the N-th input element is included. For example, the code below performs an exclusive scan over five elements with an initial value -1:</para>
+<para>tf::Taskflow::exclusive_scan(B first, E last, D d_first, T init, BOP bop) generates an <emphasis>exclusive</emphasis> scan with the given initial value. The N-th element of the output range is the sum of the first N-1 input elements, so the N-th input element is included. For example, the code below performs an exclusive scan over five elements with an initial value -1:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>output(input.size())</highlight></codeline>
 <codeline><highlight class="normal">taskflow.exclusive_scan(</highlight></codeline>
@@ -122,7 +122,7 @@
 </sect1>
 <sect1 id="ParallelScan_1CreateAParallelTransformExclusiveScanTask">
 <title>Create a Parallel Transform-Exclusive Scan Task</title>
-<para>You can transform elements in the input range before running exclusive scan using <ref refid="classtf_1_1FlowBuilder_1a8549478ef819699b30f8daf88f04d577" kindref="member">tf::Taskflow::transform_exclusive_scan(B first, E last, D d_first, T init, BOP bop, UOP uop)</ref>. For example, the code below performs an exclusive scan over five transformed elements:</para>
+<para>You can transform elements in the input range before running exclusive scan using tf::Taskflow::transform_exclusive_scan(B first, E last, D d_first, T init, BOP bop, UOP uop). For example, the code below performs an exclusive scan over five transformed elements:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>output(input.size());</highlight></codeline>
 <codeline><highlight class="normal">taskflow.transform_exclusive_scan(</highlight></codeline>

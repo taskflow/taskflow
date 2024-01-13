@@ -49,12 +49,6 @@ enum class PartitionerType : int {
 @brief default closure wrapper that simplies runs the given closure as is
 */
 struct DefaultClosureWrapper {
-
-  /**
-  @brief operator that does nothing but invoke the given closure
-  */
-  template <typename C>
-  void operator()(C&& closure) const { std::forward<C>(closure)(); }
 };
 
 /**
@@ -136,6 +130,11 @@ template <typename C = DefaultClosureWrapper>
 class PartitionerBase : public IsPartitioner {
 
   public:
+  
+  /** 
+  @brief the closure type
+  */
+  using closure_wrapper_type = C;
 
   /**
   @brief default constructor
@@ -175,27 +174,6 @@ class PartitionerBase : public IsPartitioner {
   */
   template <typename F>
   void closure_wrapper(F&& fn) { _closure_wrapper = std::forward<F>(fn); }
-
-  /**
-  @brief invoke the partition closure with the given wrapper object
-  */ 
-  template <typename... ArgsT>
-  void invoke(ArgsT&&... args) {
-    std::invoke(_closure_wrapper, std::forward<ArgsT>(args)...);
-  } 
-  
-  /**
-  @brief invoke the partition closure with the given wrapper object (const method overload)
-  */ 
-  template <typename... ArgsT>
-  void invoke(ArgsT&&... args) const {
-    std::invoke(_closure_wrapper, std::forward<ArgsT>(args)...);
-  } 
-  
-  //template <typename... ArgsT>
-  //void operator () (ArgsT&&... args) const {
-  //  std::invoke(_closure_wrapper, std::forward<ArgsT>(args)...);
-  //} 
 
   protected:
   

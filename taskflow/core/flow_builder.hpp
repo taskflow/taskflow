@@ -350,7 +350,7 @@ class FlowBuilder {
   Please refer to @ref ParallelIterations for details.
   */
   template <typename B, typename E, typename C, typename P = DefaultPartitioner>
-  Task for_each(B first, E last, C callable, P&& part = P());
+  Task for_each(B first, E last, C callable, P part = P());
   
   /**
   @brief constructs an STL-styled index-based parallel-for task 
@@ -392,7 +392,7 @@ class FlowBuilder {
   */
   template <typename B, typename E, typename S, typename C, typename P = DefaultPartitioner>
   Task for_each_index(
-    B first, E last, S step, C callable, P&& part = P()
+    B first, E last, S step, C callable, P part = P()
   );
 
   // ------------------------------------------------------------------------
@@ -436,7 +436,7 @@ class FlowBuilder {
     typename B, typename E, typename O, typename C, typename P = DefaultPartitioner,
     std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>* = nullptr
   >
-  Task transform(B first1, E last1, O d_first, C c, P&& part = P());
+  Task transform(B first1, E last1, O d_first, C c, P part = P());
   
   /**
   @brief constructs a parallel-transform task
@@ -477,7 +477,7 @@ class FlowBuilder {
     typename B1, typename E1, typename B2, typename O, typename C, typename P=DefaultPartitioner,
     std::enable_if_t<!is_partitioner_v<std::decay_t<C>>, void>* = nullptr
   >
-  Task transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P&& part = P());
+  Task transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P part = P());
   
   // ------------------------------------------------------------------------
   // reduction
@@ -516,7 +516,7 @@ class FlowBuilder {
   Please refer to @ref ParallelReduction for details.
   */
   template <typename B, typename E, typename T, typename O, typename P = DefaultPartitioner>
-  Task reduce(B first, E last, T& init, O bop, P&& part = P());
+  Task reduce(B first, E last, T& init, O bop, P part = P());
   
   // ------------------------------------------------------------------------
   // transform and reduction
@@ -560,7 +560,7 @@ class FlowBuilder {
     typename B, typename E, typename T, typename BOP, typename UOP, typename P = DefaultPartitioner,
     std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>* = nullptr
   >
-  Task transform_reduce(B first, E last, T& init, BOP bop, UOP uop, P&& part = P());
+  Task transform_reduce(B first, E last, T& init, BOP bop, UOP uop, P part = P());
 
   /**
   @brief constructs an STL-styled parallel transform-reduce task
@@ -604,7 +604,7 @@ class FlowBuilder {
     std::enable_if_t<!is_partitioner_v<std::decay_t<BOP_T>>, void>* = nullptr
   >
   Task transform_reduce(
-    B1 first1, E1 last1, B2 first2, T& init, BOP_R bop_r, BOP_T bop_t, P&& part = P()
+    B1 first1, E1 last1, B2 first2, T& init, BOP_R bop_r, BOP_T bop_t, P part = P()
   );
 
   // ------------------------------------------------------------------------
@@ -618,11 +618,13 @@ class FlowBuilder {
   @tparam E ending iterator type
   @tparam D destination iterator type
   @tparam BOP summation operator type
+  @tparam P partitioner type (default tf::DefaultPartitioner)
 
   @param first start of input range
   @param last end of input range
   @param d_first start of output range (may be the same as input range)
   @param bop function to perform summation
+  @param part partitioning algorithm to schedule parallel iterations
 
   Performs the cumulative sum (aka prefix sum, aka scan) of the input range
   and writes the result to the output range. 
@@ -648,8 +650,10 @@ class FlowBuilder {
   
   Please refer to @ref ParallelScan for details.
   */
-  template <typename B, typename E, typename D, typename BOP>
-  Task inclusive_scan(B first, E last, D d_first, BOP bop);
+  template <typename B, typename E, typename D, typename BOP, typename P = DefaultPartitioner,
+    std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>* = nullptr
+  >
+  Task inclusive_scan(B first, E last, D d_first, BOP bop, P part = P());
   
   /**
   @brief creates an STL-styled parallel inclusive-scan task with an initial value
@@ -659,12 +663,14 @@ class FlowBuilder {
   @tparam D destination iterator type
   @tparam BOP summation operator type
   @tparam T initial value type
+  @tparam P partitioner type (default tf::DefaultPartitioner)
 
   @param first start of input range
   @param last end of input range
   @param d_first start of output range (may be the same as input range)
   @param bop function to perform summation
   @param init initial value
+  @param part partitioning algorithm to schedule parallel iterations
 
   Performs the cumulative sum (aka prefix sum, aka scan) of the input range
   and writes the result to the output range. 
@@ -691,8 +697,10 @@ class FlowBuilder {
   Please refer to @ref ParallelScan for details.
 
   */
-  template <typename B, typename E, typename D, typename BOP, typename T>
-  Task inclusive_scan(B first, E last, D d_first, BOP bop, T init);
+  template <typename B, typename E, typename D, typename BOP, typename T, typename P = DefaultPartitioner,
+    std::enable_if_t<!is_partitioner_v<std::decay_t<T>>, void>* = nullptr
+  >
+  Task inclusive_scan(B first, E last, D d_first, BOP bop, T init, P part = P());
   
   /**
   @brief creates an STL-styled parallel exclusive-scan task
@@ -702,12 +710,14 @@ class FlowBuilder {
   @tparam D destination iterator type
   @tparam T initial value type
   @tparam BOP summation operator type
+  @tparam P partitioner type (default tf::DefaultPartitioner)
 
   @param first start of input range
   @param last end of input range
   @param d_first start of output range (may be the same as input range)
   @param init initial value
   @param bop function to perform summation
+  @param part partitioning algorithm to schedule parallel iterations
 
   Performs the cumulative sum (aka prefix sum, aka scan) of the input range
   and writes the result to the output range. 
@@ -733,8 +743,8 @@ class FlowBuilder {
   
   Please refer to @ref ParallelScan for details.
   */
-  template <typename B, typename E, typename D, typename T, typename BOP>
-  Task exclusive_scan(B first, E last, D d_first, T init, BOP bop);
+  template <typename B, typename E, typename D, typename T, typename BOP, typename P = DefaultPartitioner>
+  Task exclusive_scan(B first, E last, D d_first, T init, BOP bop, P part = P());
   
   // ------------------------------------------------------------------------
   // transform scan
@@ -748,12 +758,14 @@ class FlowBuilder {
   @tparam D destination iterator type
   @tparam BOP summation operator type
   @tparam UOP transform operator type
+  @tparam P partitioner type (default tf::DefaultPartitioner)
 
   @param first start of input range
   @param last end of input range
   @param d_first start of output range (may be the same as input range)
   @param bop function to perform summation
   @param uop function to transform elements of the input range
+  @param part partitioning algorithm to schedule parallel iterations
 
   Write the cumulative sum (aka prefix sum, aka scan) of the input range
   to the output range. Each element of the output range contains the
@@ -780,8 +792,10 @@ class FlowBuilder {
   
   Please refer to @ref ParallelScan for details.
   */
-  template <typename B, typename E, typename D, typename BOP, typename UOP>
-  Task transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop);
+  template <typename B, typename E, typename D, typename BOP, typename UOP, typename P = DefaultPartitioner,
+    std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>* = nullptr
+  >
+  Task transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, P part = P());
   
   /**
   @brief creates an STL-styled parallel transform-inclusive scan task
@@ -792,6 +806,7 @@ class FlowBuilder {
   @tparam BOP summation operator type
   @tparam UOP transform operator type
   @tparam T initial value type
+  @tparam P partitioner type (default tf::DefaultPartitioner)
 
   @param first start of input range
   @param last end of input range
@@ -799,6 +814,7 @@ class FlowBuilder {
   @param bop function to perform summation
   @param uop function to transform elements of the input range
   @param init initial value
+  @param part partitioning algorithm to schedule parallel iterations
 
   Write the cumulative sum (aka prefix sum, aka scan) of the input range
   to the output range. Each element of the output range contains the
@@ -826,8 +842,10 @@ class FlowBuilder {
   
   Please refer to @ref ParallelScan for details.
   */
-  template <typename B, typename E, typename D, typename BOP, typename UOP, typename T>
-  Task transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init);
+  template <typename B, typename E, typename D, typename BOP, typename UOP, typename T, typename P = DefaultPartitioner,
+    std::enable_if_t<!is_partitioner_v<std::decay_t<T>>, void>* = nullptr
+  >
+  Task transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init, P part = P());
   
   /**
   @brief creates an STL-styled parallel transform-exclusive scan task
@@ -838,6 +856,7 @@ class FlowBuilder {
   @tparam BOP summation operator type
   @tparam UOP transform operator type
   @tparam T initial value type
+  @tparam P partitioner type (default tf::DefaultPartitioner)
 
   @param first start of input range
   @param last end of input range
@@ -845,6 +864,7 @@ class FlowBuilder {
   @param bop function to perform summation
   @param uop function to transform elements of the input range
   @param init initial value
+  @param part partitioning algorithm to schedule parallel iterations
 
   Write the cumulative sum (aka prefix sum, aka scan) of the input range
   to the output range. Each element of the output range contains the
@@ -871,8 +891,8 @@ class FlowBuilder {
   
   Please refer to @ref ParallelScan for details.
   */
-  template <typename B, typename E, typename D, typename T, typename BOP, typename UOP>
-  Task transform_exclusive_scan(B first, E last, D d_first, T init, BOP bop, UOP uop);
+  template <typename B, typename E, typename D, typename T, typename BOP, typename UOP, typename P = DefaultPartitioner>
+  Task transform_exclusive_scan(B first, E last, D d_first, T init, BOP bop, UOP uop, P part = P());
 
   // ------------------------------------------------------------------------
   // find
@@ -924,7 +944,7 @@ class FlowBuilder {
   Iterators are templated to enable stateful range using std::reference_wrapper.
   */
   template <typename B, typename E, typename T, typename UOP, typename P = DefaultPartitioner>
-  Task find_if(B first, E last, T &result, UOP predicate, P&& part = P());
+  Task find_if(B first, E last, T &result, UOP predicate, P part = P());
 
   /**
   @brief constructs a task to perform STL-styled find-if-not algorithm
@@ -972,7 +992,7 @@ class FlowBuilder {
   Iterators are templated to enable stateful range using std::reference_wrapper.
   */
   template <typename B, typename E, typename T, typename UOP, typename P = DefaultPartitioner>
-  Task find_if_not(B first, E last, T &result, UOP predicate, P &&part = P());
+  Task find_if_not(B first, E last, T &result, UOP predicate, P part = P());
 
   /**
   @brief constructs a task to perform STL-styled min-element algorithm
@@ -1024,7 +1044,7 @@ class FlowBuilder {
   Iterators are templated to enable stateful range using std::reference_wrapper.
   */
   template <typename B, typename E, typename T, typename C, typename P>
-  Task min_element(B first, E last, T& result, C comp, P&& part);
+  Task min_element(B first, E last, T& result, C comp, P part);
   
   /**
   @brief constructs a task to perform STL-styled max-element algorithm
@@ -1076,7 +1096,7 @@ class FlowBuilder {
   Iterators are templated to enable stateful range using std::reference_wrapper.
   */
   template <typename B, typename E, typename T, typename C, typename P>
-  Task max_element(B first, E last, T& result, C comp, P&& part);
+  Task max_element(B first, E last, T& result, C comp, P part);
 
   // ------------------------------------------------------------------------
   // sort

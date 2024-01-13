@@ -119,7 +119,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem><listitem><para>Added tf::Subflow::named_silent_async to allow associating a silent asynchronous task a name</para>
 </listitem><listitem><para>Added multi-conditional tasking to allow a task to jump to multiple successors</para>
 </listitem><listitem><para>Added <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> tasking interface to enable in-task scheduling control</para>
-</listitem><listitem><para>Added <ref refid="classtf_1_1FlowBuilder_1ab2db36500ea85146772acc75fc586ced" kindref="member">tf::Taskflow::transform</ref> to perform parallel-transform algorithms</para>
+</listitem><listitem><para>Added <ref refid="classtf_1_1FlowBuilder_1a97be7ceef6fa4276e3b074c10c13b826" kindref="member">tf::Taskflow::transform</ref> to perform parallel-transform algorithms</para>
 </listitem><listitem><para>Added <ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref> interface to allow users to create custom module tasks</para>
 </listitem><listitem><para>Added <ref refid="classtf_1_1FlowBuilder_1a5627f7962099ac7c4986993cffa7b909" kindref="member">tf::FlowBuilder::erase</ref> to remove a task from the associated graph</para>
 </listitem></itemizedlist>
@@ -153,10 +153,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem><listitem><para>Fixed memory leak in updating <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> of undestroyed graph</para>
 </listitem><listitem><para>Fixed data race in the object-pool when accessing the heap pointer</para>
 </listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" kindref="member">tf::Taskflow::sort</ref></para>
-</listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a97f345ee90bdeb8c0c95120752e32dcb" kindref="member">tf::Taskflow::reduce</ref></para>
-</listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1af4ebfc8f39ab2fa3b44ab93e9675e1b1" kindref="member">tf::Taskflow::transform_reduce</ref></para>
-</listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each</ref></para>
-</listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a47ea2b35d0ec18afb35b45316939dc67" kindref="member">tf::Taskflow::for_each_index</ref></para>
+</listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1afb24798ebf46e253a40b01bffb1da6a7" kindref="member">tf::Taskflow::reduce</ref></para>
+</listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1aa62d24438c0860e76153ffd129deba41" kindref="member">tf::Taskflow::transform_reduce</ref></para>
+</listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1aae3edfa278baa75b08414e083c14c836" kindref="member">tf::Taskflow::for_each</ref></para>
+</listitem><listitem><para>Fixed invalid lambda capture by reference in <ref refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" kindref="member">tf::Taskflow::for_each_index</ref></para>
 </listitem></itemizedlist>
 </para>
 <para>If you encounter any potential bugs, please submit an issue at <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>.</para>

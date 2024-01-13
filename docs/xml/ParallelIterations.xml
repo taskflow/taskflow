@@ -41,7 +41,7 @@
 </sect1>
 <sect1 id="ParallelIterations_1A1IndexBasedParallelFor">
 <title>Create an Index-based Parallel-Iteration Task</title>
-<para>Index-based parallel-for performs parallel iterations over a range <computeroutput>[first, last)</computeroutput> with the given <computeroutput>step</computeroutput> size. The task created by <ref refid="classtf_1_1FlowBuilder_1a47ea2b35d0ec18afb35b45316939dc67" kindref="member">tf::Taskflow::for_each_index(B first, E last, S step, C callable, P&amp;&amp; part)</ref> represents parallel execution of the following loop:</para>
+<para>Index-based parallel-for performs parallel iterations over a range <computeroutput>[first, last)</computeroutput> with the given <computeroutput>step</computeroutput> size. The task created by tf::Taskflow::for_each_index(B first, E last, S step, C callable, P&amp;&amp; part) represents parallel execution of the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>positive<sp/>step</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>
@@ -89,12 +89,12 @@
 </sect1>
 <sect1 id="ParallelIterations_1A1IteratorBasedParallelFor">
 <title>Create an Iterator-based Parallel-Iteration Task</title>
-<para>Iterator-based parallel-for performs parallel iterations over a range specified by two <ulink url="https://en.cppreference.com/w/cpp/iterator/iterator">STL-styled iterators</ulink>, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each(B first, E last, C callable, P&amp;&amp; part)</ref> represents a parallel execution of the following loop:</para>
+<para>Iterator-based parallel-for performs parallel iterations over a range specified by two <ulink url="https://en.cppreference.com/w/cpp/iterator/iterator">STL-styled iterators</ulink>, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by tf::Taskflow::for_each(B first, E last, C callable, P&amp;&amp; part) represents a parallel execution of the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(*i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para><ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each(B first, E last, C callable, P&amp;&amp; part)</ref> simultaneously applies the callable to the object obtained by dereferencing every iterator in the range <computeroutput>[first, last)</computeroutput>. It is user&apos;s responsibility for ensuring the range is valid within the execution of the parallel-for task. Iterators must have the post-increment operator ++ defined.</para>
+<para>tf::Taskflow::for_each(B first, E last, C callable, P&amp;&amp; part) simultaneously applies the callable to the object obtained by dereferencing every iterator in the range <computeroutput>[first, last)</computeroutput>. It is user&apos;s responsibility for ensuring the range is valid within the execution of the parallel-for task. Iterators must have the post-increment operator ++ defined.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>vec<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
 <codeline><highlight class="normal">taskflow.for_each(vec.begin(),<sp/>vec.end(),<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;parallel<sp/>for<sp/>on<sp/>item<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/><sp/></highlight></codeline>
@@ -108,7 +108,7 @@
 </sect1>
 <sect1 id="ParallelIterations_1ParallelForEachCaptureIteratorsByReference">
 <title>Capture Iterators by Reference</title>
-<para>Similar to <ref refid="classtf_1_1FlowBuilder_1a47ea2b35d0ec18afb35b45316939dc67" kindref="member">tf::Taskflow::for_each_index</ref>, iterators of <ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each</ref> are templated to allow capturing range parameters by reference, such that one task can set up the range before another task performs the parallel-for algorithm. For example:</para>
+<para>Similar to <ref refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" kindref="member">tf::Taskflow::for_each_index</ref>, iterators of <ref refid="classtf_1_1FlowBuilder_1aae3edfa278baa75b08414e083c14c836" kindref="member">tf::Taskflow::for_each</ref> are templated to allow capturing range parameters by reference, such that one task can set up the range before another task performs the parallel-for algorithm. For example:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>vec;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>first,<sp/>last;;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>

@@ -114,29 +114,29 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem></itemizedlist>
 </para>
 </listitem><listitem><para>Added parallel-scan algorithms to Taskflow<itemizedlist>
-<listitem><para><ref refid="classtf_1_1FlowBuilder_1a1c2ace9290d83c2a006614a4d66ad588" kindref="member">tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a0b589a5bbf9b18e6484fa9e554d39a39" kindref="member">tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop, T init)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a82f3c3f49a2d52cd52f6eac07a659e9c" kindref="member">tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a49f7e17d02c708035b9134d8c6c89f90" kindref="member">tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a4e0d618d8eb0b3b2e5e00443a10bf512" kindref="member">tf::Taskflow::exclusive_scan(B first, E last, D d_first, T init, BOP bop)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a8549478ef819699b30f8daf88f04d577" kindref="member">tf::Taskflow::transform_exclusive_scan(B first, E last, D d_first, T init, BOP bop, UOP uop)</ref></para>
+<listitem><para>tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop)</para>
+</listitem><listitem><para>tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop, T init)</para>
+</listitem><listitem><para>tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop)</para>
+</listitem><listitem><para>tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init)</para>
+</listitem><listitem><para>tf::Taskflow::exclusive_scan(B first, E last, D d_first, T init, BOP bop)</para>
+</listitem><listitem><para>tf::Taskflow::transform_exclusive_scan(B first, E last, D d_first, T init, BOP bop, UOP uop)</para>
 </listitem></itemizedlist>
 </para>
 </listitem><listitem><para>Added parallel-find algorithms to Taskflow<itemizedlist>
-<listitem><para><ref refid="classtf_1_1FlowBuilder_1a94e70e5f7a459a7762cc312b6d6dec79" kindref="member">tf::Taskflow::find_if(B first, E last, T&amp; result, UOP predicate, P&amp;&amp; part)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1aae268c9763df9323dc349fb1b35988cf" kindref="member">tf::Taskflow::find_if_not(B first, E last, T&amp; result, UOP predicate, P&amp;&amp; part)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1ad6a7caf3cfc8d1887bd211be307a3eb0" kindref="member">tf::Taskflow::min_element(B first, E last, T&amp; result, C comp, P&amp;&amp; part)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1af0415d1fa5f36fee2405b0fcbf592fe0" kindref="member">tf::Taskflow::max_element(B first, E last, T&amp; result, C comp, P&amp;&amp; part)</ref></para>
+<listitem><para>tf::Taskflow::find_if(B first, E last, T&amp; result, UOP predicate, P&amp;&amp; part)</para>
+</listitem><listitem><para>tf::Taskflow::find_if_not(B first, E last, T&amp; result, UOP predicate, P&amp;&amp; part)</para>
+</listitem><listitem><para>tf::Taskflow::min_element(B first, E last, T&amp; result, C comp, P&amp;&amp; part)</para>
+</listitem><listitem><para>tf::Taskflow::max_element(B first, E last, T&amp; result, C comp, P&amp;&amp; part)</para>
 </listitem></itemizedlist>
 </para>
 </listitem><listitem><para>Modified <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> as a derived class from <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref></para>
 </listitem><listitem><para>Extended parallel algorithms to support different partitioning algorithms<itemizedlist>
-<listitem><para><ref refid="classtf_1_1FlowBuilder_1a47ea2b35d0ec18afb35b45316939dc67" kindref="member">tf::Taskflow::for_each_index(B first, E last, S step, C callable, P&amp;&amp; part)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a025717373e424a6ccf9a61163bdaa585" kindref="member">tf::Taskflow::for_each(B first, E last, C callable, P&amp;&amp; part)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1ab2db36500ea85146772acc75fc586ced" kindref="member">tf::Taskflow::transform(B first1, E last1, O d_first, C c, P&amp;&amp; part)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a519ca8f909c86efdc70fa01f28156219" kindref="member">tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P&amp;&amp; part)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a97f345ee90bdeb8c0c95120752e32dcb" kindref="member">tf::Taskflow::reduce(B first, E last, T&amp; result, O bop, P&amp;&amp; part)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1af4ebfc8f39ab2fa3b44ab93e9675e1b1" kindref="member">tf::Taskflow::transform_reduce(B first, E last, T&amp; result, BOP bop, UOP uop, P&amp;&amp; part)</ref></para>
+<listitem><para>tf::Taskflow::for_each_index(B first, E last, S step, C callable, P&amp;&amp; part)</para>
+</listitem><listitem><para>tf::Taskflow::for_each(B first, E last, C callable, P&amp;&amp; part)</para>
+</listitem><listitem><para>tf::Taskflow::transform(B first1, E last1, O d_first, C c, P&amp;&amp; part)</para>
+</listitem><listitem><para>tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P&amp;&amp; part)</para>
+</listitem><listitem><para>tf::Taskflow::reduce(B first, E last, T&amp; result, O bop, P&amp;&amp; part)</para>
+</listitem><listitem><para>tf::Taskflow::transform_reduce(B first, E last, T&amp; result, BOP bop, UOP uop, P&amp;&amp; part)</para>
 </listitem></itemizedlist>
 </para>
 </listitem><listitem><para>Improved the performance of <ref refid="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" kindref="member">tf::Taskflow::sort</ref> for plain-old-data (POD) type</para>

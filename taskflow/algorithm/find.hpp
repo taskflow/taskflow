@@ -62,29 +62,27 @@ TF_FORCE_INLINE bool find_if_not_loop(
 // Function: make_find_if_task
 template <typename B, typename E, typename T, typename UOP, typename P = DefaultPartitioner>
 TF_FORCE_INLINE auto make_find_if_task(
-  B first, E last, T& result, UOP predicate, P&& part = P()
+  B first, E last, T& result, UOP predicate, P part = P()
 ) {
   
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  return 
-  [b=first, e=last, predicate, &result, part=std::forward<P>(part)] 
-  (Runtime& rt) mutable {
+  return [=, &result] (Runtime& rt) mutable {
 
     // fetch the stateful values
-    B_t beg = b;
-    E_t end = e;
+    B_t beg = first;
+    E_t end = last;
 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      part.invoke([&](){
+      TF_MAKE_LOOP_TASK( 
         result = std::find_if(beg, end, predicate);
-      });
+      );
       return;
     }
 
@@ -106,7 +104,7 @@ TF_FORCE_INLINE auto make_find_if_task(
         launch_loop(W, w, rt,
           [N, W, curr_b, chunk_size, beg, &predicate, &offset, &part] 
           () mutable {
-            part.invoke([&]{
+            TF_MAKE_LOOP_TASK( 
               part.loop_until(N, W, curr_b, chunk_size,
                 [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
                   return detail::find_if_loop(
@@ -114,7 +112,7 @@ TF_FORCE_INLINE auto make_find_if_task(
                   );
                 }
               ); 
-            });
+            );
           }
         );
       }
@@ -126,7 +124,7 @@ TF_FORCE_INLINE auto make_find_if_task(
       std::atomic<size_t> next(0);
       launch_loop(N, W, rt, next, part, 
         [N, W, beg, &predicate, &offset, &next, &part] () mutable {
-          part.invoke([&]{
+          TF_MAKE_LOOP_TASK(
             part.loop_until(N, W, next, 
               [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
                 return detail::find_if_loop(
@@ -134,7 +132,7 @@ TF_FORCE_INLINE auto make_find_if_task(
                 );
               }
             ); 
-          });
+          );
         }
       );
     }
@@ -147,29 +145,27 @@ TF_FORCE_INLINE auto make_find_if_task(
 // Function: make_find_if_not_task
 template <typename B, typename E, typename T, typename UOP, typename P = DefaultPartitioner>
 TF_FORCE_INLINE auto make_find_if_not_task(
-  B first, E last, T& result, UOP predicate, P&& part = P()
+  B first, E last, T& result, UOP predicate, P part = P()
 ) {
   
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  return
-  [b=first, e=last, predicate, &result, part=std::forward<P>(part)] 
-  (Runtime& rt) mutable {
+  return [=, &result] (Runtime& rt) mutable {
 
     // fetch the stateful values
-    B_t beg = b;
-    E_t end = e;
+    B_t beg = first;
+    E_t end = last;
 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      part.invoke([&](){
+      TF_MAKE_LOOP_TASK(
         result = std::find_if_not(beg, end, predicate);
-      });
+      );
       return;
     }
 
@@ -190,7 +186,7 @@ TF_FORCE_INLINE auto make_find_if_not_task(
 
         launch_loop(W, w, rt,
           [N, W, curr_b, chunk_size, beg, &predicate, &offset, &part] () mutable {
-            part.invoke([&]{
+            TF_MAKE_LOOP_TASK(
               part.loop_until(N, W, curr_b, chunk_size,
                 [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
                   return detail::find_if_not_loop(
@@ -198,7 +194,7 @@ TF_FORCE_INLINE auto make_find_if_not_task(
                   );
                 }
               ); 
-            });
+            );
           }
         );
       }
@@ -210,7 +206,7 @@ TF_FORCE_INLINE auto make_find_if_not_task(
       std::atomic<size_t> next(0);
       launch_loop(N, W, rt, next, part,
         [N, W, beg, &predicate, &offset, &next, &part] () mutable {
-          part.invoke([&](){
+          TF_MAKE_LOOP_TASK(
             part.loop_until(N, W, next, 
               [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
                 return detail::find_if_not_loop(
@@ -218,7 +214,7 @@ TF_FORCE_INLINE auto make_find_if_not_task(
                 );
               }
             );
-          });
+          );
         }
       );
     }
@@ -231,29 +227,27 @@ TF_FORCE_INLINE auto make_find_if_not_task(
 // Function: make_min_element_task
 template <typename B, typename E, typename T, typename C, typename P = DefaultPartitioner>
 TF_FORCE_INLINE auto make_min_element_task(
-  B first, E last, T& result, C comp, P&& part = P()
+  B first, E last, T& result, C comp, P part = P()
 ) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  return 
-  [b=first, e=last, &result, comp, part=std::forward<P>(part)] 
-  (Runtime& rt) mutable {
+  return [=, &result] (Runtime& rt) mutable {
 
     // fetch the iterator values
-    B_t beg = b;
-    E_t end = e;
+    B_t beg = first;
+    E_t end = last;
 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      part.invoke([&](){
+      TF_MAKE_LOOP_TASK(
         result = std::min_element(beg, end, comp);
-      });
+      );
       return;
     }
 
@@ -280,7 +274,7 @@ TF_FORCE_INLINE auto make_min_element_task(
         
         launch_loop(W, w, rt,
         [beg, curr_b, N, W, chunk_size, &comp, &mutex, &result, &part] () mutable {
-          part.invoke([&](){
+          TF_MAKE_LOOP_TASK(
 
             std::advance(beg, curr_b);
 
@@ -321,7 +315,7 @@ TF_FORCE_INLINE auto make_min_element_task(
             if(comp(*smallest, *result)) {
               result = smallest;
             }
-          });
+          );
         });
       }
       rt.corun_all();
@@ -332,7 +326,7 @@ TF_FORCE_INLINE auto make_min_element_task(
       launch_loop(N, W, rt, next, part, 
         [beg, N, W, &next, &comp, &mutex, &result, &part] () mutable {
 
-          part.invoke([&](){
+          TF_MAKE_LOOP_TASK(
 
             // pre-reduce
             size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
@@ -375,7 +369,7 @@ TF_FORCE_INLINE auto make_min_element_task(
               result = smallest;
             }
 
-          });
+          );
         }
       );
     }
@@ -385,29 +379,27 @@ TF_FORCE_INLINE auto make_min_element_task(
 // Function: make_max_element_task
 template <typename B, typename E, typename T, typename C, typename P = DefaultPartitioner>
 TF_FORCE_INLINE auto make_max_element_task(
-  B first, E last, T& result, C comp, P&& part = P()
+  B first, E last, T& result, C comp, P part = P()
 ) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using namespace std::string_literals;
 
-  return 
-  [b=first, e=last, &result, comp, part=std::forward<P>(part)] 
-  (Runtime& rt) mutable {
+  return [=, &result] (Runtime& rt) mutable {
 
     // fetch the iterator values
-    B_t beg = b;
-    E_t end = e;
+    B_t beg = first;
+    E_t end = last;
 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      part.invoke([&](){
+      TF_MAKE_LOOP_TASK(
         result = std::max_element(beg, end, comp);
-      });
+      );
       return;
     }
 
@@ -435,7 +427,7 @@ TF_FORCE_INLINE auto make_max_element_task(
         launch_loop(W, w, rt,
         [beg, curr_b, N, W, chunk_size, &comp, &mutex, &result, &part] () mutable {
 
-          part.invoke([&](){
+          TF_MAKE_LOOP_TASK(
 
             std::advance(beg, curr_b);
 
@@ -477,7 +469,7 @@ TF_FORCE_INLINE auto make_max_element_task(
               result = largest;
             }
 
-          });
+          );
         });
       }
       rt.corun_all();
@@ -488,7 +480,7 @@ TF_FORCE_INLINE auto make_max_element_task(
       launch_loop(N, W, rt, next, part,
         [beg, N, W, &next, &comp, &mutex, &result, &part] () mutable {
 
-          part.invoke([&](){
+          TF_MAKE_LOOP_TASK(
 
             // pre-reduce
             size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
@@ -531,7 +523,7 @@ TF_FORCE_INLINE auto make_max_element_task(
               result = largest;
             }
 
-          });
+          );
         }
       );
     }
@@ -542,18 +534,14 @@ TF_FORCE_INLINE auto make_max_element_task(
 
 // Function: find_if
 template <typename B, typename E, typename T, typename UOP, typename P>
-Task tf::FlowBuilder::find_if(B first, E last, T& result, UOP predicate, P&& part) {
-  return emplace(make_find_if_task(
-    first, last, result, predicate, std::forward<P>(part)
-  ));
+Task tf::FlowBuilder::find_if(B first, E last, T& result, UOP predicate, P part) {
+  return emplace(make_find_if_task(first, last, result, predicate, part));
 }
 
 // Function: find_if_not
 template <typename B, typename E, typename T, typename UOP, typename P>
-Task tf::FlowBuilder::find_if_not(B first, E last, T& result, UOP predicate, P&& part) {
-  return emplace(make_find_if_not_task(
-    first, last, result, predicate, std::forward<P>(part)
-  ));
+Task tf::FlowBuilder::find_if_not(B first, E last, T& result, UOP predicate, P part) {
+  return emplace(make_find_if_not_task(first, last, result, predicate, part));
 }
 
 // ----------------------------------------------------------------------------
@@ -562,10 +550,8 @@ Task tf::FlowBuilder::find_if_not(B first, E last, T& result, UOP predicate, P&&
 
 // Function: min_element
 template <typename B, typename E, typename T, typename C, typename P>
-Task FlowBuilder::min_element(B first, E last, T& result, C comp, P&& part) {
-  return emplace(make_min_element_task(
-    first, last, result, comp, std::forward<P>(part)
-  ));
+Task FlowBuilder::min_element(B first, E last, T& result, C comp, P part) {
+  return emplace(make_min_element_task(first, last, result, comp, part));
 }
 
 // ----------------------------------------------------------------------------
@@ -574,10 +560,8 @@ Task FlowBuilder::min_element(B first, E last, T& result, C comp, P&& part) {
 
 // Function: max_element
 template <typename B, typename E, typename T, typename C, typename P>
-Task FlowBuilder::max_element(B first, E last, T& result, C comp, P&& part) {
-  return emplace(make_max_element_task(
-    first, last, result, comp, std::forward<P>(part)
-  ));
+Task FlowBuilder::max_element(B first, E last, T& result, C comp, P part) {
+  return emplace(make_max_element_task(first, last, result, comp, part));
 }
 
 }  // end of namespace tf -----------------------------------------------------

@@ -137,159 +137,165 @@
             <dd>adds adjacent dependency links to a linear list of tasks</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename C, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a025717373e424a6ccf9a61163bdaa585" class="m-doc">for_each</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper">auto <a href="#aae3edfa278baa75b08414e083c14c836" class="m-doc">for_each</a>(</span><span class="m-doc-wrap">B first,
               E last,
               C callable,
-              P&amp;&amp; part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+              P part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs an STL-styled parallel-for task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename S, typename C, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a47ea2b35d0ec18afb35b45316939dc67" class="m-doc">for_each_index</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper">auto <a href="#a3b132bd902331a11b04b4ad66cf8bf77" class="m-doc">for_each_index</a>(</span><span class="m-doc-wrap">B first,
               E last,
               S step,
               C callable,
-              P&amp;&amp; part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+              P part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs an STL-styled index-based parallel-for task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename O, typename C, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#ab2db36500ea85146772acc75fc586ced" class="m-doc">transform</a>(</span><span class="m-doc-wrap">B first1,
+              <span class="m-doc-wrap-bumper">auto <a href="#a97be7ceef6fa4276e3b074c10c13b826" class="m-doc">transform</a>(</span><span class="m-doc-wrap">B first1,
               E last1,
               O d_first,
               C c,
-              P&amp;&amp; part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+              P part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs a parallel-transform task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename B1, typename E1, typename B2, typename O, typename C, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;!<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;C&gt;&gt;, void&gt;* = nullptr&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a519ca8f909c86efdc70fa01f28156219" class="m-doc">transform</a>(</span><span class="m-doc-wrap">B1 first1,
+              <span class="m-doc-wrap-bumper">auto <a href="#a7ea96d3fa0aa9e3ff337a9f1e37682b0" class="m-doc">transform</a>(</span><span class="m-doc-wrap">B1 first1,
               E1 last1,
               B2 first2,
               O d_first,
               C c,
-              P&amp;&amp; part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+              P part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs a parallel-transform task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename O, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a97f345ee90bdeb8c0c95120752e32dcb" class="m-doc">reduce</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper">auto <a href="#afb24798ebf46e253a40b01bffb1da6a7" class="m-doc">reduce</a>(</span><span class="m-doc-wrap">B first,
               E last,
               T&amp; init,
               O bop,
-              P&amp;&amp; part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+              P part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs an STL-styled parallel-reduce task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename BOP, typename UOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#af4ebfc8f39ab2fa3b44ab93e9675e1b1" class="m-doc">transform_reduce</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper">auto <a href="#aa62d24438c0860e76153ffd129deba41" class="m-doc">transform_reduce</a>(</span><span class="m-doc-wrap">B first,
               E last,
               T&amp; init,
               BOP bop,
               UOP uop,
-              P&amp;&amp; part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+              P part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs an STL-styled parallel transform-reduce task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;!<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;BOP_T&gt;&gt;, void&gt;* = nullptr&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a21a552e5aad0dd1681c733703edd90e0" class="m-doc">transform_reduce</a>(</span><span class="m-doc-wrap">B1 first1,
+              <span class="m-doc-wrap-bumper">auto <a href="#adcd90e5b46299f4ccab33caf46edcbc0" class="m-doc">transform_reduce</a>(</span><span class="m-doc-wrap">B1 first1,
               E1 last1,
               B2 first2,
               T&amp; init,
               BOP_R bop_r,
               BOP_T bop_t,
-              P&amp;&amp; part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+              P part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs an STL-styled parallel transform-reduce task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename D, typename BOP&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a1c2ace9290d83c2a006614a4d66ad588" class="m-doc">inclusive_scan</a>(</span><span class="m-doc-wrap">B first,
+              <div class="m-doc-template">template&lt;typename B, typename E, typename D, typename BOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#abcfd93880168b7c701c4e9da2e8657de" class="m-doc">inclusive_scan</a>(</span><span class="m-doc-wrap">B first,
               E last,
               D d_first,
-              BOP bop) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+              BOP bop,
+              P part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>creates an STL-styled parallel inclusive-scan task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename D, typename BOP, typename T&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a0b589a5bbf9b18e6484fa9e554d39a39" class="m-doc">inclusive_scan</a>(</span><span class="m-doc-wrap">B first,
+              <div class="m-doc-template">template&lt;typename B, typename E, typename D, typename BOP, typename T, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;!<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;T&gt;&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a0f80c33f083b423d4d19b2a3f2650d65" class="m-doc">inclusive_scan</a>(</span><span class="m-doc-wrap">B first,
               E last,
               D d_first,
               BOP bop,
-              T init) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+              T init,
+              P part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>creates an STL-styled parallel inclusive-scan task with an initial value</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename D, typename T, typename BOP&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a4e0d618d8eb0b3b2e5e00443a10bf512" class="m-doc">exclusive_scan</a>(</span><span class="m-doc-wrap">B first,
+              <div class="m-doc-template">template&lt;typename B, typename E, typename D, typename T, typename BOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a7ba5b95020fe35f12ee6bdb97ac84156" class="m-doc">exclusive_scan</a>(</span><span class="m-doc-wrap">B first,
               E last,
               D d_first,
               T init,
-              BOP bop) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+              BOP bop,
+              P part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>creates an STL-styled parallel exclusive-scan task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename D, typename BOP, typename UOP&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a82f3c3f49a2d52cd52f6eac07a659e9c" class="m-doc">transform_inclusive_scan</a>(</span><span class="m-doc-wrap">B first,
-              E last,
-              D d_first,
-              BOP bop,
-              UOP uop) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
-            </dt>
-            <dd>creates an STL-styled parallel transform-inclusive scan task</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename D, typename BOP, typename UOP, typename T&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a49f7e17d02c708035b9134d8c6c89f90" class="m-doc">transform_inclusive_scan</a>(</span><span class="m-doc-wrap">B first,
+              <div class="m-doc-template">template&lt;typename B, typename E, typename D, typename BOP, typename UOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#ab1afb02f55255db38625eded6bf6a1d4" class="m-doc">transform_inclusive_scan</a>(</span><span class="m-doc-wrap">B first,
               E last,
               D d_first,
               BOP bop,
               UOP uop,
-              T init) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+              P part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>creates an STL-styled parallel transform-inclusive scan task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename D, typename T, typename BOP, typename UOP&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a8549478ef819699b30f8daf88f04d577" class="m-doc">transform_exclusive_scan</a>(</span><span class="m-doc-wrap">B first,
+              <div class="m-doc-template">template&lt;typename B, typename E, typename D, typename BOP, typename UOP, typename T, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;!<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;T&gt;&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#aa7f9f4805a150cf8d82938388c419078" class="m-doc">transform_inclusive_scan</a>(</span><span class="m-doc-wrap">B first,
+              E last,
+              D d_first,
+              BOP bop,
+              UOP uop,
+              T init,
+              P part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+            </dt>
+            <dd>creates an STL-styled parallel transform-inclusive scan task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename B, typename E, typename D, typename T, typename BOP, typename UOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a2b7965f3611737503a73ab41714642b0" class="m-doc">transform_exclusive_scan</a>(</span><span class="m-doc-wrap">B first,
               E last,
               D d_first,
               T init,
               BOP bop,
-              UOP uop) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+              UOP uop,
+              P part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>creates an STL-styled parallel transform-exclusive scan task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename UOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a94e70e5f7a459a7762cc312b6d6dec79" class="m-doc">find_if</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper">auto <a href="#a46a96f5889e6ac87b1ff8d6313b5f471" class="m-doc">find_if</a>(</span><span class="m-doc-wrap">B first,
               E last,
               T&amp; result,
               UOP predicate,
-              P&amp;&amp; part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+              P part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs a task to perform STL-styled find-if algorithm</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename UOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#aae268c9763df9323dc349fb1b35988cf" class="m-doc">find_if_not</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper">auto <a href="#a95fa2719fa7bbe7d171cf474ddb06726" class="m-doc">find_if_not</a>(</span><span class="m-doc-wrap">B first,
               E last,
               T&amp; result,
               UOP predicate,
-              P&amp;&amp; part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+              P part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs a task to perform STL-styled find-if-not algorithm</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename C, typename P&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#ad6a7caf3cfc8d1887bd211be307a3eb0" class="m-doc">min_element</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper">auto <a href="#a6bf43eeaa81900084a472be1d36d46a6" class="m-doc">min_element</a>(</span><span class="m-doc-wrap">B first,
               E last,
               T&amp; result,
               C comp,
-              P&amp;&amp; part) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+              P part) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs a task to perform STL-styled min-element algorithm</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename C, typename P&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#af0415d1fa5f36fee2405b0fcbf592fe0" class="m-doc">max_element</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper">auto <a href="#a6be5d7f053a868647c3b9e0d9cdf6b68" class="m-doc">max_element</a>(</span><span class="m-doc-wrap">B first,
               E last,
               T&amp; result,
               C comp,
-              P&amp;&amp; part) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+              P part) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs a task to perform STL-styled max-element algorithm</dd>
             <dt>
@@ -679,15 +685,15 @@
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;D&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
 <span class="n">taskflow</span><span class="p">.</span><span class="n">linearize</span><span class="p">({</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">});</span><span class="w">  </span><span class="c1">// A-&gt;B-&gt;C-&gt;D</span></pre>
           </div></section>
-          <section class="m-doc-details" id="a025717373e424a6ccf9a61163bdaa585"><div>
+          <section class="m-doc-details" id="aae3edfa278baa75b08414e083c14c836"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename B, typename E, typename C, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a025717373e424a6ccf9a61163bdaa585" class="m-doc-self">for_each</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aae3edfa278baa75b08414e083c14c836" class="m-doc-self">for_each</a>(</span><span class="m-doc-wrap">B first,
               E last,
               C callable,
-              P&amp;&amp; part = P())</span></span>
+              P part = P())</span></span>
             </h3>
             <p>constructs an STL-styled parallel-for task</p>
             <table class="m-table m-fullwidth m-flat">
@@ -744,16 +750,16 @@
 <span class="w">  </span><span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">);</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the dereferenced iterator type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a47ea2b35d0ec18afb35b45316939dc67"><div>
+          <section class="m-doc-details" id="a3b132bd902331a11b04b4ad66cf8bf77"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename B, typename E, typename S, typename C, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a47ea2b35d0ec18afb35b45316939dc67" class="m-doc-self">for_each_index</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3b132bd902331a11b04b4ad66cf8bf77" class="m-doc-self">for_each_index</a>(</span><span class="m-doc-wrap">B first,
               E last,
               S step,
               C callable,
-              P&amp;&amp; part = P())</span></span>
+              P part = P())</span></span>
             </h3>
             <p>constructs an STL-styled index-based parallel-for task</p>
             <table class="m-table m-fullwidth m-flat">
@@ -824,16 +830,16 @@
 <span class="w">  </span><span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the integral index type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="ab2db36500ea85146772acc75fc586ced"><div>
+          <section class="m-doc-details" id="a97be7ceef6fa4276e3b074c10c13b826"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename B, typename E, typename O, typename C, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab2db36500ea85146772acc75fc586ced" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">B first1,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a97be7ceef6fa4276e3b074c10c13b826" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">B first1,
               E last1,
               O d_first,
               C c,
-              P&amp;&amp; part = P())</span></span>
+              P part = P())</span></span>
             </h3>
             <p>constructs a parallel-transform task</p>
             <table class="m-table m-fullwidth m-flat">
@@ -898,17 +904,17 @@
 <span class="w">  </span><span class="o">*</span><span class="n">d_first</span><span class="o">++</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="p">(</span><span class="o">*</span><span class="n">first1</span><span class="o">++</span><span class="p">);</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the dereferenced iterator type.</p><p>Please refer to <a href="ParallelTransforms.html" class="m-doc">Parallel Transforms</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a519ca8f909c86efdc70fa01f28156219"><div>
+          <section class="m-doc-details" id="a7ea96d3fa0aa9e3ff337a9f1e37682b0"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename B1, typename E1, typename B2, typename O, typename C, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;!<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;C&gt;&gt;, void&gt;* = nullptr&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a519ca8f909c86efdc70fa01f28156219" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">B1 first1,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a7ea96d3fa0aa9e3ff337a9f1e37682b0" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">B1 first1,
               E1 last1,
               B2 first2,
               O d_first,
               C c,
-              P&amp;&amp; part = P())</span></span>
+              P part = P())</span></span>
             </h3>
             <p>constructs a parallel-transform task</p>
             <table class="m-table m-fullwidth m-flat">
@@ -981,16 +987,16 @@
 <span class="w">  </span><span class="o">*</span><span class="n">d_first</span><span class="o">++</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="p">(</span><span class="o">*</span><span class="n">first1</span><span class="o">++</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">first2</span><span class="o">++</span><span class="p">);</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take two arguments of dereferenced elements from the two input ranges.</p><p>Please refer to <a href="ParallelTransforms.html" class="m-doc">Parallel Transforms</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a97f345ee90bdeb8c0c95120752e32dcb"><div>
+          <section class="m-doc-details" id="afb24798ebf46e253a40b01bffb1da6a7"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename B, typename E, typename T, typename O, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a97f345ee90bdeb8c0c95120752e32dcb" class="m-doc-self">reduce</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#afb24798ebf46e253a40b01bffb1da6a7" class="m-doc-self">reduce</a>(</span><span class="m-doc-wrap">B first,
               E last,
               T&amp; init,
               O bop,
-              P&amp;&amp; part = P())</span></span>
+              P part = P())</span></span>
             </h3>
             <p>constructs an STL-styled parallel-reduce task</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1055,17 +1061,17 @@
 <span class="w">  </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bop</span><span class="p">(</span><span class="n">init</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">itr</span><span class="p">);</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="af4ebfc8f39ab2fa3b44ab93e9675e1b1"><div>
+          <section class="m-doc-details" id="aa62d24438c0860e76153ffd129deba41"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename B, typename E, typename T, typename BOP, typename UOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af4ebfc8f39ab2fa3b44ab93e9675e1b1" class="m-doc-self">transform_reduce</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa62d24438c0860e76153ffd129deba41" class="m-doc-self">transform_reduce</a>(</span><span class="m-doc-wrap">B first,
               E last,
               T&amp; init,
               BOP bop,
               UOP uop,
-              P&amp;&amp; part = P())</span></span>
+              P part = P())</span></span>
             </h3>
             <p>constructs an STL-styled parallel transform-reduce task</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1138,18 +1144,18 @@
 <span class="w">  </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bop</span><span class="p">(</span><span class="n">init</span><span class="p">,</span><span class="w"> </span><span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">));</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a21a552e5aad0dd1681c733703edd90e0"><div>
+          <section class="m-doc-details" id="adcd90e5b46299f4ccab33caf46edcbc0"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;!<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;BOP_T&gt;&gt;, void&gt;* = nullptr&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a21a552e5aad0dd1681c733703edd90e0" class="m-doc-self">transform_reduce</a>(</span><span class="m-doc-wrap">B1 first1,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#adcd90e5b46299f4ccab33caf46edcbc0" class="m-doc-self">transform_reduce</a>(</span><span class="m-doc-wrap">B1 first1,
               E1 last1,
               B2 first2,
               T&amp; init,
               BOP_R bop_r,
               BOP_T bop_t,
-              P&amp;&amp; part = P())</span></span>
+              P part = P())</span></span>
             </h3>
             <p>constructs an STL-styled parallel transform-reduce task</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1230,15 +1236,16 @@
 <span class="w">  </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bop_r</span><span class="p">(</span><span class="n">init</span><span class="p">,</span><span class="w"> </span><span class="n">bop_t</span><span class="p">(</span><span class="o">*</span><span class="n">itr1</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">itr2</span><span class="p">));</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a1c2ace9290d83c2a006614a4d66ad588"><div>
+          <section class="m-doc-details" id="abcfd93880168b7c701c4e9da2e8657de"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename D, typename BOP&gt;
+                template&lt;typename B, typename E, typename D, typename BOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1c2ace9290d83c2a006614a4d66ad588" class="m-doc-self">inclusive_scan</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#abcfd93880168b7c701c4e9da2e8657de" class="m-doc-self">inclusive_scan</a>(</span><span class="m-doc-wrap">B first,
               E last,
               D d_first,
-              BOP bop)</span></span>
+              BOP bop,
+              P part = P())</span></span>
             </h3>
             <p>creates an STL-styled parallel inclusive-scan task</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1262,6 +1269,10 @@
                   <td>BOP</td>
                   <td>summation operator type</td>
                 </tr>
+                <tr>
+                  <td>P</td>
+                  <td>partitioner type (default <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                </tr>
               </tbody>
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
@@ -1283,6 +1294,10 @@
                   <td>bop</td>
                   <td>function to perform summation</td>
                 </tr>
+                <tr>
+                  <td>part</td>
+                  <td>partitioning algorithm to schedule parallel iterations</td>
+                </tr>
               </tbody>
             </table>
 <p>Performs the cumulative sum (aka prefix sum, aka scan) of the input range and writes the result to the output range. Each element of the output range contains the running total of all earlier elements using the given binary operator for summation.</p><p>This function generates an <em>inclusive</em> scan, meaning that the N-th element of the output range is the sum of the first N input elements, so the N-th input element is included.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span><span class="w"></span>
@@ -1293,16 +1308,17 @@
 
 <span class="c1">// input is {1, 3, 6, 10, 15}</span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelScan.html" class="m-doc">Parallel Scan</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a0b589a5bbf9b18e6484fa9e554d39a39"><div>
+          <section class="m-doc-details" id="a0f80c33f083b423d4d19b2a3f2650d65"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename D, typename BOP, typename T&gt;
+                template&lt;typename B, typename E, typename D, typename BOP, typename T, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;!<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;T&gt;&gt;, void&gt;* = nullptr&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0b589a5bbf9b18e6484fa9e554d39a39" class="m-doc-self">inclusive_scan</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0f80c33f083b423d4d19b2a3f2650d65" class="m-doc-self">inclusive_scan</a>(</span><span class="m-doc-wrap">B first,
               E last,
               D d_first,
               BOP bop,
-              T init)</span></span>
+              T init,
+              P part = P())</span></span>
             </h3>
             <p>creates an STL-styled parallel inclusive-scan task with an initial value</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1330,6 +1346,10 @@
                   <td>T</td>
                   <td>initial value type</td>
                 </tr>
+                <tr>
+                  <td>P</td>
+                  <td>partitioner type (default <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                </tr>
               </tbody>
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
@@ -1355,6 +1375,10 @@
                   <td>init</td>
                   <td>initial value</td>
                 </tr>
+                <tr>
+                  <td>part</td>
+                  <td>partitioning algorithm to schedule parallel iterations</td>
+                </tr>
               </tbody>
             </table>
 <p>Performs the cumulative sum (aka prefix sum, aka scan) of the input range and writes the result to the output range. Each element of the output range contains the running total of all earlier elements (and the initial value) using the given binary operator for summation.</p><p>This function generates an <em>inclusive</em> scan, meaning the N-th element of the output range is the sum of the first N input elements, so the N-th input element is included.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span><span class="w"></span>
@@ -1365,16 +1389,17 @@
 
 <span class="c1">// input is {0, 2, 5, 9, 14}</span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelScan.html" class="m-doc">Parallel Scan</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a4e0d618d8eb0b3b2e5e00443a10bf512"><div>
+          <section class="m-doc-details" id="a7ba5b95020fe35f12ee6bdb97ac84156"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename D, typename T, typename BOP&gt;
+                template&lt;typename B, typename E, typename D, typename T, typename BOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4e0d618d8eb0b3b2e5e00443a10bf512" class="m-doc-self">exclusive_scan</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a7ba5b95020fe35f12ee6bdb97ac84156" class="m-doc-self">exclusive_scan</a>(</span><span class="m-doc-wrap">B first,
               E last,
               D d_first,
               T init,
-              BOP bop)</span></span>
+              BOP bop,
+              P part = P())</span></span>
             </h3>
             <p>creates an STL-styled parallel exclusive-scan task</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1402,6 +1427,10 @@
                   <td>BOP</td>
                   <td>summation operator type</td>
                 </tr>
+                <tr>
+                  <td>P</td>
+                  <td>partitioner type (default <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                </tr>
               </tbody>
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
@@ -1427,6 +1456,10 @@
                   <td>bop</td>
                   <td>function to perform summation</td>
                 </tr>
+                <tr>
+                  <td>part</td>
+                  <td>partitioning algorithm to schedule parallel iterations</td>
+                </tr>
               </tbody>
             </table>
 <p>Performs the cumulative sum (aka prefix sum, aka scan) of the input range and writes the result to the output range. Each element of the output range contains the running total of all earlier elements (and the initial value) using the given binary operator for summation.</p><p>This function generates an <em>exclusive</em> scan, meaning the N-th element of the output range is the sum of the first N-1 input elements, so the N-th input element is not included.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span><span class="w"></span>
@@ -1437,16 +1470,17 @@
 
 <span class="c1">// input is {-1, 0, 2, 5, 9}</span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelScan.html" class="m-doc">Parallel Scan</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a82f3c3f49a2d52cd52f6eac07a659e9c"><div>
+          <section class="m-doc-details" id="ab1afb02f55255db38625eded6bf6a1d4"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename D, typename BOP, typename UOP&gt;
+                template&lt;typename B, typename E, typename D, typename BOP, typename UOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a82f3c3f49a2d52cd52f6eac07a659e9c" class="m-doc-self">transform_inclusive_scan</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab1afb02f55255db38625eded6bf6a1d4" class="m-doc-self">transform_inclusive_scan</a>(</span><span class="m-doc-wrap">B first,
               E last,
               D d_first,
               BOP bop,
-              UOP uop)</span></span>
+              UOP uop,
+              P part = P())</span></span>
             </h3>
             <p>creates an STL-styled parallel transform-inclusive scan task</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1474,6 +1508,10 @@
                   <td>UOP</td>
                   <td>transform operator type</td>
                 </tr>
+                <tr>
+                  <td>P</td>
+                  <td>partitioner type (default <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                </tr>
               </tbody>
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
@@ -1499,6 +1537,10 @@
                   <td>uop</td>
                   <td>function to transform elements of the input range</td>
                 </tr>
+                <tr>
+                  <td>part</td>
+                  <td>partitioning algorithm to schedule parallel iterations</td>
+                </tr>
               </tbody>
             </table>
 <p>Write the cumulative sum (aka prefix sum, aka scan) of the input range to the output range. Each element of the output range contains the running total of all earlier elements using <code>uop</code> to transform the input elements and using <code>bop</code> for summation.</p><p>This function generates an <em>inclusive</em> scan, meaning the Nth element of the output range is the sum of the first N input elements, so the Nth input element is included.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span><span class="w"></span>
@@ -1510,17 +1552,18 @@
 
 <span class="c1">// input is {-1, -3, -6, -10, -15}</span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelScan.html" class="m-doc">Parallel Scan</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a49f7e17d02c708035b9134d8c6c89f90"><div>
+          <section class="m-doc-details" id="aa7f9f4805a150cf8d82938388c419078"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename D, typename BOP, typename UOP, typename T&gt;
+                template&lt;typename B, typename E, typename D, typename BOP, typename UOP, typename T, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;!<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;T&gt;&gt;, void&gt;* = nullptr&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a49f7e17d02c708035b9134d8c6c89f90" class="m-doc-self">transform_inclusive_scan</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa7f9f4805a150cf8d82938388c419078" class="m-doc-self">transform_inclusive_scan</a>(</span><span class="m-doc-wrap">B first,
               E last,
               D d_first,
               BOP bop,
               UOP uop,
-              T init)</span></span>
+              T init,
+              P part = P())</span></span>
             </h3>
             <p>creates an STL-styled parallel transform-inclusive scan task</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1552,6 +1595,10 @@
                   <td>T</td>
                   <td>initial value type</td>
                 </tr>
+                <tr>
+                  <td>P</td>
+                  <td>partitioner type (default <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                </tr>
               </tbody>
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
@@ -1581,6 +1628,10 @@
                   <td>init</td>
                   <td>initial value</td>
                 </tr>
+                <tr>
+                  <td>part</td>
+                  <td>partitioning algorithm to schedule parallel iterations</td>
+                </tr>
               </tbody>
             </table>
 <p>Write the cumulative sum (aka prefix sum, aka scan) of the input range to the output range. Each element of the output range contains the running total of all earlier elements (including an initial value) using <code>uop</code> to transform the input elements and using <code>bop</code> for summation.</p><p>This function generates an <em>inclusive</em> scan, meaning the Nth element of the output range is the sum of the first N input elements, so the Nth input element is included.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span><span class="w"></span>
@@ -1593,17 +1644,18 @@
 
 <span class="c1">// input is {-2, -4, -7, -11, -16}</span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelScan.html" class="m-doc">Parallel Scan</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a8549478ef819699b30f8daf88f04d577"><div>
+          <section class="m-doc-details" id="a2b7965f3611737503a73ab41714642b0"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename D, typename T, typename BOP, typename UOP&gt;
+                template&lt;typename B, typename E, typename D, typename T, typename BOP, typename UOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8549478ef819699b30f8daf88f04d577" class="m-doc-self">transform_exclusive_scan</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a2b7965f3611737503a73ab41714642b0" class="m-doc-self">transform_exclusive_scan</a>(</span><span class="m-doc-wrap">B first,
               E last,
               D d_first,
               T init,
               BOP bop,
-              UOP uop)</span></span>
+              UOP uop,
+              P part = P())</span></span>
             </h3>
             <p>creates an STL-styled parallel transform-exclusive scan task</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1635,6 +1687,10 @@
                   <td>UOP</td>
                   <td>transform operator type</td>
                 </tr>
+                <tr>
+                  <td>P</td>
+                  <td>partitioner type (default <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                </tr>
               </tbody>
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
@@ -1664,6 +1720,10 @@
                   <td>uop</td>
                   <td>function to transform elements of the input range</td>
                 </tr>
+                <tr>
+                  <td>part</td>
+                  <td>partitioning algorithm to schedule parallel iterations</td>
+                </tr>
               </tbody>
             </table>
 <p>Write the cumulative sum (aka prefix sum, aka scan) of the input range to the output range. Each element of the output range contains the running total of all earlier elements (including an initial value) using <code>uop</code> to transform the input elements and using <code>bop</code> for summation.</p><p>This function generates an <em>exclusive</em> scan, meaning the Nth element of the output range is the sum of the first N-1 input elements, so the Nth input element is not included.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span><span class="w"></span>
@@ -1675,16 +1735,16 @@
 
 <span class="c1">// input is {-1, -2, -4, -7, -11}</span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelScan.html" class="m-doc">Parallel Scan</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a94e70e5f7a459a7762cc312b6d6dec79"><div>
+          <section class="m-doc-details" id="a46a96f5889e6ac87b1ff8d6313b5f471"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename B, typename E, typename T, typename UOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a94e70e5f7a459a7762cc312b6d6dec79" class="m-doc-self">find_if</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a46a96f5889e6ac87b1ff8d6313b5f471" class="m-doc-self">find_if</a>(</span><span class="m-doc-wrap">B first,
               E last,
               T&amp; result,
               UOP predicate,
-              P&amp;&amp; part = P())</span></span>
+              P part = P())</span></span>
             </h3>
             <p>constructs a task to perform STL-styled find-if algorithm</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1754,16 +1814,16 @@
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
 <span class="n">assert</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">22</span><span class="p">);</span><span class="w"></span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p>
           </div></section>
-          <section class="m-doc-details" id="aae268c9763df9323dc349fb1b35988cf"><div>
+          <section class="m-doc-details" id="a95fa2719fa7bbe7d171cf474ddb06726"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename B, typename E, typename T, typename UOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aae268c9763df9323dc349fb1b35988cf" class="m-doc-self">find_if_not</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a95fa2719fa7bbe7d171cf474ddb06726" class="m-doc-self">find_if_not</a>(</span><span class="m-doc-wrap">B first,
               E last,
               T&amp; result,
               UOP predicate,
-              P&amp;&amp; part = P())</span></span>
+              P part = P())</span></span>
             </h3>
             <p>constructs a task to perform STL-styled find-if-not algorithm</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1833,16 +1893,16 @@
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
 <span class="n">assert</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">22</span><span class="p">);</span><span class="w"></span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p>
           </div></section>
-          <section class="m-doc-details" id="ad6a7caf3cfc8d1887bd211be307a3eb0"><div>
+          <section class="m-doc-details" id="a6bf43eeaa81900084a472be1d36d46a6"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename B, typename E, typename T, typename C, typename P&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad6a7caf3cfc8d1887bd211be307a3eb0" class="m-doc-self">min_element</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6bf43eeaa81900084a472be1d36d46a6" class="m-doc-self">min_element</a>(</span><span class="m-doc-wrap">B first,
               E last,
               T&amp; result,
               C comp,
-              P&amp;&amp; part)</span></span>
+              P part)</span></span>
             </h3>
             <p>constructs a task to perform STL-styled min-element algorithm</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1915,16 +1975,16 @@
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
 <span class="n">assert</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span><span class="w"></span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p>
           </div></section>
-          <section class="m-doc-details" id="af0415d1fa5f36fee2405b0fcbf592fe0"><div>
+          <section class="m-doc-details" id="a6be5d7f053a868647c3b9e0d9cdf6b68"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename B, typename E, typename T, typename C, typename P&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af0415d1fa5f36fee2405b0fcbf592fe0" class="m-doc-self">max_element</a>(</span><span class="m-doc-wrap">B first,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6be5d7f053a868647c3b9e0d9cdf6b68" class="m-doc-self">max_element</a>(</span><span class="m-doc-wrap">B first,
               E last,
               T&amp; result,
               C comp,
-              P&amp;&amp; part)</span></span>
+              P part)</span></span>
             </h3>
             <p>constructs a task to perform STL-styled max-element algorithm</p>
             <table class="m-table m-fullwidth m-flat">
