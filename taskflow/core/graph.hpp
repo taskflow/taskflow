@@ -647,10 +647,12 @@ class Node {
   size_t num_weak_dependents() const;
 
   const std::string& name() const;
+  const std::string& output() const;
 
   private:
 
   std::string _name;
+  std::string _output;
   
   unsigned _priority {0};
   
@@ -856,6 +858,11 @@ inline size_t Node::num_strong_dependents() const {
 // Function: name
 inline const std::string& Node::name() const {
   return _name;
+}
+
+// Function: output
+inline const std::string& Node::output() const {
+  return _output;
 }
 
 // Function: _is_conditioner

@@ -462,9 +462,9 @@ inline void Taskflow::_dump(
     if(node->_is_conditioner()) {
       // case edge is dashed
       os << 'p' << node << " -> p" << node->_successors[s]
-         << " [style=dashed label=\"" << s << "\"];\n";
+         << " [style=dashed label=\"" << s << node->output() << "\"];\n";
     } else {
-      os << 'p' << node << " -> p" << node->_successors[s] << ";\n";
+      os << 'p' << node << " -> p" << node->_successors[s] << "[label=\"" + node->output() + "\"]" << ";\n";
     }
   }
 
@@ -472,7 +472,7 @@ inline void Taskflow::_dump(
   if(node->_parent && node->_parent->_handle.index() == Node::DYNAMIC &&
      node->_successors.size() == 0
     ) {
-    os << 'p' << node << " -> p" << node->_parent << ";\n";
+    os << 'p' << node << " -> p" << node->_parent << "[label=\"" + node->output() + "\"]" << ";\n";
   }
 
   // node info

@@ -221,6 +221,15 @@ class Task {
     Task& name(const std::string& name);
 
     /**
+    @brief assigns a output to the task
+
+    @param output a @std_string acceptable string
+
+    @return @c *this
+    */
+    Task& output(const std::string& output);
+
+    /**
     @brief assigns a callable
 
     @tparam C callable type
@@ -440,6 +449,12 @@ inline bool Task::operator != (const Task& rhs) const {
 // Function: name
 inline Task& Task::name(const std::string& name) {
   _node->_name = name;
+  return *this;
+}
+
+// Function: name
+inline Task& Task::output(const std::string& output) {
+  _node->_output = output;
   return *this;
 }
 
