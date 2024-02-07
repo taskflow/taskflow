@@ -1306,3 +1306,83 @@ TEST_CASE("ScalablePipeline.Subflow.7R.2W.4L" * doctest::timeout(300)) {
 }
 
 
+// ------------------------------------------------------------------------
+//  Scalable Pipeline with move constructor and move assignment constructor
+// ------------------------------------------------------------------------
+
+TEST_CASE("ScalablePipeline.move" * doctest::timeout(300)) {
+  
+  size_t N = 10;
+
+  std::atomic<int> counter{0};
+
+  std::vector< tf::Pipe<std::function<void(tf::Pipeflow&)>> > pipes;
+
+  for(size_t i=0; i<N; i++) {
+    pipes.emplace_back(tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) {
+      if (pf.token() == 5) {
+        pf.stop();
+      }
+      else {
+        ++counter;
+      }
+    });
+  }
+
+  using iterator_type = decltype(pipes)::iterator;
+
+  tf::ScalablePipeline<iterator_type> rhs;
+
+  REQUIRE(rhs.num_lines()  == 0);
+  REQUIRE(rhs.num_pipes()  == 0);
+  REQUIRE(rhs.num_tokens() == 0);
+
+  rhs.reset(1, pipes.begin(), pipes.end());
+
+  REQUIRE(rhs.num_lines()  == 1);
+  REQUIRE(rhs.num_pipes()  == N);
+  REQUIRE(rhs.num_tokens() == 0);
+  
+  {
+    tf::Executor executor;
+    tf::Taskflow taskflow;
+    taskflow.composed_of(rhs);
+    executor.run(taskflow).wait();
+    REQUIRE(counter == 50);
+  }
+
+  auto lhs = std::move(rhs);
+
+  REQUIRE(rhs.num_lines()  == 0);
+  REQUIRE(rhs.num_pipes()  == 0);
+  REQUIRE(rhs.num_tokens() == 0);
+  REQUIRE(lhs.num_lines()  == 1);
+  REQUIRE(lhs.num_pipes()  == N);
+  REQUIRE(lhs.num_tokens() == 5);
+  
+  {
+    tf::Executor executor;
+    tf::Taskflow taskflow;
+    taskflow.composed_of(lhs);
+    executor.run(taskflow).wait();
+    REQUIRE(counter == 50);
+  }
+
+
+  rhs = std::move(lhs);
+
+  REQUIRE(lhs.num_lines()  == 0);
+  REQUIRE(lhs.num_pipes()  == 0);
+  REQUIRE(lhs.num_tokens() == 0);
+  REQUIRE(rhs.num_lines()  == 1);
+  REQUIRE(rhs.num_pipes()  == N);
+  REQUIRE(rhs.num_tokens() == 5);
+  
+  {
+    tf::Executor executor;
+    tf::Taskflow taskflow;
+    taskflow.composed_of(rhs);
+    executor.run(taskflow).wait();
+    REQUIRE(counter == 50);
+  }
+}
