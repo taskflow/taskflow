@@ -1078,6 +1078,7 @@ class ScalablePipeline {
     std::atomic<size_t> join_counter;
   };
 
+
   public:
 
   /**
@@ -1282,6 +1283,7 @@ ScalablePipeline<P>::ScalablePipeline(size_t num_lines, P first, P last) :
   _build();
 }
 
+/*
 // move constructor
 template <typename P>
 ScalablePipeline<P>::ScalablePipeline(ScalablePipeline&& rhs) :
@@ -1298,23 +1300,99 @@ ScalablePipeline<P>::ScalablePipeline(ScalablePipeline&& rhs) :
 
   rhs._longest_deferral = 0;
   rhs._num_tokens       = 0;
+  std::cout << "scalable move constructor\n";
 }
+*/
+
+// move constructor
+template <typename P>
+ScalablePipeline<P>::ScalablePipeline(ScalablePipeline&& rhs):
+  _num_tokens           {rhs._num_tokens},
+  _pipes                {std::move(rhs._pipes)},
+  _pipeflows            {std::move(rhs._pipeflows)},
+  _lines                {std::move(rhs._lines)},
+  _ready_tokens         {std::move(rhs._ready_tokens)},
+  _token_dependencies   {std::move(rhs._token_dependencies)},
+  _deferred_tokens      {std::move(rhs._deferred_tokens)},
+  _longest_deferral     {rhs._longest_deferral}{
+
+
+  //_num_tokens = rhs._num_tokens;
+
+  //_pipes.resize(rhs.num_pipes());
+  //size_t i=0;
+  //for(auto itr = rhs._pipes.begin(); itr != rhs._pipes.end(); itr++) {
+  //  _pipes[i++] = *itr;
+  //}
+
+
+  //_pipeflows.resize(rhs.num_lines());
+  //for(size_t l = 0; l<rhs.num_lines(); l++) {
+  //  _pipeflows[l]._pipe = rhs._pipeflows[l]._pipe;
+  //  _pipeflows[l]._line = rhs._pipeflows[l]._line;
+  //  _pipeflows[l]._num_deferrals = 0;
+  //  _pipeflows[l]._dependents.clear();
+  //}
+
+  //_lines = std::make_unique<Line[]>(rhs.num_lines() * rhs._pipes.size());
+  //for(size_t l=0; l<num_lines(); l++) {
+  //  for(size_t f=0; f<num_pipes(); f++) {
+  //    _line(l, f).join_counter.store(
+  //      rhs._line(l, f).join_counter, std::memory_order_relaxed
+  //    );
+  //  }
+  //}
+ 
+  //_ready_tokens = std::move(rhs._ready_tokens);
+  //_token_dependencies = std::move(rhs._token_dependencies);
+  //_deferred_tokens = std::move(rhs._deferred_tokens);
+
+  _graph.clear();
+  _tasks.resize(_pipeflows.size()+1);
+  rhs._longest_deferral = 0;
+  rhs._num_tokens       = 0;
+  rhs._tasks.clear();
+  _build();
+}
+
+//// move assignment operator
+//template <typename P>
+//ScalablePipeline<P>& ScalablePipeline<P>::operator = (ScalablePipeline&& rhs) {
+//  _graph                = std::move(rhs._graph);
+//  _num_tokens           = rhs._num_tokens;
+//  _pipes                = std::move(rhs._pipes);
+//  _tasks                = std::move(rhs._tasks);
+//  _pipeflows            = std::move(rhs._pipeflows);
+//  _lines                = std::move(rhs._lines);
+//  rhs._num_tokens       = 0;
+//  _ready_tokens         = std::move(rhs._ready_tokens);
+//  _token_dependencies   = std::move(rhs._token_dependencies);
+//  _deferred_tokens      = std::move(rhs._deferred_tokens);
+//  _longest_deferral     = rhs._longest_deferral;
+//  rhs._longest_deferral = 0;
+//  std::cout << "scalable move assignment\n";
+//  return *this;
+//}
 
 // move assignment operator
 template <typename P>
 ScalablePipeline<P>& ScalablePipeline<P>::operator = (ScalablePipeline&& rhs) {
-  _graph                = std::move(rhs._graph);
-  _num_tokens           = rhs._num_tokens;
-  _pipes                = std::move(rhs._pipes);
-  _tasks                = std::move(rhs._tasks);
-  _pipeflows            = std::move(rhs._pipeflows);
-  _lines                = std::move(rhs._lines);
-  rhs._num_tokens       = 0;
-  _ready_tokens         = std::move(rhs._ready_tokens);
-  _token_dependencies   = std::move(rhs._token_dependencies);
-  _deferred_tokens      = std::move(rhs._deferred_tokens);
-  _longest_deferral     = rhs._longest_deferral;
+  _num_tokens         = rhs._num_tokens;
+  _pipes              = std::move(rhs._pipes);
+  _pipeflows          = std::move(rhs._pipeflows);
+  _lines              = std::move(rhs._lines);
+  _ready_tokens       = std::move(rhs._ready_tokens);
+  _token_dependencies = std::move(rhs._token_dependencies);
+  _deferred_tokens    = std::move(rhs._deferred_tokens);
+  _longest_deferral   = rhs._longest_deferral;
+
+  _graph.clear();
+  _tasks.resize(_pipeflows.size()+1);
+
   rhs._longest_deferral = 0;
+  rhs._num_tokens       = 0;
+  rhs._tasks.clear();
+  _build();
   return *this;
 }
 
@@ -1525,7 +1603,7 @@ void ScalablePipeline<P>::_build() {
   using namespace std::literals::string_literals;
 
   FlowBuilder fb(_graph);
-
+  
   // init task
   _tasks[0] = fb.emplace([this]() {
     return static_cast<int>(_num_tokens % num_lines());
@@ -1533,7 +1611,7 @@ void ScalablePipeline<P>::_build() {
 
   // line task
   for(size_t l = 0; l < num_lines(); l++) {
-
+    
     _tasks[l + 1] = fb.emplace([this, l] (tf::Runtime& rt) mutable {
 
       auto pf = &_pipeflows[l];
@@ -1598,11 +1676,11 @@ void ScalablePipeline<P>::_build() {
       else {
         _on_pipe(*pf, rt);
       }
-
+      
       size_t c_f = pf->_pipe;
       size_t n_f = (pf->_pipe + 1) % num_pipes();
       size_t n_l = (pf->_line + 1) % num_lines();
-
+      
       pf->_pipe = n_f;
 
       // ---- scheduling starts here ----
