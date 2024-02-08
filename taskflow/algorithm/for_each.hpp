@@ -75,36 +75,48 @@ TF_FORCE_INLINE auto make_for_each_task(B b, E e, C c, P part = P()) {
   };
 }
 
+template<typename C>
+using is_index_func = std::is_invocable_r<void, C, int>;
+
+template<typename C>
+using is_range_func = std::is_invocable_r<void, C, int, int>;
+
 // Function: make_for_each_index_task
-template <typename B, typename E, typename S, typename C, typename P = DefaultPartitioner>
-TF_FORCE_INLINE auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
+template <typename T, typename C, typename P = DefaultPartitioner>
+TF_FORCE_INLINE auto make_for_each_index_task(T b, T e, C c, P part = P()){
+  static_assert(std::is_integral<T>::value, "Begin and end values must be an integral type.");
+  static_assert(
+        std::disjunction<is_index_func<C>, is_range_func<C>>::value,
+        "C must be either a void function taking one int or two ints"
+  );
 
   using namespace std::string_literals;
 
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using S_t = std::decay_t<unwrap_ref_decay_t<S>>;
+  using T_t = std::decay_t<unwrap_ref_decay_t<T>>;
 
   return [=] (Runtime& rt) mutable {
 
     // fetch the iterator values
-    B_t beg = b;
-    E_t end = e;
-    S_t inc = s;
+    T_t beg = b;
+    T_t end = e;
     
     // nothing to be done if the range is invalid
-    if(is_range_invalid(beg, end, inc)) {
+    if(is_range_invalid(beg, end, 1)) {
       return;
     }
 
     size_t W = rt.executor().num_workers();
-    size_t N = distance(beg, end, inc);
+    size_t N = end-beg;
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
       TF_MAKE_LOOP_TASK(
-        for(size_t x=0; x<N; x++, beg+=inc) {
-          c(beg);
+        if constexpr(is_index_func<C>::value) {
+          for(T_t i=0; i<N; i++) {
+            c(i);
+          }
+        } else {
+          c(0, N);
         }
       );
       return;
@@ -123,9 +135,12 @@ TF_FORCE_INLINE auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
           TF_MAKE_LOOP_TASK(
             part.loop(N, W, curr_b, chunk_size,
               [&](size_t part_b, size_t part_e) {
-                auto idx = static_cast<B_t>(part_b) * inc + beg;
-                for(size_t x=part_b; x<part_e; x++, idx += inc) {
-                  c(idx);
+                if constexpr(is_index_func<C>::value) {
+                  for(size_t i=part_b; i<part_e; i++) {
+                    c(i);
+                  }
+                } else {
+                  c(part_b, part_e);
                 }
               }
             ); 
@@ -142,9 +157,12 @@ TF_FORCE_INLINE auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
         TF_MAKE_LOOP_TASK(
           part.loop(N, W, next, 
             [&](size_t part_b, size_t part_e) {
-              auto idx = static_cast<B_t>(part_b) * inc + beg;
-              for(size_t x=part_b; x<part_e; x++, idx += inc) {
-                c(idx);
+              if constexpr(is_index_func<C>::value) {
+                for(size_t i=part_b; i<part_e; i++) {
+                  c(i);
+                }
+              } else {
+                c(part_b, part_e);
               }
             }
           ); 
@@ -171,13 +189,12 @@ Task FlowBuilder::for_each(B beg, E end, C c, P part) {
 // ----------------------------------------------------------------------------
 
 // Function: for_each_index
-template <typename B, typename E, typename S, typename C, typename P>
-Task FlowBuilder::for_each_index(B beg, E end, S inc, C c, P part){
+template <typename T, typename C, typename P>
+Task FlowBuilder::for_each_index(T beg, T end, C c, P part){
   return emplace(
-    make_for_each_index_task(beg, end, inc, c, part)
+    make_for_each_index_task(beg, end, c, part)
   );
 }
 
 
 }  // end of namespace tf -----------------------------------------------------
-
