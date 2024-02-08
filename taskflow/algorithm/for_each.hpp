@@ -75,20 +75,21 @@ TF_FORCE_INLINE auto make_for_each_task(B b, E e, C c, P part = P()) {
   };
 }
 
-template<typename C>
-using is_index_func = std::is_invocable_r<void, C, int>;
+template<typename T, typename C>
+using is_index_func = std::is_invocable_r<void, C, T>;
 
-template<typename C>
-using is_range_func = std::is_invocable_r<void, C, int, int>;
+template<typename T, typename C>
+using is_range_func = std::is_invocable_r<void, C, T, T>;
 
 // Function: make_for_each_index_task
 template <typename T, typename C, typename P = DefaultPartitioner>
 TF_FORCE_INLINE auto make_for_each_index_task(T b, T e, C c, P part = P()){
   static_assert(std::is_integral<T>::value, "Begin and end values must be an integral type.");
   static_assert(
-        std::disjunction<is_index_func<C>, is_range_func<C>>::value,
+        std::disjunction<is_index_func<T, C>, is_range_func<T, C>>::value,
         "C must be either a void function taking one int or two ints"
   );
+  constexpr bool is_index_callable = is_index_func<T, C>::value;
 
   using namespace std::string_literals;
 
@@ -111,7 +112,7 @@ TF_FORCE_INLINE auto make_for_each_index_task(T b, T e, C c, P part = P()){
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
       TF_MAKE_LOOP_TASK(
-        if constexpr(is_index_func<C>::value) {
+        if constexpr(is_index_callable) {
           for(T_t i=0; i<N; i++) {
             c(i);
           }
@@ -135,7 +136,7 @@ TF_FORCE_INLINE auto make_for_each_index_task(T b, T e, C c, P part = P()){
           TF_MAKE_LOOP_TASK(
             part.loop(N, W, curr_b, chunk_size,
               [&](size_t part_b, size_t part_e) {
-                if constexpr(is_index_func<C>::value) {
+                if constexpr(is_index_callable) {
                   for(size_t i=part_b; i<part_e; i++) {
                     c(i);
                   }
@@ -157,7 +158,7 @@ TF_FORCE_INLINE auto make_for_each_index_task(T b, T e, C c, P part = P()){
         TF_MAKE_LOOP_TASK(
           part.loop(N, W, next, 
             [&](size_t part_b, size_t part_e) {
-              if constexpr(is_index_func<C>::value) {
+              if constexpr(is_index_callable) {
                 for(size_t i=part_b; i<part_e; i++) {
                   c(i);
                 }
