@@ -355,44 +355,30 @@ class FlowBuilder {
   /**
   @brief constructs an STL-styled index-based parallel-for task 
 
-  @tparam B beginning index type (must be integral)
-  @tparam E ending index type (must be integral)
-  @tparam S step type (must be integral)
+  @tparam T beginning index type (must be integral)
+  @tparam T ending index type (must be integral)
   @tparam C callable type
   @tparam P partitioner type (default tf::DefaultPartitioner)
 
   @param first index of the beginning (inclusive)
   @param last index of the end (exclusive)
-  @param step step size
   @param callable callable object to apply to each valid index
   @param part partitioning algorithm to schedule parallel iterations
 
   @return a tf::Task handle
 
   The task spawns asynchronous tasks that applies the callable object to each index
-  in the range <tt>[first, last)</tt> with the step size.
+  in the range <tt>[first, last)</tt>.
   This method is equivalent to the parallel execution of the following loop:
-
-  @code{.cpp}
-  // case 1: step size is positive
-  for(auto i=first; i<last; i+=step) {
-    callable(i);
-  }
-
-  // case 2: step size is negative
-  for(auto i=first, i>last; i+=step) {
-    callable(i);
-  }
-  @endcode
 
   Iterators are templated to enable stateful range using std::reference_wrapper.
   The callable needs to take a single argument of the integral index type.
 
   Please refer to @ref ParallelIterations for details.
   */
-  template <typename B, typename E, typename S, typename C, typename P = DefaultPartitioner>
+  template <typename T, typename C, typename P = DefaultPartitioner>
   Task for_each_index(
-    B first, E last, S step, C callable, P part = P()
+    T first, T last, C callable, P part = P()
   );
 
   // ------------------------------------------------------------------------
@@ -1408,13 +1394,3 @@ inline void Subflow::reset(bool clear_graph) {
 }
 
 }  // end of namespace tf. ---------------------------------------------------
-
-
-
-
-
-
-
-
-
-
