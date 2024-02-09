@@ -20,7 +20,7 @@
 
 #ifdef TF_DISABLE_EXCEPTION_HANDLING
   #define TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, code_block) \
-    do { code_block; } while(0)
+    code_block;
 #else
   #define TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, code_block)  \
     try {                                          \

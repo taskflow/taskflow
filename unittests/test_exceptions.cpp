@@ -401,4 +401,41 @@ TEST_CASE("Exception.ThreadSafety.4threads") {
   thread_safety(4);
 }
 
+// ----------------------------------------------------------------------------
+// Subflow exception
+// ----------------------------------------------------------------------------
+
+void test_subflow_exception(unsigned W) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  taskflow.emplace([&] (tf::Subflow& sf0) {
+    for (int i = 0; i < 16; ++i) {
+      sf0.emplace([&, i] (tf::Subflow& sf1) {
+        for (int j = 0; j < 16; ++j) {
+          sf1.emplace([&, j] () {
+            std::stringstream ss;
+            ss << "exception (" << i << " " << j << ")";
+            throw std::runtime_error(ss.str());
+            std::cout << "post-join (" << i << " " << j << ")" << std::endl;
+          });
+        }
+        sf1.join();
+        std::cout << "post-join " << i << std::endl;
+      });
+    }
+  });
+
+  try {
+    executor.run(taskflow).get();
+  }
+  catch (const std::runtime_error& e) {
+    std::cerr << "caught std::runtime_error " << e.what() << std::endl;
+  }
+}
+
+TEST_CASE("Exception.Subflow.1thread") {
+  test_subflow_exception(1);
+}
 
