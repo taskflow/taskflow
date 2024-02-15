@@ -4,13 +4,26 @@
 
 namespace tf {
 
-#define TF_MAKE_LOOP_TASK(code_block)                                                     \
-  if constexpr(std::is_same_v<typename std::decay_t<P>::closure_wrapper_type, DefaultClosureWrapper>) { \
-    code_block                                                                            \
-  }                                                                                       \
-  else {                                                                                  \
-    std::invoke(part.closure_wrapper(), [&](){ code_block });                             \
-  }                                                                                       
+template<typename TP>
+constexpr bool is_default_wrapper_v = std::is_same_v<typename std::decay_t<TP>::closure_wrapper_type, DefaultClosureWrapper>;
+
+ template<typename TP ,  typename OP, std::enable_if_t<is_default_wrapper_v<TP>, bool> = true>
+ void CodeBlockInvoker(OP op, [[maybe_unused]] TP _part)
+ {
+     op();
+ }
+
+ template<typename TP ,  typename OP, std::enable_if_t<!is_default_wrapper_v<TP>,  bool> = true>
+ void CodeBlockInvoker(OP op, [[maybe_unused]] TP _part)
+ {
+     std::invoke(_part.closure_wrapper(), op);                             \
+ };
+
+template<typename Op, typename TP>
+void TF_MAKE_LOOP_TASK(Op op, TP tp)
+{
+  CodeBlockInvoker([&](){ op(); }, tp);   
+}
 
 // Function: launch_loop
 template <typename P, typename Loop>

@@ -32,7 +32,8 @@ TF_FORCE_INLINE auto make_transform_task(
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
       TF_MAKE_LOOP_TASK(
-        std::transform(beg, end, d_beg, c);
+            			  [&](){
+          std::transform(beg, end, d_beg, c);}, part
       );
       return;
     }
@@ -47,7 +48,7 @@ TF_FORCE_INLINE auto make_transform_task(
       for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
         chunk_size = part.adjusted_chunk_size(N, W, w);
         launch_loop(W, w, rt, [=, &part] () mutable {
-          TF_MAKE_LOOP_TASK(
+          TF_MAKE_LOOP_TASK([&](){
             part.loop(N, W, curr_b, chunk_size,
               [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
                 std::advance(beg, part_b - prev_e);
@@ -57,7 +58,7 @@ TF_FORCE_INLINE auto make_transform_task(
                 }
                 prev_e = part_e;
               }
-            ); 
+            ); }, part
           );
         });
       }
@@ -68,7 +69,7 @@ TF_FORCE_INLINE auto make_transform_task(
       std::atomic<size_t> next(0);
       
       launch_loop(N, W, rt, next, part, [=, &next, &part] () mutable {
-        TF_MAKE_LOOP_TASK(
+        TF_MAKE_LOOP_TASK([&](){
           part.loop(N, W, next, 
             [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               std::advance(beg, part_b - prev_e);
@@ -79,7 +80,7 @@ TF_FORCE_INLINE auto make_transform_task(
               prev_e = part_e;
             }
           ); 
-        );
+        }, part);
       });
     }
   };
@@ -115,7 +116,9 @@ TF_FORCE_INLINE auto make_transform_task(
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
       TF_MAKE_LOOP_TASK(
+		[&](){
         std::transform(beg1, end1, beg2, d_beg, c);
+        }, part
       );
       return;
     }
@@ -130,7 +133,7 @@ TF_FORCE_INLINE auto make_transform_task(
       for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
         chunk_size = part.adjusted_chunk_size(N, W, w);
         launch_loop(W, w, rt, [=, &c, &part] () mutable {
-          TF_MAKE_LOOP_TASK(
+          TF_MAKE_LOOP_TASK([&](){
             part.loop(N, W, curr_b, chunk_size,
               [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
                 std::advance(beg1, part_b - prev_e);
@@ -141,7 +144,7 @@ TF_FORCE_INLINE auto make_transform_task(
                 }
                 prev_e = part_e;
               }
-            ); 
+          ); }, part
           );
         });
       }
@@ -151,7 +154,7 @@ TF_FORCE_INLINE auto make_transform_task(
     else {
       std::atomic<size_t> next(0);
       launch_loop(N, W, rt, next, part, [=, &c, &next, &part] () mutable {
-        TF_MAKE_LOOP_TASK(
+        TF_MAKE_LOOP_TASK([&](){
           part.loop(N, W, next, 
             [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               std::advance(beg1, part_b - prev_e);
@@ -162,7 +165,7 @@ TF_FORCE_INLINE auto make_transform_task(
               }
               prev_e = part_e;
             }
-          ); 
+        ); }, part
         );
       });
     }

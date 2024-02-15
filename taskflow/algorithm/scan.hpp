@@ -75,8 +75,9 @@ TF_FORCE_INLINE auto make_inclusive_scan_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 2) {
-      TF_MAKE_LOOP_TASK(
+      TF_MAKE_LOOP_TASK([&](){
         std::inclusive_scan(s_beg, s_end, d_beg, bop);
+      }, part
       );
       return;
     }
@@ -102,7 +103,7 @@ TF_FORCE_INLINE auto make_inclusive_scan_task(
       launch_loop(W, w, rt, [=, &rt, &bop, &buf, &counter] () mutable {
 
         TF_MAKE_LOOP_TASK(
-
+            [&](){
           auto result = d_beg;
 
           // local scan per worker
@@ -138,7 +139,7 @@ TF_FORCE_INLINE auto make_inclusive_scan_task(
           //    prev_e = curr_e;
           //  }
           //);
-        );
+      }, part);
       });
       
       std::advance(s_beg, chunk_size);
@@ -180,9 +181,9 @@ TF_FORCE_INLINE auto make_inclusive_scan_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 2) {
-      TF_MAKE_LOOP_TASK(
+      TF_MAKE_LOOP_TASK([&](){
         std::inclusive_scan(s_beg, s_end, d_beg, bop, init);
-      );
+    }, part);
       return;
     }
 
@@ -207,7 +208,7 @@ TF_FORCE_INLINE auto make_inclusive_scan_task(
       launch_loop(W, w, rt, [=, &rt, &bop, &buf, &counter] () mutable {
 
         TF_MAKE_LOOP_TASK(
-
+            [&](){
           auto result = d_beg;
 
           // local scan per worker
@@ -220,6 +221,7 @@ TF_FORCE_INLINE auto make_inclusive_scan_task(
           
           // block scan
           detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);
+      }, part
         );
       });
 
@@ -266,8 +268,8 @@ TF_FORCE_INLINE auto make_transform_inclusive_scan_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 2) {
-      TF_MAKE_LOOP_TASK(
-        std::transform_inclusive_scan(s_beg, s_end, d_beg, bop, uop);
+      TF_MAKE_LOOP_TASK([&](){
+          std::transform_inclusive_scan(s_beg, s_end, d_beg, bop, uop); }, part
       );
       return;
     }
@@ -290,7 +292,7 @@ TF_FORCE_INLINE auto make_transform_inclusive_scan_task(
       launch_loop(W, w, rt, [=, &rt, &bop, &uop, &buf, &counter] () mutable {
 
         TF_MAKE_LOOP_TASK(
-
+			[&](){
           auto result = d_beg;
 
           // local scan per worker
@@ -303,6 +305,7 @@ TF_FORCE_INLINE auto make_transform_inclusive_scan_task(
 
           // block scan
           detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);
+      }, part
         );
       });
       
@@ -345,8 +348,9 @@ TF_FORCE_INLINE auto make_transform_inclusive_scan_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 2) {
-      TF_MAKE_LOOP_TASK(
+      TF_MAKE_LOOP_TASK([&](){
         std::transform_inclusive_scan(s_beg, s_end, d_beg, bop, uop, init);
+      }, part
       );
       return;
     }
@@ -372,7 +376,7 @@ TF_FORCE_INLINE auto make_transform_inclusive_scan_task(
       launch_loop(W, w, rt, [=, &rt, &bop, &uop, &buf, &counter] () mutable {
 
         TF_MAKE_LOOP_TASK(
-
+        [&](){
           auto result = d_beg;
 
           // local scan per worker
@@ -385,6 +389,7 @@ TF_FORCE_INLINE auto make_transform_inclusive_scan_task(
           
           // block scan
           detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);
+      }, part
         );
       });
 
@@ -430,8 +435,8 @@ TF_FORCE_INLINE auto make_exclusive_scan_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 2) {
-      TF_MAKE_LOOP_TASK(
-        std::exclusive_scan(s_beg, s_end, d_beg, init, bop);
+      TF_MAKE_LOOP_TASK([&](){
+          std::exclusive_scan(s_beg, s_end, d_beg, init, bop);}, part
       );
       return;
     }
@@ -463,7 +468,7 @@ TF_FORCE_INLINE auto make_exclusive_scan_task(
       launch_loop(W, w, rt, [=, &rt, &bop, &buf, &counter] () mutable {
 
         TF_MAKE_LOOP_TASK(
-
+            [&](){
           auto result = d_beg;
 
           // local scan per worker
@@ -478,6 +483,7 @@ TF_FORCE_INLINE auto make_exclusive_scan_task(
           
           // block scan
           detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);
+      }, part
         );
       });
       
@@ -524,7 +530,9 @@ TF_FORCE_INLINE auto make_transform_exclusive_scan_task(
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 2) {
       TF_MAKE_LOOP_TASK(
+        [&](){
         std::transform_exclusive_scan(s_beg, s_end, d_beg, init, bop, uop);
+        }, part
       );
       return;
     }
@@ -556,7 +564,7 @@ TF_FORCE_INLINE auto make_transform_exclusive_scan_task(
       launch_loop(W, w, rt, [=, &rt, &bop, &uop, &buf, &counter] () mutable {
 
         TF_MAKE_LOOP_TASK(
-
+            [&](){
           auto result = d_beg;
 
           // local scan per worker
@@ -571,6 +579,7 @@ TF_FORCE_INLINE auto make_transform_exclusive_scan_task(
           
           // block scan
           detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);
+      }, part
         );
       });
       
