@@ -498,7 +498,7 @@ class cudaDeviceAllocator {
   @param n number of elements (each of size sizeof(value_type)) to be allocated
   @return a pointer to the initial element in the block of storage.
   */
-  pointer allocate( size_type n, std::allocator<void>::const_pointer = 0 )
+  pointer allocate( size_type n, const void* = 0 )
   {
     void* ptr = NULL;
     TF_CHECK_CUDA(
@@ -694,7 +694,7 @@ class cudaUSMAllocator {
   @param n number of elements (each of size sizeof(value_type)) to be allocated
   @return a pointer to the initial element in the block of storage.
   */
-  pointer allocate( size_type n, std::allocator<void>::const_pointer = 0 )
+  pointer allocate( size_type n, const void* = 0 )
   {
     void* ptr {nullptr};
     TF_CHECK_CUDA(
