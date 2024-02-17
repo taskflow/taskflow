@@ -23,8 +23,8 @@ TF_FORCE_INLINE auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      TF_MAKE_LOOP_TASK(
-        for(; beg!=end; r = bop(r, *beg++));
+      TF_MAKE_LOOP_TASK([&](){
+          for(; beg!=end; r = bop(r, *beg++));}, part
       );
       return;
     }
@@ -49,6 +49,7 @@ TF_FORCE_INLINE auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
         launch_loop(W, w, rt, [=, &bop, &mtx, &r, &part] () mutable {
 
           TF_MAKE_LOOP_TASK(
+              [&](){
             std::advance(beg, curr_b);
 
             if(N - curr_b == 1) {
@@ -82,7 +83,7 @@ TF_FORCE_INLINE auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
             // final reduce
             std::lock_guard<std::mutex> lock(mtx);
             r = bop(r, sum);
-
+        }, part
           );
 
         });
@@ -95,7 +96,7 @@ TF_FORCE_INLINE auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
       launch_loop(N, W, rt, next, part, [=, &bop, &mtx, &next, &r, &part] () mutable {
         
         TF_MAKE_LOOP_TASK(
-
+            [&](){
           // pre-reduce
           size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
@@ -130,7 +131,7 @@ TF_FORCE_INLINE auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
           // final reduce
           std::lock_guard<std::mutex> lock(mtx);
           r = bop(r, sum);
-
+      }, part
         );
       });
     }
@@ -161,8 +162,8 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      TF_MAKE_LOOP_TASK(
-        for(; beg!=end; r = bop(std::move(r), uop(*beg++)));
+      TF_MAKE_LOOP_TASK([&](){
+          for(; beg!=end; r = bop(std::move(r), uop(*beg++))); }, part
       );
       return;
     }
@@ -185,6 +186,7 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
         launch_loop(W, w, rt, [=, &bop, &uop, &mtx, &r, &part] () mutable {
 
           TF_MAKE_LOOP_TASK(
+           [&](){
 
             std::advance(beg, curr_b);
 
@@ -220,7 +222,7 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
             // final reduce
             std::lock_guard<std::mutex> lock(mtx);
             r = bop(std::move(r), std::move(sum));
-
+        }, part
           );
 
         });
@@ -235,7 +237,7 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
       launch_loop(N, W, rt, next, part, [=, &bop, &uop, &mtx, &next, &r, &part] () mutable {
 
         TF_MAKE_LOOP_TASK(
-
+            		[&](){
           // pre-reduce
           size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
@@ -270,7 +272,7 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
           // final reduce
           std::lock_guard<std::mutex> lock(mtx);
           r = bop(std::move(r), std::move(sum));
-
+      }, part
         );
       });
     }
@@ -304,8 +306,9 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      TF_MAKE_LOOP_TASK(
+      TF_MAKE_LOOP_TASK([&](){
         for(; beg1!=end1; r = bop_r(std::move(r), bop_t(*beg1++, *beg2++)));
+    }, part
       );
       return;
     }   
@@ -328,7 +331,7 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
         launch_loop(W, w, rt, [=, &bop_r, &bop_t, &mtx, &r, &part] () mutable {
 
           TF_MAKE_LOOP_TASK(
-
+              			  [&](){
             std::advance(beg1, curr_b);
             std::advance(beg2, curr_b);
 
@@ -362,7 +365,7 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
             // final reduce
             std::lock_guard<std::mutex> lock(mtx);
             r = bop_r(std::move(r), std::move(sum));
-
+        }, part
           );
 
         }); 
@@ -377,7 +380,7 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
       launch_loop(N, W, rt, next, part, [=, &bop_r, &bop_t, &mtx, &next, &r, &part] () mutable {
 
         TF_MAKE_LOOP_TASK(
-
+			[&](){
           // pre-reduce
           size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
@@ -415,7 +418,7 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
     
           // final reduce
           std::lock_guard<std::mutex> lock(mtx);
-          r = bop_r(std::move(r), std::move(sum));
+          r = bop_r(std::move(r), std::move(sum));}, part
         );
       }); 
     }   

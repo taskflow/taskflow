@@ -80,8 +80,9 @@ TF_FORCE_INLINE auto make_find_if_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      TF_MAKE_LOOP_TASK( 
+      TF_MAKE_LOOP_TASK( [&](){
         result = std::find_if(beg, end, predicate);
+        }, part
       );
       return;
     }
@@ -104,14 +105,14 @@ TF_FORCE_INLINE auto make_find_if_task(
         launch_loop(W, w, rt,
           [N, W, curr_b, chunk_size, beg, &predicate, &offset, &part] 
           () mutable {
-            TF_MAKE_LOOP_TASK( 
+            TF_MAKE_LOOP_TASK( [&](){
               part.loop_until(N, W, curr_b, chunk_size,
                 [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
                   return detail::find_if_loop(
                     offset, beg, prev_e, part_b, part_e, predicate
                   );
                 }
-              ); 
+            ); }, part
             );
           }
         );
@@ -124,14 +125,14 @@ TF_FORCE_INLINE auto make_find_if_task(
       std::atomic<size_t> next(0);
       launch_loop(N, W, rt, next, part, 
         [N, W, beg, &predicate, &offset, &next, &part] () mutable {
-          TF_MAKE_LOOP_TASK(
+          TF_MAKE_LOOP_TASK([&](){
             part.loop_until(N, W, next, 
               [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
                 return detail::find_if_loop(
                   offset, beg, prev_e, curr_b, curr_e, predicate
                 );
               }
-            ); 
+          ); }, part
           );
         }
       );
@@ -163,9 +164,9 @@ TF_FORCE_INLINE auto make_find_if_not_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      TF_MAKE_LOOP_TASK(
+      TF_MAKE_LOOP_TASK([&](){
         result = std::find_if_not(beg, end, predicate);
-      );
+      }, part);
       return;
     }
 
@@ -186,14 +187,14 @@ TF_FORCE_INLINE auto make_find_if_not_task(
 
         launch_loop(W, w, rt,
           [N, W, curr_b, chunk_size, beg, &predicate, &offset, &part] () mutable {
-            TF_MAKE_LOOP_TASK(
+            TF_MAKE_LOOP_TASK([&](){
               part.loop_until(N, W, curr_b, chunk_size,
                 [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
                   return detail::find_if_not_loop(
                     offset, beg, prev_e, part_b, part_e, predicate
                   );
                 }
-              ); 
+            ); }, part
             );
           }
         );
@@ -206,14 +207,14 @@ TF_FORCE_INLINE auto make_find_if_not_task(
       std::atomic<size_t> next(0);
       launch_loop(N, W, rt, next, part,
         [N, W, beg, &predicate, &offset, &next, &part] () mutable {
-          TF_MAKE_LOOP_TASK(
+          TF_MAKE_LOOP_TASK([&](){
             part.loop_until(N, W, next, 
               [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
                 return detail::find_if_not_loop(
                   offset, beg, prev_e, curr_b, curr_e, predicate
                 );
               }
-            );
+          );}, part
           );
         }
       );
@@ -245,8 +246,9 @@ TF_FORCE_INLINE auto make_min_element_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      TF_MAKE_LOOP_TASK(
+      TF_MAKE_LOOP_TASK([&](){
         result = std::min_element(beg, end, comp);
+      }, part
       );
       return;
     }
@@ -274,7 +276,7 @@ TF_FORCE_INLINE auto make_min_element_task(
         
         launch_loop(W, w, rt,
         [beg, curr_b, N, W, chunk_size, &comp, &mutex, &result, &part] () mutable {
-          TF_MAKE_LOOP_TASK(
+          TF_MAKE_LOOP_TASK([&](){
 
             std::advance(beg, curr_b);
 
@@ -315,6 +317,7 @@ TF_FORCE_INLINE auto make_min_element_task(
             if(comp(*smallest, *result)) {
               result = smallest;
             }
+        }, part
           );
         });
       }
@@ -326,7 +329,7 @@ TF_FORCE_INLINE auto make_min_element_task(
       launch_loop(N, W, rt, next, part, 
         [beg, N, W, &next, &comp, &mutex, &result, &part] () mutable {
 
-          TF_MAKE_LOOP_TASK(
+          TF_MAKE_LOOP_TASK([&](){
 
             // pre-reduce
             size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
@@ -368,7 +371,7 @@ TF_FORCE_INLINE auto make_min_element_task(
             if(comp(*smallest, *result)) {
               result = smallest;
             }
-
+      }, part
           );
         }
       );
@@ -397,8 +400,9 @@ TF_FORCE_INLINE auto make_max_element_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      TF_MAKE_LOOP_TASK(
+      TF_MAKE_LOOP_TASK([&](){
         result = std::max_element(beg, end, comp);
+      }, part
       );
       return;
     }
@@ -428,7 +432,7 @@ TF_FORCE_INLINE auto make_max_element_task(
         [beg, curr_b, N, W, chunk_size, &comp, &mutex, &result, &part] () mutable {
 
           TF_MAKE_LOOP_TASK(
-
+                [&](){
             std::advance(beg, curr_b);
 
             if(N - curr_b == 1) {
@@ -468,7 +472,7 @@ TF_FORCE_INLINE auto make_max_element_task(
             if(comp(*result, *largest)) {
               result = largest;
             }
-
+        }, part
           );
         });
       }
@@ -481,7 +485,7 @@ TF_FORCE_INLINE auto make_max_element_task(
         [beg, N, W, &next, &comp, &mutex, &result, &part] () mutable {
 
           TF_MAKE_LOOP_TASK(
-
+           [&](){   
             // pre-reduce
             size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
@@ -522,7 +526,7 @@ TF_FORCE_INLINE auto make_max_element_task(
             if(comp(*result, *largest)) {
               result = largest;
             }
-
+      }, part
           );
         }
       );
