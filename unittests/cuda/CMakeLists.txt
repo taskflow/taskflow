@@ -15,6 +15,7 @@ list(APPEND TF_CUDA_UNITTESTS
   test_cuda_merge
   test_cuda_basic_updates
   test_cuda_capturer_optimizer
+  test_cuda_capture
   
   #cuda_algorithms
   #cuda_algorithm_updates

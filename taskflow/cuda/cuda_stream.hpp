@@ -185,7 +185,9 @@ struct cudaEventCreator {
 */
 struct cudaEventDeleter {
   void operator () (cudaEvent_t event) const {
-    cudaEventDestroy(event);
+    if (event != nullptr) {
+      cudaEventDestroy(event);
+    }
   }
 };
 
