@@ -239,17 +239,17 @@
         </inbodydescription>
         <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="679" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="679" bodyend="679"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaUSMAllocator_1a4181ed05aa587d789311c5c6b4624905" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaUSMAllocator_1afa664496a897fc04442a5fc1988b8759" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaUSMAllocator_1a580e704508e250311f4dce9c6413d900" kindref="member">pointer</ref></type>
         <definition>pointer tf::cudaUSMAllocator&lt; T &gt;::allocate</definition>
-        <argsstring>(size_type n, std::allocator&lt; void &gt;::const_pointer=0)</argsstring>
+        <argsstring>(size_type n, const void *=0)</argsstring>
         <name>allocate</name>
         <param>
           <type><ref refid="classtf_1_1cudaUSMAllocator_1a2d145987f7535219dcfe47ee6765b2ad" kindref="member">size_type</ref></type>
           <declname>n</declname>
         </param>
         <param>
-          <type><ref refid="cpp/memory/allocator" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::allocator</ref>&lt; void &gt;::<ref refid="classtf_1_1cudaUSMAllocator_1a1bbd56f975fd433c1fd86d5008373ad0" kindref="member">const_pointer</ref></type>
+          <type>const void *</type>
           <defval>0</defval>
         </param>
         <briefdescription>
@@ -461,7 +461,7 @@ A cudaUSMAllocator enables using unified shared memory (USM) allocation for stan
     <listofallmembers>
       <member refid="classtf_1_1cudaUSMAllocator_1a174d32365a682da21469e155b95d3260" prot="public" virt="non-virtual"><scope>tf::cudaUSMAllocator</scope><name>address</name></member>
       <member refid="classtf_1_1cudaUSMAllocator_1ae9e99ab1ec08d419798e50f8d5b49802" prot="public" virt="non-virtual"><scope>tf::cudaUSMAllocator</scope><name>address</name></member>
-      <member refid="classtf_1_1cudaUSMAllocator_1a4181ed05aa587d789311c5c6b4624905" prot="public" virt="non-virtual"><scope>tf::cudaUSMAllocator</scope><name>allocate</name></member>
+      <member refid="classtf_1_1cudaUSMAllocator_1afa664496a897fc04442a5fc1988b8759" prot="public" virt="non-virtual"><scope>tf::cudaUSMAllocator</scope><name>allocate</name></member>
       <member refid="classtf_1_1cudaUSMAllocator_1a1bbd56f975fd433c1fd86d5008373ad0" prot="public" virt="non-virtual"><scope>tf::cudaUSMAllocator</scope><name>const_pointer</name></member>
       <member refid="classtf_1_1cudaUSMAllocator_1af5b1bd492a8de28eb75c136ee391b006" prot="public" virt="non-virtual"><scope>tf::cudaUSMAllocator</scope><name>const_reference</name></member>
       <member refid="classtf_1_1cudaUSMAllocator_1a9218d72dc90bc87b1ac648f5bf923439" prot="public" virt="non-virtual"><scope>tf::cudaUSMAllocator</scope><name>construct</name></member>

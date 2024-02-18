@@ -23,9 +23,9 @@ TF_FORCE_INLINE auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      TF_MAKE_LOOP_TASK([&](){
-          for(; beg!=end; r = bop(r, *beg++));}, part
-      );
+      launch_loop(part, [&](){
+        for(; beg!=end; r = bop(r, *beg++));
+      });
       return;
     }
 
@@ -46,46 +46,41 @@ TF_FORCE_INLINE auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
         // variable sum need to avoid copy at the first step
         chunk_size = std::max(size_t{2}, part.adjusted_chunk_size(N, W, w));
         
-        launch_loop(W, w, rt, [=, &bop, &mtx, &r, &part] () mutable {
+        launch_loop(W, w, rt, part, [=, &bop, &mtx, &r, &part] () mutable {
 
-          TF_MAKE_LOOP_TASK(
-              [&](){
-            std::advance(beg, curr_b);
+          std::advance(beg, curr_b);
 
-            if(N - curr_b == 1) {
-              std::lock_guard<std::mutex> lock(mtx);
-              r = bop(r, *beg);
-              return;
-            }
-
-            auto beg1 = beg++;
-            auto beg2 = beg++;
-            T sum = bop(*beg1, *beg2);
-        
-            // loop reduce
-            part.loop(N, W, curr_b, chunk_size,
-              [&, prev_e=curr_b+2](size_t part_b, size_t part_e) mutable {
-
-                if(part_b > prev_e) {
-                  std::advance(beg, part_b - prev_e);
-                }
-                else {
-                  part_b = prev_e;
-                }
-
-                for(size_t x=part_b; x<part_e; x++, beg++) {
-                  sum = bop(sum, *beg);
-                }
-                prev_e = part_e;
-              }
-            ); 
-            
-            // final reduce
+          if(N - curr_b == 1) {
             std::lock_guard<std::mutex> lock(mtx);
-            r = bop(r, sum);
-        }, part
-          );
+            r = bop(r, *beg);
+            return;
+          }
 
+          auto beg1 = beg++;
+          auto beg2 = beg++;
+          T sum = bop(*beg1, *beg2);
+        
+          // loop reduce
+          part.loop(N, W, curr_b, chunk_size,
+            [&, prev_e=curr_b+2](size_t part_b, size_t part_e) mutable {
+
+              if(part_b > prev_e) {
+                std::advance(beg, part_b - prev_e);
+              }
+              else {
+                part_b = prev_e;
+              }
+
+              for(size_t x=part_b; x<part_e; x++, beg++) {
+                sum = bop(sum, *beg);
+              }
+              prev_e = part_e;
+            }
+          ); 
+          
+          // final reduce
+          std::lock_guard<std::mutex> lock(mtx);
+          r = bop(r, sum);
         });
       }
       rt.corun_all();
@@ -94,45 +89,40 @@ TF_FORCE_INLINE auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
     else {
       std::atomic<size_t> next(0);
       launch_loop(N, W, rt, next, part, [=, &bop, &mtx, &next, &r, &part] () mutable {
-        
-        TF_MAKE_LOOP_TASK(
-            [&](){
-          // pre-reduce
-          size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
+        // pre-reduce
+        size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
-          if(s0 >= N) {
-            return;
-          }
+        if(s0 >= N) {
+          return;
+        }
 
-          std::advance(beg, s0);
+        std::advance(beg, s0);
 
-          if(N - s0 == 1) {
-            std::lock_guard<std::mutex> lock(mtx);
-            r = bop(r, *beg);
-            return;
-          }
-
-          auto beg1 = beg++;
-          auto beg2 = beg++;
-
-          T sum = bop(*beg1, *beg2);
-          
-          // loop reduce
-          part.loop(N, W, next, 
-            [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
-              std::advance(beg, curr_b - prev_e);
-              for(size_t x=curr_b; x<curr_e; x++, beg++) {
-                sum = bop(sum, *beg);
-              }
-              prev_e = curr_e;
-            }
-          ); 
-          
-          // final reduce
+        if(N - s0 == 1) {
           std::lock_guard<std::mutex> lock(mtx);
-          r = bop(r, sum);
-      }, part
-        );
+          r = bop(r, *beg);
+          return;
+        }
+
+        auto beg1 = beg++;
+        auto beg2 = beg++;
+
+        T sum = bop(*beg1, *beg2);
+        
+        // loop reduce
+        part.loop(N, W, next, 
+          [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
+            std::advance(beg, curr_b - prev_e);
+            for(size_t x=curr_b; x<curr_e; x++, beg++) {
+              sum = bop(sum, *beg);
+            }
+            prev_e = curr_e;
+          }
+        ); 
+        
+        // final reduce
+        std::lock_guard<std::mutex> lock(mtx);
+        r = bop(r, sum);
       });
     }
   };
@@ -162,9 +152,9 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      TF_MAKE_LOOP_TASK([&](){
-          for(; beg!=end; r = bop(std::move(r), uop(*beg++))); }, part
-      );
+      launch_loop(part, [&](){
+        for(; beg!=end; r = bop(std::move(r), uop(*beg++))); 
+      });
       return;
     }
 
@@ -183,48 +173,41 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
       
         chunk_size = part.adjusted_chunk_size(N, W, w);
 
-        launch_loop(W, w, rt, [=, &bop, &uop, &mtx, &r, &part] () mutable {
+        launch_loop(W, w, rt, part, [=, &bop, &uop, &mtx, &r, &part] () mutable {
+          std::advance(beg, curr_b);
 
-          TF_MAKE_LOOP_TASK(
-           [&](){
-
-            std::advance(beg, curr_b);
-
-            if(N - curr_b == 1) {
-              std::lock_guard<std::mutex> lock(mtx);
-              r = bop(std::move(r), uop(*beg));
-              return;
-            }
-
-            //auto beg1 = beg++;
-            //auto beg2 = beg++;
-            //T sum = bop(uop(*beg1), uop(*beg2));
-
-            T sum = (chunk_size == 1) ? uop(*beg++) : bop(uop(*beg++), uop(*beg++));
-        
-            // loop reduce
-            part.loop(N, W, curr_b, chunk_size,
-              [&, prev_e=curr_b+(chunk_size == 1 ? 1 : 2)]
-              (size_t part_b, size_t part_e) mutable {
-                if(part_b > prev_e) {
-                  std::advance(beg, part_b - prev_e);
-                }
-                else {
-                  part_b = prev_e;
-                }
-                for(size_t x=part_b; x<part_e; x++, beg++) {
-                  sum = bop(std::move(sum), uop(*beg));
-                }
-                prev_e = part_e;
-              }
-            ); 
-            
-            // final reduce
+          if(N - curr_b == 1) {
             std::lock_guard<std::mutex> lock(mtx);
-            r = bop(std::move(r), std::move(sum));
-        }, part
-          );
+            r = bop(std::move(r), uop(*beg));
+            return;
+          }
 
+          //auto beg1 = beg++;
+          //auto beg2 = beg++;
+          //T sum = bop(uop(*beg1), uop(*beg2));
+
+          T sum = (chunk_size == 1) ? uop(*beg++) : bop(uop(*beg++), uop(*beg++));
+        
+          // loop reduce
+          part.loop(N, W, curr_b, chunk_size,
+            [&, prev_e=curr_b+(chunk_size == 1 ? 1 : 2)]
+            (size_t part_b, size_t part_e) mutable {
+              if(part_b > prev_e) {
+                std::advance(beg, part_b - prev_e);
+              }
+              else {
+                part_b = prev_e;
+              }
+              for(size_t x=part_b; x<part_e; x++, beg++) {
+                sum = bop(std::move(sum), uop(*beg));
+              }
+              prev_e = part_e;
+            }
+          ); 
+          
+          // final reduce
+          std::lock_guard<std::mutex> lock(mtx);
+          r = bop(std::move(r), std::move(sum));
         });
       }
       
@@ -235,45 +218,40 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
       std::atomic<size_t> next(0);
         
       launch_loop(N, W, rt, next, part, [=, &bop, &uop, &mtx, &next, &r, &part] () mutable {
+        // pre-reduce
+        size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
-        TF_MAKE_LOOP_TASK(
-            		[&](){
-          // pre-reduce
-          size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
+        if(s0 >= N) {
+          return;
+        }
 
-          if(s0 >= N) {
-            return;
-          }
+        std::advance(beg, s0);
 
-          std::advance(beg, s0);
-
-          if(N - s0 == 1) {
-            std::lock_guard<std::mutex> lock(mtx);
-            r = bop(std::move(r), uop(*beg));
-            return;
-          }
-
-          auto beg1 = beg++;
-          auto beg2 = beg++;
-
-          T sum = bop(uop(*beg1), uop(*beg2));
-          
-          // loop reduce
-          part.loop(N, W, next, 
-            [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
-              std::advance(beg, curr_b - prev_e);
-              for(size_t x=curr_b; x<curr_e; x++, beg++) {
-                sum = bop(std::move(sum), uop(*beg));
-              }
-              prev_e = curr_e;
-            }
-          ); 
-          
-          // final reduce
+        if(N - s0 == 1) {
           std::lock_guard<std::mutex> lock(mtx);
-          r = bop(std::move(r), std::move(sum));
-      }, part
-        );
+          r = bop(std::move(r), uop(*beg));
+          return;
+        }
+
+        auto beg1 = beg++;
+        auto beg2 = beg++;
+
+        T sum = bop(uop(*beg1), uop(*beg2));
+        
+        // loop reduce
+        part.loop(N, W, next, 
+          [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
+            std::advance(beg, curr_b - prev_e);
+            for(size_t x=curr_b; x<curr_e; x++, beg++) {
+              sum = bop(std::move(sum), uop(*beg));
+            }
+            prev_e = curr_e;
+          }
+        ); 
+        
+        // final reduce
+        std::lock_guard<std::mutex> lock(mtx);
+        r = bop(std::move(r), std::move(sum));
       });
     }
   };
@@ -306,10 +284,9 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      TF_MAKE_LOOP_TASK([&](){
+      launch_loop(part, [&](){
         for(; beg1!=end1; r = bop_r(std::move(r), bop_t(*beg1++, *beg2++)));
-    }, part
-      );
+      });
       return;
     }   
 
@@ -328,46 +305,40 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
     
         chunk_size = part.adjusted_chunk_size(N, W, w); 
 
-        launch_loop(W, w, rt, [=, &bop_r, &bop_t, &mtx, &r, &part] () mutable {
+        launch_loop(W, w, rt, part, [=, &bop_r, &bop_t, &mtx, &r, &part] () mutable {
+          std::advance(beg1, curr_b);
+          std::advance(beg2, curr_b);
 
-          TF_MAKE_LOOP_TASK(
-              			  [&](){
-            std::advance(beg1, curr_b);
-            std::advance(beg2, curr_b);
-
-            if(N - curr_b == 1) {
-              std::lock_guard<std::mutex> lock(mtx);
-              r = bop_r(std::move(r), bop_t(*beg1, *beg2));
-              return;
-            }   
-
-            T sum = (chunk_size == 1) ? bop_t(*beg1++, *beg2++) : 
-              bop_r(bop_t(*beg1++, *beg2++), bop_t(*beg1++, *beg2++));
-    
-            // loop reduce
-            part.loop(N, W, curr_b, chunk_size,
-              [&, prev_e=curr_b+(chunk_size == 1 ? 1 : 2)] 
-              (size_t part_b, size_t part_e) mutable {
-                if(part_b > prev_e) {
-                  std::advance(beg1, part_b - prev_e);
-                  std::advance(beg2, part_b - prev_e);
-                }   
-                else {
-                  part_b = prev_e;
-                }   
-                for(size_t x=part_b; x<part_e; x++, beg1++, beg2++) { 
-                  sum = bop_r(std::move(sum), bop_t(*beg1, *beg2));
-                }   
-                prev_e = part_e;
-              }   
-            );  
-    
-            // final reduce
+          if(N - curr_b == 1) {
             std::lock_guard<std::mutex> lock(mtx);
-            r = bop_r(std::move(r), std::move(sum));
-        }, part
-          );
+            r = bop_r(std::move(r), bop_t(*beg1, *beg2));
+            return;
+          }   
 
+          T sum = (chunk_size == 1) ? bop_t(*beg1++, *beg2++) : 
+            bop_r(bop_t(*beg1++, *beg2++), bop_t(*beg1++, *beg2++));
+    
+          // loop reduce
+          part.loop(N, W, curr_b, chunk_size,
+            [&, prev_e=curr_b+(chunk_size == 1 ? 1 : 2)] 
+            (size_t part_b, size_t part_e) mutable {
+              if(part_b > prev_e) {
+                std::advance(beg1, part_b - prev_e);
+                std::advance(beg2, part_b - prev_e);
+              }   
+              else {
+                part_b = prev_e;
+              }   
+              for(size_t x=part_b; x<part_e; x++, beg1++, beg2++) { 
+                sum = bop_r(std::move(sum), bop_t(*beg1, *beg2));
+              }   
+              prev_e = part_e;
+            }   
+          );  
+    
+          // final reduce
+          std::lock_guard<std::mutex> lock(mtx);
+          r = bop_r(std::move(r), std::move(sum));
         }); 
       }   
     
@@ -378,48 +349,44 @@ TF_FORCE_INLINE auto make_transform_reduce_task(
       std::atomic<size_t> next(0);
     
       launch_loop(N, W, rt, next, part, [=, &bop_r, &bop_t, &mtx, &next, &r, &part] () mutable {
+        // pre-reduce
+        size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
 
-        TF_MAKE_LOOP_TASK(
-			[&](){
-          // pre-reduce
-          size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
+        if(s0 >= N) {
+          return;
+        }   
 
-          if(s0 >= N) {
-            return;
-          }   
+        std::advance(beg1, s0);
+        std::advance(beg2, s0);
 
-          std::advance(beg1, s0);
-          std::advance(beg2, s0);
-
-          if(N - s0 == 1) {
-            std::lock_guard<std::mutex> lock(mtx);
-            r = bop_r(std::move(r), bop_t(*beg1, *beg2));
-            return;
-          }   
-
-          auto beg11 = beg1++;
-          auto beg12 = beg1++;
-          auto beg21 = beg2++;
-          auto beg22 = beg2++;
-
-          T sum = bop_r(bop_t(*beg11, *beg21), bop_t(*beg12, *beg22));
-
-          // loop reduce
-          part.loop(N, W, next, 
-            [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
-              std::advance(beg1, curr_b - prev_e);
-              std::advance(beg2, curr_b - prev_e);
-              for(size_t x=curr_b; x<curr_e; x++, beg1++, beg2++) {
-                sum = bop_r(std::move(sum), bop_t(*beg1, *beg2));
-              }   
-              prev_e = curr_e;
-            }   
-          );  
-    
-          // final reduce
+        if(N - s0 == 1) {
           std::lock_guard<std::mutex> lock(mtx);
-          r = bop_r(std::move(r), std::move(sum));}, part
-        );
+          r = bop_r(std::move(r), bop_t(*beg1, *beg2));
+          return;
+        }   
+
+        auto beg11 = beg1++;
+        auto beg12 = beg1++;
+        auto beg21 = beg2++;
+        auto beg22 = beg2++;
+
+        T sum = bop_r(bop_t(*beg11, *beg21), bop_t(*beg12, *beg22));
+
+        // loop reduce
+        part.loop(N, W, next, 
+          [&, prev_e=s0+2](size_t curr_b, size_t curr_e) mutable {
+            std::advance(beg1, curr_b - prev_e);
+            std::advance(beg2, curr_b - prev_e);
+            for(size_t x=curr_b; x<curr_e; x++, beg1++, beg2++) {
+              sum = bop_r(std::move(sum), bop_t(*beg1, *beg2));
+            }   
+            prev_e = curr_e;
+          }   
+        );  
+    
+        // final reduce
+        std::lock_guard<std::mutex> lock(mtx);
+        r = bop_r(std::move(r), std::move(sum));
       }); 
     }   
   };  

@@ -239,17 +239,17 @@
         </inbodydescription>
         <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_memory.hpp" line="483" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_memory.hpp" bodystart="483" bodyend="483"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaDeviceAllocator_1ac9231153699981e5732ae75230f6fb31" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaDeviceAllocator_1a9cd24fe35ceef3d5cd386263b20d3093" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaDeviceAllocator_1a68c29bda337094fcb9fc6f3e9445ca9c" kindref="member">pointer</ref></type>
         <definition>pointer tf::cudaDeviceAllocator&lt; T &gt;::allocate</definition>
-        <argsstring>(size_type n, std::allocator&lt; void &gt;::const_pointer=0)</argsstring>
+        <argsstring>(size_type n, const void *=0)</argsstring>
         <name>allocate</name>
         <param>
           <type><ref refid="classtf_1_1cudaDeviceAllocator_1ac4b1781c2f116866927701d931bf8852" kindref="member">size_type</ref></type>
           <declname>n</declname>
         </param>
         <param>
-          <type><ref refid="cpp/memory/allocator" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::allocator</ref>&lt; void &gt;::<ref refid="classtf_1_1cudaDeviceAllocator_1a3cce1e14aad82c9444ab3076a8f35482" kindref="member">const_pointer</ref></type>
+          <type>const void *</type>
           <defval>0</defval>
         </param>
         <briefdescription>
@@ -429,7 +429,7 @@ A cudaDeviceAllocator enables device-specific allocation for standard library co
     <listofallmembers>
       <member refid="classtf_1_1cudaDeviceAllocator_1a3aeae7566c71b25fc5b722f74b68a8f9" prot="public" virt="non-virtual"><scope>tf::cudaDeviceAllocator</scope><name>address</name></member>
       <member refid="classtf_1_1cudaDeviceAllocator_1aadbef395cbe886d2be80ba1771992ffb" prot="public" virt="non-virtual"><scope>tf::cudaDeviceAllocator</scope><name>address</name></member>
-      <member refid="classtf_1_1cudaDeviceAllocator_1ac9231153699981e5732ae75230f6fb31" prot="public" virt="non-virtual"><scope>tf::cudaDeviceAllocator</scope><name>allocate</name></member>
+      <member refid="classtf_1_1cudaDeviceAllocator_1a9cd24fe35ceef3d5cd386263b20d3093" prot="public" virt="non-virtual"><scope>tf::cudaDeviceAllocator</scope><name>allocate</name></member>
       <member refid="classtf_1_1cudaDeviceAllocator_1a3cce1e14aad82c9444ab3076a8f35482" prot="public" virt="non-virtual"><scope>tf::cudaDeviceAllocator</scope><name>const_pointer</name></member>
       <member refid="classtf_1_1cudaDeviceAllocator_1a449d07320a94b00d4b09fa0f4e1ce399" prot="public" virt="non-virtual"><scope>tf::cudaDeviceAllocator</scope><name>const_reference</name></member>
       <member refid="classtf_1_1cudaDeviceAllocator_1a280882efd5963a11aa5d79ed491c056e" prot="public" virt="non-virtual"><scope>tf::cudaDeviceAllocator</scope><name>construct</name></member>

@@ -1,28 +1,24 @@
 #pragma once
 
+#include <functional>
 #include "../core/async.hpp"
 
 namespace tf {
 
-template<typename TP>
-constexpr bool is_default_wrapper_v = std::is_same_v<typename std::decay_t<TP>::closure_wrapper_type, DefaultClosureWrapper>;
+// Function: launch_loop
+template<typename P, typename Loop>
+TF_FORCE_INLINE void launch_loop(P part, Loop loop) {
 
- template<typename TP ,  typename OP, std::enable_if_t<is_default_wrapper_v<TP>, bool> = true>
- void CodeBlockInvoker(OP op, [[maybe_unused]] TP _part)
- {
-     op();
- }
-
- template<typename TP ,  typename OP, std::enable_if_t<!is_default_wrapper_v<TP>,  bool> = true>
- void CodeBlockInvoker(OP op, [[maybe_unused]] TP _part)
- {
-     std::invoke(_part.closure_wrapper(), op);                             \
- };
-
-template<typename Op, typename TP>
-void TF_MAKE_LOOP_TASK(Op op, TP tp)
-{
-  CodeBlockInvoker([&](){ op(); }, tp);   
+  constexpr bool is_default_wrapper_v = std::is_same_v<
+    typename std::decay_t<P>::closure_wrapper_type, DefaultClosureWrapper
+  >;
+  
+  if constexpr(is_default_wrapper_v) {
+    loop();
+  }
+  else {
+    std::invoke(part.closure_wrapper(), loop);
+  }
 }
 
 // Function: launch_loop
@@ -32,8 +28,8 @@ TF_FORCE_INLINE void launch_loop(
   size_t W, 
   Runtime& rt, 
   std::atomic<size_t>& next, 
-  P&& part, 
-  Loop&& loop
+  P part, 
+  Loop loop
 ) {
 
   //static_assert(std::is_lvalue_reference_v<Loop>, "");
@@ -48,11 +44,13 @@ TF_FORCE_INLINE void launch_loop(
     }
     // tail optimization
     if(r <= part.chunk_size() || w == W-1) {
-      loop();
+      launch_loop(part, loop);
       break;
     }
     else {
-      rt.silent_async_unchecked("loop-"s + std::to_string(w), loop);
+      rt.silent_async_unchecked("loop-"s + std::to_string(w), 
+        [=](){ launch_loop(part, loop); }
+      );
     }
   }
       
@@ -60,19 +58,22 @@ TF_FORCE_INLINE void launch_loop(
 }
 
 // Function: launch_loop
-template <typename Loop>
+template <typename P, typename Loop>
 TF_FORCE_INLINE void launch_loop(
   size_t W,
   size_t w,
   Runtime& rt, 
-  Loop&& loop 
+  P part,
+  Loop loop 
 ) {
   using namespace std::string_literals;
   if(w == W-1) {
-    loop();
+    launch_loop(part, loop);
   }
   else {
-    rt.silent_async_unchecked("loop-"s + std::to_string(w), loop);
+    rt.silent_async_unchecked("loop-"s + std::to_string(w), 
+      [=](){ launch_loop(part, loop); }
+    );
   }
 }
 

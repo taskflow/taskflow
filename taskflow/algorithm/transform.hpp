@@ -31,10 +31,9 @@ TF_FORCE_INLINE auto make_transform_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      TF_MAKE_LOOP_TASK(
-            			  [&](){
-          std::transform(beg, end, d_beg, c);}, part
-      );
+      launch_loop(part, [&](){
+        std::transform(beg, end, d_beg, c);
+      });
       return;
     }
 
@@ -47,30 +46,8 @@ TF_FORCE_INLINE auto make_transform_task(
       size_t chunk_size;
       for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
         chunk_size = part.adjusted_chunk_size(N, W, w);
-        launch_loop(W, w, rt, [=, &part] () mutable {
-          TF_MAKE_LOOP_TASK([&](){
-            part.loop(N, W, curr_b, chunk_size,
-              [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
-                std::advance(beg, part_b - prev_e);
-                std::advance(d_beg, part_b - prev_e);
-                for(size_t x = part_b; x<part_e; x++) {
-                  *d_beg++ = c(*beg++);
-                }
-                prev_e = part_e;
-              }
-            ); }, part
-          );
-        });
-      }
-      rt.corun_all();
-    }
-    // dynamic partitioner
-    else {
-      std::atomic<size_t> next(0);
-      
-      launch_loop(N, W, rt, next, part, [=, &next, &part] () mutable {
-        TF_MAKE_LOOP_TASK([&](){
-          part.loop(N, W, next, 
+        launch_loop(W, w, rt, part, [=, &part] () mutable {
+          part.loop(N, W, curr_b, chunk_size,
             [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               std::advance(beg, part_b - prev_e);
               std::advance(d_beg, part_b - prev_e);
@@ -79,8 +56,25 @@ TF_FORCE_INLINE auto make_transform_task(
               }
               prev_e = part_e;
             }
-          ); 
-        }, part);
+          );
+        });
+      }
+      rt.corun_all();
+    }
+    // dynamic partitioner
+    else {
+      std::atomic<size_t> next(0);
+      launch_loop(N, W, rt, next, part, [=, &next, &part] () mutable {
+        part.loop(N, W, next, 
+          [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
+            std::advance(beg, part_b - prev_e);
+            std::advance(d_beg, part_b - prev_e);
+            for(size_t x = part_b; x<part_e; x++) {
+              *d_beg++ = c(*beg++);
+            }
+            prev_e = part_e;
+          }
+        ); 
       });
     }
   };
@@ -115,11 +109,9 @@ TF_FORCE_INLINE auto make_transform_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      TF_MAKE_LOOP_TASK(
-		[&](){
+      launch_loop(part, [&](){
         std::transform(beg1, end1, beg2, d_beg, c);
-        }, part
-      );
+      });
       return;
     }
 
@@ -132,30 +124,8 @@ TF_FORCE_INLINE auto make_transform_task(
       size_t chunk_size;
       for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
         chunk_size = part.adjusted_chunk_size(N, W, w);
-        launch_loop(W, w, rt, [=, &c, &part] () mutable {
-          TF_MAKE_LOOP_TASK([&](){
-            part.loop(N, W, curr_b, chunk_size,
-              [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
-                std::advance(beg1, part_b - prev_e);
-                std::advance(beg2, part_b - prev_e);
-                std::advance(d_beg, part_b - prev_e);
-                for(size_t x = part_b; x<part_e; x++) {
-                  *d_beg++ = c(*beg1++, *beg2++);
-                }
-                prev_e = part_e;
-              }
-          ); }, part
-          );
-        });
-      }
-      rt.corun_all();
-    }
-    // dynamic partitioner
-    else {
-      std::atomic<size_t> next(0);
-      launch_loop(N, W, rt, next, part, [=, &c, &next, &part] () mutable {
-        TF_MAKE_LOOP_TASK([&](){
-          part.loop(N, W, next, 
+        launch_loop(W, w, rt, part, [=, &c, &part] () mutable {
+          part.loop(N, W, curr_b, chunk_size,
             [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               std::advance(beg1, part_b - prev_e);
               std::advance(beg2, part_b - prev_e);
@@ -165,7 +135,25 @@ TF_FORCE_INLINE auto make_transform_task(
               }
               prev_e = part_e;
             }
-        ); }, part
+          );
+        });
+      }
+      rt.corun_all();
+    }
+    // dynamic partitioner
+    else {
+      std::atomic<size_t> next(0);
+      launch_loop(N, W, rt, next, part, [=, &c, &next, &part] () mutable {
+        part.loop(N, W, next, 
+          [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
+            std::advance(beg1, part_b - prev_e);
+            std::advance(beg2, part_b - prev_e);
+            std::advance(d_beg, part_b - prev_e);
+            for(size_t x = part_b; x<part_e; x++) {
+              *d_beg++ = c(*beg1++, *beg2++);
+            }
+            prev_e = part_e;
+          }
         );
       });
     }

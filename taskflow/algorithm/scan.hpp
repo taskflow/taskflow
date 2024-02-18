@@ -75,10 +75,9 @@ TF_FORCE_INLINE auto make_inclusive_scan_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 2) {
-      TF_MAKE_LOOP_TASK([&](){
+      launch_loop(part, [&](){
         std::inclusive_scan(s_beg, s_end, d_beg, bop);
-      }, part
-      );
+      });
       return;
     }
 
@@ -100,46 +99,42 @@ TF_FORCE_INLINE auto make_inclusive_scan_task(
       chunk_size = std::min(Q + (w < R), N - curr_b);
 
       // block scan
-      launch_loop(W, w, rt, [=, &rt, &bop, &buf, &counter] () mutable {
+      launch_loop(W, w, rt, part, [=, &rt, &bop, &buf, &counter] () mutable {
+        auto result = d_beg;
 
-        TF_MAKE_LOOP_TASK(
-            [&](){
-          auto result = d_beg;
+        // local scan per worker
+        auto& init = buf[w].data;
+        *d_beg++ = init = *s_beg++;
 
-          // local scan per worker
-          auto& init = buf[w].data;
-          *d_beg++ = init = *s_beg++;
+        for(size_t i=1; i<chunk_size; i++){
+          *d_beg++ = init = bop(init, *s_beg++); 
+        }
 
-          for(size_t i=1; i<chunk_size; i++){
-            *d_beg++ = init = bop(init, *s_beg++); 
-          }
-
-          // block scan
-          detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);
+        // block scan
+        detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);
         
-          //size_t offset = R ? Q + 1 : Q;
-          //size_t rest   = N - offset;
-          //size_t rest_Q = rest / W;
-          //size_t rest_R = rest % W;
-          //
-          //chunk_size = policy.chunk_size() == 0 ? 
-          //             rest_Q + (w < rest_R) : policy.chunk_size();
-          //
-          //size_t curr_b = policy.chunk_size() == 0 ? 
-          //                offset + (w<rest_R ? w*(rest_Q + 1) : rest_R + w*rest_Q) :
-          //                offset + w*policy.chunk_size();
+        //size_t offset = R ? Q + 1 : Q;
+        //size_t rest   = N - offset;
+        //size_t rest_Q = rest / W;
+        //size_t rest_R = rest % W;
+        //
+        //chunk_size = policy.chunk_size() == 0 ? 
+        //             rest_Q + (w < rest_R) : policy.chunk_size();
+        //
+        //size_t curr_b = policy.chunk_size() == 0 ? 
+        //                offset + (w<rest_R ? w*(rest_Q + 1) : rest_R + w*rest_Q) :
+        //                offset + w*policy.chunk_size();
 
-          //policy(N, W, curr_b, chunk_size,
-          //  [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
-          //    std::advance(orig_d_beg, curr_b - prev_e);
-          //    for(size_t x = curr_b; x<curr_e; x++) {
-          //      size_t j = x < (Q+1)*R ? x/(Q+1) : (x-(Q+1)*R)/Q + R;
-          //      *orig_d_beg++ = bop(buf[j-1].data, *orig_d_beg);
-          //    }
-          //    prev_e = curr_e;
-          //  }
-          //);
-      }, part);
+        //policy(N, W, curr_b, chunk_size,
+        //  [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
+        //    std::advance(orig_d_beg, curr_b - prev_e);
+        //    for(size_t x = curr_b; x<curr_e; x++) {
+        //      size_t j = x < (Q+1)*R ? x/(Q+1) : (x-(Q+1)*R)/Q + R;
+        //      *orig_d_beg++ = bop(buf[j-1].data, *orig_d_beg);
+        //    }
+        //    prev_e = curr_e;
+        //  }
+        //);
       });
       
       std::advance(s_beg, chunk_size);
@@ -181,9 +176,9 @@ TF_FORCE_INLINE auto make_inclusive_scan_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 2) {
-      TF_MAKE_LOOP_TASK([&](){
+      launch_loop(part, [&](){
         std::inclusive_scan(s_beg, s_end, d_beg, bop, init);
-    }, part);
+      });
       return;
     }
 
@@ -205,24 +200,19 @@ TF_FORCE_INLINE auto make_inclusive_scan_task(
       chunk_size = std::min(Q + (w < R), N - curr_b);
 
       // block scan
-      launch_loop(W, w, rt, [=, &rt, &bop, &buf, &counter] () mutable {
+      launch_loop(W, w, rt, part, [=, &rt, &bop, &buf, &counter] () mutable {
+        auto result = d_beg;
 
-        TF_MAKE_LOOP_TASK(
-            [&](){
-          auto result = d_beg;
+        // local scan per worker
+        auto& local = buf[w].data;
+        *d_beg++ = local = (w == 0) ? bop(local, *s_beg++) : *s_beg++;
 
-          // local scan per worker
-          auto& local = buf[w].data;
-          *d_beg++ = local = (w == 0) ? bop(local, *s_beg++) : *s_beg++;
-
-          for(size_t i=1; i<chunk_size; i++){
-            *d_beg++ = local = bop(local, *s_beg++); 
-          }
-          
-          // block scan
-          detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);
-      }, part
-        );
+        for(size_t i=1; i<chunk_size; i++){
+          *d_beg++ = local = bop(local, *s_beg++); 
+        }
+        
+        // block scan
+        detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);
       });
 
       std::advance(s_beg, chunk_size);
@@ -268,9 +258,9 @@ TF_FORCE_INLINE auto make_transform_inclusive_scan_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 2) {
-      TF_MAKE_LOOP_TASK([&](){
-          std::transform_inclusive_scan(s_beg, s_end, d_beg, bop, uop); }, part
-      );
+      launch_loop(part, [&](){
+        std::transform_inclusive_scan(s_beg, s_end, d_beg, bop, uop); 
+      });
       return;
     }
 
@@ -289,24 +279,19 @@ TF_FORCE_INLINE auto make_transform_inclusive_scan_task(
       chunk_size = std::min(Q + (w < R), N - curr_b);
 
       // block scan
-      launch_loop(W, w, rt, [=, &rt, &bop, &uop, &buf, &counter] () mutable {
+      launch_loop(W, w, rt, part, [=, &rt, &bop, &uop, &buf, &counter] () mutable {
+        auto result = d_beg;
 
-        TF_MAKE_LOOP_TASK(
-			[&](){
-          auto result = d_beg;
+        // local scan per worker
+        auto& init = buf[w].data;
+        *d_beg++ = init = uop(*s_beg++);
 
-          // local scan per worker
-          auto& init = buf[w].data;
-          *d_beg++ = init = uop(*s_beg++);
+        for(size_t i=1; i<chunk_size; i++){
+          *d_beg++ = init = bop(init, uop(*s_beg++)); 
+        }
 
-          for(size_t i=1; i<chunk_size; i++){
-            *d_beg++ = init = bop(init, uop(*s_beg++)); 
-          }
-
-          // block scan
-          detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);
-      }, part
-        );
+        // block scan
+        detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);
       });
       
       std::advance(s_beg, chunk_size);
@@ -348,10 +333,9 @@ TF_FORCE_INLINE auto make_transform_inclusive_scan_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 2) {
-      TF_MAKE_LOOP_TASK([&](){
+      launch_loop(part, [&](){
         std::transform_inclusive_scan(s_beg, s_end, d_beg, bop, uop, init);
-      }, part
-      );
+      });
       return;
     }
 
@@ -373,24 +357,19 @@ TF_FORCE_INLINE auto make_transform_inclusive_scan_task(
       chunk_size = std::min(Q + (w < R), N - curr_b);
 
       // block scan
-      launch_loop(W, w, rt, [=, &rt, &bop, &uop, &buf, &counter] () mutable {
+      launch_loop(W, w, rt, part, [=, &rt, &bop, &uop, &buf, &counter] () mutable {
+        auto result = d_beg;
 
-        TF_MAKE_LOOP_TASK(
-        [&](){
-          auto result = d_beg;
+        // local scan per worker
+        auto& local = buf[w].data;
+        *d_beg++ = local = (w == 0) ? bop(local, uop(*s_beg++)) : uop(*s_beg++);
 
-          // local scan per worker
-          auto& local = buf[w].data;
-          *d_beg++ = local = (w == 0) ? bop(local, uop(*s_beg++)) : uop(*s_beg++);
-
-          for(size_t i=1; i<chunk_size; i++){
-            *d_beg++ = local = bop(local, uop(*s_beg++)); 
-          }
-          
-          // block scan
-          detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);
-      }, part
-        );
+        for(size_t i=1; i<chunk_size; i++){
+          *d_beg++ = local = bop(local, uop(*s_beg++)); 
+        }
+        
+        // block scan
+        detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);
       });
 
       std::advance(s_beg, chunk_size);
@@ -435,9 +414,9 @@ TF_FORCE_INLINE auto make_exclusive_scan_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 2) {
-      TF_MAKE_LOOP_TASK([&](){
-          std::exclusive_scan(s_beg, s_end, d_beg, init, bop);}, part
-      );
+      launch_loop(part, [&](){
+        std::exclusive_scan(s_beg, s_end, d_beg, init, bop);
+      });
       return;
     }
 
@@ -465,26 +444,21 @@ TF_FORCE_INLINE auto make_exclusive_scan_task(
       chunk_size = std::min(Q + (w < R), N - curr_b);
 
       // block scan
-      launch_loop(W, w, rt, [=, &rt, &bop, &buf, &counter] () mutable {
+      launch_loop(W, w, rt, part, [=, &rt, &bop, &buf, &counter] () mutable {
+        auto result = d_beg;
 
-        TF_MAKE_LOOP_TASK(
-            [&](){
-          auto result = d_beg;
+        // local scan per worker
+        auto& local = buf[w].data;
 
-          // local scan per worker
-          auto& local = buf[w].data;
-
-          for(size_t i=1; i<chunk_size; i++) {
-            auto v = local;
-            local = bop(local, *s_beg++);
-            *d_beg++ = std::move(v);
-          }
-          *d_beg++ = local;
-          
-          // block scan
-          detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);
-      }, part
-        );
+        for(size_t i=1; i<chunk_size; i++) {
+          auto v = local;
+          local = bop(local, *s_beg++);
+          *d_beg++ = std::move(v);
+        }
+        *d_beg++ = local;
+        
+        // block scan
+        detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);
       });
       
       std::advance(s_beg, chunk_size);
@@ -529,11 +503,9 @@ TF_FORCE_INLINE auto make_transform_exclusive_scan_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 2) {
-      TF_MAKE_LOOP_TASK(
-        [&](){
+      launch_loop(part, [&](){
         std::transform_exclusive_scan(s_beg, s_end, d_beg, init, bop, uop);
-        }, part
-      );
+      });
       return;
     }
 
@@ -561,26 +533,21 @@ TF_FORCE_INLINE auto make_transform_exclusive_scan_task(
       chunk_size = std::min(Q + (w < R), N - curr_b);
 
       // block scan
-      launch_loop(W, w, rt, [=, &rt, &bop, &uop, &buf, &counter] () mutable {
+      launch_loop(W, w, rt, part, [=, &rt, &bop, &uop, &buf, &counter] () mutable {
+        auto result = d_beg;
 
-        TF_MAKE_LOOP_TASK(
-            [&](){
-          auto result = d_beg;
+        // local scan per worker
+        auto& local = buf[w].data;
 
-          // local scan per worker
-          auto& local = buf[w].data;
-
-          for(size_t i=1; i<chunk_size; i++) {
-            auto v = local;
-            local = bop(local, uop(*s_beg++));
-            *d_beg++ = std::move(v);
-          }
-          *d_beg++ = local;
-          
-          // block scan
-          detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);
-      }, part
-        );
+        for(size_t i=1; i<chunk_size; i++) {
+          auto v = local;
+          local = bop(local, uop(*s_beg++));
+          *d_beg++ = std::move(v);
+        }
+        *d_beg++ = local;
+        
+        // block scan
+        detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);
       });
       
       std::advance(s_beg, chunk_size);
