@@ -27,6 +27,8 @@ class Topology {
     template <typename P, typename C>
     Topology(Taskflow&, P&&, C&&);
 
+    bool cancelled() const;
+
   private:
 
     Taskflow& _taskflow;
@@ -41,7 +43,7 @@ class Topology {
     std::atomic<size_t> _join_counter {0};
     std::atomic<int> _state {CLEAN};
 
-    std::exception_ptr _exception {nullptr};
+    std::exception_ptr _exception_ptr {nullptr};
 
     void _carry_out_promise();
 };
@@ -56,7 +58,19 @@ Topology::Topology(Taskflow& tf, P&& p, C&& c):
 
 // Procedure
 inline void Topology::_carry_out_promise() {
-  _exception ? _promise.set_exception(_exception) : _promise.set_value();
+  if(_exception_ptr) {
+    auto e = _exception_ptr;
+    _exception_ptr = nullptr;
+    _promise.set_exception(e);
+  }
+  else {
+    _promise.set_value();
+  }
+}
+
+// Function: cancelled
+inline bool Topology::cancelled() const {
+  return _state.load(std::memory_order_relaxed) & CANCELLED;
 }
 
 }  // end of namespace tf. ----------------------------------------------------

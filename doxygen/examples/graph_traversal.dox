@@ -129,7 +129,7 @@ You do not need to worry about details of scheduling.
 
 @section GraphTraversalDynamicTraversal Dynamic Traversal 
 
-We can traverse the graph dynamically using tf::Subflow (see @ref DynamicTasking).
+We can traverse the graph dynamically using tf::Subflow (see @ref SubflowTasking).
 We start from the source nodes of zero incoming edges and recursively spawn subflows 
 whenever the dependency of a node is meet.
 Since we are creating tasks from the execution context of another task,

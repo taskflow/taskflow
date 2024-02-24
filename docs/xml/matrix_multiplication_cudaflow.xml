@@ -114,7 +114,7 @@
 <para>Within the cudaFlow, we create two host-to-device (H2D) tasks that copy data from <computeroutput>A</computeroutput> and <computeroutput>B</computeroutput> to <computeroutput>da</computeroutput> and <computeroutput>db</computeroutput>, one device-to-host (D2H) task that copies the result from <computeroutput>dc</computeroutput> to <computeroutput>C</computeroutput>, and one kernel task that launches <computeroutput>matmul</computeroutput> on the GPU (by default, GPU 0). H2D tasks precede the kernel and the kernel precedes the D2H task. These GPU operations form a GPU task graph managed by a cudaFlow. The first dump of the taskflow gives the following graph:</para>
 <para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/matrix_multiplication_5.dot"></dotfile>
 </para>
-<para>A cudaFlow encapsulates a GPU task dependency graph similar to a <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> (see <ref refid="DynamicTasking" kindref="compound">Dynamic Tasking</ref>). In order to visualize it, we need to execute the graph first and then dump the taskflow.</para>
+<para>A cudaFlow encapsulates a GPU task dependency graph similar to a <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> (see <ref refid="SubflowTasking" kindref="compound">Subflow Tasking</ref>). In order to visualize it, we need to execute the graph first and then dump the taskflow.</para>
 <para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/matrix_multiplication_6.dot"></dotfile>
 </para>
 </sect1>

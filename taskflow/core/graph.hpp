@@ -358,7 +358,7 @@ class Runtime {
   @brief co-runs the given target and waits until it completes
   
   A target can be one of the following forms:
-    + a dynamic task to spawn a subflow or
+    + a subflow task to spawn a subflow or
     + a composable graph object with `tf::Graph& T::graph()` defined
 
   @code{.cpp}
@@ -526,6 +526,7 @@ class Node {
   constexpr static int DETACHED    = 2;
   constexpr static int ACQUIRED    = 4;
   constexpr static int READY       = 8;
+  constexpr static int EXCEPTION   = 16;
 
   using Placeholder = std::monostate;
 
@@ -540,13 +541,13 @@ class Node {
     > work;
   };
 
-  // dynamic work handle
-  struct Dynamic {
+  // subflow work handle
+  struct Subflow {
 
     template <typename C>
-    Dynamic(C&&);
+    Subflow(C&&);
 
-    std::function<void(Subflow&)> work;
+    std::function<void(tf::Subflow&)> work;
     Graph subgraph;
   };
 
@@ -609,7 +610,7 @@ class Node {
   using handle_t = std::variant<
     Placeholder,      // placeholder
     Static,           // static tasking
-    Dynamic,          // dynamic tasking
+    Subflow,          // subflow tasking
     Condition,        // conditional tasking
     MultiCondition,   // multi-conditional tasking
     Module,           // composable tasking
@@ -627,7 +628,7 @@ class Node {
   // variant index
   constexpr static auto PLACEHOLDER     = get_index_v<Placeholder, handle_t>;
   constexpr static auto STATIC          = get_index_v<Static, handle_t>;
-  constexpr static auto DYNAMIC         = get_index_v<Dynamic, handle_t>;
+  constexpr static auto SUBFLOW         = get_index_v<Subflow, handle_t>;
   constexpr static auto CONDITION       = get_index_v<Condition, handle_t>;
   constexpr static auto MULTI_CONDITION = get_index_v<MultiCondition, handle_t>;
   constexpr static auto MODULE          = get_index_v<Module, handle_t>;
@@ -666,11 +667,13 @@ class Node {
   std::atomic<size_t> _join_counter {0};
 
   std::unique_ptr<Semaphores> _semaphores;
+  std::exception_ptr _exception_ptr {nullptr};
   
   handle_t _handle;
 
   void _precede(Node*);
   void _set_up_join_counter();
+  void _process_exception();
 
   bool _is_cancelled() const;
   bool _is_conditioner() const;
@@ -698,12 +701,12 @@ Node::Static::Static(C&& c) : work {std::forward<C>(c)} {
 }
 
 // ----------------------------------------------------------------------------
-// Definition for Node::Dynamic
+// Definition for Node::Subflow
 // ----------------------------------------------------------------------------
 
 // Constructor
 template <typename C>
-Node::Dynamic::Dynamic(C&& c) : work {std::forward<C>(c)} {
+Node::Subflow::Subflow(C&& c) : work {std::forward<C>(c)} {
 }
 
 // ----------------------------------------------------------------------------
@@ -777,12 +780,12 @@ Node::Node(
 inline Node::~Node() {
   // this is to avoid stack overflow
 
-  if(_handle.index() == DYNAMIC) {
+  if(_handle.index() == SUBFLOW) {
     // using std::get_if instead of std::get makes this compatible
     // with older macOS versions
     // the result of std::get_if is guaranteed to be non-null
     // due to the index check above
-    auto& subgraph = std::get_if<Dynamic>(&_handle)->subgraph;
+    auto& subgraph = std::get_if<Subflow>(&_handle)->subgraph;
     std::vector<Node*> nodes;
     nodes.reserve(subgraph.size());
 
@@ -795,8 +798,8 @@ inline Node::~Node() {
 
     while(i < nodes.size()) {
 
-      if(nodes[i]->_handle.index() == DYNAMIC) {
-        auto& sbg = std::get_if<Dynamic>(&(nodes[i]->_handle))->subgraph;
+      if(nodes[i]->_handle.index() == SUBFLOW) {
+        auto& sbg = std::get_if<Subflow>(&(nodes[i]->_handle))->subgraph;
         std::move(
           sbg._nodes.begin(), sbg._nodes.end(), std::back_inserter(nodes)
         );
@@ -887,6 +890,14 @@ inline void Node::_set_up_join_counter() {
   _join_counter.store(c, std::memory_order_relaxed);
 }
 
+// Procedure: _process_exception
+inline void Node::_process_exception() {
+  if(_exception_ptr) {
+    auto e = _exception_ptr;
+    _exception_ptr = nullptr;
+    std::rethrow_exception(e);
+  }
+}
 
 // Function: _acquire_all
 inline bool Node::_acquire_all(SmallVector<Node*>& nodes) {

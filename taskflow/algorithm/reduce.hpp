@@ -6,11 +6,10 @@ namespace tf {
 
 // Function: make_reduce_task
 template <typename B, typename E, typename T, typename O, typename P = DefaultPartitioner>
-TF_FORCE_INLINE auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
+auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using namespace std::string_literals;
 
   return [=, &r=init] (Runtime& rt) mutable {
 
@@ -133,13 +132,10 @@ template <
   typename B, typename E, typename T, typename BOP, typename UOP, 
   typename P = DefaultPartitioner
 >
-TF_FORCE_INLINE auto make_transform_reduce_task(
-  B b, E e, T& init, BOP bop, UOP uop, P part = P()
-) {
+auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P()) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using namespace std::string_literals;
 
   return [=, &r=init] (Runtime& rt) mutable {
 
@@ -263,14 +259,13 @@ template <
   typename P = DefaultPartitioner,
   std::enable_if_t<!is_partitioner_v<std::decay_t<BOP_T>>, void>* = nullptr
 >
-TF_FORCE_INLINE auto make_transform_reduce_task(
+auto make_transform_reduce_task(
   B1 b1, E1 e1, B2 b2, T& init, BOP_R bop_r, BOP_T bop_t, P part = P()
 ) {
 
   using B1_t = std::decay_t<unwrap_ref_decay_t<B1>>;
   using E1_t = std::decay_t<unwrap_ref_decay_t<E1>>;
   using B2_t = std::decay_t<unwrap_ref_decay_t<B2>>;
-  using namespace std::string_literals;
 
   return [=, &r=init] (Runtime& rt) mutable {
 

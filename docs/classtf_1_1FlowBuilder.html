@@ -95,7 +95,7 @@
             </dt>
             <dd>creates a static task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#a1eea7593f25ab348cfb656dbdf4e5b05" class="m-doc">is_<wbr />dynamic_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;</div>
+              <div class="m-doc-template">template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#aefeb96086f4a99f0e58a0f321012a52c" class="m-doc">is_<wbr />subflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>creates a dynamic task</dd>
@@ -363,7 +363,7 @@
           <section class="m-doc-details" id="a60d7a666cab71ecfa3010b2efb0d6b57"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#a1eea7593f25ab348cfb656dbdf4e5b05" class="m-doc">is_<wbr />dynamic_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;
+                template&lt;typename C, std::enable_if_t&lt;<a href="namespacetf.html#aefeb96086f4a99f0e58a0f321012a52c" class="m-doc">is_<wbr />subflow_<wbr />task_<wbr />v</a>&lt;C&gt;, void&gt;* = nullptr&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a60d7a666cab71ecfa3010b2efb0d6b57" class="m-doc-self">emplace</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable)</span></span>
             </h3>
@@ -397,7 +397,7 @@
 <p>The following example creates a dynamic task (<a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a>) that spawns two static tasks.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">dynamic_task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span><span class="w"></span>
 <span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">static_task1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span><span class="w"></span>
 <span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">static_task2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre><p>Please refer to <a href="DynamicTasking.html" class="m-doc">Dynamic Tasking</a> for details.</p>
+<span class="p">});</span><span class="w"></span></pre><p>Please refer to <a href="SubflowTasking.html" class="m-doc">Subflow Tasking</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="a60d7a666cab71ecfa3010b2efb0d6b57"><div>
             <h3>

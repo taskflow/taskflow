@@ -535,7 +535,7 @@
 <para>A taskflow manages a task dependency graph where each task represents a callable object (e.g., <ulink url="https://en.cppreference.com/w/cpp/language/lambda">lambda</ulink>, <ulink url="https://en.cppreference.com/w/cpp/utility/functional/function">std::function</ulink>) and an edge represents a dependency between two tasks. A task is one of the following types:</para>
 <para><orderedlist>
 <listitem><para>static task : the callable constructible from <computeroutput>std::function&lt;void()&gt;</computeroutput> </para>
-</listitem><listitem><para>dynamic task : the callable constructible from <computeroutput>std::function&lt;void(tf::Subflow&amp;)&gt;</computeroutput> </para>
+</listitem><listitem><para>subflow task : the callable constructible from <computeroutput>std::function&lt;void(tf::Subflow&amp;)&gt;</computeroutput> </para>
 </listitem><listitem><para>condition task : the callable constructible from <computeroutput>std::function&lt;int()&gt;</computeroutput> </para>
 </listitem><listitem><para>multi-condition task: the callable constructible from <computeroutput>std::function&lt;tf::SmallVector&lt;int&gt;()&gt;</computeroutput> </para>
 </listitem><listitem><para>module task : the task constructed from <ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">tf::Taskflow::composed_of</ref> <computeroutput>std::function&lt;void(tf::Runtime&amp;)&gt;</computeroutput> </para>

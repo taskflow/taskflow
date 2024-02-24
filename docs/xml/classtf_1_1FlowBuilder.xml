@@ -115,7 +115,7 @@ The following example creates a static task.</para>
             <type>typename C</type>
           </param>
           <param>
-            <type>std::enable_if_t&lt; <ref refid="namespacetf_1a1eea7593f25ab348cfb656dbdf4e5b05" kindref="member">is_dynamic_task_v</ref>&lt; C &gt;, void &gt; *</type>
+            <type>std::enable_if_t&lt; <ref refid="namespacetf_1aefeb96086f4a99f0e58a0f321012a52c" kindref="member">is_subflow_task_v</ref>&lt; C &gt;, void &gt; *</type>
             <defval>nullptr</defval>
           </param>
         </templateparamlist>
@@ -157,7 +157,7 @@ The following example creates a dynamic task (<ref refid="classtf_1_1Subflow" ki
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>static_task2<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){});</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting></para>
-<para>Please refer to <ref refid="DynamicTasking" kindref="compound">Dynamic Tasking</ref> for details. </para>
+<para>Please refer to <ref refid="SubflowTasking" kindref="compound">Subflow Tasking</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>

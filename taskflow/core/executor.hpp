@@ -1057,8 +1057,6 @@ class Executor {
 
   Worker* _this_worker();
   
-  Node* _tear_down_invoke(Worker&, Node*);
-
   bool _wait_for_task(Worker&, Node*&);
   bool _invoke_module_task_internal(Worker&, Node*);
 
@@ -1076,21 +1074,22 @@ class Executor {
   void _tear_down_topology(Worker&, Topology*);
   void _tear_down_async(Node*);
   void _tear_down_dependent_async(Worker&, Node*);
+  void _tear_down_invoke(Worker&, Node*);
   void _increment_topology();
   void _decrement_topology();
   void _invoke(Worker&, Node*);
   void _invoke_static_task(Worker&, Node*);
-  void _invoke_dynamic_task(Worker&, Node*);
-  void _consume_graph(Worker&, Node*, Graph&);
-  void _detach_dynamic_task(Worker&, Node*, Graph&);
+  void _invoke_subflow_task(Worker&, Node*);
+  void _detach_subflow_task(Worker&, Node*, Graph&);
   void _invoke_condition_task(Worker&, Node*, SmallVector<int>&);
   void _invoke_multi_condition_task(Worker&, Node*, SmallVector<int>&);
-  void _invoke_module_task(Worker&, Node*, bool&);
+  void _invoke_module_task(Worker&, Node*);
   void _invoke_async_task(Worker&, Node*);
   void _invoke_dependent_async_task(Worker&, Node*);
   void _process_async_dependent(Node*, tf::AsyncTask&, size_t&);
   void _process_exception(Worker&, Node*);
   void _schedule_async_task(Node*);
+  void _corun_graph(Worker&, Node*, Graph&);
   
   template <typename P>
   void _corun_until(Worker&, P&&);
@@ -1104,12 +1103,12 @@ inline Executor::Executor(size_t N) :
   _notifier   {N} {
 
   if(N == 0) {
-    TF_THROW("no cpu workers to execute taskflows");
+    TF_THROW("executor must define at least one worker");
   }
 
   _spawn(N);
 
-  // instantite the default observer if requested
+  // initialize the default observer if requested
   if(has_env(TF_ENABLE_PROFILER)) {
     TFProfManager::get()._manage(make_observer<TFProfObserver>());
   }
@@ -1519,9 +1518,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
   // no need to do other things if the topology is cancelled
   if(node->_is_cancelled()) {
-    if(node = _tear_down_invoke(worker, node); node) {
-      goto invoke_successors;
-    }
+    _tear_down_invoke(worker, node);
     return;
   }
 
@@ -1546,9 +1543,9 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     }
     break;
 
-    // dynamic task
-    case Node::DYNAMIC: {
-      _invoke_dynamic_task(worker, node);
+    // subflow task
+    case Node::SUBFLOW: {
+      _invoke_subflow_task(worker, node);
     }
     break;
 
@@ -1566,11 +1563,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
     // module task
     case Node::MODULE: {
-      bool spawned;
-      _invoke_module_task(worker, node, spawned);
-      if(spawned) {
-        return;
-      }
+      _invoke_module_task(worker, node);
     }
     break;
 
@@ -1599,7 +1592,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     break;
   }
 
-  invoke_successors:
+  //invoke_successors:
 
   // if releasing semaphores exist, release them
   if(node->_semaphores && !node->_semaphores->to_release.empty()) {
@@ -1678,9 +1671,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   }
 
   // tear_down the invoke
-  if(node = _tear_down_invoke(worker, node); node) {
-    goto invoke_successors;
-  }
+  _tear_down_invoke(worker, node);
 
   // perform tail recursion elimination for the right-most child to reduce
   // the number of expensive pop/push operations through the task queue
@@ -1691,25 +1682,31 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   }
 }
 
-// Proecdure: _tear_down_invoke
-inline Node* Executor::_tear_down_invoke(Worker& worker, Node* node) {
-  // we must check parent first before substracting the join counter,
+// Procedure: _tear_down_invoke
+inline void Executor::_tear_down_invoke(Worker& worker, Node* node) {
+  // we must check parent first before subtracting the join counter,
   // or it can introduce data race
   if(auto parent = node->_parent; parent == nullptr) {
     if(node->_topology->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
       _tear_down_topology(worker, node->_topology);
     }
   }
-  // module task
-  else {  
-    auto id = parent->_handle.index();
-    if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-      if(id == Node::MODULE) {
-        return parent;
-      }
-    }
+  // Here we asssume the parent is in a busy loop (e.g., corun) waiting for
+  // its join counter to become 0.
+  else {
+    //parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel);
+    parent->_join_counter.fetch_sub(1, std::memory_order_release);
   }
-  return nullptr;
+  //// module task
+  //else {  
+  //  auto id = parent->_handle.index();
+  //  if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+  //    if(id == Node::MODULE) {
+  //      return parent;
+  //    }
+  //  }
+  //}
+  //return nullptr;
 }
 
 // Procedure: _observer_prologue
@@ -1730,12 +1727,22 @@ inline void Executor::_observer_epilogue(Worker& worker, Node* node) {
 inline void Executor::_process_exception(Worker&, Node* node) {
 
   constexpr static auto flag = Topology::EXCEPTION | Topology::CANCELLED;
-
+  
+  // if the node has a parent, we store the exception in its parent
+  if(auto parent = node->_parent; parent) { 
+    if ((parent->_state.fetch_or(Node::EXCEPTION, std::memory_order_relaxed) & Node::EXCEPTION) == 0) {
+      parent->_exception_ptr = std::current_exception();
+    }
+    // TODO if the node has a topology, cancel it to enable early stop
+    //if(auto tpg = node->_topology; tpg) {
+    //  tpg->_state.fetch_or(Topology::CANCELLED, std::memory_order_relaxed);
+    //}
+  }
   // multiple tasks may throw, so we only take the first thrown exception
-  if(auto tpg = node->_topology; tpg && 
+  else if(auto tpg = node->_topology; tpg && 
     ((tpg->_state.fetch_or(flag, std::memory_order_relaxed) & Topology::EXCEPTION) == 0)
   ) {
-    tpg->_exception = std::current_exception();
+    tpg->_exception_ptr = std::current_exception();
   }
   // TODO: skip the exception that is not associated with any taskflows
 }
@@ -1753,36 +1760,31 @@ inline void Executor::_invoke_static_task(Worker& worker, Node* node) {
       case 1:
         Runtime rt(*this, worker, node);
         std::get_if<1>(&work)->operator()(rt);
+        node->_process_exception();
       break;
     }
   });
   _observer_epilogue(worker, node);
 }
 
-// Procedure: _invoke_dynamic_task
-inline void Executor::_invoke_dynamic_task(Worker& w, Node* node) {
-
+// Procedure: _invoke_subflow_task
+inline void Executor::_invoke_subflow_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
-
-  auto handle = std::get_if<Node::Dynamic>(&node->_handle);
-
-  handle->subgraph._clear();
-
-  Subflow sf(*this, w, node, handle->subgraph);
-
   TF_EXECUTOR_EXCEPTION_HANDLER(w, node, {
+    auto handle = std::get_if<Node::Subflow>(&node->_handle);
+    handle->subgraph._clear();
+    Subflow sf(*this, w, node, handle->subgraph);
     handle->work(sf);
+    if(sf._joinable) {
+      _corun_graph(w, node, handle->subgraph);
+    }
+    node->_process_exception();
   });
-
-  if(sf._joinable) {
-    _consume_graph(w, node, handle->subgraph);
-  }
-
   _observer_epilogue(w, node);
 }
 
-// Procedure: _detach_dynamic_task
-inline void Executor::_detach_dynamic_task(Worker& w, Node* p, Graph& g) {
+// Procedure: _detach_subflow_task
+inline void Executor::_detach_subflow_task(Worker& w, Node* p, Graph& g) {
 
   // graph is empty and has no async tasks
   if(g.empty() && p->_join_counter.load(std::memory_order_acquire) == 0) {
@@ -1801,8 +1803,10 @@ inline void Executor::_detach_dynamic_task(Worker& w, Node* p, Graph& g) {
   _schedule(w, src);
 }
 
-// Procedure: _consume_graph
-inline void Executor::_consume_graph(Worker& w, Node* p, Graph& g) {
+// Procedure: _corun_graph
+inline void Executor::_corun_graph(Worker& w, Node* p, Graph& g) {
+
+  // assert(p);
 
   // graph is empty and has no async tasks (subflow)
   if(g.empty() && p->_join_counter.load(std::memory_order_acquire) == 0) {
@@ -1836,6 +1840,7 @@ inline void Executor::_invoke_condition_task(
       case 1:
         Runtime rt(*this, worker, node);
         conds = { std::get_if<1>(&work)->operator()(rt) };
+        node->_process_exception();
       break;
     }
   });
@@ -1857,6 +1862,7 @@ inline void Executor::_invoke_multi_condition_task(
       case 1:
         Runtime rt(*this, worker, node);
         conds = std::get_if<1>(&work)->operator()(rt);
+        node->_process_exception();
       break;
     }
   });
@@ -1864,30 +1870,33 @@ inline void Executor::_invoke_multi_condition_task(
 }
 
 // Procedure: _invoke_module_task
-inline void Executor::_invoke_module_task(Worker& w, Node* node, bool& spawned) {
+inline void Executor::_invoke_module_task(Worker& w, Node* node) {
   _observer_prologue(w, node);
-  spawned = _invoke_module_task_internal(w, node);
+  TF_EXECUTOR_EXCEPTION_HANDLER(w, node, {
+    _corun_graph(w, node, std::get_if<Node::Module>(&node->_handle)->graph);
+    node->_process_exception();
+  });
   _observer_epilogue(w, node);
 }
 
-// Function: _invoke_module_task_internal
-inline bool Executor::_invoke_module_task_internal(Worker& w, Node* p) {
-  
-  // acquire the underlying graph
-  auto& g = std::get_if<Node::Module>(&p->_handle)->graph;
-
-  // no need to do anything if the graph is empty
-  if(g.empty()) {
-    return false;
-  }
-
-  SmallVector<Node*> src;
-  _set_up_graph(g, p, p->_topology, 0, src);
-  p->_join_counter.fetch_add(src.size(), std::memory_order_relaxed);
-
-  _schedule(w, src);
-  return true;
-}
+//// Function: _invoke_module_task_internal
+//inline bool Executor::_invoke_module_task_internal(Worker& w, Node* p) {
+//  
+//  // acquire the underlying graph
+//  auto& g = std::get_if<Node::Module>(&p->_handle)->graph;
+//
+//  // no need to do anything if the graph is empty
+//  if(g.empty()) {
+//    return false;
+//  }
+//
+//  SmallVector<Node*> src;
+//  _set_up_graph(g, p, p->_topology, 0, src);
+//  p->_join_counter.fetch_add(src.size(), std::memory_order_relaxed);
+//
+//  _schedule(w, src);
+//  return true;
+//}
 
 // Procedure: _invoke_async_task
 inline void Executor::_invoke_async_task(Worker& worker, Node* node) {
@@ -1993,7 +2002,7 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
 
   _increment_topology();
 
-  // Need to check the empty under the lock since dynamic task may
+  // Need to check the empty under the lock since subflow task may
   // define detached blocks that modify the taskflow at the same time
   bool empty;
   {
@@ -2053,8 +2062,9 @@ void Executor::corun(T& target) {
     TF_THROW("corun must be called by a worker of the executor");
   }
 
-  Node parent;  // dummy parent
-  _consume_graph(*w, &parent, target.graph());
+  Node parent;  // auxiliary parent
+  _corun_graph(*w, &parent, target.graph());
+  parent._process_exception();
 }
 
 // Function: corun_until
@@ -2068,6 +2078,8 @@ void Executor::corun_until(P&& predicate) {
   }
 
   _corun_until(*w, std::forward<P>(predicate));
+
+  // TODO: exception?
 }
 
 // Procedure: _increment_topology
@@ -2138,6 +2150,7 @@ inline void Executor::_set_up_graph(
       src.push_back(node);
     }
     node->_set_up_join_counter();
+    node->_exception_ptr = nullptr;
   }
 }
 
@@ -2149,10 +2162,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
   //assert(&tpg == &(f._topologies.front()));
 
   // case 1: we still need to run the topology again
-  if(!tpg->_exception && 
-     !(tpg->_state.load(std::memory_order_relaxed) & Topology::CANCELLED) && 
-     !tpg->_pred()
-  ) {
+  if(!tpg->_exception_ptr && !tpg->cancelled() && !tpg->_pred()) {
     //assert(tpg->_join_counter == 0);
     std::lock_guard<std::mutex> lock(f._mutex);
     tpg->_join_counter.store(tpg->_sources.size(), std::memory_order_relaxed);
@@ -2221,7 +2231,11 @@ inline void Subflow::join() {
   }
 
   // only the parent worker can join the subflow
-  _executor._consume_graph(_worker, _parent, _graph);
+  _executor._corun_graph(_worker, _parent, _graph);
+
+  // if any exception is caught from subflow tasks, rethrow it
+  _parent->_process_exception();
+
   _joinable = false;
 }
 
@@ -2234,7 +2248,7 @@ inline void Subflow::detach() {
   }
 
   // only the parent worker can detach the subflow
-  _executor._detach_dynamic_task(_worker, _parent, _graph);
+  _executor._detach_subflow_task(_worker, _parent, _graph);
   _joinable = false;
 }
 
@@ -2260,26 +2274,31 @@ inline void Runtime::schedule(Task task) {
 // Procedure: corun
 template <typename T>
 void Runtime::corun(T&& target) {
-
-  // dynamic task (subflow)
-  if constexpr(is_dynamic_task_v<T>) {
-    Graph graph;
-    Subflow sf(_executor, _worker, _parent, graph);
-    target(sf);
-    if(sf._joinable) {
-      _executor._consume_graph(_worker, _parent, graph);
-    }
-  }
-  // a composable graph object with `tf::Graph& T::graph()` defined
-  else {
-    _executor._consume_graph(_worker, _parent, target.graph());
-  }
+  _executor._corun_graph(_worker, _parent, target.graph());
+  _parent->_process_exception();
 }
 
 // Procedure: corun_until
 template <typename P>
 void Runtime::corun_until(P&& predicate) {
   _executor._corun_until(_worker, std::forward<P>(predicate));
+  // TODO: exception?
+}
+
+// Function: corun_all
+inline void Runtime::corun_all() {
+  _executor._corun_until(_worker, [this] () -> bool { 
+    return _parent->_join_counter.load(std::memory_order_acquire) == 0; 
+  });
+  // TODO: exception?
+  //_parent->_process_exception();
+}
+
+// Destructor
+inline Runtime::~Runtime() {
+  _executor._corun_until(_worker, [this] () -> bool { 
+    return _parent->_join_counter.load(std::memory_order_acquire) == 0; 
+  });
 }
 
 // Function: _silent_async
@@ -2347,19 +2366,7 @@ auto Runtime::async(const std::string& name, F&& f) {
   return _async(*_executor._this_worker(), name, std::forward<F>(f));
 }
 
-// Function: corun_all
-inline void Runtime::corun_all() {
-  corun_until([this] () -> bool { 
-    return _parent->_join_counter.load(std::memory_order_acquire) == 0; 
-  });
-}
 
-// Destructor
-inline Runtime::~Runtime() {
-  if(_parent->_join_counter.load(std::memory_order_acquire)) {
-    corun_all();
-  }
-}
 
 }  // end of namespace tf -----------------------------------------------------
 

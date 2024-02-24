@@ -9,11 +9,7 @@ template <
   typename B, typename E, typename O, typename C, typename P = DefaultPartitioner,
   std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>* = nullptr
 >
-TF_FORCE_INLINE auto make_transform_task(
-  B first1, E last1, O d_first, C c, P part = P()
-) {
-
-  using namespace std::string_literals;
+auto make_transform_task(B first1, E last1, O d_first, C c, P part = P()) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
@@ -85,11 +81,7 @@ template <
   typename B1, typename E1, typename B2, typename O, typename C, typename P = DefaultPartitioner,
   std::enable_if_t<!is_partitioner_v<std::decay_t<C>>, void>* = nullptr
 >
-TF_FORCE_INLINE auto make_transform_task(
-  B1 first1, E1 last1, B2 first2, O d_first, C c, P part = P()
-) {
-
-  using namespace std::string_literals;
+auto make_transform_task(B1 first1, E1 last1, B2 first2, O d_first, C c, P part = P()) {
 
   using B1_t = std::decay_t<unwrap_ref_decay_t<B1>>;
   using E1_t = std::decay_t<unwrap_ref_decay_t<E1>>;

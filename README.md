@@ -22,7 +22,7 @@ Taskflow lets you quickly implement task decomposition strategies
 that incorporate both regular and irregular compute patterns,
 together with an efficient *work-stealing* scheduler to optimize your multithreaded performance.
 
-| [Static Tasking](#get-started-with-taskflow) | [Dynamic Tasking](#dynamic-tasking) |
+| [Static Tasking](#start-your-first-taskflow-program) | [Subflow Tasking](#create-a-subflow-graph) |
 | :------------: | :-------------: |
 | ![](image/static_graph.svg) | <img align="right" src="image/dynamic_graph.svg" width="100%"> |
 
@@ -30,7 +30,7 @@ Taskflow supports conditional tasking for you to make rapid control-flow decisio
 across dependent tasks to implement cycles and conditions that were otherwise difficult to do
 with existing tools.
 
-| [Conditional Tasking](#conditional-tasking) |
+| [Conditional Tasking](#integrate-control-flow-to-a-task-graph) |
 | :-----------------: |
 | ![](image/condition.svg) |
 
@@ -38,7 +38,7 @@ Taskflow is composable. You can create large parallel graphs through
 composition of modular and reusable blocks that are easier to optimize
 at an individual scope.
 
-| [Taskflow Composition](#composable-tasking) |
+| [Taskflow Composition](#compose-task-graphs) |
 | :---------------: |
 |![](image/framework.svg)|
 
@@ -46,7 +46,7 @@ Taskflow supports heterogeneous tasking for you to
 accelerate a wide range of scientific computing applications
 by harnessing the power of CPU-GPU collaborative computing.
 
-| [Concurrent CPU-GPU Tasking](#concurrent-cpu-gpu-tasking) |
+| [Concurrent CPU-GPU Tasking](#offload-a-task-to-a-gpu) |
 | :-----------------: |
 | ![](image/cudaflow.svg) |
 
@@ -446,5 +446,5 @@ You are completely free to re-distribute your work derived from Taskflow.
 [PayMe]:                 https://www.paypal.me/twhuang/10
 [email me]:              mailto:twh760812@gmail.com
 [Cpp Conference 2018]:   https://github.com/CppCon/CppCon2018
-[TPDS21]:                https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf
+[TPDS22]:                https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf
 

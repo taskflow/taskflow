@@ -8,11 +8,11 @@ namespace detail {
 
 // Function: scan_loop
 template <typename Iterator, typename BufferT, typename B>
-TF_FORCE_INLINE void scan_loop(
+void scan_loop(
   tf::Runtime& rt,
   std::atomic<size_t>& counter, 
   BufferT& buf, 
-  B&& bop, 
+  B bop, 
   Iterator d_beg, 
   size_t W,
   size_t w, 
@@ -49,7 +49,7 @@ TF_FORCE_INLINE void scan_loop(
 template <typename B, typename E, typename D, typename BOP, typename P = DefaultPartitioner,
   std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>* = nullptr
 >
-TF_FORCE_INLINE auto make_inclusive_scan_task(
+auto make_inclusive_scan_task(
   B first, E last, D d_first, BOP bop, P part = P()
 ) {
   
@@ -57,7 +57,6 @@ TF_FORCE_INLINE auto make_inclusive_scan_task(
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
   using value_type = typename std::iterator_traits<B_t>::value_type;
-  using namespace std::string_literals;
   
   return [=] (Runtime& rt) mutable {
 
@@ -150,7 +149,7 @@ TF_FORCE_INLINE auto make_inclusive_scan_task(
 template <typename B, typename E, typename D, typename BOP, typename T, typename P = DefaultPartitioner,
   std::enable_if_t<!is_partitioner_v<std::decay_t<T>>, void>* = nullptr
 >
-TF_FORCE_INLINE auto make_inclusive_scan_task(
+auto make_inclusive_scan_task(
   B first, E last, D d_first, BOP bop, T init, P part = P()
 ) {
   
@@ -158,7 +157,6 @@ TF_FORCE_INLINE auto make_inclusive_scan_task(
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
   using value_type = typename std::iterator_traits<B_t>::value_type;
-  using namespace std::string_literals;
   
   return [=] (Runtime& rt) mutable {
 
@@ -232,7 +230,7 @@ TF_FORCE_INLINE auto make_inclusive_scan_task(
 template <typename B, typename E, typename D, typename BOP, typename UOP, typename P = DefaultPartitioner,
   std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>* = nullptr
 >
-TF_FORCE_INLINE auto make_transform_inclusive_scan_task(
+auto make_transform_inclusive_scan_task(
   B first, E last, D d_first, BOP bop, UOP uop, P part = P()
 ) {
   
@@ -240,7 +238,6 @@ TF_FORCE_INLINE auto make_transform_inclusive_scan_task(
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
   using value_type = typename std::iterator_traits<B_t>::value_type;
-  using namespace std::string_literals;
   
   return [=] (Runtime& rt) mutable {
 
@@ -307,7 +304,7 @@ TF_FORCE_INLINE auto make_transform_inclusive_scan_task(
 template <typename B, typename E, typename D, typename BOP, typename UOP, typename T, typename P = DefaultPartitioner,
   std::enable_if_t<!is_partitioner_v<std::decay_t<T>>, void>* = nullptr
 >
-TF_FORCE_INLINE auto make_transform_inclusive_scan_task(
+auto make_transform_inclusive_scan_task(
   B first, E last, D d_first, BOP bop, UOP uop, T init, P part = P()
 ) {
   
@@ -315,7 +312,6 @@ TF_FORCE_INLINE auto make_transform_inclusive_scan_task(
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
   using value_type = typename std::iterator_traits<B_t>::value_type;
-  using namespace std::string_literals;
   
   return [=] (Runtime& rt) mutable {
 
@@ -388,7 +384,7 @@ TF_FORCE_INLINE auto make_transform_inclusive_scan_task(
 
 // Function: make_exclusive_scan_task
 template <typename B, typename E, typename D, typename T, typename BOP, typename P = DefaultPartitioner>
-TF_FORCE_INLINE auto make_exclusive_scan_task(
+auto make_exclusive_scan_task(
   B first, E last, D d_first, T init, BOP bop, P part = P()
 ) {
   
@@ -396,7 +392,6 @@ TF_FORCE_INLINE auto make_exclusive_scan_task(
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
   using value_type = typename std::iterator_traits<B_t>::value_type;
-  using namespace std::string_literals;
   
   return [=] (Runtime& rt) mutable {
 
@@ -477,7 +472,7 @@ TF_FORCE_INLINE auto make_exclusive_scan_task(
 
 // Function: 
 template <typename B, typename E, typename D, typename T, typename BOP, typename UOP, typename P = DefaultPartitioner>
-TF_FORCE_INLINE auto make_transform_exclusive_scan_task(
+auto make_transform_exclusive_scan_task(
   B first, E last, D d_first, T init, BOP bop, UOP uop, P part = P()
 ) {
   
@@ -485,7 +480,6 @@ TF_FORCE_INLINE auto make_transform_exclusive_scan_task(
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
   using value_type = typename std::iterator_traits<B_t>::value_type;
-  using namespace std::string_literals;
   
   return [=] (Runtime& rt) mutable {
 

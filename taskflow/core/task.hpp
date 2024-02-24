@@ -24,7 +24,7 @@ enum class TaskType : int {
   /** @brief static task type */
   STATIC,
   /** @brief dynamic (subflow) task type */
-  DYNAMIC,
+  SUBFLOW,
   /** @brief condition task type */
   CONDITION,
   /** @brief module task type */
@@ -42,7 +42,7 @@ enum class TaskType : int {
 inline constexpr std::array<TaskType, 6> TASK_TYPES = {
   TaskType::PLACEHOLDER,
   TaskType::STATIC,
-  TaskType::DYNAMIC,
+  TaskType::SUBFLOW,
   TaskType::CONDITION,
   TaskType::MODULE,
   TaskType::ASYNC,
@@ -56,7 +56,7 @@ The name of each task type is the litte-case string of its characters.
 @code{.cpp}
 TaskType::PLACEHOLDER     ->  "placeholder"
 TaskType::STATIC          ->  "static"
-TaskType::DYNAMIC         ->  "subflow"
+TaskType::SUBFLOW         ->  "subflow"
 TaskType::CONDITION       ->  "condition"
 TaskType::MODULE          ->  "module"
 TaskType::ASYNC           ->  "async"
@@ -69,7 +69,7 @@ inline const char* to_string(TaskType type) {
   switch(type) {
     case TaskType::PLACEHOLDER:      val = "placeholder";     break;
     case TaskType::STATIC:           val = "static";          break;
-    case TaskType::DYNAMIC:          val = "subflow";         break;
+    case TaskType::SUBFLOW:          val = "subflow";         break;
     case TaskType::CONDITION:        val = "condition";       break;
     case TaskType::MODULE:           val = "module";          break;
     case TaskType::ASYNC:            val = "async";           break;
@@ -89,7 +89,7 @@ inline const char* to_string(TaskType type) {
 A dynamic task is a callable object constructible from std::function<void(Subflow&)>.
 */
 template <typename C>
-constexpr bool is_dynamic_task_v = 
+constexpr bool is_subflow_task_v = 
   std::is_invocable_r_v<void, C, Subflow&> &&
   !std::is_invocable_r_v<void, C, Runtime&>;
 
@@ -102,7 +102,7 @@ or std::function<int(tf::Runtime&)>.
 template <typename C>
 constexpr bool is_condition_task_v = 
   (std::is_invocable_r_v<int, C> || std::is_invocable_r_v<int, C, Runtime&>) &&
-  !is_dynamic_task_v<C>;
+  !is_subflow_task_v<C>;
 
 /**
 @brief determines if a callable is a multi-condition task
@@ -115,7 +115,7 @@ template <typename C>
 constexpr bool is_multi_condition_task_v =
   (std::is_invocable_r_v<SmallVector<int>, C> ||
   std::is_invocable_r_v<SmallVector<int>, C, Runtime&>) &&
-  !is_dynamic_task_v<C>;
+  !is_subflow_task_v<C>;
 
 /**
 @brief determines if a callable is a static task
@@ -128,7 +128,7 @@ constexpr bool is_static_task_v =
   (std::is_invocable_r_v<void, C> || std::is_invocable_r_v<void, C, Runtime&>) &&
   !is_condition_task_v<C> &&
   !is_multi_condition_task_v<C> &&
-  !is_dynamic_task_v<C>;
+  !is_subflow_task_v<C>;
 
 // ----------------------------------------------------------------------------
 // Task
@@ -512,7 +512,7 @@ inline TaskType Task::type() const {
   switch(_node->_handle.index()) {
     case Node::PLACEHOLDER:     return TaskType::PLACEHOLDER;
     case Node::STATIC:          return TaskType::STATIC;
-    case Node::DYNAMIC:         return TaskType::DYNAMIC;
+    case Node::SUBFLOW:         return TaskType::SUBFLOW;
     case Node::CONDITION:       return TaskType::CONDITION;
     case Node::MULTI_CONDITION: return TaskType::CONDITION;
     case Node::MODULE:          return TaskType::MODULE;
@@ -558,8 +558,8 @@ Task& Task::work(C&& c) {
   if constexpr(is_static_task_v<C>) {
     _node->_handle.emplace<Node::Static>(std::forward<C>(c));
   }
-  else if constexpr(is_dynamic_task_v<C>) {
-    _node->_handle.emplace<Node::Dynamic>(std::forward<C>(c));
+  else if constexpr(is_subflow_task_v<C>) {
+    _node->_handle.emplace<Node::Subflow>(std::forward<C>(c));
   }
   else if constexpr(is_condition_task_v<C>) {
     _node->_handle.emplace<Node::Condition>(std::forward<C>(c));
@@ -711,7 +711,7 @@ inline TaskType TaskView::type() const {
   switch(_node._handle.index()) {
     case Node::PLACEHOLDER:     return TaskType::PLACEHOLDER;
     case Node::STATIC:          return TaskType::STATIC;
-    case Node::DYNAMIC:         return TaskType::DYNAMIC;
+    case Node::SUBFLOW:         return TaskType::SUBFLOW;
     case Node::CONDITION:       return TaskType::CONDITION;
     case Node::MULTI_CONDITION: return TaskType::CONDITION;
     case Node::MODULE:          return TaskType::MODULE;

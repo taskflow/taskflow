@@ -766,7 +766,7 @@ table.m-table td.m-dim pre, table.m-table td.m-dim code,
 table.m-table th.m-dim pre, table.m-table th.m-dim code {
   background-color: rgba(34, 39, 46, 0.5);
 }
-img.m-image, svg.m-image {
+img.m-image, svg.m-image, video.m-image {
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -774,11 +774,14 @@ img.m-image, svg.m-image {
 div.m-image {
   text-align: center;
 }
-img.m-image, svg.m-image, div.m-image img, div.m-image svg {
+img.m-image, svg.m-image, video.m-image,
+div.m-image img, div.m-image svg, div.m-image video {
   max-width: 100%;
   border-radius: 0.2rem;
 }
-div.m-image.m-fullwidth img, div.m-image.m-fullwidth svg {
+div.m-image.m-fullwidth img,
+div.m-image.m-fullwidth svg,
+div.m-image.m-fullwidth video {
   width: 100%;
 }
 img.m-image.m-badge, div.m-image.m-badge img {
@@ -820,7 +823,9 @@ figure.m-figure > *:first-child {
 figure.m-figure > *:last-child {
   margin-bottom: 1rem !important;
 }
-figure.m-figure img, figure.m-figure svg {
+figure.m-figure img,
+figure.m-figure svg,
+figure.m-figure video {
   position: relative;
   margin-left: 0;
   margin-right: 0;
@@ -829,11 +834,15 @@ figure.m-figure img, figure.m-figure svg {
   border-top-right-radius: 0.2rem;
   max-width: 100%;
 }
-figure.m-figure.m-flat img, figure.m-figure.m-flat svg {
+figure.m-figure.m-flat img,
+figure.m-figure.m-flat svg,
+figure.m-figure.m-flat video {
   border-bottom-left-radius: 0.2rem;
   border-bottom-right-radius: 0.2rem;
 }
-figure.m-figure a img, figure.m-figure a svg {
+figure.m-figure a img,
+figure.m-figure a svg,
+figure.m-figure a video {
   margin-left: -1rem;
   margin-right: -1rem;
 }
@@ -843,7 +852,9 @@ figure.m-figure.m-fullwidth, figure.m-figure.m-fullwidth > * {
 figure.m-figure.m-fullwidth > *:first-child {
   display: inline;
 }
-figure.m-figure.m-fullwidth img, figure.m-figure.m-fullwidth svg {
+figure.m-figure.m-fullwidth img,
+figure.m-figure.m-fullwidth svg,
+figure.m-figure.m-fullwidth video {
   width: 100%;
 }
 figure.m-figure.m-fullwidth::after {

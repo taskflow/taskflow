@@ -8,13 +8,13 @@ namespace detail {
 
 // Function: find_if_loop
 template <typename Iterator, typename Predicate>
-TF_FORCE_INLINE bool find_if_loop(
+bool find_if_loop(
   std::atomic<size_t>& offset, 
   Iterator& beg,
   size_t& prev_e,
   size_t  curr_b, 
   size_t  curr_e,
-  Predicate&& predicate
+  Predicate predicate
 ) {
   // early prune
   if(offset.load(std::memory_order_relaxed) < curr_b) {
@@ -33,13 +33,13 @@ TF_FORCE_INLINE bool find_if_loop(
 
 // Function: find_if_not_loop
 template <typename Iterator, typename Predicate>
-TF_FORCE_INLINE bool find_if_not_loop(
+bool find_if_not_loop(
   std::atomic<size_t>& offset, 
   Iterator& beg,
   size_t& prev_e,
   size_t  curr_b, 
   size_t  curr_e,
-  Predicate&& predicate
+  Predicate predicate
 ) {
 
   // early prune
@@ -61,13 +61,10 @@ TF_FORCE_INLINE bool find_if_not_loop(
 
 // Function: make_find_if_task
 template <typename B, typename E, typename T, typename UOP, typename P = DefaultPartitioner>
-TF_FORCE_INLINE auto make_find_if_task(
-  B first, E last, T& result, UOP predicate, P part = P()
-) {
+auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) {
   
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using namespace std::string_literals;
 
   return [=, &result] (Runtime& rt) mutable {
 
@@ -139,13 +136,10 @@ TF_FORCE_INLINE auto make_find_if_task(
 
 // Function: make_find_if_not_task
 template <typename B, typename E, typename T, typename UOP, typename P = DefaultPartitioner>
-TF_FORCE_INLINE auto make_find_if_not_task(
-  B first, E last, T& result, UOP predicate, P part = P()
-) {
+auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P()) {
   
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using namespace std::string_literals;
 
   return [=, &result] (Runtime& rt) mutable {
 
@@ -217,13 +211,10 @@ TF_FORCE_INLINE auto make_find_if_not_task(
 
 // Function: make_min_element_task
 template <typename B, typename E, typename T, typename C, typename P = DefaultPartitioner>
-TF_FORCE_INLINE auto make_min_element_task(
-  B first, E last, T& result, C comp, P part = P()
-) {
+auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using namespace std::string_literals;
 
   return [=, &result] (Runtime& rt) mutable {
 
@@ -361,13 +352,10 @@ TF_FORCE_INLINE auto make_min_element_task(
 
 // Function: make_max_element_task
 template <typename B, typename E, typename T, typename C, typename P = DefaultPartitioner>
-TF_FORCE_INLINE auto make_max_element_task(
-  B first, E last, T& result, C comp, P part = P()
-) {
+auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using namespace std::string_literals;
 
   return [=, &result] (Runtime& rt) mutable {
 

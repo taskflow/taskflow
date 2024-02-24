@@ -22,7 +22,7 @@ dependency between two tasks. A task is one of the following types:
 
   1. static task         : the callable constructible from
                            @c std::function<void()>
-  2. dynamic task        : the callable constructible from
+  2. subflow task        : the callable constructible from
                            @c std::function<void(tf::Subflow&)>
   3. condition task      : the callable constructible from
                            @c std::function<int()>
@@ -469,7 +469,7 @@ inline void Taskflow::_dump(
   }
 
   // subflow join node
-  if(node->_parent && node->_parent->_handle.index() == Node::DYNAMIC &&
+  if(node->_parent && node->_parent->_handle.index() == Node::SUBFLOW &&
      node->_successors.size() == 0
     ) {
     os << 'p' << node << " -> p" << node->_parent << ";\n";
@@ -478,8 +478,8 @@ inline void Taskflow::_dump(
   // node info
   switch(node->_handle.index()) {
 
-    case Node::DYNAMIC: {
-      auto& sbg = std::get_if<Node::Dynamic>(&node->_handle)->subgraph;
+    case Node::SUBFLOW: {
+      auto& sbg = std::get_if<Node::Subflow>(&node->_handle)->subgraph;
       if(!sbg.empty()) {
         os << "subgraph cluster_p" << node << " {\nlabel=\"Subflow: ";
         if(node->_name.empty()) os << 'p' << node;

@@ -119,7 +119,7 @@
 </sect1>
 <sect1 id="graphtraversal_1GraphTraversalDynamicTraversal">
 <title>Dynamic Traversal</title>
-<para>We can traverse the graph dynamically using <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> (see <ref refid="DynamicTasking" kindref="compound">Dynamic Tasking</ref>). We start from the source nodes of zero incoming edges and recursively spawn subflows whenever the dependency of a node is meet. Since we are creating tasks from the execution context of another task, we need to store the task callable in advance.</para>
+<para>We can traverse the graph dynamically using <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> (see <ref refid="SubflowTasking" kindref="compound">Subflow Tasking</ref>). We start from the source nodes of zero incoming edges and recursively spawn subflows whenever the dependency of a node is meet. Since we are creating tasks from the execution context of another task, we need to store the task callable in advance.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>

@@ -71,10 +71,10 @@ class FlowBuilder {
   });
   @endcode
 
-  Please refer to @ref DynamicTasking for details.
+  Please refer to @ref SubflowTasking for details.
   */
   template <typename C,
-    std::enable_if_t<is_dynamic_task_v<C>, void>* = nullptr
+    std::enable_if_t<is_subflow_task_v<C>, void>* = nullptr
   >
   Task emplace(C&& callable);
 
@@ -1171,10 +1171,10 @@ Task FlowBuilder::emplace(C&& c) {
 }
 
 // Function: emplace
-template <typename C, std::enable_if_t<is_dynamic_task_v<C>, void>*>
+template <typename C, std::enable_if_t<is_subflow_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
   return Task(_graph._emplace_back("", 0, nullptr, nullptr, 0,
-    std::in_place_type_t<Node::Dynamic>{}, std::forward<C>(c)
+    std::in_place_type_t<Node::Subflow>{}, std::forward<C>(c)
   ));
 }
 

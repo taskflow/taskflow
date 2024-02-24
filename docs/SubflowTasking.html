@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Cookbook &raquo; Dynamic Tasking | Taskflow QuickStart</title>
+  <title>Cookbook &raquo; Subflow Tasking | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
@@ -47,7 +47,7 @@
       <div class="m-col-l-10 m-push-l-1">
         <h1>
           <span class="m-breadcrumb"><a href="Cookbook.html">Cookbook</a> &raquo;</span>
-          Dynamic Tasking
+          Subflow Tasking
         </h1>
         <nav class="m-block m-default">
           <h3>Contents</h3>
@@ -58,7 +58,7 @@
             <li><a href="#CreateANestedSubflow">Create a Nested Subflow</a></li>
           </ul>
         </nav>
-<p>It is very common for a parallel program to spawn task dependency graphs at runtime. In Taskflow, we call this <em>dynamic tasking</em>.</p><section id="CreateASubflow"><h2><a href="#CreateASubflow">Create a Subflow</a></h2><p>Dynamic tasks are those created during the execution of a graph. These tasks are spawned from a parent task and are grouped together to a <em>subflow</em> dependency graph. Taskflow has an unified interface for static and dynamic tasking. To create a subflow, emplace a callable that takes an argument of type <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a>. A <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> object will be created and forwarded to the execution context of the task. All methods you find in <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> are applicable for <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a>.</p><pre class="m-code"><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
+<p>It is very common for a parallel program to spawn task dependency graphs at runtime. In Taskflow, we call this <em>dynamic tasking</em>.</p><section id="CreateASubflow"><h2><a href="#CreateASubflow">Create a Subflow</a></h2><p>Subflow tasks are those created during the execution of a graph. These tasks are spawned from a parent task and are grouped together to a <em>subflow</em> dependency graph. Taskflow has an unified interface for static and dynamic tasking. To create a subflow, emplace a callable that takes an argument of type <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a>. A <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> object will be created and forwarded to the execution context of the task. All methods you find in <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> are applicable for <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a>.</p><pre class="m-code"><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
 <span class="w"> </span><span class="mi">2</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
 <span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"></span>
 <span class="w"> </span><span class="mi">4</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// static task A</span>

@@ -239,7 +239,7 @@ void subflow_task_exception(unsigned W) {
     taskflow.emplace([](tf::Subflow& sf){
       throw std::runtime_error("x");
       sf.emplace([](){});
-      sf.emplace([](){ throw std::runtime_error("y"); });
+      sf.emplace([](){ throw std::runtime_error("z"); });
     });
   }
   REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "x", std::runtime_error);
@@ -405,37 +405,224 @@ TEST_CASE("Exception.ThreadSafety.4threads") {
 // Subflow exception
 // ----------------------------------------------------------------------------
 
-void test_subflow_exception(unsigned W) {
+void joined_subflow_exception_1(unsigned W) {
 
   tf::Executor executor(W);
   tf::Taskflow taskflow;
 
+  std::atomic<bool> post_join {false};
+
   taskflow.emplace([&] (tf::Subflow& sf0) {
     for (int i = 0; i < 16; ++i) {
-      sf0.emplace([&, i] (tf::Subflow& sf1) {
+      sf0.emplace([&] (tf::Subflow& sf1) {
         for (int j = 0; j < 16; ++j) {
-          sf1.emplace([&, j] () {
-            std::stringstream ss;
-            ss << "exception (" << i << " " << j << ")";
-            throw std::runtime_error(ss.str());
-            std::cout << "post-join (" << i << " " << j << ")" << std::endl;
+          sf1.emplace([] () {
+            throw std::runtime_error("x");
           });
         }
         sf1.join();
-        std::cout << "post-join " << i << std::endl;
+        post_join = true;
       });
     }
   });
-
-  try {
-    executor.run(taskflow).get();
-  }
-  catch (const std::runtime_error& e) {
-    std::cerr << "caught std::runtime_error " << e.what() << std::endl;
-  }
+  
+  REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "x", std::runtime_error);
+  REQUIRE(post_join == false);
 }
 
-TEST_CASE("Exception.Subflow.1thread") {
-  test_subflow_exception(1);
+TEST_CASE("Exception.JoinedSubflow1.1thread") {
+  joined_subflow_exception_1(1);
 }
+
+TEST_CASE("Exception.JoinedSubflow1.2threads") {
+  joined_subflow_exception_1(2);
+}
+
+TEST_CASE("Exception.JoinedSubflow1.3threads") {
+  joined_subflow_exception_1(3);
+}
+
+TEST_CASE("Exception.JoinedSubflow1.4threads") {
+  joined_subflow_exception_1(4);
+}
+
+void joined_subflow_exception_2(unsigned W) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  std::atomic<bool> post_join {false};
+
+  taskflow.emplace([&](tf::Subflow& sf0){
+    for (int j = 0; j < 16; ++j) {
+      sf0.emplace([] () {
+        throw std::runtime_error("x");
+      });
+    }
+    try {
+      sf0.join();
+      post_join = true;
+    } catch(const std::runtime_error& re) {
+      REQUIRE(std::strcmp(re.what(), "x") == 0);
+    }
+  });
+  executor.run(taskflow).wait();
+  REQUIRE(post_join == false);
+}
+
+TEST_CASE("Exception.JoinedSubflow2.1thread") {
+  joined_subflow_exception_2(1);
+}
+
+TEST_CASE("Exception.JoinedSubflow2.2threads") {
+  joined_subflow_exception_2(2);
+}
+
+TEST_CASE("Exception.JoinedSubflow2.3threads") {
+  joined_subflow_exception_2(3);
+}
+
+TEST_CASE("Exception.JoinedSubflow2.4threads") {
+  joined_subflow_exception_2(4);
+}
+
+// ----------------------------------------------------------------------------
+// corun
+// ----------------------------------------------------------------------------
+
+void executor_corun_exception(unsigned W) {
+  
+  tf::Executor executor(W);
+  tf::Taskflow taskflow1;
+  tf::Taskflow taskflow2;
+
+  taskflow1.emplace([](){
+    throw std::runtime_error("x");
+  });
+  taskflow2.emplace([&](){
+    REQUIRE_THROWS_WITH_AS(executor.corun(taskflow1), "x", std::runtime_error);
+  });
+  executor.run(taskflow2).get();
+  
+
+  taskflow1.clear();
+  for(size_t i=0; i<100; i++) {
+    taskflow1.emplace([](tf::Subflow& sf){
+      for(size_t j=0; j<100; j++) {
+        sf.emplace([&](){
+          throw std::runtime_error("x");
+        });
+      }
+    });
+  }
+  executor.run(taskflow2).get();
+}
+
+TEST_CASE("Exception.ExecutorCorun.1thread") {
+  executor_corun_exception(1);
+}
+
+TEST_CASE("Exception.ExecutorCorun.2threads") {
+  executor_corun_exception(2);
+}
+
+TEST_CASE("Exception.ExecutorCorun.3threads") {
+  executor_corun_exception(3);
+}
+
+TEST_CASE("Exception.ExecutorCorun.4threads") {
+  executor_corun_exception(4);
+}
+
+// ----------------------------------------------------------------------------
+// runtime_corun_exception
+// ----------------------------------------------------------------------------
+
+void runtime_corun_exception(unsigned W) {
+  
+  tf::Executor executor(W);
+  tf::Taskflow taskflow1;
+  tf::Taskflow taskflow2;
+
+  taskflow1.emplace([](){
+    throw std::runtime_error("x");
+  });
+  taskflow2.emplace([&](tf::Runtime& rt){
+    REQUIRE_THROWS_WITH_AS(rt.corun(taskflow1), "x", std::runtime_error);
+  });
+  executor.run(taskflow2).get();
+  
+
+  taskflow1.clear();
+  for(size_t i=0; i<100; i++) {
+    taskflow1.emplace([](tf::Subflow& sf){
+      for(size_t j=0; j<100; j++) {
+        sf.emplace([&](){
+          throw std::runtime_error("x");
+        });
+      }
+    });
+  }
+  executor.run(taskflow2).get();
+}
+
+TEST_CASE("Exception.RuntimeCorun.1thread") {
+  runtime_corun_exception(1);
+}
+
+TEST_CASE("Exception.RuntimeCorun.2threads") {
+  runtime_corun_exception(2);
+}
+
+TEST_CASE("Exception.RuntimeCorun.3threads") {
+  runtime_corun_exception(3);
+}
+
+TEST_CASE("Exception.RuntimeCorun.4threads") {
+  runtime_corun_exception(4);
+}
+
+// ----------------------------------------------------------------------------
+// module_task_exception
+// ----------------------------------------------------------------------------
+
+void module_task_exception(unsigned W) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow1;
+  tf::Taskflow taskflow2;
+
+  taskflow1.emplace([](){
+    throw std::runtime_error("x");
+  });
+  taskflow2.composed_of(taskflow1);
+  REQUIRE_THROWS_WITH_AS(executor.run(taskflow2).get(), "x", std::runtime_error);
+
+  taskflow1.clear();
+  taskflow1.emplace([](tf::Subflow& sf){
+    sf.emplace([](){
+      throw std::runtime_error("y");
+    });
+  });
+  REQUIRE_THROWS_WITH_AS(executor.run(taskflow2).get(), "y", std::runtime_error);
+}
+
+TEST_CASE("Exception.ModuleTask.1thread") {
+  module_task_exception(1);
+}
+
+TEST_CASE("Exception.ModuleTask.2threads") {
+  module_task_exception(2);
+}
+
+TEST_CASE("Exception.ModuleTask.3threads") {
+  module_task_exception(3);
+}
+
+TEST_CASE("Exception.ModuleTask.4threads") {
+  module_task_exception(4);
+}
+
+
+
 

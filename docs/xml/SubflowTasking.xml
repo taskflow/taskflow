@@ -1,33 +1,33 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
-  <compounddef id="DynamicTasking" kind="page">
-    <compoundname>DynamicTasking</compoundname>
-    <title>Dynamic Tasking</title>
+  <compounddef id="SubflowTasking" kind="page">
+    <compoundname>SubflowTasking</compoundname>
+    <title>Subflow Tasking</title>
     <tableofcontents>
       <tocsect>
         <name>Create a Subflow</name>
-        <reference>DynamicTasking_1CreateASubflow</reference>
+        <reference>SubflowTasking_1CreateASubflow</reference>
     </tocsect>
       <tocsect>
         <name>Join a Subflow</name>
-        <reference>DynamicTasking_1JoinASubflow</reference>
+        <reference>SubflowTasking_1JoinASubflow</reference>
     </tocsect>
       <tocsect>
         <name>Detach a Subflow</name>
-        <reference>DynamicTasking_1DetachASubflow</reference>
+        <reference>SubflowTasking_1DetachASubflow</reference>
     </tocsect>
       <tocsect>
         <name>Create a Nested Subflow</name>
-        <reference>DynamicTasking_1CreateANestedSubflow</reference>
+        <reference>SubflowTasking_1CreateANestedSubflow</reference>
     </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>It is very common for a parallel program to spawn task dependency graphs at runtime. In Taskflow, we call this <emphasis>dynamic tasking</emphasis>.</para>
-<sect1 id="DynamicTasking_1CreateASubflow">
+<sect1 id="SubflowTasking_1CreateASubflow">
 <title>Create a Subflow</title>
-<para>Dynamic tasks are those created during the execution of a graph. These tasks are spawned from a parent task and are grouped together to a <emphasis>subflow</emphasis> dependency graph. Taskflow has an unified interface for static and dynamic tasking. To create a subflow, emplace a callable that takes an argument of type <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>. A <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> object will be created and forwarded to the execution context of the task. All methods you find in <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> are applicable for <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>.</para>
+<para>Subflow tasks are those created during the execution of a graph. These tasks are spawned from a parent task and are grouped together to a <emphasis>subflow</emphasis> dependency graph. Taskflow has an unified interface for static and dynamic tasking. To create a subflow, emplace a callable that takes an argument of type <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>. A <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> object will be created and forwarded to the execution context of the task. All methods you find in <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> are applicable for <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>2:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>3:</highlight></codeline>
@@ -70,7 +70,7 @@
 </itemizedlist>
 Lines 8-14 are the main block to enable dynamic tasking. Taskflow uses a <ulink url="https://en.cppreference.com/w/cpp/utility/variant">std::variant</ulink> date type to unify the interface of static tasking and dynamic tasking. The runtime will create a <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> passing it to task B, and spawn a dependency graph as described by the associated callable. This new subflow graph will be added to the topology of its parent task B. Due to the property of dynamic tasking, we cannot dump its structure before execution. We will need to run the graph first to spawn the graph and then call <ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">tf::Taskflow::dump</ref>.</para>
 </sect1>
-<sect1 id="DynamicTasking_1JoinASubflow">
+<sect1 id="SubflowTasking_1JoinASubflow">
 <title>Join a Subflow</title>
 <para>By default, a subflow joins its parent task when the program leaves its execution context. All nodes of zero outgoing edges in the subflow precede its parent task. You can explicitly join a subflow within its execution context to carry out recursive patterns. A famous implementation is fibonacci recursion.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>spawn(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n,<sp/><ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>sbf)<sp/>{</highlight></codeline>
@@ -93,7 +93,7 @@ Lines 8-14 are the main block to enable dynamic tasking. Taskflow uses a <ulink 
 </para>
 <para>Our implementation to join subflows is <emphasis>recursive</emphasis> in order to preserve the thread context in each subflow task. Having a deep recursion of subflows may cause stack overflow.</para>
 </sect1>
-<sect1 id="DynamicTasking_1DetachASubflow">
+<sect1 id="SubflowTasking_1DetachASubflow">
 <title>Detach a Subflow</title>
 <para>In contract to joined subflow, you can detach a subflow from its parent task, allowing its execution to flow independently.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
@@ -132,7 +132,7 @@ Lines 8-14 are the main block to enable dynamic tasking. Taskflow uses a <ulink 
 <para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/subflow_detach_5.dot"></dotfile>
 </para>
 </sect1>
-<sect1 id="DynamicTasking_1CreateANestedSubflow">
+<sect1 id="SubflowTasking_1CreateANestedSubflow">
 <title>Create a Nested Subflow</title>
 <para>A subflow can be nested or recursive. You can create another subflow from the execution of a subflow and so on.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
@@ -175,6 +175,6 @@ Lines 8-14 are the main block to enable dynamic tasking. Taskflow uses a <ulink 
 Similarly, you can detach a nested subflow from its parent subflow. A detached subflow will run independently and eventually join the topology of its parent subflow. </para>
 </sect1>
     </detaileddescription>
-    <location file="cookbook/dynamic_tasking.dox"/>
+    <location file="cookbook/subflow_tasking.dox"/>
   </compounddef>
 </doxygen>
