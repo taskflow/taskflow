@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="ProjectMotivation" kind="page">
     <compoundname>ProjectMotivation</compoundname>
     <title>Project Motivation</title>
@@ -53,7 +53,7 @@
 <sect1 id="ProjectMotivation_1TaskBasedParallelism">
 <title>Task-based Parallelism</title>
 <para>The traditional loop-level parallelism is simple but hardly allows users to exploit parallelism in more irregular applications such as graph algorithms, incremental flows, recursion, and dynamically-allocated data structures. To address these challenges, parallel programming and libraries are evolving from the tradition loop-based parallelism to the <emphasis>task-based</emphasis> model.</para>
-<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/task-level-parallelism.dot"></dotfile>
+<para><dotfile name="task-level-parallelism.dot"></dotfile>
 </para>
 <para>The above figure shows an example <emphasis>task dependency graph</emphasis>. Each node in the graph represents a task unit at function level and each edge indicates the task dependency between a pair of tasks. Task-based model offers a powerful means to express both regular and irregular parallelism in a top-down manner, and provides transparent scaling to large number of cores. In fact, it has been proven, both by the research community and the evolution of parallel programming standards, task-based approach scales the best with future processor generations and architectures.</para>
 </sect1>

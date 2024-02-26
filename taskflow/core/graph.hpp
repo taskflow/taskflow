@@ -25,6 +25,7 @@ namespace tf {
 // Class: Graph
 // ----------------------------------------------------------------------------
 
+
 /**
 @class Graph
 
@@ -272,11 +273,12 @@ class Runtime {
   auto async(F&& f);
   
   /**
-  @brief similar to tf::Runtime::async but assigns the task a name
+  @brief runs the given callable asynchronously
 
   @tparam F callable type
+  @tparam P task parameters type
 
-  @param name assigned name to the task
+  @param params task parameters
   @param f callable
 
   @code{.cpp}
@@ -287,8 +289,8 @@ class Runtime {
   @endcode
 
   */
-  template <typename F>
-  auto async(const std::string& name, F&& f);
+  template <typename P, typename F>
+  auto async(P&& params, F&& f);
 
   /**
   @brief runs the given function asynchronously without returning any future object
@@ -316,10 +318,10 @@ class Runtime {
   void silent_async(F&& f);
   
   /**
-  @brief similar to tf::Runtime::silent_async but assigns the task a name
+  @brief runs the given function asynchronously without returning any future object
 
   @tparam F callable type
-  @param name assigned name to the task
+  @param params task parameters
   @param f callable
   
   @code{.cpp}
@@ -329,15 +331,37 @@ class Runtime {
   });
   @endcode
   */
-  template <typename F>
-  void silent_async(const std::string& name, F&& f);
+  template <typename P, typename F>
+  void silent_async(P&& params, F&& f);
   
   /**
   @brief similar to tf::Runtime::silent_async but the caller must be the worker of the runtime
 
   @tparam F callable type
 
-  @param name assigned name to the task
+  @param f callable
+
+  The method bypass the check of the caller worker from the executor 
+  and thus can only called by the worker of this runtime.
+
+  @code{.cpp}
+  taskflow.emplace([&](tf::Runtime& rt){
+    // running by the worker of this runtime
+    rt.silent_async_unchecked([](){});
+    rt.corun_all();
+  });
+  @endcode
+  */
+  template <typename F>
+  void silent_async_unchecked(F&& f);
+  
+  /**
+  @brief similar to tf::Runtime::silent_async but the caller must be the worker of the runtime
+
+  @tparam F callable type
+  @tparam P task parameters type
+
+  @param params task parameters
   @param f callable
 
   The method bypass the check of the caller worker from the executor 
@@ -351,8 +375,8 @@ class Runtime {
   });
   @endcode
   */
-  template <typename F>
-  void silent_async_unchecked(const std::string& name, F&& f);
+  template <typename P, typename F>
+  void silent_async_unchecked(P&& params, F&& f);
 
   /**
   @brief co-runs the given target and waits until it completes
@@ -467,14 +491,14 @@ class Runtime {
   /**
   @private
   */
-  template <typename F>
-  auto _async(Worker& w, const std::string& name, F&& f);
+  template <typename P, typename F>
+  auto _async(Worker& w, P&& params, F&& f);
   
   /**
   @private
   */
-  template <typename F>
-  void _silent_async(Worker& w, const std::string& name, F&& f);
+  template <typename P, typename F>
+  void _silent_async(Worker& w, P&& params, F&& f);
 };
 
 // constructor
@@ -493,6 +517,54 @@ inline Executor& Runtime::executor() {
 inline Worker& Runtime::worker() {
   return _worker;
 }
+
+// ----------------------------------------------------------------------------
+// TaskParams
+// ----------------------------------------------------------------------------
+
+/**
+@struct TaskParams
+
+@brief task parameters to use when creating an asynchronous task
+*/
+struct TaskParams {
+  /**
+  @brief name of the task
+  */
+  std::string name;
+
+  /**
+  @brief priority of the tassk
+  */
+  unsigned priority {0};
+
+  /**
+  @brief C-styled pointer to user data
+  */
+  void* data {nullptr};
+};
+
+/**
+@struct DefaultTaskParams
+
+@brief empty task parameter type for compile-time optimization
+*/
+struct DefaultTaskParams {
+};
+
+/**
+@brief determines if the given type is a task parameter type
+
+Task parameters can be specified in one of the following types:
+  + tf::TaskParams: assign the struct of defined parameters
+  + tf::DefaultTaskParams: assign nothing
+  + std::string: assign a name to the task
+*/
+template <typename P>
+constexpr bool is_task_params_v =
+  std::is_same_v<std::decay_t<P>, TaskParams> ||
+  std::is_same_v<std::decay_t<P>, DefaultTaskParams> ||
+  std::is_constructible_v<std::string, P>;
 
 // ----------------------------------------------------------------------------
 // Node
@@ -638,7 +710,16 @@ class Node {
   Node() = default;
 
   template <typename... Args>
-  Node(const std::string&, unsigned, Topology*, Node*, size_t, Args&&... args);
+  Node(const std::string&, unsigned, Topology*, Node*, size_t, Args&&...);
+  
+  template <typename... Args>
+  Node(const std::string&, Topology*, Node*, size_t, Args&&...);
+  
+  template <typename... Args>
+  Node(const TaskParams&, Topology*, Node*, size_t, Args&&...);
+  
+  template <typename... Args>
+  Node(const DefaultTaskParams&, Topology*, Node*, size_t, Args&&...);
 
   ~Node();
 
@@ -655,10 +736,10 @@ class Node {
   
   unsigned _priority {0};
   
+  void* _data {nullptr};
+  
   Topology* _topology {nullptr};
   Node* _parent {nullptr};
-
-  void* _data {nullptr};
 
   SmallVector<Node*> _successors;
   SmallVector<Node*> _dependents;
@@ -770,6 +851,55 @@ Node::Node(
 ) :
   _name         {name},
   _priority     {priority},
+  _topology     {topology},
+  _parent       {parent},
+  _join_counter {join_counter},
+  _handle       {std::forward<Args>(args)...} {
+}
+
+// Constructor
+template <typename... Args>
+Node::Node(
+  const std::string& name,
+  Topology* topology, 
+  Node* parent, 
+  size_t join_counter,
+  Args&&... args
+) :
+  _name         {name},
+  _topology     {topology},
+  _parent       {parent},
+  _join_counter {join_counter},
+  _handle       {std::forward<Args>(args)...} {
+}
+
+// Constructor
+template <typename... Args>
+Node::Node(
+  const TaskParams& params,
+  Topology* topology, 
+  Node* parent, 
+  size_t join_counter,
+  Args&&... args
+) :
+  _name         {params.name},
+  _priority     {params.priority},
+  _data         {params.data},
+  _topology     {topology},
+  _parent       {parent},
+  _join_counter {join_counter},
+  _handle       {std::forward<Args>(args)...} {
+}
+
+// Constructor
+template <typename... Args>
+Node::Node(
+  const DefaultTaskParams&,
+  Topology* topology, 
+  Node* parent, 
+  size_t join_counter,
+  Args&&... args
+) :
   _topology     {topology},
   _parent       {parent},
   _join_counter {join_counter},
@@ -1025,4 +1155,15 @@ Node* Graph::_emplace_back(ArgsT&&... args) {
   return _nodes.back();
 }
 
+
 }  // end of namespace tf. ---------------------------------------------------
+
+
+
+
+
+
+
+
+
+

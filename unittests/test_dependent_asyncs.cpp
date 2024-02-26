@@ -22,7 +22,7 @@ void embarrassing_parallelism(unsigned W) {
 
   for (int i = 0; i < N/2; ++i) {
     executor.silent_dependent_async(
-      std::to_string(i), [&](){
+      tf::TaskParams{std::to_string(i)}, [&](){
         counter.fetch_add(1, std::memory_order_relaxed);
       }
     );
@@ -30,7 +30,7 @@ void embarrassing_parallelism(unsigned W) {
   
   for (int i = N/2; i < N; ++i) {
     executor.dependent_async(
-      std::to_string(i), [&](){
+      tf::DefaultTaskParams{}, [&](){
         counter.fetch_add(1, std::memory_order_relaxed);
       }
     );
@@ -78,7 +78,7 @@ void silent_dependent_async_linear_chain(unsigned W) {
   for (int i = 0; i < N; ++i) {
     if (i == 0) {
       auto t = executor.silent_dependent_async(
-        std::to_string(i), [&results, i](){
+        [&results, i](){
           results[i].data = i+1;
         }
       );
@@ -86,7 +86,7 @@ void silent_dependent_async_linear_chain(unsigned W) {
     }
     else {
       auto t = executor.silent_dependent_async(
-        std::to_string(i), [&results, i](){
+        [&results, i](){
           results[i].data = results[i-1].data + i;
         }, tasks.begin(), tasks.end()
       );
@@ -148,7 +148,7 @@ void simple_graph(unsigned W) {
     results.resize(count);
 
     auto t0 = executor.silent_dependent_async(
-      "t0", [&](){
+      [&](){
         results[0] = 100 + id;
       }
     );
@@ -156,37 +156,37 @@ void simple_graph(unsigned W) {
     tasks.push_back(t0);
 
     auto t1 = executor.silent_dependent_async(
-      "t1", [&](){
+      [&](){
         results[1] = results[0] * 6 + id;
       }, tasks.begin(), tasks.end()
     );
 
     auto t2 = executor.silent_dependent_async(
-      "t2", [&](){
+      [&](){
         results[2] = results[0] - 200 + id;
       }, tasks.begin(), tasks.end()
     );
 
     auto t3 = executor.silent_dependent_async(
-      "t3", [&](){
+      [&](){
         results[3] = results[0] / 9 + id;
       }, tasks.begin(), tasks.end()
     );
 
     auto t4 = executor.silent_dependent_async(
-      "t4", [&](){
+      [&](){
         results[4] = results[2] + 66 + id;
       }, t2
     );
 
     auto t5 = executor.silent_dependent_async(
-      "t5", [&](){
+      [&](){
         results[5] = results[2] - 999 + id;
       }, t2
     );
 
     auto t6 = executor.silent_dependent_async(
-      "t6", [&](){
+      [&](){
         results[6] = results[2] * 9 / 13 + id;
       }, t2
     );
@@ -488,7 +488,7 @@ auto make_complex_graph(tf::Executor& executor, int r) {
   for (int i = 1; i <= 100; ++i) {
     tasks_level_1.push_back(
       executor.silent_dependent_async(
-        std::to_string(i), [&results, i, r](){
+        [&results, i, r](){
           results[i].data = results[0].data + i + r;
         },
         task0
@@ -501,7 +501,7 @@ auto make_complex_graph(tf::Executor& executor, int r) {
   for (int i = 101; i <= 10100; ++i) {
     tasks_level_2.push_back(
       executor.silent_dependent_async(
-        std::to_string(i), [&results, i, r](){
+        [&results, i, r](){
           results[i].data = results[(i-1)/100].data + i + r;
         },
         std::next(tasks_level_1.begin(), (i-1)/100-1), 
@@ -515,7 +515,7 @@ auto make_complex_graph(tf::Executor& executor, int r) {
   for (int i = 10101; i <= 10200; ++i) {
     tasks_level_3.push_back(
       executor.silent_dependent_async(
-        std::to_string(i), [&results, i, r](){
+        [&results, i, r](){
           int value = 0;
           int beg = i-10101;
           beg = (beg+1)*100+1;
@@ -658,7 +658,6 @@ void binary_tree(unsigned W) {
       if(task_id == 1) {
         tasks_c.push_back(
           executor.silent_dependent_async(
-            std::to_string(n),
             [task_id, &data](){
               data[task_id] = 1;
             }
@@ -669,7 +668,6 @@ void binary_tree(unsigned W) {
         dep[0] = tasks_p[n/2];
         tasks_c.push_back(
           executor.dependent_async(
-            std::to_string(n),
             [task_id, &data](){
               data[task_id] = data[task_id/2] + 1;
             },
@@ -735,7 +733,7 @@ void complete_linear_chain(unsigned W) {
   for (int i = 0; i < N; ++i) {
     if (i == 0) {
       auto t = executor0.silent_dependent_async(
-        std::to_string(i), [&results, i](){
+        [&results, i](){
           results[i].data = i+1;
         }
       );
@@ -743,7 +741,7 @@ void complete_linear_chain(unsigned W) {
     }
     else {
       auto t = executor0.silent_dependent_async(
-        std::to_string(i), [&results, i](){
+        [&results, i](){
           results[i].data = results[i-1].data + i;
         }, tasks.begin(), tasks.end()
       );
@@ -764,7 +762,7 @@ void complete_linear_chain(unsigned W) {
   for (int i = 0; i < N; ++i) {
     if (i == 0) {
       auto t = executor1.silent_dependent_async(
-        std::to_string(i+N), [&results, i, N](){
+        [&results, i, N](){
           results[i+N].data = results[i-1+N].data + i;
         }
       );
@@ -772,7 +770,7 @@ void complete_linear_chain(unsigned W) {
     }
     else {
       auto t = executor1.silent_dependent_async(
-        std::to_string(i+N), [&results, i, N](){
+        [&results, i, N](){
           results[i+N].data = results[i-1+N].data + i;
         }, tasks.begin(), tasks.end()
       );

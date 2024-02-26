@@ -344,8 +344,22 @@ void runtime_async_task_exception(unsigned W) {
   taskflow.clear();
   A = taskflow.emplace([&](tf::Runtime& rt){
     rt.silent_async([&](){ throw std::runtime_error("a"); });
-    rt.corun_all();  // must join to propagate the exception to taskflow
-                     // because async is independent of taskflow
+    REQUIRE_THROWS_WITH_AS(rt.corun_all(), "a", std::runtime_error); 
+    flag = 1;
+  });
+  B = taskflow.emplace([&](){
+    flag = 2;
+  });
+  A.precede(B);
+  executor.run(taskflow).get();
+  REQUIRE(flag == 2);
+  
+  // runtime silent async
+  flag = 0;
+  taskflow.clear();
+  A = taskflow.emplace([&](tf::Runtime& rt){
+    rt.silent_async([&](){ throw std::runtime_error("a"); });
+    rt.corun_all();
     flag = 1;
   });
   B = taskflow.emplace([&](){
@@ -353,7 +367,7 @@ void runtime_async_task_exception(unsigned W) {
   });
   A.precede(B);
   REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "a", std::runtime_error);
-  REQUIRE(flag == 1);
+  REQUIRE(flag == 0);
 }
 
 TEST_CASE("Exception.RuntimeAsyncTask.2threads") {
@@ -622,7 +636,4 @@ TEST_CASE("Exception.ModuleTask.3threads") {
 TEST_CASE("Exception.ModuleTask.4threads") {
   module_task_exception(4);
 }
-
-
-
 

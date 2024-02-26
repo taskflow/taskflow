@@ -27,12 +27,16 @@
       <xsd:element name="innerdir" type="refType" minOccurs="0" maxOccurs="unbounded" />
       <xsd:element name="innerfile" type="refType" minOccurs="0" maxOccurs="unbounded" />
       <xsd:element name="innerclass" type="refType" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="innerconcept" type="refType" minOccurs="0" maxOccurs="unbounded" />
       <xsd:element name="innernamespace" type="refType" minOccurs="0" maxOccurs="unbounded" />
       <xsd:element name="innerpage" type="refType" minOccurs="0" maxOccurs="unbounded" />
       <xsd:element name="innergroup" type="refType" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="qualifier" minOccurs="0" maxOccurs="unbounded" />
       <xsd:element name="templateparamlist" type="templateparamlistType" minOccurs="0" />
       <xsd:element name="sectiondef" type="sectiondefType" minOccurs="0" maxOccurs="unbounded" />
       <xsd:element name="tableofcontents" type="tableofcontentsType" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="requiresclause" type="linkedTextType" minOccurs="0" />
+      <xsd:element name="initializer" type="linkedTextType" minOccurs="0" />
       <xsd:element name="briefdescription" type="descriptionType" minOccurs="0" />
       <xsd:element name="detaileddescription" type="descriptionType" minOccurs="0" />
       <xsd:element name="inheritancegraph" type="graphType" minOccurs="0" />
@@ -140,13 +144,16 @@
       <xsd:element name="definition" minOccurs="0" />
       <xsd:element name="argsstring" minOccurs="0" />
       <xsd:element name="name" />
+      <xsd:element name="qualifiedname" minOccurs="0"/>
       <xsd:element name="read" minOccurs="0" />
       <xsd:element name="write" minOccurs="0" />
       <xsd:element name="bitfield" minOccurs="0" />
       <xsd:element name="reimplements" type="reimplementType" minOccurs="0" maxOccurs="unbounded" />
       <xsd:element name="reimplementedby" type="reimplementType" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="qualifier" minOccurs="0" maxOccurs="unbounded" />
       <xsd:element name="param" type="paramType" minOccurs="0" maxOccurs="unbounded" />
       <xsd:element name="enumvalue" type="enumvalueType" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="requiresclause" type="linkedTextType" minOccurs="0" />
       <xsd:element name="initializer" type="linkedTextType" minOccurs="0" />
       <xsd:element name="exceptions" type="linkedTextType" minOccurs="0" />
       <xsd:element name="briefdescription" type="descriptionType" minOccurs="0" />
@@ -424,6 +431,7 @@
       <xsd:element name="superscript" type="docMarkupType" />
       <xsd:element name="center" type="docMarkupType" />
       <xsd:element name="small" type="docMarkupType" />
+      <xsd:element name="cite" type="docMarkupType" />
       <xsd:element name="del" type="docMarkupType" />
       <xsd:element name="ins" type="docMarkupType" />
       <xsd:element name="htmlonly" type="docHtmlOnlyType" />
@@ -433,9 +441,9 @@
       <xsd:element name="latexonly" type="xsd:string" />
       <xsd:element name="docbookonly" type="xsd:string" />
       <xsd:element name="image" type="docImageType" />
-      <xsd:element name="dot" type="docImageType" />
-      <xsd:element name="msc" type="docImageType" />
-      <xsd:element name="plantuml" type="docImageType" />
+      <xsd:element name="dot" type="docDotMscType" />
+      <xsd:element name="msc" type="docDotMscType" />
+      <xsd:element name="plantuml" type="docPlantumlType" />
       <xsd:element name="anchor" type="docAnchorType" />
       <xsd:element name="formula" type="docFormulaType" />
       <xsd:element name="ref" type="docRefTextType" />
@@ -697,6 +705,10 @@
     <xsd:group ref="docTitleCmdGroup" minOccurs="0" maxOccurs="unbounded" />
   </xsd:complexType>
 
+  <xsd:complexType name="docSummaryType" mixed="true">
+    <xsd:group ref="docTitleCmdGroup" minOccurs="0" maxOccurs="unbounded" />
+  </xsd:complexType>
+
   <xsd:group name="docCmdGroup">
     <xsd:choice>
       <xsd:group ref="docTitleCmdGroup"/>
@@ -704,6 +716,8 @@
       <xsd:element name="preformatted" type="docMarkupType" />
       <xsd:element name="programlisting" type="listingType" />
       <xsd:element name="verbatim" type="xsd:string" />
+      <xsd:element name="javadocliteral" type="xsd:string" />
+      <xsd:element name="javadoccode" type="xsd:string" />
       <xsd:element name="indexentry" type="docIndexEntryType" />
       <xsd:element name="orderedlist" type="docListType" />
       <xsd:element name="itemizedlist" type="docListType" />
@@ -712,14 +726,15 @@
       <xsd:element name="variablelist" type="docVariableListType" />
       <xsd:element name="table" type="docTableType" />
       <xsd:element name="heading" type="docHeadingType" />
-      <xsd:element name="dotfile" type="docImageType" />
-      <xsd:element name="mscfile" type="docImageType" />
-      <xsd:element name="diafile" type="docImageType" />
+      <xsd:element name="dotfile" type="docImageFileType" />
+      <xsd:element name="mscfile" type="docImageFileType" />
+      <xsd:element name="diafile" type="docImageFileType" />
       <xsd:element name="toclist" type="docTocListType" />
       <xsd:element name="language" type="docLanguageType" />
       <xsd:element name="parameterlist" type="docParamListType" />
       <xsd:element name="xrefsect" type="docXRefSectType" />
       <xsd:element name="copydoc" type="docCopyType" />
+      <xsd:element name="details" type="docDetailsType" />
       <xsd:element name="blockquote" type="docBlockQuoteType" />
       <xsd:element name="parblock" type="docParBlockType" />
     </xsd:choice>
@@ -757,12 +772,15 @@
     <xsd:sequence>
       <xsd:element name="listitem" type="docListItemType" maxOccurs="unbounded" />
     </xsd:sequence>
+    <xsd:attribute name="type" type="DoxOlType" />
+    <xsd:attribute name="start" type="xsd:integer" />
   </xsd:complexType>
 
   <xsd:complexType name="docListItemType">
     <xsd:sequence>
       <xsd:element name="para" type="docParaType" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>
+    <xsd:attribute name="value" type="xsd:integer" use="optional"/>
   </xsd:complexType>
 
   <xsd:complexType name="docSimpleSectType">
@@ -833,6 +851,7 @@
 
   <xsd:complexType name="docCaptionType" mixed="true">
     <xsd:group ref="docTitleCmdGroup" minOccurs="0" maxOccurs="unbounded" />
+    <xsd:attribute name="id" type="xsd:string" /> 
   </xsd:complexType>
 
   <xsd:complexType name="docHeadingType" mixed="true">
@@ -849,6 +868,34 @@
     <xsd:attribute name="alt" type="xsd:string" use="optional"/>
     <xsd:attribute name="inline" type="DoxBool" use="optional"/>
     <xsd:attribute name="caption" type="xsd:string" use="optional"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="docDotMscType" mixed="true">
+    <xsd:group ref="docTitleCmdGroup" minOccurs="0" maxOccurs="unbounded" />
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="width" type="xsd:string" use="optional"/>
+    <xsd:attribute name="height" type="xsd:string" use="optional"/>
+    <xsd:attribute name="caption" type="xsd:string" use="optional"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="docImageFileType" mixed="true">
+    <xsd:group ref="docTitleCmdGroup" minOccurs="0" maxOccurs="unbounded" />
+    <xsd:attribute name="name" type="xsd:string" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>The mentioned file will be located in the directory as specified by XML_OUTPUT</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="width" type="xsd:string" use="optional"/>
+    <xsd:attribute name="height" type="xsd:string" use="optional"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="docPlantumlType" mixed="true">
+    <xsd:group ref="docTitleCmdGroup" minOccurs="0" maxOccurs="unbounded" />
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="width" type="xsd:string" use="optional"/>
+    <xsd:attribute name="height" type="xsd:string" use="optional"/>
+    <xsd:attribute name="caption" type="xsd:string" use="optional"/>
+    <xsd:attribute name="engine" type="DoxPlantumlEngine" use="optional"/>
   </xsd:complexType>
 
   <xsd:complexType name="docTocItemType" mixed="true">
@@ -918,6 +965,13 @@
       <xsd:element name="internal" type="docInternalType" minOccurs="0" />
     </xsd:sequence>
     <xsd:attribute name="link" type="xsd:string" /> 
+  </xsd:complexType>
+
+  <xsd:complexType name="docDetailsType">
+    <xsd:sequence>
+      <xsd:element name="summary" type="docSummaryType" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="para" type="docParaType" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
   </xsd:complexType>
 
   <xsd:complexType name="docBlockQuoteType">
@@ -1033,6 +1087,8 @@
       <xsd:enumeration value="XML" />
       <xsd:enumeration value="SQL" />
       <xsd:enumeration value="Markdown" />
+      <xsd:enumeration value="Slice" />
+      <xsd:enumeration value="Lex" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1063,6 +1119,7 @@
       <xsd:enumeration value="page" />
       <xsd:enumeration value="example" />
       <xsd:enumeration value="dir" />
+      <xsd:enumeration value="concept" />
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1158,6 +1215,29 @@
       <xsd:enumeration value="latex" />
       <xsd:enumeration value="docbook" />
       <xsd:enumeration value="rtf" />
+      <xsd:enumeration value="xml" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="DoxPlantumlEngine">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="uml"/>
+      <xsd:enumeration value="bpm"/>
+      <xsd:enumeration value="wire"/>
+      <xsd:enumeration value="dot"/>
+      <xsd:enumeration value="ditaa"/>
+      <xsd:enumeration value="salt"/>
+      <xsd:enumeration value="math"/>
+      <xsd:enumeration value="latex"/>
+      <xsd:enumeration value="gantt"/>
+      <xsd:enumeration value="mindmap"/>
+      <xsd:enumeration value="wbs"/>
+      <xsd:enumeration value="yaml"/>
+      <xsd:enumeration value="creole"/>
+      <xsd:enumeration value="json"/>
+      <xsd:enumeration value="flow"/>
+      <xsd:enumeration value="board"/>
+      <xsd:enumeration value="git"/>
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -1208,6 +1288,16 @@
       <xsd:enumeration value="bottom"/>
       <xsd:enumeration value="top"/>
       <xsd:enumeration value="middle"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="DoxOlType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="1" />
+      <xsd:enumeration value="a" />
+      <xsd:enumeration value="A" />
+      <xsd:enumeration value="i" />
+      <xsd:enumeration value="I" />
     </xsd:restriction>
   </xsd:simpleType>
 

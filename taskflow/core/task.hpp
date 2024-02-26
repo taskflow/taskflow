@@ -742,7 +742,7 @@ void TaskView::for_each_dependent(V&& visitor) const {
   }
 }
 
-}  // end of namespace tf. ---------------------------------------------------
+}  // end of namespace tf. ----------------------------------------------------
 
 namespace std {
 

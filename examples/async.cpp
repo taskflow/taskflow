@@ -13,18 +13,8 @@ int main() {
     return 1;
   });
 
-  executor.silent_async([](){  // silent async task doesn't return
+  executor.silent_async([](){  // silent async task doesn't return any future object
     std::cout << "async task 2 does not return (silent)\n";
-  });
-
-  // create asynchronous tasks with names (for profiling)
-  executor.async("async_task", [](){
-    std::cout << "named async task returns 1\n";
-    return 1;
-  });
-
-  executor.silent_async("silent_async_task", [](){
-    std::cout << "named silent async task does not return\n";
   });
 
   executor.wait_for_all();  // wait for the two async tasks to finish

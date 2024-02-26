@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaFlowRoundRobinOptimizer" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaFlowRoundRobinOptimizer</compoundname>
     <basecompoundref prot="public" virt="non-virtual">tf::cudaFlowOptimizerBase</basecompoundref>
@@ -10,6 +10,7 @@
         <definition>friend class cudaFlowCapturer</definition>
         <argsstring></argsstring>
         <name>cudaFlowCapturer</name>
+        <qualifiedname>tf::cudaFlowRoundRobinOptimizer::cudaFlowCapturer</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">cudaFlowCapturer</ref></type>
         </param>
@@ -19,7 +20,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="245" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="245" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="245" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="245" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
@@ -28,6 +29,7 @@
         <definition>size_t tf::cudaFlowRoundRobinOptimizer::_num_streams</definition>
         <argsstring></argsstring>
         <name>_num_streams</name>
+        <qualifiedname>tf::cudaFlowRoundRobinOptimizer::_num_streams</qualifiedname>
         <initializer>{4}</initializer>
         <briefdescription>
         </briefdescription>
@@ -35,7 +37,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="271" column="12" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="271" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="271" column="12" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="271" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -44,6 +46,7 @@
         <definition>tf::cudaFlowRoundRobinOptimizer::cudaFlowRoundRobinOptimizer</definition>
         <argsstring>()=default</argsstring>
         <name>cudaFlowRoundRobinOptimizer</name>
+        <qualifiedname>tf::cudaFlowRoundRobinOptimizer::cudaFlowRoundRobinOptimizer</qualifiedname>
         <briefdescription>
 <para>constructs a round-robin optimizer with 4 streams by default </para>
         </briefdescription>
@@ -51,13 +54,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="252" column="5"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="252" column="5"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowRoundRobinOptimizer_1ab293c8613773baf87ff740d2cec14149" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::cudaFlowRoundRobinOptimizer::cudaFlowRoundRobinOptimizer</definition>
         <argsstring>(size_t num_streams)</argsstring>
         <name>cudaFlowRoundRobinOptimizer</name>
+        <qualifiedname>tf::cudaFlowRoundRobinOptimizer::cudaFlowRoundRobinOptimizer</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>num_streams</declname>
@@ -69,13 +73,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="257" column="14" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="280" bodyend="286"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="257" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="280" bodyend="286"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowRoundRobinOptimizer_1a22fb9667ce393c31d908c3cc4f0ba650" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::cudaFlowRoundRobinOptimizer::num_streams</definition>
         <argsstring>() const</argsstring>
         <name>num_streams</name>
+        <qualifiedname>tf::cudaFlowRoundRobinOptimizer::num_streams</qualifiedname>
         <briefdescription>
 <para>queries the number of streams used by the optimizer </para>
         </briefdescription>
@@ -83,13 +88,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="262" column="12" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="289" bodyend="291"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="262" column="12" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="289" bodyend="291"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaFlowRoundRobinOptimizer_1acbd190f22ecc606a8b888953649a5be6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::cudaFlowRoundRobinOptimizer::num_streams</definition>
         <argsstring>(size_t n)</argsstring>
         <name>num_streams</name>
+        <qualifiedname>tf::cudaFlowRoundRobinOptimizer::num_streams</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>n</declname>
@@ -101,7 +107,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="267" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="294" bodyend="299"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="267" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="294" bodyend="299"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -110,6 +116,7 @@
         <definition>cudaGraph_t tf::cudaFlowRoundRobinOptimizer::_optimize</definition>
         <argsstring>(cudaFlowGraph &amp;graph)</argsstring>
         <name>_optimize</name>
+        <qualifiedname>tf::cudaFlowRoundRobinOptimizer::_optimize</qualifiedname>
         <param>
           <type>cudaFlowGraph &amp;</type>
           <declname>graph</declname>
@@ -120,15 +127,16 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="273" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="318" bodyend="400"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="273" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="318" bodyend="400"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlowRoundRobinOptimizer_1afd0f87fbc9131efbdb9e92bb834aeb47" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaFlowRoundRobinOptimizer_1a66a1f7b04965fe6478b0c48a6c69c4a3" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::cudaFlowRoundRobinOptimizer::_reset</definition>
-        <argsstring>(std::vector&lt; std::vector&lt; cudaFlowNode * &gt;&gt; &amp;graph)</argsstring>
+        <argsstring>(std::vector&lt; std::vector&lt; cudaFlowNode * &gt; &gt; &amp;graph)</argsstring>
         <name>_reset</name>
+        <qualifiedname>tf::cudaFlowRoundRobinOptimizer::_reset</qualifiedname>
         <param>
-          <type><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; cudaFlowNode * &gt;&gt; &amp;</type>
+          <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; cudaFlowNode * &gt; &gt; &amp;</type>
           <declname>graph</declname>
         </param>
         <briefdescription>
@@ -137,7 +145,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="275" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="301" bodyend="315"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="275" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="301" bodyend="315"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -151,33 +159,33 @@
 <para>The round-robin optimization algorithm is best suited for large cudaFlow graphs that compose hundreds of or thousands of GPU operations (e.g., kernels and memory copies) with many of them being able to run in parallel. You can configure the number of streams to the optimizer to adjust the maximum kernel currency in the captured CUDA graph. </para>
     </detaileddescription>
     <inheritancegraph>
+      <node id="2">
+        <label>tf::cudaFlowOptimizerBase</label>
+      </node>
       <node id="1">
         <label>tf::cudaFlowRoundRobinOptimizer</label>
         <link refid="classtf_1_1cudaFlowRoundRobinOptimizer"/>
         <childnode refid="2" relation="public-inheritance">
         </childnode>
-      </node>
-      <node id="2">
-        <label>tf::cudaFlowOptimizerBase</label>
       </node>
     </inheritancegraph>
     <collaborationgraph>
+      <node id="2">
+        <label>tf::cudaFlowOptimizerBase</label>
+      </node>
       <node id="1">
         <label>tf::cudaFlowRoundRobinOptimizer</label>
         <link refid="classtf_1_1cudaFlowRoundRobinOptimizer"/>
         <childnode refid="2" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="2">
-        <label>tf::cudaFlowOptimizerBase</label>
-      </node>
     </collaborationgraph>
-    <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="243" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="243" bodyend="277"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" line="243" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_optimizer.hpp" bodystart="243" bodyend="277"/>
     <listofallmembers>
       <member refid="classtf_1_1cudaFlowOptimizerBase_1ae20d9b88a98439f8d8ee5f6280b15744" prot="protected" virt="non-virtual"><scope>tf::cudaFlowRoundRobinOptimizer</scope><name>_levelize</name></member>
       <member refid="classtf_1_1cudaFlowRoundRobinOptimizer_1a1354083daa786bad9df520f4ddb03511" prot="private" virt="non-virtual"><scope>tf::cudaFlowRoundRobinOptimizer</scope><name>_num_streams</name></member>
       <member refid="classtf_1_1cudaFlowRoundRobinOptimizer_1ad612d3b6c169a65eebcf300eaca358aa" prot="private" virt="non-virtual"><scope>tf::cudaFlowRoundRobinOptimizer</scope><name>_optimize</name></member>
-      <member refid="classtf_1_1cudaFlowRoundRobinOptimizer_1afd0f87fbc9131efbdb9e92bb834aeb47" prot="private" virt="non-virtual"><scope>tf::cudaFlowRoundRobinOptimizer</scope><name>_reset</name></member>
+      <member refid="classtf_1_1cudaFlowRoundRobinOptimizer_1a66a1f7b04965fe6478b0c48a6c69c4a3" prot="private" virt="non-virtual"><scope>tf::cudaFlowRoundRobinOptimizer</scope><name>_reset</name></member>
       <member refid="classtf_1_1cudaFlowOptimizerBase_1a25bb1274b6ab2279e261690a5fe46007" prot="protected" virt="non-virtual"><scope>tf::cudaFlowRoundRobinOptimizer</scope><name>_toposort</name></member>
       <member refid="classtf_1_1cudaFlowRoundRobinOptimizer_1a672b45d300c57d726c203c62f950efbd" prot="private" virt="non-virtual"><scope>tf::cudaFlowRoundRobinOptimizer</scope><name>cudaFlowCapturer</name></member>
       <member refid="classtf_1_1cudaFlowRoundRobinOptimizer_1aef646675174ffcab6135fbfb7f0eecfe" prot="public" virt="non-virtual"><scope>tf::cudaFlowRoundRobinOptimizer</scope><name>cudaFlowRoundRobinOptimizer</name></member>

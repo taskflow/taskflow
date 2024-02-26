@@ -48,9 +48,7 @@ TF_FORCE_INLINE void launch_loop(
       break;
     }
     else {
-      rt.silent_async_unchecked("loop-"s + std::to_string(w), 
-        [=](){ launch_loop(part, loop); }
-      );
+      rt.silent_async_unchecked([=](){ launch_loop(part, loop); });
     }
   }
       
@@ -71,9 +69,7 @@ TF_FORCE_INLINE void launch_loop(
     launch_loop(part, loop);
   }
   else {
-    rt.silent_async_unchecked("loop-"s + std::to_string(w), 
-      [=](){ launch_loop(part, loop); }
-    );
+    rt.silent_async_unchecked([=](){ launch_loop(part, loop); });
   }
 }
 

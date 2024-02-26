@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="structtf_1_1IsPartitioner" kind="struct" language="C++" prot="private">
     <compoundname>tf::IsPartitioner</compoundname>
     <derivedcompoundref refid="classtf_1_1PartitionerBase" prot="public" virt="non-virtual">tf::PartitionerBase&lt; DefaultClosureWrapper &gt;</derivedcompoundref>
@@ -9,47 +9,47 @@
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="6">
-        <label>tf::StaticPartitioner&lt; C &gt;</label>
-        <link refid="classtf_1_1StaticPartitioner"/>
-        <childnode refid="2" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="7">
-        <label>tf::PartitionerBase&lt; C &gt;</label>
-        <link refid="classtf_1_1PartitionerBase"/>
-        <childnode refid="1" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="3">
-        <label>tf::DynamicPartitioner&lt; C &gt;</label>
-        <link refid="classtf_1_1DynamicPartitioner"/>
-        <childnode refid="2" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="5">
-        <label>tf::RandomPartitioner&lt; C &gt;</label>
-        <link refid="classtf_1_1RandomPartitioner"/>
-        <childnode refid="2" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="1">
-        <label>tf::IsPartitioner</label>
-      </node>
-      <node id="4">
-        <label>tf::GuidedPartitioner&lt; C &gt;</label>
-        <link refid="classtf_1_1GuidedPartitioner"/>
-        <childnode refid="2" relation="public-inheritance">
-        </childnode>
-      </node>
       <node id="2">
         <label>tf::PartitionerBase&lt; DefaultClosureWrapper &gt;</label>
         <link refid="classtf_1_1PartitionerBase"/>
         <childnode refid="1" relation="public-inheritance">
         </childnode>
       </node>
+      <node id="4">
+        <label>tf::DynamicPartitioner&lt; C &gt;</label>
+        <link refid="classtf_1_1DynamicPartitioner"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>tf::GuidedPartitioner&lt; C &gt;</label>
+        <link refid="classtf_1_1GuidedPartitioner"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>tf::IsPartitioner</label>
+      </node>
+      <node id="3">
+        <label>tf::PartitionerBase&lt; C &gt;</label>
+        <link refid="classtf_1_1PartitionerBase"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>tf::RandomPartitioner&lt; C &gt;</label>
+        <link refid="classtf_1_1RandomPartitioner"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>tf::StaticPartitioner&lt; C &gt;</label>
+        <link refid="classtf_1_1StaticPartitioner"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
     </inheritancegraph>
-    <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="57" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="57" bodyend="58"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="57" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="57" bodyend="58"/>
     <listofallmembers>
     </listofallmembers>
   </compounddef>

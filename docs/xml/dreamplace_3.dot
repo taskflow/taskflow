@@ -1,0 +1,81 @@
+digraph Taskflow {
+rankdir=LR
+p0x55f824e15da0[label="new_net_mask" ];
+p0x55f824e15da0 -> p0x55f824e16950;
+
+p0x55f824e160d0[label="new_pin2net" ];
+p0x55f824e160d0 -> p0x55f824e16950;
+
+p0x55f824e16950[label="h2d_constant" shape=folder fillcolor=cyan style=filled];
+p0x55f824e16950 -> p0x55f824e16fb0;
+subgraph cluster_p0x55f824e16950 {
+label="cudaFlow: h2d_constant";
+color="purple"
+p0x7f4ad8000e70[label="h2d_pin2net"];
+p0x7f4ad8000e70 -> p0x55f824e16950;
+p0x7f4ad8000f30[label="h2d_fv2pin"];
+p0x7f4ad8000f30 -> p0x55f824e16950;
+p0x7f4ad8001140[label="h2d_pin2v"];
+p0x7f4ad8001140 -> p0x55f824e16950;
+}
+p0x55f824e16a60[label="[0]shuffle_beg" ];
+p0x55f824e16a60 -> p0x55f824e16b70;
+p0x55f824e16b70[label="[0]shuffle_k" ];
+p0x55f824e16b70 -> p0x55f824e16c80;
+p0x55f824e16c80[label="[0]shuffle_end" ];
+p0x55f824e16c80 -> p0x55f824e16d90;
+p0x55f824e16d90[label="[0]mis_parallel_beg" ];
+p0x55f824e16d90 -> p0x55f824e16ea0;
+p0x55f824e16ea0[label="[0]mis_h2d" shape=folder fillcolor=cyan style=filled];
+p0x55f824e16ea0 -> p0x55f824e16fb0;
+subgraph cluster_p0x55f824e16ea0 {
+label="cudaFlow: [0]mis_h2d";
+color="purple"
+p0x7f4ad8004530[label="[0]h2d_ordered_vs"];
+p0x7f4ad8004530 -> p0x55f824e16ea0;
+p0x7f4ad8006d10[label="[0]h2d_dependent"];
+p0x7f4ad8006d10 -> p0x55f824e16ea0;
+p0x7f4ad8006df0[label="[0]h2d_selected"];
+p0x7f4ad8006df0 -> p0x55f824e16ea0;
+}
+p0x55f824e16fb0[label="mis_loop_beg" ];
+p0x55f824e16fb0 -> p0x55f824e170c0;
+p0x55f824e170c0[label="[0]mis_loop_k" shape=folder fillcolor=cyan style=filled];
+p0x55f824e170c0 -> p0x55f824e171d0;
+subgraph cluster_p0x55f824e170c0 {
+label="cudaFlow: [0]mis_loop_k";
+color="purple"
+p0x7f4ad8007e00[label="[0]h2d_size"];
+p0x7f4ad8007e00 -> p0x7f4ad8007d00;
+p0x7f4ad8007d00[label="[0]mis_k" style="filled" color="white" fillcolor="black" fontcolor="white" shape="box3d"];
+p0x7f4ad8007d00 -> p0x55f824e170c0;
+p0x7f4ad8007b80[label="[0]d2h_size"];
+p0x7f4ad8007b80 -> p0x55f824e170c0;
+}
+p0x55f824e171d0[label="[0]mis_loop_update" ];
+p0x55f824e171d0 -> p0x55f824e172e0;
+p0x55f824e172e0[label="[0]mis_cond" shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x55f824e172e0 -> p0x55f824e16fb0 [style=dashed label="0"];
+p0x55f824e172e0 -> p0x55f824e173f0 [style=dashed label="1"];
+p0x55f824e173f0[label="[0]mis_loop_end" shape=folder fillcolor=cyan style=filled];
+p0x55f824e173f0 ->p0x55f824e1aa20;
+subgraph cluster_p0x55f824e173f0 {
+label="cudaFlow: [0]mis_loop_end";
+color="purple"
+p0x7f4ad8008470[label="p0x7f4ad8008470"];
+p0x7f4ad8008470 -> p0x55f824e173f0;
+}
+
+
+p0x55f824e1aa20[label="[0]hpwl_k" ];
+p0x55f824e1aa20 -> p0x55f824e1ab30;
+p0x55f824e1aa20 -> p0x55f824e1ac40;
+p0x55f824e1aa20 -> p0x55f824e1ad50;
+
+
+p0x55f824e1ab30[label="del_net_mask" ];
+p0x55f824e1ac40[label="del_fnet2pin" ];
+p0x55f824e1ad50[label="del_fnet2pin_ofst" ];
+
+}
+

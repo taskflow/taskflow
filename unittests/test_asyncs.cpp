@@ -18,10 +18,23 @@ void async(unsigned W) {
   int N = 100000;
 
   for(int i=0; i<N; ++i) {
-    fus.emplace_back(executor.async([&](){
-      counter.fetch_add(1, std::memory_order_relaxed);
-      return -2;
-    }));
+    if(auto r = i%3; r==0) {
+      fus.emplace_back(executor.async(std::to_string(i), [&](){
+        counter.fetch_add(1, std::memory_order_relaxed);
+        return -2;
+      }));
+    }else if(r == 1) {
+      fus.emplace_back(executor.async(tf::DefaultTaskParams{}, [&](){
+        counter.fetch_add(1, std::memory_order_relaxed);
+        return -2;
+      }));
+    }
+    else {
+      fus.emplace_back(executor.async(tf::TaskParams{std::to_string(i)}, [&](){
+        counter.fetch_add(1, std::memory_order_relaxed);
+        return -2;
+      }));
+    }
   }
 
   executor.wait_for_all();
@@ -77,7 +90,7 @@ void nested_async(unsigned W) {
         counter.fetch_add(1, std::memory_order_relaxed);
         executor.async([&](){
           counter.fetch_add(1, std::memory_order_relaxed);
-          executor.async("inner-most", [&](){
+          executor.async([&](){
             counter.fetch_add(1, std::memory_order_relaxed);
           });
         });
@@ -278,14 +291,14 @@ void nested_subflow_async(size_t W) {
       for(int i=0; i<100; i++) {
         sf2.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
         sf1.async(
-          "named", [&](){ counter.fetch_add(1, std::memory_order_relaxed); }
+          [&](){ counter.fetch_add(1, std::memory_order_relaxed); }
         );
       }
 
       sf2.emplace([&](tf::Subflow& sf3){
         for(int i=0; i<100; i++) {
           sf3.silent_async(
-            "named", [&](){ counter.fetch_add(1, std::memory_order_relaxed); }
+            [&](){ counter.fetch_add(1, std::memory_order_relaxed); }
           );
           sf2.silent_async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
           sf1.silent_async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
@@ -338,7 +351,7 @@ void runtime_async(size_t W) {
   auto S1 = taskflow.emplace([&] (tf::Runtime& sf){
     for(int i=0; i<1000; i++) {
       sf.silent_async(
-        "named_silent_async", [&](){counter.fetch_add(1, std::memory_order_relaxed);}
+        [&](){counter.fetch_add(1, std::memory_order_relaxed);}
       );
     }
     sf.corun_all();
@@ -356,7 +369,7 @@ void runtime_async(size_t W) {
     sf.silent_async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
     for(int i=0; i<1000; i++) {
       sf.async(
-        "named_async", [&](){ counter.fetch_add(1, std::memory_order_relaxed); }
+        [&](){ counter.fetch_add(1, std::memory_order_relaxed); }
       );
     }
     sf.corun_all();
