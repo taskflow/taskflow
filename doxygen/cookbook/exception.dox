@@ -105,7 +105,7 @@ state referenced by the returned @std_future handle.
 
 @code{.cpp}
 tf::Executor executor;
-auto fu = executor.async([](){ throw std::runtime_error("exception on A"); });
+auto fu = executor.async([](){ throw std::runtime_error("exception"); });
 try {
   fu.get();
 }
@@ -117,20 +117,110 @@ catch(const std::runtime_error& e) {
 Running the program will show the exception message on the async task:
 
 @code{.shell-session}
-~$ exception on A
+~$ exception
 @endcode
 
 On the other hand, since tf::Executor::silent_async does not return any future handle,
 any exception thrown from a silent-async task will be silently caught by the 
-executor and ignored.
+executor and (1) propagated to the its parent task if the parent task exists or
+(2) ignored if the parent task does not exist.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+tf::Executor executor;
+
+// execption will be silently ignored
+executor.silent_async([](){ throw std::runtime_error("exception"); });
+
+// exception will be propagated to the parent tf::Runtime task and then its Taskflow
+taskflow.emplace([&](tf::Runtime& rt){
+  rt.silent_async([](){ throw std::runtime_error("exception"); });
+});
+try {
+  taskflow.get();
+}
+catch(const std::runtime_error& re) {
+  std::cout << re.what() << std::endl;
+}
+@endcode
+
+@section CatchAnExceptionFromACorunLoop Catch an Exception from a Corun Loop
+
+When you corun a graph via tf::Executor::corun or tf::Runtime::corun, 
+any exception will be thrown during the execution.
+For example, the code below will throw an exception during the execution of `taskflow1`:
 
 @code{.cpp}
 tf::Executor executor;
-executor.silent_async([](){ throw std::runtime_error("exception on A"); });
+tf::Taskflow taskflow1;
+tf::Taskflow taskflow2;
+
+taskflow1.emplace([](){
+  throw std::runtime_error("exception");
+}); 
+taskflow2.emplace([&](){
+  try {
+    executor.corun(taskflow1);
+  } catch(const std::runtime_error& re) {
+    std::cout << re.what() << std::endl;
+  }
+}); 
+executor.run(taskflow2).get();
 @endcode
 
-Running the above program will not show any exception message as it is silently
-caught by the executor.
+We can observe the same behavior when using tf::Runtime::corun:
+
+@code{.cpp}
+tf::Executor executor;
+tf::Taskflow taskflow1;
+tf::Taskflow taskflow2;
+
+taskflow1.emplace([](){
+  throw std::runtime_error("exception");
+}); 
+taskflow2.emplace([&](tf::Runtime& rt){
+  try {
+    rt.corun(taskflow1);
+  } catch(const std::runtime_error& re) {
+    std::cout << re.what() << std::endl;
+  }
+}); 
+executor.run(taskflow2).get();
+@endcode
+
+For the above example, if the exception is not caught with tf::Runtime::corun,
+it will be propagated to its parent task, which is the tf::Runtime object `rt` in this case.
+Then, the exception will be propagated to `taskflow2`.
+
+@code{.cpp}
+tf::Executor executor;
+tf::Taskflow taskflow1;
+tf::Taskflow taskflow2;
+
+taskflow1.emplace([](){
+  throw std::runtime_error("exception");
+}); 
+taskflow2.emplace([&](tf::Runtime& rt){
+  rt.corun(taskflow1);
+}); 
+
+try {
+  executor.run(taskflow2).get();
+}
+catch(const std::runtime_error& re) {
+  std::cout << re.what() << std::endl;
+}
+@endcode
+
+For the above example, if the exception is not caught with tf::Runtime::corun,
+it will be propagated to its parent task, which is the tf::Runtime object `rt` in this case.
+Then, the exception will be propagated to `taskflow2`.
+
+*/
+
+}
+
+
 
 */
 

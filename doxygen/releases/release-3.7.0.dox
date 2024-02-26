@@ -32,6 +32,11 @@ To use %Taskflow v3.7.0, you need a compiler that supports C++17:
 
 @section release-3-7-0_summary Release Summary
 
+This release introduces a new exception interface to help identify C++ errors 
+in taskflow programs.
+Additionally, this release enhances the scheduling performance through integration
+of C++20 atomic-wait into scheduler, executor, and notifier.
+
 @section release-3-7-0_new_features New Features
 
 @subsection release-3-7-0_taskflow_core Taskflow Core
@@ -87,7 +92,7 @@ executor.run(taskflow).wait();
 
 @section release-3-7-0_bug_fixes Bug Fixes 
 
-+ Fixed compilation erros of CUDA examples caused by not including `for_each.hpp`
++ Fixed compilation error of CUDA examples caused by not including `for_each.hpp`
 + Fixed the runtime error of tf::Taskflow::for_each_index when the range invalid 
 
 @section release-3-7-0_breaking_changes Breaking Changes

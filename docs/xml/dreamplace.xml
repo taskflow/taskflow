@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="dreamplace" kind="page">
     <compoundname>dreamplace</compoundname>
     <title>Standard Cell Placement</title>
@@ -50,7 +50,7 @@ Each iteration contains overlapped CPU and GPU tasks with nested conditions to d
 <sect1 id="dreamplace_1UseCasesDreamPlaceProgrammingEffort">
 <title>Programming Effort</title>
 <para>We implemented the hybrid CPU-GPU placement algorithm using Taskflow, <ulink url="https://github.com/oneapi-src/oneTBB">Intel TBB</ulink>, and <ulink url="http://starpu.gforge.inria.fr/">StarPU</ulink>. The algorithm is crafted on one GPU and many CPUs. Since TBB and StarPU have no support for nested conditions, we unroll their task graphs across fixed-length iterations found in hindsight. The figure below shows a partial taskflow of 4 cudaFlows, 1 conditioned cycle, and 12 static tasks for one placement iteration.</para>
-<para><dotfile name="dreamplace_3.dot"></dotfile>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/dreamplace_3.dot"></dotfile>
 </para>
 <para>The table below lists the programming effort of each method, measured by <ulink url="https://dwheeler.com/sloccount/">SLOCCount</ulink>. Taskflow outperforms TBB and StarPU in all aspects. The whole program is about 1.5x and 1.7x less complex than that of TBB and StarPU, respectively.</para>
 <para> <table rows="4" cols="5"><row>

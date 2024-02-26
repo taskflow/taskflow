@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="CUDASTDMerge" kind="page">
     <compoundname>CUDASTDMerge</compoundname>
     <title>Parallel Merge</title>
@@ -37,11 +37,11 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input_1[i]<sp/>=<sp/>rand()%100;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input_2[i]<sp/>=<sp/>rand()%100;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input_1[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>()%100;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input_2[i]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>()%100;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/algorithm/sort" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::sort</ref>(input_1,<sp/>input1<sp/>+<sp/>N);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/algorithm/sort" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::sort</ref>(input_2,<sp/>input2<sp/>+<sp/>N);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/algorithm/sort" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::sort</ref>(input_1,<sp/>input1<sp/>+<sp/>N);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/algorithm/sort" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::sort</ref>(input_2,<sp/>input2<sp/>+<sp/>N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
@@ -62,7 +62,7 @@
 <codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>verify<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">assert(<ref refid="cpp/algorithm/is_sorted" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_sorted</ref>(output,<sp/>output<sp/>+<sp/>2*N));</highlight></codeline>
+<codeline><highlight class="normal">assert(std::is_sorted(output,<sp/>output<sp/>+<sp/>2*N));</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>delete<sp/>the<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">cudaFree(input1);</highlight></codeline>

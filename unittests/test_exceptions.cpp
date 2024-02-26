@@ -557,16 +557,16 @@ void runtime_corun_exception(unsigned W) {
   tf::Executor executor(W);
   tf::Taskflow taskflow1;
   tf::Taskflow taskflow2;
-
+  
   taskflow1.emplace([](){
     throw std::runtime_error("x");
   });
-  taskflow2.emplace([&](tf::Runtime& rt){
+
+  auto task = taskflow2.emplace([&](tf::Runtime& rt){
     REQUIRE_THROWS_WITH_AS(rt.corun(taskflow1), "x", std::runtime_error);
   });
   executor.run(taskflow2).get();
   
-
   taskflow1.clear();
   for(size_t i=0; i<100; i++) {
     taskflow1.emplace([](tf::Subflow& sf){
@@ -578,6 +578,12 @@ void runtime_corun_exception(unsigned W) {
     });
   }
   executor.run(taskflow2).get();
+  
+  // change it to parent propagation
+  task.work([&](tf::Runtime& rt){
+    rt.corun(taskflow1);
+  });
+  REQUIRE_THROWS_WITH_AS(executor.run(taskflow2).get(), "x", std::runtime_error);
 }
 
 TEST_CASE("Exception.RuntimeCorun.1thread") {
