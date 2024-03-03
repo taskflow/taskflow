@@ -132,7 +132,8 @@ class Notifier {
       assert((state & kWaiterMask) != 0);
       uint64_t newstate = state - kWaiterInc + kEpochInc;
       //newstate = (newstate & ~kStackMask) | (w - &_waiters[0]);
-      newstate = static_cast<uint64_t>((newstate & ~kStackMask) | static_cast<uint64_t>(w - &_waiters[0]));
+      // newstate = static_cast<uint64_t>((newstate & ~kStackMask) | static_cast<uint64_t>(w - &_waiters[0]));
+      newstate = static_cast<uint64_t>( ( newstate & ~kStackMask ) | static_cast<uint64_t>( state & kStackMask ) );
       if ((state & kStackMask) == kStackMask)
         w->next.store(nullptr, std::memory_order_relaxed);
       else
