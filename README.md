@@ -6,7 +6,7 @@
 [![Windows](https://github.com/taskflow/taskflow/workflows/Windows/badge.svg)](https://github.com/taskflow/taskflow/actions?query=workflow%3AWindows)
 [![Wiki](image/api-doc.svg)][documentation]
 [![TFProf](image/tfprof.svg)](https://taskflow.github.io/tfprof/)
-[![Cite](image/cite-tpds.svg)][TPDS21]
+[![Cite](image/cite-tpds.svg)][TPDS22]
 
 Taskflow helps you quickly write parallel and heterogeneous task programs in modern C++
 
