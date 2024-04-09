@@ -18,7 +18,7 @@ namespace tf {
 
 @brief class to create a critical region of limited workers to run tasks
 
-tf::CriticalSection is a warpper over tf::Semaphore and is specialized for
+tf::CriticalSection is a wrapper over tf::Semaphore and is specialized for
 limiting the maximum concurrency over a set of tasks.
 A critical section starts with an initial count representing that limit.
 When a task is added to the critical section,
