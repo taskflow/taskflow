@@ -1362,23 +1362,22 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   }
 
 #ifdef __cpp_lib_atomic_wait
-  uint64_t cur_state = _state.load(std::memory_order_acquire);
-  for(;;) {
+  for(uint64_t cur_state = _state.load(std::memory_order_acquire);;) {
 
-    if(_done.test(std::memory_order_relaxed)) {
-      _state.fetch_add(_EPOCH_INC, std::memory_order_release);
-      _state.notify_all();
-      return false;
-    }
+    uint64_t new_state = cur_state + _NUM_WAITERS_INC;
 
-    // if there is alreay a waiter
-    // that waiter is guaranteed to be woken up by notify
-    // if there is no waiters
-    // check if we really don't have available tasks
-    uint64_t num_waiters = cur_state & _NUM_WAITERS_MASK;
-    if(num_waiters == 0) {
+    if(_state.compare_exchange_weak(cur_state, new_state, std::memory_order_acquire)) {
+
+      if(_done.test(std::memory_order_relaxed)) {
+        _state.fetch_sub(_NUM_WAITERS_INC, std::memory_order_relaxed);
+        //_state.fetch_add(_EPOCH_INC, std::memory_order_release);
+        //_state.notify_all();
+        return false;
+      }
+
       if(!_wsq.empty()) {
         worker._vtm = worker._id;
+        _state.fetch_sub(_NUM_WAITERS_INC, std::memory_order_relaxed);
         goto explore_task;
       }
       
@@ -1387,14 +1386,11 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
       for(size_t vtm=0; vtm<_workers.size(); vtm++) {
         if(!_workers[vtm]._wsq.empty()) {
           worker._vtm = vtm;
+          _state.fetch_sub(_NUM_WAITERS_INC, std::memory_order_relaxed);
           goto explore_task;
         }
       }
-    }
 
-    // we should use compare_exchange_weak as this loop is usually lightweight
-    uint64_t new_state = cur_state + _NUM_WAITERS_INC;
-    if(_state.compare_exchange_weak(cur_state, new_state, std::memory_order_acquire)) {
       _state.wait(new_state, std::memory_order_relaxed);
       _state.fetch_sub(_NUM_WAITERS_INC, std::memory_order_relaxed);
       goto explore_task;
