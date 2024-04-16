@@ -139,7 +139,7 @@ endif()
 #endif()
 
 # -----------------------------------------------------------------------------
-# defult release build
+# default to release build, unless explicitly specified
 # -----------------------------------------------------------------------------
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to '${TF_DEFAULT_BUILD_TYPE}'")
