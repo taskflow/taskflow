@@ -20,7 +20,7 @@ list(APPEND TF_CUDA_EXAMPLES
 foreach(cuda_example IN LISTS TF_CUDA_EXAMPLES)
   add_executable(${cuda_example} ${cuda_example}.cu)
   target_link_libraries(${cuda_example}
-    ${PROJECT_NAME} Threads::Threads tf::default_settings
+    ${PROJECT_NAME} ${ATOMIC_LIBRARY} Threads::Threads tf::default_settings
   )
 
   # avoid cmake 3.18+ warning

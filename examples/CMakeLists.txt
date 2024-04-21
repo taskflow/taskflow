@@ -42,7 +42,7 @@ list(APPEND TF_EXAMPLES
 foreach(example IN LISTS TF_EXAMPLES)
   add_executable(${example} ${example}.cpp)
   target_link_libraries(
-    ${example} ${PROJECT_NAME} tf::default_settings
+    ${example} ${PROJECT_NAME} ${ATOMIC_LIBRARY} tf::default_settings
     )
   # set emcc options
   if (CMAKE_SYSTEM_NAME STREQUAL Emscripten)
